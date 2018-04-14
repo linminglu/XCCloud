@@ -20,7 +20,7 @@ using XXCloudService.Api.XCCloud.Common;
 
 namespace XXCloudService.Api.XCCloud
 {
-    [Authorize(Roles = "XcAdmin,MerchUser")]
+    [Authorize(Roles = "XcUser,XcAdmin,MerchUser")]
     /// <summary>
     /// UserGroup 的摘要说明
     /// </summary>
@@ -90,7 +90,7 @@ namespace XXCloudService.Api.XCCloud
                     Array.Resize(ref parameters, parameters.Length + 1);
                     parameters[parameters.Length - 1] = new SqlParameter("@MerchID", merchId);
                 }
-                else if (userTokenKeyModel.LogType == (int)RoleType.XcAdmin)
+                else
                 {
                     sql = " exec  SelectFunctionForXA @GroupID";
                     Array.Resize(ref parameters, parameters.Length + 1);

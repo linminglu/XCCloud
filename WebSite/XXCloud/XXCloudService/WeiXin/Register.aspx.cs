@@ -182,7 +182,7 @@ namespace XXCloudService.WeiXin
                 errMsg = "密码参数不能为空";
                 return false;
             }
-            #endregion
+            #endregion            
 
             //验证商户
             var mId = storeOrMerchId;
@@ -208,8 +208,12 @@ namespace XXCloudService.WeiXin
 
             //验证发起人
             IBase_UserInfoService userInfoService = BLLContainer.Resolve<IBase_UserInfoService>();
-            var userList = userInfoService.GetModels(p => p.OpenID.ToString().Equals(openId, StringComparison.OrdinalIgnoreCase));
-            int userInfoCount = userList.Count<Base_UserInfo>();
+            if (userInfoService.Any(p => p.LogName.Equals(username, StringComparison.OrdinalIgnoreCase)))
+            {
+                errMsg = "该用户名已使用";
+                return false;
+            }
+
             if (userInfoService.Any(p => p.OpenID.ToString().Equals(openId, StringComparison.OrdinalIgnoreCase)))
             {
                 errMsg = "用户不能重复注册";

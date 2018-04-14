@@ -378,203 +378,209 @@ namespace XCCloudService.Api.XCCloud
                 }
             }
 
-            [Authorize(Roles = "XcAdmin")]
-            [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
-            public object SaveXcUserInfo(Dictionary<string, object> dicParas)
+        [Authorize(Roles = "XcAdmin")]
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object SaveXcUserInfo(Dictionary<string, object> dicParas)
+        {
+            try
             {
-                try
+                string errMsg = string.Empty;
+                string pwd = string.Empty;
+                string userId = dicParas.ContainsKey("userId") ? dicParas["userId"].ToString() : string.Empty;
+                string logName = dicParas.ContainsKey("logName") ? dicParas["logName"].ToString() : string.Empty;
+                string openId = dicParas.ContainsKey("openId") ? dicParas["openId"].ToString() : string.Empty;
+                string realName = dicParas.ContainsKey("realName") ? dicParas["realName"].ToString() : string.Empty;
+                string mobile = dicParas.ContainsKey("mobile") ? dicParas["mobile"].ToString() : string.Empty;
+                string iCCardId = dicParas.ContainsKey("iCCardId") ? dicParas["iCCardId"].ToString() : string.Empty;
+                string status = dicParas.ContainsKey("status") ? dicParas["status"].ToString() : string.Empty;
+                string unionId = dicParas.ContainsKey("unionId") ? dicParas["unionId"].ToString() : string.Empty;
+                string userGroupId = dicParas.ContainsKey("userGroupId") ? dicParas["userGroupId"].ToString() : string.Empty;
+                object[] userGrants = dicParas.ContainsKey("userGrants") ? (object[])dicParas["userGrants"] : null;
+
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+
+                #region 验证参数
+
+                if (!string.IsNullOrEmpty(userId) && !Utils.isNumber(userId))
                 {
-                    string errMsg = string.Empty;
-                    string pwd = string.Empty;
-                    string userId = dicParas.ContainsKey("userId") ? dicParas["userId"].ToString() : string.Empty;
-                    string logName = dicParas.ContainsKey("logName") ? dicParas["logName"].ToString() : string.Empty;
-                    string openId = dicParas.ContainsKey("openId") ? dicParas["openId"].ToString() : string.Empty;
-                    string realName = dicParas.ContainsKey("realName") ? dicParas["realName"].ToString() : string.Empty;
-                    string mobile = dicParas.ContainsKey("mobile") ? dicParas["mobile"].ToString() : string.Empty;
-                    string iCCardId = dicParas.ContainsKey("iCCardId") ? dicParas["iCCardId"].ToString() : string.Empty;
-                    string status = dicParas.ContainsKey("status") ? dicParas["status"].ToString() : string.Empty;
-                    string unionId = dicParas.ContainsKey("unionId") ? dicParas["unionId"].ToString() : string.Empty;
-                    string userGroupId = dicParas.ContainsKey("userGroupId") ? dicParas["userGroupId"].ToString() : string.Empty;
-                    object[] userGrants = dicParas.ContainsKey("userGrants") ? (object[])dicParas["userGrants"] : null;
+                    errMsg = "userId格式不正确";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
 
-                    XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                if (!Utils.CheckMobile(mobile))
+                {
+                    errMsg = "手机号不正确";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
 
-                    #region 验证参数
+                if (string.IsNullOrEmpty(realName))
+                {
+                    errMsg = "员工姓名不能为空";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
 
-                    if (!string.IsNullOrEmpty(userId) && !Utils.isNumber(userId))
+                if (realName.Length > 25)
+                {
+                    errMsg = "员工姓名不能超过25个字符";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
+                if (string.IsNullOrEmpty(logName))
+                {
+                    errMsg = "登录名不能为空";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
+                if (logName.Length > 25)
+                {
+                    errMsg = "登录名不能超过25个字符";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
+                if (!string.IsNullOrEmpty(iCCardId) && iCCardId.Length > 16)
+                {
+                    errMsg = "员工卡号不能超过16个字符";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
+                if (string.IsNullOrEmpty(status))
+                {
+                    errMsg = "员工状态不能为空";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
+                if (!Utils.isNumber(status))
+                {
+                    errMsg = "员工状态格式不正确";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
+                if (string.IsNullOrEmpty(openId))
+                {
+                    errMsg = "openId不能为空";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
+                if (string.IsNullOrEmpty(userGroupId))
+                {
+                    errMsg = "工作组Id不能为空";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
+                if (!Utils.isNumber(userGroupId))
+                {
+                    errMsg = "工作组Id格式不正确";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+                #endregion
+
+                //开启EF事务
+                using (TransactionScope ts = new TransactionScope())
+                {
+                    try
                     {
-                        errMsg = "userId格式不正确";
-                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                    }
-
-                    if (!Utils.CheckMobile(mobile))
-                    {
-                        errMsg = "手机号不正确";
-                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                    }
-
-                    if (string.IsNullOrEmpty(realName))
-                    {
-                        errMsg = "员工姓名不能为空";
-                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                    }
-
-                    if (realName.Length > 25)
-                    {
-                        errMsg = "员工姓名不能超过25个字符";
-                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                    }
-
-                    if (string.IsNullOrEmpty(logName))
-                    {
-                        errMsg = "登录名不能为空";
-                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                    }
-
-                    if (logName.Length > 25)
-                    {
-                        errMsg = "登录名不能超过25个字符";
-                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                    }
-
-                    if (!string.IsNullOrEmpty(iCCardId) && iCCardId.Length > 16)
-                    {
-                        errMsg = "员工卡号不能超过16个字符";
-                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                    }
-
-                    if (string.IsNullOrEmpty(status))
-                    {
-                        errMsg = "员工状态不能为空";
-                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                    }
-
-                    if (!Utils.isNumber(status))
-                    {
-                        errMsg = "员工状态格式不正确";
-                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                    }
-
-                    if (string.IsNullOrEmpty(openId))
-                    {
-                        errMsg = "openId不能为空";
-                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                    }
-
-                    if (string.IsNullOrEmpty(userGroupId))
-                    {
-                        errMsg = "工作组Id不能为空";
-                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                    }
-
-                    if (!Utils.isNumber(userGroupId))
-                    {
-                        errMsg = "工作组Id格式不正确";
-                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                    }
-                    #endregion
-
-                    //开启EF事务
-                    using (TransactionScope ts = new TransactionScope())
-                    {
-                        try
+                        var iUserId = 0;
+                        int.TryParse(userId, out iUserId);
+                        IBase_UserInfoService base_UserInfoService = BLLContainer.Resolve<IBase_UserInfoService>();
+                        if (base_UserInfoService.Any(p => p.UserID != iUserId && p.LogName.Equals(logName, StringComparison.OrdinalIgnoreCase)))
                         {
-                            var iUserId = 0;
-                            int.TryParse(userId, out iUserId);
-                            IBase_UserInfoService base_UserInfoService = BLLContainer.Resolve<IBase_UserInfoService>();
-                            var base_UserInfoModel = base_UserInfoService.GetModels(p => p.UserID == iUserId).FirstOrDefault() ?? new Base_UserInfo();                            
-                            base_UserInfoModel.LogName = logName;                            
-                            base_UserInfoModel.RealName = realName;
-                            base_UserInfoModel.Mobile = mobile;
-                            base_UserInfoModel.ICCardID = iCCardId;
-                            base_UserInfoModel.Status = Convert.ToInt32(status);                            
-                            base_UserInfoModel.UserGroupID = Convert.ToInt32(userGroupId);
-                            if (base_UserInfoModel.UserID == 0)
-                            {
-                                pwd = Utils.GetCheckCode(6);
-                                base_UserInfoModel.OpenID = openId;
-                                base_UserInfoModel.UnionID = unionId;
-                                base_UserInfoModel.UserType = (int)UserType.Xc;
-                                base_UserInfoModel.CreateTime = DateTime.Now;                                
-                                base_UserInfoModel.LogPassword = Utils.MD5(pwd);
-                                base_UserInfoModel.Auditor = Convert.ToInt32(userTokenKeyModel.LogId); //管理员授权给普通员工
-                                base_UserInfoModel.AuditorTime = DateTime.Now;
-                                if (!base_UserInfoService.Add(base_UserInfoModel))
-                                {
-                                    errMsg = "更新数据库失败";
-                                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                                }
-                            }
-                            else
-                            {
-                                if (!base_UserInfoService.Update(base_UserInfoModel))
-                                {
-                                    errMsg = "更新数据库失败";
-                                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                                }
-                            }
-
-                            iUserId = base_UserInfoModel.UserID;                                                       
-                            
-                            if (userGrants != null && userGrants.Count() >= 0)
-                            {
-                                //先删除后添加授权功能表
-                                var dbContext = DbContextFactory.CreateByModelNamespace(typeof(Base_UserGrant).Namespace);
-                                var base_UserGrantList = dbContext.Set<Base_UserGrant>().Where(p => p.UserID == iUserId).ToList();
-                                foreach (var item in base_UserGrantList)
-                                {
-                                    dbContext.Entry(item).State = EntityState.Deleted;
-                                }
-
-                                foreach (IDictionary<string, object> iUgr in userGrants)
-                                {
-                                    if (iUgr != null)
-                                    {
-                                        var ugr = new Dictionary<string, object>(iUgr, StringComparer.OrdinalIgnoreCase);
-                                        int ugrid = Convert.ToInt32(ugr["id"]);
-                                        var base_UserGrant = new Base_UserGrant();
-                                        base_UserGrant.GrantID = ugrid;
-                                        base_UserGrant.UserID = iUserId;
-                                        base_UserGrant.GrantEN = Convert.ToInt32(ugr["grantEn"]);
-                                        dbContext.Entry(base_UserGrant).State = EntityState.Added;                                        
-                                    }
-                                    else
-                                    {
-                                        errMsg = "提交的数据包含空值";
-                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                                    }
-                                }
-
-                                if (dbContext.SaveChanges() < 0)
-                                {
-                                    errMsg = "保存授权功能失败";
-                                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                                }
-                            }
-
-                            ts.Complete();
+                            errMsg = "该用户名已使用";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
-                        catch (Exception ex)
+
+                        var base_UserInfoModel = base_UserInfoService.GetModels(p => p.UserID == iUserId).FirstOrDefault() ?? new Base_UserInfo();
+                        base_UserInfoModel.LogName = logName;
+                        base_UserInfoModel.RealName = realName;
+                        base_UserInfoModel.Mobile = mobile;
+                        base_UserInfoModel.ICCardID = iCCardId;
+                        base_UserInfoModel.Status = Convert.ToInt32(status);
+                        base_UserInfoModel.UserGroupID = Convert.ToInt32(userGroupId);
+                        if (base_UserInfoModel.UserID == 0)
+                        {                            
+                            pwd = Utils.GetCheckCode(6);
+                            base_UserInfoModel.OpenID = openId;
+                            base_UserInfoModel.UnionID = unionId;
+                            base_UserInfoModel.UserType = (int)UserType.Xc;
+                            base_UserInfoModel.CreateTime = DateTime.Now;
+                            base_UserInfoModel.LogPassword = Utils.MD5(pwd);
+                            base_UserInfoModel.Auditor = Convert.ToInt32(userTokenKeyModel.LogId); //管理员授权给普通员工
+                            base_UserInfoModel.AuditorTime = DateTime.Now;
+                            if (!base_UserInfoService.Add(base_UserInfoModel))
+                            {
+                                errMsg = "更新数据库失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+                        }
+                        else
                         {
-                            return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, ex.Message);
-                        }                        
-                    }
+                            if (!base_UserInfoService.Update(base_UserInfoModel))
+                            {
+                                errMsg = "更新数据库失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+                        }
 
-                    if (!string.IsNullOrEmpty(pwd))
+                        iUserId = base_UserInfoModel.UserID;
+
+                        if (userGrants != null && userGrants.Count() >= 0)
+                        {
+                            //先删除后添加授权功能表
+                            var dbContext = DbContextFactory.CreateByModelNamespace(typeof(Base_UserGrant).Namespace);
+                            var base_UserGrantList = dbContext.Set<Base_UserGrant>().Where(p => p.UserID == iUserId).ToList();
+                            foreach (var item in base_UserGrantList)
+                            {
+                                dbContext.Entry(item).State = EntityState.Deleted;
+                            }
+
+                            foreach (IDictionary<string, object> iUgr in userGrants)
+                            {
+                                if (iUgr != null)
+                                {
+                                    var ugr = new Dictionary<string, object>(iUgr, StringComparer.OrdinalIgnoreCase);
+                                    int ugrid = Convert.ToInt32(ugr["id"]);
+                                    var base_UserGrant = new Base_UserGrant();
+                                    base_UserGrant.GrantID = ugrid;
+                                    base_UserGrant.UserID = iUserId;
+                                    base_UserGrant.GrantEN = Convert.ToInt32(ugr["grantEn"]);
+                                    dbContext.Entry(base_UserGrant).State = EntityState.Added;
+                                }
+                                else
+                                {
+                                    errMsg = "提交的数据包含空值";
+                                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                }
+                            }
+
+                            if (dbContext.SaveChanges() < 0)
+                            {
+                                errMsg = "保存授权功能失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+                        }
+
+                        ts.Complete();
+                    }
+                    catch (Exception ex)
                     {
-                        NewPasswordMessagePush(openId, logName, pwd);
+                        return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, ex.Message);
                     }
-
-                    //更新缓存
-                    UserBusiness.XcUserInit();
-
-                    return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
                 }
-                catch (Exception e)
+
+                if (!string.IsNullOrEmpty(pwd))
                 {
-                    return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+                    NewPasswordMessagePush(openId, logName, pwd);
                 }
+
+                //更新缓存
+                UserBusiness.XcUserInit();
+
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
             }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
 
             [Authorize(Roles = "XcAdmin")]
             [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
@@ -803,6 +809,12 @@ namespace XCCloudService.Api.XCCloud
                             errMsg = "该用户不存在";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
+
+                    if (userInfoService.Any(p => p.UserID != iUserId && p.LogName.Equals(logName, StringComparison.OrdinalIgnoreCase)))
+                    {
+                        errMsg = "该用户名已使用";
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
 
                         if (dicParas.ContainsKey("userGroup") && dicParas["userGroup"] != null)
                         {
