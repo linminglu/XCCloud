@@ -27,17 +27,18 @@ namespace XCCloudService.Model.CustomModel.XCCloud
     }
 
     public class TokenDataModel
-    {
-        public string MerchID { get; set; }
-    }
-
-    public class UserDataModel : TokenDataModel
-    {
-        public string StoreID { get; set; }        
+    {        
+ 
     }
 
     public class MerchDataModel : TokenDataModel
     {
+        public string MerchID { get; set; }
+
+        public string StoreID { get; set; }
+
+        public Nullable<int> WorkStationID { get; set; }
+
         public Nullable<int> MerchType { get; set; }
 
         public Nullable<int> CreateType { get; set; }

@@ -572,7 +572,7 @@ namespace XCCloudService.Api.XCCloud
             {
                 string errMsg = string.Empty;
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string storeId = (userTokenKeyModel.DataModel as UserDataModel).StoreID;
+                string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
                 IData_MemberLevelService data_MemberLevelService = BLLContainer.Resolve<IData_MemberLevelService>();
                 Dictionary<int, string> memberLevel = data_MemberLevelService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase) && p.State == 1).Select(o => new
                 {
@@ -595,7 +595,7 @@ namespace XCCloudService.Api.XCCloud
             try
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string merchId = userTokenKeyModel.DataModel.MerchID;
+                string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
 
                 IBase_StoreInfoService base_StoreInfoService = BLLContainer.Resolve<IBase_StoreInfoService>(resolveNew:true);
                 IBase_MemberInfoService base_MemberInfoService = BLLContainer.Resolve<IBase_MemberInfoService>(resolveNew: true);
@@ -628,7 +628,7 @@ namespace XCCloudService.Api.XCCloud
                 string memberLevelID = dicParas.ContainsKey("memberLevelID") ? dicParas["memberLevelID"].ToString() : string.Empty;
                 string memberLevelName = dicParas.ContainsKey("memberLevelName") ? dicParas["memberLevelName"].ToString() : string.Empty;
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string storeId = (userTokenKeyModel.DataModel as UserDataModel).StoreID;
+                string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
 
 
                 IData_MemberLevelService data_MemberLevelService = BLLContainer.Resolve<IData_MemberLevelService>();
@@ -695,7 +695,7 @@ namespace XCCloudService.Api.XCCloud
             try
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string storeId = (userTokenKeyModel.DataModel as UserDataModel).StoreID;
+                string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
 
                 string errMsg = string.Empty;
                 string memberLevelID = dicParas.ContainsKey("memberLevelID") ? (dicParas["memberLevelID"] + "") : string.Empty;
@@ -801,7 +801,7 @@ namespace XCCloudService.Api.XCCloud
             try
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string storeId = (userTokenKeyModel.DataModel as UserDataModel).StoreID;
+                string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
 
                 string errMsg = string.Empty;
                 string memberLevelID = dicParas.ContainsKey("memberLevelID") ? dicParas["memberLevelID"].ToString() : string.Empty;

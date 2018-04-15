@@ -94,7 +94,7 @@ namespace XXCloudService.WeiXin
                     IBase_UserInfoService userInfoService = BLLContainer.Resolve<IBase_UserInfoService>();
                     var userList = userInfoService.GetModels(p => p.OpenID.ToString().Equals(openId, StringComparison.OrdinalIgnoreCase));
                     var userInfo = userList.FirstOrDefault<Base_UserInfo>();
-                    MessagePush(revOpenId, username, userInfo.CreateTime.Value.ToString("f"), workId, userType, message);
+                    MessagePush(revOpenId, username, userInfo.CreateTime.Value.ToString("f"), workId, message);
 
                     var succMsg = "已递交工单，等待管理员审核";
                     LogHelper.SaveLog("成功:" + succMsg);
@@ -190,7 +190,7 @@ namespace XXCloudService.WeiXin
             if (!base_MerchantInfoService.Any(p => p.MerchID.Equals(mId, StringComparison.OrdinalIgnoreCase)))
             {
                 //验证门店
-                var sId = storeOrMerchId;
+                var sId = mId;
                 IBase_StoreInfoService storeInfoService = BLLContainer.Resolve<IBase_StoreInfoService>();
                 if (!storeInfoService.Any(p => p.StoreID.Equals(sId, StringComparison.OrdinalIgnoreCase)))
                 {
@@ -199,11 +199,11 @@ namespace XXCloudService.WeiXin
                 }
 
                 mId = storeInfoService.GetModels(p => p.StoreID.Equals(sId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault().MerchID;
-                storeId = storeOrMerchId;
+                storeId = sId;
             }
             else
             {
-                merchId = storeOrMerchId;
+                merchId = mId;
             }
 
             //验证发起人
@@ -243,17 +243,18 @@ namespace XXCloudService.WeiXin
             }
             else
             {
+                merchId = mId;
                 userType = (int)UserType.Store;
             }
 
             return true;
         }
 
-        private void MessagePush(string openId, string userName, string registerTime, string workId, int userType, string message)
+        private void MessagePush(string openId, string userName, string registerTime, string workId, string message)
         {
             string errMsg = string.Empty;
             LogHelper.SaveLog(TxtLogType.WeiXin, TxtLogContentType.Common, TxtLogFileType.Day, "MessagePush");
-            UserRegisterRemindDataModel dataModel = new UserRegisterRemindDataModel(userName, registerTime, workId, userType, message);
+            UserRegisterRemindDataModel dataModel = new UserRegisterRemindDataModel(userName, registerTime, workId, message);
             if (MessageMana.PushMessage(WeiXinMesageType.UserRegisterRemind, openId, dataModel, out errMsg))
             {
                 LogHelper.SaveLog(TxtLogType.WeiXin, TxtLogContentType.Common, TxtLogFileType.Day, "true");

@@ -12,13 +12,6 @@ GO
 CREATE Proc [dbo].[SP_RegisterUserFromWx](@StoreId varchar(15),@MerchId varchar(15),@UserType int,@Mobile varchar(16),@Username varchar(50),@Realname varchar(50),@UserPassword varchar(6),@Message varchar(500) = '',@WXOpenID varchar(100) = '',@UnionID varchar(100) = '',@WorkID int output, @Return int output)
 as
 
- --用户不能重复注册
- if exists (select 1 from Base_UserInfo where OpenID = @WXOpenID)
- 	begin
- 		set @Return = 0
- 		return
- 	end
-
  begin transaction tran1
  begin try
 	declare @UserId int 

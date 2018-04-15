@@ -34,7 +34,7 @@ namespace XXCloudService.Api.XCCloud
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string logId = userTokenKeyModel.LogId;
                 int logType = (int)userTokenKeyModel.LogType;
-                string merchId = (userTokenKeyModel.DataModel != null) ? userTokenKeyModel.DataModel.MerchID : string.Empty;
+                string merchId = (userTokenKeyModel.DataModel != null) ? (userTokenKeyModel.DataModel as MerchDataModel).MerchID : string.Empty;
 
                 //返回商户信息和功能菜单信息
                 string sql = " exec  SP_GetMenus @LogType,@LogID,@MerchID";

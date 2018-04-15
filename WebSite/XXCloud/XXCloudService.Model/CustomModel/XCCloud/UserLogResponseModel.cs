@@ -23,7 +23,13 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         [DataMember(Name = "userType", Order = 4)]
         public int? UserType { get; set; }
 
-        [DataMember(Name = "switchable", Order = 4)]
-        public int? Switchable { get; set; }
+        [DataMember(Name = "switchMerch", Order = 5)]
+        public int? SwitchMerch { get; set; }
+
+        [DataMember(Name = "switchStore", Order = 6)]
+        public int? SwitchStore { get; set; }
+
+        [DataMember(Name = "switchWorkstation", Order = 7)]
+        public int? SwitchWorkstation { get; set; }
     }    
 }

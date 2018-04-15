@@ -790,7 +790,7 @@ namespace XXCloudService.Api.XCCloud
                 string errMsg = string.Empty;
                 string merchId = dicParas.ContainsKey("merchId") ? dicParas["merchId"].ToString() : string.Empty;
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string currentMerchId = userTokenKeyModel.DataModel.MerchID;
+                string currentMerchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
 
                 #region 商户信息和功能菜单
 

@@ -13,12 +13,11 @@ namespace XCCloudService.Model.WeiXin.Message
             
         }
 
-        public UserRegisterRemindDataModel(string userName, string registerTime, string workId, int userType, string message)
+        public UserRegisterRemindDataModel(string userName, string registerTime, string workId, string message)
         {
             this.UserName = userName;
             this.RegisterTime = registerTime;
-            this.WorkId = workId;
-            this.UserType = userType;
+            this.WorkId = workId;            
             this.Message = message;
         }
 
@@ -27,8 +26,6 @@ namespace XCCloudService.Model.WeiXin.Message
         public string RegisterTime { set; get; }
 
         public string WorkId { set; get; }
-
-        public int UserType { set; get; }
 
         public string Message { set; get; }
 

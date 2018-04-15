@@ -26,7 +26,7 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string storeId = (userTokenKeyModel.DataModel as UserDataModel).StoreID;
+                string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
 
                 IDict_SystemService dict_SystemService = BLLContainer.Resolve<IDict_SystemService>(resolveNew: true);
                 int GameTypeId = dict_SystemService.GetModels(p => p.DictKey.Equals("游戏机类型")).FirstOrDefault().ID;
@@ -65,7 +65,7 @@ namespace XXCloudService.Api.XCCloud
             {
                 string errMsg = string.Empty;
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string storeId = (userTokenKeyModel.DataModel as UserDataModel).StoreID;
+                string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
                 IData_GameInfoService data_GameInfoService = BLLContainer.Resolve<IData_GameInfoService>();
                 Dictionary<int, string> gameInfo = data_GameInfoService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)).Select(o => new
                 {
@@ -128,7 +128,7 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string storeId = (userTokenKeyModel.DataModel as UserDataModel).StoreID;
+                string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
 
                 string errMsg = string.Empty;
                 string gameId = dicParas.ContainsKey("GameID") ? (dicParas["GameID"] + "") : string.Empty;

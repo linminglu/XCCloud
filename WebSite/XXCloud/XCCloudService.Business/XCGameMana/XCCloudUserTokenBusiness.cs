@@ -11,8 +11,8 @@ namespace XCCloudService.Business.XCGameMana
 {
     public class XCCloudUserTokenBusiness
     {
-        private static object syncRoot = new Object();  
-
+        private static object syncRoot = new Object();
+        
         public static string SetUserToken(string logId, int logType, TokenDataModel dataModel = null)
         {
             //设置用户token      

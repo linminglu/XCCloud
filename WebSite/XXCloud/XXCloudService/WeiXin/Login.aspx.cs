@@ -58,43 +58,55 @@ namespace XXCloudService.WeiXin
                     }
 
                     //验证用户 
-                    IBase_UserInfoService userInfoService = BLLContainer.Resolve<IBase_UserInfoService>();
-                    if (userInfoService.Any(w => w.UnionID.ToString().Equals(unionId, StringComparison.OrdinalIgnoreCase)))
-                    {  
-                        var base_UserInfoModel = userInfoService.GetModels(w => w.UnionID.ToString().Equals(unionId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault<Base_UserInfo>();
+                    IBase_UserInfoService userInfoService = BLLContainer.Resolve<IBase_UserInfoService>();                    
+                    int count = userInfoService.GetCount(w => w.UnionID == unionId);
+                    if (count == 1)
+                    {
+                        var base_UserInfoModel = userInfoService.GetModels(w => w.UnionID == unionId).FirstOrDefault();
                         int userId = base_UserInfoModel.UserID;
                         int userType = (int)base_UserInfoModel.UserType;
                         int logType = (int)RoleType.XcUser; //默认普通员工登录
-                        int isXcAdmin = base_UserInfoModel.Auditor ?? 0;
-                        int switchable = base_UserInfoModel.Switchable ?? 0;
+                        int auditorId = base_UserInfoModel.Auditor ?? 0;
+                        int switchMerch = base_UserInfoModel.SwitchMerch ?? 0;
+                        int switchStore = base_UserInfoModel.SwitchStore ?? 0;
+                        int switchWorkstation = base_UserInfoModel.SwitchWorkstation ?? 0;
 
-                        if (userType == (int)UserType.Xc && isXcAdmin == 0)
+                        if (userType == (int)UserType.Xc)
                         {
-                            logType = (int)RoleType.XcAdmin;
+                            if (auditorId == 0)
+                            {
+                                logType = (int)RoleType.XcAdmin;
+                            }
                             token = XCCloudUserTokenBusiness.SetUserToken(userId.ToString(), logType);
                         }
                         else if (userType == (int)UserType.Store || userType == (int)UserType.StoreBoss)
                         {
-                            logType = (int)RoleType.StoreUser;
-                            var storeId = base_UserInfoModel.StoreID;
-                            IBase_StoreInfoService base_StoreInfoService = BLLContainer.Resolve<IBase_StoreInfoService>();
-                            if (!base_StoreInfoService.Any(a => a.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)))
+                            if (switchStore == 0)
                             {
-                                errMsg = "该门店不存在";
+                                errMsg = "您没有访问门店后台的权限";
                                 Response.Redirect(WeiXinConfig.RedirectErrorPage + "?title=" + HttpUtility.UrlEncode("登录失败") + "&message=" + HttpUtility.UrlEncode(errMsg), false);
                             }
-                            string merchId = base_StoreInfoService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault().MerchID;
-                            var dataModel = new UserDataModel { StoreID = storeId, MerchID = merchId };
+
+                            logType = (int)RoleType.StoreUser;
+                            string storeId = base_UserInfoModel.StoreID;
+                            string merchId = base_UserInfoModel.MerchID;
+                            var dataModel = new MerchDataModel { StoreID = storeId, MerchID = merchId };
                             token = XCCloudUserTokenBusiness.SetUserToken(userId.ToString(), logType, dataModel);
                         }
                         else
                         {
+                            if (switchMerch == 0)
+                            {
+                                errMsg = "您没有访问商户后台的权限";
+                                Response.Redirect(WeiXinConfig.RedirectErrorPage + "?title=" + HttpUtility.UrlEncode("登录失败") + "&message=" + HttpUtility.UrlEncode(errMsg), false);
+                            }
+
                             logType = (int)RoleType.MerchUser;
                             string merchId = base_UserInfoModel.MerchID;
                             IBase_MerchantInfoService base_MerchantInfoService = BLLContainer.Resolve<IBase_MerchantInfoService>();
                             if (!base_MerchantInfoService.Any(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)))
                             {
-                                errMsg = "该商户不存在";
+                                errMsg = "您所访问的商户不存在";
                                 Response.Redirect(WeiXinConfig.RedirectErrorPage + "?title=" + HttpUtility.UrlEncode("登录失败") + "&message=" + HttpUtility.UrlEncode(errMsg), false);
                             }
                             var base_MerchantInfoModel = base_MerchantInfoService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
@@ -103,8 +115,16 @@ namespace XXCloudService.WeiXin
                             merchTag = base_MerchantInfoModel.MerchTag;
                         }
 
-                        Response.Redirect(WeiXinConfig.RedirectMainPage + "?token=" + token + "&logType=" + logType + "&userType=" 
-                            + userType + "&merchTag=" + merchTag + "&switchable=" + switchable, false);
+                        Response.Redirect(WeiXinConfig.RedirectMainPage + "?token=" + token + "&logType=" + logType + "&userType=" + userType + "&merchTag=" + merchTag +
+                            "&switchMerch=" + switchMerch + "&switchStore=" + switchStore + "&switchWorkstation=" + switchWorkstation,
+                            false);
+                    }
+                    else if (count > 1)
+                    {
+                        token = XCCloudUserTokenBusiness.SetUserToken(unionId, -1);                        
+                        var userNames = string.Join(",", userInfoService.GetModels(w => w.UnionID == unionId).Select(o => o.LogName).ToList());
+                        Response.Redirect(WeiXinConfig.RedirectSelectUserPage + "?token=" + token + "&userNames=" + HttpUtility.UrlEncode(userNames),
+                            false);
                     }
                     else
                     {

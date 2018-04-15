@@ -411,10 +411,11 @@ namespace XCCloudService.Common.Enum
 
     public enum RoleType
     {
-        XcUser = 0, //莘宸普通员工
-        XcAdmin = 1, //莘宸管理员
-        StoreUser = 2, //门店用户
-        MerchUser = 3 //商户用户
+        XcUser = 0,     //莘宸普通员工
+        XcAdmin = 1,    //莘宸管理员
+        StoreUser = 2,  //门店员工
+        MerchUser = 3,      //商户专员
+        Workstation = 4 //吧台员工
     }
 
     public enum MerchType

@@ -148,11 +148,13 @@ namespace XXCloudService.WeiXin.Api
             string errMsg = string.Empty;            
             int userId, authorId;
             string workId = dicParas.ContainsKey("workId") ? dicParas["workId"].ToString() : string.Empty;
-            string state = dicParas.ContainsKey("state") ? dicParas["state"].ToString() : string.Empty;
-            string switchable = dicParas.ContainsKey("switchable") ? dicParas["switchable"].ToString() : string.Empty;
+            string state = dicParas.ContainsKey("state") ? dicParas["state"].ToString() : string.Empty;            
             string userType = dicParas.ContainsKey("userType") ? dicParas["userType"].ToString() : string.Empty;
             string reason = dicParas.ContainsKey("reason") ? dicParas["reason"].ToString() : string.Empty;
             string isAdmin = dicParas.ContainsKey("isAdmin") ? dicParas["isAdmin"].ToString() : string.Empty;
+            string switchmerch = dicParas.ContainsKey("switchmerch") ? (dicParas["switchmerch"] + "") : string.Empty;
+            string switchstore = dicParas.ContainsKey("switchstore") ? (dicParas["switchstore"] + "") : string.Empty;
+            string switchworkstation = dicParas.ContainsKey("switchworkstation") ? (dicParas["switchworkstation"] + "") : string.Empty;
 
             if (string.IsNullOrEmpty(state))
             {
@@ -180,6 +182,24 @@ namespace XXCloudService.WeiXin.Api
                     errMsg = "授权功能列表userGrant参数不能为空";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
+            }
+
+            if (string.IsNullOrEmpty(switchmerch))
+            {
+                errMsg = "switchable参数不能为空";
+                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+            }
+
+            if (string.IsNullOrEmpty(switchstore))
+            {
+                errMsg = "switchstore参数不能为空";
+                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+            }
+
+            if (string.IsNullOrEmpty(switchworkstation))
+            {
+                errMsg = "switchworkstation参数不能为空";
+                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
             }
 
             if (!checkParas(dicParas, out userId, out authorId, out errMsg))
@@ -213,7 +233,9 @@ namespace XXCloudService.WeiXin.Api
                         base_UserInfo.Status = (int)UserStatus.Pass;
                         base_UserInfo.IsAdmin = !string.IsNullOrEmpty(isAdmin) ? Convert.ToInt32(isAdmin) : (int?)null;
                         base_UserInfo.UserType = Convert.ToInt32(userType);
-                        base_UserInfo.Switchable = !string.IsNullOrEmpty(switchable) ? Convert.ToInt32(switchable) : (int?)null;
+                        base_UserInfo.SwitchMerch = Convert.ToInt32(switchmerch);
+                        base_UserInfo.SwitchStore = Convert.ToInt32(switchstore);
+                        base_UserInfo.SwitchWorkstation = Convert.ToInt32(switchworkstation);
 
                         string storeId = base_UserInfo.StoreID;
                         if (base_UserInfo.IsAdmin == 1 && userInfoService.Any(a => a.UserID != userId && a.IsAdmin == 1 && a.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)))

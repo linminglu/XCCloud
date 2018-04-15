@@ -29,7 +29,7 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string storeId = (userTokenKeyModel.DataModel as UserDataModel).StoreID;
+                string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
 
                 string errMsg = string.Empty;
                 object[] conditions = dicParas.ContainsKey("conditions") ? (object[])dicParas["conditions"] : null;
@@ -69,7 +69,7 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string storeId = (userTokenKeyModel.DataModel as UserDataModel).StoreID;
+                string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
                 string userId = userTokenKeyModel.LogId;
                 int iUserId = 0;
                 int.TryParse(userId, out iUserId);

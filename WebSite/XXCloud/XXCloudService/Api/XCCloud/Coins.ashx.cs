@@ -32,7 +32,7 @@ namespace XXCloudService.Api.XCCloud
                 string note = dicParas.ContainsKey("note") ? (dicParas["note"] + "") : string.Empty;
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 int userId = Convert.ToInt32(userTokenKeyModel.LogId);
-                string storeId = (userTokenKeyModel.DataModel as UserDataModel).StoreID;
+                string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
 
                 if (string.IsNullOrEmpty(storageCount))
                 {
@@ -82,7 +82,7 @@ namespace XXCloudService.Api.XCCloud
                 string errMsg = string.Empty;
                 string destroyTime = dicParas.ContainsKey("destroyTime") ? (dicParas["destroyTime"] + "") : string.Empty;
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string storeId = (userTokenKeyModel.DataModel as UserDataModel).StoreID;
+                string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
 
                 if (!string.IsNullOrEmpty(destroyTime))
                 {
@@ -138,7 +138,7 @@ namespace XXCloudService.Api.XCCloud
                 string note = dicParas.ContainsKey("note") ? (dicParas["note"] + "") : string.Empty;
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 int userId = Convert.ToInt32(userTokenKeyModel.LogId);
-                string storeId = (userTokenKeyModel.DataModel as UserDataModel).StoreID;
+                string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
 
                 if (string.IsNullOrEmpty(storageCount))
                 {
@@ -188,7 +188,7 @@ namespace XXCloudService.Api.XCCloud
                 string errMsg = string.Empty;
                 string destroyTime = dicParas.ContainsKey("destroyTime") ? (dicParas["destroyTime"] + "") : string.Empty;
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string storeId = (userTokenKeyModel.DataModel as UserDataModel).StoreID;
+                string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
 
                 if (!string.IsNullOrEmpty(destroyTime))
                 {
@@ -243,7 +243,7 @@ namespace XXCloudService.Api.XCCloud
                 string digitLevelID = dicParas.ContainsKey("digitLevelID") ? (dicParas["digitLevelID"] + "") : string.Empty;
                 string iCardID = dicParas.ContainsKey("iCardID") ? (dicParas["iCardID"] + "") : string.Empty;                
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string storeId = (userTokenKeyModel.DataModel as UserDataModel).StoreID;
+                string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
 
                 if (string.IsNullOrEmpty(digitLevelID))
                 {
@@ -304,7 +304,7 @@ namespace XXCloudService.Api.XCCloud
             {
                 string errMsg = string.Empty;
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string storeId = (userTokenKeyModel.DataModel as UserDataModel).StoreID;
+                string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
 
                 IData_DigitCoinService data_DigitCoinService = BLLContainer.Resolve<IData_DigitCoinService>();
                 var data_DigitCoin = data_DigitCoinService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase) && p.Status != (int)DigitStatus.Cancel).OrderBy(or => or.ICardID).Select(o => o.ICardID).ToList();
@@ -325,7 +325,7 @@ namespace XXCloudService.Api.XCCloud
                 string errMsg = string.Empty;
                 string iCardID = dicParas.ContainsKey("iCardID") ? (dicParas["iCardID"] + "") : string.Empty;
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string storeId = (userTokenKeyModel.DataModel as UserDataModel).StoreID;
+                string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
                 int userId = Convert.ToInt32(userTokenKeyModel.LogId);
 
                 if (string.IsNullOrEmpty(iCardID))
@@ -397,7 +397,7 @@ namespace XXCloudService.Api.XCCloud
                 string destroyTime = dicParas.ContainsKey("destroyTime") ? (dicParas["destroyTime"] + "") : string.Empty;
                 string iCardID = dicParas.ContainsKey("iCardID") ? (dicParas["iCardID"] + "") : string.Empty;
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string storeId = (userTokenKeyModel.DataModel as UserDataModel).StoreID;
+                string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
 
                 if (!string.IsNullOrEmpty(destroyTime))
                 {

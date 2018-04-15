@@ -32,7 +32,7 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string storeId = (userTokenKeyModel.DataModel as UserDataModel).StoreID;
+                string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
 
                 var data_ProjectInfoService = BLLContainer.Resolve<IData_ProjectInfoService>(resolveNew: true);
                 var dict_SystemService = BLLContainer.Resolve<IDict_SystemService>(resolveNew: true);
@@ -69,7 +69,7 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string storeId = (userTokenKeyModel.DataModel as UserDataModel).StoreID;
+                string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
 
                 string errMsg = string.Empty;
                 string id = dicParas.ContainsKey("id") ? (dicParas["id"] + "") : string.Empty;
@@ -158,7 +158,7 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string storeId = (userTokenKeyModel.DataModel as UserDataModel).StoreID;
+                string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
 
                 string errMsg = string.Empty;
                 string type = dicParas.ContainsKey("type") ? (dicParas["type"] + "") : string.Empty;
@@ -217,7 +217,7 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string storeId = (userTokenKeyModel.DataModel as UserDataModel).StoreID;
+                string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
 
                 string errMsg = string.Empty;
                 string id = dicParas.ContainsKey("id") ? (dicParas["id"] + "") : string.Empty;
@@ -507,7 +507,7 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string storeId = (userTokenKeyModel.DataModel as UserDataModel).StoreID;
+                string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
 
                 string errMsg = string.Empty;
                 string projectIds = dicParas.ContainsKey("projectIds") ? (dicParas["projectIds"] + "") : string.Empty;

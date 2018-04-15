@@ -88,7 +88,7 @@ namespace XXCloudService.Api.XCCloud
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 if (userTokenKeyModel.LogType == (int)RoleType.MerchUser)
                 {
-                    merchId = userTokenKeyModel.DataModel.MerchID;
+                    merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
                 }
                 
                 string sql = " exec  SP_DictionaryNodes @MerchID,@DictKey,@RootID output ";
@@ -175,7 +175,7 @@ namespace XXCloudService.Api.XCCloud
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 if (userTokenKeyModel.LogType == (int)RoleType.MerchUser)
                 {
-                    merchId = userTokenKeyModel.DataModel.MerchID;
+                    merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
                 }
 
                 //验证参数信息
@@ -249,7 +249,7 @@ namespace XXCloudService.Api.XCCloud
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 if (userTokenKeyModel.LogType == (int)RoleType.MerchUser)
                 {
-                    merchId = userTokenKeyModel.DataModel.MerchID;
+                    merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
                 }
 
                 if (string.IsNullOrWhiteSpace(id))
@@ -336,7 +336,7 @@ namespace XXCloudService.Api.XCCloud
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 if (userTokenKeyModel.LogType == (int)RoleType.MerchUser)
                 {
-                    merchId = userTokenKeyModel.DataModel.MerchID;
+                    merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
                 }
 
                 if (string.IsNullOrWhiteSpace(id))
