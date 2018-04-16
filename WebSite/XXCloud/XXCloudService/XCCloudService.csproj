@@ -385,6 +385,7 @@
     <Content Include="Test\payTest.html" />
     <Content Include="Test\pposTest.aspx" />
     <Content Include="Test\SocketTest.aspx" />
+    <Content Include="Test\WeiXin\RegisterTest.aspx" />
     <Content Include="Test\WorkFlowTest\StockHandle.aspx" />
     <Content Include="Test\WorkFlowTest\StockRequest.aspx" />
     <Content Include="Test\Test.aspx" />
@@ -1289,6 +1290,13 @@
     </Compile>
     <Compile Include="Test\SocketTest.aspx.designer.cs">
       <DependentUpon>SocketTest.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Test\WeiXin\RegisterTest.aspx.cs">
+      <DependentUpon>RegisterTest.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Test\WeiXin\RegisterTest.aspx.designer.cs">
+      <DependentUpon>RegisterTest.aspx</DependentUpon>
     </Compile>
     <Compile Include="Test\WorkFlowTest\StockHandle.aspx.cs">
       <DependentUpon>StockHandle.aspx</DependentUpon>

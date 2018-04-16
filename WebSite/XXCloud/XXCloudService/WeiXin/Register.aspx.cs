@@ -26,12 +26,13 @@ namespace XXCloudService.WeiXin
         {
             try
             {
-                string openId = string.Empty;
                 string errMsg = string.Empty;
+                string openId = string.Empty;
+                string unionId = string.Empty;
                 string storeId = string.Empty;
                 string merchId = string.Empty;
                 string revOpenId = string.Empty;
-                int userType = (int)UserType.Store;
+                int userType = -1;
                 string code = Request["code"] != null ? Request["code"].ToString() : string.Empty;
                 string state = Request["state"] != null ? Request["state"].ToString() : string.Empty;
                 string mobile = Request["mobile"] != null ? Request["mobile"].ToString() : string.Empty;
@@ -52,7 +53,6 @@ namespace XXCloudService.WeiXin
                 LogHelper.SaveLog("openId:" + openId);
 
                 //获取用户基本信息
-                string unionId = string.Empty;
                 if (!TokenMana.GetUnionId(openId, out unionId, out errMsg))
                 {
                     LogHelper.SaveLog("错误:" + errMsg);
@@ -92,8 +92,7 @@ namespace XXCloudService.WeiXin
                 if (ret == "1")
                 {
                     IBase_UserInfoService userInfoService = BLLContainer.Resolve<IBase_UserInfoService>();
-                    var userList = userInfoService.GetModels(p => p.OpenID.ToString().Equals(openId, StringComparison.OrdinalIgnoreCase));
-                    var userInfo = userList.FirstOrDefault<Base_UserInfo>();
+                    var userInfo = userInfoService.GetModels(p => p.LogName.Equals(username, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
                     MessagePush(revOpenId, username, userInfo.CreateTime.Value.ToString("f"), workId, message);
 
                     var succMsg = "已递交工单，等待管理员审核";

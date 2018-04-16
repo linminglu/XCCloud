@@ -116,7 +116,7 @@ function setLeftList(id) {
             data=JSON.parse(data);
             if(data.result_code=="1"){
                var data1=data.result_data[0].children;
-               // console.log(data1);
+               console.log(data1);
                var arr=[];
                    for(var j in data1){
                        if(data1[j].children.length >0){
@@ -519,10 +519,11 @@ function login_merch(){
                 data=JSON.parse(data);
                 console.log(data);
                 if(data.result_code==1){
+                    setStorage('logMsg',JSON.stringify(data.result_data));
                     setStorage('token',data.result_data.token);
-                    setStorage('logType',data.result_data.logType);
-                    setStorage('merchTag',data.result_data.merchTag);
-                    setStorage('userType',data.result_data.userType);
+                    // setStorage('logType',data.result_data.logType);
+                    // setStorage('merchTag',data.result_data.merchTag);
+                    // setStorage('userType',data.result_data.userType);
                     setStorage('usernames',username);
                     if(data.result_data.logType==2){
                         window.location.href='indexStore.html?'+(Date.parse(new Date())/1000);

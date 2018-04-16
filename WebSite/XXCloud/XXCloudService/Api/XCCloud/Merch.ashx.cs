@@ -335,7 +335,14 @@ namespace XXCloudService.Api.XCCloud
                 {
                     try
                     {
+                        var merchPassword = Utils.MD5(pwd);
                         IBase_MerchantInfoService base_MerchantInfoService = BLLContainer.Resolve<IBase_MerchantInfoService>();
+                        if (base_MerchantInfoService.Any(p => !p.MerchID.Equals(merchId) && p.MerchAccount.Equals(merchAccount, StringComparison.OrdinalIgnoreCase)))
+                        {
+                            errMsg = "账号名称已使用";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
                         var base_MerchantInfo = new Base_MerchantInfo();
                         base_MerchantInfo.MerchID = merchId;
                         base_MerchantInfo.MerchType = Convert.ToInt32(merchType);
@@ -345,7 +352,7 @@ namespace XXCloudService.Api.XCCloud
                         base_MerchantInfo.Mobil = mobil;
                         base_MerchantInfo.WxOpenID = openId;
                         base_MerchantInfo.WxUnionID = unionId;
-                        base_MerchantInfo.MerchPassword = Utils.MD5(pwd);
+                        base_MerchantInfo.MerchPassword = merchPassword;
                         base_MerchantInfo.AllowCreateSub = !string.IsNullOrEmpty(allowCreateSub) ? Convert.ToInt32(allowCreateSub) : default(int?);
                         base_MerchantInfo.AllowCreateCount = !string.IsNullOrEmpty(allowCreateCount) ? Convert.ToInt32(allowCreateCount) : default(int?);
                         base_MerchantInfo.CreateUserID = createUserId;
@@ -360,19 +367,23 @@ namespace XXCloudService.Api.XCCloud
                         }
 
                         IBase_UserInfoService base_UserInfoService = BLLContainer.Resolve<IBase_UserInfoService>();
-                        var base_UserInfo = base_UserInfoService.GetModels(p => p.OpenID.Equals(openId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
-                        if (base_UserInfo == null)
+                        if (base_UserInfoService.Any(p => p.LogName.Equals(merchAccount, StringComparison.OrdinalIgnoreCase)))
                         {
-                            base_UserInfo = new Base_UserInfo();
-                            base_UserInfo.MerchID = merchId;
-                            base_UserInfo.OpenID = openId;
-                            base_UserInfo.UserType = Convert.ToInt32(merchType);
-                            base_UserInfo.RealName = merchName;
-                            if (!base_UserInfoService.Add(base_UserInfo))
-                            {
-                                errMsg = "添加商户负责人信息失败";
-                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                            }
+                            errMsg = "商户负责人名称已注册";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
+                        var base_UserInfo = new Base_UserInfo();
+                        base_UserInfo.LogName = merchAccount;
+                        base_UserInfo.RealName = merchName;
+                        base_UserInfo.MerchID = merchId;
+                        base_UserInfo.OpenID = openId;
+                        base_UserInfo.LogPassword = merchPassword;
+                        base_UserInfo.UserType = Convert.ToInt32(merchType);
+                        if (!base_UserInfoService.Add(base_UserInfo))
+                        {
+                            errMsg = "添加商户负责人信息失败";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 
                         if (merchFunction != null && merchFunction.Count() > 0)
@@ -607,13 +618,35 @@ namespace XXCloudService.Api.XCCloud
                     try
                     {
                         IBase_MerchantInfoService base_MerchantInfoService = BLLContainer.Resolve<IBase_MerchantInfoService>();
-                        if (base_MerchantInfoService.GetCount(p => !p.MerchID.Equals(merchId) && p.MerchAccount.Equals(merchAccount, StringComparison.OrdinalIgnoreCase)) > 0)
+                        if (base_MerchantInfoService.Any(p => !p.MerchID.Equals(merchId) && p.MerchAccount.Equals(merchAccount, StringComparison.OrdinalIgnoreCase)))
                         {
-                            errMsg = "该商户账号名称已存在";
+                            errMsg = "账号名称已使用";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 
                         var base_MerchantInfo = base_MerchantInfoService.GetModels(p => p.MerchID.Equals(merchId)).FirstOrDefault();
+                        var merchAccount_old = base_MerchantInfo.MerchAccount;
+                        IBase_UserInfoService base_UserInfoService = BLLContainer.Resolve<IBase_UserInfoService>();
+                        if (!base_UserInfoService.Any(p => p.LogName.Equals(merchAccount_old, StringComparison.OrdinalIgnoreCase)))
+                        {
+                            errMsg = "找不到该商户负责人信息";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
+                        if (base_UserInfoService.Any(p => !p.LogName.Equals(merchAccount_old, StringComparison.OrdinalIgnoreCase) && p.LogName.Equals(merchAccount, StringComparison.OrdinalIgnoreCase)))
+                        {
+                            errMsg = "商户负责人名称已注册";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
+                        var base_UserInfo = base_UserInfoService.GetModels(p => p.LogName.Equals(merchAccount_old, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                        base_UserInfo.LogName = merchAccount;
+                        if (!base_UserInfoService.Update(base_UserInfo))
+                        {
+                            errMsg = "修改商户负责人信息失败";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
                         base_MerchantInfo.MerchType = Convert.ToInt32(merchType);
                         base_MerchantInfo.MerchStatus = Convert.ToInt32(merchStatus);
                         base_MerchantInfo.MerchAccount = merchAccount;
@@ -627,25 +660,10 @@ namespace XXCloudService.Api.XCCloud
                         base_MerchantInfo.CreateType = (logType == (int)RoleType.XcUser || logType == (int)RoleType.XcAdmin) ? (int)CreateType.Xc : (logType == (int)RoleType.MerchUser ? (int)CreateType.Agent : 0);
                         base_MerchantInfo.Comment = comment;
                         base_MerchantInfo.MerchTag = Convert.ToInt32(merchTag);
-
                         if (!base_MerchantInfoService.Update(base_MerchantInfo))
                         {
                             errMsg = "修改商户信息失败";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
-
-                        IBase_UserInfoService base_UserInfoService = BLLContainer.Resolve<IBase_UserInfoService>();
-                        var base_UserInfo = base_UserInfoService.GetModels(p => p.OpenID.Equals(openId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
-                        if (base_UserInfo == null)
-                        {
-                            base_UserInfo = new Base_UserInfo();
-                            base_UserInfo.OpenID = openId;
-                            base_UserInfo.UserType = Convert.ToInt32(merchType);
-                            if (!base_UserInfoService.Add(base_UserInfo))
-                            {
-                                errMsg = "添加商户负责人信息失败";
-                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                            }
                         }
 
                         if (merchFunction != null && merchFunction.Count() >= 0)

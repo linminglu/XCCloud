@@ -34,7 +34,7 @@ function checkStoreId() {
     var  strUpper=str.toUpperCase();
     console.log(strUpper);
     $('#storeId').val(strUpper);
-    var reg=/^\d{15}$/;
+    var reg=/^\d{6}$/;
     if(strUpper==""){
         $('.storeIdTips').html("tips:店铺ID不能为空").css({color:"red"});
         return false;
@@ -177,27 +177,28 @@ function contactWeiChat() {
 
 
   var href="https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx86275e2035a8089d&redirect_uri=";
-    var href2= "https://mp.4000051530.com/WeiXin/Register.aspx?" +
-      "smId="+storeId+
+    var href2="/test/weixin/registertest.aspx?" +
+      "storeOrMerchId="+storeId+
       "&scode=" +scode+
       "&mobile=" +mobile+
       "&username=" +username+
       "&password=" +password+
       "&realname=" +trueName+
-      "&message=" +userNote;
+      "&message=" +userNote+
+        //测试
+        "&openId=oNWocwVlugZexFK6-tYgUVgig45Y&unionId=oZtPw1fZM3W8SnIXDda2jqH_ChRA"
+    ;
 
     var  newHref=href+encodeURIComponent(href2)+"&response_type=code&scope=snsapi_base&state="+state+"#wechat_redirect";
     console.log(newHref);
-    window.location.href=newHref;
-    // $(".zhuce").css({display:"none"});
-    // $(".toExample").css({display:"block"});
-
+    // window.location.href=newHref;
+    window.location.href=href2;
 }
 
 
 
 //...............................................微信用户.............................................................
-//请求权限
+//................................................请求权限.............................................................
 
 //打开工作组
 var paras = [];
