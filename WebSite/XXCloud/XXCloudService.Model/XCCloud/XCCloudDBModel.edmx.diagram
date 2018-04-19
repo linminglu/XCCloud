@@ -8,7 +8,6 @@
         <EntityTypeShape EntityType="XCCloudDBModel.Base_ChainRule" Width="1.5" PointX="0.75" PointY="0.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Base_ChainRule_Store" Width="1.5" PointX="2.75" PointY="0.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Base_DepotInfo" Width="1.5" PointX="0.75" PointY="3.75" />
-        <EntityTypeShape EntityType="XCCloudDBModel.Base_DeviceInfo" Width="1.5" PointX="2.75" PointY="3.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Base_EnumParams" Width="1.5" PointX="4.75" PointY="0.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Base_GoodsInfo" Width="1.5" PointX="4.75" PointY="3.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Base_MemberInfo" Width="1.5" PointX="6.75" PointY="0.75" />
@@ -59,9 +58,6 @@
         <EntityTypeShape EntityType="XCCloudDBModel.Data_MemberLevel" Width="1.5" PointX="8.75" PointY="21.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_Message" Width="1.5" PointX="22.75" PointY="0.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_Parameters" Width="1.5" PointX="2.75" PointY="22.75" />
-        <EntityTypeShape EntityType="XCCloudDBModel.Data_Project_BandPrice" Width="1.5" PointX="22.75" PointY="4.75" />
-        <EntityTypeShape EntityType="XCCloudDBModel.Data_Project_Device" Width="1.5" PointX="22.75" PointY="7.75" />
-        <EntityTypeShape EntityType="XCCloudDBModel.Data_ProjectInfo" Width="1.5" PointX="22.75" PointY="10.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_Push_Rule" Width="1.5" PointX="10.75" PointY="22.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_Reload" Width="1.5" PointX="22.75" PointY="15.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_Storage_Record" Width="1.5" PointX="16.75" PointY="22.75" />
@@ -111,12 +107,17 @@
         <EntityTypeShape EntityType="XCCloudDBModel.Store_CheckDate" Width="1.5" PointX="30.75" PointY="15.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Base_StoreInfo" Width="1.5" PointX="27.375" PointY="30.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_Food_Detial" Width="1.5" PointX="13.375" PointY="30.75" />
-        <EntityTypeShape EntityType="XCCloudDBModel.Data_Head" Width="1.5" PointX="5.375" PointY="31.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_SupplierList" Width="1.5" PointX="15.375" PointY="31.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Log_GameAlarm" Width="1.5" PointX="17.375" PointY="31.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_Food_Level" Width="1.5" PointX="3.375" PointY="17.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_Food_Sale" Width="1.5" PointX="15.375" PointY="16.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_FoodInfo" Width="1.5" PointX="29.375" PointY="30.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.Base_DeviceInfo" Width="1.5" PointX="5.375" PointY="31.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.Data_Project_Device" Width="1.5" PointX="0.75" PointY="6.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.Data_Project_StoreList" Width="1.5" PointX="21.75" PointY="9.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.Data_ProjectInfo" Width="1.5" PointX="31.75" PointY="21.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.Data_ProjectTime_BandPrice" Width="1.5" PointX="31.75" PointY="25.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.Data_ProjectTimeInfo" Width="1.5" PointX="31.75" PointY="29.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

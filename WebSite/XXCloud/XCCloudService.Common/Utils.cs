@@ -1676,7 +1676,6 @@ namespace XCCloudService.Common
             return t;
         }
 
-
         public static T GetCopy<T>(object obj) where T : new()
         {
             Type type = typeof(T);
@@ -1697,7 +1696,7 @@ namespace XCCloudService.Common
             }
 
             return t;
-        }
+        }              
 
         #endregion
 
@@ -2101,7 +2100,7 @@ namespace XCCloudService.Common
         {
             propertyName = string.Empty;
             string description = string.Empty;
-
+            
             Type type = enumValue.GetType();
 
             // 获取枚举
@@ -2121,6 +2120,12 @@ namespace XCCloudService.Common
             //}
             return "";
 
+        }
+
+        public static string GetName(object enumValue)
+        {
+            if (enumValue == null) return string.Empty;
+            return System.Enum.GetName(enumValue.GetType(), enumValue);
         }
 
         #endregion

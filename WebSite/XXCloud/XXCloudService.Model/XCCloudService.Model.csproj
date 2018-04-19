@@ -402,9 +402,6 @@
     <Compile Include="XCCloud\Data_GoodStorage.cs">
       <DependentUpon>XCCloudDBModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="XCCloud\Data_Head.cs">
-      <DependentUpon>XCCloudDBModel.tt</DependentUpon>
-    </Compile>
     <Compile Include="XCCloud\Data_JackpotInfo.cs">
       <DependentUpon>XCCloudDBModel.tt</DependentUpon>
     </Compile>
@@ -438,10 +435,16 @@
     <Compile Include="XCCloud\Data_ProjectInfo.cs">
       <DependentUpon>XCCloudDBModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="XCCloud\Data_Project_BandPrice.cs">
+    <Compile Include="XCCloud\Data_ProjectTimeInfo.cs">
+      <DependentUpon>XCCloudDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_ProjectTime_BandPrice.cs">
       <DependentUpon>XCCloudDBModel.tt</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_Project_Device.cs">
+      <DependentUpon>XCCloudDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_Project_StoreList.cs">
       <DependentUpon>XCCloudDBModel.tt</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_Push_Rule.cs">

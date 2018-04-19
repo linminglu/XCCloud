@@ -105,7 +105,6 @@
     <Compile Include="IDAL\XCCloud\IData_GoodsStockDAL.cs" />
     <Compile Include="IDAL\XCCloud\IData_GoodStock_RecordDAL.cs" />
     <Compile Include="IDAL\XCCloud\IData_GoodStorageDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IData_HeadDAL.cs" />
     <Compile Include="IDAL\XCCloud\IData_JackpotInfoDAL.cs" />
     <Compile Include="IDAL\XCCloud\IData_Jackpot_LevelDAL.cs" />
     <Compile Include="IDAL\XCCloud\IData_Jackpot_MatrixDAL.cs" />
@@ -124,7 +123,9 @@
     <Compile Include="IDAL\XCCloud\IData_Member_Card_StoreDAL.cs" />
     <Compile Include="IDAL\XCCloud\IData_ParametersDAL.cs" />
     <Compile Include="IDAL\XCCloud\IData_ProjectInfoDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IData_Project_BandPriceDAL.cs" />
+    <Compile Include="IDAL\XCCloud\IData_Project_StoreListDAL.cs" />
+    <Compile Include="IDAL\XCCloud\IData_ProjectTimeInfoDAL.cs" />
+    <Compile Include="IDAL\XCCloud\IData_ProjectTime_BandPriceDAL.cs" />
     <Compile Include="IDAL\XCCloud\IData_Project_DeviceDAL.cs" />
     <Compile Include="IDAL\XCCloud\IData_Push_RuleDAL.cs" />
     <Compile Include="IDAL\XCCloud\IData_ReloadDAL.cs" />
@@ -238,7 +239,6 @@
     <Compile Include="XCCloud\Data_GoodsStockDAL.cs" />
     <Compile Include="XCCloud\Data_GoodStock_RecordDAL.cs" />
     <Compile Include="XCCloud\Data_GoodStorageDAL.cs" />
-    <Compile Include="XCCloud\Data_HeadDAL.cs" />
     <Compile Include="XCCloud\Data_JackpotInfoDAL.cs" />
     <Compile Include="XCCloud\Data_Jackpot_LevelDAL.cs" />
     <Compile Include="XCCloud\Data_Jackpot_MatrixDAL.cs" />
@@ -257,7 +257,9 @@
     <Compile Include="XCCloud\Data_Member_Card_StoreDAL.cs" />
     <Compile Include="XCCloud\Data_ParametersDAL.cs" />
     <Compile Include="XCCloud\Data_ProjectInfoDAL.cs" />
-    <Compile Include="XCCloud\Data_Project_BandPriceDAL.cs" />
+    <Compile Include="XCCloud\Data_ProjectTimeInfoDAL.cs" />
+    <Compile Include="XCCloud\Data_Project_StoreListDAL.cs" />
+    <Compile Include="XCCloud\Data_ProjectTime_BandPriceDAL.cs" />
     <Compile Include="XCCloud\Data_Project_DeviceDAL.cs" />
     <Compile Include="XCCloud\Data_Push_RuleDAL.cs" />
     <Compile Include="XCCloud\Data_ReloadDAL.cs" />

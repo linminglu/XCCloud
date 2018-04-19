@@ -500,8 +500,6 @@ namespace XXCloudService.Api.XCCloud
                                   from c in c1.DefaultIfEmpty()
                                   join d in dict_SystemService.GetModels(p => p.PID == FoodDetailTypeId) on (a.FoodType + "") equals d.DictValue into d1
                                   from d in d1.DefaultIfEmpty()
-                                  join e in dict_SystemService.GetModels(p => p.PID == FeeTypeId) on (b.FeeType + "") equals e.DictValue into e1
-                                  from e in e1.DefaultIfEmpty()
                                   join f in dict_BalanceTypeService.GetModels() on a.BalanceType equals f.ID into f1
                                   from f in f1.DefaultIfEmpty()
                                   join g in data_CouponInfoService.GetModels() on new { ContainID = a.ContainID, FoodType = a.FoodType } equals new { ContainID = (int?)g.ID, FoodType = (int?)FoodDetailType.Coupon } into g1
@@ -513,7 +511,7 @@ namespace XXCloudService.Api.XCCloud
                                       ProjectName = (a.FoodType == (int)FoodDetailType.Coin) ? "游戏币" : (a.FoodType == (int)FoodDetailType.Digit) ? "数字币" : (a.FoodType == (int)FoodDetailType.Good) ? (c != null ? c.GoodName : string.Empty) :
                                                     (a.FoodType == (int)FoodDetailType.Ticket) ? (b != null ? b.ProjectName : string.Empty) : (a.FoodType == (int)FoodDetailType.Coupon) ? (g.EntryCouponFlag == (int)EntryCouponFlag.Entry ? "实物券" : "电子券") : string.Empty,
                                       FoodDetailType = a.FoodType,                                      
-                                      FoodDetailTypeStr = (a.FoodType == (int)FoodDetailType.Coin) ? (f != null ? f.TypeName : string.Empty) : ((d != null ? d.DictKey : string.Empty) + (e != null ? e.DictKey : string.Empty)),
+                                      FoodDetailTypeStr = (a.FoodType == (int)FoodDetailType.Coin) ? (f != null ? f.TypeName : string.Empty) : (d != null ? d.DictKey : string.Empty),
                                       ContainCount = a.ContainCount,
                                       Days = a.Days,
                                       WeightValue = a.WeightValue

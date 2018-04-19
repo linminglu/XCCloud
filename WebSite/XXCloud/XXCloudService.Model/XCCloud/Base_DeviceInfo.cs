@@ -15,9 +15,14 @@ namespace XCCloudService.Model.XCCloud
     public partial class Base_DeviceInfo
     {
         public int ID { get; set; }
+        public string MerchID { get; set; }
         public string StoreID { get; set; }
         public string DeviceName { get; set; }
+        public string SiteName { get; set; }
         public Nullable<int> type { get; set; }
+        public string Token { get; set; }
+        public Nullable<int> GameIndexID { get; set; }
+        public Nullable<int> BindDeviceID { get; set; }
         public Nullable<int> CmdType { get; set; }
         public string segment { get; set; }
         public string Address { get; set; }
@@ -28,9 +33,11 @@ namespace XCCloudService.Model.XCCloud
         public string IPAddress { get; set; }
         public string WorkStation { get; set; }
         public Nullable<int> DeviceStatus { get; set; }
+        public Nullable<int> DeviceLock { get; set; }
         public Nullable<System.DateTime> create_time { get; set; }
         public Nullable<System.DateTime> update_time { get; set; }
         public string note { get; set; }
         public Nullable<int> AllowPrint { get; set; }
+        public string BarCode { get; set; }
     }
 }

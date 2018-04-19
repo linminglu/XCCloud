@@ -194,8 +194,7 @@ namespace XXCloudService.Api.XCCloud
 
                 var result = base_GoodsInfoService.SqlQuery<Base_GoodsInfoList>(sql).FirstOrDefault();
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, result);
-                //  var result =base_GoodsInfoService.GetModels(p => p.ID == iId).FirstOrDefault();
-                //  return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, result);
+
             }
             catch (Exception e)
             {

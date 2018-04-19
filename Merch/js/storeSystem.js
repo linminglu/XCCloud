@@ -742,42 +742,6 @@ xcActionSystem.prototype= {
 
     },
 
-    // setSelect: function (objVal,id,m){
-    //     var xc=xcActionSystem.prototype;
-    //     var token=xc.getStorage('token');
-    //     var  obj={"dictKey":objVal,"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
-    //     var url="/XCCloud/Dictionary?action=GetNodes";
-    //     var parasJson = JSON.stringify(obj);
-    //     $.ajax({
-    //         type: "post",
-    //         url: url,
-    //         contentType: "application/json; charset=utf-8",
-    //         data: { parasJson: parasJson },
-    //         success: function (data) {
-    //             data=JSON.parse(data);
-    //             if(data.result_code=="1"){
-    //                 var arr=data.result_data;
-    //                 $('#'+id).html('<option value="">-请选择-</option>');
-    //                 for(i in arr){
-    //                     $('#'+id).append("<option value='"+arr[i].dictValue+"' name='"+arr[i].name+"'title='"+arr[i].name+"'>"+arr[i].name+"</option>");
-    //                 }
-    //                 var _text= $('#'+id).find('option[value='+m+']').text();
-    //                 $('#'+id).find('option[value='+m+']').remove();
-    //                 $('#'+id).append("<option value='"+m+"' selected>"+_text+"</option>");
-    //                 layui.use(['form'], function() {
-    //                     var form = layui.form;
-    //                     form.render('select');
-    //                 });
-    //             }else {
-    //                 layui.use(['layer'], function() {
-    //                     var layer = layui.layer;
-    //                     layer.msg(data.result_msg);
-    //                 });
-    //             }
-    //         }
-    //     })
-    // },
-
     setSelect: function (objVal,id,m){
         var xc=xcActionSystem.prototype;
         var token=xc.getStorage('token');
@@ -1309,7 +1273,7 @@ xcActionSystem.prototype= {
 
     },
 
-    //游戏机档案维护
+    //......................................游戏机档案维护
     initGameFile: function (token) {
        let _obj={'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
        let url='/XCCloud/GameInfo?action=GetGameInfoList';
@@ -1380,6 +1344,57 @@ xcActionSystem.prototype= {
             })
 
     },
+    //......................................设备管理
+    //加载路由器列表
+    getRouteDevice:function (token,layer,form,id) {
+    let _obj={'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+    let parseJson = JSON.stringify(_obj);
+    $.ajax({
+        type:'post',
+        url:'/XCCloud/DeviceInfo?action=GetRouteDevice',
+        contentType: "application/json; charset=utf-8",
+        data:{parasJson: parseJson},
+        success: function (data) {
+            data = JSON.parse(data);
+            if (data.result_code == 1) {
+                let arr=data.result_data;
+                $('#'+id).html('<option>-请选择-</option>');
+                for(let i in arr){
+                    $('#'+id).append('<option value="'+arr[i].ID+'">'+arr[i].DeviceName+'</option>')
+                }
+                form.render('select');
+            } else {
+                layer.msg(data.result_msg);
+            }
+        }
+    });
+},
+    //加载游戏机列表
+    getGameInfoDic:function (token,layer,form,id) {
+    let _obj={'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+    let parseJson = JSON.stringify(_obj);
+    $.ajax({
+        type:'post',
+        url:'/XCCloud/GameInfo?action=GetGameInfoDic',
+        contentType: "application/json; charset=utf-8",
+        data:{parasJson: parseJson},
+        success: function (data) {
+            data = JSON.parse(data);
+            if (data.result_code == 1) {
+                let arr=data.result_data;
+                $('#'+id).html('<option>-请选择-</option>');
+                for(let i in arr){
+                    $('#'+id).append('<option value="'+arr[i].Key+'">'+arr[i].Value+'</option>')
+                }
+                form.render('select');
+            } else {
+                layer.msg(data.result_msg);
+            }
+        }
+    });
+},
+
+    //..........................................商品管理..............................................
     addGamelists: function (id, token, layer) {
         var tableData = [];
         $('#'+id).html("");

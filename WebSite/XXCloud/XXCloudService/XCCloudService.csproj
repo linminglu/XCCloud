@@ -358,7 +358,6 @@
     <Content Include="Api\XCGame\Ticket.ashx" />
     <Content Include="Api\XCCloud\GoodsInfo.ashx" />
     <Content Include="Api\XCGame\Lottery.ashx" />
-    <Content Include="Api\XCCloud\Head.ashx" />
     <Content Include="Api\XCCloud\Workstation.ashx" />
     <Content Include="Api\XCCloud\PushRule.ashx" />
     <Content Include="Api\XCCloud\FreeRule.ashx" />
@@ -948,9 +947,6 @@
     </Compile>
     <Compile Include="Api\XCCloud\GoodsInfo.ashx.cs">
       <DependentUpon>GoodsInfo.ashx</DependentUpon>
-    </Compile>
-    <Compile Include="Api\XCCloud\Head.ashx.cs">
-      <DependentUpon>Head.ashx</DependentUpon>
     </Compile>
     <Compile Include="Api\XCCloud\Jackpot.ashx.cs">
       <DependentUpon>Jackpot.ashx</DependentUpon>

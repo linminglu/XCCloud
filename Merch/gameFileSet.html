@@ -23,12 +23,12 @@
         <input type="text" class="layui-hide" name="userToken" value="" id="mT">
         <input type="text" class="layui-hide" name="signkey" value="1f626576304bf5d95b72ece2222e42c3">
         <div class="layui-form-item">
-            <div class="layui-inline StoreID">
-                <label class="layui-form-label">游戏机编号</label>
-                <div class="layui-input-inline">
-                    <input type="text" name="GameID" class="layui-input" id="StoreIDLow">
-                </div>
-            </div>
+            <!--<div class="layui-inline StoreID">-->
+                <!--<label class="layui-form-label">游戏机编号</label>-->
+                <!--<div class="layui-input-inline">-->
+                    <!--<input type="text" name="GameID" class="layui-input" id="StoreIDLow">-->
+                <!--</div>-->
+            <!--</div>-->
             <div class="layui-inline GameName">
                 <label class="layui-form-label">游戏机名</label>
                 <div class="layui-input-inline">
@@ -137,12 +137,6 @@
             <div class="layui-tab-content">
                 <div class="layui-tab-item layui-show" style="padding-left: 10px">
                   <div class="layui-form-item">
-                      <div class="layui-inline GameID">
-                          <label  class="layui-form-label">游戏机编号</label>
-                          <div class="layui-input-inline">
-                              <input type="text" class="layui-input" id="GameID">
-                          </div>
-                      </div>
                       <div class="layui-inline GameName">
                           <label  class="layui-form-label">游戏机名</label>
                           <div class="layui-input-inline">
@@ -599,7 +593,7 @@
             _ID='';
         }
              _obj={'ID':_ID,
-             'GameID':$('#StoreIDLow').val(),
+             // 'GameID':$('#StoreIDLow').val(),
              'GameName':$('#GameNameLow').val(),
              'GameType':_type,
             'PushReduceFromCard':$('#PushReduceFromCardLow').val(),
@@ -642,7 +636,7 @@
          _ID='';
         }
      let _obj={'ID':_ID,
-               'GameID':$('#GameID').val(),
+               // 'GameID':$('#GameID').val(),
                'GameName':$('#GameName').val(),
                'GameType':gameType,
          'State':state,
@@ -720,12 +714,23 @@
             }
         })
     }
-  layui.use(['form','element','layer','table'],function () {
+  layui.use(['form','element','layer','table','laydate'],function () {
       let element=layui.element;
       let form=layui.form;
       let layer=layui.layer;
       let table=layui.table;
+      let laydate=layui.laydate;
 
+      laydate.render({
+          elem: '#ChangeTime'
+          ,type: 'datetime'
+          ,value: new Date()
+      });
+      laydate.render({
+          elem: '#ChangeTime1'
+          ,type: 'datetime'
+          ,value: new Date()
+      });
       //简易模式事件监听
       form.on('select(GameTypeLow)',(data)=>{_type=data.value;});
       form.on('switch(PLL)',(data)=>{if(data.elem.checked==true){_PushLevel=1;}else{_PushLevel=0;}});
@@ -812,10 +817,10 @@
           let tr = obj.tr; //获得当前行 tr 的DOM对象
 
           if(layEvent === 'detail'){ //查看
-              xc.getGameInfoByid(data.ID,token,'detail');
+              xc.getGameInfoByid(data.GameName,token,'detail');
               $('.saveBox').css('display','none');
           }else if(layEvent==='edit'){
-              xc.getGameInfoByid(data.ID,token,'edit');
+              xc.getGameInfoByid(data.GameName,token,'edit');
               xc.setStorage('gameIds',data.ID);
               $('.saveBox').css('display','inline-block');
           }else if(layEvent==='del'){
@@ -861,9 +866,9 @@
           content:$('#highType')
       })
   };
-  xcActionSystem.prototype.getGameInfoByid=(gameIds,tokens,act)=>{
-      let _obj={'id':gameIds,'userToken':tokens,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
-      let url='/XCCloud/GameInfo?action=GetGameInfo';
+  xcActionSystem.prototype.getGameInfoByid=(gameName,tokens,act)=>{
+      let _obj={'gameName':gameName,'userToken':tokens,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+      let url='/XCCloud/GameInfo?action=GetGameInfoByName';
       let parasJson = JSON.stringify(_obj);
       layui.use(['layer','form'], function(){
           let  form=layui.form,$=layui.jquery,layer=layui.layer;
@@ -881,8 +886,8 @@
                               $('body').find('div[class="layui-inline '+arr[i].name+'"]').attr('name',arr[i].comment)
                           }
 
-                          $('#GameID').val(arr[1].value);
-                          $('#StoreIDLow').val(arr[1].value);
+                          // $('#GameID').val(arr[1].value);
+                          // $('#StoreIDLow').val(arr[1].value);
                           $('#GameName').val(arr[3].value);
                           $('#GameNameLow').val(arr[3].value);
                           xc.setSelect('游戏机类型','GameType',arr[4].value);

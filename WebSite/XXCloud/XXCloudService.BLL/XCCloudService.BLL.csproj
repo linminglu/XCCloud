@@ -104,7 +104,6 @@
     <Compile Include="IBLL\XCCloud\IData_GoodsStockService.cs" />
     <Compile Include="IBLL\XCCloud\IData_GoodStock_RecordService.cs" />
     <Compile Include="IBLL\XCCloud\IData_GoodStorageService.cs" />
-    <Compile Include="IBLL\XCCloud\IData_HeadService.cs" />
     <Compile Include="IBLL\XCCloud\IData_JackpotInfoService.cs" />
     <Compile Include="IBLL\XCCloud\IData_Jackpot_LevelService.cs" />
     <Compile Include="IBLL\XCCloud\IData_Jackpot_MatrixService.cs" />
@@ -113,7 +112,9 @@
     <Compile Include="IBLL\XCCloud\IData_Member_Card_StoreService.cs" />
     <Compile Include="IBLL\XCCloud\IData_ParametersService.cs" />
     <Compile Include="IBLL\XCCloud\IData_ProjectInfoService.cs" />
-    <Compile Include="IBLL\XCCloud\IData_Project_BandPriceService.cs" />
+    <Compile Include="IBLL\XCCloud\IData_ProjectTimeInfoService.cs" />
+    <Compile Include="IBLL\XCCloud\IData_Project_StoreListService.cs" />
+    <Compile Include="IBLL\XCCloud\IData_ProjectTime_BandPriceService.cs" />
     <Compile Include="IBLL\XCCloud\IData_Project_DeviceService.cs" />
     <Compile Include="IBLL\XCCloud\IData_Push_RuleService.cs" />
     <Compile Include="IBLL\XCCloud\IData_ReloadService.cs" />
@@ -237,7 +238,6 @@
     <Compile Include="XCCloud\Data_GoodsStockService.cs" />
     <Compile Include="XCCloud\Data_GoodStock_RecordService.cs" />
     <Compile Include="XCCloud\Data_GoodStorageService.cs" />
-    <Compile Include="XCCloud\Data_HeadService.cs" />
     <Compile Include="XCCloud\Data_JackpotInfoService.cs" />
     <Compile Include="XCCloud\Data_Jackpot_LevelService.cs" />
     <Compile Include="XCCloud\Data_Jackpot_MatrixService.cs" />
@@ -246,7 +246,9 @@
     <Compile Include="XCCloud\Data_Member_Card_StoreService.cs" />
     <Compile Include="XCCloud\Data_ParametersService.cs" />
     <Compile Include="XCCloud\Data_ProjectInfoService.cs" />
-    <Compile Include="XCCloud\Data_Project_BandPriceService.cs" />
+    <Compile Include="XCCloud\Data_Project_StoreListService.cs" />
+    <Compile Include="XCCloud\Data_ProjectTimeInfoService.cs" />
+    <Compile Include="XCCloud\Data_ProjectTime_BandPrice.cs" />
     <Compile Include="XCCloud\Data_Project_DeviceService.cs" />
     <Compile Include="XCCloud\Data_Push_RuleService.cs" />
     <Compile Include="XCCloud\Data_ReloadService.cs" />

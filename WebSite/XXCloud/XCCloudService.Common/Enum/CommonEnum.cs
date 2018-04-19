@@ -593,7 +593,10 @@ namespace XCCloudService.Common.Enum
         储值金 = 3
     }
 
-    public enum DeviceType
+    /// <summary>
+    /// 设备类型
+    /// </summary>
+    public enum DeviceType : int
     {
         /// <summary>
         /// 卡头
@@ -641,14 +644,40 @@ namespace XCCloudService.Common.Enum
         /// 闸机
         /// </summary>
         [Description("闸机")]
-        闸机 = 7
-    }
+        闸机 = 7,
 
+        /// <summary>
+        /// 路由器
+        /// </summary>
+        [Description("路由器")]
+        路由器 = 8
+    }
+    /// <summary>
+    /// 设备在线状态
+    /// </summary>
     public enum DeviceStatus
     {
-        Stop = 0,//停用
-        Normal = 1,//正常
-        Service = 2//检修
+        停用 = 0,
+        正常 = 1,
+        检修 = 2
+    }
+    /// <summary>
+    /// 设备锁定状态
+    /// </summary>
+    public enum DeviceLock
+    {
+        解锁 = 0,
+        锁定 = 1
+    }
+    /// <summary>
+    /// 设备通讯方式
+    /// </summary>
+    public enum CmdType
+    {
+        RS232 = 0,    //串口
+        RS485 = 1,    //工业总线
+        Wireless = 2, //店内无线
+        TCPIP = 3    //以太网
     }
 
     public enum DeviceBindType

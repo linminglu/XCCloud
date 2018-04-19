@@ -1,0 +1,30 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title></title>
+    <script>
+        function do_confirm() {
+            var obj = new Object();
+            obj.storeId = 100000;
+            obj.icCardId = 1431432;
+            var json = JSON.stringify(obj);
+            if (confirm(json)) {
+                window.location.href = "http://www.baidu.com";
+            }
+            else {
+                window.location.href = "http://news.baidu.com/";
+            }
+        }
+
+        function do_alert() {
+            alert("fewfewfewfew");
+        }
+
+    </script>
+</head>
+<body>
+    <input id="btnTestConfirm" type="button" value="do_confim(测试confirm)" onclick="do_confirm()" />
+    <input id="btnTestAlert" type="button" value="do_alert(测试alert)" onclick="do_alert()" />
+</body>
+</html>

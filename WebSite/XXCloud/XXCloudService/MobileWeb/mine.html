@@ -47,7 +47,8 @@
 <!-- 引入组件库 -->
 <script src="js/ydui.rem.js"></script>
 <script src="js/axios.min.js"></script>
-<script src="https://gw.alipayobjects.com/as/g/h5-lib/alipayjsapi/3.1.0/alipayjsapi.min.js"></script>
+<script src="js/alipayjsapi.min.js"></script>
+<script src="https://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
 <script>
     var sysId = 0; //调用方应用Id
     var versionNo= "0.89"; //版本号
@@ -58,19 +59,66 @@
             mobileToken:''
         },
         mounted: function () {
-
+            this.Load();
         },
         methods: {
             Load:function () {
+                var that =this;
+                this.$dialog.loading.open('');
+                var obj={
+                    sysId: sysId,
+                    versionNo: versionNo,
+                    fileName:"mine"
+                };
+                axios.post('/XCGameMana/WxCommon?action=getWxH5Config', obj).then(function (res) {
+                    that.$dialog.loading.close();
+                    that.msgPrompt(res.data);
+                    console.log(res.data);
+                    if (res.data.result_code === '1') {
+                        wx.config({
+                            debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+                            appId: res.data.result_data.AppId, // 必填，公众号的唯一标识
+                            timestamp: res.data.result_data.TimeStamp, // 必填，生成签名的时间戳
+                            nonceStr: res.data.result_data.NonceStr, // 必填，生成签名的随机串
+                            signature: res.data.result_data.Signature,// 必填，签名
+                            jsApiList: ["scanQRCode"] // 必填，需要使用的JS接口列表
+                        });
+                    }
+                }).catch(function (err) {
+                    that.$dialog.loading.close();
+                    console.log(err);
+                })
 
             },
             btnClick:function () {
-                AlipayJSBridge.call('scan', {
-                    type: 'qr',
-                    actionType: 'scan'
-                }, function(result) {
-                    alert(JSON.stringify(result));
-                });
+                var that =this;
+                if (/MicroMessenger/.test(window.navigator.userAgent)) {
+                    wx.scanQRCode({
+                        needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
+                        scanType: ["qrCode","barCode"], // 可以指定扫二维码还是一维码，默认二者都有
+                        success: function (res) {
+                            var result = res.resultStr; // 当needResult 为 1 时，扫码返回的结果
+                            console.log(result);
+//                            alert(JSON.stringify(result));
+                        }
+                    });
+
+                } else if (/AlipayClient/.test(window.navigator.userAgent)) {
+                    AlipayJSBridge.call('scan', {
+                        type: 'qr',
+                        actionType: 'scan'
+                    }, function(result) {
+                        alert(JSON.stringify(result));
+                    });
+                } else {
+                    that.$dialog.toast({
+                        mes: "暂不支持此浏览器!",
+                        timeout:1500,
+                        icon: 'error'
+                    });
+                    console.log("")
+                }
+
             },
             msgPrompt:function (res) {
                 if(res.return_code == 0){

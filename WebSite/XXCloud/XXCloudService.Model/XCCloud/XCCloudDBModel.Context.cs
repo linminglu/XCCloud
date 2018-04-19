@@ -28,7 +28,6 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Base_ChainRule> Base_ChainRule { get; set; }
         public virtual DbSet<Base_ChainRule_Store> Base_ChainRule_Store { get; set; }
         public virtual DbSet<Base_DepotInfo> Base_DepotInfo { get; set; }
-        public virtual DbSet<Base_DeviceInfo> Base_DeviceInfo { get; set; }
         public virtual DbSet<Base_EnumParams> Base_EnumParams { get; set; }
         public virtual DbSet<Base_GoodsInfo> Base_GoodsInfo { get; set; }
         public virtual DbSet<Base_MemberInfo> Base_MemberInfo { get; set; }
@@ -79,9 +78,6 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Data_MemberLevel> Data_MemberLevel { get; set; }
         public virtual DbSet<Data_Message> Data_Message { get; set; }
         public virtual DbSet<Data_Parameters> Data_Parameters { get; set; }
-        public virtual DbSet<Data_Project_BandPrice> Data_Project_BandPrice { get; set; }
-        public virtual DbSet<Data_Project_Device> Data_Project_Device { get; set; }
-        public virtual DbSet<Data_ProjectInfo> Data_ProjectInfo { get; set; }
         public virtual DbSet<Data_Push_Rule> Data_Push_Rule { get; set; }
         public virtual DbSet<Data_Reload> Data_Reload { get; set; }
         public virtual DbSet<Data_Storage_Record> Data_Storage_Record { get; set; }
@@ -131,11 +127,16 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Store_CheckDate> Store_CheckDate { get; set; }
         public virtual DbSet<Base_StoreInfo> Base_StoreInfo { get; set; }
         public virtual DbSet<Data_Food_Detial> Data_Food_Detial { get; set; }
-        public virtual DbSet<Data_Head> Data_Head { get; set; }
         public virtual DbSet<Data_SupplierList> Data_SupplierList { get; set; }
         public virtual DbSet<Log_GameAlarm> Log_GameAlarm { get; set; }
         public virtual DbSet<Data_Food_Level> Data_Food_Level { get; set; }
         public virtual DbSet<Data_Food_Sale> Data_Food_Sale { get; set; }
         public virtual DbSet<Data_FoodInfo> Data_FoodInfo { get; set; }
+        public virtual DbSet<Base_DeviceInfo> Base_DeviceInfo { get; set; }
+        public virtual DbSet<Data_Project_Device> Data_Project_Device { get; set; }
+        public virtual DbSet<Data_Project_StoreList> Data_Project_StoreList { get; set; }
+        public virtual DbSet<Data_ProjectInfo> Data_ProjectInfo { get; set; }
+        public virtual DbSet<Data_ProjectTime_BandPrice> Data_ProjectTime_BandPrice { get; set; }
+        public virtual DbSet<Data_ProjectTimeInfo> Data_ProjectTimeInfo { get; set; }
     }
 }

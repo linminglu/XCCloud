@@ -17,6 +17,7 @@
         .header_active span{margin-left: 0.1rem;margin-top: 0.15rem;color: #ff5400;font-weight: 600;}
         .header_active img{width: 0.6rem;height: 0.6rem;}
         /*.header_b{b}*/
+        .header_b{background: none;border: none!important;}
         .header_b img{width: 1.2rem;height: 0.8rem;margin-top: 0.3rem;}
         .rollText{padding-left: 0.3rem;}
         .gamePlay_img{background: url("images/btnBg.png") no-repeat center 0.2rem;width: 100%;height: 3rem;text-align: center;background-size: 50% 80%;}
@@ -26,14 +27,25 @@
         .gameGive_b{display: flex;flex-direction: row;justify-content:center;font-size: 0.35rem;line-height: 0.6rem;margin-top: 0.3rem;}
         .gameGive_b img{width: 0.6rem;height: 0.6rem;}
         .discount_text button{font-size: 0.3rem;padding: 0 0.06rem;font-weight: 600;color: #d94927;}
-        .modal-title {  font-size: 0.5rem; font-weight: bold; line-height: 0.8rem; margin-top: 0.3rem; color: #fff; text-align: center;}
         .gameGaming_b{display: flex;flex-direction: row;justify-content: center;color: #ff5400;font-size: 0.5rem;font-weight: bold;line-height: 0.6rem;margin-top: 0.2rem;}
         .gameGaming_b img{width: 0.6rem;height: 0.6rem;}
         .gameGamingTop input{border: none; border-bottom: 1px solid #666;line-height: 0.3rem;width: 4rem;padding-right: 0.5rem;padding-bottom: 0.2rem;margin-left:23%;color: #666;font-size: 0.4rem;margin-top: 0.4rem;text-align:right}
         .gameGamingTop p{font-size: 0.24rem;color: #666;margin: 0.2rem 0;text-align: center;}
         .gameGamingBtn{display: flex;flex-direction: row;flex: 1;padding: 0.1rem 9%;}
-        .gameGamingBtn .btn{width: 39%;margin: 0 1%;height: 0.8rem;line-height: 0.8rem;text-align: center;padding: 0;background: #3285ff;color: #fff;}
-        .gameGamingBtn .exitBtn{width: 39%;margin: 0 1%;height: 0.8rem;line-height: 0.8rem;text-align: center;padding: 0;background: #fc5363;color: #fff;}
+        .gameGamingBtn .btn{width: 45%;margin: 0 1%;height: 0.8rem;line-height: 0.8rem;text-align: center;padding: 0;background: #3285ff;color: #fff;}
+        .gameGamingBtn .exitBtn{width: 45%;margin: 0 1%;height: 0.8rem;line-height: 0.8rem;text-align: center;padding: 0;background: #fc5363;color: #fff;}
+        .discount_title{background: url("images/titleBg.png") no-repeat center;height: 0.6rem;width: 3rem;background-size: 100% 100%;line-height: 0.7rem;padding-left: 0.4rem;font-size: 0.3rem;color: #f1f1f1;  }
+        .discount_text{display: flex;flex-direction: row;margin-top: 0.1rem;font-size: 0.3rem;color: #ff5400;justify-content: space-between;padding-left: 0.3rem;}
+        .activeTitle { font-size: 0.5rem; font-weight: bold; line-height: 0.6rem; text-align: center;}
+        .yd-scrolltab-nav{display: none;}
+        .closeIcon{background: none;margin: 0!important;}
+        .rechargeSty{display: flex;flex-direction: row;justify-content: space-between;border-bottom: 1px solid #0bb20c;}
+        .rechargeBg{background: url("images/salesbg.png") no-repeat center;height: 1.6rem;background-size: 100% 100%;width: 200px;margin: 0.2rem 0;display: flex;flex-direction: row;}
+        .rechargeBg .rechargeText1{font-size: 0.55rem;color: #ff3030;line-height: 1rem;padding-left: 0.4rem;margin-top: 0.3rem;}
+        .rechargeBg .rechargeText0{display: inline-block;width: 2px; height: 1.4rem; margin-top: 0.1rem;margin-left: 0.2rem;transform:skew(-30deg);-webkit-transform: skew(-30deg);-moz-transform: skew(-30deg);-o-transform:skew(-30deg);-ms-transform:skew(-30deg);background-color: #fff;}
+        .rechargeBg .rechargeText2{font-size: 0.4rem;color: #ff7c3d;padding-left: 0.1rem;margin-top: 0.8rem;}
+        .rechargeBtn{margin-top: 0.8rem;}
+        .activePrompt{font-size: 0.2rem;}
     </style>
 </head>
 <body>
@@ -44,57 +56,69 @@
             <p>机台名称：{{deviceName}}</p>
             <div class="header_active"><img slot="icon" src="images/sendImg.png"><span>限时活动中</span></div>
         </div>
-        <div class='header_b' v-if="headerBtn"><img src='images/welfare.png'></div>
+        <yd-button class='header_b' type="hollow" v-if="headerBtn" @click.native="show = true"><img src='images/welfare.png'></yd-button>
     </div>
     <yd-rollnotice autoplay="2000" class="rollText">
-        <yd-rollnotice-item><span style="color:#F00;"> 荐 </span> 荣耀V9 3月超级钜惠！</yd-rollnotice-item>
-        <yd-rollnotice-item><span style="color:#F00;"> 荐 </span> 3.23京东超级品牌日格力盛典</yd-rollnotice-item>
-        <yd-rollnotice-item><span style="color:#F00;"> 荐 </span> 京东服饰 早春新品低至7折</yd-rollnotice-item>
+        <yd-rollnotice-item @click.native="show = true" v-for="(item,index) in gamePlaylist" :key="index"><span style="color:#F00;"> 荐 </span> 立投“{{item.needCoin}}”，直接送“{{item.freeCoin}}”</yd-rollnotice-item>
     </yd-rollnotice>
-    <div class="gamePlay_img" v-if="gameGive0">
+    <div class="gamePlay_img" v-if="gameGive">
         <h3>玩一局</h3>
         <div class="gameGive_b"><img slot="icon" src='images/b.png'><span>×{{deleteHide}}个</span></div>
     </div>
-    <div class="gamePlay_img" v-if="gameGive">
-        <h3>玩{{item.needGive}}局</h3>
-        <div class="gameGive_b">送{{item.freeGive}}局</div>
-    </div>
-    <yd-button size="large" type="warning" @click.native="show = true">玩的</yd-button>
     <yd-popup v-model="show" position="bottom" height="60%">
-        <yd-button type="warning" style="margin: 30px;" @click.native="show = false">Close</yd-button>
-        <yd-button type="warning" style="margin: 30px;" @click.native="show = false">Close Bottom Popup</yd-button>
-        <!--<yd-scrolltab>-->
-            <!--<yd-scrolltab-panel v-for="(item,index) in gamePlaylist" :key="item.foodID" label="" height="1rem" >-->
-                <!--<div class="modal-title">活动规则</div>-->
-                <!--<p>满“{{item.needCoin}}”就送</p>-->
-                <!--<p>立投“{{item.needCoin}}”币，直接送“{{item.freeCoin}}”</p>-->
-                <!--<p>达到“{{item.exitCoin}}”币，可退币</p>-->
-                <!--<button>立即投币</button>-->
-            <!--</yd-scrolltab-panel>-->
-        <!--</yd-scrolltab>-->
+        <yd-button class="closeIcon" type="warning" style="margin: 30px;" @click.native="show = false"><yd-icon color="#FF685D" name="error-outline"></yd-icon></yd-button>
+        <div class="activeTitle">活动规则</div>
+        <div style="height: 330px; overflow-y: auto; position: relative;">
+            <yd-scrolltab>
+                <yd-scrolltab-panel v-for="(item,index) in gamePlaylist" :key="item.foodID" label="" height="1rem" v-if="gameGamingActivity">
+                    <div class="discount_title">满“{{item.needCoin}}”就送</div>
+                    <div class="discount_text">
+                        <div>
+                            <p>立投“{{item.needCoin}}”币，直接送“{{item.freeCoin}}”</p>
+                            <p>达到“{{item.exitCoin}}”币，可退币</p>
+                        </div>
+                        <yd-button size="small" type="warning">立即投币</yd-button>
+                    </div>
+                </yd-scrolltab-panel>
+                <yd-scrolltab-panel v-for="(item,index) in gamePlaylist" :key="item.foodID" label="" height="1rem" v-if="gameGiveActivity">
+                    <div class="discount_title">满“{{item.needCoin}}”局就送</div>
+                    <div class="discount_text">
+                        <div>
+                            <p>立玩{{item.needCoin}}局，直接送{{item.freeCoin}}局</p>
+                        </div>
+                        <yd-button size="small" type="warning">立即投币</yd-button>
+                    </div>
+                </yd-scrolltab-panel>
+            </yd-scrolltab>
+        </div>
+
     </yd-popup>
     <div class="gameGaming" v-if="gameGaming">
         <div class="gameGaming_b">
             <img slot="icon" src="images/b.png"><span>币余额：{{balance}}</span>
         </div>
         <div class="gameGamingTop">
-            <input placeholder="请输入投币数" type='number' oninput="if(value.length>6)value=value.slice(0,6)">
+            <input placeholder="请输入投币数" type='number' oninput="if(value.length>6)value=value.slice(0,6)" v-model="putCoins">
             <p>（投入为“{{discountPrice}}”的整数倍）</p>
             <div class="gameGamingBtn">
-                <yd-button class="exitBtn" size="large" type="danger">退币</yd-button>
-                <yd-button class="btn" size="large" type="warning">投币</yd-button>
+                <yd-button class="exitBtn" size="large" type="danger" @click.native="ExitCoin">退币</yd-button>
+                <yd-button class="btn" size="large" type="warning" @click.native="gamePutBtn">投币</yd-button>
             </div>
-            <p>一次性投{{needCoin}}币，赠送{{freeCoin}}币，达到{{exitCoin}}币即可推出</p>
         </div>
     </div>
     <yd-button size="large" type="warning" @click.native="recharge">玩的不尽兴，马上充值</yd-button>
     <yd-popup v-model="show2" position="bottom" height="60%">
-        <yd-button type="warning" style="margin: 30px;" @click.native="show2 = false">Close Bottom Popup</yd-button>
-        <div style="height: 3rem; overflow-y: auto; position: relative;">
+        <yd-button class="closeIcon" type="warning" style="margin: 30px;" @click.native="show2 = false"><yd-icon color="#FF685D" name="error-outline"></yd-icon></yd-button>
+        <p class="activePrompt">（友情提示：请1分钟之内完成支付，支付异常将在5个工作日内退回）</p>
+        <div style="height: 10rem; overflow-y: auto; position: relative;">
             <yd-scrolltab>
-                <yd-scrolltab-panel v-for="(item,index) in list" :key="item.foodID" label="" height="1rem">
-                    <div>{{item.coinQuantity}}币{{item.sendCoinQuantity}}￥{{item.foodPrice}}</div>
-                    <yd-button size="large" type="primary">立即充值</yd-button>
+                <yd-scrolltab-panel class="rechargeSty" v-for="(item,index) in list"  :key="index" label="" height="1rem">
+                    <div  class="rechargeBg">
+                        <span class="rechargeText1">{{item.coinQuantity}}币{{item.sendCoinQuantity}}</span>
+                        <span class="rechargeText0"></span>
+                        <span class="rechargeText2">￥{{item.foodPrice}}</span>
+                    </div>
+                    <yd-button class="rechargeBtn" size="small" type="primary" @click.native="rechargeBtn">立即充值</yd-button>
                 </yd-scrolltab-panel>
             </yd-scrolltab>
         </div>
@@ -111,14 +135,13 @@
 <script>
     var sysId = 0; //调用方应用Id
     var versionNo= "0.89"; //版本号
-    var url_getDataOrder = '/XCGameMana/DataOrder?action=getDataOrder';//获取分页订单列表
     var htmlfnc = new Vue({
         el: '#app',
         data:{
             show: false,
             show2: false,
-            mobileToken:'90e28cb9261348f4b74547e531a7b225',
-            deviceToken:"5c022c26",
+            mobileToken:"9f43b139b29d4694a8a727bd0bada69b",
+            deviceToken:"5c022c27",
             deviceName:"",
             headerBtn:true,
             deleteHide:"",
@@ -126,17 +149,20 @@
             needCoin:"",
             gamePlaylist:[],
             list:[],
-            gameGaming:true,
-            gameGive0:false,
+            gameGaming:false,
+            gameGamingActivity:false,
             putCoins:"",
             discountPrice:"",
             freeCoin:"",
             exitCoin:"",
             balance:"",
             storeId:"",
-            memberToken:""
+            deviceType:"",
+            memberToken:"",
+            gameType:""
         },
         mounted: function () {
+            this.Load()
         },
         methods: {
             Load:function () {
@@ -157,12 +183,15 @@
                         that.storeId = res.data.result_data.storeId;
                         that.deviceName = res.data.result_data.deviceName;
                         that.stateName = res.data.result_data.stateName;
-                        if(memberToken == ""){
+                        that.deviceType =res.data.result_data.deviceType;
+                        console.log(that.memberToken == "");
+                        if(that.memberToken == ""){
+                            console.log(111);
                             var memData={
                                 sysId: sysId,
                                 versionNo: versionNo,
                                 storeId: that.storeId,
-                                mobileToken: mobileToken
+                                mobileToken: that.mobileToken
                             };
                             axios.post('/xcgamemana/token?action=getMemberToken', memData).then(function (res) {
                                 that.$dialog.loading.close();
@@ -172,13 +201,15 @@
                                         that.memberToken = res.data.result_data.memberToken;
                                         that.balance = res.data.result_data.member.balance;
 //                                        my.setStorageSync({key: 'memberToken',data: memberToken});//缓存
+                                    that.GetGameInfo();
                                 }
                             }).catch(function (err) {
                                 that.$dialog.loading.close();
                                 console.log(err);
-                            })
-                        }else {
+                            });
 
+                        }else {
+                            that.GetGameInfo();
                         }
                     }
                 }).catch(function (err) {
@@ -201,29 +232,33 @@
                     console.log(res.data);
                     if (res.data.result_code === '1') {
                         var gameType = res.data.result_data.gameType;
+                        that.gameType =gameType;
                         if (gameType == "投币类"){
                             console.log(res.data.result_data.gameFreeRule != "");
                             if (res.data.result_data.gameFreeRule != "") {
                                 var gamePlaylist_ = [];
                                 for (var i = 0; i < res.data.result_data.gameFreeRule.length; i++) gamePlaylist_.push({
-                                    needGive: parseInt(res.data.result_data.gameFreeRule[i].needCoin) / parseInt(res.data.result_data.price),
-                                    freeGive: parseInt(res.data.result_data.gameFreeRule[i].freeCoin) / parseInt(res.data.result_data.price),
+                                    needCoin: parseInt(res.data.result_data.gameFreeRule[i].needCoin) / parseInt(res.data.result_data.price),
+                                    freeCoin: parseInt(res.data.result_data.gameFreeRule[i].freeCoin) / parseInt(res.data.result_data.price),
                                     id: res.data.result_data.gameFreeRule[i].id
                                 });
-                                that.gameGive = "";
+                                console.log(gamePlaylist_);
+                                that.gameGiveActivity = true;
                                 that.gamePlaylist=gamePlaylist_;
                             }
-                            that.gameslot = "";
+                            that.gameGive = true;
+                            that.deleteHide = res.data.result_data.discountPrice;
                             that.price =  res.data.result_data.price;
                             that.discountPrice =  res.data.result_data.discountPrice;
                         } else if (gameType == "博彩类"){
                             console.log(res.data.result_data.gameFreeRule == "");
                             if (res.data.result_data.gameFreeRule != ""){
                                 that.discountList=res.data.result_data.gameFreeRule;
-                                that.hearderBtn=false;
+                                that.headerBtn=true;
                             }
-                            that.gameGaming=false;
-                            that.discountPrice =  res.data.result_data.discountPrice;
+                            that.gameGaming=true;
+                            that.discountPrice = res.data.result_data.discountPrice;
+                            that.gamePlaylist = res.data.result_data.gameFreeRule;
                             that.putCoins =  "";
                         }
                     }
@@ -238,8 +273,8 @@
                 var obj={
                     sysId: sysId,
                     versionNo: versionNo,
-                    storeId: storeId,
-                    memberToken: that.data.memberToken
+                    storeId: that.storeId,
+                    memberToken: that.memberToken
                 };
                 axios.post('/xcgame/Foods?action=getfoods', obj).then(function (res) {
                     that.$dialog.loading.close();
@@ -247,7 +282,8 @@
                     console.log(res.data);
                     if (res.data.result_code === '1') {
                         var newsList = [];
-                        if (gameType == "投币类") {
+                        console.log(that.gameType );
+                        if (that.gameType == "投币类") {
                             for (var i = 0; i < res.data.result_data.length; i++) {
                                 if (res.data.result_data[i].sendCoinQuantity == 0) {
                                     var sendCoinQuantity = ""
@@ -262,17 +298,17 @@
                                     sendCoinQuantity: sendCoinQuantity
                                 })
                             }
-                        } else if (gameType == "博彩类") {
-                            console.log(res.data.result_data[1].isQuickFood == 1)
+                            that.list = newsList;
+                        } else if (that.gameType == "博彩类") {
                             for (var i = 0; i < res.data.result_data.length; i++) {
                                 if (res.data.result_data[i].isQuickFood == 1) {
                                     var indexQuick = i
                                 }
                             }
-                            console.log(indexQuick)
-                            var quickPrice = res.data.result_data[indexQuick].coinQuantity / res.data.result_data[indexQuick].foodPrice
-                            console.log(quickPrice)
-                            newsList = [
+                            console.log(indexQuick);
+                            var quickPrice = res.data.result_data[indexQuick].coinQuantity / res.data.result_data[indexQuick].foodPrice;
+                            console.log(quickPrice);
+                            newsList.push(
                                 {
                                     foodID: res.data.result_data[indexQuick].foodID,
                                     foodPrice: 50,
@@ -307,25 +343,209 @@
                                     coinQuantity: 1000 * quickPrice,
                                     sendCoinQuantity: "",
                                     foodName: res.data.result_data[indexQuick].foodName
-                                }
-                            ]
+                                })
+                            that.list = newsList;
                         }
-                        console.log(newsList)
-                        that.setData({
-                            list: newsList,
-                        })
                     }
                 }).catch(function (err) {
                     that.$dialog.loading.close();
                     console.log(err);
                 })
             },
+            putCoin:function (putCoinData) {
+                var that =this;
+                this.$dialog.loading.open('');
+                axios.post('/xcgame/flw_485_coin?action=flw_485_coinPut', putCoinData).then(function (res) {
+                    that.$dialog.loading.close();
+                    that.msgPrompt(res.data);
+                    console.log(res.data);
+                    if (res.data.result_code === '1') {
+                        that.$dialog.toast({
+                            mes: "投币成功！",
+                            timeout: 1500,
+                            icon: 'success'
+                        });
+                    }
+                }).catch(function (err) {
+                    that.$dialog.loading.close();
+                    console.log(err);
+                })
+            },
+            gamePutBtn:function () {
+                var that = this;
+                console.log(that.stateName !="设备正常");
+                if (parseInt(that.balance) >= parseInt(that.putCoins) && that.stateName =="设备正常") {
+                    var putCoin_ =parseInt(parseInt(that.putCoins)/parseInt(that.discountPrice))*parseInt(that.discountPrice);
+                    that.$dialog.confirm({
+                        title: '温馨提示!',
+                        mes: '确认投币' + putCoin_ + "个",
+                        opts: () => {
+                            var putCoinData ={
+                                sysId: sysId,
+                                versionNo: versionNo,
+                                deviceToken: that.deviceToken,
+                                memberToken: that.memberToken,
+                                coins: putCoin_
+                            }
+                            that.putCoin(putCoinData);
+                        }
+                    });
+                } else {
+                    if(that.putCoins ==""){
+                        that.$dialog.toast({
+                            mes: "请先输入投币数!",
+                            timeout: 1500,
+                            icon: 'error'
+                        });
+                    }else if(that.stateName !="设备正常"){
+                        that.$dialog.toast({
+                            mes: that.stateName,
+                            timeout: 1500,
+                            icon: 'error'
+                        });
+                    }else {
+                        that.$dialog.toast({
+                            mes: "余额不足!",
+                            timeout: 1500,
+                            icon: 'error'
+                        });
+                    }
+                }
+
+            },
+            ExitCoin: function () {      //退币
+                var that = this;
+                var obj={
+                    sysId: sysId,
+                    versionNo: versionNo,
+                    deviceToken:that.deviceToken,
+                    memberToken: that.memberToken
+                };
+                if (that.stateName == "设备正常"){
+                    this.$dialog.loading.open('');
+                    this.$dialog.confirm({
+                        title: '温馨提示!',
+                        mes: '确认退币!',
+                        opts: () => {
+                                axios.post('/xcgame/flw_485_coin?action=flw_485_coinExit', obj).then(function (res) {
+                                    that.$dialog.loading.close();
+                                    that.msgPrompt(res.data);
+                                    console.log(res.data);
+                                    if (res.data.result_code === '1') {
+                                        that.$dialog.toast({
+                                            mes: "退币成功！",
+                                            timeout: 1500,
+                                            icon: 'success'
+                                        });
+                                    }
+                                }).catch(function (err) {
+                                    that.$dialog.loading.close();
+                                    console.log(err);
+                                })
+                            }
+                    })
+                }else {
+                    that.$dialog.toast({
+                        mes: that.stateName,
+                        timeout: 1500,
+                        icon: 'error'
+                    });
+                }
+            },
             recharge:function () {
                 var that =this;
                 that.show2 = true;
-
+                that.getFoods()
             },
-
+            rechargeBtn:function () {
+                var that =this;
+                if (/MicroMessenger/.test(window.navigator.userAgent)) {
+                    var obj={"sysId": "0","versionNo": "0.0.0.1",mobileToken:"335abf03a9b346b6bc5d64ec83b89dfd",openId:"oNWocwWOI7tJGRIx1x3oeBB5xnLs",storeId:"100027",buyType:"充值",productName:"5币套餐",payPrice:0.01,coins:"5"};
+                    that.$dialog.loading.open();
+                    axios.post(url_getPposWxPay, obj).then(function (res) {
+                        that.$dialog.loading.close();
+                        console.log(res.data);
+                        that.msgPrompt(res.data);
+                        if (res.data.result_code === '1') {
+                            WeixinJSBridge.invoke(
+                                'getBrandWCPayRequest',
+                                {
+                                    "appId": res.data.result_data.appId,     //公众号名称，由商户传入
+                                    "timeStamp": res.data.result_data.timeStamp,         //时间戳，自1970年以来的秒数
+                                    "nonceStr": res.data.result_data.nonceStr, //随机串
+                                    "package": res.data.result_data.package,
+                                    "signType": "MD5",         //微信签名方式：
+                                    "paySign": res.data.result_data.paySign //微信签名
+                                },
+                                function (res) {
+//                                    alert(JSON.stringify(res));
+                                    if (res.err_msg == "get_brand_wcpay_request:ok") {
+                                        that.$dialog.toast({
+                                            mes: "付款成功!",
+                                            timeout:1500,
+                                            icon: 'success'
+                                        });
+                                    }
+                                }
+                            );
+                        }
+                    }).catch(function (err) {
+                        that.$dialog.loading.close();
+                        console.log(err);
+                    })
+                } else if (/AlipayClient/.test(window.navigator.userAgent)) {
+                    var obj={"sysId": "0","versionNo": "0.0.0.1",mobileToken:"335abf03a9b346b6bc5d64ec83b89dfd",aliId:"2088012003061467",storeId:"100027",buyType:"充值",productName:"5币套餐",payPrice:0.01,coins:"5"};
+                    that.$dialog.loading.open();
+                    axios.post("/Payment?action=createAlipayOrder", obj).then(function (res) {
+                        that.$dialog.loading.close();
+                        console.log(res.data);
+                        that.msgPrompt(res.data);
+                        if (res.data.result_code === '1') {
+                            AlipayJSBridge.call("tradePay", {
+                                tradeNO: res.data.result_data.tradeNO
+                            }, function(result) {
+//                                alert(JSON.stringify(result));
+                                if(result.resultCode == "9000"){
+                                    that.$dialog.toast({
+                                        mes: "付款成功!",
+                                        timeout:1500,
+                                        icon: 'success'
+                                    });
+                                }else if(result.resultCode == "6001"){
+                                    that.$dialog.toast({
+                                        mes: "取消支付!",
+                                        timeout:1500,
+                                        icon: 'error'
+                                    });
+                                }else if(result.resultCode == "6002"){
+                                    that.$dialog.toast({
+                                        mes: "网络出错!",
+                                        timeout:1500,
+                                        icon: 'error'
+                                    });
+                                }else {
+                                    that.$dialog.toast({
+                                        mes: "订单支付失败!",
+                                        timeout: 1500,
+                                        icon: 'error'
+                                    });
+                                }
+//                            alert(JSON.stringify(result));
+                            });
+                        }
+                    }).catch(function (err) {
+                        that.$dialog.loading.close();
+                        console.log(err);
+                    })
+                } else {
+                    that.$dialog.toast({
+                        mes: "暂不支持此浏览器支付!",
+                        timeout:1500,
+                        icon: 'error'
+                    });
+                    console.log("")
+                }
+            },
             msgPrompt:function (res) {
                 if(res.return_code == 0){
                     this.$dialog.toast({

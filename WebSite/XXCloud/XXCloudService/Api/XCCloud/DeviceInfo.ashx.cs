@@ -17,12 +17,335 @@ using XXCloudService.Api.XCCloud.Common;
 
 namespace XXCloudService.Api.XCCloud
 {
-    [Authorize(Roles = "StoreUser")]
+    [Authorize(Roles = "MerchUser, StoreUser")]
     /// <summary>
     /// Gift 的摘要说明
     /// </summary>
     public class DeviceInfo : ApiBase
-    {        
+    {
+        IDict_SystemService dict_SystemService = BLLContainer.Resolve<IDict_SystemService>(resolveNew: true);
+        IData_GameInfoService data_GameInfoService = BLLContainer.Resolve<IData_GameInfoService>(resolveNew: true);
+        IBase_DeviceInfoService base_DeviceInfoService = BLLContainer.Resolve<IBase_DeviceInfoService>(resolveNew: true);
+
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object GetDeviceHeadDict(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
+                string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
+
+                string errMsg = string.Empty;
+                string gameIndexId = dicParas.ContainsKey("gameIndexId") ? Convert.ToString(dicParas["gameIndexId"]) : string.Empty;
+                int iGameIndexId = 0;
+                int.TryParse(gameIndexId, out iGameIndexId);
+
+                var query = base_DeviceInfoService.GetModels(p => p.type == (int)DeviceType.卡头 && p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase));
+                if (!string.IsNullOrEmpty(storeId))
+                {
+                    query = query.Where(w => w.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase));
+                }
+
+                if (!string.IsNullOrEmpty(gameIndexId))
+                {
+                    query = query.Where(w => w.GameIndexID == iGameIndexId);
+                }
+
+                Dictionary<int, string> gameHeadInfo = query.Select(o => new
+                {
+                    ID = o.ID,
+                    DeviceName = o.DeviceName
+                }).Distinct().ToDictionary(d => d.ID, d => d.DeviceName);
+
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, gameHeadInfo);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        /// <summary>
+        /// 设备管理列表查询
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object QueryDeviceInfo(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
+                string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
+
+                int DeviceTypeId = dict_SystemService.GetModels(p => p.DictKey.Equals("设备类型")).FirstOrDefault().ID;
+                var query = base_DeviceInfoService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase));
+                if (!string.IsNullOrEmpty(storeId))
+                {
+                    query = query.Where(w => w.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase));
+                }
+
+                var base_DeviceInfo = from a in query
+                                      join b in data_GameInfoService.GetModels() on a.GameIndexID equals b.ID into b1
+                                      from b in b1.DefaultIfEmpty()
+                                      join c in dict_SystemService.GetModels(p => p.PID == DeviceTypeId) on (a.type + "") equals c.DictValue into c1
+                                      from c in c1.DefaultIfEmpty()
+                                      orderby a.MCUID
+                                      select new
+                                      {
+                                          ID = a.ID,
+                                          MCUID = a.MCUID,
+                                          DeviceName = a.DeviceName,
+                                          DeviceType = a.type,
+                                          DeviceTypeStr = c != null ? c.DictKey : string.Empty,
+                                          GameName = b != null ? b.GameName : string.Empty,
+                                          SiteName = a.SiteName,
+                                          segment = a.segment,
+                                          Address = a.Address,
+                                          DeviceLock = a.DeviceLock,
+                                          DeviceLockStr = a.DeviceLock != null ?
+                                                        (a.DeviceLock == 1 ? "锁定" :
+                                                        a.DeviceLock == 0 ? "解锁" : string.Empty) : string.Empty,
+                                          DeviceStatus = a.DeviceStatus,
+                                          DeviceStatusStr = a.DeviceStatus != null ?
+                                                        (a.DeviceStatus == 1 ? "正常" :
+                                                        a.DeviceStatus == 2 ? "检修" :
+                                                        a.DeviceStatus == 0 ? "停用" : string.Empty) : string.Empty
+                                      };
+
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, base_DeviceInfo);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        /// <summary>
+        /// 获取路由器设备
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object GetRouteDevice(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
+                string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
+
+                var query = base_DeviceInfoService.GetModels(p => p.type == (int)DeviceType.路由器 && p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase));
+                if (!string.IsNullOrEmpty(storeId))
+                {
+                    query = query.Where(w => w.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase));
+                }
+
+                var routeDevices = from a in query
+                                      select new
+                                      {
+                                          ID = a.ID,
+                                          DeviceName = a.DeviceName
+                                      };
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, routeDevices);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+        /// <summary>
+        /// 机台绑定(解绑)
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object BindDeviceInfo(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                string errMsg = string.Empty;
+                string id = dicParas.ContainsKey("id") ? Convert.ToString(dicParas["id"]) : string.Empty;
+                string state = dicParas.ContainsKey("state") ? Convert.ToString(dicParas["state"]) : string.Empty;
+                string gameIndexId = dicParas.ContainsKey("gameIndexId") ? Convert.ToString(dicParas["gameIndexId"]) : string.Empty;
+                string bindDeviceId = dicParas.ContainsKey("bindDeviceId") ? Convert.ToString(dicParas["bindDeviceId"]) : string.Empty;
+                string siteName = dicParas.ContainsKey("siteName") ? Convert.ToString(dicParas["siteName"]) : string.Empty;
+                int iId = 0, iState = 0, iGameIndexId = 0, iBindDeviceId = 0;
+                int.TryParse(id, out iId);
+                int.TryParse(state, out iState);
+                int.TryParse(gameIndexId, out iGameIndexId);
+                int.TryParse(bindDeviceId, out iBindDeviceId);
+
+                #region 参数验证
+                if (string.IsNullOrEmpty(id))
+                {
+                    errMsg = "游戏机设备流水号不能为空";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+                if (string.IsNullOrEmpty(state))
+                {
+                    errMsg = "绑定参数state不能为空";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
+                if (iState == 1)
+                {
+                    if (string.IsNullOrEmpty(gameIndexId))
+                    {
+                        errMsg = "游戏机gameIndexId不能为空";
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
+                    if (string.IsNullOrEmpty(bindDeviceId))
+                    {
+                        errMsg = "路由器bindDeviceId不能为空";
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
+                    if (string.IsNullOrEmpty(siteName))
+                    {
+                        errMsg = "P位编号不能为空";
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
+                }
+                #endregion
+
+                if (!base_DeviceInfoService.Any(p => p.ID == iId))
+                {
+                    errMsg = "设备不存在";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
+                if (base_DeviceInfoService.Any(p => p.GameIndexID == iGameIndexId && p.ID != iId && p.SiteName.Equals(siteName, StringComparison.OrdinalIgnoreCase)))
+                {
+                    errMsg = "游戏机P位被占用";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
+                var data_DeviceInfo = base_DeviceInfoService.GetModels(p => p.ID == iId).FirstOrDefault();
+                //绑定
+                if (iState == 1)
+                {
+                    data_DeviceInfo.GameIndexID = iGameIndexId;
+                    data_DeviceInfo.BindDeviceID = iBindDeviceId;
+                    data_DeviceInfo.SiteName = siteName;
+                }
+                //解绑
+                else if (iState == 0)
+                {
+                    data_DeviceInfo.GameIndexID = (int?)null;
+                    data_DeviceInfo.BindDeviceID = (int?)null;
+                    data_DeviceInfo.SiteName = string.Empty;
+                }
+                else
+                {
+                    errMsg = "绑定参数state值无效";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
+                if (!base_DeviceInfoService.Update(data_DeviceInfo))
+                {
+                    errMsg = "操作失败";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        /// <summary>
+        /// 锁定（解锁）设备
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object LockDeviceInfo(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                string errMsg = string.Empty;
+                string id = dicParas.ContainsKey("id") ? Convert.ToString(dicParas["id"]) : string.Empty;
+                string state = dicParas.ContainsKey("state") ? Convert.ToString(dicParas["state"]) : string.Empty;
+                int iId = 0, iState = 0;
+                int.TryParse(id, out iId);
+                int.TryParse(state, out iState);
+
+                #region 参数验证
+                if (string.IsNullOrEmpty(id))
+                {
+                    errMsg = "设备流水号不能为空";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+                if (string.IsNullOrEmpty(state))
+                {
+                    errMsg = "锁定参数state不能为空";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+                #endregion
+
+                if (!base_DeviceInfoService.Any(p => p.ID == iId))
+                {
+                    errMsg = "设备不存在";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
+                if (iState != 0 && iState != 1)
+                {
+                    errMsg = "锁定参数state值无效";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
+                var data_DeviceInfo = base_DeviceInfoService.GetModels(p => p.ID == iId).FirstOrDefault();
+                data_DeviceInfo.DeviceLock = iState;
+                if (!base_DeviceInfoService.Update(data_DeviceInfo))
+                {
+                    errMsg = "操作失败";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object GetDeviceQr(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                string errMsg = string.Empty;
+                string id = dicParas.ContainsKey("id") ? Convert.ToString(dicParas["id"]) : string.Empty;
+                int iId = 0;
+                int.TryParse(id, out iId);
+
+                if (string.IsNullOrEmpty(id))
+                {
+                    errMsg = "设备流水号不能为空";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
+                if (!base_DeviceInfoService.Any(p => p.ID == iId))
+                {
+                    errMsg = "设备不存在";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
+                var barCode = base_DeviceInfoService.GetModels(p => p.ID == iId).Select(o => o.BarCode).FirstOrDefault();
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, barCode);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object QueryReloadGifts(Dictionary<string, object> dicParas)
         {
@@ -135,9 +458,9 @@ namespace XXCloudService.Api.XCCloud
                 IBase_StorageInfoService base_StorageInfoService = BLLContainer.Resolve<IBase_StorageInfoService>();
                 IData_Storage_RecordService data_Storage_RecordService = BLLContainer.Resolve<IData_Storage_RecordService>();
                 IData_ReloadService data_ReloadService = BLLContainer.Resolve<IData_ReloadService>();
-                IData_HeadService data_HeadService = BLLContainer.Resolve<IData_HeadService>(resolveNew: true);
+                IBase_DeviceInfoService base_DeviceInfoService = BLLContainer.Resolve<IBase_DeviceInfoService>(resolveNew: true);
                 IData_GameInfoService data_GameInfoService = BLLContainer.Resolve<IData_GameInfoService>(resolveNew: true);
-                int? iDepotId = (from a in data_HeadService.GetModels(p => p.ID == iDeviceId)
+                int? iDepotId = (from a in base_DeviceInfoService.GetModels(p => p.ID == iDeviceId)
                                join b in data_GameInfoService.GetModels() on a.GameIndexID equals b.ID
                                select b.DepotID).FirstOrDefault();
 

@@ -1,0 +1,73 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="divport" content="width=device-width, initial-scale=1, maximum-scale=1">
+</head>
+<body>
+</body>
+<script src="js/jquery-1.8.3-min.js"></script>
+<script>
+    function getQueryString(name) {
+        var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) {
+            return unescape(r[2]);
+        }
+        return null;
+    }
+
+    $(function () {
+        var isreg = getQueryString("isreg");
+        alert(isreg);
+
+        if (/MicroMessenger/.test(window.navigator.userAgent)) {
+            var openId = getQueryString("openId");
+//            alert(openId);
+            setStorage("openId",openId)
+            if(isreg == 0){
+                window.location.href = "login.html"
+            }else if(isreg == 1){
+//                window.location.href = "home.html"
+            }
+        } else if (/AlipayClient/.test(window.navigator.userAgent)) {
+            var userid = getQueryString("userId");
+//            alert(userid);
+            setStorage("userid",userid)
+            if(isreg == 0){
+                window.location.href = "login.html"
+            }else if(isreg == 1){
+//                window.location.href = "home.html"
+            }
+        } else {
+            console.log("暂不支持此浏览器")
+        }
+
+
+
+    });
+    //存储session
+    function setStorage(key,value) {
+        if(window.localStorage){
+            value = JSON.stringify(value); //转化为JSON字符串
+            var storage=window.localStorage;
+            storage.setItem(key,value);
+        }
+    }
+    //删除session
+    function removeStorage(key) {
+        if(window.localStorage){
+            var storage=window.localStorage;
+            storage.removeItem(key);
+        }
+    }
+    //获取session
+    function getStorage(key,value) {
+        if(window.localStorage){
+            var storage=window.localStorage;
+            value = JSON.parse(localStorage.getItem(key));
+            return value;
+        }
+    }
+</script>
+</html>

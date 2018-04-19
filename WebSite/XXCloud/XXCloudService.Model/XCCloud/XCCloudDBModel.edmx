@@ -38,9 +38,14 @@
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MerchID" Type="varchar" MaxLength="15" />
           <Property Name="StoreID" Type="varchar" MaxLength="15" />
           <Property Name="DeviceName" Type="varchar" MaxLength="50" />
+          <Property Name="SiteName" Type="varchar" MaxLength="20" />
           <Property Name="type" Type="int" />
+          <Property Name="Token" Type="varchar" MaxLength="32" />
+          <Property Name="GameIndexID" Type="int" />
+          <Property Name="BindDeviceID" Type="int" />
           <Property Name="CmdType" Type="int" />
           <Property Name="segment" Type="varchar" MaxLength="4" />
           <Property Name="Address" Type="varchar" MaxLength="2" />
@@ -51,10 +56,12 @@
           <Property Name="IPAddress" Type="varchar" MaxLength="15" />
           <Property Name="WorkStation" Type="varchar" MaxLength="100" />
           <Property Name="DeviceStatus" Type="int" />
+          <Property Name="DeviceLock" Type="int" />
           <Property Name="create_time" Type="datetime" />
           <Property Name="update_time" Type="datetime" />
           <Property Name="note" Type="varchar" MaxLength="255" />
           <Property Name="AllowPrint" Type="int" />
+          <Property Name="BarCode" Type="varchar" MaxLength="100" />
         </EntityType>
         <EntityType Name="Base_EnumParams">
           <Key>
@@ -760,23 +767,6 @@
           <Property Name="RealTime" Type="datetime" />
           <Property Name="Note" Type="varchar" MaxLength="200" />
         </EntityType>
-        <EntityType Name="Data_Head">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="HeadID" Type="varchar" MaxLength="5" Nullable="false" />
-          <Property Name="StoreID" Type="varchar" MaxLength="15" />
-          <Property Name="GameIndexID" Type="int" />
-          <Property Name="SiteName" Type="varchar" MaxLength="20" />
-          <Property Name="Segment" Type="varchar" MaxLength="16" />
-          <Property Name="HeadName" Type="varchar" MaxLength="50" />
-          <Property Name="HeadAddress" Type="varchar" MaxLength="2" />
-          <Property Name="State" Type="int" />
-          <Property Name="MCUID" Type="varchar" MaxLength="14" />
-          <Property Name="Lock" Type="int" />
-          <Property Name="BarCode" Type="varchar" MaxLength="100" />
-        </EntityType>
         <EntityType Name="Data_Jackpot_Level">
           <Key>
             <PropertyRef Name="ID" />
@@ -931,17 +921,6 @@
           <Property Name="ParameterValue" Type="varchar" MaxLength="200" />
           <Property Name="Note" Type="varchar" MaxLength="200" />
         </EntityType>
-        <EntityType Name="Data_Project_BandPrice">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="ProjectID" Type="int" />
-          <Property Name="MemberLevelID" Type="int" />
-          <Property Name="BandType" Type="int" />
-          <Property Name="BandCount" Type="int" />
-          <Property Name="BandPrice" Type="int" />
-        </EntityType>
         <EntityType Name="Data_Project_Device">
           <Key>
             <PropertyRef Name="ID" />
@@ -949,7 +928,16 @@
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ProjectID" Type="int" />
           <Property Name="DeviceID" Type="int" />
-          <Property Name="BindType" Type="int" />
+          <Property Name="SignType" Type="int" />
+          <Property Name="LockMember" Type="int" />
+        </EntityType>
+        <EntityType Name="Data_Project_StoreList">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ProjectID" Type="int" />
+          <Property Name="StoreID" Type="varchar" MaxLength="15" />
         </EntityType>
         <EntityType Name="Data_ProjectInfo">
           <Key>
@@ -957,15 +945,37 @@
           </Key>
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="MerchID" Type="varchar" MaxLength="15" />
-          <Property Name="StoreID" Type="varchar" MaxLength="15" />
           <Property Name="ProjectName" Type="varchar" MaxLength="100" />
-          <Property Name="ProjectStatus" Type="int" />
-          <Property Name="FeeType" Type="int" />
-          <Property Name="FeeCycle" Type="int" />
-          <Property Name="FeeDeposit" Type="int" />
-          <Property Name="SignOutEN" Type="int" />
-          <Property Name="WhenLock" Type="int" />
-          <Property Name="RegretTime" Type="int" />
+          <Property Name="PlayCount" Type="int" />
+          <Property Name="ExpireDays" Type="int" />
+          <Property Name="AccompanyFlag" Type="int" />
+          <Property Name="AccompanyCash" Type="int" />
+          <Property Name="BalanceType" Type="int" />
+          <Property Name="BalanceCount" Type="int" />
+          <Property Name="Note" Type="varchar" MaxLength="200" />
+        </EntityType>
+        <EntityType Name="Data_ProjectTime_BandPrice">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ProjectTimeID" Type="int" />
+          <Property Name="MemberLevelID" Type="int" />
+          <Property Name="BandType" Type="int" />
+          <Property Name="BandCount" Type="int" />
+          <Property Name="BalanceType" Type="int" />
+          <Property Name="Count" Type="int" />
+        </EntityType>
+        <EntityType Name="Data_ProjectTimeInfo">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ProjectName" Type="varchar" MaxLength="100" />
+          <Property Name="PayCycle" Type="int" />
+          <Property Name="DepositType" Type="int" />
+          <Property Name="Deposit" Type="int" />
+          <Property Name="BackTime" Type="int" />
           <Property Name="Note" Type="varchar" MaxLength="200" />
         </EntityType>
         <EntityType Name="Data_Push_Rule">
@@ -1731,7 +1741,6 @@
           <EntitySet Name="Data_GoodInventory" EntityType="Self.Data_GoodInventory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Data_GoodsStock" EntityType="Self.Data_GoodsStock" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Data_GoodStorage" EntityType="Self.Data_GoodStorage" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Data_Head" EntityType="Self.Data_Head" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Data_Jackpot_Level" EntityType="Self.Data_Jackpot_Level" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Data_Jackpot_Matrix" EntityType="Self.Data_Jackpot_Matrix" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Data_JackpotInfo" EntityType="Self.Data_JackpotInfo" Schema="dbo" store:Type="Tables" />
@@ -1740,9 +1749,11 @@
           <EntitySet Name="Data_MemberLevel" EntityType="Self.Data_MemberLevel" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Data_Message" EntityType="Self.Data_Message" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Data_Parameters" EntityType="Self.Data_Parameters" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Data_Project_BandPrice" EntityType="Self.Data_Project_BandPrice" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Data_Project_Device" EntityType="Self.Data_Project_Device" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Data_Project_StoreList" EntityType="Self.Data_Project_StoreList" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Data_ProjectInfo" EntityType="Self.Data_ProjectInfo" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Data_ProjectTime_BandPrice" EntityType="Self.Data_ProjectTime_BandPrice" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Data_ProjectTimeInfo" EntityType="Self.Data_ProjectTimeInfo" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Data_Push_Rule" EntityType="Self.Data_Push_Rule" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Data_Reload" EntityType="Self.Data_Reload" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Data_Storage_Record" EntityType="Self.Data_Storage_Record" Schema="dbo" store:Type="Tables" />
@@ -1975,7 +1986,6 @@
           <EntitySet Name="Base_ChainRule" EntityType="XCCloudDBModel.Base_ChainRule" />
           <EntitySet Name="Base_ChainRule_Store" EntityType="XCCloudDBModel.Base_ChainRule_Store" />
           <EntitySet Name="Base_DepotInfo" EntityType="XCCloudDBModel.Base_DepotInfo" />
-          <EntitySet Name="Base_DeviceInfo" EntityType="XCCloudDBModel.Base_DeviceInfo" />
           <EntitySet Name="Base_EnumParams" EntityType="XCCloudDBModel.Base_EnumParams" />
           <EntitySet Name="Base_GoodsInfo" EntityType="XCCloudDBModel.Base_GoodsInfo" />
           <EntitySet Name="Base_MemberInfo" EntityType="XCCloudDBModel.Base_MemberInfo" />
@@ -2026,9 +2036,6 @@
           <EntitySet Name="Data_MemberLevel" EntityType="XCCloudDBModel.Data_MemberLevel" />
           <EntitySet Name="Data_Message" EntityType="XCCloudDBModel.Data_Message" />
           <EntitySet Name="Data_Parameters" EntityType="XCCloudDBModel.Data_Parameters" />
-          <EntitySet Name="Data_Project_BandPrice" EntityType="XCCloudDBModel.Data_Project_BandPrice" />
-          <EntitySet Name="Data_Project_Device" EntityType="XCCloudDBModel.Data_Project_Device" />
-          <EntitySet Name="Data_ProjectInfo" EntityType="XCCloudDBModel.Data_ProjectInfo" />
           <EntitySet Name="Data_Push_Rule" EntityType="XCCloudDBModel.Data_Push_Rule" />
           <EntitySet Name="Data_Reload" EntityType="XCCloudDBModel.Data_Reload" />
           <EntitySet Name="Data_Storage_Record" EntityType="XCCloudDBModel.Data_Storage_Record" />
@@ -2078,12 +2085,17 @@
           <EntitySet Name="Store_CheckDate" EntityType="XCCloudDBModel.Store_CheckDate" />
           <EntitySet Name="Base_StoreInfo" EntityType="XCCloudDBModel.Base_StoreInfo" />
           <EntitySet Name="Data_Food_Detial" EntityType="XCCloudDBModel.Data_Food_Detial" />
-          <EntitySet Name="Data_Head" EntityType="XCCloudDBModel.Data_Head" />
           <EntitySet Name="Data_SupplierList" EntityType="XCCloudDBModel.Data_SupplierList" />
           <EntitySet Name="Log_GameAlarm" EntityType="XCCloudDBModel.Log_GameAlarm" />
           <EntitySet Name="Data_Food_Level" EntityType="XCCloudDBModel.Data_Food_Level" />
           <EntitySet Name="Data_Food_Sale" EntityType="XCCloudDBModel.Data_Food_Sale" />
           <EntitySet Name="Data_FoodInfo" EntityType="XCCloudDBModel.Data_FoodInfo" />
+          <EntitySet Name="Base_DeviceInfo" EntityType="XCCloudDBModel.Base_DeviceInfo" />
+          <EntitySet Name="Data_Project_Device" EntityType="XCCloudDBModel.Data_Project_Device" />
+          <EntitySet Name="Data_Project_StoreList" EntityType="XCCloudDBModel.Data_Project_StoreList" />
+          <EntitySet Name="Data_ProjectInfo" EntityType="XCCloudDBModel.Data_ProjectInfo" />
+          <EntitySet Name="Data_ProjectTime_BandPrice" EntityType="XCCloudDBModel.Data_ProjectTime_BandPrice" />
+          <EntitySet Name="Data_ProjectTimeInfo" EntityType="XCCloudDBModel.Data_ProjectTimeInfo" />
         </EntityContainer>
         <EntityType Name="Base_ChainRule">
           <Key>
@@ -2112,29 +2124,6 @@
           <Property Name="DepotType" Type="Int32" />
           <Property Name="DepotName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="InventoryEN" Type="Int32" />
-        </EntityType>
-        <EntityType Name="Base_DeviceInfo">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="DeviceName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="type" Type="Int32" />
-          <Property Name="CmdType" Type="Int32" />
-          <Property Name="segment" Type="String" MaxLength="4" FixedLength="false" Unicode="false" />
-          <Property Name="Address" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
-          <Property Name="MCUID" Type="String" MaxLength="64" FixedLength="false" Unicode="false" />
-          <Property Name="port_name" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
-          <Property Name="baute_rate" Type="Int32" />
-          <Property Name="parity" Type="Int32" />
-          <Property Name="IPAddress" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="WorkStation" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="DeviceStatus" Type="Int32" />
-          <Property Name="create_time" Type="DateTime" Precision="3" />
-          <Property Name="update_time" Type="DateTime" Precision="3" />
-          <Property Name="note" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="AllowPrint" Type="Int32" />
         </EntityType>
         <EntityType Name="Base_EnumParams">
           <Key>
@@ -2830,43 +2819,6 @@
           <Property Name="ParameterName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="IsAllow" Type="Int32" />
           <Property Name="ParameterValue" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
-          <Property Name="Note" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
-        </EntityType>
-        <EntityType Name="Data_Project_BandPrice">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ProjectID" Type="Int32" />
-          <Property Name="MemberLevelID" Type="Int32" />
-          <Property Name="BandType" Type="Int32" />
-          <Property Name="BandCount" Type="Int32" />
-          <Property Name="BandPrice" Type="Int32" />
-        </EntityType>
-        <EntityType Name="Data_Project_Device">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ProjectID" Type="Int32" />
-          <Property Name="DeviceID" Type="Int32" />
-          <Property Name="BindType" Type="Int32" />
-        </EntityType>
-        <EntityType Name="Data_ProjectInfo">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="ProjectName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="ProjectStatus" Type="Int32" />
-          <Property Name="FeeType" Type="Int32" />
-          <Property Name="FeeCycle" Type="Int32" />
-          <Property Name="FeeDeposit" Type="Int32" />
-          <Property Name="SignOutEN" Type="Int32" />
-          <Property Name="WhenLock" Type="Int32" />
-          <Property Name="RegretTime" Type="Int32" />
           <Property Name="Note" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="Data_Push_Rule">
@@ -3642,23 +3594,6 @@
           <Property Name="ValidType" Type="Int32" />
           <Property Name="Status" Type="Int32" />
         </EntityType>
-        <EntityType Name="Data_Head">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="HeadID" Type="String" Nullable="false" MaxLength="5" FixedLength="false" Unicode="false" />
-          <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="GameIndexID" Type="Int32" />
-          <Property Name="SiteName" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="Segment" Type="String" MaxLength="16" FixedLength="false" Unicode="false" />
-          <Property Name="HeadName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="HeadAddress" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
-          <Property Name="State" Type="Int32" />
-          <Property Name="MCUID" Type="String" MaxLength="14" FixedLength="false" Unicode="false" />
-          <Property Name="Lock" Type="Int32" />
-          <Property Name="BarCode" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-        </EntityType>
         <EntityType Name="Data_SupplierList">
           <Key>
             <PropertyRef Name="ID" />
@@ -3737,6 +3672,93 @@
           <Property Name="MemberPrice" Type="Decimal" Precision="18" Scale="2" />
           <Property Name="RenewDays" Type="Int32" />
         </EntityType>
+        <EntityType Name="Base_DeviceInfo">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="DeviceName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="SiteName" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="type" Type="Int32" />
+          <Property Name="Token" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="GameIndexID" Type="Int32" />
+          <Property Name="BindDeviceID" Type="Int32" />
+          <Property Name="CmdType" Type="Int32" />
+          <Property Name="segment" Type="String" MaxLength="4" FixedLength="false" Unicode="false" />
+          <Property Name="Address" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
+          <Property Name="MCUID" Type="String" MaxLength="64" FixedLength="false" Unicode="false" />
+          <Property Name="port_name" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="baute_rate" Type="Int32" />
+          <Property Name="parity" Type="Int32" />
+          <Property Name="IPAddress" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="WorkStation" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="DeviceStatus" Type="Int32" />
+          <Property Name="DeviceLock" Type="Int32" />
+          <Property Name="create_time" Type="DateTime" Precision="3" />
+          <Property Name="update_time" Type="DateTime" Precision="3" />
+          <Property Name="note" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="AllowPrint" Type="Int32" />
+          <Property Name="BarCode" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Data_Project_Device">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ProjectID" Type="Int32" />
+          <Property Name="DeviceID" Type="Int32" />
+          <Property Name="SignType" Type="Int32" />
+          <Property Name="LockMember" Type="Int32" />
+        </EntityType>
+        <EntityType Name="Data_Project_StoreList">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ProjectID" Type="Int32" />
+          <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Data_ProjectInfo">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="ProjectName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="PlayCount" Type="Int32" />
+          <Property Name="ExpireDays" Type="Int32" />
+          <Property Name="AccompanyFlag" Type="Int32" />
+          <Property Name="AccompanyCash" Type="Int32" />
+          <Property Name="BalanceType" Type="Int32" />
+          <Property Name="BalanceCount" Type="Int32" />
+          <Property Name="Note" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Data_ProjectTime_BandPrice">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ProjectTimeID" Type="Int32" />
+          <Property Name="MemberLevelID" Type="Int32" />
+          <Property Name="BandType" Type="Int32" />
+          <Property Name="BandCount" Type="Int32" />
+          <Property Name="BalanceType" Type="Int32" />
+          <Property Name="Count" Type="Int32" />
+        </EntityType>
+        <EntityType Name="Data_ProjectTimeInfo">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ProjectName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="PayCycle" Type="Int32" />
+          <Property Name="DepositType" Type="Int32" />
+          <Property Name="Deposit" Type="Int32" />
+          <Property Name="BackTime" Type="Int32" />
+          <Property Name="Note" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -3770,30 +3792,6 @@
                 <ScalarProperty Name="DepotType" ColumnName="DepotType" />
                 <ScalarProperty Name="StoreID" ColumnName="StoreID" />
                 <ScalarProperty Name="MerchID" ColumnName="MerchID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Base_DeviceInfo">
-            <EntityTypeMapping TypeName="XCCloudDBModel.Base_DeviceInfo">
-              <MappingFragment StoreEntitySet="Base_DeviceInfo">
-                <ScalarProperty Name="AllowPrint" ColumnName="AllowPrint" />
-                <ScalarProperty Name="note" ColumnName="note" />
-                <ScalarProperty Name="update_time" ColumnName="update_time" />
-                <ScalarProperty Name="create_time" ColumnName="create_time" />
-                <ScalarProperty Name="DeviceStatus" ColumnName="DeviceStatus" />
-                <ScalarProperty Name="WorkStation" ColumnName="WorkStation" />
-                <ScalarProperty Name="IPAddress" ColumnName="IPAddress" />
-                <ScalarProperty Name="parity" ColumnName="parity" />
-                <ScalarProperty Name="baute_rate" ColumnName="baute_rate" />
-                <ScalarProperty Name="port_name" ColumnName="port_name" />
-                <ScalarProperty Name="MCUID" ColumnName="MCUID" />
-                <ScalarProperty Name="Address" ColumnName="Address" />
-                <ScalarProperty Name="segment" ColumnName="segment" />
-                <ScalarProperty Name="CmdType" ColumnName="CmdType" />
-                <ScalarProperty Name="type" ColumnName="type" />
-                <ScalarProperty Name="DeviceName" ColumnName="DeviceName" />
-                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -4538,46 +4536,6 @@
                 <ScalarProperty Name="ParameterName" ColumnName="ParameterName" />
                 <ScalarProperty Name="System" ColumnName="System" />
                 <ScalarProperty Name="StoreID" ColumnName="StoreID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Data_Project_BandPrice">
-            <EntityTypeMapping TypeName="XCCloudDBModel.Data_Project_BandPrice">
-              <MappingFragment StoreEntitySet="Data_Project_BandPrice">
-                <ScalarProperty Name="BandPrice" ColumnName="BandPrice" />
-                <ScalarProperty Name="BandCount" ColumnName="BandCount" />
-                <ScalarProperty Name="BandType" ColumnName="BandType" />
-                <ScalarProperty Name="MemberLevelID" ColumnName="MemberLevelID" />
-                <ScalarProperty Name="ProjectID" ColumnName="ProjectID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Data_Project_Device">
-            <EntityTypeMapping TypeName="XCCloudDBModel.Data_Project_Device">
-              <MappingFragment StoreEntitySet="Data_Project_Device">
-                <ScalarProperty Name="BindType" ColumnName="BindType" />
-                <ScalarProperty Name="DeviceID" ColumnName="DeviceID" />
-                <ScalarProperty Name="ProjectID" ColumnName="ProjectID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Data_ProjectInfo">
-            <EntityTypeMapping TypeName="XCCloudDBModel.Data_ProjectInfo">
-              <MappingFragment StoreEntitySet="Data_ProjectInfo">
-                <ScalarProperty Name="Note" ColumnName="Note" />
-                <ScalarProperty Name="RegretTime" ColumnName="RegretTime" />
-                <ScalarProperty Name="WhenLock" ColumnName="WhenLock" />
-                <ScalarProperty Name="SignOutEN" ColumnName="SignOutEN" />
-                <ScalarProperty Name="FeeDeposit" ColumnName="FeeDeposit" />
-                <ScalarProperty Name="FeeCycle" ColumnName="FeeCycle" />
-                <ScalarProperty Name="FeeType" ColumnName="FeeType" />
-                <ScalarProperty Name="ProjectStatus" ColumnName="ProjectStatus" />
-                <ScalarProperty Name="ProjectName" ColumnName="ProjectName" />
-                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
-                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -5404,24 +5362,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Data_Head">
-            <EntityTypeMapping TypeName="XCCloudDBModel.Data_Head">
-              <MappingFragment StoreEntitySet="Data_Head">
-                <ScalarProperty Name="BarCode" ColumnName="BarCode" />
-                <ScalarProperty Name="Lock" ColumnName="Lock" />
-                <ScalarProperty Name="MCUID" ColumnName="MCUID" />
-                <ScalarProperty Name="State" ColumnName="State" />
-                <ScalarProperty Name="HeadAddress" ColumnName="HeadAddress" />
-                <ScalarProperty Name="HeadName" ColumnName="HeadName" />
-                <ScalarProperty Name="Segment" ColumnName="Segment" />
-                <ScalarProperty Name="SiteName" ColumnName="SiteName" />
-                <ScalarProperty Name="GameIndexID" ColumnName="GameIndexID" />
-                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
-                <ScalarProperty Name="HeadID" ColumnName="HeadID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Data_SupplierList">
             <EntityTypeMapping TypeName="XCCloudDBModel.Data_SupplierList">
               <MappingFragment StoreEntitySet="Data_SupplierList">
@@ -5502,6 +5442,99 @@
                 <ScalarProperty Name="MerchID" ColumnName="MerchID" />
                 <ScalarProperty Name="FoodName" ColumnName="FoodName" />
                 <ScalarProperty Name="FoodID" ColumnName="FoodID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Base_DeviceInfo">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Base_DeviceInfo">
+              <MappingFragment StoreEntitySet="Base_DeviceInfo">
+                <ScalarProperty Name="BarCode" ColumnName="BarCode" />
+                <ScalarProperty Name="AllowPrint" ColumnName="AllowPrint" />
+                <ScalarProperty Name="note" ColumnName="note" />
+                <ScalarProperty Name="update_time" ColumnName="update_time" />
+                <ScalarProperty Name="create_time" ColumnName="create_time" />
+                <ScalarProperty Name="DeviceLock" ColumnName="DeviceLock" />
+                <ScalarProperty Name="DeviceStatus" ColumnName="DeviceStatus" />
+                <ScalarProperty Name="WorkStation" ColumnName="WorkStation" />
+                <ScalarProperty Name="IPAddress" ColumnName="IPAddress" />
+                <ScalarProperty Name="parity" ColumnName="parity" />
+                <ScalarProperty Name="baute_rate" ColumnName="baute_rate" />
+                <ScalarProperty Name="port_name" ColumnName="port_name" />
+                <ScalarProperty Name="MCUID" ColumnName="MCUID" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="segment" ColumnName="segment" />
+                <ScalarProperty Name="CmdType" ColumnName="CmdType" />
+                <ScalarProperty Name="BindDeviceID" ColumnName="BindDeviceID" />
+                <ScalarProperty Name="GameIndexID" ColumnName="GameIndexID" />
+                <ScalarProperty Name="Token" ColumnName="Token" />
+                <ScalarProperty Name="type" ColumnName="type" />
+                <ScalarProperty Name="SiteName" ColumnName="SiteName" />
+                <ScalarProperty Name="DeviceName" ColumnName="DeviceName" />
+                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
+                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Data_Project_Device">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Data_Project_Device">
+              <MappingFragment StoreEntitySet="Data_Project_Device">
+                <ScalarProperty Name="LockMember" ColumnName="LockMember" />
+                <ScalarProperty Name="SignType" ColumnName="SignType" />
+                <ScalarProperty Name="DeviceID" ColumnName="DeviceID" />
+                <ScalarProperty Name="ProjectID" ColumnName="ProjectID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Data_Project_StoreList">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Data_Project_StoreList">
+              <MappingFragment StoreEntitySet="Data_Project_StoreList">
+                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
+                <ScalarProperty Name="ProjectID" ColumnName="ProjectID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Data_ProjectInfo">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Data_ProjectInfo">
+              <MappingFragment StoreEntitySet="Data_ProjectInfo">
+                <ScalarProperty Name="Note" ColumnName="Note" />
+                <ScalarProperty Name="BalanceCount" ColumnName="BalanceCount" />
+                <ScalarProperty Name="BalanceType" ColumnName="BalanceType" />
+                <ScalarProperty Name="AccompanyCash" ColumnName="AccompanyCash" />
+                <ScalarProperty Name="AccompanyFlag" ColumnName="AccompanyFlag" />
+                <ScalarProperty Name="ExpireDays" ColumnName="ExpireDays" />
+                <ScalarProperty Name="PlayCount" ColumnName="PlayCount" />
+                <ScalarProperty Name="ProjectName" ColumnName="ProjectName" />
+                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Data_ProjectTime_BandPrice">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Data_ProjectTime_BandPrice">
+              <MappingFragment StoreEntitySet="Data_ProjectTime_BandPrice">
+                <ScalarProperty Name="Count" ColumnName="Count" />
+                <ScalarProperty Name="BalanceType" ColumnName="BalanceType" />
+                <ScalarProperty Name="BandCount" ColumnName="BandCount" />
+                <ScalarProperty Name="BandType" ColumnName="BandType" />
+                <ScalarProperty Name="MemberLevelID" ColumnName="MemberLevelID" />
+                <ScalarProperty Name="ProjectTimeID" ColumnName="ProjectTimeID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Data_ProjectTimeInfo">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Data_ProjectTimeInfo">
+              <MappingFragment StoreEntitySet="Data_ProjectTimeInfo">
+                <ScalarProperty Name="Note" ColumnName="Note" />
+                <ScalarProperty Name="BackTime" ColumnName="BackTime" />
+                <ScalarProperty Name="Deposit" ColumnName="Deposit" />
+                <ScalarProperty Name="DepositType" ColumnName="DepositType" />
+                <ScalarProperty Name="PayCycle" ColumnName="PayCycle" />
+                <ScalarProperty Name="ProjectName" ColumnName="ProjectName" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

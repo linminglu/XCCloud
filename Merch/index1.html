@@ -160,7 +160,8 @@
                         if(data.result_code==1){
                             logMsg.logType=2;
                             xc.setStorage('logMsg',JSON.stringify(logMsg));
-                            window.location.href='indexStore.html?'+(Date.parse(new Date())/1000);
+                            // window.location.href='indexStore.html?'+(Date.parse(new Date())/1000);
+                            window.location.href='/merch/index1.html';
                         }
                     }
                 })
@@ -217,7 +218,7 @@
                             if(data.result_code==1){
                                 logMsg.logType=3;
                                 xc.setStorage('logMsg',JSON.stringify(logMsg));
-                                window.location.href='http://192.168.1.73:8080/merch/index1.html';
+                                window.location.href='/merch/index1.html';
                             }
                         }
                     })
@@ -243,7 +244,7 @@
                             if(data.result_code==1){
                                 logMsg.logType=4;
                                 xc.setStorage('logMsg',JSON.stringify(logMsg));
-                               window.location.href='http://192.168.1.73:8080/merch/index1.html';
+                               window.location.href='/merch/index1.html';
                             }
                         }
                     })
