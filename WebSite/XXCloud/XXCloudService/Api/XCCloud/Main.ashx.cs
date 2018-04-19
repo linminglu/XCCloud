@@ -41,7 +41,7 @@ namespace XXCloudService.Api.XCCloud
                 SqlParameter[] parameters = new SqlParameter[3];
                 parameters[0] = new SqlParameter("@LogType", logType);
                 parameters[1] = new SqlParameter("@LogID", Convert.ToInt32(logId));
-                parameters[1] = new SqlParameter("@MerchID", merchId);
+                parameters[2] = new SqlParameter("@MerchID", merchId);
                 System.Data.DataSet ds = XCCloudBLL.ExecuteQuerySentence(sql, parameters);
                 if (ds.Tables.Count != 1)
                 {

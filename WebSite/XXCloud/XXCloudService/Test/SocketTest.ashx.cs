@@ -12,6 +12,7 @@ using XCCloudService.Model.Socket.UDP;
 using XCCloudService.SocketService.TCP.Business;
 using XCCloudService.SocketService.TCP.Client;
 using XCCloudService.SocketService.TCP.Common;
+using XCCloudService.SocketService.TCP.HubService;
 using XCCloudService.SocketService.TCP.Model;
 using XCCloudService.SocketService.UDP;
 using XCCloudService.SocketService.UDP.Factory;
@@ -46,6 +47,7 @@ namespace XCCloudService.Test
                 case "serverReceiveRadarResponse": serverReceiveRadarResponse(context); break;
                 case "radarNotify": radarNotify(context); break;
                 case "getMemberInfo": getMemberInfo(context); break;
+                case "sendSignalRNotify": sendSignalRNotify(context); break;
             }
         }
 
@@ -80,6 +82,20 @@ namespace XCCloudService.Test
 
             byte[] data = DataFactory.CreateRequesProtocolData(TransmiteEnum.远程门店会员卡数据请求响应, requestModel);
             service.Send(data);
+        }
+
+        private void sendSignalRNotify(HttpContext context)
+        {
+            var dataObj = new
+            {
+                answerMsgType = "1",
+                answerOjb = new
+                {
+                    result_code = "1",
+                    answerMsg = "成功出币10个"
+                }
+            };
+            XCGameClientHub.SignalrServerToClient.Notify("15618920033", dataObj);
         }
 
         private void radarNotify(HttpContext context)

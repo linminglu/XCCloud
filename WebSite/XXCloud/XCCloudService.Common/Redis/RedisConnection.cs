@@ -22,7 +22,7 @@ namespace XCCloudService.Common.Redis
         /// <summary>
         /// 连接字符串
         /// </summary>
-        private static readonly string RedisConnectionString = ConfigurationManager.AppSettings["RedisAddress"] ?? "127.0.0.1:6379";
+        private static readonly string RedisConnectionString = ConfigurationManager.AppSettings["RedisServers"];
 
         private static readonly object Locker = new object();
         private static ConnectionMultiplexer _instance;
@@ -78,13 +78,13 @@ namespace XCCloudService.Common.Redis
             var connect = ConnectionMultiplexer.Connect(connectionString);
 
             //注册如下事件
-            connect.ConnectionFailed += MuxerConnectionFailed;
-            connect.ConnectionRestored += MuxerConnectionRestored;
-            connect.ErrorMessage += MuxerErrorMessage;
-            connect.ConfigurationChanged += MuxerConfigurationChanged;
-            connect.HashSlotMoved += MuxerHashSlotMoved;
-            connect.InternalError += MuxerInternalError;
-            connect.ConfigurationChangedBroadcast += MuxerConfigurationChangedBroadcast;
+            //connect.ConnectionFailed += MuxerConnectionFailed;
+            //connect.ConnectionRestored += MuxerConnectionRestored;
+            //connect.ErrorMessage += MuxerErrorMessage;
+            //connect.ConfigurationChanged += MuxerConfigurationChanged;
+            //connect.HashSlotMoved += MuxerHashSlotMoved;
+            //connect.InternalError += MuxerInternalError;
+            //connect.ConfigurationChangedBroadcast += MuxerConfigurationChangedBroadcast;
 
             return connect;
         }

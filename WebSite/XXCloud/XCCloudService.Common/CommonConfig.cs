@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -48,5 +49,38 @@ namespace XCCloudService.Common
         public static int RadarOffLineTimeLong = int.Parse(System.Configuration.ConfigurationManager.AppSettings["radarOffLineTimeLong"] ?? "60");
 
         public static string H5WeiXinAuthRedirectUrl = System.Configuration.ConfigurationManager.AppSettings["H5WeiXinAuthRedirectUrl"];
+
+        /// <summary>
+        /// 莘拍档H5支付宝支付回调
+        /// </summary>
+        public static string PayTitle
+        {
+            get
+            {
+                return ConfigurationManager.AppSettings["PayTitle"];
+            }
+        }
+
+        /// <summary>
+        /// 微信公众号AccessToken键名
+        /// </summary>
+        public static string WxPubAccessToken
+        {
+            get
+            {
+                return "WxPub_AccessToken";
+            }
+        }
+
+        /// <summary>
+        /// 微信公众号JsApi_Ticket键名
+        /// </summary>
+        public static string WxPubApiTicket
+        {
+            get
+            {
+                return "WxPub_ApiTicket";
+            }
+        }
     }
 }

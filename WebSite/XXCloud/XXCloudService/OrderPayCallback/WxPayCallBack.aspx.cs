@@ -13,8 +13,8 @@ using XCCloudService.CacheService.XCCloud;
 using XCCloudService.Common.Enum;
 using XCCloudService.Model.CustomModel.XCCloud;
 using XCCloudService.Model.XCCloud;
+using XCCloudService.OrderPayCallback.Common;
 using XCCloudService.Pay.WeiXinPay.Lib;
-using XCCloudService.PayChannel.Common;
 
 namespace XXCloudService.PayChannel
 {

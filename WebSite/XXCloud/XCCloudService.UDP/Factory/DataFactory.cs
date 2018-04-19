@@ -583,7 +583,7 @@ namespace XCCloudService.SocketService.UDP.Factory
                 //记录日志
                 string requestJson = JsonHelper.DataContractJsonSerializer(radarModel);
                 UDPLogHelper.SaveUDPSendDeviceControlLog(controlModel.StoreId, controlModel.Mobile, controlModel.MCUId, controlModel.OrderId, controlModel.Segment, controlModel.SN, controlModel.Coins, int.Parse(controlModel.Action), requestJson);
-                SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.远程设备控制指令), "远程设备控制指令",radarModel.Token, requestJson);
+                XCGameUDPMsgHub.SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.远程设备控制指令), "远程设备控制指令", radarModel.Token, requestJson);
                 return true;
             }
 
@@ -651,7 +651,7 @@ namespace XCCloudService.SocketService.UDP.Factory
                 //服务端发送数据
                 XCCloudService.SocketService.UDP.Server.Send(ip, port, requestPackages);
                 string requestJson = JsonHelper.DataContractJsonSerializer(dataModel);
-                SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.远程门店账目查询指令), "远程门店账目查询指令", radarToken, requestJson);
+                XCGameUDPMsgHub.SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.远程门店账目查询指令), "远程门店账目查询指令", radarToken, requestJson);
                 return true;
             }
 
@@ -829,7 +829,7 @@ namespace XCCloudService.SocketService.UDP.Factory
                 //服务端发送数据
                 XCCloudService.SocketService.UDP.Server.Send(ip, port, requestPackages);
                 string requestJson = JsonHelper.DataContractJsonSerializer(dataModel);
-                SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.远程门店会员卡数据请求), "远程门店会员卡数据请求",radarToken,requestJson);
+                XCGameUDPMsgHub.SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.远程门店会员卡数据请求), "远程门店会员卡数据请求", radarToken, requestJson);
                 return true;
             }
 
@@ -868,7 +868,7 @@ namespace XCCloudService.SocketService.UDP.Factory
                 //服务端发送数据
                 XCCloudService.SocketService.UDP.Server.Send(ip, port, requestPackages);
                 string requestJson = JsonHelper.DataContractJsonSerializer(dataModel);
-                SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.远程门店门票数据请求), "远程门店门票数据请求",radarToken,requestJson);
+                XCGameUDPMsgHub.SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.远程门店门票数据请求), "远程门店门票数据请求", radarToken, requestJson);
                 return true;
             }
 
@@ -907,7 +907,7 @@ namespace XCCloudService.SocketService.UDP.Factory
                 //服务端发送数据
                 XCCloudService.SocketService.UDP.Server.Send(ip, port, requestPackages);
                 string requestJson = JsonHelper.DataContractJsonSerializer(dataModel);
-                SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.远程门店门票操作请求), "远程门店门票操作请求",radarToken, requestJson);
+                XCGameUDPMsgHub.SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.远程门店门票操作请求), "远程门店门票操作请求", radarToken, requestJson);
                 return true;
             }
 
@@ -946,7 +946,7 @@ namespace XCCloudService.SocketService.UDP.Factory
                 //服务端发送数据
                 XCCloudService.SocketService.UDP.Server.Send(ip, port, requestPackages);
                 string requestJson = JsonHelper.DataContractJsonSerializer(dataModel);
-                SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.远程门店彩票数据请求), "远程门店彩票数据请求", radarToken, requestJson);
+                XCGameUDPMsgHub.SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.远程门店彩票数据请求), "远程门店彩票数据请求", radarToken, requestJson);
                 return true;
             }
 
@@ -985,7 +985,7 @@ namespace XCCloudService.SocketService.UDP.Factory
                 //服务端发送数据
                 XCCloudService.SocketService.UDP.Server.Send(ip, port, requestPackages);
                 string requestJson = JsonHelper.DataContractJsonSerializer(dataModel);
-                SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.远程门店彩票操作请求), "远程门店彩票操作请求", radarToken, requestJson);
+                XCGameUDPMsgHub.SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.远程门店彩票操作请求), "远程门店彩票操作请求", radarToken, requestJson);
                 return true;
             }
 
@@ -1024,7 +1024,7 @@ namespace XCCloudService.SocketService.UDP.Factory
                 //服务端发送数据
                 XCCloudService.SocketService.UDP.Server.Send(ip, port, requestPackages);
                 string requestJson = JsonHelper.DataContractJsonSerializer(dataModel);
-                SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.远程门店出票条码数据请求), "远程门店出票条码数据请求", radarToken, requestJson);
+                XCGameUDPMsgHub.SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.远程门店出票条码数据请求), "远程门店出票条码数据请求", radarToken, requestJson);
                 return true;
             }
 
@@ -1063,7 +1063,7 @@ namespace XCCloudService.SocketService.UDP.Factory
                 //服务端发送数据
                 XCCloudService.SocketService.UDP.Server.Send(ip, port, requestPackages);
                 string requestJson = JsonHelper.DataContractJsonSerializer(dataModel);
-                SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.远程门店出票条码操作请求), "远程门店出票条码操作请求", radarToken, requestJson);
+                XCGameUDPMsgHub.SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.远程门店出票条码操作请求), "远程门店出票条码操作请求", radarToken, requestJson);
                 return true;
             }
 
@@ -1102,7 +1102,7 @@ namespace XCCloudService.SocketService.UDP.Factory
                 //服务端发送数据
                 XCCloudService.SocketService.UDP.Server.Send(ip, port, requestPackages);
                 string requestJson = JsonHelper.DataContractJsonSerializer(dataModel);
-                SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.远程门店运行参数数据请求),"远程门店运行参数数据请求",radarToken, requestJson);
+                XCGameUDPMsgHub.SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.远程门店运行参数数据请求), "远程门店运行参数数据请求", radarToken, requestJson);
                 return true;
             }
 
@@ -1141,7 +1141,7 @@ namespace XCCloudService.SocketService.UDP.Factory
                 //服务端发送数据
                 XCCloudService.SocketService.UDP.Server.Send(ip, port, requestPackages);
                 string requestJson = JsonHelper.DataContractJsonSerializer(dataModel);
-                SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.远程门店会员转账操作请求), "远程门店会员转账操作请求",radarToken, requestJson);
+                XCGameUDPMsgHub.SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.远程门店会员转账操作请求), "远程门店会员转账操作请求", radarToken, requestJson);
                 return true;
             }
 
@@ -1180,7 +1180,7 @@ namespace XCCloudService.SocketService.UDP.Factory
                 //服务端发送数据
                 XCCloudService.SocketService.UDP.Server.Send(ip, port, requestPackages);
                 string requestJson = JsonHelper.DataContractJsonSerializer(dataModel);
-                SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.远程门店员工手机号校验请求), "远程门店员工手机号校验请求", radarToken, requestJson);
+                XCGameUDPMsgHub.SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.远程门店员工手机号校验请求), "远程门店员工手机号校验请求", radarToken, requestJson);
                 return true;
             }
 
@@ -1219,7 +1219,7 @@ namespace XCCloudService.SocketService.UDP.Factory
                 //服务端发送数据
                 XCCloudService.SocketService.UDP.Server.Send(ip, port, requestPackages);
                 string requestJson = JsonHelper.DataContractJsonSerializer(dataModel);
-                SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.黄牛卡信息查询请求), "黄牛卡信息查询请求", radarToken, requestJson);
+                XCGameUDPMsgHub.SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.黄牛卡信息查询请求), "黄牛卡信息查询请求", radarToken, requestJson);
                 return true;
             }
 

@@ -3,189 +3,138 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Vue-ydui Demo</title>
-    <meta name="divport" content="width=device-width, initial-scale=1">
+    <title>莘拍档</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- 引入样式 -->
     <link rel="stylesheet" href="css/ydui.rem.css">
     <!-- 引入rem自适应类库 -->
-    <script src="js/ydui.flexible.js"></script>
+
     <style>
-        body{
-            height: 100%;
-            width: 100%;
-        }
-        /*.account-password-container {*/
-            /*display: flex;*/
-            /*flex-direction: row;*/
-            /*width: 100%;*/
-            /*height: 100rpx;*/
-            /*align-items: center;*/
-            /*border-bottom: 1rpx solid #eee;*/
-        /*}*/
 
-
-        /*.Verification {*/
-            /*padding-left: 10rpx;width: 500rpx;height: 70rpx;*/
-            /*font-size: 32rpx;*/
-        /*}*/
-
-        /*.login-button {*/
-            /*height: 100rpx;*/
-            /*background-color: #fb7c58;*/
-            /*font-size: 34rpx;*/
-            /*margin: 20rpx 50rpx;*/
-            /*color: #fff;*/
-            /*text-align: center;*/
-        /*}*/
-        /*.Invisibility{font-size: 28rpx;width: 330rpx;padding-left:20rpx;}*/
-        /*.Verificationimg{width: 100rpx;}*/
-        /*.hidden{display: none;}*/
     </style>
 </head>
 <body>
 
 <div id="app">
-    <yd-cell-group>
-        <yd-cell-item>
-            <img slot="icon" src="images/account.png">
-            <input slot="right" type="number" placeholder="请输入手机号" v-model="account" v-on:blur="inputPrompt">
-        </yd-cell-item>
-        <yd-cell-item>
-            <div slot="left" >
-                <img slot="icon" src="images/note.png">
-                <input type="text" placeholder="请输入验证码" v-model="password">
-            </div>
-            <div slot="right" >
-                <img slot="icon" :src="Verification">
-                <span @click="verificationChange">点击刷新</span>
-            </div>
-        </yd-cell-item>
-        <div>
-            <yd-button size="large" type="hollow" @click.native="login">hollow</yd-button>
-        </div>
-    </yd-cell-group>
-    <yd-cell-group>
-        <yd-cell-item>
-            <yd-icon slot="icon" name="phone3" size=".45rem"></yd-icon>
-            <input type="text" slot="right" placeholder="请输入短信验证码" v-model="smsCode">
-            <yd-sendcode slot="right"
-                         v-model="start1"
-                         second="30"
-                         @click.native="sendCode1"
-                         type="warning"
-            ></yd-sendcode>
-
-
-        </yd-cell-item>
-    </yd-cell-group>
-    <yd-button size="large" type="primary" @click.native="register">注册</yd-button>
+    <yd-button @click.native="payBtn" size="large">Confirm</yd-button>
+    <yd-button @click.native="payBtnTest" size="large">payBtnTest</yd-button>
 </div>
-
+<script src="js/ydui.flexible.js"></script>
 <!-- 引入 Vue -->
 <script src="js/vue.js"></script>
 <script src="js/jquery-1.8.3-min.js"></script>
 <!-- 引入组件库 -->
 <script src="js/ydui.rem.js"></script>
 <script src="js/axios.min.js"></script>
+<script src="https://gw.alipayobjects.com/as/g/h5-lib/alipayjsapi/3.1.0/alipayjsapi.min.js"></script>
 <script>
-    var geteway = "https://mp.4000051530.com";
-    var url_ImgCode ="/xcgamemana/token?action=checkImgCode"; //图形码验证接口
-    var url_sendSMSCode ="/xcgamemana/token?action=sendSMSCode";//发送验证码接口
-    var url_getMobileToken = "/xcgamemana/token?action=getMobileToken";//获取手机令牌接口
+    var sysId = 0; //调用方应用Id
+    var versionNo= "0.89"; //版本号
+    var url_getPposWxPay = '/Payment?action=getPposWxPay';//获取分页订单列表
     var htmlfnc = new Vue({
         el: '#app',
         data:{
-            Verification: geteway + "/ServicePage/ValidateImg.aspx? t =" + new Date().getTime(),
-            account: '',
-            password: '',
-            smsCode:"",
-            start1:false
+            mobileToken:''
         },
         mounted: function () {
-            this.Load();
+
         },
         methods: {
-            toastSuccess: function() {
-                this.$dialog.toast({
-                    mes: '保存成功',
-                    timeout: 1500,
-                    icon: 'success'
-                });
+            Load:function () {
             },
-            verificationChange:function(){
-                this.Verification = geteway + "/ServicePage/ValidateImg.aspx? t =" + new Date().getTime()
-            },
-            inputPrompt:function () {
-                var mobile =this.account;
-                var myreg = /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1})|(17[0-9]{1}))+\d{8})$/;
-                if (!myreg.test(mobile) || mobile.length == 0 || mobile.length != 11) {
-                    this.$dialog.toast({
-                        mes: '请输入正确手机号！',
-                        timeout: 1500,
-                        icon: 'success'
+            payBtn:function () {
+                var that =this;
+                if (/MicroMessenger/.test(window.navigator.userAgent)) {
+                    var obj={"sysId": "0","versionNo": "0.0.0.1",mobileToken:"335abf03a9b346b6bc5d64ec83b89dfd",openId:"oNWocwWOI7tJGRIx1x3oeBB5xnLs",storeId:"100027",buyType:"充值",productName:"5币套餐",payPrice:0.01,coins:"5"};
+                    that.$dialog.loading.open();
+                    axios.post(url_getPposWxPay, obj).then(function (res) {
+                        that.$dialog.loading.close();
+                        console.log(res.data);
+                        that.msgPrompt(res.data);
+                        if (res.data.result_code === '1') {
+                            WeixinJSBridge.invoke(
+                                'getBrandWCPayRequest',
+                                {
+                                    "appId": res.data.result_data.appId,     //公众号名称，由商户传入
+                                    "timeStamp": res.data.result_data.timeStamp,         //时间戳，自1970年以来的秒数
+                                    "nonceStr": res.data.result_data.nonceStr, //随机串
+                                    "package": res.data.result_data.package,
+                                    "signType": "MD5",         //微信签名方式：
+                                    "paySign": res.data.result_data.paySign //微信签名
+                                },
+                                function (res) {
+//                                    alert(JSON.stringify(res));
+                                    if (res.err_msg == "get_brand_wcpay_request:ok") {
+                                        that.$dialog.toast({
+                                            mes: "付款成功!",
+                                            timeout:1500,
+                                            icon: 'success'
+                                        });
+                                    }
+                                }
+                            );
+                        }
+                    }).catch(function (err) {
+                        that.$dialog.loading.close();
+                        console.log(err);
+                    })
+                } else if (/AlipayClient/.test(window.navigator.userAgent)) {
+                    var obj={"sysId": "0","versionNo": "0.0.0.1",mobileToken:"335abf03a9b346b6bc5d64ec83b89dfd",aliId:"2088012003061467",storeId:"100027",buyType:"充值",productName:"5币套餐",payPrice:0.01,coins:"5"};
+                    that.$dialog.loading.open();
+                    axios.post("/Payment?action=createAlipayOrder", obj).then(function (res) {
+                        that.$dialog.loading.close();
+                        console.log(res.data);
+                        that.msgPrompt(res.data);
+                        if (res.data.result_code === '1') {
+                            AlipayJSBridge.call("tradePay", {
+                                tradeNO: res.data.result_data.tradeNO
+                            }, function(result) {
+//                                alert(JSON.stringify(result));
+                                if(result.resultCode == "9000"){
+                                    that.$dialog.toast({
+                                        mes: "付款成功!",
+                                        timeout:1500,
+                                        icon: 'success'
+                                    });
+                                }else if(result.resultCode == "6001"){
+                                    that.$dialog.toast({
+                                        mes: "取消支付!",
+                                        timeout:1500,
+                                        icon: 'error'
+                                    });
+                                }else if(result.resultCode == "6002"){
+                                    that.$dialog.toast({
+                                        mes: "网络出错!",
+                                        timeout:1500,
+                                        icon: 'error'
+                                    });
+                                }else {
+                                    that.$dialog.toast({
+                                        mes: "订单支付失败!",
+                                        timeout: 1500,
+                                        icon: 'error'
+                                    });
+                                }
+//                            alert(JSON.stringify(result));
+                            });
+                        }
+                    }).catch(function (err) {
+                        that.$dialog.loading.close();
+                        console.log(err);
+                    })
+                } else {
+                    that.$dialog.toast({
+                        mes: "暂不支持此浏览器支付!",
+                        timeout:1500,
+                        icon: 'error'
                     });
+                    console.log("")
                 }
-            },
-            login:function () {
-                var that =this;
-                var obj={"sysId": "0","versionNo": "0.0.0.1",mobile:that.account,code:that.password};
-                obj =JSON.stringify(obj);
-//                this.$dialog.loading.open();
-                console.log(that.account+"/"+that.password);
-                axios.post(url_ImgCode, obj).then(function (res) {
-//                    that.$dialog.loading.close();
-                    console.log(res.data);
-                    that.msgPrompt(res.data);
-                    if (res.data.result_code === '1') {
-
-                    }
-                }).catch(function (err) {
-//                    that.$dialog.loading.close();
-                    console.log(err);
-                })
-            },
-            sendCode1:function () {
-                this.$dialog.loading.open('发送中...');
-                this.start1 = true;
-                var that=this;
-                console.log(that.account+"/"+that.password);
-                var obj={"sysId": "0","versionNo": "0.0.0.1",mobile:that.account,code:that.password};
-                axios.post(url_sendSMSCode, obj).then(function (res) {
-                    console.log(res.data);
-                    that.$dialog.loading.close();
-                    if (res.data.result_code === '1') {
-                        this.$dialog.toast({
-                            mes: '已发送',
-                            icon: 'success',
-                            timeout: 1500
-                        });
-                    }
-                }).catch(function (err) {
-                    console.log(err);
-//                    this.$dialog.loading.close();
-//                    this.$dialog.toast({
-//                        mes: "请求失败!",
-//                        timeout: 1500,
-//                        icon: 'error'
-//                    });
-                });
-            },
-            register:function () {
-                var that =this;
-                this.$dialog.loading.open('');
-                var obj={"sysId": "0","versionNo": "0.0.0.1",mobile: that.account,smsCode: that.smsCode};
-                axios.post(url_getMobileToken, obj).then(function (res) {
-                    this.$dialog.loading.close();
-                    console.log(res.data);
-                    if (res.data.result_code === '1') {
-                    }
-                }).catch(function (err) {
-                    this.$dialog.loading.close();
-                    console.log(err);
-                })
 
             },
-            Load: function () {
+            payBtnTest:function () {
+                var that =this;
+
 
             },
             msgPrompt:function (res) {
@@ -205,11 +154,6 @@
             }
         }
     });
-
-
-
-
-
 </script>
 </body>
 </html>

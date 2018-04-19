@@ -18,6 +18,7 @@ namespace XCCloudService.Model.XCCloud
         public string HeadID { get; set; }
         public string StoreID { get; set; }
         public Nullable<int> GameIndexID { get; set; }
+        public string SiteName { get; set; }
         public string Segment { get; set; }
         public string HeadName { get; set; }
         public string HeadAddress { get; set; }

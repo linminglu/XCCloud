@@ -92,6 +92,7 @@
     <Compile Include="IDAL\XCCloud\IData_FoodInfoDAL.cs" />
     <Compile Include="IDAL\XCCloud\IData_Food_DetialDAL.cs" />
     <Compile Include="IDAL\XCCloud\IData_Food_LevelDAL.cs" />
+    <Compile Include="IDAL\XCCloud\IData_Food_SaleDAL.cs" />
     <Compile Include="IDAL\XCCloud\IData_Food_StoreListDAL.cs" />
     <Compile Include="IDAL\XCCloud\IData_Food_WorkStationDAL.cs" />
     <Compile Include="IDAL\XCCloud\IData_GameFreeRuleDAL.cs" />
@@ -128,6 +129,7 @@
     <Compile Include="IDAL\XCCloud\IData_Push_RuleDAL.cs" />
     <Compile Include="IDAL\XCCloud\IData_ReloadDAL.cs" />
     <Compile Include="IDAL\XCCloud\IData_Storage_RecordDAL.cs" />
+    <Compile Include="IDAL\XCCloud\IData_SupplierListDAL.cs" />
     <Compile Include="IDAL\XCCloud\IData_WorkstationDAL.cs" />
     <Compile Include="IDAL\XCCloud\IDict_BalanceTypeDAL.cs" />
     <Compile Include="IDAL\XCCloud\IDict_SystemDAL.cs" />
@@ -138,6 +140,7 @@
     <Compile Include="IDAL\XCCloud\IFlw_OrderDAL.cs" />
     <Compile Include="IDAL\XCCloud\IFlw_Order_DetailDAL.cs" />
     <Compile Include="IDAL\XCCloud\IFlw_Order_SerialNumberDAL.cs" />
+    <Compile Include="IDAL\XCCloud\ILog_GameAlarmDAL.cs" />
     <Compile Include="IDAL\XCCloud\ILog_OperationDAL.cs" />
     <Compile Include="IDAL\XCCloud\IStore_CheckDateDAL.cs" />
     <Compile Include="IDAL\XCCloud\IXC_WorkInfoDAL.cs" />
@@ -222,6 +225,7 @@
     <Compile Include="XCCloud\Data_FoodInfoDAL.cs" />
     <Compile Include="XCCloud\Data_Food_DetialDAL.cs" />
     <Compile Include="XCCloud\Data_Food_LevelDAL.cs" />
+    <Compile Include="XCCloud\Data_Food_SaleDAL.cs" />
     <Compile Include="XCCloud\Data_Food_StoreListDAL.cs" />
     <Compile Include="XCCloud\Data_Food_WorkStationDAL.cs" />
     <Compile Include="XCCloud\Data_GameFreeRuleDAL.cs" />
@@ -258,6 +262,7 @@
     <Compile Include="XCCloud\Data_Push_RuleDAL.cs" />
     <Compile Include="XCCloud\Data_ReloadDAL.cs" />
     <Compile Include="XCCloud\Data_Storage_RecordDAL.cs" />
+    <Compile Include="XCCloud\Data_SupplierListDAL.cs" />
     <Compile Include="XCCloud\Data_WorkstationDAL.cs" />
     <Compile Include="XCCloud\Dict_BalanceTypeDAL.cs" />
     <Compile Include="XCCloud\Dict_SystemDAL.cs" />
@@ -268,6 +273,7 @@
     <Compile Include="XCCloud\Flw_OrderDAL.cs" />
     <Compile Include="XCCloud\Flw_Order_DetailDAL.cs" />
     <Compile Include="XCCloud\Flw_Order_SerialNumberDAL.cs" />
+    <Compile Include="XCCloud\Log_GameAlarmDAL.cs" />
     <Compile Include="XCCloud\Log_OperationDAL.cs" />
     <Compile Include="XCCloud\Store_CheckDateDAL.cs" />
     <Compile Include="XCCloud\XC_WorkInfoDAL.cs" />

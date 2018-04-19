@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Vue-ydui Demo</title>
+    <title>莘拍档</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- 引入样式 -->
     <link rel="stylesheet" href="css/ydui.rem.css">
@@ -14,7 +14,6 @@
     </style>
 </head>
 <body>
-
 <div id="app">
     <yd-tabbar fixed=true active-color="#000000">
         <yd-tabbar-item title="首页" link="#" active>
@@ -70,25 +69,20 @@
             this.Load();
         },
         methods: {
-            toastSuccess: function() {
-                this.$dialog.toast({
-                    mes: '保存成功',
-                    timeout: 1500,
-                    icon: 'success'
-                });
-            },
             Load: function () {
                 var obj={"sysId": "0","versionNo": "0.0.0.1"};
                 var that =this;
+                this.$dialog.loading.open('');
                 axios.post(url_getNews, obj).then(function (res) {
                     console.log(res.data);
+                    that.$dialog.loading.close();
+                    that.msgPrompt(res.data);
                     if (res.data.result_code === '1') {
                         console.log(res.data.result_data.length);
                         var _newsList=[];
                         var _banner=[];
                         for (var i = 0; i < res.data.result_data.length; i++) {
                             console.log(res.data.result_data[i].PublishType);
-
                             if (res.data.result_data[i].PublishType == 0) {
                                 _newsList.push({
                                     ID: res.data.result_data[i].ID,
@@ -123,8 +117,24 @@
                     }
                 }).catch(function (err) {
                     console.log(err);
+                    that.$dialog.loading.close();
                 })
-            },
+            }
+        },
+        msgPrompt:function (res) {
+            if(res.return_code == 0){
+                this.$dialog.toast({
+                    mes: res.return_msg,
+                    timeout: 1500,
+                    icon: 'error'
+                });
+            }else if(res.result_code == 0){
+                this.$dialog.toast({
+                    mes: res.result_msg,
+                    timeout: 1500,
+                    icon: 'error'
+                });
+            }
         }
     });
 

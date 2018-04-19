@@ -90,6 +90,7 @@
     <Compile Include="IBLL\XCCloud\IData_FoodInfoService.cs" />
     <Compile Include="IBLL\XCCloud\IData_Food_DetialService.cs" />
     <Compile Include="IBLL\XCCloud\IData_Food_LevelService.cs" />
+    <Compile Include="IBLL\XCCloud\IData_Food_SaleService.cs" />
     <Compile Include="IBLL\XCCloud\IData_Food_StoreListService.cs" />
     <Compile Include="IBLL\XCCloud\IData_Food_WorkStationService.cs" />
     <Compile Include="IBLL\XCCloud\IData_GameFreeRuleService.cs" />
@@ -117,6 +118,7 @@
     <Compile Include="IBLL\XCCloud\IData_Push_RuleService.cs" />
     <Compile Include="IBLL\XCCloud\IData_ReloadService.cs" />
     <Compile Include="IBLL\XCCloud\IData_Storage_RecordService.cs" />
+    <Compile Include="IBLL\XCCloud\IData_SupplierListService.cs" />
     <Compile Include="IBLL\XCCloud\IData_WorkstationService.cs" />
     <Compile Include="IBLL\XCCloud\IDict_BalanceTypeService.cs" />
     <Compile Include="IBLL\XCCloud\IDict_SystemService.cs" />
@@ -127,6 +129,7 @@
     <Compile Include="IBLL\XCCloud\IFlw_OrderService.cs" />
     <Compile Include="IBLL\XCCloud\IFlw_Order_DetailService.cs" />
     <Compile Include="IBLL\XCCloud\IFlw_Order_SerialNumberService.cs" />
+    <Compile Include="IBLL\XCCloud\ILog_GameAlarmService.cs" />
     <Compile Include="IBLL\XCCloud\ILog_OperationService.cs" />
     <Compile Include="IBLL\XCCloud\IStore_CheckDateService.cs" />
     <Compile Include="IBLL\XCCloud\IXC_WorkInfoService.cs" />
@@ -220,6 +223,7 @@
     <Compile Include="XCCloud\Data_FoodInfoService.cs" />
     <Compile Include="XCCloud\Data_Food_DetialService.cs" />
     <Compile Include="XCCloud\Data_Food_LevelService.cs" />
+    <Compile Include="XCCloud\Data_Food_SaleService.cs" />
     <Compile Include="XCCloud\Data_Food_StoreListService.cs" />
     <Compile Include="XCCloud\Data_Food_WorkStationService.cs" />
     <Compile Include="XCCloud\Data_GameFreeRuleService.cs" />
@@ -247,6 +251,7 @@
     <Compile Include="XCCloud\Data_Push_RuleService.cs" />
     <Compile Include="XCCloud\Data_ReloadService.cs" />
     <Compile Include="XCCloud\Data_Storage_RecordServcie.cs" />
+    <Compile Include="XCCloud\Data_SupplierListService.cs" />
     <Compile Include="XCCloud\Data_WorkstationService.cs" />
     <Compile Include="XCCloud\Dict_BalanceTypeService.cs" />
     <Compile Include="XCCloud\Dict_SystemService.cs" />
@@ -257,6 +262,7 @@
     <Compile Include="XCCloud\Flw_OrderService.cs" />
     <Compile Include="XCCloud\Flw_Order_DetailService.cs" />
     <Compile Include="XCCloud\Flw_Order_SerialNumberService.cs" />
+    <Compile Include="XCCloud\Log_GameAlarmService.cs" />
     <Compile Include="XCCloud\Log_OperationService.cs" />
     <Compile Include="XCCloud\Store_CheckDateService.cs" />
     <Compile Include="XCCloud\XC_WorkInfoService.cs" />

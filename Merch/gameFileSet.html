@@ -11,9 +11,9 @@
 </style>
 <body>
  <div class="layui-row">
-     <div style="text-align: right;padding-right: 150px;margin-top: 15px" class="layui-col-md12 layui-col-xs12 layui-col-lg12">
+     <blockquote style="text-align: right;padding-right: 150px;" class="layui-col-md12 layui-col-xs12 layui-col-lg12 layui-elem-quote">
          <button type="button" class="layui-btn layui-btn-normal toEasyOpen" id="addNew"><i class="layui-icon">&#xe654;</i>新增</button>
-     </div>
+     </blockquote>
      <table class="layui-hide" lay-filter="gameFileTable" id="gameFileTable"></table>
  </div>
 
@@ -41,6 +41,12 @@
                     <select name="GameType" id="GameTypeLow" lay-filter="GameTypeLow">
 
                     </select>
+                </div>
+            </div>
+             <div class="layui-inline buyTimeEasy" >
+                <label class="layui-form-label">出厂编号</label>
+                <div class="layui-input-inline">
+                    <input type="text"  class="layui-input"  id="GameCode">
                 </div>
             </div>
             <div class="layui-inline PushReduceFromCard" >
@@ -85,6 +91,32 @@
                     <input type="checkbox" lay-filter="StateLow" lay-skin="switch" lay-text="启用|禁用" id="StateLow">
                 </div>
             </div>
+
+
+            <div class="layui-inline areaEasy" >
+                <label class="layui-form-label">占地面积(m^2)</label>
+                <div class="layui-input-inline">
+                    <input type="text"  class="layui-input" placeholder="平方米" id="Area">
+                </div>
+            </div>
+            <div class="layui-inline buyTimeEasy" >
+                <label class="layui-form-label">采购时间</label>
+                <div class="layui-input-inline">
+                    <input type="text"  class="layui-input"  id="ChangeTime">
+                </div>
+            </div>
+            <div class="layui-inline buyPriceEasy" >
+                <label class="layui-form-label">采购价格</label>
+                <div class="layui-input-inline">
+                    <input type="text"  class="layui-input" placeholder="元" id="Price">
+                </div>
+            </div>
+            <div class="layui-inline saleEasy" >
+                <label class="layui-form-label" style="padding: 8px 0!improtant">新旧程度(1-10)</label>
+                <div class="layui-input-inline">
+                    <input type="text"  class="layui-input" placeholder="1-10成新" id="Evaluation">
+                </div>
+            </div>
         </div>
         <div class="layui-col-xs12 layui-col-md12 " style="margin-bottom: 15px;padding-left: 100px;">
             <button class="layui-btn layui-btn-normal toHighOpen" type="button">高级设置</button>
@@ -125,7 +157,12 @@
                               </select>
                           </div>
                       </div>
-
+                     <div class="layui-inline buyTimeEasy" >
+                            <label class="layui-form-label">出厂编号</label>
+                            <div class="layui-input-inline">
+                                <input type="text"  class="layui-input"  id="GameCode1">
+                            </div>
+                     </div>
                       <div class="layui-inline State">
                           <label class="layui-form-label">设备启用</label>
                           <div class="layui-input-inline">
@@ -159,21 +196,45 @@
                       <div class="layui-inline LotteryMode">
                           <label class="layui-form-label">退彩票到会员卡</label>
                           <div class="layui-input-inline">
-                              <input type="checkbox"  lay-skin="switch" lay-text="启用|禁用" id="LotteryMode" lay-filter="NotGiveBack">
+                              <input type="checkbox"  lay-skin="switch" lay-text="启用|禁用" id="LotteryMode" lay-filter="LotteryMode">
                           </div>
                       </div>
                       <div class="layui-inline OnlyExitLottery">
                           <label class="layui-form-label">只退实物彩票</label>
                           <div class="layui-input-inline">
-                              <input type="checkbox"  lay-skin="switch" lay-text="启用|禁用" id="OnlyExitLottery" lay-filter="NotGiveBack">
+                              <input type="checkbox"  lay-skin="switch" lay-text="启用|禁用" id="OnlyExitLottery" lay-filter="OnlyExitLottery">
                           </div>
                       </div>
                       <div class="layui-inline chkCheckGift">
                           <label class="layui-form-label">礼品掉落检测</label>
                           <div class="layui-input-inline">
-                              <input type="checkbox"  lay-skin="switch" lay-text="启用|禁用" id="chkCheckGift" lay-filter="NotGiveBack">
+                              <input type="checkbox"  lay-skin="switch" lay-text="启用|禁用" id="chkCheckGift" lay-filter="chkCheckGift">
                           </div>
                       </div>
+                      <div class="layui-inline areaEasy" >
+                        <label class="layui-form-label">占地面积(m^2)</label>
+                        <div class="layui-input-inline">
+                            <input type="text"  class="layui-input" placeholder="平方米" id="Area1">
+                        </div>
+                    </div>
+                    <div class="layui-inline buyTimeEasy" >
+                        <label class="layui-form-label">采购时间</label>
+                        <div class="layui-input-inline">
+                            <input type="text"  class="layui-input"  id="ChangeTime1">
+                        </div>
+                    </div>
+                    <div class="layui-inline buyPriceEasy" >
+                        <label class="layui-form-label">采购价格</label>
+                        <div class="layui-input-inline">
+                            <input type="text"  class="layui-input" placeholder="元" id="Price1">
+                        </div>
+                    </div>
+                    <div class="layui-inline saleEasy" >
+                        <label class="layui-form-label" style="padding: 8px 0!improtant">新旧程度(1-10)</label>
+                        <div class="layui-input-inline">
+                            <input type="text"  class="layui-input" placeholder="1-10成新" id="Evaluation1">
+                        </div>
+                    </div>
                   </div>
                 </div>
                 <div class="layui-tab-item"style="padding-left: 10px">
@@ -181,43 +242,43 @@
                         <div class="layui-inline AllowElecPush">
                             <label class="layui-form-label">允许电子投币</label>
                             <div class="layui-input-inline">
-                                <input type="checkbox" checked lay-skin="switch" lay-text="启用|禁用" id="AllowElecPush" lay-filter="NotGiveBack">
+                                <input type="checkbox" checked lay-skin="switch" lay-text="启用|禁用" id="AllowElecPush" lay-filter="AllowElecPush">
                             </div>
                         </div>
                         <div class="layui-inline AllowDecuplePush">
                             <label class="layui-form-label">允许10倍投币</label>
                             <div class="layui-input-inline">
-                                <input type="checkbox" checked lay-skin="switch" lay-text="启用|禁用" id="AllowDecuplePush" lay-filter="NotGiveBack">
+                                <input type="checkbox" checked lay-skin="switch" lay-text="启用|禁用" id="AllowDecuplePush" lay-filter="AllowDecuplePush">
                             </div>
                         </div>
                         <div class="layui-inline GuardConvertCard">
                             <label class="layui-form-label">专卡专用</label>
                             <div class="layui-input-inline">
-                                <input type="checkbox"  lay-skin="switch" lay-text="启用|禁用" id="GuardConvertCard" lay-filter="NotGiveBack">
+                                <input type="checkbox"  lay-skin="switch" lay-text="启用|禁用" id="GuardConvertCard" lay-filter="GuardConvertCard">
                             </div>
                         </div>
                         <div class="layui-inline ReadCat">
                             <label class="layui-form-label">刷卡即扣</label>
                             <div class="layui-input-inline">
-                                <input type="checkbox"  lay-skin="switch" lay-text="启用|禁用" id="ReadCat" lay-filter="NotGiveBack">
+                                <input type="checkbox"  lay-skin="switch" lay-text="启用|禁用" id="ReadCat" lay-filter="ReadCat">
                             </div>
                         </div>
                         <div class="layui-inline AllowRealPush">
                             <label class="layui-form-label">允许实物投币</label>
                             <div class="layui-input-inline">
-                                <input type="checkbox"  lay-skin="switch" lay-text="启用|禁用" id="AllowRealPush" lay-filter="NotGiveBack">
+                                <input type="checkbox"  lay-skin="switch" lay-text="启用|禁用" id="AllowRealPush" lay-filter="AllowRealPush">
                             </div>
                         </div>
                         <div class="layui-inline BanOccupy">
                             <label class="layui-form-label">霸位检测</label>
                             <div class="layui-input-inline">
-                                <input type="checkbox"  lay-skin="switch" lay-text="启用|禁用" id="BanOccupy" lay-filter="NotGiveBack">
+                                <input type="checkbox"  lay-skin="switch" lay-text="启用|禁用" id="BanOccupy" lay-filter="BanOccupy">
                             </div>
                         </div>
                         <div class="layui-inline StrongGuardConvertCard">
                             <label class="layui-form-label">增强专卡专用</label>
                             <div class="layui-input-inline">
-                                <input type="checkbox" lay-skin="switch" lay-text="启用|禁用" id="StrongGuardConvertCard" lay-filter="NotGiveBack">
+                                <input type="checkbox" lay-skin="switch" lay-text="启用|禁用" id="StrongGuardConvertCard" lay-filter="StrongGuardConvertCard">
                             </div>
                         </div>
                         <div class="layui-inline PushReduceFromCard">
@@ -289,7 +350,7 @@
                         <div class="layui-inline UseSecondPush">
                             <label class="layui-form-label" style="padding: 0;white-space: normal;">启用从游戏机上分线上分</label>
                             <div class="layui-input-inline">
-                                <input type="checkbox" lay-skin="switch" lay-text="启用|禁用" id="UseSecondPush" lay-filter="NotGiveBack">
+                                <input type="checkbox" lay-skin="switch" lay-text="启用|禁用" id="UseSecondPush" lay-filter="UseSecondPush">
                             </div>
                         </div>
                         <div class="layui-inline SecondReduceFromCard">
@@ -307,7 +368,7 @@
                         <div class="layui-inline SecondLevel">
                             <label class="layui-form-label">上分信号电平</label>
                             <div class="layui-input-inline">
-                                <input type="checkbox" name="zzz" lay-skin="switch" lay-text="高电平|低电平" id="SecondLevel" lay-filter="NotGiveBack">
+                                <input type="checkbox" name="zzz" lay-skin="switch" lay-text="高电平|低电平" id="SecondLevel" lay-filter="SecondLevel">
                             </div>
                         </div>
                         <div class="layui-inline SecondStartInterval">
@@ -365,31 +426,31 @@
                         <div class="layui-inline AllowElecOut">
                             <label class="layui-form-label">允许电子出币</label>
                             <div class="layui-input-inline">
-                                <input type="checkbox" checked lay-skin="switch" lay-text="启用|禁用" id="AllowElecOut">
+                                <input type="checkbox" checked lay-skin="switch" lay-text="启用|禁用" id="AllowElecOut" lay-filter="AllowElecOut">
                             </div>
                         </div>
                         <div class="layui-inline NowExit">
                             <label class="layui-form-label">即中即退</label>
                             <div class="layui-input-inline">
-                                <input type="checkbox"  lay-skin="switch" lay-text="启用|禁用" id="NowExit">
+                                <input type="checkbox"  lay-skin="switch" lay-text="启用|禁用" id="NowExit" lay-filter="NowExit">
                             </div>
                         </div>
                         <div class="layui-inline BOLock">
                             <label class="layui-form-label">退币锁定</label>
                             <div class="layui-input-inline">
-                                <input type="checkbox"  lay-skin="switch" lay-text="启用|禁用" id="BOLock">
+                                <input type="checkbox"  lay-skin="switch" lay-text="启用|禁用" id="BOLock" lay-filter="BOLock">
                             </div>
                         </div>
                         <div class="layui-inline AllowRealOut">
                             <label class="layui-form-label">允许实物退币</label>
                             <div class="layui-input-inline">
-                                <input type="checkbox"  lay-skin="switch" lay-text="启用|禁用" id="AllowRealOut">
+                                <input type="checkbox"  lay-skin="switch" lay-text="启用|禁用" id="AllowRealOut" lay-filter="AllowRealOut">
                             </div>
                         </div>
                         <div class="layui-inline BOKeep">
                             <label class="layui-form-label">退币按钮保持</label>
                             <div class="layui-input-inline">
-                                <input type="checkbox"  lay-skin="switch" lay-text="启用|禁用" id="BOKeep">
+                                <input type="checkbox"  lay-skin="switch" lay-text="启用|禁用" id="BOKeep" lay-filter="BOKeep">
                             </div>
                         </div>
                         <div class="layui-inline OutReduceFromGame">
@@ -443,13 +504,13 @@
                         <div class="layui-inline OutLevel">
                             <label class="layui-form-label">出币电平(SSR)</label>
                             <div class="layui-input-inline">
-                                <input type="checkbox"  lay-skin="switch" lay-text="高电平|低电平" id="OutLevel">
+                                <input type="checkbox"  lay-skin="switch" lay-text="高电平|低电平" id="OutLevel" lay-filter="OutLevel">
                             </div>
                         </div>
                         <div class="layui-inline CountLevel">
                             <label class="layui-form-label">数币电平(MD)</label>
                             <div class="layui-input-inline">
-                                <input type="checkbox" lay-skin="switch" lay-text="高电平|低电平" id="CountLevel">
+                                <input type="checkbox" lay-skin="switch" lay-text="高电平|低电平" id="CountLevel" lay-filter="CountLevel">
                             </div>
                         </div>
                         <div class="layui-inline BOPulse">
@@ -465,7 +526,7 @@
                         <div class="layui-inline ExceptOutTest">
                             <label class="layui-form-label">异常出币检测</label>
                             <div class="layui-input-inline">
-                                <input type="checkbox" checked lay-skin="switch" lay-text="启用|禁用" id="ExceptOutTest">
+                                <input type="checkbox" checked lay-skin="switch" lay-text="启用|禁用" id="ExceptOutTest" lay-filter="ExceptOutTest">
                             </div>
                         </div>
                         <div class="layui-inline ExceptOutSpeed">
@@ -537,10 +598,22 @@
         if(_ids){_ID=_ids}else {
             _ID='';
         }
-             _obj={'ID':_ID,'GameID':$('#StoreIDLow').val(),'GameName':$('#GameNameLow').val(),'GameType':_type,
-            'PushReduceFromCard':$('#PushReduceFromCardLow').val(),'PushLevel':_PushLevel,'LotteryMode':_LotteryMode,
-            'OnlyExitLottery':_OnlyExitLottery,'ReadCat':_ReadCat,'chkCheckGift':_chkCheckGift,'State':_State,
-                 'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'}
+             _obj={'ID':_ID,
+             'GameID':$('#StoreIDLow').val(),
+             'GameName':$('#GameNameLow').val(),
+             'GameType':_type,
+            'PushReduceFromCard':$('#PushReduceFromCardLow').val(),
+            'PushLevel':_PushLevel,'LotteryMode':_LotteryMode,
+            'OnlyExitLottery':_OnlyExitLottery,
+            'ReadCat':_ReadCat,
+            'chkCheckGift':_chkCheckGift,
+            'State':_State,
+            'Area':$('#Area').val(),
+            'ChangeTime':$('#ChangeTime').val(),
+            'Price':$('#Price').val(),
+            'Evaluation':$('#Evaluation').val(),
+             'GameCode':$('#GameCode').val(),
+             'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'}
         let parasJson = JSON.stringify(_obj);
         $.ajax({
             type: "post",
@@ -568,7 +641,8 @@
      if(_ids){_ID=_ids}else {
          _ID='';
         }
-     let _obj={'ID':_ID,'GameID':$('#GameID').val(),
+     let _obj={'ID':_ID,
+               'GameID':$('#GameID').val(),
                'GameName':$('#GameName').val(),
                'GameType':gameType,
          'State':state,
@@ -617,6 +691,13 @@
          'Frequency':$('#Frequency').val(),
          'OnceOutLimit':$('#OnceOutLimit').val(),
          'OncePureOutLimit':$('#OncePureOutLimit').val(),
+
+          'Area':$('#Area1').val(),
+          'ChangeTime':$('#ChangeTime1').val(),
+          'Price':$('#Price1').val(),
+          'Evaluation':$('#Evaluation1').val(),
+          'GameCode':$('#GameCode1').val(),
+
          'userToken':token,
          'signkey':'1f626576304bf5d95b72ece2222e42c3'
      };
@@ -646,54 +727,69 @@
       let table=layui.table;
 
       //简易模式事件监听
-      form.on('select(GameTypeLow)',function(data){_type=data.value;});
-      form.on('switch(PLL)',function(data){if(data.elem.checked==true){_PushLevel=1;}});
-      form.on('switch(LML)',function(data){if(data.elem.checked==true){_LotteryMode=1;}});
-      form.on('switch(OELL)',function(data){if(data.elem.checked==true){_OnlyExitLottery=1;}});
-      form.on('switch(RCL)',function(data){if(data.elem.checked==true){_ReadCat=1;}});
-      form.on('switch(CCL)',function(data){if(data.elem.checked==true){_chkCheckGift=1;}});
-      form.on('switch(StateLow)',function(data){if(data.elem.checked==true){_State=1;}});
+      form.on('select(GameTypeLow)',(data)=>{_type=data.value;});
+      form.on('switch(PLL)',(data)=>{if(data.elem.checked==true){_PushLevel=1;}else{_PushLevel=0;}});
+      form.on('switch(LML)',(data)=>{if(data.elem.checked==true){_LotteryMode=1;}else{_LotteryMode=0;}});
+      form.on('switch(OELL)',(data)=>{if(data.elem.checked==true){_OnlyExitLottery=1;}else{_OnlyExitLottery=0;}});
+      form.on('switch(RCL)',(data)=>{if(data.elem.checked==true){_ReadCat=1;}else{_ReadCat=0;}});
+      form.on('switch(CCL)',(data)=>{if(data.elem.checked==true){_chkCheckGift=1;}else{_chkCheckGift=0;}});
+      form.on('switch(StateLow)',(data)=>{if(data.elem.checked==true){_State=1;}else{_State=0;}});
 
       $('#easySaveBtn').click(function () {
           saveEasy(form,layer);
       });
       //高级模式事件监听
-      form.on('select(GameType)',function(data){gameType=data.value;});
-      form.on('switch(State)',function(data){if(data.elem.checked==true){state=1;}});
-      form.on('switch(ReturnCheck)',function(data){if(data.elem.checked==true){returnCheck=1;}});
-      form.on('switch(OutsideAlertCheck)',function(data){if(data.elem.checked==true){osaCheck=1;}});
-      form.on('switch(ICTicketOperation)',function(data){if(data.elem.checked==true){ICTO=1;}});
-      form.on('switch(NotGiveBack)',function(data){if(data.elem.checked==true){NGB=1;}});
-      form.on('switch(LotteryMode)',function(data){if(data.elem.checked==true){LM=1;}});
-      form.on('switch(OnlyExitLottery)',function(data){if(data.elem.checked==true){OEL=1;}});
-      form.on('switch(chkCheckGift)',function(data){if(data.elem.checked==true){CCG=1;}});
-      form.on('switch(AllowElecPush)',function(data){if(data.elem.checked==true){allowEP=1;}});
-      form.on('switch(AllowDecuplePush)',function(data){if(data.elem.checked==true){allowDP=1;}});
-      form.on('switch(GuardConvertCard)',function(data){if(data.elem.checked==true){GCC=1;}});
-      form.on('switch(ReadCat)',function(data){if(data.elem.checked==true){readCat=1;}});
-      form.on('switch(AllowRealPush)',function(data){if(data.elem.checked==true){allowRealPush=1;}});
-      form.on('switch(BanOccupy)',function(data){if(data.elem.checked==true){BanOccupy=1;}});
-      form.on('switch(StrongGuardConvertCard)',function(data){if(data.elem.checked==true){StrongGCC=1;}});
-      form.on('select(PushStartInterval)',function(data){pushStartInterval=data.value});
-      form.on('select(PushPulse)',function(data){PushPuse=data.value;});
-          form.on('select(PushSpeed)',function(data){pushSpeed=data.value;});
-              form.on('switch(UseSecondPush)',function(data){if(data.elem.checked==true){useSP=1;}});
-              form.on('switch(SecondLevel)',function(data){if(data.elem.checked==true){secondLevel=1;}});
-              form.on('select(SecondStartInterval)',function(data){pushSpeed=data.secondStartInterval;});
-      form.on('select(SecondPulse)',function(data){secondPulse=data.value;});
-      form.on('select(SecondSpeed)',function(data){secondSpeed=data.value;});
-      form.on('switch(NowExit)',function(data){if(data.elem.checked==true){nowExit=1;}});
-      form.on('switch(BOLock)',function(data){if(data.elem.checked==true){bOLock=1;}});
-      form.on('switch(AllowRealOut)',function(data){if(data.elem.checked==true){allowRealOut=1;}});
-      form.on('switch(BOKeep)',function(data){if(data.elem.checked==true){boKeep=1;}});
-      form.on('switch(AllowElecOut)',function(data){if(data.elem.checked==true){allowElect=1;}});
-      form.on('select(OutPulse)',function(data){outPulse=data.value;});
-      form.on('select(OutSpeed)',function(data){outSpeed=data.value;});
-      form.on('switch(OutLevel)',function(data){if(data.elem.checked==true){outLevel=1;}});
-      form.on('switch(CountLevel)',function(data){if(data.elem.checked==true){countLevel=1;}});
-      form.on('select(BOPulse)',function(data){boPulse=data.value;});
-      form.on('switch(ExceptOutTest)',function(data){if(data.elem.checked==true){exceptOutTest=1;}});
-      form.on('select(ExceptOutSpeed)',function(data){exceptOutSpeed=data.value;});
+      form.on('select(GameType)',(data)=>{gameType=data.value;});
+      form.on('switch(State)',(data)=>{console.log(data.elem.checked)
+          if(data.elem.checked==true){state=1;}else{state=0;}});
+      form.on('switch(ReturnCheck)',(data)=>{console.log(data.elem.checked)
+          if(data.elem.checked==true){returnCheck=1;}else{returnCheck=0;}});
+      form.on('switch(OutsideAlertCheck)',(data)=>{console.log(data.elem.checked)
+          if(data.elem.checked==true){osaCheck=1;}else{osaCheck=0;}});
+      form.on('switch(ICTicketOperation)',(data)=>{console.log(data.elem.checked)
+          if(data.elem.checked==true){ICTO=1;}else{ICTO=0;}});
+      form.on('switch(NotGiveBack)',(data)=>{console.log(data.elem.checked)
+          if(data.elem.checked==true){NGB=1;}else{NGB=0;}});
+      form.on('switch(LotteryMode)',(data)=>{console.log(data.elem.checked)
+          if(data.elem.checked==true){LM=1;}else{LM=0;}});
+      form.on('switch(OnlyExitLottery)',(data)=>{console.log(data.elem.checked)
+          if(data.elem.checked==true){OEL=1;}else{OEL=0;}});
+      form.on('switch(chkCheckGift)',(data)=>{console.log(data.elem.checked)
+          if(data.elem.checked==true){CCG=1;}else{CCG=0;}});
+      form.on('switch(AllowElecPush)',(data)=>{console.log(data.elem.checked)
+          if(data.elem.checked==true){allowEP=1;}else{allowEP=0;}});
+      form.on('switch(AllowDecuplePush)',(data)=>{console.log(data.elem.checked)
+          if(data.elem.checked==true){allowDP=1;}else{allowDP=0;}});
+      form.on('switch(GuardConvertCard)',(data)=>{console.log(data.elem.checked)
+          if(data.elem.checked==true){GCC=1;}else{GCC=0;}});
+      form.on('switch(ReadCat)',(data)=>{console.log(data.elem.checked)
+          if(data.elem.checked==true){readCat=1;}else{readCat=0;}});
+      form.on('switch(AllowRealPush)',(data)=>{console.log(data.elem.checked)
+          if(data.elem.checked==true){allowRealPush=1;}else{allowRealPush=0;}});
+      form.on('switch(BanOccupy)',(data)=>{console.log(data.elem.checked)
+          if(data.elem.checked==true){BanOccupy=1;}else{BanOccupy=0;}});
+      form.on('switch(StrongGuardConvertCard)',(data)=>{console.log(data.elem.checked)
+          if(data.elem.checked==true){StrongGCC=1;}else{StrongGCC=0;}});
+      form.on('select(PushStartInterval)',(data)=>{pushStartInterval=data.value});
+      form.on('select(PushPulse)',(data)=>{PushPuse=data.value;});
+      form.on('select(PushSpeed)',(data)=>{pushSpeed=data.value;});
+      form.on('switch(UseSecondPush)',(data)=>{if(data.elem.checked==true){useSP=1;}else{useSP=0;}});
+      form.on('switch(SecondLevel)',(data)=>{if(data.elem.checked==true){secondLevel=1;}else{secondLevel=0;}});
+      form.on('select(SecondStartInterval)',(data)=>{pushSpeed=data.secondStartInterval;});
+      form.on('select(SecondPulse)',(data)=>{secondPulse=data.value;});
+      form.on('select(SecondSpeed)',(data)=>{secondSpeed=data.value;});
+      form.on('switch(NowExit)',(data)=>{if(data.elem.checked==true){nowExit=1;}else{nowExit=0;}});
+      form.on('switch(BOLock)',(data)=>{if(data.elem.checked==true){bOLock=1;}else{bOLock=0;}});
+      form.on('switch(AllowRealOut)',(data)=>{if(data.elem.checked==true){allowRealOut=1;}else{allowRealOut=0;}});
+      form.on('switch(BOKeep)',(data)=>{if(data.elem.checked==true){boKeep=1;}else{boKeep=0;}});
+      form.on('switch(AllowElecOut)',(data)=>{if(data.elem.checked==true){allowElect=1;}else{allowElect=0;}});
+      form.on('select(OutPulse)',(data)=>{outPulse=data.value;});
+      form.on('select(OutSpeed)',(data)=>{outSpeed=data.value;});
+      form.on('switch(OutLevel)',(data)=>{if(data.elem.checked==true){outLevel=1;}else{outLevel=0;}});
+      form.on('switch(CountLevel)',(data)=>{if(data.elem.checked==true){countLevel=1;}else{countLevel=0;}});
+      form.on('select(BOPulse)',(data)=>{boPulse=data.value;});
+      form.on('switch(ExceptOutTest)',(data)=>{if(data.elem.checked==true){exceptOutTest=1;}else{exceptOutTest=0;}});
+      form.on('select(ExceptOutSpeed)',(data)=>{exceptOutSpeed=data.value;});
       $('.toEasyOpen').click(function () {
           xc.openEasy(layer);
       });
@@ -716,7 +812,6 @@
           let tr = obj.tr; //获得当前行 tr 的DOM对象
 
           if(layEvent === 'detail'){ //查看
-              //do somehing
               xc.getGameInfoByid(data.ID,token,'detail');
               $('.saveBox').css('display','none');
           }else if(layEvent==='edit'){
@@ -746,7 +841,7 @@
           }
       })
   });
-  xcActionSystem.prototype.openEasy=function(layer){
+  xcActionSystem.prototype.openEasy=(layer)=>{
       xc.setStorage('easyOrHigh','easy');
       layer.closeAll();
       let index1=layer.open({
@@ -756,7 +851,7 @@
           content:$('#easyType')
       })
   };
-  xcActionSystem.prototype.openHigh=function(layer){
+  xcActionSystem.prototype.openHigh=(layer)=>{
       xc.setStorage('easyOrHigh','high');
       layer.closeAll();
       let index2=layer.open({
@@ -766,7 +861,7 @@
           content:$('#highType')
       })
   };
-  xcActionSystem.prototype.getGameInfoByid=function(gameIds,tokens,act){
+  xcActionSystem.prototype.getGameInfoByid=(gameIds,tokens,act)=>{
       let _obj={'id':gameIds,'userToken':tokens,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
       let url='/XCCloud/GameInfo?action=GetGameInfo';
       let parasJson = JSON.stringify(_obj);
@@ -779,8 +874,9 @@
                   data: { parasJson: parasJson },
                   success: function (data) {
                       data=JSON.parse(data);
-                      if(data.Result_Code==1){
-                          let arr=data.Result_Data;
+                      if(data.result_code==1){
+                          let arr=data.result_data;
+                          console.log(arr);
                           for(var i in arr){
                               $('body').find('div[class="layui-inline '+arr[i].name+'"]').attr('name',arr[i].comment)
                           }
@@ -920,13 +1016,29 @@
                           $('#OnceOutLimit').val(arr[46].value);
                           $('#OncePureOutLimit').val(arr[47].value);
 
+                          $('#GameCode').val(arr[53].value);
+                           $('#GameCode1').val(arr[53].value);
+                          $('#Area').val(arr[54].value);
+                           $('#Area1').val(arr[54].value);
+                          $('#Price').val(arr[57].value);
+                            $('#Price1').val(arr[57].value);
+                          $('#ChangeTime').val(arr[55].value);
+                           $('#ChangeTime1').val(arr[55].value);
+                          $('#Evaluation').val(arr[56].value);
+                             $('#Evaluation1').val(arr[56].value);
+
+
+
+
+
+
                           form.render();
                       }
                   }
               })
       })
   };
-  xcActionSystem.prototype.setsel=function(val,id,form){
+  xcActionSystem.prototype.setsel=(val,id,form)=>{
       let _option=$('#'+id).find('option[value="'+val+'"]');
       if(_option){
           $('#'+id).find('option[value="'+val+'"]').attr('selected',true);
@@ -934,7 +1046,6 @@
       form.render();
   };
      $('body').find($('.layui-form-item>div')).on('mouseenter','label',function () {
-         console.log(11);
          let _this=$(this);
          layui.use('layer',function () {
              let layer=layui.layer;

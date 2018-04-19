@@ -11,7 +11,7 @@ using System.Web.UI.WebControls;
 using XCCloudService.Business.XCCloud;
 using XCCloudService.Common;
 using XCCloudService.Common.Enum;
-using XCCloudService.PayChannel.Common;
+using XCCloudService.OrderPayCallback.Common;
 
 namespace XXCloudService.PayChannel
 {

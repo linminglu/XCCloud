@@ -47,7 +47,7 @@ namespace XCCloudService.SocketService.UDP
             string logTxt = "[接收：" + requestDataJson + "]" + "[响应：" + Utils.SerializeObject(parmasModel) + "]" + System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
             UDPLogHelper.SaveRadarRegisterLog(((IPEndPoint)item.remotePoint).Address.ToString(), ((IPEndPoint)item.remotePoint).Port, parmasModel.StoreId, parmasModel.Segment, parmasModel.Token, bRegister, requestDataJson, parmasModel.ResponseJson, logTxt);
             string message = "[接收：" + requestDataJson + "]" + "[响应：" + parmasModel.ResponseJson + "]";
-            SignalrServerToClient.BroadcastMessageByRadarRegister("雷达注册授权", item.StoreID,item.Segment, message,System.DateTime.Now);
+            XCGameUDPMsgHub.SignalrServerToClient.BroadcastMessageByRadarRegister("雷达注册授权", item.StoreID, item.Segment, message, System.DateTime.Now);
         }
 
         public static void DeviceStateChange(string requestDataJson, UDPClientItemBusiness.ClientItem item)
@@ -74,7 +74,7 @@ namespace XCCloudService.SocketService.UDP
             string logTxt = "[接收：" + requestDataJson + "]" + "[响应：" + Utils.SerializeObject(outModel) + "]" + System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
             UDPLogHelper.SaveDeviceStateChangeLog(((IPEndPoint)item.remotePoint).Address.ToString(), ((IPEndPoint)item.remotePoint).Port, requestDataModel.StoreId, requestDataModel.Token, requestDataModel.MCUId, requestDataModel.Status, bChangeSuccess, requestDataJson, responseOutModel.ResponseJson, logTxt);
             string message = "[接收：" + requestDataJson + "]" + "[响应：" + responseOutModel.ResponseJson + "]";
-            SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.设备状态变更通知), "设备状态变更通知", requestDataModel.Token, message,System.DateTime.Now);
+            XCGameUDPMsgHub.SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.设备状态变更通知), "设备状态变更通知", requestDataModel.Token, message, System.DateTime.Now);
         }
 
         public static void RadarHeat(string requestDataJson, UDPClientItemBusiness.ClientItem item)
@@ -102,7 +102,7 @@ namespace XCCloudService.SocketService.UDP
             UDPLogHelper.SaveRadarHeatLog(((IPEndPoint)item.remotePoint).Address.ToString(), ((IPEndPoint)item.remotePoint).Port, requestDataModel.StoreId, requestDataModel.Segment, requestDataModel.Token, bHeadSuccess, requestDataJson, outDataModel.ResponseJson, logTxt);
             ClientList.UpdateClientHeatTime(requestDataModel.Token);
             string message = "[接收：" + requestDataJson + "]" + "[响应：" + outDataModel.ResponseJson + "]";
-            SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.雷达心跳), "雷达心跳", requestDataModel.Token, message, System.DateTime.Now);
+            XCGameUDPMsgHub.SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.雷达心跳), "雷达心跳", requestDataModel.Token, message, System.DateTime.Now);
         }
 
         public static void DeviceControl(string requestDataJson, UDPClientItemBusiness.ClientItem item)
@@ -129,7 +129,7 @@ namespace XCCloudService.SocketService.UDP
             }
             UDPLogHelper.SaveUDPDeviceControlLog(requestDataModel.StoreId, requestDataModel.OrderId, ((IPEndPoint)item.remotePoint).Address.ToString(), ((IPEndPoint)item.remotePoint).Port, requestDataModel.SN, requestDataJson, responseDataModel.ResponseJson, bSuccess, logTxt);
             string message = "[接收：" + requestDataJson + "]" + "[响应：" + responseDataModel.ResponseJson + "]";
-            SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.雷达心跳), "远程设备控制指令响应", radarToken, message,System.DateTime.Now);
+            XCGameUDPMsgHub.SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.雷达心跳), "远程设备控制指令响应", radarToken, message, System.DateTime.Now);
         }
 
         public static void RadarNotify(string requestDataJson, UDPClientItemBusiness.ClientItem item)
@@ -161,7 +161,7 @@ namespace XCCloudService.SocketService.UDP
             string logTxt = "[接收：" + requestDataJson + "]" + "[响应：" + responseOutModel.ResponseJson + "]" + System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
             UDPLogHelper.SaveUDPRadarNotifyLog(requestDataModel.StoreId, requestDataModel.OrderId, requestDataModel.Token, requestDataModel.SN, int.Parse(requestDataModel.Coins), int.Parse(requestDataModel.Action), requestDataModel.Result, ((IPEndPoint)item.remotePoint).Address.ToString(), ((IPEndPoint)item.remotePoint).Port, requestDataJson, responseOutModel.ResponseJson, bCoinSuccess, logTxt);
             string message = "[接收：" + requestDataJson + "]" + "[响应：" + responseOutModel.ResponseJson + "]";
-            SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.雷达通知指令), "雷达通知指令", requestDataModel.Token, message, System.DateTime.Now);
+            XCGameUDPMsgHub.SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.雷达通知指令), "雷达通知指令", requestDataModel.Token, message, System.DateTime.Now);
             if (rnrModel.Result == "成功" && bCoinSuccess)
             {
                 //出币后向客户端发送成功信息
@@ -239,7 +239,8 @@ namespace XCCloudService.SocketService.UDP
                             answerMsgType = answerMsgType  
                         };
                         MPOrderBusiness.RemoveTCPAnswerOrder(rnrModel.OrderId);
-                        TCPServiceBusiness.Send(taoModel.Mobile, dataObj);                                  
+                        //TCPServiceBusiness.Send(taoModel.Mobile, dataObj);
+                        XCGameClientHub.SignalrServerToClient.Notify(taoModel.Mobile,dataObj);          
                     }
                 }
                 catch (Exception ex)
@@ -313,7 +314,7 @@ namespace XCCloudService.SocketService.UDP
                 answerModel.Status = 1;
             }
             string message = "[接收：" + requestDataJson + "]" + "[响应：" + responseOutModel.ResponseJson + "]";
-            SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.远程门店账目查询指令), "远程门店账目查询指令响应", answerModel.RadarToken, message);
+            XCGameUDPMsgHub.SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.远程门店账目查询指令), "远程门店账目查询指令响应", answerModel.RadarToken, message);
         }
 
 
@@ -338,7 +339,7 @@ namespace XCCloudService.SocketService.UDP
                 answerModel.Result = rnrModel.TDList;
                 //} 
             }
-            SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.远程门店账目应答通知指令), "远程门店账目应答通知指令", answerModel.RadarToken, requestDataJson);
+            XCGameUDPMsgHub.SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.远程门店账目应答通知指令), "远程门店账目应答通知指令", answerModel.RadarToken, requestDataJson);
         }
 
         public static void MemberQueryNotify(string requestDataJson, UDPClientItemBusiness.ClientItem item)
@@ -360,7 +361,7 @@ namespace XCCloudService.SocketService.UDP
             asnwerModel.Status = 1;
             asnwerModel.Result = requestDataModel;
 
-            SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.远程门店会员卡数据请求响应), "远程门店会员卡数据请求响应", asnwerModel.RadarToken, requestDataJson);
+            XCGameUDPMsgHub.SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.远程门店会员卡数据请求响应), "远程门店会员卡数据请求响应", asnwerModel.RadarToken, requestDataJson);
         }
 
         public static void TicketQueryNotify(string requestDataJson, UDPClientItemBusiness.ClientItem item)
@@ -383,7 +384,7 @@ namespace XCCloudService.SocketService.UDP
             asnwerModel.Status = 1;
             asnwerModel.Result = requestDataModel;
 
-            SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.远程门店门票数据请求响应), "远程门店门票数据请求响应", asnwerModel.RadarToken, requestDataJson);
+            XCGameUDPMsgHub.SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.远程门店门票数据请求响应), "远程门店门票数据请求响应", asnwerModel.RadarToken, requestDataJson);
         }
 
         public static void TicketOperateNotify(string requestDataJson, UDPClientItemBusiness.ClientItem item)
@@ -406,7 +407,7 @@ namespace XCCloudService.SocketService.UDP
             asnwerModel.Status = 1;
             asnwerModel.Result = requestDataModel;
 
-            SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.远程门店门票操作请求响应), "远程门店门票操作请求响应", asnwerModel.RadarToken, requestDataJson);
+            XCGameUDPMsgHub.SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.远程门店门票操作请求响应), "远程门店门票操作请求响应", asnwerModel.RadarToken, requestDataJson);
         }
 
         public static void LotteryQueryNotify(string requestDataJson, UDPClientItemBusiness.ClientItem item)
@@ -429,7 +430,7 @@ namespace XCCloudService.SocketService.UDP
             asnwerModel.Status = 1;
             asnwerModel.Result = requestDataModel;
 
-            SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.远程门店彩票数据请求响应), "远程门店彩票数据请求响应", asnwerModel.RadarToken, requestDataJson);
+            XCGameUDPMsgHub.SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.远程门店彩票数据请求响应), "远程门店彩票数据请求响应", asnwerModel.RadarToken, requestDataJson);
         }
 
         public static void LotteryOperateNotify(string requestDataJson, UDPClientItemBusiness.ClientItem item)
@@ -455,7 +456,7 @@ namespace XCCloudService.SocketService.UDP
             asnwerModel.Status = 1;
             asnwerModel.Result = requestDataModel;
 
-            SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.远程门店彩票操作请求响应), "远程门店彩票操作请求响应", asnwerModel.RadarToken, requestDataJson);
+            XCGameUDPMsgHub.SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.远程门店彩票操作请求响应), "远程门店彩票操作请求响应", asnwerModel.RadarToken, requestDataJson);
         }
 
         public static void OutTicketQueryNotify(string requestDataJson, UDPClientItemBusiness.ClientItem item)
@@ -478,7 +479,7 @@ namespace XCCloudService.SocketService.UDP
             asnwerModel.Status = 1;
             asnwerModel.Result = requestDataModel;
 
-            SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.远程门店出票条码数据请求响应), "远程门店出票条码数据请求响应", asnwerModel.RadarToken, requestDataJson);
+            XCGameUDPMsgHub.SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.远程门店出票条码数据请求响应), "远程门店出票条码数据请求响应", asnwerModel.RadarToken, requestDataJson);
         }
 
         public static void OutTicketOperateNotify(string requestDataJson, UDPClientItemBusiness.ClientItem item)
@@ -502,7 +503,7 @@ namespace XCCloudService.SocketService.UDP
             asnwerModel.Status = 1;
             asnwerModel.Result = requestDataModel;
 
-            SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.远程门店出票条码操作请求响应), "远程门店出票条码操作请求响应", asnwerModel.RadarToken, requestDataJson);
+            XCGameUDPMsgHub.SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.远程门店出票条码操作请求响应), "远程门店出票条码操作请求响应", asnwerModel.RadarToken, requestDataJson);
         }
 
         public static void ParamQueryNotify(string requestDataJson, UDPClientItemBusiness.ClientItem item)
@@ -523,7 +524,7 @@ namespace XCCloudService.SocketService.UDP
             asnwerModel.Status = 1;
             asnwerModel.Result = requestDataModel;
 
-            SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.远程门店运行参数数据请求响应), "远程门店运行参数数据请求响应", asnwerModel.RadarToken, requestDataJson);
+            XCGameUDPMsgHub.SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.远程门店运行参数数据请求响应), "远程门店运行参数数据请求响应", asnwerModel.RadarToken, requestDataJson);
         }
 
         public static void UserPhoneQueryNotify(string requestDataJson, UDPClientItemBusiness.ClientItem item)
@@ -544,7 +545,7 @@ namespace XCCloudService.SocketService.UDP
             asnwerModel.Status = 1;
             asnwerModel.Result = requestDataModel;
 
-            SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.远程门店运行参数数据请求响应), "远程门店运行参数数据请求响应", asnwerModel.RadarToken, requestDataJson);
+            XCGameUDPMsgHub.SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.远程门店运行参数数据请求响应), "远程门店运行参数数据请求响应", asnwerModel.RadarToken, requestDataJson);
         }
 
 
@@ -566,7 +567,7 @@ namespace XCCloudService.SocketService.UDP
             asnwerModel.Status = 1;
             asnwerModel.Result = requestDataModel;
 
-            SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.远程门店会员转账操作请求响应), "远程门店会员转账操作请求响应", asnwerModel.RadarToken, requestDataJson);
+            XCGameUDPMsgHub.SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.远程门店会员转账操作请求响应), "远程门店会员转账操作请求响应", asnwerModel.RadarToken, requestDataJson);
         }
 
         public static void CattleMemberCardQueryNotify(string requestDataJson, UDPClientItemBusiness.ClientItem item)
@@ -587,7 +588,7 @@ namespace XCCloudService.SocketService.UDP
             asnwerModel.Status = 1;
             asnwerModel.Result = requestDataModel;
 
-            SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.黄牛卡信息查询请求响应), "黄牛卡信息查询请求响应", asnwerModel.RadarToken, requestDataJson);
+            XCGameUDPMsgHub.SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.黄牛卡信息查询请求响应), "黄牛卡信息查询请求响应", asnwerModel.RadarToken, requestDataJson);
         }
 
     }

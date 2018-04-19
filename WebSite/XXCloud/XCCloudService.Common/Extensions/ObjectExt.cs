@@ -20,5 +20,33 @@ namespace XCCloudService.Common.Extensions
         {
             return ((o == null) || (((o.GetType() == typeof(string)) && string.IsNullOrEmpty(o.ToString().Trim())) || (o.GetType() == typeof(DBNull))));
         }
+        /// <summary>
+        /// 将泛型转换为int型数字（失败返回defaultvalue）
+        /// </summary>
+        /// <typeparam name="T">转换前的类型</typeparam>
+        /// <param name="key">转换前的值</param>
+        /// <param name="defaultvalue">转换失败或无法转换时的默认值</param>
+        /// <returns></returns>
+        public static int Toint<T>(T key, int defaultvalue)
+        {
+            if (key.IsNull()) return defaultvalue;
+            if (int.TryParse(key.ToString(), out defaultvalue))
+                return defaultvalue;
+            return defaultvalue;
+        }
+        /// <summary>
+        /// 将泛型转换为int型数字（失败返回null）
+        /// </summary>
+        /// <typeparam name="T">转换前的类型</typeparam>
+        /// <param name="key">转换前的值</param>
+        /// <returns></returns>
+        public static int? Toint<T>(T key)
+        {
+            if (key.IsNull()) return null;
+            var id = 0;
+            if (int.TryParse(key.ToString(), out id))
+                return id;
+            return null;
+        }
     }
 }

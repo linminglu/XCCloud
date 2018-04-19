@@ -1979,6 +1979,12 @@ namespace XCCloudService.Common
 
         #endregion
 
+        #region "时间处理"
+        public static string ConvertFromDatetime(DateTime? datetime)
+        {
+            return datetime != null ? datetime.Value.ToString("yyyy-MM-dd HH:mm:ss") : string.Empty;
+        }
+        #endregion
 
         #region "时间戳"
 

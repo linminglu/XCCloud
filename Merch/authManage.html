@@ -62,6 +62,34 @@
 
                     </ul>
                 </div>
+                <!--//-->
+                <div class="weui-cell weui-cell_switch">
+                    <div class="weui-cell__bd">切换商户</div>
+                    <div class="weui-cell__ft">
+                        <label for="switchMerch" class="weui-switch-cp">
+                            <input id="switchMerch" class="weui-switch-cp__input" type="checkbox" checked="checked">
+                            <div class="weui-switch-cp__box"></div>
+                        </label>
+                    </div>
+                </div>
+                <div class="weui-cell weui-cell_switch">
+                    <div class="weui-cell__bd">切换门店</div>
+                    <div class="weui-cell__ft">
+                        <label for="switchStore" class="weui-switch-cp">
+                            <input id="switchStore" class="weui-switch-cp__input" type="checkbox" checked="checked">
+                            <div class="weui-switch-cp__box"></div>
+                        </label>
+                    </div>
+                </div>
+                <div class="weui-cell weui-cell_switch">
+                    <div class="weui-cell__bd">切换吧台</div>
+                    <div class="weui-cell__ft">
+                        <label for="switchWorkstation" class="weui-switch-cp">
+                            <input id="switchWorkstation" class="weui-switch-cp__input" type="checkbox" checked="checked">
+                            <div class="weui-switch-cp__box"></div>
+                        </label>
+                    </div>
+                </div>
             </div>
             <!--提交-->
             <div class="btn_box">
@@ -172,6 +200,37 @@
             do_userGrant();
             function cancelRefuse() {
                 $('.refuseReason').stop(false, true).animate({left: '+=+100%'}, "quick");
+            }
+            function passAudit() {
+                let obj={'userGroup':[],
+                    'userGrant':[],
+                    'userType':'4',
+                    'switchmerch':$('#switchMerch').prop('checked')==true?1:0,
+                    'switchstore':$('#switchStore').prop('checked')==true?1:0,
+                    'switchworkstation':$('#switchWorkstation').prop('checked')==true?1:0,
+                    'state':1,
+                    'workId':window.localStorage.getItem('workIds'),
+                    'sysId':0,
+                    'versionNo':'0.0.0.1'
+                };
+                console.log(obj);
+                var parasJson = JSON.stringify(obj);
+                $.ajax({
+                    type: "post",
+                    url: '/wx/Users?action=SaveUserInfo',
+                    contentType: "application/json; charset=utf-8",
+                    data: { parasJson: parasJson },
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        console.log(data);
+                        if (data.result_code==1){
+                            alert('succed')
+                        }else {alert('err')}
+                    },
+                    error: function (error) {
+                        console.log(1);  //这个地方也用到了
+                    }
+                });
             }
         </script>
 </body>

@@ -5,7 +5,7 @@ using System.Web;
 using System.IO;
 using System.Text;
 
-namespace XCCloudService.PayChannel.Common
+namespace XCCloudService.OrderPayCallback.Common
 {
     /// <summary>
     ///LogHelper 的摘要说明

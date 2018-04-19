@@ -58,27 +58,14 @@
             </form>
             <!-- 扫码登录 -->
             <form action="" class="layui-hide login-code">
-                <!--<div class="regTitle">手机扫码，安全登录</div>
-                <div class="code-model"></div>-->
                 <div class="code-msg">
                     <div class="msg-ok">
                         <div id="codeBox">
-                           <!--<img src="/qr/c" alt="">-->
+
                         </div>
-                        <!--<iframe src="/qr.aspx" style="margin:-10px -50px;" width="400" height="345" id="iframeCode"-->
-                                <!--frameborder="no" border="0" marginwidth="0" marginheight="0" scrolling="no" allowtransparency="yes"></iframe>-->
-                        <!--<h6>扫码成功！</h6>-->
-                        <!--<p>请在手机上确认登录</p>-->
-                        <!--<div class="links">-->
-                            <!--<a href="#">返回二维码登录</a>-->
-                        <!--</div>-->
                     </div>
                 </div>
-                <!--<div class="login-links">-->
-                    <!--<a href="#">密码登录</a><a href="#">免费登录</a>-->
-                <!--</div>-->
             </form>
-
         </div>
     </div>
     <script src="js/jquery-1.8.3-min.js"></script>
@@ -86,20 +73,15 @@
     <script src="js/manchartSystem.js"></script>
 </div>
 <script>
-
+    window.localStorage.clear();
     var obj = new WxLogin({
         id:"codeBox",
         appid: "wx643b076d171ecb3c",
         scope: "snsapi_login",
         redirect_uri: "http://test.4000051530.com/WeiXin/Login.aspx",
-        // state: "<{$state}>",
         style: "black",
         href: "https://mp.4000051530.com/merch/css/wxCode.css"
     });
-
-
-
-    var clickCounts=0,ifshow=0;
     $("body").keydown(function() {
         if (event.keyCode == "13") {//keyCode=13是回车键
             login_merch();

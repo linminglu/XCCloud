@@ -17,12 +17,13 @@ namespace XCCloudService.Model.XCCloud
         public int FoodID { get; set; }
         public string FoodName { get; set; }
         public string MerchID { get; set; }
-        public string StoreID { get; set; }
         public string Note { get; set; }
         public string ImageURL { get; set; }
         public Nullable<int> FoodType { get; set; }
-        public Nullable<int> RechargeType { get; set; }
         public Nullable<int> AllowInternet { get; set; }
+        public string MeituanID { get; set; }
+        public string DianpinID { get; set; }
+        public string KoubeiID { get; set; }
         public Nullable<int> AllowPrint { get; set; }
         public Nullable<int> FoodState { get; set; }
         public Nullable<int> ForeAuthorize { get; set; }
@@ -30,11 +31,6 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<System.DateTime> EndTime { get; set; }
         public Nullable<decimal> ClientPrice { get; set; }
         public Nullable<decimal> MemberPrice { get; set; }
-        public Nullable<int> AllowCoin { get; set; }
-        public Nullable<int> Coins { get; set; }
-        public Nullable<int> AllowPoint { get; set; }
-        public Nullable<int> Points { get; set; }
-        public Nullable<int> AllowLottery { get; set; }
-        public Nullable<int> Lottery { get; set; }
+        public Nullable<int> RenewDays { get; set; }
     }
 }

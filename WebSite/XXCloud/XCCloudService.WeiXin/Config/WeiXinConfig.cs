@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,7 +18,13 @@ namespace XCCloudService.WeiXin.Common
         //微信https协议HostUrl
         public static string WeiXinHttpsHostUrl = "https://" + System.Configuration.ConfigurationManager.AppSettings["WeiXinHost"].ToString();
         //微信开发者ID
-        public static string AppId = System.Configuration.ConfigurationManager.AppSettings["AppId"].ToString();
+        public static string AppId
+        {
+            get
+            {
+                return ConfigurationManager.AppSettings["AppId"].ToString();
+            }
+        }
         //开发者密码
         public static string AppSecret = System.Configuration.ConfigurationManager.AppSettings["AppSecret"].ToString();
 
@@ -63,5 +70,16 @@ namespace XCCloudService.WeiXin.Common
 
         //云平台https协议HostUrl
         public static string CloudHttpsHostUrl = "https://" + System.Configuration.ConfigurationManager.AppSettings["CloudHost"].ToString();
+
+        /// <summary>
+        /// 微信JSSDK配置url
+        /// </summary>
+        public static string WxJSSDK_Url
+        {
+            get
+            {
+                return ConfigurationManager.AppSettings["WxJSSDK_Url"].ToString();
+            }
+        }
     }
 }

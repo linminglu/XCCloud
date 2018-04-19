@@ -29,5 +29,25 @@ namespace XCCloudService.Business.WeiXin
                 return true;
             }
         }
+
+        public static void AddJsapiTicket(string ticket, int expires)
+        {
+            WeiXinAccessTokenCache.Add(CommonConfig.WxPubApiTicket, ticket, expires);
+        }
+
+        public static bool GetJsapiTicket(out string ticket)
+        {
+            ticket = string.Empty;
+            object obj = WeiXinAccessTokenCache.GetValue(CommonConfig.WxPubApiTicket);
+            if (obj == null)
+            {
+                return false;
+            }
+            else
+            {
+                ticket = obj.ToString();
+                return true;
+            }
+        }
     }
 }

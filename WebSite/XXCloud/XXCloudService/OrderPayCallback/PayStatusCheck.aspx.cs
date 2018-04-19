@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using XCCloudService.PayChannel.Common;
+using XXCloudService.OrderPayCallback.Common;
 
 namespace XXCloudService.PayChannel
 {
@@ -12,12 +12,12 @@ namespace XXCloudService.PayChannel
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            //string tradeNum = Request["tradenum"];
-            //string money = "";
-            //if (PayList.GetItem(tradeNum, out money))
-            //    Response.Write("success:" + tradeNum + ":" + money);
-            //else
-            //    Response.Write("fail");
+            string tradeNum = Request["tradenum"];
+            string money = "";
+            if (PayList.GetItem(tradeNum, out money))
+                Response.Write("success:" + tradeNum + ":" + money);
+            else
+                Response.Write("fail");
         }
     }
 }

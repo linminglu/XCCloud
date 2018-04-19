@@ -22,7 +22,7 @@ namespace XXCloudService.Api.XCCloud
     /// Gift 的摘要说明
     /// </summary>
     public class DeviceInfo : ApiBase
-    {
+    {        
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object QueryReloadGifts(Dictionary<string, object> dicParas)
         {

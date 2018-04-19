@@ -1,6 +1,40 @@
 ﻿//定义公用方法
 var xcActionSystem=xcActionSystem || {};
 xcActionSystem.prototype= {
+    //登录
+    login:function(){
+        window.localStorage.clear();
+        var username=$('#username_login').val();
+        var password=$('#password_login').val();
+        var obj={'userName':username,'password':password,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+        var url='/XCCloud/Login?action=CheckUser';
+        var parasJson = JSON.stringify(obj);
+        if(username!=''&&password!=''){
+            $.ajax({
+                type: "post",
+                url: url,
+                contentType: "application/json; charset=utf-8",
+                data: { parasJson: parasJson },
+                success: function (data) {
+                    data=JSON.parse(data);
+                    console.log(data);
+                    if(data.result_code==1){
+                        setStorage('logMsg',JSON.stringify(data.result_data));
+                        setStorage('token',data.result_data.token);
+                        // setStorage('logType',data.result_data.logType);
+                        // setStorage('merchTag',data.result_data.merchTag);
+                        // setStorage('userType',data.result_data.userType);
+                        setStorage('usernames',username);
+                        if(data.result_data.logType==2){
+                            window.location.href='indexStore.html?'+(Date.parse(new Date())/1000);
+                        }else {
+                            window.location.href='index1.html?'+(Date.parse(new Date())/1000);
+                        }
+                    }
+                }
+            })
+        }
+},
     initLeftMenu: function (layuiFilterName) {
         layui.use('element', function () {
             var element = layui.element;
@@ -96,41 +130,38 @@ xcActionSystem.prototype= {
         }
     },
     getInitData: function (parm) {
-        var tableData = [], obj = parm.obj, url = parm.url;
-        $.ajax({
-            type: "post", url: url,
-            contentType: "application/json; charset=utf-8",
-            data: {parasJson: JSON.stringify(obj)},
-            success: function (data) {
-                data = JSON.parse(data);
-                console.log(data);
-                if (data.Result_Code == "1"||data.result_code==1) {
-                    tableData = data.Result_Data||data.result_data;
-                    layui.use(['table', 'layer'], function () {
+         layui.use(['table', 'layer'], function () {
                         var table = layui.table;
                         var layer = layui.layer;
                         var index = layer.load(0, {shade: false});
-                            layer.close(index);
-                        table.render({
-                            elem: parm.elem
-                            , data: tableData,
-                            height:parm.height
-                            , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
-                            , cols: [parm.cols]
-                            , page: {page: true, limits: [10, 15, 20, 30, 50, 100]}
-                            , limit: 10
-                        });
+                        var tableData = [], obj = parm.obj, url = parm.url;
+                        $.ajax({
+                            type: "post", url: url,
+                            contentType: "application/json; charset=utf-8",
+                            data: {parasJson: JSON.stringify(obj)},
+                            success: function (data) {
+                                data = JSON.parse(data);
+                                console.log(data);
+                                if (data.Result_Code == "1"||data.result_code==1) {
+                                    tableData = data.Result_Data||data.result_data;
+
+                                    table.render({
+                                            elem: parm.elem
+                                            , data: tableData,
+                                            height:parm.height
+                                            , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+                                            , cols: [parm.cols]
+                                            , page: {page: true, limits: [10, 15, 20, 30, 50, 100]}
+                                            , limit: 10
+                                        });
+                                    layer.close(index);
+                                }  else {
+                                 layer.msg(data.result_msg);
+
+                                }
+                            }
+                        })
                     });
-                }  else {
-                    // alert("添加失败，请核对后再次提交！");
-                    layui.use(['layer'], function () {
-                        var layer = layui.layer;
-                        var $ = layui.jquery;
-                        layer.msg(data.result_msg);
-                    });
-                }
-            }
-        })
     },
     closeAll: function (layer) {
         layer.closeAll();

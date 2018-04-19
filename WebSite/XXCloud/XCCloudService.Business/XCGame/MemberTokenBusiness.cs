@@ -60,6 +60,24 @@ namespace XCCloudService.Business.XCGame
         }
 
 
+        public static bool ExistToken(string token)
+        {
+            return XCGameMemberTokenCache.ExistToken(token);
+        }
+
+        public static bool ExistToken(string token,ref XCGameMemberTokenModel memberTokenModel)
+        {
+            if (XCGameMemberTokenCache.ExistToken(token))
+            {
+                memberTokenModel = GetMemberTokenModel(token);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         public static bool GetMemberTokenModel(string storeId,string mobile,out string token)
         {
             token = string.Empty;

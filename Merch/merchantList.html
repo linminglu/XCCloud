@@ -15,10 +15,10 @@
 <body> 
 	<div class="" style="padding: 5px">
 		<div class="layui-row">
-			<blockquote class="demoTable layui-elem-quote" style="text-align: right;padding-right: 100px;">
+			<div class="demoTable" style="text-align: right;">
 				<button class="layui-btn layui-btn_serch" data-type="reload" id="shBtn"><i class="layui-icon">&#xe615;</i>高级搜索</button>
 				<button class="layui-btn layui-btn-normal addbtn" onclick="getAddMerchInfo()"><i class="layui-icon">&#xe654;</i>新增</button>
-			</blockquote>
+			</div>
 			<div class="layui-col-md12">
 				<table class="layui-hide" id="merchantListTable"  lay-filter="merchList"></table>
 				<table class="layui-hide" id="merchantListTable1"  lay-filter="merchList"></table>
@@ -493,20 +493,36 @@
 
                 } else if (layEvent === 'del') { //删除
                     layer.confirm('真的删除行么', function (index) {
-                        obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
-                        layer.close(index);
                         //向服务端发送删除指令,删除数据库中此条数据
 						var merchId=data.MerchID;
 						var obj1={"merchId":merchId,"createUserId":"B4201030001","userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
-                        var parm={'obj':obj1,'url':'/XCCloud/Merch?action=DelMerch'};
-                        deleteTableList(parm);
+                        var url = '/XCCloud/Merch?action=DelMerch';
+                        var parasJson = JSON.stringify(obj1);
+                        $.ajax({
+                            type: "post",
+                            url: url,
+                            contentType: "application/json; charset=utf-8",
+                            data: {parasJson: parasJson},
+                            success: function (data) {
+                                data = JSON.parse(data);
+                                    var index = layer.load(1, {shade: [0.1,'#fff']});
+                                    if(data.result_code==1){
+                                        setTimeout(function () {
+                                            layer.close(index);
+                                            layer.msg("成功删除！")
+                                            obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
+                                        },1000);
+                                    }else {
+                                        setTimeout(function () {
+                                            layer.close(index);
+                                            layer.msg("操作失败！")
+                                        },1000);
+                                    }
+                            }
+                        })
                     });
                 } else if (layEvent === 'edit') { //编辑
                     modefyMerchInfo(merchIds);
-                    obj.update({
-                        username: '123'
-                        , title: 'xxx'
-                    });
                 }
             });
             table.on('tool(merchStoreList)', function (obj) { //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"

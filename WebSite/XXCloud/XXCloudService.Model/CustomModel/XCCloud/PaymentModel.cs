@@ -42,4 +42,10 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         public string package { get; set; }
         public string paySign { get; set; }
     }
+
+    public class AliCreateOrderResModel
+    {
+        public string tradeNO { get; set; }
+        public string orderId { get; set; }
+    }
 }

@@ -3,82 +3,83 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Vue-ydui Demo</title>
-    <meta name="divport" content="width=device-width, initial-scale=1">
+    <title>莘拍档</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- 引入样式 -->
     <link rel="stylesheet" href="css/ydui.rem.css">
     <!-- 引入rem自适应类库 -->
     <script src="js/ydui.flexible.js"></script>
     <style>
-        body{
-            height: 100%;
-            width: 100%;
-        }
-        /*.account-password-container {*/
-            /*display: flex;*/
-            /*flex-direction: row;*/
-            /*width: 100%;*/
-            /*height: 100rpx;*/
-            /*align-items: center;*/
-            /*border-bottom: 1rpx solid #eee;*/
-        /*}*/
 
+        .Currency{width: 70%;margin: 0 15%;}
+        .device{display: flex;width: 100%; background-color: #eee;}
+        .device img{width: 2rem;height: 2.4rem;}
+        .memberCard{background: #a82e8c;border-radius: 0.4rem;padding: 0.2rem 0;width: 100%;margin-top: 0.3rem;}
+        .memCardTop{height: 0.3rem;text-align: right;font-size: 0.2rem;padding-right: 0.6rem;padding-bottom:0.1rem;}
+        .memCardTopBg{background: #000;height: 0.6rem;margin-top: 0.1rem;color: gold;text-align: left;padding-left: 0.8rem;line-height: 0.6rem;}
+        .memCardMid{padding: 0 0.3rem;}
+        .memLeft{width: 50%;display: inline-block;font-size: 0.3rem;;}
+        .memberTextSty{display: block;width: 100%;padding: 0.05rem 0;color: #FFFACD;}
+        .textS{width: 1.6rem;text-align: right;display: inline-block}
+        .memRight{width: 48%;display: inline-block;font-size: 0.3rem;}
+        .memRight img{width: 1.5rem;height: 0.7rem;margin-top: 0.2rem;margin-left: 0.7rem;}
 
-        /*.Verification {*/
-            /*padding-left: 10rpx;width: 500rpx;height: 70rpx;*/
-            /*font-size: 32rpx;*/
-        /*}*/
+        .show{display: block;}
 
-        /*.login-button {*/
-            /*height: 100rpx;*/
-            /*background-color: #fb7c58;*/
-            /*font-size: 34rpx;*/
-            /*margin: 20rpx 50rpx;*/
-            /*color: #fff;*/
-            /*text-align: center;*/
-        /*}*/
-        /*.Invisibility{font-size: 28rpx;width: 330rpx;padding-left:20rpx;}*/
-        /*.Verificationimg{width: 100rpx;}*/
-        /*.hidden{display: none;}*/
+        .Save-money{margin-top: 0.2rem;}
+        .memberTr{height: 0.6rem;text-align: left;padding-left: 0.5rem;margin-top: 20px;}
+        .memberColor{padding-left: 0.1rem;color: #ff3030;}
+
     </style>
 </head>
 <body>
-
 <div id="app">
-    <yd-cell-group>
-        <yd-cell-item>
-            <img slot="icon" src="images/account.png">
-            <input slot="right" type="number" placeholder="请输入手机号" v-model="account" v-on:blur="inputPrompt">
-        </yd-cell-item>
-        <yd-cell-item>
-            <div slot="left" >
-                <img slot="icon" src="images/note.png">
-                <input type="text" placeholder="请输入验证码" v-model="password">
-            </div>
-            <div slot="right" >
-                <img slot="icon" :src="Verification">
-                <span @click="verificationChange">点击刷新</span>
-            </div>
-        </yd-cell-item>
+    <div class='device'>
+        <img src="images/device.png" alt="设备">
         <div>
-            <yd-button size="large" type="hollow" @click.native="login">hollow</yd-button>
+            <p><span>店名：</span>{{memberText1}}</p>
+            <p><span>设备状态：</span>{{memberText2}}</p>
+            <p><span>设备类型：</span>{{memberText3}}</p>
         </div>
-    </yd-cell-group>
-    <yd-cell-group>
-        <yd-cell-item>
-            <yd-icon slot="icon" name="phone3" size=".45rem"></yd-icon>
-            <input type="text" slot="right" placeholder="请输入短信验证码" v-model="smsCode">
-            <yd-sendcode slot="right"
-                         v-model="start1"
-                         second="30"
-                         @click.native="sendCode1"
-                         type="warning"
-            ></yd-sendcode>
-
-
-        </yd-cell-item>
-    </yd-cell-group>
-    <yd-button size="large" type="primary" @click.native="register">注册</yd-button>
+    </div>
+    <div class='memberCard'>
+        <div class='memCardTop'>到期日期：{{memberText4}}</div>
+        <div class='memCardTopBg'>卡号：{{memberText5}}</div>
+        <div class='memCardMid'>
+            <div class="memLeft">
+                <p><span class='textS'>币余额：</span>{{memberText73}}</p>
+                <p><span class='textS'>彩票：</span>{{memberText71}}</p>
+                <p><span class='textS'>积分：</span>{{memberText72}}</p>
+                <p><span class='textS'>押金：</span>{{memberText74}}</p>
+            </div>
+            <div class='memRight'>
+                <p><span class='textS'>级别：</span>{{memberText75}}</p>
+                <p><span class='textS'>状态：</span>{{memberText76}}</p>
+                <img src="images/vip.png" alt="vip">
+            </div>
+        </div>
+    </div>
+    <div class='Currency' v-if="currencyShow">
+        <!--<input class='Currency-input' type="number" maxlength='6' value="{{inputTxt}}" onBlur="CurrencyInput" placeholder="输入要提取的数量"/>-->
+        <!--<input password type="number" onInput="Currencypassd" placeholder="请输入密码"/>-->
+        <!--<button formType="submit" type="primary" class='Save-money' disabled="{{disabled}}" >{{memberText8}}</button>-->
+        <!--<button type="primary" class='Save-money' disabled="{{disabled}}" catchTap="buyCoins">购币</button>-->
+    </div>
+    <div class='saveM' v-if="saveShow">
+        <!--<button formType="submit" type="primary" class='Save-money' disabled="{{disabled}}" >提币</button>-->
+    </div>
+    <yd-button size="large" type="warning" @click.native="show2 = true">玩的不尽兴，马上充值</yd-button>
+    <yd-popup v-model="show2" position="bottom" height="60%">
+        <yd-button type="warning" style="margin: 30px;" @click.native="show2 = false">Close Bottom Popup</yd-button>
+        <div style="height: 3rem; overflow-y: auto; position: relative;">
+            <yd-scrolltab>
+                <yd-scrolltab-panel v-for="(item,index) in list" :key="item.foodID" label="" height="1rem">
+                    <div>{{item.coinQuantity}}币{{item.sendCoinQuantity}}￥{{item.foodPrice}}</div>
+                    <yd-button size="large" type="primary">立即充值</yd-button>
+                </yd-scrolltab-panel>
+            </yd-scrolltab>
+        </div>
+    </yd-popup>
 </div>
 
 <!-- 引入 Vue -->
@@ -87,106 +88,44 @@
 <!-- 引入组件库 -->
 <script src="js/ydui.rem.js"></script>
 <script src="js/axios.min.js"></script>
+<script src="https://gw.alipayobjects.com/as/g/h5-lib/alipayjsapi/3.1.0/alipayjsapi.min.js"></script>
 <script>
-    var geteway = "https://mp.4000051530.com";
-    var url_ImgCode ="/xcgamemana/token?action=checkImgCode"; //图形码验证接口
-    var url_sendSMSCode ="/xcgamemana/token?action=sendSMSCode";//发送验证码接口
-    var url_getMobileToken = "/xcgamemana/token?action=getMobileToken";//获取手机令牌接口
+    var sysId = 0; //调用方应用Id
+    var versionNo= "0.89"; //版本号
+    var url_getDataOrder = '/XCGameMana/DataOrder?action=getDataOrder';//获取分页订单列表
     var htmlfnc = new Vue({
         el: '#app',
         data:{
-            Verification: geteway + "/ServicePage/ValidateImg.aspx? t =" + new Date().getTime(),
-            account: '',
-            password: '',
-            smsCode:"",
-            start1:false
+            show2: false,
+            mobileToken:'',
+            memberText71:"",
+            memberText72:"",
+            memberText73:"",
+            memberText74:"",
+            memberText75:"",
+            memberText76:"",
+            memberText1:"",
+            memberText2:"",
+            memberText3:"",
+            memberText4:"",
+            memberText5:"",
+            currencyShow:false,
+            saveShow:false,
+            list:[]
         },
         mounted: function () {
-            this.Load();
+
         },
         methods: {
-            toastSuccess: function() {
-                this.$dialog.toast({
-                    mes: '保存成功',
-                    timeout: 1500,
-                    icon: 'success'
+            Load:function () {
+            },
+            btnClick:function () {
+                AlipayJSBridge.call('scan', {
+                    type: 'qr',
+                    actionType: 'scan'
+                }, function(result) {
+                    alert(JSON.stringify(result));
                 });
-            },
-            verificationChange:function(){
-                this.Verification = geteway + "/ServicePage/ValidateImg.aspx? t =" + new Date().getTime()
-            },
-            inputPrompt:function () {
-                var mobile =this.account;
-                var myreg = /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1})|(17[0-9]{1}))+\d{8})$/;
-                if (!myreg.test(mobile) || mobile.length == 0 || mobile.length != 11) {
-                    this.$dialog.toast({
-                        mes: '请输入正确手机号！',
-                        timeout: 1500,
-                        icon: 'success'
-                    });
-                }
-            },
-            login:function () {
-                var that =this;
-                var obj={"sysId": "0","versionNo": "0.0.0.1",mobile:that.account,code:that.password};
-                obj =JSON.stringify(obj);
-//                this.$dialog.loading.open();
-                console.log(that.account+"/"+that.password);
-                axios.post(url_ImgCode, obj).then(function (res) {
-//                    that.$dialog.loading.close();
-                    console.log(res.data);
-                    that.msgPrompt(res.data);
-                    if (res.data.result_code === '1') {
-
-                    }
-                }).catch(function (err) {
-//                    that.$dialog.loading.close();
-                    console.log(err);
-                })
-            },
-            sendCode1:function () {
-                this.$dialog.loading.open('发送中...');
-                this.start1 = true;
-                var that=this;
-                console.log(that.account+"/"+that.password);
-                var obj={"sysId": "0","versionNo": "0.0.0.1",mobile:that.account,code:that.password};
-                axios.post(url_sendSMSCode, obj).then(function (res) {
-                    console.log(res.data);
-                    that.$dialog.loading.close();
-                    if (res.data.result_code === '1') {
-                        this.$dialog.toast({
-                            mes: '已发送',
-                            icon: 'success',
-                            timeout: 1500
-                        });
-                    }
-                }).catch(function (err) {
-                    console.log(err);
-//                    this.$dialog.loading.close();
-//                    this.$dialog.toast({
-//                        mes: "请求失败!",
-//                        timeout: 1500,
-//                        icon: 'error'
-//                    });
-                });
-            },
-            register:function () {
-                var that =this;
-                this.$dialog.loading.open('');
-                var obj={"sysId": "0","versionNo": "0.0.0.1",mobile: that.account,smsCode: that.smsCode};
-                axios.post(url_getMobileToken, obj).then(function (res) {
-                    this.$dialog.loading.close();
-                    console.log(res.data);
-                    if (res.data.result_code === '1') {
-                    }
-                }).catch(function (err) {
-                    this.$dialog.loading.close();
-                    console.log(err);
-                })
-
-            },
-            Load: function () {
-
             },
             msgPrompt:function (res) {
                 if(res.return_code == 0){
@@ -205,11 +144,6 @@
             }
         }
     });
-
-
-
-
-
 </script>
 </body>
 </html>

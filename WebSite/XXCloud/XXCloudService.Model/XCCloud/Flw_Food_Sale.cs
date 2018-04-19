@@ -18,6 +18,7 @@ namespace XCCloudService.Model.XCCloud
         public string StoreID { get; set; }
         public Nullable<int> FlowType { get; set; }
         public Nullable<int> FoodID { get; set; }
+        public Nullable<int> SaleCount { get; set; }
         public Nullable<int> Point { get; set; }
         public Nullable<int> UseCoin { get; set; }
         public Nullable<int> CoinBalance { get; set; }
@@ -33,6 +34,5 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<decimal> TotalMoney { get; set; }
         public string Note { get; set; }
         public Nullable<int> BuyFoodType { get; set; }
-        public Nullable<int> SaleCount { get; set; }
     }
 }

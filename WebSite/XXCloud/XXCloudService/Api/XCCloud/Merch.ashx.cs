@@ -380,6 +380,9 @@ namespace XXCloudService.Api.XCCloud
                         base_UserInfo.OpenID = openId;
                         base_UserInfo.LogPassword = merchPassword;
                         base_UserInfo.UserType = Convert.ToInt32(merchType);
+                        base_UserInfo.SwitchMerch = 1;
+                        base_UserInfo.SwitchStore = 1;
+                        base_UserInfo.SwitchWorkstation = 1;
                         if (!base_UserInfoService.Add(base_UserInfo))
                         {
                             errMsg = "添加商户负责人信息失败";

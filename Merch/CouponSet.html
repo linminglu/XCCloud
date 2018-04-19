@@ -99,13 +99,13 @@
             <div class="layui-inline">
                 <label class="layui-form-label">本券类型</label>
                 <div class="layui-input-inline" id="goodIsAll">
-                    <input type="checkbox" name="switch" lay-skin="switch" lay-text="电子券|实物券" id='CouponKind' lay-filter="CouponKind">
+                    <input type="checkbox" name="switch" lay-skin="switch" lay-text="实物券|电子" id='entryCouponFlag' lay-filter="entryCouponFlag">
                 </div>
             </div>
             <div class="layui-inline">
                 <label class="layui-form-label">发行数量</label>
                 <div class="layui-input-inline">
-                    <input type="text" class="layui-input" lay-verify="number" id="CouponCount">
+                    <input type="text" class="layui-input" lay-verify="number" id="PublishCount">
                 </div>
             </div>
         </div>
@@ -119,17 +119,17 @@
                 </div>
             </div>
             <div class="layui-inline">
-                <input type="checkbox" name="like[write]" title="使用需要授权" lay-skin="primary" id="OverFlag" lay-filter="OverFlag">
+                <input type="checkbox" checked name="like[write]" title="使用需要授权" lay-skin="primary" id="authorFlag" lay-filter="authorFlag">
             </div>
             <div id="showPrint" style="display: inline-block">
                 <div class="layui-inline">
                     <label class="layui-form-label">印刷编号</label>
                     <div class="layui-input-inline">
-                        <input type="text" class="layui-input" required id="printIDStart">
+                        <input type="text" class="layui-input" required id="couponCodeStart">
                     </div>
                     <div class="layui-form-mid">至</div>
                     <div class="layui-input-inline">
-                        <input type="text" class="layui-input" required id="printIDEnd">
+                        <input type="text" class="layui-input" required id="couponCodeEnd">
                     </div>
                 </div>
             </div>
@@ -151,13 +151,13 @@
             <div class="layui-inline">
                 <label class="layui-form-label" style="padding: 8px 0;">价值(抵用金额)</label>
                 <div class="layui-input-inline" style="width: 109px;">
-                    <input type="text" class="layui-input" required placeholder="元" id="1">
+                    <input type="text" class="layui-input" required placeholder="元" id="couponValue">
                 </div>
             </div>
             <div class="layui-inline">
                 <label class="layui-form-label" style="padding: 8px 0;">同时使用张数</label>
                 <div class="layui-input-inline" style="width: 109px;">
-                    <input type="text" class="layui-input" required placeholder="张" id="2">
+                    <input type="text" class="layui-input" required placeholder="张" id="OverUseCount">
                 </div>
             </div>
         </div>
@@ -166,19 +166,30 @@
             <div class="layui-inline">
                 <label  class="layui-form-label">兑换类型</label>
                 <div class="layui-input-inline">
-                    <select name="" id=""></select>
+                    <select name="" id="ChargeType" lay-filter="chargeType">
+                        <option>-请选择-</option>
+                        <option value="0">礼品</option>
+                        <option value="1">游乐项目</option>
+                        <option value="2">代币</option>
+                    </select>
                 </div>
             </div>
-            <div class="layui-inline">
+            <div class="layui-inline chargeContentBox chargeGoods">
                 <label  class="layui-form-label">兑换内容</label>
                 <div class="layui-input-inline">
-                    <select name="" id=""></select>
+                    <select name="" id="GoodID" lay-filter="GoodID"></select>
+                </div>
+            </div>
+            <div class="layui-inline chargeContentBox chargeProgect layui-hide">
+                <label  class="layui-form-label">兑换内容</label>
+                <div class="layui-input-inline">
+                    <select name="" id="ProjectID" lay-filter="ProjectID"></select>
                 </div>
             </div>
             <div class="layui-inline">
                 <label  class="layui-form-label">兑换数量</label>
                 <div class="layui-input-inline">
-                    <input type="text" class="layui-input">
+                    <input type="text" class="layui-input" id="ChargeCount">
                 </div>
             </div>
         </div>
@@ -201,7 +212,7 @@
             <div class="layui-inline">
                 <label  class="layui-form-label">派发途径</label>
                 <div class="layui-input-inline">
-                    <select name="" id="disturbWay" lay-filter="disturbWay">
+                    <select name="" id="SendType" lay-filter="SendType">
                         <option value="0">消费</option>
                         <option value="1">定向</option>
                         <option value="2">抽奖</option>
@@ -210,35 +221,23 @@
                 </div>
             </div>
             <ul style="display: inline-block">
-                <li style="display: inline-block" name="disturbBox">
-                    <div class="layui-inline">
-                        <label  class="layui-form-label">消费满</label>
-                        <div class="layui-input-inline">
-                            <input type="text" class="layui-input" name="disturbInput">
-                        </div>
-                        <div class="layui-form-mid">送</div>
-                        <div class="layui-input-inline">
-                            <input type="text" class="layui-input" name="disturbInput">
-                        </div>
-                        <div class="layui-form-mid">张</div>
-                    </div>
-                </li>
                 <li class="layui-hide" name="disturbBox">
-                    <button type="button" class=" layui-btn layui-btn-normal">选取派发会员</button>
+                    <button type="button" class=" layui-btn layui-btn-normal" id="setVipBtn">选取派发会员</button>
                 </li>
-                <li class="layui-hide" name="disturbBox">
+                <li class="" name="disturbBox">
                     <div class="layui-inline">
                         <label  class="layui-form-label">消费满</label>
                         <div class="layui-input-inline" style="width: 90px">
-                            <input type="text" class="layui-input" name="disturbInput">
+                            <input type="text" class="layui-input" id="OverMoney" name="disturbInput">
                         </div>
                         <div class="layui-form-mid">送</div>
                         <div class="layui-input-inline" style="width: 90px">
-                            <input type="text" class="layui-input" name="disturbInput">
+                            <input type="text" class="layui-input" name="disturbInput" id="FreeCouponCount">
+                            <input type="text" class="layui-input layui-hide" name="disturbInput" id="JackpotCount">
                         </div>
-                        <div class="layui-form-mid">张</div>
+                        <div class="layui-form-mid" id="tips">张</div>
                     </div>
-                    <div class="layui-inline">
+                    <div class="layui-inline layui-hide" id="JackpotActiveBox">
                         <label  class="layui-form-label">抽奖活动</label>
                         <div class="layui-input-inline" style="width: 142px">
                             <select name="" id="JackpotActive" lay-filter="JackpotActive"></select>
@@ -264,70 +263,82 @@
         <div style="text-align: right;margin-right: 100px;">
             <button type="button" class="layui-btn-normal layui-btn" id="cancelBtn">取消</button>
             <button type="reset" class="layui-btn layui-btn-danger" id="resetBtn"><i class="layui-icon">&#x1002;</i>重置</button>
-            <button type="submit" class="layui-btn layui-btn-normal" id="saveBtn"><i class="layui-icon">&#xe6af;</i>确定</button>
+            <button type="button" class="layui-btn layui-btn-normal" id="saveBtn"><i class="layui-icon">&#xe6af;</i>确定</button>
         </div>
     </form>
 </div>
 <!--适用门店的弹窗-->
 <div class="chooseStore" style="display: none">
-       <div class="layui-form-item">
-           <label class="layui-form-label">适用门店列表</label>
-           <div class="layui-input-inline" id="chooseStoreList">
-               <input type="checkbox" lay-skin="primary" title="写作">
-               <input type="checkbox" lay-skin="primary" title="写作">
-               <input type="checkbox" lay-skin="primary" title="写作">
-               <input type="checkbox" lay-skin="primary" title="写作">
-               <input type="checkbox" lay-skin="primary" title="写作">
-               <input type="checkbox" lay-skin="primary" title="写作">
-           </div>
-       </div>
+    <form action="" class="layui-form">
+        <div class="layui-form-item">
+            <label class="layui-form-label">适用门店</label>
+            <div class="layui-input-inline" id="chooseStoreList">
+            </div>
+        </div>
+    </form>
+    <div style="text-align:right;padding-right: 50px;margin-bottom: 15px">
+        <button type="button" class="layui-btn" id="cancelStorebtn">取消</button>
+        <button type="button" class="layui-btn layui-btn-normal" id="saveStorebtn">确定</button>
+    </div>
+</div>
+<!--分配会员弹窗-->
+<div class="setVip" style="display: none">
+    <form action="" class="layui-form">
+        <div class="layui-form-item">
+            <div class="layui-input-inline" id="setVipList">
+            </div>
+        </div>
+    </form>
+    <div style="text-align:right;padding-right: 50px;margin-bottom: 15px">
+        <button type="button" class="layui-btn" id="cancelVipbtn">取消</button>
+        <button type="button" class="layui-btn layui-btn-normal" id="saveVipbtn">确定</button>
+    </div>
 </div>
 </body>
 <script src="js/jquery-1.8.3-min.js"></script>
 <script src="layui/layui.js"></script>
 <script src="js/storeSystem.js"></script>
 <script>
+   let modelHtml= $('#addOrModify').html();
     let xc=xcActionSystem.prototype;
     let token=xc.getStorage('token');
     let Id='';
+    let indexLayer;
     //初始化table
     let parm={'obj':{'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'},
         'url':'/XCCloud/Coupon?action=QueryCouponInfo',
         'elem':'#couponSetTable',
         'cols':[
-             {field:'ID', title:'规则编号ID', align: 'center', sort: true}
+             {field:'ID', title:'优惠券规则ID', align: 'center', sort: true}
             ,{field:'CouponName',title: '优惠券名称', align: 'center'}
-            ,{field:'CouponValue',title: '优惠券价值', align: 'center'}
-            ,{field:'CouponDiscount', title: '优惠券折扣', align: 'center'}
-            ,{field:'CouponThreshold', title: '优惠券阈值', align: 'center'}
-            ,{field:'CouponTypeStr', title: '使用类别', align: 'center'}
-            ,{field:'OpUserName', title: '创建人', align: 'center'}
-            ,{field:'StartDateStr', title: '有效期开始时间', align: 'center'}
-            ,{field:'EndDateStr', title: '有效期结束时间', align: 'center'}
-            ,{field:'OverFlagStr', title: '是否允许叠加', align: 'center'}
+            ,{field:'CouponTypeStr', title: '类别', align: 'center'}
+            ,{field:'PublishCount', title: '创建张数', align: 'center'}
+            ,{field:'LeftCount', title: '剩余张数', align: 'center'}
+            ,{field:'StartTime', title: '开始时间', align: 'center'}
+            ,{field:'EndTime', title: '结束时间', align: 'center'}
             ,{field:'Context', title: '说明', align: 'center'}
             ,{field:'State', title: '状态', align: 'center',templet:'#changeState'}
             ,{fixed: 'right', title: '操作', width:160, align:'center', toolbar: '#barDemo'}]
     };
     xc.getInitData(parm);
 
-    let CouponType=0;let disturbWay=0;let CouponKind=0;
+    let CouponType=0;
+    let SendType=0;
+    let entryCouponFlag=0;
+    let authorFlag=1;
+    let chargeType='';//兑换类型
+    let goodId='';
+    let projectId='';
+    let jackpotId='';
+    let memberId=[];
+    let storeId=[];
     layui.use(['form','layer','table','laydate'],()=>{
         let form=layui.form;
         let layer=layui.layer;
         let table=layui.table;
         let laydate=layui.laydate;
         //监听
-        laydate.render({
-            elem: '#startDate'
-            ,type: 'date'
-            ,value: new Date()
-        });
-        laydate.render({
-            elem: '#endDate'
-            ,type: 'date'
-            ,value: new Date()
-        });
+
         form.on('select(CouponType)',(data)=>{
             CouponType=data.value;
             if(data.value==2){
@@ -335,36 +346,98 @@
                 $('#saleShow').addClass('layui-hide')
             } else {
                 $('#saleShow').removeClass('layui-hide');
-                $('#tokenShow').addClass('layui-hide')}
+                $('#tokenShow').addClass('layui-hide');
+            }
          });
-
-        form.on('select(disturbWay)',(data)=>{
-            disturbWay=data.value;
+        form.on('select(SendType)',(data)=>{
+            SendType=data.value;
+            jackpotId='';
             $('body').find('input[name="disturbInput"]').each(function () {
                 $(this).val("");
             });
             if(data.value==3){
                 $('body').find('li[name="disturbBox"]').each(function () {
                     $(this).addClass('layui-hide');
-                    form.render('select','JackpotActive');
-                })
-            } else if(data.value==2){
-                $('body').find('li[name="disturbBox"]').eq(2).removeClass('layui-hide').siblings().addClass('layui-hide');
-                xc.getJackpotList(token,form);
-            }else {
-                $('body').find('li[name="disturbBox"]').eq(data.value).removeClass('layui-hide').siblings().addClass('layui-hide');
+                });
                 $('#JackpotActive').html('');
-                form.render('select','JackpotActive');
+            } else if(data.value==2){
+                $('body').find('li[name="disturbBox"]').eq(1).removeClass('layui-hide').siblings().addClass('layui-hide');
+                $('#JackpotActiveBox').removeClass('layui-hide');
+                $('#JackpotCount').removeClass('layui-hide').siblings().addClass('layui-hide');
+                $('#tips').text('次');
+                xc.getJackpotList(token,form);
+            }else if(data.value==1){
+                $('body').find('li[name="disturbBox"]').eq(0).removeClass('layui-hide').siblings().addClass('layui-hide');
+                $('#JackpotActive').html('');
+            }else if(data.value==0) {
+                $('body').find('li[name="disturbBox"]').eq(1).removeClass('layui-hide').siblings().addClass('layui-hide');
+                $('#JackpotActiveBox').addClass('layui-hide');
+                $('#FreeCouponCount').removeClass('layui-hide').siblings().addClass('layui-hide');
+                $('#tips').text('张');
+                $('#JackpotActive').html('');
             }
-
+            form.render('select','JackpotActive');
         });
-        form.on('switch(CouponKind)',(data)=>{
+        form.on('select(chargeType)',(data)=>{
+            chargeType=data.value;
+            $('#ChargeCount').val('');
+            if(data.value==0){
+                $('.chargeGoods').removeClass('layui-hide');
+                $('.chargeProgect').addClass('layui-hide');
+                projectId='';
+                $('#ProjectID').html('');
+                xc.getChargeGood(token,form);
+            } else if(data.value==1){
+                $('.chargeGoods').addClass('layui-hide');
+                $('.chargeProgect').removeClass('layui-hide');
+                goodId='';
+                $('#GoodID').html('');
+                xc.getChargeProgect(token,form)
+            }else if(data.value==2){
+               $('.chargeContentBox').addClass('layui-hide');
+                goodId='';
+                projectId='';
+                $('#GoodID').html('');
+                $('#ProjectID').html('');
+            }
+            form.render('select');
+        });
+        form.on('select(GoodID)',(data)=>{
+            goodId=data.value;
+        });
+        form.on('select(ProjectID)',(data)=>{
+            projectId=data.value;
+        });
+        form.on('select(JackpotActive)',(data)=>{
+            jackpotId=data.value;
+        });
+        form.on('switch(entryCouponFlag)',(data)=>{
             if(data.elem.checked==true){
-                CouponKind=1;
-                $('#showPrint').addClass('layui-hide');
-            }else {
-                CouponKind=0;
+                entryCouponFlag=1;
                 $('#showPrint').removeClass('layui-hide');
+            }else {
+                entryCouponFlag=0;
+                $('#showPrint').addClass('layui-hide');
+            }
+            console.log(entryCouponFlag)
+        });
+        form.on('checkbox(authorFlag)',(data)=>{
+            if(data.elem.checked==true){
+                authorFlag=1;
+            }else {
+                authorFlag=0;
+            }
+        });
+        //监听门店设置
+        form.on('checkbox(chooseStore)',function (data) {
+            if (data.elem.checked==true){
+                storeId.push(data.value);
+            }else if(data.elem.checked==false){
+                for (var i=0;i<storeId.length;i++){
+                    if(storeId[i]==data.value){
+                        storeId.splice(i,1)
+                    }
+                }
             }
         });
 
@@ -372,7 +445,29 @@
         $('.add').on('click',()=>{
             Id='';//新增Id为空
             xc.setSelect('优惠券类别','CouponType');
-            CouponType=0; CouponKind=0; disturbWay=0;
+            CouponType=0;
+            SendType=0;
+            entryCouponFlag=0;
+            authorFlag=1;
+            chargeType='';//兑换类型
+            goodId='';
+            projectId='';
+            jackpotId='';
+            memberId=[];
+            storeId=[];
+
+            $('#addOrModify').html(modelHtml);
+            laydate.render({
+                elem: '#startDate'
+                ,type: 'date'
+                ,value: new Date()
+            });
+            laydate.render({
+                elem: '#endDate'
+                ,type: 'date'
+                ,value: new Date()
+            });
+            form.render();
             layer.open({
                 title:'新增优惠券',
                 type:'1',
@@ -380,12 +475,37 @@
                 content:$('#addOrModify')
             })
         });
-        $('#saveBtn').on('click',()=>{
+        $('#addOrModify').on('click','#saveBtn',()=>{
             xc.saveCoupon(layer)
         });
         //点击选择适用门店
-        $('.chooseStoreBtn').on('click',()=>{
-            xc.setUsefulStore(token,form,layer);
+        $('#addOrModify').on('click','.chooseStoreBtn',()=>{
+            xc.setUsefulStore(token,form);
+            if(Id==''){
+                storeId=[];
+            }else {
+                for(let i in storeId){
+                    $('#chooseStoreList').find('input[value="'+storeId[i]+'"]').attr('checked',true);
+                }
+            }
+            form.render();
+            indexLayer= layer.open({
+                // title:'设置适用门店',
+                type:1,
+                area:'500px',
+                content:$('.chooseStore')
+            });
+
+        });
+        $('#saveStorebtn').on('click',()=>{
+            layer.close(indexLayer);
+        });
+        $('#cancelStorebtn').on('click',()=>{
+            layer.close(indexLayer);
+            storeId=[];
+        });
+        $('#addOrModify').on('click','#setVipBtn',()=>{
+            xc.getVip(token,form,layer);
         });
         //监听table工具栏
         table.on('tool(couponSetTable)',(obj)=>{
@@ -405,39 +525,113 @@
                         console.log(data);
                         if (data.result_code == 1) {
                             let arr=data.result_data;
-                            $('#CouponName').val(arr.CouponName);
-                                $('#CouponValue').val(arr.CouponValue);
-                                $('#CouponDiscount').val(arr.CouponDiscount);
-                                $('#CouponThreshold').val(arr.CouponThreshold);
-                                CouponType=arr.CouponType;
-                                xc.setSelect('使用类别','CouponType',arr.CouponType);
-                                OverFlag=arr.OverFlag;
-                                if(arr.OverFlag==1){
-                                    $('#OverFlag').attr({'checked':true})
-                                }else {
-                                    $('#OverFlag').attr({'checked':false})
+
+                            $('#addOrModify').html(modelHtml);
+                            laydate.render({
+                                elem: '#startDate'
+                                ,type: 'date'
+                                ,value: xc.timeStampDate(arr.StartTime)
+                            });
+                            laydate.render({
+                                elem: '#endDate'
+                                ,type: 'date'
+                                ,value: xc.timeStampDate(arr.EndTime)
+                            });
+                            $('#CouponName').val(arr.CouponName||'');
+                            CouponType=arr.CouponType;
+                            if(arr.CouponType==2){
+                                $('#tokenShow').removeClass('layui-hide');
+                                $('#saleShow').addClass('layui-hide')
+                            } else {
+                                $('#saleShow').removeClass('layui-hide');
+                                $('#tokenShow').addClass('layui-hide');
+                            }
+                             xc.setSelect('优惠券类别','CouponType',arr.CouponType);
+                             entryCouponFlag=arr.EntryCouponFlag;
+                             if(arr.EntryCouponFlag==1){
+                                 $('#showPrint').removeClass('layui-hide');
+                                 $('#entryCouponFlag').attr('checked',true)
+                             }else {
+                                 $('#showPrint').addClass('layui-hide');
+                                 $('#entryCouponFlag').attr('checked',false)
+                             }
+                             authorFlag=arr.AuthorFlag;
+                            if(arr.AuthorFlag==1){
+                                $('#authorFlag').attr('checked',true)
+                            }else { $('#authorFlag').attr('checked',false)}
+                                $('#OverUseCount').val(arr.OverUseCount||'');
+                                $('#PublishCount').val(arr.PublishCount||'');
+                                $('#couponValue').val(arr.CouponValue||'');
+                                $('#CouponDiscount').val(arr.CouponDiscount||'');
+                                $('#CouponThreshold').val(arr.CouponThreshold||'');
+                                SendType=arr.SendType;
+                            if(arr.SendType==3){
+                                $('body').find('li[name="disturbBox"]').each(function () {
+                                    $(this).addClass('layui-hide');
+                                });
+                                $('#JackpotActive').html('');
+                            } else if(arr.SendType==2){
+                                $('body').find('li[name="disturbBox"]').eq(1).removeClass('layui-hide').siblings().addClass('layui-hide');
+                                $('#JackpotActiveBox').removeClass('layui-hide');
+                                $('#JackpotCount').removeClass('layui-hide').siblings().addClass('layui-hide');
+                                $('#tips').text('次');
+                                xc.getJackpotList(token,form,arr.JackpotID);
+                            }else if(arr.SendType==1){
+                                $('body').find('li[name="disturbBox"]').eq(0).removeClass('layui-hide').siblings().addClass('layui-hide');
+                                $('#JackpotActive').html('');
+                            }else if(arr.SendType==0) {
+                                $('body').find('li[name="disturbBox"]').eq(1).removeClass('layui-hide').siblings().addClass('layui-hide');
+                                $('#JackpotActiveBox').addClass('layui-hide');
+                                $('#FreeCouponCount').removeClass('layui-hide').siblings().addClass('layui-hide');
+                                $('#tips').text('张');
+                                $('#JackpotActive').html('');
+                            }
+                                $('#SendType').find('option[value="'+arr.SendType+'"]').attr('selected',true);
+                                $('#OverMoney').val(arr.OverMoney||'');
+                                $('#FreeCouponCount').val(arr.FreeCouponCount||'');
+                                $('#JackpotCount').val(arr.JackpotCount||'');
+                                jackpotId;
+                                chargeType=arr.ChargeType||'';
+                                if(arr.ChargeType){
+                                    $('#ChargeType').find('option[value="'+arr.ChargeType+'"]').attr('selected',true);
+                                    if(arr.ChargeType==0){
+                                        $('.chargeGoods').removeClass('layui-hide');
+                                        $('.chargeProgect').addClass('layui-hide');
+                                        projectId='';
+                                        $('#ProjectID').html('');
+                                        xc.getChargeGood(token,form,arr.GoodID);
+                                    } else if(arr.ChargeType==1){
+                                        $('.chargeGoods').addClass('layui-hide');
+                                        $('.chargeProgect').removeClass('layui-hide');
+                                        goodId='';
+                                        $('#GoodID').html('');
+                                        xc.getChargeProgect(token,form,arr.ProjectID)
+                                    }else if(arr.ChargeType==2){
+                                        $('.chargeContentBox').addClass('layui-hide');
+                                        goodId='';
+                                        projectId='';
+                                        $('#GoodID').html('');
+                                        $('#ProjectID').html('');
+                                    }
                                 }
-                                State=arr.State;
-                                if(arr.State==1){
-                                    $('#State').attr({'checked':true})
-                                }else {
-                                    $('#State').attr({'checked':false})
-                                }
-                            form.render();
-                                $('#startDate').val(xc.timeStampDate(arr.StartDate));
-                                $('#endDate').val(xc.timeStampDate(arr.EndDate));
+                                $('#ChargeCount').val(arr.ChargeCount||'');
+                                goodId=arr.GoodID||'';
+                                projectId=arr.ProjectID||'';
                                 $('#Note').val(arr.Context);
+
+                            form.render();
                             layer.open({
-                                title:'修改电子优惠券',
+                                title:'修改优惠券',
                                 type:'1',
-                                area:'680px',
+                                area:'1000px',
                                 content:$('#addOrModify')
                             })
                         } else {
                             layer.msg(data.result_msg);
                         }
                     }
-                })
+                });
+                xc.getUsefulStore(Id,token,form,layer)
             } else if(layEvent === 'del'){ //删除
                 layer.confirm('真的删除行么', function(index){
                     Id=data.ID;
@@ -489,14 +683,29 @@
         xcActionSystem.prototype.saveCoupon=(layer)=>{
             let obj={'id':Id,
                         'couponName':$('#CouponName').val(),
-                        'couponValue':$('#CouponValue').val(),
+                        'couponCodeStart':$('#couponCodeStart').val(),
+                        'couponCodeEnd':$('#couponCodeEnd').val(),
+                        'couponType':CouponType,
+                        'entryCouponFlag':entryCouponFlag,
+                        'authorFlag':authorFlag ,
+                        'overUseCount':$('#OverUseCount').val(),
+                        'publishCount':$('#PublishCount').val(),
+                        'couponValue':$('#couponValue').val(),
                         'couponDiscount':$('#CouponDiscount').val(),
                         'couponThreshold':$('#CouponThreshold').val(),
-                        'couponType':CouponType,
-                        'overFlag':OverFlag,
-                        'state':State,
-                        'startDate':$('#startDate').val(),
-                        'endDate':$('#endDate').val(),
+                        'startTime':$('#startDate').val(),
+                        'endTime':$('#endDate').val(),
+                        'sendType':SendType,
+                        'overMoney':$('#OverMoney').val(),
+                        'freeCouponCount':$('#FreeCouponCount').val(),
+                        'jackpotCount':$('#JackpotCount').val(),
+                        'jackpotID':jackpotId,
+                        'chargeType':chargeType,
+                        'chargeCount':$('#ChargeCount').val(),
+                        'goodId':goodId,
+                        'projectId':projectId,
+                        'memberIds':'',
+                        'storeIds':storeId==''?'':storeId.join('|'),
                         'context':$('#Note').val(),
                         'userToken':token,
                         'signkey':'1f626576304bf5d95b72ece2222e42c3'};
@@ -512,8 +721,8 @@
                     console.log(data);
                     if (data.result_code == 1) {
                         layer.msg('保存成功！');
-                        setInterval(xc.getInitData(parm),1000);
-                        $('#resetBtn').trigger('click');
+                        window.location.reload();
+                        layer.closeAll();
                     } else {
                         layer.msg(data.result_msg);
                     }
@@ -523,7 +732,7 @@
 
     });
     //加载抽奖规则
-    xcActionSystem.prototype.getJackpotList=function (token,form) {
+    xcActionSystem.prototype.getJackpotList=function (token,form,j) {
         let obj={'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
         let parseJson = JSON.stringify(obj);
         $.ajax({
@@ -533,17 +742,65 @@
             data:{parasJson: parseJson},
             success: function (data) {
                 data=JSON.parse(data);
-                console.log(data)
                 if(data.result_code==1){
+                    $('#JackpotActive').html('<option>-请选择-</option>');
                     let array=data.result_data;
                     for(let i in array){
-                        $('#JackpotActive').html('').append()
+                        $('#JackpotActive').append('<option value="'+array[i].Key+'">'+array[i].Value+'</option>')
                     }
+                    $('#JackpotActive').find('option[value="'+j+'"]').attr('selected',true);
+                    form.render('select');
                 }
             }
         })
     };
-    //加载适用门店
+    //加载兑换奖品
+    xcActionSystem.prototype.getChargeGood=function (token,form,j) {
+        let obj={'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+        let parseJson = JSON.stringify(obj);
+        $.ajax({
+            type:'post',
+            url:'/XCCloud/GoodsInfo?action=GetGoodsDic',
+            contentType: "application/json; charset=utf-8",
+            data:{parasJson: parseJson},
+            success: function (data) {
+                data=JSON.parse(data);
+                if(data.result_code==1){
+                    $('#GoodID').html('<option>-请选择-</option>');
+                    let array=data.result_data;
+                    for(let i in array){
+                        $('#GoodID').append('<option value="'+array[i].ID+'">'+array[i].GoodName+'</option>')
+                    }
+                    $('#GoodID').find('option[value="'+j+'"]').attr('selected',true);
+                    form.render('select');
+                }
+            }
+        })
+    };
+    //加载兑换游乐项目
+    xcActionSystem.prototype.getChargeProgect=function (token,form,j) {
+        let obj={'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+        let parseJson = JSON.stringify(obj);
+        $.ajax({
+            type:'post',
+            url:'/XCCloud/Project?action=GetProjectDic',
+            contentType: "application/json; charset=utf-8",
+            data:{parasJson: parseJson},
+            success: function (data) {
+                data=JSON.parse(data);
+                if(data.result_code==1){
+                    $('#ProjectID').html('<option>-请选择-</option>');
+                    let array=data.result_data;
+                    for(let i in array){
+                        $('#ProjectID').append('<option value="'+array[i].ID+'">'+array[i].ProjectName+'</option>')
+                    }
+                    $('#ProjectID').find('option[value="'+j+'"]').attr('selected',true);
+                    form.render('select');
+                }
+            }
+        })
+    };
+    //加载可选门店
     xcActionSystem.prototype.setUsefulStore=function (token,form,layer) {
         let choseStore=JSON.parse(xcActionSystem.prototype.getStorage('choseStore'));
         let obj={'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
@@ -557,27 +814,87 @@
                 data=JSON.parse(data);
                 console.log(data);
                 if(data.result_code==1){
+                    $('#chooseStoreList').html('');
                     let array=data.result_data;
                     for(let i in array){
                         if(choseStore){
 
                         }else {
-                            $('#chooseStoreList').html('').append('<input type="checkbox" lay-skin="primary" lay-filter="chooseStore" text="'+array[i]+'">')
+                            $('#chooseStoreList').append('<input type="checkbox" lay-skin="primary" value="'
+                                +array[i].Key+'" lay-filter="chooseStore" title="'+array[i].Value+'">')
                         }
-
                     }
-                    form.render('checkbox','chooseStore');
-                    layer.open({
-                        type:1,
-                        area:'500px',
-                        content:$('#checkStore')
-                    })
+                    form.render('checkbox');
+
                 }else {
                     layer.msg('获取门店列表失败，err:'+data.result_msg||data.return_msg)
                 }
             }
         })
-    }
+    };
+   //获取已选门店
+   xcActionSystem.prototype.getUsefulStore=function (couponId,token,form,layer) {
+       let choseStore=JSON.parse(xcActionSystem.prototype.getStorage('choseStore'));
+       let obj={'couponId':couponId,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+       let parseJson = JSON.stringify(obj);
+       $.ajax({
+           type:'post',
+           url:'/XCCloud/Coupon?action=GetCouponStores',
+           contentType: "application/json; charset=utf-8",
+           data:{parasJson: parseJson},
+           success: function (data) {
+               data=JSON.parse(data);
+               console.log(data);
+               if(data.result_code==1){
+                   let array=data.result_data;
+                   // for(let i in array){
+                   //
+                   //   $('#chooseStoreList').find('<input [value="'+array[i].Key+'"]>')
+                   //
+                   // }
+                   // form.render('checkbox');
+
+               }else {
+                   layer.msg('获取门店列表失败，err:'+data.result_msg||data.return_msg)
+               }
+           }
+       })
+   };
+    //加载会员列表
+    xcActionSystem.prototype.getVip=function (token,form,layer) {
+        let obj={'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+        let parseJson = JSON.stringify(obj);
+        $.ajax({
+            type:'post',
+            url:'/XCCloud/Member?action=GetMemberDic',
+            contentType: "application/json; charset=utf-8",
+            data:{parasJson: parseJson},
+            success: function (data) {
+                data=JSON.parse(data);
+                console.log(data);
+                if(data.result_code==1){
+                    let arr=data.result_data;
+                    if(arr.length>0){
+                        $('#setVipList').html('');
+                        for(let index in arr){
+                            $('#setVipList').app('<input type="checkbox" value="'+arr[index].MemberID+'" lay-filter="vipList" lay-skin="primary" title="'+arr[index].MemberName+'">');
+                        }
+                        form.render('checkbox');
+                        indexLayer= layer.open({
+                            // title:'设置适用门店',
+                            type:1,
+                            area:'500px',
+                            content:$('.setVip')
+                        })
+                    }else {
+                        layer.msg('当前没有可设置的会员！')
+                    }
+
+                }
+            }
+        })
+    };
+
 </script>
 <script type="text/html" id="barDemo">
     <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="edit"><i class="layui-icon">&#xe642;</i>编辑</a>

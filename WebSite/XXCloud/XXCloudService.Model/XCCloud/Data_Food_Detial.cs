@@ -16,8 +16,8 @@ namespace XCCloudService.Model.XCCloud
     {
         public int ID { get; set; }
         public Nullable<int> FoodID { get; set; }
-        public Nullable<int> FoodLevelID { get; set; }
         public Nullable<int> FoodType { get; set; }
+        public Nullable<int> BalanceType { get; set; }
         public Nullable<int> WeightType { get; set; }
         public Nullable<decimal> WeightValue { get; set; }
         public Nullable<int> ContainID { get; set; }

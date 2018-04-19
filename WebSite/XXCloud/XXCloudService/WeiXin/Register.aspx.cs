@@ -93,7 +93,7 @@ namespace XXCloudService.WeiXin
                 {
                     IBase_UserInfoService userInfoService = BLLContainer.Resolve<IBase_UserInfoService>();
                     var userInfo = userInfoService.GetModels(p => p.LogName.Equals(username, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
-                    MessagePush(revOpenId, username, userInfo.CreateTime.Value.ToString("f"), workId, message);
+                    MessagePush(revOpenId, username, userInfo.CreateTime.Value.ToString("f"), workId, userType, message);
 
                     var succMsg = "已递交工单，等待管理员审核";
                     LogHelper.SaveLog("成功:" + succMsg);
@@ -249,11 +249,11 @@ namespace XXCloudService.WeiXin
             return true;
         }
 
-        private void MessagePush(string openId, string userName, string registerTime, string workId, string message)
+        private void MessagePush(string openId, string userName, string registerTime, string workId, int userType, string message)
         {
             string errMsg = string.Empty;
             LogHelper.SaveLog(TxtLogType.WeiXin, TxtLogContentType.Common, TxtLogFileType.Day, "MessagePush");
-            UserRegisterRemindDataModel dataModel = new UserRegisterRemindDataModel(userName, registerTime, workId, message);
+            UserRegisterRemindDataModel dataModel = new UserRegisterRemindDataModel(userName, registerTime, workId, userType, message);
             if (MessageMana.PushMessage(WeiXinMesageType.UserRegisterRemind, openId, dataModel, out errMsg))
             {
                 LogHelper.SaveLog(TxtLogType.WeiXin, TxtLogContentType.Common, TxtLogFileType.Day, "true");

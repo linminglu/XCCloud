@@ -6,6 +6,13 @@
     <script src="/website/js/jquery-1.8.3-min.js"></script>
     <script type="text/javascript">
 
+        $(function () {
+            $("#validateImgCode").attr("src", "/ServicePage/validateimg.aspx?t=" + Math.random());
+        });
+
+        function changeImgCode() {
+            $("#validateImgCode").attr("src", "/ServicePage/validateimg.aspx?t=" + Math.random());
+        }
 
         //李俊杰本地测试，请勿修改，如需要修改，请注释再重新定义变量
         //var mobileToken = "fe1949af67f64696af524b129090461b";
@@ -15,13 +22,13 @@
         //var deviceToken = "23c41662";
 
 
-        var mobileToken1 = "45cec6980a1843daa8af11f4ee31b2e0";
+        var mobileToken1 = "b4d0faac6e4047bbad9417903ab4b2a9";
         var memberToken1 = "5b5585523caf4791a4bf8f000573e17f";
         var storeId1 = "100027";
         var mobile1 = "15618920033";
         var deviceToken1 = "000006";
 
-        var mobileToken2 = "45cec6980a1843daa8af11f4ee31b2e0";
+        var mobileToken2 = "b4d0faac6e4047bbad9417903ab4b2a9";
         var memberToken2 = "5b5585523caf4791a4bf8f000573e17f";
         var storeId2 = "2";
         var mobile2 = "15618920033";
@@ -100,7 +107,7 @@
         }
 
         function do_getMemberToken1() {
-            var parasObj = { "sysId": "0", "versionNo": "0.89", "storeId": "100027", "mobileToken": "a1dce6949f264220beaddf3a036457b2" };
+            var parasObj = { "sysId": "0", "versionNo": "0.89", "storeId": "100027", "mobileToken": "b4d0faac6e4047bbad9417903ab4b2a9" };
             var url = "/xcgamemana/Token?action=getMemberToken";
             var parasJson = JSON.stringify(parasObj);
             common(url, parasJson);
@@ -132,6 +139,15 @@
             common(url, parasJson);
         }
 
+        function do_getSMS() {
+            var mobile = $("#mobile").val();
+            var code = $("#imgcode").val();
+            var parasObj = { "sysId": "0", "versionNo": "0.0.0.1", "mobile": mobile, "templateId": "1", "imgCode": code };
+            var url = "/xcgamemana/Token?action=getSMSCode";
+            var parasJson = JSON.stringify(parasObj);
+            common(url, parasJson);
+        }
+
         function do_storeInfoByTerminalNo() {
             var parasObj = { "sysId": "0", "versionNo": "0.0.0.1", "deviceToken": "000002" };
             var url = "/xcgamemana/store?action=storeInfoByTerminalNo";
@@ -140,7 +156,7 @@
         }
 
         function do_getMobileToken() {
-            var parasObj = { "sysId": "0", "versionNo": "0.0.0.1", "mobile": mobile1, "smsCode": "123456" };
+            var parasObj = { "sysId": "0", "versionNo": "0.0.0.1", "mobile": mobile1, "smsCode": "123456","thirdType":"1","userThirdId":"aliIddddddd" };
             var url = "/xcgamemana/Token?action=getMobileToken";
             var parasJson = JSON.stringify(parasObj);
             common(url, parasJson);
@@ -498,6 +514,7 @@
         <input id="Button2" type="button" value="do_sendSMSToken(获取发送短信的临时token)" onclick="do_sendSMSToken()" />
 
         <input id="Button2" type="button" value="do_sendSMS(获取短信验证码)" onclick="do_sendSMS()" />
+        <input id="Button2" type="button" value="do_getSMS(获取短信验证码)" onclick="do_getSMS()" />
         <input id="Button21" type="button" value="do_getMobileToken(获取手机token)" onclick="do_getMobileToken()" />
         <input id="Button22" type="button" value="do_getrouteDeviceToken(获取路由设备token)" onclick="do_getrouteDeviceToken()" />
     </div>
@@ -559,6 +576,7 @@
     </div>
     <input id="mobile" type="text" value="mobile" />
     <input id="imgcode" type="text" value="imgcode" />
+    <img id="validateImgCode" onclick="changeImgCode()"/>
 
 
     <div title="order" style="font-size:14px;color:#F00;border:1px solid #ccc;">

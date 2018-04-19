@@ -614,7 +614,7 @@ namespace XXCloudService.Api
 
                 IAopClient client = new DefaultAopClient(AliPayConfig.serverUrl, AliPayConfig.miniAppId, AliPayConfig.merchant_miniapp_private_key, "json", "1.0", "RSA2", AliPayConfig.alipay_miniapp_public_key, AliPayConfig.charset, false);
                 AlipayTradeAppPayModel builder = new AlipayTradeAppPayModel();
-                builder.Body = "莘拍档-" + buyType;
+                builder.Body = CommonConfig.PayTitle + "-" + buyType;
                 builder.Subject = productName;
                 builder.OutTradeNo = orderNo;
                 builder.TotalAmount = payPrice.ToString("0.00");
@@ -642,47 +642,55 @@ namespace XXCloudService.Api
         }
         #endregion
 
-        #region 新大陆的微信支付通道
+        #region 微信H5支付 -- 新大陆支付通道
         /// <summary>
-        /// 新大陆的微信支付通道
+        /// 微信H5支付 -- 新大陆支付通道
         /// </summary>
         /// <param name="dicParas"></param>
         /// <returns></returns>
-        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.MethodToken)]
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.MobileToken)]
         public object getPposWxPay(Dictionary<string, object> dicParas)
         {
             try
             {
+                int coins = 0;
+                string orderNo = string.Empty;
                 string errMsg = string.Empty;
-                //string orderId = dicParas.ContainsKey("orderId") ? dicParas["orderId"].ToString() : string.Empty;
-                string orderId = System.DateTime.Now.ToString("yyyyMMddHHmmss");
-                string amount = dicParas.ContainsKey("amount") ? dicParas["amount"].ToString() : string.Empty;
-                string subject = dicParas.ContainsKey("subject") ? dicParas["subject"].ToString() : string.Empty;
-                string openid = dicParas.ContainsKey("openid") ? dicParas["openid"].ToString() : string.Empty;
+                string mobileToken = dicParas.ContainsKey("mobileToken") ? dicParas["mobileToken"].ToString() : string.Empty;
+                string openId = dicParas.ContainsKey("openid") ? dicParas["openId"].ToString() : string.Empty;
+                string storeId = dicParas.ContainsKey("storeId") ? dicParas["storeId"].ToString() : string.Empty;
+                string productName = dicParas.ContainsKey("productName") ? dicParas["productName"].ToString() : string.Empty;
+                string payPriceStr = dicParas.ContainsKey("payPrice") ? dicParas["payPrice"].ToString() : string.Empty;
+                string buyType = dicParas.ContainsKey("buyType") ? dicParas["buyType"].ToString() : string.Empty;
+                string coinsStr = dicParas.ContainsKey("coins") ? dicParas["coins"].ToString() : string.Empty;
 
-                if (string.IsNullOrWhiteSpace(orderId))
+                decimal payPrice = 0;
+                if (!decimal.TryParse(payPriceStr, out payPrice))
                 {
-                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "订单号无效");
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "支付金额不正确");
                 }
 
-                //Flw_Order order = Flw_OrderBusiness.GetOrderModel(orderId);
-                //if (order == null)
-                //{
-                //    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "订单号无效");
-                //}
+                if (!int.TryParse(coinsStr, out coins))
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "购买币数不正确");
+                }
+                MobileTokenModel mobileTokenModel = (MobileTokenModel)(dicParas[Constant.MobileTokenModel]);
+
+                //生成服务器订单号
+                orderNo = PayOrderHelper.CreateXCGameOrderNo(storeId, payPrice, 0, (int)(OrderType.WeiXin), productName, mobileTokenModel.Mobile, buyType, coins);
 
 
                 #region 新大陆微信公众号支付
                 string error = "";
                 PPosPayData.WeiXinPubPay pay = new PPosPayData.WeiXinPubPay();
 
-                pay.openid = openid;//在授权回调页面中获取到的授权code或者openid
+                pay.openid = openId;//在授权回调页面中获取到的授权code或者openid
 
-                pay.amount = amount;//实际付款
-                pay.total_amount = amount;//订单总金额
-                pay.subject = subject;
-                pay.selOrderNo = orderId;
-                pay.goods_tag = "";
+                pay.amount = ((int)(payPrice * 100)).ToString();//实际付款
+                pay.total_amount = pay.amount;//订单总金额
+                pay.subject = CommonConfig.PayTitle +"-" + buyType;
+                pay.selOrderNo = orderNo;
+                pay.goods_tag = productName;
 
                 PPosPayApi ppos = new PPosPayApi();
                 PPosPayData.WeiXinPubPayACK ack = new PPosPayData.WeiXinPubPayACK();
@@ -702,9 +710,75 @@ namespace XXCloudService.Api
 
                 return ResponseModelFactory<PposPubSigPay>.CreateModel(isSignKeyReturn, model);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                throw e;
+                LogHelper.SaveLog(TxtLogType.WeiXin, TxtLogContentType.Debug, TxtLogFileType.Day, "新大陆微信公众号支付失败，原因：" + ex.InnerException != null ? ex.InnerException.Message : ex.Message);
+                throw ex;
+            }
+        }
+        #endregion
+
+        #region 支付宝H5支付 -- 创建支付订单
+        /// <summary>
+        /// 支付宝H5支付 -- 创建支付订单
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.MobileToken)]
+        public object createAlipayOrder(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                int coins = 0;
+                string orderNo = string.Empty;
+                string errMsg = string.Empty;
+                string aliId = dicParas.ContainsKey("aliId") ? dicParas["aliId"].ToString() : string.Empty;
+                string storeId = dicParas.ContainsKey("storeId") ? dicParas["storeId"].ToString() : string.Empty;
+                string productName = dicParas.ContainsKey("productName") ? dicParas["productName"].ToString() : string.Empty;
+                string payPriceStr = dicParas.ContainsKey("payPrice") ? dicParas["payPrice"].ToString() : string.Empty;
+                string buyType = dicParas.ContainsKey("buyType") ? dicParas["buyType"].ToString() : string.Empty;
+                string coinsStr = dicParas.ContainsKey("coins") ? dicParas["coins"].ToString() : string.Empty;
+
+                decimal payPrice = 0;
+                if (!decimal.TryParse(payPriceStr, out payPrice))
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "支付金额不正确");
+                }
+
+                if (!int.TryParse(coinsStr, out coins))
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "购买币数不正确");
+                }
+                MobileTokenModel mobileTokenModel = (MobileTokenModel)(dicParas[Constant.MobileTokenModel]);
+
+                //生成服务器订单号
+                orderNo = PayOrderHelper.CreateXCGameOrderNo(storeId, payPrice, 0, (int)(OrderType.Ali), productName, mobileTokenModel.Mobile, buyType, coins);
+
+                #region 支付宝下单创建
+                IAopClient client = new DefaultAopClient(AliPayConfig.serverUrl, AliPayConfig.authAppId, AliPayConfig.merchant_auth_private_key, "json", AliPayConfig.version, AliPayConfig.sign_type, AliPayConfig.alipay_auth_public_key, AliPayConfig.charset, false);
+                AlipayTradeCreateRequest request = new AlipayTradeCreateRequest();
+                AlipayTradeCreateModel builder = new AlipayTradeCreateModel();
+                builder.Body = productName;
+                builder.Subject = CommonConfig.PayTitle + "-" + buyType + "-" + productName;
+                builder.OutTradeNo = orderNo;
+                builder.TotalAmount = payPrice.ToString("0.00");
+                builder.BuyerId = aliId;
+
+                request.SetBizModel(builder);
+                request.SetNotifyUrl(AliPayConfig.AliH5NotifyUrl);
+                AlipayTradeCreateResponse response = client.Execute(request);
+
+                AliCreateOrderResModel model = new AliCreateOrderResModel();
+                model.tradeNO = response.TradeNo;
+                model.orderId = response.OutTradeNo;
+
+                #endregion
+                return ResponseModelFactory<AliCreateOrderResModel>.CreateModel(isSignKeyReturn, model);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.SaveLog(TxtLogType.AliPay, TxtLogContentType.Debug, TxtLogFileType.Day, "支付宝H5订单创建失败，原因：" + ex.InnerException != null ? ex.InnerException.Message : ex.Message);
+                throw ex;
             }
         }
         #endregion

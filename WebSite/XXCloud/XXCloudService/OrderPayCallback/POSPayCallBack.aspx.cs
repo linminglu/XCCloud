@@ -9,12 +9,17 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using XCCloudService.BLL.CommonBLL;
 using XCCloudService.Business.XCCloud;
+using XCCloudService.Business.XCGameMana;
 using XCCloudService.CacheService;
 using XCCloudService.CacheService.XCCloud;
+using XCCloudService.Common;
 using XCCloudService.Common.Enum;
 using XCCloudService.Model.CustomModel.XCCloud;
 using XCCloudService.Model.XCCloud;
-using XCCloudService.PayChannel.Common;
+using XCCloudService.Model.XCGameManager;
+using XCCloudService.OrderPayCallback.Common;
+using XCCloudService.Pay.PPosPay;
+using XXCloudService.OrderPayCallback.Common;
 
 namespace XXCloudService.PayChannel
 {
@@ -22,11 +27,36 @@ namespace XXCloudService.PayChannel
     {
         class PosStarCallback
         {
+            /// <summary>
+            /// 平台流水号
+            /// </summary>
             public string logNo { get; set; }
+
             public string TxnLogId { get; set; }
+
+            /// <summary>
+            /// 商户订单号
+            /// </summary>
+            public string ChannelId { get; set; }
+
+            /// <summary>
+            /// 商户号
+            /// </summary>
             public string BusinessId { get; set; }
+
+            /// <summary>
+            /// 交易码
+            /// </summary>
             public string TxnCode { get; set; }
+
+            /// <summary>
+            /// 交易状态
+            /// </summary>
             public string TxnStatus { get; set; }
+
+            /// <summary>
+            /// 交易金额
+            /// </summary>
             public string TxnAmt { get; set; }
         }
 
@@ -46,66 +76,79 @@ namespace XXCloudService.PayChannel
 
             PayLogHelper.WriteEvent(builder.ToString(), "新大陆支付");
 
+            string r = "{\"RspCode\":\"000000\",\"RspDes\":\"\"}";
+
             JavaScriptSerializer jsonSerialize = new JavaScriptSerializer();
             PosStarCallback callback = jsonSerialize.Deserialize<PosStarCallback>(builder.ToString());
 
             if (callback != null)
             {
-                string out_trade_no = callback.TxnLogId;
-                decimal total_fee = Convert.ToDecimal(callback.TxnAmt);
-                decimal payAmount = total_fee / 100;
+                if (callback.TxnStatus == "1" && callback.BusinessId == PPosPayConfig.MerchNo)
+                {
+                    string out_trade_no = callback.ChannelId;
+                    decimal payAmount = Convert.ToDecimal(callback.TxnAmt);
 
-                Flw_OrderBusiness.OrderPay(out_trade_no, payAmount, SelttleType.StarPos);
+                    Data_Order order = MPOrderBusiness.GetOrderModel(out_trade_no);
+                    //判断是莘拍档订单还是云平台订单
+                    if (order != null)
+                    {
+                        //莘拍档订单处理
+                        // 判断payAmount是否确实为该订单的实际金额
+                        if (order.Price != payAmount)
+                        {
+                            LogHelper.SaveLog(TxtLogType.WeiXin, TxtLogContentType.Debug, TxtLogFileType.Day, "应用：莘拍档 订单号：" + out_trade_no + " 警告：支付支付金额验证失败！！！");
+                        }
+                        else
+                        {
+                            if (MPOrderBusiness.UpdateOrderForPaySuccess(out_trade_no, callback.logNo))
+                            {
+                                LogHelper.SaveLog(TxtLogType.WeiXin, TxtLogContentType.Debug, TxtLogFileType.Day, "应用：莘拍档 订单号：" + out_trade_no + " 支付成功！");
+                            }
+                            else
+                            {
+                                LogHelper.SaveLog(TxtLogType.WeiXin, TxtLogContentType.Debug, TxtLogFileType.Day, "应用：莘拍档 订单号：" + out_trade_no + " 已支付订单更新失败！！！");
+                            }
+                        }
+                    }
+                    else
+                    {
+                        //云平台订单处理
+                        Flw_OrderBusiness.OrderPay(out_trade_no, payAmount, SelttleType.StarPos);
+                    }
+                }
+                else
+                {
+                    PayList.AddNewItem(callback.TxnLogId, callback.TxnAmt);
 
-                #region MyRegion
-//                Flw_Order order = Flw_OrderBusiness.GetOrderModel(out_trade_no);
-//                if (order != null)
-//                {
-//                    decimal PayCount = order.PayCount != null ? (decimal)order.PayCount * 100 : 0; //应付金额
-//                    decimal FreePay = order.FreePay != null ? (decimal)order.FreePay * 100 : 0;   //减免金额
+                    DataAccess ac = new DataAccess();
+                    string out_trade_no = callback.TxnLogId;
+                    string sql = "";
 
-//                    if (total_fee == PayCount - FreePay)
-//                    {
-//                        string payTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-//                        string sql = string.Format("update Flw_Order set OrderStatus=2, RealPay='{0}', PayTime='{1}' where OrderID='{2}'", payAmount, payTime, out_trade_no);
-//                        XCCloudBLL.ExecuteSql(sql);
+                    sql = "update data_order set PayStatus='1',PayTime=GETDATE() where OrderID='" + out_trade_no + "' and PayStatus='0'"; //支付成功
+                    ac.Execute(sql);
 
-//                        OrderPayNotify.AddOrderPayCache(out_trade_no, payAmount, payTime, 2);
+                    sql = "select o.Price, s.* from Data_Order o,Base_StoreInfo s where o.StoreID=s.StoreID and o.OrderID='" + out_trade_no + "'";
+                    DataTable dt = ac.GetTable(sql);
+                    if (dt.Rows.Count > 0)
+                    {
+                        //获取当前结算费率，计算手续费
+                        double fee = Convert.ToDouble(dt.Rows[0]["POSStarFee"]);
+                        double d = Math.Round(Convert.ToDouble(dt.Rows[0]["Price"]) * fee, 2, MidpointRounding.AwayFromZero);   //最小单位为0.01元
+                        if (d < 0.01) d = 0.01;
+                        sql = "update data_order set Fee='" + d + "' where OrderID='" + out_trade_no + "'";
+                        ac.Execute(sql);
+                    }
 
-//                        sql = @"SELECT a.StoreID, SettleFee FROM Base_StoreInfo a
-//                                INNER JOIN Flw_Order b ON b.StoreID = a.StoreID
-//                                INNER JOIN Base_SettlePPOS c ON c.ID = a.SettleID
-//                                WHERE b.OrderID = '" + out_trade_no + "'";
-
-//                        DataTable dt = XCCloudBLL.ExecuterSqlToTable(sql);
-//                        if (dt.Rows.Count > 0)
-//                        {
-//                            //获取当前结算费率，计算手续费
-//                            double fee = Convert.ToDouble(dt.Rows[0]["SettleFee"]);
-//                            double d = Math.Round(Convert.ToDouble(payAmount) * fee, 2, MidpointRounding.AwayFromZero);   //最小单位为0.01元
-//                            if (d < 0.01) d = 0.01;
-//                            sql = "update Flw_Order set PayFee='" + d + "' where OrderID='" + out_trade_no + "'";
-//                            XCCloudBLL.ExecuteSql(sql);
-//                        }
-//                    }
-//                    else
-//                    {
-//                        //支付异常
-//                        //PayList.AddNewItem(out_trade_no, amount);
-//                        string sql = string.Format("update Flw_Order set OrderStatus=3, RealPay='{0}', PayTime=GETDATE() where OrderID='{1}'", payAmount, out_trade_no);
-//                        XCCloudBLL.ExecuteSql(sql);
-//                    }
-//                } 
-                #endregion
+                    ac.Dispose();
+                }
+            }
+            else
+            {
+                r = "{\"RspCode\":\"999999\",\"RspDes\":\"\"}";
             }
 
             Response.ContentType = "application/json";
-            Response.HeaderEncoding = Encoding.GetEncoding("GBK");
-            //string blank = "";
-            //blank = blank.PadLeft(64, ' ');
-            //string responseWrite=
-            string r = "{\"RspCode\":\"000000\",\"RspDes\":\"\"}";
-            //Response.Write(string.Format("{\"RspCode\":\"000000\",\"RspDes\":\"{0}\"}", blank));
+            Response.HeaderEncoding = Encoding.GetEncoding("GBK");            
             Response.Write(r);
         }
     }

@@ -32,11 +32,11 @@
 	}
 </style>
 <body>
-	<div class="" style="padding: 10px">
-		<blockquote class="layui-elem-quote" style="text-align: right;padding-right: 100px;">
+	<div class="" style="padding: 5px">
+		<div class="layui-col-md12 layui-col-lg12 layui-col-sm12" style="text-align: right;">
 			 <button type="button" class="layui-btn layui-btn_serch" data-type="reload" id="shBtn"><i class="layui-icon">&#xe615;</i>高级搜索</button>
 			 <button type="button" class="layui-btn layui-btn-normal addbtn" id="addNewStore">新增</button>
-		</blockquote>
+		</div>
 		<div class="layui-col-md12 layui-col-lg12 layui-col-sm12">
 			<table class="layui-hide" id="storeListTable"  lay-filter="storeList"></table>
 		</div>
@@ -894,7 +894,6 @@
                             for(var i=0;i<arr.length;i++){
                                 arrList.push(arr[i])
                             }
-                            console.log(arrList)
                             layer.open({
                                 type: 1,
                                 title:'高级查询',
@@ -1015,13 +1014,6 @@
                 layer.closeAll();
             })
         }
-        function js_strto_time(str_time){
-            var new_str = str_time.replace(/:/g,'-');
-            new_str = new_str.replace(/ /g,'-');
-            var arr = new_str.split("-");
-            var datum = new Date(Date.UTC(arr[0],arr[1]-1,arr[2]));
-            return strtotime = datum.getTime()/1000;
-        }
         layui.use(['upload','form','layer'], function(){
             var $ = layui.jquery
                 ,upload = layui.upload,form=layui.form,layer=layui.layer;
@@ -1117,7 +1109,7 @@
         function showParentId(){
             $('#parentId option[value!=""]').remove();
             var obj={'userToken':token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
-            var url="/XCCloud/StoreInfo?action=GetParentStoreList";
+            var url="/XCCloud/StoreInfo?action=GetStoreUncheckList";
             var parasJson = JSON.stringify(obj);
             $.ajax({
                 type: "post",

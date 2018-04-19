@@ -19,7 +19,7 @@ using XCCloudService.Model.XCCloud;
 
 namespace XXCloudService.Api.XCCloud
 {
-    [Authorize(Roles = "StoreUser")]
+    [Authorize(Roles = "MerchUser, StoreUser")]
     /// <summary>
     /// Project 的摘要说明
     /// </summary>
@@ -56,6 +56,30 @@ namespace XXCloudService.Api.XCCloud
                            };
 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, linq.ToList());
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object GetProjectDic(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
+
+                IData_ProjectInfoService data_ProjectInfoService = BLLContainer.Resolve<IData_ProjectInfoService>();
+                var linq = from a in data_ProjectInfoService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase))
+                           select new
+                           {
+                               ID = a.ID,
+                               ProjectName = a.ProjectName
+                           };
+
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, linq);
             }
             catch (Exception e)
             {

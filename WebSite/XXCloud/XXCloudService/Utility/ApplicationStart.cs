@@ -16,6 +16,7 @@ using XCCloudService.Model.CustomModel.XCCloud;
 using XCCloudService.Model.WeiXin.Session;
 using XCCloudService.SocketService.TCP.Business;
 using XCCloudService.SocketService.UDP;
+using XXCloudService.OrderPayCallback.Common;
 
 namespace XCCloudService.Utility
 {
@@ -41,6 +42,7 @@ namespace XCCloudService.Utility
                 XCGameManaDeviceInit();
                 XCCloudManaUserInit();
                 FilterMobileInit();
+                XinchenPayInit();
             }
             catch(Exception e)
             {
@@ -230,6 +232,21 @@ namespace XCCloudService.Utility
             catch(Exception ex)
             {
                 LogHelper.SaveLog(TxtLogType.SystemInit, "FilterMobileInit..." + Utils.GetException(ex));
+            }
+        }
+
+        /// <summary>
+        /// 莘宸自助机支付数据初始化
+        /// </summary>
+        public static void XinchenPayInit()
+        {
+            try
+            {
+                PayList.Init();
+            }
+            catch (Exception ex)
+            {
+                LogHelper.SaveLog(TxtLogType.SystemInit, "XinchenPayInit..." + Utils.GetException(ex));
             }
         }
     }

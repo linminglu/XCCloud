@@ -70,6 +70,8 @@ namespace XXCloudService.WeiXin
                         int switchMerch = base_UserInfoModel.SwitchMerch ?? 0;
                         int switchStore = base_UserInfoModel.SwitchStore ?? 0;
                         int switchWorkstation = base_UserInfoModel.SwitchWorkstation ?? 0;
+                        string merchId = string.Empty;
+                        string storeId = string.Empty;
 
                         if (userType == (int)UserType.Xc)
                         {
@@ -88,8 +90,8 @@ namespace XXCloudService.WeiXin
                             }
 
                             logType = (int)RoleType.StoreUser;
-                            string storeId = base_UserInfoModel.StoreID;
-                            string merchId = base_UserInfoModel.MerchID;
+                            storeId = base_UserInfoModel.StoreID;
+                            merchId = base_UserInfoModel.MerchID;
                             var dataModel = new MerchDataModel { StoreID = storeId, MerchID = merchId };
                             token = XCCloudUserTokenBusiness.SetUserToken(userId.ToString(), logType, dataModel);
                         }
@@ -102,7 +104,7 @@ namespace XXCloudService.WeiXin
                             }
 
                             logType = (int)RoleType.MerchUser;
-                            string merchId = base_UserInfoModel.MerchID;
+                            merchId = base_UserInfoModel.MerchID;
                             IBase_MerchantInfoService base_MerchantInfoService = BLLContainer.Resolve<IBase_MerchantInfoService>();
                             if (!base_MerchantInfoService.Any(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)))
                             {
@@ -116,7 +118,7 @@ namespace XXCloudService.WeiXin
                         }
 
                         Response.Redirect(WeiXinConfig.RedirectMainPage + "?token=" + token + "&logType=" + logType + "&userType=" + userType + "&merchTag=" + merchTag +
-                            "&switchMerch=" + switchMerch + "&switchStore=" + switchStore + "&switchWorkstation=" + switchWorkstation,
+                            "&switchMerch=" + switchMerch + "&switchStore=" + switchStore + "&switchWorkstation=" + switchWorkstation + "&merchId=" + merchId + "&storeId=" + storeId,
                             false);
                     }
                     else if (count > 1)

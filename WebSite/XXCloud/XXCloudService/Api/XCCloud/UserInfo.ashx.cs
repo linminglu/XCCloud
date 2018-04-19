@@ -640,6 +640,7 @@ namespace XCCloudService.Api.XCCloud
                     string merchId = string.Empty;
                     XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                     merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
+                    int userId = Convert.ToInt32(userTokenKeyModel.LogId);
 
                     IBase_StoreInfoService base_StoreInfoService = BLLContainer.Resolve<IBase_StoreInfoService>();
                     var storeIds = base_StoreInfoService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)).Select(o => o.StoreID).ToList();                    
@@ -647,7 +648,7 @@ namespace XCCloudService.Api.XCCloud
                     int UserStatusId = dict_SystemService.GetModels(p => p.DictKey.Equals("员工状态")).FirstOrDefault().ID;
 
                     var dbContext = DbContextFactory.CreateByModelNamespace(typeof(Base_UserInfo).Namespace);
-                    var linq = from a in dbContext.Set<Base_UserInfo>().Where(p => storeIds.Contains(p.StoreID))
+                    var linq = from a in dbContext.Set<Base_UserInfo>().Where(p => p.UserID != userId && (storeIds.Contains(p.StoreID) || merchId.Equals(p.MerchID, StringComparison.OrdinalIgnoreCase)))
                                 join b in dbContext.Set<Base_StoreInfo>() on a.StoreID equals b.StoreID into b1
                                 from b in b1.DefaultIfEmpty()
                                 join c in dbContext.Set<Base_UserGroup>() on a.UserGroupID equals c.ID into c1
@@ -931,9 +932,9 @@ namespace XCCloudService.Api.XCCloud
                 string reason = dicParas.ContainsKey("reason") ? (dicParas["reason"] + "") : string.Empty;
                 string isAdmin = dicParas.ContainsKey("isAdmin") ? (dicParas["isAdmin"] + "") : string.Empty;
                 string userType = dicParas.ContainsKey("userType") ? (dicParas["userType"] + "") : string.Empty;
-            string switchmerch = dicParas.ContainsKey("switchmerch") ? (dicParas["switchmerch"] + "") : string.Empty;
-            string switchstore = dicParas.ContainsKey("switchstore") ? (dicParas["switchstore"] + "") : string.Empty;
-            string switchworkstation = dicParas.ContainsKey("switchworkstation") ? (dicParas["switchworkstation"] + "") : string.Empty;
+                string switchmerch = dicParas.ContainsKey("switchmerch") ? (dicParas["switchmerch"] + "") : string.Empty;
+                string switchstore = dicParas.ContainsKey("switchstore") ? (dicParas["switchstore"] + "") : string.Empty;
+                string switchworkstation = dicParas.ContainsKey("switchworkstation") ? (dicParas["switchworkstation"] + "") : string.Empty;
             int iUserId, iState; 
 
                 if (string.IsNullOrEmpty(userId))

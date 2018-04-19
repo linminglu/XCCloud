@@ -17,10 +17,10 @@ namespace XCCloudService.Model.XCCloud
         public int ID { get; set; }
         public string StoreID { get; set; }
         public string ICardID { get; set; }
+        public Nullable<int> UID { get; set; }
         public Nullable<int> DigitLevelID { get; set; }
         public Nullable<System.DateTime> CreateTime { get; set; }
         public Nullable<int> Status { get; set; }
-        public Nullable<int> UID { get; set; }
         public Nullable<int> Balance { get; set; }
         public Nullable<System.DateTime> EndDate { get; set; }
         public Nullable<System.DateTime> SaleDate { get; set; }

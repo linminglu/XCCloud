@@ -108,6 +108,7 @@
     <Compile Include="CustomModel\XCGameManager\TerminalStoreReponseModel.cs" />
     <Compile Include="CustomModel\XCGameManager\TmpmemberModel.cs" />
     <Compile Include="CustomModel\XCGameManager\TokenModel.cs" />
+    <Compile Include="CustomModel\XCGameManager\WxConfigModel.cs" />
     <Compile Include="CustomModel\XCGameManager\XCGameManaRadarMonitor.cs" />
     <Compile Include="CustomModel\XCGame\DashboardModel.cs" />
     <Compile Include="CustomModel\XCGame\FoodsModel.cs" />
@@ -269,6 +270,9 @@
     <Compile Include="XCCloud\Base_MerchFunction.cs">
       <DependentUpon>XCCloudDBModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="XCCloud\Base_SettleLCPay.cs">
+      <DependentUpon>XCCloudDBModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="XCCloud\Base_SettleOrg.cs">
       <DependentUpon>XCCloudDBModel.tt</DependentUpon>
     </Compile>
@@ -354,6 +358,9 @@
       <DependentUpon>XCCloudDBModel.tt</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_Food_Level.cs">
+      <DependentUpon>XCCloudDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_Food_Sale.cs">
       <DependentUpon>XCCloudDBModel.tt</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_Food_StoreList.cs">
@@ -444,6 +451,9 @@
       <DependentUpon>XCCloudDBModel.tt</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_Storage_Record.cs">
+      <DependentUpon>XCCloudDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_SupplierList.cs">
       <DependentUpon>XCCloudDBModel.tt</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_Workstation.cs">

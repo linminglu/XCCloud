@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Vue-ydui Demo</title>
+    <title>莘拍档</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- 引入样式 -->
     <link rel="stylesheet" href="css/ydui.rem.css">
@@ -14,7 +14,6 @@
     </style>
 </head>
 <body>
-
 <div id="app">
     <div>
         <div class="page-bottom">
@@ -61,27 +60,36 @@
                 <yd-button size="large" type="primary" @click.native="confirm">primary</yd-button>
                 <yd-button size="large" type="hollow" @click.native="cancel">hollow</yd-button>
             </yd-popup>
-            <!--<yd-list>-->
-                <!--<yd-list-item v-for="item, key in orderList" :key="item.index">-->
-                    <!--<div class='section_items {{index%2==0? "background1" : "background2"}}' data-id="{{item.storeId}}">-->
-                        <!--<div class="section_c1">-->
-                            <!--<div class='section_T'>{{item.StoreName}}</div>-->
-                            <!--<div class='section_r'>{{item.Descript}}</div>-->
-                            <!--<div>{{item.PayStatus}}</div>-->
-                        <!--</div>-->
-                        <!--<div class="section_c2">-->
-                            <!--<div>{{item.CreateTime}}</div>-->
-                        <!--</div>-->
-                        <!--<div class="section_c3">-->
-                            <!--<div class='section_c'>￥{{item.Price}}元</div>-->
-                            <!--<div class='section_c'>{{item.OrderType}}</div>-->
-                            <!--<div class='section_c'>{{item.Coins}}个</div>-->
-                            <!--<div class='section_c'>{{item.BuyType}}</div>-->
-                        <!--</div>-->
-                    <!--</div>-->
-                <!--</yd-list-item>-->
-            <!--</yd-list>-->
-            <!--<div class='allover' hidden='{{allover}}'>已加载全部</div>-->
+            <yd-infinitescroll :callback="loadList" ref="infinitescrollDemo">
+
+                <yd-list theme="1" slot="list">
+                    <yd-list-item v-for="item, key in orderList" :key="item.index">
+                        <div class='section_items' :class="{'active':index%2==0? 'background1' : 'background2'}">
+                            <div class="section_c1">
+                                <div class='section_T'>{{item.StoreName}}</div>
+                                <div class='section_r'>{{item.Descript}}</div>
+                                <div>{{item.PayStatus}}</div>
+                            </div>
+                            <div class="section_c2">
+                                <div>{{item.CreateTime}}</div>
+                            </div>
+                            <div class="section_c3">
+                                <div class='section_c'>￥{{item.Price}}元</div>
+                                <div class='section_c'>{{item.OrderType}}</div>
+                                <div class='section_c'>{{item.Coins}}个</div>
+                                <div class='section_c'>{{item.BuyType}}</div>
+                            </div>
+                        </div>
+                    </yd-list-item>
+                </yd-list>
+
+                <!-- 数据全部加载完毕显示 -->
+                <span slot="doneTip">已加载全部</span>
+
+                <!-- 加载中提示，不指定，将显示默认加载中图标 -->
+                <img slot="loadingTip" src="http://static.ydcss.com/uploads/ydui/loading/loading10.svg"/>
+
+            </yd-infinitescroll>
         </div>
     </div>
 </div>
@@ -116,7 +124,8 @@
             dataSelected2:"",
             show4: false,
             today: "",
-            mobileToken:''
+            allover:"",
+            mobileToken:'90e28cb9261348f4b74547e531a7b225'
         },
         mounted: function () {
             this.newTimes();
@@ -135,7 +144,7 @@
                 this.datetime4 =yy+"-"+mm+"-"+dd;
                 this.datetime5 =yy+"-"+mm+"-"+dd;
             },
-            confirm:function (pageIndex) {
+            confirm:function () {
                 var that =this;
                 this.$dialog.loading.open('');
                 if (parseInt(that.dateInput0) <= parseInt(that.dateInput1) || that.dateInput0 == "" || that.dateInput1 == ""){
@@ -173,15 +182,15 @@
                     sysId: sysId,
                     versionNo: versionNo,
                     mobileToken: that.mobileToken,
-                    pageIndex: pageIndex,
-                    storename: that.data.storeName,
-                    startcoins: that.data.startcoins,
-                    buytype: that.data.buyType,
-                    startcreatetime: that.data.startcreatetime,
-                    startprice: that.data.startprice,
-                    endcreatetime: that.data.endcreatetime,
-                    endcoins: that.data.endcoins,
-                    endprice: that.data.endprice
+                    pageIndex: "0",
+                    storename: that.storeName,
+                    startcoins: that.startcoins,
+                    buytype: that.buyType,
+                    startcreatetime: that.startcreatetime,
+                    startprice: that.startprice,
+                    endcreatetime: that.endcreatetime,
+                    endcoins: that.endcoins,
+                    endprice: that.endprice
                 };
                 axios.post(url_getDataOrder, obj).then(function (res) {
                     that.$dialog.loading.close();
@@ -242,6 +251,66 @@
                 that.dataSelected2="";
             },
             Load: function () {
+                var that =this;
+//                var mobileToken = res.data.mobileToken;//获取手机令牌
+                this.$dialog.loading.open('');
+                var obj={
+                    sysId: sysId,
+                    versionNo: versionNo,
+                    mobileToken: that.mobileToken,
+                    pageIndex: "0",
+                    storename: "",
+                    startcoins: "",
+                    buytype: "",
+                    startcreatetime: "",
+                    startprice: "",
+                    endcreatetime: "",
+                    endcoins: "",
+                    endprice: ""
+                };
+                axios.post(url_getDataOrder, obj).then(function (res) {
+                    that.$dialog.loading.close();
+                    that.msgPrompt(res.data);
+                    console.log(res.data);
+                    if (res.data.result_code === '1') {
+                        var orderListData = [];
+                        for (var i = 0; i < res.data.result_data.Lists.length; i++) {
+                            if (res.data.result_data.Lists[i].OrderType == "0") {
+                                res.data.result_data.Lists[i].OrderType = "微信支付"
+                            } else {
+                                res.data.result_data.Lists[i].save_coins = "其他支付"
+                            }
+                            if (res.data.result_data.Lists[i].PayStatus == "0") {
+                                res.data.result_data.Lists[i].PayStatus = "未支付"
+                            } else {
+                                res.data.result_data.Lists[i].PayStatus = "已支付"
+                            }
+                            orderListData.push({
+                                CreateTime: res.data.result_data.Lists[i].CreateTimes,
+                                Price: res.data.result_data.Lists[i].Price,
+                                Descript: res.data.result_data.Lists[i].Descript,
+                                StoreName: res.data.result_data.Lists[i].StoreName,
+                                Coins: res.data.result_data.Lists[i].Coins,
+                                BuyType: res.data.result_data.Lists[i].BuyType,
+                                OrderType: res.data.result_data.Lists[i].OrderType,
+                                PayStatus: res.data.result_data.Lists[i].PayStatus
+                            })
+                        }
+                        that.orderList =orderListData;
+                        that.orderPage =res.data.result_data.Page;
+                        that.Count =res.data.result_data.Count;
+                        that.Buycoins =res.data.result_data.Buycoins;
+                        that.Totalcoins =res.data.result_data.Buycoins;
+                        that.Totalmoney =res.data.result_data.Totalmoney;
+                        that.BuyTypelist =res.data.result_data.BuyTypelist;
+                        that.StoreNamelist =res.data.result_data.StoreNamelist;
+                    }
+                }).catch(function (err) {
+                    that.$dialog.loading.close();
+                    console.log(err);
+                })
+            },
+            loadList: function (){
 
             },
             msgPrompt:function (res) {

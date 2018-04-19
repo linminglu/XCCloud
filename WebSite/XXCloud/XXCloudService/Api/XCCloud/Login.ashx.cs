@@ -53,6 +53,8 @@ namespace XXCloudService.Api.XCCloud
                 string merchId = base_UserInfoModel.MerchID;
                 var dataModel = new MerchDataModel { StoreID = storeId, MerchID = merchId };
                 userLogResponseModel.Token = XCCloudUserTokenBusiness.SetUserToken(userId.ToString(), logType, dataModel);
+                userLogResponseModel.MerchID = merchId;
+                userLogResponseModel.StoreID = storeId;
             }
             else
             {
@@ -74,14 +76,15 @@ namespace XXCloudService.Api.XCCloud
                 var dataModel = new MerchDataModel { MerchID = merchId, MerchType = base_MerchantInfoModel.MerchType, CreateType = base_MerchantInfoModel.CreateType, CreateUserID = base_MerchantInfoModel.CreateUserID };
                 userLogResponseModel.Token = XCCloudUserTokenBusiness.SetUserToken(userId.ToString(), logType, dataModel);
                 userLogResponseModel.MerchTag = base_MerchantInfoModel.MerchTag;
+                userLogResponseModel.MerchID = merchId;
             }
 
             userLogResponseModel.LogType = logType;
             userLogResponseModel.UserType = userType;
             userLogResponseModel.SwitchMerch = switchMerch;
             userLogResponseModel.SwitchStore = switchStore;
-            userLogResponseModel.SwitchWorkstation = switchWorkstation;
-            
+            userLogResponseModel.SwitchWorkstation = switchWorkstation;            
+
             return true;
         }
 

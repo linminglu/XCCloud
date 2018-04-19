@@ -125,7 +125,9 @@ namespace XCCloudService.Common.Enum
         [LogFolderAttribute(FolderName = "WorkFlow")]
         WorkFlow = 10, //工作流
         [LogFolderAttribute(FolderName = "WorkFlow")]
-        LogDBExcepton = 11 //工作流
+        LogDBExcepton = 11, //工作流
+        [LogFolderAttribute(FolderName = "Redis")]
+        Redis = 12 //Redis
     }
     
     public enum TxtLogContentType
@@ -480,23 +482,27 @@ namespace XCCloudService.Common.Enum
     //套餐
     public enum FoodType
     {
-        Coin = 0,//售币
+        Coin = 0,//充值
         Member = 1,//入会
         Digit = 2,//数字币
         Good = 3,//商品
         Ticket = 4,//门票
-        Beverage = 5,//餐饮
-        Mixed = 6//混合
+        Beverage = 5//礼包
     }
 
     public enum FoodDetailType
     {
-        Coin = 0,//代币
-        Beverage = 1,//餐饮
-        Good = 2,//商品
-        Ticket = 3,//门票
-        Extended = 4,//扩展赠送跟会员级别绑定
-        Digit = 5//扩展赠送跟会员级别绑定
+        Coin = 0,//会员币种
+        Good = 1,//礼品
+        Ticket = 2,//门票
+        Digit = 3,//数字币
+        Coupon = 4//优惠券
+    }
+
+    public enum OperateType
+    {
+        CoinOrTicket = 0,//实物币票
+        Card = 1 //存入卡
     }
 
     public enum RechargeManner
@@ -543,12 +549,13 @@ namespace XCCloudService.Common.Enum
     }
 
     //优惠时段，时段类型
-    public enum PeriodType
+    public enum TimeType
     {
-        WorkDay = 0,//工作日
-        Holiday = 1,//节假日
-        Double = 2,//双休制
-        Custom = 3//自定义
+        Custom = 0,//自定义
+        Workday = 1,//工作日
+        Weekend = 2,//周末
+        Holiday = 3//节假日
+        
     }
 
     //连锁门店权重配置中使用
@@ -686,6 +693,14 @@ namespace XCCloudService.Common.Enum
     {
         Digit = 0,//电子优惠券
         Entry = 1 //实物优惠券
+    }
+
+    //券状态
+    public enum CouponState
+    {
+        UnUsed = 0,   //未使用
+        Applied = 1,  //已核销
+        Locked = 2    //已锁定
     }
 
     /// <summary>

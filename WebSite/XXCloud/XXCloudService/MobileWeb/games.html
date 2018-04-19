@@ -3,191 +3,329 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Vue-ydui Demo</title>
+    <title>莘拍档</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- 引入样式 -->
     <link rel="stylesheet" href="css/ydui.rem.css">
     <!-- 引入rem自适应类库 -->
-    <script src="js/ydui.flexible.js"></script>
     <style>
-        body{
-            height: 100%;
-            width: 100%;
-        }
-        /*.account-password-container {*/
-            /*display: flex;*/
-            /*flex-direction: row;*/
-            /*width: 100%;*/
-            /*height: 100rpx;*/
-            /*align-items: center;*/
-            /*border-bottom: 1rpx solid #eee;*/
-        /*}*/
+        body{height: 100%;width: 100%;overflow: hidden;}
+        .header{width: 90%;display: flex;flex-direction: row;margin: 0.2rem 5%;justify-content: space-between;}
+        .header_img{width: 1.3rem;height: 1.3rem;}
+        .header_text{padding-left: 0.2rem;font-size: 0.28rem;margin-top: 0.1rem}
+        .header_active{margin-top: 0.2rem; display: flex;flex-direction: row;color: #ff5400;}
+        .header_active span{margin-left: 0.1rem;margin-top: 0.15rem;color: #ff5400;font-weight: 600;}
+        .header_active img{width: 0.6rem;height: 0.6rem;}
+        /*.header_b{b}*/
+        .header_b img{width: 1.2rem;height: 0.8rem;margin-top: 0.3rem;}
+        .rollText{padding-left: 0.3rem;}
+        .gamePlay_img{background: url("images/btnBg.png") no-repeat center 0.2rem;width: 100%;height: 3rem;text-align: center;background-size: 50% 80%;}
+        .gamePlay_img h3{padding-top: 0.6rem;font-size: 0.4rem;color: #fc5363;font-weight: bold;}
 
-
-        /*.Verification {*/
-            /*padding-left: 10rpx;width: 500rpx;height: 70rpx;*/
-            /*font-size: 32rpx;*/
-        /*}*/
-
-        /*.login-button {*/
-            /*height: 100rpx;*/
-            /*background-color: #fb7c58;*/
-            /*font-size: 34rpx;*/
-            /*margin: 20rpx 50rpx;*/
-            /*color: #fff;*/
-            /*text-align: center;*/
-        /*}*/
-        /*.Invisibility{font-size: 28rpx;width: 330rpx;padding-left:20rpx;}*/
-        /*.Verificationimg{width: 100rpx;}*/
-        /*.hidden{display: none;}*/
+        .gameGaming{display: flex;flex-direction: column;width: 100%;}
+        .gameGive_b{display: flex;flex-direction: row;justify-content:center;font-size: 0.35rem;line-height: 0.6rem;margin-top: 0.3rem;}
+        .gameGive_b img{width: 0.6rem;height: 0.6rem;}
+        .discount_text button{font-size: 0.3rem;padding: 0 0.06rem;font-weight: 600;color: #d94927;}
+        .modal-title {  font-size: 0.5rem; font-weight: bold; line-height: 0.8rem; margin-top: 0.3rem; color: #fff; text-align: center;}
+        .gameGaming_b{display: flex;flex-direction: row;justify-content: center;color: #ff5400;font-size: 0.5rem;font-weight: bold;line-height: 0.6rem;margin-top: 0.2rem;}
+        .gameGaming_b img{width: 0.6rem;height: 0.6rem;}
+        .gameGamingTop input{border: none; border-bottom: 1px solid #666;line-height: 0.3rem;width: 4rem;padding-right: 0.5rem;padding-bottom: 0.2rem;margin-left:23%;color: #666;font-size: 0.4rem;margin-top: 0.4rem;text-align:right}
+        .gameGamingTop p{font-size: 0.24rem;color: #666;margin: 0.2rem 0;text-align: center;}
+        .gameGamingBtn{display: flex;flex-direction: row;flex: 1;padding: 0.1rem 9%;}
+        .gameGamingBtn .btn{width: 39%;margin: 0 1%;height: 0.8rem;line-height: 0.8rem;text-align: center;padding: 0;background: #3285ff;color: #fff;}
+        .gameGamingBtn .exitBtn{width: 39%;margin: 0 1%;height: 0.8rem;line-height: 0.8rem;text-align: center;padding: 0;background: #fc5363;color: #fff;}
     </style>
 </head>
 <body>
-
 <div id="app">
-    <yd-cell-group>
-        <yd-cell-item>
-            <img slot="icon" src="images/account.png">
-            <input slot="right" type="number" placeholder="请输入手机号" v-model="account" v-on:blur="inputPrompt">
-        </yd-cell-item>
-        <yd-cell-item>
-            <div slot="left" >
-                <img slot="icon" src="images/note.png">
-                <input type="text" placeholder="请输入验证码" v-model="password">
-            </div>
-            <div slot="right" >
-                <img slot="icon" :src="Verification">
-                <span @click="verificationChange">点击刷新</span>
-            </div>
-        </yd-cell-item>
-        <div>
-            <yd-button size="large" type="hollow" @click.native="login">hollow</yd-button>
+    <div class='header'>
+        <img class="header_img" src="images/portrait.jpg" alt="头像">
+        <div class="header_text">
+            <p>机台名称：{{deviceName}}</p>
+            <div class="header_active"><img slot="icon" src="images/sendImg.png"><span>限时活动中</span></div>
         </div>
-    </yd-cell-group>
-    <yd-cell-group>
-        <yd-cell-item>
-            <yd-icon slot="icon" name="phone3" size=".45rem"></yd-icon>
-            <input type="text" slot="right" placeholder="请输入短信验证码" v-model="smsCode">
-            <yd-sendcode slot="right"
-                         v-model="start1"
-                         second="30"
-                         @click.native="sendCode1"
-                         type="warning"
-            ></yd-sendcode>
-
-
-        </yd-cell-item>
-    </yd-cell-group>
-    <yd-button size="large" type="primary" @click.native="register">注册</yd-button>
+        <div class='header_b' v-if="headerBtn"><img src='images/welfare.png'></div>
+    </div>
+    <yd-rollnotice autoplay="2000" class="rollText">
+        <yd-rollnotice-item><span style="color:#F00;"> 荐 </span> 荣耀V9 3月超级钜惠！</yd-rollnotice-item>
+        <yd-rollnotice-item><span style="color:#F00;"> 荐 </span> 3.23京东超级品牌日格力盛典</yd-rollnotice-item>
+        <yd-rollnotice-item><span style="color:#F00;"> 荐 </span> 京东服饰 早春新品低至7折</yd-rollnotice-item>
+    </yd-rollnotice>
+    <div class="gamePlay_img" v-if="gameGive0">
+        <h3>玩一局</h3>
+        <div class="gameGive_b"><img slot="icon" src='images/b.png'><span>×{{deleteHide}}个</span></div>
+    </div>
+    <div class="gamePlay_img" v-if="gameGive">
+        <h3>玩{{item.needGive}}局</h3>
+        <div class="gameGive_b">送{{item.freeGive}}局</div>
+    </div>
+    <yd-button size="large" type="warning" @click.native="show = true">玩的</yd-button>
+    <yd-popup v-model="show" position="bottom" height="60%">
+        <yd-button type="warning" style="margin: 30px;" @click.native="show = false">Close</yd-button>
+        <yd-button type="warning" style="margin: 30px;" @click.native="show = false">Close Bottom Popup</yd-button>
+        <!--<yd-scrolltab>-->
+            <!--<yd-scrolltab-panel v-for="(item,index) in gamePlaylist" :key="item.foodID" label="" height="1rem" >-->
+                <!--<div class="modal-title">活动规则</div>-->
+                <!--<p>满“{{item.needCoin}}”就送</p>-->
+                <!--<p>立投“{{item.needCoin}}”币，直接送“{{item.freeCoin}}”</p>-->
+                <!--<p>达到“{{item.exitCoin}}”币，可退币</p>-->
+                <!--<button>立即投币</button>-->
+            <!--</yd-scrolltab-panel>-->
+        <!--</yd-scrolltab>-->
+    </yd-popup>
+    <div class="gameGaming" v-if="gameGaming">
+        <div class="gameGaming_b">
+            <img slot="icon" src="images/b.png"><span>币余额：{{balance}}</span>
+        </div>
+        <div class="gameGamingTop">
+            <input placeholder="请输入投币数" type='number' oninput="if(value.length>6)value=value.slice(0,6)">
+            <p>（投入为“{{discountPrice}}”的整数倍）</p>
+            <div class="gameGamingBtn">
+                <yd-button class="exitBtn" size="large" type="danger">退币</yd-button>
+                <yd-button class="btn" size="large" type="warning">投币</yd-button>
+            </div>
+            <p>一次性投{{needCoin}}币，赠送{{freeCoin}}币，达到{{exitCoin}}币即可推出</p>
+        </div>
+    </div>
+    <yd-button size="large" type="warning" @click.native="recharge">玩的不尽兴，马上充值</yd-button>
+    <yd-popup v-model="show2" position="bottom" height="60%">
+        <yd-button type="warning" style="margin: 30px;" @click.native="show2 = false">Close Bottom Popup</yd-button>
+        <div style="height: 3rem; overflow-y: auto; position: relative;">
+            <yd-scrolltab>
+                <yd-scrolltab-panel v-for="(item,index) in list" :key="item.foodID" label="" height="1rem">
+                    <div>{{item.coinQuantity}}币{{item.sendCoinQuantity}}￥{{item.foodPrice}}</div>
+                    <yd-button size="large" type="primary">立即充值</yd-button>
+                </yd-scrolltab-panel>
+            </yd-scrolltab>
+        </div>
+    </yd-popup>
 </div>
-
+<script src="js/ydui.flexible.js"></script>
 <!-- 引入 Vue -->
 <script src="js/vue.js"></script>
 <script src="js/jquery-1.8.3-min.js"></script>
 <!-- 引入组件库 -->
 <script src="js/ydui.rem.js"></script>
 <script src="js/axios.min.js"></script>
+<script src="https://gw.alipayobjects.com/as/g/h5-lib/alipayjsapi/3.1.0/alipayjsapi.min.js"></script>
 <script>
-    var geteway = "https://mp.4000051530.com";
-    var url_ImgCode ="/xcgamemana/token?action=checkImgCode"; //图形码验证接口
-    var url_sendSMSCode ="/xcgamemana/token?action=sendSMSCode";//发送验证码接口
-    var url_getMobileToken = "/xcgamemana/token?action=getMobileToken";//获取手机令牌接口
+    var sysId = 0; //调用方应用Id
+    var versionNo= "0.89"; //版本号
+    var url_getDataOrder = '/XCGameMana/DataOrder?action=getDataOrder';//获取分页订单列表
     var htmlfnc = new Vue({
         el: '#app',
         data:{
-            Verification: geteway + "/ServicePage/ValidateImg.aspx? t =" + new Date().getTime(),
-            account: '',
-            password: '',
-            smsCode:"",
-            start1:false
+            show: false,
+            show2: false,
+            mobileToken:'90e28cb9261348f4b74547e531a7b225',
+            deviceToken:"5c022c26",
+            deviceName:"",
+            headerBtn:true,
+            deleteHide:"",
+            gameGive:false,
+            needCoin:"",
+            gamePlaylist:[],
+            list:[],
+            gameGaming:true,
+            gameGive0:false,
+            putCoins:"",
+            discountPrice:"",
+            freeCoin:"",
+            exitCoin:"",
+            balance:"",
+            storeId:"",
+            memberToken:""
         },
         mounted: function () {
-            this.Load();
         },
         methods: {
-            toastSuccess: function() {
-                this.$dialog.toast({
-                    mes: '保存成功',
-                    timeout: 1500,
-                    icon: 'success'
-                });
-            },
-            verificationChange:function(){
-                this.Verification = geteway + "/ServicePage/ValidateImg.aspx? t =" + new Date().getTime()
-            },
-            inputPrompt:function () {
-                var mobile =this.account;
-                var myreg = /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1})|(17[0-9]{1}))+\d{8})$/;
-                if (!myreg.test(mobile) || mobile.length == 0 || mobile.length != 11) {
-                    this.$dialog.toast({
-                        mes: '请输入正确手机号！',
-                        timeout: 1500,
-                        icon: 'success'
-                    });
-                }
-            },
-            login:function () {
+            Load:function () {
                 var that =this;
-                var obj={"sysId": "0","versionNo": "0.0.0.1",mobile:that.account,code:that.password};
-                obj =JSON.stringify(obj);
-//                this.$dialog.loading.open();
-                console.log(that.account+"/"+that.password);
-                axios.post(url_ImgCode, obj).then(function (res) {
-//                    that.$dialog.loading.close();
-                    console.log(res.data);
+//                var mobileToken = res.data.mobileToken;//获取手机令牌
+//                let memberToken  = my.getStorageSync({ key: 'memberToken' }).data ||"";     //获取
+                this.$dialog.loading.open('');
+                var obj={
+                    sysId: sysId,
+                    versionNo: versionNo,
+                    deviceToken:that.deviceToken
+                };
+                axios.post('/xcgamemana/store?action=storeInfoByTerminalNo', obj).then(function (res) {
+                    that.$dialog.loading.close();
                     that.msgPrompt(res.data);
+                    console.log(res.data);
                     if (res.data.result_code === '1') {
+                        that.storeId = res.data.result_data.storeId;
+                        that.deviceName = res.data.result_data.deviceName;
+                        that.stateName = res.data.result_data.stateName;
+                        if(memberToken == ""){
+                            var memData={
+                                sysId: sysId,
+                                versionNo: versionNo,
+                                storeId: that.storeId,
+                                mobileToken: mobileToken
+                            };
+                            axios.post('/xcgamemana/token?action=getMemberToken', memData).then(function (res) {
+                                that.$dialog.loading.close();
+                                that.msgPrompt(res.data);
+                                console.log(res.data);
+                                if (res.data.result_code === '1') {
+                                        that.memberToken = res.data.result_data.memberToken;
+                                        that.balance = res.data.result_data.member.balance;
+//                                        my.setStorageSync({key: 'memberToken',data: memberToken});//缓存
+                                }
+                            }).catch(function (err) {
+                                that.$dialog.loading.close();
+                                console.log(err);
+                            })
+                        }else {
 
+                        }
                     }
                 }).catch(function (err) {
-//                    that.$dialog.loading.close();
+                    that.$dialog.loading.close();
                     console.log(err);
                 })
             },
-            sendCode1:function () {
-                this.$dialog.loading.open('发送中...');
-                this.start1 = true;
-                var that=this;
-                console.log(that.account+"/"+that.password);
-                var obj={"sysId": "0","versionNo": "0.0.0.1",mobile:that.account,code:that.password};
-                axios.post(url_sendSMSCode, obj).then(function (res) {
-                    console.log(res.data);
-                    that.$dialog.loading.close();
-                    if (res.data.result_code === '1') {
-                        this.$dialog.toast({
-                            mes: '已发送',
-                            icon: 'success',
-                            timeout: 1500
-                        });
-                    }
-                }).catch(function (err) {
-                    console.log(err);
-//                    this.$dialog.loading.close();
-//                    this.$dialog.toast({
-//                        mes: "请求失败!",
-//                        timeout: 1500,
-//                        icon: 'error'
-//                    });
-                });
-            },
-            register:function () {
+            GetGameInfo:function () {
                 var that =this;
                 this.$dialog.loading.open('');
-                var obj={"sysId": "0","versionNo": "0.0.0.1",mobile: that.account,smsCode: that.smsCode};
-                axios.post(url_getMobileToken, obj).then(function (res) {
-                    this.$dialog.loading.close();
+                var obj={
+                    sysId: sysId,
+                    versionNo: versionNo,
+                    deviceToken: that.deviceToken,
+                    memberToken: that.memberToken
+                };
+                axios.post('/XCGame/Game?action=GetGameInfo', obj).then(function (res) {
+                    that.$dialog.loading.close();
+                    that.msgPrompt(res.data);
                     console.log(res.data);
                     if (res.data.result_code === '1') {
+                        var gameType = res.data.result_data.gameType;
+                        if (gameType == "投币类"){
+                            console.log(res.data.result_data.gameFreeRule != "");
+                            if (res.data.result_data.gameFreeRule != "") {
+                                var gamePlaylist_ = [];
+                                for (var i = 0; i < res.data.result_data.gameFreeRule.length; i++) gamePlaylist_.push({
+                                    needGive: parseInt(res.data.result_data.gameFreeRule[i].needCoin) / parseInt(res.data.result_data.price),
+                                    freeGive: parseInt(res.data.result_data.gameFreeRule[i].freeCoin) / parseInt(res.data.result_data.price),
+                                    id: res.data.result_data.gameFreeRule[i].id
+                                });
+                                that.gameGive = "";
+                                that.gamePlaylist=gamePlaylist_;
+                            }
+                            that.gameslot = "";
+                            that.price =  res.data.result_data.price;
+                            that.discountPrice =  res.data.result_data.discountPrice;
+                        } else if (gameType == "博彩类"){
+                            console.log(res.data.result_data.gameFreeRule == "");
+                            if (res.data.result_data.gameFreeRule != ""){
+                                that.discountList=res.data.result_data.gameFreeRule;
+                                that.hearderBtn=false;
+                            }
+                            that.gameGaming=false;
+                            that.discountPrice =  res.data.result_data.discountPrice;
+                            that.putCoins =  "";
+                        }
                     }
                 }).catch(function (err) {
-                    this.$dialog.loading.close();
+                    that.$dialog.loading.close();
                     console.log(err);
                 })
+            },
+            getFoods:function () {
+                var that =this;
+                this.$dialog.loading.open('');
+                var obj={
+                    sysId: sysId,
+                    versionNo: versionNo,
+                    storeId: storeId,
+                    memberToken: that.data.memberToken
+                };
+                axios.post('/xcgame/Foods?action=getfoods', obj).then(function (res) {
+                    that.$dialog.loading.close();
+                    that.msgPrompt(res.data);
+                    console.log(res.data);
+                    if (res.data.result_code === '1') {
+                        var newsList = [];
+                        if (gameType == "投币类") {
+                            for (var i = 0; i < res.data.result_data.length; i++) {
+                                if (res.data.result_data[i].sendCoinQuantity == 0) {
+                                    var sendCoinQuantity = ""
+                                } else {
+                                    var sendCoinQuantity = "+" + res.data.result_data[i].sendCoinQuantity
+                                }
+                                newsList.push({
+                                    foodID: res.data.result_data[i].foodID,
+                                    foodName: res.data.result_data[i].foodName,
+                                    foodPrice: res.data.result_data[i].foodPrice,
+                                    coinQuantity: res.data.result_data[i].coinQuantity,
+                                    sendCoinQuantity: sendCoinQuantity
+                                })
+                            }
+                        } else if (gameType == "博彩类") {
+                            console.log(res.data.result_data[1].isQuickFood == 1)
+                            for (var i = 0; i < res.data.result_data.length; i++) {
+                                if (res.data.result_data[i].isQuickFood == 1) {
+                                    var indexQuick = i
+                                }
+                            }
+                            console.log(indexQuick)
+                            var quickPrice = res.data.result_data[indexQuick].coinQuantity / res.data.result_data[indexQuick].foodPrice
+                            console.log(quickPrice)
+                            newsList = [
+                                {
+                                    foodID: res.data.result_data[indexQuick].foodID,
+                                    foodPrice: 50,
+                                    coinQuantity: 50 * quickPrice,
+                                    sendCoinQuantity: "",
+                                    foodName: res.data.result_data[indexQuick].foodName
+                                },
+                                {
+                                    foodID: res.data.result_data[indexQuick].foodID,
+                                    foodPrice: 100,
+                                    coinQuantity: 100 * quickPrice,
+                                    sendCoinQuantity: "",
+                                    foodName: res.data.result_data[indexQuick].foodName
+                                },
+                                {
+                                    foodID: res.data.result_data[indexQuick].foodID,
+                                    foodPrice: 200,
+                                    coinQuantity: 200 * quickPrice,
+                                    sendCoinQuantity: "",
+                                    foodName: res.data.result_data[indexQuick].foodName
+                                },
+                                {
+                                    foodID: res.data.result_data[indexQuick].foodID,
+                                    foodPrice: 500,
+                                    coinQuantity: 500 * quickPrice,
+                                    sendCoinQuantity: "",
+                                    foodName: res.data.result_data[indexQuick].foodName
+                                },
+                                {
+                                    foodID: res.data.result_data[indexQuick].foodID,
+                                    foodPrice: 1000,
+                                    coinQuantity: 1000 * quickPrice,
+                                    sendCoinQuantity: "",
+                                    foodName: res.data.result_data[indexQuick].foodName
+                                }
+                            ]
+                        }
+                        console.log(newsList)
+                        that.setData({
+                            list: newsList,
+                        })
+                    }
+                }).catch(function (err) {
+                    that.$dialog.loading.close();
+                    console.log(err);
+                })
+            },
+            recharge:function () {
+                var that =this;
+                that.show2 = true;
 
             },
-            Load: function () {
 
-            },
             msgPrompt:function (res) {
                 if(res.return_code == 0){
                     this.$dialog.toast({
@@ -205,11 +343,6 @@
             }
         }
     });
-
-
-
-
-
 </script>
 </body>
 </html>

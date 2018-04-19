@@ -14,8 +14,8 @@ using XCCloudService.Business.XCGameMana;
 using XCCloudService.Common;
 using XCCloudService.Common.Enum;
 using XCCloudService.Model.XCGameManager;
+using XCCloudService.OrderPayCallback.Common;
 using XCCloudService.Pay.Alipay;
-using XCCloudService.PayChannel.Common;
 
 namespace XXCloudService.CallBack
 {
@@ -122,6 +122,7 @@ namespace XXCloudService.CallBack
             }
         }
 
+        #region 对支付宝异步通知的关键参数进行校验
         /// <summary>
         /// 对支付宝异步通知的关键参数进行校验
         /// </summary>
@@ -169,8 +170,10 @@ namespace XXCloudService.CallBack
             //验证上述四个参数，完全吻合则返回参数校验成功
             return true;
 
-        }
+        } 
+        #endregion
 
+        #region 获取支付宝POST过来通知消息，并以“参数名=参数值”的形式组成数组
         /// <summary>
         /// 获取支付宝POST过来通知消息，并以“参数名=参数值”的形式组成数组
         /// </summary>
@@ -192,6 +195,7 @@ namespace XXCloudService.CallBack
             }
 
             return sArray;
-        }
+        } 
+        #endregion
     }
 }

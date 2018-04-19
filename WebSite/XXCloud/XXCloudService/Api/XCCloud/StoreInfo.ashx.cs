@@ -680,26 +680,7 @@ namespace XCCloudService.Api.XCCloud
                             }
 
                             #endregion
-
-                            #region 初始化套餐设定
-
-                            //初始化套餐设定
-                            IData_FoodInfoService data_FoodInfoService = BLLContainer.Resolve<IData_FoodInfoService>();
-                            var data_FoodInfo = new Data_FoodInfo();
-                            data_FoodInfo.FoodName = "入会";
-                            data_FoodInfo.FoodType = (int)FoodType.Member;
-                            data_FoodInfo.FoodState = 1;
-                            data_FoodInfo.AllowPrint = 1;
-                            data_FoodInfo.ForeAuthorize = 1;
-                            data_FoodInfo.StoreID = storeId;
-                            if (!data_FoodInfoService.Add(data_FoodInfo))
-                            {
-                                errMsg = "添加入会套餐信息失败";
-                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                            }
-
-                            #endregion                            
-
+                            
                             ts.Complete();
 
                             //已提交工单，等待管理员审核

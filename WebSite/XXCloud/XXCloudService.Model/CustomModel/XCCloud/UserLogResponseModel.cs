@@ -31,5 +31,11 @@ namespace XCCloudService.Model.CustomModel.XCCloud
 
         [DataMember(Name = "switchWorkstation", Order = 7)]
         public int? SwitchWorkstation { get; set; }
+
+        [DataMember(Name = "merchId", Order = 8)]
+        public string MerchID { get; set; }
+
+        [DataMember(Name = "storeId", Order = 9)]
+        public string StoreID { get; set; }
     }    
 }

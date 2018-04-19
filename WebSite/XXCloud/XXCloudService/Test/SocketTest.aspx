@@ -29,6 +29,14 @@
 </script>
 
 <script type="text/javascript">
+
+    function getSendSignalRNotify() {
+        var parasObj = { "storeId": "100027", "segment": "0001", "signkey": "" };
+        var url = "/Test/SocketTest.ashx?method=sendSignalRNotify";
+        var parasJson = JSON.stringify(parasObj);
+        common(url, parasJson);
+    }
+
     function routeRegister() {
         var parasObj = { "storeId": "100027", "segment": "0001","signkey":"" };
         var url = "/Test/SocketTest.ashx?method=routeRegister";
@@ -139,6 +147,7 @@
 
         <input id="Button20" type="button" value="雷达向服务端发送会员结果回复" onclick="getMemberInfo()" />
     
+        <input id="btnSendSignalRNotify" type="button" value="btnSendSignalRNotify" onclick="getSendSignalRNotify()" />
     </div>
     </form>
 </body>

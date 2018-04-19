@@ -14,25 +14,27 @@ using XCCloudService.Model.CustomModel.XCGameManager;
 
 namespace XCCloudService.SocketService.TCP.HubService
 {
-    public class CurrentUser
-    {
-        public string ConnectionId { set; get; }
 
-        public string UserID { set; get; }
-
-        public List<int> InsList { set; get; }
-
-        public List<string> RadarTokenList { set; get; }
-
-        public List<string> StoreList { set; get; }
-
-        public List<string> SegmentList { set; get; }
-    }
 
     [HubName("XCGameUDPMsgHub")]
     public class XCGameUDPMsgHub : Hub
     {
-        public static List<CurrentUser> ConnectedUsers = new List<CurrentUser>();
+        public class CurrentUser
+        {
+            public string ConnectionId { set; get; }
+
+            public string UserID { set; get; }
+
+            public List<int> InsList { set; get; }
+
+            public List<string> RadarTokenList { set; get; }
+
+            public List<string> StoreList { set; get; }
+
+            public List<string> SegmentList { set; get; }
+        }
+
+        public static List<XCGameUDPMsgHub.CurrentUser> ConnectedUsers = new List<XCGameUDPMsgHub.CurrentUser>();
         public void Connect(string url, string userID,string storeIdStr,string segmentStr,string insStr)
         {
             var id = Context.ConnectionId;
@@ -46,7 +48,7 @@ namespace XCCloudService.SocketService.TCP.HubService
             }
 
             bool isNewUser = false;
-            CurrentUser currentUser = null;
+            XCGameUDPMsgHub.CurrentUser currentUser = null;
             UpdateUser(id, userID, out isNewUser, ref currentUser);
             if (isNewUser)
             {
@@ -61,12 +63,12 @@ namespace XCCloudService.SocketService.TCP.HubService
         }
 
 
-        private void UpdateUser(string connectionId,string userId,out bool isNewUser,ref CurrentUser currentUser)
+        private void UpdateUser(string connectionId, string userId, out bool isNewUser, ref XCGameUDPMsgHub.CurrentUser currentUser)
         {
-            CurrentUser user = GetCurrentUserByConnectedId(connectionId);
+            XCGameUDPMsgHub.CurrentUser user = GetCurrentUserByConnectedId(connectionId);
             if (user == null)
             {
-                CurrentUser newUser = CreateUser(connectionId, userId);
+                XCGameUDPMsgHub.CurrentUser newUser = CreateUser(connectionId, userId);
                 isNewUser = true;
                 currentUser = newUser;
             }
@@ -84,7 +86,7 @@ namespace XCCloudService.SocketService.TCP.HubService
         public void Exit(string userID)
         {
             var id = Context.ConnectionId;
-            CurrentUser user = GetCurrentUserByUserId(userID);
+            XCGameUDPMsgHub.CurrentUser user = GetCurrentUserByUserId(userID);
             if (user == null)
             {
                 Clients.Client(id).onExit(id, userID, 0, "监听未启动");
@@ -114,7 +116,7 @@ namespace XCCloudService.SocketService.TCP.HubService
         }
 
 
-        private void UpdateSettings(CurrentUser user,string storeIdStr,string segmentStr,string insStr)
+        private void UpdateSettings(XCGameUDPMsgHub.CurrentUser user, string storeIdStr, string segmentStr, string insStr)
         {
             user.StoreList.Clear();
             user.SegmentList.Clear();
@@ -158,9 +160,9 @@ namespace XCCloudService.SocketService.TCP.HubService
         }
 
 
-        private CurrentUser CreateUser(string connectionId, string userID)
+        private XCGameUDPMsgHub.CurrentUser CreateUser(string connectionId, string userID)
         {
-            CurrentUser user = new CurrentUser
+            XCGameUDPMsgHub.CurrentUser user = new XCGameUDPMsgHub.CurrentUser
             {
                 ConnectionId = connectionId,
                 UserID = userID,
@@ -173,7 +175,7 @@ namespace XCCloudService.SocketService.TCP.HubService
             return user;
         }
 
-        private void GetRadarList(CurrentUser user,ref List<XCGameManaRadarMonitor> monitorList,int type = 0)
+        private void GetRadarList(XCGameUDPMsgHub.CurrentUser user, ref List<XCGameManaRadarMonitor> monitorList, int type = 0)
         {
             string errMsg = string.Empty;
             string storeName = string.Empty;
@@ -264,7 +266,7 @@ namespace XCCloudService.SocketService.TCP.HubService
             }
 
             bool isNewUser = false;
-            CurrentUser currentUser = null;
+            XCGameUDPMsgHub.CurrentUser currentUser = null;
             UpdateUser(connectionId, userId, out isNewUser, ref currentUser);
 
             string errMsg = string.Empty;
@@ -289,110 +291,112 @@ namespace XCCloudService.SocketService.TCP.HubService
             }
         }
 
-        private CurrentUser GetCurrentUserByUserId(string userId)
+        private XCGameUDPMsgHub.CurrentUser GetCurrentUserByUserId(string userId)
         {
-            return ConnectedUsers.Where<CurrentUser>(p => p.UserID.Equals(userId)).FirstOrDefault<CurrentUser>();
+            return ConnectedUsers.Where<XCGameUDPMsgHub.CurrentUser>(p => p.UserID.Equals(userId)).FirstOrDefault<XCGameUDPMsgHub.CurrentUser>();
         }
 
         private CurrentUser GetCurrentUserByConnectedId(string connectedId)
         {
-            return ConnectedUsers.Where<CurrentUser>(p => p.ConnectionId.Equals(connectedId)).FirstOrDefault<CurrentUser>();
+            return ConnectedUsers.Where<XCGameUDPMsgHub.CurrentUser>(p => p.ConnectionId.Equals(connectedId)).FirstOrDefault<XCGameUDPMsgHub.CurrentUser>();
         }
 
         private void RemoveCurrentUserByUserId(string userId)
         {
-            var user = ConnectedUsers.Where<CurrentUser>(p => p.UserID.Equals(userId)).FirstOrDefault<CurrentUser>();
+            var user = ConnectedUsers.Where<XCGameUDPMsgHub.CurrentUser>(p => p.UserID.Equals(userId)).FirstOrDefault<XCGameUDPMsgHub.CurrentUser>();
             ConnectedUsers.Remove(user);
         }
-    }
 
-
-    public class SignalrServerToClient
-    {
-        static readonly IHubContext _myHubContext = GlobalHost.ConnectionManager.GetHubContext<XCGameUDPMsgHub>();
-        public static void BroadcastMessage(int insId, string name,string radar, string message,DateTime time)
+        public class SignalrServerToClient
         {
-            try
+            static readonly IHubContext _myHubContext = GlobalHost.ConnectionManager.GetHubContext<XCGameUDPMsgHub>();
+            public static void BroadcastMessage(int insId, string name, string radar, string message, DateTime time)
             {
-                foreach(var user in XCGameUDPMsgHub.ConnectedUsers)
+                try
                 {
-                    if (user.InsList.Where(p => p == insId).Count() > 0)
-                    { 
-                        if (insId == 240)
-                        {   
-                            //如果是雷达注册
+                    foreach (var user in XCGameUDPMsgHub.ConnectedUsers)
+                    {
+                        if (user.InsList.Where(p => p == insId).Count() > 0)
+                        {
+                            if (insId == 240)
+                            {
+                                //如果是雷达注册
+                                _myHubContext.Clients.Client(user.ConnectionId).broadcastMessage(name, message, System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"));
+                            }
+                            else if (user.RadarTokenList.Where(p => p == radar).Count() > 0)
+                            {
+                                if (user.InsList.Count > 0 && user.InsList.Where(p => p == insId).Count() == 0)
+                                {
+                                    return;
+                                }
+
+                                _myHubContext.Clients.Client(user.ConnectionId).broadcastMessage(name, message, System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"));
+                            }
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+
+                }
+            }
+
+            public static void BroadcastMessageByRadarRegister(string name, string storeId, string segment, string message, DateTime time)
+            {
+                try
+                {
+                    foreach (var user in XCGameUDPMsgHub.ConnectedUsers)
+                    {
+                        if (user.StoreList.Count > 0 && user.StoreList.Where(p => p == storeId).Count() == 0)
+                        {
+                            return;
+                        }
+                        if (user.SegmentList.Count > 0 && user.SegmentList.Where(p => p == segment).Count() == 0)
+                        {
+                            return;
+                        }
+
+                        if (user.InsList.Count > 0 && user.InsList.Where(p => p == 240).Count() == 0)
+                        {
+                            return;
+                        }
+
+                        _myHubContext.Clients.Client(user.ConnectionId).broadcastMessage(name, message, System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"));
+
+                    }
+                }
+                catch (Exception e)
+                {
+
+                }
+            }
+
+
+            public static void BroadcastMessage(int insId, string name, string radar, string message)
+            {
+                try
+                {
+                    foreach (var user in XCGameUDPMsgHub.ConnectedUsers)
+                    {
+                        if (user.InsList.Count > 0 && user.InsList.Where(p => p == insId).Count() == 0)
+                        {
+                            return;
+                        }
+
+                        if (user.RadarTokenList.Where(p => p == radar).Count() > 0)
+                        {
                             _myHubContext.Clients.Client(user.ConnectionId).broadcastMessage(name, message, System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"));
                         }
-                        else if (user.RadarTokenList.Where(p => p == radar).Count() > 0)
-                        {
-                            if (user.InsList.Count > 0 && user.InsList.Where(p => p == insId).Count() == 0)
-                            {
-                                return;
-                            }
-
-                            _myHubContext.Clients.Client(user.ConnectionId).broadcastMessage(name, message, System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"));                        
-                        }                        
-                    }
-                }      
-            }
-            catch(Exception e)
-            { 
-                
-            }
-        }
-
-        public static void BroadcastMessageByRadarRegister(string name,string storeId,string segment,string message, DateTime time)
-        {
-            try
-            {
-                foreach (var user in XCGameUDPMsgHub.ConnectedUsers)
-                {
-                    if (user.StoreList.Count > 0 && user.StoreList.Where(p => p == storeId).Count() == 0)
-                    {
-                        return;
-                    }
-                    if (user.SegmentList.Count > 0 && user.SegmentList.Where(p => p == segment).Count() == 0)
-                    {
-                        return;
-                    }
-
-                    if (user.InsList.Count > 0 && user.InsList.Where(p => p == 240).Count() == 0)
-                    {
-                        return;
-                    }
-
-                    _myHubContext.Clients.Client(user.ConnectionId).broadcastMessage(name, message, System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"));
-
-                }
-            }
-            catch (Exception e)
-            {
-
-            }
-        }
-
-
-        public static void BroadcastMessage(int insId, string name, string radar, string message)
-        {
-            try
-            {
-                foreach (var user in XCGameUDPMsgHub.ConnectedUsers)
-                {
-                    if (user.InsList.Count > 0 && user.InsList.Where(p => p == insId).Count() == 0)
-                    {
-                        return;
-                    }
-
-                    if (user.RadarTokenList.Where(p => p == radar).Count() > 0)
-                    { 
-                        _myHubContext.Clients.Client(user.ConnectionId).broadcastMessage(name, message, System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"));                        
                     }
                 }
-            }
-            catch (Exception e)
-            {
+                catch (Exception e)
+                {
 
+                }
             }
         }
     }
+
+
+    
 }

@@ -597,7 +597,7 @@ namespace XCCloudService.Api.XCCloud
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
 
-                IBase_StoreInfoService base_StoreInfoService = BLLContainer.Resolve<IBase_StoreInfoService>(resolveNew:true);
+                IBase_StoreInfoService base_StoreInfoService = BLLContainer.Resolve<IBase_StoreInfoService>(resolveNew: true);
                 IBase_MemberInfoService base_MemberInfoService = BLLContainer.Resolve<IBase_MemberInfoService>(resolveNew: true);
                 IData_Member_CardService data_Member_CardService = BLLContainer.Resolve<IData_Member_CardService>(resolveNew: true);
                 IData_Member_Card_StoreService data_Member_Card_StoreService = BLLContainer.Resolve<IData_Member_Card_StoreService>(resolveNew: true);
@@ -605,7 +605,7 @@ namespace XCCloudService.Api.XCCloud
                            join b in data_Member_Card_StoreService.GetModels() on a.StoreID equals b.StoreID
                            join c in data_Member_CardService.GetModels() on b.CardID equals c.ID
                            join d in base_MemberInfoService.GetModels() on c.MemberID equals d.ID
-                           select new 
+                           select new
                            {
                                MemberID = d.ID,
                                MemberName = d.UserName

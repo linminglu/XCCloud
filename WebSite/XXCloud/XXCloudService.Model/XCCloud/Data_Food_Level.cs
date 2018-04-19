@@ -17,6 +17,7 @@ namespace XCCloudService.Model.XCCloud
         public int ID { get; set; }
         public Nullable<int> FoodID { get; set; }
         public Nullable<int> MemberLevelID { get; set; }
+        public Nullable<int> TimeType { get; set; }
         public string Week { get; set; }
         public Nullable<System.TimeSpan> StartTime { get; set; }
         public Nullable<System.TimeSpan> EndTime { get; set; }
@@ -26,12 +27,6 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<System.DateTime> EndDate { get; set; }
         public Nullable<int> day_sale_count { get; set; }
         public Nullable<int> member_day_sale_count { get; set; }
-        public Nullable<int> AllowCoin { get; set; }
-        public Nullable<int> Coins { get; set; }
-        public Nullable<int> AllowPoint { get; set; }
-        public Nullable<int> Points { get; set; }
-        public Nullable<int> AllowLottery { get; set; }
-        public Nullable<int> Lottery { get; set; }
-        public Nullable<int> PeriodType { get; set; }
+        public Nullable<int> UpdateLevelID { get; set; }
     }
 }

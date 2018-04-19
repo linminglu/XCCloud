@@ -242,7 +242,7 @@ function getInitData(parm) {
         data: { parasJson: JSON.stringify(obj) },
         success: function (data) {
             data=JSON.parse(data);
-            // console.log(data);
+            console.log(data);
             if(data.result_code=="1"||data.Result_Code=="1"){
                 tableData=data.result_data||data.Result_Data;
                 layui.use(['table','layer'], function(){
@@ -501,14 +501,12 @@ function addIframePage(node) {
 }
 //登陆页面--login.html
 function login_merch(){
-    var tokens=getStorage('token');
+    window.localStorage.clear();
     var username=$('#username_login').val();
     var password=$('#password_login').val();
     var obj={'userName':username,'password':password,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
     var url='/XCCloud/Login?action=CheckUser';
     var parasJson = JSON.stringify(obj);
-    removeStorage('token');
-    removeStorage('logType');
     if(username!=''&&password!=''){
         $.ajax({
             type: "post",
@@ -521,9 +519,6 @@ function login_merch(){
                 if(data.result_code==1){
                     setStorage('logMsg',JSON.stringify(data.result_data));
                     setStorage('token',data.result_data.token);
-                    // setStorage('logType',data.result_data.logType);
-                    // setStorage('merchTag',data.result_data.merchTag);
-                    // setStorage('userType',data.result_data.userType);
                     setStorage('usernames',username);
                     if(data.result_data.logType==2){
                         window.location.href='indexStore.html?'+(Date.parse(new Date())/1000);
@@ -545,6 +540,7 @@ function changeLoginWay(){
     }
     clickCounts++;
 }
+var ifshow=0;
 function ifShowPassword(){
     if(ifshow%2==1){
         $('#password_login').addClass('layui-hide');

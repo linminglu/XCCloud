@@ -11,8 +11,8 @@ using XCCloudService.BLL.CommonBLL;
 using XCCloudService.Business.XCCloud;
 using XCCloudService.Common.Enum;
 using XCCloudService.Model.XCCloud;
+using XCCloudService.OrderPayCallback.Common;
 using XCCloudService.Pay.Alipay;
-using XCCloudService.PayChannel.Common;
 
 namespace XXCloudService.PayChannel
 {

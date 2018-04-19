@@ -269,6 +269,7 @@
     <Content Include="assets\layui\lay\modules\util.js" />
     <Content Include="Boss\Login.aspx" />
     <Content Include="CallBack\AlipayAuthNotify.aspx" />
+    <Content Include="CallBack\AlipayH5Notify.aspx" />
     <Content Include="CallBack\AliPayNotify.aspx" />
     <Content Include="Config\SAppMessageTemplate.xml">
       <SubType>Designer</SubType>
@@ -304,7 +305,6 @@
     <Content Include="MobileWeb\images\star_green.png" />
     <Content Include="MobileWeb\images\vip.png" />
     <Content Include="MobileWeb\images\welfare.png" />
-    <Content Include="MobileWeb\images\xhr.png" />
     <Content Include="MobileWeb\index.html" />
     <Content Include="MobileWeb\js\axios.min.js" />
     <Content Include="MobileWeb\js\jquery-1.8.3-min.js" />
@@ -323,6 +323,7 @@
     <Content Include="OrderPayCallback\POSPayCallBack.aspx" />
     <Content Include="OrderPayCallback\PPOSRequestQR.aspx" />
     <Content Include="OrderPayCallback\WxPayCallBack.aspx" />
+    <Content Include="OrderPayCallback\XinchenOrder.aspx" />
     <Content Include="Pay\DinPay.aspx" />
     <Content Include="QR.aspx" />
     <Content Include="CallBack\WeiXinPayNotify.aspx" />
@@ -368,6 +369,9 @@
     <Content Include="Api\XCCloud\DeviceInfo.ashx" />
     <Content Include="Api\XCGame\Params.ashx" />
     <Content Include="Api\Service\GetHolidays.ashx" />
+    <Content Include="Api\XCGameMana\Order.ashx" />
+    <Content Include="Api\XCGameMana\WxCommon.ashx" />
+    <Content Include="Api\XCCloud\BalanceType.ashx" />
     <None Include="Properties\PublishProfiles\111.pubxml" />
     <None Include="Properties\PublishProfiles\qqq.pubxml" />
     <None Include="Properties\PublishProfiles\rrr.pubxml" />
@@ -384,7 +388,9 @@
     <Content Include="Test\api.aspx" />
     <Content Include="Test\payTest.html" />
     <Content Include="Test\pposTest.aspx" />
+    <Content Include="Test\SignalRNotifyClientTest.html" />
     <Content Include="Test\SocketTest.aspx" />
+    <Content Include="Test\WebKitTest.html" />
     <Content Include="Test\WeiXin\RegisterTest.aspx" />
     <Content Include="Test\WorkFlowTest\StockHandle.aspx" />
     <Content Include="Test\WorkFlowTest\StockRequest.aspx" />
@@ -418,6 +424,7 @@
     <Content Include="WebSite\css\style.css" />
     <Content Include="WebSite\css\stylely.css" />
     <Content Include="WebSite\css\tips.css" />
+    <Content Include="WebSite\huangchentest.html" />
     <Content Include="WebSite\getholidays.html" />
     <Content Include="WebSite\fengchengtest2.html" />
     <Content Include="WebSite\fengchengtest.html" />
@@ -916,6 +923,9 @@
     <Compile Include="Api\XCCloudRS232\Foods.ashx.cs">
       <DependentUpon>Foods.ashx</DependentUpon>
     </Compile>
+    <Compile Include="Api\XCCloud\BalanceType.ashx.cs">
+      <DependentUpon>BalanceType.ashx</DependentUpon>
+    </Compile>
     <Compile Include="Api\XCCloud\Coins.ashx.cs">
       <DependentUpon>Coins.ashx</DependentUpon>
     </Compile>
@@ -975,6 +985,9 @@
     <Compile Include="Api\XCGameMana\Device.ashx.cs">
       <DependentUpon>Device.ashx</DependentUpon>
     </Compile>
+    <Compile Include="Api\XCGameMana\Order.ashx.cs">
+      <DependentUpon>Order.ashx</DependentUpon>
+    </Compile>
     <Compile Include="Api\XCGameMana\Query.ashx.cs">
       <DependentUpon>Query.ashx</DependentUpon>
     </Compile>
@@ -983,6 +996,9 @@
     </Compile>
     <Compile Include="Api\XCGameMana\User2.ashx.cs">
       <DependentUpon>User2.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="Api\XCGameMana\WxCommon.ashx.cs">
+      <DependentUpon>WxCommon.ashx</DependentUpon>
     </Compile>
     <Compile Include="Api\XCGame\Game.ashx.cs">
       <DependentUpon>Game.ashx</DependentUpon>
@@ -1017,6 +1033,13 @@
     <Compile Include="CallBack\AlipayAuthNotify.aspx.designer.cs">
       <DependentUpon>AlipayAuthNotify.aspx</DependentUpon>
     </Compile>
+    <Compile Include="CallBack\AlipayH5Notify.aspx.cs">
+      <DependentUpon>AlipayH5Notify.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="CallBack\AlipayH5Notify.aspx.designer.cs">
+      <DependentUpon>AlipayH5Notify.aspx</DependentUpon>
+    </Compile>
     <Compile Include="CallBack\AliPayNotify.aspx.cs">
       <DependentUpon>AliPayNotify.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -1033,6 +1056,7 @@
       <DependentUpon>AlipayCallBack.aspx</DependentUpon>
     </Compile>
     <Compile Include="OrderPayCallback\Common\Config.cs" />
+    <Compile Include="OrderPayCallback\Common\DataAccess.cs" />
     <Compile Include="OrderPayCallback\Common\LCSWPayAPI.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -1045,6 +1069,7 @@
     <Compile Include="OrderPayCallback\Common\OrderPayNotify.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="OrderPayCallback\Common\PayList.cs" />
     <Compile Include="OrderPayCallback\Common\PayLogHelper.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -1089,6 +1114,13 @@
     </Compile>
     <Compile Include="OrderPayCallback\WxPayCallBack.aspx.designer.cs">
       <DependentUpon>WxPayCallBack.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="OrderPayCallback\XinchenOrder.aspx.cs">
+      <DependentUpon>XinchenOrder.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="OrderPayCallback\XinchenOrder.aspx.designer.cs">
+      <DependentUpon>XinchenOrder.aspx</DependentUpon>
     </Compile>
     <Compile Include="Pay\DinPay.aspx.cs">
       <DependentUpon>DinPay.aspx</DependentUpon>
@@ -1575,7 +1607,7 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>True</UseIIS>
+          <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>18116</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -9,12 +9,15 @@
     <link rel="stylesheet" href="css/manchartData.css">
     <link href="css/common.css" rel="stylesheet" type="text/css"/>
     <title>员工账号管理</title>
+
 </head>
 <style>
     .layui-table-page{height: 50px;}
+    .layui-form-switch i{height: 36px!important;}
+    .layui-form-switch{width: 190px!important;}
 </style>
 <body>
-<div class="" style="padding: 15px;">
+<div class="" style="padding: 5px;">
     <div class="layui-row">
         <div class="layui-col-md12">
             <table class="layui-hide" id="employerManageTable"  lay-filter="employerManageTable"></table>
@@ -55,12 +58,30 @@
                         <input type="checkbox" name="zzz" lay-filter="IsAdmin" lay-skin="switch" lay-text="是|否"  id="IsAdmin">
                     </div>
                 </div>
-                <div class="layui-inline">
+                <div class="layui-inline" id="userTypeDiv">
                     <label class="layui-form-label">用户类型</label>
                     <div class="layui-input-inline" id="userTypesBox">
                         <select class="layui-input" id="userTypes" lay-filter="userTypes">
 
                         </select>
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">切换商户</label>
+                    <div class="layui-input-inline">
+                        <input type="checkbox" name="zzz" lay-filter="switchMerch" lay-skin="switch" lay-text="允许|禁用"  id="switchMerch">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">切换门店</label>
+                    <div class="layui-input-inline">
+                        <input type="checkbox" name="zzz" lay-filter="switchStore" lay-skin="switch" lay-text="允许|禁用"  id="switchStore">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">切换吧台</label>
+                    <div class="layui-input-inline">
+                        <input type="checkbox" name="zzz" lay-filter="switchBar" lay-skin="switch" lay-text="允许|禁用"  id="switchBar">
                     </div>
                 </div>
             </div>
@@ -107,6 +128,7 @@
     let _userType='';
     let userId='';
     let userGroups='';
+    let switchMerch=0;let switchStore=0;let switchBar=0;
     let parm={'url':'/XCCloud/UserInfo?action=GetStoreUserList',
         'obj':{"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"},
         'elem':'#employerManageTable',
@@ -130,15 +152,25 @@
     getInitData(parm);
     layui.use(['table','form','layer'],function () {
         var table=layui.table,$=layui.jquery,form=layui.form,layer=layui.layer;
-        form.on('select(Status)',function(data){
+        form.on('select(Status)',(data)=>{
             optionVal=data.value;
         });
-        form.on('select(userTypes)',function (data){
+        form.on('select(userTypes)',(data)=>{
             _userType=data.value;
         });
         form.on('switch(IsAdmin)', function(data){
             data.elem.checked==true ? switchVal=1:switchVal=0;
         });
+        form.on('switch(switchMerch)', function(data){
+            data.elem.checked==true ? switchMerch=1:switchMerch=0;
+        });
+        form.on('switch(switchStore)', function(data){
+            data.elem.checked==true ? switchStore=1:switchStore=0;
+        });
+        form.on('switch(switchBar)', function(data){
+            data.elem.checked==true ? switchBar=1:switchBar=0;
+        });
+
         form.on('radio(workGroup)', function(data){
             userGroups={'id':data.value,'groupName':data.elem.title}
         });
@@ -194,8 +226,21 @@
               let usergroup='';
              userGroups==''? usergroup=null :usergroup=userGroups;
 
-             let obj={'realName':RealNames,'logName':LogNames,'mobile':Mobile,'userId':userId,'state':states,'resson':reasons,'isAdmin':isAdmins,'userType':userTypes,
-                  'userGroup':usergroup,'userGrant':checkBoxArr,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+             let obj={'realName':RealNames,
+                 'logName':LogNames,
+                 'mobile':Mobile,
+                 'userId':userId,
+                 'state':states,
+                 'resson':reasons,
+                 'isAdmin':isAdmins,
+                 'switchmerch':switchMerch,
+                 'switchstore':switchStore,
+                 'switchworkstation':switchBar,
+                 'userType':userTypes,
+                 'userGroup':usergroup,
+                 'userGrant':checkBoxArr,
+                 'userToken':token,
+                 'signkey':'1f626576304bf5d95b72ece2222e42c3'};
               let _url='/XCCloud/UserInfo?action=CheckStoreUser';
              $.ajax({
                  type: "post",
@@ -224,8 +269,20 @@
             let usergroup='';
             userGroups==''? usergroup=null :usergroup=userGroups;
 
-            let obj={'realName':RealNames,'logName':LogNames,'mobile':Mobile,'userId':userId,'status':optionVal,'isAdmin':isAdmins,'userType':userTypes,
-                'userGroup':usergroup,'userGrant':checkBoxArr,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+            let obj={'realName':RealNames,
+                'logName':LogNames,
+                'mobile':Mobile,
+                'userId':userId,
+                'status':optionVal,
+                'isAdmin':isAdmins,
+                'switchmerch':switchMerch,
+                'switchstore':switchStore,
+                'switchworkstation':switchBar,
+                'userType':userTypes,
+                'userGroup':usergroup,
+                'userGrant':checkBoxArr,
+                'userToken':token,
+                'signkey':'1f626576304bf5d95b72ece2222e42c3'};
             let _url='/XCCloud/UserInfo?action=SaveStoreUserInfo';
             $.ajax({
                 type: "post",
@@ -255,11 +312,38 @@ function getMsg(_obj,form,layer,num) {
         data: { parasJson: JSON.stringify(_obj) },
         success: function (data) {
             data=JSON.parse(data);
+            console.log(data);
             if(data.Result_Code==1){
-
                 $('#RealName').val(data.Result_Data.RealName);
                 $('#LogName').val(data.Result_Data.LogName);
                 $('#Mobile').val(data.Result_Data.Mobile);
+                if(data.Result_Data.UserType==4||data.Result_Data.UserType5){
+                    setSelect('用户类型','userTypes',data.Result_Data.UserType);
+                    $('#userTypeDiv').css({'visibility':'visible'})
+                }else {
+                    $('#userTypeDiv').css({'visibility':'hidden'})
+                }
+                if(data.Result_Data.SwitchMerch==1){switchMerch=1;
+                    $('#switchMerch').attr({'checked':true});
+                }else {
+                    switchMerch=0;
+                    $('#switchMerch').attr({'checked':false});
+                }
+                if(data.Result_Data.SwitchStore==1){switchStore=1;
+                    $('#switchStore').attr({'checked':true});
+                }else {
+                    switchStore=0;
+                    $('#switchStore').attr({'checked':false});
+                }
+                if(data.Result_Data.SwitchWorkstation==1){
+                    switchBar=1;
+                    $('#switchBar').attr({'checked':true});
+                }else {
+                    switchBar=0;
+                    $('#switchBar').attr({'checked':false});
+                }
+                _userType=data.Result_Data.UserType;
+                optionVal=data.Result_Data.UserStatus;
                 let _status=data.Result_Data.UserStatus;
               //编辑
                 if(num==1){
@@ -292,26 +376,23 @@ function getMsg(_obj,form,layer,num) {
                                     layer.msg('数据加载失败！');
                             }
                         }
-                    })
-                    setSelect('用户类型','userTypes',data.Result_Data.UserType);
-                    _userType=data.Result_Data.UserType;
-                    optionVal=data.Result_Data.UserStatus;
+                    });
                     form.render();
-                }else if(num==0){//查看
-                    $('#RealName').attr({'readonly':true});
-                    $('#LogName').attr({'readonly':true});
-                    $('#Mobile').attr({'readonly':true});
-                    $('#empStatus').html('<input class="layui-input" readonly value="'+data.Result_Data.UserStatusStr+'">');
-                    $('#userTypesBox').html('<input class="layui-input" readonly value="'+data.Result_Data.UserTypeStr+'">');
-                    $('#IsAdmin').attr({'disabled':true});
-                    form.render();
-                }else if(num==2){//审核
+                }
+                // else if(num==0){//查看
+                //     $('#RealName').attr({'readonly':true});
+                //     $('#LogName').attr({'readonly':true});
+                //     $('#Mobile').attr({'readonly':true});
+                //     $('#empStatus').html('<input class="layui-input" readonly value="'+data.Result_Data.UserStatusStr+'">');
+                //     $('#userTypesBox').html('<input class="layui-input" readonly value="'+data.Result_Data.UserTypeStr+'">');
+                //     $('#IsAdmin').attr({'disabled':true});
+                //     form.render();
+                // }
+                else if(num==2){//审核
                     $('#userTypesBox').html('<select class="layui-input" id="userTypes" lay-filter="userTypes"></select>');
                     $('#empStatus').html('<input class="layui-input" readonly value="未审核">');
                     form.render();
-                    setSelect('用户类型','userTypes',data.Result_Data.UserType);
-                    _userType=data.Result_Data.UserType;
-                    optionVal=data.Result_Data.UserStatus;
+
                 }
 
                 if(data.Result_Data.IsAdmin==1){
@@ -334,6 +415,7 @@ function getMsg(_obj,form,layer,num) {
         data:{ parasJson: JSON.stringify(_obj) },
         success:function (data) {
             data=JSON.parse(data);
+            console.log(data)
             if(data.Result_Code==1){
                 var arr=data.Result_Data;
                 if(num==0){
@@ -400,10 +482,10 @@ function getMsg(_obj,form,layer,num) {
                 layer.msg('数据获取失败')
             }
         }
-    })
+    });
     layer.open({
         type:1,
-        area:'1000px',
+        area:'1065px',
         shade:0.6,
         content:$('.groupManage')
     });

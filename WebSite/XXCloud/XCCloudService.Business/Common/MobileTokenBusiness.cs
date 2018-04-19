@@ -33,6 +33,22 @@ namespace XCCloudService.Business.Common
             return token;
         }
 
+        public static string SetMobileToken(string mobile, string thirdType, string userThirdId)
+        {
+            string token = System.Guid.NewGuid().ToString("N");
+            if (MobileTokenCache.ExistTokenByKey(mobile))
+            {
+                SetDBMobileToken(token, mobile,thirdType,userThirdId);
+                MobileTokenCache.UpdateTokenByKey(mobile, token);
+            }
+            else
+            {
+                SetDBMobileToken(token, mobile, thirdType, userThirdId);
+                MobileTokenCache.AddToken(mobile, token);
+            }
+            return token;
+        }
+
         public static bool ExistToken(string token, out string mobile)
         {
             mobile = string.Empty;
@@ -46,6 +62,20 @@ namespace XCCloudService.Business.Common
                 return false;
             }
         }
+
+        public static bool ExistToken(string token)
+        {
+            if (MobileTokenCache.ExistTokenByValue(token))
+            {
+
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         public static void Init()
         {
             IMobileTokenService mobileTokenService = BLLContainer.Resolve<IMobileTokenService>();
@@ -127,6 +157,36 @@ namespace XCCloudService.Business.Common
                 model.Token = Token;
                 model.UpdateTime = DateTime.Now;
                 mobileTokenService.Update(model);                
+            }
+        }
+
+        private static void SetDBMobileToken(string Token, string Phone,string thirdType,string userThirdId)
+        {
+            IMobileTokenService mobileTokenService = BLLContainer.Resolve<IMobileTokenService>();
+            var model = mobileTokenService.GetModels(p => p.Phone.Equals(Phone)).FirstOrDefault<t_MobileToken>();
+            t_MobileToken mtk = new t_MobileToken();
+            if (model == null)
+            {
+                mtk.Token = Token;
+                mtk.CreateTime = DateTime.Now;
+                mtk.Phone = Phone;
+                mtk.OpenId = thirdType == "0" && !string.IsNullOrEmpty(userThirdId) ? userThirdId : string.Empty;
+                mtk.AliId = thirdType == "1" && !string.IsNullOrEmpty(userThirdId) ? userThirdId : string.Empty;
+                mobileTokenService.Add(mtk);
+            }
+            else
+            {
+                model.Token = Token;
+                model.UpdateTime = DateTime.Now;
+                if (thirdType == "0" && !string.IsNullOrEmpty(userThirdId))
+                {
+                    model.OpenId = userThirdId;
+                }
+                if (thirdType == "1" && !string.IsNullOrEmpty(userThirdId))
+                {
+                    model.AliId = userThirdId;
+                }
+                mobileTokenService.Update(model);
             }
         }
 

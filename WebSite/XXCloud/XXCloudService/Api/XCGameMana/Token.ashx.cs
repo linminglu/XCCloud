@@ -195,6 +195,91 @@ namespace XCCloudService.Api.XCGameMana
 
         #endregion
 
+        #region "发送短信验证码（验证码验证和发送短信合为一步）"
+
+        /// <summary>
+        /// 获取短信验证码
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.MethodToken)]
+        public object getSMSCode(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                //是否模拟短信测试（1-模拟短信测试，不发送固定短信，不做短信验证）
+
+                string mobile = dicParas.ContainsKey("mobile") ? dicParas["mobile"].ToString().Trim() : "";
+                string templateId = "2";//短信模板
+                string imgCode = dicParas.ContainsKey("imgCode") ? dicParas["imgCode"].ToString().Trim() : "";
+
+                //验证请求次数
+                if (!FilterMobileBusiness.IsTestSMS && !FilterMobileBusiness.ExistMobile(mobile))
+                {
+                    if (!RequestTotalCache.CanRequest(mobile, ApiRequestType.SendSMSCode))
+                    {
+                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "已超过单日最大请求次数");
+                    }
+                    else
+                    {
+                        RequestTotalCache.Add(mobile, ApiRequestType.SendSMSCode);
+                    }
+                }
+
+                if (!Utils.CheckMobile(mobile))
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "手机号码无效");
+                }
+
+                //如果用户未获取验证码
+                if (!ValidateImgCache.Exist(imgCode.ToUpper()))
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "验证码无效");
+                }
+                else
+                {
+                    ValidateImgCache.Remove(imgCode.ToUpper());
+                }
+                
+                //发送短信，并添加缓存成功
+                string key = string.Empty;
+                if (!FilterMobileBusiness.IsTestSMS && !FilterMobileBusiness.ExistMobile(mobile))
+                {
+                    string smsCode = string.Empty;
+                    if (SMSBusiness.GetSMSCode(out smsCode))
+                    {
+                        key = mobile + "_" + smsCode;
+                        SMSCodeCache.Add(key, mobile, CacheExpires.SMSCodeExpires);
+                        string errMsg = string.Empty;
+                        if (SMSBusiness.SendSMSCode(templateId, mobile, smsCode, out errMsg))
+                        {
+                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.T, "");
+                        }
+                        else
+                        {
+                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
+                        }
+                    }
+                    else
+                    {
+                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "发送验证码出错");
+                    }
+                }
+                else
+                {
+                    key = mobile + "_" + "123456";
+                    SMSCodeCache.Add(key, mobile, CacheExpires.SMSCodeExpires);
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.T, "");
+                }
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+        #endregion
+
         #region "校验短信验证码,获取手机token"
 
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.MethodToken)]
@@ -204,23 +289,25 @@ namespace XCCloudService.Api.XCGameMana
             {
                 string mobile = dicParas.ContainsKey("mobile") ? dicParas["mobile"].ToString().Trim() : "";
                 string smsCode = dicParas.ContainsKey("smsCode") ? dicParas["smsCode"].ToString().Trim() : "";
+                string userThirdId = dicParas.ContainsKey("userThirdId") ? dicParas["userThirdId"].ToString().Trim() : "";
+                string thirdType = dicParas.ContainsKey("thirdType") ? dicParas["thirdType"].ToString().Trim() : "";
 
                 string key = mobile + "_" + smsCode;
-                if (!FilterMobileBusiness.IsTestSMS)
+                if (!FilterMobileBusiness.IsTestSMS && !FilterMobileBusiness.ExistMobile(mobile))
                 {
                     if (!SMSCodeCache.IsExist(key))
                     {
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "短信验证码无效");
                     }
                 }
-
-               
+ 
                 if (SMSCodeCache.IsExist(key))
                 {
                     SMSCodeCache.Remove(key);
                 }
 
-                string token = MobileTokenBusiness.SetMobileToken(mobile);
+
+                string token = MobileTokenBusiness.SetMobileToken(mobile,thirdType,userThirdId);
                 MobileTokenResponseModel tokenModel = new MobileTokenResponseModel(mobile, token);
                 return ResponseModelFactory<MobileTokenResponseModel>.CreateModel(isSignKeyReturn, tokenModel);
             }
@@ -231,6 +318,7 @@ namespace XCCloudService.Api.XCGameMana
         }
 
         #endregion
+
 
         #region "获取会员的token"
 
