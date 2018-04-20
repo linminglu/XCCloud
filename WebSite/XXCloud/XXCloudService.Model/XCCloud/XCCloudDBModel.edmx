@@ -2059,7 +2059,6 @@
           <EntitySet Name="Data_JackpotInfo" EntityType="XCCloudDBModel.Data_JackpotInfo" />
           <EntitySet Name="Data_Member_Card" EntityType="XCCloudDBModel.Data_Member_Card" />
           <EntitySet Name="Data_Member_Card_Store" EntityType="XCCloudDBModel.Data_Member_Card_Store" />
-          <EntitySet Name="Data_MemberLevel" EntityType="XCCloudDBModel.Data_MemberLevel" />
           <EntitySet Name="Data_Message" EntityType="XCCloudDBModel.Data_Message" />
           <EntitySet Name="Data_Parameters" EntityType="XCCloudDBModel.Data_Parameters" />
           <EntitySet Name="Data_Push_Rule" EntityType="XCCloudDBModel.Data_Push_Rule" />
@@ -2124,6 +2123,7 @@
           <EntitySet Name="Data_BalanceChargeRule" EntityType="XCCloudDBModel.Data_BalanceChargeRule" />
           <EntitySet Name="Data_Project_Device" EntityType="XCCloudDBModel.Data_Project_Device" />
           <EntitySet Name="Data_ProjectInfo" EntityType="XCCloudDBModel.Data_ProjectInfo" />
+          <EntitySet Name="Data_MemberLevel" EntityType="XCCloudDBModel.Data_MemberLevel" />
         </EntityContainer>
         <EntityType Name="Base_ChainRule">
           <Key>
@@ -2792,35 +2792,6 @@
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="CardID" Type="Int32" />
           <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-        </EntityType>
-        <EntityType Name="Data_MemberLevel">
-          <Key>
-            <PropertyRef Name="MemberLevelID" />
-          </Key>
-          <Property Name="MemberLevelID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="MemberLevelName" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="Deposit" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="ExitMoney" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="ExitCoin" Type="Int32" />
-          <Property Name="ExitPrice" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="CardUIURL" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="Validday" Type="Int32" />
-          <Property Name="FreeRate" Type="Int32" />
-          <Property Name="FreeCoin" Type="Int32" />
-          <Property Name="BirthdayFree" Type="Int32" />
-          <Property Name="BirthdayFreeCoin" Type="Int32" />
-          <Property Name="NeedAutor" Type="Int32" />
-          <Property Name="MustInput" Type="Int32" />
-          <Property Name="AllowExitCard" Type="Int32" />
-          <Property Name="AllowExitMoney" Type="Int32" />
-          <Property Name="AllowExitCoinToCard" Type="Int32" />
-          <Property Name="AllowSubProject" Type="Int32" />
-          <Property Name="State" Type="Int32" />
-          <Property Name="LockHead" Type="Int32" />
-          <Property Name="MinExitCoin" Type="Int32" />
-          <Property Name="FreeType" Type="Int32" />
-          <Property Name="FreeNeedWin" Type="Int32" />
         </EntityType>
         <EntityType Name="Data_Message">
           <Key>
@@ -3811,6 +3782,35 @@
           <Property Name="BalanceCount" Type="Int32" />
           <Property Name="Note" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
         </EntityType>
+        <EntityType Name="Data_MemberLevel">
+          <Key>
+            <PropertyRef Name="MemberLevelID" />
+          </Key>
+          <Property Name="MemberLevelID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="MemberLevelName" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Deposit" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="ExitMoney" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="ExitCoin" Type="Int32" />
+          <Property Name="ExitPrice" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="CardUIURL" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Validday" Type="Int32" />
+          <Property Name="FreeRate" Type="Int32" />
+          <Property Name="FreeCoin" Type="Int32" />
+          <Property Name="BirthdayFree" Type="Int32" />
+          <Property Name="BirthdayFreeCoin" Type="Int32" />
+          <Property Name="NeedAutor" Type="Int32" />
+          <Property Name="MustInput" Type="Int32" />
+          <Property Name="AllowExitCard" Type="Int32" />
+          <Property Name="AllowExitMoney" Type="Int32" />
+          <Property Name="AllowExitCoinToCard" Type="Int32" />
+          <Property Name="AllowSubProject" Type="Int32" />
+          <Property Name="State" Type="Int32" />
+          <Property Name="LockHead" Type="Int32" />
+          <Property Name="MinExitCoin" Type="Int32" />
+          <Property Name="FreeType" Type="Int32" />
+          <Property Name="FreeNeedWin" Type="Int32" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -4530,36 +4530,6 @@
                 <ScalarProperty Name="StoreID" ColumnName="StoreID" />
                 <ScalarProperty Name="CardID" ColumnName="CardID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Data_MemberLevel">
-            <EntityTypeMapping TypeName="XCCloudDBModel.Data_MemberLevel">
-              <MappingFragment StoreEntitySet="Data_MemberLevel">
-                <ScalarProperty Name="FreeNeedWin" ColumnName="FreeNeedWin" />
-                <ScalarProperty Name="FreeType" ColumnName="FreeType" />
-                <ScalarProperty Name="MinExitCoin" ColumnName="MinExitCoin" />
-                <ScalarProperty Name="LockHead" ColumnName="LockHead" />
-                <ScalarProperty Name="State" ColumnName="State" />
-                <ScalarProperty Name="AllowSubProject" ColumnName="AllowSubProject" />
-                <ScalarProperty Name="AllowExitCoinToCard" ColumnName="AllowExitCoinToCard" />
-                <ScalarProperty Name="AllowExitMoney" ColumnName="AllowExitMoney" />
-                <ScalarProperty Name="AllowExitCard" ColumnName="AllowExitCard" />
-                <ScalarProperty Name="MustInput" ColumnName="MustInput" />
-                <ScalarProperty Name="NeedAutor" ColumnName="NeedAutor" />
-                <ScalarProperty Name="BirthdayFreeCoin" ColumnName="BirthdayFreeCoin" />
-                <ScalarProperty Name="BirthdayFree" ColumnName="BirthdayFree" />
-                <ScalarProperty Name="FreeCoin" ColumnName="FreeCoin" />
-                <ScalarProperty Name="FreeRate" ColumnName="FreeRate" />
-                <ScalarProperty Name="Validday" ColumnName="Validday" />
-                <ScalarProperty Name="CardUIURL" ColumnName="CardUIURL" />
-                <ScalarProperty Name="ExitPrice" ColumnName="ExitPrice" />
-                <ScalarProperty Name="ExitCoin" ColumnName="ExitCoin" />
-                <ScalarProperty Name="ExitMoney" ColumnName="ExitMoney" />
-                <ScalarProperty Name="Deposit" ColumnName="Deposit" />
-                <ScalarProperty Name="MemberLevelName" ColumnName="MemberLevelName" />
-                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
-                <ScalarProperty Name="MemberLevelID" ColumnName="MemberLevelID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -5613,6 +5583,36 @@
                 <ScalarProperty Name="ProjectName" ColumnName="ProjectName" />
                 <ScalarProperty Name="MerchID" ColumnName="MerchID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Data_MemberLevel">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Data_MemberLevel">
+              <MappingFragment StoreEntitySet="Data_MemberLevel">
+                <ScalarProperty Name="FreeNeedWin" ColumnName="FreeNeedWin" />
+                <ScalarProperty Name="FreeType" ColumnName="FreeType" />
+                <ScalarProperty Name="MinExitCoin" ColumnName="MinExitCoin" />
+                <ScalarProperty Name="LockHead" ColumnName="LockHead" />
+                <ScalarProperty Name="State" ColumnName="State" />
+                <ScalarProperty Name="AllowSubProject" ColumnName="AllowSubProject" />
+                <ScalarProperty Name="AllowExitCoinToCard" ColumnName="AllowExitCoinToCard" />
+                <ScalarProperty Name="AllowExitMoney" ColumnName="AllowExitMoney" />
+                <ScalarProperty Name="AllowExitCard" ColumnName="AllowExitCard" />
+                <ScalarProperty Name="MustInput" ColumnName="MustInput" />
+                <ScalarProperty Name="NeedAutor" ColumnName="NeedAutor" />
+                <ScalarProperty Name="BirthdayFreeCoin" ColumnName="BirthdayFreeCoin" />
+                <ScalarProperty Name="BirthdayFree" ColumnName="BirthdayFree" />
+                <ScalarProperty Name="FreeCoin" ColumnName="FreeCoin" />
+                <ScalarProperty Name="FreeRate" ColumnName="FreeRate" />
+                <ScalarProperty Name="Validday" ColumnName="Validday" />
+                <ScalarProperty Name="CardUIURL" ColumnName="CardUIURL" />
+                <ScalarProperty Name="ExitPrice" ColumnName="ExitPrice" />
+                <ScalarProperty Name="ExitCoin" ColumnName="ExitCoin" />
+                <ScalarProperty Name="ExitMoney" ColumnName="ExitMoney" />
+                <ScalarProperty Name="Deposit" ColumnName="Deposit" />
+                <ScalarProperty Name="MemberLevelName" ColumnName="MemberLevelName" />
+                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
+                <ScalarProperty Name="MemberLevelID" ColumnName="MemberLevelID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

@@ -395,10 +395,10 @@ namespace XXCloudService.Api.XCCloud
                         }
                     }
 
-                    //如果是实物券且无序号，派发途径应为“街边派送”                    
+                    //如果印刷编号为空，派发方式请选择街边派发                   
                     if (iEntryCouponFlag == (int)EntryCouponFlag.Entry && string.IsNullOrEmpty(couponCodeStart) && string.IsNullOrEmpty(couponCodeEnd) && iSendType != (int)SendType.Delivery)
                     {
-                        errMsg = "没有印刷编号的实物券，请选择街边派送";
+                        errMsg = "如果印刷编号为空，派发方式请选择街边派发";
                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                     }
                 }

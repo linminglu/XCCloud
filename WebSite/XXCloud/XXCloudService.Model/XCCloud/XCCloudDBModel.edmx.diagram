@@ -55,7 +55,6 @@
         <EntityTypeShape EntityType="XCCloudDBModel.Data_JackpotInfo" Width="1.5" PointX="20.75" PointY="19.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_Member_Card" Width="1.5" PointX="0.75" PointY="21.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_Member_Card_Store" Width="1.5" PointX="6.75" PointY="21.75" />
-        <EntityTypeShape EntityType="XCCloudDBModel.Data_MemberLevel" Width="1.5" PointX="8.75" PointY="21.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_Message" Width="1.5" PointX="22.75" PointY="0.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_Parameters" Width="1.5" PointX="2.75" PointY="22.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_Push_Rule" Width="1.5" PointX="10.75" PointY="22.75" />
@@ -120,6 +119,7 @@
         <EntityTypeShape EntityType="XCCloudDBModel.Data_BalanceChargeRule" Width="1.5" PointX="31.375" PointY="32.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_Project_Device" Width="1.5" PointX="0.75" PointY="6.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_ProjectInfo" Width="1.5" PointX="31.375" PointY="21.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.Data_MemberLevel" Width="1.5" PointX="33.375" PointY="0.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

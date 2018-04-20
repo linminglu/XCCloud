@@ -493,11 +493,12 @@
 
         });
         $('#saveStorebtn').on('click',()=>{
+            // xc.saveFoodStores(Id,token,layer)
             layer.close(indexLayer);
         });
         $('#cancelStorebtn').on('click',()=>{
             layer.close(indexLayer);
-            storeId=[];
+            storeId=JSON.parse(xc.getStorage('CouponStoreId'));
         });
         $('#addOrModify').on('click','#setVipBtn',()=>{
             xc.getVip(token,form,layer);
@@ -676,6 +677,7 @@
         });
         //保存优惠券信息
         xcActionSystem.prototype.saveCoupon=(layer)=>{
+            var index = layer.load(0, {shade: false});
             let obj={'id':Id,
                         'couponName':$('#CouponName').val(),
                         'couponCodeStart':$('#couponCodeStart').val(),
@@ -714,10 +716,11 @@
                 success: function (data) {
                     data = JSON.parse(data);
                     console.log(data);
+
                     if (data.result_code == 1) {
+                        layer.close(index);
                         layer.msg('保存成功！');
-                        window.location.reload();
-                        layer.closeAll();
+                        location.href='CouponSet.html';
                     } else {
                         layer.msg(data.result_msg);
                     }
@@ -829,11 +832,11 @@
    //获取已选门店
    xcActionSystem.prototype.getUsefulStore=function (couponId,token,form,layer) {
        let choseStore=JSON.parse(xcActionSystem.prototype.getStorage('choseStore'));
-       let obj={'foodId':couponId,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+       let obj={'couponId':couponId,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
        let parseJson = JSON.stringify(obj);
        $.ajax({
            type:'post',
-           url:'/XCCloud/Promotion?action=GetFoodStores',
+           url:'/XCCloud/Coupon?action=GetCouponStores',
            contentType: "application/json; charset=utf-8",
            data:{parasJson: parseJson},
            success: function (data) {
@@ -842,18 +845,21 @@
                if(data.result_code==1){
                    storeId=[];
                    let array=data.result_data;
-                   for(let i in array){
-                     $('#chooseStoreList').find('input[value="'+array[i].StoreID+'"]').attr({'checked':true});
-                       storeId.push(array[i].StoreID)
+                   if(array.length>0){
+                       for(let i in array){
+                           $('#chooseStoreList').find('input[value="'+array[i].StoreID+'"]').attr({'checked':true});
+                           storeId.push(array[i].StoreID)
+                       }
+                       form.render('checkbox');
+                       xc.setStorage('CouponStoreId',JSON.stringify(storeId))
                    }
-                   form.render('checkbox');
-
                }else {
                    layer.msg('获取门店列表失败，err:'+data.result_msg||data.return_msg)
                }
            }
        })
    };
+   //保存适用门店设置
     //加载会员列表
     xcActionSystem.prototype.getVip=function (token,form,layer) {
         let obj={'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};

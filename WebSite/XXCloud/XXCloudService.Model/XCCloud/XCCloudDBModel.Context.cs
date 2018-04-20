@@ -75,7 +75,6 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Data_JackpotInfo> Data_JackpotInfo { get; set; }
         public virtual DbSet<Data_Member_Card> Data_Member_Card { get; set; }
         public virtual DbSet<Data_Member_Card_Store> Data_Member_Card_Store { get; set; }
-        public virtual DbSet<Data_MemberLevel> Data_MemberLevel { get; set; }
         public virtual DbSet<Data_Message> Data_Message { get; set; }
         public virtual DbSet<Data_Parameters> Data_Parameters { get; set; }
         public virtual DbSet<Data_Push_Rule> Data_Push_Rule { get; set; }
@@ -140,5 +139,6 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Data_BalanceChargeRule> Data_BalanceChargeRule { get; set; }
         public virtual DbSet<Data_Project_Device> Data_Project_Device { get; set; }
         public virtual DbSet<Data_ProjectInfo> Data_ProjectInfo { get; set; }
+        public virtual DbSet<Data_MemberLevel> Data_MemberLevel { get; set; }
     }
 }
