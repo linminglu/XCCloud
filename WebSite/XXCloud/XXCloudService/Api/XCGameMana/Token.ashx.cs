@@ -320,6 +320,40 @@ namespace XCCloudService.Api.XCGameMana
         #endregion
 
 
+
+        #region "第三方Id,获取手机token"
+
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.MethodToken)]
+        public object getMobileTokenByThirdId(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                string userThirdId = dicParas.ContainsKey("userThirdId") ? dicParas["userThirdId"].ToString().Trim() : "";
+                MobileTokenModel mobileTokenModel = null;
+                string token = string.Empty;
+                if (MobileTokenBusiness.ExistThirdId(userThirdId, ref mobileTokenModel,out token))
+                {
+                    var obj = new {
+                        mobile = mobileTokenModel.Mobile,
+                        mobileToken = token
+                    };
+                    return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, obj);
+                }
+                else
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "用户令牌不存在");
+                }
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+        #endregion
+
+
+
         #region "获取会员的token"
 
         /// <summary>

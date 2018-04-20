@@ -30,9 +30,26 @@ namespace XCCloudService.Test
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            string token = XCCloudManaUserTokenBusiness.SetToken("15307199901", "100027", "100027", 0);
-            string s = token;
-            Response.Write(token);
+            //string token = XCCloudManaUserTokenBusiness.SetToken("15307199901", "100027", "100027", 0);
+            //string s = token;
+            //Response.Write(token);
+
+            string mobileToken = string.Empty;
+            string mobile = "1561892033";
+            string token = System.Guid.NewGuid().ToString("N");
+            if (!MobileTokenBusiness.ExistMobile(CommonConfig.PrefixKey + mobile))
+            {
+                MobileTokenBusiness.AddToken(CommonConfig.PrefixKey + mobile, token);
+            }
+
+
+            string UserName = "lijunjie";
+            string key = UserName;
+            string token1 = System.Guid.NewGuid().ToString("N");
+            if (!MobileTokenBusiness.ExistMobile(key))
+            {
+                MobileTokenBusiness.AddToken(key, token1);
+            }
         }
 
 

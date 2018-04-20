@@ -1,52 +1,106 @@
-﻿<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
+﻿
+<!DOCTYPE html>
+<html lang="zh-CN">
 <head>
     <meta charset="utf-8">
-    <meta name="divport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>莘拍档</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="css/ydui.rem.css">
+    <!-- 引入rem自适应类库 -->
+    <style>
+
+    </style>
 </head>
 <body>
-</body>
+<div id="app"></div>
+<script src="js/ydui.flexible.js"></script>
+<!-- 引入 Vue -->
+<script src="js/vue.js"></script>
 <script src="js/jquery-1.8.3-min.js"></script>
+<!-- 引入组件库 -->
+<script src="js/ydui.rem.js"></script>
+<script src="js/axios.min.js"></script>
+<script src="js/alipayjsapi.min.js"></script>
 <script>
-    function getQueryString(name) {
-        var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
-        var r = window.location.search.substr(1).match(reg);
-        if (r != null) {
-            return unescape(r[2]);
-        }
-        return null;
-    }
-
-    $(function () {
-        var isreg = getQueryString("isreg");
-        alert(isreg);
-
-        if (/MicroMessenger/.test(window.navigator.userAgent)) {
-            var openId = getQueryString("openId");
-//            alert(openId);
-            setStorage("openId",openId)
-            if(isreg == 0){
-                window.location.href = "login.html"
-            }else if(isreg == 1){
-//                window.location.href = "home.html"
+    var sysId = 0; //调用方应用Id
+    var versionNo= "0.89"; //版本号
+    var htmlfnc = new Vue({
+        el: '#app',
+        data:{
+            userThirdId:""
+        },
+        mounted: function () {
+            this.Load()
+        },
+        methods: {
+            Load:function () {
+                var that =this;
+                var isReg = getQueryString("isReg");
+                alert(isReg);
+                if (/MicroMessenger/.test(window.navigator.userAgent)) {
+                    var openId = getQueryString("openId");
+                    that.userThirdId =openId;
+                    alert(openId);
+                    setStorage("openId",openId);
+                    if(isReg == 0){
+                        window.location.href = "login.html"
+                    }else if(isReg == 1){
+                        that.getMobile();
+                    }
+                } else if (/AlipayClient/.test(window.navigator.userAgent)) {
+                    var userid = getQueryString("userId");
+                    that.userThirdId =userid;
+                    alert(userid);
+                    setStorage("userid",userid);
+                    if(isReg == 0){
+                        window.location.href = "login.html"
+                    }else if(isReg == 1){
+                        that.getMobile();
+                    }
+                } else {
+                    console.log("暂不支持此浏览器")
+                }
+            },
+            getMobile:function () {
+                var that =this;
+                this.$dialog.loading.open('');
+                var obj={
+                    sysId: sysId,
+                    versionNo: versionNo,
+                    userThirdId:that.userThirdId
+                };
+                axios.post('/xcgamemana/token?action=getMobileTokenByThirdId', obj).then(function (res) {
+                    that.$dialog.loading.close();
+                    that.msgPrompt(res.data);
+                    console.log(res.data);
+                    if (res.data.result_code === '1') {
+                        setStorage("mobileToken",res.data.result_data.mobileToken);
+                        window.location.href = "home.html"
+                    }
+                }).catch(function (err) {
+                    that.$dialog.loading.close();
+                    console.log(err);
+                })
+            },
+            msgPrompt:function (res) {
+                if(res.return_code == 0){
+                    this.$dialog.toast({
+                        mes: res.return_msg,
+                        timeout: 1500,
+                        icon: 'error'
+                    });
+                }else if(res.result_code == 0){
+                    this.$dialog.toast({
+                        mes: res.result_msg,
+                        timeout: 1500,
+                        icon: 'error'
+                    });
+                }
             }
-        } else if (/AlipayClient/.test(window.navigator.userAgent)) {
-            var userid = getQueryString("userId");
-//            alert(userid);
-            setStorage("userid",userid)
-            if(isreg == 0){
-                window.location.href = "login.html"
-            }else if(isreg == 1){
-//                window.location.href = "home.html"
-            }
-        } else {
-            console.log("暂不支持此浏览器")
         }
-
-
-
     });
-    //存储session
     function setStorage(key,value) {
         if(window.localStorage){
             value = JSON.stringify(value); //转化为JSON字符串
@@ -69,5 +123,14 @@
             return value;
         }
     }
+    function getQueryString(name) {
+        var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) {
+            return unescape(r[2]);
+        }
+        return null;
+    }
 </script>
+</body>
 </html>

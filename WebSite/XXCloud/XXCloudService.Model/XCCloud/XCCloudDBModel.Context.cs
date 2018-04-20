@@ -133,10 +133,12 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Data_Food_Sale> Data_Food_Sale { get; set; }
         public virtual DbSet<Data_FoodInfo> Data_FoodInfo { get; set; }
         public virtual DbSet<Base_DeviceInfo> Base_DeviceInfo { get; set; }
-        public virtual DbSet<Data_Project_Device> Data_Project_Device { get; set; }
         public virtual DbSet<Data_Project_StoreList> Data_Project_StoreList { get; set; }
-        public virtual DbSet<Data_ProjectInfo> Data_ProjectInfo { get; set; }
         public virtual DbSet<Data_ProjectTime_BandPrice> Data_ProjectTime_BandPrice { get; set; }
+        public virtual DbSet<Data_ProjectTime_StoreList> Data_ProjectTime_StoreList { get; set; }
         public virtual DbSet<Data_ProjectTimeInfo> Data_ProjectTimeInfo { get; set; }
+        public virtual DbSet<Data_BalanceChargeRule> Data_BalanceChargeRule { get; set; }
+        public virtual DbSet<Data_Project_Device> Data_Project_Device { get; set; }
+        public virtual DbSet<Data_ProjectInfo> Data_ProjectInfo { get; set; }
     }
 }

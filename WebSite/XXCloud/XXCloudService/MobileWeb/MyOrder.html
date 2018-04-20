@@ -10,22 +10,31 @@
     <!-- 引入rem自适应类库 -->
     <script src="js/ydui.flexible.js"></script>
     <style>
+        .closeIcon{background: none;margin: 0!important;}
+        .closeIcon1{background: none;margin: 0!important;padding-top: 0.16rem;color: #FF685D;}
+        .top_main{background: #F0F8FF;height: 1.3rem;color: #666;display:flex;flex-direction: row;justify-content: space-between;}
+        .top_mc{display:flex;flex-direction: column;font-size: 0.32rem;margin-left: 0.4rem;padding-top: 0.2rem;text-align: center;line-height: 0.5rem;}
 
     </style>
 </head>
 <body>
 <div id="app">
-    <div>
+
         <div class="page-bottom">
             <div class='top_main'>
                 <div class='top_mc'><span>总共</span><span class='color11'>{{Count}}条</span></div>
                 <div class='top_mc'><span>购币</span><span class='color11'>{{Buycoins}}个</span></div>
                 <div class='top_mc'><span>总币数：</span><span class='color11'>{{Totalcoins}}个</span></div>
                 <div class='top_mc'><span>总金额：</span><span class='color11'>{{Totalmoney}}元</span></div>
+                <yd-button class="closeIcon1" size="small" type="danger" @click.native="show4 = true">
+                    <yd-icon color="#FF685D" name="search"></yd-icon>
+                    <p>筛选</p>
+                </yd-button>
             </div>
-            <yd-button size="large" type="danger" @click.native="show4 = true">右侧弹出</yd-button>
+
             <yd-popup v-model="show4" position="right">
-                <yd-button type="danger" style="margin: 30px;" @click.native="show4 = false">Close Right Popup</yd-button>
+                <!--<yd-button type="danger" style="margin: 30px;" @click.native="show4 = false">Close Right Popup</yd-button>-->
+                <yd-button class="closeIcon" type="warning" style="margin: 30px;" @click.native="show4 = false"><yd-icon color="#FF685D" name="error-outline"></yd-icon></yd-button>
                 <yd-cell-item>
                     <span slot="left">金额：</span>
                     <input slot="right" type="number" placeholder="最低金额" class='section__input'  maxlength='9' v-model="dateInput0">
@@ -91,7 +100,17 @@
 
             </yd-infinitescroll>
         </div>
-    </div>
+    <yd-tabbar fixed=true active-color="#000000">
+        <yd-tabbar-item title="首页" @click.native="register1">
+            <yd-icon name="home" slot="icon" size="0.54rem"></yd-icon>
+        </yd-tabbar-item>
+        <yd-tabbar-item title="我的订单" active>
+            <yd-icon name="shopcart" slot="icon" size="0.54rem"></yd-icon>
+        </yd-tabbar-item>
+        <yd-tabbar-item title="个人中心" @click.native="register2">
+            <yd-icon name="ucenter-outline" slot="icon" size="0.54rem"></yd-icon>
+        </yd-tabbar-item>
+    </yd-tabbar>
 </div>
 
 <!-- 引入 Vue -->
@@ -125,7 +144,7 @@
             show4: false,
             today: "",
             allover:"",
-            mobileToken:'90e28cb9261348f4b74547e531a7b225'
+            mobileToken:'034e5131f92e45b08fea1228ea43af57'
         },
         mounted: function () {
             this.newTimes();
@@ -143,6 +162,12 @@
                 this.today =yy+"-"+mm+"-"+dd;
                 this.datetime4 =yy+"-"+mm+"-"+dd;
                 this.datetime5 =yy+"-"+mm+"-"+dd;
+            },
+            register1:function () {
+                window.location.href = "home.html"
+            },
+            register2:function () {
+                window.location.href = "mine.html"
             },
             confirm:function () {
                 var that =this;
@@ -252,12 +277,13 @@
             },
             Load: function () {
                 var that =this;
-//                var mobileToken = res.data.mobileToken;//获取手机令牌
+                var mobileToken =  getStorage("mobileToken");//获取手机令牌
+                console.log(mobileToken);
                 this.$dialog.loading.open('');
                 var obj={
                     sysId: sysId,
                     versionNo: versionNo,
-                    mobileToken: that.mobileToken,
+                    mobileToken: mobileToken,
                     pageIndex: "0",
                     storename: "",
                     startcoins: "",
@@ -332,7 +358,29 @@
     });
 
 
-
+    //存储session
+    function setStorage(key,value) {
+        if(window.localStorage){
+            value = JSON.stringify(value); //转化为JSON字符串
+            var storage=window.localStorage;
+            storage.setItem(key,value);
+        }
+    }
+    //删除session
+    function removeStorage(key) {
+        if(window.localStorage){
+            var storage=window.localStorage;
+            storage.removeItem(key);
+        }
+    }
+    //获取session
+    function getStorage(key,value) {
+        if(window.localStorage){
+            var storage=window.localStorage;
+            value = JSON.parse(localStorage.getItem(key));
+            return value;
+        }
+    }
 
 
 </script>

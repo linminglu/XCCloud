@@ -9,6 +9,11 @@ namespace XCCloudService.Common
 {
     public class RequestRouteBusiness
     {
+        private static string[] GetRequestParamArray(string requestParam)
+        {
+            return requestParam.Split('/');
+        }
+
         public static bool IsRewrite(string requestUrl, string scheme,string authority,out string rewriteUrl)
         {
             string hostUrl = string.Format("{0}://{1}", scheme, authority);
@@ -49,6 +54,17 @@ namespace XCCloudService.Common
                     string mailUrl = string.Format("{0}://{1}/{2}/", scheme, authority, "qr");
                     isRewrite = QRBusiness.GetRequestUrl(url, mailUrl, out rewriteUrl);
                     rewriteUrl = rewriteUrl.Replace(hostUrl, "");
+                }
+                else if (url.ToLower().IndexOf(string.Format("{0}://{1}/{2}/", scheme, authority, "m")) >= 0)
+                {
+                    url = url.ToLower();
+                    string mailUrl = string.Format("{0}://{1}/{2}/", scheme, authority, "m");
+                    string[] paramsArr = GetRequestParamArray(url.Replace(mailUrl, ""));
+                    if (paramsArr.Length > 0 || string.IsNullOrEmpty(paramsArr[0]))
+                    {
+                        isRewrite = true;
+                        rewriteUrl = string.Format("/ServicePage/TransPage.aspx?action=m&deviceNo={0}",paramsArr[0]);
+                    }
                 }
             }
             return isRewrite;

@@ -407,10 +407,10 @@ namespace XCCloudService.Base
                 string mobileToken = Utils.GetDictionaryValue<string>(dicParas, "mobileToken").ToString();
                 string storeId = Utils.GetDictionaryValue<string>(dicParas, "storeId").ToString();
                 //如果是手机token
-                if (MobileTokenBusiness.ExistToken(mobileToken, out mobile))
+                MobileTokenModel mobileTokenModel = null;
+                if (MobileTokenBusiness.ExistToken(mobileToken, ref mobileTokenModel))
                 {
-                    MobileTokenModel mobileTokenTokenModel = new MobileTokenModel(mobile);
-                    dicParas.Add(Constant.MobileTokenModel, mobileTokenTokenModel);
+                    dicParas.Add(Constant.MobileTokenModel, mobileTokenModel);
                     return true;
                 }
                 else

@@ -77,6 +77,7 @@
     <Compile Include="IBLL\XCCloud\IBase_UserGrantService.cs" />
     <Compile Include="IBLL\XCCloud\IBase_UserGroupService.cs" />
     <Compile Include="IBLL\XCCloud\IBase_UserGroup_GrantService.cs" />
+    <Compile Include="IBLL\XCCloud\IData_BalanceChargeRuleService.cs" />
     <Compile Include="IBLL\XCCloud\IData_BalanceType_StoreListService.cs" />
     <Compile Include="IBLL\XCCloud\IData_BillInfoService.cs" />
     <Compile Include="IBLL\XCCloud\IData_CoinDestoryService.cs" />
@@ -113,6 +114,7 @@
     <Compile Include="IBLL\XCCloud\IData_ParametersService.cs" />
     <Compile Include="IBLL\XCCloud\IData_ProjectInfoService.cs" />
     <Compile Include="IBLL\XCCloud\IData_ProjectTimeInfoService.cs" />
+    <Compile Include="IBLL\XCCloud\IData_ProjectTime_StoreListService.cs" />
     <Compile Include="IBLL\XCCloud\IData_Project_StoreListService.cs" />
     <Compile Include="IBLL\XCCloud\IData_ProjectTime_BandPriceService.cs" />
     <Compile Include="IBLL\XCCloud\IData_Project_DeviceService.cs" />
@@ -211,6 +213,7 @@
     <Compile Include="XCCloud\Base_UserGrantService.cs" />
     <Compile Include="XCCloud\Base_UserGroupService.cs" />
     <Compile Include="XCCloud\Base_UserGroup_GrantService.cs" />
+    <Compile Include="XCCloud\Data_BalanceChargeRuleService.cs" />
     <Compile Include="XCCloud\Data_BalanceType_StoreListService.cs" />
     <Compile Include="XCCloud\Data_BillInfoService.cs" />
     <Compile Include="XCCloud\Data_CoinDestoryService.cs" />
@@ -246,6 +249,7 @@
     <Compile Include="XCCloud\Data_Member_Card_StoreService.cs" />
     <Compile Include="XCCloud\Data_ParametersService.cs" />
     <Compile Include="XCCloud\Data_ProjectInfoService.cs" />
+    <Compile Include="XCCloud\Data_ProjectTime_StoreListService.cs" />
     <Compile Include="XCCloud\Data_Project_StoreListService.cs" />
     <Compile Include="XCCloud\Data_ProjectTimeInfoService.cs" />
     <Compile Include="XCCloud\Data_ProjectTime_BandPrice.cs" />

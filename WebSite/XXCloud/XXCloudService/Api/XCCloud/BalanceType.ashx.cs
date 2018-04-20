@@ -63,6 +63,31 @@ namespace XXCloudService.Api.XCCloud
         }
 
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object GetBalanceTypeDic(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
+                string errMsg = string.Empty;
+
+                IDict_BalanceTypeService dict_BalanceTypeService = BLLContainer.Resolve<IDict_BalanceTypeService>();
+                var linq = dict_BalanceTypeService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)).OrderBy(o => o.TypeID)
+                    .Select(o => new 
+                    {
+                        ID = o.ID,
+                        TypeName = o.TypeName
+                    });
+
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, linq);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object GetBalanceTypeInfo(Dictionary<string, object> dicParas)
         {
             try

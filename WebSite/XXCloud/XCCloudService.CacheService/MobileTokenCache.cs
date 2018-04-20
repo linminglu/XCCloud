@@ -11,14 +11,24 @@ namespace XCCloudService.CacheService
     {
         private static Hashtable _mobileTokenHt = new Hashtable();
 
-        public static void AddToken(string key, string token)
+        public static Hashtable MobileTokenHt
         {
-            _mobileTokenHt[key] = token;
+            get { return _mobileTokenHt; }
+        }
+
+        public static void AddToken(string mobile,string token)
+        {
+            _mobileTokenHt[token] = new MobileTokenModel(mobile);
+        }
+
+        public static void AddToken(string token,MobileTokenModel model)
+        {
+            _mobileTokenHt[token] = model;
         }
 
         public static bool ExistToken(string token)
         {
-            if (_mobileTokenHt.ContainsValue(token))
+            if (_mobileTokenHt.ContainsKey(token))
             {
                 return true;
             }
@@ -28,15 +38,20 @@ namespace XCCloudService.CacheService
             }
         }
 
+        public static void RemoveToken(string token)
+        {
+            _mobileTokenHt.Remove(token);
+        }
+
         public static bool ExistTokenByKey(string key)
         {
             return _mobileTokenHt.ContainsKey(key);
         }
 
-        public static bool ExistTokenByValue(string token)
-        {
-            return _mobileTokenHt.ContainsValue(token);
-        }
+        //public static bool ExistTokenByKey(string token)
+        //{
+        //    return _mobileTokenHt.ContainsKey(token);
+        //}
 
         public static void UpdateTokenByKey(string key, string value)
         {
@@ -70,10 +85,21 @@ namespace XCCloudService.CacheService
         public MobileTokenModel(string mobile)
         {
             this.Mobile = mobile;
+            this.WeiXinId = string.Empty;
+            this.AliId = string.Empty;
         }
 
-        public string StoreId { set; get; }
+        public MobileTokenModel(string mobile,string weixinId,string aliId)
+        {
+            this.Mobile = mobile;
+            this.WeiXinId = weixinId;
+            this.AliId = aliId;
+        }
 
         public string Mobile { set; get; }
+
+        public string WeiXinId { set; get; }
+
+        public string AliId { set; get; }
     }
 }

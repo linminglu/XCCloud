@@ -18,6 +18,7 @@ namespace XCCloudService.Model.XCCloud
         public string MerchID { get; set; }
         public string ProjectName { get; set; }
         public Nullable<int> PlayCount { get; set; }
+        public Nullable<int> PlayOnceFlag { get; set; }
         public Nullable<int> ExpireDays { get; set; }
         public Nullable<int> AccompanyFlag { get; set; }
         public Nullable<int> AccompanyCash { get; set; }

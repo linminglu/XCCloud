@@ -137,13 +137,15 @@
                 } else {
                     console.log("暂不支持此浏览器")
                 }
-                var obj={"sysId": "0","versionNo": "0.0.0.1",mobile: that.mobile,smsCode: that.smsCode,thirdType:"1",userThirdId:"2088012003061467"};
-//                var obj={"sysId": "0","versionNo": "0.0.0.1",mobile: that.mobile,smsCode: that.smsCode,thirdType:thirdType,userThirdId:userThirdId};
-                axios.post("/xcgamemana/token?action= getMobileToken", obj).then(function (res) {
+//                var obj={"sysId": "0","versionNo": "0.0.0.1",mobile: that.mobile,smsCode: that.smsCode,thirdType:"1",userThirdId:"2088012003061467"};
+                var obj={"sysId": "0","versionNo": "0.0.0.1",mobile: that.mobile,smsCode: that.smsCode,thirdType:thirdType,userThirdId:userThirdId};
+                axios.post("/xcgamemana/token?action=getMobileToken", obj).then(function (res) {
                     that.$dialog.loading.close();
                     console.log(res.data);
+                    that.msgPrompt(res.data);
                     if (res.data.result_code === '1') {
-                        alert(JSON.stringify(res.data));
+                        setStorage("mobileToken",res.data.result_data.mobileToken);
+                        window.location.href = "home.html"
                     }
                 }).catch(function (err) {
                     that.$dialog.loading.close();

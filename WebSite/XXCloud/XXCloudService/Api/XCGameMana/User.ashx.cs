@@ -162,9 +162,9 @@ namespace XXCloudService.Api.XCGameMana
                 }
                 string key = UserName;
                 string token = System.Guid.NewGuid().ToString("N");
-                if (!MobileTokenCache.ExistTokenByKey(key))
+                if (!MobileTokenBusiness.ExistMobile(key))
                 {
-                    MobileTokenCache.AddToken(key, token);
+                    MobileTokenBusiness.AddToken(key, token);
                 }
                 return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, token, Result_Code.T, "");
             }

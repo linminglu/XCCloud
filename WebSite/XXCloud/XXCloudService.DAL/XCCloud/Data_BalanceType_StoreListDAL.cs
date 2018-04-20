@@ -8,7 +8,7 @@ using XCCloudService.DAL.IDAL.XCCloud;
 using XCCloudService.Model.XCCloud;
 namespace XCCloudService.DAL.XCCloud
 {
-	public class Data_BalanceType_StoreListDAL : BaseDAL<Data_BalanceType_StoreList>, IData_BalanceType_StoreListDAL
+	public class Data_BalanceChargeRuleDAL : BaseDAL<Data_BalanceChargeRule>, IData_BalanceChargeRuleDAL
 	{
 		
 	} 

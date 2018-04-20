@@ -13,6 +13,7 @@ using XCCloudService.Model.CustomModel.XCCloud;
 using XCCloudService.Model.XCCloud;
 using System.Transactions;
 using System.Data.Entity.SqlServer;
+using XCCloudService.Common.Extensions;
 
 namespace XXCloudService.Api.XCCloud
 {
@@ -183,7 +184,7 @@ namespace XXCloudService.Api.XCCloud
         }
 
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
-        public object GetParam(Dictionary<string, object> dicParas)
+        private object GetParam(Dictionary<string, object> dicParas)
         {
             try
             {
@@ -255,7 +256,7 @@ namespace XXCloudService.Api.XCCloud
         }
 
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
-        public object SetParam(Dictionary<string, object> dicParas)
+        private object SetParam(Dictionary<string, object> dicParas)
         {
             try
             {
@@ -420,6 +421,178 @@ namespace XXCloudService.Api.XCCloud
                 {
                     errMsg = "添加返还规则失败";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object GetChargeRules(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                string errMsg = string.Empty;
+                string storeId = dicParas.ContainsKey("storeId") ? dicParas["storeId"].ToString() : string.Empty;
+
+                IData_BalanceChargeRuleService data_BalanceChargeRuleService = BLLContainer.Resolve<IData_BalanceChargeRuleService>(resolveNew: true);
+                IDict_BalanceTypeService dict_BalanceTypeService = BLLContainer.Resolve<IDict_BalanceTypeService>(resolveNew: true);
+                var linq = from a in data_BalanceChargeRuleService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase))
+                           join b in dict_BalanceTypeService.GetModels() on a.SourceType equals b.ID into b1
+                           from b in b1.DefaultIfEmpty()
+                           join c in dict_BalanceTypeService.GetModels() on a.ChargeType equals c.ID into c1
+                           from c in c1.DefaultIfEmpty()
+                           select new 
+                           {
+                               SourceType = a.SourceType,
+                               SourceTypeStr = b != null ? b.TypeName : string.Empty,
+                               SourceCount = a.SourceCount,
+                               ChargeType = a.ChargeType,
+                               ChargeTypeStr = c != null ? c.TypeName : string.Empty,
+                               ChargeCount = a.ChargeCount,
+                               AlertValue = a.AlertValue
+                           };
+
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, linq);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object AddChargeRules(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
+
+                string errMsg = string.Empty;
+                string storeId = dicParas.ContainsKey("storeId") ? dicParas["storeId"].ToString() : string.Empty;
+                object[] chargeRules = dicParas.ContainsKey("chargeRules") ? (object[])dicParas["chargeRules"] : null;
+
+                #region 验证参数
+                if (string.IsNullOrEmpty(storeId))
+                {
+                    errMsg = "门店ID参数不能为空";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }                
+                #endregion                              
+
+                //开启EF事务
+                using (TransactionScope ts = new TransactionScope())
+                {
+                    try
+                    {
+                        if (chargeRules != null && chargeRules.Count() >= 0)
+                        {
+                            //先删除，后添加
+                            IData_BalanceChargeRuleService data_BalanceChargeRuleService = BLLContainer.Resolve<IData_BalanceChargeRuleService>();                            
+                            foreach (var model in data_BalanceChargeRuleService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)))
+                            {
+                                data_BalanceChargeRuleService.DeleteModel(model);
+                            }
+
+                            var chargeRuleList = new List<Data_BalanceChargeRule>();
+                            foreach (IDictionary<string, object> el in chargeRules)
+                            {
+                                if (el != null)
+                                {
+                                    var dicPara = new Dictionary<string, object>(el, StringComparer.OrdinalIgnoreCase);
+                                    string sourceType = dicPara.ContainsKey("sourceType") ? (dicPara["sourceType"] + "") : string.Empty;
+                                    string sourceCount = dicPara.ContainsKey("sourceCount") ? (dicPara["sourceCount"] + "") : string.Empty;
+                                    string chargeType = dicPara.ContainsKey("chargeType") ? (dicPara["chargeType"] + "") : string.Empty;
+                                    string chargeCount = dicPara.ContainsKey("chargeCount") ? (dicPara["chargeCount"] + "") : string.Empty;
+                                    string alertValue = dicPara.ContainsKey("alertValue") ? (dicPara["alertValue"] + "") : string.Empty;
+
+                                    #region 验证参数
+                                    if (string.IsNullOrEmpty(sourceType))
+                                    {
+                                        errMsg = "原类型不能为空";
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    }
+                                    if (string.IsNullOrEmpty(sourceCount))
+                                    {
+                                        errMsg = "原数量不能为空";
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    }
+                                    if (!Utils.IsDecimal(sourceCount) || Convert.ToDecimal(sourceCount) < 0)
+                                    {
+                                        errMsg = "原数量格式不正确，须为非负数";
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    }
+                                    if (string.IsNullOrEmpty(chargeType))
+                                    {
+                                        errMsg = "兑换类型不能为空";
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    }
+                                    if (string.IsNullOrEmpty(chargeCount))
+                                    {
+                                        errMsg = "兑换数量不能为空";
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    }
+                                    if (!Utils.IsDecimal(chargeCount) || Convert.ToDecimal(chargeCount) < 0)
+                                    {
+                                        errMsg = "兑换数量格式不正确，须为非负数";
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    }
+                                    if (string.IsNullOrEmpty(alertValue))
+                                    {
+                                        errMsg = "警戒值不能为空";
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    }
+                                    if (!Utils.IsDecimal(alertValue) || Convert.ToDecimal(alertValue) < 0)
+                                    {
+                                        errMsg = "警戒值格式不正确，须为非负数";
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    }
+                                    #endregion
+
+                                    var data_BalanceChargeRule = new Data_BalanceChargeRule();
+                                    data_BalanceChargeRule.MerchID = merchId;
+                                    data_BalanceChargeRule.StoreID = storeId;
+                                    data_BalanceChargeRule.SourceType = ObjectExt.Toint(sourceType);
+                                    data_BalanceChargeRule.SourceCount = ObjectExt.Todecimal(sourceCount);
+                                    data_BalanceChargeRule.ChargeType = ObjectExt.Toint(chargeType);
+                                    data_BalanceChargeRule.ChargeCount = ObjectExt.Todecimal(chargeCount);
+                                    data_BalanceChargeRule.AlertValue = ObjectExt.Todecimal(alertValue);
+                                    chargeRuleList.Add(data_BalanceChargeRule);
+                                    data_BalanceChargeRuleService.AddModel(data_BalanceChargeRule);
+                                }
+                                else
+                                {
+                                    errMsg = "提交数据包含空对象";
+                                    return false;
+                                }
+                            }
+
+                            //同一类型的兑换规则必须唯一 
+                            if (chargeRuleList.GroupBy(g => new { g.SourceType, g.SourceCount, g.ChargeType }).Select(o => new { Count = o.Count() }).Any(p => p.Count > 1))
+                            {
+                                errMsg = "同一类型的兑换规则必须唯一";
+                                return false;
+                            }
+
+                            if (!data_BalanceChargeRuleService.SaveChanges())
+                            {
+                                errMsg = "保存兑换规则信息失败";
+                                return false;
+                            }
+                        }
+
+                        ts.Complete();
+                    }
+                    catch (Exception ex)
+                    {
+                        errMsg = ex.Message;
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
                 }
 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);

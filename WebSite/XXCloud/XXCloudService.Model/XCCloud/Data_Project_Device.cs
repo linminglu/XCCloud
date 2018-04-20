@@ -17,6 +17,7 @@ namespace XCCloudService.Model.XCCloud
         public int ID { get; set; }
         public Nullable<int> ProjectID { get; set; }
         public Nullable<int> DeviceID { get; set; }
+        public Nullable<int> JoinType { get; set; }
         public Nullable<int> SignType { get; set; }
         public Nullable<int> LockMember { get; set; }
     }

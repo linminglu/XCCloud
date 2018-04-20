@@ -306,6 +306,9 @@
     <Compile Include="XCCloud\Base_UserInfo.cs">
       <DependentUpon>XCCloudDBModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="XCCloud\Data_BalanceChargeRule.cs">
+      <DependentUpon>XCCloudDBModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="XCCloud\Data_BalanceType_StoreList.cs">
       <DependentUpon>XCCloudDBModel.tt</DependentUpon>
     </Compile>
@@ -439,6 +442,9 @@
       <DependentUpon>XCCloudDBModel.tt</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_ProjectTime_BandPrice.cs">
+      <DependentUpon>XCCloudDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_ProjectTime_StoreList.cs">
       <DependentUpon>XCCloudDBModel.tt</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_Project_Device.cs">

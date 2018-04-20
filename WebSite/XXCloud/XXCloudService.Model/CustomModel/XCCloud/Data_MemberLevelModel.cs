@@ -15,18 +15,6 @@ namespace XCCloudService.Model.CustomModel.XCCloud
 
         [DataMember(Name = "memberLevelName", Order = 2)]
         public string MemberLevelName { set; get; }
-
-        [DataMember(Name = "foodId", Order = 3)]
-        public int FoodId { set; get; }
-
-        [DataMember(Name = "foodName", Order = 4)]
-        public string FoodName { set; get; }
-
-        [DataMember(Name = "foodPrice", Order = 5)]
-        public decimal FoodPrice { set; get; }
-
-        [DataMember(Name = "cardUIURL", Order = 6)]
-        public string CardUIURL { set; get; }
     }
 
 

@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>门票设置</title>
+    <link rel="stylesheet" href="layui/css/layui.css">
+</head>
+<style>
+    .layui-form-onswitch{
+        border-color: #5FB878!important;
+        background-color: #5FB878!important;
+    }
+    .layui-form-switch{
+        height: 22px;
+        line-height: 22px;
+        width: 42px;
+        border: 1px solid #d2d2d2;
+        border-radius: 20px;
+        background-color: #fff;
+    }
+    .layui-form-switch em{
+        width: 25px;
+        color: #999!important;
+        font-size: 12px;}
+    .layui-form-switch i{
+        left: 5px;
+        top: 3px;
+        width: 16px;
+        height: 16px;
+        border-radius: 20px;
+        background-color: #d2d2d2;
+    }
+    .layui-form-onswitch i{
+        left: 32px;
+    }
+
+    #goodIsAll .layui-form-switch {
+        height: 36px;
+        line-height: 36px;
+        width: 180px;
+        border-radius: 5px;
+        border: 1px solid #orangered;
+        background-color: #999;
+    }
+
+    #goodIsAll .layui-form-switch i {
+        left: 0px;
+        top: 0px;
+        width: 95px;
+        height: 36px;
+        margin-top: -1px;
+        border-radius: 5px 0 0 5px;
+        border: 1px solid #aaa;
+        background-color: #fff;
+    }
+
+    #goodIsAll  .layui-form-switch em {
+        width: 80px;
+        color: #ffffff!important;
+        font-size: 14px;
+    }
+
+    #goodIsAll .layui-form-onswitch {
+        border-color: #1e9fff!important;
+        background-color: #1e9fff!important;
+    }
+
+    #goodIsAll  .layui-form-onswitch i {
+        left: 95px;
+        border-radius: 0 5px 5px 0;
+        border: 1px solid #aaa;
+        margin-top: -1px;
+    }
+
+
+</style>
+<body>
+<div class="layui-row" style="padding: 15px;">
+    <blockquote style="text-align: right;padding-right: 150px;" class="layui-col-md12 layui-col-xs12 layui-col-lg12 layui-elem-quote">
+        <button type="button" class="layui-btn layui-btn-normal toEasyOpen" id="add"><i class="layui-icon">&#xe654;</i>新增</button>
+    </blockquote>
+    <table class="layui-hide" lay-filter="ticketSettingTable" id="ticketSettingTable"></table>
+</div>
+<!--门票设置弹窗-->
+<div id="openModel" style="padding: 15px;display:none;">
+    <form action="" class="layui-form layui-form-pane">
+            <div class="layui-form-item">
+                <label class="layui-form-label">项目名称</label>
+                <div class="layui-input-block">
+                    <input type="text" class="layui-input" id="ProjectName">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">游玩次数</label>
+                    <div class="layui-input-inline" style="width: 116px;">
+                        <input type="text" class="layui-input" id="PlayCount">
+                    </div>
+                    <div class="layui-form-mid">0表示不限次数</div>
+                </div>
+                <div class="layui-inline" style="margin-right: 0;">
+                    <label class="layui-form-label">有效天数</label>
+                    <div class="layui-input-block">
+                        <input type="text" class="layui-input" id="ExpireDays">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline" id="goodIsAll">
+                    <label class="layui-form-label">开通陪同票</label>
+                    <div class="layui-input-inline">
+                        <input type="checkbox" id="AccompanyFlag" name="open" lay-skin="switch" lay-filter="AccompanyFlag" lay-text="是|否">
+                    </div>
+                </div>
+            </div>
+
+
+        <div class=" layui-hide" id="FlagTrue">
+            <div class="layui-form-item">
+                <label class="layui-form-label">现金票价</label>
+                <div class="layui-input-block">
+                    <input type="text" class="layui-input" id="AccompanyCash">
+                </div>
+            </div>
+            <div class="layui-form-item" style="margin-right: 0;">
+                <label class="layui-form-label">扣除种类</label>
+                <div class="layui-input-block">
+                    <select id="BalanceType" lay-filter="BalanceType"></select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">扣除数量</label>
+                <div class="layui-input-block">
+                    <input type="text" class="layui-input" id="BalanceCount">
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+                <label class="layui-form-label" style="height: 100px">备注</label>
+                <div class="layui-input-block">
+                    <textarea id="Note" class="layui-textarea"></textarea>
+                </div>
+        </div>
+        <div style="text-align:center;padding-right: 15px;margin: 15px 0;">
+            <button type="button" class="layui-btn layui-btn-normal" id="cancelBtn">取消</button>
+            <button type="reset" class="layui-btn layui-btn-normal">重置</button>
+            <button type="button" class="layui-btn layui-btn-normal" id="saveBtn">确定</button>
+        </div>
+    </form>
+</div>
+<!--适用门店弹窗-->
+<div id="openStore" style="padding: 15px;display: none">
+    <form action="" class="layui-form layui-form-pane">
+        <div class="layui-form-item">
+            <label for="" class="layui-form-label">选择门店</label>
+            <div class="layui-input-block" id="storeListBox">
+
+            </div>
+        </div>
+    </form>
+    <div style="text-align:center;">
+        <button type="reset" class="layui-btn">重置</button>
+        <button type="button" class="layui-btn layui-btn-normal" id="saveStoreBtn">保存</button>
+    </div>
+</div>
+</body>
+<script src="js/jquery-1.8.3-min.js"></script>
+<script src="layui/layui.js"></script>
+<script src="js/storeSystem.js"></script>
+<script>
+    let xc=xcActionSystem.prototype;
+    let token=xc.getStorage('token');
+    let _AccompanyFlag=0;
+    let _id;
+    let _balanceType;
+
+    let _storeId=[];
+    let parm={'obj':{'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'},
+        'url':'/XCCloud/Project?action=GetProjectInfoList',
+        'elem':'#ticketSettingTable',
+        'cols':[
+            {field:'ID', title:'门票ID', align: 'center', sort: true,width:80}
+            ,{field:'ProjectName',title: '门票次数', align: 'center'}
+            ,{field:'PlayCount', title: '游玩次数', align: 'center'}
+            ,{field:'ExpireDays', title: '有效天数', align: 'center'}
+            ,{field:'AccompanyFlag', title: '是否陪同票', align: 'center',templet:'#changeLock',width:140}
+            ,{field:'AccompanyCash', title: '陪同现金票价', align: 'center'}
+            ,{field:'BalanceTypeStr', title: '扣除种类', align: 'center'}
+            ,{field:'BalanceCount', title: '扣除数量', align: 'center'}
+            ,{field:'Note', title: '备注', align: 'center'}
+            ,{fixed: 'right', title: '操作', width:260, align:'center', toolbar: '#barDemo'}]
+    };
+    xc.getInitData(parm);
+
+    layui.use(['form','layer','table'],function (obj) {
+        let form=layui.form;
+        let layer=layui.layer;
+        let table=layui.table;
+        //新增门票设定
+        xc.getBalanceTypeDic (token,layer,form,'BalanceType');
+
+        $('#add').on('click',function () {
+             _AccompanyFlag=0;
+             _id='';
+             _balanceType='';
+             $(this).find('button[type="reset"]').trigger('click');
+            $('#FlagTrue').addClass('layui-hide');
+            layer.open({
+                title:'设置门票',
+                type:1,
+                area:'655px',
+                content:$('#openModel')
+            })
+        });
+        //保存门票设定
+        $('#saveBtn').on('click',function () {
+            xc.SaveProjectInfo(token,layer,_id);
+        });
+        $('#cancelBtn').on('click',function () {
+            layer.closeAll();
+            _AccompanyFlag=0;
+            _id='';
+            _balanceType='';
+            $('#openModel').find('input').val('');
+        });
+
+        //保存适用门店
+        $('#saveStoreBtn').on('click',function () {
+            xc.SaveProjectStores(token,layer,_id)
+        });
+        form.on('switch(AccompanyFlag)',function (data) {
+            if(data.elem.checked ==true){
+                _AccompanyFlag=1;
+                $('#FlagTrue').removeClass('layui-hide')
+            }else {
+                _AccompanyFlag=0;
+                $('#FlagTrue').addClass('layui-hide');
+            }
+        });
+        form.on('select(BalanceType)',function (data) {
+            _balanceType=data.value;
+        });
+        //监听门店设置
+
+
+        table.on('tool(ticketSettingTable)',function (obj) {
+            let data=obj.data;
+            let event=obj.event;
+            _id=data.ID;
+            if(event==='edit'){
+                let _obj={'id':data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                let parseJson = JSON.stringify(_obj);
+                $.ajax({
+                    type:'post',
+                    url:'/XCCloud/Project?action=GetProjectInfo',
+                    contentType: "application/json; charset=utf-8",
+                    data:{parasJson: parseJson},
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        if (data.result_code == 1) {
+                            let arr=data.result_data;
+                            $('#ProjectName').val(arr.ProjectName);
+                            $('#PlayCount').val(arr.PlayCount);
+                            $('#ExpireDays').val(arr.ExpireDays);
+                            $('#Note').val(arr.Note);
+                            if(arr.AccompanyFlag==1){
+                                _AccompanyFlag=1;
+                                $('#FlagTrue').removeClass('layui-hide');
+                                $('#AccompanyFlag').prop('checked',true);
+                                $('#AccompanyCash').val(arr.AccompanyCash);
+                                _balanceType=arr.BalanceType;
+                                $('#BalanceType').find('option[value="'+arr.BalanceType+'"]').prop('selected',true);
+                                $('#BalanceCount').val(arr.BalanceCount);
+                            }else {
+                                _AccompanyFlag=0;
+                                $('#FlagTrue').addClass('layui-hide');
+                                $('#AccompanyFlag').prop('checked',false);
+                                $('#AccompanyCash').val('');
+                                _balanceType=arr.BalanceType;
+                                $('#BalanceType').find('option').prop('selected',false);
+                                $('#BalanceCount').val('');
+                            }
+                            form.render();
+                            layer.open({
+                                title:'修改门票规则',
+                                type:1,
+                                area:'655px',
+                                content:$('#openModel')
+                            })
+                        } else {
+                            layer.msg(data.result_msg);
+                        }
+                    }
+                })
+            }else if(event==='del'){
+                layer.confirm('确定删除此条门票吗？', function(index){
+                    let _obj={'projectIds':data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                    let parseJson = JSON.stringify(_obj);
+                    $.ajax({
+                        type:'post',
+                        url:'/XCCloud/Project?action=DeleteProjectInfo',
+                        contentType: "application/json; charset=utf-8",
+                        data:{parasJson: parseJson},
+                        success: function (data) {
+                            data = JSON.parse(data);
+                            if (data.result_code == 1) {
+                                layer.close(index);
+                                xc.getInitData(parm);
+                            } else {
+                                layer.msg(data.result_msg);
+                            }
+                        }
+                    })
+                });
+            }else if(event==='bindStore'){
+                xc.getProjectStoreList(form,token,'storeListBox');
+                form.on('checkbox(chooseStore)',function (data) {
+                    if (data.elem.checked==true){
+                        _storeId.push(data.value);
+                    }else if(data.elem.checked==false){
+                        for (var i=0;i<_storeId.length;i++){
+                            if(_storeId[i]==data.value){
+                                _storeId.splice(i,1)
+                            }
+                        }
+                    }
+                    console.log(_storeId);
+                });
+                xc.getProjectStores(data.ID,form,token,'storeListBox');
+                layer.open({
+                    title:'设置适用门店',
+                    type:1,
+                    area:'305px',
+                    content:$('#openStore')
+                })
+            }
+        })
+    });
+
+    //保存门票信息
+    xcActionSystem.prototype.SaveProjectInfo=function (token,layer,id) {
+        let _obj={'id':id,
+            'projectName':$('#ProjectName').val(),
+            'playCount':$('#PlayCount').val(),
+            'expireDays':$('#ExpireDays').val(),
+            'accompanyFlag':_AccompanyFlag,
+            'accompanyCash':$('#AccompanyCash').val(),
+            'balanceType':_balanceType,
+            'balanceCount':$('#BalanceCount').val(),
+            'note':$('#Note').val(),
+            'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+        let parseJson = JSON.stringify(_obj);
+        $.ajax({
+            type:'post',
+            url:'/XCCloud/Project?action=SaveProjectInfo',
+            contentType: "application/json; charset=utf-8",
+            data:{parasJson: parseJson},
+            success: function (data) {
+                data = JSON.parse(data);
+                if (data.result_code == 1) {
+                    location.href='/merch/ticketSeting.html'
+                } else {
+                    layer.msg(data.result_msg);
+                }
+            }
+        });
+    };
+    //加载所有门店
+    xcActionSystem.prototype.getProjectStoreList=function (form,token,id) {
+        let obj={'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+        let parseJson = JSON.stringify(obj);
+        $.ajax({
+            type:'post',
+            url:'/XCCloud/StoreWeight?action=GetStoreList',
+            contentType: "application/json; charset=utf-8",
+            data:{parasJson: parseJson},
+            success: function (data) {
+                data=JSON.parse(data);
+                if(data.Result_Code==1){
+                    $('#'+id).html('');
+                    let array=data.Result_Data;
+                    for(let i in array){
+                        $('#'+id).append('<input type="checkbox" lay-skin="primary" value="'+array[i].StoreID+'" lay-filter="chooseStore" title="'+array[i].StoreName+'"><hr class="layui-bg-blue">')
+                    }
+                    form.render('checkbox');
+                }else {
+                    layer.msg('获取适用门店列表失败')
+                }
+            }
+        })
+    };
+    //加载已绑定的门店
+    xcActionSystem.prototype.getProjectStores=function (projectId,form,token,id) {
+        let obj={'projectId':projectId,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+        let parseJson = JSON.stringify(obj);
+        $.ajax({
+            type:'post',
+            url:'/XCCloud/Project?action=GetProjectStores',
+            contentType: "application/json; charset=utf-8",
+            data:{parasJson: parseJson},
+            success: function (data) {
+                data=JSON.parse(data);
+                console.log(data);
+                if(data.result_code==1){
+                    _storeId=[];
+                    $('#'+id).find('input').attr({'checked':false});
+                    let array=data.result_data;
+                    if(array.length>0){
+                        for(let i in array){
+                            $('#'+id).find('input[value="'+array[i].StoreID+'"]').attr({'checked':true});
+                            _storeId.push(array[i].StoreID)
+                        }
+                        form.render('checkbox');
+                    }
+                console.log(_storeId)
+                }else {
+                    layer.msg('请设置适用门店')
+                }
+            }
+        })
+    };
+    //保存已设置的适用门店
+    xcActionSystem.prototype.SaveProjectStores=function (token,layer,id) {
+        let _obj;
+        if(_storeId.length>0){
+             _obj={'projectId':id,
+                'storeIds':_storeId.join('|'),
+                'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+        }else {
+             _obj={'projectId':id,
+                'storeIds':'',
+                'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+        }
+        let parseJson = JSON.stringify(_obj);
+        console.log(_obj);
+        $.ajax({
+            type:'post',
+            url:'/XCCloud/Project?action=SaveProjectStores',
+            contentType: "application/json; charset=utf-8",
+            data:{parasJson: parseJson},
+            success: function (data) {
+                data = JSON.parse(data);
+                console.log(data);
+                if (data.result_code == 1) {
+                    layer.closeAll();
+                } else {
+                    layer.msg(data.result_msg);
+                }
+            }
+        });
+    }
+</script>
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="bindStore"><i class="layui-icon">&#xe642;</i>适用门店</a>
+    <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="edit"><i class="layui-icon">&#xe642;</i>编辑</a>
+    <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del"><i class="layui-icon">&#xe640;</i>删除</a>
+</script>
+<script type="text/html" id="changeLock">
+    {{# if(d.AccompanyFlag==1){ }}
+    <input type="checkbox" checked name="switch" lay-skin="switch" lay-text="ON|OFF" class="tb_check" lay-filter="test" disabled>
+    {{# }else{ }}
+    <input type="checkbox" name="switch" lay-skin="switch" lay-text="ON|OFF" class="tb_check" lay-filter="test" disabled>
+    {{#  } }}
+</script>
+</html>

@@ -22,13 +22,13 @@
         //var deviceToken = "23c41662";
 
 
-        var mobileToken1 = "b4d0faac6e4047bbad9417903ab4b2a9";
+        var mobileToken1 = "034e5131f92e45b08fea1228ea43af57";
         var memberToken1 = "5b5585523caf4791a4bf8f000573e17f";
         var storeId1 = "100027";
         var mobile1 = "15618920033";
         var deviceToken1 = "000006";
 
-        var mobileToken2 = "b4d0faac6e4047bbad9417903ab4b2a9";
+        var mobileToken2 = "034e5131f92e45b08fea1228ea43af57";
         var memberToken2 = "5b5585523caf4791a4bf8f000573e17f";
         var storeId2 = "2";
         var mobile2 = "15618920033";
@@ -107,7 +107,7 @@
         }
 
         function do_getMemberToken1() {
-            var parasObj = { "sysId": "0", "versionNo": "0.89", "storeId": "100027", "mobileToken": "b4d0faac6e4047bbad9417903ab4b2a9" };
+            var parasObj = { "sysId": "0", "versionNo": "0.89", "storeId": "100027", "mobileToken": "034e5131f92e45b08fea1228ea43af57" };
             var url = "/xcgamemana/Token?action=getMemberToken";
             var parasJson = JSON.stringify(parasObj);
             common(url, parasJson);
@@ -175,6 +175,15 @@
             var parasJson = JSON.stringify(parasObj);
             common(url, parasJson);
         }
+
+        function do_getMobileTokenByThirdId() {
+            var parasObj = { "sysId": "0", "versionNo": "0.0.0.1", "mobileToken": mobileToken1 };
+            var url = "/xcgamemana/Token?action=getMobileTokenByThirdId";
+            var parasJson = JSON.stringify(parasObj);
+            common(url, parasJson);
+        }
+
+        
 
         function do_updateDeviceState() {
             var parasObj = { "sysId": "0", "versionNo": "0.0.0.1", "storeId": storeId, "deviceId": "20171010500001", "state": "1", "token": "c8a965c70ffe8292929eb28eaa05743c" };
@@ -641,5 +650,6 @@
     <input id="Buttonorder_deleteStore22" type="button" value="do_deleteStore(删除门店信息)" onclick="do_deleteStore()" />
     <input id="Buttonorder_getStore22" type="button" value="do_getStore(获取门店信息)" onclick="do_getStore()" />
     <input id="Buttonorder_getStoreList22" type="button" value="do_getStoreList(获取门店信息)" onclick="do_getStoreList()" />
+    <input id="Buttonorder_getMobileTokenByThirdId" type="button" value="do_getMobileTokenByThirdId(获取门店信息)" onclick="do_getMobileTokenByThirdId()" />
 </body>
 </html>

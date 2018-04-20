@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>会员余额设置</title>
+    <link rel="stylesheet" href="layui/css/layui.css">
+</head>
+<body>
+<div class="layui-row">
+    <blockquote class="layui-elem-quote" style="text-align: right;padding-right: 100px;">
+        <button type="button" class="layui-btn layui-btn-normal" id="add">新增</button>
+    </blockquote>
+    <div class="layui-col-md12 layui-col-lg12 layui-col-sm12">
+        <table class="layui-hide" id="memberBalanceTb"  lay-filter="memberBalanceTb"></table>
+    </div>
+</div>
+<div id="openModel" style="display:none;padding: 0 15px">
+    <form class="layui-form ">
+        <div class="layui-col-md7" style="height: 300px;border: 1px solid red; padding: 15px;">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">类别编号</label>
+                    <div class="layui-input-inline">
+                        <input type="text" class="layui-input" id="TypeID" name="unchange">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">类别名称</label>
+                    <div class="layui-input-inline">
+                        <input type="text" class="layui-input" id="TypeName" name="unchange">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label" style="height: 185px;">适用说明</label>
+                    <div class="layui-input-inline">
+                        <textarea name="unchange" id="Note" class="layui-textarea" style="height: 185px;"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-md5" style="height: 300px;overflow-y: scroll;border: 1px solid red ;padding: 15px;border-left: none;">
+            <div class="layui-form-item">
+                <div class="layui-inline" style="">
+                    <div class="layui-input-inline" id="balanceStoreList">
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="layui-col-md12" style="margin: 15px 0;padding-right: 60px;text-align:right;">
+            <button type="button" class="layui-btn layui-btn-normal" id="cancelBtn">取消</button>
+            <button type="button" class="layui-btn layui-btn-normal" id="saveBtn">保存</button>
+        </div>
+    </form>
+</div>
+</body>
+<script src="js/jquery-1.8.3-min.js"></script>
+<script src="layui/layui.js"></script>
+<script src="js/storeSystem.js"></script>
+<script>
+    let xc=xcActionSystem.prototype;
+    let token=xc.getStorage('token');
+    let storeId=[];
+    let Id='';
+    let parm={'obj':{'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'},
+        'url':'/XCCloud/BalanceType?action=GetBalanceTypeList',
+        'elem':'#memberBalanceTb',
+        'cols':[
+            {field:'ID', title:'流水号', align: 'center', sort: true}
+            ,{field:'TypeID',title: '类别编号', align: 'center'}
+            ,{field:'TypeName', title: '类别名称', align: 'center'}
+            ,{field:'StoreNames', title: '适用门店', align: 'center'}
+            ,{field:'Note', title: '使用说明', align: 'center'}
+            ,{fixed: 'right', title: '操作', width:160, align:'center', toolbar: '#barDemo'}]
+    };
+    xc.getInitData(parm);
+    layui.use(['form','layer','table'],function () {
+        let form=layui.form;
+        let layer=layui.layer;
+        let table=layui.table;
+        $('#add').on('click',function () {
+            setStore(form,token);
+            layer.open({
+                title:'会员余额类别设定',
+                type:1,
+                area:'650px',
+                content:$('#openModel')
+            })
+        });
+        //saveBtn
+        $('#saveBtn').on('click',function () {
+            xc.saveBalance (token,layer);
+        });
+        $('#cancelBtn').on('click',function () {
+           layer.closeAll();
+            storeId=[];
+             Id='';
+        });
+        form.on('checkbox(balanceStore)',function (data) {
+            if (data.elem.checked==true){
+                storeId.push(data.value);
+            }else if(data.elem.checked==false){
+                for (var i=0;i<storeId.length;i++){
+                    if(storeId[i]==data.value){
+                        storeId.splice(i,1)
+                    }
+                }
+            }
+        });
+        table.on('tool(memberBalanceTb)',function(obj){
+    
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event;
+            if(layEvent === 'edit'){ //查看
+                Id=data.ID;
+                let _obj={'id':data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                let parseJson = JSON.stringify(_obj);
+                $.ajax({
+                    type:'post',
+                    url:'/XCCloud/BalanceType?action=GetBalanceTypeInfo',
+                    contentType: "application/json; charset=utf-8",
+                    data:{parasJson: parseJson},
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        if (data.result_code == 1) {
+                                $('#TypeID').val(data.result_data[0].TypeID);
+                                $('#TypeName').val(data.result_data[0].TypeName);
+                                $('#Note').val(data.result_data[0].Note);
+                                setStore(form,token,data.result_data[0].StoreIDs);
+                                if(data.result_data.StoreIDs){
+                                      storeId=(data.result_data.StoreIDs[0]).split("|");
+                                  }else{
+                                    storeId=[];
+                                  }
+                              
+                                $('#openModel').find('[name="unchange"]').prop('disabled',true);
+                                layer.open({
+                                    title:'修改会员余额类别',
+                                    type:1,
+                                    area:'650px',
+                                    content:$('#openModel')
+                                }) 
+                        }else {
+                            layer.msg(data.result_msg);
+                        }
+                    }
+                });
+            }else if(layEvent === 'del'){
+                layer.confirm('确定锁定该设备吗？', function(index){
+                let _obj={'id':data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                let parseJson = JSON.stringify(_obj);
+                $.ajax({
+                    type:'post',
+                    url:'/XCCloud/BalanceType?action=DelBalanceTypeInfo',
+                    contentType: "application/json; charset=utf-8",
+                    data:{parasJson: parseJson},
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        if (data.result_code == 1) {
+                         layer.msg('删除成功')
+                         xc.getInitData(parm);
+                        }else {
+                            layer.msg(data.result_msg);
+                        }
+                    }
+                });
+                });
+            }
+        })
+    });
+    function setStore(form,token,StoreId) {
+        let obj={'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+        let parseJson = JSON.stringify(obj);
+        $.ajax({
+            type:'post',
+            url:'/XCCloud/StoreInfo?action=GetUnderStores',
+            contentType: "application/json; charset=utf-8",
+            data:{parasJson: parseJson},
+            success: function (data) {
+                data=JSON.parse(data);
+                if(data.result_code==1){
+                    $('#balanceStoreList').html('');
+                    let array=data.result_data;
+                    for(let i in array){
+                        $('#balanceStoreList').append('<input type="checkbox" lay-skin="primary" value="'
+                           +array[i].Key+'" lay-filter="balanceStore" title="'+array[i].Value+'">')
+                    }
+                    if(StoreId){
+                        let storeIdArr=StoreId.split('|');
+                        for(let i in storeIdArr){
+                            $('#balanceStoreList').find('input[value="'+storeIdArr[i]+'"]').attr('checked',true);
+                        }
+                    }
+                    form.render('checkbox');
+                }else {
+                    layer.msg('获取门店列表失败，err:'+data.result_msg||data.return_msg)
+                }
+            }
+        })
+    }
+    xcActionSystem.prototype.saveBalance=function (token,layer) {
+        let obj={'id':Id,
+            'typeId':$('#TypeID').val(),
+            'typeName':$('#TypeName').val(),
+            'storeIds':storeId==''?'':storeId.join('|'),
+            'note':$('#Note').val(),
+            'userToken':token,
+            'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+        let parseJson = JSON.stringify(obj);
+        $.ajax({
+            type:'post',
+            url:'/XCCloud/BalanceType?action=SaveBalanceTypeInfo',
+            contentType: "application/json; charset=utf-8",
+            data:{parasJson: parseJson},
+            success: function (data) {
+
+                data = JSON.parse(data);
+                if (data.result_code == 1) {
+                    layer.msg('保存成功！');
+                    window.location.reload();
+                    layer.closeAll();
+                } else {
+                    layer.msg(data.result_msg);
+                }
+            }
+        })
+    }
+</script>
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="edit"><i class="layui-icon">&#xe642;</i>编辑</a>
+     <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del"><i class="layui-icon">&#xe640;</i>删除</a>
+</script>
+</html>

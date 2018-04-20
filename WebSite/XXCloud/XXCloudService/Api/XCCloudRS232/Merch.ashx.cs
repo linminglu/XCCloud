@@ -8,6 +8,7 @@ using XCCloudService.BLL.CommonBLL;
 using XCCloudService.BLL.Container;
 using XCCloudService.BLL.IBLL.XCCloudRS232;
 using XCCloudService.Business;
+using XCCloudService.Business.Common;
 using XCCloudService.CacheService;
 using XCCloudService.Common;
 using XCCloudService.Model.CustomModel.XCCloudRS232;
@@ -160,9 +161,10 @@ namespace XXCloudService.Api.XCCloudRS232
                     merch.State = 1; //状态激活
                     merchService.Update(merch);
 
-                    if (!MobileTokenCache.ExistTokenByKey(mobile))
+                    string mobileToken = string.Empty;
+                    if (!MobileTokenBusiness.ExistMobile(CommonConfig.PrefixKey + mobile))
                     {
-                        MobileTokenCache.AddToken(CommonConfig.PrefixKey + mobile, token);
+                        MobileTokenBusiness.AddToken(CommonConfig.PrefixKey + mobile, token);
                     }
                 }
 

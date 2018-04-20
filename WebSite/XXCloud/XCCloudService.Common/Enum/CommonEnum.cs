@@ -680,10 +680,17 @@ namespace XCCloudService.Common.Enum
         TCPIP = 3    //以太网
     }
 
-    public enum DeviceBindType
+    public enum SignType
     {
         In = 0,//签入
-        Out = 1//签出
+        Out = 1,//签出
+        Once = 2//单次
+    }
+
+    public enum JoinType
+    {
+        Ticket = 0,//门票
+        Time = 1 //计时
     }
 
     public enum StockFlag

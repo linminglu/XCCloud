@@ -1,0 +1,217 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>莘拍档</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="css/ydui.rem.css">
+    <!-- 引入rem自适应类库 -->
+
+    <style>
+        .section_image{width: 1rem;height: 0.7rem;display: inline-block;margin-top: 0.16rem;}
+        .section_image img{width: 1rem;height: 0.7rem;display: flex;}
+        .section_items{display:flex;flex-direction: row;justify-content: space-between;padding:0.3rem;border-bottom:1px solid #ddd;position: relative;}
+        .section_cont{width:4rem;font-size:0.26rem;color:#a9a9a9;}
+        .BuyCoins{display: inline-block;width:0.8rem;height:0.8rem;font-size:0.26rem;border-radius:100%;background:#d24a58;line-height: 0.8rem;color:#fff;text-align: center; margin-top:0.16rem;  }
+        .BuyCoinsBlue{background:#1E90FF; margin-left: 0.3rem;}
+        .addcard_img{width: 0.8rem;height: 0.8rem;display: inline-block;}
+        .addcard{text-align: center;margin: 0.2rem;}
+        .hid_cont{ display:flex;flex-direction: row;justify-content: space-between;padding: 0.2rem 0.3rem;  border-bottom:1px solid #ddd;font-size: 0.3rem;color: #999;  }
+        .hid_btn{height: 0.5rem;font-size: 0.24rem;line-height: 0.5rem;margin-top: 0.1rem;color: #fff;background: #1E90FF;}
+        .hid_contSty{display: flex;flex-direction: row;}
+        .hid_contStys{width: 1.2rem;text-align: left;color: #d24a58;}
+
+    </style>
+</head>
+<body>
+<div id="app">
+    <yd-list theme="4">
+        <yd-list-item v-for="(item,index) in memberCard" :key="index">
+            <div class='section_items'>
+                <img slot="img" src="images/card.png">
+                <yd-list-other slot="other">
+                    <div class='hid_contSty'>
+                        <p class='hid_contStys'>卡号：</p>
+                        <p>{{item.icCardID}}</p>
+                    </div>
+                    <div class='hid_contSty'>
+                        <p class='hid_contStys'>级别：</p>
+                        <p>{{item.memberLevelName}}</p>
+                    </div>
+                    <div class='hid_contSty'>
+                        <p class='hid_contStys'>店名：</p>
+                        <p>{{item.storeName}}</p>
+                    </div>
+                </yd-list-other>
+                <div class="BuyCoins">
+                    <p>充值</p>
+                </div>
+            </div>
+            <div class='hid_cont' v-if="item.hidden">
+                <div class="hid_contLeft">
+                    <div class='hid_contSty'>
+                        <p class='hid_contStys'>币余额：</p>
+                        <p>{{item.balance}}</p>
+                    </div>
+                    <div class='hid_contSty'>
+                        <p class='hid_contStys'>彩票：</p>
+                        <p>{{item.lottery}}</p>
+                    </div>
+                    <div class='hid_contSty'>
+                        <p class='hid_contStys'>积分：</p>
+                        <p>{{item.point}}</p>
+                    </div>
+                </div>
+                <div class="hid_contLeft">
+                    <div class='hid_contSty'>
+                        <p class='hid_contStys'>到期日期：</p>
+                        <p>{{item.endDate}}</p>
+                    </div>
+                    <div class='hid_contSty'>
+                        <p class='hid_contStys'>押金：</p>
+                        <p>{{item.deposit}}</p>
+                    </div>
+                    <yd-button @click.stop.native="openCustomConfrim" size="small">流水账单</yd-button>
+                </div>
+            </div>
+        </yd-list-item>
+    </yd-list>
+</div>
+<script src="js/ydui.flexible.js"></script>
+<!-- 引入 Vue -->
+<script src="js/vue.js"></script>
+<script src="js/jquery-1.8.3-min.js"></script>
+<!-- 引入组件库 -->
+<script src="js/ydui.rem.js"></script>
+<script src="js/axios.min.js"></script>
+<script src="js/alipayjsapi.min.js"></script>
+<script src="https://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+<script>
+    var sysId = 0; //调用方应用Id
+    var versionNo= "0.89"; //版本号
+    var htmlfnc = new Vue({
+        el: '#app',
+        data:{
+        },
+        mounted: function () {
+            this.Load();
+        },
+        methods: {
+            Load:function () {
+            },
+            btnClick:function () {
+                var that =this;
+                if (/MicroMessenger/.test(window.navigator.userAgent)) {
+                    wx.scanQRCode({
+                        needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
+                        scanType: ["qrCode","barCode"], // 可以指定扫二维码还是一维码，默认二者都有
+                        success: function (res) {
+                            var result = res.resultStr; // 当needResult 为 1 时，扫码返回的结果
+                            console.log(result);
+                            alert(JSON.stringify(result));
+                            that.jumpFnc();
+                        }
+                    });
+                } else if (/AlipayClient/.test(window.navigator.userAgent)) {
+                    AlipayJSBridge.call('scan', {
+                        type: 'qr',
+                        actionType: 'scan'
+                    }, function(result) {
+                        alert(JSON.stringify(result));
+                        that.jumpFnc();
+                    });
+                } else {
+                    that.$dialog.toast({
+                        mes: "暂不支持此浏览器!",
+                        timeout:1500,
+                        icon: 'error'
+                    });
+                    console.log("")
+                }
+
+            },
+            register1:function () {
+                window.location.href = "home.html"
+            },
+            register2:function () {
+                window.location.href = "MyOrder.html"
+            },
+            jumpFnc:function (result) {
+                var that =this;
+                var str = result.split("/");
+                var strCode = str[str.length - 2];
+                console.log(strCode == "m");
+                if (strCode=="m"){
+                    var deviceToken = str[str.length - 1];//扫码获得终端号解析
+                    this.$dialog.loading.open('');
+                    var obj={sysId: sysId, versionNo: versionNo, deviceToken:deviceToken};
+                    axios.post('/xcgamemana/store?action=storeInfoByTerminalNo', obj).then(function (res) {
+                        that.$dialog.loading.close();
+                        that.msgPrompt(res.data);
+                        console.log(res.data);
+                        if (res.data.result_code === '1') {
+                            setStorage("deviceToken",deviceToken);
+                            switch (res.data.result_data.deviceType) {
+                                case "自助提币机":
+                                    window.location.href = "CurrencyOperation.html";
+                                    break;
+                                case "自助存币机":
+                                    window.location.href = "CurrencyOperation.html";
+                                    break;
+                                case "游戏机":
+                                    window.location.href = "games.html";
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                    }).catch(function (err) {
+                        that.$dialog.loading.close();
+                        console.log(err);
+                    });
+                }
+            },
+            msgPrompt:function (res) {
+                if(res.return_code == 0){
+                    this.$dialog.toast({
+                        mes: res.return_msg,
+                        timeout: 1500,
+                        icon: 'error'
+                    });
+                }else if(res.result_code == 0){
+                    this.$dialog.toast({
+                        mes: res.result_msg,
+                        timeout: 1500,
+                        icon: 'error'
+                    });
+                }
+            }
+        }
+    });
+    //存储session
+    function setStorage(key,value) {
+        if(window.localStorage){
+            value = JSON.stringify(value); //转化为JSON字符串
+            var storage=window.localStorage;
+            storage.setItem(key,value);
+        }
+    }
+    //删除session
+    function removeStorage(key) {
+        if(window.localStorage){
+            var storage=window.localStorage;
+            storage.removeItem(key);
+        }
+    }
+    //获取session
+    function getStorage(key) {
+        if(window.localStorage){
+            value = JSON.parse(localStorage.getItem(key));
+            return value;
+        }
+    }
+</script>
+</body>
+</html>

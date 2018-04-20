@@ -12,6 +12,7 @@ using XCCloudService.BLL.Container;
 using XCCloudService.Model.XCGameManager;
 using XCCloudService.BLL.IBLL.XCCloudRS232;
 using XCCloudService.Model.XCCloudRS232;
+using System.Collections;
 
 namespace XCCloudService.Business.Common
 {
@@ -19,16 +20,18 @@ namespace XCCloudService.Business.Common
     {
         public static string SetMobileToken(string mobile)
         {
-            string token = System.Guid.NewGuid().ToString("N");
-            if (MobileTokenCache.ExistTokenByKey(mobile))
+            string newToken = System.Guid.NewGuid().ToString("N");
+            string token = string.Empty;
+            if (ExistMobile(mobile, out token))
             {
-                SetDBMobileToken(token, mobile);
-                MobileTokenCache.UpdateTokenByKey(mobile, token);
+                MobileTokenCache.RemoveToken(token);
+                SetDBMobileToken(newToken, mobile);
+                MobileTokenCache.AddToken(mobile, newToken);
             }
             else
             {
-                SetDBMobileToken(token, mobile);
-                MobileTokenCache.AddToken(mobile, token);
+                SetDBMobileToken(newToken, mobile);
+                MobileTokenCache.AddToken(mobile, newToken);
             }
             return token;
         }
@@ -49,12 +52,47 @@ namespace XCCloudService.Business.Common
             return token;
         }
 
-        public static bool ExistToken(string token, out string mobile)
+        public static void AddToken(string token,string mobile)
         {
-            mobile = string.Empty;
-            if (MobileTokenCache.ExistTokenByValue(token))
+            MobileTokenCache.AddToken(token, mobile);
+        }
+
+        //public static bool GetMobileTokenModel(string mobile, out string token)
+        //{
+        //    token = string.Empty;
+        //    var query = from item in MobileTokenCache.MobileTokenHt.Cast<DictionaryEntry>()
+        //                where ((MobileTokenModel)(item.Value)).Mobile.Equals(mobile)
+        //                select item.Key.ToString();
+        //    if (query.Count() == 0)
+        //    {
+        //        return false;
+        //    }
+        //    else
+        //    {
+        //        token = query.First();
+        //        return true;
+        //    }
+        //}
+
+
+        public static MobileTokenModel GetMobileTokenModel(string token)
+        {
+            if (MobileTokenCache.MobileTokenHt.ContainsKey(token))
             {
-                mobile = MobileTokenCache.GetKeyByValue(token);
+                MobileTokenModel tokenModel = (MobileTokenModel)(MobileTokenCache.MobileTokenHt[token]);
+                return tokenModel;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public static bool ExistToken(string token, ref MobileTokenModel mobileTokenModel)
+        {
+            if (MobileTokenCache.ExistToken(token))
+            {
+                mobileTokenModel = GetMobileTokenModel(token);
                 return true;
             }
             else
@@ -63,16 +101,86 @@ namespace XCCloudService.Business.Common
             }
         }
 
-        public static bool ExistToken(string token)
+        public static bool ExistToken(string token, out string mobile)
         {
-            if (MobileTokenCache.ExistTokenByValue(token))
+            mobile = string.Empty;
+            if (MobileTokenCache.ExistToken(token))
             {
-
+                MobileTokenModel model = GetMobileTokenModel(token);
+                mobile = model.Mobile;
                 return true;
             }
             else
             {
                 return false;
+            }
+        }
+
+
+        public static bool ExistMobile(string mobile, out string token)
+        {
+            token = string.Empty;
+            var query = from item in MobileTokenCache.MobileTokenHt.Cast<DictionaryEntry>()
+                        where ((MobileTokenModel)(item.Value)).Mobile.Equals(mobile)
+                        select item.Key.ToString();
+            if (query.Count() == 0)
+            {
+                return false;
+            }
+            else
+            {
+                token = query.First();
+                return true;
+            }
+        }
+
+        public static bool ExistMobile(string mobile)
+        {
+            var query = from item in MobileTokenCache.MobileTokenHt.Cast<DictionaryEntry>()
+                        where ((MobileTokenModel)(item.Value)).Mobile.Equals(mobile)
+                        select item.Key.ToString();
+            if (query.Count() == 0)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        public static bool ExistThirdId(string thirdId,ref MobileTokenModel model)
+        {
+            var query = from item in MobileTokenCache.MobileTokenHt.Cast<DictionaryEntry>()
+                        where ( ((MobileTokenModel)(item.Value)).WeiXinId.Equals(thirdId) || ((MobileTokenModel)(item.Value)).AliId.Equals(thirdId) )
+                        select item.Value;
+            if (query.Count() == 0)
+            {
+                return false;
+            }
+            else
+            {
+                model = (MobileTokenModel)(query.First());
+                return true;
+            }
+        }
+
+
+        public static bool ExistThirdId(string thirdId, ref MobileTokenModel model,out string token)
+        {
+            token = string.Empty;
+            var query = from item in MobileTokenCache.MobileTokenHt.Cast<DictionaryEntry>()
+                        where (((MobileTokenModel)(item.Value)).WeiXinId.Equals(thirdId) || ((MobileTokenModel)(item.Value)).AliId.Equals(thirdId))
+                        select item.Key.ToString();
+            if (query.Count() == 0)
+            {
+                return false;
+            }
+            else
+            {
+                token = query.First();
+                model = GetMobileTokenModel(token);
+                return true;
             }
         }
 
@@ -84,7 +192,10 @@ namespace XCCloudService.Business.Common
             {
                 for (int y = 0; y < models.Count; y++)
                 {
-                    MobileTokenCache.AddToken(models[y].Phone, models[y].Token);
+                    MobileTokenModel model = new MobileTokenModel(models[y].Phone, 
+                        string.IsNullOrEmpty(models[y].OpenId) ? string.Empty : models[y].OpenId,
+                        string.IsNullOrEmpty(models[y].AliId) ? string.Empty : models[y].AliId);
+                    MobileTokenCache.AddToken(models[y].Token,model);
                 }
             }           
         }

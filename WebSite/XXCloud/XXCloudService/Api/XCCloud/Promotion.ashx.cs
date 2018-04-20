@@ -54,7 +54,6 @@ namespace XXCloudService.Api.XCCloud
         {
             return timeType.Equals(TimeType.Custom) ? "自定义" : timeType.Equals(TimeType.Weekend) ? "周末" : timeType.Equals(TimeType.Holiday) ? "节假日" : timeType.Equals(TimeType.Workday) ? "工作日" : string.Empty;
         }
-
         private bool saveFoodSale(int iFoodId, object[] foodSales, out string errMsg)
         {
             errMsg = string.Empty;
@@ -227,13 +226,11 @@ namespace XXCloudService.Api.XCCloud
 
                 //同一会员级别，时段类型为工作模式（即0~2）与自定义模式（即3）不能共存                                    
                 foreach (var memberLevelId in foodLevelList.GroupBy(g => g.MemberLevelID).Select(o => o.Key))
-                {
-                    string memberLevelName = (from b in dbContext.Set<Data_MemberLevel>()
-                                              where b.MemberLevelID == memberLevelId
-                                              select b.MemberLevelName).FirstOrDefault();
+                {                    
                     if (foodLevelList.Any(w => w.MemberLevelID.Equals(memberLevelId) && w.TimeType.Equals((int)TimeType.Custom)) &&
                         foodLevelList.Any(w => w.MemberLevelID.Equals(memberLevelId) && !w.TimeType.Equals((int)TimeType.Custom)))
                     {
+                        string memberLevelName = (from b in dbContext.Set<Data_MemberLevel>() where b.MemberLevelID == memberLevelId select b.MemberLevelName).FirstOrDefault();
                         errMsg = string.Format("同一会员级别，自定义模式与其它模式不能混合定义 会员级别:{0}", memberLevelName);
                         return false;
                     }
@@ -242,11 +239,7 @@ namespace XXCloudService.Api.XCCloud
                 //同一会员级别，同一个时段类型（如果是自定义模式，即同一天），同一时段只能有一个优惠策略
                 foreach (var data_Food_LevelModel in foodLevelList)
                 {
-                    int memberLevelId = (int)data_Food_LevelModel.MemberLevelID;
-                    string memberLevelName = (from b in dbContext.Set<Data_MemberLevel>()
-                                              where b.MemberLevelID == memberLevelId
-                                              select b.MemberLevelName).FirstOrDefault();
-                    string timeSpan = Utils.TimeSpanToStr(data_Food_LevelModel.StartTime.Value) + "~" + Utils.TimeSpanToStr(data_Food_LevelModel.EndTime.Value);
+                    int memberLevelId = (int)data_Food_LevelModel.MemberLevelID;                                        
                     if (data_Food_LevelModel.TimeType == (int)TimeType.Custom)
                     {
                         var weeks = data_Food_LevelModel.Week.Split('|').ToList();
@@ -256,8 +249,9 @@ namespace XXCloudService.Api.XCCloud
                                  ((TimeSpan.Compare((TimeSpan)data_Food_LevelModel.StartTime, (TimeSpan)w.StartTime) >= 0 && TimeSpan.Compare((TimeSpan)data_Food_LevelModel.StartTime, (TimeSpan)w.EndTime) < 0) ||
                                  (TimeSpan.Compare((TimeSpan)data_Food_LevelModel.EndTime, (TimeSpan)w.StartTime) > 0 && TimeSpan.Compare((TimeSpan)data_Food_LevelModel.EndTime, (TimeSpan)w.EndTime) <= 0))).Count() > 1)
                             {
-                                errMsg = string.Format("同一会员级别，同一时段只能有一个优惠策略 会员级别:{0} 自定义模式:{1} 优惠时段:{2}",
-                                    memberLevelName, getWeekName(day), timeSpan);
+                                string memberLevelName = (from b in dbContext.Set<Data_MemberLevel>() where b.MemberLevelID == memberLevelId select b.MemberLevelName).FirstOrDefault();
+                                string timeSpan = Utils.TimeSpanToStr(data_Food_LevelModel.StartTime.Value) + "~" + Utils.TimeSpanToStr(data_Food_LevelModel.EndTime.Value);
+                                errMsg = string.Format("同一会员级别，同一时段只能有一个优惠策略 会员级别:{0} 自定义模式:{1} 优惠时段:{2}", memberLevelName, getWeekName(day), timeSpan);
                                 return false;
                             }
                         }
@@ -268,8 +262,9 @@ namespace XXCloudService.Api.XCCloud
                                  ((TimeSpan.Compare((TimeSpan)data_Food_LevelModel.StartTime, (TimeSpan)w.StartTime) >= 0 && TimeSpan.Compare((TimeSpan)data_Food_LevelModel.StartTime, (TimeSpan)w.EndTime) < 0) ||
                                  (TimeSpan.Compare((TimeSpan)data_Food_LevelModel.EndTime, (TimeSpan)w.StartTime) > 0 && TimeSpan.Compare((TimeSpan)data_Food_LevelModel.EndTime, (TimeSpan)w.EndTime) <= 0))).Count() > 1)
                         {
-                            errMsg = string.Format("同一会员级别，同一时段只能有一个优惠策略 会员级别:{0} 其它模式:{1} 优惠时段:{2}",
-                                memberLevelName, getPeriodTypeName((TimeType)data_Food_LevelModel.TimeType), timeSpan);
+                            string memberLevelName = (from b in dbContext.Set<Data_MemberLevel>() where b.MemberLevelID == memberLevelId select b.MemberLevelName).FirstOrDefault();
+                            string timeSpan = Utils.TimeSpanToStr(data_Food_LevelModel.StartTime.Value) + "~" + Utils.TimeSpanToStr(data_Food_LevelModel.EndTime.Value);
+                            errMsg = string.Format("同一会员级别，同一时段只能有一个优惠策略 会员级别:{0} 其它模式:{1} 优惠时段:{2}", memberLevelName, getPeriodTypeName((TimeType)data_Food_LevelModel.TimeType), timeSpan);
                             return false;
                         }
                     }
@@ -475,8 +470,8 @@ namespace XXCloudService.Api.XCCloud
                                  group c by new { c.a.TimeType, c.a.Week, c.a.StartTime, c.a.EndTime } into g
                                  select new
                                  {
-                                     MemberLevelIDs = string.Join("|", g.Select(s => s.MemberLevelID)),
-                                     MemberLevels = string.Join("|", g.Select(s => s.MemberLevelName)),
+                                     MemberLevelIDs = string.Join("|", g.OrderBy(o=>o.MemberLevelID).Select(s => s.MemberLevelID)),
+                                     MemberLevels = string.Join("|", g.OrderBy(o => o.MemberLevelName).Select(s => s.MemberLevelName)),
                                      TimeType = g.FirstOrDefault().a.TimeType,
                                      Week = g.FirstOrDefault().a.Week,
                                      WeekStr = getWeekName(g.FirstOrDefault().a.Week),
@@ -820,8 +815,8 @@ namespace XXCloudService.Api.XCCloud
                 }
 
                 int iFoodId = Convert.ToInt32(foodId);
-                var data_Food_StoreList = data_Food_StoreListService.GetModels(p => p.FoodID == iFoodId).Select(o => o.StoreID);
-                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, data_Food_StoreList);
+                var storeIDs = data_Food_StoreListService.GetModels(p => p.FoodID == iFoodId).Select(o => new { StoreID = o.StoreID });
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, storeIDs);
             }
             catch (Exception e)
             {

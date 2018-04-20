@@ -50,6 +50,8 @@ namespace XCCloudService.Common
 
         public static string H5WeiXinAuthRedirectUrl = System.Configuration.ConfigurationManager.AppSettings["H5WeiXinAuthRedirectUrl"];
 
+        public static string H5_M_WeiXinAuthRedirectUrl = System.Configuration.ConfigurationManager.AppSettings["H5_M_WeiXinAuthRedirectUrl"];
+
         /// <summary>
         /// 莘拍档H5支付宝支付回调
         /// </summary>

@@ -652,8 +652,8 @@ namespace XXCloudService.Api.XCCloud
                 }
 
                 int iCouponId = Convert.ToInt32(couponId);
-                var data_Coupon_StoreList = data_Coupon_StoreListService.GetModels(p => p.CouponID == iCouponId).Select(o => o.StoreID);
-                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, data_Coupon_StoreList);
+                var storeIDs = data_Coupon_StoreListService.GetModels(p => p.CouponID == iCouponId).Select(o => new { StoreID = o.StoreID });
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, storeIDs);
             }
             catch (Exception e)
             {

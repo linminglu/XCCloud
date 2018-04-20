@@ -439,6 +439,7 @@
                     }
                 }
             }
+            console.log(storeId);
         });
 
         //点击新增打开弹窗
@@ -481,13 +482,7 @@
         //点击选择适用门店
         $('#addOrModify').on('click','.chooseStoreBtn',()=>{
             xc.setUsefulStore(token,form);
-            if(Id==''){
-                storeId=[];
-            }else {
-                for(let i in storeId){
-                    $('#chooseStoreList').find('input[value="'+storeId[i]+'"]').attr('checked',true);
-                }
-            }
+            xc.getUsefulStore(Id,token,form,layer)
             form.render();
             indexLayer= layer.open({
                 // title:'设置适用门店',
@@ -631,7 +626,7 @@
                         }
                     }
                 });
-                xc.getUsefulStore(Id,token,form,layer)
+
             } else if(layEvent === 'del'){ //删除
                 layer.confirm('真的删除行么', function(index){
                     Id=data.ID;
@@ -818,7 +813,6 @@
                     let array=data.result_data;
                     for(let i in array){
                         if(choseStore){
-
                         }else {
                             $('#chooseStoreList').append('<input type="checkbox" lay-skin="primary" value="'
                                 +array[i].Key+'" lay-filter="chooseStore" title="'+array[i].Value+'">')
@@ -835,24 +829,24 @@
    //获取已选门店
    xcActionSystem.prototype.getUsefulStore=function (couponId,token,form,layer) {
        let choseStore=JSON.parse(xcActionSystem.prototype.getStorage('choseStore'));
-       let obj={'couponId':couponId,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+       let obj={'foodId':couponId,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
        let parseJson = JSON.stringify(obj);
        $.ajax({
            type:'post',
-           url:'/XCCloud/Coupon?action=GetCouponStores',
+           url:'/XCCloud/Promotion?action=GetFoodStores',
            contentType: "application/json; charset=utf-8",
            data:{parasJson: parseJson},
            success: function (data) {
                data=JSON.parse(data);
                console.log(data);
                if(data.result_code==1){
+                   storeId=[];
                    let array=data.result_data;
-                   // for(let i in array){
-                   //
-                   //   $('#chooseStoreList').find('<input [value="'+array[i].Key+'"]>')
-                   //
-                   // }
-                   // form.render('checkbox');
+                   for(let i in array){
+                     $('#chooseStoreList').find('input[value="'+array[i].StoreID+'"]').attr({'checked':true});
+                       storeId.push(array[i].StoreID)
+                   }
+                   form.render('checkbox');
 
                }else {
                    layer.msg('获取门店列表失败，err:'+data.result_msg||data.return_msg)
