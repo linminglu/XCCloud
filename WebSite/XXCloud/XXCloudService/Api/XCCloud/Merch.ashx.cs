@@ -20,10 +20,10 @@ using XCCloudService.Common.Enum;
 using XCCloudService.WeiXin.WeixinOAuth;
 using XCCloudService.DAL;
 using XCCloudService.Business.XCCloud;
-using XCCloudService.Model.CustomModel.XCCloud.Merch;
 using System.Data.Entity;
 using XCCloudService.DBService.BLL;
 using XXCloudService.Api.XCCloud.Common;
+using XCCloudService.Common.Extensions;
 
 namespace XXCloudService.Api.XCCloud
 {
@@ -337,7 +337,14 @@ namespace XXCloudService.Api.XCCloud
                     {
                         var merchPassword = Utils.MD5(pwd);
                         IBase_MerchantInfoService base_MerchantInfoService = BLLContainer.Resolve<IBase_MerchantInfoService>();
-                        if (base_MerchantInfoService.Any(p => !p.MerchID.Equals(merchId) && p.MerchAccount.Equals(merchAccount, StringComparison.OrdinalIgnoreCase)))
+                        if (base_MerchantInfoService.Any(p => !p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.MerchAccount.Equals(merchAccount, StringComparison.OrdinalIgnoreCase)))
+                        {
+                            errMsg = "账号名称已使用";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
+                        IBase_UserInfoService base_UserInfoService = BLLContainer.Resolve<IBase_UserInfoService>();
+                        if (base_UserInfoService.Any(p => p.LogName.Equals(merchAccount, StringComparison.OrdinalIgnoreCase)))
                         {
                             errMsg = "账号名称已使用";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -365,14 +372,7 @@ namespace XXCloudService.Api.XCCloud
                             errMsg = "添加商户信息失败";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
-
-                        IBase_UserInfoService base_UserInfoService = BLLContainer.Resolve<IBase_UserInfoService>();
-                        if (base_UserInfoService.Any(p => p.LogName.Equals(merchAccount, StringComparison.OrdinalIgnoreCase)))
-                        {
-                            errMsg = "商户负责人名称已注册";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
-
+                        
                         var base_UserInfo = new Base_UserInfo();
                         base_UserInfo.LogName = merchAccount;
                         base_UserInfo.RealName = merchName;
@@ -468,9 +468,6 @@ namespace XXCloudService.Api.XCCloud
                 
                 //发送消息密码到商户负责人微信公众号，消息模板“莘宸商户注册密码”
                 NewPasswordMessagePush(openId, merchAccount, pwd);
-
-                //更新缓存
-                MerchBusiness.Init();
 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
             }
@@ -731,9 +728,6 @@ namespace XXCloudService.Api.XCCloud
                     }                    
                 }
 
-                //更新缓存
-                MerchBusiness.Init();
-
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
             }
             catch (Exception e)
@@ -790,10 +784,7 @@ namespace XXCloudService.Api.XCCloud
                 {
                     errMsg = "该商户信息不存在";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }    
-            
-                //更新缓存
-                MerchBusiness.Init();
+                }
                    
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
             }
@@ -811,7 +802,6 @@ namespace XXCloudService.Api.XCCloud
                 string errMsg = string.Empty;
                 string merchId = dicParas.ContainsKey("merchId") ? dicParas["merchId"].ToString() : string.Empty;
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string currentMerchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
 
                 #region 商户信息和功能菜单
 
@@ -821,7 +811,7 @@ namespace XXCloudService.Api.XCCloud
                 if (string.IsNullOrEmpty(merchId))
                 {
                     
-                    parameters[0] = new SqlParameter("@MerchID", currentMerchId);
+                    parameters[0] = new SqlParameter("@MerchID", (userTokenKeyModel.DataModel as MerchDataModel).MerchID);
                 }
                 else
                 {
@@ -841,7 +831,7 @@ namespace XXCloudService.Api.XCCloud
                 parameters = new SqlParameter[1];
                 if (string.IsNullOrEmpty(merchId))
                 {
-                    parameters[0] = new SqlParameter("@MerchID", currentMerchId);
+                    parameters[0] = new SqlParameter("@MerchID", (userTokenKeyModel.DataModel as MerchDataModel).MerchID);
                 }
                 else
                 {
@@ -896,11 +886,202 @@ namespace XXCloudService.Api.XCCloud
                     TreeHelper.LoopToAppendChildren(dictionaryResponse, rootRoot2);
                     base_MerchInfoModel.MerchTypes = rootRoot2.Children;
 
-                    #endregion
-                    
+                    #endregion                    
                 }               
 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, base_MerchInfoModel);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object GetMerchAlipay(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                string errMsg = string.Empty;                
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = dicParas.ContainsKey("merchId") ? dicParas["merchId"].ToString() : string.Empty;
+                if (userTokenKeyModel.LogType == (int)RoleType.MerchUser)
+                {
+                    merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
+                }
+                else
+                {
+                    if (string.IsNullOrEmpty(merchId))
+                    {
+                        errMsg = "商户ID参数不能为空";
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
+                }
+
+                IBase_StoreInfoService base_StoreInfoService = BLLContainer.Resolve<IBase_StoreInfoService>();
+                IData_MerchAlipay_ShopService data_MerchAlipay_ShopService = BLLContainer.Resolve<IData_MerchAlipay_ShopService>();
+                IBase_MerchAlipayService base_MerchAlipayService = BLLContainer.Resolve<IBase_MerchAlipayService>();
+                if (!base_MerchAlipayService.Any(a => a.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)))
+                {
+                    errMsg = "该商户支付宝口碑接口不存在";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
+                var StoreShops = from a in data_MerchAlipay_ShopService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)) 
+                                 join b in base_StoreInfoService.GetModels() on a.StoreID equals b.StoreID
+                                 select new {
+                                    StoreID = a.StoreID,
+                                    StoreName = b.StoreName,
+                                    ShopID = a.ShopID
+                                 };
+                var base_MerchAlipay = base_MerchAlipayService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                var linq = new
+                {
+                    AppID = base_MerchAlipay.AppID,
+                    PrivateKey = base_MerchAlipay.PrivateKey,
+                    PublicKey = base_MerchAlipay.PublicKey,
+                    Fee = base_MerchAlipay.Fee,
+                    StoreShops = StoreShops
+                };
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, linq);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object SaveMerchAlipay(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
+
+                string errMsg = string.Empty;
+                string appId = dicParas.ContainsKey("appId") ? Convert.ToString(dicParas["appId"]) : string.Empty;                
+                string privateKey = dicParas.ContainsKey("privateKey") ? Convert.ToString(dicParas["privateKey"]) : string.Empty;
+                string publicKey = dicParas.ContainsKey("publicKey") ? Convert.ToString(dicParas["publicKey"]) : string.Empty;
+                string fee = dicParas.ContainsKey("fee") ? Convert.ToString(dicParas["fee"]) : string.Empty;
+                object[] storeShops = dicParas.ContainsKey("storeShops") ? (object[])dicParas["storeShops"] : null;
+
+                #region 参数验证
+                if(string.IsNullOrEmpty(appId))
+                {
+                    errMsg = "应用ID不能为空";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }                
+                if (string.IsNullOrEmpty(privateKey))
+                {
+                    errMsg = "私钥不能为空";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+                if (string.IsNullOrEmpty(publicKey))
+                {
+                    errMsg = "公钥不能为空";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+                if (string.IsNullOrEmpty(fee))
+                {
+                    errMsg = "交易费率不能为空";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+                if (!Utils.IsDecimal(fee))
+                {
+                    errMsg = "交易费率格式不正确";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+                #endregion
+
+                //开启EF事务
+                using (TransactionScope ts = new TransactionScope())
+                {
+                    try
+                    {
+                        IBase_MerchAlipayService base_MerchAlipayService = BLLContainer.Resolve<IBase_MerchAlipayService>();
+                        var base_MerchAlipay = base_MerchAlipayService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault() ?? new Base_MerchAlipay();
+                        base_MerchAlipay.AppID = appId;
+                        base_MerchAlipay.PrivateKey = privateKey;
+                        base_MerchAlipay.PublicKey = publicKey;
+                        base_MerchAlipay.Fee = ObjectExt.Todecimal(fee);                        
+                        if (base_MerchAlipay.ID == 0)
+                        {
+                            base_MerchAlipay.MerchID = merchId;
+                            if (!base_MerchAlipayService.Add(base_MerchAlipay))
+                            {
+                                errMsg = "添加商户支付宝口碑配置失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+                        }
+                        else
+                        {
+                            if (!base_MerchAlipayService.Update(base_MerchAlipay))
+                            {
+                                errMsg = "更新商户支付宝口碑配置失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+                        }
+
+                        if (storeShops != null && storeShops.Count() >= 0)
+                        {
+                            //先删除，后添加
+                            IData_MerchAlipay_ShopService data_MerchAlipay_ShopService = BLLContainer.Resolve<IData_MerchAlipay_ShopService>();
+                            foreach (var model in data_MerchAlipay_ShopService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)))
+                            {
+                                data_MerchAlipay_ShopService.DeleteModel(model);
+                            }
+
+                            foreach (IDictionary<string, object> el in storeShops)
+                            {
+                                if (el != null)
+                                {
+                                    var dicPara = new Dictionary<string, object>(el, StringComparer.OrdinalIgnoreCase);
+                                    string storeId = dicPara.ContainsKey("storeId") ? (dicPara["storeId"] + "") : string.Empty;
+                                    string shopId = dicPara.ContainsKey("shopId") ? (dicPara["shopId"] + "") : string.Empty;
+
+                                    if (string.IsNullOrEmpty(storeId))
+                                    {
+                                        errMsg = "门店ID不能为空";
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    }
+                                    if (string.IsNullOrEmpty(shopId))
+                                    {
+                                        errMsg = "口碑店号不能为空";
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    }
+                                    
+                                    var data_MerchAlipay_Shop = new Data_MerchAlipay_Shop();
+                                    data_MerchAlipay_Shop.MerchID = merchId;
+                                    data_MerchAlipay_Shop.StoreID = storeId;
+                                    data_MerchAlipay_Shop.ShopID = shopId;
+                                    data_MerchAlipay_ShopService.AddModel(data_MerchAlipay_Shop);
+                                }
+                                else
+                                {
+                                    errMsg = "提交数据包含空对象";
+                                    return false;
+                                }
+                            }
+
+                            if (!data_MerchAlipay_ShopService.SaveChanges())
+                            {
+                                errMsg = "保存口碑门店列表信息失败";
+                                return false;
+                            }
+                        }
+                        
+                        ts.Complete();
+                    }
+                    catch (Exception ex)
+                    {
+                        errMsg = ex.Message;
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
+                }
+
+                
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
             }
             catch (Exception e)
             {
@@ -945,34 +1126,31 @@ namespace XXCloudService.Api.XCCloud
                 //    ResetPasswordCache.Add(mobil, pwd, CacheExpires.SMSCodeExpires);
                 //}
 
-                string openId = dicParas.ContainsKey("openId") ? dicParas["openId"].ToString() : string.Empty;
-
-                if (string.IsNullOrEmpty(openId))
+                string merchId = dicParas.ContainsKey("merchId") ? dicParas["merchId"].ToString() : string.Empty;
+                if (string.IsNullOrEmpty(merchId))
                 {
-                    errMsg = "openId不能为空";
+                    errMsg = "商户ID不能为空";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
+                }    
 
-                MerchInfoCacheModel merchInfoCacheModel = null;
-                if (!MerchBusiness.IsEffectiveMerch(openId, out merchInfoCacheModel))
+                IBase_MerchantInfoService base_MerchantInfoService = BLLContainer.Resolve<IBase_MerchantInfoService>();
+                if (!base_MerchantInfoService.Any(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)))
                 {
                     errMsg = "该商户不存在";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
-
-                string merchId = merchInfoCacheModel.MerchID;
-                string pwd = Utils.GetCheckCode(6);
-                IBase_MerchantInfoService base_MerchantInfoService = BLLContainer.Resolve<IBase_MerchantInfoService>();
+                                                            
                 var base_MerchantInfoModel = base_MerchantInfoService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                string pwd = Utils.GetCheckCode(6);
                 base_MerchantInfoModel.MerchPassword = Utils.MD5(pwd);
                 if (!base_MerchantInfoService.Update(base_MerchantInfoModel))
                 {
-                    errMsg = "更新数据库失败";
+                    errMsg = "重置商户密码失败";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
                 //推送微信消息
-                ResetPasswordMessagePush(openId, base_MerchantInfoModel.MerchAccount, pwd);
+                ResetPasswordMessagePush(base_MerchantInfoModel.WxOpenID, base_MerchantInfoModel.MerchAccount, pwd);
                                 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
             }

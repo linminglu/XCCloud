@@ -19,5 +19,6 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> TypeID { get; set; }
         public string TypeName { get; set; }
         public string Note { get; set; }
+        public Nullable<int> State { get; set; }
     }
 }

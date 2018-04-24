@@ -263,23 +263,23 @@ namespace XXCloudService.Api.XCGameMana
                 }
 
                 //验证用户在总库是否已注册
-                XCCloudService.BLL.IBLL.XCGameManager.IUserService userServiceManager = BLLContainer.Resolve<XCCloudService.BLL.IBLL.XCGameManager.IUserService>();
-                var userRegisterModel = userServiceManager.GetModels(p => p.Mobile.Equals(mobile) && p.StoreId.Equals(storeId)).FirstOrDefault<XCCloudService.Model.XCGameManager.t_user>();
+                //XCCloudService.BLL.IBLL.XCGameManager.IUserTokenService userServiceManager = BLLContainer.Resolve<XCCloudService.BLL.IBLL.XCGameManager.IUserTokenService>();
+                //var userRegisterModel = userServiceManager.GetModels(p => p.Mobile.Equals(mobile) && p.StoreId.Equals(storeId)).FirstOrDefault<XCCloudService.Model.XCGameManager.t_usertoken>();
 
-                if (userRegisterModel == null)
-                { 
-                    //添加注册用户
-                    XCCloudService.Model.XCGameManager.t_user t_user = new XCCloudService.Model.XCGameManager.t_user();
-                    t_user.Mobile = mobile;
-                    t_user.StoreId = storeId;
-                    t_user.CreateTime = System.DateTime.Now;
-                    t_user.OpenId = "";
+                //if (userRegisterModel == null)
+                //{ 
+                //    //添加注册用户
+                //    XCCloudService.Model.XCGameManager.t_user t_user = new XCCloudService.Model.XCGameManager.t_user();
+                //    t_user.Mobile = mobile;
+                //    t_user.StoreId = storeId;
+                //    t_user.CreateTime = System.DateTime.Now;
+                //    t_user.OpenId = "";
 
-                    if (!userServiceManager.Add(t_user))
-                    {
-                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "添加注册用户失败");
-                    }
-                }
+                //    if (!userServiceManager.Add(t_user))
+                //    {
+                //        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "添加注册用户失败");
+                //    }
+                //}
 
                 //获取用户token
                 //云库不用userId

@@ -372,6 +372,9 @@
     <Content Include="Api\XCGameMana\WxCommon.ashx" />
     <Content Include="Api\XCCloud\BalanceType.ashx" />
     <Content Include="Api\XCCloud\ProjectTime.ashx" />
+    <Content Include="Api\XCCloud\DepotInfo.ashx" />
+    <Content Include="Api\XCCloud\Supplier.ashx" />
+    <Content Include="Api\XCCloud\GroupVerify.ashx" />
     <None Include="Properties\PublishProfiles\111.pubxml" />
     <None Include="Properties\PublishProfiles\qqq.pubxml" />
     <None Include="Properties\PublishProfiles\rrr.pubxml" />
@@ -935,6 +938,12 @@
     <Compile Include="Api\XCCloud\Coupon.ashx.cs">
       <DependentUpon>Coupon.ashx</DependentUpon>
     </Compile>
+    <Compile Include="Api\XCCloud\GroupVerify.ashx.cs">
+      <DependentUpon>GroupVerify.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="Api\XCCloud\Supplier.ashx.cs">
+      <DependentUpon>Supplier.ashx</DependentUpon>
+    </Compile>
     <Compile Include="Api\XCCloud\Foods.ashx.cs">
       <DependentUpon>Foods.ashx</DependentUpon>
     </Compile>
@@ -946,6 +955,9 @@
     </Compile>
     <Compile Include="Api\XCCloud\DeviceInfo.ashx.cs">
       <DependentUpon>DeviceInfo.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="Api\XCCloud\DepotInfo.ashx.cs">
+      <DependentUpon>DepotInfo.ashx</DependentUpon>
     </Compile>
     <Compile Include="Api\XCCloud\GoodsInfo.ashx.cs">
       <DependentUpon>GoodsInfo.ashx</DependentUpon>
@@ -1067,6 +1079,7 @@
     <Compile Include="OrderPayCallback\Common\MyCerts.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="OrderPayCallback\Common\OrderHandle.cs" />
     <Compile Include="OrderPayCallback\Common\OrderPayNotify.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -1074,6 +1087,7 @@
     <Compile Include="OrderPayCallback\Common\PayLogHelper.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="OrderPayCallback\Common\UnpaidOrderList.cs" />
     <Compile Include="OrderPayCallback\DinPayCallBack.aspx.cs">
       <DependentUpon>DinPayCallBack.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

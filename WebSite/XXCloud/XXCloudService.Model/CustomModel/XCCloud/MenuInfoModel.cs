@@ -31,5 +31,8 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         [DataMember(Name = "children", Order = 6)]
         public List<MenuInfoModel> Children { get; set; }
 
+        [DataMember(Name = "orderId", Order = 7)]
+        public Nullable<int> OrderID { get; set; }
+
     }    
 }

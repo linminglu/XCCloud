@@ -41,7 +41,7 @@ namespace XXCloudService.Api.XCGameMana
                 DataTable dt = ds.Tables[0];
                 if (dt.Rows.Count == 0)
                 {
-                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "");
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "用户未开卡");
                 }
                 var list = Utils.GetModelList<TmpmemberModel>(ds.Tables[0]).ToList();
 

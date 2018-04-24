@@ -33,7 +33,7 @@ namespace XXCloudService.Api.XCGameMana
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "请求微信签名的url错误");
                 }
 
-                string url = string.Format(WeiXinConfig.WxJSSDK_Url, fileName);
+                string url = string.Format(WeiXinConfig.WxJSSDK_Url, fileName).ToLower();
 
                 WxConfigModel model = CommonHelper.GetSignature(url);
                 if(model == null)

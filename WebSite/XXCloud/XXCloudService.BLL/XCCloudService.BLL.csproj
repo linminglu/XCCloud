@@ -63,6 +63,12 @@
     <Compile Include="IBLL\XCCloudRS232\IMerchService.cs" />
     <Compile Include="IBLL\XCCloud\IBase_ChainRuleService.cs" />
     <Compile Include="IBLL\XCCloud\IBase_ChainRule_StoreService.cs" />
+    <Compile Include="IBLL\XCCloud\IBase_MerchAlipayService.cs" />
+    <Compile Include="IBLL\XCCloud\IData_GoodStorage_DetailService.cs" />
+    <Compile Include="IBLL\XCCloud\IData_MemberLevelFreeService.cs" />
+    <Compile Include="IBLL\XCCloud\IData_MemberLevel_FoodService.cs" />
+    <Compile Include="IBLL\XCCloud\IData_MerchAlipay_ShopService.cs" />
+    <Compile Include="IBLL\XCCloud\IFlw_GroupVerityService.cs" />
     <Compile Include="IBLL\XCCloud\IBase_DepotInfoService.cs" />
     <Compile Include="IBLL\XCCloud\IBase_DeviceInfoService.cs" />
     <Compile Include="IBLL\XCCloud\IBase_GoodsInfoService.cs" />
@@ -132,6 +138,7 @@
     <Compile Include="IBLL\XCCloud\IFlw_OrderService.cs" />
     <Compile Include="IBLL\XCCloud\IFlw_Order_DetailService.cs" />
     <Compile Include="IBLL\XCCloud\IFlw_Order_SerialNumberService.cs" />
+    <Compile Include="IBLL\XCCloud\IFlw_ScheduleService.cs" />
     <Compile Include="IBLL\XCCloud\ILog_GameAlarmService.cs" />
     <Compile Include="IBLL\XCCloud\ILog_OperationService.cs" />
     <Compile Include="IBLL\XCCloud\IStore_CheckDateService.cs" />
@@ -156,7 +163,6 @@
     <Compile Include="IBLL\XCGameManager\IStoreService.cs" />
     <Compile Include="IBLL\XCGameManager\IDeviceService.cs" />
     <Compile Include="IBLL\XCGameManager\IDataMessageService.cs" />
-    <Compile Include="IBLL\XCGameManager\ITFoodsaleService.cs" />
     <Compile Include="IBLL\XCGameManager\IAdminUserService.cs" />
     <Compile Include="IBLL\XCGameManager\IUserTokenService.cs" />
     <Compile Include="IBLL\XCGameManager\IUserService.cs" />
@@ -201,6 +207,12 @@
     <Compile Include="XCCloud\Base_ChainRule_StoreService.cs" />
     <Compile Include="XCCloud\Base_DepotInfoService.cs" />
     <Compile Include="XCCloud\Base_DeviceInfoService.cs" />
+    <Compile Include="XCCloud\Data_GoodStorage_DetailService.cs" />
+    <Compile Include="XCCloud\Data_MemberLevelFreeService.cs" />
+    <Compile Include="XCCloud\Data_MemberLevel_FoodService.cs" />
+    <Compile Include="XCCloud\Data_MerchAlipay_ShopService.cs" />
+    <Compile Include="XCCloud\Flw_GroupVerityService.cs" />
+    <Compile Include="XCCloud\Base_MerchAlipayService.cs" />
     <Compile Include="XCCloud\Base_GoodsInfoService.cs" />
     <Compile Include="XCCloud\Base_MemberInfoService.cs" />
     <Compile Include="XCCloud\Base_MerchantInfoService.cs" />
@@ -268,6 +280,7 @@
     <Compile Include="XCCloud\Flw_OrderService.cs" />
     <Compile Include="XCCloud\Flw_Order_DetailService.cs" />
     <Compile Include="XCCloud\Flw_Order_SerialNumberService.cs" />
+    <Compile Include="XCCloud\Flw_ScheduleService.cs" />
     <Compile Include="XCCloud\Log_GameAlarmService.cs" />
     <Compile Include="XCCloud\Log_OperationService.cs" />
     <Compile Include="XCCloud\Store_CheckDateService.cs" />
@@ -292,7 +305,6 @@
     <Compile Include="XCGameManager\StoreService.cs" />
     <Compile Include="XCGameManager\DeviceService.cs" />
     <Compile Include="XCGameManager\TCPService.cs" />
-    <Compile Include="XCGameManager\TFoodsaleService.cs" />
     <Compile Include="XCGameManager\AdminUserService.cs" />
     <Compile Include="XCGameManager\UserTokenService.cs" />
     <Compile Include="XCGameManager\UserService.cs" />

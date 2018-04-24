@@ -17,7 +17,6 @@ using XCCloudService.Common;
 using XCCloudService.Common.Enum;
 using XCCloudService.DAL;
 using XCCloudService.Model.CustomModel.XCCloud;
-using XCCloudService.Model.CustomModel.XCCloud.Store;
 using XCCloudService.Model.CustomModel.XCCloud.User;
 using XCCloudService.Model.WeiXin.Message;
 using XCCloudService.Model.XCCloud;
@@ -234,11 +233,13 @@ namespace XCCloudService.Api.XCCloud
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
                     }
 
-                    StoreInfoCacheModel storeInfo = null;
-                    if(!XCCloudStoreBusiness.IsEffectiveStore(userModel.StoreID,ref storeInfo))
+                    var storeId = userModel.StoreID;
+                    IBase_StoreInfoService base_StoreInfoService = BLLContainer.Resolve<IBase_StoreInfoService>();
+                    if (!base_StoreInfoService.Any(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)))
                     {
-                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "门店缓存数据不存在");
+                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "门店号无效");
                     }
+                    var base_StoreInfoModel = base_StoreInfoService.GetModels(p => p.StoreID.Equals(userModel.StoreID, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
 
                     //设置用户token
                     StoreIDDataModel storeIDDataModel = new StoreIDDataModel(userModel.StoreID, password, workStation);
@@ -248,7 +249,7 @@ namespace XCCloudService.Api.XCCloud
                     var dataObj = new {
                         userToken = userToken,
                         storeId = userModel.StoreID,
-                        storeName = storeInfo.StoreName,
+                        storeName = base_StoreInfoModel.StoreName,
                         scheduleId = currentSchedule,
                         openTime = openTime
                     };
@@ -643,7 +644,7 @@ namespace XCCloudService.Api.XCCloud
                     int userId = Convert.ToInt32(userTokenKeyModel.LogId);
 
                     IBase_StoreInfoService base_StoreInfoService = BLLContainer.Resolve<IBase_StoreInfoService>();
-                    var storeIds = base_StoreInfoService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)).Select(o => o.StoreID).ToList();                    
+                    var storeIds = base_StoreInfoService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && (p.StoreState == (int)StoreState.Open || p.StoreState == (int)StoreState.Valid)).Select(o => o.StoreID).ToList();                    
                     IDict_SystemService dict_SystemService = BLLContainer.Resolve<IDict_SystemService>();
                     int UserStatusId = dict_SystemService.GetModels(p => p.DictKey.Equals("员工状态")).FirstOrDefault().ID;
 

@@ -114,12 +114,12 @@
             common(url, parasJson);
         }
 
-        function do_GetFoodListInfo() {
+        function do_getFoodList() {
             var txtUserToken = $("#txtUserToken").val();
             var parasObj = {
-                "sysId": "0", "versionNo": "0.0.0.1", "memberLevelId": "1", "customerType": "1", "userToken": $("#txtUserToken").val(), "foodTypeStr": "0,2,3,4,6"
+                "sysId": "0", "versionNo": "0.0.0.1", "memberLevelId": "1", "customerType": "1", "userToken": $("#txtUserToken").val(), "foodTypeStr": $("#txtFoodListFoodTypeStr").val()
             };
-            var url = "/XCCloud/Foods?action=getFoodDetail";
+            var url = "/XCCloud/Foods?action=getFoodList";
             var parasJson = JSON.stringify(parasObj);
             common(url, parasJson);
         }
@@ -318,8 +318,8 @@
     </div>
 
 
-    <div title="do_GetFoodListInfo" style="font-size:14px;color:#F00;border:1px solid #ccc;">
-        <input id="Buttonorder_12222" type="button" value="do_GetFoodListInfo(获取套餐列表)" onclick="do_GetFoodListInfo()" />
+    <div title="do_getFoodList" style="font-size:14px;color:#F00;border:1px solid #ccc;">
+        套餐类型：<input id="txtFoodListFoodTypeStr" type="text" value="0,1,2,3,4,5,6" /><input id="Buttonorder_12222" type="button" value="do_getFoodList(获取套餐列表)" onclick="do_getFoodList()" />
     </div>
 
     <div title="do_GetFoodDetail" style="font-size:14px;color:#F00;border:1px solid #ccc;">

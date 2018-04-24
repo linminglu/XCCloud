@@ -886,35 +886,7 @@ function setSelect(objVal,id,m) {
 //删除表格中一条数据
 function deleteTableList(parm) {
 
-    var url = parm.url;
-    var parasJson = JSON.stringify(parm.obj);
-    $.ajax({
-        type: "post",
-        url: url,
-        contentType: "application/json; charset=utf-8",
-        data: {parasJson: parasJson},
-        success: function (data) {
-            data = JSON.parse(data);
-            layui.use('layer',function () {
-            var layer=layui.layer;
-            var index = layer.load(1, {shade: [0.1,'#fff']});
-            if(data.result_code==1){
-                    setTimeout(function () {
-                        layer.close(index);
-                        layer.msg("成功删除！")
-                    },1000);
 
-            }else if(data.return_msg=="token无效"){
-                autoReLogin();
-            }else {
-                setTimeout(function () {
-                    layer.close(index);
-                    layer.msg("操作失败！")
-                },1000);
-            }
-                });
-        }
-    })
 }
 //...................................................page门店列表...................................
 //添加门店
@@ -948,7 +920,7 @@ function addStore() {
         'mobile':mobile,'shopSignPhoto':shopSignPhoto,'licencePhoto':licencePhoto,
         'licenceId':licenceId,'licenceExpireDate':licenceExpireDate,'bankType':bankType,'bankCode':bankCode,
         'bankAccount':bankAccount,'selttleType':selttleType,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
-        var url='/XCCloud/StoreInfo?action=SaveStoreInfo';
+        var url='/XCCloud/StoreInfo?action=AddStoreInfo';
         var parasJson = JSON.stringify(obj);
     $.ajax({
         type: "post",

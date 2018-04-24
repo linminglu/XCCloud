@@ -103,8 +103,11 @@ namespace XCCloudService.WeiXin.WeixinPub
         {
             string accessToken = GetAccessToken();
 
+            //LogHelper.SaveLog(TxtLogType.WeiXin, accessToken);
+
             string ticket = GetTicket(accessToken);
 
+            //LogHelper.SaveLog(TxtLogType.WeiXin, ticket);
             return ticket;
 
             #region MyRegion
@@ -199,7 +202,7 @@ namespace XCCloudService.WeiXin.WeixinPub
                 }
 
                 GenerateTicketModel ticketData = new GenerateTicketModel();
-                ticketData.noncestr = Guid.NewGuid().ToString().Replace("-", "");
+                ticketData.noncestr = Guid.NewGuid().ToString("N");
                 ticketData.timestamp = GenerateTimeStamp();
                 ticketData.jsapi_ticket = ticket;
                 ticketData.url = url;
@@ -263,8 +266,11 @@ namespace XCCloudService.WeiXin.WeixinPub
             string signStr = "";
             foreach (string key in signDic.Keys)
             {
-                signStr += signDic[key];
+                signStr += key + "=" + signDic[key] + "&";
             }
+            signStr = signStr.Trim('&');
+
+            //LogHelper.SaveLog(TxtLogType.WeiXin, signStr);
 
             string sign = EncryptToSHA1(signStr);
 

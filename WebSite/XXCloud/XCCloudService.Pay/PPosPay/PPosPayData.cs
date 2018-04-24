@@ -11,6 +11,59 @@ namespace XCCloudService.Pay.PPosPay
     /// </summary>
     public class PPosPayData
     {
+        #region 公共请求参数
+        /// <summary>
+        /// 公共请求参数
+        /// </summary>
+        public class CommonParams
+        {
+            /// <summary>
+            /// 操作系统
+            /// 0：ANDROID sdk 1：IOS sdk 2：windows sdk 3:直连
+            /// </summary>
+            public string opSys { get; set; }
+            /// <summary>
+            /// 字符集
+            /// 默认00    GBK
+            /// </summary>
+            public string characterSet { get; set; }
+            /// <summary>
+            /// 机构号
+            /// </summary>
+            public string orgNo { get; set; }
+            /// <summary>
+            /// 商户号
+            /// </summary>
+            public string mercId { get; set; }
+            /// <summary>
+            /// 终端号
+            /// </summary>
+            public string trmNo { get; set; }
+
+            /// <summary>
+            /// 商户单号
+            /// </summary>
+            public string tradeNo { get; set; }
+            /// <summary>
+            /// 交易时间
+            /// </summary>
+            public string txnTime { get; set; }
+            /// <summary>
+            /// 签名方式
+            /// MD5
+            /// </summary>
+            public string signType { get; set; }
+            /// <summary>
+            /// 签名域
+            /// </summary>
+            public string signValue { get; set; }
+            /// <summary>
+            /// 版本号
+            /// 默认V1.0.0
+            /// </summary>
+            public string version { get; set; }
+        } 
+        #endregion
 
         #region "公众号支付"
 
@@ -495,52 +548,8 @@ namespace XCCloudService.Pay.PPosPay
         /// <summary>
         /// 订单查询
         /// </summary>
-        public class QueryOrder
+        public class QueryOrder : CommonParams
         {
-            /// <summary>
-            /// 操作系统
-            /// 0：ANDROID sdk 1：IOS sdk 2：windows sdk 3:直连
-            /// </summary>
-            public string opSys { get; set; }
-            /// <summary>
-            /// 字符集
-            /// 默认00    GBK
-            /// </summary>
-            public string characterSet { get; set; }
-            /// <summary>
-            /// 机构号
-            /// </summary>
-            public string orgNo { get; set; }
-            /// <summary>
-            /// 商户号
-            /// </summary>
-            public string mercId { get; set; }
-            /// <summary>
-            /// 终端号
-            /// </summary>
-            public string trmNo { get; set; }
-            /// <summary>
-            /// 订单编号
-            /// </summary>
-            public string tradeNo { get; set; }
-            /// <summary>
-            /// 交易时间
-            /// </summary>
-            public string txnTime { get; set; }
-            /// <summary>
-            /// 签名方式
-            /// MD5
-            /// </summary>
-            public string signType { get; set; }
-            /// <summary>
-            /// 签名域
-            /// </summary>
-            public string signValue { get; set; }
-            /// <summary>
-            /// 版本号
-            /// 默认V1.0.0
-            /// </summary>
-            public string version { get; set; }
             /// <summary>
             /// 查询号码
             /// 可以是logNo、orderNo、tradeNo
@@ -564,6 +573,73 @@ namespace XCCloudService.Pay.PPosPay
             public string subject { get; set; }
             public string selOrderNo { get; set; }
         } 
+        #endregion
+
+        #region 退款
+        public class Refund : CommonParams
+        {
+            /// <summary>
+            /// 订单号
+            /// </summary>
+            public string orderNo { get; set; }
+
+            /// <summary>
+            /// 不传时，表示全额退款
+            /// </summary>
+            public string txnAmt { get; set; }
+        } 
+        #endregion
+
+        #region 退款应答
+        public class RefundACK
+        {
+            /// <summary>
+            /// 返回代码
+            /// </summary>
+            public string returnCode { get; set; }
+            /// <summary>
+            /// 返回消息
+            /// </summary>
+            public string message { get; set; }
+            /// <summary>
+            /// 订单编号
+            /// </summary>
+            public string tradeNo { get; set; }
+            /// <summary>
+            /// 系统交易时间
+            /// </summary>
+            public string sysTime { get; set; }
+            /// <summary>
+            /// 商户号
+            /// </summary>
+            public string mercId { get; set; }
+            /// <summary>
+            /// 签名域
+            /// </summary>
+            public string signValue { get; set; }
+            /// <summary>
+            /// 流水号
+            /// </summary>
+            public string logNo { get; set; }
+            /// <summary>
+            /// 交易结查
+            /// </summary>
+            public string result { get; set; }
+            /// <summary>
+            /// 退款金额 
+            /// </summary>
+            public string txnAmt { get; set; }
+
+            /// <summary>
+            /// 原实付金额(以分为单位)
+            /// </summary>
+            public string amount { get; set; }
+
+            /// <summary>
+            /// 原订单总金额(以分为单位)
+            /// </summary>
+            public string total_amount { get; set; }
+        }  
         #endregion
     }
 }

@@ -75,11 +75,10 @@
     <Compile Include="XCCloudRS232\MerchDeviceBusiness.cs" />
     <Compile Include="XCCloudRS232\MerchSegmentBusiness.cs" />
     <Compile Include="XCCloud\Flw_OrderBusiness.cs" />
+    <Compile Include="XCCloud\StoreBusiness.cs" />
     <Compile Include="XCCloud\MemberBusiness.cs" />
     <Compile Include="XCCloud\ScheduleBusiness.cs" />
-    <Compile Include="XCCloud\MerchBusiness.cs" />
     <Compile Include="XCCloud\UserBusiness.cs" />
-    <Compile Include="XCCloud\StoreBusiness.cs" />
     <Compile Include="XCCloud\XCCloudUnionIDBusiness.cs" />
     <Compile Include="XCGameManaLog\UDPDBBusiness.cs" />
     <Compile Include="XCGameMana\DataOrderQueryBusiness.cs" />

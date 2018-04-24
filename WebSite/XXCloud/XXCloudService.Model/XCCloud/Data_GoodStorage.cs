@@ -17,11 +17,12 @@ namespace XCCloudService.Model.XCCloud
         public int ID { get; set; }
         public string MerchID { get; set; }
         public string StoreID { get; set; }
-        public string Barcode { get; set; }
-        public Nullable<int> StorageCount { get; set; }
-        public Nullable<decimal> Price { get; set; }
-        public Nullable<decimal> TotalPrice { get; set; }
+        public Nullable<int> DepotID { get; set; }
+        public Nullable<decimal> Payable { get; set; }
+        public Nullable<decimal> Payment { get; set; }
         public Nullable<decimal> Discount { get; set; }
+        public Nullable<int> AuthorFlag { get; set; }
+        public Nullable<int> AuthorID { get; set; }
         public string Supplier { get; set; }
         public Nullable<int> UserID { get; set; }
         public Nullable<System.DateTime> RealTime { get; set; }

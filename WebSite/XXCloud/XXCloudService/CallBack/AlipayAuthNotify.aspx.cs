@@ -48,7 +48,7 @@ namespace XXCloudService.CallBack
                         isreg = "1";
                     }
 
-                    Response.Redirect(string.Format("{0}?userId={1}&isreg={2}", AliPayConfig.AliAuthRedirectUrl, aliId, isreg));
+                    Response.Redirect(string.Format("{0}?userId={1}&isReg={2}", AliPayConfig.AliAuthRedirectUrl, aliId, isreg));
                 }
                 catch (Exception ex)
                 {

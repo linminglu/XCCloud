@@ -19,54 +19,54 @@ namespace XXCloudService.Api.XCCloud
     [Authorize(Roles = "StoreUser")]
     public class Foods : ApiBase
     {
-        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
-        public object getMemberOpenCardFoodInfo(Dictionary<string, object> dicParas)
-        {
-            XCCloudUserTokenModel userTokenModel = (XCCloudUserTokenModel)(dicParas[Constant.XCCloudUserTokenModel]);
-            StoreIDDataModel userTokenDataModel = (StoreIDDataModel)(userTokenModel.DataModel);
-            string MemberLevelId = dicParas.ContainsKey("memberLevelId") ? dicParas["memberLevelId"].ToString() : string.Empty;
+        //[ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        //public object getMemberOpenCardFoodInfo(Dictionary<string, object> dicParas)
+        //{
+        //    XCCloudUserTokenModel userTokenModel = (XCCloudUserTokenModel)(dicParas[Constant.XCCloudUserTokenModel]);
+        //    StoreIDDataModel userTokenDataModel = (StoreIDDataModel)(userTokenModel.DataModel);
+        //    string MemberLevelId = dicParas.ContainsKey("memberLevelId") ? dicParas["memberLevelId"].ToString() : string.Empty;
 
-            string sql = "exec GetMemberOpenCardFoodInfo @StoreId,@MemberLevelId";
-            SqlParameter[] parameters = new SqlParameter[2];
-            parameters[0] = new SqlParameter("@StoreId", userTokenDataModel.StoreId);
-            parameters[1] = new SqlParameter("@MemberLevelId", MemberLevelId);
-            System.Data.DataSet ds = XCCloudBLL.ExecuteQuerySentence(sql, parameters);
-            DataTable dt = ds.Tables[0];
+        //    string sql = "exec GetMemberOpenCardFoodInfo @StoreId,@MemberLevelId";
+        //    SqlParameter[] parameters = new SqlParameter[2];
+        //    parameters[0] = new SqlParameter("@StoreId", userTokenDataModel.StoreId);
+        //    parameters[1] = new SqlParameter("@MemberLevelId", MemberLevelId);
+        //    System.Data.DataSet ds = XCCloudBLL.ExecuteQuerySentence(sql, parameters);
+        //    DataTable dt = ds.Tables[0];
             
-            if (dt.Rows.Count > 0)
-            {
-                List<OpenCardFoodInfoModel> list1 = Utils.GetModelList<OpenCardFoodInfoModel>(ds.Tables[0]).ToList();
-                //for (int i = 0; i < list1.Count; i++)
-                //{
-                //    List<FoodInfoPriceModel> listFoodInfoPriceModel = new List<FoodInfoPriceModel>();
-                //    FoodInfoPriceModel foodInfoModel = new FoodInfoPriceModel(0, list1[i].FoodPrice);
-                //    listFoodInfoPriceModel.Add(foodInfoModel);
+        //    if (dt.Rows.Count > 0)
+        //    {
+        //        List<OpenCardFoodInfoModel> list1 = Utils.GetModelList<OpenCardFoodInfoModel>(ds.Tables[0]).ToList();
+        //        //for (int i = 0; i < list1.Count; i++)
+        //        //{
+        //        //    List<FoodInfoPriceModel> listFoodInfoPriceModel = new List<FoodInfoPriceModel>();
+        //        //    FoodInfoPriceModel foodInfoModel = new FoodInfoPriceModel(0, list1[i].FoodPrice);
+        //        //    listFoodInfoPriceModel.Add(foodInfoModel);
 
-                //    if (list1[i].AllowCoin == 1)
-                //    {
-                //        foodInfoModel = new FoodInfoPriceModel(1, list1[i].Coins);
-                //        listFoodInfoPriceModel.Add(foodInfoModel);
-                //    }
+        //        //    if (list1[i].AllowCoin == 1)
+        //        //    {
+        //        //        foodInfoModel = new FoodInfoPriceModel(1, list1[i].Coins);
+        //        //        listFoodInfoPriceModel.Add(foodInfoModel);
+        //        //    }
 
-                //    if (list1[i].AllowPoint == 1)
-                //    {
-                //        foodInfoModel = new FoodInfoPriceModel(2, list1[i].Points);
-                //        listFoodInfoPriceModel.Add(foodInfoModel);
-                //    }
+        //        //    if (list1[i].AllowPoint == 1)
+        //        //    {
+        //        //        foodInfoModel = new FoodInfoPriceModel(2, list1[i].Points);
+        //        //        listFoodInfoPriceModel.Add(foodInfoModel);
+        //        //    }
 
-                //    if (list1[i].AllowLottery == 1)
-                //    {
-                //        foodInfoModel = new FoodInfoPriceModel(3, list1[i].Lottery);
-                //        listFoodInfoPriceModel.Add(foodInfoModel);
-                //    }
+        //        //    if (list1[i].AllowLottery == 1)
+        //        //    {
+        //        //        foodInfoModel = new FoodInfoPriceModel(3, list1[i].Lottery);
+        //        //        listFoodInfoPriceModel.Add(foodInfoModel);
+        //        //    }
 
-                //    list1[i].priceListModel = listFoodInfoPriceModel;
-                //}
-                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, list1);
-            }
+        //        //    list1[i].priceListModel = listFoodInfoPriceModel;
+        //        //}
+        //        return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, list1);
+        //    }
 
-            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "无数据");
-        }
+        //    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "无数据");
+        //}
 
         /// <summary>
         /// 获取套餐列表
@@ -95,38 +95,27 @@ namespace XXCloudService.Api.XCCloud
             parameters[2] = new SqlParameter("@MemberLevelId", memberLevelId);
             parameters[3] = new SqlParameter("@FoodTypeStr", foodTypeStr);
             System.Data.DataSet ds = XCCloudBLL.ExecuteQuerySentence(sql, parameters);
-            DataTable dt = ds.Tables[0];
+            DataTable dtFoodInfo = ds.Tables[0];
+            DataTable dtFoodDetailInfo = ds.Tables[1];
 
-            if (dt.Rows.Count > 0)
+            if (dtFoodInfo.Rows.Count > 0)
             {
-                List<FoodInfoModel> list1 = Utils.GetModelList<FoodInfoModel>(ds.Tables[0]).ToList();
-                for (int i = 0; i < list1.Count; i++)
+                List<FoodInfoModel> listFoodInfo = Utils.GetModelList<FoodInfoModel>(dtFoodInfo).ToList();
+                List<FoodDetailInfoModel> listFoodDetailInfo = Utils.GetModelList<FoodDetailInfoModel>(dtFoodDetailInfo).ToList();
+                for (int i = 0; i < listFoodInfo.Count; i++)
                 {
-                    List<FoodInfoPriceModel> listFoodInfoPriceModel = new List<FoodInfoPriceModel>();
-                    FoodInfoPriceModel foodInfoModel = new FoodInfoPriceModel(0, list1[i].FoodPrice);
-                    listFoodInfoPriceModel.Add(foodInfoModel);
-
-                    if (list1[i].AllowCoin == 1)
+                    if (listFoodInfo[i].FoodType == 1)
                     {
-                        foodInfoModel = new FoodInfoPriceModel(1, list1[i].Coins);
-                        listFoodInfoPriceModel.Add(foodInfoModel);
+                        listFoodInfo[i].DetailsCount = 0;
                     }
-
-                    if (list1[i].AllowPoint == 1)
+                    else
                     {
-                        foodInfoModel = new FoodInfoPriceModel(2, list1[i].Points);
-                        listFoodInfoPriceModel.Add(foodInfoModel);
+                        List<FoodDetailInfoModel> foodDetialInfo = listFoodDetailInfo.Where<FoodDetailInfoModel>(p => p.FoodId == listFoodInfo[i].FoodID).ToList<FoodDetailInfoModel>();
+                        listFoodInfo[i].DetailInfoList = foodDetialInfo;
+                        listFoodInfo[i].DetailsCount = listFoodInfo[i].DetailInfoList.Count();
                     }
-
-                    if (list1[i].AllowLottery == 1)
-                    {
-                        foodInfoModel = new FoodInfoPriceModel(3, list1[i].Lottery);
-                        listFoodInfoPriceModel.Add(foodInfoModel);
-                    }
-
-                    list1[i].priceListModel = listFoodInfoPriceModel;
                 }
-                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, list1);
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, listFoodInfo);
             }
 
             return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "无数据");

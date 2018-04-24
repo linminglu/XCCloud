@@ -479,7 +479,7 @@ namespace XCCloudService.Common.Enum
         Vacation = 4//休假
     }
 
-    //套餐
+    //套餐类别
     public enum FoodType
     {
         Coin = 0,//充值

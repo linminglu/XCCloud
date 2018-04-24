@@ -20,33 +20,7 @@ namespace XXCloudService.Api.XCCloud
     /// StoreWeight 的摘要说明
     /// </summary>
     public class StoreWeight : ApiBase
-    {
-
-        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
-        public object GetStoreList(Dictionary<string, object> dicParas)
-        {
-            try
-            {
-                string errMsg = string.Empty;
-                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
-
-                IBase_StoreInfoService base_StoreInfoService = BLLContainer.Resolve<IBase_StoreInfoService>();
-                var result = from a in base_StoreInfoService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase))
-                             select new
-                             {
-                                 StoreID = a.StoreID,
-                                 StoreName = a.StoreName
-                             };
-
-                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, result);
-            }
-            catch (Exception e)
-            {
-                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
-            }            
-        }
-
+    {        
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object GetStoreBossList(Dictionary<string, object> dicParas)
         {
@@ -537,7 +511,7 @@ namespace XXCloudService.Api.XCCloud
                 IBase_StoreInfoService base_StoreInfoService = BLLContainer.Resolve<IBase_StoreInfoService>(resolveNew: true);
                 IBase_ChainRuleService base_ChainRuleService = BLLContainer.Resolve<IBase_ChainRuleService>(resolveNew: true);
                 IBase_ChainRule_StoreService base_ChainRule_StoreService = BLLContainer.Resolve<IBase_ChainRule_StoreService>(resolveNew: true);
-                var result = from a in base_StoreInfoService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase))
+                var result = from a in base_StoreInfoService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && (p.StoreState == (int)StoreState.Open || p.StoreState == (int)StoreState.Valid))
                              join b in
                                  (
                                      from a in base_ChainRuleService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.RuleType == iRuleType)

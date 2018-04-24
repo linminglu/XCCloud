@@ -83,7 +83,7 @@ namespace XXCloudService.Api.XCCloud
 
                 int DeviceTypeId = dict_SystemService.GetModels(p => p.DictKey.Equals("设备类型")).FirstOrDefault().ID;
                 var query = base_DeviceInfoService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase));
-                if (!string.IsNullOrEmpty(storeId))
+                if (userTokenKeyModel.LogType == (int)RoleType.StoreUser)
                 {
                     query = query.Where(w => w.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase));
                 }

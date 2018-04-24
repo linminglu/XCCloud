@@ -482,7 +482,7 @@ xcActionSystem.prototype= {
     //查询数字币级别
     GetMemberLevel: function (token, form, layer) {
         let obj = {'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'};
-        let url = '/XCCloud/Member?action=GetStoreMemberLevel';
+        let url = '/XCCloud/Member?action=GetMemberLevelDic';
         let parseJson = JSON.stringify(obj);
         $('#digitLevel').html("<option >-请选择-</option>");
         form.render();
@@ -520,7 +520,7 @@ xcActionSystem.prototype= {
                 data = JSON.parse(data);
                 console.log(data);
                 if (data.result_code == 1) {
-                    $('#currStorage').val(data.Result_Data.length);
+                    $('#currStorage').val(data.result_data.length);
                 } else {
                     layer.msg("获取总数失败")
                 }
@@ -716,7 +716,7 @@ xcActionSystem.prototype= {
                 'userToken': token,
                 'signkey': '1f626576304bf5d95b72ece2222e42c3'
             };
-            let url = '/XCCloud/Member?action=QueryMemberLevel';
+            let url = '/XCCloud/Member?action=GetMemberLevelDic';
             let parseJson = JSON.stringify(obj);
             $.ajax({
                 type: "post",
@@ -1272,6 +1272,30 @@ xcActionSystem.prototype= {
            })
 
     },
+    //获取门店列表
+    GetStoreList:function (token,layer,form,id) {
+        let _obj={'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+        let parseJson = JSON.stringify(_obj);
+        $.ajax({
+            type:'post',
+            url:'/XCCloud/StoreWeight?action=GetStoreList',
+            contentType: "application/json; charset=utf-8",
+            data:{parasJson: parseJson},
+            success: function (data) {
+                data = JSON.parse(data);
+                if (data.Result_Code == 1){
+                    let arr=data.Result_Data;
+                    $('#'+id).html('<option>-请选择-</option>');
+                    for(let i in arr){
+                        $('#'+id).append('<option value="'+arr[i].StoreID+'">'+arr[i].StoreName+'</option>')
+                    }
+                    form.render('select');
+                } else {
+                    layer.msg(data.Result_Msg);
+                }
+            }
+        });
+    },
 
     //......................................游戏机档案维护
     initGameFile: function (token) {
@@ -1315,13 +1339,13 @@ xcActionSystem.prototype= {
             }
         })
     },
-    //游戏机投币规则
+    //获取会员级别列表
     gameMemberLevel: function (token,form,layer) {
             let obj = {
                 'userToken': token,
                 'signkey': '1f626576304bf5d95b72ece2222e42c3'
             };
-            let url = '/XCCloud/Member?action=GetStoreMemberLevel';
+            let url = '/XCCloud/Member?action=GetMemberLevelDic';
             let parseJson = JSON.stringify(obj);
             $.ajax({
                 type: "post",
@@ -1394,6 +1418,30 @@ xcActionSystem.prototype= {
     });
 },
     //......................................门票设定
+    //获取门票字典列表
+    GetTicketProjectDic:function (token,layer,form,id) {
+        let _obj={'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+        let parseJson = JSON.stringify(_obj);
+        $.ajax({
+            type:'post',
+            url:'/XCCloud/Project?action=GetProjectDic',
+            contentType: "application/json; charset=utf-8",
+            data:{parasJson: parseJson},
+            success: function (data) {
+                data = JSON.parse(data);
+                if (data.result_code == 1) {
+                    let arr=data.result_data;
+                    $('#'+id).html('<option>-请选择-</option>');
+                    for(let i in arr){
+                        $('#'+id).append('<option value="'+arr[i].ID+'">'+arr[i].ProjectName+'</option>')
+                    }
+                    form.render('select');
+                } else {
+                    layer.msg(data.result_msg);
+                }
+            }
+        });
+    },
     //获取会员余额类别字典
     getBalanceTypeDic:function (token,layer,form,id) {
         let _obj={'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};

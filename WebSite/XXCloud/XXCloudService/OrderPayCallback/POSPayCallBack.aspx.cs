@@ -15,6 +15,7 @@ using XCCloudService.CacheService.XCCloud;
 using XCCloudService.Common;
 using XCCloudService.Common.Enum;
 using XCCloudService.Model.CustomModel.XCCloud;
+using XCCloudService.Model.CustomModel.XCGameManager;
 using XCCloudService.Model.XCCloud;
 using XCCloudService.Model.XCGameManager;
 using XCCloudService.OrderPayCallback.Common;
@@ -58,6 +59,11 @@ namespace XXCloudService.PayChannel
             /// 交易金额
             /// </summary>
             public string TxnAmt { get; set; }
+
+            /// <summary>
+            /// 支付通道订单号(微信/支付宝订单号)
+            /// </summary>
+            public string OfficeId { get; set; }
         }
 
         protected void Page_Load(object sender, EventArgs e)
@@ -83,7 +89,8 @@ namespace XXCloudService.PayChannel
 
             if (callback != null)
             {
-                if (callback.TxnStatus == "1" && callback.BusinessId == PPosPayConfig.MerchNo)
+                //判断商户号是莘宸还是其他商户号
+                if (callback.TxnStatus == "1" && callback.BusinessId == PPosPayConfig.MerchNo) //莘宸商户号
                 {
                     string out_trade_no = callback.ChannelId;
                     decimal payAmount = Convert.ToDecimal(callback.TxnAmt);
@@ -96,17 +103,24 @@ namespace XXCloudService.PayChannel
                         // 判断payAmount是否确实为该订单的实际金额
                         if (order.Price != payAmount)
                         {
-                            LogHelper.SaveLog(TxtLogType.WeiXin, TxtLogContentType.Debug, TxtLogFileType.Day, "应用：莘拍档 订单号：" + out_trade_no + " 警告：支付支付金额验证失败！！！");
+                            LogHelper.SaveLog(TxtLogType.PPosPay, TxtLogContentType.Debug, TxtLogFileType.Day, "应用：莘拍档 订单号：" + out_trade_no + " 警告：支付支付金额验证失败！！！");
                         }
                         else
                         {
-                            if (MPOrderBusiness.UpdateOrderForPaySuccess(out_trade_no, callback.logNo))
+                            //如果订单状态为未支付，就更新订单状态
+                            if (order.PayStatus == 0)
                             {
-                                LogHelper.SaveLog(TxtLogType.WeiXin, TxtLogContentType.Debug, TxtLogFileType.Day, "应用：莘拍档 订单号：" + out_trade_no + " 支付成功！");
-                            }
-                            else
-                            {
-                                LogHelper.SaveLog(TxtLogType.WeiXin, TxtLogContentType.Debug, TxtLogFileType.Day, "应用：莘拍档 订单号：" + out_trade_no + " 已支付订单更新失败！！！");
+                                OrderHandle.FlwFoodSaleOrderHandle(order, callback.OfficeId);
+                                //if (MPOrderBusiness.UpdateOrderForPaySuccess(out_trade_no, callback.OfficeId))
+                                //{
+                                //    LogHelper.SaveLog(TxtLogType.PPosPay, TxtLogContentType.Debug, TxtLogFileType.Day, "应用：莘拍档 订单号：" + out_trade_no + " 支付成功！");
+
+                                //    OrderHandle.FlwFoodSaleOrderHandle(order);
+                                //}
+                                //else
+                                //{
+                                //    LogHelper.SaveLog(TxtLogType.PPosPay, TxtLogContentType.Debug, TxtLogFileType.Day, "应用：莘拍档 订单号：" + out_trade_no + " 已支付订单更新失败！！！");
+                                //}
                             }
                         }
                     }
@@ -116,7 +130,7 @@ namespace XXCloudService.PayChannel
                         Flw_OrderBusiness.OrderPay(out_trade_no, payAmount, SelttleType.StarPos);
                     }
                 }
-                else
+                else //其他商户号
                 {
                     PayList.AddNewItem(callback.TxnLogId, callback.TxnAmt);
 

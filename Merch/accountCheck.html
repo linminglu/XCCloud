@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -7,31 +7,30 @@
     <link rel="shortcut  icon" type="image/x-icon" href="images/xinchen.ico" media="screen"  />
     <title>账目审核</title>
     <link rel="stylesheet" href="layui/css/layui.css">
+    <!--<style> .layui-table-cell .layui-btn{height: 28px;line-height: 28px;}</style>-->
 </head>
 <body>
-<div style="padding: 10px;">
-    <blockquote class="layui-elem-quote layui-col-md12 layui-col-sm12" style="text-align: right;margin-right:100px;display: inline-block;">
-        <div class="layui-col-md5 layui-col-sm5" style="text-align: left">
-            <label class="layui-form-label">审核日期</label>
-            <div class="layui-input-inline">
-                <input type="text" class="layui-input" id="checkDates">
+<div style="padding: 5px;">
+    <div class="layui-row">
+        <div class="demoTable">
+            <div class="layui-inline" pane>
+                <label class="layui-form-label">审核日期</label>
+                <div class="layui-input-inline">
+                    <input type="text" class="layui-input" id="checkDates">
+                </div>
+            
+                <button class="layui-btn layui-btn_serch layui-btn-normal" data-type="reload" id="searchSigle"><i class="layui-icon">&#xe615;</i>查询</button>
+                <div style="display: inline-block;margin-left: 600px">
+                    <button class="layui-btn layui-btn_serch " data-type="reload" id="shBtn"><i class="layui-icon">&#xe615;</i>高级搜索</button>
+                    <button class="layui-btn layui-btn_serch " data-type="reload" id="checkAll"><i class="layui-icon">&#xe615;</i>一键审核</button>
+                </div>
             </div>
-            <div class="layui-input-inline" >
-                <button class="layui-btn layui-btn_serch layui-btn-normal" data-type="reload" id="searchSigle"><i class="layui-icon">&#xe6b2;</i>查询</button>
-            </div>
-        </div>
-        <div class="layui-col-md5 layui-col-sm5">
-            <button class="layui-btn layui-btn_serch " data-type="reload" id="shBtn"><i class="layui-icon">&#xe615;</i>高级搜索</button>
-            <button class="layui-btn layui-btn_serch " data-type="reload" id="checkAll"><i class="layui-icon">&#xe600;</i>一键审核</button>
-        </div>
 
-    </blockquote>
-
-
+          </div>
         <div class="layui-col-md12">
             <table class="layui-hide" id="accountCheck"  lay-filter="accountCheck"></table>
         </div>
-
+    </div>
 
     <div id="searchModel" style="display: none">
         <form action="" class="layui-form" style="padding: 15px">
@@ -48,9 +47,9 @@
             <div class="layui-form-item layui-form-pane" id="searchbox" style="margin-left: 110px">
             </div>
             <div class="layui-col-md-offset9" id="submitBtn">
-                <button type="reset" class="layui-btn layui-btn-normal " id="searchReset"><i class="layui-icon">&#x1002;</i>重置</button>
-                <button type="button" class="layui-btn layui-btn-danger " id="searchCAncle" onclick="closePage()"><i class="layui-icon">&#xe65c;</i>取消</button>
-                <button type="button" class="layui-btn layui-btn-normal " id="searchBtn"><i class="layui-icon">&#xe6b2;</i>查询</button>
+                <button type="reset" class="layui-btn layui-btn-normal" id="searchReset">重置</button>
+                <button type="button" class="layui-btn layui-btn-danger" id="searchCAncle" onclick="closePage()">取消</button>
+                <button type="button" class="layui-btn layui-btn-normal" id="searchBtn">查询</button>
             </div>
         </form>
     </div>
@@ -232,34 +231,18 @@
                     }
                 })
             }, function(){
-
+                layer.closeAll();
             });
-            $.ajax({
-                type: "post",
-                url: url,
-                contentType: "application/json; charset=utf-8",
-                data: parasJsonChart,
-                success: function (data) {
-                    data = JSON.parse(data);
-                    console.log(data);
-                    if (data.result_code == '1') {
-                        layer.msg('一键审核成功');
-                        layer.closeAll();
-                    }else {
-                        layer.msg('操作失败')
-                    }
-                }
-            })
         })
     })
 </script>
 <script type="text/html" id="barDemo">
     {{#  if(d.ScheduleState == 0){ }}
-    <a class="layui-btn layui-btn-disabled layui-btn-sm" lay-event="detail" disabled="" ><i class="layui-icon">&#xe642;</i>审核</a>
+    <a class="layui-btn layui-btn-disabled layui-btn-sm" lay-event="detail2" disabled="" ><i class="layui-icon">&#xe642;</i>正在审核</a>
     {{#  } else if(d.ScheduleState == 1){ }}
     <a class="layui-btn layui-btn-danger layui-btn-sm" lay-event="detail" ><i class="layui-icon">&#xe642;</i>审核</a>
     {{#  } else if(d.ScheduleState == 2){ }}
-    <a class="layui-btn layui-btn-disabled layui-btn-sm" lay-event="detail" disabled=""><i class="layui-icon">&#xe642;</i>审核</a>
+    <a class="layui-btn layui-btn-disabled layui-btn-sm" lay-event="detail1" disabled=""><i class="layui-icon">&#xe642;</i>已审核</a>
     {{#  } }}
 </script>
 <script type="text/html" id="titleTpl">

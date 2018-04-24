@@ -1109,7 +1109,7 @@
         function showParentId(){
             $('#parentId option[value!=""]').remove();
             var obj={'userToken':token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
-            var url="/XCCloud/StoreInfo?action=GetStoreUncheckList";
+            var url="/XCCloud/StoreInfo?action=GetUnderStores";
             var parasJson = JSON.stringify(obj);
             $.ajax({
                 type: "post",

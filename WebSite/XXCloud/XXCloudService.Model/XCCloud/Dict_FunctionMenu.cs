@@ -21,5 +21,6 @@ namespace XCCloudService.Model.XCCloud
         public string PageName { get; set; }
         public string ICON { get; set; }
         public Nullable<int> MenuType { get; set; }
+        public Nullable<int> OrderID { get; set; }
     }
 }

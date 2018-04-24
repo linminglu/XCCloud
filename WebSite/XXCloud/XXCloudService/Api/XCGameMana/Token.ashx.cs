@@ -292,6 +292,11 @@ namespace XCCloudService.Api.XCGameMana
                 string userThirdId = dicParas.ContainsKey("userThirdId") ? dicParas["userThirdId"].ToString().Trim() : "";
                 string thirdType = dicParas.ContainsKey("thirdType") ? dicParas["thirdType"].ToString().Trim() : "";
 
+                if (!Utils.CheckMobile(mobile))
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "手机号码无效");
+                }
+
                 string key = mobile + "_" + smsCode;
                 if (!FilterMobileBusiness.IsTestSMS && !FilterMobileBusiness.ExistMobile(mobile))
                 {

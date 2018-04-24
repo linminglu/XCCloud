@@ -22,6 +22,7 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> InitialValue { get; set; }
         public Nullable<System.DateTime> InitialTime { get; set; }
         public Nullable<int> RemainCount { get; set; }
+        public Nullable<decimal> InitialAvgValue { get; set; }
         public string Note { get; set; }
     }
 }

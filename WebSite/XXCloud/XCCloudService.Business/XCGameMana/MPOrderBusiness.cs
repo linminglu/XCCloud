@@ -82,6 +82,26 @@ namespace XCCloudService.Business.XCGameMana
         }
 
         /// <summary>
+        /// 修改订单状态为退款
+        /// </summary>
+        /// <param name="orderId"></param>
+        /// <param name="tradeNo"></param>
+        /// <returns></returns>
+        public static bool UpdateOrderForRefund(string orderId, string tradeNo)
+        {
+            IDataOrderService dataOrderService = BLLContainer.Resolve<IDataOrderService>();
+            var model = dataOrderService.GetModels(p => p.OrderID.Equals(orderId)).FirstOrDefault();
+            if (model != null)
+            {
+                model.PayStatus = 2;
+                model.PayTime = DateTime.Now;
+                model.TradeNo = tradeNo;
+                return dataOrderService.Update(model);
+            }
+            return false;
+        }
+
+        /// <summary>
         /// 获取订单列表
         /// </summary>
         /// <returns></returns>

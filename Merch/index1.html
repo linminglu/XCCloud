@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>莘宸管理系统</title>
+    <link rel="shortcut  icon" type="image/x-icon" href="images/xinchen.ico" media="screen"  />
     <link rel="stylesheet" href="layui/css/layui.css">
     <style>
         .iframeBox{height: 100%;}
@@ -42,7 +43,7 @@
     <!-- 顶部 -->
     <div class="layui-header header">
         <div class="dayui-main">
-            <a href="#" class="logo">莘宸后台管理</a>
+            <a href="#" class="logo"><img src="images/logo.png" alt=""></a>
             <a href="javascript:;" class="iconfont hideMenu icon-menu1"></a>
             <ul class="layui-nav layui-layout-left fsTopMenu" id="fsTopMenu" lay-filter="fsTopMenu">
                 <span class="layui-nav-bar" style="width: 0px; left: 0px; opacity: 0;"></span>
@@ -283,7 +284,7 @@
                 data=JSON.parse(data);
                 console.log(data);
                 if(data.result_code=="1"){
-                    ulBox.html('<li class="layui-nav-item"><a href="javascript:;">系统总览</a></li>');
+                    ulBox.html('<li class="layui-nav-item"><a href="javascript:;">'+data.result_data[0].name+'</a></li>');
                     var data1=data.result_data[0].children;
                     for(var j in data1){
                         if(data1[j].children.length >0){

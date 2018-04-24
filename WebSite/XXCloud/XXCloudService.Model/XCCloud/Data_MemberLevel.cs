@@ -15,28 +15,38 @@ namespace XCCloudService.Model.XCCloud
     public partial class Data_MemberLevel
     {
         public int MemberLevelID { get; set; }
-        public string StoreID { get; set; }
+        public string MerchID { get; set; }
         public string MemberLevelName { get; set; }
+        public string CoverURL { get; set; }
+        public Nullable<decimal> OpenFee { get; set; }
         public Nullable<decimal> Deposit { get; set; }
-        public Nullable<decimal> ExitMoney { get; set; }
-        public Nullable<int> ExitCoin { get; set; }
-        public Nullable<decimal> ExitPrice { get; set; }
-        public string CardUIURL { get; set; }
+        public Nullable<int> ClearPointDays { get; set; }
+        public Nullable<decimal> PriceOFF { get; set; }
         public Nullable<int> Validday { get; set; }
+        public Nullable<int> NeedAuthor { get; set; }
+        public Nullable<int> MustPhone { get; set; }
+        public Nullable<int> MustIDCard { get; set; }
+        public Nullable<int> UseReadID { get; set; }
+        public Nullable<int> ReadFace { get; set; }
+        public Nullable<int> ReadPlam { get; set; }
+        public Nullable<decimal> ChangeFee { get; set; }
+        public Nullable<decimal> ContinueFee { get; set; }
+        public Nullable<int> ContinueUsePoint { get; set; }
+        public Nullable<decimal> ConsumeTotle { get; set; }
+        public Nullable<int> NonActiveDays { get; set; }
+        public Nullable<int> UpdateUsePoint { get; set; }
         public Nullable<int> FreeRate { get; set; }
         public Nullable<int> FreeCoin { get; set; }
+        public Nullable<int> FreeType { get; set; }
+        public Nullable<int> FreeNeedWin { get; set; }
         public Nullable<int> BirthdayFree { get; set; }
         public Nullable<int> BirthdayFreeCoin { get; set; }
-        public Nullable<int> NeedAutor { get; set; }
-        public Nullable<int> MustInput { get; set; }
+        public Nullable<int> MinCoin { get; set; }
+        public Nullable<int> MaxCoin { get; set; }
         public Nullable<int> AllowExitCard { get; set; }
         public Nullable<int> AllowExitMoney { get; set; }
         public Nullable<int> AllowExitCoinToCard { get; set; }
-        public Nullable<int> AllowSubProject { get; set; }
-        public Nullable<int> State { get; set; }
         public Nullable<int> LockHead { get; set; }
-        public Nullable<int> MinExitCoin { get; set; }
-        public Nullable<int> FreeType { get; set; }
-        public Nullable<int> FreeNeedWin { get; set; }
+        public Nullable<int> State { get; set; }
     }
 }

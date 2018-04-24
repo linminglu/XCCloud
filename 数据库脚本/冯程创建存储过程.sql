@@ -139,17 +139,17 @@ begin
 	end
 					
 	;WITH 
-	LOCS(FunctionID,ParentID,FunctionName,PageName,Icon)
+	LOCS(FunctionID,ParentID,FunctionName,PageName,Icon,OrderID)
 	AS
 	(
-	SELECT FunctionID,ParentID,FunctionName,PageName,Icon FROM Dict_FunctionMenu WHERE FunctionID in (select FunctionID from #MENU)
+	SELECT FunctionID,ParentID,FunctionName,PageName,Icon,OrderID FROM Dict_FunctionMenu WHERE FunctionID in (select FunctionID from #MENU)
 	UNION ALL
-	SELECT A.FunctionID,A.ParentID,A.FunctionName,A.PageName,A.ICON FROM Dict_FunctionMenu A JOIN LOCS B ON 
+	SELECT A.FunctionID,A.ParentID,A.FunctionName,A.PageName,A.ICON,A.OrderID FROM Dict_FunctionMenu A JOIN LOCS B ON 
 	B.ParentID=A.FunctionID 
 	--A.pid = B.id
 	)
 	
-	SELECT DISTINCT FunctionID,ParentID,FunctionName,PageName,Icon from LOCS
+	SELECT DISTINCT FunctionID,ParentID,FunctionName,PageName,Icon,OrderID from LOCS order by OrderID
 	
  end
 

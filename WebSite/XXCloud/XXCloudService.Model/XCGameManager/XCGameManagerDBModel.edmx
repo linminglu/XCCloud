@@ -97,42 +97,6 @@
           <Property Name="Type" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="Value" Type="int" />
         </EntityType>
-        <EntityType Name="t_food_sale">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="FlowType" Type="varchar" MaxLength="1" />
-          <Property Name="ICCardID" Type="int" />
-          <Property Name="FoodID" Type="int" />
-          <Property Name="CoinQuantity" Type="int" />
-          <Property Name="Point" Type="int" />
-          <Property Name="Balance" Type="int" />
-          <Property Name="MemberLevelID" Type="int" />
-          <Property Name="Deposit" Type="decimal" Precision="18" Scale="2" />
-          <Property Name="OpenFee" Type="decimal" Precision="18" Scale="2" />
-          <Property Name="RenewFee" Type="decimal" Precision="18" Scale="2" />
-          <Property Name="ChangeFee" Type="decimal" Precision="18" Scale="2" />
-          <Property Name="CreditFee" Type="decimal" Precision="18" Scale="2" />
-          <Property Name="TotalMoney" Type="decimal" Precision="18" Scale="2" />
-          <Property Name="Note" Type="varchar" MaxLength="500" />
-          <Property Name="PayType" Type="varchar" MaxLength="1" />
-          <Property Name="BuyFoodType" Type="varchar" MaxLength="1" />
-          <Property Name="UserID" Type="int" />
-          <Property Name="ScheduleID" Type="int" />
-          <Property Name="AuthorID" Type="int" />
-          <Property Name="RealTime" Type="datetime" />
-          <Property Name="WorkStation" Type="varchar" MaxLength="50" />
-          <Property Name="MacAddress" Type="varchar" MaxLength="50" />
-          <Property Name="DiskID" Type="varchar" MaxLength="50" />
-          <Property Name="ExitRealTime" Type="datetime" />
-          <Property Name="ExitBalance" Type="int" />
-          <Property Name="ExitUserID" Type="int" />
-          <Property Name="ExitScheduleID" Type="int" />
-          <Property Name="ExitWorkStation" Type="varchar" MaxLength="50" />
-          <Property Name="OrderID" Type="varchar" MaxLength="32" />
-          <Property Name="StoreId" Type="varchar" MaxLength="50" />
-        </EntityType>
         <EntityType Name="T_MemberToken">
           <Key>
             <PropertyRef Name="StoreId" />
@@ -281,7 +245,6 @@
           <EntitySet Name="t_datamessage" EntityType="Self.t_datamessage" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="t_device" EntityType="Self.t_device" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="t_Enum" EntityType="Self.t_Enum" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="t_food_sale" EntityType="Self.t_food_sale" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="T_MemberToken" EntityType="Self.T_MemberToken" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="t_MobileToken" EntityType="Self.t_MobileToken" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="t_MPOrder" EntityType="Self.t_MPOrder" Schema="dbo" store:Type="Tables" />
@@ -300,7 +263,6 @@
         <EntityContainer Name="XCGameManagerDBEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="t_MPOrder" EntityType="XCGameManagerDBModel.t_MPOrder" />
           <EntitySet Name="t_UserRegister" EntityType="XCGameManagerDBModel.t_UserRegister" />
-          <EntitySet Name="t_food_sale" EntityType="XCGameManagerDBModel.t_food_sale" />
           <EntitySet Name="t_datamessage" EntityType="XCGameManagerDBModel.t_datamessage" />
           <EntitySet Name="t_promotion" EntityType="XCGameManagerDBModel.t_promotion" />
           <EntitySet Name="T_MemberToken" EntityType="XCGameManagerDBModel.T_MemberToken" />
@@ -339,42 +301,6 @@
           <Property Name="AuditingUser" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="UserName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="PassWord" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
-        </EntityType>
-        <EntityType Name="t_food_sale">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="FlowType" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="ICCardID" Type="Int32" />
-          <Property Name="FoodID" Type="Int32" />
-          <Property Name="CoinQuantity" Type="Int32" />
-          <Property Name="Point" Type="Int32" />
-          <Property Name="Balance" Type="Int32" />
-          <Property Name="MemberLevelID" Type="Int32" />
-          <Property Name="Deposit" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="OpenFee" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="RenewFee" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="ChangeFee" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="CreditFee" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="TotalMoney" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="Note" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
-          <Property Name="PayType" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="BuyFoodType" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="UserID" Type="Int32" />
-          <Property Name="ScheduleID" Type="Int32" />
-          <Property Name="AuthorID" Type="Int32" />
-          <Property Name="RealTime" Type="DateTime" Precision="3" />
-          <Property Name="WorkStation" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="MacAddress" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="DiskID" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="ExitRealTime" Type="DateTime" Precision="3" />
-          <Property Name="ExitBalance" Type="Int32" />
-          <Property Name="ExitUserID" Type="Int32" />
-          <Property Name="ExitScheduleID" Type="Int32" />
-          <Property Name="ExitWorkStation" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="OrderID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
-          <Property Name="StoreId" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="t_datamessage">
           <Key>
@@ -611,43 +537,6 @@
                 <ScalarProperty Name="State" ColumnName="State" />
                 <ScalarProperty Name="StoreId" ColumnName="StoreId" />
                 <ScalarProperty Name="Mobile" ColumnName="Mobile" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="t_food_sale">
-            <EntityTypeMapping TypeName="XCGameManagerDBModel.t_food_sale">
-              <MappingFragment StoreEntitySet="t_food_sale">
-                <ScalarProperty Name="StoreId" ColumnName="StoreId" />
-                <ScalarProperty Name="OrderID" ColumnName="OrderID" />
-                <ScalarProperty Name="ExitWorkStation" ColumnName="ExitWorkStation" />
-                <ScalarProperty Name="ExitScheduleID" ColumnName="ExitScheduleID" />
-                <ScalarProperty Name="ExitUserID" ColumnName="ExitUserID" />
-                <ScalarProperty Name="ExitBalance" ColumnName="ExitBalance" />
-                <ScalarProperty Name="ExitRealTime" ColumnName="ExitRealTime" />
-                <ScalarProperty Name="DiskID" ColumnName="DiskID" />
-                <ScalarProperty Name="MacAddress" ColumnName="MacAddress" />
-                <ScalarProperty Name="WorkStation" ColumnName="WorkStation" />
-                <ScalarProperty Name="RealTime" ColumnName="RealTime" />
-                <ScalarProperty Name="AuthorID" ColumnName="AuthorID" />
-                <ScalarProperty Name="ScheduleID" ColumnName="ScheduleID" />
-                <ScalarProperty Name="UserID" ColumnName="UserID" />
-                <ScalarProperty Name="BuyFoodType" ColumnName="BuyFoodType" />
-                <ScalarProperty Name="PayType" ColumnName="PayType" />
-                <ScalarProperty Name="Note" ColumnName="Note" />
-                <ScalarProperty Name="TotalMoney" ColumnName="TotalMoney" />
-                <ScalarProperty Name="CreditFee" ColumnName="CreditFee" />
-                <ScalarProperty Name="ChangeFee" ColumnName="ChangeFee" />
-                <ScalarProperty Name="RenewFee" ColumnName="RenewFee" />
-                <ScalarProperty Name="OpenFee" ColumnName="OpenFee" />
-                <ScalarProperty Name="Deposit" ColumnName="Deposit" />
-                <ScalarProperty Name="MemberLevelID" ColumnName="MemberLevelID" />
-                <ScalarProperty Name="Balance" ColumnName="Balance" />
-                <ScalarProperty Name="Point" ColumnName="Point" />
-                <ScalarProperty Name="CoinQuantity" ColumnName="CoinQuantity" />
-                <ScalarProperty Name="FoodID" ColumnName="FoodID" />
-                <ScalarProperty Name="ICCardID" ColumnName="ICCardID" />
-                <ScalarProperty Name="FlowType" ColumnName="FlowType" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>

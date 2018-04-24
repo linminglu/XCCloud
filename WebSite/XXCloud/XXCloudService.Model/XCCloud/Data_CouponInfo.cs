@@ -16,7 +16,6 @@ namespace XCCloudService.Model.XCCloud
     {
         public int ID { get; set; }
         public string MerchID { get; set; }
-        public string StoreID { get; set; }
         public string CouponName { get; set; }
         public Nullable<int> CouponType { get; set; }
         public Nullable<int> EntryCouponFlag { get; set; }

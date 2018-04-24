@@ -13,6 +13,7 @@ using XCCloudService.Common.Enum;
 using XCCloudService.Model.XCGameManager;
 using XCCloudService.OrderPayCallback.Common;
 using XCCloudService.Pay.Alipay;
+using XXCloudService.OrderPayCallback.Common;
 
 namespace XXCloudService.CallBack
 {
@@ -58,6 +59,8 @@ namespace XXCloudService.CallBack
                         {
                             if (MPOrderBusiness.UpdateOrderForPaySuccess(out_trade_no, trade_no))
                             {
+                                OrderHandle.FlwFoodSaleOrderHandle(order, trade_no);
+
                                 LogHelper.SaveLog(TxtLogType.AliPay, TxtLogContentType.Debug, TxtLogFileType.Day, "应用：莘拍档 订单号：" + out_trade_no + " 支付成功！");
 
                                 //支付宝买家用户id

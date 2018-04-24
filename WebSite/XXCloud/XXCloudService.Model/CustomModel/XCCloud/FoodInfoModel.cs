@@ -47,41 +47,55 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         [DataMember(Name = "foodType", Order = 3)]
         public int FoodType { get; set; }
 
-        [DataMember(Name = "allowPrint", Order = 4)]
+        [DataMember(Name = "allowInternet", Order = 4)]
+        public int AllowInternet { get; set; }
+
+        [DataMember(Name = "allowPrint", Order = 5)]
         public int AllowPrint { get; set; }
 
-        [DataMember(Name = "rechargeType", Order = 5)]
-        public int RechargeType { get; set; }
+        [DataMember(Name = "foreAuthorize", Order = 6)]
+        public int ForeAuthorize { get; set; }
 
-        [DataMember(Name = "foodPrice", Order = 6)]
+        [DataMember(Name = "foodPrice", Order = 7)]
         public decimal FoodPrice { get; set; }
 
-        [DataMember(Name = "imageUrl", Order = 7)]
+        [DataMember(Name = "imageUrl", Order = 8)]
         public string ImageUrl { get; set; }
 
-        [DataMember(Name = "detailsCount", Order = 8)]
+        [DataMember(Name = "detailsCount", Order = 9)]
         public int DetailsCount { get; set; }
 
-        public int AllowCoin {get;set;}
+        [DataMember(Name = "detailInfoList", Order = 10)]
+        public List<FoodDetailInfoModel> DetailInfoList { set; get; }
+    }
 
-        public int Coins { get; set; }
-        
-        public int AllowPoint {set;get;}
-        
-        public int Points {set;get;}
-        
-        public int AllowLottery {set;get;}
+    [DataContract]
+    public class FoodDetailInfoModel
+    {
+        public FoodDetailInfoModel()
+        { 
+            
+        }
 
-        public int Lottery { set; get; }
+        public FoodDetailInfoModel(int foodId, int balanceType,string typeName,int useCount)
+        {
+            this.FoodId = foodId;
+            this.BalanceType = balanceType;
+            this.TypeName = typeName;
+            this.UseCount = useCount;
+        }
 
-        [DataMember(Name = "containCount", Order = 9)]
-        public int ContainCount { set; get; }
+        [DataMember(Name = "foodId", Order = 1)]
+        public int FoodId { set; get; }
 
-        [DataMember(Name = "containName", Order = 10)]
-        public string ContainName { set; get; }
+        [DataMember(Name = "balanceType", Order = 2)]
+        public int BalanceType { set; get; }
 
-        [DataMember(Name = "payList", Order = 11)]
-        public List<FoodInfoPriceModel> priceListModel { set; get; }
+        [DataMember(Name = "typeName", Order = 3)]
+        public string TypeName { set; get; }
+
+        [DataMember(Name = "useCount", Order = 4)]
+        public int UseCount { set; get; }
     }
 
     [DataContract]

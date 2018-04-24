@@ -130,7 +130,7 @@ namespace XCCloudService.Business.XCCloud
             orderPay.PayTime = payTime;
             orderPay.PayState = payState;
             orderPay.PayType = payType;
-            OrderPayCache.Add(orderId, orderPay, CacheExpires.OrderPayCacheExpiresTime);
+            OrderPayCache.Add<OrderPayCacheModel>(orderId, orderPay, CacheExpires.OrderPayCacheExpiresTime);
         }
     }
 }

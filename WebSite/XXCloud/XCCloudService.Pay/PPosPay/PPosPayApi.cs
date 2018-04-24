@@ -19,6 +19,7 @@ namespace XCCloudService.Pay.PPosPay
 {
     public class PPosPayApi
     {
+        #region 签名、POST请求
         bool CheckValidationResult(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors errors)
         {
             //直接确认，否则打不开    
@@ -160,8 +161,10 @@ namespace XCCloudService.Pay.PPosPay
             s = s.Substring(0, s.Length - 1);
             s += "}";
             return s;
-        }
+        } 
+        #endregion
 
+        #region 请求二维码
         /// <summary>
         /// 扫码付请求条码
         /// </summary>
@@ -196,8 +199,10 @@ namespace XCCloudService.Pay.PPosPay
                 //return ack.payCode;
                 return ack;
             }
-        }
+        } 
+        #endregion
 
+        #region 扫码支付（商户主扫）
         public PPosPayData.MicroPayACK ScanPay(PPosPayData.MicroPay order, out string error)
         {
             error = "";
@@ -224,8 +229,10 @@ namespace XCCloudService.Pay.PPosPay
             {
                 return ack;
             }
-        }
+        } 
+        #endregion
 
+        #region 微信公众号支付
         public PPosPayData.WeiXinPubPayACK PubPay(PPosPayData.WeiXinPubPay pay, ref PPosPayData.WeiXinPubPayACK ack, out string errMsg)
         {
             errMsg = string.Empty;
@@ -236,7 +243,7 @@ namespace XCCloudService.Pay.PPosPay
             pay.version = PPosPayConfig.Version;
 
             //pay.code = "011aBksI0mjBXi2ZDIqI0uVfsI0aBks4";//在授权回调页面中获取到的授权code
-            
+
             //pay.amount = "1";//实际付款
             //pay.total_amount = "1";//订单总金额
             //pay.subject = "cesgu";
@@ -250,11 +257,13 @@ namespace XCCloudService.Pay.PPosPay
             if (ack.returnCode != "000000")
             {
                 errMsg = HttpUtility.UrlDecode(ack.message);
-                //return null;
+                return null;
             }
             return ack;
-        }
+        } 
+        #endregion
 
+        #region 微信公众号查询
         /// <summary>
         /// 微信公众号查询
         /// </summary>
@@ -266,7 +275,7 @@ namespace XCCloudService.Pay.PPosPay
             query.mercId = PPosPayConfig.MerchNo;
             query.trmNo = PPosPayConfig.TerminalNo;
             query.txnTime = DateTime.Now.ToString("yyyyMMddHHmmss");
-            query.signType = PPosPayConfig.SignType;            
+            query.signType = PPosPayConfig.SignType;
             query.version = PPosPayConfig.Version;
             query.signValue = CheckSign(query);
 
@@ -282,6 +291,61 @@ namespace XCCloudService.Pay.PPosPay
             }
             errMsg = response;
             return true;
+        } 
+        #endregion
+
+        #region 退款
+        public PPosPayData.RefundACK RefundPay(PPosPayData.Refund model, out string errMsg)
+        {
+            errMsg = string.Empty;
+            model.opSys = Convert.ToInt32(OSType.WINDOWS).ToString();
+            model.characterSet = PPosPayConfig.Character;
+            model.mercId = PPosPayConfig.MerchNo;
+            model.orgNo = PPosPayConfig.InstNo;
+            model.signType = PPosPayConfig.SignType;
+            model.trmNo = PPosPayConfig.TerminalNo;
+            model.version = PPosPayConfig.Version;
+            model.txnTime = System.DateTime.Now.ToString("yyyyMMddHHmmss");
+            model.signValue = CheckSign(model);
+
+            JavaScriptSerializer jsonSerialize = new JavaScriptSerializer();
+            string data = jsonSerialize.Serialize(model);
+            string response = Post(data, PPosPayConfig.GatewayURL + "sdkRefundBarcodePay.json", false, 20);
+            PPosPayData.RefundACK ack = jsonSerialize.Deserialize<PPosPayData.RefundACK>(response);
+            if (ack.returnCode != "000000")
+            {
+                errMsg = HttpUtility.UrlDecode(ack.message);
+                return null;
+            }
+            return ack;
         }
+        #endregion
+
+        #region 订单查询
+        public PPosPayData.QueryOrderACK QueryOrderPay(PPosPayData.QueryOrder model, out string errMsg)
+        {
+            errMsg = string.Empty;
+            model.opSys = Convert.ToInt32(OSType.WINDOWS).ToString();
+            model.characterSet = PPosPayConfig.Character;
+            model.mercId = PPosPayConfig.MerchNo;
+            model.orgNo = PPosPayConfig.InstNo;
+            model.signType = PPosPayConfig.SignType;
+            model.trmNo = PPosPayConfig.TerminalNo;
+            model.version = PPosPayConfig.Version;
+            model.txnTime = System.DateTime.Now.ToString("yyyyMMddHHmmss");
+            model.signValue = CheckSign(model);
+
+            JavaScriptSerializer jsonSerialize = new JavaScriptSerializer();
+            string data = jsonSerialize.Serialize(model);
+            string response = Post(data, PPosPayConfig.GatewayURL + "sdkQryBarcodePay.json", false, 20);
+            PPosPayData.QueryOrderACK ack = jsonSerialize.Deserialize<PPosPayData.QueryOrderACK>(response);
+            if (ack.returnCode != "000000")
+            {
+                errMsg = HttpUtility.UrlDecode(ack.message);
+                return null;
+            }
+            return ack;
+        }
+        #endregion
     }
 }

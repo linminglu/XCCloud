@@ -442,9 +442,9 @@ namespace XXCloudService.Api.XCCloud
                 IData_BalanceChargeRuleService data_BalanceChargeRuleService = BLLContainer.Resolve<IData_BalanceChargeRuleService>(resolveNew: true);
                 IDict_BalanceTypeService dict_BalanceTypeService = BLLContainer.Resolve<IDict_BalanceTypeService>(resolveNew: true);
                 var linq = from a in data_BalanceChargeRuleService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase))
-                           join b in dict_BalanceTypeService.GetModels() on a.SourceType equals b.ID into b1
+                           join b in dict_BalanceTypeService.GetModels(p=>p.State == 1) on a.SourceType equals b.ID into b1
                            from b in b1.DefaultIfEmpty()
-                           join c in dict_BalanceTypeService.GetModels() on a.ChargeType equals c.ID into c1
+                           join c in dict_BalanceTypeService.GetModels(p => p.State == 1) on a.ChargeType equals c.ID into c1
                            from c in c1.DefaultIfEmpty()
                            select new 
                            {

@@ -27,7 +27,6 @@ namespace XCCloudService.Model.XCGameManager
     
         public virtual DbSet<t_MPOrder> t_MPOrder { get; set; }
         public virtual DbSet<t_UserRegister> t_UserRegister { get; set; }
-        public virtual DbSet<t_food_sale> t_food_sale { get; set; }
         public virtual DbSet<t_datamessage> t_datamessage { get; set; }
         public virtual DbSet<t_promotion> t_promotion { get; set; }
         public virtual DbSet<T_MemberToken> T_MemberToken { get; set; }

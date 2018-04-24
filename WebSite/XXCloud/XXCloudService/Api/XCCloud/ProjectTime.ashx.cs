@@ -132,6 +132,18 @@ namespace XXCloudService.Api.XCCloud
             return true;
         }
 
+        /// <summary>
+        /// 获取适用门店的主体数据
+        /// </summary>
+        /// <param name="storeId"></param>
+        /// <returns></returns>
+        private IQueryable getSutiableList(string storeId)
+        {
+            return from a in data_ProjectTime_StoreListService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase))
+                   join b in data_ProjectTimeInfoService.GetModels() on a.ProjectTimeID equals b.ID
+                   select b;
+        }
+
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object GetProjectInfoList(Dictionary<string, object> dicParas)
         {            
@@ -140,9 +152,14 @@ namespace XXCloudService.Api.XCCloud
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
                 string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
+                var query = data_ProjectTimeInfoService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase));
+                if (userTokenKeyModel.LogType == (int)RoleType.StoreUser)
+                {
+                    query = (IQueryable<Data_ProjectTimeInfo>)getSutiableList(storeId);
+                }
 
-                var linq = from a in data_ProjectTimeInfoService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase))
-                           join b in dict_BalanceTypeService.GetModels() on a.DepositType equals b.ID into b1
+                var linq = from a in query
+                           join b in dict_BalanceTypeService.GetModels(p=>p.State == 1) on a.DepositType equals b.ID into b1
                            from b in b1.DefaultIfEmpty()
                            select new
                            {
@@ -210,9 +227,9 @@ namespace XXCloudService.Api.XCCloud
 
                 int BandTypeId = dict_SystemService.GetModels(p => p.DictKey.Equals("档位类别") && p.PID == 0).FirstOrDefault().ID;
                 var BandPrices = from e in (from a in data_ProjectTime_BandPriceService.GetModels(p => p.ProjectTimeID == iId)
-                                join b in data_MemberLevelService.GetModels() on a.MemberLevelID equals b.MemberLevelID into b1
+                                join b in data_MemberLevelService.GetModels(p => p.State == 1) on a.MemberLevelID equals b.MemberLevelID into b1
                                 from b in b1.DefaultIfEmpty()
-                                join c in dict_BalanceTypeService.GetModels() on a.BalanceType equals c.ID into c1
+                                join c in dict_BalanceTypeService.GetModels(p => p.State == 1) on a.BalanceType equals c.ID into c1
                                 from c in c1.DefaultIfEmpty()
                                 join d in dict_SystemService.GetModels(p => p.PID == BandTypeId) on (a.BandType + "") equals d.DictValue into d1
                                 from d in d1.DefaultIfEmpty()
@@ -239,7 +256,7 @@ namespace XXCloudService.Api.XCCloud
                                 }; 
 
                 var linq = from a in data_ProjectTimeInfoService.GetModels(p=>p.ID == iId)
-                           join b in dict_BalanceTypeService.GetModels() on a.DepositType equals b.ID into b1
+                           join b in dict_BalanceTypeService.GetModels(p=>p.State == 1) on a.DepositType equals b.ID into b1
                            from b in b1.DefaultIfEmpty()                                                      
                            select new
                            {

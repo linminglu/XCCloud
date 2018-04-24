@@ -7,7 +7,6 @@
       <Diagram DiagramId="8526b87d27304afcb53f26e216d07847" Name="Diagram1" ZoomLevel="82">
         <EntityTypeShape EntityType="XCGameManagerDBModel.t_MPOrder" Width="1.5" PointX="5.375" PointY="6.75" />
         <EntityTypeShape EntityType="XCGameManagerDBModel.t_UserRegister" Width="1.5" PointX="0.75" PointY="7.75" />
-        <EntityTypeShape EntityType="XCGameManagerDBModel.t_food_sale" Width="1.5" PointX="7.375" PointY="4.75" />
         <EntityTypeShape EntityType="XCGameManagerDBModel.t_datamessage" Width="1.5" PointX="7.375" PointY="0.75" />
         <EntityTypeShape EntityType="XCGameManagerDBModel.t_promotion" Width="1.5" PointX="9.375" PointY="0.75" />
         <EntityTypeShape EntityType="XCGameManagerDBModel.T_MemberToken" Width="1.5" PointX="9.375" PointY="4.75" />

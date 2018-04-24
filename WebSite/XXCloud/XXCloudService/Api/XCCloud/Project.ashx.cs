@@ -31,6 +31,18 @@ namespace XXCloudService.Api.XCCloud
         IData_Project_StoreListService data_Project_StoreListService = BLLContainer.Resolve<IData_Project_StoreListService>(resolveNew: true);
         IData_Project_DeviceService data_Project_DeviceService = BLLContainer.Resolve<IData_Project_DeviceService>(resolveNew: true);
 
+        /// <summary>
+        /// 获取适用门店的主体数据
+        /// </summary>
+        /// <param name="storeId"></param>
+        /// <returns></returns>
+        private IQueryable getSutiableList(string storeId)
+        {
+            return from a in data_Project_StoreListService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase))
+                    join b in data_ProjectInfoService.GetModels() on a.ProjectID equals b.ID
+                    select b;     
+        }
+
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object GetProjectInfoList(Dictionary<string, object> dicParas)
         {            
@@ -38,10 +50,15 @@ namespace XXCloudService.Api.XCCloud
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
-                string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;                               
-
-                var linq = from a in data_ProjectInfoService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase))
-                           join b in dict_BalanceTypeService.GetModels() on a.BalanceType equals b.ID into b1
+                string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
+                var query = data_ProjectInfoService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase));
+                if (userTokenKeyModel.LogType == (int)RoleType.StoreUser)
+                {
+                    query = (IQueryable<Data_ProjectInfo>)getSutiableList(storeId);
+                }
+                
+                var linq = from a in query
+                           join b in dict_BalanceTypeService.GetModels(p=>p.State == 1) on a.BalanceType equals b.ID into b1
                            from b in b1.DefaultIfEmpty()
                            select new
                            {

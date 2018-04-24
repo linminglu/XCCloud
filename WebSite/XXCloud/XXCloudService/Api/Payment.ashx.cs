@@ -32,6 +32,12 @@ using XCCloudService.Pay;
 using Aop.Api.Domain;
 using Aop.Api.Request;
 using Aop.Api.Response;
+using XCCloudService.Model.CustomModel.XCGameManager;
+using XCCloudService.CacheService.XCCloud;
+using XXCloudService.OrderPayCallback.Common;
+using XCCloudService.OrderPayCallback.Common;
+using XCCloudService.BLL.IBLL.XCCloud;
+using XCCloudService.BLL.Container;
 
 namespace XXCloudService.Api
 {
@@ -75,8 +81,9 @@ namespace XXCloudService.Api
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "订单号无效");
                 }
 
-                Base_StoreInfo store = XCCloudStoreBusiness.GetStoreModel(order.StoreID);
-                if (store == null)
+                var storeId = order.StoreID;
+                IBase_StoreInfoService base_StoreInfoService = BLLContainer.Resolve<IBase_StoreInfoService>();
+                if (!base_StoreInfoService.Any(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)))
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "订单所属门店无效");
                 }
@@ -291,8 +298,10 @@ namespace XXCloudService.Api
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "订单号无效");
                 }
-                Base_StoreInfo store = XCCloudStoreBusiness.GetStoreModel(order.StoreID);
-                if (store == null)
+                
+                var storeId = order.StoreID;
+                IBase_StoreInfoService base_StoreInfoService = BLLContainer.Resolve<IBase_StoreInfoService>();
+                if (!base_StoreInfoService.Any(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)))
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "订单所属门店无效");
                 }
@@ -648,7 +657,7 @@ namespace XXCloudService.Api
         /// </summary>
         /// <param name="dicParas"></param>
         /// <returns></returns>
-        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.MobileToken)]
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCGameMemberOrMobileToken)]
         public object getPposWxPay(Dictionary<string, object> dicParas)
         {
             try
@@ -664,6 +673,10 @@ namespace XXCloudService.Api
                 string buyType = dicParas.ContainsKey("buyType") ? dicParas["buyType"].ToString() : string.Empty;
                 string coinsStr = dicParas.ContainsKey("coins") ? dicParas["coins"].ToString() : string.Empty;
 
+                string memberToken = dicParas.ContainsKey("membertoken") ? dicParas["membertoken"].ToString() : string.Empty;
+                string deviceToken = dicParas.ContainsKey("deviceToken") ? dicParas["deviceToken"].ToString() : string.Empty;
+                string strFoodId = dicParas.ContainsKey("foodid") ? dicParas["foodid"].ToString() : string.Empty;
+
                 decimal payPrice = 0;
                 if (!decimal.TryParse(payPriceStr, out payPrice))
                 {
@@ -674,6 +687,13 @@ namespace XXCloudService.Api
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "购买币数不正确");
                 }
+
+                int foodId = 0;
+                if (!int.TryParse(strFoodId, out foodId))
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "套餐编号不正确");
+                }
+
                 MobileTokenModel mobileTokenModel = (MobileTokenModel)(dicParas[Constant.MobileTokenModel]);
 
                 //生成服务器订单号
@@ -701,6 +721,8 @@ namespace XXCloudService.Api
                 }
                 #endregion
 
+                PayLogHelper.WriteEvent(result.orderNo, "新大陆支付");
+
                 PposPubSigPay model = new PposPubSigPay();
                 model.appId = result.apiAppid;
                 model.timeStamp = result.apiTimestamp;
@@ -708,11 +730,19 @@ namespace XXCloudService.Api
                 model.package = result.apiPackage;
                 model.paySign = result.apiPaysign;
 
+                //将订单相关的设备、套餐信息加入到缓存，用于在收不到回调的时候发起主动查询
+                OrderUnpaidModel UnpaidOrder = new OrderUnpaidModel();
+                UnpaidOrder.OrderId = orderNo;
+                UnpaidOrder.DeviceToken = deviceToken;
+                UnpaidOrder.FoodId = foodId;
+                UnpaidOrder.CreateTime = DateTime.Now;
+                UnpaidOrderList.AddNewItem(UnpaidOrder);
+
                 return ResponseModelFactory<PposPubSigPay>.CreateModel(isSignKeyReturn, model);
             }
             catch (Exception ex)
             {
-                LogHelper.SaveLog(TxtLogType.WeiXin, TxtLogContentType.Debug, TxtLogFileType.Day, "新大陆微信公众号支付失败，原因：" + ex.InnerException != null ? ex.InnerException.Message : ex.Message);
+                LogHelper.SaveLog(TxtLogType.PPosPay, TxtLogContentType.Debug, TxtLogFileType.Day, "新大陆微信公众号支付失败，原因：" + ex.InnerException != null ? ex.InnerException.Message : ex.Message);
                 throw ex;
             }
         }
@@ -724,7 +754,7 @@ namespace XXCloudService.Api
         /// </summary>
         /// <param name="dicParas"></param>
         /// <returns></returns>
-        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.MobileToken)]
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCGameMemberOrMobileToken)]
         public object createAlipayOrder(Dictionary<string, object> dicParas)
         {
             try
@@ -739,6 +769,10 @@ namespace XXCloudService.Api
                 string buyType = dicParas.ContainsKey("buyType") ? dicParas["buyType"].ToString() : string.Empty;
                 string coinsStr = dicParas.ContainsKey("coins") ? dicParas["coins"].ToString() : string.Empty;
 
+                string memberToken = dicParas.ContainsKey("membertoken") ? dicParas["membertoken"].ToString() : string.Empty;
+                string deviceToken = dicParas.ContainsKey("deviceToken") ? dicParas["deviceToken"].ToString() : string.Empty;
+                string strFoodId = dicParas.ContainsKey("foodid") ? dicParas["foodid"].ToString() : string.Empty;
+
                 decimal payPrice = 0;
                 if (!decimal.TryParse(payPriceStr, out payPrice))
                 {
@@ -749,6 +783,13 @@ namespace XXCloudService.Api
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "购买币数不正确");
                 }
+
+                int foodId = 0;
+                if (!int.TryParse(strFoodId, out foodId))
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "套餐编号不正确");
+                }
+
                 MobileTokenModel mobileTokenModel = (MobileTokenModel)(dicParas[Constant.MobileTokenModel]);
 
                 //生成服务器订单号
@@ -763,6 +804,7 @@ namespace XXCloudService.Api
                 builder.OutTradeNo = orderNo;
                 builder.TotalAmount = payPrice.ToString("0.00");
                 builder.BuyerId = aliId;
+                builder.TimeoutExpress = "1m";
 
                 request.SetBizModel(builder);
                 request.SetNotifyUrl(AliPayConfig.AliH5NotifyUrl);
@@ -771,6 +813,13 @@ namespace XXCloudService.Api
                 AliCreateOrderResModel model = new AliCreateOrderResModel();
                 model.tradeNO = response.TradeNo;
                 model.orderId = response.OutTradeNo;
+
+                OrderUnpaidModel UnpaidOrder = new OrderUnpaidModel();
+                UnpaidOrder.OrderId = orderNo;
+                UnpaidOrder.DeviceToken = deviceToken;
+                UnpaidOrder.FoodId = foodId;
+                UnpaidOrder.CreateTime = DateTime.Now;
+                UnpaidOrderList.AddNewItem(UnpaidOrder);
 
                 #endregion
                 return ResponseModelFactory<AliCreateOrderResModel>.CreateModel(isSignKeyReturn, model);

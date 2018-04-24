@@ -304,7 +304,7 @@
 				</div>
 			</div>
 			<div style="text-align: right;padding: 15px">
-				<button class="layui-btn layui-btn-normal backHome">返回主页面</button>
+				<button class="layui-btn layui-btn-normal backHome" type="button">返回主页面</button>
 			</div>
 		</form>
 	</div>
@@ -432,7 +432,7 @@
 	<script>
         let  times=0,_merchType="",_merchStatus="",allowCS=0,allowBC=1;
         setStorage('allowBC','1'); setStorage('allowCS','0');
-        let token=getStorage('token'),logType=getStorage('logType');
+        let token=getStorage('token'),logType=JSON.parse(getStorage('logMsg')).logType;
          layui.use(['table','form','jquery','layer','element'],function () {
 			var table=layui.table;
 			var layer=layui.layer;

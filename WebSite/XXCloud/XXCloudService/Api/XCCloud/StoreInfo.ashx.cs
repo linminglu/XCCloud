@@ -185,13 +185,12 @@ namespace XCCloudService.Api.XCCloud
         {
             try
             {
-                string errMsg = string.Empty;
-
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
                 
-                //从缓存获取
-                var base_StoreInfo = XCCloudStoreBusiness.StoreInfoList.Where(p => p.MerchID == merchId).ToList();          
+                IBase_StoreInfoService base_StoreInfoService = BLLContainer.Resolve<IBase_StoreInfoService>();
+                var base_StoreInfo = base_StoreInfoService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && (p.StoreState == (int)StoreState.Open || p.StoreState == (int)StoreState.Valid));       
+   
                 Dictionary<string, string> pStoreList = base_StoreInfo.Select(o => new { StoreID = o.StoreID, StoreName = o.StoreName }).Distinct()
                     .ToDictionary(d => d.StoreID, d => d.StoreName, StringComparer.OrdinalIgnoreCase);
 
@@ -342,14 +341,32 @@ namespace XCCloudService.Api.XCCloud
 
         [Authorize(Roles = "MerchUser")]
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
-        public object SaveStoreInfo(Dictionary<string, object> dicParas)
+        public object AddStoreInfo(Dictionary<string, object> dicParas)
         {
             try
             {
                 string errMsg = string.Empty;
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;               
-                string storeId = dicParas.ContainsKey("storeId") ? dicParas["storeId"].ToString() : string.Empty;
+                string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
+
+                IBase_StoreInfoService base_StoreInfoService = BLLContainer.Resolve<IBase_StoreInfoService>();
+                IBase_MerchantInfoService base_MerchantInfoService = BLLContainer.Resolve<IBase_MerchantInfoService>();
+                var base_MerchantInfo = base_MerchantInfoService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                if (base_MerchantInfo.AllowCreateSub != 1)
+                {
+                    errMsg = "指定商户不允许创建门店";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
+                int allowCount = base_StoreInfoService.GetCount(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase));
+                if (base_MerchantInfo.AllowCreateCount > allowCount)
+                {
+                    errMsg = "指定商户创建门店数已超过最大限制";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
+
+                string storeId = string.Empty;
                 string storeState = dicParas.ContainsKey("storeState") ? dicParas["storeState"].ToString() : string.Empty;
                 string parentId = dicParas.ContainsKey("parentId") ? dicParas["parentId"].ToString() : string.Empty;
                 string storeName = dicParas.ContainsKey("storeName") ? dicParas["storeName"].ToString() : string.Empty;
@@ -495,9 +512,8 @@ namespace XCCloudService.Api.XCCloud
                 }
 
                 #endregion
-
-                IBase_StoreInfoService base_StoreInfoService = BLLContainer.Resolve<IBase_StoreInfoService>();
-                Base_StoreInfo base_StoreInfo = base_StoreInfoService.GetModels(p => p.StoreID.ToString().Equals(storeId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault<Base_StoreInfo>() ?? new Base_StoreInfo();
+                
+                Base_StoreInfo base_StoreInfo = new Base_StoreInfo();
                 base_StoreInfo.ParentID = parentId;
                 base_StoreInfo.MerchID = merchId;
                 base_StoreInfo.StoreName = storeName;
@@ -521,188 +537,172 @@ namespace XCCloudService.Api.XCCloud
                 base_StoreInfo.SelttleType = Convert.ToInt32(selttleType);
                 base_StoreInfo.StoreState = string.IsNullOrEmpty(storeState) ? (int)StoreState.Invalid : Convert.ToInt32(storeState);
 
-                if (string.IsNullOrEmpty(base_StoreInfo.StoreID))
+                //给商户的创建者发送门店审核工单                    
+                IBase_UserInfoService base_UserInfoService = BLLContainer.Resolve<IBase_UserInfoService>();
+                if (!base_UserInfoService.Any(p => p.OpenID.Equals(base_MerchantInfo.WxOpenID, StringComparison.OrdinalIgnoreCase)))
                 {
-                    //给商户的创建者发送门店审核工单
-                    IBase_MerchantInfoService base_MerchantInfoService = BLLContainer.Resolve<IBase_MerchantInfoService>();
-                    IBase_UserInfoService base_UserInfoService = BLLContainer.Resolve<IBase_UserInfoService>();
-                    var base_MerchantInfo = base_MerchantInfoService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
-                    if (!base_UserInfoService.Any(p => p.OpenID.Equals(base_MerchantInfo.WxOpenID, StringComparison.OrdinalIgnoreCase)))
-                    {
-                        errMsg = "指定OpenId的用户不存在";
-                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                    }
+                    errMsg = "指定OpenId的用户不存在";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
 
-                    int senderId = base_UserInfoService.GetModels(p => p.OpenID.Equals(base_MerchantInfo.WxOpenID, StringComparison.OrdinalIgnoreCase)).FirstOrDefault().UserID;
-                    int authorId;
-                    string authorOpenId;
-                    if (base_MerchantInfo.CreateType == (int)CreateType.Agent) //如果门店的商户是代理商，就发送给代理商的创建者审核
-                    {
-                        authorId = Convert.ToInt32(base_MerchantInfoService.GetModels(p => p.MerchID.Equals(base_MerchantInfo.CreateUserID, StringComparison.OrdinalIgnoreCase)).FirstOrDefault().CreateUserID);
-                    }
-                    else
-                    {
-                        authorId = Convert.ToInt32(base_MerchantInfo.CreateUserID);
-                    }
-                    authorOpenId = base_UserInfoService.GetModels(p => p.UserID == authorId).FirstOrDefault().OpenID;
-
-                    IXC_WorkInfoService xC_WorkInfoService = BLLContainer.Resolve<IXC_WorkInfoService>();
-                    //商户一次只能有一个待审核门店
-                    if (xC_WorkInfoService.Any(p => p.SenderID == senderId && p.WorkType == (int)WorkType.StoreCheck && p.WorkState == (int)WorkState.Pending))
-                    {
-                        errMsg = "您还有门店尚未通过审核，请等待通过后新建门店";
-                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                    }
-
-                    //开启EF事务
-                    using (TransactionScope ts = new TransactionScope())
-                    {
-                        try
-                        {                            
-                            var xC_WorkInfo = new XC_WorkInfo();
-                            xC_WorkInfo.WorkType = (int)WorkType.StoreCheck;
-                            xC_WorkInfo.WorkState = (int)WorkState.Pending;
-                            xC_WorkInfo.SenderID = senderId;
-                            xC_WorkInfo.AuditorID = authorId;
-                            xC_WorkInfo.SenderTime = DateTime.Now;
-                            xC_WorkInfo.WorkBody = "莘宸商户门店审核";
-                            if (!xC_WorkInfoService.Add(xC_WorkInfo))
-                            {
-                                errMsg = "添加门店审核工单信息失败";
-                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                            }
-
-                            //创建门店信息
-                            if (!genNo(merchId, adcode, out storeId, out errMsg))
-                            {
-                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                            }
-
-                            base_StoreInfo.StoreID = storeId;
-                            if (!base_StoreInfoService.Add(base_StoreInfo))
-                            {
-                                errMsg = "保存门店信息失败";
-                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                            }
-
-                            #region 初始化连锁店余额通用设置
-                            //初始化连锁店余额通用设置
-                            var base_ChainRule_StoreContext = DbContextFactory.CreateByModelNamespace(typeof(Base_ChainRule_Store).Namespace);
-                            if (!base_ChainRule_StoreContext.Set<Base_ChainRule>().Any(a => a.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)))
-                            {
-                                errMsg = "初始化连锁店余额通用设置异常，找不到商户分组信息";
-                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                            }
-                            if (base_ChainRule_StoreContext.Set<Base_ChainRule_Store>().Any(a => a.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)))
-                            {
-                                errMsg = "初始化连锁店余额通用设置异常，该门店ID已存在";
-                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                            }
-                            var base_ChainRule = base_ChainRule_StoreContext.Set<Base_ChainRule>().Where(w => w.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)).ToList();
-                            foreach (var model in base_ChainRule)
-                            {
-                                var base_ChainRule_Store = new Base_ChainRule_Store();
-                                base_ChainRule_Store.RuleGroupID = model.RuleGroupID;
-                                base_ChainRule_Store.StoreID = storeId;
-                                base_ChainRule_StoreContext.Entry(base_ChainRule_Store).State = EntityState.Added;
-                            }
-                            if (base_ChainRule_StoreContext.SaveChanges() < 0)
-                            {
-                                errMsg = "初始化连锁店余额通用设置失败";
-                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                            }
-                            #endregion
-
-                            #region 初始化运营参数
-
-                            //初始化门店运营参数配置
-                            var dbContext = DbContextFactory.CreateByModelNamespace(typeof(Data_Parameters).Namespace);
-                            var data_Parameter = dbContext.Set<Data_Parameters>().AsQueryable();
-                            if (base_MerchantInfo.MerchTag == (int)MerchTag.Lottery)
-                            {
-                                data_Parameter = data_Parameter.Where(p => p.StoreID.Equals(MerchTag.Lottery.ToString()));
-                            }
-                            else
-                            {
-                                data_Parameter = data_Parameter.Where(p => p.StoreID.Equals(MerchTag.Game.ToString()));
-                            }
-
-                            foreach (var model in data_Parameter.ToList())
-                            {
-                                var data_ParameterModel = new Data_Parameters();
-                                data_ParameterModel.StoreID = storeId;
-                                data_ParameterModel.ParameterName = model.ParameterName;
-                                data_ParameterModel.ParameterValue = model.ParameterValue;
-                                data_ParameterModel.System = model.System;
-                                data_ParameterModel.IsAllow = model.IsAllow;
-                                data_ParameterModel.Note = model.Note;
-                                dbContext.Entry(data_ParameterModel).State = EntityState.Added;
-                            }
-
-                            if (dbContext.SaveChanges() < 0)
-                            {
-                                errMsg = "初始化门店运营参数失败";
-                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                            }
-
-                            //初始化返回规则设定
-                            dbContext = DbContextFactory.CreateByModelNamespace(typeof(Data_GivebackRule).Namespace);
-                            var data_GivebackRule = dbContext.Set<Data_GivebackRule>().AsQueryable();
-                            if (base_MerchantInfo.MerchTag == (int)MerchTag.Lottery)
-                            {
-                                data_GivebackRule = data_GivebackRule.Where(p => p.StoreID.Equals(MerchTag.Lottery.ToString()));
-                            }
-                            else
-                            {
-                                data_GivebackRule = data_GivebackRule.Where(p => p.StoreID.Equals(MerchTag.Game.ToString()));
-                            }
-
-                            foreach (var model in data_GivebackRule.ToList())
-                            {
-                                var data_GivebackRuleModel = new Data_GivebackRule();
-                                data_GivebackRuleModel.StoreID = storeId;
-                                data_GivebackRuleModel.MemberLevelID = model.MemberLevelID;
-                                data_GivebackRuleModel.BackMin = model.BackMin;
-                                data_GivebackRuleModel.BackMax = model.BackMax;
-                                data_GivebackRuleModel.BackScale = model.BackScale;
-                                data_GivebackRuleModel.ExitCardMin = model.ExitCardMin;
-                                data_GivebackRuleModel.AllowBackPrincipal = model.AllowBackPrincipal;
-                                data_GivebackRuleModel.Backtype = model.Backtype;
-                                data_GivebackRuleModel.TotalDays = model.TotalDays;
-                                data_GivebackRuleModel.AllowContainToday = model.AllowContainToday;
-                                dbContext.Entry(data_GivebackRuleModel).State = EntityState.Added;
-                            }
-
-                            if (dbContext.SaveChanges() < 0)
-                            {
-                                errMsg = "初始化门店返回规则失败";
-                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                            }
-
-                            #endregion
-                            
-                            ts.Complete();
-
-                            //已提交工单，等待管理员审核
-                            MessagePush(authorOpenId, base_MerchantInfo.MerchAccount, xC_WorkInfo.SenderTime.Value.ToString("f"), storeName, xC_WorkInfo.WorkID.ToString());
-                        }
-                        catch (Exception ex)
-                        {
-                            return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, ex.Message);
-                        }
-                    }                    
+                int senderId = base_UserInfoService.GetModels(p => p.OpenID.Equals(base_MerchantInfo.WxOpenID, StringComparison.OrdinalIgnoreCase)).FirstOrDefault().UserID;
+                int authorId;
+                string authorOpenId;
+                if (base_MerchantInfo.CreateType == (int)CreateType.Agent) //如果门店的商户是代理商，就发送给代理商的创建者审核
+                {
+                    authorId = Convert.ToInt32(base_MerchantInfoService.GetModels(p => p.MerchID.Equals(base_MerchantInfo.CreateUserID, StringComparison.OrdinalIgnoreCase)).FirstOrDefault().CreateUserID);
                 }
                 else
                 {
-                    if (!base_StoreInfoService.Update(base_StoreInfo))
-                    {
-                        errMsg = "保存门店信息失败";
-                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                    }
-                }                
+                    authorId = Convert.ToInt32(base_MerchantInfo.CreateUserID);
+                }
+                authorOpenId = base_UserInfoService.GetModels(p => p.UserID == authorId).FirstOrDefault().OpenID;
 
-                //更新缓存
-                XCCloudStoreBusiness.Init();
+                IXC_WorkInfoService xC_WorkInfoService = BLLContainer.Resolve<IXC_WorkInfoService>();
+                //商户一次只能有一个待审核门店
+                if (xC_WorkInfoService.Any(p => p.SenderID == senderId && p.WorkType == (int)WorkType.StoreCheck && p.WorkState == (int)WorkState.Pending))
+                {
+                    errMsg = "您还有门店尚未通过审核，请等待通过后新建门店";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
+                //开启EF事务
+                using (TransactionScope ts = new TransactionScope())
+                {
+                    try
+                    {
+                        var xC_WorkInfo = new XC_WorkInfo();
+                        xC_WorkInfo.WorkType = (int)WorkType.StoreCheck;
+                        xC_WorkInfo.WorkState = (int)WorkState.Pending;
+                        xC_WorkInfo.SenderID = senderId;
+                        xC_WorkInfo.AuditorID = authorId;
+                        xC_WorkInfo.SenderTime = DateTime.Now;
+                        xC_WorkInfo.WorkBody = "莘宸商户门店审核";
+                        if (!xC_WorkInfoService.Add(xC_WorkInfo))
+                        {
+                            errMsg = "添加门店审核工单信息失败";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
+                        //创建门店信息
+                        if (!genNo(merchId, adcode, out storeId, out errMsg))
+                        {
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
+                        base_StoreInfo.StoreID = storeId;
+                        if (!base_StoreInfoService.Add(base_StoreInfo))
+                        {
+                            errMsg = "保存门店信息失败";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
+                        #region 初始化连锁店余额通用设置
+                        //初始化连锁店余额通用设置
+                        var base_ChainRule_StoreContext = DbContextFactory.CreateByModelNamespace(typeof(Base_ChainRule_Store).Namespace);
+                        if (!base_ChainRule_StoreContext.Set<Base_ChainRule>().Any(a => a.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)))
+                        {
+                            errMsg = "初始化连锁店余额通用设置异常，找不到商户分组信息";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+                        if (base_ChainRule_StoreContext.Set<Base_ChainRule_Store>().Any(a => a.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)))
+                        {
+                            errMsg = "初始化连锁店余额通用设置异常，该门店ID已存在";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+                        var base_ChainRule = base_ChainRule_StoreContext.Set<Base_ChainRule>().Where(w => w.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)).ToList();
+                        foreach (var model in base_ChainRule)
+                        {
+                            var base_ChainRule_Store = new Base_ChainRule_Store();
+                            base_ChainRule_Store.RuleGroupID = model.RuleGroupID;
+                            base_ChainRule_Store.StoreID = storeId;
+                            base_ChainRule_StoreContext.Entry(base_ChainRule_Store).State = EntityState.Added;
+                        }
+                        if (base_ChainRule_StoreContext.SaveChanges() < 0)
+                        {
+                            errMsg = "初始化连锁店余额通用设置失败";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+                        #endregion
+
+                        #region 初始化运营参数
+
+                        //初始化门店运营参数配置
+                        var dbContext = DbContextFactory.CreateByModelNamespace(typeof(Data_Parameters).Namespace);
+                        var data_Parameter = dbContext.Set<Data_Parameters>().AsQueryable();
+                        if (base_MerchantInfo.MerchTag == (int)MerchTag.Lottery)
+                        {
+                            data_Parameter = data_Parameter.Where(p => p.StoreID.Equals(MerchTag.Lottery.ToString()));
+                        }
+                        else
+                        {
+                            data_Parameter = data_Parameter.Where(p => p.StoreID.Equals(MerchTag.Game.ToString()));
+                        }
+
+                        foreach (var model in data_Parameter.ToList())
+                        {
+                            var data_ParameterModel = new Data_Parameters();
+                            data_ParameterModel.StoreID = storeId;
+                            data_ParameterModel.ParameterName = model.ParameterName;
+                            data_ParameterModel.ParameterValue = model.ParameterValue;
+                            data_ParameterModel.System = model.System;
+                            data_ParameterModel.IsAllow = model.IsAllow;
+                            data_ParameterModel.Note = model.Note;
+                            dbContext.Entry(data_ParameterModel).State = EntityState.Added;
+                        }
+
+                        if (dbContext.SaveChanges() < 0)
+                        {
+                            errMsg = "初始化门店运营参数失败";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
+                        //初始化返回规则设定
+                        dbContext = DbContextFactory.CreateByModelNamespace(typeof(Data_GivebackRule).Namespace);
+                        var data_GivebackRule = dbContext.Set<Data_GivebackRule>().AsQueryable();
+                        if (base_MerchantInfo.MerchTag == (int)MerchTag.Lottery)
+                        {
+                            data_GivebackRule = data_GivebackRule.Where(p => p.StoreID.Equals(MerchTag.Lottery.ToString()));
+                        }
+                        else
+                        {
+                            data_GivebackRule = data_GivebackRule.Where(p => p.StoreID.Equals(MerchTag.Game.ToString()));
+                        }
+
+                        foreach (var model in data_GivebackRule.ToList())
+                        {
+                            var data_GivebackRuleModel = new Data_GivebackRule();
+                            data_GivebackRuleModel.StoreID = storeId;
+                            data_GivebackRuleModel.MemberLevelID = model.MemberLevelID;
+                            data_GivebackRuleModel.BackMin = model.BackMin;
+                            data_GivebackRuleModel.BackMax = model.BackMax;
+                            data_GivebackRuleModel.BackScale = model.BackScale;
+                            data_GivebackRuleModel.ExitCardMin = model.ExitCardMin;
+                            data_GivebackRuleModel.AllowBackPrincipal = model.AllowBackPrincipal;
+                            data_GivebackRuleModel.Backtype = model.Backtype;
+                            data_GivebackRuleModel.TotalDays = model.TotalDays;
+                            data_GivebackRuleModel.AllowContainToday = model.AllowContainToday;
+                            dbContext.Entry(data_GivebackRuleModel).State = EntityState.Added;
+                        }
+
+                        if (dbContext.SaveChanges() < 0)
+                        {
+                            errMsg = "初始化门店返回规则失败";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
+                        #endregion
+
+                        ts.Complete();
+
+                        //已提交工单，等待管理员审核
+                        MessagePush(authorOpenId, base_MerchantInfo.MerchAccount, xC_WorkInfo.SenderTime.Value.ToString("f"), storeName, xC_WorkInfo.WorkID.ToString());
+                    }
+                    catch (Exception ex)
+                    {
+                        return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, ex.Message);
+                    }
+                }  
 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
             }
@@ -797,7 +797,7 @@ namespace XCCloudService.Api.XCCloud
                 #endregion
 
                 IBase_StoreInfoService base_StoreInfoService = BLLContainer.Resolve<IBase_StoreInfoService>();
-                Base_StoreInfo base_StoreInfo = base_StoreInfoService.GetModels(p => p.StoreID.ToString().Equals(storeId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                Base_StoreInfo base_StoreInfo = base_StoreInfoService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
                 if (base_StoreInfo == null)
                 {
                     errMsg = "门店信息不存在";
@@ -820,9 +820,6 @@ namespace XCCloudService.Api.XCCloud
                     errMsg = "修改门店信息失败";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
-
-                //更新缓存
-                XCCloudStoreBusiness.Init();
 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
             }
@@ -962,7 +959,7 @@ namespace XCCloudService.Api.XCCloud
                     try
                     {
                         IBase_StoreInfoService base_StoreInfoService = BLLContainer.Resolve<IBase_StoreInfoService>();
-                        var base_StoreInfoModel = base_StoreInfoService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault<Base_StoreInfo>();
+                        var base_StoreInfoModel = base_StoreInfoService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
                         if (base_StoreInfoModel == null)
                         {
                             errMsg = "门店信息不存在";
@@ -1125,7 +1122,7 @@ namespace XCCloudService.Api.XCCloud
                             } 
                         }                                                                       
 
-                        base_StoreInfoModel.SettleID = !string.IsNullOrEmpty(settleId) ? Convert.ToInt32(settleId) : default(int?);
+                        base_StoreInfoModel.SettleID = !string.IsNullOrEmpty(settleId) ? Convert.ToInt32(settleId) : (int?)null;
                         if (!base_StoreInfoService.Update(base_StoreInfoModel))
                         {
                             errMsg = "审核门店失败";
@@ -1135,15 +1132,16 @@ namespace XCCloudService.Api.XCCloud
                         //修改工单
                         IBase_MerchantInfoService base_MerchantInfoService = BLLContainer.Resolve<IBase_MerchantInfoService>();
                         IBase_UserInfoService base_UserInfoService = BLLContainer.Resolve<IBase_UserInfoService>();
-                        var base_MerchantInfo = base_MerchantInfoService.GetModels(p => p.MerchID.Equals(base_StoreInfoModel.MerchID, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
-                        if (!base_UserInfoService.Any(p => p.OpenID.Equals(base_MerchantInfo.WxOpenID, StringComparison.OrdinalIgnoreCase)))
+                        var merchId = base_StoreInfoModel.MerchID;
+                        var base_MerchantInfo = base_MerchantInfoService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                        var wxOpenId = base_MerchantInfo.WxOpenID;
+                        if (!base_UserInfoService.Any(p => p.OpenID.Equals(wxOpenId, StringComparison.OrdinalIgnoreCase)))
                         {
                             errMsg = "指定OpenId的用户不存在";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 
-                        int senderId = base_UserInfoService.GetModels(p => p.OpenID.Equals(base_MerchantInfo.WxOpenID, StringComparison.OrdinalIgnoreCase)).FirstOrDefault().UserID;
-
+                        int senderId = base_UserInfoService.GetModels(p => p.OpenID.Equals(wxOpenId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault().UserID;
                         IXC_WorkInfoService xC_WorkInfoService = BLLContainer.Resolve<IXC_WorkInfoService>();
                         var xC_WorkInfo = xC_WorkInfoService.GetModels(p => p.WorkType == (int)WorkType.StoreCheck && p.WorkState == (int)WorkState.Pending && p.SenderID == senderId).FirstOrDefault();
                         if (xC_WorkInfo == null)
@@ -1239,7 +1237,7 @@ namespace XCCloudService.Api.XCCloud
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
-                base_StoreInfoModel.StoreState = (int)StoreState.Open;//开业
+                base_StoreInfoModel.StoreState = (int)StoreState.Open;
                 if (!base_StoreInfoService.Update(base_StoreInfoModel))
                 {
                     errMsg = "校验门店信息失败";
@@ -1264,17 +1262,21 @@ namespace XCCloudService.Api.XCCloud
             
             StoreIDDataModel dataModel = (StoreIDDataModel)(userTokenModel.DataModel);
 
-            if (XCCloudStoreBusiness.IsEffectiveStore(dataModel.StoreId, out storeName, out storePassword))
+            var storeId = dataModel.StoreId;
+            IBase_StoreInfoService base_StoreInfoService = BLLContainer.Resolve<IBase_StoreInfoService>();
+            if (base_StoreInfoService.Any(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)))
             {
-                var obj = new {
-                    storePassword = storePassword
+                var base_StoreInfoModel = base_StoreInfoService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                var obj = new
+                {
+                    storePassword = base_StoreInfoModel.Password
                 };
-                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn,obj);
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, obj);
             }
             else
             {
                 return ResponseModelFactory.CreateAnonymousFailModel(isSignKeyReturn, "门店信息不存在");
-            }     
+            }
         }
     }
 }

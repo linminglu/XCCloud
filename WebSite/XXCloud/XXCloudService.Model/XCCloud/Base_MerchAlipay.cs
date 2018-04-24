@@ -12,10 +12,13 @@ namespace XCCloudService.Model.XCCloud
     using System;
     using System.Collections.Generic;
     
-    public partial class Data_CouponRight
+    public partial class Base_MerchAlipay
     {
         public int ID { get; set; }
-        public string StoreID { get; set; }
-        public Nullable<int> CouponID { get; set; }
+        public string MerchID { get; set; }
+        public string AppID { get; set; }
+        public string PrivateKey { get; set; }
+        public string PublicKey { get; set; }
+        public Nullable<decimal> Fee { get; set; }
     }
 }

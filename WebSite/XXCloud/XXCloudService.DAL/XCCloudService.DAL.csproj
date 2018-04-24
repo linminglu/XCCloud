@@ -74,6 +74,12 @@
     <Compile Include="IDAL\XCCloudRS232\IMerchSegmentDAL.cs" />
     <Compile Include="IDAL\XCCloud\IBase_ChainRuleDAL.cs" />
     <Compile Include="IDAL\XCCloud\IBase_ChainRule_StoreDAL.cs" />
+    <Compile Include="IDAL\XCCloud\IBase_MerchAlipayDAL.cs" />
+    <Compile Include="IDAL\XCCloud\IData_GoodStorage_DetailDAL.cs" />
+    <Compile Include="IDAL\XCCloud\IData_MemberLevel_FoodDAL.cs" />
+    <Compile Include="IDAL\XCCloud\IData_MemberLevelFreeDAL.cs" />
+    <Compile Include="IDAL\XCCloud\IData_MerchAlipay_ShopServiceDAL.cs" />
+    <Compile Include="IDAL\XCCloud\IFlw_GroupVerityDAL.cs" />
     <Compile Include="IDAL\XCCloud\IBase_DepotInfoDAL.cs" />
     <Compile Include="IDAL\XCCloud\IBase_DeviceInfoDAL.cs" />
     <Compile Include="IDAL\XCCloud\IBase_GoodsInfoDAL.cs" />
@@ -143,6 +149,7 @@
     <Compile Include="IDAL\XCCloud\IFlw_OrderDAL.cs" />
     <Compile Include="IDAL\XCCloud\IFlw_Order_DetailDAL.cs" />
     <Compile Include="IDAL\XCCloud\IFlw_Order_SerialNumberDAL.cs" />
+    <Compile Include="IDAL\XCCloud\IFlw_ScheduleDAL.cs" />
     <Compile Include="IDAL\XCCloud\ILog_GameAlarmDAL.cs" />
     <Compile Include="IDAL\XCCloud\ILog_OperationDAL.cs" />
     <Compile Include="IDAL\XCCloud\IStore_CheckDateDAL.cs" />
@@ -167,7 +174,6 @@
     <Compile Include="IDAL\XCGameManager\IStoreDAL.cs" />
     <Compile Include="IDAL\XCGameManager\IDeviceDAL.cs" />
     <Compile Include="IDAL\XCGameManager\IDataMessageDAL.cs" />
-    <Compile Include="IDAL\XCGameManager\ITFoodsaleDAL.cs" />
     <Compile Include="IDAL\XCGameManager\IAdminUserDAL.cs" />
     <Compile Include="IDAL\XCGameManager\IUserTokenDAL.cs" />
     <Compile Include="IDAL\XCGameManager\IUserDAL.cs" />
@@ -241,9 +247,12 @@
     <Compile Include="XCCloud\Data_GoodsStockDAL.cs" />
     <Compile Include="XCCloud\Data_GoodStock_RecordDAL.cs" />
     <Compile Include="XCCloud\Data_GoodStorageDAL.cs" />
+    <Compile Include="XCCloud\Data_GoodStorage_DetailDAL.cs" />
     <Compile Include="XCCloud\Data_JackpotInfoDAL.cs" />
     <Compile Include="XCCloud\Data_Jackpot_LevelDAL.cs" />
     <Compile Include="XCCloud\Data_Jackpot_MatrixDAL.cs" />
+    <Compile Include="XCCloud\Data_MemberLevel_FoodDAL.cs" />
+    <Compile Include="XCCloud\Data_MemberLevelFreeDAL.cs" />
     <Compile Include="XCCloud\Data_Member_CardDAL.cs" />
     <Compile Include="XCCloud\Base_MemberInfoDAL.cs" />
     <Compile Include="XCCloud\Base_MerchantInfoDAL.cs" />
@@ -257,6 +266,7 @@
     <Compile Include="XCCloud\Data_GivebackRuleDAL.cs" />
     <Compile Include="XCCloud\Data_MemberLevelDAL.cs" />
     <Compile Include="XCCloud\Data_Member_Card_StoreDAL.cs" />
+    <Compile Include="XCCloud\Data_MerchAlipay_ShopDAL.cs" />
     <Compile Include="XCCloud\Data_ParametersDAL.cs" />
     <Compile Include="XCCloud\Data_ProjectInfoDAL.cs" />
     <Compile Include="XCCloud\Data_ProjectTimeInfoDAL.cs" />
@@ -275,9 +285,12 @@
     <Compile Include="XCCloud\Flw_Game_FreeDAL.cs" />
     <Compile Include="XCCloud\Flw_Game_WatchDAL.cs" />
     <Compile Include="XCCloud\Flw_Game_WinPrizeDAL.cs" />
+    <Compile Include="XCCloud\Base_MerchAlipayDAL.cs" />
+    <Compile Include="XCCloud\Flw_GroupVerityDAL.cs" />
     <Compile Include="XCCloud\Flw_OrderDAL.cs" />
     <Compile Include="XCCloud\Flw_Order_DetailDAL.cs" />
     <Compile Include="XCCloud\Flw_Order_SerialNumberDAL.cs" />
+    <Compile Include="XCCloud\Flw_ScheduleDAL.cs" />
     <Compile Include="XCCloud\Log_GameAlarmDAL.cs" />
     <Compile Include="XCCloud\Log_OperationDAL.cs" />
     <Compile Include="XCCloud\Store_CheckDateDAL.cs" />
@@ -303,7 +316,6 @@
     <Compile Include="XCGameManager\StoreDAL.cs" />
     <Compile Include="XCGameManager\DeviceDAL.cs" />
     <Compile Include="XCGameManager\DataMessage.cs" />
-    <Compile Include="XCGameManager\TFoodsaleDAL.cs" />
     <Compile Include="XCGameManager\AdminUserDAL.cs" />
     <Compile Include="XCGameManager\UserTokenDAL.cs" />
     <Compile Include="XCGameManager\UserDAL.cs" />

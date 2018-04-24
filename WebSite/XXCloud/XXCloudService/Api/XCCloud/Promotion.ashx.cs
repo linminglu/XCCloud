@@ -460,7 +460,7 @@ namespace XXCloudService.Api.XCCloud
 
                 var FoodLevels = from c in
                                      (from a in data_Food_LevelService.GetModels(p => p.FoodID == iFoodId)
-                                      join b in data_MemberLevelService.GetModels() on a.MemberLevelID equals b.MemberLevelID
+                                      join b in data_MemberLevelService.GetModels(p => p.State == 1) on a.MemberLevelID equals b.MemberLevelID
                                       select new
                                       {
                                           a = a,
@@ -495,7 +495,7 @@ namespace XXCloudService.Api.XCCloud
                                   from c in c1.DefaultIfEmpty()
                                   join d in dict_SystemService.GetModels(p => p.PID == FoodDetailTypeId) on (a.FoodType + "") equals d.DictValue into d1
                                   from d in d1.DefaultIfEmpty()
-                                  join f in dict_BalanceTypeService.GetModels() on a.BalanceType equals f.ID into f1
+                                  join f in dict_BalanceTypeService.GetModels(p=>p.State == 1) on a.BalanceType equals f.ID into f1
                                   from f in f1.DefaultIfEmpty()
                                   join g in data_CouponInfoService.GetModels() on new { ContainID = a.ContainID, FoodType = a.FoodType } equals new { ContainID = (int?)g.ID, FoodType = (int?)FoodDetailType.Coupon } into g1
                                   from g in g1.DefaultIfEmpty()

@@ -86,12 +86,10 @@
     <Compile Include="CustomModel\XCCloud\FoodInfoModel.cs" />
     <Compile Include="CustomModel\XCCloud\Member\MemberRegisterResponseModel.cs" />
     <Compile Include="CustomModel\XCCloud\MenuInfoModel.cs" />
-    <Compile Include="CustomModel\XCCloud\Merch\MerchInfoCacheModel.cs" />
     <Compile Include="CustomModel\XCCloud\Order\OrderMainModel.cs" />
     <Compile Include="CustomModel\XCCloud\Order\OrderDetailModel.cs" />
     <Compile Include="CustomModel\XCCloud\Order\OrderModel.cs" />
     <Compile Include="CustomModel\XCCloud\PaymentModel.cs" />
-    <Compile Include="CustomModel\XCCloud\Store\StoreInfoCacheModel.cs" />
     <Compile Include="CustomModel\XCCloud\UserLogResponseModel.cs" />
     <Compile Include="CustomModel\XCCloud\UserInfoRegisterResponseModel.cs" />
     <Compile Include="CustomModel\XCCloud\UserInfoModel.cs" />
@@ -264,6 +262,9 @@
     <Compile Include="XCCloud\Base_MemberInfo.cs">
       <DependentUpon>XCCloudDBModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="XCCloud\Base_MerchAlipay.cs">
+      <DependentUpon>XCCloudDBModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="XCCloud\Base_MerchantInfo.cs">
       <DependentUpon>XCCloudDBModel.tt</DependentUpon>
     </Compile>
@@ -342,9 +343,6 @@
     <Compile Include="XCCloud\Data_CouponList.cs">
       <DependentUpon>XCCloudDBModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="XCCloud\Data_CouponRight.cs">
-      <DependentUpon>XCCloudDBModel.tt</DependentUpon>
-    </Compile>
     <Compile Include="XCCloud\Data_Coupon_StoreList.cs">
       <DependentUpon>XCCloudDBModel.tt</DependentUpon>
     </Compile>
@@ -405,6 +403,9 @@
     <Compile Include="XCCloud\Data_GoodStorage.cs">
       <DependentUpon>XCCloudDBModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="XCCloud\Data_GoodStorage_Detail.cs">
+      <DependentUpon>XCCloudDBModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="XCCloud\Data_JackpotInfo.cs">
       <DependentUpon>XCCloudDBModel.tt</DependentUpon>
     </Compile>
@@ -423,10 +424,19 @@
     <Compile Include="XCCloud\Data_MemberLevel.cs">
       <DependentUpon>XCCloudDBModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="XCCloud\Data_MemberLevelFree.cs">
+      <DependentUpon>XCCloudDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_MemberLevel_Food.cs">
+      <DependentUpon>XCCloudDBModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="XCCloud\Data_Member_Card.cs">
       <DependentUpon>XCCloudDBModel.tt</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_Member_Card_Store.cs">
+      <DependentUpon>XCCloudDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_MerchAlipay_Shop.cs">
       <DependentUpon>XCCloudDBModel.tt</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_Message.cs">
@@ -532,6 +542,9 @@
       <DependentUpon>XCCloudDBModel.tt</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Flw_Good_Detail.cs">
+      <DependentUpon>XCCloudDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Flw_GroupVerity.cs">
       <DependentUpon>XCCloudDBModel.tt</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Flw_Jackpot.cs">
@@ -658,9 +671,6 @@
       <DependentUpon>XCGameManagerDBModel.tt</DependentUpon>
     </Compile>
     <Compile Include="XCGameManager\t_Enum.cs">
-      <DependentUpon>XCGameManagerDBModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="XCGameManager\t_food_sale.cs">
       <DependentUpon>XCGameManagerDBModel.tt</DependentUpon>
     </Compile>
     <Compile Include="XCGameManager\T_MemberToken.cs">

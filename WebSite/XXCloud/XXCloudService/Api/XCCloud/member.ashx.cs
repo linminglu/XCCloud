@@ -13,16 +13,17 @@ using XCCloudService.Common;
 using XCCloudService.Model.CustomModel.XCCloud;
 using XCCloudService.Model.CustomModel.XCCloud.Member;
 using XCCloudService.Model.XCCloud;
-using System.Activities.Statements;
 using XCCloudService.Business.XCGameMana;
-using XCCloudService.Model.CustomModel.XCCloud.Store;
 using XCCloudService.Business.XCGame;
 using System.IO;
 using Microsoft.SqlServer.Server;
+using XCCloudService.Common.Enum;
+using XCCloudService.Common.Extensions;
+using System.Transactions;
 
 namespace XCCloudService.Api.XCCloud
 {
-    [Authorize(Roles = "StoreUser")]
+    [Authorize(Roles = "MerchUser")]
     /// <summary>
     /// member 的摘要说明
     /// </summary>
@@ -490,11 +491,11 @@ namespace XCCloudService.Api.XCCloud
                 return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "门店号不能为空");
             }
 
-            StoreInfoCacheModel storeInfo = null;
-            if(!XCCloudStoreBusiness.IsEffectiveStore(storeId,ref storeInfo))
+            IBase_StoreInfoService base_StoreInfoService = BLLContainer.Resolve<IBase_StoreInfoService>();            
+            if (!base_StoreInfoService.Any(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)))
             {
                 return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "门店号无效");
-            }
+            }            
 
             if (string.IsNullOrEmpty(icCardId))
             {
@@ -566,15 +567,15 @@ namespace XCCloudService.Api.XCCloud
         }
 
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
-        public object GetStoreMemberLevel(Dictionary<string, object> dicParas)
+        public object GetMemberLevelDic(Dictionary<string, object> dicParas)
         {
             try
             {
                 string errMsg = string.Empty;
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
+                string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
                 IData_MemberLevelService data_MemberLevelService = BLLContainer.Resolve<IData_MemberLevelService>();
-                Dictionary<int, string> memberLevel = data_MemberLevelService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase) && p.State == 1).Select(o => new
+                Dictionary<int, string> memberLevel = data_MemberLevelService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.State == 1).Select(o => new
                 {
                     MemberLevelID = o.MemberLevelID,
                     MemberLevelName = o.MemberLevelName
@@ -588,7 +589,6 @@ namespace XCCloudService.Api.XCCloud
             }
         }
 
-        [Authorize(Roles = "MerchUser")]
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object GetMemberDic(Dictionary<string, object> dicParas)
         {
@@ -601,7 +601,7 @@ namespace XCCloudService.Api.XCCloud
                 IBase_MemberInfoService base_MemberInfoService = BLLContainer.Resolve<IBase_MemberInfoService>(resolveNew: true);
                 IData_Member_CardService data_Member_CardService = BLLContainer.Resolve<IData_Member_CardService>(resolveNew: true);
                 IData_Member_Card_StoreService data_Member_Card_StoreService = BLLContainer.Resolve<IData_Member_Card_StoreService>(resolveNew: true);
-                var linq = from a in base_StoreInfoService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase))
+                var linq = from a in base_StoreInfoService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && (p.StoreState == (int)StoreState.Open || p.StoreState == (int)StoreState.Valid))
                            join b in data_Member_Card_StoreService.GetModels() on a.StoreID equals b.StoreID
                            join c in data_Member_CardService.GetModels() on b.CardID equals c.ID
                            join d in base_MemberInfoService.GetModels() on c.MemberID equals d.ID
@@ -628,11 +628,11 @@ namespace XCCloudService.Api.XCCloud
                 string memberLevelID = dicParas.ContainsKey("memberLevelID") ? dicParas["memberLevelID"].ToString() : string.Empty;
                 string memberLevelName = dicParas.ContainsKey("memberLevelName") ? dicParas["memberLevelName"].ToString() : string.Empty;
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
+                string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
 
 
                 IData_MemberLevelService data_MemberLevelService = BLLContainer.Resolve<IData_MemberLevelService>();
-                var query = data_MemberLevelService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase));
+                var query = data_MemberLevelService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.State == 1);
                 if (!string.IsNullOrEmpty(memberLevelID))
                 {
                     var iMemberLevelID = Convert.ToInt32(memberLevelID);
@@ -645,43 +645,28 @@ namespace XCCloudService.Api.XCCloud
                 }
 
                 IDict_SystemService dict_SystemService = BLLContainer.Resolve<IDict_SystemService>();
-                int MustInputId = dict_SystemService.GetModels(p => p.DictKey.Equals("入会时必须输入")).FirstOrDefault().ID;
-                int BirthdayFreeId = dict_SystemService.GetModels(p => p.DictKey.Equals("生日送币方式")).FirstOrDefault().ID;
-                int FreeRateId = dict_SystemService.GetModels(p => p.DictKey.Equals("送币频率")).FirstOrDefault().ID;
+                int BirthdayFreeId = dict_SystemService.GetModels(p => p.DictKey.Equals("生日送币方式") && p.PID == 0).FirstOrDefault().ID;
+                int FreeTypeId = dict_SystemService.GetModels(p => p.DictKey.Equals("送币方式") && p.PID == 0).FirstOrDefault().ID;
                 var linq = query.ToList().Select(o => new
                 {
                     MemberLevelModel = o,
-                    MustInput = dict_SystemService.GetModels(p => p.PID == MustInputId),
                     BirthdayFree = dict_SystemService.GetModels(p => p.PID == BirthdayFreeId),
-                    FreeRate = dict_SystemService.GetModels(p => p.PID == FreeRateId)
+                    FreeType = dict_SystemService.GetModels(p => p.PID == FreeTypeId)
                 }).Select(oo => new
                 {
                     MemberLevelID = oo.MemberLevelModel.MemberLevelID,
                     MemberLevelName = oo.MemberLevelModel.MemberLevelName,
+                    OpenFee = oo.MemberLevelModel.OpenFee,
                     Deposit = oo.MemberLevelModel.Deposit,
-                    ExitMoney = oo.MemberLevelModel.ExitMoney,
-                    ExitCoin = oo.MemberLevelModel.ExitCoin,
-                    ExitPrice = oo.MemberLevelModel.ExitPrice,
                     Validday = oo.MemberLevelModel.Validday,
-                    FreeRate = oo.MemberLevelModel.FreeRate,
-                    FreeCoin = oo.MemberLevelModel.FreeCoin,
-                    BirthdayFree = oo.MemberLevelModel.BirthdayFree,
-                    BirthdayFreeCoin = oo.MemberLevelModel.BirthdayFreeCoin,
-                    MustInput = oo.MemberLevelModel.MustInput,
-                    AllowExitCard = oo.MemberLevelModel.AllowExitCard == 1 ? "允许" : oo.MemberLevelModel.AllowExitCard == 0 ? "禁止" : string.Empty,
-                    AllowExitMoney = oo.MemberLevelModel.AllowExitMoney == 1 ? "允许" : oo.MemberLevelModel.AllowExitMoney == 0 ? "禁止" : string.Empty,
-                    AllowExitCoinToCard = oo.MemberLevelModel.AllowExitCoinToCard == 1 ? "允许" : oo.MemberLevelModel.AllowExitCoinToCard == 0 ? "禁止" : string.Empty,
-                    LockHead = oo.MemberLevelModel.LockHead == 1 ? "允许" : oo.MemberLevelModel.LockHead == 0 ? "禁止" : string.Empty,
-                    MinExitCoin = oo.MemberLevelModel.MinExitCoin,
-                    FreeType = oo.MemberLevelModel.FreeType,
-                    FreeNeedWin = oo.MemberLevelModel.FreeNeedWin,
-                    MustInputStr = oo.MustInput.Any(s => s.DictValue.Equals(oo.MemberLevelModel.MustInput + "")) ? oo.MustInput.Single(s => s.DictValue.Equals(oo.MemberLevelModel.MustInput + "")).DictKey : string.Empty,
+                    ContinueFee = oo.MemberLevelModel.ContinueFee,
+                    UpdateUsePoint = oo.MemberLevelModel.UpdateUsePoint,
+                    ConsumeTotle = oo.MemberLevelModel.ConsumeTotle,                   
                     BirthdayFreeStr = oo.BirthdayFree.Any(s => s.DictValue.Equals(oo.MemberLevelModel.BirthdayFree + "")) ? oo.BirthdayFree.Single(s => s.DictValue.Equals(oo.MemberLevelModel.BirthdayFree + "")).DictKey : string.Empty,
-                    FreeRateStr = oo.FreeRate.Any(s => s.DictValue.Equals(oo.MemberLevelModel.FreeRate + "")) ? oo.FreeRate.Single(s => s.DictValue.Equals(oo.MemberLevelModel.FreeRate + "")).DictKey : string.Empty,
-                    StateStr = (oo.MemberLevelModel.State == 1) ? "启用" : "停用"
+                    FreeTypeStr = oo.FreeType.Any(s => s.DictValue.Equals(oo.MemberLevelModel.FreeType + "")) ? oo.FreeType.Single(s => s.DictValue.Equals(oo.MemberLevelModel.FreeType + "")).DictKey : string.Empty
                 });
 
-                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, linq.ToList());
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, linq);
             }
             catch (Exception e)
             {
@@ -695,31 +680,43 @@ namespace XCCloudService.Api.XCCloud
             try
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
+                string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
 
                 string errMsg = string.Empty;
                 string memberLevelID = dicParas.ContainsKey("memberLevelID") ? (dicParas["memberLevelID"] + "") : string.Empty;
                 string memberLevelName = dicParas.ContainsKey("memberLevelName") ? (dicParas["memberLevelName"] + "") : string.Empty;
+                string coverUrl = dicParas.ContainsKey("coverUrl") ? (dicParas["coverUrl"] + "") : string.Empty;
+                string openFee = dicParas.ContainsKey("openFee") ? (dicParas["openFee"] + "") : string.Empty;
                 string deposit = dicParas.ContainsKey("deposit") ? (dicParas["deposit"] + "") : string.Empty;
-                string exitMoney = dicParas.ContainsKey("exitMoney") ? (dicParas["exitMoney"] + "") : string.Empty;
-                string exitCoin = dicParas.ContainsKey("exitCoin") ? (dicParas["exitCoin"] + "") : string.Empty;
-                string exitPrice = dicParas.ContainsKey("exitPrice") ? (dicParas["exitPrice"] + "") : string.Empty;
+                string clearPointDays = dicParas.ContainsKey("clearPointDays") ? (dicParas["clearPointDays"] + "") : string.Empty;
+                string priceOff = dicParas.ContainsKey("priceOff") ? (dicParas["priceOff"] + "") : string.Empty;
                 string validday = dicParas.ContainsKey("validday") ? (dicParas["validday"] + "") : string.Empty;
+                string needAuthor = dicParas.ContainsKey("needAuthor") ? (dicParas["needAuthor"] + "") : string.Empty;
+                string mustPhone = dicParas.ContainsKey("mustPhone") ? (dicParas["mustPhone"] + "") : string.Empty;
+                string mustIDCard = dicParas.ContainsKey("mustIDCard") ? (dicParas["mustIDCard"] + "") : string.Empty;
+                string useReadID = dicParas.ContainsKey("useReadID") ? (dicParas["useReadID"] + "") : string.Empty;
+                string readFace = dicParas.ContainsKey("readFace") ? (dicParas["readFace"] + "") : string.Empty;
+                string readPlam = dicParas.ContainsKey("readPlam") ? (dicParas["readPlam"] + "") : string.Empty;
+                string changeFee = dicParas.ContainsKey("changeFee") ? (dicParas["changeFee"] + "") : string.Empty;
+                string continueFee = dicParas.ContainsKey("continueFee") ? (dicParas["continueFee"] + "") : string.Empty;
+                string continueUsePoint = dicParas.ContainsKey("continueUsePoint") ? (dicParas["continueUsePoint"] + "") : string.Empty;
+                string consumeTotle = dicParas.ContainsKey("consumeTotle") ? (dicParas["consumeTotle"] + "") : string.Empty;
+                string nonActiveDays = dicParas.ContainsKey("nonActiveDays") ? (dicParas["nonActiveDays"] + "") : string.Empty;
+                string updateUsePoint = dicParas.ContainsKey("updateUsePoint") ? (dicParas["updateUsePoint"] + "") : string.Empty;
                 string freeRate = dicParas.ContainsKey("freeRate") ? (dicParas["freeRate"] + "") : string.Empty;
                 string freeCoin = dicParas.ContainsKey("freeCoin") ? (dicParas["freeCoin"] + "") : string.Empty;
+                string freeType = dicParas.ContainsKey("freeType") ? (dicParas["freeType"] + "") : string.Empty;
+                string freeNeedWin = dicParas.ContainsKey("freeNeedWin") ? (dicParas["freeNeedWin"] + "") : string.Empty;
                 string birthdayFree = dicParas.ContainsKey("birthdayFree") ? (dicParas["birthdayFree"] + "") : string.Empty;
                 string birthdayFreeCoin = dicParas.ContainsKey("birthdayFreeCoin") ? (dicParas["birthdayFreeCoin"] + "") : string.Empty;
-                string mustInput = dicParas.ContainsKey("mustInput") ? (dicParas["mustInput"] + "") : string.Empty;
+                string minCoin = dicParas.ContainsKey("minCoin") ? (dicParas["minCoin"] + "") : string.Empty;
+                string maxCoin = dicParas.ContainsKey("maxCoin") ? (dicParas["maxCoin"] + "") : string.Empty;
                 string allowExitCard = dicParas.ContainsKey("allowExitCard") ? (dicParas["allowExitCard"] + "") : string.Empty;
                 string allowExitMoney = dicParas.ContainsKey("allowExitMoney") ? (dicParas["allowExitMoney"] + "") : string.Empty;
                 string allowExitCoinToCard = dicParas.ContainsKey("allowExitCoinToCard") ? (dicParas["allowExitCoinToCard"] + "") : string.Empty;
                 string lockHead = dicParas.ContainsKey("lockHead") ? (dicParas["lockHead"] + "") : string.Empty;
-                string minExitCoin = dicParas.ContainsKey("minExitCoin") ? (dicParas["minExitCoin"] + "") : string.Empty;
-                string freeType = dicParas.ContainsKey("freeType") ? (dicParas["freeType"] + "") : string.Empty;
-                string freeNeedWin = dicParas.ContainsKey("freeNeedWin") ? (dicParas["freeNeedWin"] + "") : string.Empty;
-                string state = dicParas.ContainsKey("state") ? (dicParas["state"] + "") : string.Empty;
-                string cardUIURL = dicParas.ContainsKey("cardUIURL") ? (dicParas["cardUIURL"] + "") : string.Empty;
-                string needAuthor = dicParas.ContainsKey("needAuthor") ? (dicParas["needAuthor"] + "") : string.Empty;
+                object[] memberLevelFoods = dicParas.ContainsKey("memberLevelFoods") ? (object[])dicParas["memberLevelFoods"] : null;
+                object[] memberLevelFrees = dicParas.ContainsKey("memberLevelFrees") ? (object[])dicParas["memberLevelFrees"] : null;
 
                 if (string.IsNullOrEmpty(memberLevelName))
                 {
@@ -727,7 +724,7 @@ namespace XCCloudService.Api.XCCloud
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
-                if (string.IsNullOrEmpty(cardUIURL))
+                if (string.IsNullOrEmpty(coverUrl))
                 {
                     errMsg = "会员卡封面地址不能为空";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -735,58 +732,174 @@ namespace XCCloudService.Api.XCCloud
 
                 int iMemberLevelID = 0;
                 int.TryParse(memberLevelID, out iMemberLevelID);
-                IData_MemberLevelService data_MemberLevelService = BLLContainer.Resolve<IData_MemberLevelService>();
-                if (data_MemberLevelService.Any(a => a.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase) &&
-                    a.MemberLevelName.Equals(memberLevelName, StringComparison.OrdinalIgnoreCase) && a.MemberLevelID != iMemberLevelID))
-                {
-                    errMsg = "该会员级别名称已存在";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
 
-                var data_MemberLevel = new Data_MemberLevel();
-                data_MemberLevel.MemberLevelID = iMemberLevelID;
-                data_MemberLevel.MemberLevelName = memberLevelName;
-                data_MemberLevel.Deposit = !string.IsNullOrEmpty(deposit) ? Convert.ToDecimal(deposit) : (decimal?)null;
-                data_MemberLevel.ExitMoney = !string.IsNullOrEmpty(exitMoney) ? Convert.ToDecimal(exitMoney) : (decimal?)null;
-                data_MemberLevel.ExitCoin = !string.IsNullOrEmpty(exitCoin) ? Convert.ToInt32(exitCoin) : (int?)null;
-                data_MemberLevel.ExitPrice = !string.IsNullOrEmpty(exitPrice) ? Convert.ToDecimal(exitPrice) : (decimal?)null;
-                data_MemberLevel.Validday = !string.IsNullOrEmpty(validday) ? Convert.ToInt32(validday) : (int?)null;
-                data_MemberLevel.FreeRate = !string.IsNullOrEmpty(freeRate) ? Convert.ToInt32(freeRate) : (int?)null;
-                data_MemberLevel.FreeCoin = !string.IsNullOrEmpty(freeCoin) ? Convert.ToInt32(freeCoin) : (int?)null;
-                data_MemberLevel.BirthdayFree = !string.IsNullOrEmpty(birthdayFree) ? Convert.ToInt32(birthdayFree) : (int?)null;
-                data_MemberLevel.BirthdayFreeCoin = !string.IsNullOrEmpty(birthdayFreeCoin) ? Convert.ToInt32(birthdayFreeCoin) : (int?)null;
-                data_MemberLevel.MustInput = !string.IsNullOrEmpty(mustInput) ? Convert.ToInt32(mustInput) : (int?)null;
-                data_MemberLevel.AllowExitCard = !string.IsNullOrEmpty(allowExitCard) ? Convert.ToInt32(allowExitCard) : (int?)null;
-                data_MemberLevel.AllowExitMoney = !string.IsNullOrEmpty(allowExitMoney) ? Convert.ToInt32(allowExitMoney) : (int?)null;
-                data_MemberLevel.AllowExitCoinToCard = !string.IsNullOrEmpty(allowExitCoinToCard) ? Convert.ToInt32(allowExitCoinToCard) : (int?)null;
-                data_MemberLevel.LockHead = !string.IsNullOrEmpty(lockHead) ? Convert.ToInt32(lockHead) : (int?)null;
-                data_MemberLevel.MinExitCoin = !string.IsNullOrEmpty(minExitCoin) ? Convert.ToInt32(minExitCoin) : (int?)null;
-                data_MemberLevel.FreeType = !string.IsNullOrEmpty(freeType) ? Convert.ToInt32(freeType) : (int?)null;
-                data_MemberLevel.FreeNeedWin = !string.IsNullOrEmpty(freeNeedWin) ? Convert.ToInt32(freeNeedWin) : (int?)null;
-                data_MemberLevel.State = !string.IsNullOrEmpty(state) ? Convert.ToInt32(state) : (int?)null;
-                data_MemberLevel.StoreID = storeId;
-                data_MemberLevel.CardUIURL = cardUIURL;
-                data_MemberLevel.NeedAutor = !string.IsNullOrEmpty(needAuthor) ? Convert.ToInt32(needAuthor) : (int?)null;
-
-                if (!data_MemberLevelService.Any(a => a.MemberLevelID == iMemberLevelID))
+                //开启EF事务
+                using (TransactionScope ts = new TransactionScope())
                 {
-                    //新增
-                    if (!data_MemberLevelService.Add(data_MemberLevel))
+                    try
                     {
-                        errMsg = "添加会员级别失败";
+                        IData_MemberLevelService data_MemberLevelService = BLLContainer.Resolve<IData_MemberLevelService>();
+                        if (data_MemberLevelService.Any(a => a.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) &&
+                            a.MemberLevelName.Equals(memberLevelName, StringComparison.OrdinalIgnoreCase) && a.MemberLevelID != iMemberLevelID && a.State == 1))
+                        {
+                            errMsg = "该会员级别名称已存在";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
+                        var data_MemberLevel = data_MemberLevelService.GetModels(p => p.MemberLevelID == iMemberLevelID).FirstOrDefault() ?? new Data_MemberLevel();
+                        data_MemberLevel.MemberLevelID = iMemberLevelID;
+                        data_MemberLevel.MemberLevelName = memberLevelName;
+                        data_MemberLevel.CoverURL = coverUrl;
+                        data_MemberLevel.OpenFee = ObjectExt.Todecimal(openFee);
+                        data_MemberLevel.Deposit = ObjectExt.Todecimal(deposit);
+                        data_MemberLevel.ClearPointDays = ObjectExt.Toint(clearPointDays);
+                        data_MemberLevel.PriceOFF = ObjectExt.Todecimal(priceOff);
+                        data_MemberLevel.Validday = ObjectExt.Toint(validday);
+                        data_MemberLevel.NeedAuthor = ObjectExt.Toint(needAuthor);
+                        data_MemberLevel.MustPhone = ObjectExt.Toint(mustPhone);
+                        data_MemberLevel.MustIDCard = ObjectExt.Toint(mustIDCard);
+                        data_MemberLevel.UseReadID = ObjectExt.Toint(useReadID);
+                        data_MemberLevel.ReadFace = ObjectExt.Toint(readFace);
+                        data_MemberLevel.ReadPlam = ObjectExt.Toint(readPlam);
+                        data_MemberLevel.ChangeFee = ObjectExt.Todecimal(changeFee);
+                        data_MemberLevel.ContinueFee = ObjectExt.Todecimal(continueFee);
+                        data_MemberLevel.ContinueUsePoint = ObjectExt.Toint(continueUsePoint);
+                        data_MemberLevel.ConsumeTotle = ObjectExt.Todecimal(consumeTotle);
+                        data_MemberLevel.NonActiveDays = ObjectExt.Toint(nonActiveDays);
+                        data_MemberLevel.UpdateUsePoint = ObjectExt.Toint(updateUsePoint);
+                        data_MemberLevel.FreeRate = ObjectExt.Toint(freeRate);
+                        data_MemberLevel.FreeCoin = ObjectExt.Toint(freeCoin);
+                        data_MemberLevel.FreeType = ObjectExt.Toint(freeType);
+                        data_MemberLevel.FreeNeedWin = ObjectExt.Toint(freeNeedWin);
+                        data_MemberLevel.BirthdayFree = ObjectExt.Toint(birthdayFree);
+                        data_MemberLevel.BirthdayFreeCoin = ObjectExt.Toint(birthdayFreeCoin);
+                        data_MemberLevel.MinCoin = ObjectExt.Toint(minCoin);
+                        data_MemberLevel.MaxCoin = ObjectExt.Toint(maxCoin);
+                        data_MemberLevel.AllowExitCard = ObjectExt.Toint(allowExitCard);
+                        data_MemberLevel.AllowExitMoney = ObjectExt.Toint(allowExitMoney);
+                        data_MemberLevel.AllowExitCoinToCard = ObjectExt.Toint(allowExitCoinToCard);
+                        data_MemberLevel.LockHead = ObjectExt.Toint(lockHead);
+
+                        if (data_MemberLevel.MemberLevelID == 0)
+                        {
+                            //新增
+                            data_MemberLevel.MerchID = merchId;
+                            data_MemberLevel.State = 1;
+                            if (!data_MemberLevelService.Add(data_MemberLevel))
+                            {
+                                errMsg = "添加会员级别失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+                        }
+                        else
+                        {
+                            //修改
+                            if (!data_MemberLevelService.Update(data_MemberLevel))
+                            {
+                                errMsg = "修改会员级别失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+                        }
+
+                        iMemberLevelID = data_MemberLevel.MemberLevelID;
+
+                        //保存开卡套餐
+                        if (memberLevelFoods != null && memberLevelFoods.Count() >= 0)
+                        {
+                            //先删除，后添加
+                            IData_MemberLevel_FoodService data_MemberLevel_FoodService = BLLContainer.Resolve<IData_MemberLevel_FoodService>();
+                            foreach (var model in data_MemberLevel_FoodService.GetModels(p => p.MemberLevelID == iMemberLevelID))
+                            {
+                                data_MemberLevel_FoodService.DeleteModel(model);
+                            }
+
+                            foreach (IDictionary<string, object> el in memberLevelFoods)
+                            {
+                                if (el != null)
+                                {
+                                    var dicPara = new Dictionary<string, object>(el, StringComparer.OrdinalIgnoreCase);
+                                    string foodId = dicPara.ContainsKey("foodId") ? (dicPara["foodId"] + "") : string.Empty;
+                                    if (string.IsNullOrEmpty(foodId))
+                                    {
+                                        errMsg = "套餐ID不能为空";
+                                        return false;
+                                    }
+
+                                    var data_MemberLevel_Food = new Data_MemberLevel_Food();
+                                    data_MemberLevel_Food.MemberLevelID = iMemberLevelID;
+                                    data_MemberLevel_Food.FoodID = Convert.ToInt32(foodId);
+                                    data_MemberLevel_FoodService.AddModel(data_MemberLevel_Food);
+                                }
+                                else
+                                {
+                                    errMsg = "提交数据包含空对象";
+                                    return false;
+                                }
+                            }
+
+                            if (!data_MemberLevel_FoodService.SaveChanges())
+                            {
+                                errMsg = "保存会员级别开卡套餐信息失败";
+                                return false;
+                            }
+                        }
+
+                        //保存预赠币规则
+                        if (memberLevelFrees != null && memberLevelFrees.Count() >= 0)
+                        {
+                            //先删除，后添加
+                            IData_MemberLevelFreeService data_MemberLevelFreeService = BLLContainer.Resolve<IData_MemberLevelFreeService>();
+                            foreach (var model in data_MemberLevelFreeService.GetModels(p => p.MemberLevelID == iMemberLevelID))
+                            {
+                                data_MemberLevelFreeService.DeleteModel(model);
+                            }
+
+                            foreach (IDictionary<string, object> el in memberLevelFrees)
+                            {
+                                if (el != null)
+                                {
+                                    var dicPara = new Dictionary<string, object>(el, StringComparer.OrdinalIgnoreCase);
+                                    string chargeTotal = dicPara.ContainsKey("chargeTotal") ? (dicPara["chargeTotal"] + "") : string.Empty;
+                                    string freeBalanceType = dicPara.ContainsKey("freeBalanceType") ? (dicPara["freeBalanceType"] + "") : string.Empty;
+                                    string freeCount = dicPara.ContainsKey("freeCount") ? (dicPara["freeCount"] + "") : string.Empty;
+                                    string minSpaceDays = dicPara.ContainsKey("minSpaceDays") ? (dicPara["minSpaceDays"] + "") : string.Empty;
+                                    string onceFreeCount = dicPara.ContainsKey("onceFreeCount") ? (dicPara["onceFreeCount"] + "") : string.Empty;
+                                    string expireDays = dicPara.ContainsKey("expireDays") ? (dicPara["expireDays"] + "") : string.Empty;
+                                    
+                                    var data_MemberLevelFree = new Data_MemberLevelFree();
+                                    data_MemberLevelFree.MemberLevelID = iMemberLevelID;
+                                    data_MemberLevelFree.MerchID = merchId;
+                                    data_MemberLevelFree.ChargeTotal = ObjectExt.Todecimal(chargeTotal);
+                                    data_MemberLevelFree.FreeBalanceType = ObjectExt.Toint(freeBalanceType);
+                                    data_MemberLevelFree.FreeCount = ObjectExt.Toint(freeCount);
+                                    data_MemberLevelFree.MinSpaceDays = ObjectExt.Toint(minSpaceDays);
+                                    data_MemberLevelFree.OnceFreeCount = ObjectExt.Toint(onceFreeCount);
+                                    data_MemberLevelFree.ExpireDays = ObjectExt.Toint(expireDays);
+                                    data_MemberLevelFreeService.AddModel(data_MemberLevelFree);
+                                }
+                                else
+                                {
+                                    errMsg = "提交数据包含空对象";
+                                    return false;
+                                }
+                            }
+
+                            if (!data_MemberLevelFreeService.SaveChanges())
+                            {
+                                errMsg = "保存会员级别预赠币规则信息失败";
+                                return false;
+                            }
+                        }
+
+                        ts.Complete();
+                    }
+                    catch (Exception ex)
+                    {
+                        errMsg = ex.Message;
                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                     }
                 }
-                else
-                {
-                    //修改
-                    if (!data_MemberLevelService.Update(data_MemberLevel))
-                    {
-                        errMsg = "修改会员级别失败";
-                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                    }
-                }
-
+                
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
             }
             catch (Exception e)
@@ -800,9 +913,6 @@ namespace XCCloudService.Api.XCCloud
         {
             try
             {
-                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
-
                 string errMsg = string.Empty;
                 string memberLevelID = dicParas.ContainsKey("memberLevelID") ? dicParas["memberLevelID"].ToString() : string.Empty;
 
@@ -823,6 +933,63 @@ namespace XCCloudService.Api.XCCloud
                 var data_MemberLevelModel = data_MemberLevelService.GetModels(p => p.MemberLevelID == iMemberLevelID).FirstOrDefault();
 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, data_MemberLevelModel);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object GetMemberLevelFoodList(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                string errMsg = string.Empty;
+                string memberLevelID = dicParas.ContainsKey("memberLevelID") ? dicParas["memberLevelID"].ToString() : string.Empty;
+
+                if (string.IsNullOrEmpty(memberLevelID))
+                {
+                    errMsg = "会员级别ID不能为空";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
+                int iMemberLevelID = Convert.ToInt32(memberLevelID);
+
+                IData_MemberLevel_FoodService data_MemberLevel_FoodService = BLLContainer.Resolve<IData_MemberLevel_FoodService>(resolveNew:true);
+                IData_FoodInfoService data_FoodInfoService = BLLContainer.Resolve<IData_FoodInfoService>(resolveNew: true);                
+                var linq = from a in data_MemberLevel_FoodService.GetModels(p => p.MemberLevelID == iMemberLevelID)
+                           join b in data_FoodInfoService.GetModels(p => p.FoodState == 1 && p.FoodType == (int)FoodType.Member) on a.FoodID equals b.FoodID
+                           select new { 
+                               FoodID = b.FoodID,
+                               FoodName = b.FoodName
+                           };
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, linq);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object GetMemberLevelFreeList(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                string errMsg = string.Empty;
+                string memberLevelID = dicParas.ContainsKey("memberLevelID") ? dicParas["memberLevelID"].ToString() : string.Empty;
+
+                if (string.IsNullOrEmpty(memberLevelID))
+                {
+                    errMsg = "会员级别ID不能为空";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
+                int iMemberLevelID = Convert.ToInt32(memberLevelID);
+                IData_MemberLevelFreeService data_MemberLevelFreeService = BLLContainer.Resolve<IData_MemberLevelFreeService>();
+                var linq = data_MemberLevelFreeService.GetModels(p => p.MemberLevelID == iMemberLevelID);
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, linq);
             }
             catch (Exception e)
             {
@@ -882,5 +1049,81 @@ namespace XCCloudService.Api.XCCloud
             }
         }
 
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object DelMemberLevelInfo(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                string errMsg = string.Empty;
+                string memberLevelID = dicParas.ContainsKey("memberLevelID") ? dicParas["memberLevelID"].ToString() : string.Empty;
+
+                if (string.IsNullOrEmpty(memberLevelID))
+                {
+                    errMsg = "会员级别ID不能为空";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
+                int iMemberLevelID = Convert.ToInt32(memberLevelID);                
+
+                //开启EF事务
+                using (TransactionScope ts = new TransactionScope())
+                {
+                    try
+                    {
+                        IData_MemberLevelService data_MemberLevelService = BLLContainer.Resolve<IData_MemberLevelService>();
+                        if (!data_MemberLevelService.Any(a => a.MemberLevelID == iMemberLevelID))
+                        {
+                            errMsg = "该会员级别不存在";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
+                        var data_MemberLevel = data_MemberLevelService.GetModels(p => p.MemberLevelID == iMemberLevelID).FirstOrDefault();
+                        data_MemberLevel.State = 0;
+                        if (!data_MemberLevelService.Update(data_MemberLevel))
+                        {
+                            errMsg = "删除会员级别失败";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
+                        IData_MemberLevel_FoodService data_MemberLevel_FoodService = BLLContainer.Resolve<IData_MemberLevel_FoodService>();
+                        foreach (var model in data_MemberLevel_FoodService.GetModels(p => p.MemberLevelID == iMemberLevelID))
+                        {
+                            data_MemberLevel_FoodService.DeleteModel(model);
+                        }
+
+                        if (!data_MemberLevel_FoodService.SaveChanges())
+                        {
+                            errMsg = "删除会员级别开卡套餐信息失败";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
+                        IData_MemberLevelFreeService data_MemberLevelFreeService = BLLContainer.Resolve<IData_MemberLevelFreeService>();
+                        foreach (var model in data_MemberLevelFreeService.GetModels(p => p.MemberLevelID == iMemberLevelID))
+                        {
+                            data_MemberLevelFreeService.DeleteModel(model);
+                        }
+
+                        if (!data_MemberLevelFreeService.SaveChanges())
+                        {
+                            errMsg = "删除会员级别预赠币规则信息失败";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
+                        ts.Complete();
+                    }
+                    catch (Exception ex)
+                    {
+                        errMsg = ex.Message;
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
+                }
+
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
     }
 }

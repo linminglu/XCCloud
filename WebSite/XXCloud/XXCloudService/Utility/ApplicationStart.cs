@@ -36,9 +36,7 @@ namespace XCCloudService.Utility
                 MibleTokenInit();
                 MemberTokenInit();
                 RS232MibleTokenInit();
-                XCCloudStoreInit();
                 XCCloudUserInit();
-                XCCloudMerchInit();
                 XCGameManaDeviceInit();
                 XCCloudManaUserInit();
                 FilterMobileInit();
@@ -162,33 +160,7 @@ namespace XCCloudService.Utility
             {
                 LogHelper.SaveLog(TxtLogType.SystemInit, "MemberTokenInit Fail..." + Utils.GetException(ex));
             }
-        }
-
-        public static void XCCloudStoreInit()
-        {
-            try
-            {
-                XCCloudService.Business.XCCloud.XCCloudStoreBusiness.Init();
-                LogHelper.SaveLog(TxtLogType.SystemInit, "XCCloudStore Sucess");
-            }
-            catch (Exception ex)
-            {
-                LogHelper.SaveLog(TxtLogType.SystemInit, "XCCloudStore Fail..." + Utils.GetException(ex));
-            }
-        }
-
-        public static void XCCloudMerchInit()
-        {
-            try
-            {
-                XCCloudService.Business.XCCloud.MerchBusiness.Init();
-                LogHelper.SaveLog(TxtLogType.SystemInit, "XCCloudMerch Sucess");
-            }
-            catch (Exception ex)
-            {
-                LogHelper.SaveLog(TxtLogType.SystemInit, "XCCloudMerch Fail..." + Utils.GetException(ex));
-            }
-        }
+        }       
 
         public static void XCCloudUserInit()
         {

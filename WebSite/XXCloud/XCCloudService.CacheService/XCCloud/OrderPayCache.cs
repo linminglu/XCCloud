@@ -35,11 +35,11 @@ namespace XCCloudService.CacheService.XCCloud
         /// <param name="key"></param>
         /// <param name="list"></param>
         /// <param name="expires"></param>
-        public static void Add(string key, OrderPayCacheModel model, int expires)
+        public static void Add<T>(string key, T model, int expires)
         {
-            if (IsExist(CacheType.OrderPayCache + key))
+            if (IsExist(key))
             {
-                CacheHelper.Remove(CacheType.OrderPayCache + key);
+                Remove(key);
             }
             CacheHelper.Insert(CacheType.OrderPayCache + key, model, expires);
         }

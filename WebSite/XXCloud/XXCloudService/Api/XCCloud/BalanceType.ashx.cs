@@ -197,16 +197,16 @@ namespace XXCloudService.Api.XCCloud
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 
-                        var dict_BalanceType = new Dict_BalanceType();
+                        var dict_BalanceType = dict_BalanceTypeService.GetModels(p=>p.ID == iId).FirstOrDefault() ?? new Dict_BalanceType();
                         dict_BalanceType.ID = iId;
                         dict_BalanceType.TypeID = Convert.ToInt32(typeId);
                         dict_BalanceType.TypeName = typeName;
                         dict_BalanceType.Note = note;
-                        dict_BalanceType.MerchID = merchId;
-
+                        dict_BalanceType.MerchID = merchId;                        
                         if (!dict_BalanceTypeService.Any(a => a.ID == iId))
                         {
                             //新增
+                            dict_BalanceType.State = 1;
                             if (!dict_BalanceTypeService.Add(dict_BalanceType))
                             {
                                 errMsg = "添加余额类别失败";
@@ -299,22 +299,22 @@ namespace XXCloudService.Api.XCCloud
                         }
 
                         var dict_BalanceType = dict_BalanceTypeService.GetModels(p => p.ID == iId).FirstOrDefault();
-                        if (!dict_BalanceTypeService.Delete(dict_BalanceType))
+                        dict_BalanceType.State = 0;
+                        if (!dict_BalanceTypeService.Update(dict_BalanceType))
                         {
                             errMsg = "删除余额类别失败";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 
-                        //先删除已有数据，后添加
                         IData_BalanceType_StoreListService data_BalanceType_StoreListService = BLLContainer.Resolve<IData_BalanceType_StoreListService>();
                         foreach (var model in data_BalanceType_StoreListService.GetModels(p => p.BalanceIndex == iId))
                         {
                             data_BalanceType_StoreListService.DeleteModel(model);
                         }
-                                               
+                        
                         if (!data_BalanceType_StoreListService.SaveChanges())
                         {
-                            errMsg = "更新余额类别适用门店信息失败";
+                            errMsg = "删除余额类别适用门店信息失败";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 
