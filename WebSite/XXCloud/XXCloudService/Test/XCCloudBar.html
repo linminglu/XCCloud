@@ -126,7 +126,7 @@
 
         function do_GetFoodDetail() {
             var txtUserToken = $("#txtUserToken").val();
-            var parasObj = {"sysId": "0", "versionNo": "0.0.0.1","userToken": $("#txtUserToken").val(), "foodId": "137"};
+            var parasObj = { "sysId": "0", "versionNo": "0.0.0.1", "userToken": $("#txtUserToken").val(), "foodId": $("#txt_do_GetFoodDetail").val() };
             var url = "/XCCloud/Foods?action=getFoodDetail";
             var parasJson = JSON.stringify(parasObj);
             common(url, parasJson);
@@ -323,7 +323,7 @@
     </div>
 
     <div title="do_GetFoodDetail" style="font-size:14px;color:#F00;border:1px solid #ccc;">
-        <input id="Buttonorder_12222" type="button" value="do_GetFoodDetail(获取套餐明细)" onclick="do_GetFoodDetail()" />
+        套餐类型：<input id="txt_do_GetFoodDetail" type="text" value="1" /><input id="Buttonorder_122221" type="button" value="do_GetFoodDetail(获取套餐明细)" onclick="do_GetFoodDetail()" />
     </div>
 
     <div title="do_GetOrder" style="font-size:14px;color:#F00;border:1px solid #ccc;">

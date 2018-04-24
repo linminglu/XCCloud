@@ -7,9 +7,9 @@ using System.Linq;
 using System.Transactions;
 using System.Web;
 using XCCloudService.Base;
-using XCCloudService.BLL.Container;
 using XCCloudService.BLL.IBLL.XCCloud;
 using XCCloudService.BLL.XCCloud;
+using XCCloudService.Business.XCCloud;
 using XCCloudService.Common;
 using XCCloudService.Common.Enum;
 using XCCloudService.Common.Extensions;
@@ -26,10 +26,10 @@ namespace XXCloudService.Api.XCCloud
     /// </summary>
     public class Project : ApiBase
     {
-        IData_ProjectInfoService data_ProjectInfoService = BLLContainer.Resolve<IData_ProjectInfoService>(resolveNew: true);
-        IDict_BalanceTypeService dict_BalanceTypeService = BLLContainer.Resolve<IDict_BalanceTypeService>(resolveNew: true);
-        IData_Project_StoreListService data_Project_StoreListService = BLLContainer.Resolve<IData_Project_StoreListService>(resolveNew: true);
-        IData_Project_DeviceService data_Project_DeviceService = BLLContainer.Resolve<IData_Project_DeviceService>(resolveNew: true);
+        //IData_ProjectInfoService data_ProjectInfoService = BLLContainer.Resolve<IData_ProjectInfoService>(resolveNew: true);
+        //IDict_BalanceTypeService dict_BalanceTypeService = BLLContainer.Resolve<IDict_BalanceTypeService>(resolveNew: true);
+        //IData_Project_StoreListService data_Project_StoreListService = BLLContainer.Resolve<IData_Project_StoreListService>(resolveNew: true);
+        //IData_Project_DeviceService data_Project_DeviceService = BLLContainer.Resolve<IData_Project_DeviceService>(resolveNew: true);
 
         /// <summary>
         /// 获取适用门店的主体数据
@@ -38,8 +38,8 @@ namespace XXCloudService.Api.XCCloud
         /// <returns></returns>
         private IQueryable getSutiableList(string storeId)
         {
-            return from a in data_Project_StoreListService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase))
-                    join b in data_ProjectInfoService.GetModels() on a.ProjectID equals b.ID
+            return from a in Data_Project_StoreListBusiness.NewInstance.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase))
+                    join b in Data_ProjectInfoBusiness.NewInstance.GetModels() on a.ProjectID equals b.ID
                     select b;     
         }
 
@@ -51,14 +51,14 @@ namespace XXCloudService.Api.XCCloud
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
                 string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
-                var query = data_ProjectInfoService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase));
+                var query = Data_ProjectInfoBusiness.NewInstance.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase));
                 if (userTokenKeyModel.LogType == (int)RoleType.StoreUser)
                 {
                     query = (IQueryable<Data_ProjectInfo>)getSutiableList(storeId);
                 }
                 
                 var linq = from a in query
-                           join b in dict_BalanceTypeService.GetModels(p=>p.State == 1) on a.BalanceType equals b.ID into b1
+                           join b in Dict_BalanceTypeBusiness.NewInstance.GetModels(p=>p.State == 1) on a.BalanceType equals b.ID into b1
                            from b in b1.DefaultIfEmpty()
                            select new
                            {
@@ -91,8 +91,7 @@ namespace XXCloudService.Api.XCCloud
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
 
-                IData_ProjectInfoService data_ProjectInfoService = BLLContainer.Resolve<IData_ProjectInfoService>();
-                var linq = from a in data_ProjectInfoService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase))
+                var linq = from a in Data_ProjectInfoBusiness.Instance.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase))
                            select new
                            {
                                ID = a.ID,
@@ -121,7 +120,7 @@ namespace XXCloudService.Api.XCCloud
                 }
 
                 int iId = Convert.ToInt32(id);
-                var data_ProjectInfo = data_ProjectInfoService.GetModels(p => p.ID == iId).FirstOrDefault();
+                var data_ProjectInfo = Data_ProjectInfoBusiness.Instance.GetModels(p => p.ID == iId).FirstOrDefault();
                 if (data_ProjectInfo == null)
                 {
                     errMsg = "该项目不存在";
@@ -216,7 +215,7 @@ namespace XXCloudService.Api.XCCloud
 
                 #endregion
 
-                IData_ProjectInfoService data_ProjectInfoService = BLLContainer.Resolve<IData_ProjectInfoService>();
+                IData_ProjectInfoService data_ProjectInfoService = Data_ProjectInfoBusiness.Instance;
                 if (data_ProjectInfoService.Any(a => a.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) &&
                     a.ProjectName.Equals(projectName, StringComparison.OrdinalIgnoreCase) && a.ID != iId))
                 {
@@ -286,6 +285,7 @@ namespace XXCloudService.Api.XCCloud
                     try
                     {
                         List<string> projectIdList = projectIds.Split('|').ToList();
+                        var data_ProjectInfoService = Data_ProjectInfoBusiness.Instance;
                         foreach (var projectId in projectIdList)
                         {
                             if (string.IsNullOrEmpty(projectId))
@@ -294,7 +294,7 @@ namespace XXCloudService.Api.XCCloud
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                             }
 
-                            int iProjectId = Convert.ToInt32(projectId);
+                            int iProjectId = Convert.ToInt32(projectId);                            
                             var data_ProjectInfoModel = data_ProjectInfoService.GetModels(p => p.ID == iProjectId).FirstOrDefault();
                             if (data_ProjectInfoModel == null)
                             {
@@ -304,11 +304,13 @@ namespace XXCloudService.Api.XCCloud
 
                             data_ProjectInfoService.DeleteModel(data_ProjectInfoModel);
 
+                            var data_Project_StoreListService = Data_Project_StoreListBusiness.Instance;
                             foreach (var model in data_Project_StoreListService.GetModels(p=>p.ProjectID == iProjectId))
                             {
                                 data_Project_StoreListService.DeleteModel(model);
                             }
 
+                            var data_Project_DeviceService = Data_Project_DeviceBusiness.Instance;
                             foreach (var model in data_Project_DeviceService.GetModels(p => p.ProjectID == iProjectId))
                             {
                                 data_Project_DeviceService.DeleteModel(model);
@@ -353,7 +355,7 @@ namespace XXCloudService.Api.XCCloud
                 }
 
                 int iProjectId = Convert.ToInt32(projectId);
-                var storeIDs = data_Project_StoreListService.GetModels(p => p.ProjectID == iProjectId).Select(o => new { StoreID = o.StoreID });
+                var storeIDs = Data_Project_StoreListBusiness.Instance.GetModels(p => p.ProjectID == iProjectId).Select(o => new { StoreID = o.StoreID });
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, storeIDs);
             }
             catch (Exception e)
@@ -383,6 +385,7 @@ namespace XXCloudService.Api.XCCloud
                     try
                     {
                         int iProjectId = Convert.ToInt32(projectId);
+                        var data_Project_StoreListService = Data_Project_StoreListBusiness.Instance;
                         foreach (var model in data_Project_StoreListService.GetModels(p => p.ProjectID == iProjectId))
                         {
                             data_Project_StoreListService.DeleteModel(model);

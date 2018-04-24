@@ -28,9 +28,30 @@
           <div class="layui-collapse" lay-accordion>
               <div class="layui-colla-item">
                   <h2 class="layui-colla-title">封面</h2>
-                  <div class="layui-colla-content layui-show">
-                      tu片
+                  <div class="layui-colla-content">
+                      <div class="layui-form-item">
+                          <div class="layui-inline">
+                              <label  class="layui-form-label">会员级别名称</label>
+                              <div class="layui-input-inline">
+                                  <input type="text" class="layui-input" id="MemberLevelName">
+                              </div>
+                          </div>
+                          <div class="layui-inline">
+                              <label  class="layui-form-label" style="padding: 8px 0!important;">会员级别状态</label>
+                              <div class="layui-input-inline">
+                                  <input type="checkbox" name="zzz" lay-skin="switch" lay-text="启用|禁用" id="State" lay-filter="State">
+                              </div>
+                          </div>
+                      </div>
+
+                      <div id="test2">
+                          <div id="imgBtn"><i class="layui-icon" style="font-size: 60px;color: #9F9F9F">&#xe654;</i></div>
+                          <div class="layui-upload-list" id="demo2" style="margin: 0;">
+                              <input id="nameImage" name="list[0]" maxlength="255" class="input-xlarge required" type="hidden">
+                          </div>
+                      </div>
                   </div>
+
               </div>
               <div class="layui-colla-item">
                   <h2 class="layui-colla-title">开卡</h2>
@@ -39,46 +60,46 @@
                          <div class="layui-inline">
                              <label  class="layui-form-label ">开户费</label>
                              <div class="layui-input-inline lfl1">
-                                 <input type="text" class="layui-input">
+                                 <input type="text" class="layui-input" id="openFee">
                              </div>
                              <div class="layui-form-mid" style="width: 68.45px">(元)</div>
                          </div>
                          <div class="layui-inline">
                              <label  class="layui-form-label ">押金</label>
                              <div class="layui-input-inline lfl1">
-                                 <input type="text" class="layui-input">
+                                 <input type="text" class="layui-input" id="deposit">
                              </div>
                              <div class="layui-form-mid">(元)</div>
                          </div>
                          <div class="layui-inline">
                              <label  class="layui-form-label" style="padding: 8px 0!important;">积分清零周期</label>
                              <div class="layui-input-inline lfl1">
-                                 <input type="text" class="layui-input">
+                                 <input type="text" class="layui-input" id="clearPointDays">
                              </div>
                              <div class="layui-form-mid">(天)</div>
                          </div>
                          <div class="layui-inline">
                              <label  class="layui-form-label ">兑换折扣率</label>
                              <div class="layui-input-inline lfl1">
-                                 <input type="text" class="layui-input">
+                                 <input type="text" class="layui-input" id="priceOff">
                              </div>
                              <div class="layui-form-mid">(0.00-1.00)</div>
                          </div>
                          <div class="layui-inline">
                              <label  class="layui-form-label ">有效天数</label>
                              <div class="layui-input-inline lfl1">
-                                 <input type="text" class="layui-input">
+                                 <input type="text" class="layui-input" id="validday">
                              </div>
                              <div class="layui-form-mid">(天)</div>
                          </div>
                          <div class="layui-inline">
                              <label  class="layui-form-label ">兑币范围</label>
                              <div class="layui-input-inline lfl1">
-                                 <input type="text" class="layui-input">
+                                 <input type="text" class="layui-input" id="minCoin">
                              </div>
                              <div class="layui-form-mid">至</div>
                              <div class="layui-input-inline lfl1">
-                                 <input type="text" class="layui-input">
+                                 <input type="text" class="layui-input" id="maxCoin">
                              </div>
                          </div>
                          <!--<div class="layui-inline">-->
@@ -90,38 +111,38 @@
                          <div class="layui-inline">
                              <label  class="layui-form-label" style="padding: 8px 0!important;">开卡需要授权</label>
                              <div class="layui-input-inline">
-                                 <input type="checkbox" name="zzz" lay-skin="switch" lay-text="启用|禁用">
+                                 <input type="checkbox" name="zzz" lay-skin="switch" lay-text="启用|禁用" id="needAuthor" lay-filter="needAuthor">
                              </div>
                          </div>
                          <div class="layui-inline">
                              <label  class="layui-form-label" style="padding: 8px 0!important;">身份证读卡</label>
                              <div class="layui-input-inline">
-                                 <input type="checkbox" name="zzz" lay-skin="switch" lay-text="启用|禁用">
+                                 <input type="checkbox" name="zzz" lay-skin="switch" lay-text="启用|禁用" id="useReadID" lay-filter="useReadID">
                              </div>
                          </div>
                          <br>
                          <div class="layui-inline">
                              <label  class="layui-form-label">手机号必填</label>
                              <div class="layui-input-inline">
-                                 <input type="checkbox" name="zzz" lay-skin="switch" lay-text="启用|禁用">
+                                 <input type="checkbox" name="zzz" lay-skin="switch" lay-text="启用|禁用" id="mustPhone" lay-filter="mustPhone">
                              </div>
                          </div>
                          <div class="layui-inline">
                              <label  class="layui-form-label">身份证必填</label>
                              <div class="layui-input-inline">
-                                 <input type="checkbox" name="zzz" lay-skin="switch" lay-text="启用|禁用">
+                                 <input type="checkbox" name="zzz" lay-skin="switch" lay-text="启用|禁用" id="mustIDCard" lay-filter="mustIDCard">
                              </div>
                          </div>
                          <div class="layui-inline">
                              <label  class="layui-form-label">人脸识别</label>
                              <div class="layui-input-inline">
-                                 <input type="checkbox" name="zzz" lay-skin="switch" lay-text="启用|禁用">
+                                 <input type="checkbox" name="zzz" lay-skin="switch" lay-text="启用|禁用" id="readFace" lay-filter="readFace">
                              </div>
                          </div>
                          <div class="layui-inline">
                              <label  class="layui-form-label">掌纹识别</label>
                              <div class="layui-input-inline">
-                                 <input type="checkbox" name="zzz" lay-skin="switch" lay-text="启用|禁用">
+                                 <input type="checkbox" name="zzz" lay-skin="switch" lay-text="启用|禁用" id="readPlam" lay-filter="readPlam">
                              </div>
                          </div>
                      </div>
@@ -134,27 +155,29 @@
                           <div class="layui-inline">
                               <label  class="layui-form-label">换卡费</label>
                               <div class="layui-input-inline">
-                                  <input type="text" class="layui-input">
+                                  <input type="text" class="layui-input" id="changeFee">
                               </div>
                           </div>
                           <div class="layui-inline">
                               <label  class="layui-form-label">续期费</label>
-                              <div class="layui-input-inline"><input type="text" class="layui-input"></div>
+                              <div class="layui-input-inline">
+                                  <input type="text" class="layui-input" id="continueFee">
+                              </div>
                           </div>
                           <div class="layui-inline"><label  class="layui-form-label">续期扣积分</label>
-                              <div class="layui-input-inline"><input type="text" class="layui-input"></div>
+                              <div class="layui-input-inline"><input type="text" class="layui-input" id="continueUsePoint"></div>
                           </div>
                       </div>
                       <div class="layui-form-item">
                           <div class="layui-inline">
                               <label  class="layui-form-label">升级扣积分</label>
-                              <div class="layui-input-inline"><input type="text" class="layui-input"></div>
+                              <div class="layui-input-inline"><input type="text" class="layui-input" id="updateUsePoint"></div>
                           </div>
                           <div class="layui-inline"><label class="layui-form-label" style="padding: 8px 0!important;">升级累计消费</label>
-                              <div class="layui-input-inline"><input type="text" class="layui-input"></div>
+                              <div class="layui-input-inline"><input type="text" class="layui-input" id="consumeTotal"></div>
                           </div>
                           <div class="layui-inline"><label  class="layui-form-label" style="padding: 8px 0!important;">降级非活跃天数</label>
-                              <div class="layui-input-inline"><input type="text" class="layui-input"></div>
+                              <div class="layui-input-inline"><input type="text" class="layui-input" id="nonActiveDays"></div>
                           </div>
                       </div>
                   </div>
@@ -166,37 +189,37 @@
                           <div class="layui-inline">
                               <label class="layui-form-label">送币频率</label>
                               <div class="layui-input-inline">
-                                  <select name="" id=""></select>
+                                  <select name="" id="freeRate" lay-filter="freeRate"></select>
                               </div>
                           </div>
                           <div class="layui-inline">
                               <label  class="layui-form-label">送币数</label>
                               <div class="layui-input-inline">
-                                  <input type="text" class="layui-input">
+                                  <input type="text" class="layui-input" id="freeCoin">
                               </div>
                           </div>
                           <div class="layui-inline">
                               <label  class="layui-form-label">送币方式</label>
                               <div class="layui-input-inline">
-                                  <select name="" id=""></select>
+                                  <select name="" id="freeType" lay-filter="freeType"></select>
                               </div>
                           </div>
                           <div class="layui-inline">
                               <label  class="layui-form-label">送币条件</label>
                               <div class="layui-input-inline">
-                                  <input type="text" class="layui-input">
+                                  <input type="text" class="layui-input" id="freeNeedWin" placeholder="需要输赢多少币才送">
                               </div>
                           </div>
                           <div class="layui-inline">
                               <label  class="layui-form-label" style="padding: 8px 0!important;">生日送币方式</label>
                               <div class="layui-input-inline">
-                                  <select name="" id=""></select>
+                                  <select name="" id="birthdayFree" lay-filter="birthdayFree"></select>
                               </div>
                           </div>
                           <div class="layui-inline">
-                              <label  class="layui-form-label">送币数</label>
+                              <label  class="layui-form-label">生日送币数</label>
                               <div class="layui-input-inline">
-                                  <input type="text" class="layui-input">
+                                  <input type="text" class="layui-input" id="birthdayFreeCoin">
                               </div>
                           </div>
                       </div>
@@ -209,25 +232,25 @@
                           <div class="layui-inline">
                               <label  class="layui-form-label">允许退卡</label>
                               <div class="layui-input-inline">
-                                  <input type="checkbox" name="zzz" lay-skin="switch" lay-text="启用|禁用">
+                                  <input type="checkbox" name="zzz" lay-skin="switch" lay-text="启用|禁用" id="allowExitCard" lay-filter="allowExitCard">
                               </div>
                           </div>
                           <div class="layui-inline">
                               <label  class="layui-form-label">允许退款</label>
                               <div class="layui-input-inline">
-                                  <input type="checkbox" name="zzz" lay-skin="switch" lay-text="启用|禁用">
+                                  <input type="checkbox" name="zzz" lay-skin="switch" lay-text="启用|禁用" id="allowExitMoney" lay-filter="allowExitMoney">
                               </div>
                           </div>
                           <div class="layui-inline">
                               <label  class="layui-form-label" style="padding: 8px 0!important;">投币后拔卡锁机头</label>
                               <div class="layui-input-inline">
-                                  <input type="checkbox" name="zzz" lay-skin="switch" lay-text="启用|禁用">
+                                  <input type="checkbox" name="zzz" lay-skin="switch" lay-text="启用|禁用" id="lockHead" lay-filter="lockHead">
                               </div>
                           </div>
                           <div class="layui-inline">
                               <label  class="layui-form-label">允许下分</label>
                               <div class="layui-input-inline">
-                                  <input type="checkbox" name="zzz" lay-skin="switch" lay-text="启用|禁用">
+                                  <input type="checkbox" name="zzz" lay-skin="switch" lay-text="启用|禁用" id="allowExitCoinToCar" lay-filter="allowExitCoinToCar">
                               </div>
                           </div>
                       </div>
@@ -236,31 +259,39 @@
               <div class="layui-colla-item">
                   <h2 class="layui-colla-title">预赠币</h2>
                   <div class="layui-colla-content ">
-                      <div class="layui-form-item">
+                      <div class="layui-form-item freeLast">
                           <div class="layui-inline">
-                              <label  class="layui-form-label">充值满</label>
-                              <div class="layui-input-inline" style="width: 90px">
-                                  <input type="text" class="layui-input" >
+                              <label  class="layui-form-label" style="width: 90px">充值满</label>
+                              <div class="layui-input-inline" style="width: 60px">
+                                  <input type="text" class="layui-input" id="chargeTotal">
+                              </div>
+                              <div class="layui-form-mid">元，预赠方式</div>
+                              <div class="layui-input-inline" style="width: 150px">
+                                  <select name="" id="freeBalanceType" lay-filter="freeBalanceType"></select>
                               </div>
                               <div class="layui-form-mid">元，预赠币</div>
-                              <div class="layui-input-inline" style="width: 90px">
-                                  <input type="text" class="layui-input" >
+                              <div class="layui-input-inline" style="width: 60px">
+                                  <input type="text" class="layui-input" id="freeCount">
                               </div>
                               <div class="layui-form-mid">最小间隔</div>
-                              <div class="layui-input-inline" style="width: 90px">
-                                  <input type="text" class="layui-input" >
+                              <div class="layui-input-inline" style="width: 60px" >
+                                  <input type="text" class="layui-input" id="minSpaceDays">
                               </div>
                               <div class="layui-form-mid">天,可领</div>
-                              <div class="layui-input-inline" style="width: 90px">
-                                  <input type="text" class="layui-input" >
+                              <div class="layui-input-inline" style="width: 60px">
+                                  <input type="text" class="layui-input" id="onceFreeCount">
                               </div>
                               <div class="layui-form-mid">币,有效天数</div>
-                              <div class="layui-input-inline" style="width: 90px">
-                                  <input type="text" class="layui-input" >
+                              <div class="layui-input-inline" style="width: 60px">
+                                  <input type="text" class="layui-input" id="expireDays">
                               </div>
                           </div>
 
                       </div>
+                      <div style="text-align:right;">
+                          <button type="button" class="layui-btn layui-btn-normal" id="addFreeRule">添加</button>
+                      </div>
+                      <table class="layui-hide" id="sendCoinTable" lay-filter="sendCoinTable"></table>
                   </div>
               </div>
           </div>
@@ -268,7 +299,7 @@
           <div style="text-align: right;padding-right: 80px;margin: 15px 0">
               <button type="button" class="layui-btn layui-btn-normal cancleBtn"><i class="layui-icon">&#xe603;</i>取消</button>
               <button type="reset" class="layui-btn layui-btn-danger" id="resetBtn"><i class="layui-icon">&#x1002;</i>重置</button>
-              <button type="button" class="layui-btn layui-btn-normal" id="saveMLBtn" onclick="saveML()"><i class="layui-icon">&#xe654;</i>确定</button>
+              <button type="button" class="layui-btn layui-btn-normal" id="saveMLBtn"><i class="layui-icon">&#xe654;</i>确定</button>
           </div>
       </form>
   </div>
@@ -280,6 +311,9 @@
 <script>
     let xc=xcActionSystem.prototype;
     let token=xc.getStorage('token');
+    let merchId=JSON.parse(xc.getStorage('logMsg')).merchId;
+    let mlID;
+    let arrSendCoinTable=[];
     let parm={'obj':{'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'},
         'url':'/XCCloud/Member?action=QueryMemberLevel',
         'elem':'#memberLevelTb',
@@ -299,28 +333,34 @@
     };
     xc.getInitData(parm);
 
-    var option1='',option2='',option3='',option4='',option5='0',
-        radiv1='0',radiv2='0',radiv3='0',radiv4='0';
-    layui.use(['form','layer','laydate','table','element'],()=> {
+   let needAuthor=0;let mustPhone=0;let mustIDCard=0;let useReadID=0;let readFace=0;let readPlam=0;
+
+   let BirthdayFree='';let freeType='';let freeRate='';
+
+   let freeBalanceType='';
+
+   let  AllowExitCard=0,
+        AllowExitMoney=0,
+        AllowExitCoinToCar=0,
+        LockHead=0,
+        States=0;
+    layui.use(['form','layer','table','element','upload'],()=> {
         let layer=layui.layer,
-            laydate=layui.laydate,
             table=layui.table,
             form=layui.form,
-            element=layui.element,
-            upload=layui.upload;
+            element=layui.element;
+          let  upload=layui.upload;
         //新增按钮
         $('#add').on('click',()=>{
-             option1='';option2='';option3='';option4='';option5='0';
-                radiv1='0';radiv2='0';radiv3='0';radiv4='0';
             layer.open({
                 type:1,
                 area:'1000px',
                 shade:0.6,
                 content:$('#openModel')
             });
-            xc.setSelect('生日送币方式','barthdayFree');
+            newTable(table,arrSendCoinTable)
+            xc.setSelect('生日送币方式','birthdayFree');
             xc.setSelect('送币频率','freeRate');
-            xc.setSelect('入会时必须输入','mustInput');
             xc.setSelect('送币方式','freeType');
         });
          //修改
@@ -416,7 +456,20 @@
                     }
                 })
             }
-        })
+        });
+
+        $('#addFreeRule').on('click',function () {
+            arrSendCoinTable.push({
+                'ChargeTotal':$('#chargeTotal').val(),
+                'FreeBalanceType':freeBalanceType,
+                'FreeCount':$('#freeCount').val(),
+                'MinSpaceDays':$('#minSpaceDays').val(),
+                'OnceFreeCount':$('#onceFreeCount').val(),
+                'ExpireDays':$('#expireDays').val(),
+            });
+            newTable(table,arrSendCoinTable)
+
+        });
 
         var demoListViewStore=$('#demo2'),uploadListInsStore=upload.render({
             elem: '#imgBtn'
@@ -457,69 +510,103 @@
                 layer.closeAll('loading');
             }
         });
-    }) ;
 
-    layui.use('form', function(){
-        var form = layui.form;
-        form.on('select(mustInput)', function(data){
-            option1=data.value;
+        $('#saveMLBtn').on('click',function () {
+            saveML(layer,token);
         });
+      //送币频率
         form.on('select(freeRate)', function(data){
-            option2=data.value;
-            console.log(option2);
-            console.log(data.value);
+            freeRate=data.value;
         });
+        //送币方式
         form.on('select(freeType)', function(data){
-            option3=data.value;
+            freeType=data.value;
         });
-        form.on('select(barthdayFree)', function(data){
-            option4=data.value;
+        //生日送币方式
+        form.on('select(birthdayFree)', function(data){
+            BirthdayFree=data.value;
         });
-        form.on('switch(AllowExitCard)', function(data){
-            data.elem.checked==true ? radiv1=1:radiv1=0;
+        form.on('switch(needAuthor)', function(data){
+            data.elem.checked==true ? needAuthor=1:needAuthor=0;
         });
-        form.on('switch(AllowExitMoney)', function(data){
-            data.elem.checked==true ? radiv2=1:radiv2=0;
+        form.on('switch(useReadID)', function(data){
+            data.elem.checked==true ? useReadID=1:useReadID=0;
+        });
+        form.on('switch(mustPhone)', function(data){
+            data.elem.checked==true ? mustPhone=1:mustPhone=0;
+        });
+        form.on('switch(mustIDCard)', function(data){
+            data.elem.checked==true ? mustIDCard=1:mustIDCard=0;
+        });
+        form.on('switch(readFace)', function(data){
+            data.elem.checked==true ? readFace=1:readFace=0;
+        });
+        form.on('switch(readPlam)', function(data){
+            data.elem.checked==true ? readPlam=1:readPlam=0;
+        });
+
+
+
+        form.on('switch(allowExitCard)', function(data){
+            data.elem.checked==true ? AllowExitCard=1:AllowExitCard=0;
+        });
+        form.on('switch(allowExitMoney)', function(data){
+            data.elem.checked==true ? AllowExitMoney=1:AllowExitMoney=0;
         });
         form.on('switch(LockHead)', function(data){
-            data.elem.checked==true ? radiv3=1:radiv3=0;
+            data.elem.checked==true ? LockHead=1:LockHead=0;
         });
-        form.on('switch(AllowExitCoinToCard)', function(data){
-            data.elem.checked==true ? radiv4=1:radiv4=0;
+        form.on('switch(allowExitCoinToCar)', function(data){
+            data.elem.checked==true ? AllowExitCoinToCar=1:AllowExitCoinToCar=0;
         });
+
+
         form.on('switch(State)', function(data){
-            data.elem.checked==true ? option5=1:option5=0;
+            data.elem.checked==true ? States=1:States=0;
+        });
+        form.on('select(freeBalanceType)', function(data){
+            freeBalanceType=data.value;
         });
     });
-    var saveML=()=>{
+    var saveML=(layer,token)=>{
 
-        let MemberLI=xc.getStorage('MemberLevelID')||"";
-        let MemberLN=$('#levelNames').val();
-        let Deposit=$('#deposit').val();
-        let Validday=$('#validday').val();
-        let ExitMoney=$('#ExitMoney').val();
-        let ExitCoin=$('#ExitCoin').val();
-        let ExitPrice=$('#ExitPrice').val();
-        let BirthdayFreeCoin=$('#barthdayFreeCoin').val();
-        let MustInput=option1;
-        let BirthdayFree=option4;
-        let FreeType=option3;
-        let FreeNeedWin=$('#freeNeedWin').val();
-        let FreeCoin=$('#freeCoin').val();
-        let FreeRate=option2;
-        let AllowExitCard=radiv1;
-        let AllowExitMoney=radiv2;
-        let AllowExitCoinToCar=radiv4;
-        let LockHead=radiv3;
-        let States=option5;
-        let imgUrl=$('.layui-upload-img_md').attr('src');
-        let MinExitCoin=$('#minExitCoin').val();
         let obj={
-            'MemberLevelID':MemberLI,
-            'MemberLevelName':MemberLN,'Deposit':Deposit,'Validday':Validday,'BirthdayFreeCoin':BirthdayFreeCoin,'FreeNeedWin':FreeNeedWin,
-            'ExitMoney':ExitMoney,'ExitCoin':ExitCoin,'State':States,'FreeCoin':FreeCoin,'MinExitCoin':MinExitCoin,'CardUIURL':imgUrl,
-        'ExitPrice':ExitPrice,'MustInput':MustInput,'BirthdayFree':BirthdayFree,'FreeType':FreeType,'FreeRate':FreeRate,'AllowExitCard':AllowExitCard,
-        'AllowExitMoney':AllowExitMoney,'AllowExitCoinToCard':AllowExitCoinToCar,'LockHead':LockHead,'userToken':token,
+            'MemberLevelID':mlID||'',
+            'MerchID':merchId,
+            'MemberLevelName':$('#MemberLevelName').val(),
+            'coverURL':$('.layui-upload-img_md').attr('src'),
+            'openFree':$('#openFee').val(),
+            'Deposit':$('#deposit').val(),
+            'Validday':$('#validday').val(),
+            'needAhthor':needAuthor,//开卡需要授权
+            'mustPhone':mustPhone,//手机必填
+            'mustIDCard':mustIDCard,//身份证必填
+            'useReadID':useReadID,//身份证读卡
+            'readFace':readFace,//脸部识别
+            'readPlam':readPlam,//读取掌纹
+            'changeFree':$('#changeFee').val(),
+            'continueFree':$('#continueFee').val(),
+            'continueUsePoint':$('#continueUsePoint').val(),
+            'nonActiveDays':$('#nonActiveDays').val(),
+            'updateUsePoint':$('#updateUsePoint').val(),
+            'FreeType':freeType,
+            'FreeRate':freeRate,
+            'FreeCoin':$('#freeCoin').val(),
+
+            'FreeNeedWin':$('#freeNeedWin').val(),
+            'BirthdayFree':BirthdayFree,
+            'BirthdayFreeCoin':$('#birthdayFreeCoin').val(),
+            'minCoin':$('#minCoin').val(),
+            'maxCoin':$('#maxCoin').val(),
+
+            'AllowExitCard':AllowExitCard,
+            'AllowExitMoney':AllowExitMoney,
+            'AllowExitCoinToCard':AllowExitCoinToCar,
+            'LockHead':LockHead,
+            'State':States,
+            'memberLevelFoods':[],
+            'memberLevelFrees':arrSendCoinTable,
+            'userToken':token,
             'signkey':'1f626576304bf5d95b72ece2222e42c3'};
         let url='/XCCloud/Member?action=SaveMemberLevel';
         let  parseJson=JSON.stringify(obj);
@@ -532,25 +619,41 @@
             success:(data)=>{
                 data=JSON.parse(data);
                 if(data.result_code=="1"){
-                    layui.use('layer', function(){
-                        var layer = layui.layer;
-                        layer.msg('操作成功！');
-                        layer.closeAll();
-                        $('#mlBtn').trigger('click');
-                    });
+                    layer.closeAll();
+                    layer.msg('操作成功！');
+                    xc.getInitData(parm);
                 }else {
-                    layui.use('layer', function(){
-                        var layer = layui.layer;
                         layer.msg(data.result_msg);
-                    });
                 }
             }
         })
     };
-
+    function newTable(table,arr) {
+        table.render({
+            elem: '#sendCoinTable'
+            , height:'250px'
+            , size:"sm"
+            , data: arr
+            , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+            , cols: [[
+                ,{field:'ChargeTotal', title:'充值金额', align: 'center'}
+                ,{field:'FreeBalanceType',title: '赠送余额类别', align: 'center'} //width 支持：数字、百分比和不填写。
+                ,{field:'FreeCount', title: '赠送数量', align: 'center'}
+                ,{field:'MinSpaceDays', title: '最小间隔天数', align: 'center'}
+                ,{field:'OnceFreeCount', title: '单次领币数量', align: 'center'}
+                ,{field:'ExpireDays', title: '有效天数', align: 'center'}
+                ,{fixed: 'right',title:'操作', width:140, align:'center', toolbar: '#barDemo2'}]]
+            , page: {page: true, limits: [5,10, 15, 20]}
+            , limit: 5
+        });
+    }
 </script>
 
 <script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-sm layui-btn-danger" lay-event="edit">修改</a>
+    <a class="layui-btn layui-btn-sm layui-btn-danger" lay-event="del">删除</a>
+</script>
+<script type="text/html" id="barDemo2">
     <a class="layui-btn layui-btn-sm layui-btn-danger" lay-event="edit">修改</a>
     <a class="layui-btn layui-btn-sm layui-btn-danger" lay-event="del">删除</a>
 </script>

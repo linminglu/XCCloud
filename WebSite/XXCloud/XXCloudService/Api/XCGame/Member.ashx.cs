@@ -386,7 +386,7 @@ namespace XCCloudService.Api.XCGame
                 string PageIndex = dicParas.ContainsKey("pageIndex") ? dicParas["pageIndex"].ToString() : string.Empty;
                 if (PageIndex == "")
                 {
-                    PageIndex = "1";
+                    PageIndex = "0";
                 }
                 XCGameMemberTokenModel memberTokenKeyModel = (XCGameMemberTokenModel)(dicParas[Constant.XCGameMemberTokenModel]);
                 //IMemberTokenService memberTokenservice = BLLContainer.Resolve<IMemberTokenService>();

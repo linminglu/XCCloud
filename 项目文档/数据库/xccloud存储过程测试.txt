@@ -89,3 +89,26 @@ print @errMsg
 
 获取会员等级
 exec GetMemberLevel '100025420106001'
+
+-------------------------------------------------------------------------------------------------------
+declare @AuthorFlag int
+declare @ErrMsg varchar(200)
+declare @CouponListType [CouponListType]
+insert @CouponListType(CouponCode) values('5ca8ac12733a4b7791168cc10bd89624')
+insert @CouponListType(CouponCode) values('4fb06d7d70b1409fa9bc56224145b65d')
+declare @Str varchar(500)
+set @Str = dbo.GetTableFieldMergeString(@CouponListType)
+print '@Str' + @Str
+exec CheckCoupon @CouponListType,'100025420106001',100,@AuthorFlag output,@ErrMsg output
+
+
+declare @CouponListType [CouponListType]
+insert @CouponListType(CouponCode) values('5ca8ac12733a4b7791168cc10bd89624')
+insert @CouponListType(CouponCode) values('4fb06d7d70b1409fa9bc56224145b65d')
+declare @Str varchar(500)
+set @Str = dbo.GetTableFieldMergeString(@CouponListType)
+
+declare @CouponStateListType [CouponStateListType]
+insert @CouponStateListType(CouponCode,state) values('5ca8ac12733a4b7791168cc10bd89624',1)
+insert @CouponStateListType(CouponCode,state) values('4fb06d7d70b1409fa9bc56224145b65d',2)
+print dbo.[GetInvalidCouponString](@CouponStateListType)

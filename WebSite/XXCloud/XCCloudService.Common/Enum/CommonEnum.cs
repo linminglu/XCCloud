@@ -463,6 +463,13 @@ namespace XCCloudService.Common.Enum
         //0登录1注销2换班3加记录4改记录5删记录6数据备份7查询8清记录9短信查账10短信清账11网站登录12网站注销13网站查账14网站改密码15网站清账16网站兑币17打印18打开
     }
 
+    public enum AlertStatus
+    {
+        Active = 0,  //活动
+        Confirm = 1, //确认
+        Resolved = 2 //解决
+    }
+
     public enum DigitStatus
     {
         Unused = 0,//未使用

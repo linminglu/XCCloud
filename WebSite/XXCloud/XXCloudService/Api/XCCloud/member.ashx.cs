@@ -574,8 +574,8 @@ namespace XCCloudService.Api.XCCloud
                 string errMsg = string.Empty;
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
-                IData_MemberLevelService data_MemberLevelService = BLLContainer.Resolve<IData_MemberLevelService>();
-                Dictionary<int, string> memberLevel = data_MemberLevelService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.State == 1).Select(o => new
+
+                Dictionary<int, string> memberLevel = Data_MemberLevelBusiness.Instance.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.State == 1).Select(o => new
                 {
                     MemberLevelID = o.MemberLevelID,
                     MemberLevelName = o.MemberLevelName
@@ -597,14 +597,10 @@ namespace XCCloudService.Api.XCCloud
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
 
-                IBase_StoreInfoService base_StoreInfoService = BLLContainer.Resolve<IBase_StoreInfoService>(resolveNew: true);
-                IBase_MemberInfoService base_MemberInfoService = BLLContainer.Resolve<IBase_MemberInfoService>(resolveNew: true);
-                IData_Member_CardService data_Member_CardService = BLLContainer.Resolve<IData_Member_CardService>(resolveNew: true);
-                IData_Member_Card_StoreService data_Member_Card_StoreService = BLLContainer.Resolve<IData_Member_Card_StoreService>(resolveNew: true);
-                var linq = from a in base_StoreInfoService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && (p.StoreState == (int)StoreState.Open || p.StoreState == (int)StoreState.Valid))
-                           join b in data_Member_Card_StoreService.GetModels() on a.StoreID equals b.StoreID
-                           join c in data_Member_CardService.GetModels() on b.CardID equals c.ID
-                           join d in base_MemberInfoService.GetModels() on c.MemberID equals d.ID
+                var linq = from a in Base_StoreInfoBusiness.NewInstance.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && (p.StoreState == (int)StoreState.Open || p.StoreState == (int)StoreState.Valid))
+                           join b in Data_Member_Card_StoreBusiness.NewInstance.GetModels() on a.StoreID equals b.StoreID
+                           join c in Data_Member_CardBusiness.NewInstance.GetModels() on b.CardID equals c.ID
+                           join d in Base_MemberInfoBusiness.NewInstance.GetModels() on c.MemberID equals d.ID
                            select new
                            {
                                MemberID = d.ID,
@@ -631,7 +627,7 @@ namespace XCCloudService.Api.XCCloud
                 string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
 
 
-                IData_MemberLevelService data_MemberLevelService = BLLContainer.Resolve<IData_MemberLevelService>();
+                IData_MemberLevelService data_MemberLevelService = Data_MemberLevelBusiness.Instance;
                 var query = data_MemberLevelService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.State == 1);
                 if (!string.IsNullOrEmpty(memberLevelID))
                 {
@@ -644,7 +640,7 @@ namespace XCCloudService.Api.XCCloud
                     query = query.Where(w => w.MemberLevelName.Contains(memberLevelName));
                 }
 
-                IDict_SystemService dict_SystemService = BLLContainer.Resolve<IDict_SystemService>();
+                IDict_SystemService dict_SystemService = Dict_SystemBusiness.Instance;
                 int BirthdayFreeId = dict_SystemService.GetModels(p => p.DictKey.Equals("生日送币方式") && p.PID == 0).FirstOrDefault().ID;
                 int FreeTypeId = dict_SystemService.GetModels(p => p.DictKey.Equals("送币方式") && p.PID == 0).FirstOrDefault().ID;
                 var linq = query.ToList().Select(o => new
@@ -738,7 +734,7 @@ namespace XCCloudService.Api.XCCloud
                 {
                     try
                     {
-                        IData_MemberLevelService data_MemberLevelService = BLLContainer.Resolve<IData_MemberLevelService>();
+                        IData_MemberLevelService data_MemberLevelService = Data_MemberLevelBusiness.Instance;
                         if (data_MemberLevelService.Any(a => a.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) &&
                             a.MemberLevelName.Equals(memberLevelName, StringComparison.OrdinalIgnoreCase) && a.MemberLevelID != iMemberLevelID && a.State == 1))
                         {
@@ -807,7 +803,7 @@ namespace XCCloudService.Api.XCCloud
                         if (memberLevelFoods != null && memberLevelFoods.Count() >= 0)
                         {
                             //先删除，后添加
-                            IData_MemberLevel_FoodService data_MemberLevel_FoodService = BLLContainer.Resolve<IData_MemberLevel_FoodService>();
+                            IData_MemberLevel_FoodService data_MemberLevel_FoodService = Data_MemberLevel_FoodBusiness.Instance;
                             foreach (var model in data_MemberLevel_FoodService.GetModels(p => p.MemberLevelID == iMemberLevelID))
                             {
                                 data_MemberLevel_FoodService.DeleteModel(model);
@@ -822,7 +818,7 @@ namespace XCCloudService.Api.XCCloud
                                     if (string.IsNullOrEmpty(foodId))
                                     {
                                         errMsg = "套餐ID不能为空";
-                                        return false;
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                                     }
 
                                     var data_MemberLevel_Food = new Data_MemberLevel_Food();
@@ -833,14 +829,14 @@ namespace XCCloudService.Api.XCCloud
                                 else
                                 {
                                     errMsg = "提交数据包含空对象";
-                                    return false;
+                                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                                 }
                             }
 
                             if (!data_MemberLevel_FoodService.SaveChanges())
                             {
                                 errMsg = "保存会员级别开卡套餐信息失败";
-                                return false;
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                             }
                         }
 
@@ -848,7 +844,7 @@ namespace XCCloudService.Api.XCCloud
                         if (memberLevelFrees != null && memberLevelFrees.Count() >= 0)
                         {
                             //先删除，后添加
-                            IData_MemberLevelFreeService data_MemberLevelFreeService = BLLContainer.Resolve<IData_MemberLevelFreeService>();
+                            IData_MemberLevelFreeService data_MemberLevelFreeService = Data_MemberLevelFreeBusiness.Instance;
                             foreach (var model in data_MemberLevelFreeService.GetModels(p => p.MemberLevelID == iMemberLevelID))
                             {
                                 data_MemberLevelFreeService.DeleteModel(model);
@@ -880,14 +876,14 @@ namespace XCCloudService.Api.XCCloud
                                 else
                                 {
                                     errMsg = "提交数据包含空对象";
-                                    return false;
+                                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                                 }
                             }
 
                             if (!data_MemberLevelFreeService.SaveChanges())
                             {
                                 errMsg = "保存会员级别预赠币规则信息失败";
-                                return false;
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                             }
                         }
 
@@ -923,7 +919,7 @@ namespace XCCloudService.Api.XCCloud
                 }
 
                 int iMemberLevelID = Convert.ToInt32(memberLevelID);
-                IData_MemberLevelService data_MemberLevelService = BLLContainer.Resolve<IData_MemberLevelService>();
+                IData_MemberLevelService data_MemberLevelService = Data_MemberLevelBusiness.Instance;
                 if (!data_MemberLevelService.Any(a => a.MemberLevelID == iMemberLevelID))
                 {
                     errMsg = "该会员级别不存在";
@@ -956,8 +952,8 @@ namespace XCCloudService.Api.XCCloud
 
                 int iMemberLevelID = Convert.ToInt32(memberLevelID);
 
-                IData_MemberLevel_FoodService data_MemberLevel_FoodService = BLLContainer.Resolve<IData_MemberLevel_FoodService>(resolveNew:true);
-                IData_FoodInfoService data_FoodInfoService = BLLContainer.Resolve<IData_FoodInfoService>(resolveNew: true);                
+                IData_MemberLevel_FoodService data_MemberLevel_FoodService = Data_MemberLevel_FoodBusiness.NewInstance;
+                IData_FoodInfoService data_FoodInfoService = Data_FoodInfoBusiness.NewInstance;                
                 var linq = from a in data_MemberLevel_FoodService.GetModels(p => p.MemberLevelID == iMemberLevelID)
                            join b in data_FoodInfoService.GetModels(p => p.FoodState == 1 && p.FoodType == (int)FoodType.Member) on a.FoodID equals b.FoodID
                            select new { 
@@ -987,7 +983,7 @@ namespace XCCloudService.Api.XCCloud
                 }
 
                 int iMemberLevelID = Convert.ToInt32(memberLevelID);
-                IData_MemberLevelFreeService data_MemberLevelFreeService = BLLContainer.Resolve<IData_MemberLevelFreeService>();
+                IData_MemberLevelFreeService data_MemberLevelFreeService = Data_MemberLevelFreeBusiness.Instance;
                 var linq = data_MemberLevelFreeService.GetModels(p => p.MemberLevelID == iMemberLevelID);
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, linq);
             }
@@ -1070,7 +1066,7 @@ namespace XCCloudService.Api.XCCloud
                 {
                     try
                     {
-                        IData_MemberLevelService data_MemberLevelService = BLLContainer.Resolve<IData_MemberLevelService>();
+                        IData_MemberLevelService data_MemberLevelService = Data_MemberLevelBusiness.Instance;
                         if (!data_MemberLevelService.Any(a => a.MemberLevelID == iMemberLevelID))
                         {
                             errMsg = "该会员级别不存在";
@@ -1085,7 +1081,7 @@ namespace XCCloudService.Api.XCCloud
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 
-                        IData_MemberLevel_FoodService data_MemberLevel_FoodService = BLLContainer.Resolve<IData_MemberLevel_FoodService>();
+                        IData_MemberLevel_FoodService data_MemberLevel_FoodService = Data_MemberLevel_FoodBusiness.Instance;
                         foreach (var model in data_MemberLevel_FoodService.GetModels(p => p.MemberLevelID == iMemberLevelID))
                         {
                             data_MemberLevel_FoodService.DeleteModel(model);
@@ -1097,7 +1093,7 @@ namespace XCCloudService.Api.XCCloud
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 
-                        IData_MemberLevelFreeService data_MemberLevelFreeService = BLLContainer.Resolve<IData_MemberLevelFreeService>();
+                        IData_MemberLevelFreeService data_MemberLevelFreeService = Data_MemberLevelFreeBusiness.Instance;
                         foreach (var model in data_MemberLevelFreeService.GetModels(p => p.MemberLevelID == iMemberLevelID))
                         {
                             data_MemberLevelFreeService.DeleteModel(model);

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.40629.0
+VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XCCloudService", "XXCloudService\XCCloudService.csproj", "{FEBC527E-778E-4217-8CD0-A84FD101CBCB}"
 EndProject
@@ -19,8 +19,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XCCloudService.SocketServic
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XCCloudService.SocketService.UDP", "XCCloudService.UDP\XCCloudService.SocketService.UDP.csproj", "{DBF6E89C-B2E9-4310-8F22-B18EDD95668D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XCCloudService.Business", "XCCloudService.Business\XCCloudService.Business.csproj", "{391EB2F5-B166-4439-B0BD-91F8E3377271}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XCCloudService.Pay", "XCCloudService.Pay\XCCloudService.Pay.csproj", "{CC20D914-CA39-497B-B70D-99B6E4EFB302}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XCCloudService.WeiXin", "XCCloudService.WeiXin\XCCloudService.WeiXin.csproj", "{1A85B373-5EE7-4CBD-87D3-DE183AD1036A}"
@@ -31,11 +29,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XCCloudService.BLL", "XXClo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XCCloudService.WorkFlow", "XCCloudService.WorkFlow\XCCloudService.WorkFlow.csproj", "{4907C5DA-31AB-46F1-B55A-9EEBA3248A6E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XCCloudService.Business", "XCCloudService.Business\XCCloudService.Business.csproj", "{391EB2F5-B166-4439-B0BD-91F8E3377271}"
+EndProject
 Global
-	GlobalSection(SubversionScc) = preSolution
-		Svn-Managed = True
-		Manager = AnkhSVN - Subversion Support for Visual Studio
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|x64 = Debug|x64
@@ -92,12 +88,6 @@ Global
 		{DBF6E89C-B2E9-4310-8F22-B18EDD95668D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DBF6E89C-B2E9-4310-8F22-B18EDD95668D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DBF6E89C-B2E9-4310-8F22-B18EDD95668D}.Release|x64.ActiveCfg = Release|Any CPU
-		{391EB2F5-B166-4439-B0BD-91F8E3377271}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{391EB2F5-B166-4439-B0BD-91F8E3377271}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{391EB2F5-B166-4439-B0BD-91F8E3377271}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{391EB2F5-B166-4439-B0BD-91F8E3377271}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{391EB2F5-B166-4439-B0BD-91F8E3377271}.Release|Any CPU.Build.0 = Release|Any CPU
-		{391EB2F5-B166-4439-B0BD-91F8E3377271}.Release|x64.ActiveCfg = Release|Any CPU
 		{CC20D914-CA39-497B-B70D-99B6E4EFB302}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CC20D914-CA39-497B-B70D-99B6E4EFB302}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CC20D914-CA39-497B-B70D-99B6E4EFB302}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -128,11 +118,21 @@ Global
 		{4907C5DA-31AB-46F1-B55A-9EEBA3248A6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4907C5DA-31AB-46F1-B55A-9EEBA3248A6E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4907C5DA-31AB-46F1-B55A-9EEBA3248A6E}.Release|x64.ActiveCfg = Release|Any CPU
+		{391EB2F5-B166-4439-B0BD-91F8E3377271}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{391EB2F5-B166-4439-B0BD-91F8E3377271}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{391EB2F5-B166-4439-B0BD-91F8E3377271}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{391EB2F5-B166-4439-B0BD-91F8E3377271}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{391EB2F5-B166-4439-B0BD-91F8E3377271}.Release|Any CPU.Build.0 = Release|Any CPU
+		{391EB2F5-B166-4439-B0BD-91F8E3377271}.Release|x64.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A8987684-994E-4FDB-8500-F8D795692239}
+	EndGlobalSection
+	GlobalSection(SubversionScc) = preSolution
+		Svn-Managed = True
+		Manager = AnkhSVN - Subversion Support for Visual Studio
 	EndGlobalSection
 EndGlobal

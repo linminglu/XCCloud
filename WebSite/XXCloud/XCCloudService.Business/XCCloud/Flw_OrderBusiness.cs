@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using XCCloudService.BLL.CommonBLL;
 using XCCloudService.BLL.Container;
+using XCCloudService.BLL.IBLL.XCCloud;
 using XCCloudService.CacheService;
 using XCCloudService.CacheService.XCCloud;
 using XCCloudService.Common.Enum;
@@ -131,6 +132,22 @@ namespace XCCloudService.Business.XCCloud
             orderPay.PayState = payState;
             orderPay.PayType = payType;
             OrderPayCache.Add<OrderPayCacheModel>(orderId, orderPay, CacheExpires.OrderPayCacheExpiresTime);
+        }
+
+        public static IFlw_OrderService Instance
+        {
+            get
+            {
+                return BLLContainer.Resolve<IFlw_OrderService>();
+            }
+        }
+
+        public static IFlw_OrderService NewInstance
+        {
+            get
+            {
+                return BLLContainer.Resolve<IFlw_OrderService>(resolveNew: true);
+            }
         }
     }
 }
