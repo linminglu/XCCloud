@@ -54,7 +54,7 @@ namespace XCCloudService
         protected void Application_BeginRequest(Object sender, EventArgs e)
         {
             string reWriteUrl = string.Empty;
-            if (RequestRouteBusiness.IsRewrite(Request.Url.ToString(), Request.Url.Scheme,Request.Url.Authority, out reWriteUrl))
+            if (RequestRouteBusiness.IsRewrite(Request.Url.ToString(), Request.Url.Scheme, Request.Url.Authority, Request.Url, out reWriteUrl))
             {
                 HttpContext.Current.RewritePath(reWriteUrl);
             } 

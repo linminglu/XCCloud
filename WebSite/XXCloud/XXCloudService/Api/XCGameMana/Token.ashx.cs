@@ -311,6 +311,11 @@ namespace XCCloudService.Api.XCGameMana
                     SMSCodeCache.Remove(key);
                 }
 
+                if (MobileTokenBusiness.ExistMobileAndThirdIdBinding(mobile, thirdType, userThirdId))
+                {
+                    string errMsg = "当请手机号已与系统绑定，请解绑";
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg); 
+                }
 
                 string token = MobileTokenBusiness.SetMobileToken(mobile,thirdType,userThirdId);
                 MobileTokenResponseModel tokenModel = new MobileTokenResponseModel(mobile, token);

@@ -36,6 +36,44 @@ namespace XCCloudService.Business.Common
             return token;
         }
 
+        public static bool ExistMobileAndThirdIdBinding(string mobile, string thirdType, string userThirdId)
+        {
+            if (thirdType == "0")
+            {
+                var query = from item in MobileTokenCache.MobileTokenHt.Cast<DictionaryEntry>()
+                            where ( ((MobileTokenModel)(item.Value)).Mobile.Equals(mobile) && !String.IsNullOrEmpty(((MobileTokenModel)(item.Value)).WeiXinId) )
+                            || ((MobileTokenModel)(item.Value)).WeiXinId.Equals(userThirdId)
+                            select item.Key.ToString();
+                if (query.Count() == 0)
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+            else if (thirdType == "1")
+            {
+                var query = from item in MobileTokenCache.MobileTokenHt.Cast<DictionaryEntry>()
+                            where (((MobileTokenModel)(item.Value)).Mobile.Equals(mobile) && !String.IsNullOrEmpty(((MobileTokenModel)(item.Value)).AliId))
+                            || ((MobileTokenModel)(item.Value)).AliId.Equals(userThirdId)
+                            select item.Key.ToString();
+                if (query.Count() == 0)
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         public static string SetMobileToken(string mobile, string thirdType, string userThirdId)
         {
             string token = System.Guid.NewGuid().ToString("N");

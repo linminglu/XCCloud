@@ -526,7 +526,12 @@ namespace XXCloudService.Api.XCCloud
                                       WeightValue = a.WeightValue
                                   };
 
-                var FoodSales = Data_Food_SaleBusiness.Instance.GetModels(p => p.FoodID == iFoodId);
+                var FoodSales = from a in Data_Food_SaleBusiness.NewInstance.GetModels(p => p.FoodID == iFoodId)
+                                join b in Dict_BalanceTypeBusiness.NewInstance.GetModels() on a.BalanceType equals b.ID
+                                select new {
+                                    ID = a.BalanceType,
+                                    TypeName = b.TypeName
+                                };
 
                 var result = new
                 {

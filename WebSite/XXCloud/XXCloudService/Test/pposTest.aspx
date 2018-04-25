@@ -33,8 +33,14 @@
         <br />
         <br />
         <asp:Button ID="Button4" runat="server" Text="订单查询" OnClick="Button4_Click" />
-    
-        </p>
+        <br />
+        <br />
+    <hr />
+        <br /><br />
+
+    <div>
+        <asp:Button ID="Button5" runat="server" Text="购币测试" OnClick="Button5_Click" />
+    </div>
     </form>
 </body>
 </html>

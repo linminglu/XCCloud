@@ -103,7 +103,6 @@ namespace XCCloudService.Base
                 }
                 object resObj = requestMethodInfo.Invoke(this, paras);
                 SuccessResponseOutput(context, apiMethodAttribute, resObj, signKeyToken);
-
                 
                 string return_code;
                 string return_msg;
@@ -790,7 +789,7 @@ namespace XCCloudService.Base
             if (resObj.GetType().FullName.IndexOf("[[System.Object") >= 0 || resObj.GetType().FullName.IndexOf("f__AnonymousType") >= 0)
             {
                 string jsonStr = jss.Serialize(resObj);
-                return jsonStr;
+                return Utils.DateTimeJsonConverter(jsonStr, @"\\/Date\((\d+)\)\\/", "yyyy-MM-dd HH:mm:ss");
             }           
             else
             {

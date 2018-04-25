@@ -7,7 +7,7 @@ using System.Linq;
 using System.Web;
 using XCCloudService.OrderPayCallback.Common;
 
-namespace XXCloudService.OrderPayCallback.Common
+namespace XCCloudService.OrderPayCallback.Common
 {
     /// <summary>
     ///DataAccess 的摘要说明

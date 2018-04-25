@@ -4,7 +4,7 @@ using System.Data;
 using System.Linq;
 using System.Web;
 
-namespace XXCloudService.OrderPayCallback.Common
+namespace XCCloudService.OrderPayCallback.Common
 {
     public static class PayList
     {

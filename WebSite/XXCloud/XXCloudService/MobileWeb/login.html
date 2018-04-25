@@ -15,10 +15,9 @@
             width: 100%;
         }
         .itemImg{width: 0.45rem;height: 0.8rem;}
-        .yd-input{width: 2rem;}
-        .codeDiv{width: 2.2rem;}
-        .codeImg{width: 1.4rem;margin-top: 0.1rem;}
-        .codeText{position: relative;top: -0.13rem;}
+        .codeDiv{width: 4rem;display: flex;flex-direction: row;}
+        .codeImg{width: 1.4rem;height: 0.6rem;margin-top: 0.1rem;}
+        .codeText{line-height: 0.8rem;margin-left: 0.2rem;}
     </style>
 </head>
 <body>
@@ -27,7 +26,7 @@
     <yd-cell-group>
         <yd-cell-item>
             <img class="itemImg" slot="icon" src="images/account.png">
-            <input slot="right" type="number" placeholder="请输入手机号" v-model="mobile" v-on:blur="inputPrompt">
+            <input slot="right" type="number" placeholder="请输入手机号" v-model="mobile" v-on:blur="inputPrompt" oninput="if(value.length>11)value=value.slice(0,11)">
         </yd-cell-item>
         <yd-cell-item>
             <img class="itemImg" slot="icon" src="images/note.png">

@@ -20,7 +20,6 @@ using XCCloudService.Model.XCCloud;
 using XCCloudService.Model.XCGameManager;
 using XCCloudService.OrderPayCallback.Common;
 using XCCloudService.Pay.PPosPay;
-using XXCloudService.OrderPayCallback.Common;
 
 namespace XXCloudService.PayChannel
 {

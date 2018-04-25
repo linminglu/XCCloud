@@ -11,7 +11,7 @@ namespace XCCloudService.Model.XCCloud
 }
 
 namespace XCCloudService.Model.CustomModel.XCCloud
-{    
+{
 
     [DataContract]
     public class Base_StoreInfoModel

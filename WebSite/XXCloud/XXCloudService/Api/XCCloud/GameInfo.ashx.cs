@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity;
+using System.Data.Entity.SqlServer;
 using System.Data.Entity.Validation;
 using System.IO;
 using System.Linq;
@@ -41,15 +41,17 @@ namespace XXCloudService.Api.XCCloud
                 var data_GameInfo = from a in data_GameInfoService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase))
                                     join b in dict_SystemService.GetModels(p => p.PID == GameTypeId) on a.GameType equals b.DictValue into b1
                                     from b in b1.DefaultIfEmpty()
-                                    join c in data_GameInfo_ExtService.GetModels(p=>p.ValidFlag == 1) on a.ID equals c.GameID into c1
+                                    join c in data_GameInfo_ExtService.GetModels(p => p.ValidFlag == 1) on a.ID equals c.GameID into c1
                                     from c in c1.DefaultIfEmpty()
                                     orderby a.GameID
                                     select new
                                     {
-                                        ID = a.ID,                                        
+                                        ID = a.ID,
                                         GameName = a.GameName,
                                         GameTypeStr = b != null ? b.DictKey : string.Empty,
                                         Area = c != null ? c.Area : (decimal?)null,
+                                        //ChangeTime = c != null ? SqlFunctions.DateName("yyyy", c.ChangeTime) + "-" + SqlFunctions.DateName("mm", c.ChangeTime) + "-" + SqlFunctions.DateName("dd", c.ChangeTime) + " " + 
+                                        //                        SqlFunctions.DateName("hh", c.ChangeTime) + ":" + SqlFunctions.DateName("n", c.ChangeTime) + ":" + SqlFunctions.DateName("ss", c.ChangeTime) : string.Empty,
                                         ChangeTime = c != null ? c.ChangeTime : (DateTime?)null,
                                         Price = c != null ? c.Price : (int?)null,
                                         PushReduceFromCard = a.PushReduceFromCard,
@@ -58,7 +60,7 @@ namespace XXCloudService.Api.XCCloud
                                         ReadCatStr = a.ReadCat != null ? (a.ReadCat == 1 ? "启用" : "禁用") : "",
                                         StateStr = !string.IsNullOrEmpty(a.State) ? (a.State == "1" ? "启用" : "禁用") : ""
                                     };
-                
+                                    
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, data_GameInfo);
             }
             catch (Exception e)

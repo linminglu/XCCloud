@@ -163,6 +163,7 @@
     <Compile Include="XCCloud\ScheduleBusiness.cs" />
     <Compile Include="XCCloud\Store_CheckDateBusiness.cs" />
     <Compile Include="XCCloud\UserBusiness.cs" />
+    <Compile Include="XCCloud\WebAppInitBusiness.cs" />
     <Compile Include="XCCloud\XCCloudUnionIDBusiness.cs" />
     <Compile Include="XCCloud\XC_WorkInfoBusiness.cs" />
     <Compile Include="XCGameManaLog\UDPDBBusiness.cs" />

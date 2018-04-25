@@ -4,7 +4,10 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using XCCloudService.Business.XCGameMana;
+using XCCloudService.Model.XCGameManager;
 using XCCloudService.Pay.PPosPay;
+using XCCloudService.OrderPayCallback.Common;
 
 namespace XXCloudService.Test
 {
@@ -62,6 +65,27 @@ namespace XXCloudService.Test
             PPosPayApi ppos = new PPosPayApi();
             PPosPayData.QueryOrderACK result = ppos.QueryOrderPay(pay, out error);
             Response.Write(error);
+        }
+
+        protected void Button5_Click(object sender, EventArgs e)
+        {
+            string orderId = "2018041717554610000000000005";
+            //string deviceToken = "000001";
+            string deviceToken = "000003";
+
+            OrderUnpaidModel UnpaidOrder = new OrderUnpaidModel();
+            UnpaidOrder.OrderId = orderId;
+            UnpaidOrder.DeviceToken = deviceToken;
+            UnpaidOrder.FoodId = 40;
+            UnpaidOrder.CreateTime = DateTime.Now;
+            UnpaidOrderList.AddNewItem(UnpaidOrder);
+
+            Data_Order order = MPOrderBusiness.GetOrderModel(orderId);
+
+            OrderUnpaidModel unpaiOrder = null;
+            UnpaidOrderList.GetItem(order.OrderID, out unpaiOrder);
+
+            bool flag = OrderHandle.FoodSale(order, unpaiOrder);
         }
     }
 }

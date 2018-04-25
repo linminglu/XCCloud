@@ -14,7 +14,7 @@ using XCCloudService.Model.XCGameManager;
 using XCCloudService.Pay.PPosPay;
 using XXCloudService.Utility;
 
-namespace XXCloudService.OrderPayCallback.Common
+namespace XCCloudService.OrderPayCallback.Common
 {
     public class OrderHandle
     {
@@ -61,16 +61,19 @@ namespace XXCloudService.OrderPayCallback.Common
                         pay.txnAmt = "";
                         PPosPayApi ppos = new PPosPayApi();
                         PPosPayData.RefundACK result = ppos.RefundPay(pay, out error);
-
-                        if (result == null)
+                        if (result != null && result.returnCode == "000000")
                         {
-                            LogHelper.SaveLog(TxtLogType.WeiXin, TxtLogContentType.Debug, TxtLogFileType.Day, "应用：莘拍档 订单号：" + order.OrderID + " 退款失败！！！ 原因：" + error);
-                            flag = false;
+                            LogHelper.SaveLog(TxtLogType.WeiXin, TxtLogContentType.Debug, TxtLogFileType.Day, "应用：莘拍档 订单号：" + order.OrderID + " 退款成功！");
+
+                            //退款成功后修改订单状态为已退款
+                            MPOrderBusiness.UpdateOrderForRefund(order.OrderID, order.TradeNo);
+
+                            flag = true;
                         }
                         else
                         {
-                            LogHelper.SaveLog(TxtLogType.WeiXin, TxtLogContentType.Debug, TxtLogFileType.Day, "应用：莘拍档 订单号：" + order.OrderID + " 退款成功！");
-                            flag = true;
+                            LogHelper.SaveLog(TxtLogType.WeiXin, TxtLogContentType.Debug, TxtLogFileType.Day, "应用：莘拍档 订单号：" + order.OrderID + " 退款失败！！！ 原因：" + error);
+                            flag = false;
                         }
                     }
                 }
@@ -98,6 +101,8 @@ namespace XXCloudService.OrderPayCallback.Common
             string deviceStoreId = string.Empty; //设备门店号
             string deviceId = string.Empty;
 
+            string mobile = orderCache.MemberTokenModel.Mobile;
+
             int icCardId = 0;//会员
             int balance = 0;//币余额
             int memberLevelId = 0;//会员级别
@@ -114,7 +119,7 @@ namespace XXCloudService.OrderPayCallback.Common
                     return false;
                 }
                 //验证订单的门店号和设备门店号
-                if (!order.StoreID.Equals(deviceStoreId))
+                if (!orderCache.MemberTokenModel.StoreId.Equals(deviceStoreId))
                 {
                     return false;
                 }
@@ -129,7 +134,7 @@ namespace XXCloudService.OrderPayCallback.Common
                     return false;
                 }
                 //获取会员信息
-                if (!ExtendBusiness.GetMemberInfo(deviceStoreType, order.Mobile, xcGameDBName, out balance, out icCardId, out memberLevelId, out errMsg))
+                if (!ExtendBusiness.GetMemberInfo(deviceStoreType, mobile, xcGameDBName, out balance, out icCardId, out memberLevelId, out errMsg))
                 {
                     return false;
                 }
@@ -140,7 +145,7 @@ namespace XXCloudService.OrderPayCallback.Common
                 }
 
                 //请求雷达处理出币
-                if (!IConUtiltiy.DeviceOutputCoin(deviceStoreType, DevieControlTypeEnum.出币, deviceStoreId, order.Mobile, icCardId, orderCache.OrderId, segment, mcuId, storePassword, orderCache.FoodId, (int)order.Coins, string.Empty, out errMsg))
+                if (!IConUtiltiy.DeviceOutputCoin(deviceStoreType, DevieControlTypeEnum.出币, deviceStoreId, mobile, icCardId, orderCache.OrderId, segment, mcuId, storePassword, orderCache.FoodId, (int)order.Coins, string.Empty, out errMsg))
                 {
                     return false;
                 }
@@ -155,18 +160,18 @@ namespace XXCloudService.OrderPayCallback.Common
                 StoreCacheModel storeModel = null;
                 //验证门店
                 StoreBusiness store = new StoreBusiness();
-                if (!store.IsEffectiveStore(order.StoreID, out deviceStoreType, ref storeModel, out errMsg))
+                if (!store.IsEffectiveStore(orderCache.MemberTokenModel.StoreId, out deviceStoreType, ref storeModel, out errMsg))
                 {
                     return false;
                 }
                 //获取会员信息
-                if (!ExtendBusiness.GetMemberInfo(deviceStoreType, order.Mobile, storeModel.StoreDBName, out balance, out icCardId, out memberLevelId, out errMsg))
+                if (!ExtendBusiness.GetMemberInfo(deviceStoreType, mobile, storeModel.StoreDBName, out balance, out icCardId, out memberLevelId, out errMsg))
                 {
                     return false;
                 }
                 //充值
                 //LogHelper.SaveLog(TxtLogType.Api, TxtLogContentType.Debug, TxtLogFileType.Day, "Recharge:" + errMsg);
-                if (!Recharge(deviceStoreType, order.Mobile, storeModel.StoreDBName, order.StoreID, icCardId, memberLevelId, orderCache.FoodId, orderCache.OrderId, order.Price.ToString("0.00"), (int)order.Coins, balance, paymentype, deviceId, deviceIdentityId, out foodName, out errMsg))
+                if (!Recharge(deviceStoreType, mobile, storeModel.StoreDBName, orderCache.MemberTokenModel.StoreId, icCardId, memberLevelId, orderCache.FoodId, orderCache.OrderId, order.Price.ToString("0.00"), (int)order.Coins, balance, paymentype, deviceId, deviceIdentityId, out foodName, out errMsg))
                 {
                     return false;
                 }

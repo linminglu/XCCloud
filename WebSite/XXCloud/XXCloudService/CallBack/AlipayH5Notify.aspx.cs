@@ -13,7 +13,6 @@ using XCCloudService.Common.Enum;
 using XCCloudService.Model.XCGameManager;
 using XCCloudService.OrderPayCallback.Common;
 using XCCloudService.Pay.Alipay;
-using XXCloudService.OrderPayCallback.Common;
 
 namespace XXCloudService.CallBack
 {

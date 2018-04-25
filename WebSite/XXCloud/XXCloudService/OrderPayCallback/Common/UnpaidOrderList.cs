@@ -6,10 +6,11 @@ using System.Web;
 using XCCloudService.Business.XCGameMana;
 using XCCloudService.Common;
 using XCCloudService.Common.Enum;
+using XCCloudService.Model.CustomModel.XCGame;
 using XCCloudService.Model.XCGameManager;
 using XCCloudService.Pay.PPosPay;
 
-namespace XXCloudService.OrderPayCallback.Common
+namespace XCCloudService.OrderPayCallback.Common
 {
     public class UnpaidOrderList
     {
@@ -191,6 +192,11 @@ namespace XXCloudService.OrderPayCallback.Common
         /// 套餐ID
         /// </summary>
         public int FoodId { get; set; }
+
+        /// <summary>
+        /// 会员token
+        /// </summary>
+        public XCGameMemberTokenModel MemberTokenModel { get; set; }
 
         /// <summary>
         /// 创建时间

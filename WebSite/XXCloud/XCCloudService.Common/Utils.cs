@@ -1870,6 +1870,26 @@ namespace XCCloudService.Common
         }
 
         #region"数据序列化"
+
+        /// <summary>
+        /// 格式化日期类型
+        /// </summary>
+        /// <param name="jsonStr"></param>
+        /// <param name="pattern"></param>
+        /// <param name="format"></param>
+        /// <returns></returns>
+        public static string DateTimeJsonConverter(string jsonStr, string pattern, string format)
+        {
+            jsonStr = Regex.Replace(jsonStr, pattern, match =>
+            {
+                DateTime dt = new DateTime(1970, 1, 1);
+                dt = dt.AddMilliseconds(long.Parse(match.Groups[1].Value));
+                dt = dt.ToLocalTime();
+                return dt.ToString(format);
+            });
+            return jsonStr;
+        }
+
         /// <summary>
         /// 数据协议JSON序列华
         /// </summary>
@@ -1890,7 +1910,8 @@ namespace XCCloudService.Common
                 byteArr = ms.ToArray();
             }
             string jsonStr = Encoding.UTF8.GetString(byteArr);
-            return jsonStr;
+
+            return DateTimeJsonConverter(jsonStr, @"\\/Date\((\d+)\+(\d+)\)\\/", "yyyy-MM-dd HH:mm:ss");
         }
 
         public static T DataContractJsonDeserializer<T>(string json)

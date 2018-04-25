@@ -14,13 +14,16 @@ namespace XCCloudService.Common
             return requestParam.Split('/');
         }
 
-        public static bool IsRewrite(string requestUrl, string scheme,string authority,out string rewriteUrl)
+        public static bool IsRewrite(string requestUrl, string scheme, string authority, Uri uri, out string rewriteUrl)
         {
             string hostUrl = string.Format("{0}://{1}", scheme, authority);
             rewriteUrl = string.Empty;
             bool isRewrite = false;
             string url = requestUrl;
             string noRewriteUrl = string.Format("{0}://{1}/{2}/", scheme, authority, "api");
+
+            //好酷接口路径
+            string[] haokuPath = new string[] { string.Format("{0}/{1}", hostUrl, "charge"), string.Format("{0}/{1}", hostUrl, "insertCoin"), string.Format("{0}/{1}", hostUrl, "ping") };
 
             if (url.IndexOf(noRewriteUrl) < 0)
             {
@@ -65,6 +68,13 @@ namespace XCCloudService.Common
                         isRewrite = true;
                         rewriteUrl = string.Format("/ServicePage/TransPage.aspx?action=m&deviceNo={0}",paramsArr[0]);
                     }
+                }
+                else if (haokuPath.Any(t => t.Contains(hostUrl + uri.LocalPath)))
+                {
+                    url = url.ToLower().Replace(string.Format("{0}/", hostUrl), string.Format("{0}/{1}/", hostUrl, "api/haoku"));
+                    url = url.Insert(url.LastIndexOf("?"), ".aspx");
+                    isRewrite = true;
+                    rewriteUrl = url.Replace(hostUrl, "");
                 }
             }
             return isRewrite;

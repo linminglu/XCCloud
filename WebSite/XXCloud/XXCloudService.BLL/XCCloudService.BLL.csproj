@@ -341,7 +341,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="XCGame\ScheduleService.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Extentions\" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\XXCloudService.DAL\XCCloudService.DAL.csproj">
       <Project>{0fa3e9cf-9fd2-4d99-8efa-c44acfda160d}</Project>

@@ -34,10 +34,10 @@ using Aop.Api.Request;
 using Aop.Api.Response;
 using XCCloudService.Model.CustomModel.XCGameManager;
 using XCCloudService.CacheService.XCCloud;
-using XXCloudService.OrderPayCallback.Common;
 using XCCloudService.OrderPayCallback.Common;
 using XCCloudService.BLL.IBLL.XCCloud;
 using XCCloudService.BLL.Container;
+using XCCloudService.Model.CustomModel.XCGame;
 
 namespace XXCloudService.Api
 {
@@ -182,7 +182,7 @@ namespace XXCloudService.Api
                                     LogHelper.SaveLog(TxtLogType.WeiXinPay, e.Message);
                                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "获取支付二维码失败");
                                 }
-                            } 
+                            }
                             #endregion
                         }
                         break;
@@ -207,7 +207,7 @@ namespace XXCloudService.Api
                             }
                             model.QRcode = result.payCode;
                         }
-                        break; 
+                        break;
                         #endregion
                     case SelttleType.LcswPay: //扫呗
                         #region 扫呗
@@ -229,7 +229,7 @@ namespace XXCloudService.Api
                                 return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "获取支付二维码失败");
                             }
                         }
-                        break; 
+                        break;
                         #endregion
                     case SelttleType.DinPay: //智付
                         #region 智付
@@ -250,7 +250,7 @@ namespace XXCloudService.Api
                             return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "获取支付二维码失败，" + errmsg);
                         }
                         model.QRcode = payCode;
-                        break; 
+                        break;
                         #endregion
                 }
 
@@ -298,7 +298,7 @@ namespace XXCloudService.Api
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "订单号无效");
                 }
-                
+
                 var storeId = order.StoreID;
                 IBase_StoreInfoService base_StoreInfoService = BLLContainer.Resolve<IBase_StoreInfoService>();
                 if (!base_StoreInfoService.Any(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)))
@@ -318,7 +318,7 @@ namespace XXCloudService.Api
                 SelttleType selttleType = (SelttleType)Convert.ToInt32(strPayChannel);
                 switch (selttleType)
                 {
-                    case  SelttleType.NotThird:
+                    case SelttleType.NotThird:
                         break;
                     case SelttleType.AliWxPay: //微信支付宝官方通道
                         {
@@ -393,7 +393,7 @@ namespace XXCloudService.Api
                                     LogHelper.SaveLog(TxtLogType.WeiXinPay, e.Message);
                                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "支付失败");
                                 }
-                            } 
+                            }
                             #endregion
                         }
                         break;
@@ -434,7 +434,7 @@ namespace XXCloudService.Api
                             LogHelper.SaveLog(TxtLogType.PPosPay, error);
                             return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "支付失败，" + error);
                         }
-                        break; 
+                        break;
                         #endregion
                     case SelttleType.LcswPay: //扫呗
                         #region 扫呗
@@ -466,7 +466,7 @@ namespace XXCloudService.Api
                             LogHelper.SaveLog(TxtLogType.LcswPay, "条码支付失败");
                             return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "支付失败");
                         }
-                        break; 
+                        break;
                         #endregion
                     case SelttleType.DinPay: //智付
                         #region 智付
@@ -503,7 +503,7 @@ namespace XXCloudService.Api
                             model.OrderStatus = callbackModel.OrderStatus;
                             model.PayAmount = payAmount.ToString("0.00");
                         }
-                        else 
+                        else
                         {
                             errmsg = el.XPathSelectElement("/response/result_desc").Value;
                             LogHelper.SaveLog(TxtLogType.DinPay, errmsg);
@@ -634,7 +634,7 @@ namespace XXCloudService.Api
 
                 request.SetBizModel(builder);
                 request.SetNotifyUrl(AliPayConfig.AliMiniAppNotify_url);
-                
+
                 AlipayTradeAppPayResponse response = client.SdkExecute(request);
                 //string strSign = HttpUtility.HtmlEncode(response.Body);
 
@@ -694,10 +694,23 @@ namespace XXCloudService.Api
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "套餐编号不正确");
                 }
 
-                MobileTokenModel mobileTokenModel = (MobileTokenModel)(dicParas[Constant.MobileTokenModel]);
+                XCGameMemberTokenModel memberTokenModel = (XCGameMemberTokenModel)(dicParas[Constant.XCGameMemberTokenModel]);
+                string mobile = memberTokenModel.Mobile;
+                //XCGameMemberTokenModel memberTokenModel = null;
+                //MobileTokenModel mobileTokenModel = null;
+                //if (!string.IsNullOrWhiteSpace(deviceToken))
+                //{
+                //    memberTokenModel = (XCGameMemberTokenModel)(dicParas[Constant.XCGameMemberTokenModel]);
+                //    mobile = memberTokenModel.Mobile;
+                //}
+                //else
+                //{
+                //    mobileTokenModel = (MobileTokenModel)(dicParas[Constant.MobileTokenModel]);
+                //    mobile = mobileTokenModel.Mobile;
+                //}                
 
                 //生成服务器订单号
-                orderNo = PayOrderHelper.CreateXCGameOrderNo(storeId, payPrice, 0, (int)(OrderType.WeiXin), productName, mobileTokenModel.Mobile, buyType, coins);
+                orderNo = PayOrderHelper.CreateXCGameOrderNo(storeId, payPrice, 0, (int)(OrderType.WeiXin), productName, mobile, buyType, coins);
 
 
                 #region 新大陆微信公众号支付
@@ -708,7 +721,7 @@ namespace XXCloudService.Api
 
                 pay.amount = ((int)(payPrice * 100)).ToString();//实际付款
                 pay.total_amount = pay.amount;//订单总金额
-                pay.subject = CommonConfig.PayTitle +"-" + buyType;
+                pay.subject = CommonConfig.PayTitle + "-" + buyType;
                 pay.selOrderNo = orderNo;
                 pay.goods_tag = productName;
 
@@ -735,6 +748,7 @@ namespace XXCloudService.Api
                 UnpaidOrder.OrderId = orderNo;
                 UnpaidOrder.DeviceToken = deviceToken;
                 UnpaidOrder.FoodId = foodId;
+                UnpaidOrder.MemberTokenModel = memberTokenModel;
                 UnpaidOrder.CreateTime = DateTime.Now;
                 UnpaidOrderList.AddNewItem(UnpaidOrder);
 
@@ -790,10 +804,12 @@ namespace XXCloudService.Api
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "套餐编号不正确");
                 }
 
-                MobileTokenModel mobileTokenModel = (MobileTokenModel)(dicParas[Constant.MobileTokenModel]);
+                //MobileTokenModel mobileTokenModel = (MobileTokenModel)(dicParas[Constant.MobileTokenModel]);
+                XCGameMemberTokenModel memberTokenModel = (XCGameMemberTokenModel)(dicParas[Constant.XCGameMemberTokenModel]);
+                string mobile = memberTokenModel.Mobile;
 
                 //生成服务器订单号
-                orderNo = PayOrderHelper.CreateXCGameOrderNo(storeId, payPrice, 0, (int)(OrderType.Ali), productName, mobileTokenModel.Mobile, buyType, coins);
+                orderNo = PayOrderHelper.CreateXCGameOrderNo(storeId, payPrice, 0, (int)(OrderType.Ali), productName, mobile, buyType, coins);
 
                 #region 支付宝下单创建
                 IAopClient client = new DefaultAopClient(AliPayConfig.serverUrl, AliPayConfig.authAppId, AliPayConfig.merchant_auth_private_key, "json", AliPayConfig.version, AliPayConfig.sign_type, AliPayConfig.alipay_auth_public_key, AliPayConfig.charset, false);
@@ -818,6 +834,7 @@ namespace XXCloudService.Api
                 UnpaidOrder.OrderId = orderNo;
                 UnpaidOrder.DeviceToken = deviceToken;
                 UnpaidOrder.FoodId = foodId;
+                UnpaidOrder.MemberTokenModel = memberTokenModel;
                 UnpaidOrder.CreateTime = DateTime.Now;
                 UnpaidOrderList.AddNewItem(UnpaidOrder);
 

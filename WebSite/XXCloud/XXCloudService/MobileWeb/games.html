@@ -492,16 +492,16 @@
                     that.$dialog.confirm({
                         title: '温馨提示!',
                         mes: '确认投币' + putCoin_ + "个",
-                        opts: () => {
+                        opts: (function () {
                             var putCoinData ={
                                 sysId: sysId,
                                 versionNo: versionNo,
                                 deviceToken: that.deviceToken,
                                 memberToken: that.memberToken,
                                 coins: putCoin_
-                            }
+                            };
                             that.putCoin(putCoinData);
-                        }
+                        })
                     });
                 } else {
                     if(that.putCoins ==""){
@@ -539,23 +539,23 @@
                     this.$dialog.confirm({
                         title: '温馨提示!',
                         mes: '确认退币!',
-                        opts: () => {
-                                axios.post('/xcgame/flw_485_coin?action=flw_485_coinExit', obj).then(function (res) {
-                                    that.$dialog.loading.close();
-                                    that.msgPrompt(res.data);
-                                    console.log(res.data);
-                                    if (res.data.result_code === '1') {
-                                        that.$dialog.toast({
-                                            mes: "退币成功！",
-                                            timeout: 1500,
-                                            icon: 'success'
-                                        });
-                                    }
-                                }).catch(function (err) {
-                                    that.$dialog.loading.close();
-                                    console.log(err);
-                                })
-                            }
+                        opts: (function () {
+                            axios.post('/xcgame/flw_485_coin?action=flw_485_coinExit', obj).then(function (res) {
+                                that.$dialog.loading.close();
+                                that.msgPrompt(res.data);
+                                console.log(res.data);
+                                if (res.data.result_code === '1') {
+                                    that.$dialog.toast({
+                                        mes: "退币成功！",
+                                        timeout: 1500,
+                                        icon: 'success'
+                                    });
+                                }
+                            }).catch(function (err) {
+                                that.$dialog.loading.close();
+                                console.log(err);
+                            })
+                        })
                     })
                 }else {
                     that.$dialog.toast({
@@ -584,7 +584,7 @@
                         buyType:"充值",
                         productName:that.list[index].foodName,
                         foodid:that.list[index].foodID,
-                        payPrice:that.list[index].payPrice,
+                        payPrice:that.list[index].foodPrice,
                         coins:that.list[index].coinQuantity,
                         deviceToken:''
                     };
@@ -632,7 +632,7 @@
                         buyType:"充值",
                         productName:that.list[index].foodName,
                         foodid:that.list[index].foodID,
-                        payPrice:that.list[index].payPrice,
+                        payPrice:that.list[index].foodPrice,
                         coins:that.list[index].coinQuantity,
                         deviceToken:''
                     };

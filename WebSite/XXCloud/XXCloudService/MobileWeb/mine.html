@@ -8,6 +8,8 @@
     <!-- 引入样式 -->
     <link rel="stylesheet" href="css/ydui.rem.css">
     <!-- 引入rem自适应类库 -->
+    <script src="js/ydui.flexible.js"></script>
+    <!-- 引入rem自适应类库 -->
     <style>
         [v-cloak] {
             display: none;
@@ -51,15 +53,14 @@
         </yd-tabbar-item>
     </yd-tabbar>
 </div>
-<script src="js/ydui.flexible.js"></script>
-<!-- 引入 Vue -->
+
 <script src="js/vue.js"></script>
 <script src="js/jquery-1.8.3-min.js"></script>
 <!-- 引入组件库 -->
 <script src="js/ydui.rem.js"></script>
 <script src="js/axios.min.js"></script>
 <script src="js/alipayjsapi.min.js"></script>
-<script src="js/jweixin-1.2.0.js"></script>
+<script src="https://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
 <script>
     var sysId = 0; //调用方应用Id
     var versionNo= "0.89"; //版本号
@@ -68,14 +69,14 @@
         data:{
         },
         mounted: function () {
-            this.Load();
+//            this.Load();
         },
         methods: {
             Load:function () {
                 var that =this;
-                if (/MicroMessenger/.test(window.navigator.userAgent)) {
-                    var wxData = getStorag("wxData")||"";
-                    alert(wxData);
+                if (/MicroMessenger/.test(window.navigator.userAgent)){
+                    var wxData = getStorage("wxData")||"";
+                    alert(wxData == "");
                     if(wxData == ""){
                         this.$dialog.loading.open('');
                         var obj={
@@ -89,7 +90,10 @@
                             console.log(res.data);
                             JSON.stringify(res.data);
                             if (res.data.result_code === '1') {
+                                alert(JSON.stringify(res.data.result_data));
                                 var wxData =res.data.result_data;
+                                alert(JSON.stringify(wxData));
+                                setStorage("wxData",wxData);
                                 wx.config({
                                     debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
                                     appId: wxData.AppId, // 必填，公众号的唯一标识
@@ -98,14 +102,14 @@
                                     signature: wxData.Signature,// 必填，签名
                                     jsApiList: ["scanQRCode"] // 必填，需要使用的JS接口列表
                                 });
-                                setStorage("wxData",wxData)
+
                             }
                         }).catch(function (err) {
                             that.$dialog.loading.close();
                             console.log(err);
                         })
                     }else {
-                        alert("缓存了");
+                        alert(JSON.stringify(wxData));
                         wx.config({
                             debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
                             appId: wxData.AppId, // 必填，公众号的唯一标识
@@ -119,7 +123,6 @@
             },
             btnClick:function () {
                 var that =this;
-                alert(111);
                 if (/MicroMessenger/.test(window.navigator.userAgent)) {
                     alert("wx");
                     wx.scanQRCode({
@@ -129,7 +132,7 @@
                             var result = res.resultStr; // 当needResult 为 1 时，扫码返回的结果
                             console.log(result);
                             alert(JSON.stringify(result));
-                            that.jumpFnc();
+                            that.jumpFnc(result);
                         }
                     });
                 } else if (/AlipayClient/.test(window.navigator.userAgent)) {
@@ -139,7 +142,7 @@
                         actionType: 'scan'
                     }, function(result) {
                         alert(JSON.stringify(result));
-                        that.jumpFnc();
+                        that.jumpFnc(result.qrCode);
                     });
                 } else {
                     that.$dialog.toast({
@@ -157,12 +160,11 @@
                 this.$dialog.confirm({
                     title: '即将清除缓存!',
                     mes: '将重新注册登录!',
-                    opts: () => {
+                    opts: (function () {
                         localStorage.clear();
-                        window.location.href = "login.html"
-                    }
+                        window.location.href = "login.html";
+                    })
                 })
-
             },
             register2:function () {
                 window.location.href = "MyOrder.html"
@@ -175,11 +177,16 @@
             },
             jumpFnc:function (result) {
                 var that =this;
-                var str = result.split("/");
-                var strCode = str[str.length - 2];
-                console.log(strCode == "m");
+//                alert(JSON.stringify(result));
+                var str = result.toString();
+//                var str = JSON.stringify(result);
+                strSplit = str.split("/");
+//                alert(JSON.stringify(strSplit));
+                var strCode = strSplit[strSplit.length - 2];
+//                alert(strCode);
+//                alert(strCode == "m");
                 if (strCode=="m"){
-                    var deviceToken = str[str.length - 1];//扫码获得终端号解析
+                    var deviceToken = strSplit[strSplit.length - 1];//扫码获得终端号解析
                     this.$dialog.loading.open('');
                     var obj={sysId: sysId, versionNo: versionNo, deviceToken:deviceToken};
                     axios.post('/xcgamemana/store?action=storeInfoByTerminalNo', obj).then(function (res) {
@@ -205,6 +212,12 @@
                     }).catch(function (err) {
                         that.$dialog.loading.close();
                         console.log(err);
+                    });
+                }else {
+                    this.$dialog.toast({
+                        mes: "二维码错误！",
+                        timeout: 1500,
+                        icon: 'error'
                     });
                 }
             },

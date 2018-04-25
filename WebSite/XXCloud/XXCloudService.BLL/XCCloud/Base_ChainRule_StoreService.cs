@@ -8,9 +8,11 @@ using XCCloudService.DAL.IDAL.XCCloud;
 using XCCloudService.BLL.Base;
 using XCCloudService.BLL.IBLL.XCCloud;
 using XCCloudService.Model.XCCloud;
+using XCCloudService.BLL.Container;
+
 namespace XCCloudService.BLL.XCCloud
 {
-	public class Base_ChainRule_StoreService : BaseService<Base_ChainRule_Store>, IBase_ChainRule_StoreService
+    public class Base_ChainRule_StoreService : BaseService<Base_ChainRule_Store>, IBase_ChainRule_StoreService
 	{
 		public override void SetDal()
         {

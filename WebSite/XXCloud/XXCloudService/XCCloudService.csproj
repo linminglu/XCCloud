@@ -132,6 +132,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Api\HaoKu\charge.aspx" />
+    <Content Include="Api\HaoKu\insertCoin.aspx" />
+    <Content Include="Api\HaoKu\ping.aspx" />
     <Content Include="Api\XCCloud\UserInfo.ashx" />
     <Content Include="assets\css\admin.css" />
     <Content Include="assets\css\amazeui.min.css" />
@@ -375,6 +378,7 @@
     <Content Include="Api\XCCloud\DepotInfo.ashx" />
     <Content Include="Api\XCCloud\Supplier.ashx" />
     <Content Include="Api\XCCloud\GroupVerify.ashx" />
+    <Content Include="Api\Service\CacheService.ashx" />
     <None Include="Properties\PublishProfiles\111.pubxml" />
     <None Include="Properties\PublishProfiles\qqq.pubxml" />
     <None Include="Properties\PublishProfiles\rrr.pubxml" />
@@ -383,6 +387,7 @@
     <Content Include="Scripts\jquery-1.6.4.min.js" />
     <Content Include="Scripts\jquery.signalR-2.2.2.js" />
     <Content Include="Scripts\jquery.signalR-2.2.2.min.js" />
+    <Content Include="ServicePage\CacheMana.html" />
     <Content Include="ServicePage\TransPage.aspx" />
     <Content Include="ServicePage\UDPService.html" />
     <Content Include="ServicePage\UDPServiceTest.html" />
@@ -909,8 +914,32 @@
     <Compile Include="Api\Common\QR.ashx.cs">
       <DependentUpon>QR.ashx</DependentUpon>
     </Compile>
+    <Compile Include="Api\HaoKu\charge.aspx.cs">
+      <DependentUpon>charge.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Api\HaoKu\charge.aspx.designer.cs">
+      <DependentUpon>charge.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Api\HaoKu\insertCoin.aspx.cs">
+      <DependentUpon>insertCoin.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Api\HaoKu\insertCoin.aspx.designer.cs">
+      <DependentUpon>insertCoin.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Api\HaoKu\ping.aspx.cs">
+      <DependentUpon>ping.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Api\HaoKu\ping.aspx.designer.cs">
+      <DependentUpon>ping.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Api\Payment.ashx.cs">
       <DependentUpon>Payment.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="Api\Service\CacheService.ashx.cs">
+      <DependentUpon>CacheService.ashx</DependentUpon>
     </Compile>
     <Compile Include="Api\Service\GetHolidays.ashx.cs">
       <DependentUpon>GetHolidays.ashx</DependentUpon>

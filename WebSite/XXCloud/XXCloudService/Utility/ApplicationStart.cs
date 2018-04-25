@@ -16,7 +16,7 @@ using XCCloudService.Model.CustomModel.XCCloud;
 using XCCloudService.Model.WeiXin.Session;
 using XCCloudService.SocketService.TCP.Business;
 using XCCloudService.SocketService.UDP;
-using XXCloudService.OrderPayCallback.Common;
+using XCCloudService.OrderPayCallback.Common;
 
 namespace XCCloudService.Utility
 {
@@ -28,7 +28,7 @@ namespace XCCloudService.Utility
             try
             {
                 LogHelper.SaveLog(TxtLogType.SystemInit, "********************************Application Start********************************");
-                TestInit();
+                //TestInit();
                 TCPSocketInit();
                 UDPSocketInit();
                 StoreInit();
@@ -107,8 +107,6 @@ namespace XCCloudService.Utility
                 LogHelper.SaveLog(TxtLogType.SystemInit, "XCGameManaStoreInit..." + Utils.GetException(ex));
             }
         }
-
-
 
         public static void UDPSocketInit()
         {

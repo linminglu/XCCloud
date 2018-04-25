@@ -37,7 +37,7 @@
         left: 32px;
     }
 
-    #goodIsAll .layui-form-switch {
+    .goodIsAll .layui-form-switch {
         height: 36px;
         line-height: 36px;
         width: 180px;
@@ -46,7 +46,7 @@
         background-color: #999;
     }
 
-    #goodIsAll .layui-form-switch i {
+    .goodIsAll .layui-form-switch i {
         left: 0px;
         top: 0px;
         width: 95px;
@@ -57,18 +57,18 @@
         background-color: #fff;
     }
 
-    #goodIsAll  .layui-form-switch em {
+    .goodIsAll  .layui-form-switch em {
         width: 80px;
         color: #ffffff!important;
         font-size: 14px;
     }
 
-    #goodIsAll .layui-form-onswitch {
+    .goodIsAll .layui-form-onswitch {
         border-color: #1e9fff!important;
         background-color: #1e9fff!important;
     }
 
-    #goodIsAll  .layui-form-onswitch i {
+    .goodIsAll  .layui-form-onswitch i {
         left: 95px;
         border-radius: 0 5px 5px 0;
         border: 1px solid #aaa;
@@ -76,6 +76,14 @@
     }
 
 
+</style>
+<style>
+    .layui-form-pane .layui-inline .layui-form-label{padding: 8px 0;}
+    #test2{width: 300px;height: 170px;margin: 40px auto;border: 1px solid #8D8D8D;position: relative;}
+    #imgBtn{width: 60px;height: 60px;position: absolute;top: 55px;left: 130px;cursor: pointer;}
+    .imgBox button{position: absolute;top: 15px;right: 15px;}
+    .imgBox button i {font-size: 24px;color: red;}
+    #timeTypeSetBox .layui-input-inline,#timeTypeSetBox .layui-form-label{width: 90px;}
 </style>
 <body>
    <div class="layui-row">
@@ -87,6 +95,365 @@
            <table class="layui-hide" id="digitDestroyTb"  lay-filter="digitDestroyTb"></table>
        </div>
    </div>
+<!--新增弹窗-->
+<div id="openModel" style="display: none;padding: 10px;">
+    <form action="" class="layui-form layui-form-pane">
+        <div class="layui-collapse" lay-accordion>
+            <div class="layui-colla-item">
+                <h2 class="layui-colla-title" style="height: 36px;line-height: 36px">基本设置</h2>
+                <div class="layui-colla-content layui-show">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">套餐名称</label>
+                            <div class="layui-input-inline">
+                                <input name="" id="FoodID" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">套餐类别</label>
+                            <div class="layui-input-inline">
+                                <select name="" id="FoodType" lay-fiter="FoodType" ></select>
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label" >有效期</label>
+                            <div class="layui-input-inline" style="width: 100px">
+                                <input type="text" class="layui-input" id="StartTime">
+                            </div>
+                            <div class="layui-form-mid">至</div>
+                            <div class="layui-input-inline" style="width: 100px">
+                                <input type="text" class="layui-input" id="EndTime">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label" >散客价</label>
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input" id="ClientPrice">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label" >会员价</label>
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input" id="MemberPrice">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label" >会员卡续期日期</label>
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input" id="RenewDays" placeholder="0为不处理">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item goodIsAll">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">默认打印凭条</label>
+                            <div class="layui-input-inline" style="height: 36px;border: 1px solid rgb(230,230,230)">
+                                <input type="checkbox" id="AllowPrint" name="open" lay-skin="switch" lay-filter="AllowPrint" lay-text="允许|禁止">
+                            </div>
+                        </div>
+                        <div class="layui-inline goodIsAll">
+                            <label class="layui-form-label">需要授权</label>
+                            <div class="layui-input-inline" style="height: 36px;border: 1px solid rgb(230,230,230)">
+                                <input type="checkbox" id="ForeAuthorize" name="open" lay-skin="switch" lay-filter="ForeAuthorize" lay-text="允许|禁止">
+                            </div>
+                        </div>
+                        <div class="layui-inline goodIsAll">
+                            <label class="layui-form-label">是否允许第三方</label>
+                            <div class="layui-input-inline" style="height: 36px;border: 1px solid rgb(230,230,230)">
+                                <input type="checkbox" id="AllowInternet" name="open" lay-skin="switch" lay-filter="AllowInternet" lay-text="允许|禁止">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item layui-hide" id="otherShow">
+                        <div class="layui-inline">
+                            <label class="layui-form-label" >美团ID</label>
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input" id="MeituanID">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label" >点评ID</label>
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input" id="DianpinID">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label" >口碑ID</label>
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input" id="KoubeiID">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-colla-item">
+                <h2 class="layui-colla-title" style="height: 36px;line-height: 36px">图片</h2>
+                <div class="layui-colla-content" style="height: 250px;">
+                        <div class="layui-col-md8">
+                            <div class="layui-form-item">
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">余额类别</label>
+                                    <div class="layui-input-inline">
+                                        <select name="" id="BalanceType" lay-filter="BalanceType"></select>
+                                    </div>
+                                </div>
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">消耗价值</label>
+                                    <div class="layui-input-inline" style="width: 120px">
+                                        <input type="text" class="layui-input" id="UseCount">
+                                    </div>
+                                    <div class="layui-input-inline" style="width: 50px">
+                                        <button type="button" class="layui-btn" id="addFoodSaleBtn">+</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <table class="layui-hide" id="FoodSaleTable" lay-filter="FoodSaleTable"></table>
+                        </div>
+                        <div class="layui-col-md4">
+                            <div id="test2">
+                                <div id="imgBtn"><i class="layui-icon" style="font-size: 60px;color: #9F9F9F">&#xe654;</i></div>
+                                <div class="layui-upload-list" id="demo2" style="margin: 0;">
+                                    <input id="nameImage" name="list[0]" maxlength="255" class="input-xlarge required" type="hidden">
+                                </div>
+                            </div>
+                        </div>
+                </div>
+            </div>
+            <div class="layui-colla-item">
+                <h2 class="layui-colla-title" style="height: 36px;line-height: 36px">套餐内容设置</h2>
+                <div class="layui-colla-content">
+                    <div style="text-align:right;">
+                        <!--<button type="button" class="layui-btn layui-btn-xs">增加</button>-->
+                        <div class="layui-btn-group">
+                            <button type="button" class="layui-btn layui-btn-xs" id="vipCoinBtn">会员币种</button>
+                            <button type="button" class="layui-btn layui-btn-xs" id="giftsBtn">礼品</button>
+                            <button type="button"class="layui-btn layui-btn-xs" id="ticketBtn">门票</button>
+                            <button type="button" class="layui-btn layui-btn-xs" id="digitBtn">数字币</button>
+                            <button type="button" class="layui-btn layui-btn-xs" id="onSaleBtn">优惠券</button>
+                        </div>
+                    </div>
+                    <table class="layui-hide" lay-filter="projectCon" id="projectCon"></table>
+                </div>
+            </div>
+            <div class="layui-colla-item">
+                <h2 class="layui-colla-title" style="height: 36px;line-height: 36px">优惠时段设定</h2>
+                <div class="layui-colla-content "> <div class="thread" style="position: relative;">
+                    <button type="button" class="layui-btn layui-btn-normal" id="tosetTime"><i class="layui-icon">&#xe614;</i>优惠时段设定</button>
+                    <div  style="height: 300px">
+                        <div id="timeSettingBox" style="position: absolute;top: 50px; border:  1px dashed #aaa; padding: 10px; z-index: 9999;background-color: #fff;">
+                            <div class="layui-col-md2">
+                                <div class="layui-form-item">
+                                    <div class="layui-input-block" style="margin-left: 0px;height: 190px;overflow-y: scroll;border: 1px dashed #dedede;width: 160px" id="memberBox">
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="layui-col-md10" id="timeTypeSetBox">
+                                <div class="layui-form-item" style="margin-bottom: 5px">
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label">时段类型</label>
+                                        <div class="layui-input-inline" style="width: 200px">
+                                            <select id="poriedType" lay-filter="timeType">
+                                                <option value="0" selected>工作模式</option>
+                                                <option value="1" >自定义</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="layui-inline" id="typeCheckBox">
+                                        <label class="layui-form-label">类型选择</label>
+                                        <div class="layui-input-inline" style="width: 200px">
+                                            <select name="prioed" id="typeCheck" lay-filter="typeCheck">
+                                                <option value="0" selected>工作日</option>
+                                                <option value="1" >法定节假日</option>
+                                                <option value="2" >周末</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="layui-inline" id="weekSetBox" style="display:none;">
+                                        <label class="layui-form-label">优惠周天</label>
+                                        <div class="layui-input-block" id="weekBox" style="width: 700px">
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label">生效时段</label>
+                                        <div class="layui-input-inline" style="margin-right: 5px">
+                                            <input type="text" name="price_min" id="StartTime" class="layui-input">
+                                        </div>
+                                        <div class="layui-form-mid" style="margin-right: 5px">至</div>
+                                        <div class="layui-input-inline" >
+                                            <input type="text" name="price_max" id="EndTime" class="layui-input">
+                                        </div>
+                                    </div>
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label">散客优惠价</label>
+                                        <div class="layui-input-inline">
+                                            <input type="text" name="price_min" id="ClientPrice" class="layui-input">
+                                        </div>
+                                    </div>
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label">会员售价</label>
+                                        <div class="layui-input-inline">
+                                            <input type="text" name="price_min" id="VipPrice" class="layui-input">
+                                        </div>
+
+                                    </div>
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label">每天限购</label>
+                                        <div class="layui-input-inline">
+                                            <input type="text" name="price_min" id="day_sale_count" class="layui-input">
+                                        </div>
+                                    </div>
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label">每人每天限购</label>
+                                        <div class="layui-input-inline">
+                                            <input type="text" name="price_min" id="member_day_sale_count" class="layui-input">
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div class="layui-inline">
+                                        <div class="layui-input-inline" style="width: 140px;">
+                                            <input type="checkbox" name="" title="允许代币支付" lay-skin="primary" lay-filter="allowCoin" id="allowCoin">
+                                        </div>
+                                        <div class="layui-input-inline" style="width: 70px;">
+                                            <input type="text" name="price_max" id="coins" class="layui-input" >
+                                        </div>
+                                        <div class="layui-form-mid">币</div>
+                                    </div>
+                                    <div class="layui-inline">
+                                        <div class="layui-input-inline" style="width: 140px;">
+                                            <input type="checkbox" name="" title="允许积分支付" lay-skin="primary" lay-filter="allowPoint" id="allowPoint">
+                                        </div>
+                                        <div class="layui-input-inline" style="width: 70px;">
+                                            <input type="text" name="price_max" id="points" class="layui-input">
+                                        </div>
+                                        <div class="layui-form-mid">积分</div>
+                                    </div>
+                                    <div class="layui-inline">
+                                        <div class="layui-input-inline" style="width: 140px;">
+                                            <input type="checkbox" name="" title="允许彩票支付" lay-skin="primary" lay-filter="allowLottery" id="allowLottery">
+                                        </div>
+                                        <div class="layui-input-inline" style="width: 70px;">
+                                            <input type="text" name="price_max" id="lottery" class="layui-input">
+                                        </div>
+                                        <div class="layui-form-mid">张票</div>
+                                    </div>
+                                </div>
+                                <div class="layui-form-item" style="text-align: right;padding-right: 150px;margin-bottom: 0px" >
+                                    <button type="button" class="layui-btn layui-btn-normal" id="saveTimeCancle"><i class="layui-icon">&#xe603;</i>取消</button>
+                                    <button type="button" class="layui-btn layui-btn-normal" id="saveTimeSet1"><i class="layui-icon">&#xe6af;</i>优惠时段添加</button>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div id="digitDestroyTbBox">
+                            <table class="layui-hide" id="ticketsTable"  lay-filter="ticketsTable"></table>
+                        </div>
+
+                    </div>
+
+                </div>
+                </div>
+            </div>
+        </div>
+        <div style="text-align: right;margin-right: 100px;padding-top: 15px">
+            <button type="reset" class="layui-btn layui-btn-normal" id="saveTimeReset"><i class="layui-icon">&#x1002;</i>重置</button>
+            <button type="button" class="layui-btn layui-btn-normal" id="psSave"><i class="layui-icon">&#xe6af;</i>确定</button>
+        </div>
+    </form>
+</div>
+<!--会员币种-->
+<div id="openVip" style="display: none;padding: 10px;">
+    <form class="layui-form layui-form-pane">
+        <div class="layui-form-item">
+            <label class="layui-form-label">种类</label>
+            <div class="layui-input-block">
+                <select id="vipCoinType" lay-filter="vipCoinType"></select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">数量</label>
+            <div class="layui-input-block">
+                <input type="text" class="layui-input" id="vipCoinCount">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">权重值</label>
+            <div class="layui-input-block">
+                <input type="text" class="layui-input" id="weightValue">
+            </div>
+        </div>
+        <div class="layui-form-item goodIsAll">
+            <label class="layui-form-label">存储方式</label>
+            <div class="layui-input-block">
+                <input type="checkbox" id="saveWay" name="open" lay-skin="switch" lay-filter="AllowInternet" lay-text="允许|禁止">
+            </div>
+        </div>
+        <div style="text-align: center">
+            <button type="button" class="layui-btn" id="openVipBtn">保存</button>
+        </div>
+    </form>
+</div>
+   <!--礼品-->
+   <div id="openGift" style="display: none;padding: 10px;">
+       <form class="layui-form layui-form-pane">
+           <div class="layui-form-item">
+               <div class="layui-inline">
+                   <div class="layui-input-inline">
+                       <input type="text" class="layui-input" id="ticketName">
+                   </div>
+                   <div class="layui-input-inline">
+                       <button type="button" class="layui-btn" id="giftSearch"><i class="layui-icon">搜索</i></button>
+                   </div>
+               </div>
+
+           </div>
+           <table class="layui-hide" id="giftTable" lay-filter="giftTable"></table>
+           <div style="text-align: center">
+               <button type="button" class="layui-btn" id="openGiftBtn">保存</button>
+           </div>
+       </form>
+   </div>
+   <!--门票-->
+   <div id="openTicket" style="display: none;padding: 10px;">
+       <form class="layui-form layui-form-pane">
+           <div class="layui-form-item">
+               <div class="layui-inline">
+                   <div class="layui-input-inline">
+                       <input type="text" class="layui-input">
+                   </div>
+               </div>
+
+           </div>
+           <div style="text-align: center">
+               <button type="button" class="layui-btn" id="openTicketBtn">保存</button>
+           </div>
+       </form>
+   </div>
+   <!--数字币-->
+   <div id="openDigit" style="display: none;padding: 10px;">
+       <form class="layui-form layui-form-pane">
+           <div class="layui-form-item">
+               <label class="layui-form-label">数字币</label>
+                   <div class="layui-input-block">
+                       <select name="" id="digitType" lay-filter="digitType"></select>
+                   </div>
+           </div>
+           <div class="layui-form-item">
+               <label class="layui-form-label">数量</label>
+               <div class="layui-input-block">
+                   <input type="text" id="digitCount">
+               </div>
+           </div>
+           <div style="text-align: center">
+               <button type="button" class="layui-btn" id="openDigitBtn">保存</button>
+           </div>
+       </form>
+   </div>
 </body>
 <script src="js/jquery-1.8.3-min.js"></script>
 <script src="layui/layui.js"></script>
@@ -94,64 +461,238 @@
 <script>
     var xc=xcActionSystem.prototype;
     var token=xc.getStorage('token');
-    layui.use(['element','form','layer','table'], function(){
+    let parm={'obj':{'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'},
+        'url':'/XCCloud/Promotion?action=GetFoodInfoList',
+        'elem':'#digitDestroyTb',
+        'cols':[
+            {field:'FoodID', title:'套餐编号', align: 'center', sort: true}
+            ,{field:'FoodName',title: '套餐名称', align: 'center'} //width 支持：数字、百分比和不填写。
+            ,{field:'ClientPrice', title: '散客价', align: 'center'}
+            ,{field:'MemberPrice', title: '会员价', align: 'center'}
+            ,{field:'FoodTypeStr', title: '套餐类别', align: 'center'}
+            // ,{field:'RechargeTypeStr', title: '充值方式', align: 'center'}
+            ,{field:'AllowInternet', title: '是否允许第三方', align: 'center',templet:'#internet'}
+            ,{field:'AllowPrint', title: '是否允许打印', align: 'center',templet:'#print'}
+            ,{field:'ForeAuthorize', title: '是否允许前台授权', align: 'center',templet:'#authorize'}
+            ,{field:'StartTime', title: '启用时间', align: 'center'}
+            ,{field:'EndTime', title: '停用时间', align: 'center'}
+            ,{fixed: 'right', title: '操作', width:100, align:'center', toolbar: '#barDemo'}]
+    };
+    xc.getInitData(parm);
+    let foodID;
+    let FoodSale=[];//套餐余额消耗
+    let FoodDetial=[];
+    let FoodType;//套餐类别
+    let BalanceType;//余额类别
+    let BalanceTypeStr;
+    let AllowInternet=0;let AllowPrint=0;let ForeAuthorize=0;
+    layui.use(['element','form','layer','table','laydate'], function(){
         let element = layui.element,
             form=layui.form,
             layer=layui.layer,
-            table=layui.table;
+            table=layui.table,
+           laydate=layui.laydate;
+        form.on('select(BalanceType)',function (data) {
+            BalanceType=data.value;
+            BalanceTypeStr=data.elem[data.elem.selectedIndex].text;
+        })
+        form.on('switch(AllowInternet)',function (data) {
+            if(data.elem.checked==true){
+                AllowInternet=1;
+                $('#otherShow').removeClass('layui-hide')
+            }else {
+                AllowInternet=0;
+                $('#otherShow').addClass('layui-hide');
+                $('#otherShow').find('input').val('');
+            }
+        });
+        form.on('switch(AllowPrint)',function (data) {
+            if(data.elem.checked==true){
+                AllowPrint=1;
+            }else {
+                AllowPrint=0;
+            }
+        });
+        form.on('switch(ForeAuthorize)',function (data) {
+            if(data.elem.checked==true){
+                ForeAuthorize=1;
+            }else {
+                ForeAuthorize=0;
+            }
+        });
+        //渲染时间
+        laydate.render({
+            elem: '#StartTime',type: 'date',value:new Date()
+        });
+        laydate.render({
+            elem: '#EndTime',type: 'date',value:new Date()
+        });
+        //新增一个套餐
      $('.addNewPackage').on('click',()=>{
-         xc.removeStorage('foodId');
-         xc.setStorage('dpsAdd','dpsAdd');
-       var index=  layer.open({
+         xc.setSelect('套餐类别','FoodType');
+         xc.setSelect('余额类别','BalanceType');
+         newTable(table,FoodSale,layer,form);
+         newFoodDetialsTable(table,FoodDetial,layer,form)
+         layer.open({
              title:'新增套餐',
              shade:0.6,
-             type:2,
-             area:['1100px','600px'],
-             content:['packageMix.html','no'],
+             type:1,
+             area:'1100px',
+             content:$('#openModel'),
          })
      });
-     let parm={'obj':{'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'},
-         'url':'/XCCloud/Promotion?action=GetFoodInfoList',
-         'elem':'#digitDestroyTb',
-         'cols':[
-             {field:'FoodID', title:'套餐编号', align: 'center', sort: true}
-             ,{field:'FoodName',title: '套餐名称', align: 'center'} //width 支持：数字、百分比和不填写。
-             ,{field:'ClientPrice', title: '散客价', align: 'center'}
-             ,{field:'MemberPrice', title: '会员价', align: 'center'}
-             ,{field:'FoodTypeStr', title: '套餐类别', align: 'center'}
-             // ,{field:'RechargeTypeStr', title: '充值方式', align: 'center'}
-             ,{field:'AllowInternet', title: '是否允许第三方', align: 'center',templet:'#internet'}
-             ,{field:'AllowPrint', title: '是否允许打印', align: 'center',templet:'#print'}
-             ,{field:'ForeAuthorize', title: '是否允许前台授权', align: 'center',templet:'#authorize'}
-             ,{field:'StartTime', title: '启用时间', align: 'center'}
-             ,{field:'EndTime', title: '停用时间', align: 'center'}
-             ,{fixed: 'right', title: '操作', width:100, align:'center', toolbar: '#barDemo'}]
-     };
-     xc.getInitData(parm);
+     $('#addFoodSaleBtn').on('click',()=>{
+         let flag=false;
+         //当2个参数都填满后，点击向表里面加一条数据，初始化输入框
+         if(BalanceType!=''&&$('#UseCount').val()!=''){
+             if(FoodSale.length>0){
+                 for(let i in FoodSale){
+                     if(FoodSale[i].BalanceType==BalanceType){
+                         flag=true;
+                     }
+                 }
+             }
+             if(flag==false){
+                 FoodSale.push({
+                     'BalanceType':BalanceType, 'BalanceTypeStr':BalanceTypeStr,
+                     'UseCount':$('#UseCount').val()
+                 });
+                 newTable(table,FoodSale,layer,form);
+                 $('#UseCount').val('');
+                 xc.setSelect('余额类别','BalanceType');
+                 BalanceType='';BalanceTypeStr='';
+             }else {
+                 layer.msg('请选择其他的余额类别或者删除该类别重新设置！')
+             }
 
+         }else {
+             layer.msg('请设置参数！')
+         }
+         })
+        //会员币种
+        $('#vipCoinBtn').on('click',()=>{
+            xc.setSelect('套餐类别','FoodType');
+            layer.open({
+                title:'新增套餐',
+                shade:0.6,
+                type:1,
+                area:'500px',
+                content:$('#openVip'),
+            })
+        });
+        //礼品
+        $('#giftsBtn').on('click',()=>{
+            xc.setSelect('套餐类别','FoodType');
+            layer.open({
+                title:'新增套餐',
+                shade:0.6,
+                type:1,
+                area:'500px',
+                content:$('#openGift'),
+            })
+        });
+        //门票
+        $('#ticketBtn').on('click',()=>{
+            // xc.setSelect('套餐类别','FoodType');
+            layer.open({
+                title:'新增套餐',
+                shade:0.6,
+                type:1,
+                area:'500px',
+                content:$('#openTicket'),
+            })
+        });
+        //数字币
+        $('#digitBtn').on('click',()=>{
+            // xc.setSelect('套餐类别','FoodType');
+            layer.open({
+                title:'新增套餐',
+                shade:0.6,
+                type:1,
+                area:'500px',
+                content:$('#openDigit'),
+            })
+        });
+        //优惠券
+        $('#onSaleBtn').on('click',()=>{
+            // xc.setSelect('套餐类别','FoodType');
+            layer.open({
+                title:'新增套餐',
+                shade:0.6,
+                type:1,
+                area:'500px',
+                content:$('#openVip'),
+            })
+        });
+    //修改主表
      table.on('tool(digitDestroyTb)', function(obj){
             var data = obj.data;
             var layEvent = obj.event;
-            var foodId=data.FoodID;
+             foodId=data.FoodID;
             var foodName=data.FoodName;
-           xc.removeStorage('dpsAdd');
             if(layEvent === 'detail'){ //查看
-                xc.setStorage('foodId',foodId);
-                    if(data.FoodTypeStr=='混合'){
                     layer.open({
-                        type:2,
                         title:'修改:'+foodName+'"套餐',
-                        shade:0.6,
-                        area:['1100px','600px'],
-                        content:['packageMix.html','no']
+                        type:1,
+                        area:'1100px',
+                        content:$('#openModel'),
                     })
-                }
+
            }
      });
     });
+    function newTable(table,arr,layer,form) {
+        table.render({
+            elem: '#FoodSaleTable'
+            , height:'190px'
+            ,size:'sm'
+            , data: arr
+            , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+            , cols: [[
+                {field:'BalanceTypeStr', title: '余额类型', align: 'center'}
+                ,{field:'UseCount', title: '消耗数量', align: 'center'}
+                ,{fixed: 'right',title:'操作', width:140, align:'center', toolbar: '#barDemo2'}]]
+            , page: {page: true, limits: [5,10, 15, 20]}
+            , limit: 5
+            ,done:function () {
+                xc.getBalanceTypeDic(token,layer,form,'freeBalanceType');
+                $('.freeLast').find('input').val('')
+            }
+        });
+    }
+    function newFoodDetialsTable(table,arr,layer,form) {
+        table.render({
+            elem: '#projectCon'
+            , height:'230px'
+            ,size:'sm'
+            , data: arr
+            , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+            , cols: [[
+                {field:'ID', title: '流水号', align: 'center'}
+                ,{field:'ContainID', title: '套餐内容ID', align: 'center'}
+                ,{field:'ContainCount', title: '套餐内容数量', align: 'center'}
+                ,{field:'ProjectName', title: '项目名称', align: 'center'}
+                ,{field:'FoodDetailTypeStr', title: '套餐内容类别', align: 'center'}
+                ,{field:'Days', title: '有效期', align: 'center'}
+                ,{field:'WeightValue', title: '权重值', align: 'center'}
+                ,{fixed: 'right',title:'操作', width:140, align:'center', toolbar: '#barDemo1'}]]
+            , page: {page: true, limits: [5,10, 15, 20]}
+            , limit: 5
+            ,done:function () {
+                xc.getBalanceTypeDic(token,layer,form,'freeBalanceType');
+                $('.freeLast').find('input').val('')
+            }
+        });
+    }
 </script>
 <script type="text/html" id="barDemo">
     <a class="layui-btn layui-btn-xs" lay-event="detail"> <i class="layui-icon">&#xe642;</i>编辑</a>
+</script>
+<script type="text/html" id="barDemo1">
+    <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del"> <i class="layui-icon">&#xe642;</i>删除</a>
+</script>
+<script type="text/html" id="barDemo2">
+    <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del"> <i class="layui-icon">&#xe642;</i>删除</a>
 </script>
 <script type="text/html" id="internet">
     {{# if(d.AllowInternet==1){ }}
