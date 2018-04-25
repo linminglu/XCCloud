@@ -46,7 +46,6 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Base_UserInfo> Base_UserInfo { get; set; }
         public virtual DbSet<Data_BalanceType_StoreList> Data_BalanceType_StoreList { get; set; }
         public virtual DbSet<Data_BillInfo> Data_BillInfo { get; set; }
-        public virtual DbSet<Data_Card_Balance> Data_Card_Balance { get; set; }
         public virtual DbSet<Data_Card_Balance_StoreList> Data_Card_Balance_StoreList { get; set; }
         public virtual DbSet<Data_Card_Right> Data_Card_Right { get; set; }
         public virtual DbSet<Data_Card_Right_StoreList> Data_Card_Right_StoreList { get; set; }
@@ -117,7 +116,6 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Flw_Project_BuyDetail> Flw_Project_BuyDetail { get; set; }
         public virtual DbSet<Flw_Transfer> Flw_Transfer { get; set; }
         public virtual DbSet<Store_CheckDate> Store_CheckDate { get; set; }
-        public virtual DbSet<Data_Food_Detial> Data_Food_Detial { get; set; }
         public virtual DbSet<Data_SupplierList> Data_SupplierList { get; set; }
         public virtual DbSet<Log_GameAlarm> Log_GameAlarm { get; set; }
         public virtual DbSet<Data_Food_Level> Data_Food_Level { get; set; }
@@ -146,5 +144,7 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Dict_FunctionMenu> Dict_FunctionMenu { get; set; }
         public virtual DbSet<Data_GameInfo_Ext> Data_GameInfo_Ext { get; set; }
         public virtual DbSet<Data_Project_BindGame> Data_Project_BindGame { get; set; }
+        public virtual DbSet<Data_Food_Detial> Data_Food_Detial { get; set; }
+        public virtual DbSet<Data_Card_Balance> Data_Card_Balance { get; set; }
     }
 }

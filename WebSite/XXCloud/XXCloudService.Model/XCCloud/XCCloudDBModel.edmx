@@ -354,7 +354,7 @@
           </Key>
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="MemberID" Type="int" />
-          <Property Name="BalanceType" Type="int" />
+          <Property Name="BalanceIndex" Type="int" />
           <Property Name="Banlance" Type="decimal" Precision="10" Scale="2" />
           <Property Name="UpdateTime" Type="datetime" />
         </EntityType>
@@ -509,6 +509,7 @@
           <Property Name="FoodID" Type="int" />
           <Property Name="FoodType" Type="int" />
           <Property Name="BalanceType" Type="int" />
+          <Property Name="OperateType" Type="int" />
           <Property Name="WeightType" Type="int" />
           <Property Name="WeightValue" Type="decimal" Precision="18" Scale="2" />
           <Property Name="ContainID" Type="int" />
@@ -2126,7 +2127,6 @@
           <EntitySet Name="Base_UserInfo" EntityType="XCCloudDBModel.Base_UserInfo" />
           <EntitySet Name="Data_BalanceType_StoreList" EntityType="XCCloudDBModel.Data_BalanceType_StoreList" />
           <EntitySet Name="Data_BillInfo" EntityType="XCCloudDBModel.Data_BillInfo" />
-          <EntitySet Name="Data_Card_Balance" EntityType="XCCloudDBModel.Data_Card_Balance" />
           <EntitySet Name="Data_Card_Balance_StoreList" EntityType="XCCloudDBModel.Data_Card_Balance_StoreList" />
           <EntitySet Name="Data_Card_Right" EntityType="XCCloudDBModel.Data_Card_Right" />
           <EntitySet Name="Data_Card_Right_StoreList" EntityType="XCCloudDBModel.Data_Card_Right_StoreList" />
@@ -2197,7 +2197,6 @@
           <EntitySet Name="Flw_Project_BuyDetail" EntityType="XCCloudDBModel.Flw_Project_BuyDetail" />
           <EntitySet Name="Flw_Transfer" EntityType="XCCloudDBModel.Flw_Transfer" />
           <EntitySet Name="Store_CheckDate" EntityType="XCCloudDBModel.Store_CheckDate" />
-          <EntitySet Name="Data_Food_Detial" EntityType="XCCloudDBModel.Data_Food_Detial" />
           <EntitySet Name="Data_SupplierList" EntityType="XCCloudDBModel.Data_SupplierList" />
           <EntitySet Name="Log_GameAlarm" EntityType="XCCloudDBModel.Log_GameAlarm" />
           <EntitySet Name="Data_Food_Level" EntityType="XCCloudDBModel.Data_Food_Level" />
@@ -2226,6 +2225,8 @@
           <EntitySet Name="Dict_FunctionMenu" EntityType="XCCloudDBModel.Dict_FunctionMenu" />
           <EntitySet Name="Data_GameInfo_Ext" EntityType="XCCloudDBModel.Data_GameInfo_Ext" />
           <EntitySet Name="Data_Project_BindGame" EntityType="XCCloudDBModel.Data_Project_BindGame" />
+          <EntitySet Name="Data_Food_Detial" EntityType="XCCloudDBModel.Data_Food_Detial" />
+          <EntitySet Name="Data_Card_Balance" EntityType="XCCloudDBModel.Data_Card_Balance" />
         </EntityContainer>
         <EntityType Name="Base_ChainRule">
           <Key>
@@ -2485,16 +2486,6 @@
           <Property Name="State" Type="Int32" />
           <Property Name="PublishType" Type="Int32" />
           <Property Name="PromotionType" Type="Int32" />
-        </EntityType>
-        <EntityType Name="Data_Card_Balance">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="MemberID" Type="Int32" />
-          <Property Name="BalanceType" Type="Int32" />
-          <Property Name="Banlance" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="UpdateTime" Type="DateTime" Precision="3" />
         </EntityType>
         <EntityType Name="Data_Card_Balance_StoreList">
           <Key>
@@ -3544,22 +3535,6 @@
           <Property Name="ChargeCoins" Type="Int32" />
           <Property Name="NoChargeCoins" Type="Int32" />
         </EntityType>
-        <EntityType Name="Data_Food_Detial">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="FoodID" Type="Int32" />
-          <Property Name="FoodType" Type="Int32" />
-          <Property Name="BalanceType" Type="Int32" />
-          <Property Name="WeightType" Type="Int32" />
-          <Property Name="WeightValue" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="ContainID" Type="Int32" />
-          <Property Name="ContainCount" Type="Int32" />
-          <Property Name="Days" Type="Int32" />
-          <Property Name="ValidType" Type="Int32" />
-          <Property Name="Status" Type="Int32" />
-        </EntityType>
         <EntityType Name="Data_SupplierList">
           <Key>
             <PropertyRef Name="ID" />
@@ -4003,6 +3978,33 @@
           <Property Name="ProjectID" Type="Int32" />
           <Property Name="GameID" Type="Int32" />
         </EntityType>
+        <EntityType Name="Data_Food_Detial">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FoodID" Type="Int32" />
+          <Property Name="FoodType" Type="Int32" />
+          <Property Name="BalanceType" Type="Int32" />
+          <Property Name="OperateType" Type="Int32" />
+          <Property Name="WeightType" Type="Int32" />
+          <Property Name="WeightValue" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="ContainID" Type="Int32" />
+          <Property Name="ContainCount" Type="Int32" />
+          <Property Name="Days" Type="Int32" />
+          <Property Name="ValidType" Type="Int32" />
+          <Property Name="Status" Type="Int32" />
+        </EntityType>
+        <EntityType Name="Data_Card_Balance">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MemberID" Type="Int32" />
+          <Property Name="BalanceIndex" Type="Int32" />
+          <Property Name="Banlance" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="UpdateTime" Type="DateTime" Precision="3" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -4283,17 +4285,6 @@
                 <ScalarProperty Name="Time" ColumnName="Time" />
                 <ScalarProperty Name="StoreID" ColumnName="StoreID" />
                 <ScalarProperty Name="StoreName" ColumnName="StoreName" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Data_Card_Balance">
-            <EntityTypeMapping TypeName="XCCloudDBModel.Data_Card_Balance">
-              <MappingFragment StoreEntitySet="Data_Card_Balance">
-                <ScalarProperty Name="UpdateTime" ColumnName="UpdateTime" />
-                <ScalarProperty Name="Banlance" ColumnName="Banlance" />
-                <ScalarProperty Name="BalanceType" ColumnName="BalanceType" />
-                <ScalarProperty Name="MemberID" ColumnName="MemberID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -5416,23 +5407,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Data_Food_Detial">
-            <EntityTypeMapping TypeName="XCCloudDBModel.Data_Food_Detial">
-              <MappingFragment StoreEntitySet="Data_Food_Detial">
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="ValidType" ColumnName="ValidType" />
-                <ScalarProperty Name="Days" ColumnName="Days" />
-                <ScalarProperty Name="ContainCount" ColumnName="ContainCount" />
-                <ScalarProperty Name="ContainID" ColumnName="ContainID" />
-                <ScalarProperty Name="WeightValue" ColumnName="WeightValue" />
-                <ScalarProperty Name="WeightType" ColumnName="WeightType" />
-                <ScalarProperty Name="BalanceType" ColumnName="BalanceType" />
-                <ScalarProperty Name="FoodType" ColumnName="FoodType" />
-                <ScalarProperty Name="FoodID" ColumnName="FoodID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Data_SupplierList">
             <EntityTypeMapping TypeName="XCCloudDBModel.Data_SupplierList">
               <MappingFragment StoreEntitySet="Data_SupplierList">
@@ -5900,6 +5874,35 @@
               <MappingFragment StoreEntitySet="Data_Project_BindGame">
                 <ScalarProperty Name="GameID" ColumnName="GameID" />
                 <ScalarProperty Name="ProjectID" ColumnName="ProjectID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Data_Food_Detial">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Data_Food_Detial">
+              <MappingFragment StoreEntitySet="Data_Food_Detial">
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="ValidType" ColumnName="ValidType" />
+                <ScalarProperty Name="Days" ColumnName="Days" />
+                <ScalarProperty Name="ContainCount" ColumnName="ContainCount" />
+                <ScalarProperty Name="ContainID" ColumnName="ContainID" />
+                <ScalarProperty Name="WeightValue" ColumnName="WeightValue" />
+                <ScalarProperty Name="WeightType" ColumnName="WeightType" />
+                <ScalarProperty Name="OperateType" ColumnName="OperateType" />
+                <ScalarProperty Name="BalanceType" ColumnName="BalanceType" />
+                <ScalarProperty Name="FoodType" ColumnName="FoodType" />
+                <ScalarProperty Name="FoodID" ColumnName="FoodID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Data_Card_Balance">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Data_Card_Balance">
+              <MappingFragment StoreEntitySet="Data_Card_Balance">
+                <ScalarProperty Name="UpdateTime" ColumnName="UpdateTime" />
+                <ScalarProperty Name="Banlance" ColumnName="Banlance" />
+                <ScalarProperty Name="BalanceIndex" ColumnName="BalanceIndex" />
+                <ScalarProperty Name="MemberID" ColumnName="MemberID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>

@@ -11,6 +11,7 @@ using XCCloudService.BLL.IBLL.XCCloud;
 using XCCloudService.Business.XCCloud;
 using XCCloudService.Common;
 using XCCloudService.Common.Enum;
+using XCCloudService.Common.Extensions;
 using XCCloudService.DAL;
 using XCCloudService.DBService.BLL;
 using XCCloudService.Model.CustomModel.XCCloud;
@@ -303,6 +304,11 @@ namespace XXCloudService.Api.XCCloud
                             errMsg = "会员币种种类不能为空";
                             return false;
                         }
+                        if (iFoodDetailType == (int)FoodDetailType.Coin && string.IsNullOrEmpty(operateType))
+                        {
+                            errMsg = "会员币种处理方式不能为空";
+                            return false;
+                        }
                         if (string.IsNullOrEmpty(containCount))
                         {
                             errMsg = "内容数量不能为空";
@@ -356,12 +362,13 @@ namespace XXCloudService.Api.XCCloud
                         data_Food_DetialModel.FoodID = iFoodId;
                         data_Food_DetialModel.Status = 1;
                         data_Food_DetialModel.FoodType = iFoodDetailType;
-                        data_Food_DetialModel.BalanceType = !string.IsNullOrEmpty(balanceType) ? Convert.ToInt32(balanceType) : (int?)null;
-                        data_Food_DetialModel.ContainCount = Convert.ToInt32(containCount);
-                        data_Food_DetialModel.ContainID = !string.IsNullOrEmpty(containId) ? Convert.ToInt32(containId) : (int?)null;
+                        data_Food_DetialModel.BalanceType = ObjectExt.Toint(balanceType); 
+                        data_Food_DetialModel.ContainCount = ObjectExt.Toint(containCount); 
+                        data_Food_DetialModel.ContainID = ObjectExt.Toint(containId);
                         data_Food_DetialModel.WeightType = (int)WeightType.Money;
-                        data_Food_DetialModel.WeightValue = Convert.ToDecimal(weightValue);
-                        data_Food_DetialModel.Days = Convert.ToInt32(days);
+                        data_Food_DetialModel.WeightValue = ObjectExt.Todecimal(weightValue);
+                        data_Food_DetialModel.Days = ObjectExt.Toint(days);
+                        data_Food_DetialModel.OperateType = ObjectExt.Toint(operateType);
                         dbContext.Entry(data_Food_DetialModel).State = EntityState.Added;
                     }
                     else

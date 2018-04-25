@@ -16,7 +16,7 @@ namespace XCCloudService.Model.XCCloud
     {
         public int ID { get; set; }
         public Nullable<int> MemberID { get; set; }
-        public Nullable<int> BalanceType { get; set; }
+        public Nullable<int> BalanceIndex { get; set; }
         public Nullable<decimal> Banlance { get; set; }
         public Nullable<System.DateTime> UpdateTime { get; set; }
     }
