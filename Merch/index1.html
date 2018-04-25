@@ -56,9 +56,7 @@
                     <dl class="layui-nav-child ">
                         <dd id="storeSys" class="layui-hide"><a href="javascript:;">门店系统</a>
                             <ul id="storeListToGo">
-                                <!--<li>1.3.1.3为研究体操技术 </li>-->
-                                <!--<li>002</li>-->
-                                <!--<li>003</li>-->
+
                             </ul>
                         </dd>
                         <dd id="merchSys" class="layui-hide"><a href="javascript:;">商户系统</a></dd>
@@ -159,9 +157,9 @@
                         data = JSON.parse(data);
                         console.log(data);
                         if(data.result_code==1){
+                            logMsg.MerchTag=data.result_data.MerchTag;
                             logMsg.logType=2;
                             xc.setStorage('logMsg',JSON.stringify(logMsg));
-                            // window.location.href='indexStore.html?'+(Date.parse(new Date())/1000);
                             window.location.href='/merch/index1.html';
                         }
                     }
@@ -217,6 +215,7 @@
                             data = JSON.parse(data);
                             console.log(data);
                             if(data.result_code==1){
+                                logMsg.MerchTag=data.result_data.MerchTag;
                                 logMsg.logType=3;
                                 xc.setStorage('logMsg',JSON.stringify(logMsg));
                                 window.location.href='/merch/index1.html';
@@ -243,9 +242,10 @@
                             data = JSON.parse(data);
                             console.log(data);
                             if(data.result_code==1){
+                                logMsg.MerchTag=data.result_data.MerchTag;
                                 logMsg.logType=4;
                                 xc.setStorage('logMsg',JSON.stringify(logMsg));
-                               window.location.href='/merch/index1.html';
+                                window.location.href='/merch/index1.html';
                             }
                         }
                     })

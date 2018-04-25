@@ -360,10 +360,12 @@ namespace XXCloudService.Api.XCCloud
                         base_MerchantInfo.WxOpenID = openId;
                         base_MerchantInfo.WxUnionID = unionId;
                         base_MerchantInfo.MerchPassword = merchPassword;
-                        base_MerchantInfo.AllowCreateSub = !string.IsNullOrEmpty(allowCreateSub) ? Convert.ToInt32(allowCreateSub) : default(int?);
-                        base_MerchantInfo.AllowCreateCount = !string.IsNullOrEmpty(allowCreateCount) ? Convert.ToInt32(allowCreateCount) : default(int?);
-                        base_MerchantInfo.CreateUserID = createUserId;
-                        base_MerchantInfo.CreateType = (logType == (int)RoleType.XcUser || logType == (int)RoleType.XcAdmin) ? (int)CreateType.Xc : (logType == (int)RoleType.MerchUser ? (int)CreateType.Agent : 0);
+                        base_MerchantInfo.AllowCreateSub = ObjectExt.Toint(allowCreateSub);
+                        base_MerchantInfo.AllowCreateCount = ObjectExt.Toint(allowCreateCount);
+                        base_MerchantInfo.CreateUserID = (logType == (int)RoleType.XcUser || logType == (int)RoleType.XcAdmin) ? createUserId : 
+                                                            logType == (int)RoleType.MerchUser ? (userTokenKeyModel.DataModel as MerchDataModel).MerchID : string.Empty;
+                        base_MerchantInfo.CreateType = (logType == (int)RoleType.XcUser || logType == (int)RoleType.XcAdmin) ? (int)CreateType.Xc : 
+                                                            logType == (int)RoleType.MerchUser ? (int)CreateType.Agent : 0;
                         base_MerchantInfo.Comment = comment;
                         base_MerchantInfo.MerchTag = Convert.ToInt32(merchTag);
 
@@ -654,10 +656,12 @@ namespace XXCloudService.Api.XCCloud
                         base_MerchantInfo.Mobil = mobil;
                         base_MerchantInfo.WxOpenID = openId;
                         base_MerchantInfo.WxUnionID = unionId;
-                        base_MerchantInfo.AllowCreateSub = !string.IsNullOrEmpty(allowCreateSub) ? Convert.ToInt32(allowCreateSub) : default(int?);
-                        base_MerchantInfo.AllowCreateCount = !string.IsNullOrEmpty(allowCreateCount) ? Convert.ToInt32(allowCreateCount) : default(int?);
-                        base_MerchantInfo.CreateUserID = createUserId;
-                        base_MerchantInfo.CreateType = (logType == (int)RoleType.XcUser || logType == (int)RoleType.XcAdmin) ? (int)CreateType.Xc : (logType == (int)RoleType.MerchUser ? (int)CreateType.Agent : 0);
+                        base_MerchantInfo.AllowCreateSub = ObjectExt.Toint(allowCreateSub);
+                        base_MerchantInfo.AllowCreateCount = ObjectExt.Toint(allowCreateCount);
+                        base_MerchantInfo.CreateUserID = (logType == (int)RoleType.XcUser || logType == (int)RoleType.XcAdmin) ? createUserId :
+                                                            logType == (int)RoleType.MerchUser ? (userTokenKeyModel.DataModel as MerchDataModel).MerchID : string.Empty;
+                        base_MerchantInfo.CreateType = (logType == (int)RoleType.XcUser || logType == (int)RoleType.XcAdmin) ? (int)CreateType.Xc :
+                                                            logType == (int)RoleType.MerchUser ? (int)CreateType.Agent : 0;
                         base_MerchantInfo.Comment = comment;
                         base_MerchantInfo.MerchTag = Convert.ToInt32(merchTag);
                         if (!base_MerchantInfoService.Update(base_MerchantInfo))
@@ -859,7 +863,7 @@ namespace XXCloudService.Api.XCCloud
 
                     sql = " exec  SP_DictionaryNodes @MerchID,@DictKey,@RootID output ";
                     parameters = new SqlParameter[3];
-                    parameters[0] = new SqlParameter("@MerchID", string.Empty);
+                    parameters[0] = new SqlParameter("@MerchID", merchId);
                     parameters[1] = new SqlParameter("@DictKey", "商户类别");
                     parameters[2] = new SqlParameter("@RootID", 0);
                     parameters[2].Direction = System.Data.ParameterDirection.Output;

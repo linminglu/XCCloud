@@ -9,6 +9,73 @@
     .iframeBox{height: 100%;}
     .iframeBox .layui-tab-item{position: absolute;top:65px;left: 0;right: 0;bottom: 0;}
     .iframeBox iframe{border: none;min-width: 400px;}
+    .layui-form-onswitch{
+        border-color: #5FB878!important;
+        background-color: #5FB878!important;
+    }
+    .layui-form-switch{
+        height: 22px;
+        line-height: 22px;
+        width: 42px;
+        border: 1px solid #d2d2d2;
+        border-radius: 20px;
+        background-color: #fff;
+    }
+    .layui-form-switch em{
+        width: 25px;
+        color: #999!important;
+        font-size: 12px;}
+    .layui-form-switch i{
+        left: 5px;
+        top: 3px;
+        width: 16px;
+        height: 16px;
+        border-radius: 20px;
+        background-color: #d2d2d2;
+    }
+    .layui-form-onswitch i{
+        left: 32px;
+    }
+
+    #goodIsAll .layui-form-switch {
+        height: 36px;
+        line-height: 36px;
+        width: 180px;
+        border-radius: 5px;
+        border: 1px solid #orangered;
+        background-color: #999;
+    }
+
+    #goodIsAll .layui-form-switch i {
+        left: 0px;
+        top: 0px;
+        width: 95px;
+        height: 36px;
+        margin-top: -1px;
+        border-radius: 5px 0 0 5px;
+        border: 1px solid #aaa;
+        background-color: #fff;
+    }
+
+    #goodIsAll  .layui-form-switch em {
+        width: 80px;
+        color: #ffffff!important;
+        font-size: 14px;
+    }
+
+    #goodIsAll .layui-form-onswitch {
+        border-color: #1e9fff!important;
+        background-color: #1e9fff!important;
+    }
+
+    #goodIsAll  .layui-form-onswitch i {
+        left: 95px;
+        border-radius: 0 5px 5px 0;
+        border: 1px solid #aaa;
+        margin-top: -1px;
+    }
+
+
 </style>
 <body>
    <div class="layui-row">
@@ -49,13 +116,15 @@
          'cols':[
              {field:'FoodID', title:'套餐编号', align: 'center', sort: true}
              ,{field:'FoodName',title: '套餐名称', align: 'center'} //width 支持：数字、百分比和不填写。
+             ,{field:'ClientPrice', title: '散客价', align: 'center'}
+             ,{field:'MemberPrice', title: '会员价', align: 'center'}
              ,{field:'FoodTypeStr', title: '套餐类别', align: 'center'}
-             ,{field:'RechargeTypeStr', title: '充值方式', align: 'center'}
-             ,{field:'AllowInternetStr', title: '是否允许第三方', align: 'center'}
-             ,{field:'AllowPrintStr', title: '是否允许打印', align: 'center'}
-             ,{field:'ForeAuthorizeStr', title: '是否允许前台授权', align: 'center'}
-             ,{field:'StartTimeStr', title: '启用时间', align: 'center'}
-             ,{field:'EndTimeStr', title: '停用时间', align: 'center'}
+             // ,{field:'RechargeTypeStr', title: '充值方式', align: 'center'}
+             ,{field:'AllowInternet', title: '是否允许第三方', align: 'center',templet:'#internet'}
+             ,{field:'AllowPrint', title: '是否允许打印', align: 'center',templet:'#print'}
+             ,{field:'ForeAuthorize', title: '是否允许前台授权', align: 'center',templet:'#authorize'}
+             ,{field:'StartTime', title: '启用时间', align: 'center'}
+             ,{field:'EndTime', title: '停用时间', align: 'center'}
              ,{fixed: 'right', title: '操作', width:100, align:'center', toolbar: '#barDemo'}]
      };
      xc.getInitData(parm);
@@ -68,39 +137,6 @@
            xc.removeStorage('dpsAdd');
             if(layEvent === 'detail'){ //查看
                 xc.setStorage('foodId',foodId);
-                // if(data.FoodTypeStr=='售币'){
-                //     layer.open({
-                //         type:2,
-                //         title:'修改："'+foodName+'"套餐',
-                //         shade:0.6,
-                //         area:['1100px','500px'],
-                //         content:['packageSale.html','no']
-                //     });
-                // }else if(data.FoodTypeStr=='数字币'){
-                //     layer.open({
-                //         type:2,
-                //         title:'修改:"'+foodName+'"套餐',
-                //         shade:0.6,
-                //         area:['1100px','520px'],
-                //         content:['packageDigit.html','no']
-                //     })
-                // }else if(data.FoodTypeStr=='商品'){
-                //     layer.open({
-                //         type:2,
-                //         title:'修改商品套餐',
-                //         shade:0.6,
-                //         area:['1100px','565px'],
-                //         content:['packageGoods.html','no']
-                //     })
-                // } else if(data.FoodTypeStr=='门票'){
-                //     layer.open({
-                //         type:2,
-                //         title:'修改:"'+foodName+'"套餐',
-                //         shade:0.6,
-                //         area:['1100px','510px'],
-                //         content:['packageTickets.html','no']
-                //     })
-                // }else
                     if(data.FoodTypeStr=='混合'){
                     layer.open({
                         type:2,
@@ -116,5 +152,26 @@
 </script>
 <script type="text/html" id="barDemo">
     <a class="layui-btn layui-btn-xs" lay-event="detail"> <i class="layui-icon">&#xe642;</i>编辑</a>
+</script>
+<script type="text/html" id="internet">
+    {{# if(d.AllowInternet==1){ }}
+    <input type="checkbox" checked name="switch" lay-skin="switch" lay-text="允许|禁止" class="tb_check" lay-filter="test" disabled>
+    {{# }else{ }}
+    <input type="checkbox" name="switch" lay-skin="switch" lay-text="允许|禁止" class="tb_check" lay-filter="test" disabled>
+    {{#  } }}
+</script>
+<script type="text/html" id="print">
+    {{# if(d.State==1){ }}
+    <input type="checkbox" checked name="switch" lay-skin="switch" lay-text="允许|禁止" class="tb_check" lay-filter="test" disabled>
+    {{# }else{ }}
+    <input type="checkbox" name="switch" lay-skin="switch" lay-text="允许|禁止" class="tb_check" lay-filter="test" disabled>
+    {{#  } }}
+</script>
+<script type="text/html" id="authorize">
+    {{# if(d.ForeAuthorize==1){ }}
+    <input type="checkbox" checked name="switch" lay-skin="switch" lay-text="允许|禁止" class="tb_check" lay-filter="test"disabled >
+    {{# }else{ }}
+    <input type="checkbox" name="switch" lay-skin="switch" lay-text="允许|禁止" class="tb_check" lay-filter="test" disabled>
+    {{#  } }}
 </script>
 </html>

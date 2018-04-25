@@ -94,6 +94,14 @@ namespace XXCloudService.WeiXin
                             merchId = base_UserInfoModel.MerchID;
                             var dataModel = new MerchDataModel { StoreID = storeId, MerchID = merchId };
                             token = XCCloudUserTokenBusiness.SetUserToken(userId.ToString(), logType, dataModel);
+                            IBase_StoreInfoService base_StoreInfoService = BLLContainer.Resolve<IBase_StoreInfoService>();
+                            if (!base_StoreInfoService.Any(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)))
+                            {
+                                errMsg = "您所访问的门店不存在";
+                                Response.Redirect(WeiXinConfig.RedirectErrorPage + "?title=" + HttpUtility.UrlEncode("登录失败") + "&message=" + HttpUtility.UrlEncode(errMsg), false);
+                            }
+                            var base_StoreInfoModel = base_StoreInfoService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                            merchTag = base_StoreInfoModel.StoreTag;
                         }
                         else
                         {
@@ -104,7 +112,7 @@ namespace XXCloudService.WeiXin
                             }
 
                             logType = (int)RoleType.MerchUser;
-                            merchId = base_UserInfoModel.MerchID;
+                            merchId = base_UserInfoModel.MerchID;                            
                             IBase_MerchantInfoService base_MerchantInfoService = BLLContainer.Resolve<IBase_MerchantInfoService>();
                             if (!base_MerchantInfoService.Any(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)))
                             {
@@ -112,7 +120,7 @@ namespace XXCloudService.WeiXin
                                 Response.Redirect(WeiXinConfig.RedirectErrorPage + "?title=" + HttpUtility.UrlEncode("登录失败") + "&message=" + HttpUtility.UrlEncode(errMsg), false);
                             }
                             var base_MerchantInfoModel = base_MerchantInfoService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
-                            var dataModel = new MerchDataModel { MerchID = merchId, MerchType = base_MerchantInfoModel.MerchType, CreateType = base_MerchantInfoModel.CreateType, CreateUserID = base_MerchantInfoModel.CreateUserID };
+                            var dataModel = new MerchDataModel { MerchID = merchId, StoreID = string.Empty, MerchType = base_MerchantInfoModel.MerchType, CreateType = base_MerchantInfoModel.CreateType, CreateUserID = base_MerchantInfoModel.CreateUserID };
                             token = XCCloudUserTokenBusiness.SetUserToken(userId.ToString(), logType, dataModel);
                             merchTag = base_MerchantInfoModel.MerchTag;
                         }

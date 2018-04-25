@@ -26,10 +26,6 @@ namespace XXCloudService.Api.XCCloud
     /// </summary>
     public class Project : ApiBase
     {
-        //IData_ProjectInfoService data_ProjectInfoService = BLLContainer.Resolve<IData_ProjectInfoService>(resolveNew: true);
-        //IDict_BalanceTypeService dict_BalanceTypeService = BLLContainer.Resolve<IDict_BalanceTypeService>(resolveNew: true);
-        //IData_Project_StoreListService data_Project_StoreListService = BLLContainer.Resolve<IData_Project_StoreListService>(resolveNew: true);
-        //IData_Project_DeviceService data_Project_DeviceService = BLLContainer.Resolve<IData_Project_DeviceService>(resolveNew: true);
 
         /// <summary>
         /// 获取适用门店的主体数据
@@ -107,6 +103,49 @@ namespace XXCloudService.Api.XCCloud
         }
 
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object GetProjectGames(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                var gameTypeId = Dict_SystemBusiness.Instance.GetModels(p => p.DictKey.Equals("游戏机类型", StringComparison.OrdinalIgnoreCase) && p.PID == 0).FirstOrDefault().ID;
+                var projectGameId = Dict_SystemBusiness.Instance.GetModels(p => p.DictKey.Equals("游乐项目", StringComparison.OrdinalIgnoreCase) && p.PID == gameTypeId).FirstOrDefault().ID;
+                var linq = Dict_SystemBusiness.Instance.GetModels(p => p.PID == projectGameId).Select(o => new {
+                    ID = o.ID,
+                    Name = o.DictKey
+                });
+
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, linq);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object GetProjectBindGames(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                string errMsg = string.Empty;
+                var id = dicParas.ContainsKey("id") ? ObjectExt.Toint(dicParas["id"], 0) : 0;
+                if (id == 0)
+                {
+                    errMsg = "门票ID不能为空";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
+                var linq = Data_Project_BindGameBusiness.Instance.GetModels(p => p.ProjectID == id).Select(o => new { GameID = o.GameID });
+
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, linq);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object GetProjectInfo(Dictionary<string, object> dicParas)
         {
             try
@@ -154,6 +193,7 @@ namespace XXCloudService.Api.XCCloud
                 string balanceType = dicParas.ContainsKey("balanceType") ? (dicParas["balanceType"] + "") : string.Empty;
                 string balanceCount = dicParas.ContainsKey("balanceCount") ? (dicParas["balanceCount"] + "") : string.Empty;                
                 string note = dicParas.ContainsKey("note") ? (dicParas["note"] + "") : string.Empty;
+                object[] projectGames = dicParas.ContainsKey("projectGames") ? (object[])dicParas["projectGames"] : null;       
                 int iId = 0;
                 int.TryParse(id, out iId);
 
@@ -215,45 +255,103 @@ namespace XXCloudService.Api.XCCloud
 
                 #endregion
 
-                IData_ProjectInfoService data_ProjectInfoService = Data_ProjectInfoBusiness.Instance;
-                if (data_ProjectInfoService.Any(a => a.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) &&
-                    a.ProjectName.Equals(projectName, StringComparison.OrdinalIgnoreCase) && a.ID != iId))
+                //开启EF事务
+                using (TransactionScope ts = new TransactionScope())
                 {
-                    errMsg = "该项目名称已存在";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
-
-                var data_ProjectInfo = new Data_ProjectInfo();
-                data_ProjectInfo.ID = iId;
-                data_ProjectInfo.ProjectName = projectName;
-                data_ProjectInfo.PlayCount = ObjectExt.Toint(playCount); 
-                data_ProjectInfo.ExpireDays = ObjectExt.Toint(expireDays);
-                data_ProjectInfo.PlayOnceFlag = ObjectExt.Toint(playOnceFlag);
-                data_ProjectInfo.AccompanyFlag = ObjectExt.Toint(accompanyFlag);
-                data_ProjectInfo.AccompanyCash = ObjectExt.Toint(accompanyCash);
-                data_ProjectInfo.BalanceType = ObjectExt.Toint(balanceType);
-                data_ProjectInfo.BalanceCount = ObjectExt.Toint(balanceCount);
-                data_ProjectInfo.Note = note;
-                data_ProjectInfo.MerchID = merchId;
-                if (!data_ProjectInfoService.Any(a => a.ID == iId))
-                {
-                    //新增
-                    if (!data_ProjectInfoService.Add(data_ProjectInfo))
+                    try
                     {
-                        errMsg = "添加门票项目信息失败";
+                        IData_ProjectInfoService data_ProjectInfoService = Data_ProjectInfoBusiness.Instance;
+                        if (data_ProjectInfoService.Any(a => a.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) &&
+                            a.ProjectName.Equals(projectName, StringComparison.OrdinalIgnoreCase) && a.ID != iId))
+                        {
+                            errMsg = "该项目名称已存在";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
+                        var data_ProjectInfo = new Data_ProjectInfo();
+                        data_ProjectInfo.ID = iId;
+                        data_ProjectInfo.ProjectName = projectName;
+                        data_ProjectInfo.PlayCount = ObjectExt.Toint(playCount);
+                        data_ProjectInfo.ExpireDays = ObjectExt.Toint(expireDays);
+                        data_ProjectInfo.PlayOnceFlag = ObjectExt.Toint(playOnceFlag);
+                        data_ProjectInfo.AccompanyFlag = ObjectExt.Toint(accompanyFlag);
+                        data_ProjectInfo.AccompanyCash = ObjectExt.Toint(accompanyCash);
+                        data_ProjectInfo.BalanceType = ObjectExt.Toint(balanceType);
+                        data_ProjectInfo.BalanceCount = ObjectExt.Toint(balanceCount);
+                        data_ProjectInfo.Note = note;
+                        data_ProjectInfo.MerchID = merchId;
+                        if (!data_ProjectInfoService.Any(a => a.ID == iId))
+                        {
+                            //新增
+                            if (!data_ProjectInfoService.Add(data_ProjectInfo))
+                            {
+                                errMsg = "添加门票项目信息失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+                        }
+                        else
+                        {
+                            //修改
+                            if (!data_ProjectInfoService.Update(data_ProjectInfo))
+                            {
+                                errMsg = "修改门票项目信息失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+                        }
+
+                        iId = data_ProjectInfo.ID;
+
+                        //保存绑定游乐项目
+                        if (projectGames != null && projectGames.Count() >= 0)
+                        {
+                            //先删除，后添加
+                            var data_Project_BindGameService = Data_Project_BindGameBusiness.Instance;
+                            foreach (var model in data_Project_BindGameService.GetModels(p => p.ProjectID == iId))
+                            {
+                                data_Project_BindGameService.DeleteModel(model);
+                            }
+
+                            foreach (IDictionary<string, object> el in projectGames)
+                            {
+                                if (el != null)
+                                {
+                                    var dicPara = new Dictionary<string, object>(el, StringComparer.OrdinalIgnoreCase);
+                                    var gameId = dicPara.ContainsKey("gameId") ? ObjectExt.Toint(dicPara["gameId"], 0) : 0;                                    
+
+                                    if (gameId == 0)
+                                    {
+                                        errMsg = "游乐项目ID不能为空";
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    }
+
+                                    var data_Project_BindGame = new Data_Project_BindGame();
+                                    data_Project_BindGame.ProjectID = iId;
+                                    data_Project_BindGame.GameID = gameId;
+                                    data_Project_BindGameService.AddModel(data_Project_BindGame);
+                                }
+                                else
+                                {
+                                    errMsg = "提交数据包含空对象";
+                                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                }
+                            }
+
+                            if (!data_Project_BindGameService.SaveChanges())
+                            {
+                                errMsg = "绑定游乐项目信息失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+                        }
+
+                        ts.Complete();
+                    }
+                    catch (Exception ex)
+                    {
+                        errMsg = ex.Message;
                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                     }
                 }
-                else
-                {
-                    //修改
-                    if (!data_ProjectInfoService.Update(data_ProjectInfo))
-                    {
-                        errMsg = "修改门票项目信息失败";
-                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                    }
-                }
-
+                
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
             }
             catch (Exception e)
@@ -267,9 +365,6 @@ namespace XXCloudService.Api.XCCloud
         {
             try
             {
-                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
-
                 string errMsg = string.Empty;
                 string projectIds = dicParas.ContainsKey("projectIds") ? (dicParas["projectIds"] + "") : string.Empty;
 

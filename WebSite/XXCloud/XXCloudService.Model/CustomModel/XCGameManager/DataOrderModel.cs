@@ -26,9 +26,11 @@ namespace XCCloudService.Model.CustomModel.XCGameManager
         public string Totalmoney { set; get; }
 
         [DataMember(Name = "BuyTypelist", Order = 7)]
-        public List<DataOrderModelBuyType> BuyTypelist { set; get; }
+        public List<string> BuyTypelist { set; get; }
         [DataMember(Name = "StoreNamelist", Order = 8)]
-        public List<DataOrderModelStoreName> StoreNamelist { set; get; }
+        public List<string> StoreNamelist { set; get; }
+        [DataMember(Name = "PayTypelist", Order = 9)]
+        public List<string> PayTypelist { set; get; }
 
     }
     [DataContract]
@@ -64,6 +66,14 @@ namespace XCCloudService.Model.CustomModel.XCGameManager
         public string StoreName { set; get; }
         [DataMember(Name = "Coins", Order = 11)]
         public int Coins { set; get; }
+        [DataMember(Name = "payStatus", Order = 12)]
+        public int PayStatus { set; get; }
+        [DataMember(Name = "orderType", Order = 13)]
+        public int OrderType { set; get; }
+        [DataMember(Name = "payStatusName", Order = 14)]
+        public string PayStatusName { set; get; }
+        [DataMember(Name = "orderTypeName", Order = 15)]
+        public string OrderTypeName { set; get; }
     }
 
     [DataContract]

@@ -89,6 +89,7 @@ as
 			SET @sql = @sql + ' and PID=@RootID'
 		end
 	--exec (@sql)
+	SET @sql = @sql + ' order by OrderID'
 	exec sp_executesql @sql, N'@MerchID nvarchar(15), @DictKey nvarchar(50), @RootID int', @MerchID, @DictKey, @RootID
  end
 
@@ -100,15 +101,17 @@ as
 	declare @MerchTag int = 0
 	select @MerchTag=MerchTag from Base_MerchantInfo where MerchID=@MerchID
 	select distinct a.ParentID, a.FunctionID, a.FunctionName, (case when c.FunctionEN is null then (case when b.FunctionEN is null then null else b.FunctionEN end) else c.FunctionEN end) as FunctionEN
-	from Dict_FunctionMenu a left join (select b.MerchID,c.FunctionID,c.FunctionEN from Base_MerchantInfo a inner join Base_UserInfo b on a.CreateUserID=b.UserID inner join Base_MerchFunction c on b.MerchID=c.MerchID and a.MerchType=3) b on a.FunctionID=b.FunctionID
+	from Dict_FunctionMenu a 
+	left join (select b.MerchID,c.FunctionID,c.FunctionEN from Base_MerchantInfo a 
+				inner join Base_MerchantInfo b on a.MerchID=b.CreateUserID
+				inner join Base_MerchFunction c on a.MerchID=c.MerchID where a.MerchType=3
+				) b on a.FunctionID=b.FunctionID and b.MerchID=@MerchID
 	left join Base_MerchFunction c on a.FunctionID=c.FunctionID and c.MerchID=@MerchID 
-	where a.MenuType in (1, case when @MerchTag=1 then 5 else 1 end)
+	where a.MenuType = 1 and a.UseType in (0, @MerchTag)
 	order by a.ParentID, a.FunctionID
  end
 
-GO
-
-CREATE Proc [dbo].[SP_GetMenus](@LogType int, @LogID int, @MerchID varchar(15))
+CREATE Proc [dbo].[SP_GetMenus](@LogType int, @LogID int, @MerchID varchar(15), @StoreID varchar(15))
 as
 begin
 	
@@ -116,9 +119,11 @@ begin
 	if @LogType=3 --商户用户
 	begin
 		declare @MerchType int 
-		SELECT @MerchType=MerchType FROM Base_MerchantInfo WHERE MerchID=@MerchID
+		declare @MerchTag int 
+		SELECT @MerchType=MerchType, @MerchTag=MerchTag FROM Base_MerchantInfo WHERE MerchID=@MerchID
 		insert into #MENU
 		select FunctionID from Dict_FunctionMenu where MenuType=(case when @MerchType in (1, 2) then 3 when @MerchType=3 then 4 else null end)
+														and UseType in (0, @MerchTag)
 	end
 	else if @LogType=1 --莘宸管理员
 	begin
@@ -134,8 +139,17 @@ begin
 	end
 	else if @LogType=2 --门店用户
 	begin
+		declare @StoreTag int 
+		SELECT @StoreTag=StoreTag FROM Base_StoreInfo WHERE StoreID=@StoreID
 		insert into #MENU
-		select FunctionID from Dict_FunctionMenu where MenuType=1
+		select distinct a.FunctionID
+		from Dict_FunctionMenu a 
+		left join (select b.MerchID,c.FunctionID,c.FunctionEN from Base_MerchantInfo a 
+					inner join Base_MerchantInfo b on a.MerchID=b.CreateUserID
+					inner join Base_MerchFunction c on a.MerchID=c.MerchID where a.MerchType=3
+					) b on a.FunctionID=b.FunctionID and b.MerchID=@MerchID
+		left join Base_MerchFunction c on a.FunctionID=c.FunctionID and c.MerchID=@MerchID 
+		where a.MenuType = 1 and a.UseType in (0, @StoreTag) and (c.FunctionEN=1 or b.FunctionEN=1)
 	end
 					
 	;WITH 

@@ -42,7 +42,7 @@
 		</div>
 	</div>
 
-	<form action="" class="formStore layui-form" style="display: none;padding: 15px;">
+	<form action="" class="formStore layui-form layui-form-pane" style="display: none;padding: 15px;">
 		<div class="layui-tab">
 			<ul class="layui-tab-title">
 				<li class="layui-this">常规设置</li>
@@ -62,11 +62,21 @@
 						<div class="layui-form-mid layui-word-aux">直属门店或单门店不填</div>
 					</div>
 					<div class="layui-form-item">
-						<label class="layui-form-label">门头名称</label>
-						<div class="layui-input-inline" style="width: 300px;">
-							<input type="text" name="title" id="storeName" required  lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input">
+						<div class="layui-inline">
+							<label class="layui-form-label">门头名称</label>
+							<div class="layui-input-inline">
+								<input type="text" name="title" id="storeName" required  lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input">
+							</div>
+							<div class="layui-form-mid layui-word-aux" style="padding: 0!important;">
+								<button type="button" class="layui-btn" id="lookPassword">消费密码</button>
+							</div>
 						</div>
-						<div class="layui-form-mid layui-word-aux" style="padding: 0!important;"><input type="text" placeholder="消费密码" class="layui-input" id="lookPassword"></div>
+						<div class="layui-inline">
+							<label class="layui-form-label">门头标签</label>
+							<div class="layui-input-inline">
+								<input type="checkbox" name="zzz" lay-filter="StoreTag" lay-skin="switch" lay-text="博彩场地|游乐场地"  id="StoreTag">
+							</div>
+						</div>
 					</div>
 					<div class="layui-form-item">
 						<label class="layui-form-label">到期日期</label>
@@ -615,11 +625,10 @@
 <script src="js/manchartSystem.js"></script>
 <script>
         var token=getStorage('token'),logType=getStorage('logType'),bankTypes='',selttleTypes='',storeStatusModify='',settleTypeModify='';
-        layui.use(['form', 'layedit'], function() {
-            var form = layui.form
-                , layer = layui.layer
-                , layedit = layui.layedit
-                , laydate = layui.laydate;
+        let StoreTag=0;
+        layui.use('form', function() {
+            var form = layui.form;
+
             form.on('select(bankType)', function(data){
                 bankTypes=data.value;
             });
@@ -638,6 +647,13 @@
                     $('.payWayNeed').find('li').eq(0).addClass('layui-hide');
                 }
             });
+            form.on('switch()',function (data) {
+				if(data.elem.checked==true){
+				    StoreTag=1;
+				}else {
+				    StoreTag=0;
+				}
+            })
 
         });
         var parm={'url':'/XCCloud/StoreInfo?action=GetStoreList',
@@ -790,6 +806,13 @@
                                         $('#nameModify').val(data.result_data.Contacts);
                                         $('#mobileModify').val(data.result_data.Mobile);
                                         $('#settleTypeModify').val(data.result_data.SelttleTypeStr);
+                                        StoreTag=data.result_data.StoreTag;
+                                        if(data.result_data.StoreTag==1){
+                                            $('#StoreTag').attr('checked',true)
+										}else {
+                                            $('#StoreTag').attr('checked',false)
+										}
+										form.render();
                                         laydate.render({
                                             elem: '#authDataModify'
                                             ,value: dateStamp(data.result_data.AuthorExpireDate) //必须遵循format参数设定的格式

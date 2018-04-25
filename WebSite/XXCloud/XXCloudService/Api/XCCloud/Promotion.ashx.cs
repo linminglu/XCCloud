@@ -198,8 +198,6 @@ namespace XXCloudService.Api.XCCloud
                             data_Food_LevelModel.VIPPrice = Convert.ToDecimal(vip);
                             data_Food_LevelModel.day_sale_count = Convert.ToInt32(day_sale_count);
                             data_Food_LevelModel.member_day_sale_count = Convert.ToInt32(member_day_sale_count);
-                            //data_Food_LevelModel.StartDate = startTime;
-                            //data_Food_LevelModel.EndDate = endTime;
                             data_Food_LevelModel.UpdateLevelID = !string.IsNullOrEmpty(updateLevelId) ? Convert.ToInt32(updateLevelId) : (int?)null;
                             foodLevelList.Add(data_Food_LevelModel);
                             dbContext.Entry(data_Food_LevelModel).State = EntityState.Added;
@@ -417,6 +415,34 @@ namespace XXCloudService.Api.XCCloud
                 var data_FoodInfo = data_FoodInfoService.SqlQuery<Data_FoodInfoListModel>(sql, parameters).ToList();
                 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, data_FoodInfo);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        /// <summary>
+        /// 获取入会套餐
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object GetMemberFoodDic(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
+
+                var linq = from a in Data_FoodInfoBusiness.Instance.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.FoodState == 1 && p.FoodType == (int)FoodType.Member)                          
+                           select new
+                           {
+                               FoodID = a.FoodID,
+                               FoodName = a.FoodName
+                           };
+
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, linq);
             }
             catch (Exception e)
             {
@@ -742,45 +768,17 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 string errMsg = string.Empty;
+                Dictionary<string, string> imageInfo = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
-                #region 验证参数
-
-                var file = HttpContext.Current.Request.Files[0];
-                if (file == null)
+                List<string> imageUrls = null;
+                if (!Utils.UploadImageFile("/XCCloud/Promotion/Food/", out imageUrls, out errMsg))
                 {
-                    errMsg = "未找到图片";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
-                if (file.ContentLength > int.Parse(System.Configuration.ConfigurationManager.AppSettings["MaxImageSize"].ToString()))
-                {
-                    errMsg = "超过图片的最大限制为1M";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
+                imageInfo.Add("ImageURL", imageUrls.FirstOrDefault());
 
-                #endregion
-
-                string picturePath = System.Configuration.ConfigurationManager.AppSettings["UploadImageUrl"].ToString() + "/XCCloud/Promotion/Food/";
-                string path = System.Web.HttpContext.Current.Server.MapPath(picturePath);
-                //如果不存在就创建file文件夹
-                if (Directory.Exists(path) == false)
-                {
-                    Directory.CreateDirectory(path);
-                }
-
-                string fileName = Path.GetFileNameWithoutExtension(file.FileName) + Utils.ConvertDateTimeToLong(DateTime.Now) + Path.GetExtension(file.FileName);
-
-                if (File.Exists(path + fileName))
-                {
-                    errMsg = "图片名称已存在，请重命名后上传";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
-
-                file.SaveAs(path + fileName);
-
-                Dictionary<string, string> dicStoreInfo = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-                dicStoreInfo.Add("ImageURL", picturePath + fileName);
-                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, dicStoreInfo);
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, imageInfo);
             }
             catch (Exception e)
             {

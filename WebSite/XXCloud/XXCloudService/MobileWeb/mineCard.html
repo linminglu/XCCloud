@@ -8,10 +8,9 @@
     <!-- 引入样式 -->
     <link rel="stylesheet" href="css/ydui.rem.css">
     <!-- 引入rem自适应类库 -->
-
+    <script src="js/ydui.flexible.js"></script>
     <style>
         .section_image{width: 1rem;height: 0.7rem;display: inline-block;margin-top: 0.16rem;}
-        .section_image img{width: 1rem;height: 0.7rem;display: flex;}
         .section_items{display:flex;flex-direction: row;justify-content: space-between;padding:0.3rem;border-bottom:1px solid #ddd;position: relative;}
         .section_cont{width:4rem;font-size:0.26rem;color:#a9a9a9;}
         .BuyCoins{display: inline-block;width:0.8rem;height:0.8rem;font-size:0.26rem;border-radius:100%;background:#d24a58;line-height: 0.8rem;color:#fff;text-align: center; margin-top:0.16rem;  }
@@ -21,157 +20,163 @@
         .hid_cont{ display:flex;flex-direction: row;justify-content: space-between;padding: 0.2rem 0.3rem;  border-bottom:1px solid #ddd;font-size: 0.3rem;color: #999;  }
         .hid_btn{height: 0.5rem;font-size: 0.24rem;line-height: 0.5rem;margin-top: 0.1rem;color: #fff;background: #1E90FF;}
         .hid_contSty{display: flex;flex-direction: row;}
-        .hid_contStys{width: 1.2rem;text-align: left;color: #d24a58;}
+        .hid_contStys{width: 1.6rem;text-align: left;color: #d24a58;}
 
     </style>
 </head>
 <body>
 <div id="app">
-    <yd-list theme="4">
-        <yd-list-item v-for="(item,index) in memberCard" :key="index">
-            <div class='section_items'>
-                <img slot="img" src="images/card.png">
-                <yd-list-other slot="other">
-                    <div class='hid_contSty'>
-                        <p class='hid_contStys'>卡号：</p>
-                        <p>{{item.icCardID}}</p>
-                    </div>
-                    <div class='hid_contSty'>
-                        <p class='hid_contStys'>级别：</p>
-                        <p>{{item.memberLevelName}}</p>
-                    </div>
-                    <div class='hid_contSty'>
-                        <p class='hid_contStys'>店名：</p>
-                        <p>{{item.storeName}}</p>
-                    </div>
-                </yd-list-other>
-                <div class="BuyCoins">
-                    <p>充值</p>
+    <div v-for="(item,index) in memberCard" :key="index">
+        <div class='section_items' @click="dropdown(index)">
+            <img class="section_image" slot="img" src="images/card.png">
+            <div class="section_cont">
+                <div class='hid_contSty'>
+                    <p class='hid_contStys'>卡号：</p>
+                    <p>{{item.icCardID}}</p>
+                </div>
+                <div class='hid_contSty'>
+                    <p class='hid_contStys'>级别：</p>
+                    <p>{{item.memberLevelName}}</p>
+                </div>
+                <div class='hid_contSty'>
+                    <p class='hid_contStys'>店名：</p>
+                    <p>{{item.storeName}}</p>
                 </div>
             </div>
-            <div class='hid_cont' v-if="item.hidden">
-                <div class="hid_contLeft">
-                    <div class='hid_contSty'>
-                        <p class='hid_contStys'>币余额：</p>
-                        <p>{{item.balance}}</p>
-                    </div>
-                    <div class='hid_contSty'>
-                        <p class='hid_contStys'>彩票：</p>
-                        <p>{{item.lottery}}</p>
-                    </div>
-                    <div class='hid_contSty'>
-                        <p class='hid_contStys'>积分：</p>
-                        <p>{{item.point}}</p>
-                    </div>
+            <div class="BuyCoins" @click.stop="topUp(index)">
+                <p>充值</p>
+            </div>
+        </div>
+        <div class='hid_cont' v-if="item.hidden">
+            <div class="hid_contLeft">
+                <div class='hid_contSty'>
+                    <p class='hid_contStys'>币余额：</p>
+                    <p>{{item.balance}}</p>
                 </div>
-                <div class="hid_contLeft">
-                    <div class='hid_contSty'>
-                        <p class='hid_contStys'>到期日期：</p>
-                        <p>{{item.endDate}}</p>
-                    </div>
-                    <div class='hid_contSty'>
-                        <p class='hid_contStys'>押金：</p>
-                        <p>{{item.deposit}}</p>
-                    </div>
-                    <yd-button @click.stop.native="openCustomConfrim" size="small">流水账单</yd-button>
+                <div class='hid_contSty'>
+                    <p class='hid_contStys'>彩票：</p>
+                    <p>{{item.lottery}}</p>
+                </div>
+                <div class='hid_contSty'>
+                    <p class='hid_contStys'>积分：</p>
+                    <p>{{item.point}}</p>
                 </div>
             </div>
-        </yd-list-item>
-    </yd-list>
+            <div class="hid_contLeft">
+                <div class='hid_contSty'>
+                    <p class='hid_contStys'>到期日期：</p>
+                    <p>{{item.endDate}}</p>
+                </div>
+                <div class='hid_contSty'>
+                    <p class='hid_contStys'>押金：</p>
+                    <p>{{item.deposit}}</p>
+                </div>
+                <yd-button @click.stop.native="laundryList(index)" size="small">流水账单</yd-button>
+            </div>
+        </div>
+    </div>
 </div>
-<script src="js/ydui.flexible.js"></script>
+
 <!-- 引入 Vue -->
 <script src="js/vue.js"></script>
 <script src="js/jquery-1.8.3-min.js"></script>
 <!-- 引入组件库 -->
 <script src="js/ydui.rem.js"></script>
 <script src="js/axios.min.js"></script>
-<script src="js/alipayjsapi.min.js"></script>
-<script src="https://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
 <script>
     var sysId = 0; //调用方应用Id
     var versionNo= "0.89"; //版本号
     var htmlfnc = new Vue({
         el: '#app',
         data:{
+            memberCard:""
         },
         mounted: function () {
             this.Load();
         },
         methods: {
             Load:function () {
-            },
-            btnClick:function () {
                 var that =this;
-                if (/MicroMessenger/.test(window.navigator.userAgent)) {
-                    wx.scanQRCode({
-                        needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
-                        scanType: ["qrCode","barCode"], // 可以指定扫二维码还是一维码，默认二者都有
-                        success: function (res) {
-                            var result = res.resultStr; // 当needResult 为 1 时，扫码返回的结果
-                            console.log(result);
-                            alert(JSON.stringify(result));
-                            that.jumpFnc();
-                        }
-                    });
-                } else if (/AlipayClient/.test(window.navigator.userAgent)) {
-                    AlipayJSBridge.call('scan', {
-                        type: 'qr',
-                        actionType: 'scan'
-                    }, function(result) {
-                        alert(JSON.stringify(result));
-                        that.jumpFnc();
-                    });
-                } else {
-                    that.$dialog.toast({
-                        mes: "暂不支持此浏览器!",
-                        timeout:1500,
-                        icon: 'error'
-                    });
-                    console.log("")
-                }
+                var mobileToken = getStorage("mobileToken");//获取手机令牌
+                console.log(mobileToken);
+                this.$dialog.loading.open('');
+                var obj={
+                    sysId: sysId,
+                    versionNo: versionNo,
+                    mobileToken: mobileToken
+                };
+                axios.post('/XCGameMana/Member?action=getMemberCard', obj).then(function (res) {
+                    that.$dialog.loading.close();
+                    that.msgPrompt(res.data);
+                    console.log(res.data);
+                    if (res.data.result_code === '1') {
+                        var memberCard_ = [];
+                        for (var i = 0; i < res.data.result_data.length; i++) memberCard_.push({
+                            memberLevelName: res.data.result_data[i].MemberLevelName,
+                            mobile: res.data.result_data[i].Phone,
+                            endDate: res.data.result_data[i].EndTime,
+                            icCardID: res.data.result_data[i].ICCardID,
+                            storeId: res.data.result_data[i].StoreId,
+                            storeName: res.data.result_data[i].StoreName,
+                            memberToken: res.data.result_data[i].Token,
+                            hidden: false,
+                            balance: "",
+                            point: "",
+                            deposit: "",
+                            lottery: ""
+                        });
+                        that.memberCard = memberCard_;
+                        console.log(that.memberCard)
+                    }
+                }).catch(function (err) {
+                    that.$dialog.loading.close();
+                    console.log(err);
+                })
 
             },
-            register1:function () {
-                window.location.href = "home.html"
-            },
-            register2:function () {
-                window.location.href = "MyOrder.html"
-            },
-            jumpFnc:function (result) {
+            dropdown:function (index) {
                 var that =this;
-                var str = result.split("/");
-                var strCode = str[str.length - 2];
-                console.log(strCode == "m");
-                if (strCode=="m"){
-                    var deviceToken = str[str.length - 1];//扫码获得终端号解析
-                    this.$dialog.loading.open('');
-                    var obj={sysId: sysId, versionNo: versionNo, deviceToken:deviceToken};
-                    axios.post('/xcgamemana/store?action=storeInfoByTerminalNo', obj).then(function (res) {
-                        that.$dialog.loading.close();
-                        that.msgPrompt(res.data);
-                        console.log(res.data);
-                        if (res.data.result_code === '1') {
-                            setStorage("deviceToken",deviceToken);
-                            switch (res.data.result_data.deviceType) {
-                                case "自助提币机":
-                                    window.location.href = "CurrencyOperation.html";
-                                    break;
-                                case "自助存币机":
-                                    window.location.href = "CurrencyOperation.html";
-                                    break;
-                                case "游戏机":
-                                    window.location.href = "games.html";
-                                    break;
-                                default:
-                                    break;
+                this.$dialog.loading.open('');
+                var obj={
+                    sysId: sysId,
+                    versionNo: versionNo,
+                    memberToken: that.memberCard[index].memberToken
+                };
+                axios.post('/xcgame/member?action=getInfo', obj).then(function (res) {
+                    that.$dialog.loading.close();
+                    that.msgPrompt(res.data);
+                    console.log(res.data);
+                    if (res.data.result_code === '1') {
+                        that.memberCard[index].balance = res.data.result_data.balance;
+                        that.memberCard[index].deposit = res.data.result_data.deposit;
+                        that.memberCard[index].lottery = res.data.result_data.lottery;
+                        that.memberCard[index].point = res.data.result_data.point;
+                        if(that.memberCard[index].hidden){
+                            that.memberCard[index].hidden = false;
+                        }else {
+                            for (var i = 0; i < that.memberCard.length; i++) {
+                                that.memberCard[i].hidden = false;
                             }
+                            that.memberCard[index].hidden = true
                         }
-                    }).catch(function (err) {
-                        that.$dialog.loading.close();
-                        console.log(err);
-                    });
-                }
+                    }
+                }).catch(function (err) {
+                    that.$dialog.loading.close();
+                    console.log(err);
+                })
+            },
+            laundryList:function (index) {
+                var that = this;
+                var memberToken = that.memberCard[index].memberToken;
+                console.log(that.memberCard[index].memberToken);
+                setStorage("billListmemberToken",memberToken);
+                window.location.href = "billList.html";
+            },
+            topUp:function (index) {
+                var that = this;
+                var memberTokens = {storeId: that.memberCard[index].storeId, memberToken: that.memberCard[index].memberToken};
+                setStorage("memberTokens",memberTokens);
+                window.location.href = "mall.html"
             },
             msgPrompt:function (res) {
                 if(res.return_code == 0){

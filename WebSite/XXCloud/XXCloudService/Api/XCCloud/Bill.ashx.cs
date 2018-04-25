@@ -57,42 +57,15 @@ namespace XXCloudService.Api.XCCloud
         {
             try
             {
-                string errMsg = string.Empty;
+                string errMsg = string.Empty;              
 
-                #region 验证参数
-                
-                var file = HttpContext.Current.Request.Files[0];                
-                if (file == null)
+                List<string> imageUrls = null;
+                if (!Utils.UploadImageFile("/XCCloud/Bill/", out imageUrls, out errMsg))
                 {
-                    errMsg = "未找到图片";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
-                if (file.ContentLength > int.Parse(System.Configuration.ConfigurationManager.AppSettings["MaxImageSize"].ToString()))
-                {
-                    errMsg = "超过图片的最大限制为1M";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
-                #endregion
-                
-                string picturePath = System.Configuration.ConfigurationManager.AppSettings["UploadImageUrl"].ToString() + "/XCCloud/Bill/";
-                string path = System.Web.HttpContext.Current.Server.MapPath(picturePath);
-                //如果不存在就创建file文件夹
-                if (Directory.Exists(path) == false)
-                {
-                    Directory.CreateDirectory(path);
-                }
-
-                string fileName = Path.GetFileNameWithoutExtension(file.FileName) + Utils.ConvertDateTimeToLong(DateTime.Now) + Path.GetExtension(file.FileName);
-                if (File.Exists(path + fileName))
-                {
-                    errMsg = "图片名称已存在，请重命名后上传";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
-                
-                file.SaveAs(path + fileName);
-
-                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, new { PicturePath = (picturePath + fileName) });
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, new { PicturePath = imageUrls.FirstOrDefault() });
             }
             catch (Exception e)
             {
@@ -379,43 +352,15 @@ namespace XXCloudService.Api.XCCloud
         {            
             try
             {
-                string errMsg = string.Empty;
-                                
-                #region 验证参数
-                
-                var file = HttpContext.Current.Request.Files[0];
-                if (file == null)
-                {
-                    errMsg = "未找到图片";
-                    return ToAnonymousObject(msg: errMsg);
-                }
-                if (file.ContentLength > int.Parse(System.Configuration.ConfigurationManager.AppSettings["MaxImageSize"].ToString()))
-                {
-                    errMsg = "超过图片的最大限制为1M";
-                    return ToAnonymousObject(msg: errMsg);
-                }
-                
-                #endregion
+                string errMsg = string.Empty;                                           
 
-                string picturePath = System.Configuration.ConfigurationManager.AppSettings["UploadImageUrl"].ToString() + "/XCCloud/Bill/";
-                string path = System.Web.HttpContext.Current.Server.MapPath(picturePath);
-                //如果不存在就创建file文件夹
-                if (Directory.Exists(path) == false)
+                List<string> imageUrls = null;
+                if (!Utils.UploadImageFile("/XCCloud/Bill/", out imageUrls, out errMsg))
                 {
-                    Directory.CreateDirectory(path);
-                }
-                
-                //string fileName = Path.GetFileName(file.FileName);
-                string fileName = Path.GetFileNameWithoutExtension(file.FileName) + Utils.ConvertDateTimeToLong(DateTime.Now) + Path.GetExtension(file.FileName);
-                if (File.Exists(path + fileName))
-                {
-                    errMsg = "图片名称已存在，请重命名后上传";
                     return ToAnonymousObject(msg: errMsg);
                 }
-                
-                file.SaveAs(path + fileName);
 
-                return ToAnonymousObject(code: 0, src: (picturePath + fileName));
+                return ToAnonymousObject(code: 0, src: imageUrls.FirstOrDefault());
             }
             catch (Exception e)
             {

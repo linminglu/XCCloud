@@ -20,6 +20,8 @@ using Microsoft.SqlServer.Server;
 using XCCloudService.Common.Enum;
 using XCCloudService.Common.Extensions;
 using System.Transactions;
+using System.Data.Entity.Validation;
+using XXCloudService.Api.XCCloud.Common;
 
 namespace XCCloudService.Api.XCCloud
 {
@@ -889,6 +891,10 @@ namespace XCCloudService.Api.XCCloud
 
                         ts.Complete();
                     }
+                    catch (DbEntityValidationException e)
+                    {
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, e.EntityValidationErrors.ToErrors());
+                    }
                     catch (Exception ex)
                     {
                         errMsg = ex.Message;
@@ -936,6 +942,11 @@ namespace XCCloudService.Api.XCCloud
             }
         }
 
+        /// <summary>
+        /// 获取绑定开卡套餐
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object GetMemberLevelFoodList(Dictionary<string, object> dicParas)
         {
@@ -950,16 +961,14 @@ namespace XCCloudService.Api.XCCloud
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
-                int iMemberLevelID = Convert.ToInt32(memberLevelID);
-
-                IData_MemberLevel_FoodService data_MemberLevel_FoodService = Data_MemberLevel_FoodBusiness.NewInstance;
-                IData_FoodInfoService data_FoodInfoService = Data_FoodInfoBusiness.NewInstance;                
-                var linq = from a in data_MemberLevel_FoodService.GetModels(p => p.MemberLevelID == iMemberLevelID)
-                           join b in data_FoodInfoService.GetModels(p => p.FoodState == 1 && p.FoodType == (int)FoodType.Member) on a.FoodID equals b.FoodID
+                int iMemberLevelID = Convert.ToInt32(memberLevelID);              
+                var linq = from a in Data_MemberLevel_FoodBusiness.NewInstance.GetModels(p => p.MemberLevelID == iMemberLevelID)
+                           join b in Data_FoodInfoBusiness.NewInstance.GetModels() on a.FoodID equals b.FoodID
                            select new { 
                                FoodID = b.FoodID,
                                FoodName = b.FoodName
                            };
+
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, linq);
             }
             catch (Exception e)
@@ -983,8 +992,8 @@ namespace XCCloudService.Api.XCCloud
                 }
 
                 int iMemberLevelID = Convert.ToInt32(memberLevelID);
-                IData_MemberLevelFreeService data_MemberLevelFreeService = Data_MemberLevelFreeBusiness.Instance;
-                var linq = data_MemberLevelFreeService.GetModels(p => p.MemberLevelID == iMemberLevelID);
+                var linq = Data_MemberLevelFreeBusiness.Instance.GetModels(p => p.MemberLevelID == iMemberLevelID);
+
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, linq);
             }
             catch (Exception e)
@@ -999,45 +1008,17 @@ namespace XCCloudService.Api.XCCloud
             try
             {
                 string errMsg = string.Empty;
+                Dictionary<string, string> imageInfo = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
-                #region 验证参数
-
-                var file = HttpContext.Current.Request.Files[0];
-                if (file == null)
+                List<string> imageUrls = null;
+                if (!Utils.UploadImageFile("/XCCloud/GameInfo/Photo/", out imageUrls, out errMsg))
                 {
-                    errMsg = "未找到图片";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
-                if (file.ContentLength > int.Parse(System.Configuration.ConfigurationManager.AppSettings["MaxImageSize"].ToString()))
-                {
-                    errMsg = "超过图片的最大限制为1M";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
+                imageInfo.Add("CardUIURL", imageUrls.FirstOrDefault());
 
-                #endregion
-
-                string picturePath = System.Configuration.ConfigurationManager.AppSettings["UploadImageUrl"].ToString() + "/XCCloud/Store/Member/";
-                string path = System.Web.HttpContext.Current.Server.MapPath(picturePath);
-                //如果不存在就创建file文件夹
-                if (Directory.Exists(path) == false)
-                {
-                    Directory.CreateDirectory(path);
-                }
-
-                string fileName = Path.GetFileNameWithoutExtension(file.FileName) + Utils.ConvertDateTimeToLong(DateTime.Now) + Path.GetExtension(file.FileName);
-
-                if (File.Exists(path + fileName))
-                {
-                    errMsg = "图片名称已存在，请重命名后上传";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
-
-                file.SaveAs(path + fileName);
-
-                Dictionary<string, string> dicStoreInfo = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-                dicStoreInfo.Add("CardUIURL", picturePath + fileName);
-                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, dicStoreInfo);
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, imageInfo);
             }
             catch (Exception e)
             {

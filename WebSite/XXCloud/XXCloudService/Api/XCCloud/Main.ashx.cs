@@ -35,13 +35,15 @@ namespace XXCloudService.Api.XCCloud
                 string logId = userTokenKeyModel.LogId;
                 int logType = (int)userTokenKeyModel.LogType;
                 string merchId = (userTokenKeyModel.DataModel != null) ? (userTokenKeyModel.DataModel as MerchDataModel).MerchID : string.Empty;
+                string storeId = (userTokenKeyModel.DataModel != null) ? (userTokenKeyModel.DataModel as MerchDataModel).StoreID : string.Empty;
 
                 //返回商户信息和功能菜单信息
-                string sql = " exec  SP_GetMenus @LogType,@LogID,@MerchID";
-                SqlParameter[] parameters = new SqlParameter[3];
+                string sql = " exec  SP_GetMenus @LogType,@LogID,@MerchID,@StoreID";
+                SqlParameter[] parameters = new SqlParameter[4];
                 parameters[0] = new SqlParameter("@LogType", logType);
                 parameters[1] = new SqlParameter("@LogID", Convert.ToInt32(logId));
                 parameters[2] = new SqlParameter("@MerchID", merchId);
+                parameters[3] = new SqlParameter("@StoreID", storeId);
                 System.Data.DataSet ds = XCCloudBLL.ExecuteQuerySentence(sql, parameters);
                 if (ds.Tables.Count != 1)
                 {

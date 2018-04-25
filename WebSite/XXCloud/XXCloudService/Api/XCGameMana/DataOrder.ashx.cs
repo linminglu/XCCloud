@@ -110,35 +110,43 @@ namespace XXCloudService.Api.XCGameMana
                     List<DataOrderModel> list1 = null;
                     if (Utils.GetPageList<DataOrderModel>(list, Convert.ToInt32(PageIndex), Convert.ToInt32(PageSize), out PageCout, ref list1))
                     {
-                        sql = "select SUM(Coins) as Totalcoins,SUM(Price)as Totalmoney from Data_Order where Mobile='" + mobile + "' and  PayStatus='1'";
-                        DataSet ds2 = XCGameManabll.ExecuteQuerySentence(sql, null);
-                        DataTable dt2 = ds2.Tables[0];
-                        string Totalcoins = dt2.Rows[0]["Totalcoins"].ToString();
-                        if (Totalcoins == "")
+                        string Totalcoins = list.Where<DataOrderModel>(p => p.PayStatus == 1).Sum<DataOrderModel>(p => p.Coins).ToString();
+                        string Totalmoney = list.Where<DataOrderModel>(p => p.PayStatus == 1).Sum<DataOrderModel>(p => p.Price).ToString("0.00");
+                        string Buycoins = list.Where<DataOrderModel>(p => p.PayStatus == 1 && p.BuyType == "购币").Sum<DataOrderModel>(p => p.Coins).ToString();
+                        var TmpList = list.Where<DataOrderModel>(p => p.PayStatus == 1).ToList<DataOrderModel>();
+                        List<string> BuyTypelist = new List<string>();
+                        foreach (var model in TmpList)
                         {
-                            Totalcoins = "0";
+                            if (BuyTypelist.Where<string>(p => p == model.BuyType).Count() == 0)
+                            { 
+                                BuyTypelist.Add(model.BuyType);
+                            }
                         }
-                        string Totalmoney = dt2.Rows[0]["Totalmoney"].ToString();
-                        if (Totalmoney == "")
+                        List<string> StoreNamelist = new List<string>();
+                        foreach (var model in TmpList)
                         {
-                            Totalmoney = "0";
+                            if (StoreNamelist.Where<string>(p => p == model.StoreName).Count() == 0)
+                            {
+                                StoreNamelist.Add(model.StoreName);
+                            }
                         }
-                        sql = "select SUM(Coins) as Buycoins from Data_Order  where Mobile='" + mobile + "'and BuyType='购币' and  PayStatus='1'";
-                        DataSet ds1 = XCGameManabll.ExecuteQuerySentence(sql, null);
-                        DataTable dt1 = ds1.Tables[0];
-                        string Buycoins = dt1.Rows[0]["Buycoins"].ToString();
-                        if (Buycoins == "")
+                        List<string> PayTypeIdlist = new List<string>();
+                        List<string> PayTypeNamelist = new List<string>();
+                        foreach (var model in TmpList)
                         {
-                            Buycoins = "0";
+                            if (PayTypeIdlist.Where<string>(p => p == model.OrderType.ToString()).Count() == 0)
+                            {
+                                PayTypeIdlist.Add(model.OrderType.ToString());
+                                PayTypeNamelist.Add(GetPayTypeName(model.OrderType));
+                            }
                         }
-                        sql = "select Distinct (BuyType )as BuyTypelist from Data_Order where Mobile='" + mobile + "' and  PayStatus='1'";
-                        DataSet ds3 = XCGameManabll.ExecuteQuerySentence(sql, null);
-                        DataTable dt3 = ds3.Tables[0];
-                        var BuyTypelist = Utils.GetModelList<DataOrderModelBuyType>(ds3.Tables[0]).ToList();
-                        sql = "select Distinct ( StoreName )as StoreNamelist from Data_Order where Mobile='" + mobile + "' and  PayStatus='1'";
-                        DataSet ds4 = XCGameManabll.ExecuteQuerySentence(sql, null);
-                        DataTable dt4 = ds4.Tables[0];
-                        var StoreNamelist = Utils.GetModelList<DataOrderModelStoreName>(ds4.Tables[0]).ToList();
+
+                        foreach(var model in list1)
+                        {
+                            model.PayStatusName = GetPayStatusName(model.PayStatus);
+                            model.OrderTypeName = GetPayTypeName(model.OrderType);
+                        }
+
                         DataOrderPageModel dataOrder = new DataOrderPageModel();
                         dataOrder.Lists = list1;
                         dataOrder.Page = PageCout.ToString();
@@ -148,6 +156,7 @@ namespace XXCloudService.Api.XCGameMana
                         dataOrder.Totalmoney = Totalmoney;
                         dataOrder.BuyTypelist = BuyTypelist;
                         dataOrder.StoreNamelist = StoreNamelist;
+                        dataOrder.PayTypelist = PayTypeNamelist;
                         return ResponseModelFactory<DataOrderPageModel>.CreateModel(isSignKeyReturn, dataOrder);
                     }
                 }
@@ -159,5 +168,26 @@ namespace XXCloudService.Api.XCGameMana
             }
         }
 
+
+        private string GetPayTypeName(int payType)
+        {
+            switch (payType)
+            {
+                case 0: return "微信";
+                case 1: return "支付宝";
+                default: return "未知";
+            }
+        }
+
+        private string GetPayStatusName(int payStatus)
+        {
+            switch (payStatus)
+            {
+                case 0: return "未支付";
+                case 1: return "已支付";
+                case 2: return "已退款";
+                default: return "未知";
+            }
+        }
     }
 }

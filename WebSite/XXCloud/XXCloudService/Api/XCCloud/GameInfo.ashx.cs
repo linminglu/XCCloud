@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Data.Entity.Validation;
 using System.IO;
 using System.Linq;
@@ -10,6 +11,7 @@ using XCCloudService.Base;
 using XCCloudService.BLL.Container;
 using XCCloudService.BLL.IBLL.XCCloud;
 using XCCloudService.Common;
+using XCCloudService.Common.Extensions;
 using XCCloudService.Model.CustomModel.XCCloud;
 using XCCloudService.Model.XCCloud;
 using XXCloudService.Api.XCCloud.Common;
@@ -39,7 +41,7 @@ namespace XXCloudService.Api.XCCloud
                 var data_GameInfo = from a in data_GameInfoService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase))
                                     join b in dict_SystemService.GetModels(p => p.PID == GameTypeId) on a.GameType equals b.DictValue into b1
                                     from b in b1.DefaultIfEmpty()
-                                    join c in data_GameInfo_ExtService.GetModels() on a.ID equals c.GameID into c1
+                                    join c in data_GameInfo_ExtService.GetModels(p=>p.ValidFlag == 1) on a.ID equals c.GameID into c1
                                     from c in c1.DefaultIfEmpty()
                                     orderby a.GameID
                                     select new
@@ -48,7 +50,7 @@ namespace XXCloudService.Api.XCCloud
                                         GameName = a.GameName,
                                         GameTypeStr = b != null ? b.DictKey : string.Empty,
                                         Area = c != null ? c.Area : (decimal?)null,
-                                        ChangeTime = c != null ? Utils.ConvertFromDatetime(c.ChangeTime) : string.Empty,
+                                        ChangeTime = c != null ? c.ChangeTime : (DateTime?)null,
                                         Price = c != null ? c.Price : (int?)null,
                                         PushReduceFromCard = a.PushReduceFromCard,
                                         AllowElecPushStr = a.AllowElecPush != null ? (a.AllowElecPush == 1 ? "启用" : "禁用") : "",
@@ -134,6 +136,8 @@ namespace XXCloudService.Api.XCCloud
                 result.Add(new { name = "ChangeTime", value = (object)Utils.ConvertFromDatetime(data_GameInfo_Ext.ChangeTime), comment = string.Empty });
                 result.Add(new { name = "Evaluation", value = (object)data_GameInfo_Ext.Evaluation, comment = string.Empty });
                 result.Add(new { name = "Price", value = (object)data_GameInfo_Ext.Price, comment = string.Empty });
+                result.Add(new { name = "LowLimit", value = (object)data_GameInfo_Ext.LowLimit, comment = string.Empty });
+                result.Add(new { name = "HighLimit", value = (object)data_GameInfo_Ext.HighLimit, comment = string.Empty });    
 
                 List<string> PhotoURLs = new List<string>();
                 if (data_GameInfo_PhotoService.Any(p => p.GameID == iId))
@@ -167,6 +171,12 @@ namespace XXCloudService.Api.XCCloud
                 }
 
                 IData_GameInfoService data_GameInfoService = BLLContainer.Resolve<IData_GameInfoService>(resolveNew: true);
+                if (!data_GameInfoService.Any(a => a.GameName.Equals(gameName, StringComparison.OrdinalIgnoreCase)))
+                {
+                    errMsg = "该游戏机信息不存在";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
                 IDict_SystemService dict_SystemService = BLLContainer.Resolve<IDict_SystemService>(resolveNew: true);
                 int GameInfoId = dict_SystemService.GetModels(p => p.DictKey.Equals("游戏机档案维护")).FirstOrDefault().ID;
                 var data_GameInfo = data_GameInfoService.GetModels(p => p.GameName.Equals(gameName, StringComparison.OrdinalIgnoreCase)).FirstOrDefault() ?? new Data_GameInfo();
@@ -184,7 +194,9 @@ namespace XXCloudService.Api.XCCloud
                 result.Add(new { name = "Area", value = (object)data_GameInfo_Ext.Area });
                 result.Add(new { name = "ChangeTime", value = (object)Utils.ConvertFromDatetime(data_GameInfo_Ext.ChangeTime) });
                 result.Add(new { name = "Evaluation", value = (object)data_GameInfo_Ext.Evaluation });
-                result.Add(new { name = "Price", value = (object)data_GameInfo_Ext.Price });                
+                result.Add(new { name = "Price", value = (object)data_GameInfo_Ext.Price });
+                result.Add(new { name = "LowLimit", value = (object)data_GameInfo_Ext.LowLimit });
+                result.Add(new { name = "HighLimit", value = (object)data_GameInfo_Ext.HighLimit });    
 
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, result);
             }
@@ -211,6 +223,8 @@ namespace XXCloudService.Api.XCCloud
                 string evaluation = dicParas.ContainsKey("evaluation") ? (dicParas["evaluation"] + "") : string.Empty;
                 string price = dicParas.ContainsKey("price") ? (dicParas["price"] + "") : string.Empty;
                 string gameCode = dicParas.ContainsKey("gameCode") ? (dicParas["gameCode"] + "") : string.Empty;
+                string lowLimit = dicParas.ContainsKey("lowLimit") ? (dicParas["lowLimit"] + "") : string.Empty;
+                string highLimit = dicParas.ContainsKey("highLimit") ? (dicParas["highLimit"] + "") : string.Empty;
                 string[] photoURLs = dicParas.ContainsKey("photoURLs") ? (string[])dicParas["photoURLs"]: null;
 
                 if (string.IsNullOrEmpty(gameName))
@@ -241,6 +255,16 @@ namespace XXCloudService.Api.XCCloud
                 if (string.IsNullOrEmpty(gameCode))
                 {
                     errMsg = "游戏机出厂编号gameCode不能为空";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+                if (!string.IsNullOrEmpty(lowLimit) && !Utils.IsDecimal(lowLimit))
+                {
+                    errMsg = "中奖概率下限参数lowLimit格式不正确";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+                if (!string.IsNullOrEmpty(highLimit) && !Utils.IsDecimal(highLimit))
+                {
+                    errMsg = "中奖概率上限参数highLimit格式不正确";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
@@ -296,10 +320,12 @@ namespace XXCloudService.Api.XCCloud
                         }
 
                         var data_GameInfo_Ext = new Data_GameInfo_Ext();
-                        data_GameInfo_Ext.Area = !string.IsNullOrEmpty(area) ? Convert.ToDecimal(area) : (decimal?)null;
-                        data_GameInfo_Ext.ChangeTime = !string.IsNullOrEmpty(changeTime) ? Convert.ToDateTime(changeTime) : (DateTime?)null;
-                        data_GameInfo_Ext.Evaluation = !string.IsNullOrEmpty(evaluation) ? Convert.ToInt32(evaluation) : (int?)null;
-                        data_GameInfo_Ext.Price = !string.IsNullOrEmpty(price) ? Convert.ToInt32(price) : (int?)null;
+                        data_GameInfo_Ext.Area = ObjectExt.Todecimal(area);
+                        data_GameInfo_Ext.ChangeTime = ObjectExt.Todatetime(changeTime);
+                        data_GameInfo_Ext.Evaluation = ObjectExt.Toint(evaluation);
+                        data_GameInfo_Ext.Price = ObjectExt.Toint(price);
+                        data_GameInfo_Ext.LowLimit = ObjectExt.Todecimal(lowLimit);
+                        data_GameInfo_Ext.HighLimit = ObjectExt.Todecimal(highLimit);
                         data_GameInfo_Ext.GameCode = gameCode;
                         data_GameInfo_Ext.GameID = iId;
                         data_GameInfo_Ext.MerchID = merchId;
@@ -400,51 +426,17 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 string errMsg = string.Empty;
+                Dictionary<string, object> imageInfo = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
 
-                string picturePath = System.Configuration.ConfigurationManager.AppSettings["UploadImageUrl"].ToString() + "/XCCloud/GameInfo/Photo/";
-                string path = System.Web.HttpContext.Current.Server.MapPath(picturePath);
-                string maxSize = System.Configuration.ConfigurationManager.AppSettings["MaxImageSize"].ToString();
-                Dictionary<string, string> dicStoreInfo = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-                foreach (HttpPostedFile file in HttpContext.Current.Request.Files)
+                List<string> imageUrls = null;
+                if (!Utils.UploadImageFile("/XCCloud/GameInfo/Photo/", out imageUrls, out errMsg))
                 {
-                    #region 验证参数
-
-                    if (file == null)
-                    {
-                        errMsg = "未找到图片";
-                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                    }
-
-                    if (file.ContentLength > int.Parse(maxSize))
-                    {
-                        errMsg = "超过图片的最大限制为1M";
-                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                    }
-
-                    #endregion
-
-                    
-                    //如果不存在就创建file文件夹
-                    if (Directory.Exists(path) == false)
-                    {
-                        Directory.CreateDirectory(path);
-                    }
-
-                    string fileName = Path.GetFileNameWithoutExtension(file.FileName) + Utils.ConvertDateTimeToLong(DateTime.Now) + Path.GetExtension(file.FileName);
-
-                    if (File.Exists(path + fileName))
-                    {
-                        errMsg = "图片名称已存在，请重命名后上传";
-                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                    }
-
-                    file.SaveAs(path + fileName);
-                    
-                    dicStoreInfo.Add("ImageURL", picturePath + fileName);
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
-                
-                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, dicStoreInfo);
+                imageInfo.Add("ImageURL", imageUrls);
+
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, imageInfo);
             }
             catch (Exception e)
             {

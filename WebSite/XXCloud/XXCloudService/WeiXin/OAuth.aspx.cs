@@ -57,7 +57,7 @@ namespace XXCloudService.WeiXin
                     if (mobileTokenModel != null)
                     {
                         IMemberTokenService memberTokenService = BLLContainer.Resolve<IMemberTokenService>();
-                        var memberTokenModel = mobileTokenService.GetModels(p => p.OpenId.Equals(openId)).FirstOrDefault<t_MobileToken>();
+                        var memberTokenModel = memberTokenService.GetModels(p => p.Phone.Equals(mobileTokenModel.Phone)).FirstOrDefault<T_MemberToken>();
                         if (memberTokenModel != null)
                         {
                             isReg = true;

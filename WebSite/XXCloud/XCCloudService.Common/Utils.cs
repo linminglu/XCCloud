@@ -1044,6 +1044,54 @@ namespace XCCloudService.Common
             return false;
         }
 
+        /// <summary>
+        /// 上传多个图片文件
+        /// </summary>
+        /// <returns></returns>
+        public static bool UploadImageFile(string savePath, out List<string> uploadImageUrls, out string errMsg)
+        {
+            errMsg = string.Empty;
+            uploadImageUrls = new List<string>();
+            int count = HttpContext.Current.Request.Files.Count;
+            for (int i = 0; i < count; i++)
+            {
+                var file = HttpContext.Current.Request.Files[i];
+                if (file == null)
+                {
+                    errMsg = "未找到图片";
+                    return false;
+                }
+
+                if (file.ContentLength > int.Parse(System.Configuration.ConfigurationManager.AppSettings["MaxImageSize"].ToString()))
+                {
+                    errMsg = "超过图片的最大限制为1M";
+                    return false;
+                }
+
+                string picturePath = System.Configuration.ConfigurationManager.AppSettings["UploadImageUrl"].ToString() + savePath;
+                string path = System.Web.HttpContext.Current.Server.MapPath(picturePath);
+                //如果不存在就创建file文件夹
+                if (Directory.Exists(path) == false)
+                {
+                    Directory.CreateDirectory(path);
+                }
+
+                string fileName = Path.GetFileNameWithoutExtension(file.FileName) + Utils.ConvertDateTimeToLong(DateTime.Now) + Path.GetExtension(file.FileName);
+
+                if (File.Exists(path + fileName))
+                {
+                    errMsg = "图片名称已存在，请重命名后上传";
+                    return false;
+                }
+
+                file.SaveAs(path + fileName);
+
+                uploadImageUrls.Add(picturePath + fileName);
+            }
+
+            return true;
+        }
+
 
         #endregion
 

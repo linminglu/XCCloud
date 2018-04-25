@@ -17,10 +17,11 @@ namespace XCCloudService.Model.XCCloud
         public int FunctionID { get; set; }
         public Nullable<int> ParentID { get; set; }
         public string FunctionName { get; set; }
+        public Nullable<int> OrderID { get; set; }
         public string Descript { get; set; }
         public string PageName { get; set; }
         public string ICON { get; set; }
         public Nullable<int> MenuType { get; set; }
-        public Nullable<int> OrderID { get; set; }
+        public Nullable<int> UseType { get; set; }
     }
 }

@@ -7,7 +7,7 @@
 </head>
 <style>
     .layui-colla-content1 .lfl1{width: 135px}
-    /*.layui-colla-content1 .layui-form-mid{width: 50px}*/
+   .layui-colla-title{line-height: 34px;height: 34px;}
 </style>
 <body>
     <div class="layui-row" style="padding: 15px">
@@ -28,26 +28,29 @@
           <div class="layui-collapse" lay-accordion>
               <div class="layui-colla-item">
                   <h2 class="layui-colla-title">封面</h2>
-                  <div class="layui-colla-content">
-                      <div class="layui-form-item">
-                          <div class="layui-inline">
-                              <label  class="layui-form-label">会员级别名称</label>
-                              <div class="layui-input-inline">
-                                  <input type="text" class="layui-input" id="MemberLevelName">
+                  <div class="layui-colla-content layui-show">
+                      <div style="width: 50%;display: inline-block">
+                          <div class="layui-form-item">
+                              <div class="layui-inline">
+                                  <label  class="layui-form-label" style="padding: 8px 0;">会员级别名称</label>
+                                  <div class="layui-input-inline">
+                                      <input type="text" class="layui-input" id="MemberLevelName">
+                                  </div>
                               </div>
-                          </div>
-                          <div class="layui-inline">
-                              <label  class="layui-form-label" style="padding: 8px 0!important;">会员级别状态</label>
-                              <div class="layui-input-inline">
-                                  <input type="checkbox" name="zzz" lay-skin="switch" lay-text="启用|禁用" id="State" lay-filter="State">
+                              <div class="layui-inline">
+                                  <label  class="layui-form-label" style="padding: 8px 0!important;">会员级别状态</label>
+                                  <div class="layui-input-inline">
+                                      <input type="checkbox" name="zzz" lay-skin="switch" lay-text="启用|禁用" id="State" lay-filter="State">
+                                  </div>
                               </div>
                           </div>
                       </div>
-
-                      <div id="test2">
-                          <div id="imgBtn"><i class="layui-icon" style="font-size: 60px;color: #9F9F9F">&#xe654;</i></div>
-                          <div class="layui-upload-list" id="demo2" style="margin: 0;">
-                              <input id="nameImage" name="list[0]" maxlength="255" class="input-xlarge required" type="hidden">
+                      <div style="width: 480px;display: inline-block">
+                          <div id="test2">
+                              <div id="imgBtn" style="width: 80px;display: inline-block"><i class="layui-icon" style="font-size: 60px;color: #9F9F9F">&#xe654;</i></div>
+                              <div class="layui-upload-list" id="demo2" style="margin: 0;display: inline-block">
+                                  <input id="nameImage" name="list[0]" maxlength="255" class="input-xlarge required" type="hidden">
+                              </div>
                           </div>
                       </div>
                   </div>
@@ -102,22 +105,17 @@
                                  <input type="text" class="layui-input" id="maxCoin">
                              </div>
                          </div>
-                         <!--<div class="layui-inline">-->
-                             <!--<label  class="layui-form-label ">最小退币数</label>-->
-                             <!--<div class="layui-input-inline lfl1">-->
-                                 <!--<input type="text" class="layui-input">-->
-                             <!--</div>-->
-                         <!--</div>-->
+                         <br>
                          <div class="layui-inline">
                              <label  class="layui-form-label" style="padding: 8px 0!important;">开卡需要授权</label>
                              <div class="layui-input-inline">
-                                 <input type="checkbox" name="zzz" lay-skin="switch" lay-text="启用|禁用" id="needAuthor" lay-filter="needAuthor">
+                                 <input type="checkbox" name="zzz" checked lay-skin="switch" lay-text="启用|禁用" id="needAuthor" lay-filter="needAuthor">
                              </div>
                          </div>
                          <div class="layui-inline">
                              <label  class="layui-form-label" style="padding: 8px 0!important;">身份证读卡</label>
                              <div class="layui-input-inline">
-                                 <input type="checkbox" name="zzz" lay-skin="switch" lay-text="启用|禁用" id="useReadID" lay-filter="useReadID">
+                                 <input type="checkbox" name="zzz"  checked lay-skin="switch" lay-text="启用|禁用" id="useReadID" lay-filter="useReadID">
                              </div>
                          </div>
                          <br>
@@ -143,6 +141,15 @@
                              <label  class="layui-form-label">掌纹识别</label>
                              <div class="layui-input-inline">
                                  <input type="checkbox" name="zzz" lay-skin="switch" lay-text="启用|禁用" id="readPlam" lay-filter="readPlam">
+                             </div>
+                         </div>
+                         <div class="layui-inline">
+                             <label  class="layui-form-label" style="padding: 8px 0;">开卡套餐内容</label>
+                             <div class="layui-input-inline">
+                                <button type="button" class="layui-btn layui-btn-normal" id="lookGoods">查看开卡套餐内容</button>
+                             </div>
+                             <div class="layui-input-inline">
+                                 <button type="button" class="layui-btn layui-btn-normal" id="setGoods">点击绑定开卡套餐内容</button>
                              </div>
                          </div>
                      </div>
@@ -266,7 +273,7 @@
                                   <input type="text" class="layui-input" id="chargeTotal">
                               </div>
                               <div class="layui-form-mid">元，预赠方式</div>
-                              <div class="layui-input-inline" style="width: 150px">
+                              <div class="layui-input-inline" style="width: 130px">
                                   <select name="" id="freeBalanceType" lay-filter="freeBalanceType"></select>
                               </div>
                               <div class="layui-form-mid">元，预赠币</div>
@@ -285,11 +292,14 @@
                               <div class="layui-input-inline" style="width: 60px">
                                   <input type="text" class="layui-input" id="expireDays">
                               </div>
+                              <div class="layui-input-inline" style="width: 60px">
+                                  <button type="button" class="layui-btn layui-btn-normal" id="addFreeRule">添加</button>
+                              </div>
                           </div>
 
                       </div>
                       <div style="text-align:right;">
-                          <button type="button" class="layui-btn layui-btn-normal" id="addFreeRule">添加</button>
+
                       </div>
                       <table class="layui-hide" id="sendCoinTable" lay-filter="sendCoinTable"></table>
                   </div>
@@ -303,7 +313,21 @@
           </div>
       </form>
   </div>
+<!--绑定莱卡套餐弹窗-->
+<div id="bindFood" style="display: none;padding: 15px">
+    <form action="" class="layui-form">
+        <div class="layui-form-item">
+            <label for="" class="layui-form-label">选择套餐</label>
+            <div class="layui-input-inline" id="foodListBox">
 
+            </div>
+        </div>
+    </form>
+    <div style="text-align:center;margin: 15px;">
+        <button type="button" class="layui-btn" id="closeBtn">关闭</button>
+        <button type="button" class="layui-btn" id="saveFood">保存</button>
+    </div>
+</div>
 </body>
 <script src="js/jquery-1.8.3-min.js"></script>
 <script src="layui/layui.js"></script>
@@ -312,8 +336,11 @@
     let xc=xcActionSystem.prototype;
     let token=xc.getStorage('token');
     let merchId=JSON.parse(xc.getStorage('logMsg')).merchId;
-    let mlID;
+    let memberLevelID;
     let arrSendCoinTable=[];
+    let memberLevelFood=[];
+
+    let index;//layer;
     let parm={'obj':{'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'},
         'url':'/XCCloud/Member?action=QueryMemberLevel',
         'elem':'#memberLevelTb',
@@ -329,21 +356,18 @@
             ,{field:'BirthdayFreeStr', title: '生日送币方式', align: 'center'}
             ,{field:'FreeTypeStr', title: '送币方式', align: 'center'}
             ,{field:'LogName', title: '操作员', align: 'center'}
+            ,{fixed: 'right',title:'操作', width:140, align:'center', toolbar: '#barDemo'}
         ]
     };
     xc.getInitData(parm);
 
-   let needAuthor=0;let mustPhone=0;let mustIDCard=0;let useReadID=0;let readFace=0;let readPlam=0;
+   let needAuthor=1;let mustPhone=0;let mustIDCard=0;let useReadID=1;let readFace=0;let readPlam=0;
 
    let BirthdayFree='';let freeType='';let freeRate='';
 
    let freeBalanceType='';
 
-   let  AllowExitCard=0,
-        AllowExitMoney=0,
-        AllowExitCoinToCar=0,
-        LockHead=0,
-        States=0;
+   let  AllowExitCard=0,AllowExitMoney=0,AllowExitCoinToCar=0,LockHead=0,States=0;
     layui.use(['form','layer','table','element','upload'],()=> {
         let layer=layui.layer,
             table=layui.table,
@@ -352,28 +376,100 @@
           let  upload=layui.upload;
         //新增按钮
         $('#add').on('click',()=>{
+            newTable(table,arrSendCoinTable,layer,form);
+            xc.setSelect('生日送币方式','birthdayFree');
+            xc.setSelect('送币频率','freeRate');
+            xc.setSelect('送币方式','freeType');
+            xc.getBalanceTypeDic(token,layer,form,'freeBalanceType');
             layer.open({
                 type:1,
                 area:'1000px',
                 shade:0.6,
                 content:$('#openModel')
             });
-            newTable(table,arrSendCoinTable)
-            xc.setSelect('生日送币方式','birthdayFree');
-            xc.setSelect('送币频率','freeRate');
-            xc.setSelect('送币方式','freeType');
+        });
+        //提示
+        $('#priceOff').on('blur',function () {
+            if($(this).val()<0||parseInt($(this).val())>1){
+                layer.tips('这个值必须在0-1之间','#priceOff')
+            }
+        });
+        //绑定开卡套餐
+        $('#setGoods').on('click',function () {
+            getFoodList(token,form,layer);
+            index= layer.open({
+                type:1,
+                area:'400px',
+                content:$('#bindFood')
+            })
+        });
+        //保存选中套餐
+        $('#saveFood').on('click',function () {
+            layer.close(index);
+        });
+        $('#closeBtn').on('click',function () {
+            layer.close(index);
+            memberLevelFood=[];
+            $('#foodListBox').html('');
+            form.render();
+        });
+        //监听选中的套餐设置
+        form.on('checkbox(foodList)',function (data) {
+            if (data.elem.checked==true){
+                memberLevelFood.push({'FoodID':data.value});
+            }else if(data.elem.checked==false){
+                for (var i=0;i<memberLevelFood.length;i++){
+                    if(memberLevelFood[i].FoodID==data.value){
+                        memberLevelFood.splice(i,1)
+                    }
+                }
+            }
+        });
+        //3.获取会员级别开卡套餐
+        $('#lookGoods').click(function () {
+            getFoodList(token,form,layer);
+            if(memberLevelID&&memberLevelID!=''){
+                let _obj={'memberLevelID':memberLevelID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                let parseJson = JSON.stringify(_obj);
+                $.ajax({
+                    type:'post',
+                    url:'/XCCloud/Member?action=GetMemberLevelFoodList',
+                    contentType: "application/json; charset=utf-8",
+                    data:{parasJson: parseJson},
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        if (data.result_code == 1) {
+                            let arr=data.result_data;
+                            for(let i in arr){
+                                $('#foodListBox').find('input[value="'+arr[i].FoodID+'"]').prop('checked',true)
+                            }
+                            form.render('checkbox');
+                            index= layer.open({
+                                type:1,
+                                area:'400px',
+                                content:$('#bindFood')
+                            })
+                        } else {
+                            layer.msg(data.result_msg);
+                        }
+                    }
+                })
+            }else {
+                layer.msg('请先绑定开卡套餐！')
+            }
+
         });
          //修改
         table.on('tool(memberLevelTb)', (obj)=>{
             let data = obj.data; //获得当前行数据
             let layEvent = obj.event;
             $('#demo2').html("");
-            let memberLevelID=data.MemberLevelID;
+            memberLevelID=data.MemberLevelID;
             if(layEvent === 'edit'){ //修改按钮
                 $('#resetBtn').trigger('click');
-                xc.setStorage('MemberLevelID',memberLevelID);
+                // xc.setStorage('MemberLevelID',memberLevelID);
                 let _obj={'memberLevelID':memberLevelID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
-                let url='/XCCloud/Member?action=GetMemberLevel';
+                let url='/XCCloud/Member?action=GetMemberLevelInfo';
                 let parseJson=JSON.stringify(_obj);
                 $.ajax({
                     type:'post',
@@ -384,67 +480,76 @@
                         data = JSON.parse(data);
                         console.log(data)
                         if(data.result_code==1){
+                            getMemberFreeRule(memberLevelID,arrSendCoinTable);
                             let arr=data.result_data;
-                            option1=arr.MustInput;
-                            option2=arr.FreeRate;
-                            option3=arr.FreeType;
-                            option4=arr.BirthdayFree;
-                            arr.State ? option5=arr.State : option5=0;
-                                radiv1=arr.AllowExitCard;
-                                radiv2=arr.AllowExitMoney;
-                                radiv3=arr.LockHead;
-                                radiv4=arr.AllowExitCoinToCard;
-                            if(arr.AllowExitCard==1){
-                                $('#AllowExitCard').attr({'checked':true});
-                                form.render();
-                            }
-                            if(arr.AllowExitMoney==1){
-                                $('#AllowExitMoney').attr({'checked':true});
-                                form.render();
-                            }
-                            if(arr.LockHead==1){
-                                $('#LockHead').attr({'checked':true});
-                                form.render();
-                            }
-                            if(arr.AllowExitCoinToCard==1){
-                                $('#AllowExitCoinToCard').attr({'checked':true});
-                                form.render();
-                            }
-                            if(arr.State==1){
-                                $('#State').attr({'checked':true});
-                                form.render();
-                            }
+
+                            $('#MemberLevelName').val(arr.MemberLevelName);
+                                $('#openFee').val(arr.OpenFee);
+                                $('#deposit').val(arr.Deposit);
+                                $('#validday').val(arr.Validday);
+                                needAuthor=arr.NeedAuthor;//开卡需要授权
+                                if(arr.NeedAuthor==1){$('#needAuthor').attr('checked',true)
+                                }else { $('#needAuthor').attr('checked',false)}
+                                mustPhone=arr.MustPhone;//手机必填
+                                if(arr.MustPhone==1){$('#mustPhone').attr('checked',true)
+                                }else { $('#mustPhone').attr('checked',false)}
+                                mustIDCard=arr.MustIDCard;//身份证必填
+                                if(arr.MustIDCard==1){$('#mustIDCard').attr('checked',true)
+                                }else { $('#mustIDCard').attr('checked',false)}
+                                useReadID=arr.UseReadID;//身份证读卡
+                                if(arr.UseReadID==1){$('#useReadID').attr('checked',true)
+                                }else { $('#useReadID').attr('checked',false)}
+                                readFace=arr.ReadFace;//脸部识别
+                                if(arr.ReadFace==1){$('#readFace').attr('checked',true)
+                                }else { $('#readFace').attr('checked',false)}
+                                readPlam=arr.ReadPlam;//读取掌纹
+                                if(arr.ReadPlam==1){$('#readPlam').attr('checked',true)
+                                }else { $('#readPlam').attr('checked',false)}
+                                $('#changeFee').val(arr.ChangeFee);
+                                $('#consumeTotal').val(arr.ConsumeTotle);
+                                $('#continueFee').val(arr.ContinueFee);
+                                $('#continueUsePoint').val(arr.ContinueUsePoint);
+                                $('#nonActiveDays').val(arr.NonActiveDays);
+                                $('#updateUsePoint').val(arr.UpdateUsePoint);
+                                $('#priceOff').val(arr.PriceOFF);
+                                $('#clearPointDays').val(arr.ClearPointDays);
+                                freeType=arr.FreeType;
+
+                                freeRate=arr.FreeRate;
+                                $('#freeCoin').val(arr.FreeCoin);
+                                $('#freeNeedWin').val(arr.FreeNeedWin);
+                                BirthdayFree=arr.BirthdayFree;
+                                $('#birthdayFreeCoin').val(arr.BirthdayFreeCoin);
+                                $('#minCoin').val(arr.MinCoin);
+                                $('#maxCoin').val(arr.MaxCoin);
+
+                                AllowExitCard=arr.AllowExitCard;
+                                if(arr.AllowExitCard==1){$('#allowExitCard').attr('checked',true)
+                                }else { $('#allowExitCard').attr('checked',false)}
+                                AllowExitMoney=arr.AllowExitMoney;
+                                if(arr.AllowExitMoney==1){$('#allowExitMoney').attr('checked',true)
+                                }else { $('#allowExitMoney').attr('checked',false)}
+                                AllowExitCoinToCar=arr.AllowExitCoinToCard;
+                                if(arr.AllowExitCoinToCard==1){$('#allowExitCoinToCar').attr('checked',true)
+                                }else { $('#allowExitCoinToCar').attr('checked',false)}
+                                LockHead=arr.LockHead;
+                                if(arr.LockHead==1){$('#lockHead').attr('checked',true)
+                                }else { $('#lockHead').attr('checked',false)}
+
                             xc.setSelect('生日送币方式','barthdayFree',arr.BirthdayFree);
                             xc.setSelect('送币频率','freeRate',arr.FreeRate);
-                            xc.setSelect('入会时必须输入','mustInput',arr.MustInput);
                             xc.setSelect('送币方式','freeType',arr.FreeType);
-                            $('#levelNames').val(arr.MemberLevelName);
-                            $('#deposit').val(arr.Deposit);
-                            $('#validday').val(arr.Validday);
-                            $('#ExitMoney').val(arr.ExitMoney);
-                            $('#ExitCoin').val(arr.ExitCoin);
-                            $('#ExitPrice').val(arr.ExitPrice);
-                            $('.layui-upload-img_md').attr('src',arr.CardUIURL);
-                            $('#barthdayFreeCoin').val(arr.BirthdayFreeCoin);
-                            $('#freeNeedWin').val(arr.FreeNeedWin);
-                            $('#freeCoin').val(arr.FreeCoin);
-                            $('#minExitCoin').val(arr.MinExitCoin);
+
 
                             $('#demo2') .append('<div style="display: inline-block;position: relative" class="imgBox">' +
                                 '<button type="button" ><i class="layui-icon"><i class="layui-icon">&#xe640</i></i></button>' +
-                                '<img src="'+ arr.CardUIURL +'" class="layui-upload-img_md" ' +
+                                '<img src="'+ arr.CoverURL +'" class="layui-upload-img_md" ' +
                                 'style="display: block;width: 300px;height: 170px"></div>');
                             $('.imgBox button').click(function () {
                                 $(this).parent('div').remove();
                             });
-                            $('.imgBox img').click(function () {
-                                layer.open({
-                                    title:'查看大图',
-                                    type: 1,
-                                    area: ['600px','400px'], //宽高
-                                    content: '<div><img src="'+arr.CardUIURL+'" alt="" style="display: block;"></div>'
-                                });
-                            });
+
+                            newTable(table,arrSendCoinTable,layer,form);
                             layer.open({
                                 type:1,
                                 area:'1000px',
@@ -452,25 +557,71 @@
                                 content:$('#openModel')
                             });
                         }
-
                     }
                 })
+            }else if(layEvent === 'del'){
+                layer.confirm('真的删除行么', function(index){
+                    Id=data.ID;
+                    let _obj={'memberLevelID':memberLevelID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                    let parseJson = JSON.stringify(_obj);
+                    $.ajax({
+                        type:'post',
+                        url:'/XCCloud/Member?action=DelMemberLevelInfo',
+                        contentType: "application/json; charset=utf-8",
+                        data:{parasJson: parseJson},
+                        success: function (data) {
+                            data = JSON.parse(data);
+                            if (data.result_code == 1) {
+                                obj.del();
+                                layer.msg('删除成功',function () {
+                                    xc.getInitData(parm);
+                                })
+                            } else {
+                                layer.msg(data.result_msg);
+                            }
+                        }
+                    })
+                });
             }
         });
 
         $('#addFreeRule').on('click',function () {
-            arrSendCoinTable.push({
-                'ChargeTotal':$('#chargeTotal').val(),
-                'FreeBalanceType':freeBalanceType,
-                'FreeCount':$('#freeCount').val(),
-                'MinSpaceDays':$('#minSpaceDays').val(),
-                'OnceFreeCount':$('#onceFreeCount').val(),
-                'ExpireDays':$('#expireDays').val(),
-            });
-            newTable(table,arrSendCoinTable)
+            if($('#chargeTotal').val()==''||freeBalanceType==''||$('#freeCount').val()==''||$('#minSpaceDays').val()==''||
+                $('#onceFreeCount').val()==''||$('#expireDays').val()==''){
+                layer.msg('请检查是否有未填信息')
+            }else {
+                arrSendCoinTable.push({
+                    'ChargeTotal':$('#chargeTotal').val(),
+                    'FreeBalanceType':freeBalanceType,
+                    'FreeCount':$('#freeCount').val(),
+                    'MinSpaceDays':$('#minSpaceDays').val(),
+                    'OnceFreeCount':$('#onceFreeCount').val(),
+                    'ExpireDays':$('#expireDays').val(),
+                });
+                newTable(table,arrSendCoinTable,layer,form)
 
+            }
         });
+        //删除预赠币规则
+        table.on('tool(sendCoinTable)', (obj)=>{
+            let data = obj.data; //获得当前行数据
+            let layEvent = obj.event;
+             if(layEvent === 'del'){
+                 for(let i in arrSendCoinTable){
+                     if(arrSendCoinTable[i]=={'ChargeTotal':data.ChargeTotal,
+                             'FreeBalanceType':data.FreeBalanceType,
+                             'FreeCount':data.FreeCount,
+                             'MinSpaceDays':data.MinSpaceDays,
+                             'OnceFreeCount':data.OnceFreeCount,
+                             'ExpireDays':data.ExpireDays,
+                         }){
+                         arrSendCoinTable.splice(i,1);
+                         obj.del()
+                     }
+                 }
 
+            }
+        });
         var demoListViewStore=$('#demo2'),uploadListInsStore=upload.render({
             elem: '#imgBtn'
             ,url: '/XCCloud/Member?action=UploadCardCover'
@@ -544,9 +695,6 @@
         form.on('switch(readPlam)', function(data){
             data.elem.checked==true ? readPlam=1:readPlam=0;
         });
-
-
-
         form.on('switch(allowExitCard)', function(data){
             data.elem.checked==true ? AllowExitCard=1:AllowExitCard=0;
         });
@@ -559,8 +707,6 @@
         form.on('switch(allowExitCoinToCar)', function(data){
             data.elem.checked==true ? AllowExitCoinToCar=1:AllowExitCoinToCar=0;
         });
-
-
         form.on('switch(State)', function(data){
             data.elem.checked==true ? States=1:States=0;
         });
@@ -571,24 +717,27 @@
     var saveML=(layer,token)=>{
 
         let obj={
-            'MemberLevelID':mlID||'',
+            'MemberLevelID':memberLevelID||'',
             'MerchID':merchId,
             'MemberLevelName':$('#MemberLevelName').val(),
             'coverURL':$('.layui-upload-img_md').attr('src'),
-            'openFree':$('#openFee').val(),
+            'openFee':$('#openFee').val(),
             'Deposit':$('#deposit').val(),
             'Validday':$('#validday').val(),
-            'needAhthor':needAuthor,//开卡需要授权
+            'needAuthor':needAuthor,//开卡需要授权
             'mustPhone':mustPhone,//手机必填
             'mustIDCard':mustIDCard,//身份证必填
             'useReadID':useReadID,//身份证读卡
             'readFace':readFace,//脸部识别
             'readPlam':readPlam,//读取掌纹
-            'changeFree':$('#changeFee').val(),
-            'continueFree':$('#continueFee').val(),
+            'changeFee':$('#changeFee').val(),
+            'consumeTotle':$('#consumeTotal').val(),
+            'continueFee':$('#continueFee').val(),
             'continueUsePoint':$('#continueUsePoint').val(),
             'nonActiveDays':$('#nonActiveDays').val(),
             'updateUsePoint':$('#updateUsePoint').val(),
+            'priceOff':$('#priceOff').val(),
+            'clearPointDays':$('#clearPointDays').val(),
             'FreeType':freeType,
             'FreeRate':freeRate,
             'FreeCoin':$('#freeCoin').val(),
@@ -604,8 +753,8 @@
             'AllowExitCoinToCard':AllowExitCoinToCar,
             'LockHead':LockHead,
             'State':States,
-            'memberLevelFoods':[],
-            'memberLevelFrees':arrSendCoinTable,
+            'memberLevelFoods':memberLevelFood.length>0?memberLevelFood:null,
+            'memberLevelFrees':arrSendCoinTable.length>0?arrSendCoinTable:null,
             'userToken':token,
             'signkey':'1f626576304bf5d95b72ece2222e42c3'};
         let url='/XCCloud/Member?action=SaveMemberLevel';
@@ -619,33 +768,81 @@
             success:(data)=>{
                 data=JSON.parse(data);
                 if(data.result_code=="1"){
-                    layer.closeAll();
-                    layer.msg('操作成功！');
-                    xc.getInitData(parm);
+                    layer.msg('操作成功！',{
+                        time:1500
+                    },function () {
+                        location.href='memberLevelSet.html';
+                    });
                 }else {
                         layer.msg(data.result_msg);
                 }
             }
         })
     };
-    function newTable(table,arr) {
-        table.render({
-            elem: '#sendCoinTable'
-            , height:'250px'
-            , size:"sm"
-            , data: arr
-            , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
-            , cols: [[
-                ,{field:'ChargeTotal', title:'充值金额', align: 'center'}
-                ,{field:'FreeBalanceType',title: '赠送余额类别', align: 'center'} //width 支持：数字、百分比和不填写。
-                ,{field:'FreeCount', title: '赠送数量', align: 'center'}
-                ,{field:'MinSpaceDays', title: '最小间隔天数', align: 'center'}
-                ,{field:'OnceFreeCount', title: '单次领币数量', align: 'center'}
-                ,{field:'ExpireDays', title: '有效天数', align: 'center'}
-                ,{fixed: 'right',title:'操作', width:140, align:'center', toolbar: '#barDemo2'}]]
-            , page: {page: true, limits: [5,10, 15, 20]}
-            , limit: 5
-        });
+    function getMemberFreeRule(m) {
+        let _obj={'memberLevelID':m,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+        let parseJson = JSON.stringify(_obj);
+        $.ajax({
+            type:'post',
+            url:'/XCCloud/Member?action=GetMemberLevelFreeList',
+            contentType: "application/json; charset=utf-8",
+            data:{parasJson: parseJson},
+            success: function (data) {
+                data = JSON.parse(data);
+                if (data.result_code == 1) {
+                    arrSendCoinTable=data.result_data;
+                } else {
+                    layer.msg(data.result_msg);
+                }
+            }
+        })
+    }
+    function newTable(table,arr,layer,form) {
+            table.render({
+                elem: '#sendCoinTable'
+                , height:'250px'
+                , data: arr
+                , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+                , cols: [[
+                    {field:'ChargeTotal', title:'充值金额', align: 'center'}
+                    ,{field:'FreeBalanceType',title: '赠送余额类别', align: 'center'} //width 支持：数字、百分比和不填写。
+                    ,{field:'FreeCount', title: '赠送数量', align: 'center'}
+                    ,{field:'MinSpaceDays', title: '最小间隔天数', align: 'center'}
+                    ,{field:'OnceFreeCount', title: '单次领币数量', align: 'center'}
+                    ,{field:'ExpireDays', title: '有效天数', align: 'center'}
+                    ,{fixed: 'right',title:'操作', width:140, align:'center', toolbar: '#barDemo2'}]]
+                , page: {page: true, limits: [5,10, 15, 20]}
+                , limit: 5
+                ,done:function () {
+                    xc.getBalanceTypeDic(token,layer,form,'freeBalanceType');
+                    $('.freeLast').find('input').val('')
+                }
+            });
+
+    }
+    //获取会员预赠币规则
+    function getFoodList(token,form,layer) {
+        let _obj={'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+        let parseJson = JSON.stringify(_obj);
+        $.ajax({
+            type:'post',
+            url:'/XCCloud/Promotion?action=GetMemberFoodDic',
+            contentType: "application/json; charset=utf-8",
+            data:{parasJson: parseJson},
+            success: function (data) {
+                data = JSON.parse(data);
+                if (data.result_code == 1) {
+                    let arr=data.result_data;
+                    $('#foodListBox').html('');
+                    for(let i in arr){
+                        $('#foodListBox').append('<input type="checkbox" lay-filter="foodList" value="'+arr[i].FoodID+'" title="'+arr[i].FoodName+'"> ')
+                    }
+                    form.render('checkbox');
+                } else {
+                    layer.msg(data.result_msg);
+                }
+            }
+        })
     }
 </script>
 
@@ -654,7 +851,6 @@
     <a class="layui-btn layui-btn-sm layui-btn-danger" lay-event="del">删除</a>
 </script>
 <script type="text/html" id="barDemo2">
-    <a class="layui-btn layui-btn-sm layui-btn-danger" lay-event="edit">修改</a>
     <a class="layui-btn layui-btn-sm layui-btn-danger" lay-event="del">删除</a>
 </script>
 </html>

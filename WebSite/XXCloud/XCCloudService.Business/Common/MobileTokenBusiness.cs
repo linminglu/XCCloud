@@ -39,15 +39,16 @@ namespace XCCloudService.Business.Common
         public static string SetMobileToken(string mobile, string thirdType, string userThirdId)
         {
             string token = System.Guid.NewGuid().ToString("N");
-            if (MobileTokenCache.ExistTokenByKey(mobile))
+            if (ExistMobile(mobile))
             {
+                MobileTokenCache.RemoveToken(token);
                 SetDBMobileToken(token, mobile,thirdType,userThirdId);
-                MobileTokenCache.UpdateTokenByKey(mobile, token);
+                MobileTokenCache.AddToken(token, mobile, thirdType, userThirdId);
             }
             else
             {
                 SetDBMobileToken(token, mobile, thirdType, userThirdId);
-                MobileTokenCache.AddToken(mobile, token);
+                MobileTokenCache.AddToken(token, mobile, thirdType, userThirdId);
             }
             return token;
         }

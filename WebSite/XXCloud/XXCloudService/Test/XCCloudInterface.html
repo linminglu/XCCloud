@@ -22,7 +22,7 @@
         //var deviceToken = "23c41662";
 
 
-        var mobileToken1 = "034e5131f92e45b08fea1228ea43af57";
+        var mobileToken1 = "7984086357a7451cbfe299cd3955c1c2";
         var memberToken1 = "45cec6980a1843daa8af11f4ee31b2e0";
         var storeId1 = "100027";
         var mobile1 = "15618920033";
@@ -156,7 +156,7 @@
         }
 
         function do_getMobileToken() {
-            var parasObj = { "sysId": "0", "versionNo": "0.0.0.1", "mobile": mobile1, "smsCode": "123456","thirdType":"1","userThirdId":"aliIddddddd" };
+            var parasObj = { "sysId": "0", "versionNo": "0.0.0.1", "mobile": "15618920033", "smsCode": "123456","thirdType":"0","userThirdId":"999aliIddddddd" };
             var url = "/xcgamemana/Token?action=getMobileToken";
             var parasJson = JSON.stringify(parasObj);
             common(url, parasJson);
@@ -177,7 +177,7 @@
         }
 
         function do_getMobileTokenByThirdId() {
-            var parasObj = { "sysId": "0", "versionNo": "0.0.0.1", "mobileToken": mobileToken1 };
+            var parasObj = { "sysId": "0", "versionNo": "0.0.0.1", "userThirdId": "999aliIddddddd" };
             var url = "/xcgamemana/Token?action=getMobileTokenByThirdId";
             var parasJson = JSON.stringify(parasObj);
             common(url, parasJson);

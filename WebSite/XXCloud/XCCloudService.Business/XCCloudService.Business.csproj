@@ -136,6 +136,7 @@
     <Compile Include="XCCloud\Data_ProjectTimeInfoBusiness.cs" />
     <Compile Include="XCCloud\Data_ProjectTime_BandPriceBusiness.cs" />
     <Compile Include="XCCloud\Data_ProjectTime_StoreListBusiness.cs" />
+    <Compile Include="XCCloud\Data_Project_BindGameBusiness.cs" />
     <Compile Include="XCCloud\Data_Project_DeviceBusiness.cs" />
     <Compile Include="XCCloud\Data_Project_StoreListBusiness.cs" />
     <Compile Include="XCCloud\Data_Push_RuleBusiness.cs" />

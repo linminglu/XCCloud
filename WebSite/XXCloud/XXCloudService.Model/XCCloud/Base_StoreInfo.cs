@@ -18,6 +18,7 @@ namespace XCCloudService.Model.XCCloud
         public string ParentID { get; set; }
         public string MerchID { get; set; }
         public string StoreName { get; set; }
+        public Nullable<int> StoreTag { get; set; }
         public string Password { get; set; }
         public Nullable<System.DateTime> AuthorExpireDate { get; set; }
         public string AreaCode { get; set; }

@@ -7,8 +7,10 @@ using System.Web;
 using XCCloudService.Base;
 using XCCloudService.BLL.Container;
 using XCCloudService.BLL.IBLL.XCCloud;
+using XCCloudService.Business.XCCloud;
 using XCCloudService.Common;
 using XCCloudService.Common.Enum;
+using XCCloudService.Common.Extensions;
 using XCCloudService.Model.CustomModel.XCCloud;
 using XCCloudService.Model.XCCloud;
 
@@ -83,44 +85,30 @@ namespace XXCloudService.Api.XCCloud
                 string destroyTime = dicParas.ContainsKey("destroyTime") ? (dicParas["destroyTime"] + "") : string.Empty;
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
-
-                if (!string.IsNullOrEmpty(destroyTime))
-                {
-                    try
-                    {
-                        Convert.ToDateTime(destroyTime);
-                    }
-                    catch
-                    {
-                        errMsg = "入库时间参数格式不正确";
-                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                    }
-                }
                                 
-                IData_CoinStorageService data_CoinStorageService = BLLContainer.Resolve<IData_CoinStorageService>();
-                var query = data_CoinStorageService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase));
+                var query = Data_CoinStorageBusiness.NewInstance.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase));
                 if (!string.IsNullOrEmpty(destroyTime))
                 {
-                    var dt = Convert.ToDateTime(destroyTime);
+                    var dt = ObjectExt.Todatetime(destroyTime);
                     query = query.Where(w => DbFunctions.DiffDays(w.DestroyTime, dt) == 0);
                 }
 
-                IBase_UserInfoService base_UserInfoService = BLLContainer.Resolve<IBase_UserInfoService>();
-                var linq = base_UserInfoService.GetModels(p => p.UserType == (int)UserType.Store).Select(o => new { UserID = o.UserID, LogName = o.LogName, RealName = o.RealName });
+                var result = from a in query
+                             join b in Base_UserInfoBusiness.NewInstance.GetModels(p => p.UserType == (int)UserType.Store) on a.UserID equals b.UserID into b1
+                             from b in b1.DefaultIfEmpty()
+                             select new
+                             {
+                                 ID = a.ID,
+                                 StoreID = a.StoreID,
+                                 StorageCount = a.StorageCount,
+                                 DestroyTime = a.DestroyTime,
+                                 UserID = a.UserID,
+                                 Note = a.Note,
+                                 LogName = b != null ? b.LogName : string.Empty,
+                                 RealName = b != null ? b.RealName : string.Empty
+                             };
 
-                var result = query.ToList().Select(o => new
-                {
-                    ID = o.ID,
-                    StoreID = o.StoreID,
-                    StorageCount = o.StorageCount,
-                    DestroyTime = o.DestroyTime,
-                    UserID = o.UserID,
-                    Note = o.Note,
-                    LogName = linq.SingleOrDefault(p => p.UserID == o.UserID).LogName,
-                    RealName = linq.SingleOrDefault(p => p.UserID == o.UserID).RealName
-                });
-
-                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, result.ToList());
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, result);
             }
             catch (Exception e)
             {
@@ -190,43 +178,29 @@ namespace XXCloudService.Api.XCCloud
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
 
+                var query = Data_CoinDestoryBusiness.NewInstance.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase));
                 if (!string.IsNullOrEmpty(destroyTime))
                 {
-                    try
-                    {
-                        Convert.ToDateTime(destroyTime);
-                    }
-                    catch
-                    {
-                        errMsg = "销毁时间参数格式不正确";
-                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                    }
-                }
-
-                IData_CoinDestoryService data_CoinDestoryService = BLLContainer.Resolve<IData_CoinDestoryService>();
-                var query = data_CoinDestoryService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase));
-                if (!string.IsNullOrEmpty(destroyTime))
-                {
-                    var dt = Convert.ToDateTime(destroyTime);
+                    var dt = ObjectExt.Todatetime(destroyTime);
                     query = query.Where(w => DbFunctions.DiffDays(w.DestroyTime, dt) == 0);
                 }
 
-                IBase_UserInfoService base_UserInfoService = BLLContainer.Resolve<IBase_UserInfoService>();
-                var linq = base_UserInfoService.GetModels(p => p.UserType == (int)UserType.Store).Select(o => new { UserID = o.UserID, LogName = o.LogName, RealName = o.RealName });
-
-                var result = query.ToList().Select(o => new
-                {
-                    ID = o.ID,
-                    StoreID = o.StoreID,
-                    StorageCount = o.StorageCount,
-                    DestroyTime = o.DestroyTime,
-                    UserID = o.UserID,
-                    Note = o.Note,
-                    LogName = linq.SingleOrDefault(p => p.UserID == o.UserID).LogName,
-                    RealName = linq.SingleOrDefault(p => p.UserID == o.UserID).RealName
-                });
-
-                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, result.ToList());
+                var result = from a in query
+                             join b in Base_UserInfoBusiness.NewInstance.GetModels(p => p.UserType == (int)UserType.Store) on a.UserID equals b.UserID into b1
+                             from b in b1.DefaultIfEmpty()
+                             select new
+                             {
+                                 ID = a.ID,
+                                 StoreID = a.StoreID,
+                                 StorageCount = a.StorageCount,
+                                 DestroyTime = a.DestroyTime,
+                                 UserID = a.UserID,
+                                 Note = a.Note,
+                                 LogName = b != null ? b.LogName : string.Empty,
+                                 RealName = b != null ? b.RealName : string.Empty
+                             };
+                    
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, result);
             }
             catch (Exception e)
             {
@@ -399,24 +373,10 @@ namespace XXCloudService.Api.XCCloud
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
 
+                var query = Data_DigitCoinDestroyBusiness.NewInstance.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase));
                 if (!string.IsNullOrEmpty(destroyTime))
                 {
-                    try
-                    {
-                        Convert.ToDateTime(destroyTime);
-                    }
-                    catch
-                    {
-                        errMsg = "销毁时间参数格式不正确";
-                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                    }
-                }
-
-                IData_DigitCoinDestroyService data_DigitCoinDestroyService = BLLContainer.Resolve<IData_DigitCoinDestroyService>();
-                var query = data_DigitCoinDestroyService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase));
-                if (!string.IsNullOrEmpty(destroyTime))
-                {
-                    var dt = Convert.ToDateTime(destroyTime);
+                    var dt = ObjectExt.Todatetime(destroyTime);
                     query = query.Where(w => DbFunctions.DiffDays(w.DestroyTime, dt) == 0);
                 }
 
@@ -425,22 +385,22 @@ namespace XXCloudService.Api.XCCloud
                     query = query.Where(w => w.ICCardID.Contains(iCardID));
                 }
 
-                IBase_UserInfoService base_UserInfoService = BLLContainer.Resolve<IBase_UserInfoService>();
-                var linq = base_UserInfoService.GetModels(p => p.UserType == (int)UserType.Store).Select(o => new { UserID = o.UserID, LogName = o.LogName, RealName = o.RealName });
+                var result = from a in query
+                             join b in Base_UserInfoBusiness.NewInstance.GetModels(p => p.UserType == (int)UserType.Store) on a.UserID equals b.UserID into b1
+                             from b in b1.DefaultIfEmpty()
+                             select new
+                             {
+                                 ID = a.ID,
+                                 StoreID = a.StoreID,
+                                 ICardID = a.ICCardID,
+                                 DestroyTime = a.DestroyTime,
+                                 UserID = a.UserID,
+                                 Note = a.Note,
+                                 LogName = b != null ? b.LogName : string.Empty,
+                                 RealName = b != null ? b.RealName : string.Empty
+                             };
 
-                var result = query.ToList().Select(o => new
-                {
-                    ID = o.ID,
-                    StoreID = o.StoreID,
-                    ICardID = o.ICCardID,
-                    DestroyTime = o.DestroyTime,
-                    UserID = o.UserID,
-                    Note = o.Note,
-                    LogName = linq.SingleOrDefault(p => p.UserID == o.UserID).LogName,
-                    RealName = linq.SingleOrDefault(p => p.UserID == o.UserID).RealName
-                });                
-
-                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, result.ToList());
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, result);
             }
             catch (Exception e)
             {

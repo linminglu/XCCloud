@@ -24,5 +24,7 @@ namespace XCCloudService.Model.XCCloud
         public string MerchID { get; set; }
         public string StoreID { get; set; }
         public Nullable<int> ValidFlag { get; set; }
+        public Nullable<decimal> LowLimit { get; set; }
+        public Nullable<decimal> HighLimit { get; set; }
     }
 }

@@ -79,6 +79,7 @@
     <Compile Include="IDAL\XCCloud\IData_MemberLevel_FoodDAL.cs" />
     <Compile Include="IDAL\XCCloud\IData_MemberLevelFreeDAL.cs" />
     <Compile Include="IDAL\XCCloud\IData_MerchAlipay_ShopServiceDAL.cs" />
+    <Compile Include="IDAL\XCCloud\IData_Project_BindGameDAL.cs" />
     <Compile Include="IDAL\XCCloud\IFlw_GroupVerityDAL.cs" />
     <Compile Include="IDAL\XCCloud\IBase_DepotInfoDAL.cs" />
     <Compile Include="IDAL\XCCloud\IBase_DeviceInfoDAL.cs" />
@@ -271,6 +272,7 @@
     <Compile Include="XCCloud\Data_ProjectInfoDAL.cs" />
     <Compile Include="XCCloud\Data_ProjectTimeInfoDAL.cs" />
     <Compile Include="XCCloud\Data_ProjectTime_StoreListDAL.cs" />
+    <Compile Include="XCCloud\Data_Project_BindGameDAL.cs" />
     <Compile Include="XCCloud\Data_Project_StoreListDAL.cs" />
     <Compile Include="XCCloud\Data_ProjectTime_BandPriceDAL.cs" />
     <Compile Include="XCCloud\Data_Project_DeviceDAL.cs" />

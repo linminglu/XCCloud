@@ -457,6 +457,9 @@
     <Compile Include="XCCloud\Data_ProjectTime_StoreList.cs">
       <DependentUpon>XCCloudDBModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="XCCloud\Data_Project_BindGame.cs">
+      <DependentUpon>XCCloudDBModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="XCCloud\Data_Project_Device.cs">
       <DependentUpon>XCCloudDBModel.tt</DependentUpon>
     </Compile>

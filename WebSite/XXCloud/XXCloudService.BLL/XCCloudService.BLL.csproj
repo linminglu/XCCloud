@@ -68,6 +68,7 @@
     <Compile Include="IBLL\XCCloud\IData_MemberLevelFreeService.cs" />
     <Compile Include="IBLL\XCCloud\IData_MemberLevel_FoodService.cs" />
     <Compile Include="IBLL\XCCloud\IData_MerchAlipay_ShopService.cs" />
+    <Compile Include="IBLL\XCCloud\IData_Project_BindGameService.cs" />
     <Compile Include="IBLL\XCCloud\IFlw_GroupVerityService.cs" />
     <Compile Include="IBLL\XCCloud\IBase_DepotInfoService.cs" />
     <Compile Include="IBLL\XCCloud\IBase_DeviceInfoService.cs" />
@@ -211,6 +212,7 @@
     <Compile Include="XCCloud\Data_MemberLevelFreeService.cs" />
     <Compile Include="XCCloud\Data_MemberLevel_FoodService.cs" />
     <Compile Include="XCCloud\Data_MerchAlipay_ShopService.cs" />
+    <Compile Include="XCCloud\Data_Project_BindGameService.cs" />
     <Compile Include="XCCloud\Flw_GroupVerityService.cs" />
     <Compile Include="XCCloud\Base_MerchAlipayService.cs" />
     <Compile Include="XCCloud\Base_GoodsInfoService.cs" />

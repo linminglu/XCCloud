@@ -16,6 +16,7 @@ using XCCloudService.BLL.XCCloud;
 using XCCloudService.Business.XCCloud;
 using XCCloudService.Common;
 using XCCloudService.Common.Enum;
+using XCCloudService.Common.Extensions;
 using XCCloudService.DAL;
 using XCCloudService.DBService.BLL;
 using XCCloudService.Model.CustomModel.XCCloud;
@@ -208,45 +209,17 @@ namespace XCCloudService.Api.XCCloud
             try
             {
                 string errMsg = string.Empty;
+                Dictionary<string, string> imageInfo = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
-                #region 验证参数
-
-                var file = HttpContext.Current.Request.Files[0];
-                if (file == null)
+                List<string> imageUrls = null;
+                if (!Utils.UploadImageFile("/XCCloud/Store/Shop/", out imageUrls, out errMsg))
                 {
-                    errMsg = "未找到图片";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
-                if (file.ContentLength > int.Parse(System.Configuration.ConfigurationManager.AppSettings["MaxImageSize"].ToString()))
-                {
-                    errMsg = "超过图片的最大限制为1M";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
+                imageInfo.Add("ShopSignPhoto", imageUrls.FirstOrDefault());
 
-                #endregion
-
-                string picturePath = System.Configuration.ConfigurationManager.AppSettings["UploadImageUrl"].ToString() + "/XCCloud/Store/Shop/";
-                string path = System.Web.HttpContext.Current.Server.MapPath(picturePath);
-                //如果不存在就创建file文件夹
-                if (Directory.Exists(path) == false)
-                {
-                    Directory.CreateDirectory(path);
-                }
-
-                string fileName = Path.GetFileNameWithoutExtension(file.FileName) + Utils.ConvertDateTimeToLong(DateTime.Now) + Path.GetExtension(file.FileName);
-
-                if (File.Exists(path + fileName))
-                {
-                    errMsg = "图片名称已存在，请重命名后上传";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }              
-
-                file.SaveAs(path + fileName);
-
-                Dictionary<string, string> dicStoreInfo = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-                dicStoreInfo.Add("ShopSignPhoto", picturePath + fileName);
-                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, dicStoreInfo);
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, imageInfo);
             }
             catch (Exception e)
             {
@@ -259,45 +232,18 @@ namespace XCCloudService.Api.XCCloud
         {
             try
             {
-                string errMsg = string.Empty;
+                string errMsg = string.Empty;               
+                Dictionary<string, string> imageInfo = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
-                #region 验证参数
-
-                var file = HttpContext.Current.Request.Files[0];
-                if (file == null)
+                List<string> imageUrls = null;
+                if (!Utils.UploadImageFile("/XCCloud/Store/Licence/", out imageUrls, out errMsg))
                 {
-                    errMsg = "未找到图片";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
-                if (file.ContentLength > int.Parse(System.Configuration.ConfigurationManager.AppSettings["MaxImageSize"].ToString()))
-                {
-                    errMsg = "超过图片的最大限制为1M";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
-                #endregion
+                imageInfo.Add("LicencePhoto", imageUrls.FirstOrDefault());
 
-                string picturePath = System.Configuration.ConfigurationManager.AppSettings["UploadImageUrl"].ToString() + "/XCCloud/Store/Licence/";
-                string path = System.Web.HttpContext.Current.Server.MapPath(picturePath);
-                //如果不存在就创建file文件夹
-                if (Directory.Exists(path) == false)
-                {
-                    Directory.CreateDirectory(path);
-                }
-
-                string fileName = Path.GetFileNameWithoutExtension(file.FileName) + Utils.ConvertDateTimeToLong(DateTime.Now) + Path.GetExtension(file.FileName);
-
-                if (File.Exists(path + fileName))
-                {
-                    errMsg = "图片名称已存在，请重命名后上传";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }                
-
-                file.SaveAs(path + fileName);
-
-                Dictionary<string, string> dicStoreInfo = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-                dicStoreInfo.Add("LicencePhoto", picturePath + fileName);
-                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, dicStoreInfo);
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, imageInfo);
             }
             catch (Exception e)
             {
@@ -370,6 +316,7 @@ namespace XCCloudService.Api.XCCloud
                 string storeState = dicParas.ContainsKey("storeState") ? dicParas["storeState"].ToString() : string.Empty;
                 string parentId = dicParas.ContainsKey("parentId") ? dicParas["parentId"].ToString() : string.Empty;
                 string storeName = dicParas.ContainsKey("storeName") ? dicParas["storeName"].ToString() : string.Empty;
+                string storeTag = dicParas.ContainsKey("storeTag") ? dicParas["storeTag"].ToString() : string.Empty;
                 string password = dicParas.ContainsKey("password") ? dicParas["password"].ToString() : string.Empty;
                 string authorExpireDate = dicParas.ContainsKey("authorExpireDate") ? dicParas["authorExpireDate"].ToString() : string.Empty;
                 string address = dicParas.ContainsKey("address") ? dicParas["address"].ToString() : string.Empty;
@@ -393,6 +340,12 @@ namespace XCCloudService.Api.XCCloud
                 if (string.IsNullOrEmpty(storeName))
                 {
                     errMsg = "门头名称不能为空";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
+                if (string.IsNullOrEmpty(storeTag))
+                {
+                    errMsg = "门店标签不能为空";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
                 
@@ -517,25 +470,26 @@ namespace XCCloudService.Api.XCCloud
                 base_StoreInfo.ParentID = parentId;
                 base_StoreInfo.MerchID = merchId;
                 base_StoreInfo.StoreName = storeName;
+                base_StoreInfo.StoreTag = ObjectExt.Toint(storeTag);
                 base_StoreInfo.Password = password;
-                base_StoreInfo.AuthorExpireDate = !string.IsNullOrEmpty(authorExpireDate) ? Convert.ToDateTime(authorExpireDate) : default(DateTime?);
+                base_StoreInfo.AuthorExpireDate = ObjectExt.Todatetime(authorExpireDate);
                 base_StoreInfo.AreaCode = adcode;
                 base_StoreInfo.Address = address;
-                base_StoreInfo.Lng = Convert.ToDecimal(lng);
-                base_StoreInfo.Lat = Convert.ToDecimal(lat);
+                base_StoreInfo.Lng = ObjectExt.Todecimal(lng);
+                base_StoreInfo.Lat = ObjectExt.Todecimal(lat);
                 base_StoreInfo.Contacts = contracts;
                 base_StoreInfo.IDCard = idCard;
-                base_StoreInfo.IDExpireDate = !string.IsNullOrEmpty(idExpireDate) ? Convert.ToDateTime(idExpireDate) : default(DateTime?);
+                base_StoreInfo.IDExpireDate = ObjectExt.Todatetime(idExpireDate);
                 base_StoreInfo.Mobile = mobile;
                 base_StoreInfo.ShopSignPhoto = shopSignPhoto;
                 base_StoreInfo.LicencePhoto = licencePhoto;
                 base_StoreInfo.LicenceID = licenceId;
-                base_StoreInfo.LicenceExpireDate = !string.IsNullOrEmpty(licenceExpireDate) ? Convert.ToDateTime(licenceExpireDate) : default(DateTime?);
+                base_StoreInfo.LicenceExpireDate = ObjectExt.Todatetime(licenceExpireDate);
                 base_StoreInfo.BankType = bankType;
                 base_StoreInfo.BankCode = bankCode;
                 base_StoreInfo.BankAccount = bankAccount;
-                base_StoreInfo.SelttleType = Convert.ToInt32(selttleType);
-                base_StoreInfo.StoreState = string.IsNullOrEmpty(storeState) ? (int)StoreState.Invalid : Convert.ToInt32(storeState);
+                base_StoreInfo.SelttleType = ObjectExt.Toint(selttleType);
+                base_StoreInfo.StoreState = ObjectExt.Toint(storeState, (int)StoreState.Invalid);
 
                 //给商户的创建者发送门店审核工单                    
                 IBase_UserInfoService base_UserInfoService = BLLContainer.Resolve<IBase_UserInfoService>();
@@ -725,6 +679,7 @@ namespace XCCloudService.Api.XCCloud
                 string storeState = dicParas.ContainsKey("storeState") ? dicParas["storeState"].ToString() : string.Empty;
                 string parentId = dicParas.ContainsKey("parentId") ? dicParas["parentId"].ToString() : string.Empty;
                 string storeName = dicParas.ContainsKey("storeName") ? dicParas["storeName"].ToString() : string.Empty;
+                string storeTag = dicParas.ContainsKey("storeTag") ? dicParas["storeTag"].ToString() : string.Empty;
                 string password = dicParas.ContainsKey("password") ? dicParas["password"].ToString() : string.Empty;
                 string authorExpireDate = dicParas.ContainsKey("authorExpireDate") ? dicParas["authorExpireDate"].ToString() : string.Empty;
                 string address = dicParas.ContainsKey("address") ? dicParas["address"].ToString() : string.Empty;
@@ -737,6 +692,12 @@ namespace XCCloudService.Api.XCCloud
                 if (string.IsNullOrEmpty(storeName))
                 {
                     errMsg = "门头名称不能为空";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
+                if (string.IsNullOrEmpty(storeTag))
+                {
+                    errMsg = "门店标签不能为空";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
@@ -807,13 +768,14 @@ namespace XCCloudService.Api.XCCloud
                 base_StoreInfo.ParentID = parentId;
                 base_StoreInfo.MerchID = merchId;
                 base_StoreInfo.StoreName = storeName;
+                base_StoreInfo.StoreTag = ObjectExt.Toint(storeTag);
                 base_StoreInfo.Password = password;
-                base_StoreInfo.AuthorExpireDate = !string.IsNullOrEmpty(authorExpireDate) ? Convert.ToDateTime(authorExpireDate) : default(DateTime?);
+                base_StoreInfo.AuthorExpireDate = ObjectExt.Todatetime(authorExpireDate);
                 base_StoreInfo.Address = address;
                 base_StoreInfo.Contacts = contracts;
                 base_StoreInfo.Mobile = mobile;
-                base_StoreInfo.SelttleType = Convert.ToInt32(selttleType);
-                base_StoreInfo.StoreState = string.IsNullOrEmpty(storeState) ? (int)StoreState.Invalid : Convert.ToInt32(storeState);
+                base_StoreInfo.SelttleType = ObjectExt.Toint(selttleType);
+                base_StoreInfo.StoreState = ObjectExt.Toint(storeState, (int)StoreState.Invalid);
 
                 if (!base_StoreInfoService.Update(base_StoreInfo))
                 {

@@ -8,13 +8,14 @@
     <!-- 引入样式 -->
     <link rel="stylesheet" href="css/ydui.rem.css">
     <!-- 引入rem自适应类库 -->
-
     <style>
-
+        [v-cloak] {
+            display: none;
+        }
     </style>
 </head>
 <body>
-<div id="app">
+<div id="app" v-cloak>
     <yd-cell-group>
         <yd-cell-item arrow @click.native="btnClick">
             <span slot="left">扫一扫</span>
@@ -58,7 +59,7 @@
 <script src="js/ydui.rem.js"></script>
 <script src="js/axios.min.js"></script>
 <script src="js/alipayjsapi.min.js"></script>
-<script src="https://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+<script src="js/jweixin-1.2.0.js"></script>
 <script>
     var sysId = 0; //调用方应用Id
     var versionNo= "0.89"; //版本号
@@ -72,35 +73,55 @@
         methods: {
             Load:function () {
                 var that =this;
-                this.$dialog.loading.open('');
-                var obj={
-                    sysId: sysId,
-                    versionNo: versionNo,
-                    fileName:"mine"
-                };
-                axios.post('/XCGameMana/WxCommon?action=getWxH5Config', obj).then(function (res) {
-                    that.$dialog.loading.close();
-                    that.msgPrompt(res.data);
-                    console.log(res.data);
-                    if (res.data.result_code === '1') {
+                if (/MicroMessenger/.test(window.navigator.userAgent)) {
+                    var wxData = getStorag("wxData")||"";
+                    alert(wxData);
+                    if(wxData == ""){
+                        this.$dialog.loading.open('');
+                        var obj={
+                            sysId: sysId,
+                            versionNo: versionNo,
+                            fileName:"mine"
+                        };
+                        axios.post('/XCGameMana/WxCommon?action=getWxH5Config', obj).then(function (res) {
+                            that.$dialog.loading.close();
+                            that.msgPrompt(res.data);
+                            console.log(res.data);
+                            JSON.stringify(res.data);
+                            if (res.data.result_code === '1') {
+                                var wxData =res.data.result_data;
+                                wx.config({
+                                    debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+                                    appId: wxData.AppId, // 必填，公众号的唯一标识
+                                    timestamp: wxData.TimeStamp, // 必填，生成签名的时间戳
+                                    nonceStr: wxData.NonceStr, // 必填，生成签名的随机串
+                                    signature: wxData.Signature,// 必填，签名
+                                    jsApiList: ["scanQRCode"] // 必填，需要使用的JS接口列表
+                                });
+                                setStorage("wxData",wxData)
+                            }
+                        }).catch(function (err) {
+                            that.$dialog.loading.close();
+                            console.log(err);
+                        })
+                    }else {
+                        alert("缓存了");
                         wx.config({
                             debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-                            appId: res.data.result_data.AppId, // 必填，公众号的唯一标识
-                            timestamp: res.data.result_data.TimeStamp, // 必填，生成签名的时间戳
-                            nonceStr: res.data.result_data.NonceStr, // 必填，生成签名的随机串
-                            signature: res.data.result_data.Signature,// 必填，签名
+                            appId: wxData.AppId, // 必填，公众号的唯一标识
+                            timestamp: wxData.TimeStamp, // 必填，生成签名的时间戳
+                            nonceStr: wxData.NonceStr, // 必填，生成签名的随机串
+                            signature: wxData.Signature,// 必填，签名
                             jsApiList: ["scanQRCode"] // 必填，需要使用的JS接口列表
                         });
                     }
-                }).catch(function (err) {
-                    that.$dialog.loading.close();
-                    console.log(err);
-                })
-
+                }
             },
             btnClick:function () {
                 var that =this;
+                alert(111);
                 if (/MicroMessenger/.test(window.navigator.userAgent)) {
+                    alert("wx");
                     wx.scanQRCode({
                         needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
                         scanType: ["qrCode","barCode"], // 可以指定扫二维码还是一维码，默认二者都有
@@ -112,6 +133,7 @@
                         }
                     });
                 } else if (/AlipayClient/.test(window.navigator.userAgent)) {
+                    alert("ali");
                     AlipayJSBridge.call('scan', {
                         type: 'qr',
                         actionType: 'scan'
@@ -125,7 +147,6 @@
                         timeout:1500,
                         icon: 'error'
                     });
-                    console.log("")
                 }
 
             },

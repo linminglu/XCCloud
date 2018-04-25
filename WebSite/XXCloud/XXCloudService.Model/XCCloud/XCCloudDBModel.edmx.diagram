@@ -42,7 +42,6 @@
         <EntityTypeShape EntityType="XCCloudDBModel.Data_GameFreeRule" Width="1.5" PointX="6.75" PointY="17.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_GameFreeRule_List" Width="1.5" PointX="18.75" PointY="0.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_GameInfo" Width="1.5" PointX="18.75" PointY="3.75" />
-        <EntityTypeShape EntityType="XCCloudDBModel.Data_GameInfo_Ext" Width="1.5" PointX="12.75" PointY="18.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_GameInfo_Photo" Width="1.5" PointX="18.75" PointY="15.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_GivebackRule" Width="1.5" PointX="18.75" PointY="18.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_GoodInventory" Width="1.5" PointX="14.75" PointY="19.75" />
@@ -98,7 +97,6 @@
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_Project_BuyDetail" Width="1.5" PointX="8.75" PointY="30.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_Transfer" Width="1.5" PointX="10.75" PointY="30.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Store_CheckDate" Width="1.5" PointX="30.75" PointY="15.75" />
-        <EntityTypeShape EntityType="XCCloudDBModel.Base_StoreInfo" Width="1.5" PointX="27.375" PointY="30.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_Food_Detial" Width="1.5" PointX="13.375" PointY="30.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_SupplierList" Width="1.5" PointX="15.375" PointY="31.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Log_GameAlarm" Width="1.5" PointX="17.375" PointY="31.75" />
@@ -113,18 +111,21 @@
         <EntityTypeShape EntityType="XCCloudDBModel.Data_BalanceChargeRule" Width="1.5" PointX="31.375" PointY="32.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_Project_Device" Width="1.5" PointX="0.75" PointY="6.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_ProjectInfo" Width="1.5" PointX="31.375" PointY="21.75" />
-        <EntityTypeShape EntityType="XCCloudDBModel.Dict_FunctionMenu" Width="1.5" PointX="7.375" PointY="24.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_GoodsStock" Width="1.5" PointX="21.375" PointY="4.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_GoodStorage" Width="1.5" PointX="33.375" PointY="7.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_GoodStorage_Detail" Width="1.5" PointX="33.375" PointY="12.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_GroupVerity" Width="1.5" PointX="33.375" PointY="15.75" />
-        <EntityTypeShape EntityType="XCCloudDBModel.Data_MemberLevelFree" Width="1.5" PointX="21.375" PointY="33.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_CouponInfo" Width="1.5" PointX="23.375" PointY="33.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Dict_BalanceType" Width="1.5" PointX="15.375" PointY="13.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_MerchAlipay_Shop" Width="1.5" PointX="9.375" PointY="17.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Base_MerchAlipay" Width="1.5" PointX="19.375" PointY="23.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_MemberLevel_Food" Width="1.5" PointX="33.375" PointY="20.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_MemberLevel" Width="1.5" PointX="33.375" PointY="29.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.Data_MemberLevelFree" Width="1.5" PointX="33.375" PointY="0.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.Base_StoreInfo" Width="1.5" PointX="25.375" PointY="33.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.Dict_FunctionMenu" Width="1.5" PointX="7.375" PointY="24.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.Data_GameInfo_Ext" Width="1.5" PointX="0.75" PointY="34.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.Data_Project_BindGame" Width="1.5" PointX="11.375" PointY="18.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

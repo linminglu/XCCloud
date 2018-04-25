@@ -11,9 +11,13 @@
     <script src="js/ydui.flexible.js"></script>
     <style>
 
-        .Currency{width: 70%;margin: 0 15%;}
+        .Currency{width: 70%;margin: 0.3rem 15%;text-align: center;}
+        .CurrencyBtn {margin-top: 0.1rem;width: 3rem;height: 0.8rem;font-size: 0.32rem;font-weight: 600;}
         .device{display: flex;width: 100%; background-color: #eee;}
         .device img{width: 2rem;height: 2.4rem;}
+        .section_cont{ width:4rem; font-size:0.26rem;color:#a9a9a9;margin-top: 0.4rem;}
+        .section_cont p{margin-top: 0.2rem;}
+        .section_cont p span{display: inline-block;width: 1.6rem;}
         .memberCard{background: #a82e8c;border-radius: 0.4rem;padding: 0.2rem 0;width: 100%;margin-top: 0.3rem;}
         .memCardTop{height: 0.3rem;text-align: right;font-size: 0.2rem;padding-right: 0.6rem;padding-bottom:0.1rem;}
         .memCardTopBg{background: #000;height: 0.6rem;margin-top: 0.1rem;color: gold;text-align: left;padding-left: 0.8rem;line-height: 0.6rem;}
@@ -23,23 +27,31 @@
         .textS{width: 1.6rem;text-align: right;display: inline-block}
         .memRight{width: 48%;display: inline-block;font-size: 0.3rem;}
         .memRight img{width: 1.5rem;height: 0.7rem;margin-top: 0.2rem;margin-left: 0.7rem;}
-
-        .show{display: block;}
-
-        .Save-money{margin-top: 0.2rem;}
+        .saveM{margin-top: 0.4rem;width: 3rem;height: 0.8rem;font-size: 0.32rem;font-weight: 600;}
         .memberTr{height: 0.6rem;text-align: left;padding-left: 0.5rem;margin-top: 20px;}
         .memberColor{padding-left: 0.1rem;color: #ff3030;}
-
+        .yd-scrolltab-nav{display: none;}
+        .closeIcon{background: none;margin: 0!important;}
+        .rechargeSty{display: flex;flex-direction: row;justify-content: space-between;border-bottom: 1px solid #0bb20c;}
+        .rechargeBg{background: url("images/salesbg.png") no-repeat center;height: 1.6rem;background-size: 100% 100%;width: 200px;margin: 0.2rem 0;display: flex;flex-direction: row;}
+        .rechargeBg .rechargeText1{font-size: 0.55rem;color: #ff3030;line-height: 1rem;padding-left: 0.4rem;margin-top: 0.3rem;}
+        .rechargeBg .rechargeText0{display: inline-block;width: 2px; height: 1.4rem; margin-top: 0.1rem;margin-left: 0.2rem;transform:skew(-30deg);-webkit-transform: skew(-30deg);-moz-transform: skew(-30deg);-o-transform:skew(-30deg);-ms-transform:skew(-30deg);background-color: #fff;}
+        .rechargeBg .rechargeText2{font-size: 0.4rem;color: #ff7c3d;padding-left: 0.1rem;margin-top: 0.8rem;}
+        .rechargeBtn{margin-top: 0.8rem;}
+        .activePrompt{font-size: 0.2rem;}
+        [v-cloak] {
+            display: none;
+        }
     </style>
 </head>
 <body>
-<div id="app">
+<div id="app" v-cloak>
     <div class='device'>
         <img src="images/device.png" alt="设备">
-        <div>
-            <p><span>店名：</span>{{memberText1}}</p>
-            <p><span>设备状态：</span>{{memberText2}}</p>
-            <p><span>设备类型：</span>{{memberText3}}</p>
+        <div class="section_cont">
+            <p><span>店名：</span>{{storeName}}</p>
+            <p><span>设备状态：</span>{{stateName}}</p>
+            <p><span>设备类型：</span>{{deviceType}}</p>
         </div>
     </div>
     <div class='memberCard'>
@@ -60,72 +72,604 @@
         </div>
     </div>
     <div class='Currency' v-if="currencyShow">
-        <!--<input class='Currency-input' type="number" maxlength='6' value="{{inputTxt}}" onBlur="CurrencyInput" placeholder="输入要提取的数量"/>-->
-        <!--<input imgCode type="number" onInput="Currencypassd" placeholder="请输入密码"/>-->
-        <!--<button formType="submit" type="primary" class='Save-money' disabled="{{disabled}}" >{{memberText8}}</button>-->
-        <!--<button type="primary" class='Save-money' disabled="{{disabled}}" catchTap="buyCoins">购币</button>-->
+        <yd-cell-group>
+            <yd-cell-item>
+                <span slot="left">提币数：</span>
+                <yd-input slot="right" required v-model="input1" max="6" placeholder="输入要提取的数量"></yd-input>
+            </yd-cell-item>
+            <yd-cell-item>
+                <span slot="left">密码：</span>
+                <yd-input slot="right" type="password" v-model="input2" placeholder="请输入密码"></yd-input>
+            </yd-cell-item>
+        </yd-cell-group>
+        <yd-button size="small" type="primary" class='CurrencyBtn' @click.native="extractBtn">提币</yd-button>
+        <yd-button size="small" type="primary" class='CurrencyBtn' @click.native="buyBtn">购币</yd-button>
     </div>
-    <div class='saveM' v-if="saveShow">
-        <!--<button formType="submit" type="primary" class='Save-money' disabled="{{disabled}}" >提币</button>-->
+    <div v-if="saveShow" style="text-align: center;">
+        <yd-button size="small" type="primary" class='saveM' @click.native="saveBtn">存币</yd-button>
     </div>
-    <yd-button size="large" type="warning" @click.native="show2 = true">玩的不尽兴，马上充值</yd-button>
+    <yd-button size="large" type="warning" @click.native="recharge">玩的不尽兴，马上充值</yd-button>
     <yd-popup v-model="show2" position="bottom" height="60%">
-        <yd-button type="warning" style="margin: 30px;" @click.native="show2 = false">Close Bottom Popup</yd-button>
-        <div style="height: 3rem; overflow-y: auto; position: relative;">
+        <yd-button class="closeIcon" type="warning" style="margin: 30px;" @click.native="show2 = false"><yd-icon color="#FF685D" name="error-outline"></yd-icon></yd-button>
+        <p class="activePrompt">（友情提示：请1分钟之内完成支付，支付异常将在5个工作日内退回）</p>
+        <div style="height: 10rem; overflow-y: auto; position: relative;">
             <yd-scrolltab>
-                <yd-scrolltab-panel v-for="(item,index) in list" :key="item.foodID" label="" height="1rem">
-                    <div>{{item.coinQuantity}}币{{item.sendCoinQuantity}}￥{{item.foodPrice}}</div>
-                    <yd-button size="large" type="primary">立即充值</yd-button>
+                <yd-scrolltab-panel class="rechargeSty" v-for="(item,index) in list"  :key="index" label="" height="1rem">
+                    <div  class="rechargeBg">
+                        <span class="rechargeText1">{{item.coinQuantity}}币{{item.sendCoinQuantity}}</span>
+                        <span class="rechargeText0"></span>
+                        <span class="rechargeText2">￥{{item.foodPrice}}</span>
+                    </div>
+                    <yd-button class="rechargeBtn" size="small" type="primary" @click.native="rechargeBtn(index)">立即充值</yd-button>
+                </yd-scrolltab-panel>
+            </yd-scrolltab>
+        </div>
+    </yd-popup>
+    <yd-popup v-model="show1" position="bottom" height="60%">
+        <yd-button class="closeIcon" type="warning" style="margin: 30px;" @click.native="show1 = false"><yd-icon color="#FF685D" name="error-outline"></yd-icon></yd-button>
+        <p class="activePrompt">（友情提示：请1分钟之内完成支付，支付异常将在5个工作日内退回）</p>
+        <div style="height: 10rem; overflow-y: auto; position: relative;">
+            <yd-scrolltab>
+                <yd-scrolltab-panel class="rechargeSty" v-for="(item,index) in list"  :key="index" label="" height="1rem">
+                    <div  class="rechargeBg">
+                        <span class="rechargeText1">{{item.coinQuantity}}币{{item.sendCoinQuantity}}</span>
+                        <span class="rechargeText0"></span>
+                        <span class="rechargeText2">￥{{item.foodPrice}}</span>
+                    </div>
+                    <yd-button class="rechargeBtn" size="small" type="primary" @click.native="buyCoinBtn(index)">立即购币</yd-button>
                 </yd-scrolltab-panel>
             </yd-scrolltab>
         </div>
     </yd-popup>
 </div>
-
-<!-- 引入 Vue -->
 <script src="js/vue.js"></script>
+<!-- 引入 Vue -->
 <script src="js/jquery-1.8.3-min.js"></script>
 <!-- 引入组件库 -->
 <script src="js/ydui.rem.js"></script>
 <script src="js/axios.min.js"></script>
-<script src="https://gw.alipayobjects.com/as/g/h5-lib/alipayjsapi/3.1.0/alipayjsapi.min.js"></script>
+<script src="js/alipayjsapi.min.js"></script>
+<!--Reference the SignalR library. -->
+<script src="/Scripts/jquery.signalR-2.2.2.min.js"></script>
+<!--Reference the autogenerated SignalR hub script. -->
+<script src="/signalr/hubs"></script>
 <script>
     var sysId = 0; //调用方应用Id
     var versionNo= "0.89"; //版本号
-    var url_getDataOrder = '/XCGameMana/DataOrder?action=getDataOrder';//获取分页订单列表
     var htmlfnc = new Vue({
         el: '#app',
         data:{
+            show1: false,
             show2: false,
             mobileToken:'',
+            deviceToken:'',
+            memberToken:'',
+            storeId:'',
             memberText71:"",
             memberText72:"",
             memberText73:"",
             memberText74:"",
             memberText75:"",
             memberText76:"",
-            memberText1:"",
-            memberText2:"",
-            memberText3:"",
+            storeName:"",
+            stateName:"",
+            deviceType:"",
             memberText4:"",
             memberText5:"",
             currencyShow:false,
             saveShow:false,
-            list:[]
+            list:[],
+            input1:"",
+            input2:""
         },
         mounted: function () {
-
+            this.Load()
         },
         methods: {
             Load:function () {
-            },
-            btnClick:function () {
-                AlipayJSBridge.call('scan', {
-                    type: 'qr',
-                    actionType: 'scan'
-                }, function(result) {
-                    alert(JSON.stringify(result));
+                var that =this;
+                this.$dialog.loading.open('');
+                var mobileToken = getStorage("mobileToken")||"";        //获取手机令牌
+                var deviceToken = getStorage("deviceToken")||"";       //获取手机令牌
+                var memberToken = getStorage("memberToken")||"";    //获取会员令牌
+                that.deviceToken = deviceToken;
+                that.mobileToken = mobileToken;
+                console.log(mobileToken);
+                that.memberToken = memberToken;
+                chatHub = $.connection.XCGameClientHub;
+                chatHub.client.broadcastMessage = function (name, message) {
+                    //接受广播消息
+                };
+                chatHub.client.hubCall = function (data) {
+                    console.log(data);
+                    switch (data.callType) {
+                        case "connect": that.callBackFnc2(data); break;
+                        case "notify": that.callBackFnc(data); break;
+                        default: break;
+                    }
+                };
+                // Start Hub
+                $.connection.hub.start().done(function () {
+                    chatHub.server.connect(mobileToken, "0");
                 });
+
+                var obj={
+                    sysId: sysId,
+                    versionNo: versionNo,
+                    deviceToken:that.deviceToken
+                };
+                axios.post('/xcgamemana/store?action=storeInfoByTerminalNo', obj).then(function (res) {
+                    that.$dialog.loading.close();
+                    that.msgPrompt(res.data);
+                    console.log(res.data);
+                    if (res.data.result_code === '1') {
+                        that.storeId = res.data.result_data.storeId;
+                        that.storeName = res.data.result_data.storeName;
+                        that.stateName = res.data.result_data.stateName;
+                        that.deviceType =res.data.result_data.deviceType;
+                        console.log(that.memberToken == "");
+                        if(that.memberToken == ""){
+                            var memData={
+                                sysId: sysId,
+                                versionNo: versionNo,
+                                storeId: that.storeId,
+                                mobileToken: that.mobileToken
+                            };
+                            console.log(memData);
+                            axios.post('/xcgamemana/token?action=getMemberToken', memData).then(function (res) {
+                                that.$dialog.loading.close();
+                                that.msgPrompt(res.data);
+                                console.log(res.data);
+                                if (res.data.result_code === '1') {
+                                    that.memberToken = res.data.result_data.memberToken;
+                                    setStorage("memberToken",memberToken);
+                                    that.GetGameInfo();
+                                }
+                            }).catch(function (err) {
+                                that.$dialog.loading.close();
+                                console.log(err);
+                            });
+
+                        }else {
+                            that.GetGameInfo();
+                        }
+                    }
+                }).catch(function (err) {
+                    that.$dialog.loading.close();
+                    console.log(err);
+                });
+
+            },
+            callBackFnc: function (data) {
+                this.msgPrompt(data);
+                if(data.result_code == "1" && data.result_data.answerOjb.result_code == "1"){
+                    this.$dialog.toast({
+                        mes:data.result_data.answerOjb.answerMsg,
+                        timeout: 1500,
+                        icon: 'success'
+                    });
+
+                }
+            },
+            callBackFnc2: function (data) {
+                var that = this;
+                this.msgPrompt(data);
+                if(data.result_code != 1){
+                    that.load()
+                }
+            },
+            GetGameInfo:function () {
+                var that =this;
+                this.$dialog.loading.open('');
+                var obj={
+                    sysId: sysId,
+                    versionNo: versionNo,
+                    deviceToken: that.deviceToken,
+                    memberToken: that.memberToken
+                };
+                axios.post('/xcgame/member?action=getInfo', obj).then(function (res) {
+                    that.$dialog.loading.close();
+                    that.msgPrompt(res.data);
+                    console.log(res.data);
+                    if (res.data.result_code === '1') {
+                        var gameType = res.data.result_data.gameType;
+                        that.gameType =gameType;
+                        that.memberText4 =res.data.result_data.endDate;
+                        that.memberText5 = res.data.result_data.icCardID;
+                        that.memberText73 = res.data.result_data.balance;
+                        that.memberText72 = res.data.result_data.point;
+                        that.memberText74 = res.data.result_data.deposit;
+                        that.memberText71 = res.data.result_data.lottery;
+                        that.memberText75 = res.data.result_data.memberLevelName;
+                        that.memberText76 = res.data.result_data.memberState;
+                        if (that.deviceType == "自助提币机") {            //设置按钮
+                            that.currencyShow = true;
+                        } else if (that.deviceType == "自助存币机") {
+                            that.saveShow = true;
+                        }
+                    }
+                }).catch(function (err) {
+                    that.$dialog.loading.close();
+                    console.log(err);
+                })
+            },
+            getFoods:function () {
+                var that =this;
+                this.$dialog.loading.open('');
+                console.log(that.memberToken);
+                var obj={
+                    sysId: sysId,
+                    versionNo: versionNo,
+                    storeId: that.storeId,
+                    memberToken: that.memberToken
+                };
+                axios.post('/xcgame/Foods?action=getfoods', obj).then(function (res) {
+                    that.$dialog.loading.close();
+                    that.msgPrompt(res.data);
+                    console.log(res.data);
+                    if (res.data.result_code === '1') {
+                        var newsList = [];
+                        for (var i = 0; i < res.data.result_data.length; i++) {
+                            if (res.data.result_data[i].sendCoinQuantity == 0) {
+                                var sendCoinQuantity = ""
+                            } else {
+                                var sendCoinQuantity = "+" + res.data.result_data[i].sendCoinQuantity
+                            }
+                            newsList.push({
+                                foodID: res.data.result_data[i].foodID,
+                                foodName: res.data.result_data[i].foodName,
+                                foodPrice: res.data.result_data[i].foodPrice,
+                                coinQuantity: res.data.result_data[i].coinQuantity,
+                                sendCoinQuantity: sendCoinQuantity
+                            })
+                        }
+                        that.list = newsList;
+                    }
+                }).catch(function (err) {
+                    that.$dialog.loading.close();
+                    console.log(err);
+                })
+            },
+            extractBtn:function () {
+                var that = this;
+                if(that.stateName == "设备正常"){
+                    if (that.input1 == "" || that.input2 == "" ){
+                        that.$dialog.toast({
+                            mes: "请输入提币数和密码！",
+                            timeout: 1500,
+                            icon: 'error'
+                        });
+                    } else if (that.memberText73 >= that.input1) {
+                        this.$dialog.loading.open('');
+                        var obj = {
+                            sysId: sysId,
+                            versionNo: versionNo,
+                            memberPassword: that.input2,
+                            deviceToken: that.deviceToken,
+                            memberToken: that.memberToken,
+                            coins: that.input1,
+                            mobileToken: that.mobileToken
+                        };
+                        axios.post('/xcgame/flw_485_coin?action=flw_485_coinSale', obj).then(function (res) {
+                            that.$dialog.loading.close();
+                            that.msgPrompt(res.data);
+                            console.log(res.data);
+                            if (res.data.result_code === '1') {
+                                that.$dialog.toast({
+                                    mes: "请等待出币！",
+                                    timeout: 1500,
+                                    icon: 'success'
+                                });
+                            }
+                        }).catch(function (err) {
+                            that.$dialog.loading.close();
+                            console.log(err);
+                        });
+                    }else {
+                        that.$dialog.toast({
+                            mes: "币余额不足！",
+                            timeout: 1500,
+                            icon: 'error'
+                        });
+                    }
+                }else {
+                    that.$dialog.toast({
+                        mes: that.stateName,
+                        timeout: 1500,
+                        icon: 'error'
+                    });
+                }
+
+            },
+            buyBtn:function () {
+                var that= this;
+                if(that.stateName == "设备正常"){
+                    var that =this;
+                    that.show1 = true;
+                    that.getFoods()
+                }else {
+                    that.$dialog.toast({
+                        mes: that.stateName,
+                        timeout: 1500,
+                        icon: 'error'
+                    });
+                }
+            },
+            buyCoinBtn:function (index) {
+                var that =this;
+                console.log(index);
+                console.log(that.list[index]);
+                if (/MicroMessenger/.test(window.navigator.userAgent)) {
+                    var openId =getStorage("openId")||"";
+                    var obj={
+                        sysId: sysId,
+                        versionNo: versionNo,
+                        mobileToken:that.mobileToken,
+                        openId:openId,
+                        memberToken:that.memberToken,
+                        storeId:that.storeId,
+                        buyType:"购币",
+                        productName:that.list[index].foodName,
+                        foodid:that.list[index].foodID,
+                        payPrice:that.list[index].payPrice,
+                        coins:that.list[index].coinQuantity,
+                        deviceToken:that.deviceToken
+                    };
+                    that.$dialog.loading.open();
+                    axios.post("/Payment?action=getPposWxPay", obj).then(function (res) {
+                        that.$dialog.loading.close();
+                        console.log(res.data);
+                        that.msgPrompt(res.data);
+                        if (res.data.result_code === '1') {
+                            WeixinJSBridge.invoke(
+                                'getBrandWCPayRequest',
+                                {
+                                    "appId": res.data.result_data.appId,     //公众号名称，由商户传入
+                                    "timeStamp": res.data.result_data.timeStamp,         //时间戳，自1970年以来的秒数
+                                    "nonceStr": res.data.result_data.nonceStr, //随机串
+                                    "package": res.data.result_data.package,
+                                    "signType": "MD5",         //微信签名方式：
+                                    "paySign": res.data.result_data.paySign //微信签名
+                                },
+                                function (res) {
+//                                    alert(JSON.stringify(res));
+                                    if (res.err_msg == "get_brand_wcpay_request:ok") {
+                                        that.$dialog.toast({
+                                            mes: "付款成功!",
+                                            timeout:1500,
+                                            icon: 'success'
+                                        });
+
+                                    }
+                                }
+                            );
+                        }
+                    }).catch(function (err) {
+                        that.$dialog.loading.close();
+                        console.log(err);
+                    })
+                } else if (/AlipayClient/.test(window.navigator.userAgent)) {
+                    var aliId =getStorage("userId")||"";
+                    var obj={
+                        sysId: sysId,
+                        versionNo: versionNo,
+                        mobileToken:that.mobileToken,
+                        aliId:aliId,
+                        memberToken:that.memberToken,
+                        storeId:that.storeId,
+                        buyType:"购币",
+                        productName:that.list[index].foodName,
+                        foodid:that.list[index].foodID,
+                        payPrice:that.list[index].payPrice,
+                        coins:that.list[index].coinQuantity,
+                        deviceToken:that.deviceToken
+                    };
+                    that.$dialog.loading.open();
+                    axios.post("/Payment?action=createAlipayOrder", obj).then(function (res) {
+                        that.$dialog.loading.close();
+                        console.log(res.data);
+                        that.msgPrompt(res.data);
+                        if (res.data.result_code === '1') {
+                            AlipayJSBridge.call("tradePay", {
+                                tradeNO: res.data.result_data.tradeNO
+                            }, function(result) {
+//                                alert(JSON.stringify(result));
+                                if(result.resultCode == "9000"){
+                                    that.$dialog.toast({
+                                        mes: "付款成功!",
+                                        timeout:1500,
+                                        icon: 'success'
+                                    });
+                                }else if(result.resultCode == "6001"){
+                                    that.$dialog.toast({
+                                        mes: "取消支付!",
+                                        timeout:1500,
+                                        icon: 'error'
+                                    });
+                                }else if(result.resultCode == "6002"){
+                                    that.$dialog.toast({
+                                        mes: "网络出错!",
+                                        timeout:1500,
+                                        icon: 'error'
+                                    });
+                                }else {
+                                    that.$dialog.toast({
+                                        mes: "订单支付失败!",
+                                        timeout: 1500,
+                                        icon: 'error'
+                                    });
+                                }
+//                            alert(JSON.stringify(result));
+                            });
+                        }
+                    }).catch(function (err) {
+                        that.$dialog.loading.close();
+                        console.log(err);
+                    })
+                } else {
+                    that.$dialog.toast({
+                        mes: "暂不支持此浏览器支付!",
+                        timeout:1500,
+                        icon: 'error'
+                    });
+                }
+            },
+            recharge:function () {
+                var that =this;
+                that.show2 = true;
+                that.getFoods()
+            },
+            rechargeBtn :function (index) {
+                var that =this;
+                console.log(index);
+                console.log(that.list[index]);
+                if (/MicroMessenger/.test(window.navigator.userAgent)) {
+                    var openId =getStorage("openId")||"";
+                    var obj={
+                        sysId: sysId,
+                        versionNo: versionNo,
+                        mobileToken:that.mobileToken,
+                        openId:openId,
+                        memberToken:that.memberToken,
+                        storeId:that.storeId,
+                        buyType:"充值",
+                        productName:that.list[index].foodName,
+                        foodid:that.list[index].foodID,
+                        payPrice:that.list[index].payPrice,
+                        coins:that.list[index].coinQuantity,
+                        deviceToken:''
+                    };
+                    that.$dialog.loading.open();
+                    axios.post("/Payment?action=getPposWxPay", obj).then(function (res) {
+                        that.$dialog.loading.close();
+                        console.log(res.data);
+                        that.msgPrompt(res.data);
+                        if (res.data.result_code === '1') {
+                            WeixinJSBridge.invoke(
+                                'getBrandWCPayRequest',
+                                {
+                                    "appId": res.data.result_data.appId,     //公众号名称，由商户传入
+                                    "timeStamp": res.data.result_data.timeStamp,         //时间戳，自1970年以来的秒数
+                                    "nonceStr": res.data.result_data.nonceStr, //随机串
+                                    "package": res.data.result_data.package,
+                                    "signType": "MD5",         //微信签名方式：
+                                    "paySign": res.data.result_data.paySign //微信签名
+                                },
+                                function (res) {
+        //                                    alert(JSON.stringify(res));
+                                    if (res.err_msg == "get_brand_wcpay_request:ok") {
+                                        that.$dialog.toast({
+                                            mes: "付款成功!",
+                                            timeout:1500,
+                                            icon: 'success'
+                                        });
+                                    }
+                                }
+                            );
+                        }
+                    }).catch(function (err) {
+                        that.$dialog.loading.close();
+                        console.log(err);
+                    })
+                } else if (/AlipayClient/.test(window.navigator.userAgent)) {
+                    var aliId =getStorage("userId")||"";
+                    var obj={
+                        sysId: sysId,
+                        versionNo: versionNo,
+                        mobileToken:that.mobileToken,
+                        aliId:aliId,
+                        memberToken:that.memberToken,
+                        storeId:that.storeId,
+                        buyType:"充值",
+                        productName:that.list[index].foodName,
+                        foodid:that.list[index].foodID,
+                        payPrice:that.list[index].payPrice,
+                        coins:that.list[index].coinQuantity,
+                        deviceToken:''
+                    };
+                    that.$dialog.loading.open();
+                    axios.post("/Payment?action=createAlipayOrder", obj).then(function (res) {
+                        that.$dialog.loading.close();
+                        console.log(res.data);
+                        that.msgPrompt(res.data);
+                        if (res.data.result_code === '1') {
+                            AlipayJSBridge.call("tradePay", {
+                                tradeNO: res.data.result_data.tradeNO
+                            }, function(result) {
+        //                                alert(JSON.stringify(result));
+                                if(result.resultCode == "9000"){
+                                    that.$dialog.toast({
+                                        mes: "付款成功!",
+                                        timeout:1500,
+                                        icon: 'success'
+                                    });
+                                }else if(result.resultCode == "6001"){
+                                    that.$dialog.toast({
+                                        mes: "取消支付!",
+                                        timeout:1500,
+                                        icon: 'error'
+                                    });
+                                }else if(result.resultCode == "6002"){
+                                    that.$dialog.toast({
+                                        mes: "网络出错!",
+                                        timeout:1500,
+                                        icon: 'error'
+                                    });
+                                }else {
+                                    that.$dialog.toast({
+                                        mes: "订单支付失败!",
+                                        timeout: 1500,
+                                        icon: 'error'
+                                    });
+                                }
+        //                            alert(JSON.stringify(result));
+                            });
+                        }
+                    }).catch(function (err) {
+                        that.$dialog.loading.close();
+                        console.log(err);
+                    })
+                } else {
+                    that.$dialog.toast({
+                        mes: "暂不支持此浏览器支付!",
+                        timeout:1500,
+                        icon: 'error'
+                    });
+                }
+            },
+            saveBtn:function () {
+                var that= this;
+                if(that.stateName == "设备正常"){
+                    this.$dialog.loading.open('');
+                    var obj={
+                        sysId: sysId,
+                        versionNo: versionNo,
+                        deviceToken: that.deviceToken,
+                        memberToken: that.memberToken,
+                        mobileToken: that.mobileToken
+                    };
+                    axios.post('/xcgame/coins?action=saveCoins', obj).then(function (res) {
+                        that.$dialog.loading.close();
+                        that.msgPrompt(res.data);
+                        console.log(res.data);
+                        if (res.data.result_code === '1') {
+                            that.$dialog.toast({
+                                mes: res.result_msg,
+                                timeout: 1500,
+                                icon: 'success'
+                            });
+                        }
+                    }).catch(function (err) {
+                        that.$dialog.loading.close();
+                        console.log(err);
+                    })
+                }else {
+                    that.$dialog.toast({
+                        mes: that.stateName,
+                        timeout: 1500,
+                        icon: 'error'
+                    });
+                }
             },
             msgPrompt:function (res) {
                 if(res.return_code == 0){
@@ -144,6 +688,28 @@
             }
         }
     });
+    //存储session
+    function setStorage(key,value) {
+        if(window.localStorage){
+            value = JSON.stringify(value); //转化为JSON字符串
+            var storage=window.localStorage;
+            storage.setItem(key,value);
+        }
+    }
+    //删除session
+    function removeStorage(key) {
+        if(window.localStorage){
+            var storage=window.localStorage;
+            storage.removeItem(key);
+        }
+    }
+    //获取session
+    function getStorage(key) {
+        if(window.localStorage){
+            value = JSON.parse(localStorage.getItem(key));
+            return value;
+        }
+    }
 </script>
 </body>
 </html>

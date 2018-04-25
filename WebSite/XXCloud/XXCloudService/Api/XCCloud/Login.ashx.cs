@@ -11,6 +11,7 @@ using XCCloudService.Business.XCCloud;
 using XCCloudService.Business.XCGameMana;
 using XCCloudService.Common;
 using XCCloudService.Common.Enum;
+using XCCloudService.Common.Extensions;
 using XCCloudService.Model.CustomModel.XCCloud;
 using XCCloudService.Model.XCCloud;
 
@@ -52,7 +53,15 @@ namespace XXCloudService.Api.XCCloud
                 string storeId = base_UserInfoModel.StoreID;
                 string merchId = base_UserInfoModel.MerchID;
                 var dataModel = new MerchDataModel { StoreID = storeId, MerchID = merchId };
+                IBase_StoreInfoService base_StoreInfoService = BLLContainer.Resolve<IBase_StoreInfoService>();
+                if (!base_StoreInfoService.Any(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)))
+                {
+                    errMsg = "您所访问的门店不存在";
+                    return false;
+                }
+                var base_StoreInfoModel = base_StoreInfoService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
                 userLogResponseModel.Token = XCCloudUserTokenBusiness.SetUserToken(userId.ToString(), logType, dataModel);
+                userLogResponseModel.MerchTag = base_StoreInfoModel.StoreTag;
                 userLogResponseModel.MerchID = merchId;
                 userLogResponseModel.StoreID = storeId;
             }
@@ -73,10 +82,11 @@ namespace XXCloudService.Api.XCCloud
                     return false;
                 }
                 var base_MerchantInfoModel = base_MerchantInfoService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
-                var dataModel = new MerchDataModel { MerchID = merchId, MerchType = base_MerchantInfoModel.MerchType, CreateType = base_MerchantInfoModel.CreateType, CreateUserID = base_MerchantInfoModel.CreateUserID };
+                var dataModel = new MerchDataModel { MerchID = merchId, StoreID = string.Empty, MerchType = base_MerchantInfoModel.MerchType, CreateType = base_MerchantInfoModel.CreateType, CreateUserID = base_MerchantInfoModel.CreateUserID };
                 userLogResponseModel.Token = XCCloudUserTokenBusiness.SetUserToken(userId.ToString(), logType, dataModel);
                 userLogResponseModel.MerchTag = base_MerchantInfoModel.MerchTag;
                 userLogResponseModel.MerchID = merchId;
+                userLogResponseModel.StoreID = string.Empty;
             }
 
             userLogResponseModel.LogType = logType;
@@ -145,6 +155,7 @@ namespace XXCloudService.Api.XCCloud
                 string merchId = dicParas.ContainsKey("merchId") ? Convert.ToString(dicParas["merchId"]) : string.Empty;
                 string storeId = dicParas.ContainsKey("storeId") ? Convert.ToString(dicParas["storeId"]) : string.Empty;
                 string workStationId = dicParas.ContainsKey("workStationId") ? Convert.ToString(dicParas["workStationId"]) : string.Empty;
+                int? merchTag = (int?)null;
 
                 if (string.IsNullOrEmpty(logType))
                 {
@@ -152,14 +163,39 @@ namespace XXCloudService.Api.XCCloud
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
-                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                userTokenKeyModel.LogType = Convert.ToInt32(logType);
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];                
                 var merchDataModel = (userTokenKeyModel.DataModel as MerchDataModel);
-                if (!string.IsNullOrEmpty(merchId)) merchDataModel.MerchID = merchId;
-                if (!string.IsNullOrEmpty(storeId)) merchDataModel.StoreID = storeId;
-                if (!string.IsNullOrEmpty(workStationId)) merchDataModel.WorkStationID = Convert.ToInt32(workStationId);
+                merchDataModel.WorkStationID = ObjectExt.Toint(workStationId);
 
-                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
+                userTokenKeyModel.LogType = Convert.ToInt32(logType);
+                if (userTokenKeyModel.LogType == (int)RoleType.MerchUser)
+                {
+                    IBase_MerchantInfoService base_MerchantInfoService = BLLContainer.Resolve<IBase_MerchantInfoService>();
+                    if (!base_MerchantInfoService.Any(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)))
+                    {
+                        errMsg = "您所访问的商户不存在";
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
+                    var base_MerchantInfoModel = base_MerchantInfoService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                    merchTag = base_MerchantInfoModel.MerchTag;
+                    merchDataModel.MerchID = merchId;
+                    merchDataModel.StoreID = string.Empty;
+                }
+                else if (userTokenKeyModel.LogType == (int)RoleType.StoreUser)
+                {
+                    IBase_StoreInfoService base_StoreInfoService = BLLContainer.Resolve<IBase_StoreInfoService>();
+                    if (!base_StoreInfoService.Any(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)))
+                    {
+                        errMsg = "您所访问的门店不存在";
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
+                    var base_StoreInfoModel = base_StoreInfoService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                    merchTag = base_StoreInfoModel.StoreTag;
+                    merchDataModel.MerchID = merchId;
+                    merchDataModel.StoreID = storeId;
+                }
+
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, new { MerchTag = merchTag });
             }
             catch (Exception e)
             {

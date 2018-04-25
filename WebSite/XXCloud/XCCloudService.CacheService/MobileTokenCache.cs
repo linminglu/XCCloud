@@ -21,6 +21,22 @@ namespace XCCloudService.CacheService
             _mobileTokenHt[token] = new MobileTokenModel(mobile);
         }
 
+        public static void AddToken(string token, string mobile, string thirdType, string userThirdId)
+        {
+            var model = new MobileTokenModel(mobile);
+            model.WeiXinId = thirdType == "0" && !string.IsNullOrEmpty(userThirdId) ? userThirdId : string.Empty;
+            model.AliId = thirdType == "1" && !string.IsNullOrEmpty(userThirdId) ? userThirdId : string.Empty;
+            _mobileTokenHt[token] = model;
+        }
+
+        //public static void UpdateToken(string token, string mobile, string thirdType, string userThirdId)
+        //{
+        //    var model = (MobileTokenModel)(_mobileTokenHt[token]);
+        //    model.WeiXinId = thirdType == "0" && !string.IsNullOrEmpty(userThirdId) ? userThirdId : model.WeiXinId;
+        //    model.AliId = thirdType == "1" && !string.IsNullOrEmpty(userThirdId) ? userThirdId : model.AliId;
+        //    _mobileTokenHt[token] = model;
+        //}
+
         public static void AddToken(string token,MobileTokenModel model)
         {
             _mobileTokenHt[token] = model;
@@ -88,6 +104,8 @@ namespace XCCloudService.CacheService
             this.WeiXinId = string.Empty;
             this.AliId = string.Empty;
         }
+
+
 
         public MobileTokenModel(string mobile,string weixinId,string aliId)
         {
