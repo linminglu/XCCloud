@@ -72,9 +72,373 @@
     <Compile Include="IDAL\XCCloudRS232\IMerchDAL.cs" />
     <Compile Include="IDAL\XCCloudRS232\IMerchDeviceDAL.cs" />
     <Compile Include="IDAL\XCCloudRS232\IMerchSegmentDAL.cs" />
+    <Compile Include="IDAL\XCCloud\IBase_ChainRuleDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IBase_ChainRule_StoreDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IBase_DepotInfoDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IBase_DeviceInfoDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IBase_EnumParamsDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IBase_GoodsInfoDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IBase_MemberInfoDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IBase_MerchAlipayDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IBase_MerchantInfoDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IBase_MerchFunctionDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IBase_SettleLCPayDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IBase_SettleOrgDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IBase_SettlePPOSDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IBase_StorageInfoDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IBase_StoreDogListDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IBase_StoreInfoDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IBase_StoreWeightDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IBase_StoreWeight_GameDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IBase_UserGrantDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IBase_UserGroupDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IBase_UserGroup_GrantDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IBase_UserInfoDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IData_BalanceChargeRuleDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IData_BalanceType_StoreListDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IData_BillInfoDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IData_Card_BalanceDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IData_Card_Balance_StoreListDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IData_Card_RightDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IData_Card_Right_StoreListDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IData_CoinDestoryDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IData_CoinInventoryDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IData_CoinStorageDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IData_CouponInfoDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IData_CouponListDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IData_Coupon_StoreListDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IData_DigitCoinDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IData_DigitCoinDestroyDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IData_FoodInfoDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IData_Food_DetialDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IData_Food_LevelDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IData_Food_SaleDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IData_Food_StoreListDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IData_Food_WorkStationDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IData_GameFreeRuleDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IData_GameFreeRule_ListDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IData_GameInfoDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IData_GameInfo_ExtDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IData_GameInfo_PhotoDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IData_Game_StockInfoDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IData_GivebackRuleDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IData_GoodInventoryDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IData_GoodsStockDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IData_GoodStock_RecordDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IData_GoodStorageDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IData_GoodStorage_DetailDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IData_JackpotInfoDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IData_Jackpot_LevelDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IData_Jackpot_MatrixDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IData_LotteryInventoryDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IData_LotteryStorageDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IData_MemberLevelDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IData_MemberLevelFreeDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IData_MemberLevel_FoodDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IData_Member_CardDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IData_Member_Card_StoreDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IData_MerchAlipay_ShopDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IData_MessageDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IData_ParametersDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IData_ProjectInfoDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IData_ProjectTimeInfoDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IData_ProjectTime_BandPriceDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IData_ProjectTime_StoreListDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IData_Project_BindGameDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IData_Project_DeviceDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IData_Project_StoreListDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IData_Push_RuleDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IData_ReloadDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IData_Storage_RecordDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IData_SupplierListDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IData_WorkstationDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IDict_AreaDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IDict_BalanceTypeDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IDict_FunctionMenuDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IDict_SystemDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IFlw_485_CoinDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IFlw_485_SaveCoinDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IFlw_CheckDateDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IFlw_Coin_ExitDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IFlw_Coin_SaleDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IFlw_CouponUseDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IFlw_Digite_CoinDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IFlw_Digite_Coin_DetailDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IFlw_Food_ExitDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IFlw_Food_ExitDetailDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IFlw_Food_SaleDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IFlw_Food_SaleDetailDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IFlw_Game_FreeDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IFlw_Game_WatchDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IFlw_Game_WinPrizeDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IFlw_GivebackDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IFlw_GoodsDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IFlw_Good_DetailDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IFlw_GroupVerityDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IFlw_JackpotDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IFlw_LotteryDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IFlw_OrderDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IFlw_Order_DetailDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IFlw_Order_SerialNumberDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IFlw_Project_BuyDetailDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IFlw_Project_Play_TimeDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IFlw_ScheduleDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IFlw_Ticket_ExitDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IFlw_TransferDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\ILog_GameAlarmDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\ILog_OperationDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\ISearch_TemplateDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\ISearch_Template_DetailDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IStore_CheckDateDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IStore_GameTotalDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IStore_HeadTotalDAL.cs">
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
     <Compile Include="IDAL\XCCloud\IXCCloudDAL.cs">
-      <AutoGen>True</AutoGen>
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+      <SubType>Code</SubType>
       <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Include="IDAL\XCCloud\IXC_WorkInfoDAL.cs">
       <DependentUpon>IXCCloudDAL.tt</DependentUpon>
     </Compile>
     <Compile Include="IDAL\XCGameManagerLog\IUDPDeviceStateChangeLogDAL.cs" />
@@ -134,9 +498,373 @@
     <Compile Include="XCCloudRS232\MerchDAL.cs" />
     <Compile Include="XCCloudRS232\MerchDeviceDAL.cs" />
     <Compile Include="XCCloudRS232\MerchSegmentDAL.cs" />
+    <Compile Include="XCCloud\Base_ChainRuleDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Base_ChainRule_StoreDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Base_DepotInfoDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Base_DeviceInfoDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Base_EnumParamsDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Base_GoodsInfoDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Base_MemberInfoDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Base_MerchAlipayDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Base_MerchantInfoDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Base_MerchFunctionDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Base_SettleLCPayDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Base_SettleOrgDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Base_SettlePPOSDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Base_StorageInfoDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Base_StoreDogListDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Base_StoreInfoDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Base_StoreWeightDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Base_StoreWeight_GameDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Base_UserGrantDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Base_UserGroupDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Base_UserGroup_GrantDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Base_UserInfoDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_BalanceChargeRuleDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_BalanceType_StoreListDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_BillInfoDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_Card_BalanceDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_Card_Balance_StoreListDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_Card_RightDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_Card_Right_StoreListDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_CoinDestoryDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_CoinInventoryDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_CoinStorageDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_CouponInfoDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_CouponListDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_Coupon_StoreListDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_DigitCoinDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_DigitCoinDestroyDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_FoodInfoDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_Food_DetialDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_Food_LevelDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_Food_SaleDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_Food_StoreListDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_Food_WorkStationDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_GameFreeRuleDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_GameFreeRule_ListDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_GameInfoDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_GameInfo_ExtDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_GameInfo_PhotoDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_Game_StockInfoDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_GivebackRuleDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_GoodInventoryDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_GoodsStockDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_GoodStock_RecordDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_GoodStorageDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_GoodStorage_DetailDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_JackpotInfoDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_Jackpot_LevelDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_Jackpot_MatrixDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_LotteryInventoryDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_LotteryStorageDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_MemberLevelDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_MemberLevelFreeDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_MemberLevel_FoodDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_Member_CardDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_Member_Card_StoreDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_MerchAlipay_ShopDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_MessageDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_ParametersDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_ProjectInfoDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_ProjectTimeInfoDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_ProjectTime_BandPriceDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_ProjectTime_StoreListDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_Project_BindGameDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_Project_DeviceDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_Project_StoreListDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_Push_RuleDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_ReloadDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_Storage_RecordDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_SupplierListDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_WorkstationDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Dict_AreaDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Dict_BalanceTypeDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Dict_FunctionMenuDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Dict_SystemDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Flw_485_CoinDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Flw_485_SaveCoinDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Flw_CheckDateDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Flw_Coin_ExitDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Flw_Coin_SaleDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Flw_CouponUseDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Flw_Digite_CoinDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Flw_Digite_Coin_DetailDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Flw_Food_ExitDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Flw_Food_ExitDetailDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Flw_Food_SaleDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Flw_Food_SaleDetailDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Flw_Game_FreeDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Flw_Game_WatchDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Flw_Game_WinPrizeDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Flw_GivebackDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Flw_GoodsDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Flw_Good_DetailDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Flw_GroupVerityDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Flw_JackpotDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Flw_LotteryDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Flw_OrderDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Flw_Order_DetailDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Flw_Order_SerialNumberDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Flw_Project_BuyDetailDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Flw_Project_Play_TimeDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Flw_ScheduleDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Flw_Ticket_ExitDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Flw_TransferDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Log_GameAlarmDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Log_OperationDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Search_TemplateDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Search_Template_DetailDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Store_CheckDateDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Store_GameTotalDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Store_HeadTotalDAL.cs">
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
     <Compile Include="XCCloud\XCCloudDAL.cs">
-      <AutoGen>True</AutoGen>
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+      <SubType>Code</SubType>
       <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Include="XCCloud\XC_WorkInfoDAL.cs">
       <DependentUpon>XCCloudDAL.tt</DependentUpon>
     </Compile>
     <Compile Include="XCGameDBService.cs" />
@@ -198,6 +926,12 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
     <Content Include="IDAL\XCCloud\IXCCloudDAL.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>IXCCloudDAL.cs</LastGenOutput>
@@ -206,12 +940,6 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>XCCloudDAL.cs</LastGenOutput>
     </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

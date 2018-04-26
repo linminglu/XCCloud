@@ -253,21 +253,33 @@ namespace XXCloudService.Api.XCCloud
                                     BalanceType = g.Key.BalanceType,
                                     BalanceTypeStr = g.FirstOrDefault().BalanceTypeStr,
                                     Count = g.FirstOrDefault().a.Count,                                    
-                                }; 
+                                };
 
-                var linq = from a in data_ProjectTimeInfoService.GetModels(p=>p.ID == iId)
-                           join b in dict_BalanceTypeService.GetModels(p=>p.State == 1) on a.DepositType equals b.ID into b1
-                           from b in b1.DefaultIfEmpty()                                                      
-                           select new
+                var data_ProjectTimeInfo = (from a in data_ProjectTimeInfoService.GetModels(p => p.ID == iId)
+                                           join b in dict_BalanceTypeService.GetModels(p => p.State == 1) on a.DepositType equals b.ID into b1
+                                           from b in b1.DefaultIfEmpty()
+                                           select new
+                                           {
+                                               ID = a.ID,
+                                               ProjectName = a.ProjectName,
+                                               PayCycle = a.PayCycle,
+                                               Deposit = a.Deposit,
+                                               BackTime = a.BackTime,
+                                               DepositType = a.DepositType,
+                                               DepositTypeStr = b != null ? b.TypeName : string.Empty,
+                                               Note = a.Note
+                                           }).FirstOrDefault();
+
+                var linq = new
                            {
-                               ID = a.ID,
-                               ProjectName = a.ProjectName,
-                               PayCycle = a.PayCycle,
-                               Deposit = a.Deposit,
-                               BackTime = a.BackTime,
-                               DepositType = a.DepositType,
-                               DepositTypeStr = b != null ? b.TypeName : string.Empty,
-                               Note = a.Note,
+                               ID = data_ProjectTimeInfo.ID,
+                               ProjectName = data_ProjectTimeInfo.ProjectName,
+                               PayCycle = data_ProjectTimeInfo.PayCycle,
+                               Deposit = data_ProjectTimeInfo.Deposit,
+                               BackTime = data_ProjectTimeInfo.BackTime,
+                               DepositType = data_ProjectTimeInfo.DepositType,
+                               DepositTypeStr = data_ProjectTimeInfo.DepositTypeStr,
+                               Note = data_ProjectTimeInfo.Note,
                                BandPrices = BandPrices
                            };
 
@@ -290,10 +302,10 @@ namespace XXCloudService.Api.XCCloud
                 string errMsg = string.Empty;
                 string id = dicParas.ContainsKey("id") ? (dicParas["id"] + "") : string.Empty;
                 string projectName = dicParas.ContainsKey("projectName") ? (dicParas["projectName"] + "") : string.Empty;
-                string payCycle = dicParas.ContainsKey("playCount") ? (dicParas["playCount"] + "") : string.Empty;
-                string depositType = dicParas.ContainsKey("expireDays") ? (dicParas["expireDays"] + "") : string.Empty;
-                string deposit = dicParas.ContainsKey("accompanyFlag") ? (dicParas["accompanyFlag"] + "") : string.Empty;
-                string backTime = dicParas.ContainsKey("accompanyCash") ? (dicParas["accompanyCash"] + "") : string.Empty;                
+                string payCycle = dicParas.ContainsKey("payCycle") ? (dicParas["payCycle"] + "") : string.Empty;
+                string depositType = dicParas.ContainsKey("depositType") ? (dicParas["depositType"] + "") : string.Empty;
+                string deposit = dicParas.ContainsKey("deposit") ? (dicParas["deposit"] + "") : string.Empty;
+                string backTime = dicParas.ContainsKey("backTime") ? (dicParas["backTime"] + "") : string.Empty;                
                 string note = dicParas.ContainsKey("note") ? (dicParas["note"] + "") : string.Empty;
                 object[] bandPrices = dicParas.ContainsKey("bandPrices") ? (object[])dicParas["bandPrices"] : null; 
                 int iId = 0;
@@ -492,7 +504,7 @@ namespace XXCloudService.Api.XCCloud
         }
 
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
-        public object GetProjectTimeStores(Dictionary<string, object> dicParas)
+        public object GetProjectStores(Dictionary<string, object> dicParas)
         {
             try
             {
@@ -516,7 +528,7 @@ namespace XXCloudService.Api.XCCloud
         }
 
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
-        public object SaveProjectTimeStores(Dictionary<string, object> dicParas)
+        public object SaveProjectStores(Dictionary<string, object> dicParas)
         {
             try
             {

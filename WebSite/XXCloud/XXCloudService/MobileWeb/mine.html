@@ -37,6 +37,11 @@
         </yd-cell-item>
     </yd-cell-group>
     <yd-cell-group>
+        <yd-cell-item arrow @click.native="unbind">
+            <span slot="left">解除绑定</span>
+        </yd-cell-item>
+    </yd-cell-group>
+    <yd-cell-group>
         <yd-cell-item arrow>
             <span slot="left" @click.native="hrefFnc2">关于我们</span>
         </yd-cell-item>
@@ -172,6 +177,43 @@
             },
             register2:function () {
                 window.location.href = "MyOrder.html"
+            },
+            unbind:function () {
+                var that =this;
+                var mobileToken = getStorage("mobileToken");        //获取手机令牌
+                if (/MicroMessenger/.test(window.navigator.userAgent)) {
+                    var thirdType = "0"
+                } else if (/AlipayClient/.test(window.navigator.userAgent)) {
+                    var thirdType = "1"
+                } else {
+                    that.$dialog.toast({
+                        mes: "暂不支持此浏览器!",
+                        timeout:1500,
+                        icon: 'error'
+                    });
+                }
+                this.$dialog.loading.open('');
+                var obj={
+                    sysId: sysId,
+                    versionNo: versionNo,
+                    thirdType: thirdType,
+                    mobileToken:mobileToken
+                };
+                axios.post('/xcgamemana/token?action=removeThirdId', obj).then(function (res) {
+                    that.$dialog.loading.close();
+                    that.msgPrompt(res.data);
+                    console.log(res.data);
+                    if (res.data.result_code === '1') {
+                        that.$dialog.toast({
+                            mes: "解绑成功！",
+                            timeout: 1500,
+                            icon: 'success'
+                        });
+                    }
+                }).catch(function (err) {
+                    that.$dialog.loading.close();
+                    console.log(err);
+                })
             },
             hrefFnc1:function () {
                 window.location.href = "mineCard.html"

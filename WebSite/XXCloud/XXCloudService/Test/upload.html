@@ -1,0 +1,48 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="/website/uploadify/uploadify.css">  
+    <script src="/website/js/jquery-1.8.3-min.js"></script>
+    <script type="text/javascript" src="/website/uploadify/jquery.uploadify.min.js"></script>  
+    <script>
+        $(function () {
+                $('#photoname').uploadify({
+                'swf': "/website/js/uploadify/uploadify.swf",
+                'uploader': "/XCGameMana/PhotoUpload?action=getphotoupload",
+                'cancelImg': "/website/js/uploadify/uploadify-cancel.png",
+                'debug': true,
+                'buttonText': '选择照片',
+                'method': 'post',
+                'buttonClass': 'upload_button',
+                'fileTypeDesc': '图片文件',
+                'fileTypeExts': '*.gif;*.jpg;*.png;*.bmp',
+                //'formData': { 'public_path': PUBLIC },
+                'multi': false,
+
+                'onUploadComplete': function (file) {
+
+                },
+
+                /** 
+                 * 上传成功后触发事件 
+                 */
+                'onUploadSuccess': function (file, data, response) {
+                    //参数data保存的是上传后的图片的路径  
+                    //alert(data);  
+                    //$('#photo').css("background-color","#f00");  
+
+                    var path = PUBLIC + "/Uploads/Photo/" + data;
+                    $('#photo>img').attr("src", path);
+                    $('#photoname_hidden').val(data);
+                },
+            });
+        });
+
+    </script>
+</head>
+<body>
+    <input type="file" name="photoname" id="photoname" />  
+</body>
+</html>

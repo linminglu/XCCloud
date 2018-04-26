@@ -7,6 +7,7 @@ using XCCloudService.DAL.XCGame;
 using XCCloudService.DAL.IDAL;
 using XCCloudService.DAL.XCGame.IDAL;
 using XCCloudService.DAL.IDAL.XCGame;
+using XCCloudService.DAL.IDAL.XCCloud;
 using XCCloudService.DAL.Base;
 
 namespace XCCloudService.DAL.Container

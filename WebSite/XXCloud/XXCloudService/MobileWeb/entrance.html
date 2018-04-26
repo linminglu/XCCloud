@@ -1,235 +1,27 @@
 ﻿<!DOCTYPE html>
-<html lang="zh-CN">
+<html>
 <head>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>莘拍档</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- 引入样式 -->
-    <link rel="stylesheet" href="css/ydui.rem.css">
-    <!-- 引入rem自适应类库 -->
-    <script src="js/ydui.flexible.js"></script>
-    <!-- 引入rem自适应类库 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title></title>
     <style>
-        [v-cloak] {
-            display: none;
-        }
+
     </style>
 </head>
 <body>
-<div id="app" v-cloak>
-    <yd-cell-group>
-        <yd-cell-item arrow @click.native="btnClick">
-            <span slot="left">扫一扫</span>
-        </yd-cell-item>
-    </yd-cell-group>
-    <yd-cell-group>
-        <yd-cell-item arrow @click.native="hrefFnc1">
-            <span slot="left">我的会员卡</span>
-        </yd-cell-item>
-        <yd-cell-item arrow>
-            <span slot="left">修改会员信息</span>
-        </yd-cell-item>
-    </yd-cell-group>
-    <yd-cell-group>
-        <yd-cell-item arrow @click.native="clearFnc">
-            <span slot="left">清空缓存</span>
-        </yd-cell-item>
-    </yd-cell-group>
-    <yd-cell-group>
-        <yd-cell-item arrow>
-            <span slot="left" @click.native="hrefFnc2">关于我们</span>
-        </yd-cell-item>
-    </yd-cell-group>
-    <yd-tabbar fixed=true active-color="#000000">
-        <yd-tabbar-item title="首页" @click.native="register1">
-            <yd-icon name="home" slot="icon" size="0.54rem"></yd-icon>
-        </yd-tabbar-item>
-        <yd-tabbar-item title="我的订单" @click.native="register2">
-            <yd-icon name="shopcart" slot="icon" size="0.54rem"></yd-icon>
-        </yd-tabbar-item>
-        <yd-tabbar-item title="个人中心" active>
-            <yd-icon name="ucenter-outline" slot="icon" size="0.54rem"></yd-icon>
-        </yd-tabbar-item>
-    </yd-tabbar>
-</div>
-
-<script src="js/vue.js"></script>
-<!--<script src="js/jquery-1.8.3-min.js"></script>-->
-<!--&lt;!&ndash; 引入组件库 &ndash;&gt;-->
-<script src="js/ydui.rem.js"></script>
-<!--<script src="js/axios.min.js"></script>-->
-<!--<script src="js/alipayjsapi.min.js"></script>-->
-<!--<script src="https://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>-->
+<script src="js/jquery-1.8.3-min.js"></script>
 <script>
-    var sysId = 0; //调用方应用Id
-    var versionNo= "0.89"; //版本号
-    var htmlfnc = new Vue({
-        el: '#app',
-        data:{
-        },
-        mounted: function () {
-            this.Load();
-        },
-        methods: {
-            Load:function () {
-                var that =this;
-                if (/MicroMessenger/.test(window.navigator.userAgent)){
-                    var wxData = getStorage("wxData")||"";
-                    alert(wxData == "");
-                    if(wxData == ""){
-                        this.$dialog.loading.open('');
-                        var obj={
-                            sysId: sysId,
-                            versionNo: versionNo,
-                            fileName:"mine"
-                        };
-                        axios.post('/XCGameMana/WxCommon?action=getWxH5Config', obj).then(function (res) {
-                            that.$dialog.loading.close();
-                            that.msgPrompt(res.data);
-                            console.log(res.data);
-                            JSON.stringify(res.data);
-                            if (res.data.result_code === '1') {
-                                alert(JSON.stringify(res.data.result_data));
-                                var wxData =res.data.result_data;
-                                alert(JSON.stringify(wxData));
-                                setStorage("wxData",wxData);
-                                wx.config({
-                                    debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-                                    appId: wxData.AppId, // 必填，公众号的唯一标识
-                                    timestamp: wxData.TimeStamp, // 必填，生成签名的时间戳
-                                    nonceStr: wxData.NonceStr, // 必填，生成签名的随机串
-                                    signature: wxData.Signature,// 必填，签名
-                                    jsApiList: ["scanQRCode"] // 必填，需要使用的JS接口列表
-                                });
-
-                            }
-                        }).catch(function (err) {
-                            that.$dialog.loading.close();
-                            console.log(err);
-                        })
-                    }else {
-                        alert(JSON.stringify(wxData));
-                        wx.config({
-                            debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-                            appId: wxData.AppId, // 必填，公众号的唯一标识
-                            timestamp: wxData.TimeStamp, // 必填，生成签名的时间戳
-                            nonceStr: wxData.NonceStr, // 必填，生成签名的随机串
-                            signature: wxData.Signature,// 必填，签名
-                            jsApiList: ["scanQRCode"] // 必填，需要使用的JS接口列表
-                        });
-                    }
-                }
-            },
-//            btnClick:function () {
-//                var that =this;
-//                if (/MicroMessenger/.test(window.navigator.userAgent)) {
-//                    alert("wx");
-//                    wx.scanQRCode({
-//                        needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
-//                        scanType: ["qrCode","barCode"], // 可以指定扫二维码还是一维码，默认二者都有
-//                        success: function (res) {
-//                            var result = res.resultStr; // 当needResult 为 1 时，扫码返回的结果
-//                            console.log(result);
-//                            alert(JSON.stringify(result));
-//                            that.jumpFnc(result);
-//                        }
-//                    });
-//                } else if (/AlipayClient/.test(window.navigator.userAgent)) {
-//                    alert("ali");
-//                    AlipayJSBridge.call('scan', {
-//                        type: 'qr',
-//                        actionType: 'scan'
-//                    }, function(result) {
-//                        alert(JSON.stringify(result));
-//                        that.jumpFnc(result.qrCode);
-//                    });
-//                } else {
-//                    that.$dialog.toast({
-//                        mes: "暂不支持此浏览器!",
-//                        timeout:1500,
-//                        icon: 'error'
-//                    });
-//                }
-//
-//            },
-//            register1:function () {
-//                window.location.href = "home.html"
-//            },
-//
-//            register2:function () {
-//                window.location.href = "MyOrder.html"
-//            },
-//            hrefFnc1:function () {
-//                window.location.href = "mineCard.html"
-//            },
-//            hrefFnc2:function () {
-//                window.location.href = "about.html"
-//            },
-//            jumpFnc:function (result) {
-//                var that =this;
-////                alert(JSON.stringify(result));
-//                var str = result.toString();
-////                var str = JSON.stringify(result);
-//                strSplit = str.split("/");
-////                alert(JSON.stringify(strSplit));
-//                var strCode = strSplit[strSplit.length - 2];
-////                alert(strCode);
-////                alert(strCode == "m");
-//                if (strCode=="m"){
-//                    var deviceToken = strSplit[strSplit.length - 1];//扫码获得终端号解析
-//                    this.$dialog.loading.open('');
-//                    var obj={sysId: sysId, versionNo: versionNo, deviceToken:deviceToken};
-//                    axios.post('/xcgamemana/store?action=storeInfoByTerminalNo', obj).then(function (res) {
-//                        that.$dialog.loading.close();
-//                        that.msgPrompt(res.data);
-//                        console.log(res.data);
-//                        if (res.data.result_code === '1') {
-//                            setStorage("deviceToken",deviceToken);
-//                            switch (res.data.result_data.deviceType) {
-//                                case "自助提币机":
-//                                    window.location.href = "CurrencyOperation.html";
-//                                    break;
-//                                case "自助存币机":
-//                                    window.location.href = "CurrencyOperation.html";
-//                                    break;
-//                                case "游戏机":
-//                                    window.location.href = "games.html";
-//                                    break;
-//                                default:
-//                                    break;
-//                            }
-//                        }
-//                    }).catch(function (err) {
-//                        that.$dialog.loading.close();
-//                        console.log(err);
-//                    });
-//                }else {
-//                    this.$dialog.toast({
-//                        mes: "二维码错误！",
-//                        timeout: 1500,
-//                        icon: 'error'
-//                    });
-//                }
-//            },
-            msgPrompt:function (res) {
-                if(res.return_code == 0){
-                    this.$dialog.toast({
-                        mes: res.return_msg,
-                        timeout: 1500,
-                        icon: 'error'
-                    });
-                }else if(res.result_code == 0){
-                    this.$dialog.toast({
-                        mes: res.result_msg,
-                        timeout: 1500,
-                        icon: 'error'
-                    });
-                }
-            }
-        }
+    if (/MicroMessenger/.test(window.navigator.userAgent)) {
+        window.location.href = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx86275e2035a8089d&redirect_uri=http%3a%2f%2fmp.4000051530.com%2fWeiXin%2fOAuth.aspx&response_type=code&scope=snsapi_base&state=h5_Auth_Common#wechat_redirect"
+    } else if (/AlipayClient/.test(window.navigator.userAgent)) {
+        window.location.href = "https://openauth.alipay.com/oauth2/publicAppAuthorize.htm?app_id=2018032302435860&scope=auth_user&redirect_uri=https://mp.4000051530.com/CallBack/AlipayAuthNotify.aspx"
+    } else {
+        console.log("暂不支持此浏览器")
+    }
+    $(function () {
+        var deviceNo = getQueryString("deviceNo");
+        setStorage("deviceNo",deviceNo)
     });
-    //存储session
     function setStorage(key,value) {
         if(window.localStorage){
             value = JSON.stringify(value); //转化为JSON字符串
@@ -245,11 +37,20 @@
         }
     }
     //获取session
-    function getStorage(key) {
+    function getStorage(key,value) {
         if(window.localStorage){
+            var storage=window.localStorage;
             value = JSON.parse(localStorage.getItem(key));
             return value;
         }
+    }
+    function getQueryString(name) {
+        var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) {
+            return unescape(r[2]);
+        }
+        return null;
     }
 </script>
 </body>

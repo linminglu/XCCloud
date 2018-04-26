@@ -362,7 +362,32 @@ namespace XCCloudService.Api.XCGameMana
 
         #endregion
 
+        #region "解除第三方绑定"
 
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.MobileToken)]
+        public object removeThirdId(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                MobileTokenModel mobileTokenModel = (MobileTokenModel)(dicParas[Constant.MobileTokenModel]);
+                string thirdType = dicParas.ContainsKey("thirdType") ? dicParas["thirdType"].ToString().Trim() : "";
+
+                if (thirdType != "0" && thirdType != "1")
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "用户令牌不存在");
+                }
+
+                MobileTokenBusiness.RemoveThirdIdBinding(mobileTokenModel.Mobile, thirdType);
+                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.T, "");
+
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+        #endregion
 
         #region "获取会员的token"
 

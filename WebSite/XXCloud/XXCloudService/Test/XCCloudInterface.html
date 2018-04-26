@@ -183,6 +183,13 @@
             common(url, parasJson);
         }
 
+        function do_removeThirdId() {
+            var parasObj = { "sysId": "0", "versionNo": "0.0.0.1", "mobileToken": mobileToken1,"thirdType":"1" };
+            var url = "/xcgamemana/Token?action=removeThirdId";
+            var parasJson = JSON.stringify(parasObj);
+            common(url, parasJson);
+        }
+        
         
 
         function do_updateDeviceState() {
@@ -651,5 +658,6 @@
     <input id="Buttonorder_getStore22" type="button" value="do_getStore(获取门店信息)" onclick="do_getStore()" />
     <input id="Buttonorder_getStoreList22" type="button" value="do_getStoreList(获取门店信息)" onclick="do_getStoreList()" />
     <input id="Buttonorder_getMobileTokenByThirdId" type="button" value="do_getMobileTokenByThirdId(获取门店信息)" onclick="do_getMobileTokenByThirdId()" />
+    <input id="Buttonorder_do_removeThirdId" type="button" value="do_removeThirdId(获取门店信息)" onclick="do_removeThirdId()" />
 </body>
 </html>

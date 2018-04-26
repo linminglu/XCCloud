@@ -122,7 +122,7 @@ namespace XXCloudService.Api.XCCloud
 
                 password = Utils.MD5(password);
                 UserLogResponseModel userLogResponseModel = new UserLogResponseModel();
-                IBase_UserInfoService base_UserInfoService = BLLContainer.Resolve<IBase_UserInfoService>();                                                
+                IBase_UserInfoService base_UserInfoService = BLLContainer.Resolve<IBase_UserInfoService>(resolveNew:true);                                                
                 if (base_UserInfoService.Any(p => p.LogName.Equals(userName, StringComparison.OrdinalIgnoreCase) && p.LogPassword.Equals(password, StringComparison.OrdinalIgnoreCase)))
                 {
                     var base_UserInfoModel = base_UserInfoService.GetModels(p => p.LogName.Equals(userName, StringComparison.OrdinalIgnoreCase) && p.LogPassword.Equals(password, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();

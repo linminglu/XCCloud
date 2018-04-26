@@ -399,6 +399,7 @@
     <Content Include="Test\pposTest.aspx" />
     <Content Include="Test\SignalRNotifyClientTest.html" />
     <Content Include="Test\SocketTest.aspx" />
+    <Content Include="Test\upload.html" />
     <Content Include="Test\WebKitTest.html" />
     <Content Include="Test\WeiXin\RegisterTest.aspx" />
     <Content Include="Test\WorkFlowTest\StockHandle.aspx" />
@@ -870,6 +871,15 @@
     <Content Include="WebSite\lib\wow.js" />
     <Content Include="WebSite\login.html" />
     <Content Include="WebSite\taskForBoss.html" />
+    <Content Include="WebSite\uploadify\Change Log.txt" />
+    <Content Include="WebSite\uploadify\jquery.uploadify.js" />
+    <Content Include="WebSite\uploadify\jquery.uploadify.min.js" />
+    <Content Include="WebSite\uploadify\license.txt" />
+    <Content Include="WebSite\uploadify\uploadify-cancel.png" />
+    <Content Include="WebSite\uploadify\uploadify.css" />
+    <Content Include="WebSite\uploadify\uploadify.swf" />
+    <Content Include="WebSite\uploadify\__MACOSX\._Change Log.txt" />
+    <Content Include="WebSite\uploadify\__MACOSX\._uploadify.swf" />
     <Content Include="WebSite\wxpageuggtest.htm" />
     <Content Include="Test\lijunjietest.htm" />
     <Content Include="Test\lijunjietest3.htm" />
@@ -903,6 +913,9 @@
     <Content Include="WeiXin\QR.aspx" />
     <Content Include="WeiXin\Register.aspx" />
     <Content Include="WeiXin\Test.aspx" />
+    <Content Include="WebSite\uploadify\check-exists.php" />
+    <Content Include="WebSite\uploadify\index.php" />
+    <Content Include="WebSite\uploadify\uploadify.php" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Api\Client.ashx.cs">

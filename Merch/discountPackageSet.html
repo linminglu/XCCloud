@@ -514,11 +514,12 @@
 
     let week=[];let memberLevelID=[];let timeType='0';
     let AllowInternet=0;let AllowPrint=0;let ForeAuthorize=0;
-    layui.use(['element','form','layer','table','laydate'], function(){
+    layui.use(['element','form','layer','table','laydate','upload'], function(){
         let element = layui.element,
             form=layui.form,
             layer=layui.layer,
             table=layui.table,
+            upload=layui.upload,
            laydate=layui.laydate;
         form.on('select(FoodType)',function (data) {
             FoodType=data.value;
@@ -653,7 +654,8 @@
          xc.setSelect('套餐类别','FoodType');
          xc.setSelect('余额类别','BalanceType');
          newTable(table,FoodSale,layer,form);
-         newFoodDetialsTable(table,FoodDetial,layer,form)
+         newFoodDetialsTable(table,FoodDetial,layer,form);
+         newFoodLevelTable(table,FoodLevel,layer,form);
          layer.open({
              title:'新增套餐',
              shade:0.6,
@@ -795,7 +797,45 @@
             layer.close(index);
             newFoodDetialsTable(table,FoodDetial,layer,form)
         });
-
+        var demoListViewStore=$('#demo2'),uploadListInsStore=upload.render({
+            elem: '#imgBtn'
+            ,url: '/XCCloud/Promotion?action=UploadFoodPhoto'
+            ,data:{'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'}
+            ,multiple: true
+            ,accept:"images"
+            ,size:1000
+            ,auto:true
+            ,done: function(res,index,upload){
+                //上传完毕
+                console.log(res);
+                if(res.result_code==1){
+                    $('#demo2').children('div[class="imgBox"]').remove();
+                    $('#demo2 .loadTips').addClass('layui-hide');
+                    $('#demo2') .append('<div style="display: inline-block;position: relative" class="imgBox">' +
+                        '<button type="button" ><i class="layui-icon"><i class="layui-icon">&#xe640</i></i></button>' +
+                        '<img src="'+ res.result_data[0].Value +'" alt="'+ res.result_data[0].Value +'" class="layui-upload-img_md" ' +
+                        'style="display: block;width: 300px;height: 170px"></div>');
+                    layer.msg("图片上传成功！");
+                    $('.imgBox button').click(function () {
+                        $(this).parent('div').remove();
+                    });
+                    $('.imgBox img').click(function () {
+                        layer.open({
+                            title:  res.result_data.ID,
+                            type: 1,
+                            area: ['600px','400px'], //宽高
+                            content: '<div><img src="'+res.result_data[0].Value+'" alt="" style="display: block;"></div>'
+                        });
+                    });
+                }else{
+                    layer.msg(res.return_msg);
+                }
+            }
+            ,error:function(index,upload){
+                layer.msg("服务器返回错误！");
+                layer.closeAll('loading');
+            }
+        });
     //    ............................................................................
         $('.timeSetBtn').on('click',()=>{
             xc.SearchMemberLevel1('memberBox', token, layer);
@@ -835,13 +875,61 @@
                 var parasJson = JSON.stringify(_obj);
                 $.ajax({
                     type: "post",
-                    url: '/XCCloud/Promotion?action=SaveFoodInfo',
+                    url: '/XCCloud/Promotion?action=GetFoodInfo',
                     contentType: "application/json; charset=utf-8",
                     data: { parasJson: parasJson },
                     success: function (data) {
                         data=JSON.parse(data);
                         if(data.result_code==1){
                            console.log(data)
+                            let arr=data.result_data;
+                            $('#FoodName').val(arr.FoodName||'');
+                                FoodType=arr.FoodType;
+                            xc.setSelect('套餐类别','FoodType',arr.FoodType);
+                            $('#StartTime').val(arr.StartTime||'');
+                            $('#EndTime').val(arr.EndTime||'');
+                            $('#RenewDays').val(arr.RenewDays||'');
+                            AllowInternet=arr.AllowInternet;
+                            if(arr.AllowInternet==1){
+                                $('#AllowInternet').attr('checked',true);
+                                $('#otherShow').removeClass('layui-hide')
+                            }else {
+                                $('#AllowInternet').attr('checked',false)
+                                $('#otherShow').addClass('layui-hide')
+                            }
+                            AllowPrint=arr.AllowPrint;
+                            if(arr.AllowPrint==1){
+                                $('#AllowPrint').attr('checked',true)
+                            }else {
+                                $('#AllowPrint').attr('checked',false)
+                            }
+                            ForeAuthorize=arr.ForeAuthorize;
+                            if(arr.ForeAuthorize==1){
+                                $('#ForeAuthorize').attr('checked',true)
+                            }else {
+                                $('#ForeAuthorize').attr('checked',false)
+                            }
+                            $('#MeituanID').val(arr.MeituanID||'');
+                            $('#DianpinID').val(arr.DianpinID||'');
+                            $('#KoubeiID').val(arr.KoubeiID||'');
+                            $('#ClientPrice').val(arr.ClientPrice);
+                            $('#MemberPrice').val(arr.MemberPrice);
+                            FoodSale=arr.FoodSales;
+                            newTable(table,arr.FoodSales,layer,form);
+                            FoodDetial=arr.FoodDetials;
+                            newFoodDetialsTable(table,arr.FoodDetials,layer,form)
+                            FoodLevel=arr.FoodLevels;
+                            newFoodLevelTable(table,arr.FoodLevels,layer,form);
+                            if(arr.ImageURL!=""){
+                                $('#demo2') .append('<div style="display: inline-block;position: relative" class="imgBox">' +
+                                    '<button type="button" ><i class="layui-icon"><i class="layui-icon">&#xe640</i></i></button>' +
+                                    '<img src="'+ arr.ImageURL +'" class="layui-upload-img_md" ' +
+                                    'style="display: block;width: 300px;height: 170px"></div>');
+                                $('.imgBox button').click(function () {
+                                    $(this).parent('div').remove();
+                                });
+                            }
+                            form.render();
                             layer.open({
                                 title:'修改:'+foodName+'"套餐',
                                 type:1,
@@ -858,6 +946,46 @@
 
            }
      });
+        table.on('tool(FoodSaleTable)', function(obj){
+            let data = obj.data;
+            let layEvent = obj.event;
+            if(layEvent === 'del'){ //查看
+                for(let i in FoodSale){
+                    if(FoodSale[i].BalanceType==data.BalanceType){
+                        FoodSale.splice(i,1);
+                        obj.del();
+                    }
+                }
+            }
+        });
+        table.on('tool(projectCon)', function(obj){
+            let data = obj.data;
+            let layEvent = obj.event;
+            if(layEvent === 'del'){ //查看
+                console.log(data);
+
+                for(let i in FoodDetial){
+                    if(FoodDetial[i]==data){
+                        FoodDetial.splice(i,1);
+                        obj.del();
+                    }
+                }
+            }
+        });
+        table.on('tool(ticketsTable)', function(obj){
+            let data = obj.data;
+            let layEvent = obj.event;
+            if(layEvent === 'del'){ //查看
+                console.log(data);
+
+                for(let i in FoodLevel){
+                    if(FoodLevel[i]==data){
+                        FoodLevel.splice(i,1);
+                        obj.del();
+                    }
+                }
+            }
+        });
      //保存主套餐
         $('#lastSave').on('click',function () {
             let obj={'FoodId':foodID,
@@ -865,7 +993,7 @@
                 'foodType':FoodType,
                 'startTime':$('#StartTime').val(),
                 'endTime':$('#EndTime').val(),
-                'ImageURL':'ww.png',
+                'ImageURL':$('.layui-upload-img_md').attr('src'),
                 'foodState':0,
                 'renewDays':$('#RenewDays').val(),
                 'allowInternet':AllowInternet,

@@ -36,6 +36,38 @@ namespace XCCloudService.Business.Common
             return token;
         }
 
+
+        public static void RemoveThirdIdBinding(string mobile,string thirdType)
+        {
+            RemoveThirdId(mobile, thirdType);
+            RemoveTokenThirdId(mobile, thirdType);
+        }
+
+        private static bool RemoveTokenThirdId(string mobile,string thirdType)
+        {
+            var query = from item in MobileTokenCache.MobileTokenHt.Cast<DictionaryEntry>()
+            where ((MobileTokenModel)(item.Value)).Mobile.Equals(mobile) 
+            select item.Key.ToString();
+            if (query.Count() == 0)
+            {
+                return false;
+            }
+            else
+            {
+                string token = query.First();
+                var model = (MobileTokenModel)(MobileTokenCache.MobileTokenHt[token]); 
+                if(thirdType == "0")
+                {
+                    model.WeiXinId = string.Empty ;
+                }
+                else if(thirdType == "1")
+                {
+                    model.AliId = string.Empty ;
+                }
+                return true;
+            }
+        }
+
         public static bool ExistMobileAndThirdIdBinding(string mobile, string thirdType, string userThirdId)
         {
             if (thirdType == "0")
@@ -338,6 +370,26 @@ namespace XCCloudService.Business.Common
                 }
                 mobileTokenService.Update(model);
             }
+        }
+
+
+        private static bool RemoveThirdId(string mobile,string thirdType)
+        {
+            IMobileTokenService mobileTokenService = BLLContainer.Resolve<IMobileTokenService>();
+            var model = mobileTokenService.GetModels(p => p.Phone.Equals(mobile)).FirstOrDefault<t_MobileToken>();
+            if (model != null)
+            {
+                if (thirdType == "0")
+                {
+                    model.OpenId = string.Empty;
+                }
+                else if (thirdType == "1")
+                {
+                    model.AliId = string.Empty;
+                } 
+                return mobileTokenService.Update(model);
+            }
+            return false;
         }
 
         public static bool UpdateAliBuyerId(string phone, string buyerId)

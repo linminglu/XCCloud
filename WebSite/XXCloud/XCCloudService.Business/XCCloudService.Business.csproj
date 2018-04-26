@@ -74,12 +74,24 @@
     <Compile Include="XCCloudRS232\MerchBusiness.cs" />
     <Compile Include="XCCloudRS232\MerchDeviceBusiness.cs" />
     <Compile Include="XCCloudRS232\MerchSegmentBusiness.cs" />
-    <Compile Include="XCCloud\Flw_OrderBusiness.cs" />
-    <Compile Include="XCCloud\StoreBusiness.cs" />
-    <Compile Include="XCCloud\MemberBusiness.cs" />
-    <Compile Include="XCCloud\ScheduleBusiness.cs" />
-    <Compile Include="XCCloud\UserBusiness.cs" />
-    <Compile Include="XCCloud\WebAppInitBusiness.cs" />
+    <Compile Include="XCCloud\Flw_OrderBusiness.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="XCCloud\MemberBusiness.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="XCCloud\ScheduleBusiness.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="XCCloud\StoreBusiness.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="XCCloud\UserBusiness.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="XCCloud\WebAppInitBusiness.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="XCCloud\XCCloudBusiness.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -133,13 +145,13 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
     <Content Include="XCCloud\XCCloudBusiness.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>XCCloudBusiness.cs</LastGenOutput>
     </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
