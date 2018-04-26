@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -42,7 +42,7 @@
 <script src="js/storeSystem.js"></script>
 <script>
 
-        layui.use(['form','layer','laydate'],function() {
+        layui.use(['form','layer','laydate'],()=> {
             var layer=layui.layer, $=layui.jquery,laydate=layui.laydate;
             var xc=xcActionSystem.prototype;
             laydate.render({
@@ -55,11 +55,11 @@
         })
 
 </script>
-<script type="text/html" id="titleTpl">
-    {{# if(d.DestroyTime!=null&&d.DestroyTime!=''){ }}
-    {{xcActionSystem.prototype.timeStamp2String(d.DestroyTime)}}
-    {{# }else{ }}
-    {{d.DestroyTime}}
-    {{#  } }}
-</script>
+<!--<script type="text/html" id="titleTpl">-->
+    <!--{{# if(d.DestroyTime!=null&&d.DestroyTime!=''){ }}-->
+    <!--{{xcActionSystem.prototype.timeStamp2String(d.DestroyTime)}}-->
+    <!--{{# }else{ }}-->
+    <!--{{d.DestroyTime}}-->
+    <!--{{#  } }}-->
+<!--</script>-->
 </html>

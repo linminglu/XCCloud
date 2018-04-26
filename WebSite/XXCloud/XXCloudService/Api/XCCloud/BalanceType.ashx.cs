@@ -6,8 +6,10 @@ using System.Web;
 using XCCloudService.Base;
 using XCCloudService.BLL.Container;
 using XCCloudService.BLL.IBLL.XCCloud;
+using XCCloudService.Business.XCCloud;
 using XCCloudService.Common;
 using XCCloudService.Common.Enum;
+using XCCloudService.Common.Extensions;
 using XCCloudService.DAL;
 using XCCloudService.DBService.BLL;
 using XCCloudService.Model.CustomModel.XCCloud;
@@ -112,24 +114,32 @@ namespace XXCloudService.Api.XCCloud
     
                 IData_BalanceType_StoreListService data_BalanceType_StoreListService = BLLContainer.Resolve<IData_BalanceType_StoreListService>(resolveNew: true);
                 IBase_StoreInfoService base_StoreInfoService = BLLContainer.Resolve<IBase_StoreInfoService>(resolveNew: true);
-                var linq = from d in
+                var linq = from t in
                                (from a in dict_BalanceTypeService.GetModels(p => p.ID == iId)
                                 join b in data_BalanceType_StoreListService.GetModels() on a.ID equals b.BalanceIndex into b1
                                 from b in b1.DefaultIfEmpty()
                                 join c in base_StoreInfoService.GetModels() on b.StroeID equals c.StoreID into c1
                                 from c in c1.DefaultIfEmpty()
+                                join d in Dict_SystemBusiness.NewInstance.GetModels() on (a.HKType + "") equals d.DictValue into d1
+                                from d in d1.DefaultIfEmpty()
+                                join e in Dict_SystemBusiness.NewInstance.GetModels(p=>p.DictKey.Equals("关联类别", StringComparison.OrdinalIgnoreCase) && p.PID == 0) on d.PID equals e.ID into e1
+                                from e in e1.DefaultIfEmpty()
                                 select new
                                 {
                                     a = a,
+                                    HKType = d != null ? d.ID : (int?)null,
+                                    HKTypeStr = d != null ? d.DictKey : string.Empty,
                                     StoreID = c != null ? c.StoreID : string.Empty
                                 }).AsEnumerable()
-                           group d by d.a.ID into g
+                           group t by t.a.ID into g
                            select new
                            {
                                ID = g.Key,
                                TypeID = g.FirstOrDefault().a.TypeID,
                                TypeName = g.FirstOrDefault().a.TypeName,
                                Note = g.FirstOrDefault().a.Note,
+                               HKType = g.FirstOrDefault().HKType,
+                               HKTypeStr = g.FirstOrDefault().HKTypeStr,
                                StoreIDs = string.Join("|", g.Select(o => o.StoreID))
                            };
 
@@ -154,6 +164,7 @@ namespace XXCloudService.Api.XCCloud
                 string id = dicParas.ContainsKey("id") ? (dicParas["id"] + "") : string.Empty;
                 string typeId = dicParas.ContainsKey("typeId") ? (dicParas["typeId"] + "") : string.Empty;
                 string typeName = dicParas.ContainsKey("typeName") ? (dicParas["typeName"] + "") : string.Empty;
+                string hkType = dicParas.ContainsKey("hkType") ? (dicParas["hkType"] + "") : string.Empty;
                 string note = dicParas.ContainsKey("note") ? (dicParas["note"] + "") : string.Empty;
                 string storeIds = dicParas.ContainsKey("storeIds") ? (dicParas["storeIds"] + "") : string.Empty;                
                 int iId = 0;
@@ -161,25 +172,28 @@ namespace XXCloudService.Api.XCCloud
 
                 #region 验证参数
 
-                if (iId == 0)
+                if (string.IsNullOrEmpty(typeId))
                 {
-                    if (string.IsNullOrEmpty(typeId))
-                    {
-                        errMsg = "类别编号不能为空";
-                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                    }
+                    errMsg = "类别编号不能为空";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
 
-                    if (!Utils.isNumber(typeId))
-                    {
-                        errMsg = "类别编号格式不正确";
-                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                    }
+                if (!Utils.isNumber(typeId))
+                {
+                    errMsg = "类别编号格式不正确";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
 
-                    if (string.IsNullOrEmpty(typeName))
-                    {
-                        errMsg = "类别名称不能为空";
-                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                    }       
+                if (string.IsNullOrEmpty(typeName))
+                {
+                    errMsg = "类别名称不能为空";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
+                if (string.IsNullOrEmpty(hkType))
+                {
+                    errMsg = "关联类别不能为空";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
                         
                 #endregion
@@ -189,21 +203,29 @@ namespace XXCloudService.Api.XCCloud
                 {
                     try
                     {
-                        int iTypeId = Convert.ToInt32(typeId);
+                        var iTypeId = ObjectExt.Toint(typeId);
                         IDict_BalanceTypeService dict_BalanceTypeService = BLLContainer.Resolve<IDict_BalanceTypeService>();
-                        if (dict_BalanceTypeService.Any(p => p.TypeID == iTypeId && p.ID != iId))
+                        if (dict_BalanceTypeService.Any(p => p.ID != iId && p.TypeID == iTypeId))
                         {
                             errMsg = "类别编号不能重复";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 
+                        var iHKType = ObjectExt.Toint(hkType);
+                        if (dict_BalanceTypeService.Any(p => p.ID != iId && p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.HKType == iHKType))
+                        {
+                            errMsg = "同商户余额类别的关联类别不能重复";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
                         var dict_BalanceType = dict_BalanceTypeService.GetModels(p=>p.ID == iId).FirstOrDefault() ?? new Dict_BalanceType();
                         dict_BalanceType.ID = iId;
-                        dict_BalanceType.TypeID = Convert.ToInt32(typeId);
+                        dict_BalanceType.TypeID = iTypeId;
                         dict_BalanceType.TypeName = typeName;
                         dict_BalanceType.Note = note;
-                        dict_BalanceType.MerchID = merchId;                        
-                        if (!dict_BalanceTypeService.Any(a => a.ID == iId))
+                        dict_BalanceType.MerchID = merchId;
+                        dict_BalanceType.HKType = iHKType;
+                        if (dict_BalanceType.ID == 0)
                         {
                             //新增
                             dict_BalanceType.State = 1;

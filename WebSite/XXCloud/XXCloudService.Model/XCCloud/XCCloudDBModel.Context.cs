@@ -134,7 +134,6 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Data_GoodStorage_Detail> Data_GoodStorage_Detail { get; set; }
         public virtual DbSet<Flw_GroupVerity> Flw_GroupVerity { get; set; }
         public virtual DbSet<Data_CouponInfo> Data_CouponInfo { get; set; }
-        public virtual DbSet<Dict_BalanceType> Dict_BalanceType { get; set; }
         public virtual DbSet<Data_MerchAlipay_Shop> Data_MerchAlipay_Shop { get; set; }
         public virtual DbSet<Base_MerchAlipay> Base_MerchAlipay { get; set; }
         public virtual DbSet<Data_MemberLevel_Food> Data_MemberLevel_Food { get; set; }
@@ -146,5 +145,6 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Data_Project_BindGame> Data_Project_BindGame { get; set; }
         public virtual DbSet<Data_Food_Detial> Data_Food_Detial { get; set; }
         public virtual DbSet<Data_Card_Balance> Data_Card_Balance { get; set; }
+        public virtual DbSet<Dict_BalanceType> Dict_BalanceType { get; set; }
     }
 }

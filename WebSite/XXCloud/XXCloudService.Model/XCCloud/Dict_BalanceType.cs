@@ -18,6 +18,7 @@ namespace XCCloudService.Model.XCCloud
         public string MerchID { get; set; }
         public Nullable<int> TypeID { get; set; }
         public string TypeName { get; set; }
+        public Nullable<int> HKType { get; set; }
         public string Note { get; set; }
         public Nullable<int> State { get; set; }
     }

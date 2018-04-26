@@ -69,7 +69,7 @@
         data:{
         },
         mounted: function () {
-//            this.Load();
+            this.Load();
         },
         methods: {
             Load:function () {
@@ -79,35 +79,7 @@
                     alert(wxData == "");
                     if(wxData == ""){
                         this.$dialog.loading.open('');
-                        var obj={
-                            sysId: sysId,
-                            versionNo: versionNo,
-                            fileName:"mine"
-                        };
-                        axios.post('/XCGameMana/WxCommon?action=getWxH5Config', obj).then(function (res) {
-                            that.$dialog.loading.close();
-                            that.msgPrompt(res.data);
-                            console.log(res.data);
-                            JSON.stringify(res.data);
-                            if (res.data.result_code === '1') {
-                                alert(JSON.stringify(res.data.result_data));
-                                var wxData =res.data.result_data;
-                                alert(JSON.stringify(wxData));
-                                setStorage("wxData",wxData);
-                                wx.config({
-                                    debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-                                    appId: wxData.AppId, // 必填，公众号的唯一标识
-                                    timestamp: wxData.TimeStamp, // 必填，生成签名的时间戳
-                                    nonceStr: wxData.NonceStr, // 必填，生成签名的随机串
-                                    signature: wxData.Signature,// 必填，签名
-                                    jsApiList: ["scanQRCode"] // 必填，需要使用的JS接口列表
-                                });
-
-                            }
-                        }).catch(function (err) {
-                            that.$dialog.loading.close();
-                            console.log(err);
-                        })
+                        this.signatureNew();
                     }else {
                         alert(JSON.stringify(wxData));
                         wx.config({
@@ -118,8 +90,39 @@
                             signature: wxData.Signature,// 必填，签名
                             jsApiList: ["scanQRCode"] // 必填，需要使用的JS接口列表
                         });
+                        wx.error(function(res){
+                            alert(JSON.stringify(res));
+                            alert("PA可以在这里更新签名。");
+                            that.signatureNew();
+                        });
                     }
                 }
+            },
+            signatureNew:function () {
+                var obj={sysId: sysId,versionNo: versionNo, fileName:"mine"};
+                axios.post('/XCGameMana/WxCommon?action=getWxH5Config', obj).then(function (res) {
+                    that.$dialog.loading.close();
+                    that.msgPrompt(res.data);
+                    console.log(res.data);
+                    JSON.stringify(res.data);
+                    if (res.data.result_code === '1') {
+                        alert(JSON.stringify(res.data.result_data));
+                        var wxData =res.data.result_data;
+                        alert(JSON.stringify(wxData));
+                        setStorage("wxData",wxData);
+                        wx.config({
+                            debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+                            appId: wxData.AppId, // 必填，公众号的唯一标识
+                            timestamp: wxData.TimeStamp, // 必填，生成签名的时间戳
+                            nonceStr: wxData.NonceStr, // 必填，生成签名的随机串
+                            signature: wxData.Signature,// 必填，签名
+                            jsApiList: ["scanQRCode"] // 必填，需要使用的JS接口列表
+                        });
+                    }
+                }).catch(function (err) {
+                    that.$dialog.loading.close();
+                    console.log(err);
+                })
             },
             btnClick:function () {
                 var that =this;
@@ -179,7 +182,6 @@
                 var that =this;
 //                alert(JSON.stringify(result));
                 var str = result.toString();
-//                var str = JSON.stringify(result);
                 strSplit = str.split("/");
 //                alert(JSON.stringify(strSplit));
                 var strCode = strSplit[strSplit.length - 2];

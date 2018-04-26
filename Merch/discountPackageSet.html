@@ -387,10 +387,16 @@
                 <input type="text" class="layui-input" id="weightValue">
             </div>
         </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">有效期</label>
+            <div class="layui-input-block">
+                <input type="text" class="layui-input" id="vipDays">
+            </div>
+        </div>
         <div class="layui-form-item goodIsAll">
             <label class="layui-form-label">存储方式</label>
             <div class="layui-input-block">
-                <input type="checkbox" id="saveWay" name="open" lay-skin="switch" lay-filter="AllowInternet" lay-text="允许|禁止">
+                <input type="checkbox" id="OperateType" lay-skin="switch" lay-filter="OperateType" lay-text="允许|禁止">
             </div>
         </div>
         <div style="text-align: center">
@@ -410,7 +416,12 @@
                        <button type="button" class="layui-btn" id="giftSearch"><i class="layui-icon">搜索</i></button>
                    </div>
                </div>
-
+               <div class="layui-inline">
+                   <label class="layui-form-label">有效期</label>
+                   <div class="layui-input-inline">
+                       <input type="text" class="layui-input" id="GiftDays">
+                   </div>
+               </div>
            </div>
            <table class="layui-hide" id="giftTable" lay-filter="giftTable"></table>
            <div style="text-align: center">
@@ -438,19 +449,58 @@
    <div id="openDigit" style="display: none;padding: 10px;">
        <form class="layui-form layui-form-pane">
            <div class="layui-form-item">
-               <label class="layui-form-label">数字币</label>
+                   <label class="layui-form-label">数字币</label>
                    <div class="layui-input-block">
                        <select name="" id="digitType" lay-filter="digitType"></select>
                    </div>
            </div>
+
            <div class="layui-form-item">
                <label class="layui-form-label">数量</label>
                <div class="layui-input-block">
-                   <input type="text" id="digitCount">
+                   <input type="text" id="digitCount" class="layui-input">
+               </div>
+           </div>
+           <div class="layui-form-item">
+               <label class="layui-form-label">有效期</label>
+               <div class="layui-input-block">
+                   <input type="text" id="digitDays" class="layui-input">
                </div>
            </div>
            <div style="text-align: center">
                <button type="button" class="layui-btn" id="openDigitBtn">保存</button>
+           </div>
+       </form>
+   </div>
+   <!--优惠券-->
+   <div id="openOnSale" style="display: none;padding: 10px;">
+       <form class="layui-form layui-form-pane">
+           <div class="layui-form-item">
+               <label class="layui-form-label">优惠券</label>
+               <div class="layui-input-block">
+                   <select name="" id="CouponType" lay-filter="CouponType"></select>
+               </div>
+           </div>
+           <div class="layui-form-item">
+               <label class="layui-form-label">数量</label>
+               <div class="layui-input-block">
+                   <input type="text" id="CouponCount" class="layui-input">
+               </div>
+           </div>
+           <div class="layui-form-item">
+               <label class="layui-form-label">权重</label>
+               <div class="layui-input-block">
+                   <input type="text" id="CouponWeight" class="layui-input">
+               </div>
+           </div>
+           <div class="layui-form-item">
+               <label class="layui-form-label">有效期</label>
+               <div class="layui-input-block">
+                   <input type="text" id="CouponDays" class="layui-input">
+               </div>
+           </div>
+           <div style="text-align: center">
+               <button type="button" class="layui-btn" id="openOnSaleBtn">保存</button>
            </div>
        </form>
    </div>
@@ -480,11 +530,17 @@
     };
     xc.getInitData(parm);
     let foodID;
+    let index;
     let FoodSale=[];//套餐余额消耗
     let FoodDetial=[];
     let FoodType;//套餐类别
     let BalanceType;//余额类别
     let BalanceTypeStr;
+
+    let vipCoinType='';let vipCoinTypeStr='';let OperateType=0;
+    let digitType='';let giftList=[];
+    let CouponType='';
+
     let AllowInternet=0;let AllowPrint=0;let ForeAuthorize=0;
     layui.use(['element','form','layer','table','laydate'], function(){
         let element = layui.element,
@@ -495,7 +551,17 @@
         form.on('select(BalanceType)',function (data) {
             BalanceType=data.value;
             BalanceTypeStr=data.elem[data.elem.selectedIndex].text;
-        })
+        });
+        form.on('select(vipCoinType)',function (data) {
+            vipCoinType=data.value;
+            vipCoinTypeStr=data.elem[data.elem.selectedIndex].text;
+        });
+        form.on('select(digitType)',function (data) {
+            digitType=data.value;
+        });
+        form.on('select(CouponType)',function (data) {
+            CouponType=data.value;
+        });
         form.on('switch(AllowInternet)',function (data) {
             if(data.elem.checked==true){
                 AllowInternet=1;
@@ -520,12 +586,50 @@
                 ForeAuthorize=0;
             }
         });
+        form.on('switch(OperateType)',function (data) {
+            if(data.elem.checked==true){
+                OperateType=1;
+            }else {
+                OperateType=0;
+            }
+        });
         //渲染时间
         laydate.render({
             elem: '#StartTime',type: 'date',value:new Date()
         });
         laydate.render({
             elem: '#EndTime',type: 'date',value:new Date()
+        });
+        table.on('checkbox(giftTable)', function(obj){
+            if (obj.type == "all") {
+                var csss = $(".layui-table-cell.laytable-cell-checkbox");
+                csss.each(function(index, e){
+                    e.children[0].checked = false;
+                    e.children[1].className="layui-unselect layui-form-checkbox";
+                    giftList=[];
+                });
+            } else {
+                if(obj.checked==true){
+                    giftList=[{'FoodDetailType':1, 'BalanceType':'',
+                        'OperateType':'',
+                        'ContainId':obj.data.ID,'WeightValue':0,'ContainCount':1,'Days':$('#GiftDays').val()}]
+                }else {
+                    giftList=[];
+                }
+                var csss = $(".layui-table-cell.laytable-cell-checkbox");
+                csss.each(function(index, e){
+                    var dataIndex = e.parentNode.parentNode.getAttribute("data-index");
+                    if (dataIndex != null) {
+                        if(dataIndex != obj.data.LAY_TABLE_INDEX){
+                            e.children[0].checked = false;
+                            e.children[1].className="layui-unselect layui-form-checkbox";
+                        }
+                    } else {
+                        e.children[0].checked = false;
+                        e.children[1].className="layui-unselect layui-form-checkbox";
+                    }
+                });
+            }
         });
         //新增一个套餐
      $('.addNewPackage').on('click',()=>{
@@ -568,11 +672,12 @@
          }else {
              layer.msg('请设置参数！')
          }
-         })
+         });
         //会员币种
         $('#vipCoinBtn').on('click',()=>{
-            xc.setSelect('套餐类别','FoodType');
-            layer.open({
+            xc.setSelect('余额类别','vipCoinType');
+            BalanceType='';
+            index= layer.open({
                 title:'新增套餐',
                 shade:0.6,
                 type:1,
@@ -582,19 +687,20 @@
         });
         //礼品
         $('#giftsBtn').on('click',()=>{
-            xc.setSelect('套餐类别','FoodType');
-            layer.open({
+            initGoodsTb();
+            giftList=[];
+            index= layer.open({
                 title:'新增套餐',
                 shade:0.6,
                 type:1,
-                area:'500px',
+                area:'700px',
                 content:$('#openGift'),
             })
         });
         //门票
         $('#ticketBtn').on('click',()=>{
             // xc.setSelect('套餐类别','FoodType');
-            layer.open({
+            index=  layer.open({
                 title:'新增套餐',
                 shade:0.6,
                 type:1,
@@ -605,7 +711,7 @@
         //数字币
         $('#digitBtn').on('click',()=>{
             // xc.setSelect('套餐类别','FoodType');
-            layer.open({
+            index= layer.open({
                 title:'新增套餐',
                 shade:0.6,
                 type:1,
@@ -616,13 +722,61 @@
         //优惠券
         $('#onSaleBtn').on('click',()=>{
             // xc.setSelect('套餐类别','FoodType');
+            xc.getCouponDic(token,layer,form,'CouponType');
+            CouponType='';
             layer.open({
                 title:'新增套餐',
                 shade:0.6,
                 type:1,
                 area:'500px',
-                content:$('#openVip'),
+                content:$('#openOnSale'),
             })
+        });
+
+        //保存套餐内容
+        $('#openVipBtn').on('click',()=>{
+            FoodDetial.push({ 'FoodDetailType':0,
+                'BalanceType':vipCoinType,
+                'OperateType':OperateType,
+                'ContainId':'',
+                'ContainCount':$('#vipCoinCount').val(),
+                'WeightValue':$('#weightValue').val(),
+                'Days':$('#vipDays').val()});
+            layer.close(index);
+            newFoodDetialsTable(table,FoodDetial,layer,form)
+        });
+        $('#openGiftBtn').on('click',()=>{
+            if(giftList[0].Days=''){
+                layer.msg('请填写有效期')
+            }else {
+                giftList[0].Days=$('#GiftDays').val();
+                FoodDetial=  FoodDetial.concat(giftList);
+                layer.close(index);
+                newFoodDetialsTable(table,FoodDetial,layer,form)
+
+            }
+        });
+        $('#openDigitBtn').on('click',()=>{
+            FoodDetial.push({ 'FoodDetailType':3,
+                'BalanceType':'',
+                'OperateType':'',
+                'ContainId':digitType,
+                'ContainCount':$('#digitCount').val(),
+                'WeightValue':'',
+                'Days':$('#digitDays').val()});
+            layer.close(index);
+            newFoodDetialsTable(table,FoodDetial,layer,form)
+        });
+        $('#openOnSaleBtn').on('click',()=>{
+            FoodDetial.push({ 'FoodDetailType':4,
+                'BalanceType':'',
+                'OperateType':'',
+                'ContainId':CouponType,
+                'ContainCount':$('#CouponCount').val(),
+                'WeightValue':$('#CouponWeight').val(),
+                'Days':$('#CouponDays').val()});
+            layer.close(index);
+            newFoodDetialsTable(table,FoodDetial,layer,form)
         });
     //修改主表
      table.on('tool(digitDestroyTb)', function(obj){
@@ -668,21 +822,36 @@
             , data: arr
             , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
             , cols: [[
-                {field:'ID', title: '流水号', align: 'center'}
+                 {field:'FoodDetailType', title: '套餐种类类别', align: 'center'}
+                ,{field:'BalanceType', title: '余额类别', align: 'center'}
+                ,{field:'OperateType', title: '操作类型', align: 'center'}
                 ,{field:'ContainID', title: '套餐内容ID', align: 'center'}
                 ,{field:'ContainCount', title: '套餐内容数量', align: 'center'}
-                ,{field:'ProjectName', title: '项目名称', align: 'center'}
-                ,{field:'FoodDetailTypeStr', title: '套餐内容类别', align: 'center'}
-                ,{field:'Days', title: '有效期', align: 'center'}
                 ,{field:'WeightValue', title: '权重值', align: 'center'}
+                ,{field:'Days', title: '有效期', align: 'center'}
                 ,{fixed: 'right',title:'操作', width:140, align:'center', toolbar: '#barDemo1'}]]
             , page: {page: true, limits: [5,10, 15, 20]}
             , limit: 5
-            ,done:function () {
-                xc.getBalanceTypeDic(token,layer,form,'freeBalanceType');
-                $('.freeLast').find('input').val('')
-            }
+            // ,done:function () {
+            //     xc.getBalanceTypeDic(token,layer,form,'freeBalanceType');
+            //     $('.freeLast').find('input').val('')
+            // }
         });
+    }
+    function initGoodsTb() {
+        var searchText=$('#ticketName').val();
+        var parm={'obj':{'goodNameOrBarcode':searchText,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'},
+            'url':'/XCCloud/Promotion?action=GetGoodsInfoList',
+            'elem':'#giftTable',
+            'height':'210px',
+            'size':'sm',
+            'cols':[  {type:'checkbox'},
+                {field:'ID', title: '商品ID', align: 'center'}
+                ,{field:'Barcode', title: '商品条码', align: 'center'}
+                ,{field:'GoodName', title: '商品名称', align: 'center'}
+                ,{field:'GoodTypeStr', title: '商品类别', align: 'center'}
+            ]};
+        xc.getInitData(parm);
     }
 </script>
 <script type="text/html" id="barDemo">

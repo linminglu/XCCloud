@@ -21,11 +21,13 @@
         .hid_btn{height: 0.5rem;font-size: 0.24rem;line-height: 0.5rem;margin-top: 0.1rem;color: #fff;background: #1E90FF;}
         .hid_contSty{display: flex;flex-direction: row;}
         .hid_contStys{width: 1.6rem;text-align: left;color: #d24a58;}
-
+        [v-cloak] {
+            display: none;
+        }
     </style>
 </head>
 <body>
-<div id="app">
+<div id="app" v-cloak>
     <div v-for="(item,index) in memberCard" :key="index">
         <div class='section_items' @click="dropdown(index)">
             <img class="section_image" slot="img" src="images/card.png">
