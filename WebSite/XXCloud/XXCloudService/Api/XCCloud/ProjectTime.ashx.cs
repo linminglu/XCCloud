@@ -7,9 +7,8 @@ using System.Linq;
 using System.Transactions;
 using System.Web;
 using XCCloudService.Base;
-using XCCloudService.BLL.Container;
 using XCCloudService.BLL.IBLL.XCCloud;
-using XCCloudService.BLL.XCCloud;
+using XCCloudService.Business.XCCloud;
 using XCCloudService.Common;
 using XCCloudService.Common.Enum;
 using XCCloudService.Common.Extensions;
@@ -26,22 +25,15 @@ namespace XXCloudService.Api.XCCloud
     /// </summary>
     public class ProjectTime : ApiBase
     {
-        IData_ProjectTimeInfoService data_ProjectTimeInfoService = BLLContainer.Resolve<IData_ProjectTimeInfoService>(resolveNew: true);
-        IDict_BalanceTypeService dict_BalanceTypeService = BLLContainer.Resolve<IDict_BalanceTypeService>(resolveNew: true);
-        IData_ProjectTime_BandPriceService data_ProjectTime_BandPriceService = BLLContainer.Resolve<IData_ProjectTime_BandPriceService>(resolveNew: true);
-        IData_ProjectTime_StoreListService data_ProjectTime_StoreListService = BLLContainer.Resolve<IData_ProjectTime_StoreListService>(resolveNew: true);
-        IData_MemberLevelService data_MemberLevelService = BLLContainer.Resolve<IData_MemberLevelService>(resolveNew: true);
-        IDict_SystemService dict_SystemService = BLLContainer.Resolve<IDict_SystemService>(resolveNew: true);
-
         private bool saveBandPrice(int iId, object[] bandPrices, out string errMsg)
         {
             errMsg = string.Empty;
             if (bandPrices != null && bandPrices.Count() >= 0)
             {
                 //先删除，后添加
-                foreach (var model in data_ProjectTime_BandPriceService.GetModels(p => p.ProjectTimeID == iId))
+                foreach (var model in Data_ProjectTime_BandPriceBusiness.I.GetModels(p => p.ProjectTimeID == iId))
                 {
-                    data_ProjectTime_BandPriceService.DeleteModel(model);
+                    Data_ProjectTime_BandPriceBusiness.I.DeleteModel(model);
                 }
 
                 var bandPriceList = new List<Data_ProjectTime_BandPrice>();
@@ -50,62 +42,30 @@ namespace XXCloudService.Api.XCCloud
                     if (el != null)
                     {
                         var dicPara = new Dictionary<string, object>(el, StringComparer.OrdinalIgnoreCase);
-                        string memberLevelIDs = dicPara.ContainsKey("memberLevelIDs") ? dicPara["memberLevelIDs"].ToString() : string.Empty;
-                        string bandType = dicPara.ContainsKey("bandType") ? (dicPara["bandType"] + "") : string.Empty;
-                        string bandCount = dicPara.ContainsKey("bandCount") ? (dicPara["bandCount"] + "") : string.Empty;
-                        string balanceType = dicPara.ContainsKey("balanceType") ? (dicPara["balanceType"] + "") : string.Empty;
-                        string count = dicPara.ContainsKey("count") ? (dicPara["count"] + "") : string.Empty;
+                        string memberLevelIDs = dicPara.Get("memberLevelIDs");
+                        string bandType = dicPara.Get("bandType");
+                        string bandCount = dicPara.Get("bandCount");
+                        string balanceType = dicPara.Get("balanceType");
+                        string count = dicPara.Get("count");
 
-                        #region 验证参数
-                        if (string.IsNullOrEmpty(memberLevelIDs))
-                        {
-                            errMsg = "适用级别不能为空";
-                            return false;
-                        }
-                        if (string.IsNullOrEmpty(bandType))
-                        {
-                            errMsg = "档位类别不能为空";
-                            return false;
-                        }
-                        if (string.IsNullOrEmpty(bandCount))
-                        {
-                            errMsg = "档位数量不能为空";
-                            return false;
-                        }
-                        if (!Utils.isNumber(bandCount) || Convert.ToInt32(bandCount) < 0)
-                        {
-                            errMsg = "档位数量格式不正确，须为非负整数";
-                            return false;
-                        }
-                        if (string.IsNullOrEmpty(balanceType))
-                        {
-                            errMsg = "计费类型不能为空";
-                            return false;
-                        }
-                        if (string.IsNullOrEmpty(count))
-                        {
-                            errMsg = "扣除数量不能为空";
-                            return false;
-                        }
-                        if (!Utils.isNumber(count) || Convert.ToInt32(count) < 0)
-                        {
-                            errMsg = "扣除数量格式不正确，须为非负整数";
-                            return false;
-                        }
-                        #endregion
+                        if (!memberLevelIDs.NonEmpty("适用级别", out errMsg)) return false;
+                        if (!bandType.NonEmpty("档位类别", out errMsg)) return false;
+                        if (!balanceType.NonEmpty("计费类型", out errMsg)) return false;
+                        if (!bandCount.NonnegInt("档位数量", out errMsg)) return false;
+                        if (!count.NonnegInt("扣除数量", out errMsg)) return false;
 
                         List<string> memberLevelIDList = memberLevelIDs.Split('|').ToList();
                         foreach (var memberLevelID in memberLevelIDList)
                         {
                             var data_ProjectTime_BandPrice = new Data_ProjectTime_BandPrice();
                             data_ProjectTime_BandPrice.ProjectTimeID = iId;
-                            data_ProjectTime_BandPrice.MemberLevelID = ObjectExt.Toint(memberLevelID);
-                            data_ProjectTime_BandPrice.BandType = ObjectExt.Toint(bandType);
-                            data_ProjectTime_BandPrice.BandCount = ObjectExt.Toint(bandCount);
-                            data_ProjectTime_BandPrice.BalanceType = ObjectExt.Toint(balanceType);
-                            data_ProjectTime_BandPrice.Count = ObjectExt.Toint(count);
+                            data_ProjectTime_BandPrice.MemberLevelID = memberLevelID.Toint();
+                            data_ProjectTime_BandPrice.BandType = bandType.Toint();
+                            data_ProjectTime_BandPrice.BandCount = bandCount.Toint();
+                            data_ProjectTime_BandPrice.BalanceType = balanceType.Toint();
+                            data_ProjectTime_BandPrice.Count = count.Toint();
                             bandPriceList.Add(data_ProjectTime_BandPrice);
-                            data_ProjectTime_BandPriceService.AddModel(data_ProjectTime_BandPrice);
+                            Data_ProjectTime_BandPriceBusiness.I.AddModel(data_ProjectTime_BandPrice);
                         }
                     }
                     else
@@ -122,7 +82,7 @@ namespace XXCloudService.Api.XCCloud
                     return false;
                 }
 
-                if (!data_ProjectTime_BandPriceService.SaveChanges())
+                if (!Data_ProjectTime_BandPriceBusiness.I.SaveChanges())
                 {
                     errMsg = "保存门票绑定信息失败";
                     return false;
@@ -133,14 +93,14 @@ namespace XXCloudService.Api.XCCloud
         }
 
         /// <summary>
-        /// 获取适用门店的主体数据
+        /// 获取本门店项目
         /// </summary>
         /// <param name="storeId"></param>
         /// <returns></returns>
         private IQueryable getSutiableList(string storeId)
         {
-            return from a in data_ProjectTime_StoreListService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase))
-                   join b in data_ProjectTimeInfoService.GetModels() on a.ProjectTimeID equals b.ID
+            return from a in Data_ProjectTime_StoreListBusiness.NI.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase))
+                   join b in Data_ProjectTimeInfoBusiness.NI.GetModels() on a.ProjectTimeID equals b.ID
                    select b;
         }
 
@@ -152,14 +112,14 @@ namespace XXCloudService.Api.XCCloud
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
                 string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
-                var query = data_ProjectTimeInfoService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase));
+                var query = Data_ProjectTimeInfoBusiness.NI.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase));
                 if (userTokenKeyModel.LogType == (int)RoleType.StoreUser)
                 {
                     query = (IQueryable<Data_ProjectTimeInfo>)getSutiableList(storeId);
                 }
 
                 var linq = from a in query
-                           join b in dict_BalanceTypeService.GetModels(p=>p.State == 1) on a.DepositType equals b.ID into b1
+                           join b in Dict_BalanceTypeBusiness.NI.GetModels(p=>p.State == 1) on a.DepositType equals b.ID into b1
                            from b in b1.DefaultIfEmpty()
                            select new
                            {
@@ -189,8 +149,7 @@ namespace XXCloudService.Api.XCCloud
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
 
-                IData_ProjectTimeInfoService data_ProjectTimeInfoService = BLLContainer.Resolve<IData_ProjectTimeInfoService>();
-                var linq = from a in data_ProjectTimeInfoService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase))
+                var linq = from a in Data_ProjectTimeInfoBusiness.I.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase))
                            select new
                            {
                                ID = a.ID,
@@ -211,27 +170,26 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 string errMsg = string.Empty;
-                string id = dicParas.ContainsKey("id") ? (dicParas["id"] + "") : string.Empty;
-                if (string.IsNullOrEmpty(id))
+                int id = dicParas.Get("id").Toint(0);
+                if(id == 0)
                 {
                     errMsg = "项目ID不能为空";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
-
-                int iId = Convert.ToInt32(id);
-                if (!data_ProjectTimeInfoService.Any(p => p.ID == iId))
+                
+                if (!Data_ProjectTimeInfoBusiness.I.Any(p => p.ID == id))
                 {
                     errMsg = "该项目不存在";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
-                int BandTypeId = dict_SystemService.GetModels(p => p.DictKey.Equals("档位类别") && p.PID == 0).FirstOrDefault().ID;
-                var BandPrices = from e in (from a in data_ProjectTime_BandPriceService.GetModels(p => p.ProjectTimeID == iId)
-                                join b in data_MemberLevelService.GetModels(p => p.State == 1) on a.MemberLevelID equals b.MemberLevelID into b1
+                int BandTypeId = Dict_SystemBusiness.I.GetModels(p => p.DictKey.Equals("档位类别") && p.PID == 0).FirstOrDefault().ID;
+                var BandPrices = from e in (from a in Data_ProjectTime_BandPriceBusiness.NI.GetModels(p => p.ProjectTimeID == id)
+                                join b in Data_MemberLevelBusiness.NI.GetModels(p => p.State == 1) on a.MemberLevelID equals b.MemberLevelID into b1
                                 from b in b1.DefaultIfEmpty()
-                                join c in dict_BalanceTypeService.GetModels(p => p.State == 1) on a.BalanceType equals c.ID into c1
+                                join c in Dict_BalanceTypeBusiness.NI.GetModels(p => p.State == 1) on a.BalanceType equals c.ID into c1
                                 from c in c1.DefaultIfEmpty()
-                                join d in dict_SystemService.GetModels(p => p.PID == BandTypeId) on (a.BandType + "") equals d.DictValue into d1
+                                join d in Dict_SystemBusiness.NI.GetModels(p => p.PID == BandTypeId) on (a.BandType + "") equals d.DictValue into d1
                                 from d in d1.DefaultIfEmpty()
                                 orderby a.BandType, a.BandCount, a.BalanceType                                
                                 select new 
@@ -248,15 +206,15 @@ namespace XXCloudService.Api.XCCloud
                                     MemberLevelIDs = string.Join("|", g.OrderBy(o => o.MemberLevelID).Select(s => s.MemberLevelID)),
                                     MemberLevelNames = string.Join("|", g.OrderBy(o => o.MemberLevelName).Select(s => s.MemberLevelName)),
                                     BandType = g.Key.BandType,
-                                    BandTypeStr = g.FirstOrDefault().BalanceTypeStr,
+                                    BandTypeStr = g.FirstOrDefault().BandTypeStr,
                                     BandCount = g.Key.BandCount,
                                     BalanceType = g.Key.BalanceType,
                                     BalanceTypeStr = g.FirstOrDefault().BalanceTypeStr,
                                     Count = g.FirstOrDefault().a.Count,                                    
                                 };
 
-                var data_ProjectTimeInfo = (from a in data_ProjectTimeInfoService.GetModels(p => p.ID == iId)
-                                           join b in dict_BalanceTypeService.GetModels(p => p.State == 1) on a.DepositType equals b.ID into b1
+                var data_ProjectTimeInfo = (from a in Data_ProjectTimeInfoBusiness.NI.GetModels(p => p.ID == id)
+                                           join b in Dict_BalanceTypeBusiness.NI.GetModels(p => p.State == 1) on a.DepositType equals b.ID into b1
                                            from b in b1.DefaultIfEmpty()
                                            select new
                                            {
@@ -300,7 +258,7 @@ namespace XXCloudService.Api.XCCloud
                 string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
 
                 string errMsg = string.Empty;
-                string id = dicParas.ContainsKey("id") ? (dicParas["id"] + "") : string.Empty;
+                string id = dicParas.Get("id");
                 string projectName = dicParas.ContainsKey("projectName") ? (dicParas["projectName"] + "") : string.Empty;
                 string payCycle = dicParas.ContainsKey("payCycle") ? (dicParas["payCycle"] + "") : string.Empty;
                 string depositType = dicParas.ContainsKey("depositType") ? (dicParas["depositType"] + "") : string.Empty;
@@ -368,7 +326,7 @@ namespace XXCloudService.Api.XCCloud
                 {
                     try
                     {
-                        if (data_ProjectTimeInfoService.Any(a => a.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && 
+                        if (Data_ProjectTimeInfoBusiness.I.Any(a => a.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && 
                             a.ProjectName.Equals(projectName, StringComparison.OrdinalIgnoreCase) && a.ID != iId))
                         {
                             errMsg = "该项目名称已存在";
@@ -384,10 +342,10 @@ namespace XXCloudService.Api.XCCloud
                         data_ProjectTimeInfo.BackTime = ObjectExt.Toint(backTime);
                         data_ProjectTimeInfo.Note = note;
                         data_ProjectTimeInfo.MerchID = merchId;
-                        if (!data_ProjectTimeInfoService.Any(a => a.ID == iId))
+                        if (!Data_ProjectTimeInfoBusiness.I.Any(a => a.ID == iId))
                         {
                             //新增
-                            if (!data_ProjectTimeInfoService.Add(data_ProjectTimeInfo))
+                            if (!Data_ProjectTimeInfoBusiness.I.Add(data_ProjectTimeInfo))
                             {
                                 errMsg = "添加计时项目信息失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -396,7 +354,7 @@ namespace XXCloudService.Api.XCCloud
                         else
                         {
                             //修改
-                            if (!data_ProjectTimeInfoService.Update(data_ProjectTimeInfo))
+                            if (!Data_ProjectTimeInfoBusiness.I.Update(data_ProjectTimeInfo))
                             {
                                 errMsg = "修改计时项目信息失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -460,27 +418,27 @@ namespace XXCloudService.Api.XCCloud
                             }
 
                             int iProjectId = Convert.ToInt32(projectId);
-                            var data_ProjectTimeInfoModel = data_ProjectTimeInfoService.GetModels(p => p.ID == iProjectId).FirstOrDefault();
+                            var data_ProjectTimeInfoModel = Data_ProjectTimeInfoBusiness.NI.GetModels(p => p.ID == iProjectId).FirstOrDefault();
                             if (data_ProjectTimeInfoModel == null)
                             {
                                 errMsg = "项目ID" + projectId + "不存在";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                             }
 
-                            data_ProjectTimeInfoService.DeleteModel(data_ProjectTimeInfoModel);
+                            Data_ProjectTimeInfoBusiness.I.DeleteModel(data_ProjectTimeInfoModel);
 
-                            foreach (var model in data_ProjectTime_StoreListService.GetModels(p=>p.ProjectTimeID == iProjectId))
+                            foreach (var model in Data_ProjectTime_StoreListBusiness.NI.GetModels(p=>p.ProjectTimeID == iProjectId))
                             {
-                                data_ProjectTime_StoreListService.DeleteModel(model);
+                                Data_ProjectTime_StoreListBusiness.NI.DeleteModel(model);
                             }
 
-                            foreach (var model in data_ProjectTime_BandPriceService.GetModels(p => p.ProjectTimeID == iProjectId))
+                            foreach (var model in Data_ProjectTime_BandPriceBusiness.NI.GetModels(p => p.ProjectTimeID == iProjectId))
                             {
-                                data_ProjectTime_BandPriceService.DeleteModel(model);
+                                Data_ProjectTime_BandPriceBusiness.NI.DeleteModel(model);
                             }
                         }
 
-                        if (!data_ProjectTimeInfoService.SaveChanges())
+                        if (!Data_ProjectTimeInfoBusiness.NI.SaveChanges())
                         {
                             errMsg = "删除项目失败";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -509,16 +467,16 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 string errMsg = string.Empty;
-                string projectId = dicParas.ContainsKey("projectId") ? (dicParas["projectId"] + "") : string.Empty;
+                var projectId = dicParas.Get("projectId").Toint(0);
 
-                if (string.IsNullOrEmpty(projectId))
+                if (projectId == 0)
                 {
                     errMsg = "项目ID不能为空";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
-                int iProjectId = Convert.ToInt32(projectId);
-                var storeIDs = data_ProjectTime_StoreListService.GetModels(p => p.ProjectTimeID == iProjectId).Select(o => new { StoreID = o.StoreID });
+                var storeIDs = Data_ProjectTime_StoreListBusiness.I.GetModels(p => p.ProjectTimeID == projectId).Select(o => new { StoreID = o.StoreID });
+
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, storeIDs);
             }
             catch (Exception e)
@@ -548,9 +506,9 @@ namespace XXCloudService.Api.XCCloud
                     try
                     {
                         int iProjectId = Convert.ToInt32(projectId);
-                        foreach (var model in data_ProjectTime_StoreListService.GetModels(p => p.ProjectTimeID == iProjectId))
+                        foreach (var model in Data_ProjectTime_StoreListBusiness.I.GetModels(p => p.ProjectTimeID == iProjectId))
                         {
-                            data_ProjectTime_StoreListService.DeleteModel(model);
+                            Data_ProjectTime_StoreListBusiness.I.DeleteModel(model);
                         }
 
                         var storeIdArr = storeIds.Split('|');
@@ -559,10 +517,10 @@ namespace XXCloudService.Api.XCCloud
                             var model = new Data_ProjectTime_StoreList();
                             model.ProjectTimeID = iProjectId;
                             model.StoreID = storeId;
-                            data_ProjectTime_StoreListService.AddModel(model);
+                            Data_ProjectTime_StoreListBusiness.I.AddModel(model);
                         }
 
-                        if (!data_ProjectTime_StoreListService.SaveChanges())
+                        if (!Data_ProjectTime_StoreListBusiness.I.SaveChanges())
                         {
                             errMsg = "更新计时项目适用门店表失败";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);

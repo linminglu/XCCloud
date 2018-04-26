@@ -12,11 +12,11 @@ namespace XXCloudService.Api.XCGameMana
     /// <summary>
     /// PhotoUpload 的摘要说明
     /// </summary>
-    public class PhotoUpload : ApiBase
+    public class Upload : ApiBase
     {
-        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.MethodToken)]
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.MethodToken,SysIdAndVersionNo=false)]
         #region "会员图片上传"
-        public object getphotoupload(Dictionary<string, object> dicParas)
+        public object upload(Dictionary<string, object> dicParas)
         {
             
             string moblietoken = dicParas.ContainsKey("moblietoken") ? dicParas["moblietoken"].ToString() : string.Empty;
@@ -32,9 +32,11 @@ namespace XXCloudService.Api.XCGameMana
             {
                 return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "未找到上传路径");
             }
-            string path = imageUrl + DateTime.Now.ToString("yyyy-MM-dd-hh-mm-ss").ToString() + file.FileName;
-            file.SaveAs(path);
-            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.T, "");
+            string path = "/uplaodtest/" + System.Guid.NewGuid().ToString().Replace("-", "") + file.FileName;
+            string physicsPath = System.Web.HttpContext.Current.Server.MapPath(path);
+            file.SaveAs(physicsPath);
+            var obj = new { url = path };
+            return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, obj);
             //return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, path, Result_Code.T, "");
 
         }

@@ -1240,8 +1240,8 @@
     <Compile Include="Api\XCGameMana\Member.ashx.cs">
       <DependentUpon>Member.ashx</DependentUpon>
     </Compile>
-    <Compile Include="Api\XCGameMana\PhotoUpload.ashx.cs">
-      <DependentUpon>PhotoUpload.ashx</DependentUpon>
+    <Compile Include="Api\XCGameMana\Upload.ashx.cs">
+      <DependentUpon>Upload.ashx</DependentUpon>
     </Compile>
     <Compile Include="Api\XCGameMana\Promotion.ashx.cs">
       <DependentUpon>Promotion.ashx</DependentUpon>
@@ -1519,6 +1519,7 @@
     <Folder Include="App_Data\" />
     <Folder Include="Logs\" />
     <Folder Include="memberphoto\" />
+    <Folder Include="uplaodtest\" />
     <Folder Include="WebSite\.idea\inspectionProfiles\" />
     <Folder Include="WeiXin\Pay\Pages\" />
   </ItemGroup>
@@ -1556,7 +1557,7 @@
     <Content Include="Api\XCGame\Foods.ashx" />
     <Content Include="Api\XCGame\Coins.ashx" />
     <Content Include="Api\XCCloud\Parameter.ashx" />
-    <Content Include="Api\XCGameMana\PhotoUpload.ashx" />
+    <Content Include="Api\XCGameMana\Upload.ashx" />
     <Content Include="Api\XCCloud\Merch.ashx" />
     <Content Include="Api\XCCloud\Login.ashx" />
     <Content Include="Api\XCCloud\Main.ashx" />

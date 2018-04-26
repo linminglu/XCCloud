@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>计时项目</title>
+    <link rel="stylesheet" href="layui/css/layui.css">
+</head>
+<body>
+    <div class="layui-row" style="padding: 10px;">
+        <blockquote class="layui-elem-quote" style="text-align: right;padding-right: 100px">
+            <button type="button" class="layui-btn layui-btn-normal" id="add"><i class="layui-icon">&#xe615;</i>新增</button>
+        </blockquote>
+        <div class="layui-col-lg12 layui-col-md12 layui-col-sm12 layui-col-xs12">
+            <table class="layui-hide" id="timeProjectTable" lay-filter="timeProjectTable"></table>
+        </div>
+    </div>
+<!--弹出层-->
+<div id="openModel" style="display: none;padding: 15px">
+    <form class="layui-form layui-form-pane">
+        <div class="layui-form-item" style="margin-bottom: 8px">
+          <label class="layui-form-label">项目名称</label>
+          <div class="layui-input-block">
+              <input type="text" class="layui-input" id="ProjectName">
+          </div>
+        </div>
+        <div class="layui-form-item" style="margin-bottom: 8px">
+            <div class="layui-inline" >
+                <label class="layui-form-label">计费周期</label>
+                <div class="layui-input-inline">
+                    <input type="text" class="layui-input" id="PayCycle" placeholder="分钟" lay-verify="required|number">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label" style="padding: 8px 0">预扣押金类别</label>
+                <div class="layui-input-inline">
+                    <select name="" id="DepositType" lay-filter="DepositType"></select>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item" style="margin-bottom: 8px">
+            <div class="layui-inline">
+                <label class="layui-form-label">预收押金</label>
+                <div class="layui-input-inline">
+                    <input type="text" class="layui-input" id="Deposit" lay-verify="required|number">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">后悔时间</label>
+                <div class="layui-input-inline">
+                    <input type="text" class="layui-input" id="BackTime" lay-verify="required|number">
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item" style="margin-bottom: 8px">
+            <label class="layui-form-label">备注</label>
+            <div class="layui-input-block">
+                <input type="text" class="layui-input" id="Note">
+            </div>
+        </div>
+        <button type="button" class="layui-btn layui-btn-primary" id="toSetBand">波段设定</button>
+        <table class="layui-hide" id="bandTable" lay-filter="bandTable"></table>
+        <div style="text-align:center;">
+            <button type="button" class="layui-btn layui-btn-normal" id="saveTimeProject">保存</button>
+        </div>
+    </form>
+</div>
+    <!--波段设置-->
+<div id="openBand" style="display: none;padding: 15px">
+    <form action="" class="layui-form layui-form-pane">
+        <div class="layui-col-md3">
+            <div class="layui-input-block" style="margin-left: 0px;height: 190px;overflow-y: scroll;border: 1px dashed #dedede;width: 160px" id="memberBox">
+
+            </div>
+        </div>
+        <div class="layui-col-md9">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label" style="padding: 8px 0">档位类别</label>
+                    <div class="layui-input-inline">
+                        <select name="" id="BandType" lay-filter="BandType">
+
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">档位数量</label>
+                    <div class="layui-input-inline">
+                        <input type="text" class="layui-input" id="BandCount">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label" style="padding: 8px 0">计费类型</label>
+                    <div class="layui-input-inline">
+                        <select name="" id="BalanceType" lay-filter="BalanceType">
+
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">计费周期</label>
+                    <div class="layui-input-inline">
+                        <input type="text" class="layui-input" id="Count" >
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item" >
+                <div class="layui-inline">
+                    <div class="layui-input-inline">
+                      <button type="button" class="layui-btn layui-btn-normal" id="savePriedBtn">保存</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    </div>
+<!--设置适用门店-->
+<div id="setStore" style="display: none;padding: 15px">
+    <form action="" class="layui-form layui-form-pane">
+        <div class="layui-form-item">
+            <label class="layui-form-label">门店列表</label>
+            <div class="layui-input-block" id="storeListBox">
+
+            </div>
+        </div>
+        <div style="text-align:center;">
+            <button type="button" class="layui-btn" id="closeStoreBtn">取消</button>
+            <button type="button" class="layui-btn" id="saveStoreBtn">保存</button>
+        </div>
+    </form>
+</div>
+</body>
+<script src="js/jquery-1.8.3-min.js"></script>
+<script src="layui/layui.js"></script>
+<script src="js/storeSystem.js"></script>
+<script>
+    let xc=xcActionSystem.prototype;
+    let token=xc.getStorage('token');
+    let parm={'obj':{'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'},
+        'url':'/XCCloud/ProjectTime?action=GetProjectInfoList',
+        'elem':'#timeProjectTable',
+        'cols':[
+            {field:'ID', title:'项目ID', align: 'center', sort: true,width:80}
+            ,{field:'ProjectName',title: '项目名称', align: 'center'}
+            ,{field:'PayCycle', title: '计费周期', align: 'center'}
+            ,{field:'DepositTypeStr', title: '预售押金类别', align: 'center'}
+            ,{field:'Deposit', title: '预售押金', align: 'center',templet:'#changeLock',width:140}
+            ,{field:'BackTime', title: '后悔时间', align: 'center'}
+            ,{field:'Note', title: '操作员', align: 'center'}
+            ,{fixed: 'right',title:'操作', width:240, align:'center', toolbar: '#barDemo'}
+        ]
+    };
+    xc.getInitData(parm);
+    let index; let projectId='';
+    let BandPrices=[];//波段设定列表
+
+    let DepositType='';
+    let BalanceType='';let BalanceTypeStr='';
+    let BandType='';let BandTypeStr='';
+    let memberLevelID=[];let MemberLevelName=[];
+
+    let storeList=[];//适用门店
+    layui.use(['form','layer','table'],function () {
+        let form=layui.form;
+        let layer=layui.layer;
+        let table=layui.table;
+        form.on('select(DepositType)',function (data) {
+            DepositType=data.value;
+        });
+        form.on('select(BandType)',function (data) {
+            BandType=data.value;
+            BandTypeStr=data.elem[data.elem.selectedIndex].text;
+        });
+        form.on('select(BalanceType)',function (data) {
+            BalanceType=data.value;
+            BalanceTypeStr=data.elem[data.elem.selectedIndex].text;
+        });
+        form.on('checkbox(ml)', function(data){
+            if (data.elem.checked==true){
+                memberLevelID.push(data.value);
+                MemberLevelName.push(data.elem.title);
+            }else if(data.elem.checked==false){
+                for (var i=0;i<memberLevelID.length;i++){
+                    if(memberLevelID[i]==data.value){
+                        memberLevelID.splice(i,1);
+                        MemberLevelName.splice(i,1)
+                    }
+                }
+            }
+        });
+        //新增按钮
+        $('#add').on('click',function () {
+            projectId='';
+            $('#openModel').find('input').val('')
+            BandPrices=[];//波段设定列表
+            DepositType='';
+            BalanceType=''; BalanceTypeStr='';
+            BandType=''; BandTypeStr='';
+            memberLevelID=[]; MemberLevelName=[];
+            newTable(table,BandPrices,layer,form);
+            // xc.setSelect('计费类型','DepositType');
+            xc.getBalanceTypeDic(token,layer,form,'DepositType')
+            layer.open({
+                title:'设置新时段',
+                type:1,
+                area:'800px',
+                content:$('#openModel')
+            })
+        });
+        //设置波段
+        $('#toSetBand').on('click',function () {
+             BalanceType=''; BalanceTypeStr='';
+             BandType=''; BandTypeStr='';
+             memberLevelID=[]; MemberLevelName=[];
+            xc.SearchMemberLevel1('memberBox', token, layer);
+            // xc.setSelect('计费类型','BalanceType');
+            xc.getBalanceTypeDic(token,layer,form,'BalanceType')
+            xc.setSelect('档位类别','BandType');
+             index=   layer.open({
+                title:'设置波段',
+                type:1,
+                area:'900px',
+                content:$('#openBand')
+            })
+        });
+        //save时段设定
+        $('#savePriedBtn').on('click',function () {
+                BandPrices.push({ 'MemberLevelIDs':memberLevelID.length>0?memberLevelID.join('|'):null,
+                'MemberLevelNames':MemberLevelName.length>0?MemberLevelName.join('|'):null,
+                'BandType':BandType,
+                'BandTypeStr':BandTypeStr,
+                'BandCount':$('#BandCount').val(),
+                'BalanceType':BalanceType,
+                'BalanceTypeStr':BalanceTypeStr,
+                'Count':$('#Count').val()});
+                layer.close(index);
+                newTable(table,BandPrices,layer,form);
+        });
+        //点击保存新记录
+        $('#saveTimeProject').on('click',function () {
+            let obj={'id':projectId,
+                'projectName':$('#ProjectName').val(),
+                'payCycle':$('#PayCycle').val(),
+                'depositType':DepositType,
+                'deposit':$('#Deposit').val(),
+                'backTime':$('#BackTime').val(),
+                'note':$('#Note').val(),
+                'bandPrices':BandPrices.length>0?BandPrices:null,
+                'userToken':token,
+                'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+            let url='/XCCloud/ProjectTime?action=SaveProjectInfo';
+            var parasJson = JSON.stringify(obj);
+            $.ajax({
+                type: "post",
+                url: url,
+                contentType: "application/json; charset=utf-8",
+                data: { parasJson: parasJson },
+                success: function (data) {
+                    data=JSON.parse(data);
+                    if(data.result_code==1){
+                        layer.msg('保存成功',{time:1000},function () {
+                            location.href='timeProject.html'
+                        })
+                    }else {
+                        layer.msg('操作失败')
+                        return false;
+                    }
+                }
+            })
+        });
+
+        //修改、删除、和绑定适用门店
+        table.on('tool(timeProjectTable)', function(obj){
+        let data = obj.data;
+        let layEvent = obj.event;
+         projectId=data.ID;
+        if(layEvent === 'detail'){ //查看
+            let _obj={'id':projectId,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'}
+            var parasJson = JSON.stringify(_obj);
+            $.ajax({
+                type: "post",
+                url: '/XCCloud/ProjectTime?action=GetProjectInfo',
+                contentType: "application/json; charset=utf-8",
+                data: { parasJson: parasJson },
+                success: function (data) {
+                    data=JSON.parse(data);
+                    if(data.result_code==1){
+                       let arr=data.result_data;
+                       $('#ProjectName').val(arr.ProjectName);
+                       $('#PayCycle').val(arr.PayCycle);
+                       DepositType=arr.DepositType;
+                        // xc.setSelect('计费类型','DepositType',arr.DepositType);
+                        xc.getBalanceTypeDic(token,layer,form,'DepositType',arr.DepositType)
+                       $('#Deposit').val(arr.Deposit);
+                       $('#BackTime').val(arr.BackTime);
+                       $('#Note').val(arr.Note);
+                       BandPrices=arr.BandPrices;
+                        newTable(table,arr.BandPrices,layer,form);
+                        layer.open({
+                            title:'修改计时项目',
+                            type:1,
+                            area:'800px',
+                            content:$('#openModel')
+                        })
+                    }else {
+                        layer.msg('操作失败')
+                    }
+                }
+            })
+        }else if(layEvent === 'del'){
+            layer.confirm('确定删除该条规则吗？', function(index){
+                let _obj={'projectIds':data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                let parseJson = JSON.stringify(_obj);
+                $.ajax({
+                    type:'post',
+                    url:'/XCCloud/ProjectTime?action=DeleteProjectInfo',
+                    contentType: "application/json; charset=utf-8",
+                    data:{parasJson: parseJson},
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        if (data.result_code == 1) {
+                            obj.del();
+                            layer.closeAll();
+                        } else {
+                            layer.msg(data.result_msg);
+                        }
+                    }
+                })
+            });
+        }else if(layEvent === 'set'){
+            xc.GetStoreList(token,layer,form,'storeListBox');
+            let _obj={'projectId':data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                let parseJson = JSON.stringify(_obj);
+                $.ajax({
+                    type:'post',
+                    url:'/XCCloud/ProjectTime?action=GetProjectStores',
+                    contentType: "application/json; charset=utf-8",
+                    data:{parasJson: parseJson},
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        if (data.result_code == 1) {
+                            storeList=data.result_data;
+                             if(storeList.length>0){
+                                 for(let i in storeList){
+                                     $('#storeListBox').find('input[value="'+storeList[i]+'"]').prop('checked',true)
+                                 }
+                             }
+                             form.render('checkbox');
+                             index=layer.open({
+                                 type:1,
+                                 area:'400px',
+                                 content:$('#setStore')
+                             })
+                        } else {
+                            layer.msg(data.result_msg);
+                        }
+                    }
+                })
+        }
+    });
+        //删除波段设定
+        table.on('tool(bandTable)', function(obj){
+            let data = obj.data;
+            let layEvent = obj.event;
+        if(layEvent === 'del'){
+                for(let i in BandPrices){
+                    if(BandPrices[i].BalanceType==data.BalanceType&&BandPrices[i].BandCount==data.BandCount&&
+                        BandPrices[i].BandType==data.BandType&&BandPrices[i].Count==data.Count
+                        &&BandPrices[i].MemberLevelIDs==data.MemberLevelIDs
+                        &&BandPrices[i].MemberLevelNames==data.MemberLevelNames){
+                        BandPrices.splice(i,1);
+                        obj.del();
+                        // console.log(BandPrices)
+                    }
+                }
+            }
+        });
+    });
+    function newTable(table,arr,layer,form) {
+        table.render({
+            elem: '#bandTable'
+            , height:'200px'
+            , data: BandPrices
+            ,size:'sm'
+            , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+            , cols: [[
+                {field:'MemberLevelNames', title:'会员级别名称', align: 'center'}
+                ,{field:'BandTypeStr',title: '档位类别', align: 'center'} //width 支持：数字、百分比和不填写。
+                ,{field:'BandCount', title: '档位数量', align: 'center'}
+                ,{field:'BalanceTypeStr', title: '扣费类别', align: 'center'}
+                ,{field:'Count', title: '扣费数量', align: 'center'}
+                ,{fixed: 'right',title:'操作', width:140, align:'center', toolbar: '#barDemo2'}]]
+            , page: {page: true, limits: [5,10, 15, 20]}
+            , limit: 5
+            // ,done:function () {
+            //     xc.getBalanceTypeDic(token,layer,form,'freeBalanceType');
+            //     $('.freeLast').find('input').val('')
+            // }
+        });
+
+    }
+</script>
+<script type="text/html" id="barDemo">
+<a class="layui-btn layui-btn-xs" lay-event="set"> <i class="layui-icon">&#xe642;</i>适用门店</a>
+<a class="layui-btn layui-btn-xs" lay-event="detail"> <i class="layui-icon">&#xe642;</i>编辑</a>
+<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del"> <i class="layui-icon">&#xe642;</i>删除</a>
+</script>
+<script type="text/html" id="barDemo2">
+    <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del"> <i class="layui-icon">&#xe642;</i>删除</a>
+</script>
+</html>

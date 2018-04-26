@@ -476,9 +476,9 @@ namespace XXCloudService.Api.XCCloud
 
                                     var data_Project_Device = new Data_Project_Device();
                                     data_Project_Device.DeviceID = iId;
-                                    data_Project_Device.ProjectID = ObjectExt.Toint(projectId);
-                                    data_Project_Device.SignType = ObjectExt.Toint(signType);
-                                    data_Project_Device.LockMember = ObjectExt.Toint(lockMember);
+                                    data_Project_Device.ProjectID = projectId.Toint();
+                                    data_Project_Device.SignType = signType.Toint();
+                                    data_Project_Device.LockMember = lockMember.Toint();
                                     data_Project_Device.JoinType = iJoinType;
                                     data_Project_DeviceService.AddModel(data_Project_Device);
                                 }

@@ -106,10 +106,16 @@
                 </div>
             </div>
             <div class="layui-form-item">
-                <div class="layui-inline" id="goodIsAll">
+                <div class="layui-inline goodIsAll" >
                     <label class="layui-form-label">开通陪同票</label>
                     <div class="layui-input-inline">
                         <input type="checkbox" id="AccompanyFlag" name="open" lay-skin="switch" lay-filter="AccompanyFlag" lay-text="是|否">
+                    </div>
+                </div>
+                <div class="layui-inline goodIsAll">
+                    <label class="layui-form-label">开通陪同票</label>
+                    <div class="layui-input-inline">
+                        <input type="checkbox" id="PlayOnceFlag" name="open" lay-skin="switch" lay-filter="PlayOnceFlag" lay-text="扣次|通完">
                     </div>
                 </div>
             </div>
@@ -171,6 +177,7 @@
     let xc=xcActionSystem.prototype;
     let token=xc.getStorage('token');
     let _AccompanyFlag=0;
+    let _PlayOnceFlag=0;
     let _id;
     let _balanceType;
 
@@ -237,6 +244,13 @@
                 $('#FlagTrue').addClass('layui-hide');
             }
         });
+        form.on('switch(PlayOnceFlag)',function (data) {
+            if(data.elem.checked ==true){
+                _PlayOnceFlag=1;
+            }else {
+                _PlayOnceFlag=0;
+            }
+        });
         form.on('select(BalanceType)',function (data) {
             _balanceType=data.value;
         });
@@ -279,6 +293,13 @@
                                 _balanceType=arr.BalanceType;
                                 $('#BalanceType').find('option').prop('selected',false);
                                 $('#BalanceCount').val('');
+                            }
+                            if(arr.PlayOnceFlag==1){
+                                $('#PlayOnceFlag').prop('checked',true);
+                                _PlayOnceFlag=1;
+                            }else {
+                                $('#PlayOnceFlag').prop('checked',false);
+                                _PlayOnceFlag=0;
                             }
                             form.render();
                             layer.open({
@@ -346,6 +367,7 @@
             'accompanyFlag':_AccompanyFlag,
             'accompanyCash':$('#AccompanyCash').val(),
             'balanceType':_balanceType,
+            'playOnceFlag':_PlayOnceFlag,
             'balanceCount':$('#BalanceCount').val(),
             'note':$('#Note').val(),
             'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
@@ -371,18 +393,18 @@
         let parseJson = JSON.stringify(obj);
         $.ajax({
             type:'post',
-            url:'/XCCloud/StoreWeight?action=GetStoreList',
+            url:'/XCCloud/StoreInfo?action=GetStoreList',
             contentType: "application/json; charset=utf-8",
             data:{parasJson: parseJson},
             success: function (data) {
                 data=JSON.parse(data);
-                if(data.Result_Code==1){
+                if(data.result_code==1){
                     $('#'+id).html('');
-                    let array=data.Result_Data;
+                    let array=data.result_data;
                     for(let i in array){
                         $('#'+id).append('<input type="checkbox" lay-skin="primary" value="'+array[i].StoreID+'" lay-filter="chooseStore" title="'+array[i].StoreName+'"><hr class="layui-bg-blue">')
                     }
-                    form.render('checkbox');
+                    form.render();
                 }else {
                     layer.msg('获取适用门店列表失败')
                 }

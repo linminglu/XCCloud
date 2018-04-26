@@ -49,7 +49,7 @@ namespace XXCloudService.Api.XCCloud
             if (foodSales != null && foodSales.Count() >= 0)
             {
                 //先删除，后添加
-                var data_Food_SaleService = Data_Food_SaleBusiness.Instance;
+                var data_Food_SaleService = Data_Food_SaleBusiness.I;
                 foreach (var model in data_Food_SaleService.GetModels(p => p.FoodID == iFoodId))
                 {
                     data_Food_SaleService.DeleteModel(model);
@@ -418,7 +418,7 @@ namespace XXCloudService.Api.XCCloud
                     " where a.MerchID=@MerchId ";
                 sql = sql + sqlWhere;
 
-                IData_FoodInfoService data_FoodInfoService = Data_FoodInfoBusiness.Instance;
+                IData_FoodInfoService data_FoodInfoService = Data_FoodInfoBusiness.I;
                 var data_FoodInfo = data_FoodInfoService.SqlQuery<Data_FoodInfoListModel>(sql, parameters).ToList();
                 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, data_FoodInfo);
@@ -442,7 +442,7 @@ namespace XXCloudService.Api.XCCloud
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
 
-                var linq = from a in Data_FoodInfoBusiness.Instance.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.FoodState == 1 && p.FoodType == (int)FoodType.Member)                          
+                var linq = from a in Data_FoodInfoBusiness.I.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.FoodState == 1 && p.FoodType == (int)FoodType.Member)                          
                            select new
                            {
                                FoodID = a.FoodID,
@@ -472,7 +472,7 @@ namespace XXCloudService.Api.XCCloud
                 }
 
                 int iFoodId = Convert.ToInt32(foodId);                                               
-                var FoodInfo = Data_FoodInfoBusiness.Instance.GetModels(p => p.FoodID == iFoodId).FirstOrDefault();
+                var FoodInfo = Data_FoodInfoBusiness.I.GetModels(p => p.FoodID == iFoodId).FirstOrDefault();
                 if(FoodInfo == null)
                 {
                     errMsg = "该套餐不存在";
@@ -480,8 +480,8 @@ namespace XXCloudService.Api.XCCloud
                 }
 
                 var FoodLevels = from c in
-                                     (from a in Data_Food_LevelBusiness.NewInstance.GetModels(p => p.FoodID == iFoodId)
-                                      join b in Data_MemberLevelBusiness.NewInstance.GetModels(p => p.State == 1) on a.MemberLevelID equals b.MemberLevelID
+                                     (from a in Data_Food_LevelBusiness.NI.GetModels(p => p.FoodID == iFoodId)
+                                      join b in Data_MemberLevelBusiness.NI.GetModels(p => p.State == 1) on a.MemberLevelID equals b.MemberLevelID
                                       select new
                                       {
                                           a = a,
@@ -506,19 +506,19 @@ namespace XXCloudService.Api.XCCloud
                                      UpdateLevelID = g.FirstOrDefault().a.UpdateLevelID
                                  };                                 
 
-                int FoodDetailId = Dict_SystemBusiness.Instance.GetModels(p => p.DictKey.Equals("套餐内容") && p.PID == 0).FirstOrDefault().ID;
-                int FoodDetailTypeId = Dict_SystemBusiness.Instance.GetModels(p => p.DictKey.Equals("套餐类别") && p.PID == FoodDetailId).FirstOrDefault().ID;
-                int FeeTypeId = Dict_SystemBusiness.Instance.GetModels(p => p.DictKey.Equals("计费方式")).FirstOrDefault().ID;
-                var FoodDetials = from a in Data_Food_DetialBusiness.NewInstance.GetModels(p => p.FoodID == iFoodId && p.Status == 1)
-                                  join b in Data_ProjectInfoBusiness.NewInstance.GetModels() on new { ContainID = a.ContainID, FoodType = a.FoodType } equals new { ContainID = (int?)b.ID, FoodType = (int?)FoodDetailType.Ticket } into b1
+                int FoodDetailId = Dict_SystemBusiness.I.GetModels(p => p.DictKey.Equals("套餐内容") && p.PID == 0).FirstOrDefault().ID;
+                int FoodDetailTypeId = Dict_SystemBusiness.I.GetModels(p => p.DictKey.Equals("套餐类别") && p.PID == FoodDetailId).FirstOrDefault().ID;
+                int FeeTypeId = Dict_SystemBusiness.I.GetModels(p => p.DictKey.Equals("计费方式")).FirstOrDefault().ID;
+                var FoodDetials = from a in Data_Food_DetialBusiness.NI.GetModels(p => p.FoodID == iFoodId && p.Status == 1)
+                                  join b in Data_ProjectInfoBusiness.NI.GetModels() on new { ContainID = a.ContainID, FoodType = a.FoodType } equals new { ContainID = (int?)b.ID, FoodType = (int?)FoodDetailType.Ticket } into b1
                                   from b in b1.DefaultIfEmpty()
-                                  join c in Base_GoodsInfoBusiness.NewInstance.GetModels() on new { ContainID = a.ContainID, FoodType = a.FoodType } equals new { ContainID = (int?)c.ID, FoodType = (int?)FoodDetailType.Good } into c1
+                                  join c in Base_GoodsInfoBusiness.NI.GetModels() on new { ContainID = a.ContainID, FoodType = a.FoodType } equals new { ContainID = (int?)c.ID, FoodType = (int?)FoodDetailType.Good } into c1
                                   from c in c1.DefaultIfEmpty()
-                                  join d in Dict_SystemBusiness.NewInstance.GetModels(p => p.PID == FoodDetailTypeId) on (a.FoodType + "") equals d.DictValue into d1
+                                  join d in Dict_SystemBusiness.NI.GetModels(p => p.PID == FoodDetailTypeId) on (a.FoodType + "") equals d.DictValue into d1
                                   from d in d1.DefaultIfEmpty()
-                                  join f in Dict_BalanceTypeBusiness.NewInstance.GetModels(p=>p.State == 1) on a.BalanceType equals f.ID into f1
+                                  join f in Dict_BalanceTypeBusiness.NI.GetModels(p=>p.State == 1) on a.BalanceType equals f.ID into f1
                                   from f in f1.DefaultIfEmpty()
-                                  join g in Data_CouponInfoBusiness.NewInstance.GetModels() on new { ContainID = a.ContainID, FoodType = a.FoodType } equals new { ContainID = (int?)g.ID, FoodType = (int?)FoodDetailType.Coupon } into g1
+                                  join g in Data_CouponInfoBusiness.NI.GetModels() on new { ContainID = a.ContainID, FoodType = a.FoodType } equals new { ContainID = (int?)g.ID, FoodType = (int?)FoodDetailType.Coupon } into g1
                                   from g in g1.DefaultIfEmpty()
                                   select new
                                   {
@@ -533,8 +533,8 @@ namespace XXCloudService.Api.XCCloud
                                       WeightValue = a.WeightValue
                                   };
 
-                var FoodSales = from a in Data_Food_SaleBusiness.NewInstance.GetModels(p => p.FoodID == iFoodId)
-                                join b in Dict_BalanceTypeBusiness.NewInstance.GetModels() on a.BalanceType equals b.ID
+                var FoodSales = from a in Data_Food_SaleBusiness.NI.GetModels(p => p.FoodID == iFoodId)
+                                join b in Dict_BalanceTypeBusiness.NI.GetModels() on a.BalanceType equals b.ID
                                 select new {
                                     ID = a.BalanceType,
                                     TypeName = b.TypeName
@@ -663,7 +663,7 @@ namespace XXCloudService.Api.XCCloud
                 {
                     try
                     {
-                        IData_FoodInfoService data_FoodInfoService = Data_FoodInfoBusiness.Instance;
+                        IData_FoodInfoService data_FoodInfoService = Data_FoodInfoBusiness.I;
                         var data_FoodInfo = new Data_FoodInfo();
                         data_FoodInfo.FoodID = iFoodId;
                         data_FoodInfo.FoodName = foodName;
@@ -746,10 +746,10 @@ namespace XXCloudService.Api.XCCloud
                 string errMsg = string.Empty;                
                 string goodNameOrBarcode = dicParas.ContainsKey("goodNameOrBarcode") ? (dicParas["goodNameOrBarcode"] + "") : string.Empty;
 
-                IDict_SystemService dict_SystemService = Dict_SystemBusiness.NewInstance;
+                IDict_SystemService dict_SystemService = Dict_SystemBusiness.NI;
                 int GoodTypeId = dict_SystemService.GetModels(p => p.DictKey.Equals("商品类别")).FirstOrDefault().ID;
 
-                IBase_GoodsInfoService base_GoodsInfoService = Base_GoodsInfoBusiness.NewInstance;
+                IBase_GoodsInfoService base_GoodsInfoService = Base_GoodsInfoBusiness.NI;
                 var query = base_GoodsInfoService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.GoodType == (int)GoodType.Good && p.Status == 1);
                 if (!string.IsNullOrEmpty(goodNameOrBarcode))
                 {
@@ -814,7 +814,7 @@ namespace XXCloudService.Api.XCCloud
                 }
 
                 int iFoodId = Convert.ToInt32(foodId);
-                var storeIDs = Data_Food_StoreListBusiness.Instance.GetModels(p => p.FoodID == iFoodId).Select(o => new { StoreID = o.StoreID });
+                var storeIDs = Data_Food_StoreListBusiness.I.GetModels(p => p.FoodID == iFoodId).Select(o => new { StoreID = o.StoreID });
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, storeIDs);
             }
             catch (Exception e)
@@ -844,7 +844,7 @@ namespace XXCloudService.Api.XCCloud
                     try
                     {
                         int iFoodId = Convert.ToInt32(foodId);
-                        var data_Food_StoreListService = Data_Food_StoreListBusiness.Instance;
+                        var data_Food_StoreListService = Data_Food_StoreListBusiness.I;
                         foreach (var model in data_Food_StoreListService.GetModels(p => p.FoodID == iFoodId))
                         {
                             data_Food_StoreListService.DeleteModel(model);

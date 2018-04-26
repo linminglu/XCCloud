@@ -165,7 +165,7 @@ namespace XXCloudService.Api.XCCloud
 
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];                
                 var merchDataModel = (userTokenKeyModel.DataModel as MerchDataModel);
-                merchDataModel.WorkStationID = ObjectExt.Toint(workStationId);
+                merchDataModel.WorkStationID = workStationId.Toint();
 
                 userTokenKeyModel.LogType = Convert.ToInt32(logType);
                 if (userTokenKeyModel.LogType == (int)RoleType.MerchUser)

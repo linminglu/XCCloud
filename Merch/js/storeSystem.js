@@ -1277,13 +1277,13 @@ xcActionSystem.prototype= {
         let parseJson = JSON.stringify(_obj);
         $.ajax({
             type:'post',
-            url:'/XCCloud/StoreWeight?action=GetStoreList',
+            url:'/XCCloud/StoreInfo?action=GetStoreList',
             contentType: "application/json; charset=utf-8",
             data:{parasJson: parseJson},
             success: function (data) {
                 data = JSON.parse(data);
-                if (data.Result_Code == 1){
-                    let arr=data.Result_Data;
+                if (data.result_code == 1){
+                    let arr=data.result_data;
                     $('#'+id).html('<option>-请选择-</option>');
                     for(let i in arr){
                         $('#'+id).append('<option value="'+arr[i].StoreID+'">'+arr[i].StoreName+'</option>')
@@ -1442,7 +1442,7 @@ xcActionSystem.prototype= {
         });
     },
     //获取会员余额类别字典
-    getBalanceTypeDic:function (token,layer,form,id) {
+    getBalanceTypeDic:function (token,layer,form,id,selected) {
         let _obj={'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
         let parseJson = JSON.stringify(_obj);
         $.ajax({
@@ -1456,7 +1456,15 @@ xcActionSystem.prototype= {
                     let arr=data.result_data;
                     $('#'+id).html('<option>-请选择-</option>');
                     for(let i in arr){
-                        $('#'+id).append('<option value="'+arr[i].ID+'">'+arr[i].TypeName+'</option>')
+                        if(selected){
+                            if(arr[i].ID==selected){
+                                $('#'+id).append('<option value="'+arr[i].ID+'" selected>'+arr[i].TypeName+'</option>')
+                            }else {
+                                $('#'+id).append('<option value="'+arr[i].ID+'">'+arr[i].TypeName+'</option>')
+                            }
+                        }else {
+                            $('#'+id).append('<option value="'+arr[i].ID+'">'+arr[i].TypeName+'</option>')
+                        }
                     }
                     form.render('select');
                 } else {

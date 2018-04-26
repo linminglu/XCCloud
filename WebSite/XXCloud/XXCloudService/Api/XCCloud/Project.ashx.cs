@@ -34,8 +34,8 @@ namespace XXCloudService.Api.XCCloud
         /// <returns></returns>
         private IQueryable getSutiableList(string storeId)
         {
-            return from a in Data_Project_StoreListBusiness.NewInstance.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase))
-                    join b in Data_ProjectInfoBusiness.NewInstance.GetModels() on a.ProjectID equals b.ID
+            return from a in Data_Project_StoreListBusiness.NI.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase))
+                    join b in Data_ProjectInfoBusiness.NI.GetModels() on a.ProjectID equals b.ID
                     select b;     
         }
 
@@ -47,14 +47,14 @@ namespace XXCloudService.Api.XCCloud
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
                 string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
-                var query = Data_ProjectInfoBusiness.NewInstance.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase));
+                var query = Data_ProjectInfoBusiness.NI.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase));
                 if (userTokenKeyModel.LogType == (int)RoleType.StoreUser)
                 {
                     query = (IQueryable<Data_ProjectInfo>)getSutiableList(storeId);
                 }
                 
                 var linq = from a in query
-                           join b in Dict_BalanceTypeBusiness.NewInstance.GetModels(p=>p.State == 1) on a.BalanceType equals b.ID into b1
+                           join b in Dict_BalanceTypeBusiness.NI.GetModels(p=>p.State == 1) on a.BalanceType equals b.ID into b1
                            from b in b1.DefaultIfEmpty()
                            select new
                            {
@@ -87,7 +87,7 @@ namespace XXCloudService.Api.XCCloud
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
 
-                var linq = from a in Data_ProjectInfoBusiness.Instance.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase))
+                var linq = from a in Data_ProjectInfoBusiness.I.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase))
                            select new
                            {
                                ID = a.ID,
@@ -107,9 +107,9 @@ namespace XXCloudService.Api.XCCloud
         {
             try
             {
-                var gameTypeId = Dict_SystemBusiness.Instance.GetModels(p => p.DictKey.Equals("游戏机类型", StringComparison.OrdinalIgnoreCase) && p.PID == 0).FirstOrDefault().ID;
-                var projectGameId = Dict_SystemBusiness.Instance.GetModels(p => p.DictKey.Equals("游乐项目", StringComparison.OrdinalIgnoreCase) && p.PID == gameTypeId).FirstOrDefault().ID;
-                var linq = Dict_SystemBusiness.Instance.GetModels(p => p.PID == projectGameId).Select(o => new {
+                var gameTypeId = Dict_SystemBusiness.I.GetModels(p => p.DictKey.Equals("游戏机类型", StringComparison.OrdinalIgnoreCase) && p.PID == 0).FirstOrDefault().ID;
+                var projectGameId = Dict_SystemBusiness.I.GetModels(p => p.DictKey.Equals("游乐项目", StringComparison.OrdinalIgnoreCase) && p.PID == gameTypeId).FirstOrDefault().ID;
+                var linq = Dict_SystemBusiness.I.GetModels(p => p.PID == projectGameId).Select(o => new {
                     ID = o.ID,
                     Name = o.DictKey
                 });
@@ -135,7 +135,7 @@ namespace XXCloudService.Api.XCCloud
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
-                var linq = Data_Project_BindGameBusiness.Instance.GetModels(p => p.ProjectID == id).Select(o => new { GameID = o.GameID });
+                var linq = Data_Project_BindGameBusiness.I.GetModels(p => p.ProjectID == id).Select(o => new { GameID = o.GameID });
 
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, linq);
             }
@@ -159,7 +159,7 @@ namespace XXCloudService.Api.XCCloud
                 }
 
                 int iId = Convert.ToInt32(id);
-                var data_ProjectInfo = Data_ProjectInfoBusiness.Instance.GetModels(p => p.ID == iId).FirstOrDefault();
+                var data_ProjectInfo = Data_ProjectInfoBusiness.I.GetModels(p => p.ID == iId).FirstOrDefault();
                 if (data_ProjectInfo == null)
                 {
                     errMsg = "该项目不存在";
@@ -260,7 +260,7 @@ namespace XXCloudService.Api.XCCloud
                 {
                     try
                     {
-                        IData_ProjectInfoService data_ProjectInfoService = Data_ProjectInfoBusiness.Instance;
+                        IData_ProjectInfoService data_ProjectInfoService = Data_ProjectInfoBusiness.I;
                         if (data_ProjectInfoService.Any(a => a.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) &&
                             a.ProjectName.Equals(projectName, StringComparison.OrdinalIgnoreCase) && a.ID != iId))
                         {
@@ -305,7 +305,7 @@ namespace XXCloudService.Api.XCCloud
                         if (projectGames != null && projectGames.Count() >= 0)
                         {
                             //先删除，后添加
-                            var data_Project_BindGameService = Data_Project_BindGameBusiness.Instance;
+                            var data_Project_BindGameService = Data_Project_BindGameBusiness.I;
                             foreach (var model in data_Project_BindGameService.GetModels(p => p.ProjectID == iId))
                             {
                                 data_Project_BindGameService.DeleteModel(model);
@@ -380,7 +380,7 @@ namespace XXCloudService.Api.XCCloud
                     try
                     {
                         List<string> projectIdList = projectIds.Split('|').ToList();
-                        var data_ProjectInfoService = Data_ProjectInfoBusiness.Instance;
+                        var data_ProjectInfoService = Data_ProjectInfoBusiness.I;
                         foreach (var projectId in projectIdList)
                         {
                             if (string.IsNullOrEmpty(projectId))
@@ -399,13 +399,13 @@ namespace XXCloudService.Api.XCCloud
 
                             data_ProjectInfoService.DeleteModel(data_ProjectInfoModel);
 
-                            var data_Project_StoreListService = Data_Project_StoreListBusiness.Instance;
+                            var data_Project_StoreListService = Data_Project_StoreListBusiness.I;
                             foreach (var model in data_Project_StoreListService.GetModels(p=>p.ProjectID == iProjectId))
                             {
                                 data_Project_StoreListService.DeleteModel(model);
                             }
 
-                            var data_Project_DeviceService = Data_Project_DeviceBusiness.Instance;
+                            var data_Project_DeviceService = Data_Project_DeviceBusiness.I;
                             foreach (var model in data_Project_DeviceService.GetModels(p => p.ProjectID == iProjectId))
                             {
                                 data_Project_DeviceService.DeleteModel(model);
@@ -450,7 +450,7 @@ namespace XXCloudService.Api.XCCloud
                 }
 
                 int iProjectId = Convert.ToInt32(projectId);
-                var storeIDs = Data_Project_StoreListBusiness.Instance.GetModels(p => p.ProjectID == iProjectId).Select(o => new { StoreID = o.StoreID });
+                var storeIDs = Data_Project_StoreListBusiness.I.GetModels(p => p.ProjectID == iProjectId).Select(o => new { StoreID = o.StoreID });
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, storeIDs);
             }
             catch (Exception e)
@@ -480,7 +480,7 @@ namespace XXCloudService.Api.XCCloud
                     try
                     {
                         int iProjectId = Convert.ToInt32(projectId);
-                        var data_Project_StoreListService = Data_Project_StoreListBusiness.Instance;
+                        var data_Project_StoreListService = Data_Project_StoreListBusiness.I;
                         foreach (var model in data_Project_StoreListService.GetModels(p => p.ProjectID == iProjectId))
                         {
                             data_Project_StoreListService.DeleteModel(model);

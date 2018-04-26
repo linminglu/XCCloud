@@ -12,7 +12,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Base_ChainRuleBusiness
     {
-		public static IBase_ChainRuleService Instance
+		public static IBase_ChainRuleService I
         {
             get
             {
@@ -20,7 +20,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IBase_ChainRuleService NewInstance
+        public static IBase_ChainRuleService NI
         {
             get
             {
@@ -31,7 +31,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Base_ChainRule_StoreBusiness
     {
-		public static IBase_ChainRule_StoreService Instance
+		public static IBase_ChainRule_StoreService I
         {
             get
             {
@@ -39,7 +39,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IBase_ChainRule_StoreService NewInstance
+        public static IBase_ChainRule_StoreService NI
         {
             get
             {
@@ -50,7 +50,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Base_DepotInfoBusiness
     {
-		public static IBase_DepotInfoService Instance
+		public static IBase_DepotInfoService I
         {
             get
             {
@@ -58,7 +58,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IBase_DepotInfoService NewInstance
+        public static IBase_DepotInfoService NI
         {
             get
             {
@@ -69,7 +69,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Base_DeviceInfoBusiness
     {
-		public static IBase_DeviceInfoService Instance
+		public static IBase_DeviceInfoService I
         {
             get
             {
@@ -77,7 +77,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IBase_DeviceInfoService NewInstance
+        public static IBase_DeviceInfoService NI
         {
             get
             {
@@ -88,7 +88,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Base_EnumParamsBusiness
     {
-		public static IBase_EnumParamsService Instance
+		public static IBase_EnumParamsService I
         {
             get
             {
@@ -96,7 +96,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IBase_EnumParamsService NewInstance
+        public static IBase_EnumParamsService NI
         {
             get
             {
@@ -107,7 +107,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Base_GoodsInfoBusiness
     {
-		public static IBase_GoodsInfoService Instance
+		public static IBase_GoodsInfoService I
         {
             get
             {
@@ -115,7 +115,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IBase_GoodsInfoService NewInstance
+        public static IBase_GoodsInfoService NI
         {
             get
             {
@@ -126,7 +126,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Base_MemberInfoBusiness
     {
-		public static IBase_MemberInfoService Instance
+		public static IBase_MemberInfoService I
         {
             get
             {
@@ -134,7 +134,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IBase_MemberInfoService NewInstance
+        public static IBase_MemberInfoService NI
         {
             get
             {
@@ -145,7 +145,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Base_MerchAlipayBusiness
     {
-		public static IBase_MerchAlipayService Instance
+		public static IBase_MerchAlipayService I
         {
             get
             {
@@ -153,7 +153,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IBase_MerchAlipayService NewInstance
+        public static IBase_MerchAlipayService NI
         {
             get
             {
@@ -164,7 +164,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Base_MerchantInfoBusiness
     {
-		public static IBase_MerchantInfoService Instance
+		public static IBase_MerchantInfoService I
         {
             get
             {
@@ -172,7 +172,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IBase_MerchantInfoService NewInstance
+        public static IBase_MerchantInfoService NI
         {
             get
             {
@@ -183,7 +183,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Base_MerchFunctionBusiness
     {
-		public static IBase_MerchFunctionService Instance
+		public static IBase_MerchFunctionService I
         {
             get
             {
@@ -191,7 +191,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IBase_MerchFunctionService NewInstance
+        public static IBase_MerchFunctionService NI
         {
             get
             {
@@ -202,7 +202,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Base_SettleLCPayBusiness
     {
-		public static IBase_SettleLCPayService Instance
+		public static IBase_SettleLCPayService I
         {
             get
             {
@@ -210,7 +210,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IBase_SettleLCPayService NewInstance
+        public static IBase_SettleLCPayService NI
         {
             get
             {
@@ -221,7 +221,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Base_SettleOrgBusiness
     {
-		public static IBase_SettleOrgService Instance
+		public static IBase_SettleOrgService I
         {
             get
             {
@@ -229,7 +229,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IBase_SettleOrgService NewInstance
+        public static IBase_SettleOrgService NI
         {
             get
             {
@@ -240,7 +240,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Base_SettlePPOSBusiness
     {
-		public static IBase_SettlePPOSService Instance
+		public static IBase_SettlePPOSService I
         {
             get
             {
@@ -248,7 +248,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IBase_SettlePPOSService NewInstance
+        public static IBase_SettlePPOSService NI
         {
             get
             {
@@ -259,7 +259,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Base_StorageInfoBusiness
     {
-		public static IBase_StorageInfoService Instance
+		public static IBase_StorageInfoService I
         {
             get
             {
@@ -267,7 +267,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IBase_StorageInfoService NewInstance
+        public static IBase_StorageInfoService NI
         {
             get
             {
@@ -278,7 +278,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Base_StoreDogListBusiness
     {
-		public static IBase_StoreDogListService Instance
+		public static IBase_StoreDogListService I
         {
             get
             {
@@ -286,7 +286,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IBase_StoreDogListService NewInstance
+        public static IBase_StoreDogListService NI
         {
             get
             {
@@ -297,7 +297,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Base_StoreInfoBusiness
     {
-		public static IBase_StoreInfoService Instance
+		public static IBase_StoreInfoService I
         {
             get
             {
@@ -305,7 +305,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IBase_StoreInfoService NewInstance
+        public static IBase_StoreInfoService NI
         {
             get
             {
@@ -316,7 +316,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Base_StoreWeightBusiness
     {
-		public static IBase_StoreWeightService Instance
+		public static IBase_StoreWeightService I
         {
             get
             {
@@ -324,7 +324,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IBase_StoreWeightService NewInstance
+        public static IBase_StoreWeightService NI
         {
             get
             {
@@ -335,7 +335,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Base_StoreWeight_GameBusiness
     {
-		public static IBase_StoreWeight_GameService Instance
+		public static IBase_StoreWeight_GameService I
         {
             get
             {
@@ -343,7 +343,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IBase_StoreWeight_GameService NewInstance
+        public static IBase_StoreWeight_GameService NI
         {
             get
             {
@@ -354,7 +354,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Base_UserGrantBusiness
     {
-		public static IBase_UserGrantService Instance
+		public static IBase_UserGrantService I
         {
             get
             {
@@ -362,7 +362,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IBase_UserGrantService NewInstance
+        public static IBase_UserGrantService NI
         {
             get
             {
@@ -373,7 +373,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Base_UserGroupBusiness
     {
-		public static IBase_UserGroupService Instance
+		public static IBase_UserGroupService I
         {
             get
             {
@@ -381,7 +381,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IBase_UserGroupService NewInstance
+        public static IBase_UserGroupService NI
         {
             get
             {
@@ -392,7 +392,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Base_UserGroup_GrantBusiness
     {
-		public static IBase_UserGroup_GrantService Instance
+		public static IBase_UserGroup_GrantService I
         {
             get
             {
@@ -400,7 +400,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IBase_UserGroup_GrantService NewInstance
+        public static IBase_UserGroup_GrantService NI
         {
             get
             {
@@ -411,7 +411,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Base_UserInfoBusiness
     {
-		public static IBase_UserInfoService Instance
+		public static IBase_UserInfoService I
         {
             get
             {
@@ -419,7 +419,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IBase_UserInfoService NewInstance
+        public static IBase_UserInfoService NI
         {
             get
             {
@@ -430,7 +430,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Data_BalanceChargeRuleBusiness
     {
-		public static IData_BalanceChargeRuleService Instance
+		public static IData_BalanceChargeRuleService I
         {
             get
             {
@@ -438,7 +438,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IData_BalanceChargeRuleService NewInstance
+        public static IData_BalanceChargeRuleService NI
         {
             get
             {
@@ -449,7 +449,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Data_BalanceType_StoreListBusiness
     {
-		public static IData_BalanceType_StoreListService Instance
+		public static IData_BalanceType_StoreListService I
         {
             get
             {
@@ -457,7 +457,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IData_BalanceType_StoreListService NewInstance
+        public static IData_BalanceType_StoreListService NI
         {
             get
             {
@@ -468,7 +468,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Data_BillInfoBusiness
     {
-		public static IData_BillInfoService Instance
+		public static IData_BillInfoService I
         {
             get
             {
@@ -476,7 +476,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IData_BillInfoService NewInstance
+        public static IData_BillInfoService NI
         {
             get
             {
@@ -487,7 +487,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Data_Card_BalanceBusiness
     {
-		public static IData_Card_BalanceService Instance
+		public static IData_Card_BalanceService I
         {
             get
             {
@@ -495,7 +495,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IData_Card_BalanceService NewInstance
+        public static IData_Card_BalanceService NI
         {
             get
             {
@@ -506,7 +506,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Data_Card_Balance_StoreListBusiness
     {
-		public static IData_Card_Balance_StoreListService Instance
+		public static IData_Card_Balance_StoreListService I
         {
             get
             {
@@ -514,7 +514,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IData_Card_Balance_StoreListService NewInstance
+        public static IData_Card_Balance_StoreListService NI
         {
             get
             {
@@ -525,7 +525,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Data_Card_RightBusiness
     {
-		public static IData_Card_RightService Instance
+		public static IData_Card_RightService I
         {
             get
             {
@@ -533,7 +533,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IData_Card_RightService NewInstance
+        public static IData_Card_RightService NI
         {
             get
             {
@@ -544,7 +544,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Data_Card_Right_StoreListBusiness
     {
-		public static IData_Card_Right_StoreListService Instance
+		public static IData_Card_Right_StoreListService I
         {
             get
             {
@@ -552,7 +552,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IData_Card_Right_StoreListService NewInstance
+        public static IData_Card_Right_StoreListService NI
         {
             get
             {
@@ -563,7 +563,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Data_CoinDestoryBusiness
     {
-		public static IData_CoinDestoryService Instance
+		public static IData_CoinDestoryService I
         {
             get
             {
@@ -571,7 +571,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IData_CoinDestoryService NewInstance
+        public static IData_CoinDestoryService NI
         {
             get
             {
@@ -582,7 +582,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Data_CoinInventoryBusiness
     {
-		public static IData_CoinInventoryService Instance
+		public static IData_CoinInventoryService I
         {
             get
             {
@@ -590,7 +590,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IData_CoinInventoryService NewInstance
+        public static IData_CoinInventoryService NI
         {
             get
             {
@@ -601,7 +601,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Data_CoinStorageBusiness
     {
-		public static IData_CoinStorageService Instance
+		public static IData_CoinStorageService I
         {
             get
             {
@@ -609,7 +609,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IData_CoinStorageService NewInstance
+        public static IData_CoinStorageService NI
         {
             get
             {
@@ -620,7 +620,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Data_Coupon_StoreListBusiness
     {
-		public static IData_Coupon_StoreListService Instance
+		public static IData_Coupon_StoreListService I
         {
             get
             {
@@ -628,7 +628,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IData_Coupon_StoreListService NewInstance
+        public static IData_Coupon_StoreListService NI
         {
             get
             {
@@ -639,7 +639,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Data_CouponInfoBusiness
     {
-		public static IData_CouponInfoService Instance
+		public static IData_CouponInfoService I
         {
             get
             {
@@ -647,7 +647,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IData_CouponInfoService NewInstance
+        public static IData_CouponInfoService NI
         {
             get
             {
@@ -658,7 +658,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Data_CouponListBusiness
     {
-		public static IData_CouponListService Instance
+		public static IData_CouponListService I
         {
             get
             {
@@ -666,7 +666,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IData_CouponListService NewInstance
+        public static IData_CouponListService NI
         {
             get
             {
@@ -677,7 +677,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Data_DigitCoinBusiness
     {
-		public static IData_DigitCoinService Instance
+		public static IData_DigitCoinService I
         {
             get
             {
@@ -685,7 +685,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IData_DigitCoinService NewInstance
+        public static IData_DigitCoinService NI
         {
             get
             {
@@ -696,7 +696,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Data_DigitCoinDestroyBusiness
     {
-		public static IData_DigitCoinDestroyService Instance
+		public static IData_DigitCoinDestroyService I
         {
             get
             {
@@ -704,7 +704,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IData_DigitCoinDestroyService NewInstance
+        public static IData_DigitCoinDestroyService NI
         {
             get
             {
@@ -715,7 +715,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Data_Food_DetialBusiness
     {
-		public static IData_Food_DetialService Instance
+		public static IData_Food_DetialService I
         {
             get
             {
@@ -723,7 +723,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IData_Food_DetialService NewInstance
+        public static IData_Food_DetialService NI
         {
             get
             {
@@ -734,7 +734,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Data_Food_LevelBusiness
     {
-		public static IData_Food_LevelService Instance
+		public static IData_Food_LevelService I
         {
             get
             {
@@ -742,7 +742,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IData_Food_LevelService NewInstance
+        public static IData_Food_LevelService NI
         {
             get
             {
@@ -753,7 +753,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Data_Food_SaleBusiness
     {
-		public static IData_Food_SaleService Instance
+		public static IData_Food_SaleService I
         {
             get
             {
@@ -761,7 +761,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IData_Food_SaleService NewInstance
+        public static IData_Food_SaleService NI
         {
             get
             {
@@ -772,7 +772,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Data_Food_StoreListBusiness
     {
-		public static IData_Food_StoreListService Instance
+		public static IData_Food_StoreListService I
         {
             get
             {
@@ -780,7 +780,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IData_Food_StoreListService NewInstance
+        public static IData_Food_StoreListService NI
         {
             get
             {
@@ -791,7 +791,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Data_Food_WorkStationBusiness
     {
-		public static IData_Food_WorkStationService Instance
+		public static IData_Food_WorkStationService I
         {
             get
             {
@@ -799,7 +799,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IData_Food_WorkStationService NewInstance
+        public static IData_Food_WorkStationService NI
         {
             get
             {
@@ -810,7 +810,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Data_FoodInfoBusiness
     {
-		public static IData_FoodInfoService Instance
+		public static IData_FoodInfoService I
         {
             get
             {
@@ -818,7 +818,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IData_FoodInfoService NewInstance
+        public static IData_FoodInfoService NI
         {
             get
             {
@@ -829,7 +829,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Data_Game_StockInfoBusiness
     {
-		public static IData_Game_StockInfoService Instance
+		public static IData_Game_StockInfoService I
         {
             get
             {
@@ -837,7 +837,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IData_Game_StockInfoService NewInstance
+        public static IData_Game_StockInfoService NI
         {
             get
             {
@@ -848,7 +848,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Data_GameFreeRuleBusiness
     {
-		public static IData_GameFreeRuleService Instance
+		public static IData_GameFreeRuleService I
         {
             get
             {
@@ -856,7 +856,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IData_GameFreeRuleService NewInstance
+        public static IData_GameFreeRuleService NI
         {
             get
             {
@@ -867,7 +867,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Data_GameFreeRule_ListBusiness
     {
-		public static IData_GameFreeRule_ListService Instance
+		public static IData_GameFreeRule_ListService I
         {
             get
             {
@@ -875,7 +875,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IData_GameFreeRule_ListService NewInstance
+        public static IData_GameFreeRule_ListService NI
         {
             get
             {
@@ -886,7 +886,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Data_GameInfoBusiness
     {
-		public static IData_GameInfoService Instance
+		public static IData_GameInfoService I
         {
             get
             {
@@ -894,7 +894,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IData_GameInfoService NewInstance
+        public static IData_GameInfoService NI
         {
             get
             {
@@ -905,7 +905,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Data_GameInfo_ExtBusiness
     {
-		public static IData_GameInfo_ExtService Instance
+		public static IData_GameInfo_ExtService I
         {
             get
             {
@@ -913,7 +913,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IData_GameInfo_ExtService NewInstance
+        public static IData_GameInfo_ExtService NI
         {
             get
             {
@@ -924,7 +924,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Data_GameInfo_PhotoBusiness
     {
-		public static IData_GameInfo_PhotoService Instance
+		public static IData_GameInfo_PhotoService I
         {
             get
             {
@@ -932,7 +932,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IData_GameInfo_PhotoService NewInstance
+        public static IData_GameInfo_PhotoService NI
         {
             get
             {
@@ -943,7 +943,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Data_GivebackRuleBusiness
     {
-		public static IData_GivebackRuleService Instance
+		public static IData_GivebackRuleService I
         {
             get
             {
@@ -951,7 +951,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IData_GivebackRuleService NewInstance
+        public static IData_GivebackRuleService NI
         {
             get
             {
@@ -962,7 +962,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Data_GoodInventoryBusiness
     {
-		public static IData_GoodInventoryService Instance
+		public static IData_GoodInventoryService I
         {
             get
             {
@@ -970,7 +970,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IData_GoodInventoryService NewInstance
+        public static IData_GoodInventoryService NI
         {
             get
             {
@@ -981,7 +981,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Data_GoodsStockBusiness
     {
-		public static IData_GoodsStockService Instance
+		public static IData_GoodsStockService I
         {
             get
             {
@@ -989,7 +989,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IData_GoodsStockService NewInstance
+        public static IData_GoodsStockService NI
         {
             get
             {
@@ -1000,7 +1000,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Data_GoodStock_RecordBusiness
     {
-		public static IData_GoodStock_RecordService Instance
+		public static IData_GoodStock_RecordService I
         {
             get
             {
@@ -1008,7 +1008,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IData_GoodStock_RecordService NewInstance
+        public static IData_GoodStock_RecordService NI
         {
             get
             {
@@ -1019,7 +1019,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Data_GoodStorageBusiness
     {
-		public static IData_GoodStorageService Instance
+		public static IData_GoodStorageService I
         {
             get
             {
@@ -1027,7 +1027,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IData_GoodStorageService NewInstance
+        public static IData_GoodStorageService NI
         {
             get
             {
@@ -1038,7 +1038,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Data_GoodStorage_DetailBusiness
     {
-		public static IData_GoodStorage_DetailService Instance
+		public static IData_GoodStorage_DetailService I
         {
             get
             {
@@ -1046,7 +1046,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IData_GoodStorage_DetailService NewInstance
+        public static IData_GoodStorage_DetailService NI
         {
             get
             {
@@ -1057,7 +1057,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Data_Jackpot_LevelBusiness
     {
-		public static IData_Jackpot_LevelService Instance
+		public static IData_Jackpot_LevelService I
         {
             get
             {
@@ -1065,7 +1065,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IData_Jackpot_LevelService NewInstance
+        public static IData_Jackpot_LevelService NI
         {
             get
             {
@@ -1076,7 +1076,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Data_Jackpot_MatrixBusiness
     {
-		public static IData_Jackpot_MatrixService Instance
+		public static IData_Jackpot_MatrixService I
         {
             get
             {
@@ -1084,7 +1084,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IData_Jackpot_MatrixService NewInstance
+        public static IData_Jackpot_MatrixService NI
         {
             get
             {
@@ -1095,7 +1095,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Data_JackpotInfoBusiness
     {
-		public static IData_JackpotInfoService Instance
+		public static IData_JackpotInfoService I
         {
             get
             {
@@ -1103,7 +1103,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IData_JackpotInfoService NewInstance
+        public static IData_JackpotInfoService NI
         {
             get
             {
@@ -1114,7 +1114,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Data_LotteryInventoryBusiness
     {
-		public static IData_LotteryInventoryService Instance
+		public static IData_LotteryInventoryService I
         {
             get
             {
@@ -1122,7 +1122,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IData_LotteryInventoryService NewInstance
+        public static IData_LotteryInventoryService NI
         {
             get
             {
@@ -1133,7 +1133,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Data_LotteryStorageBusiness
     {
-		public static IData_LotteryStorageService Instance
+		public static IData_LotteryStorageService I
         {
             get
             {
@@ -1141,7 +1141,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IData_LotteryStorageService NewInstance
+        public static IData_LotteryStorageService NI
         {
             get
             {
@@ -1152,7 +1152,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Data_Member_CardBusiness
     {
-		public static IData_Member_CardService Instance
+		public static IData_Member_CardService I
         {
             get
             {
@@ -1160,7 +1160,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IData_Member_CardService NewInstance
+        public static IData_Member_CardService NI
         {
             get
             {
@@ -1171,7 +1171,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Data_Member_Card_StoreBusiness
     {
-		public static IData_Member_Card_StoreService Instance
+		public static IData_Member_Card_StoreService I
         {
             get
             {
@@ -1179,7 +1179,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IData_Member_Card_StoreService NewInstance
+        public static IData_Member_Card_StoreService NI
         {
             get
             {
@@ -1190,7 +1190,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Data_MemberLevelBusiness
     {
-		public static IData_MemberLevelService Instance
+		public static IData_MemberLevelService I
         {
             get
             {
@@ -1198,7 +1198,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IData_MemberLevelService NewInstance
+        public static IData_MemberLevelService NI
         {
             get
             {
@@ -1209,7 +1209,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Data_MemberLevel_FoodBusiness
     {
-		public static IData_MemberLevel_FoodService Instance
+		public static IData_MemberLevel_FoodService I
         {
             get
             {
@@ -1217,7 +1217,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IData_MemberLevel_FoodService NewInstance
+        public static IData_MemberLevel_FoodService NI
         {
             get
             {
@@ -1228,7 +1228,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Data_MemberLevelFreeBusiness
     {
-		public static IData_MemberLevelFreeService Instance
+		public static IData_MemberLevelFreeService I
         {
             get
             {
@@ -1236,7 +1236,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IData_MemberLevelFreeService NewInstance
+        public static IData_MemberLevelFreeService NI
         {
             get
             {
@@ -1247,7 +1247,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Data_MerchAlipay_ShopBusiness
     {
-		public static IData_MerchAlipay_ShopService Instance
+		public static IData_MerchAlipay_ShopService I
         {
             get
             {
@@ -1255,7 +1255,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IData_MerchAlipay_ShopService NewInstance
+        public static IData_MerchAlipay_ShopService NI
         {
             get
             {
@@ -1266,7 +1266,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Data_MessageBusiness
     {
-		public static IData_MessageService Instance
+		public static IData_MessageService I
         {
             get
             {
@@ -1274,7 +1274,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IData_MessageService NewInstance
+        public static IData_MessageService NI
         {
             get
             {
@@ -1285,7 +1285,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Data_ParametersBusiness
     {
-		public static IData_ParametersService Instance
+		public static IData_ParametersService I
         {
             get
             {
@@ -1293,7 +1293,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IData_ParametersService NewInstance
+        public static IData_ParametersService NI
         {
             get
             {
@@ -1304,7 +1304,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Data_Project_BindGameBusiness
     {
-		public static IData_Project_BindGameService Instance
+		public static IData_Project_BindGameService I
         {
             get
             {
@@ -1312,7 +1312,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IData_Project_BindGameService NewInstance
+        public static IData_Project_BindGameService NI
         {
             get
             {
@@ -1323,7 +1323,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Data_Project_DeviceBusiness
     {
-		public static IData_Project_DeviceService Instance
+		public static IData_Project_DeviceService I
         {
             get
             {
@@ -1331,7 +1331,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IData_Project_DeviceService NewInstance
+        public static IData_Project_DeviceService NI
         {
             get
             {
@@ -1342,7 +1342,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Data_Project_StoreListBusiness
     {
-		public static IData_Project_StoreListService Instance
+		public static IData_Project_StoreListService I
         {
             get
             {
@@ -1350,7 +1350,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IData_Project_StoreListService NewInstance
+        public static IData_Project_StoreListService NI
         {
             get
             {
@@ -1361,7 +1361,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Data_ProjectInfoBusiness
     {
-		public static IData_ProjectInfoService Instance
+		public static IData_ProjectInfoService I
         {
             get
             {
@@ -1369,7 +1369,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IData_ProjectInfoService NewInstance
+        public static IData_ProjectInfoService NI
         {
             get
             {
@@ -1380,7 +1380,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Data_ProjectTime_BandPriceBusiness
     {
-		public static IData_ProjectTime_BandPriceService Instance
+		public static IData_ProjectTime_BandPriceService I
         {
             get
             {
@@ -1388,7 +1388,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IData_ProjectTime_BandPriceService NewInstance
+        public static IData_ProjectTime_BandPriceService NI
         {
             get
             {
@@ -1399,7 +1399,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Data_ProjectTime_StoreListBusiness
     {
-		public static IData_ProjectTime_StoreListService Instance
+		public static IData_ProjectTime_StoreListService I
         {
             get
             {
@@ -1407,7 +1407,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IData_ProjectTime_StoreListService NewInstance
+        public static IData_ProjectTime_StoreListService NI
         {
             get
             {
@@ -1418,7 +1418,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Data_ProjectTimeInfoBusiness
     {
-		public static IData_ProjectTimeInfoService Instance
+		public static IData_ProjectTimeInfoService I
         {
             get
             {
@@ -1426,7 +1426,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IData_ProjectTimeInfoService NewInstance
+        public static IData_ProjectTimeInfoService NI
         {
             get
             {
@@ -1437,7 +1437,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Data_Push_RuleBusiness
     {
-		public static IData_Push_RuleService Instance
+		public static IData_Push_RuleService I
         {
             get
             {
@@ -1445,7 +1445,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IData_Push_RuleService NewInstance
+        public static IData_Push_RuleService NI
         {
             get
             {
@@ -1456,7 +1456,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Data_ReloadBusiness
     {
-		public static IData_ReloadService Instance
+		public static IData_ReloadService I
         {
             get
             {
@@ -1464,7 +1464,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IData_ReloadService NewInstance
+        public static IData_ReloadService NI
         {
             get
             {
@@ -1475,7 +1475,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Data_Storage_RecordBusiness
     {
-		public static IData_Storage_RecordService Instance
+		public static IData_Storage_RecordService I
         {
             get
             {
@@ -1483,7 +1483,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IData_Storage_RecordService NewInstance
+        public static IData_Storage_RecordService NI
         {
             get
             {
@@ -1494,7 +1494,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Data_SupplierListBusiness
     {
-		public static IData_SupplierListService Instance
+		public static IData_SupplierListService I
         {
             get
             {
@@ -1502,7 +1502,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IData_SupplierListService NewInstance
+        public static IData_SupplierListService NI
         {
             get
             {
@@ -1513,7 +1513,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Data_WorkstationBusiness
     {
-		public static IData_WorkstationService Instance
+		public static IData_WorkstationService I
         {
             get
             {
@@ -1521,7 +1521,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IData_WorkstationService NewInstance
+        public static IData_WorkstationService NI
         {
             get
             {
@@ -1532,7 +1532,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Dict_AreaBusiness
     {
-		public static IDict_AreaService Instance
+		public static IDict_AreaService I
         {
             get
             {
@@ -1540,7 +1540,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IDict_AreaService NewInstance
+        public static IDict_AreaService NI
         {
             get
             {
@@ -1551,7 +1551,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Dict_BalanceTypeBusiness
     {
-		public static IDict_BalanceTypeService Instance
+		public static IDict_BalanceTypeService I
         {
             get
             {
@@ -1559,7 +1559,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IDict_BalanceTypeService NewInstance
+        public static IDict_BalanceTypeService NI
         {
             get
             {
@@ -1570,7 +1570,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Dict_FunctionMenuBusiness
     {
-		public static IDict_FunctionMenuService Instance
+		public static IDict_FunctionMenuService I
         {
             get
             {
@@ -1578,7 +1578,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IDict_FunctionMenuService NewInstance
+        public static IDict_FunctionMenuService NI
         {
             get
             {
@@ -1589,7 +1589,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Dict_SystemBusiness
     {
-		public static IDict_SystemService Instance
+		public static IDict_SystemService I
         {
             get
             {
@@ -1597,7 +1597,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IDict_SystemService NewInstance
+        public static IDict_SystemService NI
         {
             get
             {
@@ -1608,7 +1608,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Flw_485_CoinBusiness
     {
-		public static IFlw_485_CoinService Instance
+		public static IFlw_485_CoinService I
         {
             get
             {
@@ -1616,7 +1616,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IFlw_485_CoinService NewInstance
+        public static IFlw_485_CoinService NI
         {
             get
             {
@@ -1627,7 +1627,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Flw_485_SaveCoinBusiness
     {
-		public static IFlw_485_SaveCoinService Instance
+		public static IFlw_485_SaveCoinService I
         {
             get
             {
@@ -1635,7 +1635,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IFlw_485_SaveCoinService NewInstance
+        public static IFlw_485_SaveCoinService NI
         {
             get
             {
@@ -1646,7 +1646,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Flw_CheckDateBusiness
     {
-		public static IFlw_CheckDateService Instance
+		public static IFlw_CheckDateService I
         {
             get
             {
@@ -1654,7 +1654,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IFlw_CheckDateService NewInstance
+        public static IFlw_CheckDateService NI
         {
             get
             {
@@ -1665,7 +1665,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Flw_Coin_ExitBusiness
     {
-		public static IFlw_Coin_ExitService Instance
+		public static IFlw_Coin_ExitService I
         {
             get
             {
@@ -1673,7 +1673,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IFlw_Coin_ExitService NewInstance
+        public static IFlw_Coin_ExitService NI
         {
             get
             {
@@ -1684,7 +1684,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Flw_Coin_SaleBusiness
     {
-		public static IFlw_Coin_SaleService Instance
+		public static IFlw_Coin_SaleService I
         {
             get
             {
@@ -1692,7 +1692,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IFlw_Coin_SaleService NewInstance
+        public static IFlw_Coin_SaleService NI
         {
             get
             {
@@ -1703,7 +1703,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Flw_CouponUseBusiness
     {
-		public static IFlw_CouponUseService Instance
+		public static IFlw_CouponUseService I
         {
             get
             {
@@ -1711,7 +1711,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IFlw_CouponUseService NewInstance
+        public static IFlw_CouponUseService NI
         {
             get
             {
@@ -1722,7 +1722,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Flw_Digite_CoinBusiness
     {
-		public static IFlw_Digite_CoinService Instance
+		public static IFlw_Digite_CoinService I
         {
             get
             {
@@ -1730,7 +1730,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IFlw_Digite_CoinService NewInstance
+        public static IFlw_Digite_CoinService NI
         {
             get
             {
@@ -1741,7 +1741,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Flw_Digite_Coin_DetailBusiness
     {
-		public static IFlw_Digite_Coin_DetailService Instance
+		public static IFlw_Digite_Coin_DetailService I
         {
             get
             {
@@ -1749,7 +1749,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IFlw_Digite_Coin_DetailService NewInstance
+        public static IFlw_Digite_Coin_DetailService NI
         {
             get
             {
@@ -1760,7 +1760,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Flw_Food_ExitBusiness
     {
-		public static IFlw_Food_ExitService Instance
+		public static IFlw_Food_ExitService I
         {
             get
             {
@@ -1768,7 +1768,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IFlw_Food_ExitService NewInstance
+        public static IFlw_Food_ExitService NI
         {
             get
             {
@@ -1779,7 +1779,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Flw_Food_ExitDetailBusiness
     {
-		public static IFlw_Food_ExitDetailService Instance
+		public static IFlw_Food_ExitDetailService I
         {
             get
             {
@@ -1787,7 +1787,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IFlw_Food_ExitDetailService NewInstance
+        public static IFlw_Food_ExitDetailService NI
         {
             get
             {
@@ -1798,7 +1798,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Flw_Food_SaleBusiness
     {
-		public static IFlw_Food_SaleService Instance
+		public static IFlw_Food_SaleService I
         {
             get
             {
@@ -1806,7 +1806,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IFlw_Food_SaleService NewInstance
+        public static IFlw_Food_SaleService NI
         {
             get
             {
@@ -1817,7 +1817,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Flw_Food_SaleDetailBusiness
     {
-		public static IFlw_Food_SaleDetailService Instance
+		public static IFlw_Food_SaleDetailService I
         {
             get
             {
@@ -1825,7 +1825,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IFlw_Food_SaleDetailService NewInstance
+        public static IFlw_Food_SaleDetailService NI
         {
             get
             {
@@ -1836,7 +1836,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Flw_Game_FreeBusiness
     {
-		public static IFlw_Game_FreeService Instance
+		public static IFlw_Game_FreeService I
         {
             get
             {
@@ -1844,7 +1844,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IFlw_Game_FreeService NewInstance
+        public static IFlw_Game_FreeService NI
         {
             get
             {
@@ -1855,7 +1855,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Flw_Game_WatchBusiness
     {
-		public static IFlw_Game_WatchService Instance
+		public static IFlw_Game_WatchService I
         {
             get
             {
@@ -1863,7 +1863,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IFlw_Game_WatchService NewInstance
+        public static IFlw_Game_WatchService NI
         {
             get
             {
@@ -1874,7 +1874,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Flw_Game_WinPrizeBusiness
     {
-		public static IFlw_Game_WinPrizeService Instance
+		public static IFlw_Game_WinPrizeService I
         {
             get
             {
@@ -1882,7 +1882,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IFlw_Game_WinPrizeService NewInstance
+        public static IFlw_Game_WinPrizeService NI
         {
             get
             {
@@ -1893,7 +1893,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Flw_GivebackBusiness
     {
-		public static IFlw_GivebackService Instance
+		public static IFlw_GivebackService I
         {
             get
             {
@@ -1901,7 +1901,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IFlw_GivebackService NewInstance
+        public static IFlw_GivebackService NI
         {
             get
             {
@@ -1912,7 +1912,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Flw_Good_DetailBusiness
     {
-		public static IFlw_Good_DetailService Instance
+		public static IFlw_Good_DetailService I
         {
             get
             {
@@ -1920,7 +1920,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IFlw_Good_DetailService NewInstance
+        public static IFlw_Good_DetailService NI
         {
             get
             {
@@ -1931,7 +1931,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Flw_GoodsBusiness
     {
-		public static IFlw_GoodsService Instance
+		public static IFlw_GoodsService I
         {
             get
             {
@@ -1939,7 +1939,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IFlw_GoodsService NewInstance
+        public static IFlw_GoodsService NI
         {
             get
             {
@@ -1950,7 +1950,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Flw_GroupVerityBusiness
     {
-		public static IFlw_GroupVerityService Instance
+		public static IFlw_GroupVerityService I
         {
             get
             {
@@ -1958,7 +1958,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IFlw_GroupVerityService NewInstance
+        public static IFlw_GroupVerityService NI
         {
             get
             {
@@ -1969,7 +1969,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Flw_JackpotBusiness
     {
-		public static IFlw_JackpotService Instance
+		public static IFlw_JackpotService I
         {
             get
             {
@@ -1977,7 +1977,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IFlw_JackpotService NewInstance
+        public static IFlw_JackpotService NI
         {
             get
             {
@@ -1988,7 +1988,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Flw_LotteryBusiness
     {
-		public static IFlw_LotteryService Instance
+		public static IFlw_LotteryService I
         {
             get
             {
@@ -1996,7 +1996,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IFlw_LotteryService NewInstance
+        public static IFlw_LotteryService NI
         {
             get
             {
@@ -2007,7 +2007,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Flw_OrderBusiness
     {
-		public static IFlw_OrderService Instance
+		public static IFlw_OrderService I
         {
             get
             {
@@ -2015,7 +2015,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IFlw_OrderService NewInstance
+        public static IFlw_OrderService NI
         {
             get
             {
@@ -2026,7 +2026,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Flw_Order_DetailBusiness
     {
-		public static IFlw_Order_DetailService Instance
+		public static IFlw_Order_DetailService I
         {
             get
             {
@@ -2034,7 +2034,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IFlw_Order_DetailService NewInstance
+        public static IFlw_Order_DetailService NI
         {
             get
             {
@@ -2045,7 +2045,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Flw_Order_SerialNumberBusiness
     {
-		public static IFlw_Order_SerialNumberService Instance
+		public static IFlw_Order_SerialNumberService I
         {
             get
             {
@@ -2053,7 +2053,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IFlw_Order_SerialNumberService NewInstance
+        public static IFlw_Order_SerialNumberService NI
         {
             get
             {
@@ -2064,7 +2064,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Flw_Project_BuyDetailBusiness
     {
-		public static IFlw_Project_BuyDetailService Instance
+		public static IFlw_Project_BuyDetailService I
         {
             get
             {
@@ -2072,7 +2072,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IFlw_Project_BuyDetailService NewInstance
+        public static IFlw_Project_BuyDetailService NI
         {
             get
             {
@@ -2083,7 +2083,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Flw_Project_Play_TimeBusiness
     {
-		public static IFlw_Project_Play_TimeService Instance
+		public static IFlw_Project_Play_TimeService I
         {
             get
             {
@@ -2091,7 +2091,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IFlw_Project_Play_TimeService NewInstance
+        public static IFlw_Project_Play_TimeService NI
         {
             get
             {
@@ -2102,7 +2102,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Flw_ScheduleBusiness
     {
-		public static IFlw_ScheduleService Instance
+		public static IFlw_ScheduleService I
         {
             get
             {
@@ -2110,7 +2110,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IFlw_ScheduleService NewInstance
+        public static IFlw_ScheduleService NI
         {
             get
             {
@@ -2121,7 +2121,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Flw_Ticket_ExitBusiness
     {
-		public static IFlw_Ticket_ExitService Instance
+		public static IFlw_Ticket_ExitService I
         {
             get
             {
@@ -2129,7 +2129,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IFlw_Ticket_ExitService NewInstance
+        public static IFlw_Ticket_ExitService NI
         {
             get
             {
@@ -2140,7 +2140,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Flw_TransferBusiness
     {
-		public static IFlw_TransferService Instance
+		public static IFlw_TransferService I
         {
             get
             {
@@ -2148,7 +2148,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IFlw_TransferService NewInstance
+        public static IFlw_TransferService NI
         {
             get
             {
@@ -2159,7 +2159,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Log_GameAlarmBusiness
     {
-		public static ILog_GameAlarmService Instance
+		public static ILog_GameAlarmService I
         {
             get
             {
@@ -2167,7 +2167,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static ILog_GameAlarmService NewInstance
+        public static ILog_GameAlarmService NI
         {
             get
             {
@@ -2178,7 +2178,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Log_OperationBusiness
     {
-		public static ILog_OperationService Instance
+		public static ILog_OperationService I
         {
             get
             {
@@ -2186,7 +2186,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static ILog_OperationService NewInstance
+        public static ILog_OperationService NI
         {
             get
             {
@@ -2197,7 +2197,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Search_TemplateBusiness
     {
-		public static ISearch_TemplateService Instance
+		public static ISearch_TemplateService I
         {
             get
             {
@@ -2205,7 +2205,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static ISearch_TemplateService NewInstance
+        public static ISearch_TemplateService NI
         {
             get
             {
@@ -2216,7 +2216,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Search_Template_DetailBusiness
     {
-		public static ISearch_Template_DetailService Instance
+		public static ISearch_Template_DetailService I
         {
             get
             {
@@ -2224,7 +2224,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static ISearch_Template_DetailService NewInstance
+        public static ISearch_Template_DetailService NI
         {
             get
             {
@@ -2235,7 +2235,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Store_CheckDateBusiness
     {
-		public static IStore_CheckDateService Instance
+		public static IStore_CheckDateService I
         {
             get
             {
@@ -2243,7 +2243,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IStore_CheckDateService NewInstance
+        public static IStore_CheckDateService NI
         {
             get
             {
@@ -2254,7 +2254,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Store_GameTotalBusiness
     {
-		public static IStore_GameTotalService Instance
+		public static IStore_GameTotalService I
         {
             get
             {
@@ -2262,7 +2262,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IStore_GameTotalService NewInstance
+        public static IStore_GameTotalService NI
         {
             get
             {
@@ -2273,7 +2273,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class Store_HeadTotalBusiness
     {
-		public static IStore_HeadTotalService Instance
+		public static IStore_HeadTotalService I
         {
             get
             {
@@ -2281,7 +2281,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IStore_HeadTotalService NewInstance
+        public static IStore_HeadTotalService NI
         {
             get
             {
@@ -2292,7 +2292,7 @@ namespace XCCloudService.Business.XCCloud
     
     public partial class XC_WorkInfoBusiness
     {
-		public static IXC_WorkInfoService Instance
+		public static IXC_WorkInfoService I
         {
             get
             {
@@ -2300,7 +2300,7 @@ namespace XCCloudService.Business.XCCloud
             }
         }
 
-        public static IXC_WorkInfoService NewInstance
+        public static IXC_WorkInfoService NI
         {
             get
             {

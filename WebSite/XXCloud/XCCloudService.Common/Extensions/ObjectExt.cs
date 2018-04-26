@@ -27,7 +27,7 @@ namespace XCCloudService.Common.Extensions
         /// <param name="key">转换前的值</param>
         /// <param name="defaultvalue">转换失败或无法转换时的默认值</param>
         /// <returns></returns>
-        public static int Toint<T>(T key, int defaultvalue)
+        public static int Toint<T>(this T key, int defaultvalue)
         {
             if (key.IsNull()) return defaultvalue;
             if (int.TryParse(key.ToString(), out defaultvalue))
@@ -40,7 +40,7 @@ namespace XCCloudService.Common.Extensions
         /// <typeparam name="T">转换前的类型</typeparam>
         /// <param name="key">转换前的值</param>
         /// <returns></returns>
-        public static int? Toint<T>(T key)
+        public static int? Toint<T>(this T key)
         {
             if (key.IsNull()) return null;
             var id = 0;
@@ -55,7 +55,7 @@ namespace XCCloudService.Common.Extensions
         /// <param name="key">转换前的值</param>
         /// <param name="defaultvalue">转换失败或无法转换时的默认值</param>
         /// <returns></returns>
-        public static decimal Todecimal<T>(T key, decimal defaultvalue)
+        public static decimal Todecimal<T>(this T key, decimal defaultvalue)
         {
             if (key.IsNull()) return defaultvalue;
             if (decimal.TryParse(key.ToString(), out defaultvalue))
@@ -68,7 +68,7 @@ namespace XCCloudService.Common.Extensions
         /// <typeparam name="T">转换前的类型</typeparam>
         /// <param name="key">转换前的值</param>
         /// <returns></returns>
-        public static decimal? Todecimal<T>(T key)
+        public static decimal? Todecimal<T>(this T key)
         {
             if (key.IsNull()) return null;
             var id = 0M;
@@ -83,7 +83,7 @@ namespace XCCloudService.Common.Extensions
         /// <param name="key">转换前的值</param>
         /// <param name="defaultvalue">转换失败或无法转换时的默认值</param>
         /// <returns></returns>
-        public static DateTime Todatetime<T>(T key, DateTime defaultvalue)
+        public static DateTime Todatetime<T>(this T key, DateTime defaultvalue)
         {
             if (key.IsNull()) return defaultvalue;
             if (DateTime.TryParse(key.ToString(), out defaultvalue))
@@ -96,7 +96,7 @@ namespace XCCloudService.Common.Extensions
         /// <typeparam name="T">转换前的类型</typeparam>
         /// <param name="key">转换前的值</param>
         /// <returns></returns>
-        public static DateTime? Todatetime<T>(T key)
+        public static DateTime? Todatetime<T>(this T key)
         {
             if (key.IsNull()) return null;
             var date = new DateTime(1753, 1, 1);

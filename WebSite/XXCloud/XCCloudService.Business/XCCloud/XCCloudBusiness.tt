@@ -35,7 +35,7 @@ foreach (EntityType entity in ItemCollection.GetItems<EntityType>().OrderBy(e =>
 #>    
     public partial class <#=entity.Name#>Business
     {
-		public static I<#=entity.Name#>Service Instance
+		public static I<#=entity.Name#>Service I
         {
             get
             {
@@ -43,7 +43,7 @@ foreach (EntityType entity in ItemCollection.GetItems<EntityType>().OrderBy(e =>
             }
         }
 
-        public static I<#=entity.Name#>Service NewInstance
+        public static I<#=entity.Name#>Service NI
         {
             get
             {

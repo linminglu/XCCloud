@@ -322,12 +322,12 @@ namespace XXCloudService.Api.XCCloud
                         }
 
                         var data_GameInfo_Ext = new Data_GameInfo_Ext();
-                        data_GameInfo_Ext.Area = ObjectExt.Todecimal(area);
-                        data_GameInfo_Ext.ChangeTime = ObjectExt.Todatetime(changeTime);
-                        data_GameInfo_Ext.Evaluation = ObjectExt.Toint(evaluation);
-                        data_GameInfo_Ext.Price = ObjectExt.Toint(price);
-                        data_GameInfo_Ext.LowLimit = ObjectExt.Todecimal(lowLimit);
-                        data_GameInfo_Ext.HighLimit = ObjectExt.Todecimal(highLimit);
+                        data_GameInfo_Ext.Area = area.Todecimal();
+                        data_GameInfo_Ext.ChangeTime = changeTime.Todatetime();
+                        data_GameInfo_Ext.Evaluation = evaluation.Toint();
+                        data_GameInfo_Ext.Price = price.Toint();
+                        data_GameInfo_Ext.LowLimit = lowLimit.Todecimal();
+                        data_GameInfo_Ext.HighLimit = highLimit.Todecimal();
                         data_GameInfo_Ext.GameCode = gameCode;
                         data_GameInfo_Ext.GameID = iId;
                         data_GameInfo_Ext.MerchID = merchId;

@@ -120,9 +120,9 @@ namespace XXCloudService.Api.XCCloud
                                 from b in b1.DefaultIfEmpty()
                                 join c in base_StoreInfoService.GetModels() on b.StroeID equals c.StoreID into c1
                                 from c in c1.DefaultIfEmpty()
-                                join d in Dict_SystemBusiness.NewInstance.GetModels() on (a.HKType + "") equals d.DictValue into d1
+                                join d in Dict_SystemBusiness.NI.GetModels() on (a.HKType + "") equals d.DictValue into d1
                                 from d in d1.DefaultIfEmpty()
-                                join e in Dict_SystemBusiness.NewInstance.GetModels(p=>p.DictKey.Equals("关联类别", StringComparison.OrdinalIgnoreCase) && p.PID == 0) on d.PID equals e.ID into e1
+                                join e in Dict_SystemBusiness.NI.GetModels(p=>p.DictKey.Equals("关联类别", StringComparison.OrdinalIgnoreCase) && p.PID == 0) on d.PID equals e.ID into e1
                                 from e in e1.DefaultIfEmpty()
                                 select new
                                 {
@@ -203,7 +203,7 @@ namespace XXCloudService.Api.XCCloud
                 {
                     try
                     {
-                        var iTypeId = ObjectExt.Toint(typeId);
+                        var iTypeId = typeId.Toint();
                         IDict_BalanceTypeService dict_BalanceTypeService = BLLContainer.Resolve<IDict_BalanceTypeService>();
                         if (dict_BalanceTypeService.Any(p => p.ID != iId && p.TypeID == iTypeId))
                         {
@@ -211,7 +211,7 @@ namespace XXCloudService.Api.XCCloud
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 
-                        var iHKType = ObjectExt.Toint(hkType);
+                        var iHKType = hkType.Toint();
                         if (dict_BalanceTypeService.Any(p => p.ID != iId && p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.HKType == iHKType))
                         {
                             errMsg = "同商户余额类别的关联类别不能重复";

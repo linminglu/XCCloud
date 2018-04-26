@@ -86,15 +86,15 @@ namespace XXCloudService.Api.XCCloud
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
                                 
-                var query = Data_CoinStorageBusiness.NewInstance.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase));
+                var query = Data_CoinStorageBusiness.NI.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase));
                 if (!string.IsNullOrEmpty(destroyTime))
                 {
-                    var dt = ObjectExt.Todatetime(destroyTime);
+                    var dt = destroyTime.Todatetime();
                     query = query.Where(w => DbFunctions.DiffDays(w.DestroyTime, dt) == 0);
                 }
 
                 var result = from a in query
-                             join b in Base_UserInfoBusiness.NewInstance.GetModels(p => p.UserType == (int)UserType.Store) on a.UserID equals b.UserID into b1
+                             join b in Base_UserInfoBusiness.NI.GetModels(p => p.UserType == (int)UserType.Store) on a.UserID equals b.UserID into b1
                              from b in b1.DefaultIfEmpty()
                              select new
                              {
@@ -178,15 +178,15 @@ namespace XXCloudService.Api.XCCloud
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
 
-                var query = Data_CoinDestoryBusiness.NewInstance.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase));
+                var query = Data_CoinDestoryBusiness.NI.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase));
                 if (!string.IsNullOrEmpty(destroyTime))
                 {
-                    var dt = ObjectExt.Todatetime(destroyTime);
+                    var dt = destroyTime.Todatetime();
                     query = query.Where(w => DbFunctions.DiffDays(w.DestroyTime, dt) == 0);
                 }
 
                 var result = from a in query
-                             join b in Base_UserInfoBusiness.NewInstance.GetModels(p => p.UserType == (int)UserType.Store) on a.UserID equals b.UserID into b1
+                             join b in Base_UserInfoBusiness.NI.GetModels(p => p.UserType == (int)UserType.Store) on a.UserID equals b.UserID into b1
                              from b in b1.DefaultIfEmpty()
                              select new
                              {
@@ -373,10 +373,10 @@ namespace XXCloudService.Api.XCCloud
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
 
-                var query = Data_DigitCoinDestroyBusiness.NewInstance.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase));
+                var query = Data_DigitCoinDestroyBusiness.NI.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase));
                 if (!string.IsNullOrEmpty(destroyTime))
                 {
-                    var dt = ObjectExt.Todatetime(destroyTime);
+                    var dt = destroyTime.Todatetime();
                     query = query.Where(w => DbFunctions.DiffDays(w.DestroyTime, dt) == 0);
                 }
 
@@ -386,7 +386,7 @@ namespace XXCloudService.Api.XCCloud
                 }
 
                 var result = from a in query
-                             join b in Base_UserInfoBusiness.NewInstance.GetModels(p => p.UserType == (int)UserType.Store) on a.UserID equals b.UserID into b1
+                             join b in Base_UserInfoBusiness.NI.GetModels(p => p.UserType == (int)UserType.Store) on a.UserID equals b.UserID into b1
                              from b in b1.DefaultIfEmpty()
                              select new
                              {

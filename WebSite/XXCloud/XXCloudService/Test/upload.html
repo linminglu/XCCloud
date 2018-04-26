@@ -3,22 +3,22 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title></title>
-    <link rel="stylesheet" type="text/css" href="/website/uploadify/uploadify.css">  
+    <link rel="stylesheet" type="text/css" href="/website/uploadify/uploadify.css"> 
     <script src="/website/js/jquery-1.8.3-min.js"></script>
-    <script type="text/javascript" src="/website/uploadify/jquery.uploadify.min.js"></script>  
+    <script type="text/javascript" src="/website/uploadify/jquery.uploadify.min.js"></script>
+       
     <script>
         $(function () {
-                $('#photoname').uploadify({
-                'swf': "/website/js/uploadify/uploadify.swf",
-                'uploader': "/XCGameMana/PhotoUpload?action=getphotoupload",
-                'cancelImg': "/website/js/uploadify/uploadify-cancel.png",
-                'debug': true,
+            $('#file_upload').uploadify({
+                'swf': "/website/uploadify/uploadify.swf",
+                'uploader': "/api/XCGameMana/PhotoUpload.ashx?action=getphotoupload",
+                'cancelImg': "/website/uploadify/uploadify-cancel.png",
                 'buttonText': '选择照片',
                 'method': 'post',
+                'queueID': 'fileQueue',//与下面的id对应 
                 'buttonClass': 'upload_button',
                 'fileTypeDesc': '图片文件',
                 'fileTypeExts': '*.gif;*.jpg;*.png;*.bmp',
-                //'formData': { 'public_path': PUBLIC },
                 'multi': false,
 
                 'onUploadComplete': function (file) {
@@ -29,20 +29,21 @@
                  * 上传成功后触发事件 
                  */
                 'onUploadSuccess': function (file, data, response) {
-                    //参数data保存的是上传后的图片的路径  
-                    //alert(data);  
-                    //$('#photo').css("background-color","#f00");  
-
-                    var path = PUBLIC + "/Uploads/Photo/" + data;
-                    $('#photo>img').attr("src", path);
-                    $('#photoname_hidden').val(data);
-                },
+                    console.log(data);
+                }
             });
+
+
         });
+
+
+
 
     </script>
 </head>
 <body>
-    <input type="file" name="photoname" id="photoname" />  
+    <div id="fileQueue"></div>
+    <input type="file" name="file_upload" id="file_upload" />
+    <a href="javascript:$('#file_upload').uploadify('upload')">上传</a>   
 </body>
 </html>

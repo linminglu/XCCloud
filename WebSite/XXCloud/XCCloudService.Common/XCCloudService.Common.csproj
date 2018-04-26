@@ -68,7 +68,9 @@
     <Compile Include="Constant.cs" />
     <Compile Include="Enum\CommonEnum.cs" />
     <Compile Include="Enum\LogFolderAttribute.cs" />
+    <Compile Include="Extensions\DicExt.cs" />
     <Compile Include="Extensions\EnumExt.cs" />
+    <Compile Include="Valid.cs" />
     <Compile Include="Extensions\ObjectExt.cs" />
     <Compile Include="Extensions\StringExt.cs" />
     <Compile Include="HolidayHelper.cs" />

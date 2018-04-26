@@ -149,7 +149,7 @@ namespace XXCloudService.Api.XCCloud
                 string errMsg = string.Empty;
                 string id = dicParas.ContainsKey("id") ? (dicParas["id"] + "") : string.Empty;
 
-                var iId = ObjectExt.Toint(id, 0);
+                var iId = id.Toint(0);
                 if (iId == 0)
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, "商品ID不能为空");
 
@@ -251,10 +251,10 @@ namespace XXCloudService.Api.XCCloud
                 var merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
 
                 var errMsg = string.Empty;
-                var id = dicParas.ContainsKey("id") ? ObjectExt.Toint(dicParas["id"], 0) : 0;
+                var id = dicParas.ContainsKey("id") ? dicParas["id"].Toint(0) : 0;
                 var goodType = dicParas.ContainsKey("goodType") ? (dicParas["goodType"] + "") : string.Empty;
                 var goodName = dicParas.ContainsKey("goodName") ? (dicParas["goodName"] + "") : string.Empty;
-                var status = dicParas.ContainsKey("status") ? ObjectExt.Toint(dicParas["status"], 0) : 0;
+                var status = dicParas.ContainsKey("status") ? dicParas["status"].Toint(0) : 0;
                 var note = dicParas.ContainsKey("note") ? (dicParas["note"] + "") : string.Empty;
                 var barCode = dicParas.ContainsKey("barCode") ? (dicParas["barCode"] + "") : string.Empty;
 
@@ -279,7 +279,7 @@ namespace XXCloudService.Api.XCCloud
 
                     var base_GoodsInfo = new Base_GoodsInfo();
                     base_GoodsInfo.Barcode = barCode;
-                    base_GoodsInfo.GoodType = ObjectExt.Toint(goodType);
+                    base_GoodsInfo.GoodType = goodType.Toint();
                     base_GoodsInfo.GoodName = goodName;
                     base_GoodsInfo.MerchID = merchId;
                     base_GoodsInfo.StoreID = storeId;
@@ -302,7 +302,7 @@ namespace XXCloudService.Api.XCCloud
                     if (base_GoodsInfo.MerchID != merchId)
                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, "禁止修改非此商户下的商品信息");
 
-                    base_GoodsInfo.GoodType = ObjectExt.Toint(goodType);
+                    base_GoodsInfo.GoodType = goodType.Toint();
                     base_GoodsInfo.GoodName = goodName;
                     base_GoodsInfo.MerchID = merchId;
                     base_GoodsInfo.StoreID = storeId;
@@ -341,7 +341,7 @@ namespace XXCloudService.Api.XCCloud
                 var merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
 
                 var errMsg = string.Empty;
-                var id = dicParas.ContainsKey("id") ? ObjectExt.Toint(dicParas["id"], -1) : 0;                
+                var id = dicParas.ContainsKey("id") ? dicParas["id"].Toint(-1) : 0;                
 
                 #region 参数验证
                 //如果ID为-1的话说明请求内传了ID但是ID的值不为数字
@@ -385,7 +385,7 @@ namespace XXCloudService.Api.XCCloud
                 var userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 var storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
                 var merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
-                var id = dicParas.ContainsKey("id") ? ObjectExt.Toint(dicParas["id"], 0) : 0;
+                var id = dicParas.ContainsKey("id") ? dicParas["id"].Toint(0) : 0;
                 if (id == 0)
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, "商品ID不合法");
 
