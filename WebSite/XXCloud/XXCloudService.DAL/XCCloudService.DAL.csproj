@@ -72,92 +72,11 @@
     <Compile Include="IDAL\XCCloudRS232\IMerchDAL.cs" />
     <Compile Include="IDAL\XCCloudRS232\IMerchDeviceDAL.cs" />
     <Compile Include="IDAL\XCCloudRS232\IMerchSegmentDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IBase_ChainRuleDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IBase_ChainRule_StoreDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IBase_MerchAlipayDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IData_GoodStorage_DetailDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IData_MemberLevel_FoodDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IData_MemberLevelFreeDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IData_MerchAlipay_ShopServiceDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IData_Project_BindGameDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IFlw_GroupVerityDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IBase_DepotInfoDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IBase_DeviceInfoDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IBase_GoodsInfoDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IBase_StorageInfoDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IBase_StoreWeightDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IBase_StoreWeight_GameDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IData_BalanceChargeRuleDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IData_BalanceType_StoreListDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IData_CoinDestoryDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IData_CoinInventoryDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IData_CoinStorageDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IData_CouponInfoDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IData_CouponListDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IData_Coupon_StoreListDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IData_DigitCoinDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IData_DigitCoinDestroyDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IData_FoodInfoDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IData_Food_DetialDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IData_Food_LevelDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IData_Food_SaleDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IData_Food_StoreListDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IData_Food_WorkStationDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IData_GameFreeRuleDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IData_GameFreeRule_ListDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IData_GameInfoDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IData_GameInfo_ExtDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IData_GameInfo_PhotoDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IData_Game_StockInfoDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IData_GoodInventoryDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IData_GoodsStockDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IData_GoodStock_RecordDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IData_GoodStorageDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IData_JackpotInfoDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IData_Jackpot_LevelDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IData_Jackpot_MatrixDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IData_Member_CardDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IBase_MemberInfoDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IBase_MerchantInfoDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IBase_MerchFunctionDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IBase_SettleOrgDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IBase_SettlePPOSDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IBase_UserGrantDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IBase_UserGroupDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IBase_UserGroup_GrantDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IData_BillInfoDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IData_GivebackRuleDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IData_MemberLevelDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IData_Member_Card_StoreDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IData_ParametersDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IData_ProjectInfoDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IData_ProjectTime_StoreListDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IData_Project_StoreListDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IData_ProjectTimeInfoDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IData_ProjectTime_BandPriceDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IData_Project_DeviceDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IData_Push_RuleDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IData_ReloadDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IData_Storage_RecordDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IData_SupplierListDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IData_WorkstationDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IDict_BalanceTypeDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IDict_SystemDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IFlw_CouponUseDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IFlw_Game_FreeDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IFlw_Game_WatchDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IFlw_Game_WinPrizeDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IFlw_OrderDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IFlw_Order_DetailDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IFlw_Order_SerialNumberDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IFlw_ScheduleDAL.cs" />
-    <Compile Include="IDAL\XCCloud\ILog_GameAlarmDAL.cs" />
-    <Compile Include="IDAL\XCCloud\ILog_OperationDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IStore_CheckDateDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IXC_WorkInfoDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IDict_AreaDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IBase_StoreInfoDAL.cs" />
-    <Compile Include="IDAL\XCCloud\IBase_UserInfoDAL.cs" />
+    <Compile Include="IDAL\XCCloud\IXCCloudDAL.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>IXCCloudDAL.tt</DependentUpon>
+    </Compile>
     <Compile Include="IDAL\XCGameManagerLog\IUDPDeviceStateChangeLogDAL.cs" />
     <Compile Include="IDAL\XCGameManagerLog\IUDPIndexLogDAL.cs" />
     <Compile Include="IDAL\XCGameManagerLog\IUDPRadarNotifyLogDAL.cs" />
@@ -215,91 +134,11 @@
     <Compile Include="XCCloudRS232\MerchDAL.cs" />
     <Compile Include="XCCloudRS232\MerchDeviceDAL.cs" />
     <Compile Include="XCCloudRS232\MerchSegmentDAL.cs" />
-    <Compile Include="XCCloud\Base_ChainRuleDAL.cs" />
-    <Compile Include="XCCloud\Base_ChainRule_StoreDAL.cs" />
-    <Compile Include="XCCloud\Base_DepotInfoDAL.cs" />
-    <Compile Include="XCCloud\Base_DeviceInfoDAL.cs" />
-    <Compile Include="XCCloud\Base_GoodsInfoDAL.cs" />
-    <Compile Include="XCCloud\Base_StorageInfoDAL.cs" />
-    <Compile Include="XCCloud\Base_StoreWeightDAL.cs" />
-    <Compile Include="XCCloud\Base_StoreWeight_GameDAL.cs" />
-    <Compile Include="XCCloud\Data_BalanceType_StoreListDAL.cs" />
-    <Compile Include="XCCloud\Data_CoinDestoryDAL.cs" />
-    <Compile Include="XCCloud\Data_CoinInventoryDAL.cs" />
-    <Compile Include="XCCloud\Data_CoinStorageDAL.cs" />
-    <Compile Include="XCCloud\Data_CouponInfoDAL.cs" />
-    <Compile Include="XCCloud\Data_CouponListDAL.cs" />
-    <Compile Include="XCCloud\Data_Coupon_StoreListDAL.cs" />
-    <Compile Include="XCCloud\Data_DigitCoinDAL.cs" />
-    <Compile Include="XCCloud\Data_DigitCoinDestroyDAL.cs" />
-    <Compile Include="XCCloud\Data_FoodInfoDAL.cs" />
-    <Compile Include="XCCloud\Data_Food_DetialDAL.cs" />
-    <Compile Include="XCCloud\Data_Food_LevelDAL.cs" />
-    <Compile Include="XCCloud\Data_Food_SaleDAL.cs" />
-    <Compile Include="XCCloud\Data_Food_StoreListDAL.cs" />
-    <Compile Include="XCCloud\Data_Food_WorkStationDAL.cs" />
-    <Compile Include="XCCloud\Data_GameFreeRuleDAL.cs" />
-    <Compile Include="XCCloud\Data_GameFreeRule_ListDAL.cs" />
-    <Compile Include="XCCloud\Data_GameInfoDAL.cs" />
-    <Compile Include="XCCloud\Data_GameInfo_ExtDAL.cs" />
-    <Compile Include="XCCloud\Data_GameInfo_PhotoDAL.cs" />
-    <Compile Include="XCCloud\Data_Game_StockInfoDAL.cs" />
-    <Compile Include="XCCloud\Data_GoodInventoryDAL.cs" />
-    <Compile Include="XCCloud\Data_GoodsStockDAL.cs" />
-    <Compile Include="XCCloud\Data_GoodStock_RecordDAL.cs" />
-    <Compile Include="XCCloud\Data_GoodStorageDAL.cs" />
-    <Compile Include="XCCloud\Data_GoodStorage_DetailDAL.cs" />
-    <Compile Include="XCCloud\Data_JackpotInfoDAL.cs" />
-    <Compile Include="XCCloud\Data_Jackpot_LevelDAL.cs" />
-    <Compile Include="XCCloud\Data_Jackpot_MatrixDAL.cs" />
-    <Compile Include="XCCloud\Data_MemberLevel_FoodDAL.cs" />
-    <Compile Include="XCCloud\Data_MemberLevelFreeDAL.cs" />
-    <Compile Include="XCCloud\Data_Member_CardDAL.cs" />
-    <Compile Include="XCCloud\Base_MemberInfoDAL.cs" />
-    <Compile Include="XCCloud\Base_MerchantInfoDAL.cs" />
-    <Compile Include="XCCloud\Base_MerchFunctionDAL.cs" />
-    <Compile Include="XCCloud\Base_SettleOrgDAL.cs" />
-    <Compile Include="XCCloud\Base_SettlePPOSDAL.cs" />
-    <Compile Include="XCCloud\Base_UserGrantDAL.cs" />
-    <Compile Include="XCCloud\Base_UserGroupDAL.cs" />
-    <Compile Include="XCCloud\Base_UserGroup_GrantDAL.cs" />
-    <Compile Include="XCCloud\Data_BillInfoDAL.cs" />
-    <Compile Include="XCCloud\Data_GivebackRuleDAL.cs" />
-    <Compile Include="XCCloud\Data_MemberLevelDAL.cs" />
-    <Compile Include="XCCloud\Data_Member_Card_StoreDAL.cs" />
-    <Compile Include="XCCloud\Data_MerchAlipay_ShopDAL.cs" />
-    <Compile Include="XCCloud\Data_ParametersDAL.cs" />
-    <Compile Include="XCCloud\Data_ProjectInfoDAL.cs" />
-    <Compile Include="XCCloud\Data_ProjectTimeInfoDAL.cs" />
-    <Compile Include="XCCloud\Data_ProjectTime_StoreListDAL.cs" />
-    <Compile Include="XCCloud\Data_Project_BindGameDAL.cs" />
-    <Compile Include="XCCloud\Data_Project_StoreListDAL.cs" />
-    <Compile Include="XCCloud\Data_ProjectTime_BandPriceDAL.cs" />
-    <Compile Include="XCCloud\Data_Project_DeviceDAL.cs" />
-    <Compile Include="XCCloud\Data_Push_RuleDAL.cs" />
-    <Compile Include="XCCloud\Data_ReloadDAL.cs" />
-    <Compile Include="XCCloud\Data_Storage_RecordDAL.cs" />
-    <Compile Include="XCCloud\Data_SupplierListDAL.cs" />
-    <Compile Include="XCCloud\Data_WorkstationDAL.cs" />
-    <Compile Include="XCCloud\Dict_BalanceTypeDAL.cs" />
-    <Compile Include="XCCloud\Dict_SystemDAL.cs" />
-    <Compile Include="XCCloud\Flw_CouponUseDAL.cs" />
-    <Compile Include="XCCloud\Flw_Game_FreeDAL.cs" />
-    <Compile Include="XCCloud\Flw_Game_WatchDAL.cs" />
-    <Compile Include="XCCloud\Flw_Game_WinPrizeDAL.cs" />
-    <Compile Include="XCCloud\Base_MerchAlipayDAL.cs" />
-    <Compile Include="XCCloud\Flw_GroupVerityDAL.cs" />
-    <Compile Include="XCCloud\Flw_OrderDAL.cs" />
-    <Compile Include="XCCloud\Flw_Order_DetailDAL.cs" />
-    <Compile Include="XCCloud\Flw_Order_SerialNumberDAL.cs" />
-    <Compile Include="XCCloud\Flw_ScheduleDAL.cs" />
-    <Compile Include="XCCloud\Log_GameAlarmDAL.cs" />
-    <Compile Include="XCCloud\Log_OperationDAL.cs" />
-    <Compile Include="XCCloud\Store_CheckDateDAL.cs" />
-    <Compile Include="XCCloud\XC_WorkInfoDAL.cs" />
-    <Compile Include="XCCloud\Dict_AreaDAL.cs" />
-    <Compile Include="XCCloud\Base_StoreInfoDAL.cs" />
-    <Compile Include="XCCloud\Base_UserInfoDAL.cs" />
+    <Compile Include="XCCloud\XCCloudDAL.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>XCCloudDAL.tt</DependentUpon>
+    </Compile>
     <Compile Include="XCGameDBService.cs" />
     <Compile Include="XCGameManagerLog\UDPDeviceStateChangeLogDAL.cs" />
     <Compile Include="XCGameManagerLog\UDPIndexLogDAL.cs" />
@@ -358,9 +197,21 @@
       <Name>XCCloudService.Model</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="IDAL\XCCloud\IXCCloudDAL.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>IXCCloudDAL.cs</LastGenOutput>
+    </Content>
+    <Content Include="XCCloud\XCCloudDAL.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>XCCloudDAL.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

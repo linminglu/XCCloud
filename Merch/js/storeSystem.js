@@ -708,7 +708,6 @@ xcActionSystem.prototype= {
     },
     //查询会员级别1
     SearchMemberLevel1: function (id, token, layer) {
-            var tableData = [];
             $('#'+id).html("");
             let obj = {
                 'memberLevelID': "",
@@ -725,10 +724,10 @@ xcActionSystem.prototype= {
                 data: {parasJson: parseJson},
                 success: function (data) {
                     data = JSON.parse(data);
-                    if (data.Result_Code == 1) {
-                        tableData = data.Result_Data;
+                    if (data.result_code == 1) {
+                      let  tableData = data.result_data;
                         for (var i in tableData){
-                            $('#'+id).append('<input type="checkbox" name="like[write]" lay-filter="ml" value="'+tableData[i].MemberLevelID+'" title="'+tableData[i].MemberLevelName+'"><br>')
+                            $('#'+id).append('<input type="checkbox" name="like[write]" lay-filter="ml" value="'+tableData[i].Key+'" title="'+tableData[i].Value+'"><br>')
                         }
                         layui.use('form',function () {
                             var form=layui.form;

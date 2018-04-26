@@ -74,98 +74,18 @@
     <Compile Include="XCCloudRS232\MerchBusiness.cs" />
     <Compile Include="XCCloudRS232\MerchDeviceBusiness.cs" />
     <Compile Include="XCCloudRS232\MerchSegmentBusiness.cs" />
-    <Compile Include="XCCloud\Base_ChainRuleBusiness.cs" />
-    <Compile Include="XCCloud\Base_ChainRule_StoreBusiness.cs" />
-    <Compile Include="XCCloud\Base_DepotInfoBusiness.cs" />
-    <Compile Include="XCCloud\Base_DeviceInfoBusiness.cs" />
-    <Compile Include="XCCloud\Base_GoodsInfoBusiness.cs" />
-    <Compile Include="XCCloud\Base_MemberInfoBusiness.cs" />
-    <Compile Include="XCCloud\Base_MerchAlipayBusiness.cs" />
-    <Compile Include="XCCloud\Base_MerchantInfoBusiness.cs" />
-    <Compile Include="XCCloud\Base_MerchFunctionBusiness.cs" />
-    <Compile Include="XCCloud\Base_SettleOrgBusiness.cs" />
-    <Compile Include="XCCloud\Base_SettlePPOSBusiness.cs" />
-    <Compile Include="XCCloud\Base_StorageInfoBusiness.cs" />
-    <Compile Include="XCCloud\Base_StoreInfoBusiness.cs" />
-    <Compile Include="XCCloud\Base_StoreWeightBusiness.cs" />
-    <Compile Include="XCCloud\Base_StoreWeight_GameBusiness.cs" />
-    <Compile Include="XCCloud\Base_UserGrantBusiness.cs" />
-    <Compile Include="XCCloud\Base_UserGroupBusiness.cs" />
-    <Compile Include="XCCloud\Base_UserGroup_GrantBusiness.cs" />
-    <Compile Include="XCCloud\Base_UserInfoBusiness.cs" />
-    <Compile Include="XCCloud\Data_BalanceChargeRuleBusiness.cs" />
-    <Compile Include="XCCloud\Data_BalanceType_StoreListBusiness.cs" />
-    <Compile Include="XCCloud\Data_BillInfoBusiness.cs" />
-    <Compile Include="XCCloud\Data_CoinDestoryBusiness.cs" />
-    <Compile Include="XCCloud\Data_CoinInventoryBusiness.cs" />
-    <Compile Include="XCCloud\Data_CoinStorageBusiness.cs" />
-    <Compile Include="XCCloud\Data_CouponInfoBusiness.cs" />
-    <Compile Include="XCCloud\Data_CouponListBusiness.cs" />
-    <Compile Include="XCCloud\Data_Coupon_StoreListBusiness.cs" />
-    <Compile Include="XCCloud\Data_DigitCoinBusiness.cs" />
-    <Compile Include="XCCloud\Data_DigitCoinDestroyBusiness.cs" />
-    <Compile Include="XCCloud\Data_FoodInfoBusiness.cs" />
-    <Compile Include="XCCloud\Data_Food_DetialBusiness.cs" />
-    <Compile Include="XCCloud\Data_Food_LevelBusiness.cs" />
-    <Compile Include="XCCloud\Data_Food_SaleBusiness.cs" />
-    <Compile Include="XCCloud\Data_Food_StoreListBusiness.cs" />
-    <Compile Include="XCCloud\Data_Food_WorkStationBusiness.cs" />
-    <Compile Include="XCCloud\Data_GameFreeRuleBusiness.cs" />
-    <Compile Include="XCCloud\Data_GameFreeRule_ListBusiness.cs" />
-    <Compile Include="XCCloud\Data_GameInfoBusiness.cs" />
-    <Compile Include="XCCloud\Data_GameInfo_ExtBusiness.cs" />
-    <Compile Include="XCCloud\Data_GameInfo_PhotoBusiness.cs" />
-    <Compile Include="XCCloud\Data_Game_StockInfoBusiness.cs" />
-    <Compile Include="XCCloud\Data_GivebackRuleBusiness.cs" />
-    <Compile Include="XCCloud\Data_GoodInventoryBusiness.cs" />
-    <Compile Include="XCCloud\Data_GoodsStockBusiness.cs" />
-    <Compile Include="XCCloud\Data_GoodStock_RecordBusiness.cs" />
-    <Compile Include="XCCloud\Data_GoodStorageBusiness.cs" />
-    <Compile Include="XCCloud\Data_GoodStorage_DetailBusiness.cs" />
-    <Compile Include="XCCloud\Data_JackpotInfoBusiness.cs" />
-    <Compile Include="XCCloud\Data_Jackpot_LevelBusiness.cs" />
-    <Compile Include="XCCloud\Data_Jackpot_MatrixBusiness.cs" />
-    <Compile Include="XCCloud\Data_MemberLevelBusiness.cs" />
-    <Compile Include="XCCloud\Data_MemberLevelFreeBusiness.cs" />
-    <Compile Include="XCCloud\Data_MemberLevel_FoodBusiness.cs" />
-    <Compile Include="XCCloud\Data_Member_CardBusiness.cs" />
-    <Compile Include="XCCloud\Data_Member_Card_StoreBusiness.cs" />
-    <Compile Include="XCCloud\Data_MerchAlipay_ShopBusiness.cs" />
-    <Compile Include="XCCloud\Data_ParametersBusiness.cs" />
-    <Compile Include="XCCloud\Data_ProjectInfoBusiness.cs" />
-    <Compile Include="XCCloud\Data_ProjectTimeInfoBusiness.cs" />
-    <Compile Include="XCCloud\Data_ProjectTime_BandPriceBusiness.cs" />
-    <Compile Include="XCCloud\Data_ProjectTime_StoreListBusiness.cs" />
-    <Compile Include="XCCloud\Data_Project_BindGameBusiness.cs" />
-    <Compile Include="XCCloud\Data_Project_DeviceBusiness.cs" />
-    <Compile Include="XCCloud\Data_Project_StoreListBusiness.cs" />
-    <Compile Include="XCCloud\Data_Push_RuleBusiness.cs" />
-    <Compile Include="XCCloud\Data_ReloadBusiness.cs" />
-    <Compile Include="XCCloud\Data_Storage_RecordBusiness.cs" />
-    <Compile Include="XCCloud\Data_SupplierListBusiness.cs" />
-    <Compile Include="XCCloud\Data_WorkstationBusiness.cs" />
-    <Compile Include="XCCloud\Dict_AreaBusiness.cs" />
-    <Compile Include="XCCloud\Dict_BalanceTypeBusiness.cs" />
-    <Compile Include="XCCloud\Dict_SystemBusiness.cs" />
-    <Compile Include="XCCloud\Flw_CouponUseBusiness.cs" />
-    <Compile Include="XCCloud\Flw_Game_FreeBusiness.cs" />
-    <Compile Include="XCCloud\Flw_Game_WatchBusiness.cs" />
-    <Compile Include="XCCloud\Flw_Game_WinPrizeBusiness.cs" />
-    <Compile Include="XCCloud\Flw_GroupVerityBusiness.cs" />
     <Compile Include="XCCloud\Flw_OrderBusiness.cs" />
-    <Compile Include="XCCloud\Flw_Order_DetailBusiness.cs" />
-    <Compile Include="XCCloud\Flw_Order_SerialNumberBusiness.cs" />
-    <Compile Include="XCCloud\Flw_ScheduleBusiness.cs" />
-    <Compile Include="XCCloud\Log_GameAlarmBusiness.cs" />
-    <Compile Include="XCCloud\Log_OperationBusiness.cs" />
     <Compile Include="XCCloud\StoreBusiness.cs" />
     <Compile Include="XCCloud\MemberBusiness.cs" />
     <Compile Include="XCCloud\ScheduleBusiness.cs" />
-    <Compile Include="XCCloud\Store_CheckDateBusiness.cs" />
     <Compile Include="XCCloud\UserBusiness.cs" />
     <Compile Include="XCCloud\WebAppInitBusiness.cs" />
+    <Compile Include="XCCloud\XCCloudBusiness.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>XCCloudBusiness.tt</DependentUpon>
+    </Compile>
     <Compile Include="XCCloud\XCCloudUnionIDBusiness.cs" />
-    <Compile Include="XCCloud\XC_WorkInfoBusiness.cs" />
     <Compile Include="XCGameManaLog\UDPDBBusiness.cs" />
     <Compile Include="XCGameMana\DataOrderQueryBusiness.cs" />
     <Compile Include="XCGameMana\DeviceManaBusiness.cs" />
@@ -212,7 +132,15 @@
       <Name>XXCloudService.RadarServer</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="XCCloud\XCCloudBusiness.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>XCCloudBusiness.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

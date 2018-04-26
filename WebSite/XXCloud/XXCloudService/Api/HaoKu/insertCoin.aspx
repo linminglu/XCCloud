@@ -1,0 +1,1 @@
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="insertCoin.aspx.cs" Inherits="XXCloudService.Api.HaoKu.insertCoin" %>

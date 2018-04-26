@@ -15,7 +15,7 @@ using XCCloudService.Model.XCCloud;
 
 namespace XCCloudService.Business.XCCloud
 {
-    public class Flw_OrderBusiness
+    public partial class Flw_OrderBusiness
     {
         /// <summary>
         /// 订单列表
@@ -132,22 +132,6 @@ namespace XCCloudService.Business.XCCloud
             orderPay.PayState = payState;
             orderPay.PayType = payType;
             OrderPayCache.Add<OrderPayCacheModel>(orderId, orderPay, CacheExpires.OrderPayCacheExpiresTime);
-        }
-
-        public static IFlw_OrderService Instance
-        {
-            get
-            {
-                return BLLContainer.Resolve<IFlw_OrderService>();
-            }
-        }
-
-        public static IFlw_OrderService NewInstance
-        {
-            get
-            {
-                return BLLContainer.Resolve<IFlw_OrderService>(resolveNew: true);
-            }
-        }
+        }        
     }
 }

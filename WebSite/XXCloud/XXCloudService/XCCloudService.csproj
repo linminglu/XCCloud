@@ -135,6 +135,7 @@
     <Content Include="Api\HaoKu\charge.aspx" />
     <Content Include="Api\HaoKu\insertCoin.aspx" />
     <Content Include="Api\HaoKu\ping.aspx" />
+    <Content Include="Api\HaoKu\ShopList.xml" />
     <Content Include="Api\XCCloud\UserInfo.ashx" />
     <Content Include="assets\css\admin.css" />
     <Content Include="assets\css\amazeui.min.css" />
@@ -308,7 +309,6 @@
     <Content Include="MobileWeb\images\star_green.png" />
     <Content Include="MobileWeb\images\vip.png" />
     <Content Include="MobileWeb\images\welfare.png" />
-    <Content Include="MobileWeb\index.html" />
     <Content Include="MobileWeb\js\axios.min.js" />
     <Content Include="MobileWeb\js\jquery-1.8.3-min.js" />
     <Content Include="MobileWeb\js\vue.js" />
@@ -921,6 +921,8 @@
     <Compile Include="Api\HaoKu\charge.aspx.designer.cs">
       <DependentUpon>charge.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Api\HaoKu\Com\AES.cs" />
+    <Compile Include="Api\HaoKu\Com\HaokuConfig.cs" />
     <Compile Include="Api\HaoKu\insertCoin.aspx.cs">
       <DependentUpon>insertCoin.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -1421,6 +1423,7 @@
     </Compile>
     <Compile Include="Utility\ApplicationEnd.cs" />
     <Compile Include="Utility\ApplicationStart.cs" />
+    <Compile Include="Utility\HaokuUtility.cs" />
     <Compile Include="Utility\IConUtiltiy.cs" />
     <Compile Include="Utility\Info\RouterInfo.cs" />
     <Compile Include="Utility\UDPApiService.cs">

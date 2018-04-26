@@ -1,0 +1,107 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>缓存管理</title>
+    <link rel="stylesheet" href="/assets/layui/css/layui.css">
+    <link rel="stylesheet" href="/assets/layui/css/layui.mobile.css">
+    <script src="/WebSite/js/jquery-1.8.3-min.js"></script>
+    <script src="/assets/layui/layui.js"></script>
+    <script type="text/javascript">
+        //用户登录
+        layui.use(['layer', 'form'], function () { //独立版的layer无需执行这一句
+            var $ = layui.jquery, layer = layui.layer; //独立版的layer无需执行这一句
+            var form = layui.form;
+
+            //监听提交
+            form.on('submit(formDemo)', function (data) {
+                layer.msg(JSON.stringify(data.field));
+                return false;
+            });
+            $('#btnInsSettings').on('click', function () {
+                layer.open({
+                    title: "指令选择",
+                    type: 1,
+                    area: ["1200px", "600px"],
+                    content: $("#sssssss")
+                });
+            });
+        });
+        function login() {
+            var userMobile = $("#txtUserMobile").val();
+            var password = $("#txtPassword").val();
+            var imgCode = $("#txtImgCode").val();
+
+            if (userMobile == "") {
+                layer.msg("请输入用户手机号码");
+                return;
+            }
+
+            if (password == "") {
+                layer.msg("请输入密码");
+                return;
+            }
+
+            if (imgCode == "") {
+                layer.msg("请输入图形验证码");
+                return;
+            }
+
+            var data = { "userMobile": userMobile, "password": password, "imgCode": imgCode };
+            var url = "/service/user?action=login";
+            $.ajax({
+                type: "get",
+                url: url,
+                contentType: "application/json; charset=utf-8",
+                data: data,
+                success: function (data) {
+                    data = JSON.parse(data);
+                    if (data.return_code == "1" && data.result_code == "1") {
+                        userToken = data.result_data.token;
+                        $("#txtLoginResult").text(userToken);
+                    }
+                    else {
+                        var errMsg = getApiErrMsg(data);
+                        layer.msg(errMsg);
+                    }
+                },
+                error: function (error) {
+                    alert(1);  //这个地方也用到了
+                }
+            });
+        }
+    </script>
+
+</head>
+<body>
+    <div>
+        用户名：<input id="txtUserMobile" type="text" />&nbsp;&nbsp;
+        密码：<input id="txtPassword" type="text" />&nbsp;&nbsp;
+        验证码：<input id="txtImgCode" type="text" /><img id="imgCode" src="/ServicePage/validateimg.aspx" onclick="changeImgCode()" />
+        <input id="btnLogin" type="button" value="用户登录" onclick="login()" />
+        <span id="txtLoginResult"></span>
+    </div>
+    <form class="layui-form" action="">
+        <div class="layui-form-item">
+            <div class="layui-input-block" id="divIns">
+                <input type="checkbox" name="like" title="XCGame门店总表" value="1">
+            </div>
+        </div>
+    </form>
+    <div class="" id="reloadCache">
+        <form class="layui-form" action="">
+            <div class="layui-form-item">
+                <div class="layui-input-block" id="divIns">
+                    <input type="checkbox" name="like" title="XCGame门店总表" value="1">
+                </div>
+            </div>
+        </form>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button id="btnNoSelAllIns" class="layui-btn layui-btn-normal">全不选</button>
+                <button id="btnSelAllIns" class="layui-btn layui-btn-normal">全选</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -163,6 +163,8 @@
     <Compile Include="Socket\UDP\TicketQueryResultNotifyRequestModel.cs" />
     <Compile Include="Socket\UDP\UserPhoneQueryRequestDataModel.cs" />
     <Compile Include="Socket\UDP\UserPhoneQueryResultNotifyRequestModel.cs" />
+    <Compile Include="WeiXin\Message\MemberRechargeNotifyConfigModel.cs" />
+    <Compile Include="WeiXin\Message\MemberRechargeNotifyDataModel.cs" />
     <Compile Include="WeiXin\Message\SAppMsgConfigAttribute.cs" />
     <Compile Include="WeiXin\Message\XcGameGetCoinSuccessConfigModel.cs" />
     <Compile Include="WeiXin\Message\XcGameGetCoinSuccessDataModel.cs" />

@@ -94,6 +94,10 @@ namespace XCCloudService.WeiXin.Message
             {
                 return GetXcGameGetCoinSuccessData(configModel, dataModel);
             }
+            else if (typeof(TConfig) == typeof(MemberRechargeNotifyConfigModel))
+            {
+                return GetMemberRechargeNotifyData(configModel, dataModel);
+            }
             return null;
         }
 
@@ -253,6 +257,23 @@ namespace XCCloudService.WeiXin.Message
                 keyword1 = new { value = string.Format("成功提币{0}个", data.Coins), color = config.Keynote1Color },
                 keyword2 = new { value = data.OperationDate, color = config.Keynote2Color },
                 remark = new { value = config.Remark, color = config.RemarkColor }
+            };
+
+            return msgData;
+        }
+
+        private static object GetMemberRechargeNotifyData<TConfig, TData>(TConfig configModel, TData dataModel)
+        {
+            MemberRechargeNotifyConfigModel config = Utils.GetCopy<MemberRechargeNotifyConfigModel>(configModel);
+            MemberRechargeNotifyDataModel data = Utils.GetCopy<MemberRechargeNotifyDataModel>(dataModel);
+            var msgData = new
+            {
+                first = new { value = config.Title, color = config.FirstColor },
+                accountType = new { value = data.AccountType },
+                account = new { value = data.Account, color = config.Keynote1Color },
+                amount = new { value = data.Amount, color = config.Keynote2Color },
+                result = new { value = data.Status, color = config.Keynote3Color },
+                remark = new { value = data.Remark, color = config.RemarkColor }
             };
 
             return msgData;

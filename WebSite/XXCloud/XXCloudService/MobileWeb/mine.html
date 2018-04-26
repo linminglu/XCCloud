@@ -99,6 +99,7 @@
                 }
             },
             signatureNew:function () {
+                var that =this;
                 var obj={sysId: sysId,versionNo: versionNo, fileName:"mine"};
                 axios.post('/XCGameMana/WxCommon?action=getWxH5Config', obj).then(function (res) {
                     that.$dialog.loading.close();

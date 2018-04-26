@@ -10,8 +10,10 @@ using XCCloudService.Business.XCGameMana;
 using XCCloudService.Common;
 using XCCloudService.Common.Enum;
 using XCCloudService.Model.CustomModel.XCGameManager;
+using XCCloudService.Model.WeiXin.Message;
 using XCCloudService.Model.XCGameManager;
 using XCCloudService.Pay.PPosPay;
+using XCCloudService.WeiXin.Message;
 using XXCloudService.Utility;
 
 namespace XCCloudService.OrderPayCallback.Common
@@ -44,6 +46,7 @@ namespace XCCloudService.OrderPayCallback.Common
                         flag = FoodSale(order, unpaiOrder);
                         if (flag)
                         {
+                            UnpaidOrderList.RemoveItem(unpaiOrder);
                             LogHelper.SaveLog(TxtLogType.WeiXin, TxtLogContentType.Debug, TxtLogFileType.Day, "应用：莘拍档 订单号：" + order.OrderID + " 回调业务处理成功！");
                         }
                         else
@@ -67,7 +70,7 @@ namespace XCCloudService.OrderPayCallback.Common
 
                             //退款成功后修改订单状态为已退款
                             MPOrderBusiness.UpdateOrderForRefund(order.OrderID, order.TradeNo);
-
+                            UnpaidOrderList.RemoveItem(unpaiOrder);
                             flag = true;
                         }
                         else
@@ -175,9 +178,17 @@ namespace XCCloudService.OrderPayCallback.Common
                 {
                     return false;
                 }
-                //推送消息
-                //string form_id = dicParas.ContainsKey("form_id") ? dicParas["form_id"].ToString() : string.Empty;
-                //SAppMessageMana.PushMemberFoodSaleMsg("", "", "充值", storeModel.StoreName, mobile, orderId, foodName, foodNum, icCardId, decimal.Parse(money), coins, form_id, out errMsg);
+
+                if (order.OrderType == 0 && !string.IsNullOrEmpty(orderCache.OpenId))
+                {
+                    MemberRechargeNotifyDataModel dataModel = new MemberRechargeNotifyDataModel();
+                    dataModel.AccountType = "充值套餐";
+                    dataModel.Account = order.Descript;
+                    dataModel.Amount = order.Price.ToString("0.00");
+                    dataModel.Status = "成功";
+                    dataModel.Remark = "充值成功，感谢您的光临！";
+                    MessageMana.PushMessage(WeiXinMesageType.MemberRechargeNotify, orderCache.OpenId, dataModel, out errMsg);
+                }
             }
             else
             {

@@ -544,6 +544,7 @@ namespace XXCloudService.Api.XCCloud
                 {
                     FoodID = FoodInfo.FoodID,
                     FoodName = FoodInfo.FoodName,
+                    FoodType = FoodInfo.FoodType,
                     StartTime = string.Format("{0:yyyy-MM-dd}", FoodInfo.StartTime),
                     EndTime = string.Format("{0:yyyy-MM-dd}", FoodInfo.EndTime),
                     ImageURL = FoodInfo.ImageURL,

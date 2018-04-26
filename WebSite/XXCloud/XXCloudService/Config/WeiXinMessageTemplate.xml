@@ -29,6 +29,11 @@
     <templateid>EuHQdLLoU5RuZ_R4NGf6XjwkQ07M9fMPZ3J109EbQ50</templateid>
     <detailsurl></detailsurl>
     <sapppagepath></sapppagepath>
+    <firstcolor>#173177</firstcolor>
+    <keynote1color>#173177</keynote1color>
+    <keynote2color>#173177</keynote2color>
+    <keynote3color>#173177</keynote3color>
+    <remarkcolor>#173177</remarkcolor>    
   </msgtemplate>
   <msgtemplate id="UserRegisterRemind">
     <title>收到莘宸商户注册信息</title>

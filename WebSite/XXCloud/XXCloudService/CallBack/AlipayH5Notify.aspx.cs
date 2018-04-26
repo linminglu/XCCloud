@@ -58,7 +58,15 @@ namespace XXCloudService.CallBack
                         {
                             if (MPOrderBusiness.UpdateOrderForPaySuccess(out_trade_no, trade_no))
                             {
-                                OrderHandle.FlwFoodSaleOrderHandle(order, trade_no);
+                                //OrderHandle.FlwFoodSaleOrderHandle(order, trade_no);
+
+                                OrderUnpaidModel unpaiOrder = null;
+                                UnpaidOrderList.GetItem(order.OrderID, out unpaiOrder);
+                                bool flag = OrderHandle.FoodSale(order, unpaiOrder);
+                                if (flag)
+                                {
+                                    UnpaidOrderList.RemoveItem(unpaiOrder);
+                                }
 
                                 LogHelper.SaveLog(TxtLogType.AliPay, TxtLogContentType.Debug, TxtLogFileType.Day, "应用：莘拍档 订单号：" + out_trade_no + " 支付成功！");
 

@@ -6,6 +6,7 @@ using XCCloudService.Base;
 using XCCloudService.Model.CustomModel.XCGameManager;
 using XCCloudService.Pay.WeiXinPay.Lib;
 using XCCloudService.WeiXin.Common;
+using XCCloudService.WeiXin.WeixinOAuth;
 using XCCloudService.WeiXin.WeixinPub;
 
 namespace XXCloudService.Api.XCGameMana
@@ -40,6 +41,33 @@ namespace XXCloudService.Api.XCGameMana
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "请求微信SDK错误");
                 }
+
+                return ResponseModelFactory<WxConfigModel>.CreateModel(isSignKeyReturn, model);
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+        #endregion
+
+        #region 获取微信H5配置
+        /// <summary>
+        /// 获取微信H5配置
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.MethodToken)]
+        public object getAccessToken(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                string accessToken = string.Empty;
+                TokenMana.GetAccessToken(out accessToken);
+
+
+                WxConfigModel model = new WxConfigModel();
+                model.AppId = accessToken;
 
                 return ResponseModelFactory<WxConfigModel>.CreateModel(isSignKeyReturn, model);
             }

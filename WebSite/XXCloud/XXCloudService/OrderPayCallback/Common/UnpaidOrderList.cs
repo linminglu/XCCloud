@@ -59,11 +59,25 @@ namespace XCCloudService.OrderPayCallback.Common
                 item = unpaidOrderList.Where(p => p.OrderId == orderId).FirstOrDefault();
                 if (item != null)
                 {
-                    unpaidOrderList.Remove(item);
+                    //unpaidOrderList.Remove(item);
                     return true;
                 }
                 else
                     return false;
+            }
+        } 
+        #endregion
+
+        #region 移除列表元素
+        /// <summary>
+        /// 移除列表元素
+        /// </summary>
+        /// <param name="item"></param>
+        public static void RemoveItem(OrderUnpaidModel item)
+        {
+            lock (UnpaidOrderLock)
+            {
+                unpaidOrderList.Remove(item);
             }
         } 
         #endregion
@@ -197,6 +211,11 @@ namespace XCCloudService.OrderPayCallback.Common
         /// 会员token
         /// </summary>
         public XCGameMemberTokenModel MemberTokenModel { get; set; }
+
+        /// <summary>
+        /// 微信OpenId
+        /// </summary>
+        public string OpenId { get; set; }
 
         /// <summary>
         /// 创建时间

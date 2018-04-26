@@ -8,6 +8,9 @@ using XCCloudService.Business.XCGameMana;
 using XCCloudService.Model.XCGameManager;
 using XCCloudService.Pay.PPosPay;
 using XCCloudService.OrderPayCallback.Common;
+using XCCloudService.Model.WeiXin.Message;
+using XCCloudService.WeiXin.Message;
+using XCCloudService.Common.Enum;
 
 namespace XXCloudService.Test
 {
@@ -86,6 +89,20 @@ namespace XXCloudService.Test
             UnpaidOrderList.GetItem(order.OrderID, out unpaiOrder);
 
             bool flag = OrderHandle.FoodSale(order, unpaiOrder);
+        }
+
+        protected void Button6_Click(object sender, EventArgs e)
+        {
+            string errMsg = string.Empty;
+            MemberRechargeNotifyDataModel dataModel = new MemberRechargeNotifyDataModel();
+            dataModel.AccountType = "充值套餐";
+            dataModel.Account = "5元10币";
+            dataModel.Amount = "99.9元";
+            dataModel.Status = "成功";
+            dataModel.Remark = "充值成功，祝您玩的愉快！";
+            bool flag = MessageMana.PushMessage(WeiXinMesageType.MemberRechargeNotify, "oNWocwSC_GFO8n_8mtZ0iV9tL0WI", dataModel, out errMsg);
+
+            Response.Write(errMsg);
         }
     }
 }

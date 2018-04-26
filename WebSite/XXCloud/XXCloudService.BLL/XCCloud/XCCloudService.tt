@@ -1,0 +1,59 @@
+﻿<#@ template language="C#" debug="false" hostspecific="true"#>
+<#@ include file="EF.Utility.CS.ttinclude"#><#@
+ output extension=".cs"#>
+ 
+<#
+
+CodeGenerationTools code = new CodeGenerationTools(this);
+MetadataLoader loader = new MetadataLoader(this);
+CodeRegion region = new CodeRegion(this, 1);
+MetadataTools ef = new MetadataTools(this);
+
+string solutionsPath = Host.ResolveAssemblyReference("$(SolutionDir)");  
+string projectPath = Host.ResolveAssemblyReference("$(ProjectDir)");
+string inputFile = solutionsPath + @"\\XXCloudService.Model\\XCCloud\\XCCloudDBModel.edmx";  
+
+EdmItemCollection ItemCollection = loader.CreateEdmItemCollection(inputFile);
+string namespaceName = code.VsNamespaceSuggestion();
+
+EntityFrameworkTemplateFileManager fileManager = EntityFrameworkTemplateFileManager.Create(this);
+
+#>
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using XCCloudService.DAL.Container;
+using XCCloudService.DAL.IDAL.XCCloud;
+using XCCloudService.BLL.Base;
+using XCCloudService.BLL.IBLL.XCCloud;
+using XCCloudService.Model.XCCloud;
+using XCCloudService.BLL.Container;
+
+namespace XCCloudService.BLL.XCCloud
+{  
+<#
+foreach (EntityType entity in ItemCollection.GetItems<EntityType>().OrderBy(e => e.Name))
+{   
+#>    
+    public partial class <#=entity.Name#>Service:BaseService<<#=entity.Name#>>,I<#=entity.Name#>Service
+    {
+		public override void SetDal()
+        {
+
+        }
+
+        public <#=entity.Name#>Service()
+            : this(false)
+        {
+
+        }
+
+        public <#=entity.Name#>Service(bool resolveNew)
+        {
+            Dal = DALContainer.Resolve<I<#=entity.Name#>DAL>(resolveNew: resolveNew);
+        }
+    }
+<#}#>
+}

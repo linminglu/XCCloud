@@ -29,6 +29,7 @@ namespace XCCloudService.WeiXin.Message
                 case WeiXinMesageType.XcUserNewPassword: return Push<XcUserNewPasswordConfigModel, XcUserNewPasswordDataModel>(openId, (XcUserNewPasswordDataModel)dataModel, out errMsg);
                 case WeiXinMesageType.XcUserResetPassword: return Push<XcUserResetPasswordConfigModel, XcUserResetPasswordDataModel>(openId, (XcUserResetPasswordDataModel)dataModel, out errMsg);
                 case WeiXinMesageType.XCGameGetCoinSuccess: return Push<XcGameGetCoinSuccessConfigModel, XcGameGetCoinSuccessDataModel>(openId, (XcGameGetCoinSuccessDataModel)dataModel, out errMsg);
+                case WeiXinMesageType.MemberRechargeNotify: return Push<MemberRechargeNotifyConfigModel, MemberRechargeNotifyDataModel>(openId, (MemberRechargeNotifyDataModel)dataModel, out errMsg);
                 default: return false;
             }
         }
@@ -47,6 +48,7 @@ namespace XCCloudService.WeiXin.Message
             if (TokenMana.GetAccessToken(out accessToken))
             {
                 string json = MessagePushFactory.CreateMsgJson<TConfig, TData>(openId, configModel, dataModel);
+                errMsg = json;
                 string url = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token={0}";
                 url = string.Format(url, accessToken);
                 string str = Utils.HttpPost(url, json);

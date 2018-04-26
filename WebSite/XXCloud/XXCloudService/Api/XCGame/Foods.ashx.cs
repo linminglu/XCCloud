@@ -371,39 +371,57 @@ namespace XCCloudService.Api.XCGame
                     orderId = System.Guid.NewGuid().ToString("N");
                 }
 
+                XCGameManaDeviceStoreType deviceStoreType;
+                StoreCacheModel storeModel = null;
+                StoreBusiness storeBusiness = new StoreBusiness();
+                if (!storeBusiness.IsEffectiveStore(memberTokenModel.StoreId, out deviceStoreType, ref storeModel, out errMsg))
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
+                }
+
                 if (type == "购币")
                 {
-                    string xcGameDBName = string.Empty;
-                    //根据终端号查询终端号是否存在
-                    XCGameManaDeviceStoreType deviceStoreType;
-                    if (!ExtendBusiness.checkXCGameManaDeviceInfo(terminalNo, out deviceStoreType, out storeId, out deviceId))
-                    {
-                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "终端号不存在");
+                    if (storeModel.StoreDBDeployType == 0)
+                    { 
+                        string xcGameDBName = string.Empty;
+                        //根据终端号查询终端号是否存在
+                        if (!ExtendBusiness.checkXCGameManaDeviceInfo(terminalNo, out deviceStoreType, out storeId, out deviceId))
+                        {
+                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "终端号不存在");
+                        }
+                        //验证会员令牌的门店号和设备门店号
+                        if (!memberTokenModel.StoreId.Equals(storeId))
+                        {
+                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员令牌不能再此设备上操作");
+                        }
+                        //验证门店信息和设备状态是否为启用状态
+                        if (!ExtendBusiness.checkStoreDeviceInfo(deviceStoreType, storeId, deviceId, out segment, out mcuId, out xcGameDBName, out deviceIdentityId,out storePassword,out storeName, out errMsg))
+                        {
+                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
+                        }
+                        //验证雷达设备缓存状态
+                        if (!ExtendBusiness.checkRadarDeviceState(deviceStoreType, storeId, deviceId, out errMsg))
+                        {
+                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
+                        }
+                        //获取会员信息
+                        if (!ExtendBusiness.GetMemberInfo(deviceStoreType, mobile, xcGameDBName, out balance, out icCardId, out memberLevelId, out errMsg))
+                        {
+                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
+                        }
+                        //购币
+                        if (!BuyCoin(deviceStoreType, xcGameDBName,storeId,icCardId, memberLevelId, foodId, orderId, money, coins, balance, paymentype, deviceId,deviceIdentityId, out errMsg))
+                        {
+                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
+                        }                        
                     }
-                    //验证会员令牌的门店号和设备门店号
-                    if (!memberTokenModel.StoreId.Equals(storeId))
+                    else if (storeModel.StoreDBDeployType == 1)
                     {
-                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员令牌不能再此设备上操作");
+
                     }
-                    //验证门店信息和设备状态是否为启用状态
-                    if (!ExtendBusiness.checkStoreDeviceInfo(deviceStoreType, storeId, deviceId, out segment, out mcuId, out xcGameDBName, out deviceIdentityId,out storePassword,out storeName, out errMsg))
+                    else
                     {
-                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
-                    }
-                    //验证雷达设备缓存状态
-                    if (!ExtendBusiness.checkRadarDeviceState(deviceStoreType, storeId, deviceId, out errMsg))
-                    {
-                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
-                    }
-                    //获取会员信息
-                    if (!ExtendBusiness.GetMemberInfo(deviceStoreType, mobile, xcGameDBName, out balance, out icCardId, out memberLevelId, out errMsg))
-                    {
-                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
-                    }
-                    //购币
-                    if (!BuyCoin(deviceStoreType, xcGameDBName,storeId,icCardId, memberLevelId, foodId, orderId, money, coins, balance, paymentype, deviceId,deviceIdentityId, out errMsg))
-                    {
-                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
+                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "门店设置错误");
                     }
                     //请求雷达处理出币
                     if (!IConUtiltiy.DeviceOutputCoin(deviceStoreType, DevieControlTypeEnum.出币, storeId, mobile, icCardId, orderId, segment, mcuId, storePassword, foodId, coins, string.Empty, out errMsg))
@@ -417,25 +435,20 @@ namespace XCCloudService.Api.XCGame
                 }
                 else if (type == "充值")
                 {
-                    StoreCacheModel storeModel = null;
-                    XCGameManaDeviceStoreType deviceStoreType;
-                    //验证门店
-                    StoreBusiness store = new StoreBusiness();
-                    if (!store.IsEffectiveStore(memberTokenModel.StoreId,out deviceStoreType, ref storeModel, out errMsg))
-                    {
-                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
+                    if (storeModel.StoreDBDeployType == 0)
+                    { 
+                        //获取会员信息
+                        if (!ExtendBusiness.GetMemberInfo(deviceStoreType, mobile, storeModel.StoreDBName, out balance, out icCardId, out memberLevelId, out errMsg))
+                        {
+                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
+                        }
+                        //充值
+                        if (!Recharge(deviceStoreType, mobile, storeModel.StoreDBName, storeId, icCardId, memberLevelId, foodId, orderId, money, coins, balance, paymentype, deviceId, deviceIdentityId,out foodName, out errMsg))
+                        {
+                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
+                        }                        
                     }
-                    //获取会员信息
-                    if (!ExtendBusiness.GetMemberInfo(deviceStoreType, mobile, storeModel.StoreDBName, out balance, out icCardId, out memberLevelId, out errMsg))
-                    {
-                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
-                    }
-                    //充值
-                    LogHelper.SaveLog(TxtLogType.Api, TxtLogContentType.Debug, TxtLogFileType.Day, "Recharge:" + errMsg);
-                    if (!Recharge(deviceStoreType, mobile, storeModel.StoreDBName, storeId, icCardId, memberLevelId, foodId, orderId, money, coins, balance, paymentype, deviceId, deviceIdentityId,out foodName, out errMsg))
-                    {
-                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
-                    }
+
                     //推送消息
                     string form_id = dicParas.ContainsKey("form_id") ? dicParas["form_id"].ToString() : string.Empty;
                     SAppMessageMana.PushMemberFoodSaleMsg("","","充值",storeModel.StoreName, mobile, orderId, foodName, foodNum, icCardId, decimal.Parse(money),coins, form_id, out errMsg);

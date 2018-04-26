@@ -749,6 +749,7 @@ namespace XXCloudService.Api
                 UnpaidOrder.DeviceToken = deviceToken;
                 UnpaidOrder.FoodId = foodId;
                 UnpaidOrder.MemberTokenModel = memberTokenModel;
+                UnpaidOrder.OpenId = openId;
                 UnpaidOrder.CreateTime = DateTime.Now;
                 UnpaidOrderList.AddNewItem(UnpaidOrder);
 

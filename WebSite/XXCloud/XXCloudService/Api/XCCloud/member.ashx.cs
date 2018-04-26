@@ -24,8 +24,7 @@ using System.Data.Entity.Validation;
 using XXCloudService.Api.XCCloud.Common;
 
 namespace XCCloudService.Api.XCCloud
-{
-    [Authorize(Roles = "MerchUser")]
+{    
     /// <summary>
     /// member 的摘要说明
     /// </summary>
@@ -289,8 +288,8 @@ namespace XCCloudService.Api.XCCloud
             System.Data.DataSet ds = XCCloudBLL.GetStoredProcedureSentence(storedProcedure, sqlParameter);
             if (sqlParameter[3].Value.ToString() == "1")
             {
-                var baseMemberModel = Utils.GetModelList<BaseMemberModel>(ds.Tables[0]).ToList()[0];
-                return ResponseModelFactory<BaseMemberModel>.CreateModel(isSignKeyReturn, baseMemberModel);
+                var baseMemberModel = Utils.GetModelList<MemberBaseModel>(ds.Tables[0]).ToList()[0];
+                return ResponseModelFactory<MemberBaseModel>.CreateModel(isSignKeyReturn, baseMemberModel);
             }
             else
             {
@@ -562,12 +561,15 @@ namespace XCCloudService.Api.XCCloud
             System.Data.DataSet ds = XCCloudBLL.GetStoredProcedureSentence(storedProcedure, parameters);
             if (parameters[2].Value.ToString() == "1")
             {
-                var baseMemberModel = Utils.GetModelList<BaseMemberModel>(ds.Tables[0]).ToList()[0];
-                return ResponseModelFactory<BaseMemberModel>.CreateModel(isSignKeyReturn, baseMemberModel);
+                var memberBaseModel = Utils.GetModelList<MemberBaseModel>(ds.Tables[0]).ToList()[0];
+                var memberBalanceModelList = Utils.GetModelList<MemberBalanceModel>(ds.Tables[1]).ToList();
+                MemberModel model = new MemberModel(memberBaseModel, memberBalanceModelList);
+                return ResponseModelFactory<MemberModel>.CreateModel(isSignKeyReturn, model);
             }
             return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员信息不存在");
         }
 
+        [Authorize(Roles = "MerchUser")]
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object GetMemberLevelDic(Dictionary<string, object> dicParas)
         {
@@ -591,6 +593,7 @@ namespace XCCloudService.Api.XCCloud
             }
         }
 
+        [Authorize(Roles = "MerchUser")]
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object GetMemberDic(Dictionary<string, object> dicParas)
         {
@@ -617,6 +620,7 @@ namespace XCCloudService.Api.XCCloud
             }
         }
 
+        [Authorize(Roles = "MerchUser")]
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object QueryMemberLevel(Dictionary<string, object> dicParas)
         {
@@ -672,6 +676,7 @@ namespace XCCloudService.Api.XCCloud
             }
         }
 
+        [Authorize(Roles = "MerchUser")]
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object SaveMemberLevel(Dictionary<string, object> dicParas)
         {
@@ -910,6 +915,7 @@ namespace XCCloudService.Api.XCCloud
             }
         }
 
+        [Authorize(Roles = "MerchUser")]
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object GetMemberLevelInfo(Dictionary<string, object> dicParas)
         {
@@ -947,6 +953,7 @@ namespace XCCloudService.Api.XCCloud
         /// </summary>
         /// <param name="dicParas"></param>
         /// <returns></returns>
+        [Authorize(Roles = "MerchUser")]
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object GetMemberLevelFoodList(Dictionary<string, object> dicParas)
         {
@@ -977,6 +984,7 @@ namespace XCCloudService.Api.XCCloud
             }
         }
 
+        [Authorize(Roles = "MerchUser")]
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object GetMemberLevelFreeList(Dictionary<string, object> dicParas)
         {
@@ -1002,6 +1010,7 @@ namespace XCCloudService.Api.XCCloud
             }
         }
 
+        [Authorize(Roles = "MerchUser")]
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object UploadCardCover(Dictionary<string, object> dicParas)
         {
@@ -1026,6 +1035,7 @@ namespace XCCloudService.Api.XCCloud
             }
         }
 
+        [Authorize(Roles = "MerchUser")]
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object DelMemberLevelInfo(Dictionary<string, object> dicParas)
         {

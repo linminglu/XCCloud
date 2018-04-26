@@ -21,6 +21,7 @@ using XCCloudService.Model.CustomModel.XCGame;
 using XXCloudService.Utility;
 using XCCloudService.Model.WeiXin.SAppMessage;
 using XCCloudService.WeiXin.Message;
+using XCCloudService.Model.CustomModel.XCGameManager;
 
 namespace XCCloudService.Api.XCGame
 {
@@ -70,31 +71,51 @@ namespace XCCloudService.Api.XCGame
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员令牌不能再此设备上操作");
                 }
-                //验证门店信息和设备状态是否为启用状态
-                if (!ExtendBusiness.checkStoreDeviceInfo(deviceStoreType, storeId, deviceId, out segment, out mcuId, out xcGameDBName, out deviceIdentityId,out storePassword,out storeName, out errMsg))
+
+                StoreCacheModel storeModel = null;
+                StoreBusiness storeBusiness = new StoreBusiness();
+                if (!storeBusiness.IsEffectiveStore(storeId, ref storeModel,out errMsg))
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
                 }
-                //验证雷达设备缓存状态
-                if (!ExtendBusiness.checkRadarDeviceState(deviceStoreType, storeId, deviceId, out errMsg))
-                {
-                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
+
+                if (storeModel.StoreDBDeployType == 0)
+                { 
+                    //验证门店信息和设备状态是否为启用状态
+                    if (!ExtendBusiness.checkStoreDeviceInfo(deviceStoreType, storeId, deviceId, out segment, out mcuId, out xcGameDBName, out deviceIdentityId,out storePassword,out storeName, out errMsg))
+                    {
+                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
+                    }
+                    //验证雷达设备缓存状态
+                    if (!ExtendBusiness.checkRadarDeviceState(deviceStoreType, storeId, deviceId, out errMsg))
+                    {
+                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
+                    }
+                    //获取会员信息
+                    if (!ExtendBusiness.GetMemberInfo(deviceStoreType, mobile, xcGameDBName, out balance, out icCardId, out memberLevelId, out errMsg))
+                    {
+                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
+                    }
+                    //验证余额
+                    if (coins > balance)
+                    {
+                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "币数余额不足");
+                    }
+                    //数据库提币操作
+                    if (!getCoins(deviceStoreType, xcGameDBName, mobile, balance, coins, icCardId, segment, deviceId, deviceIdentityId,out lastBalance,out errMsg))
+                    {
+                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
+                    }                    
                 }
-                //获取会员信息
-                if (!ExtendBusiness.GetMemberInfo(deviceStoreType, mobile, xcGameDBName, out balance, out icCardId, out memberLevelId, out errMsg))
+                else if (storeModel.StoreDBDeployType == 1)
                 {
-                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
+                    deviceStoreType = XCGameManaDeviceStoreType.Store;
                 }
-                //验证余额
-                if (coins > balance)
+                else
                 {
-                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "币数余额不足");
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "门店设置错误");
                 }
-                //数据库提币操作
-                if (!getCoins(deviceStoreType, xcGameDBName, mobile, balance, coins, icCardId, segment, deviceId, deviceIdentityId,out lastBalance,out errMsg))
-                {
-                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
-                }
+
                 //请求雷达处理出币
                 if (!IConUtiltiy.DeviceOutputCoin(deviceStoreType, DevieControlTypeEnum.出币, storeId, mobile, icCardId, orderId, segment, mcuId, storePassword, 0, coins, string.Empty,out errMsg))
                 {

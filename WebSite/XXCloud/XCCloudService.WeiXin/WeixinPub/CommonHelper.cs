@@ -107,7 +107,7 @@ namespace XCCloudService.WeiXin.WeixinPub
 
             string ticket = GetTicket(accessToken);
 
-            LogHelper.SaveLog(TxtLogType.WeiXin, ticket);
+            //LogHelper.SaveLog(TxtLogType.WeiXin, ticket);
             return ticket;
 
             #region MyRegion
@@ -215,7 +215,6 @@ namespace XCCloudService.WeiXin.WeixinPub
                 config.NonceStr = ticketData.noncestr;
                 config.Signature = signature;
 
-                LogHelper.SaveLog(TxtLogType.WeiXin, "ticket=" + ticket + " ;timestamp=" + config.TimeStamp + " ; NonceStr=" + config.NonceStr);
                 return config;
             }
         }
@@ -271,7 +270,7 @@ namespace XCCloudService.WeiXin.WeixinPub
             }
             signStr = signStr.Trim('&');
 
-            //LogHelper.SaveLog(TxtLogType.WeiXin, signStr);
+            LogHelper.SaveLog(TxtLogType.WeiXin, signStr);
 
             string sign = EncryptToSHA1(signStr);
 

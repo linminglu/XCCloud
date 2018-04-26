@@ -1,0 +1,1 @@
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="charge.aspx.cs" Inherits="XXCloudService.Api.HaoKu.charge" %>

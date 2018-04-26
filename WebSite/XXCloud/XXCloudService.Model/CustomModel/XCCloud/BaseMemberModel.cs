@@ -8,19 +8,39 @@ using System.Threading.Tasks;
 namespace XCCloudService.Model.CustomModel.XCCloud
 {
     [DataContract]
-    public class BaseMemberModel
+    public class MemberModel
+    {
+        public MemberModel(MemberBaseModel memberBaseModel, List<MemberBalanceModel> memberBalanceModelList)
+        {
+            this.MemberBaseModel = memberBaseModel;
+            this.MemberBalanceModelList = memberBalanceModelList;
+        }
+
+        [DataMember(Name = "base", Order = 1)]
+        public MemberBaseModel MemberBaseModel { set; get; }
+
+        [DataMember(Name = "balance", Order = 2)]
+        public List<MemberBalanceModel> MemberBalanceModelList { set; get; }
+    }
+
+    [DataContract]
+    public class MemberBaseModel
     {
         [DataMember(Name = "icCardID", Order = 1)]
         public string ICCardID { set; get; }
+
         [DataMember(Name = "memberName", Order = 2)]
         public string MemberName { set; get; }
 
         [DataMember(Name = "gender", Order = 3)]
         public int Gender { set; get; }
+
         [DataMember(Name = "birthday", Order = 4)]
         public string Birthday { set; get; }
+
         [DataMember(Name = "certificalID", Order = 5)]
         public string IDCard { set; get; }
+
         [DataMember(Name = "mobile", Order = 6)]
         public string Mobile { set; get; }
 
@@ -38,28 +58,23 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         [DataMember(Name = "repeatCode", Order = 11)]
         public int RepeatCode { set; get; }
 
-
         [DataMember(Name = "storeId", Order = 12)]
         public string StoreId { set; get; }
 
-
         [DataMember(Name = "storeName", Order = 13)]
-        public string StoreName { set; get; }
+        public string StoreName { set; get; }     
+    }
 
-        [DataMember(Name = "storage", Order = 14)]
-        public decimal Storage { set; get; }
+    [DataContract]
+    public class MemberBalanceModel
+    {
+        [DataMember(Name = "balanceIndex", Order = 1)]
+        public string BalanceIndex { set; get; }
 
-        [DataMember(Name = "banlance", Order = 15)]
-        public decimal Banlance { set; get; }
+        [DataMember(Name = "balanceName", Order = 2)]
+        public string BalanceName { set; get; }
 
-        [DataMember(Name = "point", Order = 16)]
-        public decimal Point { set; get; }
-
-        [DataMember(Name = "lottery", Order = 17)]
-        public decimal Lottery { set; get; }
-
-        [DataMember(Name = "deposit", Order = 18)]
-        public decimal Deposit { set; get; }
-        
+        [DataMember(Name = "balance", Order = 3)]
+        public string Balance { set; get; }
     }
 }
