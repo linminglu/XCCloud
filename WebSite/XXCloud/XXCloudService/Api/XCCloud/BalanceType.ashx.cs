@@ -36,7 +36,7 @@ namespace XXCloudService.Api.XCCloud
                 IData_BalanceType_StoreListService data_BalanceType_StoreListService = BLLContainer.Resolve<IData_BalanceType_StoreListService>(resolveNew: true);
                 IBase_StoreInfoService base_StoreInfoService = BLLContainer.Resolve<IBase_StoreInfoService>(resolveNew:true);
                 var linq = from d in
-                               (from a in dict_BalanceTypeService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase))
+                               (from a in dict_BalanceTypeService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.State == 1)
                                 join b in data_BalanceType_StoreListService.GetModels() on a.ID equals b.BalanceIndex into b1
                                 from b in b1.DefaultIfEmpty()
                                 join c in base_StoreInfoService.GetModels() on b.StroeID equals c.StoreID into c1
@@ -74,7 +74,7 @@ namespace XXCloudService.Api.XCCloud
                 string errMsg = string.Empty;
 
                 IDict_BalanceTypeService dict_BalanceTypeService = BLLContainer.Resolve<IDict_BalanceTypeService>();
-                var linq = dict_BalanceTypeService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)).OrderBy(o => o.TypeID)
+                var linq = dict_BalanceTypeService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.State == 1).OrderBy(o => o.TypeID)
                     .Select(o => new 
                     {
                         ID = o.ID,
