@@ -363,7 +363,21 @@ namespace XXCloudService.Api.XCCloud
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
 
-                var data_GivebackRuleList = Data_GivebackRuleBiz.I.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)).ToList();
+                var data_GivebackRuleList = from a in Data_GivebackRuleBiz.NI.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase))
+                                            join b in Data_MemberLevelBiz.NI.GetModels(p => p.State == 1) on a.MemberLevelID equals b.MemberLevelID into b1
+                                            from b in b1.DefaultIfEmpty()
+                                            select new {
+                                                MemberLevelID = a.MemberLevelID,
+                                                MemberLevelName = b != null ? b.MemberLevelName : string.Empty,
+                                                AllowBackPrincipal = a.AllowBackPrincipal,
+                                                Backtype = a.Backtype,
+                                                AllowContainToday = a.AllowContainToday,
+                                                BackMin = a.BackMin,
+                                                BackMax = a.BackMax,
+                                                BackScale = a.BackScale,
+                                                ExitCardMin = a.ExitCardMin,
+                                                TotalDays = a.TotalDays
+                                            };
 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, data_GivebackRuleList);
             }
