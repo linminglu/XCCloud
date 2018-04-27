@@ -48,9 +48,13 @@
             <ul class="layui-nav layui-layout-left fsTopMenu" id="fsTopMenu" lay-filter="fsTopMenu">
                 <span class="layui-nav-bar" style="width: 0px; left: 0px; opacity: 0;"></span>
                 <li class="layui-nav-item" datapid="1"><a href="javascript:;"><i class="fa fa-cog"></i> <cite>控制台</cite></a></li>
-                <li class="layui-nav-item layui-this" datapid="2"><a href="javascript:;"> <cite>测试</cite></a></li>
+                <li class="layui-nav-item" lay-unselect=""><a href="javascript:;"> <cite>测试</cite></a></li>
             </ul>
             <ul class="layui-nav layui-layout-right" style="margin-right: 100px;" lay-shrink="all">
+                <li class="layui-nav-item" lay-unselect=""><a href="javascript:;">上线时间: <span id="nowTime"></span></a></li>
+                <li class="layui-nav-item" lay-unselect="">
+                    <a href="#"><i class="layui-icon" style="color:#fff;">&#xe715;</i>&nbsp;&nbsp;&nbsp;我的位置：<span id="myPlace"></span><span class="layui-badge-dot"></span></a>
+                </li>
                 <li class="layui-nav-item layui-hide" id="sysExchange">
                     <a href="#">系统切换</a>
                     <dl class="layui-nav-child ">
@@ -79,7 +83,7 @@
                     <dl class="layui-nav-child">
                         <dd><a href="javascript:;">简体中午</a></dd>
                         <dd><a href="javascript:;">ENGLISH</a></dd>
-                        <dd><a href="javascript:;">FRENCH</a></dd>
+                        <dd><a href="javascript:;">francais</a></dd>
                     </dl>
                 </li>
             </ul>
@@ -123,7 +127,16 @@
     let logMsg=JSON.parse(getStorage('logMsg'));
     let token=logMsg.token;
     let xc=xcActionSystem.prototype;
-
+    if(logMsg.logType==0){
+        $('#myPlace').text('莘宸工作人员/'+'')
+    }else if(logMsg.logType==1){
+        $('#myPlace').text('莘宸管理员/'+'')
+    }else if(logMsg.logType==2){
+        $('#myPlace').text('门店后台/门店ID:'+logMsg.storeId)
+    }
+    else if(logMsg.logType==3){
+        $('#myPlace').text('商户后台/商户ID:'+logMsg.merchId)
+    }
     //判断是否添加角色切换模块
     function exchangeSystem() {
         let logMsg=JSON.parse(getStorage('logMsg'));
@@ -151,6 +164,9 @@
     layui.use(['element','layer'],function () {
         let element=layui.element;
         let layer=layui.layer;
+        let _date=new Date()
+        $('#nowTime').text(_date.getFullYear()+'/'+(_date.getMonth()+1)+'/'+_date.getDate()+' '+_date.getHours()+':'+_date.getMinutes()+':'+_date.getSeconds());
+
         if(logMsg.switchStore==1){
             $('#storeListToGo').on('click','li',function (e) {
                  e.stopPropagation();

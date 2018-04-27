@@ -119,16 +119,10 @@ namespace XXCloudService.Api.XCCloud
                                 join b in data_BalanceType_StoreListService.GetModels() on a.ID equals b.BalanceIndex into b1
                                 from b in b1.DefaultIfEmpty()
                                 join c in base_StoreInfoService.GetModels() on b.StroeID equals c.StoreID into c1
-                                from c in c1.DefaultIfEmpty()
-                                join d in Dict_SystemBiz.NI.GetModels() on (a.HKType + "") equals d.DictValue into d1
-                                from d in d1.DefaultIfEmpty()
-                                join e in Dict_SystemBiz.NI.GetModels(p=>p.DictKey.Equals("关联类别", StringComparison.OrdinalIgnoreCase) && p.PID == 0) on d.PID equals e.ID into e1
-                                from e in e1.DefaultIfEmpty()
+                                from c in c1.DefaultIfEmpty()                                
                                 select new
                                 {
                                     a = a,
-                                    HKType = d != null ? d.ID : (int?)null,
-                                    HKTypeStr = d != null ? d.DictKey : string.Empty,
                                     StoreID = c != null ? c.StoreID : string.Empty
                                 }).AsEnumerable()
                            group t by t.a.ID into g
@@ -138,8 +132,7 @@ namespace XXCloudService.Api.XCCloud
                                TypeID = g.FirstOrDefault().a.TypeID,
                                TypeName = g.FirstOrDefault().a.TypeName,
                                Note = g.FirstOrDefault().a.Note,
-                               HKType = g.FirstOrDefault().HKType,
-                               HKTypeStr = g.FirstOrDefault().HKTypeStr,
+                               HKType = g.FirstOrDefault().a.HKType,
                                StoreIDs = string.Join("|", g.Select(o => o.StoreID))
                            };
 
@@ -254,14 +247,20 @@ namespace XXCloudService.Api.XCCloud
                             data_BalanceType_StoreListService.DeleteModel(model);
                         }
 
-                        foreach (var storeId in storeIds.Split('|'))
+                        if (!string.IsNullOrEmpty(storeIds))
                         {
-                            var model = new Data_BalanceType_StoreList();
-                            model.BalanceIndex = iId;
-                            model.StroeID = storeId;
-                            data_BalanceType_StoreListService.AddModel(model);
-                        }
+                            foreach (var storeId in storeIds.Split('|'))
+                            {
+                                if (!storeId.Nonempty("门店ID", out errMsg))
+                                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
+                                var model = new Data_BalanceType_StoreList();
+                                model.BalanceIndex = iId;
+                                model.StroeID = storeId;
+                                data_BalanceType_StoreListService.AddModel(model);
+                            }
+                        }
+                        
                         if (!data_BalanceType_StoreListService.SaveChanges())
                         {
                             errMsg = "更新余额类别适用门店信息失败";

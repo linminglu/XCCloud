@@ -171,12 +171,12 @@
                                 $('#TypeName').val(data.result_data[0].TypeName);
                                 $('#Note').val(data.result_data[0].Note);
                                 setStore(form,token,data.result_data[0].StoreIDs);
-                                if(data.result_data.StoreIDs){
-                                      storeId=(data.result_data.StoreIDs[0]).split("|");
+                                if(data.result_data[0].StoreIDs){
+                                      storeId=data.result_data[0].StoreIDs.split("|");
                                   }else{
                                     storeId=[];
                                   }
-                                HKType=data.result_data.HKType;
+                                HKType=data.result_data[0].HKType;
                                 $('#HKType').find('option[value="'+data.result_data.HKType+'"]').prop('selected',true)
                                     // .siblings().prop('selected',false);
                                 form.render();
