@@ -207,12 +207,12 @@ namespace XXCloudService.Api.XCCloud
                         IDict_BalanceTypeService dict_BalanceTypeService = BLLContainer.Resolve<IDict_BalanceTypeService>();
                         if (dict_BalanceTypeService.Any(p => p.ID != iId && p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.TypeID == iTypeId))
                         {
-                            errMsg = "类别编号不能重复";
+                            errMsg = "同商户余额类别编号不能重复";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 
                         var iHKType = hkType.Toint();
-                        if (dict_BalanceTypeService.Any(p => p.ID != iId && p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.HKType == iHKType && p.HKType != 0))
+                        if (dict_BalanceTypeService.Any(p => p.ID != iId && p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.HKType == iHKType && p.HKType != (int)HKType.NoBound))
                         {
                             errMsg = "同商户余额类别的关联类别不能重复";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);

@@ -600,6 +600,14 @@ namespace XCCloudService.Common.Enum
         储值金 = 3
     }
 
+    public enum HKType
+    {
+        NoBound = 0, //不绑定
+        Coin = 1, //代币
+        Lottery = 2, //彩票
+        Points = 3 //积分
+    }
+
     /// <summary>
     /// 设备类型
     /// </summary>
