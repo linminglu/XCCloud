@@ -609,41 +609,7 @@ namespace XCCloudService.Api.XCCloud
                         {
                             errMsg = "初始化门店运营参数失败";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
-
-                        //初始化返回规则设定
-                        dbContext = DbContextFactory.CreateByModelNamespace(typeof(Data_GivebackRule).Namespace);
-                        var data_GivebackRule = dbContext.Set<Data_GivebackRule>().AsQueryable();
-                        if (base_MerchantInfo.MerchTag == (int)MerchTag.Lottery)
-                        {
-                            data_GivebackRule = data_GivebackRule.Where(p => p.StoreID.Equals(MerchTag.Lottery.ToString()));
-                        }
-                        else
-                        {
-                            data_GivebackRule = data_GivebackRule.Where(p => p.StoreID.Equals(MerchTag.Game.ToString()));
-                        }
-
-                        foreach (var model in data_GivebackRule.ToList())
-                        {
-                            var data_GivebackRuleModel = new Data_GivebackRule();
-                            data_GivebackRuleModel.StoreID = storeId;
-                            data_GivebackRuleModel.MemberLevelID = model.MemberLevelID;
-                            data_GivebackRuleModel.BackMin = model.BackMin;
-                            data_GivebackRuleModel.BackMax = model.BackMax;
-                            data_GivebackRuleModel.BackScale = model.BackScale;
-                            data_GivebackRuleModel.ExitCardMin = model.ExitCardMin;
-                            data_GivebackRuleModel.AllowBackPrincipal = model.AllowBackPrincipal;
-                            data_GivebackRuleModel.Backtype = model.Backtype;
-                            data_GivebackRuleModel.TotalDays = model.TotalDays;
-                            data_GivebackRuleModel.AllowContainToday = model.AllowContainToday;
-                            dbContext.Entry(data_GivebackRuleModel).State = EntityState.Added;
-                        }
-
-                        if (dbContext.SaveChanges() < 0)
-                        {
-                            errMsg = "初始化门店返回规则失败";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
+                        }                        
 
                         #endregion
 

@@ -493,7 +493,6 @@
 
         });
         $('#saveStorebtn').on('click',()=>{
-            // xc.saveFoodStores(Id,token,layer)
             layer.close(indexLayer);
         });
         $('#cancelStorebtn').on('click',()=>{
@@ -526,12 +525,12 @@
                             laydate.render({
                                 elem: '#startDate'
                                 ,type: 'date'
-                                ,value: xc.timeStampDate(arr.StartTime)
+                                ,value: arr.StartTime
                             });
                             laydate.render({
                                 elem: '#endDate'
                                 ,type: 'date'
-                                ,value: xc.timeStampDate(arr.EndTime)
+                                ,value: arr.EndTime
                             });
                             $('#CouponName').val(arr.CouponName||'');
                             CouponType=arr.CouponType;

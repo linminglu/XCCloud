@@ -215,8 +215,7 @@
              BandType=''; BandTypeStr='';
              memberLevelID=[]; MemberLevelName=[];
             xc.SearchMemberLevel1('memberBox', token, layer);
-            // xc.setSelect('计费类型','BalanceType');
-            xc.getBalanceTypeDic(token,layer,form,'BalanceType')
+            xc.getBalanceTypeDic(token,layer,form,'BalanceType');
             xc.setSelect('档位类别','BandType');
              index=   layer.open({
                 title:'设置波段',
@@ -247,7 +246,7 @@
                 'deposit':$('#Deposit').val(),
                 'backTime':$('#BackTime').val(),
                 'note':$('#Note').val(),
-                'bandPrices':BandPrices.length>0?BandPrices:null,
+                'bandPrices':BandPrices,
                 'userToken':token,
                 'signkey':'1f626576304bf5d95b72ece2222e42c3'};
             let url='/XCCloud/ProjectTime?action=SaveProjectInfo';
@@ -291,8 +290,7 @@
                        $('#ProjectName').val(arr.ProjectName);
                        $('#PayCycle').val(arr.PayCycle);
                        DepositType=arr.DepositType;
-                        // xc.setSelect('计费类型','DepositType',arr.DepositType);
-                        xc.getBalanceTypeDic(token,layer,form,'DepositType',arr.DepositType)
+                       xc.getBalanceTypeDic(token,layer,form,'DepositType',arr.DepositType)
                        $('#Deposit').val(arr.Deposit);
                        $('#BackTime').val(arr.BackTime);
                        $('#Note').val(arr.Note);
@@ -372,7 +370,8 @@
                         &&BandPrices[i].MemberLevelNames==data.MemberLevelNames){
                         BandPrices.splice(i,1);
                         obj.del();
-                        // console.log(BandPrices)
+                        console.log(1)
+                        newTable(table,BandPrices,layer,form);
                     }
                 }
             }

@@ -712,7 +712,7 @@
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="StoreID" Type="varchar" MaxLength="15" />
+          <Property Name="MerchID" Type="varchar" MaxLength="15" />
           <Property Name="MemberLevelID" Type="int" />
           <Property Name="BackMin" Type="int" />
           <Property Name="BackMax" Type="int" />
@@ -2144,7 +2144,6 @@
           <EntitySet Name="Data_GameFreeRule_List" EntityType="XCCloudDBModel.Data_GameFreeRule_List" />
           <EntitySet Name="Data_GameInfo" EntityType="XCCloudDBModel.Data_GameInfo" />
           <EntitySet Name="Data_GameInfo_Photo" EntityType="XCCloudDBModel.Data_GameInfo_Photo" />
-          <EntitySet Name="Data_GivebackRule" EntityType="XCCloudDBModel.Data_GivebackRule" />
           <EntitySet Name="Data_GoodInventory" EntityType="XCCloudDBModel.Data_GoodInventory" />
           <EntitySet Name="Data_Jackpot_Level" EntityType="XCCloudDBModel.Data_Jackpot_Level" />
           <EntitySet Name="Data_Jackpot_Matrix" EntityType="XCCloudDBModel.Data_Jackpot_Matrix" />
@@ -2228,6 +2227,7 @@
           <EntitySet Name="Data_Food_Detial" EntityType="XCCloudDBModel.Data_Food_Detial" />
           <EntitySet Name="Data_Card_Balance" EntityType="XCCloudDBModel.Data_Card_Balance" />
           <EntitySet Name="Dict_BalanceType" EntityType="XCCloudDBModel.Dict_BalanceType" />
+          <EntitySet Name="Data_GivebackRule" EntityType="XCCloudDBModel.Data_GivebackRule" />
         </EntityContainer>
         <EntityType Name="Base_ChainRule">
           <Key>
@@ -2705,22 +2705,6 @@
           <Property Name="GameID" Type="Int32" />
           <Property Name="PhotoURL" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
           <Property Name="UploadTime" Type="DateTime" Precision="3" />
-        </EntityType>
-        <EntityType Name="Data_GivebackRule">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="MemberLevelID" Type="Int32" />
-          <Property Name="BackMin" Type="Int32" />
-          <Property Name="BackMax" Type="Int32" />
-          <Property Name="BackScale" Type="Int32" />
-          <Property Name="ExitCardMin" Type="Int32" />
-          <Property Name="AllowBackPrincipal" Type="Int32" />
-          <Property Name="Backtype" Type="Int32" />
-          <Property Name="TotalDays" Type="Int32" />
-          <Property Name="AllowContainToday" Type="Int32" />
         </EntityType>
         <EntityType Name="Data_GoodInventory">
           <Key>
@@ -4007,6 +3991,22 @@
           <Property Name="Note" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
           <Property Name="State" Type="Int32" />
         </EntityType>
+        <EntityType Name="Data_GivebackRule">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="MemberLevelID" Type="Int32" />
+          <Property Name="BackMin" Type="Int32" />
+          <Property Name="BackMax" Type="Int32" />
+          <Property Name="BackScale" Type="Int32" />
+          <Property Name="ExitCardMin" Type="Int32" />
+          <Property Name="AllowBackPrincipal" Type="Int32" />
+          <Property Name="Backtype" Type="Int32" />
+          <Property Name="TotalDays" Type="Int32" />
+          <Property Name="AllowContainToday" Type="Int32" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -4521,23 +4521,6 @@
                 <ScalarProperty Name="UploadTime" ColumnName="UploadTime" />
                 <ScalarProperty Name="PhotoURL" ColumnName="PhotoURL" />
                 <ScalarProperty Name="GameID" ColumnName="GameID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Data_GivebackRule">
-            <EntityTypeMapping TypeName="XCCloudDBModel.Data_GivebackRule">
-              <MappingFragment StoreEntitySet="Data_GivebackRule">
-                <ScalarProperty Name="AllowContainToday" ColumnName="AllowContainToday" />
-                <ScalarProperty Name="TotalDays" ColumnName="TotalDays" />
-                <ScalarProperty Name="Backtype" ColumnName="Backtype" />
-                <ScalarProperty Name="AllowBackPrincipal" ColumnName="AllowBackPrincipal" />
-                <ScalarProperty Name="ExitCardMin" ColumnName="ExitCardMin" />
-                <ScalarProperty Name="BackScale" ColumnName="BackScale" />
-                <ScalarProperty Name="BackMax" ColumnName="BackMax" />
-                <ScalarProperty Name="BackMin" ColumnName="BackMin" />
-                <ScalarProperty Name="MemberLevelID" ColumnName="MemberLevelID" />
-                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -5905,6 +5888,23 @@
                 <ScalarProperty Name="HKType" ColumnName="HKType" />
                 <ScalarProperty Name="TypeName" ColumnName="TypeName" />
                 <ScalarProperty Name="TypeID" ColumnName="TypeID" />
+                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Data_GivebackRule">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Data_GivebackRule">
+              <MappingFragment StoreEntitySet="Data_GivebackRule">
+                <ScalarProperty Name="AllowContainToday" ColumnName="AllowContainToday" />
+                <ScalarProperty Name="TotalDays" ColumnName="TotalDays" />
+                <ScalarProperty Name="Backtype" ColumnName="Backtype" />
+                <ScalarProperty Name="AllowBackPrincipal" ColumnName="AllowBackPrincipal" />
+                <ScalarProperty Name="ExitCardMin" ColumnName="ExitCardMin" />
+                <ScalarProperty Name="BackScale" ColumnName="BackScale" />
+                <ScalarProperty Name="BackMax" ColumnName="BackMax" />
+                <ScalarProperty Name="BackMin" ColumnName="BackMin" />
+                <ScalarProperty Name="MemberLevelID" ColumnName="MemberLevelID" />
                 <ScalarProperty Name="MerchID" ColumnName="MerchID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>

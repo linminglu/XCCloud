@@ -49,7 +49,7 @@ namespace XXCloudService.Api.XCCloud
             if (foodSales != null && foodSales.Count() >= 0)
             {
                 //先删除，后添加
-                var data_Food_SaleService = Data_Food_SaleBusiness.I;
+                var data_Food_SaleService = Data_Food_SaleBiz.I;
                 foreach (var model in data_Food_SaleService.GetModels(p => p.FoodID == iFoodId))
                 {
                     data_Food_SaleService.DeleteModel(model);
@@ -284,91 +284,48 @@ namespace XXCloudService.Api.XCCloud
                     if (el != null)
                     {
                         var dicPara = new Dictionary<string, object>(el, StringComparer.OrdinalIgnoreCase);
-                        string foodDetailType = dicPara.ContainsKey("foodDetailType") ? (dicPara["foodDetailType"] + "") : string.Empty;
-                        string balanceType = dicPara.ContainsKey("balanceType") ? (dicPara["balanceType"] + "") : string.Empty;
-                        string operateType = dicPara.ContainsKey("operateType") ? (dicPara["operateType"] + "") : string.Empty;
-                        string containId = dicPara.ContainsKey("containId") ? (dicPara["containId"] + "") : string.Empty;
-                        string containCount = dicPara.ContainsKey("containCount") ? (dicPara["containCount"] + "") : string.Empty;
-                        string weightValue = dicPara.ContainsKey("weightValue") ? (dicPara["weightValue"] + "") : string.Empty;
-                        string days = dicPara.ContainsKey("days") ? (dicPara["days"] + "") : string.Empty;
-                        int iFoodDetailType = 0;
-                        int.TryParse(foodDetailType, out iFoodDetailType);
+                        var foodDetailType = dicPara.Get("foodDetailType").Toint();
+                        var balanceType = dicPara.Get("balanceType").Toint();
+                        var operateType = dicPara.Get("operateType").Toint();
+                        var containId = dicPara.Get("containId").Toint();
+                        var containCount = dicPara.Get("containCount").Toint();
+                        var weightValue = dicPara.Get("weightValue").Todecimal();
+                        var days = dicPara.Get("days").Toint();
 
-                        if (string.IsNullOrEmpty(foodDetailType))
-                        {
-                            errMsg = "套餐内容类别不能为空";
+                        if (!foodDetailType.Nonempty("套餐内容类别", out errMsg)) 
                             return false;
-                        }
-                        if (iFoodDetailType == (int)FoodDetailType.Coin && string.IsNullOrEmpty(balanceType))
+
+                        if (foodDetailType == (int)FoodDetailType.Coin)
                         {
-                            errMsg = "会员币种种类不能为空";
-                            return false;
-                        }
-                        if (iFoodDetailType == (int)FoodDetailType.Coin && string.IsNullOrEmpty(operateType))
-                        {
-                            errMsg = "会员币种处理方式不能为空";
-                            return false;
-                        }
-                        if (string.IsNullOrEmpty(containCount))
-                        {
-                            errMsg = "内容数量不能为空";
-                            return false;
-                        }
-                        if (!Utils.isNumber(containCount))
-                        {
-                            errMsg = "内容数量格式不正确";
-                            return false;
-                        }
-                        if (Convert.ToInt32(containCount) < 0)
-                        {
-                            errMsg = "内容数量不能为负数";
-                            return false;
-                        }
-                        if (string.IsNullOrEmpty(weightValue))
-                        {
-                            errMsg = "权重价值不能为空";
-                            return false;
-                        }
-                        if (!Utils.IsDecimal(weightValue))
-                        {
-                            errMsg = "权重价值格式不正确";
-                            return false;
-                        }
-                        if (Convert.ToDecimal(weightValue) < 0)
-                        {
-                            errMsg = "权重价值不能为负数";
-                            return false;
-                        }
-                        if (iFoodDetailType == (int)FoodDetailType.Ticket)
-                        {
-                            if (string.IsNullOrEmpty(days))
-                            {
-                                errMsg = "有效天数不能为空";
+                            if (!balanceType.Nonempty("会员币种种类", out errMsg))
                                 return false;
-                            }
-                            if (!Utils.isNumber(days))
-                            {
-                                errMsg = "有效天数格式不正确";
+                            if (!operateType.Nonempty("会员币种处理方式", out errMsg))
                                 return false;
-                            }
-                            if (Convert.ToInt32(days) < 0)
-                            {
-                                errMsg = "有效天数不能为负数";
+                        }
+                        
+                        if (!containCount.Illegalint("内容数量", out errMsg)) 
+                            return false;
+                        if (!weightValue.Illegaldec("权重价值", out errMsg)) 
+                            return false;
+
+                        if (foodDetailType == (int)FoodDetailType.Ticket
+                            || foodDetailType == (int)FoodDetailType.Coupon)
+                        {
+                            if (!days.Illegalint("有效天数", out errMsg))
                                 return false;
-                            }
                         }
 
                         var data_Food_DetialModel = new Data_Food_Detial();
                         data_Food_DetialModel.FoodID = iFoodId;
                         data_Food_DetialModel.Status = 1;
-                        data_Food_DetialModel.FoodType = iFoodDetailType;
-                        data_Food_DetialModel.BalanceType = ObjectExt.Toint(balanceType); 
-                        data_Food_DetialModel.ContainCount = ObjectExt.Toint(containCount); 
-                        data_Food_DetialModel.ContainID = ObjectExt.Toint(containId);
+                        data_Food_DetialModel.FoodType = foodDetailType;
+                        data_Food_DetialModel.BalanceType = balanceType;
+                        data_Food_DetialModel.ContainCount = containCount;
+                        data_Food_DetialModel.ContainID = containId;
                         data_Food_DetialModel.WeightType = (int)WeightType.Money;
-                        data_Food_DetialModel.WeightValue = ObjectExt.Todecimal(weightValue);
-                        data_Food_DetialModel.Days = ObjectExt.Toint(days);
-                        data_Food_DetialModel.OperateType = ObjectExt.Toint(operateType);
+                        data_Food_DetialModel.WeightValue = weightValue;
+                        data_Food_DetialModel.Days = days;
+                        data_Food_DetialModel.OperateType = operateType;
                         dbContext.Entry(data_Food_DetialModel).State = EntityState.Added;
                     }
                     else
@@ -418,7 +375,7 @@ namespace XXCloudService.Api.XCCloud
                     " where a.MerchID=@MerchId ";
                 sql = sql + sqlWhere;
 
-                IData_FoodInfoService data_FoodInfoService = Data_FoodInfoBusiness.I;
+                IData_FoodInfoService data_FoodInfoService = Data_FoodInfoBiz.I;
                 var data_FoodInfo = data_FoodInfoService.SqlQuery<Data_FoodInfoListModel>(sql, parameters).ToList();
                 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, data_FoodInfo);
@@ -442,7 +399,7 @@ namespace XXCloudService.Api.XCCloud
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
 
-                var linq = from a in Data_FoodInfoBusiness.I.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.FoodState == 1 && p.FoodType == (int)FoodType.Member)                          
+                var linq = from a in Data_FoodInfoBiz.I.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.FoodState == 1 && p.FoodType == (int)FoodType.Member)                          
                            select new
                            {
                                FoodID = a.FoodID,
@@ -472,7 +429,7 @@ namespace XXCloudService.Api.XCCloud
                 }
 
                 int iFoodId = Convert.ToInt32(foodId);                                               
-                var FoodInfo = Data_FoodInfoBusiness.I.GetModels(p => p.FoodID == iFoodId).FirstOrDefault();
+                var FoodInfo = Data_FoodInfoBiz.I.GetModels(p => p.FoodID == iFoodId).FirstOrDefault();
                 if(FoodInfo == null)
                 {
                     errMsg = "该套餐不存在";
@@ -480,8 +437,8 @@ namespace XXCloudService.Api.XCCloud
                 }
 
                 var FoodLevels = from c in
-                                     (from a in Data_Food_LevelBusiness.NI.GetModels(p => p.FoodID == iFoodId)
-                                      join b in Data_MemberLevelBusiness.NI.GetModels(p => p.State == 1) on a.MemberLevelID equals b.MemberLevelID
+                                     (from a in Data_Food_LevelBiz.NI.GetModels(p => p.FoodID == iFoodId)
+                                      join b in Data_MemberLevelBiz.NI.GetModels(p => p.State == 1) on a.MemberLevelID equals b.MemberLevelID
                                       select new
                                       {
                                           a = a,
@@ -506,38 +463,40 @@ namespace XXCloudService.Api.XCCloud
                                      UpdateLevelID = g.FirstOrDefault().a.UpdateLevelID
                                  };                                 
 
-                int FoodDetailId = Dict_SystemBusiness.I.GetModels(p => p.DictKey.Equals("套餐内容") && p.PID == 0).FirstOrDefault().ID;
-                int FoodDetailTypeId = Dict_SystemBusiness.I.GetModels(p => p.DictKey.Equals("套餐类别") && p.PID == FoodDetailId).FirstOrDefault().ID;
-                int FeeTypeId = Dict_SystemBusiness.I.GetModels(p => p.DictKey.Equals("计费方式")).FirstOrDefault().ID;
-                var FoodDetials = from a in Data_Food_DetialBusiness.NI.GetModels(p => p.FoodID == iFoodId && p.Status == 1)
-                                  join b in Data_ProjectInfoBusiness.NI.GetModels() on new { ContainID = a.ContainID, FoodType = a.FoodType } equals new { ContainID = (int?)b.ID, FoodType = (int?)FoodDetailType.Ticket } into b1
+                int FoodDetailId = Dict_SystemBiz.I.GetModels(p => p.DictKey.Equals("套餐内容") && p.PID == 0).FirstOrDefault().ID;
+                int FoodDetailTypeId = Dict_SystemBiz.I.GetModels(p => p.DictKey.Equals("套餐类别") && p.PID == FoodDetailId).FirstOrDefault().ID;
+                int FeeTypeId = Dict_SystemBiz.I.GetModels(p => p.DictKey.Equals("计费方式")).FirstOrDefault().ID;
+                var FoodDetials = from a in Data_Food_DetialBiz.NI.GetModels(p => p.FoodID == iFoodId && p.Status == 1)
+                                  join b in Data_ProjectInfoBiz.NI.GetModels() on new { ContainID = a.ContainID, FoodType = a.FoodType } equals new { ContainID = (int?)b.ID, FoodType = (int?)FoodDetailType.Ticket } into b1
                                   from b in b1.DefaultIfEmpty()
-                                  join c in Base_GoodsInfoBusiness.NI.GetModels() on new { ContainID = a.ContainID, FoodType = a.FoodType } equals new { ContainID = (int?)c.ID, FoodType = (int?)FoodDetailType.Good } into c1
+                                  join c in Base_GoodsInfoBiz.NI.GetModels() on new { ContainID = a.ContainID, FoodType = a.FoodType } equals new { ContainID = (int?)c.ID, FoodType = (int?)FoodDetailType.Good } into c1
                                   from c in c1.DefaultIfEmpty()
-                                  join d in Dict_SystemBusiness.NI.GetModels(p => p.PID == FoodDetailTypeId) on (a.FoodType + "") equals d.DictValue into d1
+                                  join d in Dict_SystemBiz.NI.GetModels(p => p.PID == FoodDetailTypeId) on (a.FoodType + "") equals d.DictValue into d1
                                   from d in d1.DefaultIfEmpty()
-                                  join f in Dict_BalanceTypeBusiness.NI.GetModels(p=>p.State == 1) on a.BalanceType equals f.ID into f1
+                                  join f in Dict_BalanceTypeBiz.NI.GetModels(p=>p.State == 1) on a.BalanceType equals f.ID into f1
                                   from f in f1.DefaultIfEmpty()
-                                  join g in Data_CouponInfoBusiness.NI.GetModels() on new { ContainID = a.ContainID, FoodType = a.FoodType } equals new { ContainID = (int?)g.ID, FoodType = (int?)FoodDetailType.Coupon } into g1
+                                  join g in Data_CouponInfoBiz.NI.GetModels() on new { ContainID = a.ContainID, FoodType = a.FoodType } equals new { ContainID = (int?)g.ID, FoodType = (int?)FoodDetailType.Coupon } into g1
                                   from g in g1.DefaultIfEmpty()
                                   select new
                                   {
                                       ID = a.ID,
                                       ContainID = a.ContainID,
                                       ProjectName = (a.FoodType == (int)FoodDetailType.Coin) ? "游戏币" : (a.FoodType == (int)FoodDetailType.Digit) ? "数字币" : (a.FoodType == (int)FoodDetailType.Good) ? (c != null ? c.GoodName : string.Empty) :
-                                                    (a.FoodType == (int)FoodDetailType.Ticket) ? (b != null ? b.ProjectName : string.Empty) : (a.FoodType == (int)FoodDetailType.Coupon) ? (g.EntryCouponFlag == (int)EntryCouponFlag.Entry ? "实物券" : "电子券") : string.Empty,
+                                                    (a.FoodType == (int)FoodDetailType.Ticket) ? (b != null ? b.ProjectName : string.Empty) : (a.FoodType == (int)FoodDetailType.Coupon) ? (g != null ? g.CouponName : string.Empty) : string.Empty,
                                       FoodDetailType = a.FoodType,                                      
                                       FoodDetailTypeStr = (a.FoodType == (int)FoodDetailType.Coin) ? (f != null ? f.TypeName : string.Empty) : (d != null ? d.DictKey : string.Empty),
                                       ContainCount = a.ContainCount,
                                       Days = a.Days,
-                                      WeightValue = a.WeightValue
+                                      WeightValue = a.WeightValue,
+                                      OperateType = a.OperateType
                                   };
 
-                var FoodSales = from a in Data_Food_SaleBusiness.NI.GetModels(p => p.FoodID == iFoodId)
-                                join b in Dict_BalanceTypeBusiness.NI.GetModels() on a.BalanceType equals b.ID
+                var FoodSales = from a in Data_Food_SaleBiz.NI.GetModels(p => p.FoodID == iFoodId)
+                                join b in Dict_BalanceTypeBiz.NI.GetModels() on a.BalanceType equals b.ID
                                 select new {
-                                    ID = a.BalanceType,
-                                    TypeName = b.TypeName
+                                    BalanceType = a.BalanceType,
+                                    BalanceTypeStr = b.TypeName,
+                                    UseCount = a.UseCount
                                 };
 
                 var result = new
@@ -663,7 +622,7 @@ namespace XXCloudService.Api.XCCloud
                 {
                     try
                     {
-                        IData_FoodInfoService data_FoodInfoService = Data_FoodInfoBusiness.I;
+                        IData_FoodInfoService data_FoodInfoService = Data_FoodInfoBiz.I;
                         var data_FoodInfo = new Data_FoodInfo();
                         data_FoodInfo.FoodID = iFoodId;
                         data_FoodInfo.FoodName = foodName;
@@ -746,10 +705,10 @@ namespace XXCloudService.Api.XCCloud
                 string errMsg = string.Empty;                
                 string goodNameOrBarcode = dicParas.ContainsKey("goodNameOrBarcode") ? (dicParas["goodNameOrBarcode"] + "") : string.Empty;
 
-                IDict_SystemService dict_SystemService = Dict_SystemBusiness.NI;
+                IDict_SystemService dict_SystemService = Dict_SystemBiz.NI;
                 int GoodTypeId = dict_SystemService.GetModels(p => p.DictKey.Equals("商品类别")).FirstOrDefault().ID;
 
-                IBase_GoodsInfoService base_GoodsInfoService = Base_GoodsInfoBusiness.NI;
+                IBase_GoodsInfoService base_GoodsInfoService = Base_GoodsInfoBiz.NI;
                 var query = base_GoodsInfoService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.GoodType == (int)GoodType.Good && p.Status == 1);
                 if (!string.IsNullOrEmpty(goodNameOrBarcode))
                 {
@@ -814,7 +773,7 @@ namespace XXCloudService.Api.XCCloud
                 }
 
                 int iFoodId = Convert.ToInt32(foodId);
-                var storeIDs = Data_Food_StoreListBusiness.I.GetModels(p => p.FoodID == iFoodId).Select(o => new { StoreID = o.StoreID });
+                var storeIDs = Data_Food_StoreListBiz.I.GetModels(p => p.FoodID == iFoodId).Select(o => new { StoreID = o.StoreID });
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, storeIDs);
             }
             catch (Exception e)
@@ -844,7 +803,7 @@ namespace XXCloudService.Api.XCCloud
                     try
                     {
                         int iFoodId = Convert.ToInt32(foodId);
-                        var data_Food_StoreListService = Data_Food_StoreListBusiness.I;
+                        var data_Food_StoreListService = Data_Food_StoreListBiz.I;
                         foreach (var model in data_Food_StoreListService.GetModels(p => p.FoodID == iFoodId))
                         {
                             data_Food_StoreListService.DeleteModel(model);

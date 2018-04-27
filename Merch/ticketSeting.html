@@ -34,7 +34,7 @@
         left: 32px;
     }
 
-    #goodIsAll .layui-form-switch {
+    .goodIsAll .layui-form-switch {
         height: 36px;
         line-height: 36px;
         width: 180px;
@@ -43,7 +43,7 @@
         background-color: #999;
     }
 
-    #goodIsAll .layui-form-switch i {
+    .goodIsAll .layui-form-switch i {
         left: 0px;
         top: 0px;
         width: 95px;
@@ -54,18 +54,18 @@
         background-color: #fff;
     }
 
-    #goodIsAll  .layui-form-switch em {
+    .goodIsAll  .layui-form-switch em {
         width: 80px;
         color: #ffffff!important;
         font-size: 14px;
     }
 
-    #goodIsAll .layui-form-onswitch {
+    .goodIsAll .layui-form-onswitch {
         border-color: #1e9fff!important;
         background-color: #1e9fff!important;
     }
 
-    #goodIsAll  .layui-form-onswitch i {
+   .goodIsAll  .layui-form-onswitch i {
         left: 95px;
         border-radius: 0 5px 5px 0;
         border: 1px solid #aaa;
@@ -84,6 +84,7 @@
 <!--门票设置弹窗-->
 <div id="openModel" style="padding: 15px;display:none;">
     <form action="" class="layui-form layui-form-pane">
+        <div class="layui-col-md8" style="min-height: 320px">
             <div class="layui-form-item">
                 <label class="layui-form-label">项目名称</label>
                 <div class="layui-input-block">
@@ -119,39 +120,47 @@
                     </div>
                 </div>
             </div>
-
-
-        <div class=" layui-hide" id="FlagTrue">
-            <div class="layui-form-item">
-                <label class="layui-form-label">现金票价</label>
-                <div class="layui-input-block">
-                    <input type="text" class="layui-input" id="AccompanyCash">
+            <div class=" layui-hide" id="FlagTrue">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">现金票价</label>
+                    <div class="layui-input-block">
+                        <input type="text" class="layui-input" id="AccompanyCash">
+                    </div>
+                </div>
+                <div class="layui-form-item" style="margin-right: 0;">
+                    <label class="layui-form-label">扣除种类</label>
+                    <div class="layui-input-block">
+                        <select id="BalanceType" lay-filter="BalanceType"></select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">扣除数量</label>
+                    <div class="layui-input-block">
+                        <input type="text" class="layui-input" id="BalanceCount">
+                    </div>
                 </div>
             </div>
-            <div class="layui-form-item" style="margin-right: 0;">
-                <label class="layui-form-label">扣除种类</label>
-                <div class="layui-input-block">
-                    <select id="BalanceType" lay-filter="BalanceType"></select>
-                </div>
-            </div>
+
+        </div>
+        <div class="layui-col-md4" style="height: 320px;border-left: 1px solid #aaa;padding: 0 15px;">
             <div class="layui-form-item">
-                <label class="layui-form-label">扣除数量</label>
-                <div class="layui-input-block">
-                    <input type="text" class="layui-input" id="BalanceCount">
+                <label class="layui-form-label">绑定项目</label>
+                <div class="layui-input-block" id="bindProject">
+
                 </div>
             </div>
         </div>
         <div class="layui-form-item">
-                <label class="layui-form-label" style="height: 100px">备注</label>
-                <div class="layui-input-block">
-                    <textarea id="Note" class="layui-textarea"></textarea>
-                </div>
+            <label class="layui-form-label" style="height: 100px">备注</label>
+            <div class="layui-input-block">
+                <textarea id="Note" class="layui-textarea"></textarea>
+            </div>
         </div>
-        <div style="text-align:center;padding-right: 15px;margin: 15px 0;">
-            <button type="button" class="layui-btn layui-btn-normal" id="cancelBtn">取消</button>
-            <button type="reset" class="layui-btn layui-btn-normal">重置</button>
-            <button type="button" class="layui-btn layui-btn-normal" id="saveBtn">确定</button>
-        </div>
+            <div style="text-align:center;padding-right: 15px;margin: 15px 0;">
+                <button type="button" class="layui-btn layui-btn-normal" id="cancelBtn">取消</button>
+                <button type="reset" class="layui-btn layui-btn-normal">重置</button>
+                <button type="button" class="layui-btn layui-btn-normal" id="saveBtn">确定</button>
+            </div>
     </form>
 </div>
 <!--适用门店弹窗-->
@@ -211,11 +220,12 @@
              _id='';
              _balanceType='';
              $(this).find('button[type="reset"]').trigger('click');
+            xc.getProjectGames(token,layer,form,'bindProject');
             $('#FlagTrue').addClass('layui-hide');
             layer.open({
                 title:'设置门票',
                 type:1,
-                area:'655px',
+                area:'1000px',
                 content:$('#openModel')
             })
         });

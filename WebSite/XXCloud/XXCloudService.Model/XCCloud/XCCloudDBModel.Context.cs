@@ -62,7 +62,6 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Data_GameFreeRule_List> Data_GameFreeRule_List { get; set; }
         public virtual DbSet<Data_GameInfo> Data_GameInfo { get; set; }
         public virtual DbSet<Data_GameInfo_Photo> Data_GameInfo_Photo { get; set; }
-        public virtual DbSet<Data_GivebackRule> Data_GivebackRule { get; set; }
         public virtual DbSet<Data_GoodInventory> Data_GoodInventory { get; set; }
         public virtual DbSet<Data_Jackpot_Level> Data_Jackpot_Level { get; set; }
         public virtual DbSet<Data_Jackpot_Matrix> Data_Jackpot_Matrix { get; set; }
@@ -146,5 +145,6 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Data_Food_Detial> Data_Food_Detial { get; set; }
         public virtual DbSet<Data_Card_Balance> Data_Card_Balance { get; set; }
         public virtual DbSet<Dict_BalanceType> Dict_BalanceType { get; set; }
+        public virtual DbSet<Data_GivebackRule> Data_GivebackRule { get; set; }
     }
 }

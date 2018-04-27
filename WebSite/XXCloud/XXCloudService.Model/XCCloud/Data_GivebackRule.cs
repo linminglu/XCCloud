@@ -15,7 +15,7 @@ namespace XCCloudService.Model.XCCloud
     public partial class Data_GivebackRule
     {
         public int ID { get; set; }
-        public string StoreID { get; set; }
+        public string MerchID { get; set; }
         public Nullable<int> MemberLevelID { get; set; }
         public Nullable<int> BackMin { get; set; }
         public Nullable<int> BackMax { get; set; }

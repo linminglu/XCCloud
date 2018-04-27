@@ -86,7 +86,7 @@ namespace XXCloudService.Api.XCCloud
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
                                 
-                var query = Data_CoinStorageBusiness.NI.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase));
+                var query = Data_CoinStorageBiz.NI.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase));
                 if (!string.IsNullOrEmpty(destroyTime))
                 {
                     var dt = destroyTime.Todatetime();
@@ -94,7 +94,7 @@ namespace XXCloudService.Api.XCCloud
                 }
 
                 var result = from a in query
-                             join b in Base_UserInfoBusiness.NI.GetModels(p => p.UserType == (int)UserType.Store) on a.UserID equals b.UserID into b1
+                             join b in Base_UserInfoBiz.NI.GetModels(p => p.UserType == (int)UserType.Store) on a.UserID equals b.UserID into b1
                              from b in b1.DefaultIfEmpty()
                              select new
                              {
@@ -178,7 +178,7 @@ namespace XXCloudService.Api.XCCloud
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
 
-                var query = Data_CoinDestoryBusiness.NI.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase));
+                var query = Data_CoinDestoryBiz.NI.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase));
                 if (!string.IsNullOrEmpty(destroyTime))
                 {
                     var dt = destroyTime.Todatetime();
@@ -186,7 +186,7 @@ namespace XXCloudService.Api.XCCloud
                 }
 
                 var result = from a in query
-                             join b in Base_UserInfoBusiness.NI.GetModels(p => p.UserType == (int)UserType.Store) on a.UserID equals b.UserID into b1
+                             join b in Base_UserInfoBiz.NI.GetModels(p => p.UserType == (int)UserType.Store) on a.UserID equals b.UserID into b1
                              from b in b1.DefaultIfEmpty()
                              select new
                              {
@@ -373,7 +373,7 @@ namespace XXCloudService.Api.XCCloud
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
 
-                var query = Data_DigitCoinDestroyBusiness.NI.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase));
+                var query = Data_DigitCoinDestroyBiz.NI.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase));
                 if (!string.IsNullOrEmpty(destroyTime))
                 {
                     var dt = destroyTime.Todatetime();
@@ -386,7 +386,7 @@ namespace XXCloudService.Api.XCCloud
                 }
 
                 var result = from a in query
-                             join b in Base_UserInfoBusiness.NI.GetModels(p => p.UserType == (int)UserType.Store) on a.UserID equals b.UserID into b1
+                             join b in Base_UserInfoBiz.NI.GetModels(p => p.UserType == (int)UserType.Store) on a.UserID equals b.UserID into b1
                              from b in b1.DefaultIfEmpty()
                              select new
                              {

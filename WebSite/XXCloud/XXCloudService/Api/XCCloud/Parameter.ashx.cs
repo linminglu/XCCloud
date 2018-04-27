@@ -14,6 +14,7 @@ using XCCloudService.Model.XCCloud;
 using System.Transactions;
 using System.Data.Entity.SqlServer;
 using XCCloudService.Common.Extensions;
+using XCCloudService.Business.XCCloud;
 
 namespace XXCloudService.Api.XCCloud
 {
@@ -367,11 +368,10 @@ namespace XXCloudService.Api.XCCloud
         {
             try
             {
-                string errMsg = string.Empty;
-                string storeId = dicParas.ContainsKey("storeId") ? dicParas["storeId"].ToString() : string.Empty;
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
 
-                IData_GivebackRuleService data_GivebackRuleService = BLLContainer.Resolve<IData_GivebackRuleService>();
-                var data_GivebackRule = data_GivebackRuleService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)).ToList();
+                var data_GivebackRule = Data_GivebackRuleBiz.I.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)).ToList();
                 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, data_GivebackRule);
             }
@@ -386,8 +386,10 @@ namespace XXCloudService.Api.XCCloud
         {
             try
             {
-                string errMsg = string.Empty;
-                string storeId = dicParas.ContainsKey("storeId") ? dicParas["storeId"].ToString() : string.Empty;
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
+
+                string errMsg = string.Empty;                
                 string memberLvlId = dicParas.ContainsKey("memberLvlId") ? dicParas["memberLvlId"].ToString() : string.Empty;                                
                 string allowBackPrincipal = dicParas.ContainsKey("allowBackPrincipal") ? dicParas["allowBackPrincipal"].ToString() : string.Empty;
                 string backType = dicParas.ContainsKey("backType") ? dicParas["backType"].ToString() : string.Empty;                
@@ -406,7 +408,7 @@ namespace XXCloudService.Api.XCCloud
 
                 IData_GivebackRuleService data_GivebackRuleService = BLLContainer.Resolve<IData_GivebackRuleService>();
                 Data_GivebackRule data_GivebackRule = new Data_GivebackRule();
-                data_GivebackRule.StoreID = storeId;
+                data_GivebackRule.MerchID = merchId;
                 data_GivebackRule.MemberLevelID = Convert.ToInt32(memberLvlId);
                 data_GivebackRule.AllowBackPrincipal = Convert.ToInt32(allowBackPrincipal);
                 data_GivebackRule.Backtype = Convert.ToInt32(backType);

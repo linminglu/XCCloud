@@ -10,7 +10,7 @@ using XCCloudService.BLL.IBLL.XCCloud;
 namespace XCCloudService.Business.XCCloud
 {  
     
-    public partial class Base_ChainRuleBusiness
+    public partial class Base_ChainRuleBiz
     {
 		public static IBase_ChainRuleService I
         {
@@ -29,7 +29,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Base_ChainRule_StoreBusiness
+    public partial class Base_ChainRule_StoreBiz
     {
 		public static IBase_ChainRule_StoreService I
         {
@@ -48,7 +48,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Base_DepotInfoBusiness
+    public partial class Base_DepotInfoBiz
     {
 		public static IBase_DepotInfoService I
         {
@@ -67,7 +67,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Base_DeviceInfoBusiness
+    public partial class Base_DeviceInfoBiz
     {
 		public static IBase_DeviceInfoService I
         {
@@ -86,7 +86,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Base_EnumParamsBusiness
+    public partial class Base_EnumParamsBiz
     {
 		public static IBase_EnumParamsService I
         {
@@ -105,7 +105,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Base_GoodsInfoBusiness
+    public partial class Base_GoodsInfoBiz
     {
 		public static IBase_GoodsInfoService I
         {
@@ -124,7 +124,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Base_MemberInfoBusiness
+    public partial class Base_MemberInfoBiz
     {
 		public static IBase_MemberInfoService I
         {
@@ -143,7 +143,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Base_MerchAlipayBusiness
+    public partial class Base_MerchAlipayBiz
     {
 		public static IBase_MerchAlipayService I
         {
@@ -162,7 +162,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Base_MerchantInfoBusiness
+    public partial class Base_MerchantInfoBiz
     {
 		public static IBase_MerchantInfoService I
         {
@@ -181,7 +181,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Base_MerchFunctionBusiness
+    public partial class Base_MerchFunctionBiz
     {
 		public static IBase_MerchFunctionService I
         {
@@ -200,7 +200,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Base_SettleLCPayBusiness
+    public partial class Base_SettleLCPayBiz
     {
 		public static IBase_SettleLCPayService I
         {
@@ -219,7 +219,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Base_SettleOrgBusiness
+    public partial class Base_SettleOrgBiz
     {
 		public static IBase_SettleOrgService I
         {
@@ -238,7 +238,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Base_SettlePPOSBusiness
+    public partial class Base_SettlePPOSBiz
     {
 		public static IBase_SettlePPOSService I
         {
@@ -257,7 +257,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Base_StorageInfoBusiness
+    public partial class Base_StorageInfoBiz
     {
 		public static IBase_StorageInfoService I
         {
@@ -276,7 +276,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Base_StoreDogListBusiness
+    public partial class Base_StoreDogListBiz
     {
 		public static IBase_StoreDogListService I
         {
@@ -295,7 +295,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Base_StoreInfoBusiness
+    public partial class Base_StoreInfoBiz
     {
 		public static IBase_StoreInfoService I
         {
@@ -314,7 +314,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Base_StoreWeightBusiness
+    public partial class Base_StoreWeightBiz
     {
 		public static IBase_StoreWeightService I
         {
@@ -333,7 +333,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Base_StoreWeight_GameBusiness
+    public partial class Base_StoreWeight_GameBiz
     {
 		public static IBase_StoreWeight_GameService I
         {
@@ -352,7 +352,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Base_UserGrantBusiness
+    public partial class Base_UserGrantBiz
     {
 		public static IBase_UserGrantService I
         {
@@ -371,7 +371,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Base_UserGroupBusiness
+    public partial class Base_UserGroupBiz
     {
 		public static IBase_UserGroupService I
         {
@@ -390,7 +390,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Base_UserGroup_GrantBusiness
+    public partial class Base_UserGroup_GrantBiz
     {
 		public static IBase_UserGroup_GrantService I
         {
@@ -409,7 +409,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Base_UserInfoBusiness
+    public partial class Base_UserInfoBiz
     {
 		public static IBase_UserInfoService I
         {
@@ -428,7 +428,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Data_BalanceChargeRuleBusiness
+    public partial class Data_BalanceChargeRuleBiz
     {
 		public static IData_BalanceChargeRuleService I
         {
@@ -447,7 +447,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Data_BalanceType_StoreListBusiness
+    public partial class Data_BalanceType_StoreListBiz
     {
 		public static IData_BalanceType_StoreListService I
         {
@@ -466,7 +466,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Data_BillInfoBusiness
+    public partial class Data_BillInfoBiz
     {
 		public static IData_BillInfoService I
         {
@@ -485,7 +485,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Data_Card_BalanceBusiness
+    public partial class Data_Card_BalanceBiz
     {
 		public static IData_Card_BalanceService I
         {
@@ -504,7 +504,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Data_Card_Balance_StoreListBusiness
+    public partial class Data_Card_Balance_StoreListBiz
     {
 		public static IData_Card_Balance_StoreListService I
         {
@@ -523,7 +523,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Data_Card_RightBusiness
+    public partial class Data_Card_RightBiz
     {
 		public static IData_Card_RightService I
         {
@@ -542,7 +542,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Data_Card_Right_StoreListBusiness
+    public partial class Data_Card_Right_StoreListBiz
     {
 		public static IData_Card_Right_StoreListService I
         {
@@ -561,7 +561,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Data_CoinDestoryBusiness
+    public partial class Data_CoinDestoryBiz
     {
 		public static IData_CoinDestoryService I
         {
@@ -580,7 +580,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Data_CoinInventoryBusiness
+    public partial class Data_CoinInventoryBiz
     {
 		public static IData_CoinInventoryService I
         {
@@ -599,7 +599,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Data_CoinStorageBusiness
+    public partial class Data_CoinStorageBiz
     {
 		public static IData_CoinStorageService I
         {
@@ -618,7 +618,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Data_Coupon_StoreListBusiness
+    public partial class Data_Coupon_StoreListBiz
     {
 		public static IData_Coupon_StoreListService I
         {
@@ -637,7 +637,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Data_CouponInfoBusiness
+    public partial class Data_CouponInfoBiz
     {
 		public static IData_CouponInfoService I
         {
@@ -656,7 +656,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Data_CouponListBusiness
+    public partial class Data_CouponListBiz
     {
 		public static IData_CouponListService I
         {
@@ -675,7 +675,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Data_DigitCoinBusiness
+    public partial class Data_DigitCoinBiz
     {
 		public static IData_DigitCoinService I
         {
@@ -694,7 +694,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Data_DigitCoinDestroyBusiness
+    public partial class Data_DigitCoinDestroyBiz
     {
 		public static IData_DigitCoinDestroyService I
         {
@@ -713,7 +713,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Data_Food_DetialBusiness
+    public partial class Data_Food_DetialBiz
     {
 		public static IData_Food_DetialService I
         {
@@ -732,7 +732,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Data_Food_LevelBusiness
+    public partial class Data_Food_LevelBiz
     {
 		public static IData_Food_LevelService I
         {
@@ -751,7 +751,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Data_Food_SaleBusiness
+    public partial class Data_Food_SaleBiz
     {
 		public static IData_Food_SaleService I
         {
@@ -770,7 +770,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Data_Food_StoreListBusiness
+    public partial class Data_Food_StoreListBiz
     {
 		public static IData_Food_StoreListService I
         {
@@ -789,7 +789,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Data_Food_WorkStationBusiness
+    public partial class Data_Food_WorkStationBiz
     {
 		public static IData_Food_WorkStationService I
         {
@@ -808,7 +808,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Data_FoodInfoBusiness
+    public partial class Data_FoodInfoBiz
     {
 		public static IData_FoodInfoService I
         {
@@ -827,7 +827,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Data_Game_StockInfoBusiness
+    public partial class Data_Game_StockInfoBiz
     {
 		public static IData_Game_StockInfoService I
         {
@@ -846,7 +846,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Data_GameFreeRuleBusiness
+    public partial class Data_GameFreeRuleBiz
     {
 		public static IData_GameFreeRuleService I
         {
@@ -865,7 +865,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Data_GameFreeRule_ListBusiness
+    public partial class Data_GameFreeRule_ListBiz
     {
 		public static IData_GameFreeRule_ListService I
         {
@@ -884,7 +884,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Data_GameInfoBusiness
+    public partial class Data_GameInfoBiz
     {
 		public static IData_GameInfoService I
         {
@@ -903,7 +903,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Data_GameInfo_ExtBusiness
+    public partial class Data_GameInfo_ExtBiz
     {
 		public static IData_GameInfo_ExtService I
         {
@@ -922,7 +922,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Data_GameInfo_PhotoBusiness
+    public partial class Data_GameInfo_PhotoBiz
     {
 		public static IData_GameInfo_PhotoService I
         {
@@ -941,7 +941,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Data_GivebackRuleBusiness
+    public partial class Data_GivebackRuleBiz
     {
 		public static IData_GivebackRuleService I
         {
@@ -960,7 +960,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Data_GoodInventoryBusiness
+    public partial class Data_GoodInventoryBiz
     {
 		public static IData_GoodInventoryService I
         {
@@ -979,7 +979,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Data_GoodsStockBusiness
+    public partial class Data_GoodsStockBiz
     {
 		public static IData_GoodsStockService I
         {
@@ -998,7 +998,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Data_GoodStock_RecordBusiness
+    public partial class Data_GoodStock_RecordBiz
     {
 		public static IData_GoodStock_RecordService I
         {
@@ -1017,7 +1017,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Data_GoodStorageBusiness
+    public partial class Data_GoodStorageBiz
     {
 		public static IData_GoodStorageService I
         {
@@ -1036,7 +1036,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Data_GoodStorage_DetailBusiness
+    public partial class Data_GoodStorage_DetailBiz
     {
 		public static IData_GoodStorage_DetailService I
         {
@@ -1055,7 +1055,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Data_Jackpot_LevelBusiness
+    public partial class Data_Jackpot_LevelBiz
     {
 		public static IData_Jackpot_LevelService I
         {
@@ -1074,7 +1074,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Data_Jackpot_MatrixBusiness
+    public partial class Data_Jackpot_MatrixBiz
     {
 		public static IData_Jackpot_MatrixService I
         {
@@ -1093,7 +1093,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Data_JackpotInfoBusiness
+    public partial class Data_JackpotInfoBiz
     {
 		public static IData_JackpotInfoService I
         {
@@ -1112,7 +1112,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Data_LotteryInventoryBusiness
+    public partial class Data_LotteryInventoryBiz
     {
 		public static IData_LotteryInventoryService I
         {
@@ -1131,7 +1131,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Data_LotteryStorageBusiness
+    public partial class Data_LotteryStorageBiz
     {
 		public static IData_LotteryStorageService I
         {
@@ -1150,7 +1150,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Data_Member_CardBusiness
+    public partial class Data_Member_CardBiz
     {
 		public static IData_Member_CardService I
         {
@@ -1169,7 +1169,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Data_Member_Card_StoreBusiness
+    public partial class Data_Member_Card_StoreBiz
     {
 		public static IData_Member_Card_StoreService I
         {
@@ -1188,7 +1188,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Data_MemberLevelBusiness
+    public partial class Data_MemberLevelBiz
     {
 		public static IData_MemberLevelService I
         {
@@ -1207,7 +1207,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Data_MemberLevel_FoodBusiness
+    public partial class Data_MemberLevel_FoodBiz
     {
 		public static IData_MemberLevel_FoodService I
         {
@@ -1226,7 +1226,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Data_MemberLevelFreeBusiness
+    public partial class Data_MemberLevelFreeBiz
     {
 		public static IData_MemberLevelFreeService I
         {
@@ -1245,7 +1245,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Data_MerchAlipay_ShopBusiness
+    public partial class Data_MerchAlipay_ShopBiz
     {
 		public static IData_MerchAlipay_ShopService I
         {
@@ -1264,7 +1264,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Data_MessageBusiness
+    public partial class Data_MessageBiz
     {
 		public static IData_MessageService I
         {
@@ -1283,7 +1283,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Data_ParametersBusiness
+    public partial class Data_ParametersBiz
     {
 		public static IData_ParametersService I
         {
@@ -1302,7 +1302,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Data_Project_BindGameBusiness
+    public partial class Data_Project_BindGameBiz
     {
 		public static IData_Project_BindGameService I
         {
@@ -1321,7 +1321,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Data_Project_DeviceBusiness
+    public partial class Data_Project_DeviceBiz
     {
 		public static IData_Project_DeviceService I
         {
@@ -1340,7 +1340,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Data_Project_StoreListBusiness
+    public partial class Data_Project_StoreListBiz
     {
 		public static IData_Project_StoreListService I
         {
@@ -1359,7 +1359,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Data_ProjectInfoBusiness
+    public partial class Data_ProjectInfoBiz
     {
 		public static IData_ProjectInfoService I
         {
@@ -1378,7 +1378,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Data_ProjectTime_BandPriceBusiness
+    public partial class Data_ProjectTime_BandPriceBiz
     {
 		public static IData_ProjectTime_BandPriceService I
         {
@@ -1397,7 +1397,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Data_ProjectTime_StoreListBusiness
+    public partial class Data_ProjectTime_StoreListBiz
     {
 		public static IData_ProjectTime_StoreListService I
         {
@@ -1416,7 +1416,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Data_ProjectTimeInfoBusiness
+    public partial class Data_ProjectTimeInfoBiz
     {
 		public static IData_ProjectTimeInfoService I
         {
@@ -1435,7 +1435,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Data_Push_RuleBusiness
+    public partial class Data_Push_RuleBiz
     {
 		public static IData_Push_RuleService I
         {
@@ -1454,7 +1454,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Data_ReloadBusiness
+    public partial class Data_ReloadBiz
     {
 		public static IData_ReloadService I
         {
@@ -1473,7 +1473,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Data_Storage_RecordBusiness
+    public partial class Data_Storage_RecordBiz
     {
 		public static IData_Storage_RecordService I
         {
@@ -1492,7 +1492,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Data_SupplierListBusiness
+    public partial class Data_SupplierListBiz
     {
 		public static IData_SupplierListService I
         {
@@ -1511,7 +1511,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Data_WorkstationBusiness
+    public partial class Data_WorkstationBiz
     {
 		public static IData_WorkstationService I
         {
@@ -1530,7 +1530,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Dict_AreaBusiness
+    public partial class Dict_AreaBiz
     {
 		public static IDict_AreaService I
         {
@@ -1549,7 +1549,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Dict_BalanceTypeBusiness
+    public partial class Dict_BalanceTypeBiz
     {
 		public static IDict_BalanceTypeService I
         {
@@ -1568,7 +1568,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Dict_FunctionMenuBusiness
+    public partial class Dict_FunctionMenuBiz
     {
 		public static IDict_FunctionMenuService I
         {
@@ -1587,7 +1587,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Dict_SystemBusiness
+    public partial class Dict_SystemBiz
     {
 		public static IDict_SystemService I
         {
@@ -1606,7 +1606,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Flw_485_CoinBusiness
+    public partial class Flw_485_CoinBiz
     {
 		public static IFlw_485_CoinService I
         {
@@ -1625,7 +1625,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Flw_485_SaveCoinBusiness
+    public partial class Flw_485_SaveCoinBiz
     {
 		public static IFlw_485_SaveCoinService I
         {
@@ -1644,7 +1644,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Flw_CheckDateBusiness
+    public partial class Flw_CheckDateBiz
     {
 		public static IFlw_CheckDateService I
         {
@@ -1663,7 +1663,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Flw_Coin_ExitBusiness
+    public partial class Flw_Coin_ExitBiz
     {
 		public static IFlw_Coin_ExitService I
         {
@@ -1682,7 +1682,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Flw_Coin_SaleBusiness
+    public partial class Flw_Coin_SaleBiz
     {
 		public static IFlw_Coin_SaleService I
         {
@@ -1701,7 +1701,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Flw_CouponUseBusiness
+    public partial class Flw_CouponUseBiz
     {
 		public static IFlw_CouponUseService I
         {
@@ -1720,7 +1720,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Flw_Digite_CoinBusiness
+    public partial class Flw_Digite_CoinBiz
     {
 		public static IFlw_Digite_CoinService I
         {
@@ -1739,7 +1739,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Flw_Digite_Coin_DetailBusiness
+    public partial class Flw_Digite_Coin_DetailBiz
     {
 		public static IFlw_Digite_Coin_DetailService I
         {
@@ -1758,7 +1758,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Flw_Food_ExitBusiness
+    public partial class Flw_Food_ExitBiz
     {
 		public static IFlw_Food_ExitService I
         {
@@ -1777,7 +1777,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Flw_Food_ExitDetailBusiness
+    public partial class Flw_Food_ExitDetailBiz
     {
 		public static IFlw_Food_ExitDetailService I
         {
@@ -1796,7 +1796,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Flw_Food_SaleBusiness
+    public partial class Flw_Food_SaleBiz
     {
 		public static IFlw_Food_SaleService I
         {
@@ -1815,7 +1815,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Flw_Food_SaleDetailBusiness
+    public partial class Flw_Food_SaleDetailBiz
     {
 		public static IFlw_Food_SaleDetailService I
         {
@@ -1834,7 +1834,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Flw_Game_FreeBusiness
+    public partial class Flw_Game_FreeBiz
     {
 		public static IFlw_Game_FreeService I
         {
@@ -1853,7 +1853,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Flw_Game_WatchBusiness
+    public partial class Flw_Game_WatchBiz
     {
 		public static IFlw_Game_WatchService I
         {
@@ -1872,7 +1872,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Flw_Game_WinPrizeBusiness
+    public partial class Flw_Game_WinPrizeBiz
     {
 		public static IFlw_Game_WinPrizeService I
         {
@@ -1891,7 +1891,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Flw_GivebackBusiness
+    public partial class Flw_GivebackBiz
     {
 		public static IFlw_GivebackService I
         {
@@ -1910,7 +1910,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Flw_Good_DetailBusiness
+    public partial class Flw_Good_DetailBiz
     {
 		public static IFlw_Good_DetailService I
         {
@@ -1929,7 +1929,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Flw_GoodsBusiness
+    public partial class Flw_GoodsBiz
     {
 		public static IFlw_GoodsService I
         {
@@ -1948,7 +1948,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Flw_GroupVerityBusiness
+    public partial class Flw_GroupVerityBiz
     {
 		public static IFlw_GroupVerityService I
         {
@@ -1967,7 +1967,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Flw_JackpotBusiness
+    public partial class Flw_JackpotBiz
     {
 		public static IFlw_JackpotService I
         {
@@ -1986,7 +1986,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Flw_LotteryBusiness
+    public partial class Flw_LotteryBiz
     {
 		public static IFlw_LotteryService I
         {
@@ -2005,7 +2005,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Flw_OrderBusiness
+    public partial class Flw_OrderBiz
     {
 		public static IFlw_OrderService I
         {
@@ -2024,7 +2024,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Flw_Order_DetailBusiness
+    public partial class Flw_Order_DetailBiz
     {
 		public static IFlw_Order_DetailService I
         {
@@ -2043,7 +2043,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Flw_Order_SerialNumberBusiness
+    public partial class Flw_Order_SerialNumberBiz
     {
 		public static IFlw_Order_SerialNumberService I
         {
@@ -2062,7 +2062,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Flw_Project_BuyDetailBusiness
+    public partial class Flw_Project_BuyDetailBiz
     {
 		public static IFlw_Project_BuyDetailService I
         {
@@ -2081,7 +2081,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Flw_Project_Play_TimeBusiness
+    public partial class Flw_Project_Play_TimeBiz
     {
 		public static IFlw_Project_Play_TimeService I
         {
@@ -2100,7 +2100,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Flw_ScheduleBusiness
+    public partial class Flw_ScheduleBiz
     {
 		public static IFlw_ScheduleService I
         {
@@ -2119,7 +2119,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Flw_Ticket_ExitBusiness
+    public partial class Flw_Ticket_ExitBiz
     {
 		public static IFlw_Ticket_ExitService I
         {
@@ -2138,7 +2138,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Flw_TransferBusiness
+    public partial class Flw_TransferBiz
     {
 		public static IFlw_TransferService I
         {
@@ -2157,7 +2157,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Log_GameAlarmBusiness
+    public partial class Log_GameAlarmBiz
     {
 		public static ILog_GameAlarmService I
         {
@@ -2176,7 +2176,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Log_OperationBusiness
+    public partial class Log_OperationBiz
     {
 		public static ILog_OperationService I
         {
@@ -2195,7 +2195,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Search_TemplateBusiness
+    public partial class Search_TemplateBiz
     {
 		public static ISearch_TemplateService I
         {
@@ -2214,7 +2214,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Search_Template_DetailBusiness
+    public partial class Search_Template_DetailBiz
     {
 		public static ISearch_Template_DetailService I
         {
@@ -2233,7 +2233,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Store_CheckDateBusiness
+    public partial class Store_CheckDateBiz
     {
 		public static IStore_CheckDateService I
         {
@@ -2252,7 +2252,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Store_GameTotalBusiness
+    public partial class Store_GameTotalBiz
     {
 		public static IStore_GameTotalService I
         {
@@ -2271,7 +2271,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class Store_HeadTotalBusiness
+    public partial class Store_HeadTotalBiz
     {
 		public static IStore_HeadTotalService I
         {
@@ -2290,7 +2290,7 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
-    public partial class XC_WorkInfoBusiness
+    public partial class XC_WorkInfoBiz
     {
 		public static IXC_WorkInfoService I
         {

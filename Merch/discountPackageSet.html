@@ -190,7 +190,7 @@
             </div>
             <div class="layui-colla-item">
                 <h2 class="layui-colla-title" style="height: 36px;line-height: 36px">图片</h2>
-                <div class="layui-colla-content" style="height: 250px;">
+                <div class="layui-colla-content" style="height: 280px;">
                         <div class="layui-col-md8">
                             <div class="layui-form-item">
                                 <div class="layui-inline">
@@ -319,14 +319,24 @@
    <!--门票-->
    <div id="openTicket" style="display: none;padding: 10px;">
        <form class="layui-form layui-form-pane">
-           <div class="layui-form-item">
-               <div class="layui-inline">
+               <div class="layui-form-item">
+                       <label class="layui-form-label">选择门票</label>
+                       <div class="layui-input-inline">
+                           <select id="ticketType" lay-filter="ticketType"></select>
+                       </div>
+               </div>
+               <div class="layui-form-item">
+                   <label class="layui-form-label">数量</label>
                    <div class="layui-input-inline">
-                       <input type="text" class="layui-input">
+                       <input type="text" class="layui-input" id="ticketCount">
                    </div>
                </div>
-
-           </div>
+               <div class="layui-form-item">
+                   <label class="layui-form-label">有效期</label>
+                   <div class="layui-input-inline">
+                       <input type="text" class="layui-input" id="ticketDays" readonly>
+                   </div>
+               </div>
            <div style="text-align: center">
                <button type="button" class="layui-btn" id="openTicketBtn">保存</button>
            </div>
@@ -505,14 +515,19 @@
     let FoodLevel=[];
 
     let FoodType='';//套餐类别
-    let BalanceType;//余额类别
-    let BalanceTypeStr;
+    let BalanceType='';//余额类别
+    let BalanceTypeStr='';
 
     let vipCoinType='';let vipCoinTypeStr='';let OperateType=0;
-    let digitType='';let giftList=[];
-    let CouponType='';
+    let digitType='';let digitTypeStr='';
+    let giftList=[];
+    let ticketType='';let ticketTypeStr='';
+    let CouponType=''; let CouponTypeStr='';
+    // let EntryCouponFlag='';
 
-    let week=[];let memberLevelID=[];let timeType='0';
+    let week=[];let weekStr=[];
+    let memberLevelID=[];let MemberLevel=[];
+    let timeType='0';let Time='';
     let AllowInternet=0;let AllowPrint=0;let ForeAuthorize=0;
     layui.use(['element','form','layer','table','laydate','upload'], function(){
         let element = layui.element,
@@ -533,11 +548,22 @@
             vipCoinType=data.value;
             vipCoinTypeStr=data.elem[data.elem.selectedIndex].text;
         });
+        form.on('select(ticketType)',function (data) {
+            ticketType=data.value;
+            ticketTypeStr=data.elem[data.elem.selectedIndex].text;
+            $('#ticketDays').val(data.elem[data.elem.selectedIndex].title)
+        });
         form.on('select(digitType)',function (data) {
             digitType=data.value;
+            digitTypeStr=data.elem[data.elem.selectedIndex].text;
         });
         form.on('select(CouponType)',function (data) {
             CouponType=data.value;
+            CouponTypeStr=data.elem[data.elem.selectedIndex].text;
+            let time1=new Date(data.elem[data.elem.selectedIndex].title);
+            let time2=new Date();
+            console.log(parseInt((time1.getTime() - time2.getTime()) / (24*60*60*1000)));
+            $('#CouponDays').val( parseInt((time1.getTime() - time2.getTime()) / (24*60*60*1000)))
         });
         form.on('switch(AllowInternet)',function (data) {
             if(data.elem.checked==true){
@@ -592,10 +618,12 @@
         form.on('checkbox(ml)', function(data){
             if (data.elem.checked==true){
                 memberLevelID.push(data.value);
+                MemberLevel.push(data.elem.title)
             }else if(data.elem.checked==false){
                 for (var i=0;i<memberLevelID.length;i++){
                     if(memberLevelID[i]==data.value){
-                        memberLevelID.splice(i,1)
+                        memberLevelID.splice(i,1);
+                        MemberLevel.splice(i,1);
                     }
                 }
             }
@@ -603,10 +631,12 @@
         form.on('checkbox(weeks)', function(data){
             if (data.elem.checked==true){
                 week.push(data.value);
+                weekStr.push(data.elem.title)
             }else if(data.elem.checked==false){
                 for (var i=0;i<week.length;i++){
                     if(week[i]==data.value){
-                        week.splice(i,1)
+                        week.splice(i,1);
+                        weekStr.splice(i,1);
                     }
                 }
             }
@@ -628,9 +658,15 @@
                 });
             } else {
                 if(obj.checked==true){
-                    giftList=[{'FoodDetailType':1, 'BalanceType':'',
+                    giftList=[{'FoodDetailType':1,
+                        'FoodDetailTypeStr':'礼品',
+                        // 'BalanceType':'',
                         'OperateType':'',
-                        'ContainId':obj.data.ID,'WeightValue':0,'ContainCount':1,'Days':$('#GiftDays').val()}]
+                        'ContainId':obj.data.ID,
+                        'ProjectName':obj.data.GoodName,
+                        'WeightValue':0,
+                        'ContainCount':1,
+                        'Days':$('#GiftDays').val()}]
                 }else {
                     giftList=[];
                 }
@@ -651,8 +687,12 @@
         });
         //新增一个套餐
      $('.addNewPackage').on('click',()=>{
+          FoodSale=[];FoodDetial=[];FoodLevel=[];
+          FoodType='';//套餐类别
+          BalanceType='';//余额类别
+          BalanceTypeStr='';
          xc.setSelect('套餐类别','FoodType');
-         xc.setSelect('余额类别','BalanceType');
+         xc.getBalanceTypeDic(token,layer,form,'BalanceType');
          newTable(table,FoodSale,layer,form);
          newFoodDetialsTable(table,FoodDetial,layer,form);
          newFoodLevelTable(table,FoodLevel,layer,form);
@@ -682,7 +722,8 @@
                  });
                  newTable(table,FoodSale,layer,form);
                  $('#UseCount').val('');
-                 xc.setSelect('余额类别','BalanceType');
+                 // xc.setSelect('余额类别','BalanceType');
+                 xc.getBalanceTypeDic(token,layer,form,'BalanceType')
                  BalanceType='';BalanceTypeStr='';
              }else {
                  layer.msg('请选择其他的余额类别或者删除该类别重新设置！')
@@ -694,8 +735,9 @@
          });
         //会员币种
         $('#vipCoinBtn').on('click',()=>{
-            xc.setSelect('余额类别','vipCoinType');
-            BalanceType='';
+            // xc.setSelect('余额类别','vipCoinType');
+            xc.getBalanceTypeDic(token,layer,form,'vipCoinType')
+            vipCoinType=''; vipCoinTypeStr=''
             index= layer.open({
                 title:'新增套餐',
                 shade:0.6,
@@ -718,7 +760,8 @@
         });
         //门票
         $('#ticketBtn').on('click',()=>{
-            // xc.setSelect('套餐类别','FoodType');
+           xc. GetTicketProjectDic (token,layer,form,'ticketType');
+             ticketType=''; ticketTypeStr='';
             index=  layer.open({
                 title:'新增套餐',
                 shade:0.6,
@@ -740,10 +783,9 @@
         });
         //优惠券
         $('#onSaleBtn').on('click',()=>{
-            // xc.setSelect('套餐类别','FoodType');
             xc.getCouponDic(token,layer,form,'CouponType');
-            CouponType='';
-            layer.open({
+             CouponType='';  CouponTypeStr='';
+          index=layer.open({
                 title:'新增套餐',
                 shade:0.6,
                 type:1,
@@ -755,9 +797,11 @@
         //保存套餐内容
         $('#openVipBtn').on('click',()=>{
             FoodDetial.push({ 'FoodDetailType':0,
-                'BalanceType':vipCoinType,
+                        'FoodDetailTypeStr':'会员币种',
+                // 'BalanceType':vipCoinType,
                 'OperateType':OperateType,
                 'ContainId':'',
+                'ProjectName':'数字币',
                 'ContainCount':$('#vipCoinCount').val(),
                 'WeightValue':$('#weightValue').val(),
                 'Days':$('#vipDays').val()});
@@ -769,17 +813,29 @@
                 layer.msg('请填写有效期')
             }else {
                 giftList[0].Days=$('#GiftDays').val();
-                FoodDetial=  FoodDetial.concat(giftList);
+                FoodDetial=FoodDetial.concat(giftList);
                 layer.close(index);
                 newFoodDetialsTable(table,FoodDetial,layer,form)
-
             }
+        });
+        $('#openTicketBtn').on('click',()=>{
+            FoodDetial.push({ 'FoodDetailType':2,
+                'FoodDetailTypeStr':'门票',
+                'OperateType':'',
+                'ContainId':ticketType,
+                'ProjectName':ticketTypeStr,
+                'ContainCount':$('#ticketCount').val(),
+                'WeightValue':'',
+                'Days':$('#ticketDays').val()});
+            layer.close(index);
+            newFoodDetialsTable(table,FoodDetial,layer,form)
         });
         $('#openDigitBtn').on('click',()=>{
             FoodDetial.push({ 'FoodDetailType':3,
-                'BalanceType':'',
+                'FoodDetailTypeStr':'数字币',
                 'OperateType':'',
                 'ContainId':digitType,
+                'ProjectName':'数字币',
                 'ContainCount':$('#digitCount').val(),
                 'WeightValue':'',
                 'Days':$('#digitDays').val()});
@@ -788,9 +844,10 @@
         });
         $('#openOnSaleBtn').on('click',()=>{
             FoodDetial.push({ 'FoodDetailType':4,
-                'BalanceType':'',
+                'FoodDetailTypeStr':'优惠券',
                 'OperateType':'',
                 'ContainId':CouponType,
+                'ProjectName':CouponTypeStr,
                 'ContainCount':$('#CouponCount').val(),
                 'WeightValue':$('#CouponWeight').val(),
                 'Days':$('#CouponDays').val()});
@@ -838,11 +895,17 @@
         });
     //    ............................................................................
         $('.timeSetBtn').on('click',()=>{
+            laydate.render({
+                elem: '#StartDate',type: 'time',value:new Date()
+            });
+            laydate.render({
+                elem: '#EndDate',type: 'time',value:new Date()
+            });
             xc.SearchMemberLevel1('memberBox', token, layer);
             xc.AddWeeks('weekBox');
             $('#weekSetBox').css({'display':'inline-block'});
-             week=[]; memberLevelID=[];timeType='0';
-          index=  layer.open({
+             week=[];weekStr=[]; memberLevelID=[];MemberLevel=[];timeType='0';Time='';
+            index=layer.open({
                 title:'新增套餐',
                 shade:0.6,
                 type:1,
@@ -852,20 +915,23 @@
         });
         $('#saveTimeSet').on('click',function () {
             FoodLevel.push({'MemberLevelIDs':memberLevelID.join('|'),
+            'MemberLevels':MemberLevel.join('|'),
             'TimeType':timeType,
             'week':week.join('|'),
+            'WeekStr':weekStr.join('|'),
             'StartTime':$('#StartDate').val(),
             'EndTime':$('#EndDate').val(),
-            'clientPrice':$('#custorPrice').val(),
-            'vipPrice':$('#VipPrice').val(),
+            'Time':$('#StartDate').val()+'~'+$('#EndDate').val(),
+            'ClientPrice':$('#custorPrice').val(),
+            'VIPPrice':$('#VipPrice').val(),
             'day_sale_count':$('#day_sale_count').val(),
             'member_day_sale_count':$('#member_day_sale_count').val(),
-            'updateLevelId':''});
+            'UpdateLevelID':'0'});
             newFoodLevelTable(table,FoodLevel,layer,form);
             layer.close(index);
         });
     //修改主表
-     table.on('tool(digitDestroyTb)', function(obj){
+        table.on('tool(digitDestroyTb)', function(obj){
             var data = obj.data;
             var layEvent = obj.event;
            foodID=data.FoodID;
@@ -884,8 +950,11 @@
                            console.log(data)
                             let arr=data.result_data;
                             $('#FoodName').val(arr.FoodName||'');
-                                FoodType=arr.FoodType;
+                            FoodType=arr.FoodType;
                             xc.setSelect('套餐类别','FoodType',arr.FoodType);
+                            xc.getBalanceTypeDic(token,layer,form,'BalanceType');
+                            BalanceType='';//余额类别
+                            BalanceTypeStr='';
                             $('#StartTime').val(arr.StartTime||'');
                             $('#EndTime').val(arr.EndTime||'');
                             $('#RenewDays').val(arr.RenewDays||'');
@@ -946,6 +1015,7 @@
 
            }
      });
+         //删除套餐余额消耗
         table.on('tool(FoodSaleTable)', function(obj){
             let data = obj.data;
             let layEvent = obj.event;
@@ -958,15 +1028,20 @@
                 }
             }
         });
+        //删除套餐内容
         table.on('tool(projectCon)', function(obj){
             let data = obj.data;
             let layEvent = obj.event;
             if(layEvent === 'del'){ //查看
-                console.log(data);
-
                 for(let i in FoodDetial){
-                    if(FoodDetial[i]==data){
+                    if(FoodDetial[i].FoodDetailType==data.FoodDetailType&&
+                        FoodDetial[i].OperateType==data.OperateType&&
+                        FoodDetial[i].ContainId==data.ContainId&&
+                        FoodDetial[i].ContainCount==data.ContainCount&&
+                        FoodDetial[i].WeightValue==data.WeightValue&&
+                        FoodDetial[i].Days==data.Days){
                         FoodDetial.splice(i,1);
+                        console.log(FoodDetial)
                         obj.del();
                     }
                 }
@@ -976,10 +1051,19 @@
             let data = obj.data;
             let layEvent = obj.event;
             if(layEvent === 'del'){ //查看
-                console.log(data);
-
                 for(let i in FoodLevel){
-                    if(FoodLevel[i]==data){
+                    console.log(FoodLevel[i]);
+                    console.log(data);
+                    if(FoodLevel[i].MemberLevelIDs==data.MemberLevelIDs&&
+                        FoodLevel[i].Week==data.Week&&
+                        FoodLevel[i].StartTime==data.StartTime&&
+                        FoodLevel[i].EndTime==data.EndTime&&
+                        FoodLevel[i].ClientPrice==data.ClientPrice&&
+                        FoodLevel[i].VIPPrice==data.VIPPrice&&
+                        FoodLevel[i].day_sale_count==data.day_sale_count&&
+                        FoodLevel[i].member_day_sale_count==data.member_day_sale_count&&
+                        FoodLevel[i].TimeType==data.TimeType&&
+                        FoodLevel[i].UpdateLevelID==data.UpdateLevelID){
                         FoodLevel.splice(i,1);
                         obj.del();
                     }
@@ -1034,14 +1118,14 @@
     function newTable(table,arr,layer,form) {
         table.render({
             elem: '#FoodSaleTable'
-            , height:'190px'
+            , height:'220px'
             ,size:'sm'
             , data: arr
             , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
             , cols: [[
-                {field:'BalanceTypeStr', title: '余额类型', align: 'center'}
-                ,{field:'UseCount', title: '消耗数量', align: 'center'}
-                ,{fixed: 'right',title:'操作', width:140, align:'center', toolbar: '#barDemo2'}]]
+                 {field:'BalanceTypeStr', title: '余额类型', align: 'center',width:250}
+                ,{field:'UseCount', title: '消耗数量', align: 'center',width:250}
+                ,{fixed: 'right',title:'操作', width:195, align:'center', toolbar: '#barDemo2'}]]
             , page: {page: true, limits: [5,10, 15, 20]}
             , limit: 5
             ,done:function () {
@@ -1058,10 +1142,10 @@
             , data: arr
             , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
             , cols: [[
-                 {field:'FoodDetailType', title: '套餐种类类别', align: 'center'}
-                ,{field:'BalanceType', title: '余额类别', align: 'center'}
+                 {field:'FoodDetailTypeStr', title: '套餐种类类别', align: 'center'}
+                // ,{field:'BalanceType', title: '余额类别', align: 'center'}
                 ,{field:'OperateType', title: '操作类型', align: 'center'}
-                ,{field:'ContainID', title: '套餐内容ID', align: 'center'}
+                ,{field:'ProjectName', title: '套餐名字', align: 'center'}
                 ,{field:'ContainCount', title: '套餐内容数量', align: 'center'}
                 ,{field:'WeightValue', title: '权重值', align: 'center'}
                 ,{field:'Days', title: '有效期', align: 'center'}
@@ -1082,16 +1166,16 @@
             , data: arr
             , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
             , cols: [[
-                {field:'MemberLevelIDs', title: '会员级别', align: 'center'}
+                {field:'MemberLevels', title: '会员级别', align: 'center'}
                 ,{field:'TimeType', title: '时段类型', align: 'center'}
-                ,{field:'week', title: '有效周', align: 'center'}
+                ,{field:'WeekStr', title: '有效周', align: 'center'}
                 ,{field:'StartTime', title: '开始时段', align: 'center'}
                 ,{field:'EndTime', title: '结束时段', align: 'center'}
-                ,{field:'clientPrice', title: '游客优惠价', align: 'center'}
-                ,{field:'vipPrice', title: '会员优惠价', align: 'center'}
+                ,{field:'ClientPrice', title: '游客优惠价', align: 'center'}
+                ,{field:'VIPPrice', title: '会员优惠价', align: 'center'}
                 ,{field:'day_sale_count', title: '每天限额', align: 'center'}
                 ,{field:'member_day_sale_count', title: '会员每天限额', align: 'center'}
-                ,{field:'updateLevelId', title: '下一级', align: 'center'}
+                ,{field:'UpdateLevelID', title: '下一级', align: 'center'}
                 ,{fixed: 'right',title:'操作', width:140, align:'center', toolbar: '#barDemo1'}]]
             , page: {page: true, limits: [5,10, 15, 20]}
             , limit: 5

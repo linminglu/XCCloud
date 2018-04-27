@@ -33,7 +33,7 @@ namespace XCCloudService.Business.XCCloud
 foreach (EntityType entity in ItemCollection.GetItems<EntityType>().OrderBy(e => e.Name))
 {   
 #>    
-    public partial class <#=entity.Name#>Business
+    public partial class <#=entity.Name#>Biz
     {
 		public static I<#=entity.Name#>Service I
         {

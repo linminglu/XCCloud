@@ -120,9 +120,9 @@ namespace XXCloudService.Api.XCCloud
                                 from b in b1.DefaultIfEmpty()
                                 join c in base_StoreInfoService.GetModels() on b.StroeID equals c.StoreID into c1
                                 from c in c1.DefaultIfEmpty()
-                                join d in Dict_SystemBusiness.NI.GetModels() on (a.HKType + "") equals d.DictValue into d1
+                                join d in Dict_SystemBiz.NI.GetModels() on (a.HKType + "") equals d.DictValue into d1
                                 from d in d1.DefaultIfEmpty()
-                                join e in Dict_SystemBusiness.NI.GetModels(p=>p.DictKey.Equals("关联类别", StringComparison.OrdinalIgnoreCase) && p.PID == 0) on d.PID equals e.ID into e1
+                                join e in Dict_SystemBiz.NI.GetModels(p=>p.DictKey.Equals("关联类别", StringComparison.OrdinalIgnoreCase) && p.PID == 0) on d.PID equals e.ID into e1
                                 from e in e1.DefaultIfEmpty()
                                 select new
                                 {

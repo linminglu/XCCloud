@@ -27,7 +27,7 @@ namespace XCCloudService.Common
         /// <param name="discription"></param>
         /// <param name="errMsg"></param>
         /// <returns></returns>
-        public static bool NonEmpty<T>(this T t, string discription, out string errMsg)
+        public static bool Nonempty<T>(this T t, string discription, out string errMsg)
         {
             errMsg = string.Empty;
 
@@ -47,11 +47,11 @@ namespace XCCloudService.Common
         /// <param name="discription"></param>
         /// <param name="errMsg"></param>
         /// <returns></returns>
-        public static bool NonnegInt<T>(this T t, string discription, out string errMsg)
+        public static bool Illegalint<T>(this T t, string discription, out string errMsg)
         {
             errMsg = string.Empty;
 
-            if (!NonEmpty(t, discription, out errMsg))
+            if (!Nonempty(t, discription, out errMsg))
             {
                 return false;
             }
@@ -73,11 +73,11 @@ namespace XCCloudService.Common
         /// <param name="discription"></param>
         /// <param name="errMsg"></param>
         /// <returns></returns>
-        public static bool NonnegDec<T>(this T t, string discription, out string errMsg)
+        public static bool Illegaldec<T>(this T t, string discription, out string errMsg)
         {
             errMsg = string.Empty;
 
-            if (!NonEmpty(t, discription, out errMsg))
+            if (!Nonempty(t, discription, out errMsg))
             {
                 return false;
             }

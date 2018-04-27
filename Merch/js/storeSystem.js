@@ -1418,7 +1418,7 @@ xcActionSystem.prototype= {
 },
     //......................................门票设定
     //获取门票字典列表
-    GetTicketProjectDic:function (token,layer,form,id) {
+    GetTicketProjectDic:function (token,layer,form,id,selected) {
         let _obj={'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
         let parseJson = JSON.stringify(_obj);
         $.ajax({
@@ -1432,7 +1432,16 @@ xcActionSystem.prototype= {
                     let arr=data.result_data;
                     $('#'+id).html('<option>-请选择-</option>');
                     for(let i in arr){
-                        $('#'+id).append('<option value="'+arr[i].ID+'">'+arr[i].ProjectName+'</option>')
+                        $('#'+id).append('<option value="'+arr[i].ID+'" title="'+arr[i].ExpireDays+'">'+arr[i].ProjectName+'</option>')
+                        if(selected){
+                            if(arr[i].ID==selected){
+                                $('#'+id).append('<option value="'+arr[i].ID+'" selected title="'+arr[i].ExpireDays+'">'+arr[i].ProjectName+'</option>')
+                            }else {
+                                $('#'+id).append('<option value="'+arr[i].ID+'" title="'+arr[i].ExpireDays+'">'+arr[i].ProjectName+'</option>')
+                            }
+                        }else {
+                            $('#'+id).append('<option value="'+arr[i].ID+'" title="'+arr[i].ExpireDays+'">'+arr[i].ProjectName+'</option>')
+                        }
                     }
                     form.render('select');
                 } else {
@@ -1474,12 +1483,12 @@ xcActionSystem.prototype= {
         });
     },
     //获取优惠券
-    getCouponDic:function (token,layer,form,id) {
+    getCouponDic:function (token,layer,form,id,selected) {
         let _obj={'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
         let parseJson = JSON.stringify(_obj);
         $.ajax({
             type:'post',
-            url:'/XCCloud/Coupon?action=QueryCouponInfo',
+            url:'/XCCloud/Coupon?action=GetCouponDic',
             contentType: "application/json; charset=utf-8",
             data:{parasJson: parseJson},
             success: function (data) {
@@ -1488,7 +1497,15 @@ xcActionSystem.prototype= {
                     let arr=data.result_data;
                     $('#'+id).html('<option>-请选择-</option>');
                     for(let i in arr){
-                        $('#'+id).append('<option value="'+arr[i].ID+'">'+arr[i].CouponName+'</option>')
+                        if(selected){
+                            if(arr[i].ID==selected){
+                                $('#'+id).append('<option value="'+arr[i].ID+'" selected   title="'+arr[i].EndTime+'">'+arr[i].CouponName+'</option>')
+                            }else {
+                                $('#'+id).append('<option value="'+arr[i].ID+'" title="'+arr[i].EndTime+'">'+arr[i].CouponName+'</option>')
+                            }
+                        }else {
+                            $('#'+id).append('<option value="'+arr[i].ID+'"  title="'+arr[i].EndTime+'">'+arr[i].CouponName+'</option>')
+                        }
                     }
                     form.render('select');
                 } else {
@@ -1497,7 +1514,30 @@ xcActionSystem.prototype= {
             }
         });
     },
-
+    //获取游乐项目字典
+    getProjectGames:function (token,layer,form,id) {
+        let _obj={'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+        let parseJson = JSON.stringify(_obj);
+        $.ajax({
+            type:'post',
+            url:'/XCCloud/Project?action=GetProjectGames',
+            contentType: "application/json; charset=utf-8",
+            data:{parasJson: parseJson},
+            success: function (data) {
+                data = JSON.parse(data);
+                if (data.result_code == 1) {
+                    let arr=data.result_data;
+                    $('#'+id).html('');
+                    for(let i in arr){
+                         $('#'+id).append('<input value="'+arr[i].ID+'" type="checkbox" lay-skin="primary" title="'+arr[i].Name+'">')
+                    }
+                    form.render();
+                } else {
+                    layer.msg(data.result_msg);
+                }
+            }
+        });
+    },
     //..........................................商品管理..............................................
     addGamelists: function (id, token, layer) {
         var tableData = [];
