@@ -205,14 +205,14 @@ namespace XXCloudService.Api.XCCloud
                     {
                         var iTypeId = typeId.Toint();
                         IDict_BalanceTypeService dict_BalanceTypeService = BLLContainer.Resolve<IDict_BalanceTypeService>();
-                        if (dict_BalanceTypeService.Any(p => p.ID != iId && p.TypeID == iTypeId))
+                        if (dict_BalanceTypeService.Any(p => p.ID != iId && p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.TypeID == iTypeId))
                         {
                             errMsg = "类别编号不能重复";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 
                         var iHKType = hkType.Toint();
-                        if (dict_BalanceTypeService.Any(p => p.ID != iId && p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.HKType == iHKType))
+                        if (dict_BalanceTypeService.Any(p => p.ID != iId && p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.HKType == iHKType && p.HKType != 0))
                         {
                             errMsg = "同商户余额类别的关联类别不能重复";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);

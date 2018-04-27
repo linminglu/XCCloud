@@ -16,7 +16,7 @@
 </div>
 <div id="openModel" style="display:none;padding: 0 15px">
     <form class="layui-form ">
-        <div class="layui-col-md7" style="height: 300px;border: 1px solid red; padding: 15px;">
+        <div class="layui-col-md7" style="height: 300px;border: 1px dashed #aaa; padding: 15px;">
             <div class="layui-form-item">
                 <div class="layui-inline">
                     <label class="layui-form-label">类别编号</label>
@@ -34,7 +34,8 @@
                     <label class="layui-form-label">关联类别</label>
                     <div class="layui-input-inline">
                         <select id="HKType" lay-filter="HKType">
-                            <option value="0" selected>不绑定</option>
+                            <option >-请选择-</option>
+                            <option value="0" >不绑定</option>
                             <option value="1">代币</option>
                             <option value="2">彩票</option>
                             <option value="3">积分</option>
@@ -44,7 +45,7 @@
                 <div class="layui-inline">
                     <label class="layui-form-label" style="height: 185px;">适用说明</label>
                     <div class="layui-input-inline">
-                        <textarea name="unchange" id="Note" class="layui-textarea" style="height: 135px;"></textarea>
+                        <textarea name="" id="Note" class="layui-textarea" style="height: 135px;"></textarea>
                     </div>
                 </div>
             </div>
@@ -73,7 +74,8 @@
     let xc=xcActionSystem.prototype;
     let token=xc.getStorage('token');
     let storeId=[];
-    let Id='';let HKType=0;
+    let Id='';
+    let HKType='';
     let parm={'obj':{'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'},
         'url':'/XCCloud/BalanceType?action=GetBalanceTypeList',
         'elem':'#memberBalanceTb',
@@ -82,6 +84,7 @@
             ,{field:'TypeID',title: '类别编号', align: 'center'}
             ,{field:'TypeName', title: '类别名称', align: 'center'}
             ,{field:'StoreNames', title: '适用门店', align: 'center'}
+            ,{field:'HKTypeStr', title: '关联类别', align: 'center'}
             ,{field:'Note', title: '使用说明', align: 'center'}
             ,{fixed: 'right', title: '操作', width:160, align:'center', toolbar: '#barDemo'}]
     };
@@ -95,6 +98,7 @@
         });
         $('#add').on('click',function () {
             setStore(form,token);
+            HKType='';
             layer.open({
                 title:'会员余额类别设定',
                 type:1,
@@ -104,7 +108,32 @@
         });
         //saveBtn
         $('#saveBtn').on('click',function () {
-            xc.saveBalance (token,layer);
+            let obj={'id':Id,
+                'typeId':$('#TypeID').val(),
+                'typeName':$('#TypeName').val(),
+                'hkType':HKType,
+                'storeIds':storeId==''?'':storeId.join('|'),
+                'note':$('#Note').val(),
+                'userToken':token,
+                'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+            let parseJson = JSON.stringify(obj);
+            $.ajax({
+                type:'post',
+                url:'/XCCloud/BalanceType?action=SaveBalanceTypeInfo',
+                contentType: "application/json; charset=utf-8",
+                data:{parasJson: parseJson},
+                success: function (data) {
+
+                    data = JSON.parse(data);
+                    if (data.result_code == 1) {
+                        layer.msg('保存成功！');
+                        window.location.reload();
+                        layer.closeAll();
+                    } else {
+                        layer.msg(data.result_msg);
+                    }
+                }
+            })
         });
         $('#cancelBtn').on('click',function () {
            layer.closeAll();
@@ -147,8 +176,9 @@
                                   }else{
                                     storeId=[];
                                   }
-                              HKType=data.result_data.HKType;
-                                $('#HKType').find('option[value="'+data.result_data.HKType+'"]').prop('selected',true).siblings().prop('selected',false);
+                                HKType=data.result_data.HKType;
+                                $('#HKType').find('option[value="'+data.result_data.HKType+'"]').prop('selected',true)
+                                    // .siblings().prop('selected',false);
                                 form.render();
                                 $('#openModel').find('[name="unchange"]').prop('disabled',true);
                                 layer.open({
@@ -215,33 +245,8 @@
             }
         })
     }
-    xcActionSystem.prototype.saveBalance=function (token,layer) {
-        let obj={'id':Id,
-            'typeId':$('#TypeID').val(),
-            'typeName':$('#TypeName').val(),
-            'hkType':HKType,
-            'storeIds':storeId==''?'':storeId.join('|'),
-            'note':$('#Note').val(),
-            'userToken':token,
-            'signkey':'1f626576304bf5d95b72ece2222e42c3'};
-        let parseJson = JSON.stringify(obj);
-        $.ajax({
-            type:'post',
-            url:'/XCCloud/BalanceType?action=SaveBalanceTypeInfo',
-            contentType: "application/json; charset=utf-8",
-            data:{parasJson: parseJson},
-            success: function (data) {
+    xcActionSystem.prototype.saveBalance=function (token,layer,HKType) {
 
-                data = JSON.parse(data);
-                if (data.result_code == 1) {
-                    layer.msg('保存成功！');
-                    window.location.reload();
-                    layer.closeAll();
-                } else {
-                    layer.msg(data.result_msg);
-                }
-            }
-        })
     }
 </script>
 <script type="text/html" id="barDemo">
