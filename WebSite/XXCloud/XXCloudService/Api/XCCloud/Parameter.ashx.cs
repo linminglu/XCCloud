@@ -76,7 +76,6 @@ namespace XXCloudService.Api.XCCloud
         private bool checkGbRules(Dictionary<string, object> dicParas, out string errMsg)
         {
             errMsg = string.Empty;
-            string storeId = dicParas.ContainsKey("storeId") ? dicParas["storeId"].ToString() : string.Empty;
             string memberLvlId = dicParas.ContainsKey("memberLvlId") ? dicParas["memberLvlId"].ToString() : string.Empty;
             string backMin = dicParas.ContainsKey("backMin") ? dicParas["backMin"].ToString() : string.Empty;
             string backMax = dicParas.ContainsKey("backMax") ? dicParas["backMax"].ToString() : string.Empty;
@@ -86,13 +85,6 @@ namespace XXCloudService.Api.XCCloud
             string backType = dicParas.ContainsKey("backType") ? dicParas["backType"].ToString() : string.Empty;
             string totalDays = dicParas.ContainsKey("totalDays") ? dicParas["totalDays"].ToString() : string.Empty;
             string allowContainToday = dicParas.ContainsKey("allowContainToday") ? dicParas["allowContainToday"].ToString() : string.Empty;
-
-            //门店编号
-            if (string.IsNullOrEmpty(storeId))
-            {
-                errMsg = "门店编号不能为空";
-                return false;
-            }
 
             //会员级别
             if (string.IsNullOrEmpty(memberLvlId))
@@ -367,12 +359,41 @@ namespace XXCloudService.Api.XCCloud
         public object GetGivebackRules(Dictionary<string, object> dicParas)
         {
             try
-            {
+            { 
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
 
-                var data_GivebackRule = Data_GivebackRuleBiz.I.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)).ToList();
-                
+                var data_GivebackRuleList = Data_GivebackRuleBiz.I.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)).ToList();
+
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, data_GivebackRuleList);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object GetGivebackRuleInfo(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                string errMsg = string.Empty;
+                int id = dicParas.Get("id").Toint(0);
+
+                if (id == 0)
+                {
+                    errMsg = "返还规则ID不能为空";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
+                var data_GivebackRule = Data_GivebackRuleBiz.I.GetModels(p => p.ID == id).FirstOrDefault();
+                if (data_GivebackRule == null)
+                {
+                    errMsg = "该返还规则不存在";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, data_GivebackRule);
             }
             catch (Exception e)
@@ -382,15 +403,16 @@ namespace XXCloudService.Api.XCCloud
         }
 
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
-        public object AddGivebackRule(Dictionary<string, object> dicParas)
+        public object SaveGivebackRule(Dictionary<string, object> dicParas)
         {
             try
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
 
-                string errMsg = string.Empty;                
-                string memberLvlId = dicParas.ContainsKey("memberLvlId") ? dicParas["memberLvlId"].ToString() : string.Empty;                                
+                string errMsg = string.Empty;
+                int id = dicParas.Get("id").Toint(0);                
+                var memberLvlId = dicParas.Get("memberLvlId").Toint();                                
                 string allowBackPrincipal = dicParas.ContainsKey("allowBackPrincipal") ? dicParas["allowBackPrincipal"].ToString() : string.Empty;
                 string backType = dicParas.ContainsKey("backType") ? dicParas["backType"].ToString() : string.Empty;                
                 string allowContainToday = dicParas.ContainsKey("allowContainToday") ? dicParas["allowContainToday"].ToString() : string.Empty;
@@ -406,10 +428,9 @@ namespace XXCloudService.Api.XCCloud
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
-                IData_GivebackRuleService data_GivebackRuleService = BLLContainer.Resolve<IData_GivebackRuleService>();
-                Data_GivebackRule data_GivebackRule = new Data_GivebackRule();
+                Data_GivebackRule data_GivebackRule = Data_GivebackRuleBiz.I.GetModels(p=>p.ID == id).FirstOrDefault() ?? new Data_GivebackRule();
                 data_GivebackRule.MerchID = merchId;
-                data_GivebackRule.MemberLevelID = Convert.ToInt32(memberLvlId);
+                data_GivebackRule.MemberLevelID = memberLvlId;
                 data_GivebackRule.AllowBackPrincipal = Convert.ToInt32(allowBackPrincipal);
                 data_GivebackRule.Backtype = Convert.ToInt32(backType);
                 data_GivebackRule.AllowContainToday = Convert.ToInt32(allowContainToday);
@@ -418,14 +439,72 @@ namespace XXCloudService.Api.XCCloud
                 data_GivebackRule.BackScale = !string.IsNullOrEmpty(backScale) ? Convert.ToInt32(dicParas["backScale"]) : (int?)null;
                 data_GivebackRule.ExitCardMin = !string.IsNullOrEmpty(exitCardMin) ? Convert.ToInt32(dicParas["exitCardMin"]) : (int?)null;
                 data_GivebackRule.TotalDays = !string.IsNullOrEmpty(totalDays) ? Convert.ToInt32(dicParas["totalDays"]) : (int?)null;
-                
-                if (!data_GivebackRuleService.Add(data_GivebackRule))
+
+                if (Data_GivebackRuleBiz.I.Any(a => a.ID != id && a.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && a.MemberLevelID == memberLvlId))
                 {
-                    errMsg = "添加返还规则失败";
+                    errMsg = "该会员级别的返还规则已存在";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
+                if (id == 0)
+                {                    
+                    if (!Data_GivebackRuleBiz.I.Add(data_GivebackRule))
+                    {
+                        errMsg = "添加返还规则失败";
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
+                }
+                else
+                {
+                    if (!Data_GivebackRuleBiz.I.Any(a => a.ID == id))
+                    {
+                        errMsg = "该返还规则不存在";
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
+
+                    if (!Data_GivebackRuleBiz.I.Update(data_GivebackRule))
+                    {
+                        errMsg = "更新返还规则失败";
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
+                }
+
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object DelGivebackRuleInfo(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                string errMsg = string.Empty;
+                int id = dicParas.Get("id").Toint(0);
+
+                if (id == 0)
+                {
+                    errMsg = "返还规则ID不能为空";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
+                var data_GivebackRule = Data_GivebackRuleBiz.I.GetModels(p => p.ID == id).FirstOrDefault();
+                if (data_GivebackRule == null)
+                {
+                    errMsg = "该返还规则不存在";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
+                if (!Data_GivebackRuleBiz.I.Delete(data_GivebackRule))
+                {
+                    errMsg = "删除返还规则失败";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, data_GivebackRule);
             }
             catch (Exception e)
             {

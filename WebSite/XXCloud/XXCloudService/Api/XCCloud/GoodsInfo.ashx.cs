@@ -197,7 +197,7 @@ namespace XXCloudService.Api.XCCloud
                                 ) c ON CONVERT (VARCHAR, a.GoodType) = c.DictValue
                                 WHERE
                                 	a.Status = 1";
-                sql += " AND a.ID='" + id + "'";
+                sql += " AND a.ID=" + id;
                 #endregion
 
                 var result = base_GoodsInfoService.SqlQuery<Base_GoodsInfoList>(sql).FirstOrDefault();
@@ -220,12 +220,19 @@ namespace XXCloudService.Api.XCCloud
         {
             try
             {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
+                string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
+
                 string errMsg = string.Empty;
                 IBase_GoodsInfoService base_GoodsInfoService = BLLContainer.Resolve<IBase_GoodsInfoService>();
                 var barcode = "";
                 do
                 {
-                    barcode = Guid.NewGuid().ToString("N");
+                    //barcode = Guid.NewGuid().ToString("N");
+                    string num5 = Utils.getNumRandomCode(5);
+                    barcode = (userTokenKeyModel.LogType == (int)RoleType.MerchUser) ? merchId : storeId;
+                    barcode = barcode.Toint(0).ToString().PadRight(15, '0') + num5;
                 }
                 while (base_GoodsInfoService.Any(a => a.Barcode.Equals(barcode, StringComparison.OrdinalIgnoreCase)));
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, new { BarCode = barcode });
@@ -271,13 +278,13 @@ namespace XXCloudService.Api.XCCloud
 
 
                 IBase_GoodsInfoService base_GoodsInfoService = BLLContainer.Resolve<IBase_GoodsInfoService>();
-                if (id == 0)
+                if (base_GoodsInfoService.Any(a => a.ID != id && a.Barcode.Equals(barCode, StringComparison.OrdinalIgnoreCase)))
                 {
-                    if (base_GoodsInfoService.Any(a => a.Barcode.Equals(barCode, StringComparison.OrdinalIgnoreCase)))
-                    {
-                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, "该商品条码已存在");
-                    }
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, "该商品条码已存在");
+                }
 
+                if (id == 0)
+                {                    
                     var base_GoodsInfo = new Base_GoodsInfo();
                     base_GoodsInfo.Barcode = barCode;
                     base_GoodsInfo.GoodType = goodType.Toint();
@@ -303,6 +310,7 @@ namespace XXCloudService.Api.XCCloud
                     if (base_GoodsInfo.MerchID != merchId)
                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, "禁止修改非此商户下的商品信息");
 
+                    base_GoodsInfo.Barcode = barCode;
                     base_GoodsInfo.GoodType = goodType.Toint();
                     base_GoodsInfo.GoodName = goodName;
                     base_GoodsInfo.MerchID = merchId;

@@ -170,6 +170,7 @@
             let table=layui.table;
             $('#addNew').on('click',()=>{
                 Status=1; GoodType='';id='';
+                $('#createBarcodeBtn').removeClass('layui-hide');
                 $('#Status').attr('disabled',true);
                 form.render();
                 xc.setSelect('商品类别','GoodType');
@@ -248,6 +249,7 @@
                             if(data.result_code==1){
                                 let arr=data.result_data;
                                 $('#Barcode').val(arr.Barcode);
+                                $('#createBarcodeBtn').addClass('layui-hide');
                                 GoodType=arr.GoodType;
                                 xc.setSelect('商品类别','GoodType',arr.GoodType);
                                 $('#GoodName').val(arr.GoodName);

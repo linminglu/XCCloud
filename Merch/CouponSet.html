@@ -460,12 +460,12 @@
             $('#addOrModify').html(modelHtml);
             laydate.render({
                 elem: '#startDate'
-                ,type: 'date'
+                ,type: 'datetime'
                 ,value: new Date()
             });
             laydate.render({
                 elem: '#endDate'
-                ,type: 'date'
+                ,type: 'datetime'
                 ,value: new Date()
             });
             form.render();
@@ -524,12 +524,12 @@
                             $('#addOrModify').html(modelHtml);
                             laydate.render({
                                 elem: '#startDate'
-                                ,type: 'date'
+                                ,type: 'datetime'
                                 ,value: arr.StartTime
                             });
                             laydate.render({
                                 elem: '#endDate'
-                                ,type: 'date'
+                                ,type: 'datetime'
                                 ,value: arr.EndTime
                             });
                             $('#CouponName').val(arr.CouponName||'');
