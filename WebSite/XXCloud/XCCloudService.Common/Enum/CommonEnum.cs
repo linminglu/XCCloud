@@ -14,6 +14,7 @@ namespace XCCloudService.Common.Enum
     public enum SysIdEnum
     { 
         WXSAPP = 0,//微信小程序
+        WXHelper = 1,//莘助手
         Radar = 101,//雷达服务程序
         UDP = 102//UDP服务程序
     }

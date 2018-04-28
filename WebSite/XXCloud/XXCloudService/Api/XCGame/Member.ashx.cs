@@ -85,7 +85,7 @@ namespace XCCloudService.Api.XCGame
                         parameters[1] = new SqlParameter("@ICCardID", "0");
                         ds = XCGameBLL.ExecuteQuerySentence(sql, storeModel.StoreDBName, parameters);
                         RegisterMemberResponseModel registerMemberResponseModel = Utils.GetModelList<RegisterMemberResponseModel>(ds.Tables[0])[0];
-                        registerMemberResponseModel.StoreId = storeModel.StoreID.ToString();
+                        registerMemberResponseModel.StoreId = storeModel.StoreID;
                         registerMemberResponseModel.StoreName = storeModel.StoreName;
                         registerMemberResponseModel.MemberState = MemberBusiness.GetMemberStateName(registerMemberResponseModel.MemberState);
                         return ResponseModelFactory<RegisterMemberResponseModel>.CreateModel(isSignKeyReturn, registerMemberResponseModel);
@@ -122,7 +122,7 @@ namespace XCCloudService.Api.XCGame
                         parameters[2] = new SqlParameter("@ICCardID", "0");
                         ds = XCCloudRS232BLL.ExecuteQuerySentence(sql, parameters);
                         RegisterMemberResponseModel registerMemberResponseModel = Utils.GetModelList<RegisterMemberResponseModel>(ds.Tables[0])[0];
-                        registerMemberResponseModel.StoreId = storeModel.StoreID.ToString();
+                        registerMemberResponseModel.StoreId = storeModel.StoreID;
                         registerMemberResponseModel.StoreName = storeModel.StoreName;
                         registerMemberResponseModel.MemberState = MemberBusiness.GetMemberStateName(registerMemberResponseModel.MemberState);
                         return ResponseModelFactory<RegisterMemberResponseModel>.CreateModel(isSignKeyReturn, registerMemberResponseModel);
@@ -455,10 +455,10 @@ namespace XCCloudService.Api.XCGame
 
         #region "会员转账"
 
-        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCGameManaUserToken)]
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCManaUserHelperToken)]
         public object transICCardCoins(Dictionary<string, object> dicParas)
         {
-            XCCloudManaUserTokenModel userTokenModel = (XCCloudManaUserTokenModel)(dicParas[Constant.XCGameManaUserToken]);
+            XCManaUserHelperTokenModel userTokenModel = (XCManaUserHelperTokenModel)(dicParas[Constant.XCManaUserHelperToken]);
 
             string cardIdOut = dicParas.ContainsKey("cardIdOut") ? dicParas["cardIdOut"].ToString() : string.Empty;
             string cardIdOutPassword = dicParas.ContainsKey("cardIdOutPassword") ? dicParas["cardIdOutPassword"].ToString() : string.Empty;
@@ -483,7 +483,7 @@ namespace XCCloudService.Api.XCGame
                 parameters[1] = new SqlParameter("@CardIdOutPassword", cardIdOutPassword);
                 parameters[2] = new SqlParameter("@CardIdIn", cardIdIn);
                 parameters[3] = new SqlParameter("@Coins", coins);
-                parameters[4] = new SqlParameter("@UserId", userTokenModel.XCGameUserId);
+                parameters[4] = new SqlParameter("@UserId", userTokenModel.UserId);
                 parameters[5] = new SqlParameter("@Mobile", userTokenModel.Mobile);
                 parameters[6] = new SqlParameter("@ErrMsg", System.Data.SqlDbType.VarChar,200);
                 parameters[6].Direction = System.Data.ParameterDirection.Output;
@@ -505,7 +505,7 @@ namespace XCCloudService.Api.XCGame
                 string sn = System.Guid.NewGuid().ToString().Replace("-", "");
                 UDPSocketCommonQueryAnswerModel answerModel = null;
                 string radarToken = string.Empty;
-                if (DataFactory.SendMemberTransOperate(sn, storeModel.StoreID.ToString(),storeModel.StorePassword, mobileName, userTokenModel.Mobile, cardIdIn, cardIdOut, int.Parse(coins),out radarToken,out errMsg))
+                if (DataFactory.SendMemberTransOperate(sn, storeModel.StoreID,storeModel.StorePassword, mobileName, userTokenModel.Mobile, cardIdIn, cardIdOut, int.Parse(coins),out radarToken,out errMsg))
                 {
 
                 }
@@ -557,7 +557,7 @@ namespace XCCloudService.Api.XCGame
         /// </summary>
         /// <param name="dicParas"></param>
         /// <returns></returns>
-        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCGameManaUserToken)]
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCManaUserHelperToken)]
         public object getInfo2(Dictionary<string, object> dicParas)
         {
             try
@@ -567,7 +567,7 @@ namespace XCCloudService.Api.XCGame
                 System.Data.DataSet ds = null;
 
                 //获取token模式
-                XCCloudManaUserTokenModel userTokenModel = (XCCloudManaUserTokenModel)(dicParas[Constant.XCGameManaUserToken]);
+                XCManaUserHelperTokenModel userTokenModel = (XCManaUserHelperTokenModel)(dicParas[Constant.XCManaUserHelperToken]);
                 string icCardId = dicParas.ContainsKey("icCardId") ? dicParas["icCardId"].ToString() : string.Empty;
 
                 //验证门店
@@ -588,7 +588,7 @@ namespace XCCloudService.Api.XCGame
                     if (ds != null && ds.Tables.Count >= 1)
                     {
                         RegisterMemberResponseModel registerMemberResponseModel = Utils.GetModelList<RegisterMemberResponseModel>(ds.Tables[0])[0];
-                        registerMemberResponseModel.StoreId = storeModel.StoreID.ToString();
+                        registerMemberResponseModel.StoreId = storeModel.StoreID;
                         registerMemberResponseModel.StoreName = storeModel.StoreName;
                         registerMemberResponseModel.MemberState = MemberBusiness.GetMemberStateName(registerMemberResponseModel.MemberState);
                         return ResponseModelFactory<RegisterMemberResponseModel>.CreateModel(isSignKeyReturn, registerMemberResponseModel);
@@ -669,7 +669,7 @@ namespace XCCloudService.Api.XCGame
             }
         }
 
-        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCGameManaUserToken)]
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCManaUserHelperToken)]
         public object getCustomCardInfo(Dictionary<string, object> dicParas)
         {
             string errMsg = string.Empty;
@@ -677,7 +677,7 @@ namespace XCCloudService.Api.XCGame
             System.Data.DataSet ds = null;
 
             //获取token模式
-            XCCloudManaUserTokenModel userTokenModel = (XCCloudManaUserTokenModel)(dicParas[Constant.XCGameManaUserToken]);
+            XCManaUserHelperTokenModel userTokenModel = (XCManaUserHelperTokenModel)(dicParas[Constant.XCManaUserHelperToken]);
             //验证门店
             StoreBusiness storeBusiness = new StoreBusiness();
             if (!storeBusiness.IsEffectiveStore(userTokenModel.StoreId, ref storeModel, out errMsg))
@@ -701,7 +701,7 @@ namespace XCCloudService.Api.XCGame
                         cattleMemberCardDetailModel.MemberState = MemberBusiness.GetMemberStateName(cattleMemberCardDetailModel.MemberState);
                         list.Add(cattleMemberCardDetailModel);
                     }
-                    CattleMemberCardModel cardModel = new CattleMemberCardModel(storeModel.StoreID.ToString(), storeModel.StoreName, list);
+                    CattleMemberCardModel cardModel = new CattleMemberCardModel(storeModel.StoreID, storeModel.StoreName, list);
                     return ResponseModelFactory<CattleMemberCardModel>.CreateModel(isSignKeyReturn, cardModel);
                 }
                 else
@@ -714,7 +714,7 @@ namespace XCCloudService.Api.XCGame
                 string sn = System.Guid.NewGuid().ToString().Replace("-", "");
                 UDPSocketCommonQueryAnswerModel answerModel = null;
                 string radarToken = string.Empty;
-                if (DataFactory.SendDataCattleMemberCardQuery(sn, storeModel.StoreID.ToString(), storeModel.StorePassword, "0", out radarToken, out errMsg))
+                if (DataFactory.SendDataCattleMemberCardQuery(sn, storeModel.StoreID, storeModel.StorePassword, "0", out radarToken, out errMsg))
                 {
 
                 }
@@ -749,7 +749,7 @@ namespace XCCloudService.Api.XCGame
                             detailModel.Mobile = model1.Result_Data[i].Phone;
                             list.Add(detailModel);
                         }
-                        CattleMemberCardModel cardModel = new CattleMemberCardModel(storeModel.StoreID.ToString(), storeModel.StoreName, list);
+                        CattleMemberCardModel cardModel = new CattleMemberCardModel(storeModel.StoreID, storeModel.StoreName, list);
                         return ResponseModelFactory<CattleMemberCardModel>.CreateModel(isSignKeyReturn, cardModel);
                     }
                     else

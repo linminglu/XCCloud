@@ -146,5 +146,7 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Data_Card_Balance> Data_Card_Balance { get; set; }
         public virtual DbSet<Dict_BalanceType> Dict_BalanceType { get; set; }
         public virtual DbSet<Data_GivebackRule> Data_GivebackRule { get; set; }
+        public virtual DbSet<Base_StoreHKConfig> Base_StoreHKConfig { get; set; }
+        public virtual DbSet<Data_DigitCoinFood> Data_DigitCoinFood { get; set; }
     }
 }

@@ -28,5 +28,8 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> OutCoinError { get; set; }
         public Nullable<int> OutLottery { get; set; }
         public Nullable<int> OutLotteryError { get; set; }
+        public string MediaUrl1 { get; set; }
+        public string MediaUrl2 { get; set; }
+        public string MediaUrl3 { get; set; }
     }
 }

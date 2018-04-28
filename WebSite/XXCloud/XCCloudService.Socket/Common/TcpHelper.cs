@@ -36,17 +36,7 @@ namespace XCCloudService.SocketService.TCP.Common
             }
             return content;
         }
-        /// <summary>
-        /// 添加消息
-        /// </summary>
-        /// <param name="model"></param>
-        /// <returns></returns>
-        public static bool SaveDBLog(t_datamessage model)
-        {
-            IDataMessageService tcpService = BLLContainer.Resolve<IDataMessageService>();
-            tcpService.Add(model);
-            return true;
-        }
+
         /// <summary>
         /// 重发消息
         /// </summary>

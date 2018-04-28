@@ -2,7 +2,8 @@
 layui.define(["laytpl", "laypage", "layer", "form"], function(e)
 {
     "use strict";
-    var t = layui.$,
+    var language=window.localStorage.getItem('xc_language'),
+        t = layui.$,
         i = layui.laytpl,
         a = layui.laypage,
         l = layui.layer,
@@ -28,8 +29,8 @@ layui.define(["laytpl", "laypage", "layer", "form"], function(e)
             {
                 return layui.onevent.call(this, s, e, t)
             }
-        }, c = function()
-        {
+        },
+        c = function(){
             var e = this,
                 t = e.config,
                 i = t.id;
@@ -41,7 +42,8 @@ layui.define(["laytpl", "laypage", "layer", "form"], function(e)
                     },
                     config: t
                 }
-        }, s = "table",
+        },
+        s = "table",
         u = ".layui-table",
         h = "layui-hide",
         f = "layui-none",
@@ -89,7 +91,7 @@ layui.define(["laytpl", "laypage", "layer", "form"], function(e)
         cellMinWidth: 60,
         text:
             {
-                none: "无数据"
+                none:language=='Chinese'? "无数据":"there is no data!"
             }
     }, M.prototype.render = function()
     {

@@ -24,18 +24,15 @@ namespace XCCloudService.ServicePage
                 CreateImage(validateNum);//将生成的随机字符串绘成图片
                 ValidateImgCache.Add(validateNum, "", CacheExpires.ImgCodeCache);
             }
-            //validateNum = CreateRandomNum(4);
-            //CreateImage(validateNum);
-            //Session[SessionType.ValidateCode] = validateNum;
         }
 
         private bool GetRandomNum(out string validateNum)
         {
             int count = 0;
-            validateNum = CreateRandomNum(4);
+            validateNum = CreateRandomNum(6);
             while (ValidateImgCache.Exist(validateNum) && count < 9)
             {
-                validateNum = CreateRandomNum(4);
+                validateNum = CreateRandomNum(6);
                 count++;
             }
             if (count < 9 )
@@ -55,7 +52,7 @@ namespace XCCloudService.ServicePage
         //生成随机字符串
         private string CreateRandomNum(int NumCount)
         {
-            string allChar = "0,1,2,3,4,5,6,7,8,9,A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,W,X,Y,Z";
+            string allChar = "A,B,C,D,E,F,G,H,I,J,K,L,M,N,P,Q,R,S,T,U,W,X,Y,Z";
             string[] allCharArray = allChar.Split(',');//拆分成数组
             string randomNum = "";
             int temp = -1;//记录上次随机数的数值，尽量避免产生几个相同的随机数
@@ -67,7 +64,7 @@ namespace XCCloudService.ServicePage
                 {
                     rand = new Random(i * temp * ((int)DateTime.Now.Ticks));
                 }
-                int t = rand.Next(35);
+                int t = rand.Next(24);
                 if (temp == t)
                 {
                     return CreateRandomNum(NumCount);

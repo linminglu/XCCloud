@@ -376,6 +376,10 @@
           let  upload=layui.upload;
         //新增按钮
         $('#add').on('click',()=>{
+             needAuthor=1; mustPhone=0; mustIDCard=0; useReadID=1; readFace=0; readPlam=0;
+             BirthdayFree=''; freeType=''; freeRate='';
+             freeBalanceType='';
+              AllowExitCard=0;AllowExitMoney=0;AllowExitCoinToCar=0;LockHead=0;States=0;
             newTable(table,arrSendCoinTable,layer,form);
             xc.setSelect('生日送币方式','birthdayFree');
             xc.setSelect('送币频率','freeRate');
@@ -480,13 +484,16 @@
                         data = JSON.parse(data);
                         console.log(data)
                         if(data.result_code==1){
-                            getMemberFreeRule(memberLevelID,arrSendCoinTable);
+                            getMemberFreeRule(memberLevelID,table,layer,form);
                             let arr=data.result_data;
 
                             $('#MemberLevelName').val(arr.MemberLevelName);
                                 $('#openFee').val(arr.OpenFee);
                                 $('#deposit').val(arr.Deposit);
                                 $('#validday').val(arr.Validday);
+                            States=arr.State;
+                            if(arr.State==1){$('#State').attr('checked',true)
+                            }else { $('#State').attr('checked',false)}
                                 needAuthor=arr.NeedAuthor;//开卡需要授权
                                 if(arr.NeedAuthor==1){$('#needAuthor').attr('checked',true)
                                 }else { $('#needAuthor').attr('checked',false)}
@@ -536,7 +543,7 @@
                                 if(arr.LockHead==1){$('#lockHead').attr('checked',true)
                                 }else { $('#lockHead').attr('checked',false)}
 
-                            xc.setSelect('生日送币方式','barthdayFree',arr.BirthdayFree);
+                            xc.setSelect('生日送币方式','birthdayFree',arr.BirthdayFree);
                             xc.setSelect('送币频率','freeRate',arr.FreeRate);
                             xc.setSelect('送币方式','freeType',arr.FreeType);
 
@@ -549,7 +556,7 @@
                                 $(this).parent('div').remove();
                             });
 
-                            newTable(table,arrSendCoinTable,layer,form);
+                            // newTable(table,arrSendCoinTable,layer,form);
                             layer.open({
                                 type:1,
                                 area:'1000px',
@@ -608,13 +615,13 @@
             let layEvent = obj.event;
              if(layEvent === 'del'){
                  for(let i in arrSendCoinTable){
-                     if(arrSendCoinTable[i]=={'ChargeTotal':data.ChargeTotal,
-                             'FreeBalanceType':data.FreeBalanceType,
-                             'FreeCount':data.FreeCount,
-                             'MinSpaceDays':data.MinSpaceDays,
-                             'OnceFreeCount':data.OnceFreeCount,
-                             'ExpireDays':data.ExpireDays,
-                         }){
+                     if(arrSendCoinTable[i].ChargeTotal==data.ChargeTotal&&
+                         arrSendCoinTable[i].FreeBalanceType==data.FreeBalanceType&&
+                         arrSendCoinTable[i].FreeCount==data.FreeCount&&
+                         arrSendCoinTable[i].MinSpaceDays==data.MinSpaceDays&&
+                         arrSendCoinTable[i].OnceFreeCount==data.OnceFreeCount&&
+                         arrSendCoinTable[i].ExpireDays==data.ExpireDays
+                         ){
                          arrSendCoinTable.splice(i,1);
                          obj.del()
                      }
@@ -754,7 +761,7 @@
             'LockHead':LockHead,
             'State':States,
             'memberLevelFoods':memberLevelFood.length>0?memberLevelFood:null,
-            'memberLevelFrees':arrSendCoinTable.length>0?arrSendCoinTable:null,
+            'memberLevelFrees':arrSendCoinTable,
             'userToken':token,
             'signkey':'1f626576304bf5d95b72ece2222e42c3'};
         let url='/XCCloud/Member?action=SaveMemberLevel';
@@ -779,7 +786,7 @@
             }
         })
     };
-    function getMemberFreeRule(m) {
+    function getMemberFreeRule(m,table,layer,form) {
         let _obj={'memberLevelID':m,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
         let parseJson = JSON.stringify(_obj);
         $.ajax({
@@ -791,6 +798,7 @@
                 data = JSON.parse(data);
                 if (data.result_code == 1) {
                     arrSendCoinTable=data.result_data;
+                    newTable(table,arrSendCoinTable,layer,form);
                 } else {
                     layer.msg(data.result_msg);
                 }

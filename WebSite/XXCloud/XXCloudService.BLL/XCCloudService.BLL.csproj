@@ -11,6 +11,7 @@
     <AssemblyName>XXCloudService.BLL</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <NuGetPackageImportStamp>7a3afd49</NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -31,8 +32,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Autofac, Version=4.6.1.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Autofac.4.6.1\lib\net45\Autofac.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -106,6 +107,9 @@
     <Compile Include="IBLL\XCCloud\IBase_StoreDogListService.cs">
       <DependentUpon>IXCCloudService.tt</DependentUpon>
     </Compile>
+    <Compile Include="IBLL\XCCloud\IBase_StoreHKConfigService.cs">
+      <DependentUpon>IXCCloudService.tt</DependentUpon>
+    </Compile>
     <Compile Include="IBLL\XCCloud\IBase_StoreInfoService.cs">
       <DependentUpon>IXCCloudService.tt</DependentUpon>
     </Compile>
@@ -167,6 +171,9 @@
       <DependentUpon>IXCCloudService.tt</DependentUpon>
     </Compile>
     <Compile Include="IBLL\XCCloud\IData_DigitCoinDestroyService.cs">
+      <DependentUpon>IXCCloudService.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\XCCloud\IData_DigitCoinFoodService.cs">
       <DependentUpon>IXCCloudService.tt</DependentUpon>
     </Compile>
     <Compile Include="IBLL\XCCloud\IData_DigitCoinService.cs">
@@ -446,7 +453,6 @@
     <Compile Include="IBLL\XCGameManager\IPromotionService.cs" />
     <Compile Include="IBLL\XCGameManager\IStoreService.cs" />
     <Compile Include="IBLL\XCGameManager\IDeviceService.cs" />
-    <Compile Include="IBLL\XCGameManager\IDataMessageService.cs" />
     <Compile Include="IBLL\XCGameManager\IAdminUserService.cs" />
     <Compile Include="IBLL\XCGameManager\IUserTokenService.cs" />
     <Compile Include="IBLL\XCGameManager\IUserService.cs" />
@@ -505,7 +511,7 @@
     <Compile Include="XCCloud\Base_GoodsInfoService.cs">
       <DependentUpon>XCCloudService.tt</DependentUpon>
     </Compile>
-    <Compile Include="XCCloud\base_MemberInfoService.cs">
+    <Compile Include="XCCloud\Base_MemberInfoService.cs">
       <DependentUpon>XCCloudService.tt</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Base_MerchAlipayService.cs">
@@ -530,6 +536,9 @@
       <DependentUpon>XCCloudService.tt</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Base_StoreDogListService.cs">
+      <DependentUpon>XCCloudService.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Base_StoreHKConfigService.cs">
       <DependentUpon>XCCloudService.tt</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Base_StoreInfoService.cs">
@@ -593,6 +602,9 @@
       <DependentUpon>XCCloudService.tt</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_DigitCoinDestroyService.cs">
+      <DependentUpon>XCCloudService.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_DigitCoinFoodService.cs">
       <DependentUpon>XCCloudService.tt</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_DigitCoinService.cs">
@@ -872,7 +884,6 @@
     <Compile Include="XCGameManager\PromotionService.cs" />
     <Compile Include="XCGameManager\StoreService.cs" />
     <Compile Include="XCGameManager\DeviceService.cs" />
-    <Compile Include="XCGameManager\TCPService.cs" />
     <Compile Include="XCGameManager\AdminUserService.cs" />
     <Compile Include="XCGameManager\UserTokenService.cs" />
     <Compile Include="XCGameManager\UserService.cs" />
@@ -927,11 +938,16 @@
     <Content Include="IBLL\XCCloud\IXCCloudService.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>IXCCloudService.cs</LastGenOutput>
+      <AutoT4RunOnBuild>Disabled</AutoT4RunOnBuild>
     </Content>
     <Content Include="XCCloud\XCCloudService.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>XCCloudService.cs</LastGenOutput>
+      <AutoT4RunOnBuild>Disabled</AutoT4RunOnBuild>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

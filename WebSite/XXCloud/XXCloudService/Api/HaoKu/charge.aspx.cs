@@ -10,8 +10,11 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Xml;
 using XCCloudService.BLL.CommonBLL;
+using XCCloudService.Business.XCCloud;
 using XCCloudService.Common;
 using XCCloudService.Model.CustomModel.XCCloud;
+using XCCloudService.Model.XCCloud;
+using XXCloudService.Api.HaoKu.Com;
 
 namespace XXCloudService.Api.HaoKu
 {
@@ -21,7 +24,7 @@ namespace XXCloudService.Api.HaoKu
         {
             SortedDictionary<string, string> sPara = GetRequestPost();
 
-            Response.Write(Request.QueryString.ToString());
+            //Response.Write(Request.QueryString.ToString());
 
             string shopId = Request["shopId"];
             string cardId = Request["cardId"];
@@ -29,6 +32,18 @@ namespace XXCloudService.Api.HaoKu
             string source = Request["source"];
             string t = Request["t"];
             string sign = Request["sign"];
+
+            if(string.IsNullOrEmpty(shopId)){
+                Response.Write(ReturnModel.ReturnInfo(ReturnCode.F, "shopId错误"));
+                return;
+            }
+
+            int raiseBalance = 0;
+            if(!int.TryParse(amount, out raiseBalance))
+            {
+                Response.Write(ReturnModel.ReturnInfo(ReturnCode.F, "amount错误"));
+                return;
+            }
 
             Response.HeaderEncoding = Encoding.UTF8;
             Response.ContentType = "application/json";
@@ -38,10 +53,10 @@ namespace XXCloudService.Api.HaoKu
 
             foreach (XmlNode node in doc.SelectNodes("List/ShopID"))
             {
-                if (node.Attributes["HKID"].InnerText == shopId)
+                if (node.Attributes["HKID"].Value == shopId)
                 {
                     //找到对应的门店ID
-                    string storeId = node.Attributes["XCID"].Value;
+                    string storeId = node.Attributes["XCStoreId"].Value;
                     //通过门店ID和IC卡ID查找会员及余额信息
                     string storedProcedure = "GetMember";
                     SqlParameter[] parameters = new SqlParameter[4];
@@ -54,46 +69,39 @@ namespace XXCloudService.Api.HaoKu
                     System.Data.DataSet ds = XCCloudBLL.GetStoredProcedureSentence(storedProcedure, parameters);
                     if (parameters[2].Value.ToString() == "1" && ds.Tables.Count > 0)
                     {
+                        MemberBaseModel member = null;
+                        MemberBalancesModel memberBalance = null;
                         if (ds.Tables[0].Rows.Count > 0)
                         {
-                            var baseMemberModel = Utils.GetModelList<MemberBaseModel>(ds.Tables[0]).ToList()[0];
+                            member = Utils.GetModelList<MemberBaseModel>(ds.Tables[0]).FirstOrDefault();
                         }
                         if (ds.Tables[1].Rows.Count > 0)
                         {
-                            var baseMemberModel = Utils.GetModelList<MemberBaseModel>(ds.Tables[0]).ToList()[0];
+                            memberBalance = Utils.GetModelList<MemberBalancesModel>(ds.Tables[1]).FirstOrDefault(b => b.HKType == 1);
                         }
                         //增加币余额
+                        if (member != null && memberBalance != null)
+                        {
+                            Data_Card_Balance model = Data_Card_BalanceBiz.I.GetModels(b=>b.BalanceIndex == memberBalance.BalanceIndex).FirstOrDefault();
+                            model.Banlance = memberBalance.Banlance + raiseBalance;
+                            bool ret = Data_Card_BalanceBiz.I.Update(model);
+                            if (ret)
+                            {
+                                Response.Write(ReturnModel.ReturnInfo(ReturnCode.T, "转换成功"));
+                            }
+                            else
+                            {
+                                Response.Write(ReturnModel.ReturnInfo(ReturnCode.F, "转换失败"));
+                            }
 
+                            return;
+                        }
                     }
-
-                    
-
-
-                    //找到对应的店铺信息
-                    //TransmiteObject.互联网充值结构 recharge = new TransmiteObject.互联网充值结构()
-                    //{
-                    //    ICCardID = cardId,
-                    //    Amount = Convert.ToUInt16(amount),
-                    //    OrderID = source,
-                    //    OrderTime = Convert.ToUInt64(t)
-                    //};
-                    //object response = new object();
-                    //string msg = "";
-                    //if (ClientList.RequestCommand(node.Attributes["XCID"].InnerText, TransmiteEnum.互联网充值, recharge.ToArray(), out response, out msg))
-                    //{
-                    //    Response.Write("{\"return_code\":\"01\",\"return_msg\":\"充值成功\"}");
-                    //}
-                    //else
-                    //{
-                    //    Response.Write("{\"return_code\":\"02\",\"return_msg\":\"" + msg + "\"}");
-                    //}
-                    return;
                 }
             }
 
-            ////没有找到对应店铺信息
-
-            //Response.Write("{\"return_code\":\"02\",\"return_msg\":\"没有找到对应店铺信息\"}");
+            //没有找到对应店铺信息
+            Response.Write(ReturnModel.ReturnInfo(ReturnCode.F, "没有找到对应店铺信息"));
         }
 
         #region 获取好酷GET过来的请求消息，并以“参数名=参数值”的形式组成数组

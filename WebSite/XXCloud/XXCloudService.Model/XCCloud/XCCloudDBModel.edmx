@@ -208,6 +208,20 @@
           <Property Name="DogID" Type="varchar" MaxLength="128" />
           <Property Name="Status" Type="int" />
         </EntityType>
+        <EntityType Name="Base_StoreHKConfig">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MerchID" Type="varchar" MaxLength="15" />
+          <Property Name="StoreID" Type="varchar" MaxLength="15" />
+          <Property Name="HKShopID" Type="varchar" MaxLength="10" />
+          <Property Name="HKStoreSecret" Type="varchar" MaxLength="16" />
+          <Property Name="HKOrgID" Type="varchar" MaxLength="16" />
+          <Property Name="HKMerchID" Type="varchar" MaxLength="16" />
+          <Property Name="HKAppSecret" Type="varchar" MaxLength="64" />
+          <Property Name="HKAppID" Type="varchar" MaxLength="64" />
+        </EntityType>
         <EntityType Name="Base_StoreInfo">
           <Key>
             <PropertyRef Name="StoreID" />
@@ -499,6 +513,18 @@
           <Property Name="ICCardID" Type="varchar" MaxLength="16" />
           <Property Name="DestroyTime" Type="datetime" />
           <Property Name="UserID" Type="int" />
+          <Property Name="Note" Type="varchar" MaxLength="200" />
+        </EntityType>
+        <EntityType Name="Data_DigitCoinFood">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MerchID" Type="varchar" MaxLength="15" />
+          <Property Name="FoodName" Type="varchar" MaxLength="50" />
+          <Property Name="BalanceIndex" Type="int" />
+          <Property Name="Coins" Type="int" />
+          <Property Name="AuthorFlag" Type="int" />
           <Property Name="Note" Type="varchar" MaxLength="200" />
         </EntityType>
         <EntityType Name="Data_Food_Detial">
@@ -1194,9 +1220,14 @@
           <Property Name="StoreID" Type="varchar" MaxLength="15" />
           <Property Name="Segment" Type="varchar" MaxLength="4" />
           <Property Name="HeadAddress" Type="varchar" MaxLength="2" />
+          <Property Name="DeviceID" Type="int" />
+          <Property Name="GameIndexID" Type="int" />
+          <Property Name="SiteName" Type="varchar" MaxLength="20" />
+          <Property Name="MemberID" Type="int" />
           <Property Name="CardID" Type="int" />
           <Property Name="Coins" Type="int" />
           <Property Name="CoinType" Type="int" />
+          <Property Name="BalanceIndex" Type="int" />
           <Property Name="Balance" Type="int" />
           <Property Name="RealTime" Type="datetime" />
         </EntityType>
@@ -1405,6 +1436,9 @@
           <Property Name="OutCoinError" Type="int" />
           <Property Name="OutLottery" Type="int" />
           <Property Name="OutLotteryError" Type="int" />
+          <Property Name="MediaUrl1" Type="varchar" MaxLength="200" />
+          <Property Name="MediaUrl2" Type="varchar" MaxLength="200" />
+          <Property Name="MediaUrl3" Type="varchar" MaxLength="200" />
         </EntityType>
         <EntityType Name="Flw_Game_WinPrize">
           <Key>
@@ -1821,6 +1855,7 @@
           <EntitySet Name="Base_SettlePPOS" EntityType="Self.Base_SettlePPOS" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Base_StorageInfo" EntityType="Self.Base_StorageInfo" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Base_StoreDogList" EntityType="Self.Base_StoreDogList" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Base_StoreHKConfig" EntityType="Self.Base_StoreHKConfig" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Base_StoreInfo" EntityType="Self.Base_StoreInfo" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Base_StoreWeight" EntityType="Self.Base_StoreWeight" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Base_StoreWeight_Game" EntityType="Self.Base_StoreWeight_Game" Schema="dbo" store:Type="Tables" />
@@ -1842,6 +1877,7 @@
           <EntitySet Name="Data_CouponInfo" EntityType="Self.Data_CouponInfo" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Data_CouponList" EntityType="Self.Data_CouponList" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Data_DigitCoinDestroy" EntityType="Self.Data_DigitCoinDestroy" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Data_DigitCoinFood" EntityType="Self.Data_DigitCoinFood" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Data_Food_Detial" EntityType="Self.Data_Food_Detial" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Data_Food_Level" EntityType="Self.Data_Food_Level" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Data_Food_Sale" EntityType="Self.Data_Food_Sale" Schema="dbo" store:Type="Tables" />
@@ -2228,6 +2264,8 @@
           <EntitySet Name="Data_Card_Balance" EntityType="XCCloudDBModel.Data_Card_Balance" />
           <EntitySet Name="Dict_BalanceType" EntityType="XCCloudDBModel.Dict_BalanceType" />
           <EntitySet Name="Data_GivebackRule" EntityType="XCCloudDBModel.Data_GivebackRule" />
+          <EntitySet Name="Base_StoreHKConfig" EntityType="XCCloudDBModel.Base_StoreHKConfig" />
+          <EntitySet Name="Data_DigitCoinFood" EntityType="XCCloudDBModel.Data_DigitCoinFood" />
         </EntityContainer>
         <EntityType Name="Base_ChainRule">
           <Key>
@@ -2908,6 +2946,11 @@
           <Property Name="CoinType" Type="Int32" />
           <Property Name="Balance" Type="Int32" />
           <Property Name="RealTime" Type="DateTime" Precision="3" />
+          <Property Name="DeviceID" Type="Int32" />
+          <Property Name="GameIndexID" Type="Int32" />
+          <Property Name="SiteName" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="MemberID" Type="Int32" />
+          <Property Name="BalanceIndex" Type="Int32" />
         </EntityType>
         <EntityType Name="Flw_485_SaveCoin">
           <Key>
@@ -3080,6 +3123,9 @@
           <Property Name="OutCoinError" Type="Int32" />
           <Property Name="OutLottery" Type="Int32" />
           <Property Name="OutLotteryError" Type="Int32" />
+          <Property Name="MediaUrl1" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="MediaUrl2" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="MediaUrl3" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="Flw_Game_WinPrize">
           <Key>
@@ -4007,6 +4053,32 @@
           <Property Name="TotalDays" Type="Int32" />
           <Property Name="AllowContainToday" Type="Int32" />
         </EntityType>
+        <EntityType Name="Base_StoreHKConfig">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="HKShopID" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="HKStoreSecret" Type="String" MaxLength="16" FixedLength="false" Unicode="false" />
+          <Property Name="HKOrgID" Type="String" MaxLength="16" FixedLength="false" Unicode="false" />
+          <Property Name="HKMerchID" Type="String" MaxLength="16" FixedLength="false" Unicode="false" />
+          <Property Name="HKAppSecret" Type="String" MaxLength="64" FixedLength="false" Unicode="false" />
+          <Property Name="HKAppID" Type="String" MaxLength="64" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Data_DigitCoinFood">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="FoodName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="BalanceIndex" Type="Int32" />
+          <Property Name="Coins" Type="Int32" />
+          <Property Name="AuthorFlag" Type="Int32" />
+          <Property Name="Note" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -4731,6 +4803,11 @@
           <EntitySetMapping Name="Flw_485_Coin">
             <EntityTypeMapping TypeName="XCCloudDBModel.Flw_485_Coin">
               <MappingFragment StoreEntitySet="Flw_485_Coin">
+                <ScalarProperty Name="BalanceIndex" ColumnName="BalanceIndex" />
+                <ScalarProperty Name="MemberID" ColumnName="MemberID" />
+                <ScalarProperty Name="SiteName" ColumnName="SiteName" />
+                <ScalarProperty Name="GameIndexID" ColumnName="GameIndexID" />
+                <ScalarProperty Name="DeviceID" ColumnName="DeviceID" />
                 <ScalarProperty Name="RealTime" ColumnName="RealTime" />
                 <ScalarProperty Name="Balance" ColumnName="Balance" />
                 <ScalarProperty Name="CoinType" ColumnName="CoinType" />
@@ -4909,6 +4986,9 @@
           <EntitySetMapping Name="Flw_Game_Watch">
             <EntityTypeMapping TypeName="XCCloudDBModel.Flw_Game_Watch">
               <MappingFragment StoreEntitySet="Flw_Game_Watch">
+                <ScalarProperty Name="MediaUrl3" ColumnName="MediaUrl3" />
+                <ScalarProperty Name="MediaUrl2" ColumnName="MediaUrl2" />
+                <ScalarProperty Name="MediaUrl1" ColumnName="MediaUrl1" />
                 <ScalarProperty Name="OutLotteryError" ColumnName="OutLotteryError" />
                 <ScalarProperty Name="OutLottery" ColumnName="OutLottery" />
                 <ScalarProperty Name="OutCoinError" ColumnName="OutCoinError" />
@@ -5905,6 +5985,34 @@
                 <ScalarProperty Name="BackMax" ColumnName="BackMax" />
                 <ScalarProperty Name="BackMin" ColumnName="BackMin" />
                 <ScalarProperty Name="MemberLevelID" ColumnName="MemberLevelID" />
+                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Base_StoreHKConfig">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Base_StoreHKConfig">
+              <MappingFragment StoreEntitySet="Base_StoreHKConfig">
+                <ScalarProperty Name="HKAppID" ColumnName="HKAppID" />
+                <ScalarProperty Name="HKAppSecret" ColumnName="HKAppSecret" />
+                <ScalarProperty Name="HKMerchID" ColumnName="HKMerchID" />
+                <ScalarProperty Name="HKOrgID" ColumnName="HKOrgID" />
+                <ScalarProperty Name="HKStoreSecret" ColumnName="HKStoreSecret" />
+                <ScalarProperty Name="HKShopID" ColumnName="HKShopID" />
+                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
+                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Data_DigitCoinFood">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Data_DigitCoinFood">
+              <MappingFragment StoreEntitySet="Data_DigitCoinFood">
+                <ScalarProperty Name="Note" ColumnName="Note" />
+                <ScalarProperty Name="AuthorFlag" ColumnName="AuthorFlag" />
+                <ScalarProperty Name="Coins" ColumnName="Coins" />
+                <ScalarProperty Name="BalanceIndex" ColumnName="BalanceIndex" />
+                <ScalarProperty Name="FoodName" ColumnName="FoodName" />
                 <ScalarProperty Name="MerchID" ColumnName="MerchID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>

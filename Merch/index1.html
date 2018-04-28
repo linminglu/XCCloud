@@ -35,9 +35,7 @@
             line-height: 36px;}
     </style>
 </head>
-<!--
 
--->
 <body>
 <div class="layui-layout layui-layout-admin">
     <!-- 顶部 -->
@@ -80,10 +78,10 @@
                 </li>
                 <li class="layui-nav-item" lay-unselect="">
                     <a href="javascript:;"><span id="_lang">国际化</span></a>
-                    <dl class="layui-nav-child">
-                        <dd><a href="javascript:;">简体中午</a></dd>
-                        <dd><a href="javascript:;">ENGLISH</a></dd>
-                        <dd><a href="javascript:;">francais</a></dd>
+                    <dl class="layui-nav-child" id="languageBox">
+                        <dd><a href="javascript:;" id="Chinese">简体中文</a></dd>
+                        <dd><a href="javascript:;" id="English">ENGLISH</a></dd>
+                        <dd><a href="javascript:;" id="French">francais</a></dd>
                     </dl>
                 </li>
             </ul>
@@ -164,7 +162,7 @@
     layui.use(['element','layer'],function () {
         let element=layui.element;
         let layer=layui.layer;
-        let _date=new Date()
+        let _date=new Date();
         $('#nowTime').text(_date.getFullYear()+'/'+(_date.getMonth()+1)+'/'+_date.getDate()+' '+_date.getHours()+':'+_date.getMinutes()+':'+_date.getSeconds());
 
         if(logMsg.switchStore==1){
@@ -362,5 +360,16 @@
             window.close();
         }
     }
+    //切换语言
+    $('#languageBox').on('click','dd a',function () {
+        if($(this).attr('id')=='Chinese'){
+            xc.setStorage('xc_language','Chinese')
+        }else if($(this).attr('id')=='English'){
+            xc.setStorage('xc_language','English')
+        }else if($(this).attr('id')=='French'){
+           xc.setStorage('xc_language','French')
+        }
+        window.location.href='/merch/index1.html';
+    })
 </script>
 </html>

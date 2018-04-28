@@ -29,7 +29,7 @@ namespace XCCloudService.Utility
             {
                 LogHelper.SaveLog(TxtLogType.SystemInit, "********************************Application Start********************************");
                 //TestInit();
-                TCPSocketInit();
+                //TCPSocketInit();
                 UDPSocketInit();
                 StoreInit();
                 StoreDogInit();
@@ -177,7 +177,7 @@ namespace XCCloudService.Utility
         {
             try
             {
-                XCCloudManaUserTokenBusiness.Init();
+                XCManaUserHelperTokenBusiness.Init();
                 LogHelper.SaveLog(TxtLogType.SystemInit, "XcManaUserInit Sucess");
             }
             catch (Exception ex)

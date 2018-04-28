@@ -295,6 +295,25 @@ namespace XCCloudService.Business.XCCloud
         }
     }
     
+    public partial class Base_StoreHKConfigBiz
+    {
+		public static IBase_StoreHKConfigService I
+        {
+            get
+            {
+                return BLLContainer.Resolve<IBase_StoreHKConfigService>();
+            }
+        }
+
+        public static IBase_StoreHKConfigService NI
+        {
+            get
+            {
+                return BLLContainer.Resolve<IBase_StoreHKConfigService>(resolveNew: true);
+            }
+        }
+    }
+    
     public partial class Base_StoreInfoBiz
     {
 		public static IBase_StoreInfoService I
@@ -709,6 +728,25 @@ namespace XCCloudService.Business.XCCloud
             get
             {
                 return BLLContainer.Resolve<IData_DigitCoinDestroyService>(resolveNew: true);
+            }
+        }
+    }
+    
+    public partial class Data_DigitCoinFoodBiz
+    {
+		public static IData_DigitCoinFoodService I
+        {
+            get
+            {
+                return BLLContainer.Resolve<IData_DigitCoinFoodService>();
+            }
+        }
+
+        public static IData_DigitCoinFoodService NI
+        {
+            get
+            {
+                return BLLContainer.Resolve<IData_DigitCoinFoodService>(resolveNew: true);
             }
         }
     }

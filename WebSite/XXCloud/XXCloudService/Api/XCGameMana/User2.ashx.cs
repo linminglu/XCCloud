@@ -12,6 +12,7 @@ using XCCloudService.Model.CustomModel.Common;
 using XCCloudService.Model.CustomModel.XCGameManager;
 using XCCloudService.Model.Socket.UDP;
 using XCCloudService.SocketService.UDP.Factory;
+using XXCloudService.Utility;
 
 namespace XXCloudService.Api.XCGameMana
 {
@@ -60,63 +61,50 @@ namespace XXCloudService.Api.XCGameMana
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
                 }
 
-
-                if (storeModel.StoreDBDeployType == 0)
+                if (storeModel.StoreType == 0)
                 { 
-                    //验证用户在分库是否存在
-                    XCCloudService.BLL.IBLL.XCGame.IUserService userService = BLLContainer.Resolve<XCCloudService.BLL.IBLL.XCGame.IUserService>(storeModel.StoreDBName);
-                    var gameUserModel = userService.GetModels(p => p.Mobile.Equals(mobile, StringComparison.OrdinalIgnoreCase)).FirstOrDefault<XCCloudService.Model.XCGame.u_users>();
-                    if (gameUserModel == null)
-                    {
-                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "未查询到该用户");
-                    }                    
-                }
-                else if (storeModel.StoreDBDeployType == 1)
-                {
-                    string sn = System.Guid.NewGuid().ToString().Replace("-", "");
-                    UDPSocketCommonQueryAnswerModel answerModel = null;
-                    string radarToken = string.Empty;
-                    if (DataFactory.SendDataUserPhoneQuery(sn, storeModel.StoreID.ToString(), storeModel.StorePassword, mobile, out radarToken, out errMsg))
-                    {
-
-                    }
-                    else
-                    {
-                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
-                    }
-
-                    answerModel = null;
-                    int whileCount = 0;
-                    while (answerModel == null && whileCount <= 25)
-                    {
-                        //获取应答缓存数据
-                        whileCount++;
-                        System.Threading.Thread.Sleep(1000);
-                        answerModel = UDPSocketCommonQueryAnswerBusiness.GetAnswerModel(sn, 1);
-                    }
-
-                    if (answerModel != null)
-                    {
-                        UserPhoneQueryResultNotifyRequestModel model = (UserPhoneQueryResultNotifyRequestModel)(answerModel.Result);
-                        //移除应答缓存数据
-                        UDPSocketCommonQueryAnswerBusiness.Remove(sn);
-                        if (model.Result_Code == "0")
+                    if (storeModel.StoreDBDeployType == 0)
+                    { 
+                        //验证用户在分库是否存在
+                        XCCloudService.BLL.IBLL.XCGame.IUserService userService = BLLContainer.Resolve<XCCloudService.BLL.IBLL.XCGame.IUserService>(storeModel.StoreDBName);
+                        var gameUserModel = userService.GetModels(p => p.Mobile.Equals(mobile, StringComparison.OrdinalIgnoreCase)).FirstOrDefault<XCCloudService.Model.XCGame.u_users>();
+                        if (gameUserModel == null)
                         {
                             return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "未查询到该用户");
+                        }                    
+                    }
+                    else if (storeModel.StoreDBDeployType == 1)
+                    {
+                        if (!UDPApiService.UserPhoneQuery(storeModel.StoreID, storeModel.StorePassword, mobile, out errMsg))
+                        {
+                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
                         }
                     }
                     else
                     {
-                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "系统没有响应");
+                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "门店设置不正确");
+                    }                    
+                }
+                else if (storeModel.StoreType == 1)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "当前门店不能进行操作");
+                }
+                else if (storeModel.StoreType == 2)
+                {
+                    //验证用户在分库是否存在
+                    XCCloudService.BLL.IBLL.XCCloud.IBase_UserInfoService userService = BLLContainer.Resolve<XCCloudService.BLL.IBLL.XCCloud.IBase_UserInfoService>();
+                    var userModel = userService.GetModels(p => p.Mobile.Equals(mobile, StringComparison.OrdinalIgnoreCase) && p.StoreID.Equals(storeModel.StoreID)).FirstOrDefault<XCCloudService.Model.XCCloud.Base_UserInfo>();
+                    if (userModel == null)
+                    {
+                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "未查询到该用户");
                     }
                 }
                 else
                 {
-                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "门店设置不正确");
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "门店配置无效");
                 }
 
                 string templateId = "2";
-
                 string key = string.Empty;
                 if (!isSMSTest && !FilterMobileBusiness.ExistMobile(mobile))
                 {
@@ -206,86 +194,57 @@ namespace XXCloudService.Api.XCGameMana
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
                 }
 
-                if (storeModel.StoreDBDeployType == 0)
+                if (storeModel.StoreType == 0)
                 {
-                    //验证用户在分库是否存在
-                    XCCloudService.BLL.IBLL.XCGame.IUserService userService = BLLContainer.Resolve<XCCloudService.BLL.IBLL.XCGame.IUserService>(storeModel.StoreDBName);
-                    var gameUserModel = userService.GetModels(p => p.Mobile.Equals(mobile, StringComparison.OrdinalIgnoreCase)).FirstOrDefault<XCCloudService.Model.XCGame.u_users>();
-                    if (gameUserModel == null)
+                    if (storeModel.StoreDBDeployType == 0)
                     {
-                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "未查询到该用户");
-                    }
-                    userId = gameUserModel.UserID;
-                }
-                else if(storeModel.StoreDBDeployType == 1)
-                {
-                    string sn = System.Guid.NewGuid().ToString().Replace("-", "");
-                    UDPSocketCommonQueryAnswerModel answerModel = null;
-                    string radarToken = string.Empty;
-                    if (DataFactory.SendDataUserPhoneQuery(sn, storeModel.StoreID.ToString(), storeModel.StorePassword, mobile, out radarToken, out errMsg))
-                    {
-
-                    }
-                    else
-                    {
-                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
-                    }
-
-                    answerModel = null;
-                    int whileCount = 0;
-                    while (answerModel == null && whileCount <= 25)
-                    {
-                        //获取应答缓存数据
-                        whileCount++;
-                        System.Threading.Thread.Sleep(1000);
-                        answerModel = UDPSocketCommonQueryAnswerBusiness.GetAnswerModel(sn, 1);
-                    }
-
-                    if (answerModel != null)
-                    {
-                        UserPhoneQueryResultNotifyRequestModel model = (UserPhoneQueryResultNotifyRequestModel)(answerModel.Result);
-                        //移除应答缓存数据
-                        UDPSocketCommonQueryAnswerBusiness.Remove(sn);
-                        if (model.Result_Code == "0")
+                        //验证用户在分库是否存在
+                        XCCloudService.BLL.IBLL.XCGame.IUserService userService = BLLContainer.Resolve<XCCloudService.BLL.IBLL.XCGame.IUserService>(storeModel.StoreDBName);
+                        var gameUserModel = userService.GetModels(p => p.Mobile.Equals(mobile, StringComparison.OrdinalIgnoreCase)).FirstOrDefault<XCCloudService.Model.XCGame.u_users>();
+                        if (gameUserModel == null)
                         {
                             return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "未查询到该用户");
                         }
+                        userId = gameUserModel.UserID;
+                    }
+                    else if(storeModel.StoreDBDeployType == 1)
+                    {
+                        if (!UDPApiService.UserPhoneQuery(storeModel.StoreID, storeModel.StorePassword, mobile, out errMsg))
+                        {
+                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
+                        }
+                        userId = 0;//本地库用0
                     }
                     else
                     {
-                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "系统没有响应");
+                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "门店配置无效");
                     }
-                    userId = 0;//本地库用0
+                }
+                else if (storeModel.StoreType == 1)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "当前门店不能进行操作");
+                }
+                else if (storeModel.StoreType == 2)
+                {
+                    //验证用户在分库是否存在
+                    XCCloudService.BLL.IBLL.XCCloud.IBase_UserInfoService userService = BLLContainer.Resolve<XCCloudService.BLL.IBLL.XCCloud.IBase_UserInfoService>();
+                    var userModel = userService.GetModels(p => p.Mobile.Equals(mobile, StringComparison.OrdinalIgnoreCase) && p.StoreID.Equals(storeModel.StoreID)).FirstOrDefault<XCCloudService.Model.XCCloud.Base_UserInfo>();
+                    if (userModel == null)
+                    {
+                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "未查询到该用户");
+                    }
+                    userId = userModel.UserID;
                 }
                 else
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "门店配置无效");
                 }
 
-                //验证用户在总库是否已注册
-                //XCCloudService.BLL.IBLL.XCGameManager.IUserTokenService userServiceManager = BLLContainer.Resolve<XCCloudService.BLL.IBLL.XCGameManager.IUserTokenService>();
-                //var userRegisterModel = userServiceManager.GetModels(p => p.Mobile.Equals(mobile) && p.StoreId.Equals(storeId)).FirstOrDefault<XCCloudService.Model.XCGameManager.t_usertoken>();
-
-                //if (userRegisterModel == null)
-                //{ 
-                //    //添加注册用户
-                //    XCCloudService.Model.XCGameManager.t_user t_user = new XCCloudService.Model.XCGameManager.t_user();
-                //    t_user.Mobile = mobile;
-                //    t_user.StoreId = storeId;
-                //    t_user.CreateTime = System.DateTime.Now;
-                //    t_user.OpenId = "";
-
-                //    if (!userServiceManager.Add(t_user))
-                //    {
-                //        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "添加注册用户失败");
-                //    }
-                //}
-
                 //获取用户token
                 //云库不用userId
-                string token = XCCloudManaUserTokenBusiness.SetToken(mobile, storeId, storeModel.StoreName, userId);
-                List<XCCloudManaUserTokenResultModel> list = null;
-                XCCloudManaUserTokenBusiness.GetUserTokenModel(mobile, ref list);
+                string token = XCManaUserHelperTokenBusiness.SetToken(mobile, storeId, storeModel.StoreName, userId);
+                List<XCManaUserHelperTokenResultModel> list = null;
+                XCManaUserHelperTokenBusiness.GetUserTokenModel(mobile, ref list);
                 var obj = new
                 {
                     userToken = token,

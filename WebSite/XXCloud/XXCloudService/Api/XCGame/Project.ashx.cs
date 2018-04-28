@@ -41,7 +41,7 @@ namespace XXCloudService.Api.XCGame
                 }
                 int storeids = int.Parse(ticketlist.StoreId);
                 IStoreService storeService = BLLContainer.Resolve<IStoreService>();
-                var menlist = storeService.GetModels(x => x.id == storeids).FirstOrDefault<t_store>();
+                var menlist = storeService.GetModels(x => x.id == storeids.ToString()).FirstOrDefault<t_store>();
                 if (menlist == null)
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.F, "", Result_Code.T, "门店号无效");

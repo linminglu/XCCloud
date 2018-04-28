@@ -477,12 +477,17 @@ namespace XXCloudService.Api.XCCloud
                                   from f in f1.DefaultIfEmpty()
                                   join g in Data_CouponInfoBiz.NI.GetModels() on new { ContainID = a.ContainID, FoodType = a.FoodType } equals new { ContainID = (int?)g.ID, FoodType = (int?)FoodDetailType.Coupon } into g1
                                   from g in g1.DefaultIfEmpty()
+                                  join h in Data_DigitCoinFoodBiz.NI.GetModels() on new { ContainID = a.ContainID, FoodType = a.FoodType } equals new { ContainID = (int?)h.ID, FoodType = (int?)FoodDetailType.Digit } into h1
+                                  from h in h1.DefaultIfEmpty()
                                   select new
                                   {
                                       ID = a.ID,
                                       ContainID = a.ContainID,
-                                      ProjectName = (a.FoodType == (int)FoodDetailType.Coin) ? "游戏币" : (a.FoodType == (int)FoodDetailType.Digit) ? "数字币" : (a.FoodType == (int)FoodDetailType.Good) ? (c != null ? c.GoodName : string.Empty) :
-                                                    (a.FoodType == (int)FoodDetailType.Ticket) ? (b != null ? b.ProjectName : string.Empty) : (a.FoodType == (int)FoodDetailType.Coupon) ? (g != null ? g.CouponName : string.Empty) : string.Empty,
+                                      ProjectName = (a.FoodType == (int)FoodDetailType.Coin) ? "游戏币" : 
+                                                    (a.FoodType == (int)FoodDetailType.Digit) ? (h != null ? h.FoodName : string.Empty) : 
+                                                    (a.FoodType == (int)FoodDetailType.Good) ? (c != null ? c.GoodName : string.Empty) :
+                                                    (a.FoodType == (int)FoodDetailType.Ticket) ? (b != null ? b.ProjectName : string.Empty) : 
+                                                    (a.FoodType == (int)FoodDetailType.Coupon) ? (g != null ? g.CouponName : string.Empty) : string.Empty,
                                       FoodDetailType = a.FoodType,                                      
                                       FoodDetailTypeStr = (a.FoodType == (int)FoodDetailType.Coin) ? (f != null ? f.TypeName : string.Empty) : (d != null ? d.DictKey : string.Empty),
                                       ContainCount = a.ContainCount,

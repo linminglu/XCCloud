@@ -570,16 +570,16 @@ namespace XCCloudService.Base
                 }
                 return true;
             }
-            else if (signKeyEnum == SignKeyEnum.XCGameManaUserToken)
+            else if (signKeyEnum == SignKeyEnum.XCManaUserHelperToken)
             {
                 string userToken = dicParas.ContainsKey("userToken") ? dicParas["userToken"].ToString() : string.Empty;
-                XCCloudManaUserTokenModel userTokenModel = XCCloudManaUserTokenBusiness.GetManaUserTokenModel(userToken);
+                XCManaUserHelperTokenModel userTokenModel = XCManaUserHelperTokenBusiness.GetManaUserTokenModel(userToken);
                 if (userTokenModel == null)
                 {
                     errMsg = "用户没有授权";
                     return false;
                 }
-                dicParas.Add(Constant.XCGameManaUserToken, userTokenModel);
+                dicParas.Add(Constant.XCManaUserHelperToken, userTokenModel);
                 return true;
             }
             else if (signKeyEnum == SignKeyEnum.XCGameManamAdminUserToken)

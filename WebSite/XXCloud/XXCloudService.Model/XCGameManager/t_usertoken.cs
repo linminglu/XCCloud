@@ -18,10 +18,10 @@ namespace XCCloudService.Model.XCGameManager
         public string Token { get; set; }
         public string Mobile { get; set; }
         public string StoreId { get; set; }
+        public Nullable<int> UserId { get; set; }
         public string StoreName { get; set; }
         public Nullable<System.DateTime> CreateTime { get; set; }
         public Nullable<System.DateTime> UpdateTime { get; set; }
         public string EndTime { get; set; }
-        public Nullable<int> XCGameUserId { get; set; }
     }
 }

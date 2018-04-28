@@ -7,7 +7,7 @@ using XCCloudService.Common;
 
 namespace XCCloudService.CacheService
 {
-    public class XCCloudManaUserTokenCache
+    public class XCManaUserHelperTokenCache
     {
         private static Dictionary<string, object> _userTokenDic = new Dictionary<string, object>();
 
@@ -33,9 +33,9 @@ namespace XCCloudService.CacheService
     }
 
 
-    public class XCCloudManaUserTokenResultModel
+    public class XCManaUserHelperTokenResultModel
     {
-        public XCCloudManaUserTokenResultModel(string storeId,string storeName,string userToken)
+        public XCManaUserHelperTokenResultModel(string storeId, string storeName, string userToken)
         {
             this.StoreId = storeId;
             this.StoreName = storeName;
@@ -49,19 +49,19 @@ namespace XCCloudService.CacheService
         public string UserToken { set; get; }
     }
 
-    public class XCCloudManaUserTokenModel
+    public class XCManaUserHelperTokenModel
     {
-        public XCCloudManaUserTokenModel()
+        public XCManaUserHelperTokenModel()
         { 
 
         }
 
-        public XCCloudManaUserTokenModel(string storeId, string storeName, string mobile,int xcGameUserId)
+        public XCManaUserHelperTokenModel(string storeId, string storeName, string mobile, int userId)
         {
             this.StoreId = storeId;
             this.StoreName = storeName;
             this.Mobile = mobile;
-            this.XCGameUserId = xcGameUserId;
+            this.UserId = userId;
         }
 
         public string StoreId { set; get; }
@@ -70,6 +70,6 @@ namespace XCCloudService.CacheService
 
         public string Mobile { set; get; }
 
-        public int XCGameUserId { set; get; }
+        public int UserId { set; get; }
     }
 }

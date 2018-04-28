@@ -279,7 +279,7 @@ namespace XCCloudService.Api.XCGameMana
 
             string store_dbname = string.Empty;
             t_store store = new t_store();
-            store.id = int.Parse(storeId);
+            store.id = storeId;
             store.companyname = companyname;
             store.province = province;
             store.address = address;
@@ -305,7 +305,7 @@ namespace XCCloudService.Api.XCGameMana
             {
                 List<StoreCacheModel> list = StoreCache.GetStore();
                 StoreCacheModel model = new StoreCacheModel();
-                model.StoreID = int.Parse(storeId);
+                model.StoreID = storeId;
                 model.StoreName = companyname;
                 model.StorePassword = store_password;
                 model.StoreType = Convert.ToInt32(store.StoreType);
@@ -332,7 +332,7 @@ namespace XCCloudService.Api.XCGameMana
                 if (storeService.Delete(storeModel))
                 {
                     List<StoreCacheModel> list = StoreCache.GetStore();
-                    StoreCacheModel storeCacheModel = list.Where<StoreCacheModel>(p => p.StoreID == int.Parse(storeId)).FirstOrDefault<StoreCacheModel>();
+                    StoreCacheModel storeCacheModel = list.Where<StoreCacheModel>(p => p.StoreID == storeId).FirstOrDefault<StoreCacheModel>();
                     if (storeCacheModel != null)
                     { 
                         list.Remove(storeCacheModel);
@@ -399,11 +399,11 @@ namespace XCCloudService.Api.XCGameMana
             if (storeService.Update(store))
             {
                 List<StoreCacheModel> list = StoreCache.GetStore();
-                StoreCacheModel storeCacheModel = list.Where<StoreCacheModel>(p => p.StoreID == int.Parse(storeId)).FirstOrDefault<StoreCacheModel>();
+                StoreCacheModel storeCacheModel = list.Where<StoreCacheModel>(p => p.StoreID == storeId).FirstOrDefault<StoreCacheModel>();
                 if (storeCacheModel == null)
                 {
                     StoreCacheModel model = new StoreCacheModel();
-                    model.StoreID = int.Parse(storeId);
+                    model.StoreID = storeId;
                     model.StoreName = companyname;
                     model.StorePassword = store_password;
                     model.StoreType = Convert.ToInt32(store.StoreType);

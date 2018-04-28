@@ -159,7 +159,8 @@ public class CodeStringGenerator
         {
             var isNotNull = parameter.IsNullableOfT ? parameter.FunctionParameterName + ".HasValue" : parameter.FunctionParameterName + " != null";
             var notNullInit = "new ObjectParameter(\"" + parameter.EsqlParameterName + "\", " + parameter.FunctionParameterName + ")";
-            var nullInit = "new ObjectParameter(\"" + parameter.EsqlParameterName + "\", typeof(" + TypeMapper.FixNamespaces
+            var nullInit = "new ObjectParameter(\"" + parameter.EsqlParameterName + "\", typeof(" + TypeMapper.FixNamespaces
+
 (parameter.RawClrTypeName) + "))";
             writeParameter(parameter.LocalVariableName, isNotNull, notNullInit, nullInit);
         }
@@ -175,7 +176,8 @@ public class CodeStringGenerator
             AccessibilityAndVirtual(Accessibility.ForMethod(edmFunction)),
             _typeMapper.GetTypeName(_typeMapper.GetReturnType(edmFunction), modelNamespace),
             _code.Escape(edmFunction),
-            string.Join(", ", parameters.Select(p => TypeMapper.FixNamespaces(p.FunctionParameterType) + " " + p.FunctionParameterName).ToArray
+            string.Join(", ", parameters.Select(p => TypeMapper.FixNamespaces(p.FunctionParameterType) + " " + p.FunctionParameterName).ToArray
+
 ()));
     }
     
@@ -198,7 +200,8 @@ public class CodeStringGenerator
         var parameters = _typeMapper.GetParameters(edmFunction);
         var returnType = _typeMapper.GetReturnType(edmFunction);
 
-        var paramList = String.Join(", ", parameters.Select(p => TypeMapper.FixNamespaces(p.FunctionParameterType) + " " + 
+        var paramList = String.Join(", ", parameters.Select(p => TypeMapper.FixNamespaces(p.FunctionParameterType) + " " + 
+
 p.FunctionParameterName).ToArray());
         if (includeMergeOption)
         {
@@ -507,7 +510,8 @@ public class TypeMapper
     
     public IEnumerable<NavigationProperty> GetCollectionNavigationProperties(EntityType type)
     {
-        return type.NavigationProperties.Where(np => np.DeclaringType == type && np.ToEndMember.RelationshipMultiplicity == 
+        return type.NavigationProperties.Where(np => np.DeclaringType == type && np.ToEndMember.RelationshipMultiplicity == 
+
 RelationshipMultiplicity.Many);
     }
     

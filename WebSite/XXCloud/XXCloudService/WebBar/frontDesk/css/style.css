@@ -1,6 +1,4 @@
 /*Content style*/
-
-
 /*XinChen--PC 2017-9-2*/
 * {margin:0;padding:0;word-break:break-all;}
 html,body{height:100%; font-size:100%;}
@@ -34,9 +32,7 @@ a:hover,a:active {text-decoration:none;cursor:pointer;}
 
 
 
-/**
-
- -----------------------------*/
+/*-----------------------------*/
 .heightKz{overflow: hidden;}
 /*高度控制*/
 .boxShadow{box-shadow: 0 0 2px #FF8C00;background-color: #3c8dbc;}
@@ -54,29 +50,6 @@ a:hover,a:active {text-decoration:none;cursor:pointer;}
 .bbs{color: #b63b4d}
 .hidden{display: none;}
 .show{display: block;}
-
-
-
-/*.corner{*/
-    /*background:-webkit-linear-gradient(45deg, #2e2e2e 24%, #5F5F5F 40%,#6f6f6f 43%,#5F5F5F 46%,#2F2F2F 46%,#fff 46%,#fff);*/
-    /*background:-moz-linear-gradient(45deg, #2e2e2e 24%, #5F5F5F 40%,#6f6f6f 43%,#5F5F5F 46%,#2F2F2F 46%,#fff 46%,#fff);*/
-    /*background:-o-linear-gradient(45deg, #2e2e2e 24%, #5F5F5F 40%,#6f6f6f 43%,#5F5F5F 46%,#2F2F2F 46%,#fff 46%,#fff);*/
-    /*background:-ms-linear-gradient(45deg, #2e2e2e 24%, #5F5F5F 40%,#6f6f6f 43%,#5F5F5F 46%,#2F2F2F 46%,#fff 46%,#fff);*/
-    /*background:linear-gradient(45deg, #2e2e2e 24%, #5F5F5F 40%,#6f6f6f 43%,#5F5F5F 46%,#2F2F2F 46%,#fff 46%,#fff);*/
-    /*width:40px;*/
-    /*height:40px;*/
-    /*border-radius:0 0 0 30px / 0 0 0 30px;*/
-    /*-webkit-transform:rotate(0deg);*/
-    /*-moz-transform:rotate(0deg);*/
-    /*-o-transform:rotate(0deg);*/
-    /*-ms-transform:rotate(0deg);*/
-    /*transform:rotate(0deg);*/
-    /*position:absolute;*/
-    /*right:-4px;*/
-    /*top:-4px;*/
-    /*box-shadow:5px 2px 8px black;*/
-    /*overflow:hidden;*/
-/*}*/
 
 .majorMenu{width: 100px; height: inherit;padding-top: 2em;margin-top: 50px;margin-left: 0.5em;margin-right: 0.5em;background: #3c8dbc;min-height: 40em;}
 .majorMenu li{width: 100%;height: 3.6em;margin: 5px 0;}

@@ -14,7 +14,7 @@ namespace XCCloudService.Model.XCGameManager
     
     public partial class t_store
     {
-        public int id { get; set; }
+        public string id { get; set; }
         public string companyname { get; set; }
         public string province { get; set; }
         public string address { get; set; }

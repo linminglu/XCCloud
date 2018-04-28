@@ -24,13 +24,13 @@ namespace XXCloudService.Api.XCGame
     /// </summary>
     public class Ticket : ApiBase
     {
-        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCGameManaUserToken)]
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCManaUserHelperToken)]
         public object getTicketInfo(Dictionary<string, object> dicParas)
         {
             try
             {
                 string errMsg = string.Empty;
-                XCCloudManaUserTokenModel userTokenModel = (XCCloudManaUserTokenModel)(dicParas[Constant.XCGameManaUserToken]);
+                XCManaUserHelperTokenModel userTokenModel = (XCManaUserHelperTokenModel)(dicParas[Constant.XCManaUserHelperToken]);
                 string barCode = dicParas.ContainsKey("barCode") ? dicParas["barCode"].ToString() : string.Empty;
 
                 if (string.IsNullOrEmpty(barCode))
@@ -114,7 +114,7 @@ namespace XXCloudService.Api.XCGame
                     string sn = System.Guid.NewGuid().ToString().Replace("-","");
                     UDPSocketCommonQueryAnswerModel answerModel = null;
                     string radarToken = string.Empty;
-                    if (DataFactory.SendDataTicketQuery(sn, storeModel.StoreID.ToString(), storeModel.StorePassword, barCode,out radarToken, out errMsg))
+                    if (DataFactory.SendDataTicketQuery(sn, storeModel.StoreID, storeModel.StorePassword, barCode,out radarToken, out errMsg))
                     {
 
                     }
@@ -195,13 +195,13 @@ namespace XXCloudService.Api.XCGame
             return "";
         }
 
-        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCGameManaUserToken)]
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCManaUserHelperToken)]
         public object addTicket(Dictionary<string, object> dicParas)
         {
             try
             {
                 string errMsg = string.Empty;
-                XCCloudManaUserTokenModel userTokenModel = (XCCloudManaUserTokenModel)(dicParas[Constant.XCGameManaUserToken]);
+                XCManaUserHelperTokenModel userTokenModel = (XCManaUserHelperTokenModel)(dicParas[Constant.XCManaUserHelperToken]);
                 string barCode = dicParas.ContainsKey("barCode") ? dicParas["barCode"].ToString() : string.Empty;
 
                 if (string.IsNullOrEmpty(barCode))
@@ -332,7 +332,7 @@ namespace XXCloudService.Api.XCGame
                     string sn = System.Guid.NewGuid().ToString().Replace("-","");
                     UDPSocketCommonQueryAnswerModel answerModel = null;
                     string radarToken = string.Empty;
-                    if (DataFactory.SendDataTicketOperate(sn,storeModel.StoreID.ToString(), storeModel.StorePassword, barCode, "0", out radarToken,out errMsg))
+                    if (DataFactory.SendDataTicketOperate(sn,storeModel.StoreID, storeModel.StorePassword, barCode, "0", out radarToken,out errMsg))
                     {
 
                     }
@@ -383,11 +383,11 @@ namespace XXCloudService.Api.XCGame
 
         }
 
-        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCGameManaUserToken)]
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCManaUserHelperToken)]
         public object lockTicket(Dictionary<string, object> dicParas)
         {
             string errMsg = string.Empty;
-            XCCloudManaUserTokenModel userTokenModel = (XCCloudManaUserTokenModel)(dicParas[Constant.XCGameManaUserToken]);
+            XCManaUserHelperTokenModel userTokenModel = (XCManaUserHelperTokenModel)(dicParas[Constant.XCManaUserHelperToken]);
             string barCode = dicParas.ContainsKey("barCode") ? dicParas["barCode"].ToString() : string.Empty;
 
             if (string.IsNullOrEmpty(barCode))
@@ -494,7 +494,7 @@ namespace XXCloudService.Api.XCGame
                 string sn = System.Guid.NewGuid().ToString().Replace("-", "");
                 UDPSocketCommonQueryAnswerModel answerModel = null;
                 string radarToken = string.Empty;
-                if (DataFactory.SendDataTicketOperate(sn, storeModel.StoreID.ToString(), storeModel.StorePassword, barCode, "2", out radarToken,out errMsg))
+                if (DataFactory.SendDataTicketOperate(sn, storeModel.StoreID, storeModel.StorePassword, barCode, "2", out radarToken,out errMsg))
                 {
 
                 }
@@ -539,13 +539,13 @@ namespace XXCloudService.Api.XCGame
             }
         }
 
-        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCGameManaUserToken)]
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCManaUserHelperToken)]
         public object unlockTicket(Dictionary<string, object> dicParas)
         {
             try
             {
                 string errMsg = string.Empty;
-                XCCloudManaUserTokenModel userTokenModel = (XCCloudManaUserTokenModel)(dicParas[Constant.XCGameManaUserToken]);
+                XCManaUserHelperTokenModel userTokenModel = (XCManaUserHelperTokenModel)(dicParas[Constant.XCManaUserHelperToken]);
                 string barCode = dicParas.ContainsKey("barCode") ? dicParas["barCode"].ToString() : string.Empty;
 
                 if (string.IsNullOrEmpty(barCode))
@@ -625,7 +625,7 @@ namespace XXCloudService.Api.XCGame
                     string sn = System.Guid.NewGuid().ToString().Replace("-", "");
                     UDPSocketCommonQueryAnswerModel answerModel = null;
                     string radarToken = string.Empty;
-                    if (DataFactory.SendDataTicketOperate(sn,storeModel.StoreID.ToString(), storeModel.StorePassword, barCode, "1",out radarToken, out errMsg))
+                    if (DataFactory.SendDataTicketOperate(sn,storeModel.StoreID, storeModel.StorePassword, barCode, "1",out radarToken, out errMsg))
                     {
 
                     }
@@ -675,12 +675,12 @@ namespace XXCloudService.Api.XCGame
             }
         }
 
-        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCGameManaUserToken)]
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCManaUserHelperToken)]
         public object exchangeOutTicket(Dictionary<string, object> dicParas)
         {
             string errMsg = string.Empty;
             decimal money = 0;
-            XCCloudManaUserTokenModel userTokenModel = (XCCloudManaUserTokenModel)(dicParas[Constant.XCGameManaUserToken]);
+            XCManaUserHelperTokenModel userTokenModel = (XCManaUserHelperTokenModel)(dicParas[Constant.XCManaUserHelperToken]);
             string barCode = dicParas.ContainsKey("barCode") ? dicParas["barCode"].ToString() : string.Empty;
             string icCardId = dicParas.ContainsKey("icCardId") ? dicParas["icCardId"].ToString() : string.Empty;
             string mobileName = dicParas.ContainsKey("mobileName") ? dicParas["mobileName"].ToString() : string.Empty;
@@ -723,7 +723,7 @@ namespace XXCloudService.Api.XCGame
 
                 System.DateTime startTime = System.DateTime.Parse(System.DateTime.Now.ToString("yyyy-MM-dd") + " 00:00:00");
                 System.DateTime endTime = System.DateTime.Parse(System.DateTime.Now.ToString("yyyy-MM-dd") + " 23:59:59");
-                var scheduleModel = scheduleService.GetModels(p => (p.OpenTime >= startTime && p.OpenTime <= endTime && p.UserID == userTokenModel.XCGameUserId && p.State.Equals("0"))).FirstOrDefault<flw_schedule>();
+                var scheduleModel = scheduleService.GetModels(p => (p.OpenTime >= startTime && p.OpenTime <= endTime && p.UserID == userTokenModel.UserId && p.State.Equals("0"))).FirstOrDefault<flw_schedule>();
                 if (scheduleModel == null)
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "用户班次信息不存在");
@@ -784,7 +784,7 @@ namespace XXCloudService.Api.XCGame
                     flwTicketExitModel.DiskID = userTokenModel.Mobile;
                     flwTicketExitModel.Note = "小程序兑换";
                     flwTicketExitModel.CoinMoney = exCoinMoney;
-                    flwTicketExitModel.UserID = userTokenModel.XCGameUserId.ToString();
+                    flwTicketExitModel.UserID = userTokenModel.UserId.ToString();
                     flwTicketExitModel.State = 1;
                     flwTicketExitModel.ScheduleID = scheduleModel.ID;
                     flwTicketExitService.Update(flwTicketExitModel);
@@ -797,7 +797,7 @@ namespace XXCloudService.Api.XCGame
                 string sn = System.Guid.NewGuid().ToString().Replace("-", "");
                 UDPSocketCommonQueryAnswerModel answerModel = null;
                 string radarToken = string.Empty;
-                if (DataFactory.SendDataOutTicketOperate(sn, storeModel.StoreID.ToString(), storeModel.StorePassword, barCode, icCardId, mobileName, userTokenModel.Mobile, money, "0", out radarToken, out errMsg))
+                if (DataFactory.SendDataOutTicketOperate(sn, storeModel.StoreID, storeModel.StorePassword, barCode, icCardId, mobileName, userTokenModel.Mobile, money, "0", out radarToken, out errMsg))
                 {
 
                 }
@@ -842,10 +842,10 @@ namespace XXCloudService.Api.XCGame
             }
         }
 
-        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCGameManaUserToken)]
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCManaUserHelperToken)]
         public object getOutTicket(Dictionary<string, object> dicParas)
         {
-            XCCloudManaUserTokenModel userTokenModel = (XCCloudManaUserTokenModel)(dicParas[Constant.XCGameManaUserToken]);
+            XCManaUserHelperTokenModel userTokenModel = (XCManaUserHelperTokenModel)(dicParas[Constant.XCManaUserHelperToken]);
             string barCode = dicParas.ContainsKey("barCode") ? dicParas["barCode"].ToString() : string.Empty;
 
             if (string.IsNullOrEmpty(barCode))
@@ -952,7 +952,7 @@ namespace XXCloudService.Api.XCGame
                 string sn = System.Guid.NewGuid().ToString().Replace("-", "");
                 UDPSocketCommonQueryAnswerModel answerModel = null;
                 string radarToken = string.Empty;
-                if (DataFactory.SendDataOutTicketQuery(sn,storeModel.StoreID.ToString(), storeModel.StorePassword, barCode,out radarToken,out errMsg))
+                if (DataFactory.SendDataOutTicketQuery(sn,storeModel.StoreID, storeModel.StorePassword, barCode,out radarToken,out errMsg))
                 {
 
                 }

@@ -52,12 +52,12 @@ namespace XXCloudService.Api.XCGameMana
 
                 int iStoreId = Convert.ToInt32(storeId);
                 IStoreService storeService = BLLContainer.Resolve<IStoreService>();
-                if (!storeService.Any(a => a.id == iStoreId))
+                if (!storeService.Any(a => a.id == iStoreId.ToString()))
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "该门店不存在");
                 }
 
-                var storeModel = storeService.GetModels(p => p.id == iStoreId).FirstOrDefault();
+                var storeModel = storeService.GetModels(p => p.id == iStoreId.ToString()).FirstOrDefault();
                 string mobile = storeModel.phone;
                 if (string.IsNullOrEmpty(mobile))
                 {
@@ -238,12 +238,12 @@ namespace XXCloudService.Api.XCGameMana
 
                 int iStoreId = Convert.ToInt32(storeId);
                 IStoreService storeService = BLLContainer.Resolve<IStoreService>();
-                if (!storeService.Any(a => a.id == iStoreId))
+                if (!storeService.Any(a => a.id == iStoreId.ToString()))
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "该门店不存在");
                 }
 
-                var storeModel = storeService.GetModels(p => p.id == iStoreId).FirstOrDefault();
+                var storeModel = storeService.GetModels(p => p.id == iStoreId.ToString()).FirstOrDefault();
                 if (!string.IsNullOrEmpty(storeModel.openId))
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "门店已绑定微信，不能重复绑定");
@@ -312,12 +312,12 @@ namespace XXCloudService.Api.XCGameMana
 
                 int iStoreId = Convert.ToInt32(storeId);
                 IStoreService storeService = BLLContainer.Resolve<IStoreService>();
-                if (!storeService.Any(a => a.id == iStoreId))
+                if (!storeService.Any(a => a.id == iStoreId.ToString()))
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "该门店不存在");
                 }
 
-                var storeInfo = storeService.GetModels(p => p.id == iStoreId).FirstOrDefault();
+                var storeInfo = storeService.GetModels(p => p.id == iStoreId.ToString()).FirstOrDefault();
                 storeInfo.openId = string.Empty;
                 if (!storeService.Update(storeInfo))
                 {

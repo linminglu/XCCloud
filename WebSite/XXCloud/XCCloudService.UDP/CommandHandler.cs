@@ -45,7 +45,7 @@ namespace XCCloudService.SocketService.UDP
             }
             Send(((IPEndPoint)item.remotePoint).Address.ToString(), ((IPEndPoint)item.remotePoint).Port, parmasModel.ResponsePackages);
             string logTxt = "[接收：" + requestDataJson + "]" + "[响应：" + Utils.SerializeObject(parmasModel) + "]" + System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
-            UDPLogHelper.SaveRadarRegisterLog(((IPEndPoint)item.remotePoint).Address.ToString(), ((IPEndPoint)item.remotePoint).Port, parmasModel.StoreId, parmasModel.Segment, parmasModel.Token, bRegister, requestDataJson, parmasModel.ResponseJson, logTxt);
+            //UDPLogHelper.SaveRadarRegisterLog(((IPEndPoint)item.remotePoint).Address.ToString(), ((IPEndPoint)item.remotePoint).Port, parmasModel.StoreId, parmasModel.Segment, parmasModel.Token, bRegister, requestDataJson, parmasModel.ResponseJson, logTxt);
             string message = "[接收：" + requestDataJson + "]" + "[响应：" + parmasModel.ResponseJson + "]";
             XCGameUDPMsgHub.SignalrServerToClient.BroadcastMessageByRadarRegister("雷达注册授权", item.StoreID, item.Segment, message, System.DateTime.Now);
         }
@@ -72,7 +72,7 @@ namespace XCCloudService.SocketService.UDP
                 bChangeSuccess = model.Result_Code == "1" ? true : false;
             }
             string logTxt = "[接收：" + requestDataJson + "]" + "[响应：" + Utils.SerializeObject(outModel) + "]" + System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
-            UDPLogHelper.SaveDeviceStateChangeLog(((IPEndPoint)item.remotePoint).Address.ToString(), ((IPEndPoint)item.remotePoint).Port, requestDataModel.StoreId, requestDataModel.Token, requestDataModel.MCUId, requestDataModel.Status, bChangeSuccess, requestDataJson, responseOutModel.ResponseJson, logTxt);
+            //UDPLogHelper.SaveDeviceStateChangeLog(((IPEndPoint)item.remotePoint).Address.ToString(), ((IPEndPoint)item.remotePoint).Port, requestDataModel.StoreId, requestDataModel.Token, requestDataModel.MCUId, requestDataModel.Status, bChangeSuccess, requestDataJson, responseOutModel.ResponseJson, logTxt);
             string message = "[接收：" + requestDataJson + "]" + "[响应：" + responseOutModel.ResponseJson + "]";
             XCGameUDPMsgHub.SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.设备状态变更通知), "设备状态变更通知", requestDataModel.Token, message, System.DateTime.Now);
         }
@@ -99,7 +99,7 @@ namespace XCCloudService.SocketService.UDP
                 bHeadSuccess = model.Result_Code == "1" ? true : false;
             }
             string logTxt = "[接收：" + requestDataJson + "]" + "[响应：" + Utils.SerializeObject(outModel) + "]" + System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
-            UDPLogHelper.SaveRadarHeatLog(((IPEndPoint)item.remotePoint).Address.ToString(), ((IPEndPoint)item.remotePoint).Port, requestDataModel.StoreId, requestDataModel.Segment, requestDataModel.Token, bHeadSuccess, requestDataJson, outDataModel.ResponseJson, logTxt);
+            //UDPLogHelper.SaveRadarHeatLog(((IPEndPoint)item.remotePoint).Address.ToString(), ((IPEndPoint)item.remotePoint).Port, requestDataModel.StoreId, requestDataModel.Segment, requestDataModel.Token, bHeadSuccess, requestDataJson, outDataModel.ResponseJson, logTxt);
             ClientList.UpdateClientHeatTime(requestDataModel.Token);
             string message = "[接收：" + requestDataJson + "]" + "[响应：" + outDataModel.ResponseJson + "]";
             XCGameUDPMsgHub.SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.雷达心跳), "雷达心跳", requestDataModel.Token, message, System.DateTime.Now);
@@ -127,7 +127,7 @@ namespace XCCloudService.SocketService.UDP
             { 
                 
             }
-            UDPLogHelper.SaveUDPDeviceControlLog(requestDataModel.StoreId, requestDataModel.OrderId, ((IPEndPoint)item.remotePoint).Address.ToString(), ((IPEndPoint)item.remotePoint).Port, requestDataModel.SN, requestDataJson, responseDataModel.ResponseJson, bSuccess, logTxt);
+            //UDPLogHelper.SaveUDPDeviceControlLog(requestDataModel.StoreId, requestDataModel.OrderId, ((IPEndPoint)item.remotePoint).Address.ToString(), ((IPEndPoint)item.remotePoint).Port, requestDataModel.SN, requestDataJson, responseDataModel.ResponseJson, bSuccess, logTxt);
             string message = "[接收：" + requestDataJson + "]" + "[响应：" + responseDataModel.ResponseJson + "]";
             XCGameUDPMsgHub.SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.雷达心跳), "远程设备控制指令响应", radarToken, message, System.DateTime.Now);
         }
@@ -159,7 +159,7 @@ namespace XCCloudService.SocketService.UDP
 
             //记录日志
             string logTxt = "[接收：" + requestDataJson + "]" + "[响应：" + responseOutModel.ResponseJson + "]" + System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
-            UDPLogHelper.SaveUDPRadarNotifyLog(requestDataModel.StoreId, requestDataModel.OrderId, requestDataModel.Token, requestDataModel.SN, int.Parse(requestDataModel.Coins), int.Parse(requestDataModel.Action), requestDataModel.Result, ((IPEndPoint)item.remotePoint).Address.ToString(), ((IPEndPoint)item.remotePoint).Port, requestDataJson, responseOutModel.ResponseJson, bCoinSuccess, logTxt);
+            //UDPLogHelper.SaveUDPRadarNotifyLog(requestDataModel.StoreId, requestDataModel.OrderId, requestDataModel.Token, requestDataModel.SN, int.Parse(requestDataModel.Coins), int.Parse(requestDataModel.Action), requestDataModel.Result, ((IPEndPoint)item.remotePoint).Address.ToString(), ((IPEndPoint)item.remotePoint).Port, requestDataJson, responseOutModel.ResponseJson, bCoinSuccess, logTxt);
             string message = "[接收：" + requestDataJson + "]" + "[响应：" + responseOutModel.ResponseJson + "]";
             XCGameUDPMsgHub.SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.雷达通知指令), "雷达通知指令", requestDataModel.Token, message, System.DateTime.Now);
             if (rnrModel.Result == "成功" && bCoinSuccess)

@@ -24,7 +24,7 @@ namespace XCCloudService.Business.XCGameMana
         {
             errMsg = string.Empty;
             List<StoreCacheModel> list = StoreCache.GetStore();
-            var model = list.Where<StoreCacheModel>(p => p.StoreID.ToString().Equals(storeId)).FirstOrDefault<StoreCacheModel>();
+            var model = list.Where<StoreCacheModel>(p => p.StoreID.Equals(storeId)).FirstOrDefault<StoreCacheModel>();
             if (model == null)
             {
                 errMsg = "门店信息不存在";
@@ -42,7 +42,7 @@ namespace XCCloudService.Business.XCGameMana
             errMsg = string.Empty;
             storeName = string.Empty;
             List<StoreCacheModel> list = StoreCache.GetStore();
-            var model = list.Where<StoreCacheModel>(p => p.StoreID.ToString().Equals(storeId)).FirstOrDefault<StoreCacheModel>();
+            var model = list.Where<StoreCacheModel>(p => p.StoreID.Equals(storeId)).FirstOrDefault<StoreCacheModel>();
             if (model == null)
             {
                 errMsg = "门店信息不存在";
@@ -60,7 +60,7 @@ namespace XCCloudService.Business.XCGameMana
             errMsg = string.Empty;
             deviceStoreType = XCGameManaDeviceStoreType.Store;
             List<StoreCacheModel> list = StoreCache.GetStore();
-            var model = list.Where<StoreCacheModel>(p => p.StoreID.ToString().Equals(storeId)).FirstOrDefault<StoreCacheModel>();
+            var model = list.Where<StoreCacheModel>(p => p.StoreID.Equals(storeId)).FirstOrDefault<StoreCacheModel>();
             if (model == null)
             {
                 errMsg = "门店信息不存在";
@@ -78,7 +78,7 @@ namespace XCCloudService.Business.XCGameMana
         {
             errMsg = string.Empty;
             List<StoreCacheModel> list = StoreCache.GetStore();
-            var model = list.Where<StoreCacheModel>(p => p.StoreID.ToString().Equals(storeId)).FirstOrDefault<StoreCacheModel>();
+            var model = list.Where<StoreCacheModel>(p => p.StoreID.Equals(storeId)).FirstOrDefault<StoreCacheModel>();
             if (model == null)
             {
                 errMsg = "门店信息不存在";
@@ -102,7 +102,7 @@ namespace XCCloudService.Business.XCGameMana
             errMsg = string.Empty;
             xcGameDBName = string.Empty;
             List<StoreCacheModel> list = StoreCache.GetStore();
-            var model = list.Where<StoreCacheModel>(p => p.StoreID.ToString().Equals(storeId)).FirstOrDefault<StoreCacheModel>();
+            var model = list.Where<StoreCacheModel>(p => p.StoreID.Equals(storeId)).FirstOrDefault<StoreCacheModel>();
             if (model == null)
             {
                 errMsg = "门店信息不存在";
@@ -122,7 +122,7 @@ namespace XCCloudService.Business.XCGameMana
             password = string.Empty;
             xcGameDBName = string.Empty;
             List<StoreCacheModel> list = StoreCache.GetStore();
-            var model = list.Where<StoreCacheModel>(p => p.StoreID.ToString().Equals(storeId)).FirstOrDefault<StoreCacheModel>();
+            var model = list.Where<StoreCacheModel>(p => p.StoreID.Equals(storeId)).FirstOrDefault<StoreCacheModel>();
             if (model == null)
             {
                 errMsg = "门店信息不存在";

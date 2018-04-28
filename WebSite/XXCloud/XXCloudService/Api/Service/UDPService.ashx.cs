@@ -31,49 +31,56 @@ namespace XXCloudService.Api.Service
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCGameManamAdminUserToken, SysIdAndVersionNo = false)]
         public object radarRegister(Dictionary<string, object> dicParas)
         {
-            string errMsg = string.Empty;
-            string storeId = dicParas.ContainsKey("storeId") ? dicParas["storeId"].ToString() : string.Empty;
-            string segment = dicParas.ContainsKey("segment") ? dicParas["segment"].ToString() : string.Empty;
-
-            XCGameManaAdminUserTokenModel tokenModel = (XCGameManaAdminUserTokenModel)(dicParas[Constant.XCGameManamAdminUserToken]);
-            if (tokenModel == null)
+            try
             {
-                errMsg = "用户没有授权";
-                return false;
+                string errMsg = string.Empty;
+                string storeId = dicParas.ContainsKey("storeId") ? dicParas["storeId"].ToString() : string.Empty;
+                string segment = dicParas.ContainsKey("segment") ? dicParas["segment"].ToString() : string.Empty;
+
+                XCGameManaAdminUserTokenModel tokenModel = (XCGameManaAdminUserTokenModel)(dicParas[Constant.XCGameManamAdminUserToken]);
+                if (tokenModel == null)
+                {
+                    errMsg = "用户没有授权";
+                    return false;
+                }
+
+                StoreBusiness storeBusiness = new StoreBusiness();
+                StoreCacheModel storeCacheModel = null;
+                if (!storeBusiness.IsEffectiveStore(storeId, ref storeCacheModel, out errMsg))
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "门店不存在");
+                }
+
+                ClientService service = new ClientService();
+                service.Connection();
+                RadarRegisterRequestDataModel dataModel = new RadarRegisterRequestDataModel(storeId, segment);
+                SignKeyHelper.SetSignKey(dataModel, storeCacheModel.StorePassword);
+                byte[] data = DataFactory.CreateRequesProtocolData(TransmiteEnum.雷达注册授权, dataModel);
+                service.Send(data);
+
+                System.Threading.Thread.Sleep(5000);
+
+                int count = 0;
+                UDPClientItemBusiness.ClientItem item = XCCloudService.SocketService.UDP.ClientList.ClientListObj.Where<UDPClientItemBusiness.ClientItem>(p => p.StoreID.Equals(storeId) && p.Segment.Equals(segment)).FirstOrDefault<UDPClientItemBusiness.ClientItem>();
+                while (item == null && count < 10)
+                {
+                    item = XCCloudService.SocketService.UDP.ClientList.ClientListObj.Where<UDPClientItemBusiness.ClientItem>(p => p.StoreID.Equals(storeId) && p.Segment.Equals(segment)).FirstOrDefault<UDPClientItemBusiness.ClientItem>();
+                    System.Threading.Thread.Sleep(1000);
+                    count++;
+                }
+
+                if (item == null)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "注册失败");
+                }
+
+                var obj = new { token = item.gID };
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, obj);
             }
-            
-            StoreBusiness storeBusiness = new StoreBusiness();
-            StoreCacheModel storeCacheModel = null;
-            if (!storeBusiness.IsEffectiveStore(storeId, ref storeCacheModel,out errMsg))
+            catch(Exception e)
             {
-                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "门店不存在");
+                throw e;
             }
-
-            ClientService service = new ClientService();
-            service.Connection();
-            RadarRegisterRequestDataModel dataModel = new RadarRegisterRequestDataModel(storeId, segment);
-            SignKeyHelper.SetSignKey(dataModel, storeCacheModel.StorePassword);
-            byte[] data = DataFactory.CreateRequesProtocolData(TransmiteEnum.雷达注册授权, dataModel);
-            service.Send(data);
-
-            System.Threading.Thread.Sleep(5000);
-
-            int count = 0;
-            UDPClientItemBusiness.ClientItem item = XCCloudService.SocketService.UDP.ClientList.ClientListObj.Where<UDPClientItemBusiness.ClientItem>(p => p.StoreID.Equals(storeId) && p.Segment.Equals(segment)).FirstOrDefault<UDPClientItemBusiness.ClientItem>();
-            while (item == null && count < 10)
-            {
-                item = XCCloudService.SocketService.UDP.ClientList.ClientListObj.Where<UDPClientItemBusiness.ClientItem>(p => p.StoreID.Equals(storeId) && p.Segment.Equals(segment)).FirstOrDefault<UDPClientItemBusiness.ClientItem>();
-                System.Threading.Thread.Sleep(1000);
-                count++;
-            }
-
-            if (item == null)
-            {
-                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "注册失败");
-            }
-
-            var obj = new { token = item.gID };
-            return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, obj);
         }
 
 

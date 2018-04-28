@@ -50,7 +50,7 @@
     <Compile Include="WorkFlowCache.cs" />
     <Compile Include="UDPSocketCommonQueryAnswerCache.cs" />
     <Compile Include="XCGameManaAdminUserTokenCache.cs" />
-    <Compile Include="XCCloudManaUserTokenCache.cs" />
+    <Compile Include="XCManaUserHelperTokenCache.cs" />
     <Compile Include="UnionIdTokenCache.cs" />
     <Compile Include="MobileTokenCache.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

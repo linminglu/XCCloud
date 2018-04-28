@@ -39,9 +39,9 @@ namespace XCCloudService.Base
         /// </summary>
         XCCloudUserCacheToken = 8,
         /// <summary>
-        /// 用户token
+        /// 用户token(莘助手)
         /// </summary>
-        XCGameManaUserToken = 9,
+        XCManaUserHelperToken = 9,
         /// <summary>
         /// XCGameManaDB表管理权限
         /// </summary>

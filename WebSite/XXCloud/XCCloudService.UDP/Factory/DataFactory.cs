@@ -582,7 +582,7 @@ namespace XCCloudService.SocketService.UDP.Factory
                 XCCloudService.SocketService.UDP.Server.Send(ip, port, requestPackages);
                 //记录日志
                 string requestJson = JsonHelper.DataContractJsonSerializer(radarModel);
-                UDPLogHelper.SaveUDPSendDeviceControlLog(controlModel.StoreId, controlModel.Mobile, controlModel.MCUId, controlModel.OrderId, controlModel.Segment, controlModel.SN, controlModel.Coins, int.Parse(controlModel.Action), requestJson);
+                //UDPLogHelper.SaveUDPSendDeviceControlLog(controlModel.StoreId, controlModel.Mobile, controlModel.MCUId, controlModel.OrderId, controlModel.Segment, controlModel.SN, controlModel.Coins, int.Parse(controlModel.Action), requestJson);
                 XCGameUDPMsgHub.SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.远程设备控制指令), "远程设备控制指令", radarModel.Token, requestJson);
                 return true;
             }

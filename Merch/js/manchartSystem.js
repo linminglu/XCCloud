@@ -1,4 +1,4 @@
-// 后台主页   动态加载左侧菜单
+﻿// 后台主页   动态加载左侧菜单
     var paras = [];
     var values = [];
     layui.use('form',function () {
@@ -517,6 +517,7 @@ function login_merch(){
                 data=JSON.parse(data);
                 console.log(data);
                 if(data.result_code==1){
+  		    setStorage('xc_language','Chinese');
                     setStorage('logMsg',JSON.stringify(data.result_data));
                     setStorage('token',data.result_data.token);
                     setStorage('usernames',username);

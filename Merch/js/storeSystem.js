@@ -1514,6 +1514,38 @@ xcActionSystem.prototype= {
             }
         });
     },
+    //获取数字币级别字典
+    getDigitFoodDic:function (token,layer,form,id,selected) {
+        let _obj={'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+        let parseJson = JSON.stringify(_obj);
+        $.ajax({
+            type:'post',
+            url:'/XCCloud/DigitFood?action=GetDigitFoodDic',
+            contentType: "application/json; charset=utf-8",
+            data:{parasJson: parseJson},
+            success: function (data) {
+                data = JSON.parse(data);
+                if (data.result_code == 1) {
+                    let arr=data.result_data;
+                    $('#'+id).html('<option>-请选择-</option>');
+                    for(let i in arr){
+                        if(selected){
+                            if(arr[i].ID==selected){
+                                $('#'+id).append('<option value="'+arr[i].ID+'" selected>'+arr[i].FoodName+'</option>')
+                            }else {
+                                $('#'+id).append('<option value="'+arr[i].ID+'">'+arr[i].FoodName+'</option>')
+                            }
+                        }else {
+                            $('#'+id).append('<option value="'+arr[i].ID+'">'+arr[i].FoodName+'</option>')
+                        }
+                    }
+                    form.render('select');
+                } else {
+                    layer.msg(data.result_msg);
+                }
+            }
+        });
+    },
     //获取优惠券
     getCouponDic:function (token,layer,form,id,selected) {
         let _obj={'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};

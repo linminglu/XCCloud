@@ -11,6 +11,7 @@
     <AssemblyName>XCCloudService.Business</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <NuGetPackageImportStamp>08a24c6f</NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -45,6 +46,7 @@
     <Compile Include="ApiRequestType.cs" />
     <Compile Include="Common\CoinBusiess.cs" />
     <Compile Include="Common\DeviceStateBusiness.cs" />
+    <Compile Include="Common\FileUploadBusiness.cs" />
     <Compile Include="Common\FilterMobileBusiness.cs" />
     <Compile Include="Common\IconOutLockBusiness.cs" />
     <Compile Include="Common\MobileTokenBusiness.cs" />
@@ -106,7 +108,7 @@
     <Compile Include="XCGameMana\PayBusiness.cs" />
     <Compile Include="XCGameMana\StoreBusiness.cs" />
     <Compile Include="XCGameMana\XCGameManaAdminUserTokenBusiness.cs" />
-    <Compile Include="XCGameMana\XCCloudManaUserTokenBusiness.cs" />
+    <Compile Include="XCGameMana\XCManaUserHelperTokenBusiness.cs" />
     <Compile Include="XCGameMana\XCCloudUserTokenBusiness.cs" />
     <Compile Include="XCGame\DeviceBusiness.cs" />
     <Compile Include="XCGame\MeberAndMobileTokenBusiness.cs" />
@@ -151,6 +153,7 @@
     <Content Include="XCCloud\XCCloudBusiness.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>XCCloudBusiness.cs</LastGenOutput>
+      <AutoT4RunOnBuild>Disabled</AutoT4RunOnBuild>
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

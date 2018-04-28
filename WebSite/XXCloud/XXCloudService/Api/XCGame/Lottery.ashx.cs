@@ -23,7 +23,7 @@ namespace XXCloudService.Api.XCGame
     /// </summary>
     public class Lottery : ApiBase
     {
-        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCGameManaUserToken)]
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCManaUserHelperToken)]
         public object getLotteryInfo(Dictionary<string, object> dicParas)
         {
             string gameName = string.Empty;
@@ -35,7 +35,7 @@ namespace XXCloudService.Api.XCGame
                 return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "请输入条码编号");
             }
 
-            XCCloudManaUserTokenModel userTokenModel = (XCCloudManaUserTokenModel)(dicParas[Constant.XCGameManaUserToken]);
+            XCManaUserHelperTokenModel userTokenModel = (XCManaUserHelperTokenModel)(dicParas[Constant.XCManaUserHelperToken]);
             StoreBusiness store = new StoreBusiness();
             string errMsg = string.Empty;
             StoreCacheModel storeModel = null;
@@ -123,7 +123,7 @@ namespace XXCloudService.Api.XCGame
                 UDPSocketCommonQueryAnswerModel answerModel = null;
                 string radarToken = string.Empty;
                 //string storeId, string storePassword, string barCode,string icCardId,string mobileName, string phone, string operate, out string errMsg
-                if (DataFactory.SendDataLotteryQuery(sn,storeModel.StoreID.ToString(), storeModel.StorePassword, barCode,out radarToken, out errMsg))
+                if (DataFactory.SendDataLotteryQuery(sn,storeModel.StoreID, storeModel.StorePassword, barCode,out radarToken, out errMsg))
                 {
 
                 }
@@ -181,10 +181,10 @@ namespace XXCloudService.Api.XCGame
 
         #region "提取彩票"
 
-        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCGameManaUserToken)]
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCManaUserHelperToken)]
         public object exchangeLottery(Dictionary<string, object> dicParas)
         {
-            XCCloudManaUserTokenModel userTokenModel = (XCCloudManaUserTokenModel)(dicParas[Constant.XCGameManaUserToken]);
+            XCManaUserHelperTokenModel userTokenModel = (XCManaUserHelperTokenModel)(dicParas[Constant.XCManaUserHelperToken]);
             string barCode = dicParas.ContainsKey("barCode") ? dicParas["barCode"].ToString() : string.Empty;
             string icCardId = dicParas.ContainsKey("icCardId") ? dicParas["icCardId"].ToString() : string.Empty;
             string mobileName = dicParas.ContainsKey("mobileName") ? dicParas["mobileName"].ToString() : string.Empty;
@@ -214,7 +214,7 @@ namespace XXCloudService.Api.XCGame
 
                 var lotteryModel = lotteryService.GetModels(p => p.Barcode.Equals(barCode)).FirstOrDefault<flw_lottery>();
                 var memberModel = memberService.GetModels(p => p.ICCardID.ToString().Equals(icCardId)).FirstOrDefault<t_member>();
-                var scheduleModel = scheduleService.GetModels(p => (p.OpenTime >= startTime && p.OpenTime <= endTime && p.UserID == userTokenModel.XCGameUserId && p.State.Equals("0"))).FirstOrDefault<flw_schedule>();
+                var scheduleModel = scheduleService.GetModels(p => (p.OpenTime >= startTime && p.OpenTime <= endTime && p.UserID == userTokenModel.UserId && p.State.Equals("0"))).FirstOrDefault<flw_schedule>();
 
                 if (scheduleModel == null)
                 {
@@ -256,7 +256,7 @@ namespace XXCloudService.Api.XCGame
                         lotteryModel.State = 1;
                         lotteryModel.RealTime = System.DateTime.Now;
                         lotteryModel.ICCardID = int.Parse(icCardId);
-                        lotteryModel.UserID = userTokenModel.XCGameUserId;
+                        lotteryModel.UserID = userTokenModel.UserId;
                         lotteryModel.ScheduleID = scheduleModel.ID;
                         lotteryModel.WorkStation = userTokenModel.Mobile;
 
@@ -281,7 +281,7 @@ namespace XXCloudService.Api.XCGame
                 UDPSocketCommonQueryAnswerModel answerModel = null;
                 string radarToken = string.Empty;
                 //发送彩票操作
-                if (DataFactory.SendDataLotteryOperate(sn, storeModel.StoreID.ToString(), storeModel.StorePassword, barCode, icCardId, "0",mobileName,userTokenModel.Mobile,out radarToken,out errMsg))
+                if (DataFactory.SendDataLotteryOperate(sn, storeModel.StoreID, storeModel.StorePassword, barCode, icCardId, "0",mobileName,userTokenModel.Mobile,out radarToken,out errMsg))
                 {
 
                 }

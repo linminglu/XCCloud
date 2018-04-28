@@ -84,12 +84,14 @@
     <Compile Include="CustomModel\XCCloud\DictionaryResponseModel.cs" />
     <Compile Include="CustomModel\XCCloud\Flw_OrderModel.cs" />
     <Compile Include="CustomModel\XCCloud\FoodInfoModel.cs" />
+    <Compile Include="CustomModel\XCCloud\MemberBalancesModel.cs" />
     <Compile Include="CustomModel\XCCloud\Member\MemberRegisterResponseModel.cs" />
     <Compile Include="CustomModel\XCCloud\MenuInfoModel.cs" />
     <Compile Include="CustomModel\XCCloud\Order\OrderMainModel.cs" />
     <Compile Include="CustomModel\XCCloud\Order\OrderDetailModel.cs" />
     <Compile Include="CustomModel\XCCloud\Order\OrderModel.cs" />
     <Compile Include="CustomModel\XCCloud\PaymentModel.cs" />
+    <Compile Include="CustomModel\XCCloud\UploadFileResultModel.cs" />
     <Compile Include="CustomModel\XCCloud\UserLogResponseModel.cs" />
     <Compile Include="CustomModel\XCCloud\UserInfoRegisterResponseModel.cs" />
     <Compile Include="CustomModel\XCCloud\UserInfoModel.cs" />
@@ -288,6 +290,9 @@
     <Compile Include="XCCloud\Base_StoreDogList.cs">
       <DependentUpon>XCCloudDBModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="XCCloud\Base_StoreHKConfig.cs">
+      <DependentUpon>XCCloudDBModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="XCCloud\Base_StoreInfo.cs">
       <DependentUpon>XCCloudDBModel.tt</DependentUpon>
     </Compile>
@@ -352,6 +357,9 @@
       <DependentUpon>XCCloudDBModel.tt</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_DigitCoinDestroy.cs">
+      <DependentUpon>XCCloudDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_DigitCoinFood.cs">
       <DependentUpon>XCCloudDBModel.tt</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_FoodInfo.cs">
@@ -667,9 +675,6 @@
       <DependentUpon>XCGameManagerDBModel.tt</DependentUpon>
     </Compile>
     <Compile Include="XCGameManager\t_apiRequestLog.cs">
-      <DependentUpon>XCGameManagerDBModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="XCGameManager\t_datamessage.cs">
       <DependentUpon>XCGameManagerDBModel.tt</DependentUpon>
     </Compile>
     <Compile Include="XCGameManager\t_device.cs">

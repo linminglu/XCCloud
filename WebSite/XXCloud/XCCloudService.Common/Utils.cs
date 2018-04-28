@@ -2104,6 +2104,12 @@ namespace XCCloudService.Common
             return System.Guid.NewGuid().ToString("N");
         }
 
+        public static string GetExtName(string fileName)
+        {
+            int index = fileName.LastIndexOf('.');
+            return fileName.Substring(index + 1, fileName.Length - index - 1);
+        }
+
         #region "XML"
 
         public static object XmlDeserialize(Type type, string xml)

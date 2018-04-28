@@ -9,71 +9,72 @@
     .iframeBox{height: 100%;}
     .iframeBox .layui-tab-item{position: absolute;top:65px;left: 0;right: 0;bottom: 0;}
     .iframeBox iframe{border: none;min-width: 400px;}
-    .layui-form-onswitch{
-        border-color: #5FB878!important;
-        background-color: #5FB878!important;
-    }
-    .layui-form-switch{
-        height: 22px;
-        line-height: 22px;
-        width: 42px;
-        border: 1px solid #d2d2d2;
-        border-radius: 20px;
-        background-color: #fff;
-    }
-    .layui-form-switch em{
-        width: 25px;
-        color: #999!important;
-        font-size: 12px;}
-    .layui-form-switch i{
-        left: 5px;
-        top: 3px;
-        width: 16px;
-        height: 16px;
-        border-radius: 20px;
-        background-color: #d2d2d2;
-    }
-    .layui-form-onswitch i{
-        left: 32px;
-    }
+    /*.layui-form-onswitch{*/
+        /*border-color: #5FB878!important;*/
+        /*background-color: #5FB878!important;*/
+    /*}*/
+    /*.layui-form-switch{*/
+        /*height: 22px;*/
+        /*line-height: 22px;*/
+        /*width: 42px;*/
+        /*border: 1px solid #d2d2d2;*/
+        /*border-radius: 20px;*/
+        /*background-color: #fff;*/
+    /*}*/
+    /*.layui-form-switch em{*/
+        /*width: 25px;*/
+        /*color: #999!important;*/
+        /*font-size: 12px;}*/
 
-    .goodIsAll .layui-form-switch {
-        height: 36px;
-        line-height: 36px;
-        width: 180px;
-        border-radius: 5px;
-        border: 1px solid #orangered;
-        background-color: #999;
-    }
+    /*.layui-form-switch i{*/
+        /*left: 5px;*/
+        /*top: 3px;*/
+        /*width: 16px;*/
+        /*height: 16px;*/
+        /*border-radius: 20px;*/
+        /*background-color: #d2d2d2;*/
+    /*}*/
+    /*.layui-form-onswitch i{*/
+        /*left: 32px;*/
+    /*}*/
 
-    .goodIsAll .layui-form-switch i {
-        left: 0px;
-        top: 0px;
-        width: 95px;
-        height: 36px;
-        margin-top: -1px;
-        border-radius: 5px 0 0 5px;
-        border: 1px solid #aaa;
-        background-color: #fff;
-    }
+    /*.goodIsAll .layui-form-switch {*/
+        /*height: 36px;*/
+        /*line-height: 36px;*/
+        /*width: 180px;*/
+        /*border-radius: 5px;*/
+        /*border: 1px solid #orangered;*/
+        /*background-color: #999;*/
+    /*}*/
 
-    .goodIsAll  .layui-form-switch em {
-        width: 80px;
-        color: #ffffff!important;
-        font-size: 14px;
-    }
+    /*.goodIsAll .layui-form-switch i {*/
+        /*left: 0px;*/
+        /*top: 0px;*/
+        /*width: 95px;*/
+        /*height: 36px;*/
+        /*margin-top: -1px;*/
+        /*border-radius: 5px 0 0 5px;*/
+        /*border: 1px solid #aaa;*/
+        /*background-color: #fff;*/
+    /*}*/
 
-    .goodIsAll .layui-form-onswitch {
-        border-color: #1e9fff!important;
-        background-color: #1e9fff!important;
-    }
+    /*.goodIsAll  .layui-form-switch em {*/
+        /*width: 80px;*/
+        /*color: #ffffff!important;*/
+        /*font-size: 14px;*/
+    /*}*/
 
-    .goodIsAll  .layui-form-onswitch i {
-        left: 95px;
-        border-radius: 0 5px 5px 0;
-        border: 1px solid #aaa;
-        margin-top: -1px;
-    }
+    /*.goodIsAll .layui-form-onswitch {*/
+        /*border-color: #1e9fff!important;*/
+        /*background-color: #1e9fff!important;*/
+    /*}*/
+
+    /*.goodIsAll  .layui-form-onswitch i {*/
+        /*left: 95px;*/
+        /*border-radius: 0 5px 5px 0;*/
+        /*border: 1px solid #aaa;*/
+        /*margin-top: -1px;*/
+    /*}*/
 
 
 </style>
@@ -660,7 +661,7 @@
                 if(obj.checked==true){
                     giftList=[{'FoodDetailType':1,
                         'FoodDetailTypeStr':'礼品',
-                        // 'BalanceType':'',
+                        'BalanceType':'',
                         'OperateType':'',
                         'ContainId':obj.data.ID,
                         'ProjectName':obj.data.GoodName,
@@ -762,7 +763,7 @@
         $('#ticketBtn').on('click',()=>{
            xc. GetTicketProjectDic (token,layer,form,'ticketType');
              ticketType=''; ticketTypeStr='';
-            index=  layer.open({
+              index=  layer.open({
                 title:'新增套餐',
                 shade:0.6,
                 type:1,
@@ -772,7 +773,8 @@
         });
         //数字币
         $('#digitBtn').on('click',()=>{
-            // xc.setSelect('套餐类别','FoodType');
+            xc.getDigitFoodDic(token,layer,form,'digitType');
+             digitType=''; digitTypeStr='';
             index= layer.open({
                 title:'新增套餐',
                 shade:0.6,
@@ -798,7 +800,7 @@
         $('#openVipBtn').on('click',()=>{
             FoodDetial.push({ 'FoodDetailType':0,
                         'FoodDetailTypeStr':'会员币种',
-                // 'BalanceType':vipCoinType,
+                'BalanceType':vipCoinType,
                 'OperateType':OperateType,
                 'ContainId':'',
                 'ProjectName':'数字币',
@@ -821,11 +823,12 @@
         $('#openTicketBtn').on('click',()=>{
             FoodDetial.push({ 'FoodDetailType':2,
                 'FoodDetailTypeStr':'门票',
+                'BalanceType':'',
                 'OperateType':'',
                 'ContainId':ticketType,
                 'ProjectName':ticketTypeStr,
                 'ContainCount':$('#ticketCount').val(),
-                'WeightValue':'',
+                'WeightValue':'0',
                 'Days':$('#ticketDays').val()});
             layer.close(index);
             newFoodDetialsTable(table,FoodDetial,layer,form)
@@ -833,11 +836,12 @@
         $('#openDigitBtn').on('click',()=>{
             FoodDetial.push({ 'FoodDetailType':3,
                 'FoodDetailTypeStr':'数字币',
+                'BalanceType':'',
                 'OperateType':'',
                 'ContainId':digitType,
                 'ProjectName':'数字币',
                 'ContainCount':$('#digitCount').val(),
-                'WeightValue':'',
+                'WeightValue':'0',
                 'Days':$('#digitDays').val()});
             layer.close(index);
             newFoodDetialsTable(table,FoodDetial,layer,form)
@@ -845,6 +849,7 @@
         $('#openOnSaleBtn').on('click',()=>{
             FoodDetial.push({ 'FoodDetailType':4,
                 'FoodDetailTypeStr':'优惠券',
+                'BalanceType':'',
                 'OperateType':'',
                 'ContainId':CouponType,
                 'ProjectName':CouponTypeStr,
@@ -1035,6 +1040,7 @@
             if(layEvent === 'del'){ //查看
                 for(let i in FoodDetial){
                     if(FoodDetial[i].FoodDetailType==data.FoodDetailType&&
+                        FoodDetial[i].BalanceType==data.BalanceType&&
                         FoodDetial[i].OperateType==data.OperateType&&
                         FoodDetial[i].ContainId==data.ContainId&&
                         FoodDetial[i].ContainCount==data.ContainCount&&

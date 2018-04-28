@@ -15,12 +15,12 @@ namespace XXCloudService.Api.XCGame
     /// </summary>
     public class Params : ApiBase
     {
-        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCGameManaUserToken)]
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCManaUserHelperToken)]
         public object getStoreParam(Dictionary<string, object> dicParas)
         {
             string errMsg = string.Empty;
             ParamQueryResultModel paramQueryResultModel = null;
-            XCCloudManaUserTokenModel userTokenModel = (XCCloudManaUserTokenModel)(dicParas[Constant.XCGameManaUserToken]);
+            XCManaUserHelperTokenModel userTokenModel = (XCManaUserHelperTokenModel)(dicParas[Constant.XCManaUserHelperToken]);
             if (UDPApiService.GetParam(userTokenModel.StoreId, "0", ref paramQueryResultModel, out errMsg))
             {
                 var obj = new {

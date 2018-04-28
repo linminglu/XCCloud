@@ -3,7 +3,9 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title></title>
-    <script src="/website/js/jquery-1.8.3-min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/website/uploadify/uploadify.css">
+    <script src="/website/js/jquery-1.8.3-min.js"></script> 
+    <script type="text/javascript" src="/website/uploadify/jquery.uploadify.min.js"></script>
 </head>
 <body>
     <script type="text/javascript">
@@ -13,7 +15,53 @@
             $("#txtMobile").val("15307199901");
             $("#txtICCardId1").val("90000002");
             $("#txtICCardId2").val("90000007");
+
+            $("#validateImgCode").attr("src", "/ServicePage/validateimg.aspx?t=" + Math.random());
+
+            $('#file_upload').uploadify({
+                'swf': "/website/uploadify/uploadify.swf",
+                'uploader': getUploaderUrl(),
+                'formData': getUploaderData(),
+                'cancelImg': "/website/uploadify/uploadify-cancel.png",
+                'buttonText': '选择照片',
+                'method': 'post',
+                'queueID': 'fileQueue',//与下面的id对应 
+                'buttonClass': 'upload_button',
+                'fileTypeDesc': '图片文件',
+                'fileTypeExts': '*.gif;*.jpg;*.png;*.bmp',
+                'multi': false,
+                'onUploadComplete': function (file) {
+
+                },
+                'onUploadSuccess': function (file, data, response) {
+                    console.log(data);
+                }
+            });
         });
+
+        function changeImgCode() {
+            $("#validateImgCode").attr("src", "/ServicePage/validateimg.aspx?t=" + Math.random());
+        }
+
+        function getUploaderUrl() {
+            var url = "/api/xccloud/gamewatch.ashx?action=addGameWatch";
+            return url;
+        }
+
+        function getUploaderData() {
+            var userToken = $("#txtUserToken").val();
+            var clientType = "1";
+            var headIndex = 8;
+            var inCoin = 10;
+            var prizeCount = 100;
+            var outCoin = 70;
+            var outLottery = 90;
+            var obj = {
+                'userToken': userToken, 'clientType': clientType, 'inCoin': inCoin, 'prizeCount': prizeCount,
+                'outCoin': outCoin, 'outLottery': outLottery, 'headIndex': headIndex
+            };
+            return obj;
+        }
 
         function common(url, parasJson) {
             $.ajax({
@@ -32,14 +80,14 @@
         }
 
         function do_getRegisterSMSCode() {
-            var parasObj = { "sysId": "0", "versionNo": "0.0.0.1", "storeId": "100027", "mobile": $("#txtMobile").val(), "imgCode": $("#txtImgCode").val() };
+            var parasObj = { "sysId": "0", "versionNo": "0.0.0.1", "storeId": $("#selStore").val(), "mobile": $("#txtMobile").val(), "imgCode": $("#txtImgCode").val() };
             var url = "/xcgamemana/User2?action=getRegisterSMSCode";
             var parasJson = JSON.stringify(parasObj);
             common(url, parasJson);
         }
 
         function do_registerUser() {
-            var parasObj = { "sysId": "0", "versionNo": "0.0.0.1", "storeId": "100027", "mobile": $("#txtMobile").val(), "smsCode": $("#txtSmsCode").val() };
+            var parasObj = { "sysId": "0", "versionNo": "0.0.0.1", "storeId": $("#selStore").val(), "mobile": $("#txtMobile").val(), "smsCode": $("#txtSmsCode").val() };
             var url = "/xcgamemana/User2?action=registerUser";
             var parasJson = JSON.stringify(parasObj);
             $.ajax({
@@ -170,6 +218,12 @@
     
     <div title="票据" style="font-size:14px;color:#F00;border:1px solid #ccc;">
         <div>票据</div>
+        门店:
+        <select class="" id="selStore">
+            <option value="100027">100027</option>
+            <option value="100025420106001" selected>100025420106001</option>
+        </select>
+        <br/>
         ICCardId1:<input id="txtICCardId1" type="text" />&nbsp;&nbsp;ICCardId2:<input id="txtICCardId2" type="text" />
         <br />
         Mobile:<input id="txtMobile" type="text" />
@@ -178,7 +232,7 @@
         <br />
         BarCode:<input id="txtBarCode" type="text" />
         <br />
-        ImgCode:<input id="txtImgCode" type="text" />
+        ImgCode:<input id="txtImgCode" type="text" /><img id="validateImgCode" onclick="changeImgCode()" />
         <br />
         SmsCode:<input id="txtSmsCode" type="text" />
         <br />
@@ -198,6 +252,7 @@
         <input id="do_exchangeOutTicket" type="button" value="do_exchangeOutTicket(获取出票信息)" onclick="do_exchangeOutTicket()" />
         <input id="do_getCustomCardInfo" type="button" value="do_getCustomCardInfo(获取定制会员信息)" onclick="do_getCustomCardInfo()" />
         <input id="do_getParams" type="button" value="do_getParams(获取门店参数)" onclick="do_getParams()" />
+        <input type="file" name="file_upload" id="file_upload" />
     </div>
     
 </body>

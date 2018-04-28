@@ -85,6 +85,7 @@
     //存储session
     function setStorage(key,value) {
         if(window.localStorage){
+            value = JSON.stringify(value); //转化为JSON字符串
             var storage=window.localStorage;
             storage.setItem(key,value);
         }
@@ -97,14 +98,12 @@
         }
     }
     //获取session
-    function getStorage(key,value) {
+    function getStorage(key) {
         if(window.localStorage){
-            var storage=window.localStorage;
-            value = localStorage.getItem(key);
+            value = JSON.parse(localStorage.getItem(key));
             return value;
         }
     }
-
     var machineName ="";
     var dogIdToken ="";
     var ws = new WebSocket("ws://127.0.0.1:12880");
@@ -127,7 +126,6 @@
 //                    send(msgTypeB);
 //                }, 100);
             };
-
             ws.onmessage = function (evt)
             {
                 console.log("接收成功");
@@ -154,14 +152,12 @@
             };
 
         }
-
         else
         {
             // 浏览器不支持 WebSocket
             alert("您的浏览器不支持 WebSocket!");
         }
     }
-
     WebSocketTest();
     setTimeout(function () {
         var msgTypeB =JSON.stringify({"msgType":"2"});
@@ -174,7 +170,7 @@
         var username=$('#username_login').val();
         var password=$('#password_login').val();
         var obj={'loginName':"lijunjie",'password':"123456",'workStation':'CHENWU-PC','dogId':'139134557'};
-        var url='/api/xccloud/UserInfo.ashx?action=barLogin';           //登录接口
+        var url='/xccloud/UserInfo?action=barLogin';           //登录接口
         var parasJson = JSON.stringify(obj);
 
         if(username!=''&&password!=''){

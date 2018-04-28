@@ -8,10 +8,27 @@
     <script type="text/javascript" src="/website/uploadify/jquery.uploadify.min.js"></script>
        
     <script>
+        var userToken = "107f7a833bab498a9a819867bc95d6c4";
+        var clientType = "1";
+        var headIndex = 8;
+        var inCoin = 10;
+        var prizeCount = 100;
+        var outCoin = 70;
+        var outLottery = 90;
+        var goodPrice = 65;
+        //function getUrl() {
+        //    var url = "/api/xccloud/gamewatch.ashx?action=addGameWatch&userToken=107f7a833bab498a9a819867bc95d6c4&clientType=1";
+        //    url = url + "&inCoin=10&prizeCount100&outCoin=70&outLottery=90&goodPrice=65";
+        //    return url;
+        //}
         $(function () {
             $('#file_upload').uploadify({
                 'swf': "/website/uploadify/uploadify.swf",
-                'uploader': "/api/XCGameMana/PhotoUpload.ashx?action=getphotoupload",
+                'uploader': getUrl(),
+                'formData': {
+                    'userToken': userToken, 'clientType': clientType, 'inCoin': inCoin, 'prizeCount': prizeCount,
+                    'outCoin': outCoin, 'outLottery': outLottery, 'headIndex': headIndex
+                },
                 'cancelImg': "/website/uploadify/uploadify-cancel.png",
                 'buttonText': '选择照片',
                 'method': 'post',
@@ -33,6 +50,10 @@
                 }
             });
 
+            function getUrl() {
+                var url = "/api/xccloud/gamewatch.ashx?action=addGameWatch";
+                return url;
+            }
 
         });
 

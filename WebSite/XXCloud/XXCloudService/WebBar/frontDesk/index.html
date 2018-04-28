@@ -195,24 +195,6 @@
 				<li class="col-md-5 col-sm-5"><span>彩票：</span></li>
 			</ul>
 			<div class="shopCart col-md-12 col-sm-12">
-				<!--<div class="shopCartMb col-md-12 col-sm-12 shopCStyle hidden">-->
-					<!--<div class="col-md-7 col-sm-7 shopCStyle">-->
-						<!--<h4 class="shopCStyle"></h4>-->
-						<!--<h5 class="shopCStyle">支付方式：-->
-                            <!--<select class="useSelect form-control" style="display: inline-block;">-->
-                                <!--<option value="Price">现金</option>-->
-                                <!--<option class="useCoin" value="useCoin">代币</option>-->
-                                <!--<option class="useLottery" value="useLottery">积分</option>-->
-                                <!--<option class="usePoint" value="usePoint">彩票</option>-->
-                            <!--</select>-->
-						<!--</h5>-->
-						<!--<p class="shopCStyle">支付单价：<i class="fhRMB hidden">￥</i><em class="shopD"></em></p>-->
-					<!--</div>-->
-					<!--<div class="col-md-5 col-sm-5 shopCStyle">-->
-                        <!--<div class="col-md-12 col-sm-12 strongStyle"><i class="fhRMB col-md-2 col-sm-2 hidden strongStyle">￥</i><strong class="col-md-10 col-sm-10 strongStyle"></strong></div>-->
-                        <!--<div class="col-md-12 col-sm-12 shopCStyle"><em>数量：<span>1</span></em></div>-->
-					<!--</div>-->
-				<!--</div>-->
 				<table class="table table-bordered col-md-12 col-sm-12">
 					<thead style="background: #f5f5f5">
 						<tr>
@@ -278,20 +260,7 @@
 					<div class="swiper-button-prev"></div>
 				</div>
 				<div class="sales">
-					<!--<div class="salesStencil hidden">-->
-						<!--<img src="images/sales.png">-->
-						<!--<h3></h3>-->
-						<!--<p>￥</p>-->
-						<!--<h5></h5>-->
-					<!--</div>-->
-					<!--<ul id="v-for-object" class="salesStencil">-->
-						<!--<li v-for="(items,index) in tbodyData" class="salesStencil hidden">-->
-							<!--<img src="images/sales.png">-->
-							<!--<h3>{{items.name}}</h3>-->
-							<!--<p>￥</p>-->
-							<!--<h5>{{items.name}}</h5>-->
-						<!--</li>-->
-					<!--</ul>-->
+
 					<ul id="v-for-object" class="salesStencil hidden">
 						<li v-for="(items,index) in tbodyData" class="salesStencil" @click="deletePerson(index)" v-bind:style="{ background: activeColor}" >
 							<img :src="items.imageUrl"/>
@@ -302,15 +271,6 @@
 					</ul>
 				</div>
 			</div>
-
-
-			<!--<iframe class="hidden" id="iFrame2" src="Member.html" width="100%" height="100%" frameborder="0" seamless></iframe>-->
-			<!--<iframe class="hidden" id="iFrame4" src="sales.html" width="100%" height="100%" frameborder="0" seamless></iframe>-->
-
-			<!--<iframe class="hidden" id="iFrame5" src="MemberOperation.html" width="100%" height="100%" frameborder="0" seamless></iframe>-->
-			<!--<iframe class="hidden"  src="MembersReturn.html" width="100%" height="100%" frameborder="0" seamless></iframe>-->
-			<!--<iframe class="hidden" id="iFrame7" src="AnyReturns.html" width="100%" height="100%" frameborder="0" seamless></iframe>-->
-			<!--<iframe class="hidden" id="iFrame8" src="cardLoss.html" width="100%" height="100%" frameborder="0" seamless></iframe>-->
 		</div>
     </div>
 

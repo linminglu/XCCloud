@@ -52,6 +52,20 @@ namespace XCCloudService.Common
 
         public static string H5_M_WeiXinAuthRedirectUrl = System.Configuration.ConfigurationManager.AppSettings["H5_M_WeiXinAuthRedirectUrl"];
 
+        public static string FileServerPhysicsPath = System.Configuration.ConfigurationManager.AppSettings["FileServerPhysicsPath"];
+
+        public static string FileFormat = System.Configuration.ConfigurationManager.AppSettings["FileFormat"];
+        
+        /// <summary>
+        /// 图片服务器Host
+        /// </summary>
+        public static string ImageFileHost = System.Configuration.ConfigurationManager.AppSettings["ImageFileHost"];
+
+        /// <summary>
+        /// 视频服务器Host
+        /// </summary>
+        public static string MovieFileHost = System.Configuration.ConfigurationManager.AppSettings["MovieFileHost"];
+
         /// <summary>
         /// 莘拍档H5支付宝支付回调
         /// </summary>

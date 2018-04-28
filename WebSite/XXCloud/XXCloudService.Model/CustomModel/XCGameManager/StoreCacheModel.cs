@@ -9,7 +9,7 @@ namespace XCCloudService.Model.CustomModel.XCGameManager
 {
     public class StoreCacheModel
     {
-        public int StoreID { set; get; }
+        public string StoreID { set; get; }
 
         public string StorePassword { set; get; }
 

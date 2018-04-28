@@ -45,8 +45,14 @@ namespace XCCloudService.Common
 
         public static string InvalidStore = "InvalidStore";
 
-        public static string XCGameManaUserToken = "XCGameManaUserToken";
+        public static string XCManaUserHelperToken = "XCManaUserHelperToken";
 
         public static string XCGameManamAdminUserToken = "XCGameManamAdminUserToken";
+
+        public static string ImageFileType = "Image";//图片文件类型
+
+        public static string MoveFileType = "Move";//视频文件类型
+
+        public static string OtherFileType = "Other";//其他文件类型
     }
 }

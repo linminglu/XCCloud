@@ -23,5 +23,10 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> CoinType { get; set; }
         public Nullable<int> Balance { get; set; }
         public Nullable<System.DateTime> RealTime { get; set; }
+        public Nullable<int> DeviceID { get; set; }
+        public Nullable<int> GameIndexID { get; set; }
+        public string SiteName { get; set; }
+        public Nullable<int> MemberID { get; set; }
+        public Nullable<int> BalanceIndex { get; set; }
     }
 }

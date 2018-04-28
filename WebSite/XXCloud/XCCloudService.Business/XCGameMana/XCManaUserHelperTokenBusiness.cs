@@ -12,36 +12,36 @@ using XCCloudService.Model.XCGameManager;
 
 namespace XCCloudService.Business.XCGameMana
 {
-    public class XCCloudManaUserTokenBusiness
+    public class XCManaUserHelperTokenBusiness
     {
-        public static string SetToken(string mobile,string storeId,string storeName,int xcGameUserId)
+        public static string SetToken(string mobile,string storeId,string storeName,int userId)
         {
             //设置会员token
             string newToken = System.Guid.NewGuid().ToString("N");
             string token = string.Empty;
             if (GetUserTokenModel(storeId, mobile, out token))
             {
-                SetDBManaUserToken(newToken, mobile, storeId, storeName, xcGameUserId);
-                XCCloudManaUserTokenCache.Remove(token);
-                XCCloudManaUserTokenModel tokenModel = new XCCloudManaUserTokenModel(storeId, storeName, mobile, xcGameUserId);
-                XCCloudManaUserTokenCache.AddToken(newToken, tokenModel);
+                SetDBManaUserToken(newToken, mobile, storeId, storeName, userId);
+                XCManaUserHelperTokenCache.Remove(token);
+                XCManaUserHelperTokenModel tokenModel = new XCManaUserHelperTokenModel(storeId, storeName, mobile, userId);
+                XCManaUserHelperTokenCache.AddToken(newToken, tokenModel);
             }
             else
             {
-                SetDBManaUserToken(newToken, mobile, storeId, storeName, xcGameUserId);
-                XCCloudManaUserTokenModel tokenModel = new XCCloudManaUserTokenModel(storeId, storeName, mobile, xcGameUserId);
-                XCCloudManaUserTokenCache.AddToken(newToken, tokenModel);
+                SetDBManaUserToken(newToken, mobile, storeId, storeName, userId);
+                XCManaUserHelperTokenModel tokenModel = new XCManaUserHelperTokenModel(storeId, storeName, mobile, userId);
+                XCManaUserHelperTokenCache.AddToken(newToken, tokenModel);
             }
 
             return newToken;
         }
 
 
-        public static XCCloudManaUserTokenModel GetManaUserTokenModel(string token)
+        public static XCManaUserHelperTokenModel GetManaUserTokenModel(string token)
         {
-            if (XCCloudManaUserTokenCache.UserTokenHTDic.ContainsKey(token))
+            if (XCManaUserHelperTokenCache.UserTokenHTDic.ContainsKey(token))
             {
-                XCCloudManaUserTokenModel tokenModel = (XCCloudManaUserTokenModel)(XCCloudManaUserTokenCache.UserTokenHTDic[token]);
+                XCManaUserHelperTokenModel tokenModel = (XCManaUserHelperTokenModel)(XCManaUserHelperTokenCache.UserTokenHTDic[token]);
                 return tokenModel;
             }
             else
@@ -51,11 +51,11 @@ namespace XCCloudService.Business.XCGameMana
         }
 
 
-        public static bool GetUserTokenModel(string mobile, ref List<XCCloudManaUserTokenResultModel> storeList)
+        public static bool GetUserTokenModel(string mobile, ref List<XCManaUserHelperTokenResultModel> storeList)
         {
-            storeList = new List<XCCloudManaUserTokenResultModel>();
-            var query = from item in XCCloudManaUserTokenCache.UserTokenHTDic
-                        where ((XCCloudManaUserTokenModel)(item.Value)).Mobile.Equals(mobile)
+            storeList = new List<XCManaUserHelperTokenResultModel>();
+            var query = from item in XCManaUserHelperTokenCache.UserTokenHTDic
+                        where ((XCManaUserHelperTokenModel)(item.Value)).Mobile.Equals(mobile)
                         select item.Key.ToString();
             if (query.Count() == 0)
             {
@@ -67,7 +67,7 @@ namespace XCCloudService.Business.XCGameMana
                 string storeName = string.Empty;
                 for (int i = 0; i < tmpList.Count; i++)
                 {
-                    XCCloudManaUserTokenModel userTokenModel = (XCCloudManaUserTokenModel)(XCCloudManaUserTokenCache.UserTokenHTDic[tmpList[i]]);
+                    XCManaUserHelperTokenModel userTokenModel = (XCManaUserHelperTokenModel)(XCManaUserHelperTokenCache.UserTokenHTDic[tmpList[i]]);
                     XCCloudService.Model.CustomModel.XCGameManager.StoreCacheModel storeModel = null;
                     string errMsg = string.Empty;
                     StoreBusiness storeBusiness = new StoreBusiness();
@@ -83,7 +83,7 @@ namespace XCCloudService.Business.XCGameMana
                         }
                     }
 
-                    XCCloudManaUserTokenResultModel userTokenResultModel = new XCCloudManaUserTokenResultModel(userTokenModel.StoreId, storeName, tmpList[i].ToString());
+                    XCManaUserHelperTokenResultModel userTokenResultModel = new XCManaUserHelperTokenResultModel(userTokenModel.StoreId, storeName, tmpList[i].ToString());
                     storeList.Add(userTokenResultModel);
                 }
                 return true;
@@ -93,8 +93,8 @@ namespace XCCloudService.Business.XCGameMana
         public static bool GetUserTokenModel(string storeId, string mobile, out string token)
         {
             token = string.Empty;
-            var query = from item in XCCloudManaUserTokenCache.UserTokenHTDic
-                        where ((XCCloudManaUserTokenModel)(item.Value)).StoreId.Equals(storeId) && ((XCCloudManaUserTokenModel)(item.Value)).Mobile.Equals(mobile)
+            var query = from item in XCManaUserHelperTokenCache.UserTokenHTDic
+                        where ((XCManaUserHelperTokenModel)(item.Value)).StoreId.Equals(storeId) && ((XCManaUserHelperTokenModel)(item.Value)).Mobile.Equals(mobile)
                         select item.Key.ToString();
             if (query.Count() == 0)
             {
@@ -116,14 +116,14 @@ namespace XCCloudService.Business.XCGameMana
             {
                 for (int i = 0; i < list.Count; i++)
                 {
-                    XCCloudManaUserTokenModel tokenModel = new XCCloudManaUserTokenModel(list[i].StoreId, list[i].StoreName, list[i].Mobile, Convert.ToInt32(list[i].XCGameUserId));
-                    XCCloudManaUserTokenCache.AddToken(list[i].Token, tokenModel);
+                    XCManaUserHelperTokenModel tokenModel = new XCManaUserHelperTokenModel(list[i].StoreId, list[i].StoreName, list[i].Mobile, Convert.ToInt32(list[i].UserId));
+                    XCManaUserHelperTokenCache.AddToken(list[i].Token, tokenModel);
                 }
             }
         }
 
 
-        private static void SetDBManaUserToken(string token,string mobile , string storeId, string storeName,int xcGameUserId)
+        private static void SetDBManaUserToken(string token,string mobile , string storeId, string storeName,int userId)
         {
             IUserTokenService userTokenService = BLLContainer.Resolve<IUserTokenService>();
             var model = userTokenService.GetModels(p => p.StoreId.Equals(storeId) & p.Mobile.Equals(mobile)).FirstOrDefault<t_usertoken>();
@@ -136,7 +136,7 @@ namespace XCCloudService.Business.XCGameMana
                 userToken.StoreId = storeId;
                 userToken.StoreName = storeName;
                 userToken.CreateTime = DateTime.Now;
-                userToken.XCGameUserId = xcGameUserId;
+                userToken.UserId = userId;
                 userTokenService.Add(userToken);
             }
             else
@@ -146,7 +146,7 @@ namespace XCCloudService.Business.XCGameMana
                 model.StoreId = storeId;
                 model.StoreName = storeName;
                 model.UpdateTime = DateTime.Now;
-                model.XCGameUserId = xcGameUserId;
+                model.UserId = userId;
                 userTokenService.Update(model);
             }
         }

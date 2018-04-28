@@ -144,7 +144,7 @@
             if (data.elem.checked==true){
                 storeId.push(data.value);
             }else if(data.elem.checked==false){
-                for (var i=0;i<storeId.length;i++){
+                for (let i=0;i<storeId.length;i++){
                     if(storeId[i]==data.value){
                         storeId.splice(i,1)
                     }
@@ -177,7 +177,7 @@
                                     storeId=[];
                                   }
                                 HKType=data.result_data[0].HKType;
-                                $('#HKType').find('option[value="'+data.result_data.HKType+'"]').prop('selected',true)
+                                $('#HKType').find('option[value="'+data.result_data[0].HKType+'"]').attr('selected',true)
                                     // .siblings().prop('selected',false);
                                 form.render();
                                 $('#openModel').find('[name="unchange"]').prop('disabled',true);
