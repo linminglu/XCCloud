@@ -1,13 +1,18 @@
 ﻿<#@ template language="C#" debug="false" hostspecific="true"#>
-<#@ include file="EF6.Utility.CS.ttinclude"#><#@ 
+<#@ import namespace="System.IO" #>
+<#@ include file="EF6.Utility.CS.ttinclude"#>
+<#@ include file="$(SolutionDir)\packages\T4.TemplateFileManager.2.2.1\tools\ttinc\TemplateFilemanager.CS.ttinclude" #>
+<#@ 
  output extension=".cs"#><#
 
 const string inputFile = @"XCCloudDBModel.edmx";
-var textTransform = DynamicTextTransformation.Create(this);
+var textTransform = DynamicTextTransformation.Create(this); 
 var code = new CodeGenerationTools(this);
 var ef = new MetadataTools(this);
 var typeMapper = new TypeMapper(code, ef, textTransform.Errors);
-var	fileManager = EntityFrameworkTemplateFileManager.Create(this);
+var	fileManager = TemplateFileManager.Create(this);
+fileManager.IsAutoIndentEnabled = true;
+fileManager.CanOverwriteExistingFile = true;
 var itemCollection = new EdmMetadataLoader(textTransform.Host, textTransform.Errors).CreateEdmItemCollection(inputFile);
 var codeStringGenerator = new CodeStringGenerator(code, typeMapper, ef);
 
@@ -209,12 +214,214 @@ foreach (var enumType in typeMapper.GetEnumItemsToGenerate(itemCollection))
     EndNamespace(code);
 }
 
-fileManager.Process();
+fileManager.Process(true);
+
+////////////////////////////////////////////////////////自定义模板开始///////////////////////////////////////////////////
+string solutionsPath = Host.ResolveAssemblyReference("$(SolutionDir)");  
+string projectPath = Host.ResolveAssemblyReference("$(ProjectDir)");
+string destPath = string.Empty;
+var fileProperties = new FileProperties()
+{
+	BuildAction = BuildAction.Compile
+};
+
+destPath = solutionsPath + @"\\XCCloudService.BLL\\IBLL\\XCCloud\\";
+if(!Directory.Exists(destPath))
+{
+    Directory.CreateDirectory(destPath);
+}
+
+foreach (var entity in typeMapper.GetItemsToGenerate<EntityType>(itemCollection))
+{
+    fileManager.StartNewFile("I" + entity.Name + "Service.cs", projectName:"XCCloudService.BLL",
+								folderName:"IBLL/XCCloud", fileProperties:fileProperties);
+#>
+namespace XCCloudService.BLL.IBLL.XCCloud
+{
+<#
+    PushIndent("    ");
+#>
+
+using XCCloudService.Model.XCCloud;
+
+public interface I<#=entity.Name#>Service : IBaseService<<#=entity.Name#>>
+{
+		
+}
+<#
+    PopIndent();
+#>
+}
+<#
+}
+
+//XCCloudService.BLL
+
+destPath = solutionsPath + @"\\XCCloudService.BLL\\XCCloud\\";
+if(!Directory.Exists(destPath))
+{
+    Directory.CreateDirectory(destPath);
+}
+
+foreach (var entity in typeMapper.GetItemsToGenerate<EntityType>(itemCollection))
+{
+    fileManager.StartNewFile(entity.Name + "Service.cs", projectName:"XCCloudService.BLL",
+								folderName:"XCCloud", fileProperties:fileProperties);
+#>
+namespace XCCloudService.BLL.XCCloud
+{
+<#
+    PushIndent("    ");
+#>
+
+using XCCloudService.DAL.Container;
+using XCCloudService.DAL.IDAL.XCCloud;
+using XCCloudService.BLL.Base;
+using XCCloudService.BLL.IBLL.XCCloud;
+using XCCloudService.Model.XCCloud;
+
+public partial class <#=entity.Name#>Service : BaseService<<#=entity.Name#>>, I<#=entity.Name#>Service
+{
+	public override void SetDal()
+    {
+
+    }
+
+    public <#=entity.Name#>Service()
+        : this(false)
+    {
+
+    }
+
+    public <#=entity.Name#>Service(bool resolveNew)
+    {
+        Dal = DALContainer.Resolve<I<#=entity.Name#>DAL>(resolveNew: resolveNew);
+    }
+}
+<#
+    PopIndent();
+#>
+}
+<#
+}
+
+//XCCloudService.DAL.IDAL
+
+destPath = solutionsPath + @"\\XCCloudService.DAL\\IDAL\\XCCloud\\";
+if(!Directory.Exists(destPath))
+{
+    Directory.CreateDirectory(destPath);
+}
+
+foreach (var entity in typeMapper.GetItemsToGenerate<EntityType>(itemCollection))
+{
+    fileManager.StartNewFile("I" + entity.Name + "DAL.cs", projectName:"XCCloudService.DAL",
+								folderName:"IDAL/XCCloud", fileProperties:fileProperties);
+#>
+namespace XCCloudService.DAL.IDAL.XCCloud
+{
+<#
+    PushIndent("    ");
+#>
+using XCCloudService.Model.XCCloud;
+public interface I<#=entity.Name#>DAL : IBaseDAL<<#=entity.Name#>>
+{
+		
+}
+<#
+    PopIndent();
+#>
+}
+<#
+}
+
+//XCCloudService.DAL
+
+destPath = solutionsPath + @"\\XCCloudService.DAL\\XCCloud\\";
+if(!Directory.Exists(destPath))
+{
+    Directory.CreateDirectory(destPath);
+}
+
+foreach (var entity in typeMapper.GetItemsToGenerate<EntityType>(itemCollection))
+{
+    fileManager.StartNewFile(entity.Name + "DAL.cs", projectName:"XCCloudService.DAL",
+								folderName:"XCCloud", fileProperties:fileProperties);
+#>
+namespace XCCloudService.DAL.XCCloud
+{
+<#
+    PushIndent("    ");
+#>
+using XCCloudService.DAL.Base;
+using XCCloudService.DAL.IDAL.XCCloud;
+using XCCloudService.Model.XCCloud;
+public partial class <#=entity.Name#>DAL : BaseDAL<<#=entity.Name#>>, I<#=entity.Name#>DAL
+{
+		
+}
+<#
+    PopIndent();
+#>
+}
+<#
+}
+
+//XCCloudService.Business
+
+destPath = solutionsPath + @"\\XCCloudService.Business\\XCCloud\\";
+if(!Directory.Exists(destPath))
+{
+    Directory.CreateDirectory(destPath);
+}
+
+foreach (var entity in typeMapper.GetItemsToGenerate<EntityType>(itemCollection))
+{
+    fileManager.StartNewFile(entity.Name + "Biz.cs", projectName:"XCCloudService.Business",
+								folderName:"XCCloud", fileProperties:fileProperties);
+#>
+namespace XCCloudService.Business.XCCloud
+{
+<#
+    PushIndent("    ");
+#>
+
+using XCCloudService.BLL.Container;
+using XCCloudService.BLL.IBLL.XCCloud;
+
+public partial class <#=entity.Name#>Biz
+{
+	public static I<#=entity.Name#>Service I
+    {
+        get
+        {
+            return BLLContainer.Resolve<I<#=entity.Name#>Service>();
+        }
+    }
+
+    public static I<#=entity.Name#>Service NI
+    {
+        get
+        {
+            return BLLContainer.Resolve<I<#=entity.Name#>Service>(resolveNew: true);
+        }
+    }
+}
+<#
+    PopIndent();
+#>
+}
+<#
+}
+
+fileManager.Process(true);
+
+////////////////////////////////////////////////////////自定义模板结束//////////////////////////////////////////////////////////
 
 #>
 <#+
 
-public void WriteHeader(CodeStringGenerator codeStringGenerator, EntityFrameworkTemplateFileManager fileManager)
+public void WriteHeader(CodeStringGenerator codeStringGenerator, TemplateFileManager fileManager)
 {
     fileManager.StartHeader();
 #>
