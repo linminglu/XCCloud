@@ -216,7 +216,6 @@ foreach (var enumType in typeMapper.GetEnumItemsToGenerate(itemCollection))
 
 fileManager.Process(true);
 
-////////////////////////////////////////////////////////自定义模板开始///////////////////////////////////////////////////
 string solutionsPath = Host.ResolveAssemblyReference("$(SolutionDir)");  
 string projectPath = Host.ResolveAssemblyReference("$(ProjectDir)");
 string destPath = string.Empty;
@@ -224,7 +223,9 @@ var fileProperties = new FileProperties()
 {
 	BuildAction = BuildAction.Compile
 };
-
+//------------------------------------------------------------------------------
+//XCCloudService.BLL.IBLL.XCCloud
+//------------------------------------------------------------------------------
 destPath = solutionsPath + @"\\XCCloudService.BLL\\IBLL\\XCCloud\\";
 if(!Directory.Exists(destPath))
 {
@@ -255,8 +256,9 @@ public interface I<#=entity.Name#>Service : IBaseService<<#=entity.Name#>>
 <#
 }
 
-//XCCloudService.BLL
-
+//------------------------------------------------------------------------------
+//XCCloudService.BLL.XCCloud
+//------------------------------------------------------------------------------
 destPath = solutionsPath + @"\\XCCloudService.BLL\\XCCloud\\";
 if(!Directory.Exists(destPath))
 {
@@ -277,6 +279,7 @@ namespace XCCloudService.BLL.XCCloud
 using XCCloudService.DAL.Container;
 using XCCloudService.DAL.IDAL.XCCloud;
 using XCCloudService.BLL.Base;
+using XCCloudService.BLL.Container;
 using XCCloudService.BLL.IBLL.XCCloud;
 using XCCloudService.Model.XCCloud;
 
@@ -297,6 +300,22 @@ public partial class <#=entity.Name#>Service : BaseService<<#=entity.Name#>>, I<
     {
         Dal = DALContainer.Resolve<I<#=entity.Name#>DAL>(resolveNew: resolveNew);
     }
+
+	public static I<#=entity.Name#>Service I
+    {
+        get
+        {
+            return BLLContainer.Resolve<I<#=entity.Name#>Service>();
+        }
+    }
+
+    public static I<#=entity.Name#>Service N
+    {
+        get
+        {
+            return BLLContainer.Resolve<I<#=entity.Name#>Service>(resolveNew: true);
+        }
+    }
 }
 <#
     PopIndent();
@@ -305,8 +324,9 @@ public partial class <#=entity.Name#>Service : BaseService<<#=entity.Name#>>, I<
 <#
 }
 
-//XCCloudService.DAL.IDAL
-
+//------------------------------------------------------------------------------
+//XCCloudService.DAL.IDAL.XCCloud
+//------------------------------------------------------------------------------
 destPath = solutionsPath + @"\\XCCloudService.DAL\\IDAL\\XCCloud\\";
 if(!Directory.Exists(destPath))
 {
@@ -335,8 +355,9 @@ public interface I<#=entity.Name#>DAL : IBaseDAL<<#=entity.Name#>>
 <#
 }
 
-//XCCloudService.DAL
-
+//------------------------------------------------------------------------------
+//XCCloudService.DAL.XCCloud
+//------------------------------------------------------------------------------
 destPath = solutionsPath + @"\\XCCloudService.DAL\\XCCloud\\";
 if(!Directory.Exists(destPath))
 {
@@ -353,6 +374,7 @@ namespace XCCloudService.DAL.XCCloud
 <#
     PushIndent("    ");
 #>
+
 using XCCloudService.DAL.Base;
 using XCCloudService.DAL.IDAL.XCCloud;
 using XCCloudService.Model.XCCloud;
@@ -367,56 +389,8 @@ public partial class <#=entity.Name#>DAL : BaseDAL<<#=entity.Name#>>, I<#=entity
 <#
 }
 
-//XCCloudService.Business
-
-destPath = solutionsPath + @"\\XCCloudService.Business\\XCCloud\\";
-if(!Directory.Exists(destPath))
-{
-    Directory.CreateDirectory(destPath);
-}
-
-foreach (var entity in typeMapper.GetItemsToGenerate<EntityType>(itemCollection))
-{
-    fileManager.StartNewFile(entity.Name + "Biz.cs", projectName:"XCCloudService.Business",
-								folderName:"XCCloud", fileProperties:fileProperties);
-#>
-namespace XCCloudService.Business.XCCloud
-{
-<#
-    PushIndent("    ");
-#>
-
-using XCCloudService.BLL.Container;
-using XCCloudService.BLL.IBLL.XCCloud;
-
-public partial class <#=entity.Name#>Biz
-{
-	public static I<#=entity.Name#>Service I
-    {
-        get
-        {
-            return BLLContainer.Resolve<I<#=entity.Name#>Service>();
-        }
-    }
-
-    public static I<#=entity.Name#>Service NI
-    {
-        get
-        {
-            return BLLContainer.Resolve<I<#=entity.Name#>Service>(resolveNew: true);
-        }
-    }
-}
-<#
-    PopIndent();
-#>
-}
-<#
-}
-
 fileManager.Process(true);
 
-////////////////////////////////////////////////////////自定义模板结束//////////////////////////////////////////////////////////
 
 #>
 <#+
