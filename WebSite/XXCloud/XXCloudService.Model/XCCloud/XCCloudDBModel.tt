@@ -1,7 +1,7 @@
-﻿<#@ template language="C#" debug="false" hostspecific="true"#>
+<#@ template language="C#" debug="false" hostspecific="true"#>
 <#@ import namespace="System.IO" #>
 <#@ include file="EF6.Utility.CS.ttinclude"#>
-<#@ include file="$(SolutionDir)packages\T4.TemplateFileManager.2.2.1\tools\ttinc\TemplateFilemanager.CS.ttinclude" #>
+<#@ include file="$(SolutionDir)\packages\T4.TemplateFileManager.2.2.1\tools\ttinc\TemplateFilemanager.CS.ttinclude" #>
 <#@ 
  output extension=".cs"#><#
 
