@@ -23,9 +23,27 @@ if (!typeMapper.VerifyCaseInsensitiveTypeUniqueness(typeMapper.GetAllGlobalItems
 
 WriteHeader(codeStringGenerator, fileManager);
 
+string solutionsPath = Host.ResolveAssemblyReference("$(SolutionDir)");  
+string projectPath = Host.ResolveAssemblyReference("$(ProjectDir)");
+string destPath = string.Empty;
+var fileProperties = new FileProperties()
+{
+	BuildAction = BuildAction.Compile
+};
+
+//------------------------------------------------------------------------------
+//XCCloudService.Model.XCCloud
+//------------------------------------------------------------------------------
+destPath = solutionsPath + @"\\XXCloudService.Model\\XCCloud\\";
+if(!Directory.Exists(destPath))
+{
+    Directory.CreateDirectory(destPath);
+}
+
 foreach (var entity in typeMapper.GetItemsToGenerate<EntityType>(itemCollection))
 {
-    fileManager.StartNewFile(entity.Name + ".cs");
+    fileManager.StartNewFile(entity.Name + ".cs", projectName:"XCCloudService.Model",
+								folderName:"XCCloud", fileProperties:fileProperties);
     BeginNamespace(code);
 #>
 <#=codeStringGenerator.UsingDirectives(inHeader: false)#>
@@ -214,15 +232,6 @@ foreach (var enumType in typeMapper.GetEnumItemsToGenerate(itemCollection))
     EndNamespace(code);
 }
 
-fileManager.Process(true);
-
-string solutionsPath = Host.ResolveAssemblyReference("$(SolutionDir)");  
-string projectPath = Host.ResolveAssemblyReference("$(ProjectDir)");
-string destPath = string.Empty;
-var fileProperties = new FileProperties()
-{
-	BuildAction = BuildAction.Compile
-};
 //------------------------------------------------------------------------------
 //XCCloudService.BLL.IBLL.XCCloud
 //------------------------------------------------------------------------------
@@ -235,7 +244,7 @@ if(!Directory.Exists(destPath))
 foreach (var entity in typeMapper.GetItemsToGenerate<EntityType>(itemCollection))
 {
     fileManager.StartNewFile("I" + entity.Name + "Service.cs", projectName:"XCCloudService.BLL",
-								folderName:"IBLL/XCCloud", fileProperties:fileProperties);
+								folderName:"IBLL", fileProperties:fileProperties);
 #>
 namespace XCCloudService.BLL.IBLL.XCCloud
 {
@@ -336,7 +345,7 @@ if(!Directory.Exists(destPath))
 foreach (var entity in typeMapper.GetItemsToGenerate<EntityType>(itemCollection))
 {
     fileManager.StartNewFile("I" + entity.Name + "DAL.cs", projectName:"XCCloudService.DAL",
-								folderName:"IDAL/XCCloud", fileProperties:fileProperties);
+								folderName:"IDAL", fileProperties:fileProperties);
 #>
 namespace XCCloudService.DAL.IDAL.XCCloud
 {
