@@ -226,7 +226,7 @@ var fileProperties = new FileProperties()
 //------------------------------------------------------------------------------
 //XCCloudService.BLL.IBLL.XCCloud
 //------------------------------------------------------------------------------
-destPath = solutionsPath + @"\\XCCloudService.BLL\\IBLL\\XCCloud\\";
+destPath = solutionsPath + @"\\XXCloudService.BLL\\IBLL\\XCCloud\\";
 if(!Directory.Exists(destPath))
 {
     Directory.CreateDirectory(destPath);
@@ -259,7 +259,7 @@ public interface I<#=entity.Name#>Service : IBaseService<<#=entity.Name#>>
 //------------------------------------------------------------------------------
 //XCCloudService.BLL.XCCloud
 //------------------------------------------------------------------------------
-destPath = solutionsPath + @"\\XCCloudService.BLL\\XCCloud\\";
+destPath = solutionsPath + @"\\XXCloudService.BLL\\XCCloud\\";
 if(!Directory.Exists(destPath))
 {
     Directory.CreateDirectory(destPath);
@@ -327,7 +327,7 @@ public partial class <#=entity.Name#>Service : BaseService<<#=entity.Name#>>, I<
 //------------------------------------------------------------------------------
 //XCCloudService.DAL.IDAL.XCCloud
 //------------------------------------------------------------------------------
-destPath = solutionsPath + @"\\XCCloudService.DAL\\IDAL\\XCCloud\\";
+destPath = solutionsPath + @"\\XXCloudService.DAL\\IDAL\\XCCloud\\";
 if(!Directory.Exists(destPath))
 {
     Directory.CreateDirectory(destPath);
@@ -358,7 +358,7 @@ public interface I<#=entity.Name#>DAL : IBaseDAL<<#=entity.Name#>>
 //------------------------------------------------------------------------------
 //XCCloudService.DAL.XCCloud
 //------------------------------------------------------------------------------
-destPath = solutionsPath + @"\\XCCloudService.DAL\\XCCloud\\";
+destPath = solutionsPath + @"\\XXCloudService.DAL\\XCCloud\\";
 if(!Directory.Exists(destPath))
 {
     Directory.CreateDirectory(destPath);
