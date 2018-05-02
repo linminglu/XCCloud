@@ -47,6 +47,7 @@ namespace XXCloudService.Api.XCCloud
                                     select new
                                     {
                                         ID = a.ID,
+                                        GameID = a.GameID,
                                         GameName = a.GameName,
                                         GameTypeStr = b != null ? b.DictKey : string.Empty,
                                         Area = c != null ? c.Area : (decimal?)null,
@@ -219,6 +220,7 @@ namespace XXCloudService.Api.XCCloud
 
                 string errMsg = string.Empty;
                 string id = dicParas.ContainsKey("ID") ? (dicParas["ID"] + "") : string.Empty;
+                string gameId = dicParas.ContainsKey("gameId") ? (dicParas["gameId"] + "") : string.Empty;
                 string gameName = dicParas.ContainsKey("GameName") ? (dicParas["GameName"] + "") : string.Empty;
                 string area = dicParas.ContainsKey("area") ? (dicParas["area"] + "") : string.Empty;
                 string changeTime = dicParas.ContainsKey("changeTime") ? (dicParas["changeTime"] + "") : string.Empty;
@@ -237,6 +239,11 @@ namespace XXCloudService.Api.XCCloud
                 if (!string.IsNullOrEmpty(id) && !Utils.isNumber(id))
                 {
                     errMsg = "游戏机参数ID格式不正确";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+                if (!string.IsNullOrEmpty(gameId) && gameId.Length > 4)
+                {
+                    errMsg = "游戏机编号长度不能超过4个字符";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
                 if (!string.IsNullOrEmpty(area) && !Utils.IsDecimal(area))
@@ -366,6 +373,10 @@ namespace XXCloudService.Api.XCCloud
                         
                         ts.Complete();
                     }
+                    catch (DbEntityValidationException e)
+                    {
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, e.EntityValidationErrors.ToErrors());
+                    }
                     catch (Exception ex)
                     {
                         errMsg = ex.Message;
@@ -374,11 +385,7 @@ namespace XXCloudService.Api.XCCloud
                 }                
                 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
-            }
-            catch (DbEntityValidationException e)
-            {
-                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, e.EntityValidationErrors.ToErrors());
-            }
+            }            
             catch (Exception e)
             {
                 return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);

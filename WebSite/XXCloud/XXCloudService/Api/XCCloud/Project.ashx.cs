@@ -128,15 +128,9 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 string errMsg = string.Empty;
-                var id = dicParas.ContainsKey("id") ? ObjectExt.Toint(dicParas["id"], 0) : 0;
-                if (id == 0)
-                {
-                    errMsg = "门票ID不能为空";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
+                int id = dicParas.Get("id").Toint(0);
 
                 var linq = Data_Project_BindGameService.I.GetModels(p => p.ProjectID == id).Select(o => new { GameID = o.GameID });
-
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, linq);
             }
             catch (Exception e)

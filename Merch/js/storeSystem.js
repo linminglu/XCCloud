@@ -1295,7 +1295,6 @@ xcActionSystem.prototype= {
             }
         });
     },
-
     //......................................游戏机档案维护
     initGameFile: function (token) {
        let _obj={'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
@@ -1315,7 +1314,7 @@ xcActionSystem.prototype= {
                          elem:'#gameFileTable',
                          data:data.Result_Data,
                          cols:[[
-                             {field:'GameID', title:'游戏机编号', align: 'center', sort: true}
+                             {field:'ID', title:'游戏机编号', align: 'center', sort: true}
                              ,{field:'GameName',title: '游戏机名', align: 'center'} //width 支持：数字、百分比和不填写。
                              ,{field:'GameTypeStr', title: '游戏机类型', align: 'center'}
                              ,{field:'PushReduceFromCard', title: '单局币数', align: 'center'}

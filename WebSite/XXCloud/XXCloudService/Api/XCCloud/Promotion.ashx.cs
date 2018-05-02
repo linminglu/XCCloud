@@ -372,7 +372,7 @@ namespace XXCloudService.Api.XCCloud
                     " (case a.AllowPrint when 1 then '允许' when 0 then '禁止' else '' end) as AllowPrint, (case a.ForeAuthorize when 1 then '允许' when 0 then '禁止' else '' end) as ForeAuthorize, " +
                     " (case when a.StartTime is null or a.StartTime='' then '' else convert(varchar,a.StartTime,23) end) as StartTime, (case when a.EndTime is null or a.EndTime='' then '' else convert(varchar,a.EndTime,23) end) as EndTime from Data_FoodInfo a " +
                     " left join (select b.* from Dict_System a inner join Dict_System b on a.ID=b.PID where a.DictKey='套餐类别' and a.PID=0) b on convert(varchar, a.FoodType)=b.DictValue " +
-                    " where a.MerchID=@MerchId ";
+                    " where a.MerchID=@MerchId and a.FoodState=1 ";
                 sql = sql + sqlWhere;
 
                 IData_FoodInfoService data_FoodInfoService = Data_FoodInfoService.I;
@@ -399,7 +399,7 @@ namespace XXCloudService.Api.XCCloud
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
 
-                var linq = from a in Data_FoodInfoService.I.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.FoodState == 1 && p.FoodType == (int)FoodType.Member)                          
+                var linq = from a in Data_FoodInfoService.I.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.FoodState == (int)FoodState.Valid && p.FoodType == (int)FoodType.Member)                          
                            select new
                            {
                                FoodID = a.FoodID,
@@ -648,6 +648,7 @@ namespace XXCloudService.Api.XCCloud
                         if (!data_FoodInfoService.Any(a => a.FoodID == iFoodId))
                         {
                             //新增
+                            data_FoodInfo.FoodState = (int)FoodState.Valid;
                             if (!data_FoodInfoService.Add(data_FoodInfo))
                             {
                                 errMsg = "添加套餐信息失败";
@@ -690,6 +691,40 @@ namespace XXCloudService.Api.XCCloud
                         errMsg = ex.Message;
                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                     }                    
+                }
+
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object DelFoodInfo(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                string errMsg = string.Empty;
+                int foodId = dicParas.Get("foodId").Toint(0);
+                
+                #region 验证参数
+
+                if (foodId == 0)
+                {
+                    errMsg = "套餐ID不能为空";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+               
+                #endregion
+
+                var data_FoodInfo = Data_FoodInfoService.I.GetModels(p => p.FoodID == foodId).FirstOrDefault();
+                data_FoodInfo.FoodState = (int)FoodState.Invalid;
+                if (!Data_FoodInfoService.I.Update(data_FoodInfo))
+                {
+                    errMsg = "删除套餐信息失败";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);

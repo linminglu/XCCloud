@@ -138,22 +138,23 @@ exec GetMemberLevel '100025420106001'
 
 -------------------------------------------------------------------------------------------------------
 declare @AuthorFlag int
+declare @FreePrice decimal(18,2) = 0.1
 declare @ErrMsg varchar(200)
+declare @Rs int
 declare @CouponListType [CouponListType]
-insert @CouponListType(CouponCode) values('5ca8ac12733a4b7791168cc10bd89624')
-insert @CouponListType(CouponCode) values('4fb06d7d70b1409fa9bc56224145b65d')
+--≤Â»Î”≈ª›»Ø
+--insert @CouponListType(CouponCode) values('5ca8ac12733a4b7791168cc10bd89624')
+--insert @CouponListType(CouponCode) values('4fb06d7d70b1409fa9bc56224145b65d')
+--≤Â»Î’€ø€»Ø
+insert @CouponListType(CouponCode) values('980be011b25449aab5753ab0fd57c1f5')
+insert @CouponListType(CouponCode) values('cd6bb819e5f9453c87013d64689945a7')
+insert @CouponListType(CouponCode) values('76d1f7c43571429b89ad5f516ca762fa')
+
 declare @Str varchar(500)
-set @Str = dbo.GetTableFieldMergeString(@CouponListType)
-print '@Str' + @Str
-exec CheckCoupon @CouponListType,'100025420106001',100,@AuthorFlag output,@ErrMsg output
-
-
-declare @CouponListType [CouponListType]
-insert @CouponListType(CouponCode) values('5ca8ac12733a4b7791168cc10bd89624')
-insert @CouponListType(CouponCode) values('4fb06d7d70b1409fa9bc56224145b65d')
-declare @Str varchar(500)
-set @Str = dbo.GetTableFieldMergeString(@CouponListType)
-
+exec @Rs = CheckCoupon @CouponListType,'100025420106001',100,@AuthorFlag output,@FreePrice output,@ErrMsg output
+print '@Rs:' + cast(@Rs as varchar)
+print '@FreePrice:' + cast(@FreePrice as varchar)
+print '@ErrMsg:' + @ErrMsg
 
 
 declare @CouponId int
@@ -167,3 +168,8 @@ exec @Rs = CheckCouponInvalid '100025420106001',@CouponListType,@CouponId output
 print '@Rs' + cast(@Rs as varchar)
 print '@CouponCount:' + cast(@CouponCount as varchar)
 print '@ErrMsg:' + @ErrMsg
+
+
+declare @FreePrice decimal(18,2) 
+exec GetDiscountPrice 100,0.92,3,@FreePrice output
+print @FreePrice

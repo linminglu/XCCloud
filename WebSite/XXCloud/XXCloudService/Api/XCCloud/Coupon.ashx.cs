@@ -175,6 +175,7 @@ namespace XXCloudService.Api.XCCloud
                 string jackpotId = dicParas.ContainsKey("jackpotId") ? (dicParas["jackpotId"] + "") : string.Empty;
                 string chargeType = dicParas.ContainsKey("chargeType") ? (dicParas["chargeType"] + "") : string.Empty;
                 string chargeCount = dicParas.ContainsKey("chargeCount") ? (dicParas["chargeCount"] + "") : string.Empty;
+                string balanceIndex = dicParas.ContainsKey("balanceIndex") ? (dicParas["balanceIndex"] + "") : string.Empty;
                 string goodId = dicParas.ContainsKey("goodId") ? (dicParas["goodId"] + "") : string.Empty;
                 string projectId = dicParas.ContainsKey("projectId") ? (dicParas["projectId"] + "") : string.Empty;
                 string context = dicParas.ContainsKey("context") ? (dicParas["context"] + "") : string.Empty;
@@ -297,7 +298,7 @@ namespace XXCloudService.Api.XCCloud
                     }
                 }
 
-                int? iChargeType = (int?)null, iChargeCount = (int?)null, iGoodId = (int?)null, iProjectId = (int?)null;
+                int? iChargeType = (int?)null, iChargeCount = (int?)null, iGoodId = (int?)null, iProjectId = (int?)null, iBalanceIndex = (int?)null;
                 if (iCouponType == (int)CouponType.Charge)
                 {
                     if (string.IsNullOrEmpty(chargeType))
@@ -325,6 +326,16 @@ namespace XXCloudService.Api.XCCloud
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
                         iProjectId = Convert.ToInt32(projectId);
+                    }
+
+                    if (iChargeType == (int)ChargeType.Coin)
+                    {
+                        if (string.IsNullOrEmpty(balanceIndex))
+                        {
+                            errMsg = "兑换内容不能为空";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+                        iBalanceIndex = Convert.ToInt32(balanceIndex);
                     }
 
                     if (string.IsNullOrEmpty(chargeCount))
@@ -504,6 +515,7 @@ namespace XXCloudService.Api.XCCloud
                         data_CouponInfo.ChargeType = iChargeType;
                         data_CouponInfo.ChargeCount = iChargeCount;
                         data_CouponInfo.GoodID = iGoodId;
+                        data_CouponInfo.BalanceIndex = iBalanceIndex;
                         data_CouponInfo.ProjectID = iProjectId;
                         data_CouponInfo.OpUserID = userId;
                         data_CouponInfo.Context = context;

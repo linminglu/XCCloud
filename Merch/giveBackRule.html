@@ -135,10 +135,13 @@
                 AllowContainToday=0;
             }
         });
+        //新增返还规则
         $('.add').on('click',function () {
             _id='';
            memberLevel=''; memberLevelStr='';
-           Backtype=1; AllowBackPrincipal=1; AllowContainToday=1;
+           Backtype=1;
+           AllowBackPrincipal=1;
+           AllowContainToday=1;
            xc.getMemberTypeDic(token,layer,form,'memberLevel');
             layui.layer.open({
                 title:'新增返还规则',
@@ -147,6 +150,7 @@
                 content:$('#openModel')
             })
         });
+        //保存返还规则
        $('#save').on('click',()=>{
            let obj={'id':_id,
                'memberLvlId':memberLevel,
@@ -173,7 +177,7 @@
                            location.href='giveBackRule.html'
                        })
                    }else {
-                       layer.msg('操作失败');
+                       layer.msg(data.result_msg||return_msg);
                    }
                }
            })
@@ -183,8 +187,8 @@
              let layevent=obj.event;
              _id=data.ID;
              if(layevent==='edit'){
-                     memberLevel=data.MemberLvlId;
-                     xc.getMemberTypeDic(token,layer,form,'memberLevel',data.MemberLvlId);
+                     memberLevel=data.MemberLevelID;
+                     xc.getMemberTypeDic(token,layer,form,'memberLevel',data.MemberLevelID);
                      $('#backMin').val(data.BackMin);
                      $('#backMax').val(data.BackMax);
                      $('#backScale').val(data.BackScale);

@@ -468,6 +468,7 @@
           <Property Name="JackpotID" Type="int" />
           <Property Name="ChargeType" Type="int" />
           <Property Name="ChargeCount" Type="int" />
+          <Property Name="BalanceIndex" Type="int" />
           <Property Name="GoodID" Type="int" />
           <Property Name="ProjectID" Type="int" />
           <Property Name="OpUserID" Type="int" />
@@ -654,7 +655,7 @@
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="GameID" Type="varchar" MaxLength="4" Nullable="false" />
+          <Property Name="GameID" Type="varchar" MaxLength="4" />
           <Property Name="StoreID" Type="varchar" MaxLength="15" />
           <Property Name="GameName" Type="varchar" MaxLength="50" />
           <Property Name="GameType" Type="varchar" MaxLength="50" />
@@ -2178,7 +2179,6 @@
           <EntitySet Name="Data_Game_StockInfo" EntityType="XCCloudDBModel.Data_Game_StockInfo" />
           <EntitySet Name="Data_GameFreeRule" EntityType="XCCloudDBModel.Data_GameFreeRule" />
           <EntitySet Name="Data_GameFreeRule_List" EntityType="XCCloudDBModel.Data_GameFreeRule_List" />
-          <EntitySet Name="Data_GameInfo" EntityType="XCCloudDBModel.Data_GameInfo" />
           <EntitySet Name="Data_GameInfo_Photo" EntityType="XCCloudDBModel.Data_GameInfo_Photo" />
           <EntitySet Name="Data_GoodInventory" EntityType="XCCloudDBModel.Data_GoodInventory" />
           <EntitySet Name="Data_Jackpot_Level" EntityType="XCCloudDBModel.Data_Jackpot_Level" />
@@ -2250,7 +2250,6 @@
           <EntitySet Name="Data_GoodStorage" EntityType="XCCloudDBModel.Data_GoodStorage" />
           <EntitySet Name="Data_GoodStorage_Detail" EntityType="XCCloudDBModel.Data_GoodStorage_Detail" />
           <EntitySet Name="Flw_GroupVerity" EntityType="XCCloudDBModel.Flw_GroupVerity" />
-          <EntitySet Name="Data_CouponInfo" EntityType="XCCloudDBModel.Data_CouponInfo" />
           <EntitySet Name="Data_MerchAlipay_Shop" EntityType="XCCloudDBModel.Data_MerchAlipay_Shop" />
           <EntitySet Name="Base_MerchAlipay" EntityType="XCCloudDBModel.Base_MerchAlipay" />
           <EntitySet Name="Data_MemberLevel_Food" EntityType="XCCloudDBModel.Data_MemberLevel_Food" />
@@ -2266,6 +2265,8 @@
           <EntitySet Name="Data_GivebackRule" EntityType="XCCloudDBModel.Data_GivebackRule" />
           <EntitySet Name="Base_StoreHKConfig" EntityType="XCCloudDBModel.Base_StoreHKConfig" />
           <EntitySet Name="Data_DigitCoinFood" EntityType="XCCloudDBModel.Data_DigitCoinFood" />
+          <EntitySet Name="Data_GameInfo" EntityType="XCCloudDBModel.Data_GameInfo" />
+          <EntitySet Name="Data_CouponInfo" EntityType="XCCloudDBModel.Data_CouponInfo" />
         </EntityContainer>
         <EntityType Name="Base_ChainRule">
           <Key>
@@ -2676,64 +2677,6 @@
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="RuleID" Type="Int32" />
           <Property Name="GameIndexID" Type="Int32" />
-        </EntityType>
-        <EntityType Name="Data_GameInfo">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="GameID" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="false" />
-          <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="GameName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="GameType" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="State" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="ReturnCheck" Type="Int32" />
-          <Property Name="OutsideAlertCheck" Type="Int32" />
-          <Property Name="ICTicketOperation" Type="Int32" />
-          <Property Name="NotGiveBack" Type="Int32" />
-          <Property Name="LotteryMode" Type="Int32" />
-          <Property Name="OnlyExitLottery" Type="Int32" />
-          <Property Name="chkCheckGift" Type="Int32" />
-          <Property Name="AllowElecPush" Type="Int32" />
-          <Property Name="AllowDecuplePush" Type="Int32" />
-          <Property Name="GuardConvertCard" Type="Int32" />
-          <Property Name="ReadCat" Type="Int32" />
-          <Property Name="AllowRealPush" Type="Int32" />
-          <Property Name="BanOccupy" Type="Int32" />
-          <Property Name="StrongGuardConvertCard" Type="Int32" />
-          <Property Name="PushControl" Type="Int32" />
-          <Property Name="AllowElecOut" Type="Int32" />
-          <Property Name="NowExit" Type="Int32" />
-          <Property Name="BOLock" Type="Int32" />
-          <Property Name="BOPulse" Type="Int32" />
-          <Property Name="AllowRealOut" Type="Int32" />
-          <Property Name="BOKeep" Type="Int32" />
-          <Property Name="PushReduceFromCard" Type="Int32" />
-          <Property Name="PushAddToGame" Type="Int32" />
-          <Property Name="PushSpeed" Type="Int32" />
-          <Property Name="PushPulse" Type="Int32" />
-          <Property Name="PushLevel" Type="Int32" />
-          <Property Name="PushStartInterval" Type="Int32" />
-          <Property Name="UseSecondPush" Type="Int32" />
-          <Property Name="SecondReduceFromCard" Type="Int32" />
-          <Property Name="SecondAddToGame" Type="Int32" />
-          <Property Name="SecondSpeed" Type="Int32" />
-          <Property Name="SecondPulse" Type="Int32" />
-          <Property Name="SecondLevel" Type="Int32" />
-          <Property Name="SecondStartInterval" Type="Int32" />
-          <Property Name="OutSpeed" Type="Int32" />
-          <Property Name="OutPulse" Type="Int32" />
-          <Property Name="CountLevel" Type="Int32" />
-          <Property Name="OutLevel" Type="Int32" />
-          <Property Name="OutReduceFromGame" Type="Int32" />
-          <Property Name="OutAddToCard" Type="Int32" />
-          <Property Name="OnceOutLimit" Type="Int32" />
-          <Property Name="OncePureOutLimit" Type="Int32" />
-          <Property Name="SSRTimeOut" Type="Int32" />
-          <Property Name="ExceptOutTest" Type="Int32" />
-          <Property Name="ExceptOutSpeed" Type="Int32" />
-          <Property Name="Frequency" Type="Int32" />
-          <Property Name="DepotID" Type="Int32" />
         </EntityType>
         <EntityType Name="Data_GameInfo_Photo">
           <Key>
@@ -3819,35 +3762,6 @@
           <Property Name="ScheduleID" Type="Int32" />
           <Property Name="备注" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
         </EntityType>
-        <EntityType Name="Data_CouponInfo">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="CouponName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="CouponType" Type="Int32" />
-          <Property Name="EntryCouponFlag" Type="Int32" />
-          <Property Name="AuthorFlag" Type="Int32" />
-          <Property Name="OverUseCount" Type="Int32" />
-          <Property Name="PublishCount" Type="Int32" />
-          <Property Name="CouponValue" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="CouponDiscount" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="CouponThreshold" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="StartTime" Type="DateTime" Precision="3" />
-          <Property Name="EndTime" Type="DateTime" Precision="3" />
-          <Property Name="SendType" Type="Int32" />
-          <Property Name="OverMoney" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="FreeCouponCount" Type="Int32" />
-          <Property Name="JackpotCount" Type="Int32" />
-          <Property Name="JackpotID" Type="Int32" />
-          <Property Name="ChargeType" Type="Int32" />
-          <Property Name="ChargeCount" Type="Int32" />
-          <Property Name="GoodID" Type="Int32" />
-          <Property Name="ProjectID" Type="Int32" />
-          <Property Name="OpUserID" Type="Int32" />
-          <Property Name="Context" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
-        </EntityType>
         <EntityType Name="Data_MerchAlipay_Shop">
           <Key>
             <PropertyRef Name="ID" />
@@ -4078,6 +3992,94 @@
           <Property Name="Coins" Type="Int32" />
           <Property Name="AuthorFlag" Type="Int32" />
           <Property Name="Note" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Data_GameInfo">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="GameID" Type="String" MaxLength="4" FixedLength="false" Unicode="false" />
+          <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="GameName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="GameType" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="State" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="ReturnCheck" Type="Int32" />
+          <Property Name="OutsideAlertCheck" Type="Int32" />
+          <Property Name="ICTicketOperation" Type="Int32" />
+          <Property Name="NotGiveBack" Type="Int32" />
+          <Property Name="LotteryMode" Type="Int32" />
+          <Property Name="OnlyExitLottery" Type="Int32" />
+          <Property Name="chkCheckGift" Type="Int32" />
+          <Property Name="AllowElecPush" Type="Int32" />
+          <Property Name="AllowDecuplePush" Type="Int32" />
+          <Property Name="GuardConvertCard" Type="Int32" />
+          <Property Name="ReadCat" Type="Int32" />
+          <Property Name="AllowRealPush" Type="Int32" />
+          <Property Name="BanOccupy" Type="Int32" />
+          <Property Name="StrongGuardConvertCard" Type="Int32" />
+          <Property Name="PushControl" Type="Int32" />
+          <Property Name="AllowElecOut" Type="Int32" />
+          <Property Name="NowExit" Type="Int32" />
+          <Property Name="BOLock" Type="Int32" />
+          <Property Name="BOPulse" Type="Int32" />
+          <Property Name="AllowRealOut" Type="Int32" />
+          <Property Name="BOKeep" Type="Int32" />
+          <Property Name="PushReduceFromCard" Type="Int32" />
+          <Property Name="PushAddToGame" Type="Int32" />
+          <Property Name="PushSpeed" Type="Int32" />
+          <Property Name="PushPulse" Type="Int32" />
+          <Property Name="PushLevel" Type="Int32" />
+          <Property Name="PushStartInterval" Type="Int32" />
+          <Property Name="UseSecondPush" Type="Int32" />
+          <Property Name="SecondReduceFromCard" Type="Int32" />
+          <Property Name="SecondAddToGame" Type="Int32" />
+          <Property Name="SecondSpeed" Type="Int32" />
+          <Property Name="SecondPulse" Type="Int32" />
+          <Property Name="SecondLevel" Type="Int32" />
+          <Property Name="SecondStartInterval" Type="Int32" />
+          <Property Name="OutSpeed" Type="Int32" />
+          <Property Name="OutPulse" Type="Int32" />
+          <Property Name="CountLevel" Type="Int32" />
+          <Property Name="OutLevel" Type="Int32" />
+          <Property Name="OutReduceFromGame" Type="Int32" />
+          <Property Name="OutAddToCard" Type="Int32" />
+          <Property Name="OnceOutLimit" Type="Int32" />
+          <Property Name="OncePureOutLimit" Type="Int32" />
+          <Property Name="SSRTimeOut" Type="Int32" />
+          <Property Name="ExceptOutTest" Type="Int32" />
+          <Property Name="ExceptOutSpeed" Type="Int32" />
+          <Property Name="Frequency" Type="Int32" />
+          <Property Name="DepotID" Type="Int32" />
+        </EntityType>
+        <EntityType Name="Data_CouponInfo">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="CouponName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CouponType" Type="Int32" />
+          <Property Name="EntryCouponFlag" Type="Int32" />
+          <Property Name="AuthorFlag" Type="Int32" />
+          <Property Name="OverUseCount" Type="Int32" />
+          <Property Name="PublishCount" Type="Int32" />
+          <Property Name="CouponValue" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="CouponDiscount" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="CouponThreshold" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="StartTime" Type="DateTime" Precision="3" />
+          <Property Name="EndTime" Type="DateTime" Precision="3" />
+          <Property Name="SendType" Type="Int32" />
+          <Property Name="OverMoney" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="FreeCouponCount" Type="Int32" />
+          <Property Name="JackpotCount" Type="Int32" />
+          <Property Name="JackpotID" Type="Int32" />
+          <Property Name="ChargeType" Type="Int32" />
+          <Property Name="ChargeCount" Type="Int32" />
+          <Property Name="BalanceIndex" Type="Int32" />
+          <Property Name="GoodID" Type="Int32" />
+          <Property Name="ProjectID" Type="Int32" />
+          <Property Name="OpUserID" Type="Int32" />
+          <Property Name="Context" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
         </EntityType>
         </Schema>
     </edmx:ConceptualModels>
@@ -4524,65 +4526,6 @@
               <MappingFragment StoreEntitySet="Data_GameFreeRule_List">
                 <ScalarProperty Name="GameIndexID" ColumnName="GameIndexID" />
                 <ScalarProperty Name="RuleID" ColumnName="RuleID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Data_GameInfo">
-            <EntityTypeMapping TypeName="XCCloudDBModel.Data_GameInfo">
-              <MappingFragment StoreEntitySet="Data_GameInfo">
-                <ScalarProperty Name="DepotID" ColumnName="DepotID" />
-                <ScalarProperty Name="Frequency" ColumnName="Frequency" />
-                <ScalarProperty Name="ExceptOutSpeed" ColumnName="ExceptOutSpeed" />
-                <ScalarProperty Name="ExceptOutTest" ColumnName="ExceptOutTest" />
-                <ScalarProperty Name="SSRTimeOut" ColumnName="SSRTimeOut" />
-                <ScalarProperty Name="OncePureOutLimit" ColumnName="OncePureOutLimit" />
-                <ScalarProperty Name="OnceOutLimit" ColumnName="OnceOutLimit" />
-                <ScalarProperty Name="OutAddToCard" ColumnName="OutAddToCard" />
-                <ScalarProperty Name="OutReduceFromGame" ColumnName="OutReduceFromGame" />
-                <ScalarProperty Name="OutLevel" ColumnName="OutLevel" />
-                <ScalarProperty Name="CountLevel" ColumnName="CountLevel" />
-                <ScalarProperty Name="OutPulse" ColumnName="OutPulse" />
-                <ScalarProperty Name="OutSpeed" ColumnName="OutSpeed" />
-                <ScalarProperty Name="SecondStartInterval" ColumnName="SecondStartInterval" />
-                <ScalarProperty Name="SecondLevel" ColumnName="SecondLevel" />
-                <ScalarProperty Name="SecondPulse" ColumnName="SecondPulse" />
-                <ScalarProperty Name="SecondSpeed" ColumnName="SecondSpeed" />
-                <ScalarProperty Name="SecondAddToGame" ColumnName="SecondAddToGame" />
-                <ScalarProperty Name="SecondReduceFromCard" ColumnName="SecondReduceFromCard" />
-                <ScalarProperty Name="UseSecondPush" ColumnName="UseSecondPush" />
-                <ScalarProperty Name="PushStartInterval" ColumnName="PushStartInterval" />
-                <ScalarProperty Name="PushLevel" ColumnName="PushLevel" />
-                <ScalarProperty Name="PushPulse" ColumnName="PushPulse" />
-                <ScalarProperty Name="PushSpeed" ColumnName="PushSpeed" />
-                <ScalarProperty Name="PushAddToGame" ColumnName="PushAddToGame" />
-                <ScalarProperty Name="PushReduceFromCard" ColumnName="PushReduceFromCard" />
-                <ScalarProperty Name="BOKeep" ColumnName="BOKeep" />
-                <ScalarProperty Name="AllowRealOut" ColumnName="AllowRealOut" />
-                <ScalarProperty Name="BOPulse" ColumnName="BOPulse" />
-                <ScalarProperty Name="BOLock" ColumnName="BOLock" />
-                <ScalarProperty Name="NowExit" ColumnName="NowExit" />
-                <ScalarProperty Name="AllowElecOut" ColumnName="AllowElecOut" />
-                <ScalarProperty Name="PushControl" ColumnName="PushControl" />
-                <ScalarProperty Name="StrongGuardConvertCard" ColumnName="StrongGuardConvertCard" />
-                <ScalarProperty Name="BanOccupy" ColumnName="BanOccupy" />
-                <ScalarProperty Name="AllowRealPush" ColumnName="AllowRealPush" />
-                <ScalarProperty Name="ReadCat" ColumnName="ReadCat" />
-                <ScalarProperty Name="GuardConvertCard" ColumnName="GuardConvertCard" />
-                <ScalarProperty Name="AllowDecuplePush" ColumnName="AllowDecuplePush" />
-                <ScalarProperty Name="AllowElecPush" ColumnName="AllowElecPush" />
-                <ScalarProperty Name="chkCheckGift" ColumnName="chkCheckGift" />
-                <ScalarProperty Name="OnlyExitLottery" ColumnName="OnlyExitLottery" />
-                <ScalarProperty Name="LotteryMode" ColumnName="LotteryMode" />
-                <ScalarProperty Name="NotGiveBack" ColumnName="NotGiveBack" />
-                <ScalarProperty Name="ICTicketOperation" ColumnName="ICTicketOperation" />
-                <ScalarProperty Name="OutsideAlertCheck" ColumnName="OutsideAlertCheck" />
-                <ScalarProperty Name="ReturnCheck" ColumnName="ReturnCheck" />
-                <ScalarProperty Name="State" ColumnName="State" />
-                <ScalarProperty Name="GameType" ColumnName="GameType" />
-                <ScalarProperty Name="GameName" ColumnName="GameName" />
-                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
-                <ScalarProperty Name="GameID" ColumnName="GameID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -5742,36 +5685,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Data_CouponInfo">
-            <EntityTypeMapping TypeName="XCCloudDBModel.Data_CouponInfo">
-              <MappingFragment StoreEntitySet="Data_CouponInfo">
-                <ScalarProperty Name="Context" ColumnName="Context" />
-                <ScalarProperty Name="OpUserID" ColumnName="OpUserID" />
-                <ScalarProperty Name="ProjectID" ColumnName="ProjectID" />
-                <ScalarProperty Name="GoodID" ColumnName="GoodID" />
-                <ScalarProperty Name="ChargeCount" ColumnName="ChargeCount" />
-                <ScalarProperty Name="ChargeType" ColumnName="ChargeType" />
-                <ScalarProperty Name="JackpotID" ColumnName="JackpotID" />
-                <ScalarProperty Name="JackpotCount" ColumnName="JackpotCount" />
-                <ScalarProperty Name="FreeCouponCount" ColumnName="FreeCouponCount" />
-                <ScalarProperty Name="OverMoney" ColumnName="OverMoney" />
-                <ScalarProperty Name="SendType" ColumnName="SendType" />
-                <ScalarProperty Name="EndTime" ColumnName="EndTime" />
-                <ScalarProperty Name="StartTime" ColumnName="StartTime" />
-                <ScalarProperty Name="CouponThreshold" ColumnName="CouponThreshold" />
-                <ScalarProperty Name="CouponDiscount" ColumnName="CouponDiscount" />
-                <ScalarProperty Name="CouponValue" ColumnName="CouponValue" />
-                <ScalarProperty Name="PublishCount" ColumnName="PublishCount" />
-                <ScalarProperty Name="OverUseCount" ColumnName="OverUseCount" />
-                <ScalarProperty Name="AuthorFlag" ColumnName="AuthorFlag" />
-                <ScalarProperty Name="EntryCouponFlag" ColumnName="EntryCouponFlag" />
-                <ScalarProperty Name="CouponType" ColumnName="CouponType" />
-                <ScalarProperty Name="CouponName" ColumnName="CouponName" />
-                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Data_MerchAlipay_Shop">
             <EntityTypeMapping TypeName="XCCloudDBModel.Data_MerchAlipay_Shop">
               <MappingFragment StoreEntitySet="Data_MerchAlipay_Shop">
@@ -6013,6 +5926,96 @@
                 <ScalarProperty Name="Coins" ColumnName="Coins" />
                 <ScalarProperty Name="BalanceIndex" ColumnName="BalanceIndex" />
                 <ScalarProperty Name="FoodName" ColumnName="FoodName" />
+                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Data_GameInfo">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Data_GameInfo">
+              <MappingFragment StoreEntitySet="Data_GameInfo">
+                <ScalarProperty Name="DepotID" ColumnName="DepotID" />
+                <ScalarProperty Name="Frequency" ColumnName="Frequency" />
+                <ScalarProperty Name="ExceptOutSpeed" ColumnName="ExceptOutSpeed" />
+                <ScalarProperty Name="ExceptOutTest" ColumnName="ExceptOutTest" />
+                <ScalarProperty Name="SSRTimeOut" ColumnName="SSRTimeOut" />
+                <ScalarProperty Name="OncePureOutLimit" ColumnName="OncePureOutLimit" />
+                <ScalarProperty Name="OnceOutLimit" ColumnName="OnceOutLimit" />
+                <ScalarProperty Name="OutAddToCard" ColumnName="OutAddToCard" />
+                <ScalarProperty Name="OutReduceFromGame" ColumnName="OutReduceFromGame" />
+                <ScalarProperty Name="OutLevel" ColumnName="OutLevel" />
+                <ScalarProperty Name="CountLevel" ColumnName="CountLevel" />
+                <ScalarProperty Name="OutPulse" ColumnName="OutPulse" />
+                <ScalarProperty Name="OutSpeed" ColumnName="OutSpeed" />
+                <ScalarProperty Name="SecondStartInterval" ColumnName="SecondStartInterval" />
+                <ScalarProperty Name="SecondLevel" ColumnName="SecondLevel" />
+                <ScalarProperty Name="SecondPulse" ColumnName="SecondPulse" />
+                <ScalarProperty Name="SecondSpeed" ColumnName="SecondSpeed" />
+                <ScalarProperty Name="SecondAddToGame" ColumnName="SecondAddToGame" />
+                <ScalarProperty Name="SecondReduceFromCard" ColumnName="SecondReduceFromCard" />
+                <ScalarProperty Name="UseSecondPush" ColumnName="UseSecondPush" />
+                <ScalarProperty Name="PushStartInterval" ColumnName="PushStartInterval" />
+                <ScalarProperty Name="PushLevel" ColumnName="PushLevel" />
+                <ScalarProperty Name="PushPulse" ColumnName="PushPulse" />
+                <ScalarProperty Name="PushSpeed" ColumnName="PushSpeed" />
+                <ScalarProperty Name="PushAddToGame" ColumnName="PushAddToGame" />
+                <ScalarProperty Name="PushReduceFromCard" ColumnName="PushReduceFromCard" />
+                <ScalarProperty Name="BOKeep" ColumnName="BOKeep" />
+                <ScalarProperty Name="AllowRealOut" ColumnName="AllowRealOut" />
+                <ScalarProperty Name="BOPulse" ColumnName="BOPulse" />
+                <ScalarProperty Name="BOLock" ColumnName="BOLock" />
+                <ScalarProperty Name="NowExit" ColumnName="NowExit" />
+                <ScalarProperty Name="AllowElecOut" ColumnName="AllowElecOut" />
+                <ScalarProperty Name="PushControl" ColumnName="PushControl" />
+                <ScalarProperty Name="StrongGuardConvertCard" ColumnName="StrongGuardConvertCard" />
+                <ScalarProperty Name="BanOccupy" ColumnName="BanOccupy" />
+                <ScalarProperty Name="AllowRealPush" ColumnName="AllowRealPush" />
+                <ScalarProperty Name="ReadCat" ColumnName="ReadCat" />
+                <ScalarProperty Name="GuardConvertCard" ColumnName="GuardConvertCard" />
+                <ScalarProperty Name="AllowDecuplePush" ColumnName="AllowDecuplePush" />
+                <ScalarProperty Name="AllowElecPush" ColumnName="AllowElecPush" />
+                <ScalarProperty Name="chkCheckGift" ColumnName="chkCheckGift" />
+                <ScalarProperty Name="OnlyExitLottery" ColumnName="OnlyExitLottery" />
+                <ScalarProperty Name="LotteryMode" ColumnName="LotteryMode" />
+                <ScalarProperty Name="NotGiveBack" ColumnName="NotGiveBack" />
+                <ScalarProperty Name="ICTicketOperation" ColumnName="ICTicketOperation" />
+                <ScalarProperty Name="OutsideAlertCheck" ColumnName="OutsideAlertCheck" />
+                <ScalarProperty Name="ReturnCheck" ColumnName="ReturnCheck" />
+                <ScalarProperty Name="State" ColumnName="State" />
+                <ScalarProperty Name="GameType" ColumnName="GameType" />
+                <ScalarProperty Name="GameName" ColumnName="GameName" />
+                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
+                <ScalarProperty Name="GameID" ColumnName="GameID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Data_CouponInfo">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Data_CouponInfo">
+              <MappingFragment StoreEntitySet="Data_CouponInfo">
+                <ScalarProperty Name="Context" ColumnName="Context" />
+                <ScalarProperty Name="OpUserID" ColumnName="OpUserID" />
+                <ScalarProperty Name="ProjectID" ColumnName="ProjectID" />
+                <ScalarProperty Name="GoodID" ColumnName="GoodID" />
+                <ScalarProperty Name="BalanceIndex" ColumnName="BalanceIndex" />
+                <ScalarProperty Name="ChargeCount" ColumnName="ChargeCount" />
+                <ScalarProperty Name="ChargeType" ColumnName="ChargeType" />
+                <ScalarProperty Name="JackpotID" ColumnName="JackpotID" />
+                <ScalarProperty Name="JackpotCount" ColumnName="JackpotCount" />
+                <ScalarProperty Name="FreeCouponCount" ColumnName="FreeCouponCount" />
+                <ScalarProperty Name="OverMoney" ColumnName="OverMoney" />
+                <ScalarProperty Name="SendType" ColumnName="SendType" />
+                <ScalarProperty Name="EndTime" ColumnName="EndTime" />
+                <ScalarProperty Name="StartTime" ColumnName="StartTime" />
+                <ScalarProperty Name="CouponThreshold" ColumnName="CouponThreshold" />
+                <ScalarProperty Name="CouponDiscount" ColumnName="CouponDiscount" />
+                <ScalarProperty Name="CouponValue" ColumnName="CouponValue" />
+                <ScalarProperty Name="PublishCount" ColumnName="PublishCount" />
+                <ScalarProperty Name="OverUseCount" ColumnName="OverUseCount" />
+                <ScalarProperty Name="AuthorFlag" ColumnName="AuthorFlag" />
+                <ScalarProperty Name="EntryCouponFlag" ColumnName="EntryCouponFlag" />
+                <ScalarProperty Name="CouponType" ColumnName="CouponType" />
+                <ScalarProperty Name="CouponName" ColumnName="CouponName" />
                 <ScalarProperty Name="MerchID" ColumnName="MerchID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
