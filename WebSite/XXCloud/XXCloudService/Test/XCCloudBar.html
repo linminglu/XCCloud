@@ -289,6 +289,17 @@
             });
         }
 
+        function getFoodType() {
+            var parasObj = {
+                "userToken":userToken
+            };
+            var url = "/XCCloud/Foods?action=getFoodType";
+            var parasJson = JSON.stringify(parasObj);
+            common(url, parasJson);
+        }
+
+
+
     </script>
         
 </head>
@@ -316,7 +327,9 @@
     <div title="do_saveCoins" style="font-size:14px;color:#F00;border:1px solid #ccc;">
         <input id="Buttonorder_12222" type="button" value="do_GetMemberOpenCardFoodInfo(获取套餐接口)" onclick="do_GetMemberOpenCardFoodInfo()" />
     </div>
-
+    <div title="getFoodType" style="font-size:14px;color:#F00;border:1px solid #ccc;">
+        <input id="Buttonorder_getFoodType" type="button" value="getFoodType(获取套餐类别)" onclick="getFoodType()" />
+    </div>
 
     <div title="do_getFoodList" style="font-size:14px;color:#F00;border:1px solid #ccc;">
         套餐类型：<input id="txtFoodListFoodTypeStr" type="text" value="0,1,2,3,4,5,6" /><input id="Buttonorder_12222" type="button" value="do_getFoodList(获取套餐列表)" onclick="do_getFoodList()" />
@@ -360,6 +373,8 @@
     <div title="checkCanRegister" style="font-size:14px;color:#F00;border:1px solid #ccc;">
         <input id="Buttonorder_getOrderContain" type="button" value="getOrderContain(获取订单内容)" onclick="getOrderContain()" />
     </div>
+
+
 
     <br />
 

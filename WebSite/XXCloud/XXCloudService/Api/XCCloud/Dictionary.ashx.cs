@@ -20,7 +20,6 @@ using XXCloudService.Api.XCCloud.Common;
 
 namespace XXCloudService.Api.XCCloud
 {
-    [Authorize(Roles = "XcUser,XcAdmin")]
     /// <summary>
     /// Dictionary 的摘要说明
     /// </summary>
@@ -76,7 +75,6 @@ namespace XXCloudService.Api.XCCloud
             return true;
         }        
 
-        [Authorize(Roles = "MerchUser,StoreUser")]
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object GetNodes(Dictionary<string, object> dicParas)
         {
@@ -85,11 +83,6 @@ namespace XXCloudService.Api.XCCloud
                 string errMsg = string.Empty;
                 string merchId = dicParas.ContainsKey("merchId") ? dicParas["merchId"].ToString() : string.Empty;
                 string dictKey = dicParas.ContainsKey("dictKey") ? dicParas["dictKey"].ToString() : string.Empty;
-                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                if (userTokenKeyModel.LogType == (int)RoleType.MerchUser)
-                {
-                    merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
-                }
                 
                 string sql = " exec  SP_DictionaryNodes @MerchID,@DictKey,@RootID output ";
                 SqlParameter[] parameters = new SqlParameter[3];

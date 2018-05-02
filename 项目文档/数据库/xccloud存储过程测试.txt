@@ -1,4 +1,45 @@
 ----------------------------------------------------------------------------------------------------
+--获取会员基础信息
+declare @ICCardID varchar(50) = '10004143'
+declare @StoreID varchar(50) = '100025420106001' 
+declare @Result int = 0
+declare @ErrMsg varchar(200) = ''
+declare @MemberId int
+CREATE TABLE dbo.#Tmp_MemberBaseInfo(CardId int,ICCardID varchar(20) NULL,MemberLevelID int NULL,MemberName varchar(50) NULL,Gender int NULL,Birthday varchar(100) NULL,
+IDCard varchar(18) NULL,Mobile varchar(11) NULL,Deposit numeric(18, 2) NULL,Note text NULL,EndDate varchar(100) NULL,RepeatCode int NULL,MemberState int NULL,CardStatus int NULL,
+MemberLevelName varchar(20) NULL,StoreID varchar(15) NOT NULL,StoreName varchar(50) NULL)
+insert into #Tmp_MemberBaseInfo
+exec [GetMemberBaseInfo] @ICCardID,@StoreID,@Result output,@MemberId output,@ErrMsg output
+CREATE TABLE dbo.#Tmp_MemberBalanceInfo(BalanceIndex int,BanlanceName varchar(50) NULL,Banlance decimal NULL)
+insert into #Tmp_MemberBalanceInfo
+exec GetMemberBalanceInfo @MemberId
+
+
+--添加码表
+declare @StoreId varchar(15) = '100025420106001'
+declare @HeadIndex int = 0
+declare @UserId int = 0
+declare @InCoin int = 100
+declare @PrizeCount int = 100
+declare @OutCoin int = 100
+declare @OutLottery int = 100
+declare @MediaUrl1 varchar(200) = 'fewfew'
+declare @MediaUrl2 varchar(200) = ''
+declare @MediaUrl3 varchar(200) = ''
+declare @InCoinError int 
+declare @OutCoinError int 
+declare @PrizeError int 
+declare @OutLotteryError int 
+declare @GoodPrice decimal(18,2) 
+declare @ErrMsg varchar(200) 
+declare @RS int = 0
+
+exec @RS = AddGameWatch @StoreId,@HeadIndex,@UserId,@InCoin,@PrizeCount,@OutCoin,@OutLottery,@MediaUrl1,@MediaUrl2,@MediaUrl3,
+@InCoinError output,@OutCoinError output ,@PrizeError output ,@OutLotteryError output ,@GoodPrice output,@ErrMsg output
+
+
+
+----------------------------------------------------------------------------------------------------
 declare @Return int
 declare @tmp [FoodDetailType]
 declare @StoreId varchar(15) = '100025420106001'
@@ -48,6 +89,11 @@ exec @GetFoodInfoReturn = GetFoodInfo @StoreId,133,2,1,@FoodName output,@FoodTyp
 @AllowCoin output,@Coins output,@AllowPoint output,@Points output,@AllowLottery output,@Lotterys output,@ErrMsg output
 print @GetFoodInfoReturn
 print @FoodSalePrice
+----------------------------------------------------------------------------------------------------
+
+
+
+
 ----------------------------------------------------------------------------------------------------
 declare @StoreId varchar(15) = '100025420106001'
 exec GetFoodListInfo @StoreId,2,1,'0,2,3,4,5,6'
@@ -108,7 +154,16 @@ insert @CouponListType(CouponCode) values('4fb06d7d70b1409fa9bc56224145b65d')
 declare @Str varchar(500)
 set @Str = dbo.GetTableFieldMergeString(@CouponListType)
 
-declare @CouponStateListType [CouponStateListType]
-insert @CouponStateListType(CouponCode,state) values('5ca8ac12733a4b7791168cc10bd89624',1)
-insert @CouponStateListType(CouponCode,state) values('4fb06d7d70b1409fa9bc56224145b65d',2)
-print dbo.[GetInvalidCouponString](@CouponStateListType)
+
+
+declare @CouponId int
+declare @CouponCount int
+declare @Rs int
+declare @ErrMsg varchar(8000)
+declare @CouponListType [CouponListType]
+insert @CouponListType(CouponCode) values('5ca8ac12733a4b7791168cc10bd89624')
+insert @CouponListType(CouponCode) values('4fb06d7d70b1409fa9bc56224145b65d')
+exec @Rs = CheckCouponInvalid '100025420106001',@CouponListType,@CouponId output,@CouponCount output,@ErrMsg output
+print '@Rs' + cast(@Rs as varchar)
+print '@CouponCount:' + cast(@CouponCount as varchar)
+print '@ErrMsg:' + @ErrMsg

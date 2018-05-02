@@ -14,7 +14,7 @@ using XCCloudService.CacheService;
 using XCCloudService.Model.CustomModel.XCGame;
 using XCCloudService.Common.Enum;
 using XCCloudService.Model.CustomModel.XCCloud;
-using XCCloudService.Business.XCCloud;
+using XCCloudService.BLL.XCCloud;
 using XCCloudService.Business.XCGameMana;
 
 namespace XCCloudService.Base

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Web;
 using XCCloudService.Base;
 using XCCloudService.BLL.CommonBLL;
-using XCCloudService.Business.XCCloud;
+using XCCloudService.BLL.XCCloud;
 using XCCloudService.Business.XCGameMana;
 using XCCloudService.Common;
 using XCCloudService.Model.CustomModel.XCCloud;
@@ -19,54 +19,30 @@ namespace XXCloudService.Api.XCCloud
     [Authorize(Roles = "StoreUser")]
     public class Foods : ApiBase
     {
-        //[ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
-        //public object getMemberOpenCardFoodInfo(Dictionary<string, object> dicParas)
-        //{
-        //    XCCloudUserTokenModel userTokenModel = (XCCloudUserTokenModel)(dicParas[Constant.XCCloudUserTokenModel]);
-        //    StoreIDDataModel userTokenDataModel = (StoreIDDataModel)(userTokenModel.DataModel);
-        //    string MemberLevelId = dicParas.ContainsKey("memberLevelId") ? dicParas["memberLevelId"].ToString() : string.Empty;
 
-        //    string sql = "exec GetMemberOpenCardFoodInfo @StoreId,@MemberLevelId";
-        //    SqlParameter[] parameters = new SqlParameter[2];
-        //    parameters[0] = new SqlParameter("@StoreId", userTokenDataModel.StoreId);
-        //    parameters[1] = new SqlParameter("@MemberLevelId", MemberLevelId);
-        //    System.Data.DataSet ds = XCCloudBLL.ExecuteQuerySentence(sql, parameters);
-        //    DataTable dt = ds.Tables[0];
-            
-        //    if (dt.Rows.Count > 0)
-        //    {
-        //        List<OpenCardFoodInfoModel> list1 = Utils.GetModelList<OpenCardFoodInfoModel>(ds.Tables[0]).ToList();
-        //        //for (int i = 0; i < list1.Count; i++)
-        //        //{
-        //        //    List<FoodInfoPriceModel> listFoodInfoPriceModel = new List<FoodInfoPriceModel>();
-        //        //    FoodInfoPriceModel foodInfoModel = new FoodInfoPriceModel(0, list1[i].FoodPrice);
-        //        //    listFoodInfoPriceModel.Add(foodInfoModel);
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object getFoodType(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                XCCloudUserTokenModel userTokenModel = (XCCloudUserTokenModel)(dicParas[Constant.XCCloudUserTokenModel]);
+                StoreIDDataModel userTokenDataModel = (StoreIDDataModel)(userTokenModel.DataModel);
 
-        //        //    if (list1[i].AllowCoin == 1)
-        //        //    {
-        //        //        foodInfoModel = new FoodInfoPriceModel(1, list1[i].Coins);
-        //        //        listFoodInfoPriceModel.Add(foodInfoModel);
-        //        //    }
+                string sql = "GetFoodType";
+                SqlParameter[] parameters = new SqlParameter[1];
+                parameters[0] = new SqlParameter("@MerchId", userTokenDataModel.MerchId);
+                System.Data.DataSet ds = XCCloudBLL.GetStoredProcedureSentence(sql, parameters);
 
-        //        //    if (list1[i].AllowPoint == 1)
-        //        //    {
-        //        //        foodInfoModel = new FoodInfoPriceModel(2, list1[i].Points);
-        //        //        listFoodInfoPriceModel.Add(foodInfoModel);
-        //        //    }
+                List<Base_FoodType> foodTypeList = Utils.GetModelList<Base_FoodType>(ds.Tables[0]);
 
-        //        //    if (list1[i].AllowLottery == 1)
-        //        //    {
-        //        //        foodInfoModel = new FoodInfoPriceModel(3, list1[i].Lottery);
-        //        //        listFoodInfoPriceModel.Add(foodInfoModel);
-        //        //    }
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, foodTypeList);
+            }
+            catch(Exception e)
+            {
+                throw e;
+            }
+        }
 
-        //        //    list1[i].priceListModel = listFoodInfoPriceModel;
-        //        //}
-        //        return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, list1);
-        //    }
-
-        //    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "无数据");
-        //}
 
         /// <summary>
         /// 获取套餐列表

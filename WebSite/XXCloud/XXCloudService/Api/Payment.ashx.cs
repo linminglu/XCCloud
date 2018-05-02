@@ -11,7 +11,7 @@ using System.Web;
 using System.Xml.XPath;
 using System.Xml.Linq;
 using XCCloudService.Base;
-using XCCloudService.Business.XCCloud;
+using XCCloudService.BLL.XCCloud;
 using XCCloudService.Common;
 using XCCloudService.Common.Enum;
 using XCCloudService.Common.Extensions;
@@ -38,6 +38,7 @@ using XCCloudService.OrderPayCallback.Common;
 using XCCloudService.BLL.IBLL.XCCloud;
 using XCCloudService.BLL.Container;
 using XCCloudService.Model.CustomModel.XCGame;
+using XCCloudService.Business.XCCloud;
 
 namespace XXCloudService.Api
 {

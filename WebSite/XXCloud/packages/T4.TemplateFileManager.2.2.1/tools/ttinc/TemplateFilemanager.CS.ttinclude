@@ -298,7 +298,7 @@ public class TemplateFileManager
 	{
 		foreach (var file in outputFiles)
 		{
-			var item = items.Where(p => p.Name == Path.GetFileName(file.FileName)).First();
+			var item = items.Where(p => p.Name == Path.GetFileName(file.FileName)).FirstOrDefault();
 			if (item == null) continue;
 
 			if (String.IsNullOrEmpty(file.FileProperties.CustomTool) == false)
@@ -950,7 +950,7 @@ public class VSHelper
 			{
 				var subItems = item.ProjectItems.Cast<ProjectItem>();
 				joinedNames = string.Join(", ", subItems.Select(i => i.Name));
-				item = subItems.Where(i => i.Name == folders[idx]).First();
+				item = subItems.Where(i => i.Name == folders[idx]).FirstOrDefault();
 				if (item == null)
 					break;
 			}
@@ -1009,7 +1009,7 @@ public class VSHelper
 	{
 		EnvDTE.ProjectItem item = (from i in items.Cast<EnvDTE.ProjectItem>()
 								  where i.Name == Path.GetFileName(fullName)
-								  select i).First();
+								  select i).FirstOrDefault();
 		if (item == null)
 		{
 			File.CreateText(fullName);

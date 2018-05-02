@@ -11,6 +11,7 @@ using XCCloudService.BLL.Container;
 using XCCloudService.BLL.IBLL.XCCloud;
 using XCCloudService.BLL.IBLL.XCGame;
 using XCCloudService.BLL.XCCloud;
+using XCCloudService.BLL.XCCloud;
 using XCCloudService.Business.XCCloud;
 using XCCloudService.Business.XCGameMana;
 using XCCloudService.Common;
@@ -242,7 +243,7 @@ namespace XCCloudService.Api.XCCloud
                     var base_StoreInfoModel = base_StoreInfoService.GetModels(p => p.StoreID.Equals(userModel.StoreID, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
 
                     //设置用户token
-                    StoreIDDataModel storeIDDataModel = new StoreIDDataModel(userModel.StoreID, password, workStation);
+                    StoreIDDataModel storeIDDataModel = new StoreIDDataModel(userModel.MerchID,userModel.StoreID, password, workStation);
                     XCCloudUserTokenBusiness.RemoveStoreUserTokenByWorkStaion(userModel.UserID.ToString(), (int)RoleType.StoreUser, workStation);
                     string userToken = XCCloudUserTokenBusiness.SetUserToken(userModel.UserID.ToString(), (int)RoleType.StoreUser, storeIDDataModel);
 

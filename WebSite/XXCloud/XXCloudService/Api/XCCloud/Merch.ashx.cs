@@ -19,7 +19,7 @@ using XCCloudService.WeiXin.Message;
 using XCCloudService.Common.Enum;
 using XCCloudService.WeiXin.WeixinOAuth;
 using XCCloudService.DAL;
-using XCCloudService.Business.XCCloud;
+using XCCloudService.BLL.XCCloud;
 using System.Data.Entity;
 using XCCloudService.DBService.BLL;
 using XXCloudService.Api.XCCloud.Common;

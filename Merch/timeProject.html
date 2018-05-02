@@ -126,7 +126,7 @@
             </div>
         </div>
         <div style="text-align:center;">
-            <button type="button" class="layui-btn" id="closeStoreBtn">取消</button>
+            <!--<button type="button" class="layui-btn" id="closeStoreBtn">取消</button>-->
             <button type="button" class="layui-btn" id="saveStoreBtn">保存</button>
         </div>
     </form>
@@ -161,7 +161,7 @@
     let BandType='';let BandTypeStr='';
     let memberLevelID=[];let MemberLevelName=[];
 
-    let storeList=[];//适用门店
+    let _storeId=[];//适用门店
     layui.use(['form','layer','table'],function () {
         let form=layui.form;
         let layer=layui.layer;
@@ -190,6 +190,21 @@
                 }
             }
         });
+
+        //监听门店设置
+        form.on('checkbox(chooseStore)',function (data) {
+            if (data.elem.checked==true){
+                _storeId.push(data.value);
+            }else if(data.elem.checked==false){
+                for (var i=0;i<_storeId.length;i++){
+                    if(_storeId[i]==data.value){
+                        _storeId.splice(i,1)
+                    }
+                }
+            }
+            console.log(_storeId);
+        });
+
         //新增按钮
         $('#add').on('click',function () {
             projectId='';
@@ -270,6 +285,10 @@
             })
         });
 
+        //保存适用门店
+        $('#saveStoreBtn').on('click',function () {
+            xc.SaveProjectTimeStores(token,layer,projectId)
+        });
         //修改、删除、和绑定适用门店
         table.on('tool(timeProjectTable)', function(obj){
         let data = obj.data;
@@ -290,7 +309,7 @@
                        $('#ProjectName').val(arr.ProjectName);
                        $('#PayCycle').val(arr.PayCycle);
                        DepositType=arr.DepositType;
-                       xc.getBalanceTypeDic(token,layer,form,'DepositType',arr.DepositType)
+                       xc.getBalanceTypeDic(token,layer,form,'DepositType',arr.DepositType);
                        $('#Deposit').val(arr.Deposit);
                        $('#BackTime').val(arr.BackTime);
                        $('#Note').val(arr.Note);
@@ -328,34 +347,12 @@
                 })
             });
         }else if(layEvent === 'set'){
-            xc.GetStoreList(token,layer,form,'storeListBox');
-            let _obj={'projectId':data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
-                let parseJson = JSON.stringify(_obj);
-                $.ajax({
-                    type:'post',
-                    url:'/XCCloud/ProjectTime?action=GetProjectStores',
-                    contentType: "application/json; charset=utf-8",
-                    data:{parasJson: parseJson},
-                    success: function (data) {
-                        data = JSON.parse(data);
-                        if (data.result_code == 1) {
-                            storeList=data.result_data;
-                             if(storeList.length>0){
-                                 for(let i in storeList){
-                                     $('#storeListBox').find('input[value="'+storeList[i]+'"]').prop('checked',true)
-                                 }
-                             }
-                             form.render('checkbox');
-                             index=layer.open({
-                                 type:1,
-                                 area:'400px',
-                                 content:$('#setStore')
-                             })
-                        } else {
-                            layer.msg(data.result_msg);
-                        }
-                    }
-                })
+            xc.ProjectTimeStores(projectId,form,token,'storeListBox');
+             index=layer.open({
+                 type:1,
+                 area:'400px',
+                 content:$('#setStore')
+             })
         }
     });
         //删除波段设定
@@ -399,6 +396,111 @@
             // }
         });
 
+    }
+    //加载所有门店
+    xcActionSystem.prototype.getProjectStoreList=function (form,token,id,checked) {
+        let obj={'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+        let parseJson = JSON.stringify(obj);
+        $.ajax({
+            type:'post',
+            url:'/XCCloud/StoreInfo?action=GetStoreList',
+            contentType: "application/json; charset=utf-8",
+            data:{parasJson: parseJson},
+            success: function (data) {
+                data=JSON.parse(data);
+                if(data.result_code==1){
+                    $('#'+id).html('');
+                    form.render();
+                    let array=data.result_data;
+                    for(let i in array){
+                        if(checked){
+                            if(checked.length>0){
+                                let flag=false;
+                                for (let j in checked){
+                                    if(checked[j].StoreID==array[i].StoreID){
+                                        flag=true;
+                                    }
+                                }
+                                if(flag){
+                                    $('#'+id).append('<input checked type="checkbox" lay-skin="primary" value="'+array[i].StoreID+
+                                        '" lay-filter="chooseStore" title="'+array[i].StoreName+'"><hr class="layui-bg-blue">')
+                                }else {
+                                    $('#'+id).append('<input type="checkbox" lay-skin="primary" value="'+array[i].StoreID+
+                                        '" lay-filter="chooseStore" title="'+array[i].StoreName+'"><hr class="layui-bg-blue">')
+                                }
+                            }else {
+                                $('#'+id).append('<input type="checkbox" lay-skin="primary" value="'+array[i].StoreID+
+                                    '" lay-filter="chooseStore" title="'+array[i].StoreName+'"><hr class="layui-bg-blue">')
+
+                            }
+                        }else {
+                            $('#'+id).append('<input type="checkbox" lay-skin="primary" value="'+array[i].StoreID+
+                                '" lay-filter="chooseStore" title="'+array[i].StoreName+'"><hr class="layui-bg-blue">')
+
+                        }
+                    }
+                    form.render();
+                }else {
+                    layer.msg('获取适用门店列表失败')
+                }
+            }
+        })
+    };
+    //加载已绑定的门店
+    xcActionSystem.prototype.ProjectTimeStores=function (projectId,form,token,id) {
+        let obj={'projectId':projectId,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+        let parseJson = JSON.stringify(obj);
+        $.ajax({
+            type:'post',
+            url:'/XCCloud/ProjectTime?action=GetProjectStores',
+            contentType: "application/json; charset=utf-8",
+            data:{parasJson: parseJson},
+            success: function (data) {
+                data=JSON.parse(data);
+                console.log(data);
+                if(data.result_code==1){
+                    _storeId=[];
+                    let array=data.result_data;
+                    for(let i in array){
+                        _storeId.push(array[i].StoreID)
+                    }
+                    xc.getProjectStoreList(form,token,id,array)
+                    console.log(_storeId)
+                }else {
+                    layer.msg('请设置适用门店')
+                }
+            }
+        })
+    };
+    //保存已设置的适用门店
+    xcActionSystem.prototype.SaveProjectTimeStores=function (token,layer,id) {
+        let _obj;
+        if(_storeId.length>0){
+            _obj={'projectId':id,
+                'storeIds':_storeId.join('|'),
+                'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+        }else {
+            _obj={'projectId':id,
+                'storeIds':'',
+                'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+        }
+        let parseJson = JSON.stringify(_obj);
+        console.log(_obj);
+        $.ajax({
+            type:'post',
+            url:'/XCCloud/ProjectTime?action=SaveProjectStores',
+            contentType: "application/json; charset=utf-8",
+            data:{parasJson: parseJson},
+            success: function (data) {
+                data = JSON.parse(data);
+                console.log(data);
+                if (data.result_code == 1) {
+                    layer.closeAll();
+                } else {
+                    layer.msg(data.result_msg);
+                }
+            }
+        });
     }
 </script>
 <script type="text/html" id="barDemo">

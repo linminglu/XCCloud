@@ -6,34 +6,6 @@
     <link rel="stylesheet" href="layui/css/layui.css">
 </head>
 <style>
-    .layui-form-onswitch{
-        border-color: #5FB878!important;
-        background-color: #5FB878!important;
-    }
-    .layui-form-switch{
-        height: 22px;
-        line-height: 22px;
-        width: 42px;
-        border: 1px solid #d2d2d2;
-        border-radius: 20px;
-        background-color: #fff;
-    }
-    .layui-form-switch em{
-        width: 25px;
-        color: #999!important;
-        font-size: 12px;}
-    .layui-form-switch i{
-        left: 5px;
-        top: 3px;
-        width: 16px;
-        height: 16px;
-        border-radius: 20px;
-        background-color: #d2d2d2;
-    }
-    .layui-form-onswitch i{
-        left: 32px;
-    }
-
     .goodIsAll .layui-form-switch {
         height: 36px;
         line-height: 36px;
@@ -48,7 +20,7 @@
         top: 0px;
         width: 95px;
         height: 36px;
-        margin-top: -1px;
+        margin-top: 0px;
         border-radius: 5px 0 0 5px;
         border: 1px solid #aaa;
         background-color: #fff;
@@ -84,7 +56,7 @@
 <!--门票设置弹窗-->
 <div id="openModel" style="padding: 15px;display:none;">
     <form action="" class="layui-form layui-form-pane">
-        <div class="layui-col-md8" style="min-height: 320px">
+        <div class="layui-col-md7" style="min-height: 320px">
             <div class="layui-form-item">
                 <label class="layui-form-label">项目名称</label>
                 <div class="layui-input-block">
@@ -142,7 +114,7 @@
             </div>
 
         </div>
-        <div class="layui-col-md4" style="height: 320px;border-left: 1px solid #aaa;padding: 0 15px;">
+        <div class="layui-col-md5" style="height: 320px;border-left: 1px solid #aaa;padding: 0 15px;">
             <div class="layui-form-item">
                 <label class="layui-form-label">绑定项目</label>
                 <div class="layui-input-block" id="bindProject">
@@ -201,7 +173,7 @@
             ,{field:'ExpireDays', title: '有效天数', align: 'center'}
             ,{field:'AccompanyFlag', title: '是否陪同票', align: 'center',templet:'#changeLock',width:140}
             ,{field:'AccompanyCash', title: '陪同现金票价', align: 'center'}
-            ,{field:'BalanceTypeStr', title: '扣除种类', align: 'center'}
+            // ,{field:'BalanceTypeStr', title: '扣除种类', align: 'center'}
             ,{field:'BalanceCount', title: '扣除数量', align: 'center'}
             ,{field:'Note', title: '备注', align: 'center'}
             ,{fixed: 'right', title: '操作', width:260, align:'center', toolbar: '#barDemo'}]
@@ -265,7 +237,18 @@
             _balanceType=data.value;
         });
         //监听门店设置
-
+        form.on('checkbox(chooseStore)',function (data) {
+            if (data.elem.checked==true){
+                _storeId.push(data.value);
+            }else if(data.elem.checked==false){
+                for (var i=0;i<_storeId.length;i++){
+                    if(_storeId[i]==data.value){
+                        _storeId.splice(i,1)
+                    }
+                }
+            }
+            console.log(_storeId);
+        });
 
         table.on('tool(ticketSettingTable)',function (obj) {
             let data=obj.data;
@@ -315,7 +298,7 @@
                             layer.open({
                                 title:'修改门票规则',
                                 type:1,
-                                area:'655px',
+                                area:'1000px',
                                 content:$('#openModel')
                             })
                         } else {
@@ -344,19 +327,6 @@
                     })
                 });
             }else if(event==='bindStore'){
-                xc.getProjectStoreList(form,token,'storeListBox');
-                form.on('checkbox(chooseStore)',function (data) {
-                    if (data.elem.checked==true){
-                        _storeId.push(data.value);
-                    }else if(data.elem.checked==false){
-                        for (var i=0;i<_storeId.length;i++){
-                            if(_storeId[i]==data.value){
-                                _storeId.splice(i,1)
-                            }
-                        }
-                    }
-                    console.log(_storeId);
-                });
                 xc.getProjectStores(data.ID,form,token,'storeListBox');
                 layer.open({
                     title:'设置适用门店',
@@ -398,7 +368,7 @@
         });
     };
     //加载所有门店
-    xcActionSystem.prototype.getProjectStoreList=function (form,token,id) {
+    xcActionSystem.prototype.getProjectStoreList=function (form,token,id,checked) {
         let obj={'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
         let parseJson = JSON.stringify(obj);
         $.ajax({
@@ -410,10 +380,35 @@
                 data=JSON.parse(data);
                 if(data.result_code==1){
                     $('#'+id).html('');
+                    form.render();
                     let array=data.result_data;
                     for(let i in array){
-                        $('#'+id).append('<input type="checkbox" lay-skin="primary" value="'+array[i].StoreID+'" lay-filter="chooseStore" title="'+array[i].StoreName+'"><hr class="layui-bg-blue">')
-                    }
+                        if(checked){
+                            if(checked.length>0){
+                                let flag=false;
+                                for (let j in checked){
+                                    if(checked[j].StoreID==array[i].StoreID){
+                                        flag=true;
+                                    }
+                                }
+                                if(flag){
+                                    $('#'+id).append('<input checked type="checkbox" lay-skin="primary" value="'+array[i].StoreID+
+                                        '" lay-filter="chooseStore" title="'+array[i].StoreName+'"><hr class="layui-bg-blue">')
+                                }else {
+                                    $('#'+id).append('<input type="checkbox" lay-skin="primary" value="'+array[i].StoreID+
+                                        '" lay-filter="chooseStore" title="'+array[i].StoreName+'"><hr class="layui-bg-blue">')
+                                }
+                            }else {
+                                $('#'+id).append('<input type="checkbox" lay-skin="primary" value="'+array[i].StoreID+
+                                    '" lay-filter="chooseStore" title="'+array[i].StoreName+'"><hr class="layui-bg-blue">')
+
+                            }
+                        }else {
+                            $('#'+id).append('<input type="checkbox" lay-skin="primary" value="'+array[i].StoreID+
+                                '" lay-filter="chooseStore" title="'+array[i].StoreName+'"><hr class="layui-bg-blue">')
+
+                        }
+                        }
                     form.render();
                 }else {
                     layer.msg('获取适用门店列表失败')
@@ -435,15 +430,11 @@
                 console.log(data);
                 if(data.result_code==1){
                     _storeId=[];
-                    $('#'+id).find('input').attr({'checked':false});
                     let array=data.result_data;
-                    if(array.length>0){
-                        for(let i in array){
-                            $('#'+id).find('input[value="'+array[i].StoreID+'"]').attr({'checked':true});
-                            _storeId.push(array[i].StoreID)
-                        }
-                        form.render('checkbox');
+                    for(let i in array){
+                        _storeId.push(array[i].StoreID)
                     }
+                    xc.getProjectStoreList(form,token,id,array)
                 console.log(_storeId)
                 }else {
                     layer.msg('请设置适用门店')

@@ -12,7 +12,7 @@ using XCCloudService.Pay.PPosPay;
 using XCCloudService.Common.Enum;
 using XCCloudService.BLL.IBLL.XCCloud;
 using XCCloudService.BLL.Container;
-using XCCloudService.Business.XCCloud;
+using XCCloudService.BLL.XCCloud;
 using XCCloudService.Model.XCCloud;
 using XCCloudService.Model.CustomModel.XCCloud;
 using XCCloudService.Business.XCGameMana;

@@ -10,7 +10,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Xml;
 using XCCloudService.BLL.CommonBLL;
-using XCCloudService.Business.XCCloud;
+using XCCloudService.BLL.XCCloud;
 using XCCloudService.Common;
 using XCCloudService.Model.CustomModel.XCCloud;
 using XCCloudService.Model.XCCloud;
@@ -82,9 +82,9 @@ namespace XXCloudService.Api.HaoKu
                         //增加币余额
                         if (member != null && memberBalance != null)
                         {
-                            Data_Card_Balance model = Data_Card_BalanceBiz.I.GetModels(b=>b.BalanceIndex == memberBalance.BalanceIndex).FirstOrDefault();
+                            Data_Card_Balance model = Data_Card_BalanceService.I.GetModels(b=>b.BalanceIndex == memberBalance.BalanceIndex).FirstOrDefault();
                             model.Banlance = memberBalance.Banlance + raiseBalance;
-                            bool ret = Data_Card_BalanceBiz.I.Update(model);
+                            bool ret = Data_Card_BalanceService.I.Update(model);
                             if (ret)
                             {
                                 Response.Write(ReturnModel.ReturnInfo(ReturnCode.T, "转换成功"));

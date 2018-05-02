@@ -284,7 +284,7 @@
         <div class="layui-form-item goodIsAll">
             <label class="layui-form-label">存储方式</label>
             <div class="layui-input-block">
-                <input type="checkbox" id="OperateType" lay-skin="switch" lay-filter="OperateType" lay-text="允许|禁止">
+                <input type="checkbox" id="OperateType" lay-skin="switch" lay-filter="OperateType" lay-text="充入卡|充电子币 ">
             </div>
         </div>
         <div style="text-align: center">
@@ -1150,7 +1150,7 @@
             , cols: [[
                  {field:'FoodDetailTypeStr', title: '套餐种类类别', align: 'center'}
                 // ,{field:'BalanceType', title: '余额类别', align: 'center'}
-                ,{field:'OperateType', title: '操作类型', align: 'center'}
+                ,{field:'OperateType', title: '操作类型', align: 'center',templet:'#operateType1'}
                 ,{field:'ProjectName', title: '套餐名字', align: 'center'}
                 ,{field:'ContainCount', title: '套餐内容数量', align: 'center'}
                 ,{field:'WeightValue', title: '权重值', align: 'center'}
@@ -1173,7 +1173,7 @@
             , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
             , cols: [[
                 {field:'MemberLevels', title: '会员级别', align: 'center'}
-                ,{field:'TimeType', title: '时段类型', align: 'center'}
+                ,{field:'TimeType', title: '时段类型', align: 'center',templet:'#timeType1'}
                 ,{field:'WeekStr', title: '有效周', align: 'center'}
                 ,{field:'StartTime', title: '开始时段', align: 'center'}
                 ,{field:'EndTime', title: '结束时段', align: 'center'}
@@ -1215,6 +1215,24 @@
 </script>
 <script type="text/html" id="barDemo2">
     <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del"> <i class="layui-icon">&#xe642;</i>删除</a>
+</script>
+<script type="text/html" id="operateType1">
+    {{# if(d.OperateType=='1'){ }}
+  存入会员卡
+    {{# }else if(d.OperateType=='0'){ }}
+ 直接充值
+    {{#  } }}
+</script>
+<script type="text/html" id="timeType1">
+    {{# if(d.TimeType==0){ }}
+    自定义
+    {{# }else if(d.TimeType==1){ }}
+    工作日
+    {{# }else if(d.TimeType==2){ }}
+      周末
+    {{# }else if(d.TimeType==3){ }}
+      法定节假日
+    {{#  } }}
 </script>
 <script type="text/html" id="internet">
     {{# if(d.AllowInternet=='允许'){ }}

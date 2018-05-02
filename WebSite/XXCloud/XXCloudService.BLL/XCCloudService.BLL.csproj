@@ -50,6 +50,375 @@
     <Compile Include="CommonBLL\XCGameManaLogBLL.cs" />
     <Compile Include="CommonBLL\XCGameBLL.cs" />
     <Compile Include="CommonBLL\XCGameManabll.cs" />
+    <Compile Include="IBLL\IBase_ChainRuleService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IBase_ChainRule_StoreService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IBase_DepotInfoService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IBase_DeviceInfoService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IBase_EnumParamsService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IBase_GoodsInfoService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IBase_MemberInfoService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IBase_MerchAlipayService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IBase_MerchantInfoService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IBase_MerchFunctionService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IBase_SettleLCPayService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IBase_SettleOrgService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IBase_SettlePPOSService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IBase_StorageInfoService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IBase_StoreDogListService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IBase_StoreHKConfigService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IBase_StoreInfoService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IBase_StoreWeightService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IBase_StoreWeight_GameService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IBase_UserGrantService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IBase_UserGroupService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IBase_UserGroup_GrantService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IBase_UserInfoService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IData_BalanceChargeRuleService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IData_BalanceType_StoreListService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IData_BillInfoService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IData_Card_BalanceService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IData_Card_Balance_StoreListService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IData_Card_RightService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IData_Card_Right_StoreListService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IData_CoinDestoryService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IData_CoinInventoryService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IData_CoinStorageService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IData_CouponInfoService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IData_CouponListService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IData_Coupon_StoreListService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IData_DigitCoinDestroyService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IData_DigitCoinFoodService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IData_DigitCoinService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IData_FoodInfoService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IData_Food_DetialService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IData_Food_LevelService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IData_Food_SaleService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IData_Food_StoreListService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IData_Food_WorkStationService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IData_GameFreeRuleService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IData_GameFreeRule_ListService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IData_GameInfoService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IData_GameInfo_ExtService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IData_GameInfo_PhotoService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IData_Game_StockInfoService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IData_GivebackRuleService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IData_GoodInventoryService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IData_GoodsStockService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IData_GoodStock_RecordService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IData_GoodStorageService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IData_GoodStorage_DetailService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IData_JackpotInfoService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IData_Jackpot_LevelService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IData_Jackpot_MatrixService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IData_LotteryInventoryService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IData_LotteryStorageService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IData_MemberLevelFreeService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IData_MemberLevelService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IData_MemberLevel_FoodService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IData_Member_CardService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IData_Member_Card_StoreService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IData_MerchAlipay_ShopService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IData_MessageService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IData_ParametersService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IData_ProjectInfoService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IData_ProjectTimeInfoService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IData_ProjectTime_BandPriceService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IData_ProjectTime_StoreListService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IData_Project_BindGameService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IData_Project_DeviceService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IData_Project_StoreListService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IData_Push_RuleService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IData_ReloadService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IData_Storage_RecordService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IData_SupplierListService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IData_WorkstationService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IDict_AreaService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IDict_BalanceTypeService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IDict_FunctionMenuService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IDict_SystemService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IFlw_485_CoinService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IFlw_485_SaveCoinService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IFlw_CheckDateService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IFlw_Coin_ExitService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IFlw_Coin_SaleService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IFlw_CouponUseService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IFlw_Digite_CoinService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IFlw_Digite_Coin_DetailService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IFlw_Food_ExitDetailService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IFlw_Food_ExitService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IFlw_Food_SaleDetailService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IFlw_Food_SaleService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IFlw_Game_FreeService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IFlw_Game_WatchService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IFlw_Game_WinPrizeService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IFlw_GivebackService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IFlw_GoodsService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IFlw_Good_DetailService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IFlw_GroupVerityService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IFlw_JackpotService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IFlw_LotteryService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IFlw_OrderService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IFlw_Order_DetailService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IFlw_Order_SerialNumberService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IFlw_Project_BuyDetailService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IFlw_Project_Play_TimeService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IFlw_ScheduleService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IFlw_Ticket_ExitService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IFlw_TransferService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\ILog_GameAlarmService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\ILog_OperationService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\ISearch_TemplateService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\ISearch_Template_DetailService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IStore_CheckDateService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IStore_GameTotalService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IStore_HeadTotalService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IXC_WorkInfoService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
     <Compile Include="IBLL\XCCloudRS232\IDataGameInfoService.cs" />
     <Compile Include="IBLL\XCCloudRS232\IBase_DeviceInfoService.cs" />
     <Compile Include="IBLL\XCCloudRS232\Iflw_485_savecoinService.cs" />
@@ -62,381 +431,6 @@
     <Compile Include="IBLL\XCCloudRS232\IMerchDeviceService.cs" />
     <Compile Include="IBLL\XCCloudRS232\IMerchSegmentService.cs" />
     <Compile Include="IBLL\XCCloudRS232\IMerchService.cs" />
-    <Compile Include="IBLL\XCCloud\IBase_ChainRuleService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IBase_ChainRule_StoreService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IBase_DepotInfoService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IBase_DeviceInfoService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IBase_EnumParamsService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IBase_GoodsInfoService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IBase_MemberInfoService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IBase_MerchAlipayService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IBase_MerchantInfoService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IBase_MerchFunctionService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IBase_SettleLCPayService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IBase_SettleOrgService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IBase_SettlePPOSService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IBase_StorageInfoService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IBase_StoreDogListService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IBase_StoreHKConfigService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IBase_StoreInfoService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IBase_StoreWeightService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IBase_StoreWeight_GameService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IBase_UserGrantService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IBase_UserGroupService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IBase_UserGroup_GrantService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IBase_UserInfoService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IData_BalanceChargeRuleService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IData_BalanceType_StoreListService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IData_BillInfoService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IData_Card_BalanceService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IData_Card_Balance_StoreListService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IData_Card_RightService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IData_Card_Right_StoreListService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IData_CoinDestoryService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IData_CoinInventoryService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IData_CoinStorageService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IData_CouponInfoService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IData_CouponListService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IData_Coupon_StoreListService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IData_DigitCoinDestroyService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IData_DigitCoinFoodService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IData_DigitCoinService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IData_FoodInfoService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IData_Food_DetialService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IData_Food_LevelService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IData_Food_SaleService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IData_Food_StoreListService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IData_Food_WorkStationService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IData_GameFreeRuleService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IData_GameFreeRule_ListService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IData_GameInfoService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IData_GameInfo_ExtService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IData_GameInfo_PhotoService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IData_Game_StockInfoService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IData_GivebackRuleService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IData_GoodInventoryService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IData_GoodsStockService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IData_GoodStock_RecordService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IData_GoodStorageService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IData_GoodStorage_DetailService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IData_JackpotInfoService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IData_Jackpot_LevelService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IData_Jackpot_MatrixService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IData_LotteryInventoryService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IData_LotteryStorageService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IData_MemberLevelFreeService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IData_MemberLevelService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IData_MemberLevel_FoodService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IData_Member_CardService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IData_Member_Card_StoreService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IData_MerchAlipay_ShopService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IData_MessageService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IData_ParametersService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IData_ProjectInfoService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IData_ProjectTimeInfoService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IData_ProjectTime_BandPriceService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IData_ProjectTime_StoreListService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IData_Project_BindGameService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IData_Project_DeviceService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IData_Project_StoreListService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IData_Push_RuleService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IData_ReloadService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IData_Storage_RecordService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IData_SupplierListService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IData_WorkstationService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IDict_AreaService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IDict_BalanceTypeService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IDict_FunctionMenuService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IDict_SystemService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IFlw_485_CoinService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IFlw_485_SaveCoinService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IFlw_CheckDateService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IFlw_Coin_ExitService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IFlw_Coin_SaleService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IFlw_CouponUseService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IFlw_Digite_CoinService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IFlw_Digite_Coin_DetailService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IFlw_Food_ExitDetailService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IFlw_Food_ExitService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IFlw_Food_SaleDetailService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IFlw_Food_SaleService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IFlw_Game_FreeService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IFlw_Game_WatchService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IFlw_Game_WinPrizeService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IFlw_GivebackService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IFlw_GoodsService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IFlw_Good_DetailService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IFlw_GroupVerityService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IFlw_JackpotService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IFlw_LotteryService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IFlw_OrderService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IFlw_Order_DetailService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IFlw_Order_SerialNumberService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IFlw_Project_BuyDetailService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IFlw_Project_Play_TimeService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IFlw_ScheduleService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IFlw_Ticket_ExitService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IFlw_TransferService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\ILog_GameAlarmService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\ILog_OperationService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\ISearch_TemplateService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\ISearch_Template_DetailService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IStore_CheckDateService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IStore_GameTotalService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IStore_HeadTotalService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IXCCloudService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-      <SubType>Code</SubType>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </Compile>
-    <Compile Include="IBLL\XCCloud\IXC_WorkInfoService.cs">
-      <DependentUpon>IXCCloudService.tt</DependentUpon>
-    </Compile>
     <Compile Include="IBLL\XCGameManagerLog\IUDPDeviceStateChangeLogService.cs" />
     <Compile Include="IBLL\XCGameManagerLog\IUDPIndexLogService.cs" />
     <Compile Include="IBLL\XCGameManagerLog\IUDPRadarNotifyLogService.cs" />
@@ -494,379 +488,373 @@
     <Compile Include="XCCloudRS232\MerchSegmentService.cs" />
     <Compile Include="XCCloudRS232\MerchService.cs" />
     <Compile Include="XCCloud\Base_ChainRuleService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Base_ChainRule_StoreService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Base_DepotInfoService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Base_DeviceInfoService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Base_EnumParamsService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Base_GoodsInfoService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Base_MemberInfoService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Base_MerchAlipayService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Base_MerchantInfoService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Base_MerchFunctionService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Base_SettleLCPayService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Base_SettleOrgService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Base_SettlePPOSService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Base_StorageInfoService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Base_StoreDogListService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Base_StoreHKConfigService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Base_StoreInfoService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Base_StoreWeightService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Base_StoreWeight_GameService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Base_UserGrantService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Base_UserGroupService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Base_UserGroup_GrantService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Base_UserInfoService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_BalanceChargeRuleService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_BalanceType_StoreListService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_BillInfoService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_Card_BalanceService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_Card_Balance_StoreListService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_Card_RightService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_Card_Right_StoreListService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_CoinDestoryService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_CoinInventoryService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_CoinStorageService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_CouponInfoService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_CouponListService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_Coupon_StoreListService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_DigitCoinDestroyService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_DigitCoinFoodService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_DigitCoinService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_FoodInfoService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_Food_DetialService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_Food_LevelService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_Food_SaleService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_Food_StoreListService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_Food_WorkStationService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_GameFreeRuleService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_GameFreeRule_ListService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_GameInfoService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_GameInfo_ExtService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_GameInfo_PhotoService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_Game_StockInfoService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_GivebackRuleService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_GoodInventoryService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_GoodsStockService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_GoodStock_RecordService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_GoodStorageService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_GoodStorage_DetailService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_JackpotInfoService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_Jackpot_LevelService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_Jackpot_MatrixService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_LotteryInventoryService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_LotteryStorageService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_MemberLevelFreeService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_MemberLevelService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_MemberLevel_FoodService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_Member_CardService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_Member_Card_StoreService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_MerchAlipay_ShopService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_MessageService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_ParametersService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_ProjectInfoService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_ProjectTimeInfoService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_ProjectTime_BandPriceService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_ProjectTime_StoreListService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_Project_BindGameService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_Project_DeviceService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_Project_StoreListService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_Push_RuleService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_ReloadService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_Storage_RecordService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_SupplierListService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_WorkstationService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Dict_AreaService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Dict_BalanceTypeService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Dict_FunctionMenuService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Dict_SystemService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Flw_485_CoinService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Flw_485_SaveCoinService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Flw_CheckDateService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Flw_Coin_ExitService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Flw_Coin_SaleService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Flw_CouponUseService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Flw_Digite_CoinService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Flw_Digite_Coin_DetailService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Flw_Food_ExitDetailService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Flw_Food_ExitService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Flw_Food_SaleDetailService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Flw_Food_SaleService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Flw_Game_FreeService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Flw_Game_WatchService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Flw_Game_WinPrizeService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Flw_GivebackService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Flw_GoodsService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Flw_Good_DetailService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Flw_GroupVerityService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Flw_JackpotService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Flw_LotteryService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Flw_OrderService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Flw_Order_DetailService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Flw_Order_SerialNumberService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Flw_Project_BuyDetailService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Flw_Project_Play_TimeService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Flw_ScheduleService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Flw_Ticket_ExitService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Flw_TransferService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Log_GameAlarmService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Log_OperationService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Search_TemplateService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Search_Template_DetailService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Store_CheckDateService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Store_GameTotalService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Store_HeadTotalService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
-    </Compile>
-    <Compile Include="XCCloud\XCCloudService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
-      <SubType>Code</SubType>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\XC_WorkInfoService.cs">
-      <DependentUpon>XCCloudService.tt</DependentUpon>
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCGameManagerLog\UDPDeviceStateChangeService.cs" />
     <Compile Include="XCGameManagerLog\UDPIndexLogService.cs" />
@@ -920,6 +908,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Extentions\" />
+    <Folder Include="IBLL\XCCloud\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\XXCloudService.DAL\XCCloudService.DAL.csproj">
@@ -935,19 +924,9 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="IBLL\XCCloud\IXCCloudService.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>IXCCloudService.cs</LastGenOutput>
-      <AutoT4RunOnBuild>Disabled</AutoT4RunOnBuild>
-    </Content>
-    <Content Include="XCCloud\XCCloudService.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>XCCloudService.cs</LastGenOutput>
-      <AutoT4RunOnBuild>Disabled</AutoT4RunOnBuild>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
+    <None Include="IBLL\XCCloudDBModel.txt4" />
     <None Include="packages.config" />
+    <None Include="XCCloud\XCCloudDBModel.txt4" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

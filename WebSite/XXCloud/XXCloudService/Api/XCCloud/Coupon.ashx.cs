@@ -8,12 +8,13 @@ using System.Web;
 using XCCloudService.Base;
 using XCCloudService.BLL.Container;
 using XCCloudService.BLL.IBLL.XCCloud;
-using XCCloudService.Business.XCCloud;
+using XCCloudService.BLL.XCCloud;
 using XCCloudService.Common;
 using XCCloudService.Common.Enum;
 using XCCloudService.DBService.BLL;
 using XCCloudService.Model.CustomModel.XCCloud;
 using XCCloudService.Model.XCCloud;
+using XCCloudService.Common.Extensions;
 
 namespace XXCloudService.Api.XCCloud
 {
@@ -97,7 +98,7 @@ namespace XXCloudService.Api.XCCloud
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
 
-                var linq = from a in Data_CouponInfoBiz.I.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase))
+                var linq = from a in Data_CouponInfoService.I.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase))
                            select new
                            {
                                ID = a.ID,
@@ -675,16 +676,9 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 string errMsg = string.Empty;
-                string couponId = dicParas.ContainsKey("couponId") ? (dicParas["couponId"] + "") : string.Empty;
+                int couponId = dicParas.Get("couponId").Toint(0);
 
-                if (string.IsNullOrEmpty(couponId))
-                {
-                    errMsg = "优惠券规则ID不能为空";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
-
-                int iCouponId = Convert.ToInt32(couponId);
-                var storeIDs = data_Coupon_StoreListService.GetModels(p => p.CouponID == iCouponId).Select(o => new { StoreID = o.StoreID });
+                var storeIDs = data_Coupon_StoreListService.GetModels(p => p.CouponID == couponId).Select(o => new { StoreID = o.StoreID });
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, storeIDs);
             }
             catch (Exception e)

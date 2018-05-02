@@ -48,14 +48,17 @@ namespace XCCloudService.Model.CustomModel.XCCloud
 
     public class StoreIDDataModel:TokenDataModel
     {
+        public string MerchId { set; get; }
+
         public string StoreId { set; get; }
 
         public string StorePassword { set; get; }
 
         public string WorkStation { set; get; }
 
-        public StoreIDDataModel(string storeId, string password, string workStation)
+        public StoreIDDataModel(string merchId,string storeId, string password, string workStation)
         {
+            this.MerchId = merchId;
             this.StoreId = storeId;
             this.StorePassword = password;
             this.WorkStation = workStation;

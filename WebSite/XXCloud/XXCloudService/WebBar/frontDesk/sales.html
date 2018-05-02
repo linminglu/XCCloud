@@ -19,7 +19,14 @@
 		.saleText a.btn{padding: 0 6px;}
 		.saleText{display: flex;flex-direction: column-reverse;width: 7em;justify-content: space-between;text-align: center;}
 		.salesLi img{width: 8em;height: 6em;}
-		.background1{b}
+		.saleTitleBg li:nth-child(7n) a{background-color: #3279b4;}
+		.saleTitleBg li:nth-child(7n+1) a{background-color: #32c7d2;}
+		.saleTitleBg li:nth-child(7n+2) a{background-color: #b196fd;}
+		.saleTitleBg li:nth-child(7n+3) a{background-color: #659ae0;}
+		.saleTitleBg li:nth-child(7n+4) a{background-color: #f0c40b;}
+		.saleTitleBg li:nth-child(7n+5) a{background-color: #c5d2dc;}
+		.saleTitleBg li:nth-child(7n+6) a{background-color: #e96e72;}
+
 	</style>
 </head>
 <body>
@@ -257,17 +264,11 @@
 				<div class="salesAll">
 					<div class="salesTitle">
 						<div class="swiper-container">
-							<ul class="swiper-wrapper">
+							<ul class="swiper-wrapper saleTitleBg">
 								<!--<li class="on swiper-slide"><a href="javascript:(0)">全部</a></li>-->
-								<li v-for="(item,index) in saleTitle" class="swiper-slide" :class="{'on':!index}">
-									<a href="javascript:(0)" v-bind:style="{'background-color':item.color}">{{item.text}}</a>
+								<li v-for="(item,index) in saleTitle" class="swiper-slide" :class="{'on':!index}" @click="screening(index)">
+									<a href="javascript:(0)">{{item.text}}</a>
 								</li>
-								<!--<li class="swiper-slide"><a href="javascript:(0)">充值</a></li>-->
-								<!--<li class="swiper-slide"><a href="javascript:(0)">礼品</a></li>-->
-								<!--<li class="swiper-slide"><a href="javascript:(0)">门票</a></li>-->
-								<!--<li class="swiper-slide"><a href="javascript:(0)">数字币</a></li>-->
-								<!--<li class="swiper-slide"><a href="javascript:(0)">餐饮</a></li>-->
-								<!--<li class="swiper-slide"><a href="javascript:(0)">礼包</a></li>-->
 							</ul>
 						</div>
 						<div class="swiper-button-next"></div>
@@ -277,8 +278,7 @@
 						<li v-for="(item,index) in saleData" class="salesLi" @click="deletePerson(index)">
 							<img :src="item.imageUrl"/>
 							<div class="saleText">
-								<!--title="Dismissible popover" data-content="And here's some amazing content. It's very engaging. Right?"-->
-								<a tabindex="0" class="btn btn-group-sm btn-info" role="button" data-toggle="popover" data-trigger="focus" @click.stop="details(index)">详情</a>
+								<a tabindex="0" class="btn btn-group-sm btn-info" role="button" data-toggle="popover" @click.stop="details(index)" title="<h2>popoverTitle</h2>" data-content="And here's some amazing content. It's very engaging. Right?">详情</a>
 								<h3>{{item.foodName}}</h3>
 							</div>
 						</li>
@@ -334,13 +334,13 @@
 			saleTitle:[
 			    		{text:"全部",color:"#3279b4"},
 			    		{text:"充值",color:"#32c7d2"},
+                		{text:"数字币",color:"#b196fd"},
 			    		{text:"礼品",color:"#659ae0"},
 			    		{text:"门票",color:"#f0c40b"},
-			    		{text:"数字币",color:"#b196fd"},
 			    		{text:"餐饮",color:"#c5d2dc"},
 			    		{text:"礼包",ccolor:"#e96e72"}
 						],
-			saleData4:[],
+            popoverTitle:"",
 			saleData5:[]
         },
         mounted: function () {
@@ -353,7 +353,7 @@
                 var storeId = getStorage("storeId");       		//storeId
                 that.userToken = userToken;
                 that.storeId = storeId;
-                that.getMeal(0,4)
+                that.getMeal(0,"0,1,2,3,4,5,6");
                 var swiper = new Swiper('.swiper-container', {
                     /*pagination: '.swiper-pagination',*/
                     nextButton: '.swiper-button-next',
@@ -370,6 +370,7 @@
                 axios.post('/api/XCCloud/Foods.ashx?action=getFoodList', obj).then(function (res) {
                     console.log(res.data);
                     if (res.data.result_code === '1') {
+                        that.saleData =res.data.result_data;
 						if(foodType == 0){
 
 						}else if(foodType == 1){
@@ -379,7 +380,7 @@
 						}else if(foodType == 3){
 
 						}else if(foodType == 4){
-                            that.saleData =res.data.result_data
+
 						}
                     }
                 }).catch(function (err) {
@@ -443,34 +444,38 @@
             },
             details:function(index){
                 var that = this;
-              	console.log(index);
               	console.log(that.saleData[index]);
-              	console.log(that.saleData[index].foodId);
-
-              var obj={sysId: sysId,versionNo: versionNo,foodId:that.saleData[index].foodId};
+              var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken ,foodId:that.saleData[index].foodId};
               axios.post('/XCCloud/Foods?action=getFoodDetail', obj).then(function (res) {
 				  console.log(res.data);
+				  that.msgPrompt(res.data);
 				  if (res.data.result_code === '1') {
-				      that.saleData =res.data.result_data;
+//                      that.msg = JSON.stringify(res.data.result_data);
+//                      $('#myModal').modal('show');
+
+//                      $(".salesCoin").find("li").eq(index).find(".saleText a").on('show.bs.popover', function () {
+//                          that.popoverTitle ="lalalalalalalalalal";
+//                      });
+                      $(".salesCoin").find("li").eq(index).find(".saleText a").popover("show")
 				  }
 			  }).catch(function (err) {
-				  that.$dialog.loading.close();
 				  console.log(err);
 			  });
 			},
+            screening:function (index) {
+				console.log(index);
+				$(".saleTitleBg").find("li").eq(index).addClass("on").siblings().removeClass("on");
+                this.getMeal(0,index);
+
+            },
             msgPrompt:function (res) {
+                var that = this;
                 if(res.return_code == 0){
-                    this.$dialog.toast({
-                        mes: res.return_msg,
-                        timeout: 1500,
-                        icon: 'error'
-                    });
+                    that.msg = res.return_msg;
+                    $('#myModal').modal('show');
                 }else if(res.result_code == 0){
-                    this.$dialog.toast({
-                        mes: res.result_msg,
-                        timeout: 1500,
-                        icon: 'error'
-                    });
+                    that.msg = res.result_msg;
+                    $('#myModal').modal('show');
                 }
             }
         }

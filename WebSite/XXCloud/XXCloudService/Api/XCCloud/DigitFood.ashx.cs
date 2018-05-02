@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using XCCloudService.Base;
-using XCCloudService.Business.XCCloud;
+using XCCloudService.BLL.XCCloud;
 using XCCloudService.Common;
 using XCCloudService.Model.CustomModel.XCCloud;
 using XCCloudService.Common.Extensions;
@@ -28,8 +28,8 @@ namespace XXCloudService.Api.XCCloud
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
 
-                var linq = from a in Data_DigitCoinFoodBiz.NI.GetModels(p=>p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase))
-                           join b in Dict_BalanceTypeBiz.NI.GetModels(p => p.State == 1) on a.BalanceIndex equals b.ID into b1
+                var linq = from a in Data_DigitCoinFoodService.N.GetModels(p=>p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase))
+                           join b in Dict_BalanceTypeService.N.GetModels(p => p.State == 1) on a.BalanceIndex equals b.ID into b1
                            from b in b1.DefaultIfEmpty()
                            select new
                            {
@@ -63,7 +63,7 @@ namespace XXCloudService.Api.XCCloud
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
-                var data_DigitFoodInfo = Data_DigitCoinFoodBiz.I.GetModels(p => p.ID == id).FirstOrDefault();
+                var data_DigitFoodInfo = Data_DigitCoinFoodService.I.GetModels(p => p.ID == id).FirstOrDefault();
                 if (data_DigitFoodInfo == null)
                 {
                     errMsg = "该数字币套餐不存在";
@@ -86,7 +86,7 @@ namespace XXCloudService.Api.XCCloud
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
                
-                var linq = from a in Data_DigitCoinFoodBiz.I.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase))                
+                var linq = from a in Data_DigitCoinFoodService.I.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase))                
                            select new {
                                ID = a.ID,
                                FoodName = a.FoodName
@@ -132,13 +132,13 @@ namespace XXCloudService.Api.XCCloud
 
                 #endregion
 
-                if(Data_DigitCoinFoodBiz.I.Any(a=>a.ID != id && a.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && a.FoodName.Equals(foodName, StringComparison.OrdinalIgnoreCase)))
+                if(Data_DigitCoinFoodService.I.Any(a=>a.ID != id && a.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && a.FoodName.Equals(foodName, StringComparison.OrdinalIgnoreCase)))
                 {
                     errMsg = "数字币套餐名称不能重复";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
-                var data_DigitCoinFood = Data_DigitCoinFoodBiz.I.GetModels(p => p.ID == id).FirstOrDefault() ?? new Data_DigitCoinFood();
+                var data_DigitCoinFood = Data_DigitCoinFoodService.I.GetModels(p => p.ID == id).FirstOrDefault() ?? new Data_DigitCoinFood();
                 data_DigitCoinFood.ID = id;
                 data_DigitCoinFood.FoodName = foodName;
                 data_DigitCoinFood.BalanceIndex = balanceIndex;
@@ -148,7 +148,7 @@ namespace XXCloudService.Api.XCCloud
                 data_DigitCoinFood.MerchID = merchId;
                 if (id == 0)
                 {
-                    if (!Data_DigitCoinFoodBiz.I.Add(data_DigitCoinFood))
+                    if (!Data_DigitCoinFoodService.I.Add(data_DigitCoinFood))
                     {
                         errMsg = "添加数字币套餐失败";
                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -156,13 +156,13 @@ namespace XXCloudService.Api.XCCloud
                 }
                 else
                 {
-                    if (!Data_DigitCoinFoodBiz.I.Any(a => a.ID == id))
+                    if (!Data_DigitCoinFoodService.I.Any(a => a.ID == id))
                     {
                         errMsg = "该数字币套餐不存在";
                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                     }
 
-                    if (!Data_DigitCoinFoodBiz.I.Update(data_DigitCoinFood))
+                    if (!Data_DigitCoinFoodService.I.Update(data_DigitCoinFood))
                     {
                         errMsg = "更新数字币套餐失败";
                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -195,26 +195,26 @@ namespace XXCloudService.Api.XCCloud
                 {
                     try
                     {
-                        if (!Data_DigitCoinFoodBiz.I.Any(a => a.ID == id))
+                        if (!Data_DigitCoinFoodService.I.Any(a => a.ID == id))
                         {
                             errMsg = "该数字币套餐不存在";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 
-                        var data_DigitCoinFood = Data_DigitCoinFoodBiz.I.GetModels(p => p.ID == id).FirstOrDefault();
-                        if (!Data_DigitCoinFoodBiz.I.Delete(data_DigitCoinFood))
+                        var data_DigitCoinFood = Data_DigitCoinFoodService.I.GetModels(p => p.ID == id).FirstOrDefault();
+                        if (!Data_DigitCoinFoodService.I.Delete(data_DigitCoinFood))
                         {
                             errMsg = "删除数字币套餐失败";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 
-                        foreach (var model in Data_Food_DetialBiz.I.GetModels(p => p.FoodType == (int)FoodDetailType.Digit && p.Status == 1))
+                        foreach (var model in Data_Food_DetialService.I.GetModels(p => p.FoodType == (int)FoodDetailType.Digit && p.Status == 1))
                         {
                             model.Status = 0;
-                            Data_Food_DetialBiz.I.UpdateModel(model);
+                            Data_Food_DetialService.I.UpdateModel(model);
                         }
 
-                        if (!Data_Food_DetialBiz.I.SaveChanges())
+                        if (!Data_Food_DetialService.I.SaveChanges())
                         {
                             errMsg = "删除套餐内容关联信息失败";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);

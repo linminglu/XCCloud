@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using XCCloudService.Base;
-using XCCloudService.Business.XCCloud;
+using XCCloudService.BLL.XCCloud;
 using XCCloudService.Common;
 using XCCloudService.Model.CustomModel.XCGame;
 using XCCloudService.Model.XCCloud;
@@ -39,7 +39,7 @@ namespace XXCloudService.Api.HaoKu
                 //string storeId = memberTokenModel.StoreId;
                 string storeId = "100025420106001";
 
-                Base_StoreHKConfig storeHK = Base_StoreHKConfigBiz.I.GetModels(s => s.StoreID == storeId).FirstOrDefault();
+                Base_StoreHKConfig storeHK = Base_StoreHKConfigService.I.GetModels(s => s.StoreID == storeId).FirstOrDefault();
 
                 AES.Key = HaokuConfig.CallerSecret + storeHK.HKStoreSecret;
 
@@ -95,7 +95,7 @@ namespace XXCloudService.Api.HaoKu
                 //string storeId = memberTokenModel.StoreId;
                 string storeId = "100025420106001";
 
-                Base_StoreHKConfig storeHK = Base_StoreHKConfigBiz.I.GetModels(s => s.StoreID == storeId).FirstOrDefault();
+                Base_StoreHKConfig storeHK = Base_StoreHKConfigService.I.GetModels(s => s.StoreID == storeId).FirstOrDefault();
 
                 AES.Key = HaokuConfig.CallerSecret + storeHK.HKStoreSecret;
 
@@ -153,7 +153,7 @@ namespace XXCloudService.Api.HaoKu
                 //string storeId = memberTokenModel.StoreId;
                 string storeId = "100025420106001";
 
-                Base_StoreHKConfig storeHK = Base_StoreHKConfigBiz.I.GetModels(s => s.StoreID == storeId).FirstOrDefault();
+                Base_StoreHKConfig storeHK = Base_StoreHKConfigService.I.GetModels(s => s.StoreID == storeId).FirstOrDefault();
 
                 AES.Key = HaokuConfig.CallerSecret + storeHK.HKStoreSecret;
 
@@ -207,7 +207,7 @@ namespace XXCloudService.Api.HaoKu
                 //string storeId = memberTokenModel.StoreId;
                 string storeId = "100025420106001";
 
-                Base_StoreHKConfig storeHK = Base_StoreHKConfigBiz.I.GetModels(s => s.StoreID == storeId).FirstOrDefault();
+                Base_StoreHKConfig storeHK = Base_StoreHKConfigService.I.GetModels(s => s.StoreID == storeId).FirstOrDefault();
 
                 AES.Key = HaokuConfig.CallerSecret + storeHK.HKStoreSecret;
 
@@ -257,7 +257,7 @@ namespace XXCloudService.Api.HaoKu
                 //string storeId = memberTokenModel.StoreId;
                 string storeId = "100025420106001";
 
-                Base_StoreHKConfig storeHK = Base_StoreHKConfigBiz.I.GetModels(s => s.StoreID == storeId).FirstOrDefault();
+                Base_StoreHKConfig storeHK = Base_StoreHKConfigService.I.GetModels(s => s.StoreID == storeId).FirstOrDefault();
 
                 AES.Key = HaokuConfig.CallerSecret + storeHK.HKStoreSecret;
 
@@ -308,7 +308,7 @@ namespace XXCloudService.Api.HaoKu
                 //string storeId = memberTokenModel.StoreId;
                 string storeId = "100025420106001";
 
-                Base_StoreHKConfig storeHK = Base_StoreHKConfigBiz.I.GetModels(s => s.StoreID == storeId).FirstOrDefault();
+                Base_StoreHKConfig storeHK = Base_StoreHKConfigService.I.GetModels(s => s.StoreID == storeId).FirstOrDefault();
 
                 AES.Key = HaokuConfig.CallerSecret + storeHK.HKStoreSecret;
 
@@ -360,7 +360,7 @@ namespace XXCloudService.Api.HaoKu
                 //string storeId = memberTokenModel.StoreId;
                 string storeId = "100025420106001";
 
-                Base_StoreHKConfig storeHK = Base_StoreHKConfigBiz.I.GetModels(s => s.StoreID == storeId).FirstOrDefault();
+                Base_StoreHKConfig storeHK = Base_StoreHKConfigService.I.GetModels(s => s.StoreID == storeId).FirstOrDefault();
 
                 AES.Key = HaokuConfig.CallerSecret + storeHK.HKStoreSecret;
 
@@ -413,7 +413,7 @@ namespace XXCloudService.Api.HaoKu
                 //string storeId = memberTokenModel.StoreId;
                 string storeId = "100025420106001";
 
-                Base_StoreHKConfig storeHK = Base_StoreHKConfigBiz.I.GetModels(s => s.StoreID == storeId).FirstOrDefault();
+                Base_StoreHKConfig storeHK = Base_StoreHKConfigService.I.GetModels(s => s.StoreID == storeId).FirstOrDefault();
 
                 AES.Key = HaokuConfig.CallerSecret + storeHK.HKStoreSecret;
 
@@ -466,7 +466,7 @@ namespace XXCloudService.Api.HaoKu
                 //string storeId = memberTokenModel.StoreId;
                 string storeId = "100025420106001";
 
-                Base_StoreHKConfig storeHK = Base_StoreHKConfigBiz.I.GetModels(s => s.StoreID == storeId).FirstOrDefault();
+                Base_StoreHKConfig storeHK = Base_StoreHKConfigService.I.GetModels(s => s.StoreID == storeId).FirstOrDefault();
 
                 AES.Key = HaokuConfig.CallerSecret + storeHK.HKStoreSecret;
 
@@ -523,7 +523,7 @@ namespace XXCloudService.Api.HaoKu
                 //string storeId = memberTokenModel.StoreId;
                 string storeId = "100025420106001";
 
-                Base_StoreHKConfig storeHK = Base_StoreHKConfigBiz.I.GetModels(s => s.StoreID == storeId).FirstOrDefault();
+                Base_StoreHKConfig storeHK = Base_StoreHKConfigService.I.GetModels(s => s.StoreID == storeId).FirstOrDefault();
 
                 AES.Key = HaokuConfig.CallerSecret + storeHK.HKStoreSecret;
 
@@ -581,7 +581,7 @@ namespace XXCloudService.Api.HaoKu
                 //string storeId = memberTokenModel.StoreId;
                 string storeId = "100025420106001";
 
-                Base_StoreHKConfig storeHK = Base_StoreHKConfigBiz.I.GetModels(s => s.StoreID == storeId).FirstOrDefault();
+                Base_StoreHKConfig storeHK = Base_StoreHKConfigService.I.GetModels(s => s.StoreID == storeId).FirstOrDefault();
 
                 AES.Key = HaokuConfig.CallerSecret + storeHK.HKStoreSecret;
 
@@ -633,7 +633,7 @@ namespace XXCloudService.Api.HaoKu
                 //string storeId = memberTokenModel.StoreId;
                 string storeId = "100025420106001";
 
-                Base_StoreHKConfig storeHK = Base_StoreHKConfigBiz.I.GetModels(s => s.StoreID == storeId).FirstOrDefault();
+                Base_StoreHKConfig storeHK = Base_StoreHKConfigService.I.GetModels(s => s.StoreID == storeId).FirstOrDefault();
 
                 AES.Key = HaokuConfig.CallerSecret + storeHK.HKStoreSecret;
 
@@ -688,7 +688,7 @@ namespace XXCloudService.Api.HaoKu
                 //string storeId = memberTokenModel.StoreId;
                 string storeId = "100025420106001";
 
-                Base_StoreHKConfig storeHK = Base_StoreHKConfigBiz.I.GetModels(s => s.StoreID == storeId).FirstOrDefault();
+                Base_StoreHKConfig storeHK = Base_StoreHKConfigService.I.GetModels(s => s.StoreID == storeId).FirstOrDefault();
 
                 AES.Key = HaokuConfig.CallerSecret + storeHK.HKStoreSecret;
 

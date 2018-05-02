@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using XCCloudService.BLL.CommonBLL;
+using XCCloudService.BLL.XCCloud;
 using XCCloudService.Business.XCCloud;
 using XCCloudService.Common.Enum;
 using XCCloudService.Model.XCCloud;

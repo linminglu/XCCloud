@@ -79,11 +79,12 @@ as
 	declare @sql nvarchar(max)
 	SET @sql = ''
 	SET @sql = @sql + 'select * from Dict_System where 1=1'
-	if(@MerchID is not null and @MerchID <> '')
-		SET @sql = @sql + ' and (MerchID=@MerchID or MerchID is null or MerchID='''')'
-	if(@DictKey is not null and @DictKey <> '')
+
+	SET @sql = @sql + ' and IsNull(MerchID, '''')=IsNull(@MerchID, '''')'
+	if(IsNull(@DictKey, '') <> '')
 		begin	
-			select @RootID=ID from (select top 1 ID from Dict_System where DictKey=@DictKey and (MerchID=@MerchID or MerchID is null or MerchID='')) m
+			select @RootID=ID from (select top 1 ID from Dict_System where DictKey=@DictKey 
+			and IsNull(MerchID, '')=IsNull(@MerchID, '')) m
 			if not exists (select 0 from Dict_System where PID=@RootID)
 				return
 			SET @sql = @sql + ' and PID=@RootID'

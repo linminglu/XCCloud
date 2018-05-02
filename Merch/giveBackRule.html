@@ -33,14 +33,14 @@
                 </div>
                 <div class="layui-form-mid">填0表示仅当天有效</div>
             </div>
-            <div class="layui-inline">
-                <label for="" class="layui-form-label">返还方式</label>
+            <div class="layui-inline goodIsAll">
+                <label  class="layui-form-label">返还方式</label>
                 <div class="layui-input-inline">
                     <input type="checkbox" checked lay-skin="switch" id="Backtype" lay-filter="Backtype" lay-text="按营业日期|按自然日期">
                 </div>
             </div>
-            <div class="layui-inline">
-                <label for="" class="layui-form-label">统计方式</label>
+            <div class="layui-inline goodIsAll">
+                <label  class="layui-form-label">统计方式</label>
                 <div class="layui-input-inline">
                     <input type="checkbox" checked lay-skin="switch" id="AllowContainToday" lay-filter="AllowContainToday" lay-text="包含当天|不包含当天">
                 </div>
@@ -69,8 +69,8 @@
                 </div>
                 <div class="layui-form-mid">币不能退卡(返还到会员卡时无效)</div>
             </div>
-            <div class="layui-inline">
-                <label  class="layui-form-label">是否扣除返还币</label>
+            <div class="layui-inline goodIsAll">
+                <label  class="layui-form-label" style="padding: 8px 0;">是否扣除返还币</label>
                 <div class="layui-input-inline">
                     <input type="checkbox" checked lay-skin="switch" id="AllowBackPrincipal" lay-filter="AllowBackPrincipal" lay-text="是|否">
                 </div>
@@ -100,8 +100,8 @@
         'url':'/XCCloud/Parameter?action=GetGivebackRules',
         'elem':'#giveBackRuleTb',
         'cols':[
-            {field:'ID', title:'规则ID', align: 'center', sort: true,width:80}
-            ,{field:'MemberLvlId',title: '会员级别', align: 'center',templet:'#memberLevel'}
+            {field:'ID', title:'规则ID', align: 'center', sort: true,width:80},
+            {field:'MemberLevelName',title: '会员级别', align: 'center'}
             ,{field:'BackMin', title: '最小币数', align: 'center'}
             ,{field:'BackMax', title: '最大币数', align: 'center'}
             ,{field:'BackScale', title: '返还比例', align: 'center',templet:'#changeLock',width:140}
@@ -120,13 +120,6 @@
         form.on('select(memberLevel)',function (data) {
             memberLevel=data.value;
             memberLevelStr=data.elem[data.elem.selectedIndex].text;
-        });
-        form.on('switch(Backtype)',function (data) {
-                if(data.elem.checked==true){
-                    Backtype=1;
-                }else {
-                    Backtype=0;
-                }
         });
         form.on('switch(AllowBackPrincipal)',function (data) {
             if(data.elem.checked==true){
@@ -170,7 +163,7 @@
            var parasJson = JSON.stringify(obj);
            $.ajax({
                type: "post",
-               url: '/XCCloud/Parameter?action=AddGivebackRule',
+               url: '/XCCloud/Parameter?action=SaveGivebackRule',
                contentType: "application/json; charset=utf-8",
                data: { parasJson: parasJson },
                success: function (data) {

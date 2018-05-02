@@ -94,11 +94,6 @@
     <Compile Include="XCCloud\WebAppInitBusiness.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="XCCloud\XCCloudBusiness.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>XCCloudBusiness.tt</DependentUpon>
-    </Compile>
     <Compile Include="XCCloud\XCCloudUnionIDBusiness.cs" />
     <Compile Include="XCGameManaLog\UDPDBBusiness.cs" />
     <Compile Include="XCGameMana\DataOrderQueryBusiness.cs" />
@@ -148,13 +143,6 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="XCCloud\XCCloudBusiness.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>XCCloudBusiness.cs</LastGenOutput>
-      <AutoT4RunOnBuild>Disabled</AutoT4RunOnBuild>
-    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

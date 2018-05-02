@@ -8,6 +8,7 @@ using System.Web.Script.Serialization;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using XCCloudService.BLL.CommonBLL;
+using XCCloudService.BLL.XCCloud;
 using XCCloudService.Business.XCCloud;
 using XCCloudService.Business.XCGameMana;
 using XCCloudService.CacheService;

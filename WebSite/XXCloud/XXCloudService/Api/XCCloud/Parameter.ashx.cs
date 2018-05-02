@@ -14,7 +14,7 @@ using XCCloudService.Model.XCCloud;
 using System.Transactions;
 using System.Data.Entity.SqlServer;
 using XCCloudService.Common.Extensions;
-using XCCloudService.Business.XCCloud;
+using XCCloudService.BLL.XCCloud;
 
 namespace XXCloudService.Api.XCCloud
 {
@@ -363,10 +363,11 @@ namespace XXCloudService.Api.XCCloud
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
 
-                var data_GivebackRuleList = from a in Data_GivebackRuleBiz.NI.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase))
-                                            join b in Data_MemberLevelBiz.NI.GetModels(p => p.State == 1) on a.MemberLevelID equals b.MemberLevelID into b1
+                var data_GivebackRuleList = from a in Data_GivebackRuleService.N.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase))
+                                            join b in Data_MemberLevelService.N.GetModels(p => p.State == 1) on a.MemberLevelID equals b.MemberLevelID into b1
                                             from b in b1.DefaultIfEmpty()
                                             select new {
+                                                ID = a.ID,
                                                 MemberLevelID = a.MemberLevelID,
                                                 MemberLevelName = b != null ? b.MemberLevelName : string.Empty,
                                                 AllowBackPrincipal = a.AllowBackPrincipal,
@@ -401,7 +402,7 @@ namespace XXCloudService.Api.XCCloud
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
-                var data_GivebackRule = Data_GivebackRuleBiz.I.GetModels(p => p.ID == id).FirstOrDefault();
+                var data_GivebackRule = Data_GivebackRuleService.I.GetModels(p => p.ID == id).FirstOrDefault();
                 if (data_GivebackRule == null)
                 {
                     errMsg = "该返还规则不存在";
@@ -442,7 +443,7 @@ namespace XXCloudService.Api.XCCloud
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
-                Data_GivebackRule data_GivebackRule = Data_GivebackRuleBiz.I.GetModels(p=>p.ID == id).FirstOrDefault() ?? new Data_GivebackRule();
+                Data_GivebackRule data_GivebackRule = Data_GivebackRuleService.I.GetModels(p=>p.ID == id).FirstOrDefault() ?? new Data_GivebackRule();
                 data_GivebackRule.MerchID = merchId;
                 data_GivebackRule.MemberLevelID = memberLvlId;
                 data_GivebackRule.AllowBackPrincipal = Convert.ToInt32(allowBackPrincipal);
@@ -454,7 +455,7 @@ namespace XXCloudService.Api.XCCloud
                 data_GivebackRule.ExitCardMin = !string.IsNullOrEmpty(exitCardMin) ? Convert.ToInt32(dicParas["exitCardMin"]) : (int?)null;
                 data_GivebackRule.TotalDays = !string.IsNullOrEmpty(totalDays) ? Convert.ToInt32(dicParas["totalDays"]) : (int?)null;
 
-                if (Data_GivebackRuleBiz.I.Any(a => a.ID != id && a.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && a.MemberLevelID == memberLvlId))
+                if (Data_GivebackRuleService.I.Any(a => a.ID != id && a.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && a.MemberLevelID == memberLvlId))
                 {
                     errMsg = "该会员级别的返还规则已存在";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -462,7 +463,7 @@ namespace XXCloudService.Api.XCCloud
 
                 if (id == 0)
                 {                    
-                    if (!Data_GivebackRuleBiz.I.Add(data_GivebackRule))
+                    if (!Data_GivebackRuleService.I.Add(data_GivebackRule))
                     {
                         errMsg = "添加返还规则失败";
                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -470,13 +471,13 @@ namespace XXCloudService.Api.XCCloud
                 }
                 else
                 {
-                    if (!Data_GivebackRuleBiz.I.Any(a => a.ID == id))
+                    if (!Data_GivebackRuleService.I.Any(a => a.ID == id))
                     {
                         errMsg = "该返还规则不存在";
                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                     }
 
-                    if (!Data_GivebackRuleBiz.I.Update(data_GivebackRule))
+                    if (!Data_GivebackRuleService.I.Update(data_GivebackRule))
                     {
                         errMsg = "更新返还规则失败";
                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -505,14 +506,14 @@ namespace XXCloudService.Api.XCCloud
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
-                var data_GivebackRule = Data_GivebackRuleBiz.I.GetModels(p => p.ID == id).FirstOrDefault();
+                var data_GivebackRule = Data_GivebackRuleService.I.GetModels(p => p.ID == id).FirstOrDefault();
                 if (data_GivebackRule == null)
                 {
                     errMsg = "该返还规则不存在";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
-                if (!Data_GivebackRuleBiz.I.Delete(data_GivebackRule))
+                if (!Data_GivebackRuleService.I.Delete(data_GivebackRule))
                 {
                     errMsg = "删除返还规则失败";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
