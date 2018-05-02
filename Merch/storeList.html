@@ -661,11 +661,11 @@
         'elem':'#storeListTable',
         'cols':[
             {type:'checkbox'}
-            ,{field:'StoreID', title: '门店编号', align: 'center'} //width 支持：数字、百分比和不填写。你还可以通过 minWidth 参数局部定义当前单元格的最小宽度，layui 2.2.1 新增
+            ,{field:'StoreID', title: '门店编号', align: 'center', sort: true} //width 支持：数字、百分比和不填写。你还可以通过 minWidth 参数局部定义当前单元格的最小宽度，layui 2.2.1 新增
             ,{field:'MerchID', title: '归属商户', sort: true}
             ,{field:'StoreName', title: '门头', align: 'center'}
             ,{field:'Password', title: '消费密码', align: 'center'} //单元格内容水平居中
-            ,{field:'AuthorExpireDate', title: '授权到期日期', align: 'center',templet: '#changeTime'} //单元格内容水平居中
+            ,{field:'AuthorExpireDate', title: '授权到期日期', align: 'center'} //单元格内容水平居中
             ,{field:'AreaCode', title: '邮政编号', align: 'center'}
             ,{field:'Address', title: '地址',  align: 'center'}
             ,{field:'Contacts', title: '负责人',  align: 'center'}
@@ -1236,12 +1236,4 @@
 	<a class="layui-btn layui-btn-danger layui-btn-sm" lay-event="del"><i class="layui-icon">&#xe640;</i>删除</a>
 	<a class="layui-btn layui-btn-danger layui-btn-sm" lay-event="edit"><i class="layui-icon">&#xe642;</i>修改</a>
 </script>
-<script type="text/html" id="changeTime">
-	{{# if(d.AuthorExpireDate!=null&&d.AuthorExpireDate!=''){ }}
-	{{dateStamp(d.AuthorExpireDate)}}
-	    {{# }else{ }}
-	{{d.AuthorExpireDate}}
-	{{#  } }}
-</script>
-
 </html>

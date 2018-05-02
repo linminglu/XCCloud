@@ -1,4 +1,4 @@
-﻿// 后台主页   动态加载左侧菜单
+// 后台主页   动态加载左侧菜单
     var paras = [];
     var values = [];
     layui.use('form',function () {
@@ -517,7 +517,6 @@ function login_merch(){
                 data=JSON.parse(data);
                 console.log(data);
                 if(data.result_code==1){
-  		    setStorage('xc_language','Chinese');
                     setStorage('logMsg',JSON.stringify(data.result_data));
                     setStorage('token',data.result_data.token);
                     setStorage('usernames',username);
@@ -703,10 +702,8 @@ function showAllPoster() {
                 for (let i in arr){
                     $('.active-list').append('<li class="active_lists" name="'+arr[i].ID+'"><img src="'+arr[i].PicturePath+'" alt="">' +
                         '<p class="publish_title">'+arr[i].Title+'</p>' +
-                        '<div><p class="publish_time">'+timeStamp2String(arr[i].Time)+'</p><i class="layui-icon del_active">&#xe640</i></div></li>')
+                        '<div><p class="publish_time">'+arr[i].Time+'</p><i class="layui-icon del_active">&#xe640</i></div></li>')
                 }
-            }else if(data.return_msg=="token无效"){
-                autoReLogin();
             }
         }
     })
