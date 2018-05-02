@@ -404,6 +404,13 @@ namespace XXCloudService.Api.XCCloud
                     
                     if (iSendType == (int)SendType.Jackpot)
                     {
+                        if (string.IsNullOrEmpty(jackpotId))
+                        {
+                            errMsg = "抽奖活动不能为空";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+                        iJackpotId = Convert.ToInt32(jackpotId);
+
                         if (string.IsNullOrEmpty(jackpotCount))
                         {
                             errMsg = "抽奖次数不能为空";
@@ -416,18 +423,12 @@ namespace XXCloudService.Api.XCCloud
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 
+                        iJackpotCount = Convert.ToInt32(jackpotCount);
                         if (iJackpotCount < 0)
                         {
                             errMsg = "抽奖次数不能小于0";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
-
-                        if (string.IsNullOrEmpty(jackpotId))
-                        {
-                            errMsg = "抽奖活动不能为空";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
-                        iJackpotId = Convert.ToInt32(jackpotId);
+                        }                        
                     }
 
                     if (iSendType == (int)SendType.Orient)

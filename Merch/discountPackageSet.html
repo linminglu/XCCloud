@@ -980,25 +980,27 @@
 
                 })
            }else if(layEvent === 'del'){
-                // layer.confirm('确定停用此套餐吗？', function(index){
-                //     let _obj={'projectIds':data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
-                //     let parseJson = JSON.stringify(_obj);
-                //     $.ajax({
-                //         type:'post',
-                //         url:'/XCCloud/Project?action=DeleteProjectInfo',
-                //         contentType: "application/json; charset=utf-8",
-                //         data:{parasJson: parseJson},
-                //         success: function (data) {
-                //             data = JSON.parse(data);
-                //             if (data.result_code == 1) {
-                //                 layer.close(index);
-                //                 xc.getInitData(parm);
-                //             } else {
-                //                 layer.msg(data.result_msg);
-                //             }
-                //         }
-                //     })
-                // });
+                layer.confirm('确定停用此套餐吗？', function(index){
+                    let _obj={'foodId':data.FoodID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                    let parseJson = JSON.stringify(_obj);
+                    $.ajax({
+                        type:'post',
+                        url:'/XCCloud/Promotion?action=DelFoodInfo',
+                        contentType: "application/json; charset=utf-8",
+                        data:{parasJson: parseJson},
+                        success: function (data) {
+                            data = JSON.parse(data);
+                            if (data.result_code == 1) {
+                                layer.msg('本套餐停用成功',{time:1500},function () {
+                                    layer.close(index);
+                                    xc.getInitData(parm);
+                                })
+                            } else {
+                                layer.msg(data.result_msg);
+                            }
+                        }
+                    })
+                });
             }else if(layEvent === 'set'){
                 xc.ProjectFoodStores(data.FoodID,form,token,'storeListBox');
                 layer.open({

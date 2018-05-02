@@ -186,6 +186,12 @@
                     <select name="" id="ProjectID" lay-filter="ProjectID"></select>
                 </div>
             </div>
+            <div class="layui-inline chargeContentBox chargeBalance layui-hide">
+                <label  class="layui-form-label">余额类别</label>
+                <div class="layui-input-inline">
+                    <select name="" id="balanceType" lay-filter="balanceType"></select>
+                </div>
+            </div>
             <div class="layui-inline">
                 <label  class="layui-form-label">兑换数量</label>
                 <div class="layui-input-inline">
@@ -330,6 +336,7 @@
     let goodId='';
     let projectId='';
     let jackpotId='';
+    let balanceIndex='';
     let memberId=[];
     let storeId=[];
     layui.use(['form','layer','table','laydate'],()=>{
@@ -384,19 +391,28 @@
             if(data.value==0){
                 $('.chargeGoods').removeClass('layui-hide');
                 $('.chargeProgect').addClass('layui-hide');
+                $('.chargeBalance').addClass('layui-hide');
                 projectId='';
+                balanceIndex='';
                 $('#ProjectID').html('');
+                $('#balanceType').html('');
                 xc.getChargeGood(token,form);
             } else if(data.value==1){
                 $('.chargeGoods').addClass('layui-hide');
                 $('.chargeProgect').removeClass('layui-hide');
+                $('.chargeBalance').addClass('layui-hide');
                 goodId='';
+                balanceIndex='';
                 $('#GoodID').html('');
+                $('#balanceType').html('');
                 xc.getChargeProgect(token,form)
             }else if(data.value==2){
-               $('.chargeContentBox').addClass('layui-hide');
+                $('.chargeGoods').addClass('layui-hide');
+                $('.chargeProgect').addClass('layui-hide');
+                $('.chargeBalance').removeClass('layui-hide');
                 goodId='';
                 projectId='';
+                xc.getBalanceTypeDic(token,layer,form,'balanceType');
                 $('#GoodID').html('');
                 $('#ProjectID').html('');
             }
@@ -407,6 +423,9 @@
         });
         form.on('select(ProjectID)',(data)=>{
             projectId=data.value;
+        });
+        form.on('select(balanceType)',(data)=>{
+            balanceIndex=data.value;
         });
         form.on('select(JackpotActive)',(data)=>{
             jackpotId=data.value;
@@ -536,7 +555,7 @@
                             CouponType=arr.CouponType;
                             if(arr.CouponType==2){
                                 $('#tokenShow').removeClass('layui-hide');
-                                $('#saleShow').addClass('layui-hide')
+                                $('#saleShow').addClass('layui-hide');
                             } else {
                                 $('#saleShow').removeClass('layui-hide');
                                 $('#tokenShow').addClass('layui-hide');
@@ -569,8 +588,10 @@
                                 $('body').find('li[name="disturbBox"]').eq(1).removeClass('layui-hide').siblings().addClass('layui-hide');
                                 $('#JackpotActiveBox').removeClass('layui-hide');
                                 $('#JackpotCount').removeClass('layui-hide').siblings().addClass('layui-hide');
+
                                 $('#tips').text('次');
                                 xc.getJackpotList(token,form,arr.JackpotID);
+                                jackpotId=arr.JackpotID;
                             }else if(arr.SendType==1){
                                 $('body').find('li[name="disturbBox"]').eq(0).removeClass('layui-hide').siblings().addClass('layui-hide');
                                 $('#JackpotActive').html('');
@@ -585,30 +606,37 @@
                                 $('#OverMoney').val(arr.OverMoney||'');
                                 $('#FreeCouponCount').val(arr.FreeCouponCount||'');
                                 $('#JackpotCount').val(arr.JackpotCount||'');
-                                jackpotId;
-                                chargeType=arr.ChargeType||'';
-                                if(arr.ChargeType){
-                                    $('#ChargeType').find('option[value="'+arr.ChargeType+'"]').attr('selected',true);
+
+                                chargeType=arr.ChargeType;
+                                // if(arr.ChargeType!=''){
+                                    $('#ChargeType').find('option[value="'+arr.ChargeType+'"]').prop('selected',true);
                                     if(arr.ChargeType==0){
                                         $('.chargeGoods').removeClass('layui-hide');
                                         $('.chargeProgect').addClass('layui-hide');
+                                        $('.chargeBalance').addClass('layui-hide');
                                         projectId='';
+                                        balanceIndex='';
                                         $('#ProjectID').html('');
                                         xc.getChargeGood(token,form,arr.GoodID);
                                     } else if(arr.ChargeType==1){
                                         $('.chargeGoods').addClass('layui-hide');
                                         $('.chargeProgect').removeClass('layui-hide');
+                                        $('.chargeBalance').addClass('layui-hide');
                                         goodId='';
+                                        balanceIndex='';
                                         $('#GoodID').html('');
                                         xc.getChargeProgect(token,form,arr.ProjectID)
                                     }else if(arr.ChargeType==2){
-                                        $('.chargeContentBox').addClass('layui-hide');
+                                        $('.chargeGoods').addClass('layui-hide');
+                                        $('.chargeProgect').addClass('layui-hide');
+                                        $('.chargeBalance').removeClass('layui-hide')
                                         goodId='';
                                         projectId='';
+                                        balanceIndex=arr.BalanceIndex;
+                                        xc.getBalanceTypeDic(token,layer,form,'balanceType',arr.BalanceIndex);
                                         $('#GoodID').html('');
                                         $('#ProjectID').html('');
                                     }
-                                }
                                 $('#ChargeCount').val(arr.ChargeCount||'');
                                 goodId=arr.GoodID||'';
                                 projectId=arr.ProjectID||'';
@@ -743,9 +771,19 @@
                     $('#JackpotActive').html('<option>-请选择-</option>');
                     let array=data.result_data;
                     for(let i in array){
-                        $('#JackpotActive').append('<option value="'+array[i].Key+'">'+array[i].Value+'</option>')
+                        if(j){
+                            if(array[i].Key==j){
+                                $('#JackpotActive').append('<option value="'+array[i].Key+'" selected>'+array[i].Value+'</option>')
+                            }else {
+                                $('#JackpotActive').append('<option value="'+array[i].Key+'">'+array[i].Value+'</option>')
+                            }
+
+                        }else {
+                            $('#JackpotActive').append('<option value="'+array[i].Key+'">'+array[i].Value+'</option>')
+                        }
+
                     }
-                    $('#JackpotActive').find('option[value="'+j+'"]').attr('selected',true);
+                    // $('#JackpotActive').find('option[value="'+j+'"]').attr('selected',true);
                     form.render('select');
                 }
             }
@@ -766,9 +804,18 @@
                     $('#GoodID').html('<option>-请选择-</option>');
                     let array=data.result_data;
                     for(let i in array){
-                        $('#GoodID').append('<option value="'+array[i].ID+'">'+array[i].GoodName+'</option>')
+                        if(j){
+                            if(array[i].ID==j){
+                                $('#GoodID').append('<option value="'+array[i].ID+'" selected>'+array[i].GoodName+'</option>')
+                            }else {
+                                $('#GoodID').append('<option value="'+array[i].ID+'">'+array[i].GoodName+'</option>')
+                            }
+                        }else {
+                            $('#GoodID').append('<option value="'+array[i].ID+'">'+array[i].GoodName+'</option>')
+                        }
+
                     }
-                    $('#GoodID').find('option[value="'+j+'"]').attr('selected',true);
+                    // $('#GoodID').find('option[value="'+j+'"]').attr('selected',true);
                     form.render('select');
                 }
             }

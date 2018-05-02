@@ -1072,29 +1072,29 @@ namespace XCCloudService.Api.XCCloud
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 
-                        IData_MemberLevel_FoodService data_MemberLevel_FoodService = Data_MemberLevel_FoodService.I;
-                        foreach (var model in data_MemberLevel_FoodService.GetModels(p => p.MemberLevelID == iMemberLevelID))
-                        {
-                            data_MemberLevel_FoodService.DeleteModel(model);
-                        }
+                        //IData_MemberLevel_FoodService data_MemberLevel_FoodService = Data_MemberLevel_FoodService.I;
+                        //foreach (var model in data_MemberLevel_FoodService.GetModels(p => p.MemberLevelID == iMemberLevelID))
+                        //{
+                        //    data_MemberLevel_FoodService.DeleteModel(model);
+                        //}
 
-                        if (!data_MemberLevel_FoodService.SaveChanges())
-                        {
-                            errMsg = "删除会员级别开卡套餐信息失败";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
+                        //if (!data_MemberLevel_FoodService.SaveChanges())
+                        //{
+                        //    errMsg = "删除会员级别开卡套餐信息失败";
+                        //    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        //}
 
-                        IData_MemberLevelFreeService data_MemberLevelFreeService = Data_MemberLevelFreeService.I;
-                        foreach (var model in data_MemberLevelFreeService.GetModels(p => p.MemberLevelID == iMemberLevelID))
-                        {
-                            data_MemberLevelFreeService.DeleteModel(model);
-                        }
+                        //IData_MemberLevelFreeService data_MemberLevelFreeService = Data_MemberLevelFreeService.I;
+                        //foreach (var model in data_MemberLevelFreeService.GetModels(p => p.MemberLevelID == iMemberLevelID))
+                        //{
+                        //    data_MemberLevelFreeService.DeleteModel(model);
+                        //}
 
-                        if (!data_MemberLevelFreeService.SaveChanges())
-                        {
-                            errMsg = "删除会员级别预赠币规则信息失败";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
+                        //if (!data_MemberLevelFreeService.SaveChanges())
+                        //{
+                        //    errMsg = "删除会员级别预赠币规则信息失败";
+                        //    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        //}
 
                         ts.Complete();
                     }

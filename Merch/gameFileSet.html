@@ -23,12 +23,6 @@
         <input type="text" class="layui-hide" name="userToken" value="" id="mT">
         <input type="text" class="layui-hide" name="signkey" value="1f626576304bf5d95b72ece2222e42c3">
         <div class="layui-form-item">
-            <!--<div class="layui-inline StoreID">-->
-                <!--<label class="layui-form-label">游戏机编号</label>-->
-                <!--<div class="layui-input-inline">-->
-                    <!--<input type="text" name="GameID" class="layui-input" id="StoreIDLow">-->
-                <!--</div>-->
-            <!--</div>-->
             <div class="layui-inline GameName">
                 <label class="layui-form-label">游戏机名</label>
                 <div class="layui-input-inline">
@@ -55,37 +49,37 @@
                     <input type="text" lay-filter="PushReduceFromCard" class="layui-input" placeholder="(币)" id="PushReduceFromCardLow">
                 </div>
             </div>
-            <div class="layui-inline PushLevel">
+            <div class="layui-inline PushLevel goodIsAll">
                 <label class="layui-form-label">投币信号电平</label>
                 <div class="layui-input-inline">
                     <input type="checkbox" lay-filter="PLL" lay-skin="switch" lay-text="高电平|低电平" id="PushLevel">
                 </div>
             </div>
-            <div class="layui-inline LotteryMode">
+            <div class="layui-inline LotteryMode goodIsAll">
                 <label class="layui-form-label">退彩票到会员卡</label>
                 <div class="layui-input-inline">
                     <input type="checkbox" lay-filter="LML" lay-skin="switch" lay-text="启用|禁用" id="LotteryModeLow">
                 </div>
             </div>
-            <div class="layui-inline OnlyExitLottery">
+            <div class="layui-inline OnlyExitLottery goodIsAll">
                 <label class="layui-form-label">只退实物彩票</label>
                 <div class="layui-input-inline">
                     <input type="checkbox" lay-filter="OELL" lay-skin="switch" lay-text="启用|禁用" id="OnlyExitLotteryLow">
                 </div>
             </div>
-            <div class="layui-inline ReadCat">
+            <div class="layui-inline ReadCat goodIsAll">
                 <label class="layui-form-label">刷卡即扣</label>
                 <div class="layui-input-inline">
                     <input type="checkbox" lay-filter="RCL" lay-skin="switch" lay-text="启用|禁用" id="ReadCatLow">
                 </div>
             </div>
-            <div class="layui-inline chkCheckGift">
+            <div class="layui-inline chkCheckGift goodIsAll">
                 <label class="layui-form-label">礼品掉落检测</label>
                 <div class="layui-input-inline">
                     <input type="checkbox" lay-filter="CCL" lay-skin="switch" lay-text="启用|禁用" id="chkCheckGiftLow">
                 </div>
             </div>
-            <div class="layui-inline State">
+            <div class="layui-inline State goodIsAll">
                 <label class="layui-form-label">设备启用</label>
                 <div class="layui-input-inline">
                     <input type="checkbox" lay-filter="StateLow" lay-skin="switch" lay-text="启用|禁用" id="StateLow">
@@ -126,7 +120,7 @@
 </div>
 
 <!--高级模式-->
-<div id="highType" class="" style="display: none">
+<div id="highType" class="goodIsAll" style="display: none">
     <form action="" class="layui-form layui-form-pane">
         <div class="layui-tab">
             <ul class="layui-tab-title">
@@ -157,43 +151,43 @@
                                 <input type="text"  class="layui-input"  id="GameCode1">
                             </div>
                      </div>
-                      <div class="layui-inline State">
+                      <div class="layui-inline State goodIsAll">
                           <label class="layui-form-label">设备启用</label>
                           <div class="layui-input-inline">
                               <input type="checkbox" checked lay-skin="switch" lay-text="启用|禁用" id="State"lay-filter="State">
                           </div>
                       </div>
-                      <div class="layui-inline ReturnCheck">
+                      <div class="layui-inline ReturnCheck goodIsAll">
                           <label class="layui-form-label">遥控器偷分检测</label>
                           <div class="layui-input-inline">
                               <input type="checkbox" checked lay-skin="switch" lay-text="启用|禁用" id="ReturnCheck" lay-filter="ReturnCheck">
                           </div>
                       </div>
-                      <div class="layui-inline OutsideAlertCheck">
+                      <div class="layui-inline OutsideAlertCheck goodIsAll">
                           <label class="layui-form-label">偷分报警模块</label>
                           <div class="layui-input-inline">
                               <input type="checkbox"  lay-skin="switch" lay-text="启用|禁用" id="OutsideAlertCheck" lay-filter="OutsideAlertCheck">
                           </div>
                       </div>
-                      <div class="layui-inline ICTicketOperation">
+                      <div class="layui-inline ICTicketOperation goodIsAll">
                           <label class="layui-form-label">二合一模式</label>
                           <div class="layui-input-inline">
                               <input type="checkbox"  lay-skin="switch" lay-text="启用|禁用" id="ICTicketOperation" lay-filter="ICTicketOperation">
                           </div>
                       </div>
-                      <div class="layui-inline NotGiveBack">
+                      <div class="layui-inline NotGiveBack goodIsAll">
                           <label class="layui-form-label">不参与返还</label>
                           <div class="layui-input-inline">
                               <input type="checkbox"  lay-skin="switch" lay-text="启用|禁用" id="NotGiveBack" lay-filter="NotGiveBack">
                           </div>
                       </div>
-                      <div class="layui-inline LotteryMode">
+                      <div class="layui-inline LotteryMode goodIsAll">
                           <label class="layui-form-label">退彩票到会员卡</label>
                           <div class="layui-input-inline">
                               <input type="checkbox"  lay-skin="switch" lay-text="启用|禁用" id="LotteryMode" lay-filter="LotteryMode">
                           </div>
                       </div>
-                      <div class="layui-inline OnlyExitLottery">
+                      <div class="layui-inline OnlyExitLottery goodIsAll">
                           <label class="layui-form-label">只退实物彩票</label>
                           <div class="layui-input-inline">
                               <input type="checkbox"  lay-skin="switch" lay-text="启用|禁用" id="OnlyExitLottery" lay-filter="OnlyExitLottery">
@@ -570,6 +564,23 @@
 <script>
     let xc=xcActionSystem.prototype;
     let token=xc.getStorage('token');
+    let parm={'obj':{'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'},
+        'url':'/XCCloud/GameInfo?action=GetGameInfoList',
+        'elem':'#gameFileTable',
+        'cols':[
+            {field:'ID', title:'游戏机编号', align: 'center', sort: true}
+            ,{field:'GameName',title: '游戏机名', align: 'center'} //width 支持：数字、百分比和不填写。
+            ,{field:'GameTypeStr', title: '游戏机类型', align: 'center'}
+            ,{field:'PushReduceFromCard', title: '单局币数', align: 'center'}
+            ,{field:'AllowElecPushStr', title: '允许投币', align: 'center'}
+            ,{field:'LotteryModeStr', title: '彩票模式', align: 'center'}
+            ,{field:'ReadCatStr', title: '刷卡即扣', align: 'center'}
+            ,{field:'StateStr', title: '状态', align: 'center'}
+            ,{field:'ID', title: 'id', align: 'center'}
+            ,{fixed: 'right', title: '操作', width:170, align:'center', toolbar: '#barDemo'}
+        ]
+    };
+    xc.getInitData(parm);
     //简易模式参数
     let _type='',_PushLevel=0,_LotteryMode=0,_State=0,_ReadCat=0,_OnlyExitLottery=0
         ,_chkCheckGift=0;
