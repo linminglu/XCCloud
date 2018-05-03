@@ -21,6 +21,29 @@ namespace XCCloudService.Common.Extensions
             return ((o == null) || (((o.GetType() == typeof(string)) && string.IsNullOrEmpty(o.ToString().Trim())) || (o.GetType() == typeof(DBNull))));
         }
         /// <summary>
+        /// 将泛型转换为string型数字（失败返回defaultvalue）
+        /// </summary>
+        /// <typeparam name="T">转换前的类型</typeparam>
+        /// <param name="key">转换前的值</param>
+        /// <param name="defaultvalue">转换失败或无法转换时的默认值</param>
+        /// <returns></returns>
+        public static string Tostring<T>(this T key, string defaultvalue)
+        {
+            if (key.IsNull()) return defaultvalue;
+            return Convert.ToString(key);
+        }
+        /// <summary>
+        /// 将泛型转换为string型数字（失败返回null）
+        /// </summary>
+        /// <typeparam name="T">转换前的类型</typeparam>
+        /// <param name="key">转换前的值</param>
+        /// <returns></returns>
+        public static string Tostring<T>(this T key)
+        {
+            if (key.IsNull()) return null;
+            return Convert.ToString(key);
+        }
+        /// <summary>
         /// 将泛型转换为int型数字（失败返回defaultvalue）
         /// </summary>
         /// <typeparam name="T">转换前的类型</typeparam>
@@ -102,6 +125,35 @@ namespace XCCloudService.Common.Extensions
             var date = new DateTime(1753, 1, 1);
             if (DateTime.TryParse(key.ToString(), out date))
                 return date;
+            return null;
+        }
+
+        /// <summary>
+        /// 将泛型转换为timespan型数字（失败返回defaultvalue）
+        /// </summary>
+        /// <typeparam name="T">转换前的类型</typeparam>
+        /// <param name="key">转换前的值</param>
+        /// <param name="defaultvalue">转换失败或无法转换时的默认值</param>
+        /// <returns></returns>
+        public static TimeSpan Totimespan<T>(this T key, TimeSpan defaultvalue)
+        {
+            if (key.IsNull()) return defaultvalue;
+            if (TimeSpan.TryParse(key.ToString(), out defaultvalue))
+                return defaultvalue;
+            return defaultvalue;
+        }
+        /// <summary>
+        /// 将泛型转换为timespan型数字（失败返回null）
+        /// </summary>
+        /// <typeparam name="T">转换前的类型</typeparam>
+        /// <param name="key">转换前的值</param>
+        /// <returns></returns>
+        public static TimeSpan? Totimespan<T>(this T key)
+        {
+            if (key.IsNull()) return null;
+            var timespan = new TimeSpan(0, 0, 0, 0, 0);
+            if (TimeSpan.TryParse(key.ToString(), out timespan))
+                return timespan;
             return null;
         }
     }

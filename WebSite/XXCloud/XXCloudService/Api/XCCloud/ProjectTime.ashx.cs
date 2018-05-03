@@ -51,8 +51,8 @@ namespace XXCloudService.Api.XCCloud
                         if (!memberLevelIDs.Nonempty("适用级别", out errMsg)) return false;
                         if (!bandType.Nonempty("档位类别", out errMsg)) return false;
                         if (!balanceType.Nonempty("计费类型", out errMsg)) return false;
-                        if (!bandCount.Illegalint("档位数量", out errMsg)) return false;
-                        if (!count.Illegalint("扣除数量", out errMsg)) return false;
+                        if (!bandCount.Validint("档位数量", out errMsg)) return false;
+                        if (!count.Validint("扣除数量", out errMsg)) return false;
 
                         List<string> memberLevelIDList = memberLevelIDs.Split('|').ToList();
                         foreach (var memberLevelID in memberLevelIDList)

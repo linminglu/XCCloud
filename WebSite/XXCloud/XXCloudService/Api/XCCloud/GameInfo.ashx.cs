@@ -10,6 +10,7 @@ using System.Web;
 using XCCloudService.Base;
 using XCCloudService.BLL.Container;
 using XCCloudService.BLL.IBLL.XCCloud;
+using XCCloudService.BLL.XCCloud;
 using XCCloudService.Common;
 using XCCloudService.Common.Extensions;
 using XCCloudService.Model.CustomModel.XCCloud;
@@ -80,11 +81,10 @@ namespace XXCloudService.Api.XCCloud
         {
             try
             {
-                string errMsg = string.Empty;
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
-                IData_GameInfoService data_GameInfoService = BLLContainer.Resolve<IData_GameInfoService>();
-                Dictionary<int, string> gameInfo = data_GameInfoService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase) && p.State == "1").Select(o => new
+                
+                Dictionary<int, string> gameInfo = Data_GameInfoService.I.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase) && p.State == "1").Select(o => new
                 {
                     ID = o.ID,
                     GameName = o.GameName

@@ -184,10 +184,10 @@ a:hover,a:active {text-decoration:none;cursor:pointer;}
 .formNum{margin-top: 2em;}
 
 .formNum2 a{display: block;padding: 1em 1.5em!important;}
-.formNum a{display: block;background-color: #f0f0f0;color: #000000;border-top: 1px solid #444444;border-left: 1px solid #444444;padding: 1em;text-align: center;font-size: 1.2em;}
-.formNum1 div:nth-child(4n) a{border-right: 1px solid #444444;}
-.formNum1 div:nth-child(13) a{border-bottom: 1px solid #444444;}
-.formNum1 .btn{width: 100%;background-color: #f0f0f0;color: #000000;font-size: 1.2em;padding: 0.95em 0;border: 1px solid #444444;border-radius: 0;}
+.formNum a{display: block;background-color: #555555;color: #fff;border-top: 1px solid #444444;border-left: 1px solid #444444;padding: 1em;text-align: center;font-size: 1.2em;}
+.formNum1 div:nth-child(4n) a{border-right: 1px solid #fefefe;}
+.formNum1 div:nth-child(13) a{border-bottom: 1px solid #fefefe;}
+.formNum1 .btn{width: 100%;background-color: #d43f3a;color: #fefefe;font-size: 1.2em;padding: 0.95em 0;border: 1px solid #fefefe;border-radius: 0;}
 .formNum2 div:nth-child(3n) a{border-right: 1px solid #444444;}
 .formNum2 div:nth-last-child(2){border-bottom: 1px solid #444444;}
 .formNum2 div:nth-last-child(1){border-bottom: 1px solid #444444;}

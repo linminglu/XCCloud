@@ -14,7 +14,6 @@ using XCCloudService.Model.XCCloud;
 using System.Transactions;
 using System.Data.Entity.SqlServer;
 using XCCloudService.Common.Extensions;
-using XCCloudService.BLL.XCCloud;
 
 namespace XXCloudService.Api.XCCloud
 {

@@ -11,7 +11,6 @@ using XCCloudService.BLL.Container;
 using XCCloudService.BLL.IBLL.XCCloud;
 using XCCloudService.BLL.IBLL.XCGame;
 using XCCloudService.BLL.XCCloud;
-using XCCloudService.BLL.XCCloud;
 using XCCloudService.Business.XCCloud;
 using XCCloudService.Business.XCGameMana;
 using XCCloudService.Common;

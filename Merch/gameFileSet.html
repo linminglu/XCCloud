@@ -576,7 +576,6 @@
             ,{field:'LotteryModeStr', title: '彩票模式', align: 'center'}
             ,{field:'ReadCatStr', title: '刷卡即扣', align: 'center'}
             ,{field:'StateStr', title: '状态', align: 'center'}
-            ,{field:'ID', title: 'id', align: 'center'}
             ,{fixed: 'right', title: '操作', width:170, align:'center', toolbar: '#barDemo'}
         ]
     };
@@ -584,7 +583,7 @@
     //简易模式参数
     let _type='',_PushLevel=0,_LotteryMode=0,_State=0,_ReadCat=0,_OnlyExitLottery=0
         ,_chkCheckGift=0;
-    xc.initGameFile(token);
+    // xc.initGameFile(token);
     //高级模式参数
     let  gameType='',state=1,returnCheck=1,osaCheck=0,ICTO=0,NGB=0,LM=0,OEL=0,CCG=0,allowEP=1,allowDP=1,
         GCC=0,readCat=0,allowRealPush=0,BanOccupy=0,StrongGCC=0,PushPuse=35,pushSpeed=35,pushLevel=0,

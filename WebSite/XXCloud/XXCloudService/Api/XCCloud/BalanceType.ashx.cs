@@ -30,16 +30,12 @@ namespace XXCloudService.Api.XCCloud
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
-                string errMsg = string.Empty;
 
-                IDict_BalanceTypeService dict_BalanceTypeService = BLLContainer.Resolve<IDict_BalanceTypeService>(resolveNew:true);
-                IData_BalanceType_StoreListService data_BalanceType_StoreListService = BLLContainer.Resolve<IData_BalanceType_StoreListService>(resolveNew: true);
-                IBase_StoreInfoService base_StoreInfoService = BLLContainer.Resolve<IBase_StoreInfoService>(resolveNew:true);
                 var linq = from d in
-                               (from a in dict_BalanceTypeService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.State == 1)
-                                join b in data_BalanceType_StoreListService.GetModels() on a.ID equals b.BalanceIndex into b1
+                               (from a in Dict_BalanceTypeService.N.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.State == 1)
+                                join b in Data_BalanceType_StoreListService.N.GetModels() on a.ID equals b.BalanceIndex into b1
                                 from b in b1.DefaultIfEmpty()
-                                join c in base_StoreInfoService.GetModels() on b.StroeID equals c.StoreID into c1
+                                join c in Base_StoreInfoService.N.GetModels() on b.StroeID equals c.StoreID into c1
                                 from c in c1.DefaultIfEmpty()                                
                                 select new
                                 {
@@ -247,18 +243,15 @@ namespace XXCloudService.Api.XCCloud
                             data_BalanceType_StoreListService.DeleteModel(model);
                         }
 
-                        if (!string.IsNullOrEmpty(storeIds))
+                        foreach (var storeId in storeIds.Split('|'))
                         {
-                            foreach (var storeId in storeIds.Split('|'))
-                            {
-                                if (!storeId.Nonempty("门店ID", out errMsg))
-                                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            if (!storeId.Nonempty("门店ID", out errMsg))
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-                                var model = new Data_BalanceType_StoreList();
-                                model.BalanceIndex = iId;
-                                model.StroeID = storeId;
-                                data_BalanceType_StoreListService.AddModel(model);
-                            }
+                            var model = new Data_BalanceType_StoreList();
+                            model.BalanceIndex = iId;
+                            model.StroeID = storeId;
+                            data_BalanceType_StoreListService.AddModel(model);
                         }
                         
                         if (!data_BalanceType_StoreListService.SaveChanges())

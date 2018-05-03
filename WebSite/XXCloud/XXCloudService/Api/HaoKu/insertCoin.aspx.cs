@@ -6,6 +6,9 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Xml;
+using XCCloudService.Common.Enum;
+using XXCloudService.Api.HaoKu.Com;
+using XXCloudService.Utility;
 
 namespace XXCloudService.Api.HaoKu
 {
@@ -15,6 +18,9 @@ namespace XXCloudService.Api.HaoKu
         {
             try
             {
+                HaokuAPI api = new HaokuAPI();
+                SortedDictionary<string, string> sPara = api.GetRequestQuerys(this.Context);
+
                 string shopId = Request["shopId"];
                 string device = Request["device"];
                 string count = Request["count"];
@@ -32,42 +38,31 @@ namespace XXCloudService.Api.HaoKu
 
                 foreach (XmlNode node in doc.SelectNodes("List/ShopID"))
                 {
-                    if (node.Attributes["HKID"].InnerText == shopId)
+                    if (node.Attributes["HKID"].Value == shopId)
                     {
-                        //LogHelper.WriteLog("找到投币调用店铺信息：" + node.Attributes["HKID"].InnerText);
-                        ////找到对应的店铺信息
-                        //TransmiteObject.互联网投币结构 recharge = new TransmiteObject.互联网投币结构()
+                        //找到对应的门店ID
+                        string storeId = node.Attributes["XCStoreId"].Value;
+                        string errMsg = string.Empty;
+
+                        ////请求雷达处理出币
+                        //if (!IConUtiltiy.DeviceOutputCoin(XCGameManaDeviceStoreType.Store, DevieControlTypeEnum.投币, storeId, mobile, icCardId, orderId, segment, mcuId, storePassword, 0, coins, gameRuleId, out errMsg))
                         //{
-                        //    DeviceID = device,
-                        //    Coin = Convert.ToUInt16(count),
-                        //    OrderID = source,
-                        //    OrderTime = Convert.ToUInt64(t)
-                        //};
-                        //object response = new object();
-                        //string msg = "";
-                        //if (ClientList.RequestCommand(node.Attributes["XCID"].InnerText, TransmiteEnum.互联网上分, recharge.ToArray(), out response, out msg))
-                        //{
-                        //    Response.Write("{\"return_code\":\"01\",\"return_msg\":\"投币成功\"}");
+                        //    Response.Write(ReturnModel.ReturnInfo(ReturnCode.F, errMsg));
                         //}
                         //else
                         //{
-                        //    Response.Write("{\"return_code\":\"02\",\"return_msg\":\"" + msg + "\"}");
-                        //}
-                        //return;
+                        //    Response.Write(ReturnModel.ReturnInfo(ReturnCode.T, ""));
+                        //}                        
+                        return;
                     }
                 }
 
-                //没有找到对应店铺信息
-
-                Response.Write("{\"return_code\":\"02\",\"return_msg\":\"没有找到对应店铺信息\"}");
+                Response.Write(ReturnModel.ReturnInfo(ReturnCode.F, "没有找到对应店铺信息"));
             }
             catch (Exception ex)
             {
-                //LogHelper.WriteLog(ex);
-                Response.Write("{\"return_code\":\"02\",\"return_msg\":\"服务调用出错\"}");
+                Response.Write(ReturnModel.ReturnInfo(ReturnCode.F, "服务调用出错"));
             }
-
-            Response.Write("{\"return_code\":\"02\",\"return_msg\":\"没有找到对应店铺信息\"}");
         }
     }
 }

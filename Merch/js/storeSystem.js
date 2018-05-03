@@ -359,18 +359,17 @@ xcActionSystem.prototype= {
                             table.render({
                                 elem: '#tokenStorage'
                                 , data: tableData
+                                // ,height:full-200
                                 , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
                                 , cols: [[
-                                    {type: 'numbers'}
-                                    , {field: 'ID', title: '入库编号', align: 'center'} //width 支持：数字、百分比和不填写。你还可以通过 minWidth 参数局部定义当前单元格的最小宽度，layui 2.2.1 新增
-                                    , {field: 'StoreID', title: '门店编号', align: 'center'}
-                                    , {field: 'StorageCount', title: '入库数量', align: 'center'} //单元格内容水平居中
+                                   {field: 'ID', title: '入库编号', align: 'center',sort:true} //width 支持：数字、百分比和不填写。你还可以通过 minWidth 参数局部定义当前单元格的最小宽度，layui 2.2.1 新增
+                                    , {field: 'StoreID', title: '门店编号', align: 'center',sort:true}
+                                    , {field: 'StorageCount', title: '入库数量', align: 'center',sort:true} //单元格内容水平居中
                                     , {
                                         field: 'DestroyTime',
                                         title: '入库时间',
                                         width: 170,
-                                        align: 'center',
-                                        templet: '#titleTpl'
+                                        align: 'center'
                                     }
                                     , {field: 'RealName', title: '操作人', align: 'center'}
                                     , {field: 'Note', title: '备注', align: 'center'} //单元格内容水平居中
@@ -451,15 +450,14 @@ xcActionSystem.prototype= {
                                 , data: tableData
                                 , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
                                 , cols: [[
-                                    {field: 'ID', title: '入库编号', align: 'center'} //width 支持：数字、百分比和不填写。你还可以通过 minWidth 参数局部定义当前单元格的最小宽度，layui 2.2.1 新增
-                                    , {field: 'StoreID', title: '门店编号', align: 'center'}
-                                    , {field: 'StorageCount', title: '销毁数量', align: 'center'} //单元格内容水平居中
+                                    {field: 'ID', title: '入库编号', align: 'center',sort:true} //width 支持：数字、百分比和不填写。你还可以通过 minWidth 参数局部定义当前单元格的最小宽度，layui 2.2.1 新增
+                                    , {field: 'StoreID', title: '门店编号', align: 'center',sort:true}
+                                    , {field: 'StorageCount', title: '销毁数量', align: 'center',sort:true} //单元格内容水平居中
                                     , {
                                         field: 'DestroyTime',
                                         title: '销毁时间',
                                         width: 170,
-                                        align: 'center',
-                                        templet: '#titleTpl'
+                                        align: 'center'
                                     }
                                     , {field: 'RealName', title: '操作人', align: 'center'}
                                     , {field: 'Note', title: '说明', align: 'center'} //单元格内容水平居中
@@ -1219,26 +1217,8 @@ xcActionSystem.prototype= {
 
     },
     //..........................................门票项目管理..............................................
-    //游艺项目设定--》加载列表
-    InitProjectList: function (token,xc) {
-        var parm = {
-            'obj': {'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'},
-            'url': '/XCCloud/Project?action=GetProjectInfoList',
-            'elem': '#ProjectList',
-            'cols': [{field: 'ID', title: '项目ID', align: 'center'}
-                , {field: 'ProjectName', title: '项目名称', align: 'center'}
-                , {field: 'ProjectStatusStr', title: '项目状态', align: 'center'}
-                , {field: 'FeeTypeStr', title: '计费方式', align: 'center'}
-                , {field: 'FeeCycle', title: '计费周期', align: 'center'}
-                , {field: 'FeeDeposit', title: '预售押金', align: 'center'}
-                , {field: 'SignOutEnStr', title: '签出标识', align: 'center'}
-                , {field: 'WhenLockStr', title: '入场锁定', align: 'center'}
-                , {field: 'RegretTime', title: '后悔时间', align: 'center'}
-                , {field: 'Note', title: '备注', align: 'center'}
-                ,{fixed: 'right', width:150, align:'center', toolbar: '#barDemo'}]
-        };
-        xc.getInitData(parm);
-    },
+
+
     //弹出
     outIframe: function (layer) {
         layer.open({
@@ -1296,47 +1276,7 @@ xcActionSystem.prototype= {
         });
     },
     //......................................游戏机档案维护
-    // initGameFile: function (token) {
-    //    let _obj={'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
-    //    let url='/XCCloud/GameInfo?action=GetGameInfoList';
-    //    let parasJson = JSON.stringify(_obj);
-    //     $.ajax({
-    //         type: "post",
-    //         url: url,
-    //         contentType: "application/json; charset=utf-8",
-    //         data: { parasJson: parasJson },
-    //         success: function (data) {
-    //             data=JSON.parse(data);
-    //             if(data.Result_Code==1){
-    //              layui.use('table',function () {
-    //                  let table=layui.table;
-    //                  table.render({
-    //                      elem:'#gameFileTable',
-    //                      data:data.Result_Data,
-    //                      cols:[[
-    //                          {field:'ID', title:'游戏机编号', align: 'center', sort: true}
-    //                          ,{field:'GameName',title: '游戏机名', align: 'center'} //width 支持：数字、百分比和不填写。
-    //                          ,{field:'GameTypeStr', title: '游戏机类型', align: 'center'}
-    //                          ,{field:'PushReduceFromCard', title: '单局币数', align: 'center'}
-    //                          ,{field:'AllowElecPushStr', title: '允许投币', align: 'center'}
-    //                          ,{field:'LotteryModeStr', title: '彩票模式', align: 'center'}
-    //                          ,{field:'ReadCatStr', title: '刷卡即扣', align: 'center'}
-    //                          ,{field:'StateStr', title: '状态', align: 'center'}
-    //                          ,{field:'ID', title: 'id', align: 'center'}
-    //                          ,{fixed: 'right', title: '操作', width:140, align:'center', toolbar: '#barDemo'}
-    //                      ]]
-    //                      , page: {page: true, limits: [10, 15, 20, 30, 50, 100]}
-    //                      , limit: 15
-    //                      , done:function (data) {
-    //                          $('.laytable-cell-1-ID').css({'display':'none'})
-    //                      }
-    //                          //
-    //                  })
-    //              })
-    //             }
-    //         }
-    //     })
-    // },
+
     //获取会员级别列表
     gameMemberLevel: function (token,form,layer) {
             let obj = {
@@ -1359,6 +1299,7 @@ xcActionSystem.prototype= {
                         for(var i in arr){
                             $('#memberLevel').append('<option value="'+arr[i].Key+'" title="'+arr[i].Value+'">'+arr[i].Value+'</option>')
                         }
+                        form.render();
                     } else {
                         layer.msg('操作失败');
                     }
@@ -1606,7 +1547,7 @@ xcActionSystem.prototype= {
         var tableData = [];
         $('#'+id).html("");
         let obj = {'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'};
-        let url = '/XCCloud/GameInfo?action=GetStoreGameInfo';
+        let url = '/XCCloud/GameInfo?action=GetGameInfoDic';
         let parseJson = JSON.stringify(obj);
         $.ajax({
             type: "post",

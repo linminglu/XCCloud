@@ -14,6 +14,8 @@ using XCCloudService.Business.Common;
 using XCCloudService.BLL.IBLL.XCGameManager;
 using XCCloudService.BLL.Container;
 using XCCloudService.Model.XCGameManager;
+using XCCloudService.Common.Extensions;
+using XCCloudService.BLL.XCCloud;
 
 namespace XXCloudService.WeiXin
 {
@@ -29,6 +31,12 @@ namespace XXCloudService.WeiXin
                 switch (state)
                 {
                     case "h5_Auth_Common": H5AuthCommon(code); break;
+                    case "work_Auth":
+                        {
+                            var userId = Request["userId"].Toint();
+                            var authorKey = Request["authorKey"].Tostring();
+                            WorkAuth(code, userId, authorKey); break;
+                        }
                     default: break;
                 }
             }
@@ -74,6 +82,52 @@ namespace XXCloudService.WeiXin
                 }
             }
             catch(Exception e)
+            {
+                LogHelper.SaveLog(TxtLogType.WeiXin, TxtLogContentType.Exception, TxtLogFileType.Day, "Exception:" + e.Message);
+            }
+
+        }
+
+        /// <summary>
+        /// 业务微信授权
+        /// </summary>
+        private void WorkAuth(string code, int? userId, string authorKey)
+        {
+            string accsess_token = string.Empty;
+            string refresh_token = string.Empty;
+            string openId = string.Empty;
+            string errMsg = string.Empty;
+            try
+            {
+                if (TokenMana.GetTokenForScanQR(code, out accsess_token, out refresh_token, out openId, out errMsg))
+                {
+                    string redirectUrl = string.Empty;
+                    var authors = from a in Dict_SystemService.N.GetModels(p => p.Enabled == 1 && p.MerchID == "1")
+                                  join b in Dict_SystemService.N.GetModels(p => p.DictKey == "权限列表") on a.PID equals b.ID
+                                  join c in Base_UserGrantService.N.GetModels(p => p.UserID == userId) on a.ID equals c.GrantID
+                                  where c.GrantEN == 1
+                                  select a;
+
+                    //判断操作权限
+                    if (authors.Any(a => a.DictKey.Equals(authorKey, StringComparison.OrdinalIgnoreCase)))
+                    {
+                       
+                        
+                    }
+                    else
+                    {                        
+
+                    }
+                    Response.Redirect(redirectUrl);
+                }
+                else
+                {
+                    LogHelper.SaveLog(TxtLogType.WeiXin, TxtLogContentType.Common, TxtLogFileType.Day, "errMsg:" + errMsg);
+                    //重定向的错误页面                 
+                    Response.Redirect(WeiXinConfig.RedirectErrorPage);
+                }
+            }
+            catch (Exception e)
             {
                 LogHelper.SaveLog(TxtLogType.WeiXin, TxtLogContentType.Exception, TxtLogFileType.Day, "Exception:" + e.Message);
             }

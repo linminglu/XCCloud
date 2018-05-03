@@ -35,7 +35,9 @@
             line-height: 36px;}
     </style>
 </head>
+<!--
 
+-->
 <body>
 <div class="layui-layout layui-layout-admin">
     <!-- 顶部 -->
@@ -78,10 +80,10 @@
                 </li>
                 <li class="layui-nav-item" lay-unselect="">
                     <a href="javascript:;"><span id="_lang">国际化</span></a>
-                    <dl class="layui-nav-child" id="languageBox">
-                        <dd><a href="javascript:;" id="Chinese">简体中文</a></dd>
-                        <dd><a href="javascript:;" id="English">ENGLISH</a></dd>
-                        <dd><a href="javascript:;" id="French">francais</a></dd>
+                    <dl class="layui-nav-child">
+                        <dd><a href="javascript:;">简体中午</a></dd>
+                        <dd><a href="javascript:;">ENGLISH</a></dd>
+                        <dd><a href="javascript:;">francais</a></dd>
                     </dl>
                 </li>
             </ul>
@@ -90,7 +92,7 @@
     <!-- 左侧导航 -->
     <div class="layui-side layui-bg-black">
         <div class="layui-side-scroll">
-            <ul class="layui-nav layui-nav-tree xcLeftMenu" lay-filter="xcLeftMenu" id="xcLeftMenu">
+            <ul class="layui-nav layui-nav-tree xcLeftMenu" lay-filter="xcLeftMenu" id="xcLeftMenu" >
                 <li class="layui-nav-item"><a href="javascript:;">系统总览</a></li>
             </ul>
         </div>
@@ -98,7 +100,7 @@
     <!-- 右侧内容 -->
     <div class="layui-body layui-form">
         <div class="layui-tab layui-tab-card xcTab" lay-allowClose="true" lay-filter="demo" style="position: absolute;top: 0;bottom: 0;left: 0;right: 0;overflow: hidden">
-            <ul class="layui-tab-title" id="xcTabMenu">
+            <ul class="layui-tab-title" id="xcTabMenu" style="padding:0 15px;">
                 <li class="layui-this" id="today">
                     <cite>今日营收情况分析</cite>
                 </li>
@@ -162,7 +164,7 @@
     layui.use(['element','layer'],function () {
         let element=layui.element;
         let layer=layui.layer;
-        let _date=new Date();
+        let _date=new Date()
         $('#nowTime').text(_date.getFullYear()+'/'+(_date.getMonth()+1)+'/'+_date.getDate()+' '+_date.getHours()+':'+_date.getMinutes()+':'+_date.getSeconds());
 
         if(logMsg.switchStore==1){
@@ -189,10 +191,10 @@
             })
         }
         $('#storeSys').on('click',function () {
-            if(JSON.parse(getStorage('logMsg')).switchStore==1){
-                if (logMsg.logType==2){
-                    layer.msg('当前为门店系统，请选择切换其他模式！')
-                }else {
+            // if(JSON.parse(getStorage('logMsg')).switchStore==1){
+            //     if (logMsg.logType==2){
+            //         layer.msg('当前为门店系统，请选择切换其他模式！')
+            //     }else {
                     let obj={'userToken':token,'merchId':logMsg.merchId,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
                     let parasJson = JSON.stringify(obj);
                     $.ajax({
@@ -216,8 +218,8 @@
                         }
                     })
 
-                }
-            }
+                // }
+            // }
         }).siblings().on('click',function () {
             $('#storeListToGo').css({'display':'none'})
         });
@@ -360,16 +362,5 @@
             window.close();
         }
     }
-    //切换语言
-    $('#languageBox').on('click','dd a',function () {
-        if($(this).attr('id')=='Chinese'){
-            xc.setStorage('xc_language','Chinese')
-        }else if($(this).attr('id')=='English'){
-            xc.setStorage('xc_language','English')
-        }else if($(this).attr('id')=='French'){
-           xc.setStorage('xc_language','French')
-        }
-        window.location.href='/merch/index1.html';
-    })
 </script>
 </html>

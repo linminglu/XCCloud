@@ -121,13 +121,13 @@ namespace XXCloudService.Api.XCCloud
                 if(!foodName.Nonempty("数字币套餐名称", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-                if (!coins.Illegalint("数量", out errMsg))
+                if (!coins.Validint("数量", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-                if (!authorFlag.Illegalint("授权标志", out errMsg))
+                if (!authorFlag.Validint("授权标志", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-                if (!balanceIndex.Illegalint("活动定金", out errMsg))
+                if (!balanceIndex.Validint("活动定金", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);                
 
                 #endregion

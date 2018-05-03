@@ -6,13 +6,13 @@
     <link rel="stylesheet" href="layui/css/layui.css">
 </head>
 <body>
-    <div class="layui-row" style="padding: 10px">
-
-            <blockquote class="layui-elem-quote" style="text-align:right;padding-right: 100px;">
+    <div class="layui-row">
+        <div class="layui-col-md12 layui-col-sm12 layui-col-lg12">
+            <div class="layui-col-md-offset10 layui-col-sm-offset9 layui-col-md2" style="margin-top: 10px;margin-bottom: 10px">
                 <button type="button" class="layui-btn layui-btn-normal" id="addNew"><i class="layui-icon">&#xe654;</i>新增</button>
                 <button type="button" class="layui-btn layui-btn-normal"><i class="layui-icon">&#xe615;</i>查询模板</button>
-            </blockquote>
-
+            </div>
+        </div>
         <table class="layui-hide" id="productFileTable" lay-filter="productFileTable"></table>
     </div>
 
@@ -86,15 +86,28 @@
 <script src="js/storeSystem.js"></script>
 
 <script>
-    window.onload=function(){
+    window.onload=()=>{
         let xc=xcActionSystem.prototype;
         let token=xc.getStorage('token');
+        let parm={'obj':{'conditions':[],'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'},
+            'url':'/XCCloud/GoodsInfo?action=QueryGoodsInfo',
+            'elem':'#productFileTable',
+            'cols':[
+                {field:'ID', title:'商品ID', align: 'center', sort: true}
+                ,{field:'GoodTypeStr',title: '商品类别', align: 'center'} //width 支持：数字、百分比和不填写。
+                ,{field:'GoodName', title: '商品名称', align: 'center'}
+                ,{field:'Price', title: '零售价格', align: 'center', sort: true}
+                ,{field:'Points', title: '销售积分', align: 'center', sort: true}
+                ,{field:'Note', title: '备注', align: 'center'}
+                ,{fixed: 'right', title: '操作', width:140, align:'center', toolbar: '#barDemo'}]
+        };
+        xc.getInitData(parm);
         let Status=1;let GoodType='';let id='';
-        layui.use(['layer','form','table'],function(){
+        layui.use(['layer','form','table'],()=>{
             let layer=layui.layer;
             let form=layui.form;
             let table=layui.table;
-            $('#addNew').on('click',function(){
+            $('#addNew').on('click',()=>{
                  Status=1; GoodType='';id='';
                  $('#Status').attr('disabled',true);
                  form.render();
@@ -102,10 +115,10 @@
                 $('#reset').trigger('click');
                 xc.openProductAdd(layer,'新增商品','680px','addNewProduct')
             });
-            $('#cancel').on('click',function(){
+            $('#cancel').on('click',()=>{
                 xc.closeAll(layer);
             });
-            $('#save').on('click',function(){
+            $('#save').on('click',()=>{
                 let _obj={ 'id':id,
                             'Barcode':$('#Barcode').val(),
                             'Status':Status,
@@ -138,20 +151,8 @@
                 })
             });
             //初始化表格
-            let parm={'obj':{'conditions':[],'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'},
-                'url':'/XCCloud/GoodsInfo?action=QueryGoodsInfo',
-                'elem':'#productFileTable',
-                'cols':[
-                    {field:'ID', title:'商品ID', align: 'center', sort: true}
-                    ,{field:'GoodTypeStr',title: '商品类别', align: 'center'} //width 支持：数字、百分比和不填写。
-                    ,{field:'GoodName', title: '商品名称', align: 'center'}
-                    ,{field:'Price', title: '零售价格', align: 'center'}
-                    ,{field:'Points', title: '销售积分', align: 'center'}
-                    ,{field:'Note', title: '备注', align: 'center'}
-                    ,{fixed: 'right', title: '操作', width:140, align:'center', toolbar: '#barDemo'}]
-            };
-            xc.getInitData(parm);
-            table.on('tool(productFileTable)',function(obj){
+
+            table.on('tool(productFileTable)',(obj)=>{
                 let data=obj.data;
                 let event=obj.event;
                 if(event === 'edit'){ //查看
@@ -201,6 +202,7 @@
 
                     })
                 }else if(event === 'del'){
+                    layer.confirm('真的删除行么', function(index){
                     let _obj={'id':data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
                     let url='/XCCloud/GoodsInfo?action=DelGoodsInfo';
                     let parasJson = JSON.stringify(_obj);
@@ -212,24 +214,24 @@
                         success: function (data) {
                             data=JSON.parse(data);
                             if(data.result_code==1){
-                                layer.confirm('真的删除行么', function(index){
-                                    obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
-                                    layer.close(index);
-                                    //向服务端发送删除指令
-                                });
+                                    obj.del();
+                                    layer.msg('删除成功',{time:1500},function () {
+                                        layer.close(index);
+                                    })
                             }else {
                                 layer.msg(data.result_msg)
                             }
                         }
 
                     })
+                    });
                 }
             });
             //事件监听
-            form.on('select(GoodType)',function(data){
+            form.on('select(GoodType)',(data)=>{
                 GoodType=data.value;
             })
-            form.on('switch(Status)',function(data){
+            form.on('switch(Status)',(data)=>{
                if(data.elem.checked==true){
                    Status=1;
                }else {

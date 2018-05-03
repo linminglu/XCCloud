@@ -569,7 +569,7 @@ namespace XCCloudService.Api.XCCloud
             return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员信息不存在");
         }
 
-        [Authorize(Roles = "MerchUser")]
+        [Authorize(Roles = "MerchUser,StoreUser")]
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object GetMemberLevelDic(Dictionary<string, object> dicParas)
         {

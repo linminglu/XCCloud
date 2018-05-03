@@ -47,7 +47,7 @@ namespace XCCloudService.Common
         /// <param name="discription"></param>
         /// <param name="errMsg"></param>
         /// <returns></returns>
-        public static bool Illegalint<T>(this T t, string discription, out string errMsg)
+        public static bool Validint<T>(this T t, string discription, out string errMsg)
         {
             errMsg = string.Empty;
 
@@ -73,7 +73,7 @@ namespace XCCloudService.Common
         /// <param name="discription"></param>
         /// <param name="errMsg"></param>
         /// <returns></returns>
-        public static bool Illegaldec<T>(this T t, string discription, out string errMsg)
+        public static bool Validdec<T>(this T t, string discription, out string errMsg)
         {
             errMsg = string.Empty;
 

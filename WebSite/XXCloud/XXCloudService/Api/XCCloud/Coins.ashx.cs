@@ -93,7 +93,7 @@ namespace XXCloudService.Api.XCCloud
                     query = query.Where(w => DbFunctions.DiffDays(w.DestroyTime, dt) == 0);
                 }
 
-                var result = from a in query
+                var result = from a in query.AsEnumerable()
                              join b in Base_UserInfoService.N.GetModels(p => p.UserType == (int)UserType.Store) on a.UserID equals b.UserID into b1
                              from b in b1.DefaultIfEmpty()
                              select new
@@ -101,7 +101,7 @@ namespace XXCloudService.Api.XCCloud
                                  ID = a.ID,
                                  StoreID = a.StoreID,
                                  StorageCount = a.StorageCount,
-                                 DestroyTime = a.DestroyTime,
+                                 DestroyTime = Utils.ConvertFromDatetime(a.DestroyTime),
                                  UserID = a.UserID,
                                  Note = a.Note,
                                  LogName = b != null ? b.LogName : string.Empty,

@@ -29,30 +29,33 @@ namespace XXCloudService.Api.XCCloud
         {
             return !string.IsNullOrEmpty(weekDays) && weekDays.Contains("1") && weekDays.Contains("2") && weekDays.Contains("3") && weekDays.Contains("4") && weekDays.Contains("5") && weekDays.Contains("6") && weekDays.Contains("7");
         }
+
         private string getWeekName(string weekDays)
         {
             return isEveryDay(weekDays) ? "每天" : (!string.IsNullOrEmpty(weekDays) ? weekDays.Replace("1", "周一").Replace("2", "周二").Replace("3", "周三").Replace("4", "周四").Replace("5", "周五").Replace("6", "周六").Replace("7", "周日") : string.Empty);
         }
+
         private string getTimeName(TimeSpan? startTime, TimeSpan? endTime)
         {
             var StartTime = string.Format("{0:c}", startTime).Substring(0, 5);
             var EndTime = string.Format("{0:c}", endTime).Substring(0, 5);
             return (StartTime == "00:00" && EndTime == "23:59") ? "全天" : (StartTime + "~" + EndTime);
         }
+
         private string getPeriodTypeName(TimeType timeType)
         {
             return timeType.Equals(TimeType.Custom) ? "自定义" : timeType.Equals(TimeType.Weekend) ? "周末" : timeType.Equals(TimeType.Holiday) ? "节假日" : timeType.Equals(TimeType.Workday) ? "工作日" : string.Empty;
         }
+
         private bool saveFoodSale(int iFoodId, object[] foodSales, out string errMsg)
         {
             errMsg = string.Empty;
             if (foodSales != null && foodSales.Count() >= 0)
             {
                 //先删除，后添加
-                var data_Food_SaleService = Data_Food_SaleService.I;
-                foreach (var model in data_Food_SaleService.GetModels(p => p.FoodID == iFoodId))
+                foreach (var model in Data_Food_SaleService.I.GetModels(p => p.FoodID == iFoodId))
                 {
-                    data_Food_SaleService.DeleteModel(model);
+                    Data_Food_SaleService.I.DeleteModel(model);
                 }
 
                 foreach (IDictionary<string, object> el in foodSales)
@@ -60,35 +63,20 @@ namespace XXCloudService.Api.XCCloud
                     if (el != null)
                     {
                         var dicPara = new Dictionary<string, object>(el, StringComparer.OrdinalIgnoreCase);
-                        string balanceType = dicPara.ContainsKey("balanceType") ? (dicPara["balanceType"] + "") : string.Empty;
-                        string useCount = dicPara.ContainsKey("useCount") ? (dicPara["useCount"] + "") : string.Empty;
+                        var balanceType = dicPara.Get("balanceType").Toint();
+                        var useCount = dicPara.Get("useCount").Toint();
 
-                        if (string.IsNullOrEmpty(balanceType))
-                        {
-                            errMsg = "余额类别不能为空";
+                        if (!balanceType.Nonempty("余额类别", out errMsg))
                             return false;
-                        }
-                        if (string.IsNullOrEmpty(useCount))
-                        {
-                            errMsg = "消耗数量不能为空";
-                            return false;
-                        }
-                        if (!Utils.isNumber(useCount))
-                        {
-                            errMsg = "消耗数量格式不正确";
-                            return false;
-                        }
-                        if (Convert.ToInt32(useCount) < 0)
-                        {
-                            errMsg = "消耗数量不能为负数";
-                            return false;
-                        }
+
+                        if (!useCount.Validint("消耗数量", out errMsg))
+                            return false;                        
 
                         var data_Food_SaleModel = new Data_Food_Sale();
                         data_Food_SaleModel.FoodID = iFoodId;
-                        data_Food_SaleModel.BalanceType = Convert.ToInt32(balanceType);
-                        data_Food_SaleModel.UseCount = Convert.ToInt32(useCount);
-                        data_Food_SaleService.AddModel(data_Food_SaleModel);
+                        data_Food_SaleModel.BalanceType = balanceType;
+                        data_Food_SaleModel.UseCount = useCount;
+                        Data_Food_SaleService.I.AddModel(data_Food_SaleModel);
                     }
                     else
                     {
@@ -97,7 +85,7 @@ namespace XXCloudService.Api.XCCloud
                     }
                 }
 
-                if (!data_Food_SaleService.SaveChanges())
+                if (!Data_Food_SaleService.I.SaveChanges())
                 {
                     errMsg = "保存套餐余额消耗信息失败";
                     return false;
@@ -106,17 +94,16 @@ namespace XXCloudService.Api.XCCloud
 
             return true;
         }
+
         private bool saveFoodLevel(int iFoodId, object[] foodLevels, out string errMsg)
         {
             errMsg = string.Empty;
             if (foodLevels != null && foodLevels.Count() >= 0)
             {
-                //先删除已有数据，后添加
-                var dbContext = DbContextFactory.CreateByModelNamespace(typeof(Data_Food_Level).Namespace);
-                var data_Food_Level = dbContext.Set<Data_Food_Level>().Where(p => p.FoodID == iFoodId).ToList();
-                foreach (var model in data_Food_Level)
+                //先删除，后添加
+                foreach (var model in Data_Food_LevelService.I.GetModels(p => p.FoodID == iFoodId))
                 {
-                    dbContext.Entry(model).State = EntityState.Deleted;
+                    Data_Food_LevelService.I.DeleteModel(model);
                 }
 
                 var foodLevelList = new List<Data_Food_Level>();
@@ -125,83 +112,65 @@ namespace XXCloudService.Api.XCCloud
                     if (el != null)
                     {
                         var dicPara = new Dictionary<string, object>(el, StringComparer.OrdinalIgnoreCase);
-                        string memberLevelIDs = dicPara.ContainsKey("memberLevelIDs") ? dicPara["memberLevelIDs"].ToString() : string.Empty;
-                        string timeType = dicPara.ContainsKey("timeType") ? dicPara["timeType"].ToString() : string.Empty;
-                        string week = dicPara.ContainsKey("week") ? dicPara["week"].ToString() : string.Empty;
-                        string start = dicPara.ContainsKey("startTime") ? dicPara["startTime"].ToString() : string.Empty;
-                        string end = dicPara.ContainsKey("endTime") ? dicPara["endTime"].ToString() : string.Empty;
-                        string client = dicPara.ContainsKey("clientPrice") ? dicPara["clientPrice"].ToString() : string.Empty;
-                        string vip = dicPara.ContainsKey("vipPrice") ? dicPara["vipPrice"].ToString() : string.Empty;
-                        string day_sale_count = dicPara.ContainsKey("day_sale_count") ? dicPara["day_sale_count"].ToString() : string.Empty;
-                        string member_day_sale_count = dicPara.ContainsKey("member_day_sale_count") ? dicPara["member_day_sale_count"].ToString() : string.Empty;
-                        string updateLevelId = dicPara.ContainsKey("updateLevelId") ? (dicPara["updateLevelId"] + "") : string.Empty;
+                        var memberLevelIDs = dicPara.Get("memberLevelIDs");
+                        var timeType = dicPara.Get("timeType").Toint();
+                        var week = dicPara.Get("week");
+                        var start = dicPara.Get("startTime").Totimespan();
+                        var end = dicPara.Get("endTime").Totimespan();
+                        var client = dicPara.Get("clientPrice").Todecimal();
+                        var vip = dicPara.Get("vipPrice").Todecimal();
+                        var day_sale_count = dicPara.Get("day_sale_count").Toint();
+                        var member_day_sale_count = dicPara.Get("member_day_sale_count").Toint();
+                        var updateLevelId = dicPara.Get("updateLevelId").Toint();
 
-                        #region 参数验证
-                        if (string.IsNullOrEmpty(start) || string.IsNullOrEmpty(end))
-                        {
-                            errMsg = "优惠时段不能为空";
+                        //参数验证
+                        if (!start.Nonempty("优惠时段", out errMsg) || !end.Nonempty("优惠时段", out errMsg))
                             return false;
-                        }
-                        if (TimeSpan.Compare(TimeSpan.Parse(start), TimeSpan.Parse(end)) > 0)
+
+                        if (TimeSpan.Compare(start.Value, end.Value) > 0)
                         {
                             errMsg = "优惠开始时段不能晚于结束时段";
                             return false;
                         }
-                        if (string.IsNullOrEmpty(memberLevelIDs))
-                        {
-                            errMsg = "会员级别ID列表不能为空";
+
+                        if (!memberLevelIDs.Nonempty("会员级别", out errMsg))
                             return false;
-                        }
-                        if (Convert.ToInt32(day_sale_count) < 0)
-                        {
-                            errMsg = "每天限购数不能为负数";
+                        if (!day_sale_count.Validint("每天限购数", out errMsg))
                             return false;
-                        }
-                        if (Convert.ToInt32(member_day_sale_count) < 0)
-                        {
-                            errMsg = "每人每天限购数不能为负数";
+                        if (!member_day_sale_count.Validint("每个会员限购数", out errMsg))
                             return false;
-                        }
-                        if (Convert.ToDecimal(client) < 0)
-                        {
-                            errMsg = "散客优惠价不能为负数";
+                        if (!client.Validdec("散客优惠价", out errMsg))
                             return false;
-                        }
-                        if (Convert.ToDecimal(vip) < 0)
-                        {
-                            errMsg = "会员优惠价不能为负数";
+                        if (!vip.Validdec("会员优惠价", out errMsg))
                             return false;
-                        }
-                        if (string.IsNullOrEmpty(timeType))
-                        {
-                            errMsg = "时段类型不能为空";
+                        if (!timeType.Nonempty("时段类型", out errMsg))
                             return false;
-                        }
-                        int iTimeType = Convert.ToInt32(timeType);
-                        if (iTimeType == (int)TimeType.Custom && string.IsNullOrEmpty(week))
+
+                        if (timeType == (int)TimeType.Custom && string.IsNullOrEmpty(week))
                         {
                             errMsg = "自定义模式周数不能为空";
                             return false;
-                        }
-                        #endregion
+                        }                        
 
-                        List<string> memberLevelIDList = memberLevelIDs.Split('|').ToList();
-                        foreach (var memberLevelID in memberLevelIDList)
+                        foreach (var memberLevelID in memberLevelIDs.Split('|'))
                         {
+                            if (!memberLevelID.Nonempty("会员等级ID", out errMsg))
+                                return false;
+
                             var data_Food_LevelModel = new Data_Food_Level();
                             data_Food_LevelModel.FoodID = iFoodId;
-                            data_Food_LevelModel.MemberLevelID = Convert.ToInt32(memberLevelID);
-                            data_Food_LevelModel.TimeType = iTimeType;
+                            data_Food_LevelModel.MemberLevelID = memberLevelID.Toint();
+                            data_Food_LevelModel.TimeType = timeType;
                             data_Food_LevelModel.Week = week;
-                            data_Food_LevelModel.StartTime = TimeSpan.Parse(start);
-                            data_Food_LevelModel.EndTime = TimeSpan.Parse(end);
-                            data_Food_LevelModel.ClientPrice = Convert.ToDecimal(client);
-                            data_Food_LevelModel.VIPPrice = Convert.ToDecimal(vip);
-                            data_Food_LevelModel.day_sale_count = Convert.ToInt32(day_sale_count);
-                            data_Food_LevelModel.member_day_sale_count = Convert.ToInt32(member_day_sale_count);
-                            data_Food_LevelModel.UpdateLevelID = !string.IsNullOrEmpty(updateLevelId) ? Convert.ToInt32(updateLevelId) : (int?)null;
+                            data_Food_LevelModel.StartTime = start;
+                            data_Food_LevelModel.EndTime = end;
+                            data_Food_LevelModel.ClientPrice = client;
+                            data_Food_LevelModel.VIPPrice = vip;
+                            data_Food_LevelModel.day_sale_count = day_sale_count;
+                            data_Food_LevelModel.member_day_sale_count = member_day_sale_count;
+                            data_Food_LevelModel.UpdateLevelID = updateLevelId;
                             foodLevelList.Add(data_Food_LevelModel);
-                            dbContext.Entry(data_Food_LevelModel).State = EntityState.Added;
+                            Data_Food_LevelService.I.AddModel(data_Food_LevelModel);
                         }                        
                     }
                     else
@@ -211,18 +180,29 @@ namespace XXCloudService.Api.XCCloud
                     }
                 }
 
-                //同一会员级别，时段类型为工作模式（即0~2）与自定义模式（即3）不能共存                                    
-                foreach (var memberLevelId in foodLevelList.GroupBy(g => g.MemberLevelID).Select(o => o.Key))
-                {                    
-                    if (foodLevelList.Any(w => w.MemberLevelID.Equals(memberLevelId) && w.TimeType.Equals((int)TimeType.Custom)) &&
-                        foodLevelList.Any(w => w.MemberLevelID.Equals(memberLevelId) && !w.TimeType.Equals((int)TimeType.Custom)))
-                    {
-                        string memberLevelName = (from b in dbContext.Set<Data_MemberLevel>() where b.MemberLevelID == memberLevelId select b.MemberLevelName).FirstOrDefault();
-                        errMsg = string.Format("同一会员级别，自定义模式与其它模式不能混合定义 会员级别:{0}", memberLevelName);
-                        return false;
-                    }
+                //同一会员级别，时段类型为工作模式（即0~2）与自定义模式（即3）不能共存   
+                //foreach (var memberLevelId in foodLevelList.GroupBy(g => g.MemberLevelID).Select(o => o.Key))
+                //{
+                //    if (foodLevelList.Any(w => w.MemberLevelID.Equals(memberLevelId) && w.TimeType.Equals((int)TimeType.Custom)) &&
+                //        foodLevelList.Any(w => w.MemberLevelID.Equals(memberLevelId) && !w.TimeType.Equals((int)TimeType.Custom)))
+                //    {
+                //        string memberLevelName = (from b in Data_MemberLevelService.I.GetModels(p => p.MemberLevelID == memberLevelId) select b.MemberLevelName).FirstOrDefault();
+                //        errMsg = string.Format("同一会员级别，自定义模式与其它模式不能混合定义 会员级别:{0}", memberLevelName);
+                //        return false;
+                //    }
+                //}
+                var query = from a in foodLevelList.Where(w => w.TimeType == (int)TimeType.Custom)
+                            join b in foodLevelList.Where(w => w.TimeType != (int)TimeType.Custom) 
+                            on a.MemberLevelID equals b.MemberLevelID
+                            select a;
+                if (query.Any())
+                {
+                    var memberLevelId = query.First().MemberLevelID;
+                    string memberLevelName = (from b in Data_MemberLevelService.I.GetModels(p => p.MemberLevelID == memberLevelId) select b.MemberLevelName).FirstOrDefault();
+                    errMsg = string.Format("同一会员级别，自定义模式与其它模式不能混合定义 会员级别:{0}", memberLevelName);
+                    return false;
                 }
-
+                
                 //同一会员级别，同一个时段类型（如果是自定义模式，即同一天），同一时段只能有一个优惠策略
                 foreach (var data_Food_LevelModel in foodLevelList)
                 {
@@ -236,7 +216,7 @@ namespace XXCloudService.Api.XCCloud
                                  ((TimeSpan.Compare((TimeSpan)data_Food_LevelModel.StartTime, (TimeSpan)w.StartTime) >= 0 && TimeSpan.Compare((TimeSpan)data_Food_LevelModel.StartTime, (TimeSpan)w.EndTime) < 0) ||
                                  (TimeSpan.Compare((TimeSpan)data_Food_LevelModel.EndTime, (TimeSpan)w.StartTime) > 0 && TimeSpan.Compare((TimeSpan)data_Food_LevelModel.EndTime, (TimeSpan)w.EndTime) <= 0))).Count() > 1)
                             {
-                                string memberLevelName = (from b in dbContext.Set<Data_MemberLevel>() where b.MemberLevelID == memberLevelId select b.MemberLevelName).FirstOrDefault();
+                                string memberLevelName = (from b in Data_MemberLevelService.I.GetModels(p => p.MemberLevelID == memberLevelId) select b.MemberLevelName).FirstOrDefault();
                                 string timeSpan = Utils.TimeSpanToStr(data_Food_LevelModel.StartTime.Value) + "~" + Utils.TimeSpanToStr(data_Food_LevelModel.EndTime.Value);
                                 errMsg = string.Format("同一会员级别，同一时段只能有一个优惠策略 会员级别:{0} 自定义模式:{1} 优惠时段:{2}", memberLevelName, getWeekName(day), timeSpan);
                                 return false;
@@ -249,15 +229,15 @@ namespace XXCloudService.Api.XCCloud
                                  ((TimeSpan.Compare((TimeSpan)data_Food_LevelModel.StartTime, (TimeSpan)w.StartTime) >= 0 && TimeSpan.Compare((TimeSpan)data_Food_LevelModel.StartTime, (TimeSpan)w.EndTime) < 0) ||
                                  (TimeSpan.Compare((TimeSpan)data_Food_LevelModel.EndTime, (TimeSpan)w.StartTime) > 0 && TimeSpan.Compare((TimeSpan)data_Food_LevelModel.EndTime, (TimeSpan)w.EndTime) <= 0))).Count() > 1)
                         {
-                            string memberLevelName = (from b in dbContext.Set<Data_MemberLevel>() where b.MemberLevelID == memberLevelId select b.MemberLevelName).FirstOrDefault();
+                            string memberLevelName = (from b in Data_MemberLevelService.I.GetModels(p => p.MemberLevelID == memberLevelId) select b.MemberLevelName).FirstOrDefault();
                             string timeSpan = Utils.TimeSpanToStr(data_Food_LevelModel.StartTime.Value) + "~" + Utils.TimeSpanToStr(data_Food_LevelModel.EndTime.Value);
                             errMsg = string.Format("同一会员级别，同一时段只能有一个优惠策略 会员级别:{0} 其它模式:{1} 优惠时段:{2}", memberLevelName, getPeriodTypeName((TimeType)data_Food_LevelModel.TimeType), timeSpan);
                             return false;
                         }
                     }
                 }
-
-                if (dbContext.SaveChanges() < 0)
+                
+                if (!Data_Food_LevelService.I.SaveChanges())
                 {
                     errMsg = "保存套餐级别信息失败";
                     return false;
@@ -272,11 +252,9 @@ namespace XXCloudService.Api.XCCloud
             if (foodDetials != null && foodDetials.Count() >= 0)
             {
                 //先删除，后添加
-                var dbContext = DbContextFactory.CreateByModelNamespace(typeof(Data_Food_Detial).Namespace);
-                var data_Food_Detial = dbContext.Set<Data_Food_Detial>().Where(p => p.FoodID == iFoodId).ToList();
-                foreach (var model in data_Food_Detial)
+                foreach (var model in Data_Food_DetialService.I.GetModels(p=>p.FoodID == iFoodId))
                 {
-                    dbContext.Entry(model).State = EntityState.Deleted;
+                    Data_Food_DetialService.I.DeleteModel(model);
                 }
 
                 foreach (IDictionary<string, object> el in foodDetials)
@@ -303,15 +281,14 @@ namespace XXCloudService.Api.XCCloud
                                 return false;
                         }
                         
-                        if (!containCount.Illegalint("内容数量", out errMsg)) 
+                        if (!containCount.Validint("内容数量", out errMsg)) 
                             return false;
-                        if (!weightValue.Illegaldec("权重价值", out errMsg)) 
+                        if (!weightValue.Validdec("权重价值", out errMsg)) 
                             return false;
 
-                        if (foodDetailType == (int)FoodDetailType.Ticket
-                            || foodDetailType == (int)FoodDetailType.Coupon)
+                        if (foodDetailType == (int)FoodDetailType.Ticket || foodDetailType == (int)FoodDetailType.Coupon)
                         {
-                            if (!days.Illegalint("有效天数", out errMsg))
+                            if (!days.Validint("有效天数", out errMsg))
                                 return false;
                         }
 
@@ -326,7 +303,7 @@ namespace XXCloudService.Api.XCCloud
                         data_Food_DetialModel.WeightValue = weightValue;
                         data_Food_DetialModel.Days = days;
                         data_Food_DetialModel.OperateType = operateType;
-                        dbContext.Entry(data_Food_DetialModel).State = EntityState.Added;
+                        Data_Food_DetialService.I.AddModel(data_Food_DetialModel);
                     }
                     else
                     {
@@ -335,7 +312,7 @@ namespace XXCloudService.Api.XCCloud
                     }
                 }
 
-                if (dbContext.SaveChanges() < 0)
+                if (!Data_Food_DetialService.I.SaveChanges())
                 {
                     errMsg = "保存套餐内容信息失败";
                     return false;
@@ -375,8 +352,7 @@ namespace XXCloudService.Api.XCCloud
                     " where a.MerchID=@MerchId and a.FoodState=1 ";
                 sql = sql + sqlWhere;
 
-                IData_FoodInfoService data_FoodInfoService = Data_FoodInfoService.I;
-                var data_FoodInfo = data_FoodInfoService.SqlQuery<Data_FoodInfoListModel>(sql, parameters).ToList();
+                var data_FoodInfo = Data_FoodInfoService.I.SqlQuery<Data_FoodInfoListModel>(sql, parameters).ToList();
                 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, data_FoodInfo);
             }
@@ -420,16 +396,15 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 string errMsg = string.Empty;               
-                string foodId = dicParas.ContainsKey("foodId") ? (dicParas["foodId"] + "") : string.Empty;
+                int foodId = dicParas.Get("foodId").Toint(0);
 
-                if (string.IsNullOrEmpty(foodId))
+                if (foodId == 0)
                 {
                     errMsg = "套餐ID不能为空";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
-
-                int iFoodId = Convert.ToInt32(foodId);                                               
-                var FoodInfo = Data_FoodInfoService.I.GetModels(p => p.FoodID == iFoodId).FirstOrDefault();
+                                             
+                var FoodInfo = Data_FoodInfoService.I.GetModels(p => p.FoodID == foodId).FirstOrDefault();
                 if(FoodInfo == null)
                 {
                     errMsg = "该套餐不存在";
@@ -437,7 +412,7 @@ namespace XXCloudService.Api.XCCloud
                 }
 
                 var FoodLevels = from c in
-                                     (from a in Data_Food_LevelService.N.GetModels(p => p.FoodID == iFoodId)
+                                     (from a in Data_Food_LevelService.N.GetModels(p => p.FoodID == foodId)
                                       join b in Data_MemberLevelService.N.GetModels(p => p.State == 1) on a.MemberLevelID equals b.MemberLevelID
                                       select new
                                       {
@@ -466,7 +441,7 @@ namespace XXCloudService.Api.XCCloud
                 int FoodDetailId = Dict_SystemService.I.GetModels(p => p.DictKey.Equals("套餐内容") && p.PID == 0).FirstOrDefault().ID;
                 int FoodDetailTypeId = Dict_SystemService.I.GetModels(p => p.DictKey.Equals("套餐类别") && p.PID == FoodDetailId).FirstOrDefault().ID;
                 int FeeTypeId = Dict_SystemService.I.GetModels(p => p.DictKey.Equals("计费方式")).FirstOrDefault().ID;
-                var FoodDetials = from a in Data_Food_DetialService.N.GetModels(p => p.FoodID == iFoodId && p.Status == 1)
+                var FoodDetials = from a in Data_Food_DetialService.N.GetModels(p => p.FoodID == foodId && p.Status == 1)
                                   join b in Data_ProjectInfoService.N.GetModels() on new { ContainID = a.ContainID, FoodType = a.FoodType } equals new { ContainID = (int?)b.ID, FoodType = (int?)FoodDetailType.Ticket } into b1
                                   from b in b1.DefaultIfEmpty()
                                   join c in Base_GoodsInfoService.N.GetModels() on new { ContainID = a.ContainID, FoodType = a.FoodType } equals new { ContainID = (int?)c.ID, FoodType = (int?)FoodDetailType.Good } into c1
@@ -496,7 +471,7 @@ namespace XXCloudService.Api.XCCloud
                                       OperateType = a.OperateType
                                   };
 
-                var FoodSales = from a in Data_Food_SaleService.N.GetModels(p => p.FoodID == iFoodId)
+                var FoodSales = from a in Data_Food_SaleService.N.GetModels(p => p.FoodID == foodId)
                                 join b in Dict_BalanceTypeService.N.GetModels() on a.BalanceType equals b.ID
                                 select new {
                                     BalanceType = a.BalanceType,
@@ -543,113 +518,69 @@ namespace XXCloudService.Api.XCCloud
                 string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
 
                 string errMsg = string.Empty;
-                string foodId = dicParas.ContainsKey("foodId") ? (dicParas["foodId"] + "") : string.Empty;
-                string foodName = dicParas.ContainsKey("foodName") ? (dicParas["foodName"] + "") : string.Empty;
-                string foodType = dicParas.ContainsKey("foodType") ? (dicParas["foodType"] + "") : string.Empty;
-                string startTime = dicParas.ContainsKey("startTime") ? (dicParas["startTime"] + "") : string.Empty;                
-                string endTime = dicParas.ContainsKey("endTime") ? (dicParas["endTime"] + "") : string.Empty;                
-                string allowInternet = dicParas.ContainsKey("allowInternet") ? (dicParas["allowInternet"] + "") : string.Empty;
-                string meituanID = dicParas.ContainsKey("meituanID") ? (dicParas["meituanID"] + "") : string.Empty;
-                string dianpinID = dicParas.ContainsKey("dianpinID") ? (dicParas["dianpinID"] + "") : string.Empty;
-                string koubeiID = dicParas.ContainsKey("koubeiID") ? (dicParas["koubeiID"] + "") : string.Empty;
-                string allowPrint = dicParas.ContainsKey("allowPrint") ? (dicParas["allowPrint"] + "") : string.Empty;
-                string foreAuthorize = dicParas.ContainsKey("foreAuthorize") ? (dicParas["foreAuthorize"] + "") : string.Empty;
-                string clientPrice = dicParas.ContainsKey("clientPrice") ? (dicParas["clientPrice"] + "") : string.Empty;
-                string memberPrice = dicParas.ContainsKey("memberPrice") ? (dicParas["memberPrice"] + "") : string.Empty;
-                string renewDays = dicParas.ContainsKey("renewDays") ? (dicParas["renewDays"] + "") : string.Empty;
-                string imageUrl = dicParas.ContainsKey("imageUrl") ? (dicParas["imageUrl"] + "") : string.Empty;
-                object[] foodSales = dicParas.ContainsKey("foodSales") ? (object[])dicParas["foodSales"] : null;
-                object[] foodDetials = dicParas.ContainsKey("foodDetials") ? (object[])dicParas["foodDetials"] : null;
-                object[] foodLevels = dicParas.ContainsKey("foodLevels") ? (object[])dicParas["foodLevels"] : null;
-                int iFoodId = 0;
-                int.TryParse(foodId, out iFoodId);
+                int foodId = dicParas.Get("foodId").Toint(0);
+                var foodName = dicParas.Get("foodName");
+                var foodType = dicParas.Get("foodType").Toint();
+                var startTime = dicParas.Get("startTime").Todatetime();                
+                var endTime = dicParas.Get("endTime").Todatetime();                
+                var allowInternet = dicParas.Get("allowInternet").Toint();
+                var meituanID = dicParas.Get("meituanID");
+                var dianpinID = dicParas.Get("dianpinID");
+                var koubeiID = dicParas.Get("koubeiID");
+                var allowPrint = dicParas.Get("allowPrint").Toint();
+                var foreAuthorize = dicParas.Get("foreAuthorize").Toint();
+                var clientPrice = dicParas.Get("clientPrice").Todecimal();
+                var memberPrice = dicParas.Get("memberPrice").Todecimal();
+                var renewDays = dicParas.Get("renewDays").Toint();
+                var imageUrl = dicParas.Get("imageUrl");
+                object[] foodSales = dicParas.GetArray("foodSales");
+                object[] foodDetials = dicParas.GetArray("foodDetials");
+                object[] foodLevels = dicParas.GetArray("foodLevels");
 
-                #region 验证参数
-
-                if (string.IsNullOrEmpty(foodName))
-                {
-                    errMsg = "套餐名称不能为空";
+                if (!foodName.Nonempty("套餐名称", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
-
-                if (string.IsNullOrEmpty(foodType))
-                {
-                    errMsg = "套餐类别不能为空";
+                if (!foodType.Nonempty("套餐类别", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
-
-                if (string.IsNullOrEmpty(startTime))
-                {
-                    errMsg = "有效期开始时间不能为空";
+                if (!startTime.Nonempty("有效期开始时间", out errMsg) || !endTime.Nonempty("有效期结束时间", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
-
-                if (string.IsNullOrEmpty(endTime))
-                {
-                    errMsg = "有效期结束时间不能为空";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
-
-                if (Convert.ToDateTime(startTime) > Convert.ToDateTime(endTime))
+                if (startTime > endTime)
                 {
                     errMsg = "开始时间不能晚于结束时间";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }                
-
-                if (string.IsNullOrEmpty(clientPrice))
-                {
-                    errMsg = "散客售价不能为空";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
-
-                if (string.IsNullOrEmpty(memberPrice))
-                {
-                    errMsg = "会员售价不能为空";
+                if (!clientPrice.Validdec("散客售价", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
-
-                if (Convert.ToDecimal(clientPrice) < 0)
-                {
-                    errMsg = "散客售价不能为负数";
+                if (!memberPrice.Validdec("会员售价", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
-
-                if (Convert.ToDecimal(memberPrice) < 0)
-                {
-                    errMsg = "会员售价不能为负数";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
-
-                #endregion
+               
 
                 //开启EF事务
                 using (TransactionScope ts = new TransactionScope())
                 {
                     try
                     {
-                        IData_FoodInfoService data_FoodInfoService = Data_FoodInfoService.I;
                         var data_FoodInfo = new Data_FoodInfo();
-                        data_FoodInfo.FoodID = iFoodId;
+                        data_FoodInfo.FoodID = foodId;
                         data_FoodInfo.FoodName = foodName;
-                        data_FoodInfo.FoodType = Convert.ToInt32(foodType);
-                        data_FoodInfo.StartTime = Convert.ToDateTime(startTime);
-                        data_FoodInfo.EndTime = Convert.ToDateTime(endTime);
-                        data_FoodInfo.AllowPrint = !string.IsNullOrEmpty(allowPrint) ? Convert.ToInt32(allowPrint) : (int?)null;
-                        data_FoodInfo.AllowInternet = !string.IsNullOrEmpty(allowInternet) ? Convert.ToInt32(allowInternet) : (int?)null;
+                        data_FoodInfo.FoodType = foodType;
+                        data_FoodInfo.StartTime = startTime;
+                        data_FoodInfo.EndTime = endTime;
+                        data_FoodInfo.AllowPrint = allowPrint;
+                        data_FoodInfo.AllowInternet = allowInternet;
                         data_FoodInfo.MeituanID = meituanID;
                         data_FoodInfo.DianpinID = dianpinID;
                         data_FoodInfo.KoubeiID = koubeiID;
-                        data_FoodInfo.ForeAuthorize = !string.IsNullOrEmpty(foreAuthorize) ? Convert.ToInt32(foreAuthorize) : (int?)null;
-                        data_FoodInfo.MemberPrice = Convert.ToDecimal(memberPrice);
-                        data_FoodInfo.ClientPrice = Convert.ToDecimal(clientPrice);
-                        data_FoodInfo.RenewDays = !string.IsNullOrEmpty(renewDays) ? Convert.ToInt32(renewDays) : (int?)null;
+                        data_FoodInfo.ForeAuthorize = foreAuthorize;
+                        data_FoodInfo.MemberPrice = memberPrice;
+                        data_FoodInfo.ClientPrice = clientPrice;
+                        data_FoodInfo.RenewDays = renewDays;
                         data_FoodInfo.MerchID = merchId;
                         data_FoodInfo.ImageURL = imageUrl;
-                        if (!data_FoodInfoService.Any(a => a.FoodID == iFoodId))
+                        if (foodId == 0)
                         {
                             //新增
                             data_FoodInfo.FoodState = (int)FoodState.Valid;
-                            if (!data_FoodInfoService.Add(data_FoodInfo))
+                            if (!Data_FoodInfoService.I.Add(data_FoodInfo))
                             {
                                 errMsg = "添加套餐信息失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -657,29 +588,36 @@ namespace XXCloudService.Api.XCCloud
                         }
                         else
                         {
+                            if (!Data_FoodInfoService.I.Any(p => p.FoodID == foodId))
+                            {
+                                errMsg = "该套餐信息不存在";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+
                             //修改
-                            if (!data_FoodInfoService.Update(data_FoodInfo))
+                            if (!Data_FoodInfoService.I.Update(data_FoodInfo))
                             {
                                 errMsg = "修改套餐信息失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                             }
                         }
 
-                        iFoodId = data_FoodInfo.FoodID;
+                        foodId = data_FoodInfo.FoodID;
+
                         //保存消耗余额类别设定
-                        if (!saveFoodSale(iFoodId, foodSales, out errMsg))
+                        if (!saveFoodSale(foodId, foodSales, out errMsg))
                         {
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
                         
                         //保存套餐优惠时段信息
-                        if (!saveFoodLevel(iFoodId, foodLevels, out errMsg))
+                        if (!saveFoodLevel(foodId, foodLevels, out errMsg))
                         {
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 
                         //保存套餐内容信息
-                        if (!saveFoodDetail(iFoodId, foodDetials, out errMsg))
+                        if (!saveFoodDetail(foodId, foodDetials, out errMsg))
                         {
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
@@ -708,16 +646,18 @@ namespace XXCloudService.Api.XCCloud
             {
                 string errMsg = string.Empty;
                 int foodId = dicParas.Get("foodId").Toint(0);
-                
-                #region 验证参数
 
                 if (foodId == 0)
                 {
                     errMsg = "套餐ID不能为空";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
-               
-                #endregion
+
+                if (!Data_FoodInfoService.I.Any(p => p.FoodID == foodId))
+                {
+                    errMsg = "该套餐信息不存在";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
 
                 var data_FoodInfo = Data_FoodInfoService.I.GetModels(p => p.FoodID == foodId).FirstOrDefault();
                 data_FoodInfo.FoodState = (int)FoodState.Invalid;
@@ -742,21 +682,19 @@ namespace XXCloudService.Api.XCCloud
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
+
                 string errMsg = string.Empty;                
-                string goodNameOrBarcode = dicParas.ContainsKey("goodNameOrBarcode") ? (dicParas["goodNameOrBarcode"] + "") : string.Empty;
+                var goodNameOrBarcode = dicParas.ContainsKey("goodNameOrBarcode") ? (dicParas["goodNameOrBarcode"] + "") : string.Empty;
 
-                IDict_SystemService dict_SystemService = Dict_SystemService.N;
-                int GoodTypeId = dict_SystemService.GetModels(p => p.DictKey.Equals("商品类别")).FirstOrDefault().ID;
-
-                IBase_GoodsInfoService base_GoodsInfoService = Base_GoodsInfoService.N;
-                var query = base_GoodsInfoService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.GoodType == (int)GoodType.Good && p.Status == 1);
+                int goodTypeId = Dict_SystemService.I.GetModels(p => p.DictKey.Equals("商品类别")).FirstOrDefault().ID;
+                var query = Base_GoodsInfoService.N.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.GoodType == (int)GoodType.Good && p.Status == 1);
                 if (!string.IsNullOrEmpty(goodNameOrBarcode))
                 {
                     query = query.Where(w => w.GoodName.Contains(goodNameOrBarcode) || w.Barcode.Contains(goodNameOrBarcode));
                 }
 
                 var linq = from a in query
-                           join b in dict_SystemService.GetModels(p => p.PID == GoodTypeId) on (a.GoodType + "") equals b.DictValue into b1
+                           join b in Dict_SystemService.N.GetModels(p => p.PID == goodTypeId) on (a.GoodType + "") equals b.DictValue into b1
                            from b in b1.DefaultIfEmpty()
                            select new
                            {
@@ -766,7 +704,7 @@ namespace XXCloudService.Api.XCCloud
                                GoodTypeStr = b != null ? b.DictKey : string.Empty
                            };
 
-                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, linq.ToList());
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, linq);
             }
             catch (Exception e)
             {
@@ -782,13 +720,13 @@ namespace XXCloudService.Api.XCCloud
                 string errMsg = string.Empty;
                 Dictionary<string, string> imageInfo = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
-                List<string> imageUrls = null;
+                List<string> imageUrls = new List<string>();
                 if (!Utils.UploadImageFile("/XCCloud/Promotion/Food/", out imageUrls, out errMsg))
                 {
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
-                imageInfo.Add("ImageURL", imageUrls.FirstOrDefault());
+                imageInfo.Add("ImageURL", imageUrls.First());
 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, imageInfo);
             }
@@ -807,6 +745,7 @@ namespace XXCloudService.Api.XCCloud
                 int foodId = dicParas.Get("foodId").Toint(0);
 
                 var storeIDs = Data_Food_StoreListService.I.GetModels(p => p.FoodID == foodId).Select(o => new { StoreID = o.StoreID });
+
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, storeIDs);
             }
             catch (Exception e)
@@ -821,10 +760,10 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 string errMsg = string.Empty;
-                string foodId = dicParas.ContainsKey("foodId") ? (dicParas["foodId"] + "") : string.Empty;
-                string storeIds = dicParas.ContainsKey("storeIds") ? (dicParas["storeIds"] + "") : string.Empty;
+                int foodId = dicParas.Get("foodId").Toint(0);
+                var storeIds = dicParas.Get("storeIds");
 
-                if (string.IsNullOrEmpty(foodId))
+                if (foodId == 0)
                 {
                     errMsg = "套餐ID不能为空";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -835,23 +774,23 @@ namespace XXCloudService.Api.XCCloud
                 {
                     try
                     {
-                        int iFoodId = Convert.ToInt32(foodId);
-                        var data_Food_StoreListService = Data_Food_StoreListService.I;
-                        foreach (var model in data_Food_StoreListService.GetModels(p => p.FoodID == iFoodId))
+                        foreach (var model in Data_Food_StoreListService.I.GetModels(p => p.FoodID == foodId))
                         {
-                            data_Food_StoreListService.DeleteModel(model);
+                            Data_Food_StoreListService.I.DeleteModel(model);
                         }
 
-                        var storeIdArr = storeIds.Split('|');
-                        foreach (var storeId in storeIdArr)
+                        foreach (var storeId in storeIds.Split('|'))
                         {
+                            if (!storeId.Nonempty("门店ID", out errMsg))
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
                             var model = new Data_Food_StoreList();
-                            model.FoodID = iFoodId;
+                            model.FoodID = foodId;
                             model.StoreID = storeId;
-                            data_Food_StoreListService.AddModel(model);
+                            Data_Food_StoreListService.I.AddModel(model);
                         }
 
-                        if (!data_Food_StoreListService.SaveChanges())
+                        if (!Data_Food_StoreListService.I.SaveChanges())
                         {
                             errMsg = "更新套餐适用门店表失败";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);

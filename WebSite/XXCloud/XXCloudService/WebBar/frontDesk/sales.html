@@ -26,11 +26,20 @@
 		.saleTitleBg li:nth-child(7n+4) a{background-color: #f0c40b;}
 		.saleTitleBg li:nth-child(7n+5) a{background-color: #c5d2dc;}
 		.saleTitleBg li:nth-child(7n+6) a{background-color: #e96e72;}
-
+		.tableTag{background-color: #00F7DE;}
+		.tableTag .selectSty select{background-color: #00F7DE;}
+		.selectSty select{width: auto!important;}
+		.detailHide{display: block;}
+		.modal-content{height: 400px;}
+		.modal-dialog{margin-top: 13em;}
+		.formNum a{display: block;background-color: #555555;color: #fff;border-top: 1px solid #fefefe;border-left: 1px solid #fefefe;padding: 1em;text-align: center;font-size: 1.2em;}
+		.formNum div:nth-child(4n) a{border-right: 1px solid #fefefe;}
+		.formNum div:nth-child(13) a{border-bottom: 1px solid #fefefe;}
+		.formNum .btn{width: 100%;background-color: #d43f3a;color: #fefefe;font-size: 1.2em;padding: 0.95em 0;border: 1px solid #fefefe;border-radius: 0;}
 	</style>
 </head>
 <body>
-
+<button id="custom" class="btn btn-default" data-toggle="popover" title="显示的标题" data-placement="bottom" data-content='显示的内容'>点我</button>
 <div id="app" v-cloak>
 	<div class="container-fluid top boxShadow">
 		<!--小屏幕导航按钮和logo-->
@@ -95,61 +104,54 @@
 			</div>
 		</div>
 		<!--导航-->
-		<!--饼状图弹出-->
-		<div class="boxBg hidden">
-			<div class="box row">
-				<a class="layerCancel iconfont icon-cha" href="javascript:(0);"></a>
-				<div class="crashDetials col-md-3 col-sm-3">
-				</div>
-				<div id="crash" class="col-md-9 col-sm-9">
-				</div>
-			</div>
-		</div>
-
-
 	</div>
 
-	<div class="conF">
-		<span>请先购物再结算</span>
-	</div>
-	<div class="FastSell hidden row">
-		<div class="FastSellK">
-			<a class="layerCancel iconfont icon-cha" href="javascript:(0);"></a>
 
-			<div class="col-md-6 col-sm-6" style="margin-top: 2em;">
-				<h4 class="col-md-8 col-sm-8 inputNtSty">当前快速售币：</h4><em class="inputNt inputNtSty col-md-4 col-sm-4">1元2币</em>
-				<div class="col-md-12 col-sm-12 inputNm">
-					<input type="text" class="FastSellSty form-control" id="inputD1" oninput="inpDiv1()" placeholder="输入购币金额"/>
-					<input type="text" class="FastSellSty form-control" id="inputD2" oninput="inpDiv2()" placeholder="购币数量"/>
+	<div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title" id="gridSystemModalLabel">快速售币</h4>
 				</div>
-				<div class="col-md-12 col-xs-12">
-					<div class="switchZdy addHeight col-md-12 col-xs-12">
-						<div class="col-md-6 col-xs-6 onSwitch">实物币</div>
-						<div class="col-md-6 col-xs-6">代币</div>
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-md-6 col-sm-6">
+							<h4 class="col-md-8 col-sm-8 inputNtSty">当前快速售币：</h4><em class="inputNt inputNtSty col-md-4 col-sm-4">{{fastMoney}}元{{fastAmount}}币</em>
+							<div class="col-md-12 col-sm-12 inputNm">
+								<input type="text" class="FastSellSty form-control" v-model.number="inputMoney" @focus.once="inputFnc('that.inputMoney')" @keyup.enter="submit" placeholder="输入购币金额"/>
+								<input type="text" class="FastSellSty form-control" v-model.number="inputAmount" @focus.once="inputFnc('that.inputAmount')" @keyup.enter="submit"  placeholder="购币数量"/>
+							</div>
+							<div class="col-md-12 col-xs-12">
+								<div class="switchZdy addHeight col-md-12 col-xs-12">
+									<div class="col-md-6 col-xs-6 onSwitch">实物币</div>
+									<div class="col-md-6 col-xs-6">代币</div>
+								</div>
+							</div>
+						</div>
+						<div class="formNum col-md-6 col-sm-6" id="formNum1">
+							<div class=" col-md-3 col-sm-3 pad_0"><a href="javascript:(0);" class="num">1</a></div>
+							<div class=" col-md-3 col-sm-3 pad_0"><a href="javascript:(0);" class="num">2</a></div>
+							<div class=" col-md-3 col-sm-3 pad_0"><a href="javascript:(0);" class="num">3</a></div>
+							<div class=" col-md-3 col-sm-3 pad_0"><a href="javascript:(0);" class="num">4</a></div>
+							<div class=" col-md-3 col-sm-3 pad_0"><a href="javascript:(0);" class="num">5</a></div>
+							<div class=" col-md-3 col-sm-3 pad_0"><a href="javascript:(0);" class="num">6</a></div>
+							<div class=" col-md-3 col-sm-3 pad_0"><a href="javascript:(0);" class="num">7</a></div>
+							<div class=" col-md-3 col-sm-3 pad_0"><a href="javascript:(0);" class="num">8</a></div>
+							<div class=" col-md-3 col-sm-3 pad_0"><a href="javascript:(0);" class="num">9</a></div>
+							<div class=" col-md-3 col-sm-3 pad_0"><a href="javascript:(0);" class="num">.</a></div>
+							<div class=" col-md-3 col-sm-3 pad_0"><a href="javascript:(0);" class="num">0</a></div>
+							<div class=" col-md-3 col-sm-3 pad_0"><a href="javascript:(0);" class="remove" >删除</a></div>
+							<div class="col-md-6 col-sm-6 pad_0"><a href="javascript:(0);" class="removeAll">清空</a></div>
+							<div class="col-md-6 col-sm-6 pad_0"><button type="button" class="btn btn-c1">确定</button></div>
+						</div>
 					</div>
 				</div>
 
 			</div>
-
-			<div class="formNum formNum1 col-md-6 col-sm-6">
-				<div class=" col-md-3 col-sm-3 pad_0"><a href="javascript:(0);" class="num">1</a></div>
-				<div class=" col-md-3 col-sm-3 pad_0"><a href="javascript:(0);" class="num">2</a></div>
-				<div class=" col-md-3 col-sm-3 pad_0"><a href="javascript:(0);" class="num">3</a></div>
-				<div class=" col-md-3 col-sm-3 pad_0"><a href="javascript:(0);" class="num">4</a></div>
-				<div class=" col-md-3 col-sm-3 pad_0"><a href="javascript:(0);" class="num">5</a></div>
-				<div class=" col-md-3 col-sm-3 pad_0"><a href="javascript:(0);" class="num">6</a></div>
-				<div class=" col-md-3 col-sm-3 pad_0"><a href="javascript:(0);" class="num">7</a></div>
-				<div class=" col-md-3 col-sm-3 pad_0"><a href="javascript:(0);" class="num">8</a></div>
-				<div class=" col-md-3 col-sm-3 pad_0"><a href="javascript:(0);" class="num">9</a></div>
-				<div class=" col-md-3 col-sm-3 pad_0"><a href="javascript:(0);" class="num">.</a></div>
-				<div class=" col-md-3 col-sm-3 pad_0"><a href="javascript:(0);" class="num">0</a></div>
-				<div class=" col-md-3 col-sm-3 pad_0"><a href="javascript:(0);" class="remove" >删除</a></div>
-				<div class="col-md-6 col-sm-6 pad_0"><a href="javascript:(0);" class="removeAll">清空</a></div>
-				<div class="col-md-6 col-sm-6 pad_0"><button type="button" class="btn btn-c1">确定</button></div>
-			</div>
-
 		</div>
 	</div>
+
 	<div class="container-fluid">
 		<!--结账弹出层-->
 		<div class="CheckoutMB hidden row">
@@ -213,13 +215,13 @@
 					<li class="col-md-5 col-sm-5"><span>彩票：</span></li>
 				</ul>
 				<div class="shopCart col-md-12 col-sm-12">
-					<table class="table table-bordered col-md-12 col-sm-12">
+					<table class="table table-bordered col-md-12 col-sm-12" id="shopTable">
 						<thead style="background: #f5f5f5">
-						<tr>
-							<th>商品名</th>
-							<th>数量</th>
-							<th>单价</th>
-						</tr>
+							<tr>
+								<th>商品名</th>
+								<th>数量</th>
+								<th>单价</th>
+							</tr>
 						</thead>
 						<tbody>
 						<tr v-for="(items,index) in shopData">
@@ -248,8 +250,8 @@
 			</div>
 			<!--中间菜单-->
 			<ul class="majorMenu fl heightKz">
-				<li id="AddCount"><a class="iconfont icon-jia" href="javascript:(0)"></a></li>
-				<li id="reduceCount"><a class="iconfont icon-jian" href="javascript:(0)"></a></li>
+				<li @click="addCount"><a class="iconfont icon-jia" href="javascript:(0)"></a></li>
+				<li @click="reduceCount"><a class="iconfont icon-jian" href="javascript:(0)"></a></li>
 				<li class="cur"><a href="javascript:(0)">入会办卡</a></li>
 				<li><a id="FastSell" href="javascript:(0)">快速售币</a></li>
 				<li><a id="sales" href="javascript:(0)">产品销售</a></li>
@@ -257,6 +259,7 @@
 				<li><a href="javascript:(0)">会员返还</a></li>
 				<li><a href="javascript:(0)">退货处理</a></li>
 				<li><a href="javascript:(0)">会员卡挂失</a></li>
+				<button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-lg">快速售币</button>
 
 			</ul>
 			<!--右边显示内容-->
@@ -278,7 +281,7 @@
 						<li v-for="(item,index) in saleData" class="salesLi" @click="deletePerson(index)">
 							<img :src="item.imageUrl"/>
 							<div class="saleText">
-								<a tabindex="0" class="btn btn-group-sm btn-info" role="button" data-toggle="popover" @click.stop="details(index)" title="<h2>popoverTitle</h2>" data-content="And here's some amazing content. It's very engaging. Right?">详情</a>
+								<a tabindex="0" class="btn btn-group-sm btn-info" role="button" data-toggle="popover" @click.stop="details(index)">详情</a>
 								<h3>{{item.foodName}}</h3>
 							</div>
 						</li>
@@ -303,7 +306,14 @@
 				</div>
 			</div>
 		</div>
-
+	</div>
+	<div class="detailHide">
+		<table class="table table-bordered">
+			<tr v-for="(items,index) in detailData">
+				<td>{{items.detailFoodTypeName}}</td>
+				<td>{{items.containCount}}</td>
+				<td>{{items.containName}}</td></tr>
+		</table>
 	</div>
 </div>
 
@@ -313,11 +323,7 @@
 <!-- 引入 Vue -->
 <script src="js/vue.js"></script>
 <script src="js/axios.min.js"></script>
-<script>
-    /*var appendNumber = 4;
-    var prependNumber = 1;*/
 
-</script>
 <script>
     var sysId = 0; //调用方应用Id
     var versionNo= "0.01"; //版本号
@@ -330,21 +336,39 @@
             storeId:'',
             memberLevelId:0,
 			saleData:[],
+            detailData :[],
             msg:"",
-			saleTitle:[
-			    		{text:"全部",color:"#3279b4"},
-			    		{text:"充值",color:"#32c7d2"},
-                		{text:"数字币",color:"#b196fd"},
-			    		{text:"礼品",color:"#659ae0"},
-			    		{text:"门票",color:"#f0c40b"},
-			    		{text:"餐饮",color:"#c5d2dc"},
-			    		{text:"礼包",ccolor:"#e96e72"}
-						],
+			saleTitle:[{text:"全部"},{text:"充值"},{text:"数字币"},{text:"礼品"},{text:"门票"},{text:"餐饮"},{text:"礼包"}],
             popoverTitle:"",
-			saleData5:[]
+			saleData5:[],
+            fastMoney:"1",
+            fastAmount:"2",
+            inputMoney:"",
+            inputAmount:""
         },
         mounted: function () {
             this.Initialize()
+        },
+        watch: {
+            // 如果 `question` 发生改变，这个函数就会运行
+            inputAmount: function () {
+                var that = this;
+                if(isNaN(that.inputAmount)){
+                    that.inputAmount = "";
+                }else {
+                    var inputNum = parseInt(that.inputAmount)*that.fastMoney/that.fastAmount;
+                    that.inputMoney =inputNum.toFixed(2)
+
+                }
+            },
+            inputMoney: function () {
+                var that = this;
+                if(isNaN(that.inputMoney)){
+                    that.inputMoney = "";
+                }else {
+                    that.inputAmount = parseInt(that.inputMoney*that.fastAmount/that.fastMoney);
+                }
+            }
         },
         methods: {
             Initialize:function () {
@@ -363,6 +387,50 @@
                     paginationClickable: true,
                     spaceBetween: 30
                 });
+            },
+            inputFnc:function (inputValue) {
+                var that = this;
+                var isDot = false;
+				$('#formNum1 div .num').click(function () {
+				    if(this.innerHTML == "."){
+						isDot = true;
+					} else {
+                        var inputV_ = eval(inputValue);
+                        inputV_ = parseFloat(inputV_);
+                        if(isNaN(parseFloat(inputV_))){
+                            inputV_ = "";
+                            console.log("不是数字")
+                        }
+                        if(isDot){
+                            inputVl = inputV_+'.'+this.innerHTML;
+						}else {
+                            inputVl = inputV_+''+this.innerHTML;
+						}
+                        isDot = false;
+                        console.log(inputVl);
+                        eval(inputValue +"="+inputVl);
+                        console.log(eval(inputValue +"="+inputVl));
+					}
+
+				})
+
+
+            },
+//            inputFunc2:function () {
+//                var that = this;
+//                if(isNaN(that.inputAmount)){
+//                    that.inputAmount = "";
+//                }else {
+//                    var inputNum = parseInt(that.inputAmount)*that.fastMoney/that.fastAmount;
+//                    that.inputMoney =inputNum.toFixed(2)
+//
+//                }
+//            },
+            formNum:function (ev) {
+                console.log(ev.target);
+                console.log(ev.currentTarget);
+                var that =this;
+				that.inputAmount ="999"
             },
 			getMeal:function(customerType,foodType) {			//获取销售列表
 				var that = this;
@@ -405,67 +473,81 @@
                         selected: that.saleData[index].detailInfoList[0].balanceType
                     });
                     setTimeout(function () {
-                        $("#v-for-tbody tr:last").addClass('end').siblings().removeClass('end');
+                        $("#shopTable tr:last").addClass('tableTag').siblings().removeClass('tableTag');
                     }, 50);
-                    console.log("新加的" +  that.shopData)
+                    console.log(that.shopData)
                 } else {
                     for (var i = 0; i <that.shopData.length; i++) {
                         console.log( that.saleData[index].foodId ===  that.shopData[i].foodId);
-                        if ( that.saleData[index].foodId ===  that.shopData[i].foodId) {
-                            foodId = i;
+                        console.log(that.saleData[index].foodId);
+                        console.log(that.shopData[i].foodId);
+                        if (that.shopData[i].foodId == that.saleData[index].foodId) {
+                            var indexId = i;
                             console.log("遍历的i" + i);
                             break;
                         } else {
-                            foodId = ""
+                            var indexId = "";
                         }
                     }
-                    console.log("遍历的i（索引值）" + foodId);
-                    if (foodId === "") {
+                    if (indexId === "") {
                         that.shopData.push({
-                            allowInternet:that.saleData[i].allowInternet,
-                            allowPrint:  that.saleData[i].allowPrint,
-                            detailInfoList:  that.saleData[i].detailInfoList,
-                            detailsCount:  that.saleData[i].detailsCount,
-                            foodId:  that.saleData[i].foodId,
-                            foodName:  that.saleData[i].foodName,
-                            foodType:  that.saleData[i].foodType,
-                            foreAuthorize:  that.saleData[i].foreAuthorize,
+                            allowInternet:that.saleData[index].allowInternet,
+                            allowPrint:  that.saleData[index].allowPrint,
+                            detailInfoList:  that.saleData[index].detailInfoList,
+                            detailsCount:  that.saleData[index].detailsCount,
+                            foodId:  that.saleData[index].foodId,
+                            foodName:  that.saleData[index].foodName,
+                            foodType:  that.saleData[index].foodType,
+                            foreAuthorize:  that.saleData[index].foreAuthorize,
                             amount: 1,
-                            selected: that.saleData[i].detailInfoList[0].balanceType
+                            selected: that.saleData[index].detailInfoList[0].balanceType
                         });
                         setTimeout(function () {
-                            $("#v-for-tbody tr:last").addClass('end').siblings().removeClass('end');
+                            $("#shopTable tr:last").addClass('tableTag').siblings().removeClass('tableTag');
                         }, 50);
-                        console.log()
+                        console.log(that.shopData)
                     } else {
-                        that.shopData[foodId].amount ++;
+                        that.shopData[indexId].amount ++;
+                        $("#shopTable tbody").find("tr").eq(indexId).addClass('tableTag').siblings().removeClass('tableTag');
                     }
                 }
             },
             details:function(index){
                 var that = this;
-              	console.log(that.saleData[index]);
-              var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken ,foodId:that.saleData[index].foodId};
-              axios.post('/XCCloud/Foods?action=getFoodDetail', obj).then(function (res) {
+                console.log(that.saleData[index]);
+              	var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken ,foodId:that.saleData[index].foodId};
+              	axios.post('/XCCloud/Foods?action=getFoodDetail', obj).then(function (res) {
 				  console.log(res.data);
 				  that.msgPrompt(res.data);
 				  if (res.data.result_code === '1') {
-//                      that.msg = JSON.stringify(res.data.result_data);
-//                      $('#myModal').modal('show');
-
-//                      $(".salesCoin").find("li").eq(index).find(".saleText a").on('show.bs.popover', function () {
-//                          that.popoverTitle ="lalalalalalalalalal";
-//                      });
-                      $(".salesCoin").find("li").eq(index).find(".saleText a").popover("show")
+					 that.detailData = res.data.result_data;
+                      setTimeout("detailTime("+index+")",10);
 				  }
 			  }).catch(function (err) {
 				  console.log(err);
 			  });
 			},
-            screening:function (index) {
+            screening:function (index) {		//saleTitle(标题函数)
 				console.log(index);
 				$(".saleTitleBg").find("li").eq(index).addClass("on").siblings().removeClass("on");
                 this.getMeal(0,index);
+            },
+            addCount:function(){	//+号的购物车管理
+                var that = this;
+                var tagIndex = $("#shopTable tbody").find("tr").index($('.tableTag'));
+                console.log(tagIndex);
+                that.shopData[tagIndex].amount++
+			},
+            reduceCount:function(){	//+号的购物车管理
+                var that = this;
+                var tagIndex = $("#shopTable tbody").find("tr").index($('.tableTag'));
+                console.log(tagIndex);
+                if(that.shopData[tagIndex].amount > 1){
+                    that.shopData[tagIndex].amount--
+				}else {
+                    that.shopData.splice(tagIndex,1);
+                    $("#shopTable tbody").find("tr").eq(tagIndex-1).addClass('tableTag').siblings().removeClass('tableTag')
+                }
 
             },
             msgPrompt:function (res) {
@@ -480,6 +562,30 @@
             }
         }
     });
+    $(function () {
+        $(document).mouseup(function(e){
+            var _con = $(".salesCoin li .saleText a");  // 设置目标区域
+            if(!_con.is(e.target) && _con.has(e.target).length === 0){ // Mark 1
+                _con.popover("hide");	//设置功能
+            }
+        });
+        $("#shopTable tbody").on("click","tr",function () {
+            $(this).addClass('tableTag').siblings().removeClass('tableTag');
+        })
+    });
+    function detailTime(index) {
+        var detailHide = $('.detailHide').html();
+        console.log(detailHide);
+        $(".salesCoin").find("li").eq(index).find(".saleText a").popover({
+            trigger: 'manual',
+            placement: 'top', //top, bottom, left or right
+            title: "详情",
+            html: 'true',
+            content: detailHide
+        });
+        $(".salesCoin").find("li").eq(index).find(".saleText a").popover("show");
+        $(".salesCoin").find("li").eq(index).siblings().find(".saleText a").popover("hide");
+    }
     //存储session
     function setStorage(key,value) {
         if(window.localStorage){

@@ -217,6 +217,7 @@ namespace XXCloudService.Api.HaoKu.Com
         #endregion
 
         #region 接口请求应答
+        #region 通用应答
         /// <summary>
         /// 接口请求应答
         /// </summary>
@@ -231,14 +232,140 @@ namespace XXCloudService.Api.HaoKu.Com
             /// 消息说明
             /// </summary>
             public string statusMsg { get; set; }
-        }        
+        }
 
         public class ResultData
         {
             public int code { get; set; }
             public object data { get; set; }
             public string description { get; set; }
+        } 
+        #endregion
+
+        #region 绑卡应答
+        public class BindCardACK
+        {
+            public BindData data { get; set; }
+            /// <summary>
+            /// 状态码
+            /// </summary>
+            public int statusCode { get; set; }
+            /// <summary>
+            /// 消息说明
+            /// </summary>
+            public string statusMsg { get; set; }
+        }
+
+        public class BindData
+        {
+            public int code { get; set; }
+            public BindDetailData data { get; set; }
+            public string description { get; set; }
+        }
+
+        public class BindDetailData
+        {
+            public string id { get; set; }
+            public string qrCodeUrl { get; set; }
+        } 
+        #endregion
+
+        #region 获取卡关联的用户应答
+        /// <summary>
+        /// 获取卡关联的用户应答
+        /// </summary>
+        public class MemberListACK
+        {
+            public MemberListData data { get; set; }
+            /// <summary>
+            /// 状态码
+            /// </summary>
+            public int statusCode { get; set; }
+            /// <summary>
+            /// 消息说明
+            /// </summary>
+            public string statusMsg { get; set; }
+        }
+
+        public class MemberListData
+        {
+            public List<MemberListDetail> list { get; set; }
+            public ResultPage page { get; set; }
+        }
+
+        public class MemberListDetail
+        {
+            public string memberId { get; set; }
+            public string nickname { get; set; }
+            public string shopId { get; set; }
+        }
+
+        public class ResultPage
+        {
+            public int currCount { get; set; }
+            public int currPage { get; set; }
+            public int total { get; set; }
+            public int totalPage { get; set; }
         }
         #endregion
+
+        #region 设备绑定应答
+        public class BindDeviceACK
+        {
+            public DeviceDetail data { get; set; }
+            /// <summary>
+            /// 状态码
+            /// </summary>
+            public int statusCode { get; set; }
+            /// <summary>
+            /// 消息说明
+            /// </summary>
+            public string statusMsg { get; set; }
+        }
+
+        public class DeviceDetail
+        {
+            /// <summary>
+            /// 单次耗币
+            /// </summary>
+            public int cost { get; set; }
+            /// <summary>
+            /// 卡头名称
+            /// </summary>
+            public string name { get; set; }
+            /// <summary>
+            /// 二维码图片连接
+            /// </summary>
+            public string qrCode { get; set; }
+            /// <summary>
+            /// 生成微信二维码code
+            /// </summary>
+            public string sceneUrl { get; set; }
+            /// <summary>
+            /// 好酷门店ID
+            /// </summary>
+            public string shopId { get; set; }
+            /// <summary>
+            /// 卡头编码
+            /// </summary>
+            public string sn { get; set; }
+        }
+        #endregion
+        #endregion
+    }
+
+    public class HaokuViewModel
+    {
+        public class BindViewModel
+        {
+            public string Id { get; set; }
+            public string QRCodeUrl { get; set; }
+        }
+
+        public class MemberListViewModel
+        {
+            public string memberId { get; set; }
+            public string nickName { get; set; }
+        }
     }
 }

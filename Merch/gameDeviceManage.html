@@ -5,84 +5,15 @@
     <title>设备管理</title>
     <link rel="stylesheet" href="layui/css/layui.css">
 </head>
-<style>
-    .layui-form-onswitch{
-        border-color: #5FB878!important;
-        background-color: #5FB878!important;
-    }
-    .layui-form-switch{
-        height: 22px;
-        line-height: 22px;
-        width: 42px;
-        border: 1px solid #d2d2d2;
-        border-radius: 20px;
-        background-color: #fff;
-    }
-    .layui-form-switch em{
-        width: 25px;
-        color: #999!important;
-        font-size: 12px;}
-    .layui-form-switch i{
-        left: 5px;
-        top: 3px;
-        width: 16px;
-        height: 16px;
-        border-radius: 20px;
-        background-color: #d2d2d2;
-    }
-    .layui-form-onswitch i{
-        left: 32px;
-    }
-
-    #goodIsAll .layui-form-switch {
-        height: 36px;
-        line-height: 36px;
-        width: 180px;
-        border-radius: 5px;
-        border: 1px solid #orangered;
-        background-color: #999;
-    }
-
-    #goodIsAll .layui-form-switch i {
-        left: 0px;
-        top: 0px;
-        width: 95px;
-        height: 36px;
-        margin-top: -1px;
-        border-radius: 5px 0 0 5px;
-        border: 1px solid #aaa;
-        background-color: #fff;
-    }
-
-    #goodIsAll  .layui-form-switch em {
-        width: 80px;
-        color: #ffffff!important;
-        font-size: 14px;
-    }
-
-    #goodIsAll .layui-form-onswitch {
-        border-color: #1e9fff!important;
-        background-color: #1e9fff!important;
-    }
-
-    #goodIsAll  .layui-form-onswitch i {
-        left: 95px;
-        border-radius: 0 5px 5px 0;
-        border: 1px solid #aaa;
-        margin-top: -1px;
-    }
-
-
-</style>
 <body>
 <div class="layui-row">
     <blockquote style="text-align: right;padding-right: 150px;" class="layui-col-md12 layui-col-xs12 layui-col-lg12 layui-elem-quote">
-        <button type="button" class="layui-btn layui-btn-normal toEasyOpen" id="addNew"><i class="layui-icon">&#xe654;</i>新增</button>
+        <!--<button type="button" class="layui-btn layui-btn-normal toEasyOpen" id="addNew"><i class="layui-icon">&#xe654;</i>新增</button>-->
     </blockquote>
     <table class="layui-hide" lay-filter="gameDeviceTable" id="gameDeviceTable"></table>
 </div>
 <!--设备绑定、设备解绑-->
-<div id="deviceBindOpen" style="padding: 15px;display: none;">
+<div id="deviceBindOpen" style="padding: 15px;display: none;" class="goodIsAll">
     <form action="" class="layui-form-pane layui-form">
         <div class="layui-form-item">
             <div class="layui-inline">
@@ -116,14 +47,14 @@
 </div>
 <!--关联方式/门票/计时-->
 <div id="bindTableBox" style="padding: 15px;display: none;width: 630px">
-    <div style="text-align: right;"><button type="button" class="layui-btn layui-btn-normal" id="addBind">新增</button></div>
+    <!--<div style="text-align: right;"><button type="button" class="layui-btn layui-btn-normal" id="addBind">新增</button></div>-->
     <table id="bindTable" lay-filter="bindTable" class="layui-hide" style="height: 300px;width: 600px;"></table>
     <div style="text-align:center; margin: 15px;">
         <button type="button" class="layui-btn layui-btn-normal" id="saveBind">确定</button>
         <button type="reset" class="layui-btn layui-btn-normal">重置</button>
     </div>
 </div>
-<div id="joinWay" style="padding: 15px;display: none;">
+<div id="joinWay" style="padding: 15px;display: none;" class="goodIsAll">
     <form action="" class="layui-form layui-form-pane">
         <div class="layui-form-item" >
             <label for="" class="layui-form-label">门票类别</label>
@@ -202,11 +133,11 @@ let index;
                 bindDeviceId=data.value;
           });
 
-            form.on('select(ProjectID)',function (data) {
-                ProjectID=data.value;
-                ProjectName=data.elem[data.elem.selectedIndex].text;
-            });
-            form.on('select(SignType)',function (data) {
+          form.on('select(ProjectID)',function (data) {
+            ProjectID=data.value;
+            ProjectName=data.elem[data.elem.selectedIndex].text;
+           });
+          form.on('select(SignType)',function (data) {
                 SignType=data.value;
             });
           form.on('switch(LockMember)',function (data) {
@@ -538,12 +469,13 @@ let index;
     {{#  } }}
 </script>
 <script type="text/html" id="SignType">
-    {{# if(d.SignType==0){ }}
-     '签入'
-    {{# }else if(d.SignType==1){ }}
-    '签出'
-    {{# }else if(d.SignType==2){ }}
-    '单次'
+
+    {{#  if(d.SignType == 0){ }}
+    签入
+    {{#  } else if(d.SignType == 1){ }}
+    签出
+    {{#  } else if(d.SignType == 2){ }}
+    单次
     {{#  } }}
 </script>
 </html>
