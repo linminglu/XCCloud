@@ -53,7 +53,6 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Data_CoinInventory> Data_CoinInventory { get; set; }
         public virtual DbSet<Data_CoinStorage> Data_CoinStorage { get; set; }
         public virtual DbSet<Data_Coupon_StoreList> Data_Coupon_StoreList { get; set; }
-        public virtual DbSet<Data_CouponList> Data_CouponList { get; set; }
         public virtual DbSet<Data_DigitCoinDestroy> Data_DigitCoinDestroy { get; set; }
         public virtual DbSet<Data_Food_StoreList> Data_Food_StoreList { get; set; }
         public virtual DbSet<Data_Food_WorkStation> Data_Food_WorkStation { get; set; }
@@ -147,6 +146,8 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Base_StoreHKConfig> Base_StoreHKConfig { get; set; }
         public virtual DbSet<Data_DigitCoinFood> Data_DigitCoinFood { get; set; }
         public virtual DbSet<Data_GameInfo> Data_GameInfo { get; set; }
+        public virtual DbSet<Data_CouponCondition> Data_CouponCondition { get; set; }
         public virtual DbSet<Data_CouponInfo> Data_CouponInfo { get; set; }
+        public virtual DbSet<Data_CouponList> Data_CouponList { get; set; }
     }
 }

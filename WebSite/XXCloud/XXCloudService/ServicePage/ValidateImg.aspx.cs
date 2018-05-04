@@ -29,10 +29,10 @@ namespace XCCloudService.ServicePage
         private bool GetRandomNum(out string validateNum)
         {
             int count = 0;
-            validateNum = CreateRandomNum(6);
+            validateNum = CreateRandomNum(5);
             while (ValidateImgCache.Exist(validateNum) && count < 9)
             {
-                validateNum = CreateRandomNum(6);
+                validateNum = CreateRandomNum(5);
                 count++;
             }
             if (count < 9 )

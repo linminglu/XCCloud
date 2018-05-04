@@ -30,6 +30,7 @@ namespace XCCloudService.WeiXin.Message
                 case WeiXinMesageType.XcUserResetPassword: return Push<XcUserResetPasswordConfigModel, XcUserResetPasswordDataModel>(openId, (XcUserResetPasswordDataModel)dataModel, out errMsg);
                 case WeiXinMesageType.XCGameGetCoinSuccess: return Push<XcGameGetCoinSuccessConfigModel, XcGameGetCoinSuccessDataModel>(openId, (XcGameGetCoinSuccessDataModel)dataModel, out errMsg);
                 case WeiXinMesageType.MemberRechargeNotify: return Push<MemberRechargeNotifyConfigModel, MemberRechargeNotifyDataModel>(openId, (MemberRechargeNotifyDataModel)dataModel, out errMsg);
+                case WeiXinMesageType.XCCloudOrderAuditRequest: return Push<OrderAuditConfigModel, OrderAuditDataModel>(openId, (OrderAuditDataModel)dataModel, out errMsg);
                 default: return false;
             }
         }

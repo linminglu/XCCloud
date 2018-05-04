@@ -22,6 +22,7 @@ using XCCloudService.Common.Extensions;
 using System.Transactions;
 using System.Data.Entity.Validation;
 using XXCloudService.Api.XCCloud.Common;
+using XCCloudService.Business.Common;
 
 namespace XCCloudService.Api.XCCloud
 {    
@@ -475,6 +476,32 @@ namespace XCCloudService.Api.XCCloud
             return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, list);
         }
 
+
+        /// <summary>
+        /// 获取用户短信码
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object getUserMobileSMSCode(Dictionary<string, object> dicParas)
+        {
+            string errMsg = string.Empty;
+            string mobile = dicParas.ContainsKey("mobile") ? dicParas["mobile"].ToString() : string.Empty;
+            if(!Utils.CheckMobile(mobile))
+            {
+                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "手机号无效");
+            }
+
+            if (!SMSCodeBusiness.SendSMSCode(mobile, "2", out errMsg))
+            {
+                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
+            }
+
+            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.T, "");
+        }
+
+
+
         /// <summary>
         /// 获取会员
         /// </summary>
@@ -539,21 +566,16 @@ namespace XCCloudService.Api.XCCloud
             StoreIDDataModel userTokenDataModel = (StoreIDDataModel)(userTokenModel.DataModel);
 
             string icCardId = dicParas.ContainsKey("icCardId") ? dicParas["icCardId"].ToString() : string.Empty;
-            string storeId = dicParas.ContainsKey("storeId") ? dicParas["storeId"].ToString() : string.Empty;
 
             if (string.IsNullOrEmpty(icCardId))
             {
                 return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员卡号无效");
             }
-            if (string.IsNullOrEmpty(storeId))
-            {
-                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "门店号无效");
-            }
 
             string storedProcedure = "GetMember";
             SqlParameter[] parameters = new SqlParameter[4];
             parameters[0] = new SqlParameter("@ICCardID", icCardId);
-            parameters[1] = new SqlParameter("@StoreID", storeId);
+            parameters[1] = new SqlParameter("@StoreID", userTokenDataModel.StoreId);
             parameters[2] = new SqlParameter("@Result",SqlDbType.Int);
             parameters[2].Direction = System.Data.ParameterDirection.Output;
             parameters[3] = new SqlParameter("@ErrMsg", SqlDbType.VarChar,200);

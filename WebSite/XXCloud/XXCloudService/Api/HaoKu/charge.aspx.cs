@@ -27,19 +27,19 @@ namespace XXCloudService.Api.HaoKu
                 HaokuAPI api = new HaokuAPI();
                 SortedDictionary<string, string> sPara = api.GetRequestQuerys(this.Context);
 
-                string currSign = api.GetSign(sPara);
+                string shopId = Request["shopId"];
+                string cardId = Request["cardId"];
+                string amount = Request["amount"];
+                string source = Request["source"];
+                string t = Request["t"];
                 string sign = Request["sign"];
+
+                string currSign = api.GetSign(sPara);                
                 if (currSign != sign)
                 {
                     Response.Write(ReturnModel.ReturnInfo(ReturnCode.F, "签名错误"));
                     return;
                 }
-
-                string shopId = Request["shopId"];
-                string cardId = Request["cardId"];
-                string amount = Request["amount"];
-                string source = Request["source"];
-                string t = Request["t"];                
 
                 if (string.IsNullOrEmpty(shopId))
                 {
@@ -50,7 +50,7 @@ namespace XXCloudService.Api.HaoKu
                 int raiseBalance = 0;
                 if (!int.TryParse(amount, out raiseBalance))
                 {
-                    Response.Write(ReturnModel.ReturnInfo(ReturnCode.F, "amount错误"));
+                    Response.Write(ReturnModel.ReturnInfo(ReturnCode.F, "转币数错误"));
                     return;
                 }
 

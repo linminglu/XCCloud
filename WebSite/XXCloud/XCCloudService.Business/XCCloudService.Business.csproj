@@ -52,6 +52,7 @@
     <Compile Include="Common\MobileTokenBusiness.cs" />
     <Compile Include="Common\QRBusiness.cs" />
     <Compile Include="Common\RequestRouteBusiness.cs" />
+    <Compile Include="Common\SMSCodeBusiness.cs" />
     <Compile Include="Common\TCPAnswerSocketBusiness.cs" />
     <Compile Include="Common\UDPClientItemBusiness.cs" />
     <Compile Include="Common\UDPSocketCommonQueryAnswerBusiness.cs" />
@@ -82,6 +83,7 @@
     <Compile Include="XCCloud\MemberBusiness.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="XCCloud\RoleBusiness.cs" />
     <Compile Include="XCCloud\ScheduleBusiness.cs">
       <SubType>Code</SubType>
     </Compile>

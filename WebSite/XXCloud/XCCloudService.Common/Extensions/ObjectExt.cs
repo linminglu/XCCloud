@@ -122,7 +122,7 @@ namespace XCCloudService.Common.Extensions
         public static DateTime? Todatetime<T>(this T key)
         {
             if (key.IsNull()) return null;
-            var date = new DateTime(1753, 1, 1);
+            var date = new DateTime();
             if (DateTime.TryParse(key.ToString(), out date))
                 return date;
             return null;
@@ -151,7 +151,7 @@ namespace XCCloudService.Common.Extensions
         public static TimeSpan? Totimespan<T>(this T key)
         {
             if (key.IsNull()) return null;
-            var timespan = new TimeSpan(0, 0, 0, 0, 0);
+            var timespan = new TimeSpan();
             if (TimeSpan.TryParse(key.ToString(), out timespan))
                 return timespan;
             return null;

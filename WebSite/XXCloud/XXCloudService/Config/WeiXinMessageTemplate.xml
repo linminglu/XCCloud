@@ -125,4 +125,16 @@
     <keynote3color>#173177</keynote3color>
     <remarkcolor>#173177</remarkcolor>
   </msgtemplate>
+  <msgtemplate id="XCCloudOrderAuditRequest">
+    <title>您有订单需要审核!</title>
+    <templateid>VM2Tovgl4hSh08wUzE3gR5ZOfy8hltmQndpoQ6B5Isg</templateid>
+    <detailsurl></detailsurl>
+    <sapppagepath></sapppagepath>
+    <remark>如果有疑问,请联系我们客服,24小时为您服务</remark>
+    <firstcolor>#173177</firstcolor>
+    <keynote1color>#173177</keynote1color>
+    <keynote2color>#173177</keynote2color>
+    <keynote3color>#173177</keynote3color>
+    <remarkcolor>#173177</remarkcolor>
+  </msgtemplate>
 </msgtemplates> 

@@ -7,6 +7,7 @@ using XCCloudService.Business.Common;
 using XCCloudService.Business.WeiXin;
 using XCCloudService.Common;
 using XCCloudService.Common.Enum;
+using XCCloudService.Model.WeiXin.Message;
 using XCCloudService.Model.WeiXin.SAppMessage;
 using XCCloudService.WeiXin.Common;
 using XCCloudService.WeiXin.Config;
@@ -115,6 +116,28 @@ namespace XCCloudService.WeiXin.Message
                 errMsg = e.Message;
                 return false;
             }
-        }    
+        }
+
+
+        public static bool PushOrderAudit(string openId,string accessToken,string form_id,string auditId,string orderId,int userId,string userName,string remark,out string errMsg)
+        {
+            errMsg = string.Empty;
+            try
+            {
+                OrderAuditDataModel dataModel = new OrderAuditDataModel();
+                dataModel.AuditId = auditId;
+                dataModel.SendTime = System.DateTime.Now.ToString("yyyy年MM月dd日HH时mm分");
+                dataModel.SendUserId = userId.ToString();
+                dataModel.SendUserName = userName;
+                dataModel.OrderId = orderId;
+                dataModel.Remark = remark;
+                return SAppMessageMana.Push<MemberCoinsConfigModel, OrderAuditDataModel>(openId, accessToken, form_id, dataModel, out errMsg);
+            }
+            catch (Exception e)
+            {
+                errMsg = e.Message;
+                return false;
+            }
+        }
     }
 }

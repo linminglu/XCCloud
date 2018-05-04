@@ -33,7 +33,6 @@
         <EntityTypeShape EntityType="XCCloudDBModel.Data_CoinInventory" Width="1.5" PointX="14.75" PointY="3.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_CoinStorage" Width="1.5" PointX="14.75" PointY="7.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_Coupon_StoreList" Width="1.5" PointX="14.75" PointY="10.75" />
-        <EntityTypeShape EntityType="XCCloudDBModel.Data_CouponList" Width="1.5" PointX="12.75" PointY="14.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_DigitCoinDestroy" Width="1.5" PointX="16.75" PointY="0.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_Food_StoreList" Width="1.5" PointX="16.75" PointY="7.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_Food_WorkStation" Width="1.5" PointX="16.75" PointY="10.75" />
@@ -127,7 +126,9 @@
         <EntityTypeShape EntityType="XCCloudDBModel.Base_StoreHKConfig" Width="1.5" PointX="35.375" PointY="0.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_DigitCoinFood" Width="1.5" PointX="35.375" PointY="4.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_GameInfo" Width="1.5" PointX="7.375" PointY="35.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.Data_CouponCondition" Width="1.5" PointX="11.375" PointY="14.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_CouponInfo" Width="1.5" PointX="21.375" PointY="33.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.Data_CouponList" Width="1.5" PointX="35.375" PointY="8.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

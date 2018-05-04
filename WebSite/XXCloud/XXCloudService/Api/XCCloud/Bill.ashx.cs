@@ -17,6 +17,7 @@ using XCCloudService.Business;
 using System.IO;
 using System.Drawing;
 using System.Drawing.Imaging;
+using XCCloudService.Common.Extensions;
 
 namespace XXCloudService.Api.XCCloud
 {
@@ -27,7 +28,7 @@ namespace XXCloudService.Api.XCCloud
     public class Bill : ApiBase
     {
         //查询方法  
-        private List<Data_BillInfo> Search(string title = null, string publishDate = null)
+        private List<Data_BillInfo> Search(string title, DateTime? publishDate)
         {
             //为了模拟EF查询，转换为IEnumerable,在EF中此处为数据库上下文的表对象  
             IData_BillInfoService data_BillInfoService = BLLContainer.Resolve<IData_BillInfoService>();
@@ -41,10 +42,9 @@ namespace XXCloudService.Api.XCCloud
                 result = result.Where(p => p.Title.Contains(title));
             }
 
-            if (!string.IsNullOrEmpty(publishDate))
+            if (publishDate != null)
             {
-                var date = Convert.ToDateTime(publishDate);
-                result = result.Where(p => System.Data.Entity.DbFunctions.DiffDays(p.ReleaseTime, date) == 0);
+                result = result.Where(p => System.Data.Entity.DbFunctions.DiffDays(p.ReleaseTime, publishDate) == 0);
             }            
 
             //此时执行查询  
@@ -79,9 +79,9 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 string errMsg = string.Empty;
-                string fileName = dicParas.ContainsKey("fileName") ? dicParas["fileName"].ToString() : string.Empty;
+                var fileName = dicParas.Get("fileName");
 
-                if (fileName == null)
+                if (string.IsNullOrEmpty(fileName))
                 {
                     errMsg = "图片名称不能为空";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -90,10 +90,9 @@ namespace XXCloudService.Api.XCCloud
                 string picturePath = System.Configuration.ConfigurationManager.AppSettings["UploadImageUrl"].ToString() + "/XCCloud/";
                 string path = System.Web.HttpContext.Current.Server.MapPath(picturePath);                
                 
-                IData_BillInfoService data_BillInfoService = BLLContainer.Resolve<IData_BillInfoService>();
                 SqlParameter[] parameters = new SqlParameter[1];
                 parameters[0] = new SqlParameter("@PicturePath", picturePath + fileName);
-                data_BillInfoService.ExecuteSqlCommand("update Data_BillInfo set PicturePath='' where PicturePath=@PicturePath", parameters);
+                Data_BillInfoService.I.ExecuteSqlCommand("update Data_BillInfo set PicturePath='' where PicturePath=@PicturePath", parameters);
 
                 if (File.Exists(path + fileName))
                 {
@@ -114,77 +113,42 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 string errMsg = string.Empty;
-                string id = dicParas.ContainsKey("id") ? dicParas["id"].ToString() : string.Empty;
-                string title = dicParas.ContainsKey("title") ? dicParas["title"].ToString() : string.Empty;
-                string publishType = dicParas.ContainsKey("publishType") ? dicParas["publishType"].ToString() : string.Empty;
-                string promotionType = dicParas.ContainsKey("promotionType") ? dicParas["promotionType"].ToString() : string.Empty;
-                string picturePath = dicParas.ContainsKey("picturePath") ? dicParas["picturePath"].ToString() : string.Empty;
-                string pagePath = dicParas.ContainsKey("pagePath") ? dicParas["pagePath"].ToString() : string.Empty;
-
-                #region 验证参数
-                if (!string.IsNullOrEmpty(id) && !Utils.isNumber(id))
-                {
-                    errMsg = "海报ID格式不正确";
+                if (!dicParas.Get("title").Nonempty("标题", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
-
-                if (string.IsNullOrEmpty(title))
-                {
-                    errMsg = "标题不能为空";
+                if (!dicParas.Get("publishType").Validint("展示方式", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
-
-                if (string.IsNullOrEmpty(publishType))
-                {
-                    errMsg = "展示方式不能为空";
+                if (!dicParas.Get("promotionType").Validint("活动类别", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
-
-                if (string.IsNullOrEmpty(promotionType))
-                {
-                    errMsg = "活动类别不能为空";
+                if (!dicParas.Get("pagePath").Nonempty("活动内容", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
-
-                if (string.IsNullOrEmpty(pagePath))
-                {
-                    errMsg = "活动内容不能为空";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
-
-                if (title.Length > 50)
+                if (dicParas.Get("title").Length > 50)
                 {
                     errMsg = "标题不能超过50字";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
-                if (!Utils.isNumber(publishType))
-                {
-                    errMsg = "展示方式须为整形";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
+                int id = dicParas.Get("id").Toint(0);
+                var title = dicParas.Get("title");
+                var publishType = dicParas.Get("publishType").Toint();
+                var promotionType = dicParas.Get("promotionType").Toint();
+                var picturePath = dicParas.Get("picturePath");
+                var pagePath = dicParas.Get("pagePath");
 
-                if (!Utils.isNumber(promotionType))
-                {
-                    errMsg = "活动类别须为整形";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }                
-                #endregion
+                
 
-                Data_BillInfo data_BillInfoModel = new Data_BillInfo();
-                IData_BillInfoService data_BillInfoService = BLLContainer.Resolve<IData_BillInfoService>();
-                if (!data_BillInfoService.Any(p => p.ID.ToString().Equals(id, StringComparison.OrdinalIgnoreCase)))
+                var data_BillInfoModel = new Data_BillInfo();
+                if (id == 0)
                 {
                     data_BillInfoModel.Title = title;
-                    data_BillInfoModel.PublishType = Convert.ToInt32(publishType);
-                    data_BillInfoModel.PromotionType = Convert.ToInt32(promotionType);
+                    data_BillInfoModel.PublishType = publishType;
+                    data_BillInfoModel.PromotionType = promotionType;
                     data_BillInfoModel.PicturePath = picturePath;
                     data_BillInfoModel.PagePath = pagePath;
                     data_BillInfoModel.State = 1;
                     data_BillInfoModel.Time = DateTime.Now;
                     data_BillInfoModel.ReleaseTime = DateTime.Now;
 
-                    if (!data_BillInfoService.Add(data_BillInfoModel))
+                    if (Data_BillInfoService.I.Add(data_BillInfoModel))
                     {
                         errMsg = "发布海报失败";
                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -192,16 +156,22 @@ namespace XXCloudService.Api.XCCloud
                 }
                 else
                 {
-                    data_BillInfoModel = data_BillInfoService.GetModels(p => p.ID.ToString().Equals(id, StringComparison.OrdinalIgnoreCase)).FirstOrDefault<Data_BillInfo>();
+                    if (!Data_BillInfoService.I.Any(p => p.ID == id))
+                    {
+                        errMsg = "该海报不存在";
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
+
+                    data_BillInfoModel = Data_BillInfoService.I.GetModels(p => p.ID == id).FirstOrDefault();
                     data_BillInfoModel.Title = title;
-                    data_BillInfoModel.PublishType = Convert.ToInt32(publishType);
-                    data_BillInfoModel.PromotionType = Convert.ToInt32(promotionType);
+                    data_BillInfoModel.PublishType = publishType;
+                    data_BillInfoModel.PromotionType = promotionType;
                     data_BillInfoModel.PicturePath = picturePath;
                     data_BillInfoModel.PagePath = pagePath;
                     data_BillInfoModel.State = 1;
                     data_BillInfoModel.ReleaseTime = DateTime.Now;
 
-                    if (!data_BillInfoService.Update(data_BillInfoModel))
+                    if (!Data_BillInfoService.I.Update(data_BillInfoModel))
                     {
                         errMsg = "发布海报失败";
                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -222,32 +192,22 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 string errMsg = string.Empty;
-                string id = dicParas.ContainsKey("id") ? dicParas["id"].ToString() : string.Empty;                
+                int id = dicParas.Get("id").Toint(0);
 
-                #region 验证参数
-                if (string.IsNullOrEmpty(id))
+                if (id == 0)
                 {
                     errMsg = "ID不能为空";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
-                if (!Utils.isNumber(id))
+                if (!Data_BillInfoService.I.Any(p => p.ID == id))
                 {
-                    errMsg = "ID须为整形";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
-                #endregion
-
-                IData_BillInfoService data_BillInfoService = BLLContainer.Resolve<IData_BillInfoService>();
-                int iId = Convert.ToInt32(id);
-                if (!data_BillInfoService.Any(p => p.ID.Equals(iId)))
-                {
-                    errMsg = "该海报Id不存在";
+                    errMsg = "该海报不存在";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
-                var data_BillInfoModel = data_BillInfoService.GetModels(p => p.ID.Equals(iId)).FirstOrDefault<Data_BillInfo>();
-                if (!data_BillInfoService.Delete(data_BillInfoModel))
+                var data_BillInfoModel = Data_BillInfoService.I.GetModels(p => p.ID == id).FirstOrDefault();
+                if (!Data_BillInfoService.I.Delete(data_BillInfoModel))
                 {
                     errMsg = "删除海报失败";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -272,22 +232,11 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 string errMsg = string.Empty;
-                string title = dicParas.ContainsKey("title") ? dicParas["title"].ToString() : string.Empty;
-                string publishDate = dicParas.ContainsKey("publishDate") ? dicParas["publishDate"].ToString() : string.Empty;
+                if(!dicParas.Get("publishDate").Validdate("发布日期", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-                #region 验证参数
-                if (!string.IsNullOrEmpty(publishDate))
-                {
-                    try
-                    {
-                        Convert.ToDateTime(publishDate);
-                    }
-                    catch (Exception ex)
-                    {
-                        return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, ex.Message);
-                    }
-                }
-                #endregion
+                var title = dicParas.Get("title");
+                var publishDate = dicParas.Get("publishDate").Todatetime();
 
                 //IData_BillInfoService data_BillInfoService = BLLContainer.Resolve<IData_BillInfoService>();    
                 //string sql = "select * from Data_BillInfo where 1=1";
@@ -319,11 +268,8 @@ namespace XXCloudService.Api.XCCloud
         {
             try
             {
-                string errMsg = string.Empty;
-
-                IData_BillInfoService data_BillInfoService = BLLContainer.Resolve<IData_BillInfoService>();
                 string sql = "select * from Data_BillInfo";
-                var data_BillInfo = data_BillInfoService.SqlQuery(sql).ToList().GroupBy(p => p.PicturePath).Select(g => g.Key).ToList();
+                var data_BillInfo = Data_BillInfoService.I.SqlQuery(sql).ToList().GroupBy(p => p.PicturePath).Select(g => g.Key).ToList();
 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, data_BillInfo);
             }

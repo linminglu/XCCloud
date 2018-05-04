@@ -81,7 +81,7 @@
     if(xc_language=='Chinese'){
         cols=[
             {field:'ID', title:'套餐编号', align: 'center', sort: true}
-            ,{field:'FoodName',title: '套餐名称', align: 'center'} //width 支持：数字、百分比和不填写。
+            ,{field:'FoodName',title: '套餐名称', align: 'center',templet:'#foodNames'} //width 支持：数字、百分比和不填写。
             ,{field:'BalanceIndexStr', title: '活动定金', align: 'center'}
             ,{field:'Coins', title: '数量', align: 'center'}
             ,{field:'AuthorFlag', title: '授权标记', align: 'center',templet:'#AuthorFlag'}
@@ -90,7 +90,7 @@
     }else if(xc_language=='English'){
         cols=[
             {field:'ID', title:'ID', align: 'center', sort: true}
-            ,{field:'FoodName',title: 'FoodName', align: 'center'} //width 支持：数字、百分比和不填写。
+            ,{field:'FoodName',title: 'FoodName', align: 'center',templet:'#foodNames'} //width 支持：数字、百分比和不填写。
             ,{field:'BalanceIndexStr', title: 'BalanceIndexStr', align: 'center'}
             ,{field:'Coins', title: 'Count', align: 'center'}
             ,{field:'AuthorFlag', title: 'AuthorFlag', align: 'center',templet:'#AuthorFlag'}
@@ -220,6 +220,12 @@
                 }
             })
         });
+
+        //表格钻取
+        $('body').on('click','button',function () {
+            console.log($(this))
+            console.log($(this).text())
+        })
     })
 </script>
 <script type="text/html" id="barDemo">
@@ -229,6 +235,11 @@
     {{# }else if(xc_language=='Chinese'){ }}
     <a class="layui-btn layui-btn-xs" lay-event="edit"> <i class="layui-icon">&#xe642;</i>编辑</a>
     <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del"> <i class="layui-icon">&#xe642;</i>删除</a>
+    {{#  } }}
+</script>
+<script type="text/html" id="foodNames">
+    {{# if(d.FoodName){ }}
+    <button type="button" class="layui-btn layui-btn-sm" id="{{d.ID}}">{{d.FoodName}}</button>
     {{#  } }}
 </script>
 </html>

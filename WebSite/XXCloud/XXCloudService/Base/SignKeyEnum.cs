@@ -55,6 +55,7 @@ namespace XCCloudService.Base
     public enum RespDataTypeEnum
     { 
         Json = 0,
-        ImgStream = 1
+        ImgStream = 1,
+        FileStream = 2
     }
 }

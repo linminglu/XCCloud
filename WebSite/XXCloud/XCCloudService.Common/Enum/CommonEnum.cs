@@ -203,7 +203,8 @@ namespace XCCloudService.Common.Enum
         StoreRegisterRemind = 7,//开店申请通知
         XcUserNewPassword = 8,//莘宸用户登录密码
         XcUserResetPassword = 9,//莘宸用户重置密码
-        XCGameGetCoinSuccess = 10//莘宸用户提币成功
+        XCGameGetCoinSuccess = 10,//莘宸用户提币成功
+        XCCloudOrderAuditRequest = 11//订单审核
     }
 
     public enum OrderType
@@ -734,14 +735,14 @@ namespace XCCloudService.Common.Enum
     //派发方式
     public enum SendType
     {
-        Consume = 0,//消费
-        Orient = 1,//定向
-        Jackpot = 2,//抽奖
-        Delivery = 3 //街边派送
+        Consume = 0,     //消费赠券
+        Orient = 1,      //定向派发
+        Jackpot = 2,     //抽奖赠券
+        Delivery = 3     //街边派送
     }
 
     //实物券标记
-    public enum EntryCouponFlag
+    public enum CouponFlag
     {
         Digit = 0,//电子优惠券
         Entry = 1 //实物优惠券
@@ -750,9 +751,38 @@ namespace XCCloudService.Common.Enum
     //券状态
     public enum CouponState
     {
-        UnUsed = 0,   //未使用
-        Applied = 1,  //已核销
-        Locked = 2    //已锁定
+        NotAssigned = 0,  //未分配 创建初始状态
+        NotActivated = 1, //未激活 调拨门店
+        Activated = 2,    //已激活 门店派发
+        Applied = 3       //已使用 用户核销       
+    }
+    
+    //派发周期
+    public enum SendCycle
+    {
+        EveryDay = 0,    //每天
+        EveryWeek = 1,   //每周
+        EveryMonth = 2,  //每月
+        EveryYear = 3    //每年
+    }
+
+    //条件类型
+    public enum ConditionType
+    {
+        Manual = 0,        //手动派发
+        Auto = 1,          //自动派发
+    }
+
+
+    //条件ID
+    public enum ConditionID
+    {
+        Activability = 0,    //活跃能力
+        Consumability = 1,   //消费能力
+        Bunkoability = 2,    //输赢能力
+        Birthday = 3,        //生日
+        MemberLevel = 4,     //会员级别
+        MemberBalance = 5    //会员余额
     }
 
     /// <summary>
@@ -827,5 +857,11 @@ namespace XCCloudService.Common.Enum
         /// 异常支付警报
         /// </summary>
         Alarm = 3
+    }
+
+
+    public enum AuditOrderType
+    {
+        FoodSale = 0
     }
 }

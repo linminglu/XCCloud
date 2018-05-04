@@ -139,9 +139,9 @@ namespace XXCloudService.Api.XCCloud
                             return false;
                         if (!member_day_sale_count.Validint("每个会员限购数", out errMsg))
                             return false;
-                        if (!client.Validdec("散客优惠价", out errMsg))
+                        if (!client.Validdecimal("散客优惠价", out errMsg))
                             return false;
-                        if (!vip.Validdec("会员优惠价", out errMsg))
+                        if (!vip.Validdecimal("会员优惠价", out errMsg))
                             return false;
                         if (!timeType.Nonempty("时段类型", out errMsg))
                             return false;
@@ -283,7 +283,7 @@ namespace XXCloudService.Api.XCCloud
                         
                         if (!containCount.Validint("内容数量", out errMsg)) 
                             return false;
-                        if (!weightValue.Validdec("权重价值", out errMsg)) 
+                        if (!weightValue.Validdecimal("权重价值", out errMsg)) 
                             return false;
 
                         if (foodDetailType == (int)FoodDetailType.Ticket || foodDetailType == (int)FoodDetailType.Coupon)
@@ -548,9 +548,9 @@ namespace XXCloudService.Api.XCCloud
                     errMsg = "开始时间不能晚于结束时间";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
-                if (!clientPrice.Validdec("散客售价", out errMsg))
+                if (!clientPrice.Validdecimal("散客售价", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                if (!memberPrice.Validdec("会员售价", out errMsg))
+                if (!memberPrice.Validdecimal("会员售价", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                
 
@@ -779,15 +779,18 @@ namespace XXCloudService.Api.XCCloud
                             Data_Food_StoreListService.I.DeleteModel(model);
                         }
 
-                        foreach (var storeId in storeIds.Split('|'))
+                        if (!string.IsNullOrEmpty(storeIds))
                         {
-                            if (!storeId.Nonempty("门店ID", out errMsg))
-                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            foreach (var storeId in storeIds.Split('|'))
+                            {
+                                if (!storeId.Nonempty("门店ID", out errMsg))
+                                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-                            var model = new Data_Food_StoreList();
-                            model.FoodID = foodId;
-                            model.StoreID = storeId;
-                            Data_Food_StoreListService.I.AddModel(model);
+                                var model = new Data_Food_StoreList();
+                                model.FoodID = foodId;
+                                model.StoreID = storeId;
+                                Data_Food_StoreListService.I.AddModel(model);
+                            }
                         }
 
                         if (!Data_Food_StoreListService.I.SaveChanges())

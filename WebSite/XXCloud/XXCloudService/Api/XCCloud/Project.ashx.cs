@@ -473,13 +473,18 @@ namespace XXCloudService.Api.XCCloud
                             data_Project_StoreListService.DeleteModel(model);
                         }
 
-                        var storeIdArr = storeIds.Split('|');
-                        foreach (var storeId in storeIdArr)
+                        if (!string.IsNullOrEmpty(storeIds))
                         {
-                            var model = new Data_Project_StoreList();
-                            model.ProjectID = iProjectId;
-                            model.StoreID = storeId;
-                            data_Project_StoreListService.AddModel(model);
+                            foreach (var storeId in storeIds.Split('|'))
+                            {
+                                if(!storeId.Nonempty("门店ID", out errMsg))
+                                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                                var model = new Data_Project_StoreList();
+                                model.ProjectID = iProjectId;
+                                model.StoreID = storeId;
+                                data_Project_StoreListService.AddModel(model);
+                            }                            
                         }
 
                         if (!data_Project_StoreListService.SaveChanges())

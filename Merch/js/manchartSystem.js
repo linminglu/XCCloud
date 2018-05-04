@@ -531,7 +531,7 @@ function login_merch(){
         })
     }
 }
-function changeLoginWay(){
+function changeLoginWay(clickCounts){
     if(clickCounts%2==0){
         $('.tips-img img').attr('src','images/password.png');
         $('.login-code').removeClass('layui-hide').siblings('form').addClass('layui-hide');

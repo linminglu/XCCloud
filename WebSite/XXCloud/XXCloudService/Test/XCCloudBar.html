@@ -107,9 +107,9 @@
         function do_GetMemberOpenCardFoodInfo() {
             var txtUserToken = $("#txtUserToken").val();
             var parasObj = {
-                "sysId": "0", "versionNo": "0.0.0.1", "memberLevelId": "1,2","storeId": $("#txtStoreId").val(), "userToken": $("#txtUserToken").val()
+                "sysId": "0", "versionNo": "0.0.0.1", "memberLevelId": $("#txtMemberLevelId_GetMemberOpenCardFoodInfo").val(), "storeId": $("#txtStoreId").val(), "userToken": $("#txtUserToken").val()
             };
-            var url = "/XCCloud/Foods?action=getMemberOpenCardFoodInfo";
+            var url = "/XCCloud/Foods?action=getOpenCardFoodList";
             var parasJson = JSON.stringify(parasObj);
             common(url, parasJson);
         }
@@ -298,49 +298,48 @@
             common(url, parasJson);
         }
 
-
+        function do_getOrderAuditQR() {
+            var url = "/qr/e/" + userToken + "/" + $("#selAuditOrderType").val() + "/" + $("#txtAuditOrderId").val();
+            window.open(url);
+        }
 
     </script>
         
 </head>
 <body>
     <div title="会员" style="font-size:14px;color:#F00;border:1px solid #ccc;">
-        <div>会员</div>
+        门店Id:<input id="txtStoreId" placeholder="请输入门店Id" />
+        手机号:<input id="txtMobile" placeholder="请输入手机号" />
+        密码:<input id="txtPassword" placeholder="请输入密码" />
+        工作站:<input id="txtWorkStation" placeholder="工作站" />
         <input id="Button_userlogin" type="button" value="do_userlogin(用户信息)" onclick="do_userlogin()" />
-    </div>
-    门店Id:<input id="txtStoreId" placeholder="请输入门店Id" /></br>
-    用户token":<input id="txtUserToken" placeholder="请输入用户token" /></br>
-    密码:<input id="txtPassword" placeholder="请输入密码" /></br>
-    手机号:<input id="txtMobile" placeholder="请输入手机号" /></br>
-    会员卡号:<input id="txtMemberCardId" placeholder="请输入会员卡号" /></br>
-    订单Id:<input id="txtOrderId" placeholder="请输入订单Id" /></br>
-    工作站:<input id="txtWorkStation" placeholder="工作站" /></br>
-
-    <div title="do_MemberLevel" style="font-size:14px;color:#F00;border:1px solid #ccc;">
-        <input id="Buttonorder_12222" type="button" value="do_MemberLevel(获取会员等级)" onclick="do_MemberLevel()" />
+        用户token:<input id="txtUserToken" placeholder="请输入用户token" />  
     </div>
 
-    <div title="do_Member" style="font-size:14px;color:#F00;border:1px solid #ccc;">
-        <input id="Buttonorder_12222" type="button" value="do_Member(获取会员信息)" onclick="do_Member()" />
+
+    
+    订单Id:<input id="txtOrderId" placeholder="请输入订单Id" />
+
+    <div title="Member" style="font-size:14px;color:#F00;border:1px solid #ccc;">
+        <input id="Button_Member_1" type="button" value="do_MemberLevel(获取会员等级)" onclick="do_MemberLevel()" />
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        会员卡号:<input id="txtMemberCardId" placeholder="请输入会员卡号" /><input id="Button_Member_2" type="button" value="do_Member(获取会员信息)" onclick="do_Member()" />
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        会员等级ID:<input id="txtMemberLevelId_GetMemberOpenCardFoodInfo" placeholder="请输入会员等级" />
+        <input id="Button_Member_3" type="button" value="do_GetMemberOpenCardFoodInfo(获取会员开卡套餐接口)" onclick="do_GetMemberOpenCardFoodInfo()" />
     </div>
 
-    <div title="do_saveCoins" style="font-size:14px;color:#F00;border:1px solid #ccc;">
-        <input id="Buttonorder_12222" type="button" value="do_GetMemberOpenCardFoodInfo(获取套餐接口)" onclick="do_GetMemberOpenCardFoodInfo()" />
-    </div>
-    <div title="getFoodType" style="font-size:14px;color:#F00;border:1px solid #ccc;">
-        <input id="Buttonorder_getFoodType" type="button" value="getFoodType(获取套餐类别)" onclick="getFoodType()" />
-    </div>
-
-    <div title="do_getFoodList" style="font-size:14px;color:#F00;border:1px solid #ccc;">
-        套餐类型：<input id="txtFoodListFoodTypeStr" type="text" value="0,1,2,3,4,5,6" /><input id="Buttonorder_12222" type="button" value="do_getFoodList(获取套餐列表)" onclick="do_getFoodList()" />
+    <div title="Food" style="font-size:14px;color:#F00;border:1px solid #ccc;">
+        <input id="Button_Food_1" type="button" value="getFoodType(获取套餐类别)" onclick="getFoodType()" />
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        套餐类型：<input id="txtFoodListFoodTypeStr" type="text" value="0,1,2,3,4,5,6" /><input id="Button_Food_2" type="button" value="do_getFoodList(获取套餐列表)" onclick="do_getFoodList()" />
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        套餐Id：<input id="txt_do_GetFoodDetail" type="text" value="1" /><input id="Button_Food_3" type="button" value="do_GetFoodDetail(获取套餐明细)" onclick="do_GetFoodDetail()" />
     </div>
 
-    <div title="do_GetFoodDetail" style="font-size:14px;color:#F00;border:1px solid #ccc;">
-        套餐类型：<input id="txt_do_GetFoodDetail" type="text" value="1" /><input id="Buttonorder_122221" type="button" value="do_GetFoodDetail(获取套餐明细)" onclick="do_GetFoodDetail()" />
-    </div>
 
-    <div title="do_GetOrder" style="font-size:14px;color:#F00;border:1px solid #ccc;">
-        <input id="Buttonorder_12222" type="button" value="do_GetOrder(获取订单流水号)" onclick="do_GetOrder()" />
+    <div title="Order" style="font-size:14px;color:#F00;border:1px solid #ccc;">
+        <input id="Button_Order_1" type="button" value="do_GetOrder(获取订单流水号)" onclick="do_GetOrder()" />
     </div>
 
     <div title="do_addOrder" style="font-size:14px;color:#F00;border:1px solid #ccc;">
@@ -350,6 +349,13 @@
         会员手机号码:<input id="txtMobile_do_addOrder" placeholder="请输入会员手机号码" />
         <input id="Buttonorder_12222" type="button" value="do_addOrder(添加订单)" onclick="do_addOrder()" />
         <input id="Buttonorder_payOrder" type="button" value="payOrder(完成订单支付)" onclick="payOrder()" />
+    </div>
+
+    <div title="do_getOrderAuditQR" style="font-size:14px;color:#F00;border:1px solid #ccc;">
+        审核订单类型:<select id="selAuditOrderType"><option value="0">销售订单</option></select>
+        审核订单号:<input id="txtAuditOrderId" placeholder="审核订单号" />
+        <input id="Buttonorder_do_getOrderAuditQR" type="button" value="do_getOrderAuditQR(添加订单)" onclick="do_getOrderAuditQR()" />
+        <img id="imgOrderAuditQR" />
     </div>
 
     <div title="do_UserToken" style="font-size:14px;color:#F00;border:1px solid #ccc;">

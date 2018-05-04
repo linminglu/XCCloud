@@ -22,7 +22,7 @@
     <div class="bg-image">
         <div class="loginBox" style="display: block">
 
-            <div class="tips-img" onclick="changeLoginWay()">
+            <div class="tips-img" >
                 <img src="images/code.png" alt="">
             </div>
             <!-- 密码登录 -->
@@ -86,6 +86,17 @@
         if (event.keyCode == "13") {//keyCode=13是回车键
             login_merch();
         }
+    });
+    let iTimes=0;
+    $('.tips-img').click(function () {
+        if(iTimes%2==0){
+            $('.tips-img img').attr('src','images/password.png');
+            $('.login-code').removeClass('layui-hide').siblings('form').addClass('layui-hide');
+        }else{
+            $('.tips-img img').attr('src','images/code.png');
+            $('.login-pwd').removeClass('layui-hide').siblings('form').addClass('layui-hide');
+        }
+        iTimes++;
     });
     $('#password_login').on('change',function () {
         $('#password_login_hide').val($(this).val());

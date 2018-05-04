@@ -8,34 +8,6 @@ using System.Threading.Tasks;
 namespace XCCloudService.Model.CustomModel.XCCloud
 {
     [DataContract]
-    public class OpenCardFoodInfoModel
-    {
-        [DataMember(Name = "foodId", Order = 1)]
-        public int FoodID { get; set; }
-
-        [DataMember(Name = "foodName", Order = 2)]
-        public string FoodName { get; set; }
-
-        [DataMember(Name = "allowPrint", Order = 3)]
-        public int AllowPrint { get; set; }
-
-        [DataMember(Name = "rechargeType", Order = 4)]
-        public int RechargeType { get; set; }
-
-        [DataMember(Name = "rechargeTypeName", Order = 5)]
-        public string RechargeTypeName { get; set; }
-
-        [DataMember(Name = "imageUrl", Order = 6)]
-        public string ImageUrl { set; get; }
-
-        [DataMember(Name = "foodPrice", Order = 7)]
-        public decimal FoodPrice { set; get; }
-
-        [DataMember(Name = "containName", Order = 8)]
-        public string ContainName { set; get; }
-    }
-
-    [DataContract]
     public class FoodInfoModel
     {
         [DataMember(Name = "foodId", Order = 1)]
@@ -68,6 +40,36 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         [DataMember(Name = "detailInfoList", Order = 10)]
         public List<FoodDetailInfoModel> DetailInfoList { set; get; }
     }
+
+
+    [DataContract]
+    public class OpenCardFoodInfoModel
+    {
+        [DataMember(Name = "foodId", Order = 1)]
+        public int FoodID { get; set; }
+
+        [DataMember(Name = "foodName", Order = 2)]
+        public string FoodName { get; set; }
+
+        [DataMember(Name = "foodType", Order = 3)]
+        public int FoodType { get; set; }
+
+        [DataMember(Name = "allowInternet", Order = 4)]
+        public int AllowInternet { get; set; }
+
+        [DataMember(Name = "allowPrint", Order = 5)]
+        public int AllowPrint { get; set; }
+
+        [DataMember(Name = "foreAuthorize", Order = 6)]
+        public int ForeAuthorize { get; set; }
+
+        [DataMember(Name = "foodPrice", Order = 7)]
+        public decimal FoodPrice { get; set; }
+
+        [DataMember(Name = "imageUrl", Order = 8)]
+        public string ImageUrl { get; set; }
+    }
+
 
     [DataContract]
     public class FoodDetailInfoModel

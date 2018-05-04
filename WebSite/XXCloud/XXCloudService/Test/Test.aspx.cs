@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using XCCloudService.Business.Common;
+using XCCloudService.Business.XCCloud;
 using XCCloudService.Business.XCGame;
 using XCCloudService.Business.XCGameMana;
 using XCCloudService.CacheService;
@@ -30,26 +31,15 @@ namespace XCCloudService.Test
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            //string token = XCCloudManaUserTokenBusiness.SetToken("15307199901", "100027", "100027", 0);
-            //string s = token;
-            //Response.Write(token);
-
-            string mobileToken = string.Empty;
-            string mobile = "1561892033";
-            string token = System.Guid.NewGuid().ToString("N");
-            if (!MobileTokenBusiness.ExistMobile(CommonConfig.PrefixKey + mobile))
-            {
-                MobileTokenBusiness.AddToken(CommonConfig.PrefixKey + mobile, token);
-            }
-
-
-            string UserName = "lijunjie";
-            string key = UserName;
-            string token1 = System.Guid.NewGuid().ToString("N");
-            if (!MobileTokenBusiness.ExistMobile(key))
-            {
-                MobileTokenBusiness.AddToken(key, token1);
-            }
+            string errMsg = string.Empty;
+            string openId = "";
+            OrderAuditDataModel dataModel = new OrderAuditDataModel();
+            dataModel.AuditId = "10";
+            dataModel.Remark = "Remark";
+            dataModel.SendTime = System.DateTime.Now.ToString("yyyyMMddHHmmss");
+            dataModel.SendUserName = "李俊杰";
+            dataModel.SendUserId = "1001";
+            MessageMana.PushMessage(WeiXinMesageType.XCCloudOrderAuditRequest,openId,dataModel,out errMsg);
         }
 
 

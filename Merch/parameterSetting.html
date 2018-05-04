@@ -15,49 +15,66 @@
     .layui-form-switch{width: 169px!important;}
 </style>
 <body>
-<div class="" style="padding: 5px; ">
+<div class="goodIsAll" style="padding: 5px; ">
     <form action="" class="layui-form layui-form-pane">
         <div class="layui-collapse" lay-accordion="">
+            <div class="layui-colla-item lci4">
+                <h2 class="layui-colla-title">兑换规则</h2>
+                <div class="layui-colla-content layui-show">
+                   <div class="layui-form-item">
+                       <div class="layui-inline">
+                           <label class="layui-form-label">原类型</label>
+                           <div class="layui-input-inline">
+                               <select id="sourceType" lay-filter="sourceType">
+                                   <option value="0">一级</option>
+                                   <option value="1">er级</option>
+                                   <option value="2">三级</option>
+                                   <option value="3">四级</option>
+                               </select>
+                           </div>
+                       </div>
+                       <div class="layui-inline">
+                           <label class="layui-form-label">原数量</label>
+                           <div class="layui-input-inline">
+                               <input type="text" class="layui-input" id="sourceCount">
+                           </div>
+                       </div>
+                       <div class="layui-inline">
+                           <label class="layui-form-label">兑币类型</label>
+                           <div class="layui-input-inline">
+                               <select id="chargeType" lay-filter="chargeType">
+                                   <option value="0">一级</option>
+                                   <option value="1">er级</option>
+                                   <option value="2">三级</option>
+                                   <option value="3">四级</option>
+                               </select>
+                           </div>
+                       </div>
+                       <br>
+                       <div class="layui-inline">
+                           <label class="layui-form-label">兑币数量</label>
+                           <div class="layui-input-inline">
+                               <input type="text" class="layui-input" id="chargeCount">
+                           </div>
+                       </div>
+                       <div class="layui-inline">
+                           <label class="layui-form-label">警戒值</label>
+                           <div class="layui-input-inline">
+                               <input type="text" class="layui-input" id="alertValue">
+                           </div>
+                       </div>
+                       <div class="layui-input-inline">
+                           <div class="layui-input-inline">
+                              <button type="button" class="layui-btn layui-btn-normal" id="rulesBtn">新增</button>
+                           </div>
+                       </div>
+                   </div>
+                    <table class="layui-hide" lay-filter="chargeRules" id="chargeRules"></table>
+                </div>
+            </div>
             <div class="layui-colla-item lci1">
                 <h2 class="layui-colla-title">运营参数设定</h2>
-                <div class="layui-colla-content layui-show">
-                    <div class="layui-form-item ">
-                        <div class="layui-inline">
-                            <label class="layui-form-label">兑币单价</label>
-                            <div class="layui-input-inline" style="width: 100px;">
-                                <input type="text"  name="price_min" placeholder="￥" value="1" class="layui-input" readonly>
-                            </div>
-                            <div class="layui-form-mid">币,价值</div>
-                            <div class="layui-input-inline" style="width: 100px;">
-                                <input type="text" id="txtCoinPrice" name="price_max" placeholder="￥" class="layui-input">
-                            </div>
-                            <div class="layui-form-mid">元</div>
-                        </div>
-
-                        <div class="layui-inline">
-                            <label class="layui-form-label">彩票兑换比例</label>
-                            <div class="layui-input-inline" style="width: 100px;">
-                                <input type="text" id="coinChargeScale" name="price_min" placeholder=""  class="layui-input" >
-                            </div>
-                            <div class="layui-form-mid">张彩票,兑换</div>
-                            <div class="layui-input-inline" style="width: 100px;">
-                                <input type="text"  placeholder="1"  class="layui-input" readonly>
-                            </div>
-                            <div class="layui-form-mid">币</div>
-                        </div>
-
-                        <div class="layui-inline">
-                            <label class="layui-form-label">赠送售币积分</label>
-                            <div class="layui-input-inline" style="width: 100px;">
-                                <input type="text"  value="1"  class="layui-input" readonly>
-                            </div>
-                            <div class="layui-form-mid">元,赠送</div>
-                            <div class="layui-input-inline" style="width: 100px;">
-                                <input type="text" id="txtGivePoint" name="price_max" placeholder="￥"  class="layui-input">
-                            </div>
-                            <div class="layui-form-mid">积分</div>
-                        </div>
-                    </div>
+                <div class="layui-colla-content ">
                     <div class="layui-form-item ">
                         <div class="layui-inline">
                             <label class="layui-form-label">小票是否打印二维码</label>
@@ -99,7 +116,6 @@
 
                         </div>
                     </div>
-
                 </div>
             </div>
             <div class="layui-colla-item lci2">
@@ -234,39 +250,39 @@
                     </div>
                 </div>
             </div>
-            <div class="layui-colla-item lci3">
-                <h2 class="layui-colla-title">返还设定</h2>
-                <div class="layui-colla-content">
-                    <div class="layui-form-item ">
-                        <div class="layui-inline">
-                            <label class="layui-form-label" style="white-space: normal;padding: 0;">返还时卡里余额不能超过</label>
-                            <div class="layui-input-inline">
-                                <input type="text" id="txtGiveBackMax" name="title" lay-verify="title" autocomplete="off" placeholder="请输入标题" class="layui-input">
-                            </div>
-                        </div>
-                        <div class="layui-inline">
-                            <label class="layui-form-label" style="white-space: normal;padding: 0;">退款后禁止拿返还时间(分)</label>
-                            <div class="layui-input-inline">
-                                <input type="text" id="txtExitMoneyGiveBackTime" name="title" lay-verify="title" autocomplete="off" placeholder="请输入标题" class="layui-input">
-                            </div>
-                        </div>
+            <!--<div class="layui-colla-item lci3">-->
+                <!--<h2 class="layui-colla-title">返还设定</h2>-->
+                <!--<div class="layui-colla-content">-->
+                    <!--<div class="layui-form-item ">-->
+                        <!--<div class="layui-inline">-->
+                            <!--<label class="layui-form-label" style="white-space: normal;padding: 0;">返还时卡里余额不能超过</label>-->
+                            <!--<div class="layui-input-inline">-->
+                                <!--<input type="text" id="txtGiveBackMax" name="title" lay-verify="title" autocomplete="off" placeholder="请输入标题" class="layui-input">-->
+                            <!--</div>-->
+                        <!--</div>-->
+                        <!--<div class="layui-inline">-->
+                            <!--<label class="layui-form-label" style="white-space: normal;padding: 0;">退款后禁止拿返还时间(分)</label>-->
+                            <!--<div class="layui-input-inline">-->
+                                <!--<input type="text" id="txtExitMoneyGiveBackTime" name="title" lay-verify="title" autocomplete="off" placeholder="请输入标题" class="layui-input">-->
+                            <!--</div>-->
+                        <!--</div>-->
 
-                        <div class="layui-inline">
-                            <label class="layui-form-label" style="white-space: normal;padding: 0;">拿返还时是否验证短信码</label>
-                            <div class="layui-input-inline">
-                                <input type="checkbox" lay-filter="GiveBackAllowSmsCode" lay-skin="switch" lay-text="启用|禁用" id="chkGiveBackAllowSmsCode">
-                            </div>
-                        </div>
-                    </div>
-                    <hr class="layui-bg-blue">
-                    <div style="text-align: right">
-                       <button type="button" class="layui-btn layui-btn-normal layui-btn-primary" id="addNewBackRule"> 新增</button>
-                    </div>
-                    <div>
-                        <table class="layui-hide" id="test" lay-filter="test"></table>
-                    </div>
-                </div>
-            </div>
+                        <!--<div class="layui-inline">-->
+                            <!--<label class="layui-form-label" style="white-space: normal;padding: 0;">拿返还时是否验证短信码</label>-->
+                            <!--<div class="layui-input-inline">-->
+                                <!--<input type="checkbox" lay-filter="GiveBackAllowSmsCode" lay-skin="switch" lay-text="启用|禁用" id="chkGiveBackAllowSmsCode">-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                    <!--<hr class="layui-bg-blue">-->
+                    <!--<div style="text-align: right">-->
+                       <!--<button type="button" class="layui-btn layui-btn-normal layui-btn-primary" id="addNewBackRule"> 新增</button>-->
+                    <!--</div>-->
+                    <!--<div>-->
+                        <!--<table class="layui-hide" id="test" lay-filter="test"></table>-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
         </div>
         <div style="text-align: right;margin: 20px;">
             <button type="button" class="layui-btn layui-btn-normal">重置</button>
@@ -362,6 +378,10 @@
 <script>
     let token=getStorage('token');
     let _merchTag=getStorage('merchTag');
+
+    let sourceType;let sourceTypeStr;
+    let chargeType;let chargeTypeStr;
+    let arrRule=[];
     //判断是否博彩
     if(_merchTag==0){
         $('.lci3').addClass('layui-hide');
@@ -442,6 +462,51 @@
         let form=layui.form;
         let layer=layui.layer;
         let table=layui.table;
+        //
+
+        form.on('select(sourceType)',function (data) {
+            sourceType=data.value;
+            sourceTypeStr=data.elem[data.elem.selectedIndex].text;
+        });
+        form.on('select(chargeType)',function (data) {
+            chargeType=data.value;
+            chargeTypeStr=data.elem[data.elem.selectedIndex].text;
+        });
+        $('#rulesBtn').on('click',function (){
+            arrRule.push({
+                'SourceType':sourceType,
+                'SourceTypeStr':chargeTypeStr,
+                'SourceCount':$('#sourceCount').val(),
+                'ChargeType':chargeType,
+                'ChargeTypeStr':chargeTypeStr,
+                'ChargeCount':$('#chargeCount').val(),
+                'AlertValue':$('#alertValue').val(),
+            });
+            table.render({
+                elem: '#chargeRules'
+                ,data:arrRule
+                ,cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+                ,height:200
+                ,size:'sm'
+                ,cols: [[
+                    {field:'SourceTypeStr', title: '原类型', align: 'center'} //width 支持：数字、百分比和不填写。你还可以通过 minWidth 参数局部定义当前单元格的最小宽度，layui 2.2.1 新增
+                    ,{field:'SourceCount', title: '原数量', sort: true}
+                    ,{field:'ChargeTypeStr', title: '兑换类型', align: 'center'}
+                    ,{field:'ChargeCount', title: '兑换数量', align: 'center'}
+                    ,{field:'AlertValue', title: '警戒值', align: 'center'} //单元格内容水平居中
+                    ,{fixed: 'right', title: '操作', width:100, align:'center', toolbar: '#barDemoRule'}
+                ]]
+                ,page:true
+                ,limit:10
+            });
+        });
+        table.on('tool(chargeRules)',function (obj) {
+            let data=obj.data;
+            let enevt=obj.event;
+            if(event==='del'){
+
+            }
+        });
         //监听参数设置
         form.on('select(cmbMemberBalance)',(data)=>{
             MemberBalance=data.value;
@@ -556,8 +621,8 @@
 
     function setParamList(storeIds,layer) {
 
-        var txtCoinPrice=$('#txtCoinPrice').val();//兑币单价
-        var coinChargeScale=$('#coinChargeScale').val();//彩票兑换比例
+        // var txtCoinPrice=$('#txtCoinPrice').val();//兑币单价
+        // var coinChargeScale=$('#coinChargeScale').val();//彩票兑换比例
         var txtGivePoint=$('#txtGivePoint').val();//赠送售币积分
         var chkPrintBarcode=PrintBarcode;//小票是否打印二维码
         var chkBarSendCoinAuthorize=BarSendCoinAuthorize;//吧台送币是否授权
@@ -585,8 +650,9 @@
         var txtExitMoneyGiveBackTime=$('#txtExitMoneyGiveBackTime').val();
         var chkGiveBackAllowSmsCode=GiveBackAllowSmsCode;
 
-        var submitData=[{ "storeId":storeIds, "system":"txtCoinPrice", "isAllow":"1", "pValue":txtCoinPrice, "note":""}, //1
-            { "storeId":storeIds, "system":"coinChargeScale", "isAllow":"1", "pValue":coinChargeScale, "note":""},//2
+        var submitData=[
+            // { "storeId":storeIds, "system":"txtCoinPrice", "isAllow":"1", "pValue":txtCoinPrice, "note":""}, //1
+            // { "storeId":storeIds, "system":"coinChargeScale", "isAllow":"1", "pValue":coinChargeScale, "note":""},//2
             { "storeId":storeIds, "system":"txtGivePoint", "isAllow":"1", "pValue":txtGivePoint, "note":""},      //3
             { "storeId":storeIds, "system":"chkPrintBarcode", "isAllow":chkPrintBarcode, "pValue":"0", "note":""},//4
             { "storeId":storeIds, "system":"chkBarSendCoinAuthorize", "isAllow":chkBarSendCoinAuthorize, "pValue":"0", "note":""},  //5
@@ -627,6 +693,7 @@
                 data=JSON.parse(data);
                 console.log(data);
                 if(data.result_code=="1"){
+                    layer.closeAll();
                      layer.msg('操作成功！');
                 }else {
                     layer.msg(data.result_msg);
@@ -699,6 +766,9 @@
     });
 </script>
 <script type="text/html" id="barDemo">
+    <a class="layui-btn  layui-btn-sm layui-btn-danger" lay-event="del"><i class="layui-icon">&#xe640;</i>删除</a>
+</script>
+<script type="text/html" id="barDemoRule">
     <a class="layui-btn  layui-btn-sm layui-btn-danger" lay-event="del"><i class="layui-icon">&#xe640;</i>删除</a>
 </script>
 </html>

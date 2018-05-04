@@ -168,6 +168,8 @@
     <Compile Include="Socket\UDP\UserPhoneQueryResultNotifyRequestModel.cs" />
     <Compile Include="WeiXin\Message\MemberRechargeNotifyConfigModel.cs" />
     <Compile Include="WeiXin\Message\MemberRechargeNotifyDataModel.cs" />
+    <Compile Include="WeiXin\Message\OrderAuditConfigModel.cs" />
+    <Compile Include="WeiXin\Message\OrderAuditDataModel.cs" />
     <Compile Include="WeiXin\Message\SAppMsgConfigAttribute.cs" />
     <Compile Include="WeiXin\Message\XcGameGetCoinSuccessConfigModel.cs" />
     <Compile Include="WeiXin\Message\XcGameGetCoinSuccessDataModel.cs" />
@@ -343,6 +345,9 @@
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_CoinStorage.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_CouponCondition.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_CouponInfo.cs">

@@ -47,14 +47,22 @@ namespace XCCloudService.Common
         /// 雷达超时
         /// </summary>
         public static int RadarOffLineTimeLong = int.Parse(System.Configuration.ConfigurationManager.AppSettings["radarOffLineTimeLong"] ?? "60");
-
+        /// <summary>
+        /// H5微信授权跳转页面
+        /// </summary>        
         public static string H5WeiXinAuthRedirectUrl = System.Configuration.ConfigurationManager.AppSettings["H5WeiXinAuthRedirectUrl"];
 
         public static string H5_M_WeiXinAuthRedirectUrl = System.Configuration.ConfigurationManager.AppSettings["H5_M_WeiXinAuthRedirectUrl"];
+        /// <summary>
+        /// 微信订单审核跳转页面
+        /// </summary>
+        public static string WX_Auth_OrderAuditRedirectUrl = System.Configuration.ConfigurationManager.AppSettings["WX_Auth_OrderAuditRedirectUrl"];
 
-        public static string FileServerPhysicsPath = System.Configuration.ConfigurationManager.AppSettings["FileServerPhysicsPath"];
-
-        public static string FileFormat = System.Configuration.ConfigurationManager.AppSettings["FileFormat"];
+        public static string AddWatch_FileServerPhysicsPath = System.Configuration.ConfigurationManager.AppSettings["AddWatch_FileServerPhysicsPath"];
+        /// <summary>
+        /// 添加码表文件上次传格式
+        /// </summary>
+        public static string AddWatch_FileFormat = System.Configuration.ConfigurationManager.AppSettings["AddWatch_FileFormat"];
         
         /// <summary>
         /// 图片服务器Host

@@ -444,23 +444,42 @@
           <Property Name="CouponID" Type="int" />
           <Property Name="StoreID" Type="varchar" MaxLength="15" />
         </EntityType>
+        <EntityType Name="Data_CouponCondition">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CouponID" Type="int" />
+          <Property Name="ConditionType" Type="int" />
+          <Property Name="ConditionID" Type="int" />
+          <Property Name="ConnectType" Type="int" />
+          <Property Name="ConditionValue" Type="varchar" MaxLength="100" />
+        </EntityType>
         <EntityType Name="Data_CouponInfo">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="MerchID" Type="varchar" MaxLength="15" />
+          <Property Name="CouponLevel" Type="int" />
           <Property Name="CouponName" Type="varchar" MaxLength="50" />
           <Property Name="CouponType" Type="int" />
           <Property Name="EntryCouponFlag" Type="int" />
           <Property Name="AuthorFlag" Type="int" />
+          <Property Name="AllowOverOther" Type="int" />
           <Property Name="OverUseCount" Type="int" />
           <Property Name="PublishCount" Type="int" />
           <Property Name="CouponValue" Type="numeric" Precision="10" Scale="2" />
           <Property Name="CouponDiscount" Type="numeric" Precision="10" Scale="2" />
           <Property Name="CouponThreshold" Type="numeric" Precision="10" Scale="2" />
-          <Property Name="StartTime" Type="datetime" />
-          <Property Name="EndTime" Type="datetime" />
+          <Property Name="StartDate" Type="date" />
+          <Property Name="EndDate" Type="date" />
+          <Property Name="WeekType" Type="int" />
+          <Property Name="Week" Type="varchar" MaxLength="20" />
+          <Property Name="StartTime" Type="time" Precision="7" />
+          <Property Name="EndTime" Type="time" Precision="7" />
+          <Property Name="NoStartDate" Type="date" />
+          <Property Name="NoEndDate" Type="date" />
           <Property Name="SendType" Type="int" />
           <Property Name="OverMoney" Type="numeric" Precision="10" Scale="2" />
           <Property Name="FreeCouponCount" Type="int" />
@@ -471,6 +490,10 @@
           <Property Name="BalanceIndex" Type="int" />
           <Property Name="GoodID" Type="int" />
           <Property Name="ProjectID" Type="int" />
+          <Property Name="AutoSendCycle" Type="int" />
+          <Property Name="AutoSendValue" Type="int" />
+          <Property Name="AutoSendCount" Type="int" />
+          <Property Name="CreateTime" Type="datetime" />
           <Property Name="OpUserID" Type="int" />
           <Property Name="Context" Type="varchar" MaxLength="200" />
         </EntityType>
@@ -479,14 +502,19 @@
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CouponIndex" Type="int" />
           <Property Name="CouponCode" Type="varchar" MaxLength="32" />
           <Property Name="CouponID" Type="int" />
+          <Property Name="MerchID" Type="varchar" MaxLength="15" />
+          <Property Name="StoreID" Type="varchar" MaxLength="15" />
           <Property Name="PublishType" Type="int" />
           <Property Name="SendType" Type="int" />
           <Property Name="MemberID" Type="int" />
           <Property Name="SendAuthorID" Type="int" />
+          <Property Name="SendTime" Type="datetime" />
           <Property Name="WorkStationID" Type="int" />
           <Property Name="State" Type="int" />
+          <Property Name="IsLock" Type="int" />
         </EntityType>
         <!--生成过程中发现错误:
 警告 6002: 表/视图“XCCloud.dbo.Data_DigitCoin”未定义主键。已推断出该键，并将定义创建为只读的表/视图。-->
@@ -1875,6 +1903,7 @@
           <EntitySet Name="Data_CoinInventory" EntityType="Self.Data_CoinInventory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Data_CoinStorage" EntityType="Self.Data_CoinStorage" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Data_Coupon_StoreList" EntityType="Self.Data_Coupon_StoreList" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Data_CouponCondition" EntityType="Self.Data_CouponCondition" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Data_CouponInfo" EntityType="Self.Data_CouponInfo" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Data_CouponList" EntityType="Self.Data_CouponList" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Data_DigitCoinDestroy" EntityType="Self.Data_DigitCoinDestroy" Schema="dbo" store:Type="Tables" />
@@ -2172,7 +2201,6 @@
           <EntitySet Name="Data_CoinInventory" EntityType="XCCloudDBModel.Data_CoinInventory" />
           <EntitySet Name="Data_CoinStorage" EntityType="XCCloudDBModel.Data_CoinStorage" />
           <EntitySet Name="Data_Coupon_StoreList" EntityType="XCCloudDBModel.Data_Coupon_StoreList" />
-          <EntitySet Name="Data_CouponList" EntityType="XCCloudDBModel.Data_CouponList" />
           <EntitySet Name="Data_DigitCoinDestroy" EntityType="XCCloudDBModel.Data_DigitCoinDestroy" />
           <EntitySet Name="Data_Food_StoreList" EntityType="XCCloudDBModel.Data_Food_StoreList" />
           <EntitySet Name="Data_Food_WorkStation" EntityType="XCCloudDBModel.Data_Food_WorkStation" />
@@ -2266,7 +2294,9 @@
           <EntitySet Name="Base_StoreHKConfig" EntityType="XCCloudDBModel.Base_StoreHKConfig" />
           <EntitySet Name="Data_DigitCoinFood" EntityType="XCCloudDBModel.Data_DigitCoinFood" />
           <EntitySet Name="Data_GameInfo" EntityType="XCCloudDBModel.Data_GameInfo" />
+          <EntitySet Name="Data_CouponCondition" EntityType="XCCloudDBModel.Data_CouponCondition" />
           <EntitySet Name="Data_CouponInfo" EntityType="XCCloudDBModel.Data_CouponInfo" />
+          <EntitySet Name="Data_CouponList" EntityType="XCCloudDBModel.Data_CouponList" />
         </EntityContainer>
         <EntityType Name="Base_ChainRule">
           <Key>
@@ -2598,20 +2628,6 @@
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="CouponID" Type="Int32" />
           <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-        </EntityType>
-        <EntityType Name="Data_CouponList">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="CouponCode" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
-          <Property Name="CouponID" Type="Int32" />
-          <Property Name="PublishType" Type="Int32" />
-          <Property Name="SendType" Type="Int32" />
-          <Property Name="MemberID" Type="Int32" />
-          <Property Name="SendAuthorID" Type="Int32" />
-          <Property Name="WorkStationID" Type="Int32" />
-          <Property Name="State" Type="Int32" />
         </EntityType>
         <EntityType Name="Data_DigitCoinDestroy">
           <Key>
@@ -4051,23 +4067,42 @@
           <Property Name="Frequency" Type="Int32" />
           <Property Name="DepotID" Type="Int32" />
         </EntityType>
+        <EntityType Name="Data_CouponCondition">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CouponID" Type="Int32" />
+          <Property Name="ConditionType" Type="Int32" />
+          <Property Name="ConditionID" Type="Int32" />
+          <Property Name="ConnectType" Type="Int32" />
+          <Property Name="ConditionValue" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+        </EntityType>
         <EntityType Name="Data_CouponInfo">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="CouponLevel" Type="Int32" />
           <Property Name="CouponName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="CouponType" Type="Int32" />
           <Property Name="EntryCouponFlag" Type="Int32" />
           <Property Name="AuthorFlag" Type="Int32" />
+          <Property Name="AllowOverOther" Type="Int32" />
           <Property Name="OverUseCount" Type="Int32" />
           <Property Name="PublishCount" Type="Int32" />
           <Property Name="CouponValue" Type="Decimal" Precision="10" Scale="2" />
           <Property Name="CouponDiscount" Type="Decimal" Precision="10" Scale="2" />
           <Property Name="CouponThreshold" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="StartTime" Type="DateTime" Precision="3" />
-          <Property Name="EndTime" Type="DateTime" Precision="3" />
+          <Property Name="StartDate" Type="DateTime" Precision="0" />
+          <Property Name="EndDate" Type="DateTime" Precision="0" />
+          <Property Name="WeekType" Type="Int32" />
+          <Property Name="Week" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="StartTime" Type="Time" Precision="7" />
+          <Property Name="EndTime" Type="Time" Precision="7" />
+          <Property Name="NoStartDate" Type="DateTime" Precision="0" />
+          <Property Name="NoEndDate" Type="DateTime" Precision="0" />
           <Property Name="SendType" Type="Int32" />
           <Property Name="OverMoney" Type="Decimal" Precision="10" Scale="2" />
           <Property Name="FreeCouponCount" Type="Int32" />
@@ -4078,8 +4113,31 @@
           <Property Name="BalanceIndex" Type="Int32" />
           <Property Name="GoodID" Type="Int32" />
           <Property Name="ProjectID" Type="Int32" />
+          <Property Name="AutoSendCycle" Type="Int32" />
+          <Property Name="AutoSendValue" Type="Int32" />
+          <Property Name="AutoSendCount" Type="Int32" />
+          <Property Name="CreateTime" Type="DateTime" Precision="3" />
           <Property Name="OpUserID" Type="Int32" />
           <Property Name="Context" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Data_CouponList">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CouponIndex" Type="Int32" />
+          <Property Name="CouponCode" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="CouponID" Type="Int32" />
+          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="PublishType" Type="Int32" />
+          <Property Name="SendType" Type="Int32" />
+          <Property Name="MemberID" Type="Int32" />
+          <Property Name="SendAuthorID" Type="Int32" />
+          <Property Name="SendTime" Type="DateTime" Precision="3" />
+          <Property Name="WorkStationID" Type="Int32" />
+          <Property Name="State" Type="Int32" />
+          <Property Name="IsLock" Type="Int32" />
         </EntityType>
         </Schema>
     </edmx:ConceptualModels>
@@ -4440,21 +4498,6 @@
               <MappingFragment StoreEntitySet="Data_Coupon_StoreList">
                 <ScalarProperty Name="StoreID" ColumnName="StoreID" />
                 <ScalarProperty Name="CouponID" ColumnName="CouponID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Data_CouponList">
-            <EntityTypeMapping TypeName="XCCloudDBModel.Data_CouponList">
-              <MappingFragment StoreEntitySet="Data_CouponList">
-                <ScalarProperty Name="State" ColumnName="State" />
-                <ScalarProperty Name="WorkStationID" ColumnName="WorkStationID" />
-                <ScalarProperty Name="SendAuthorID" ColumnName="SendAuthorID" />
-                <ScalarProperty Name="MemberID" ColumnName="MemberID" />
-                <ScalarProperty Name="SendType" ColumnName="SendType" />
-                <ScalarProperty Name="PublishType" ColumnName="PublishType" />
-                <ScalarProperty Name="CouponID" ColumnName="CouponID" />
-                <ScalarProperty Name="CouponCode" ColumnName="CouponCode" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -5990,11 +6033,27 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="Data_CouponCondition">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Data_CouponCondition">
+              <MappingFragment StoreEntitySet="Data_CouponCondition">
+                <ScalarProperty Name="ConditionValue" ColumnName="ConditionValue" />
+                <ScalarProperty Name="ConnectType" ColumnName="ConnectType" />
+                <ScalarProperty Name="ConditionID" ColumnName="ConditionID" />
+                <ScalarProperty Name="ConditionType" ColumnName="ConditionType" />
+                <ScalarProperty Name="CouponID" ColumnName="CouponID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Data_CouponInfo">
             <EntityTypeMapping TypeName="XCCloudDBModel.Data_CouponInfo">
               <MappingFragment StoreEntitySet="Data_CouponInfo">
                 <ScalarProperty Name="Context" ColumnName="Context" />
                 <ScalarProperty Name="OpUserID" ColumnName="OpUserID" />
+                <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
+                <ScalarProperty Name="AutoSendCount" ColumnName="AutoSendCount" />
+                <ScalarProperty Name="AutoSendValue" ColumnName="AutoSendValue" />
+                <ScalarProperty Name="AutoSendCycle" ColumnName="AutoSendCycle" />
                 <ScalarProperty Name="ProjectID" ColumnName="ProjectID" />
                 <ScalarProperty Name="GoodID" ColumnName="GoodID" />
                 <ScalarProperty Name="BalanceIndex" ColumnName="BalanceIndex" />
@@ -6005,18 +6064,46 @@
                 <ScalarProperty Name="FreeCouponCount" ColumnName="FreeCouponCount" />
                 <ScalarProperty Name="OverMoney" ColumnName="OverMoney" />
                 <ScalarProperty Name="SendType" ColumnName="SendType" />
+                <ScalarProperty Name="NoEndDate" ColumnName="NoEndDate" />
+                <ScalarProperty Name="NoStartDate" ColumnName="NoStartDate" />
                 <ScalarProperty Name="EndTime" ColumnName="EndTime" />
                 <ScalarProperty Name="StartTime" ColumnName="StartTime" />
+                <ScalarProperty Name="Week" ColumnName="Week" />
+                <ScalarProperty Name="WeekType" ColumnName="WeekType" />
+                <ScalarProperty Name="EndDate" ColumnName="EndDate" />
+                <ScalarProperty Name="StartDate" ColumnName="StartDate" />
                 <ScalarProperty Name="CouponThreshold" ColumnName="CouponThreshold" />
                 <ScalarProperty Name="CouponDiscount" ColumnName="CouponDiscount" />
                 <ScalarProperty Name="CouponValue" ColumnName="CouponValue" />
                 <ScalarProperty Name="PublishCount" ColumnName="PublishCount" />
                 <ScalarProperty Name="OverUseCount" ColumnName="OverUseCount" />
+                <ScalarProperty Name="AllowOverOther" ColumnName="AllowOverOther" />
                 <ScalarProperty Name="AuthorFlag" ColumnName="AuthorFlag" />
                 <ScalarProperty Name="EntryCouponFlag" ColumnName="EntryCouponFlag" />
                 <ScalarProperty Name="CouponType" ColumnName="CouponType" />
                 <ScalarProperty Name="CouponName" ColumnName="CouponName" />
+                <ScalarProperty Name="CouponLevel" ColumnName="CouponLevel" />
                 <ScalarProperty Name="MerchID" ColumnName="MerchID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Data_CouponList">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Data_CouponList">
+              <MappingFragment StoreEntitySet="Data_CouponList">
+                <ScalarProperty Name="IsLock" ColumnName="IsLock" />
+                <ScalarProperty Name="State" ColumnName="State" />
+                <ScalarProperty Name="WorkStationID" ColumnName="WorkStationID" />
+                <ScalarProperty Name="SendTime" ColumnName="SendTime" />
+                <ScalarProperty Name="SendAuthorID" ColumnName="SendAuthorID" />
+                <ScalarProperty Name="MemberID" ColumnName="MemberID" />
+                <ScalarProperty Name="SendType" ColumnName="SendType" />
+                <ScalarProperty Name="PublishType" ColumnName="PublishType" />
+                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
+                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
+                <ScalarProperty Name="CouponID" ColumnName="CouponID" />
+                <ScalarProperty Name="CouponCode" ColumnName="CouponCode" />
+                <ScalarProperty Name="CouponIndex" ColumnName="CouponIndex" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>

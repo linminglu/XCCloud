@@ -15,13 +15,18 @@ namespace XCCloudService.Model.XCCloud
     public partial class Data_CouponList
     {
         public int ID { get; set; }
+        public Nullable<int> CouponIndex { get; set; }
         public string CouponCode { get; set; }
         public Nullable<int> CouponID { get; set; }
+        public string MerchID { get; set; }
+        public string StoreID { get; set; }
         public Nullable<int> PublishType { get; set; }
         public Nullable<int> SendType { get; set; }
         public Nullable<int> MemberID { get; set; }
         public Nullable<int> SendAuthorID { get; set; }
+        public Nullable<System.DateTime> SendTime { get; set; }
         public Nullable<int> WorkStationID { get; set; }
         public Nullable<int> State { get; set; }
+        public Nullable<int> IsLock { get; set; }
     }
 }

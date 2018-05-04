@@ -5,7 +5,10 @@ using System.Drawing;
 using System.Linq;
 using System.Web;
 using XCCloudService.Base;
+using XCCloudService.Business.XCGameMana;
 using XCCloudService.Common;
+using XCCloudService.Model.CustomModel.XCCloud;
+using XCCloudService.WeiXin.Common;
 using XCCloudService.WeiXin.WeixinOAuth;
 
 namespace XCCloudService.Api.Common
@@ -25,8 +28,27 @@ namespace XCCloudService.Api.Common
                 case "b": return CreateWeiXinPubNoLoginQRImage();//生成设备token的二维码图(可跳转小程序)
                 //case "c": return CreateXcBizAuthQRImage();//生成业务授权二维码图
                 case "d": return CreateTicketQRImage(dicParas);
+                case "e": return CreateAuditOrderQRImage(dicParas);
             }
             return null;
+        }
+
+        private byte[] CreateAuditOrderQRImage(Dictionary<string, object> dicParas)
+        {
+            string userToken = dicParas.ContainsKey("para1") ? dicParas["para1"].ToString() : string.Empty;
+            string auditOrderType = dicParas.ContainsKey("para2") ? dicParas["para2"].ToString() : string.Empty;
+            string orderId = dicParas.ContainsKey("para3") ? dicParas["para3"].ToString() : string.Empty;
+
+            XCCloudUserTokenModel userTokenKeyModel = XCCloudUserTokenBusiness.GetUserTokenModel(userToken);
+            if (userTokenKeyModel == null)
+            {       
+                throw new Exception("用户token无效");
+            }
+
+            string redirect_uri = string.Format("https://{0}/{1}",WeiXinConfig.WeiXinHost,"WeiXin/OAuth.aspx");
+            string state = string.Format("{0}_{1}_{2}", Constant.WX_Auth_OrderAudit, auditOrderType, orderId);
+            string url = string.Format("https://open.weixin.qq.com/connect/oauth2/authorize?appid={0}&redirect_uri={1}&response_type=code&scope=snsapi_base&state={2}#wechat_redirect", WeiXinConfig.AppId, HttpUtility.UrlEncode(redirect_uri), state);
+            return QRHelper.CreateQR(url, 4, 11);
         }
 
         private byte[] CreateTicketQRImage(Dictionary<string, object> dicParas)

@@ -6,6 +6,9 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Xml;
+using XCCloudService.BLL.XCCloud;
+using XCCloudService.Business.Common;
+using XCCloudService.Model.XCCloud;
 using XXCloudService.Api.HaoKu.Com;
 
 namespace XXCloudService.Api.HaoKu
@@ -17,7 +20,7 @@ namespace XXCloudService.Api.HaoKu
             try
             {
                 string shopId = Request["shopId"];
-                string device = Request["device"];
+                string deviceSN = Request["device"];
                 string sign = Request["sign"];
 
                 //LogHelper.WriteLog("收到接口调用");
@@ -34,31 +37,34 @@ namespace XXCloudService.Api.HaoKu
                     {
                         //找到对应的门店ID
                         string storeId = node.Attributes["XCStoreId"].Value;
-                        //LogHelper.WriteLog("找到调用店铺信息：" + node.Attributes["HKID"].InnerText);
-                        ////找到对应的店铺信息
-                        //TransmiteObject.请求设备状态结构 status = new TransmiteObject.请求设备状态结构()
-                        //{
-                        //    DeviceID = device
-                        //};
-                        //object response = new object();
-                        //string msg = "";
-                        //if (ClientList.RequestCommand(node.Attributes["XCID"].InnerText, TransmiteEnum.互联网状态查询, status.ToArray(), out response, out msg))
-                        //{
-                        //    TransmiteObject.请求设备状态应答结构 o = response as TransmiteObject.请求设备状态应答结构;
-                        //    if (o != null)
-                        //    {
-                        //        Response.Write("{\"return_code\":\"" + o.Result_Code + "\",\"deviceid\":\"" + o.DeviceID + "\",\"status\":\"" + o.DeviceStatus + "\",\"return_msg\":\"" + o.Result_Msg + "\"}");
-                        //    }
-                        //    else
-                        //    {
-                        //        Response.Write("{\"return_code\":\"02\",\"return_msg\":\"对象转换出错\"}");
-                        //    }
-                        //}
-                        //else
-                        //{
-                        //    Response.Write("{\"return_code\":\"02\",\"return_msg\":\"" + msg + "\"}");
-                        //}
-                        //return;
+
+                        Base_StoreInfo store = Base_StoreInfoService.I.GetModels(t => t.StoreID == storeId).FirstOrDefault();
+                        if (store == null)
+                        {
+                            Response.Write(ReturnModel.ReturnInfo(ReturnCode.F, "没有找到对应店铺信息"));
+                            return;
+                        }
+
+                        Base_DeviceInfo device = Base_DeviceInfoService.I.GetModels(t => t.MCUID == deviceSN).FirstOrDefault();
+                        if (device == null)
+                        {
+                            Response.Write(ReturnModel.ReturnInfo(ReturnCode.F, "没有找到对应设备"));
+                            return;
+                        }
+
+                        //获取设备状态
+                        string state = DeviceStateBusiness.GetDeviceState(storeId, device.MCUID);
+
+                        if (state == "1")
+                        {
+                            Response.Write(ReturnModel.ReturnInfo(ReturnCode.T, "设备在线"));
+                        }
+                        else
+                        {
+                            Response.Write(ReturnModel.ReturnInfo(ReturnCode.F, "设备离线"));
+                        }
+                        
+                        return;
                     }
                 }
 

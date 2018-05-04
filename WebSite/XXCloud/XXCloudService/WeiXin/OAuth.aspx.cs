@@ -26,8 +26,11 @@ namespace XXCloudService.WeiXin
             try
             {
                 string code = Request["code"] ?? "";
-                string state = Request["state"] ?? "";
+                string state = string.Empty;
+                string paramStr = string.Empty;
+                AnalysisState(Request["state"] ?? "", out state, out paramStr);
 
+  
                 switch (state)
                 {
                     case "h5_Auth_Common": H5AuthCommon(code); break;
@@ -37,12 +40,28 @@ namespace XXCloudService.WeiXin
                             var authorKey = Request["authorKey"].Tostring();
                             WorkAuth(code, userId, authorKey); break;
                         }
+                    case "WX_Auth_OrderAudit": OrderAudit(code, paramStr); break;
                     default: break;
                 }
             }
             catch (Exception ex)
             {
                 LogHelper.SaveLog(TxtLogType.WeiXin, TxtLogContentType.Exception, TxtLogFileType.Day, "errMsg:" + ex.Message);
+            }
+        }
+
+
+        private void AnalysisState(string requestState,out string state,out string paramStr)
+        {
+            paramStr = string.Empty;
+            if (requestState.IndexOf(Constant.WX_Auth_OrderAudit) >= 0)
+            {
+                state = Constant.WX_Auth_OrderAudit;
+                paramStr = requestState.Replace(Constant.WX_Auth_OrderAudit + "_", "");
+            }
+            else
+            {
+                state = requestState;
             }
         }
 
@@ -132,6 +151,37 @@ namespace XXCloudService.WeiXin
                 LogHelper.SaveLog(TxtLogType.WeiXin, TxtLogContentType.Exception, TxtLogFileType.Day, "Exception:" + e.Message);
             }
 
+        }
+
+        private void OrderAudit(string code,string paramStr)
+        {
+            string accsess_token = string.Empty;
+            string refresh_token = string.Empty;
+            string openId = string.Empty;
+            string errMsg = string.Empty;
+            string[] paramArr = paramStr.Split('_');
+            if (paramArr.Length != 2)
+            {
+                LogHelper.SaveLog(TxtLogType.WeiXin, TxtLogContentType.Common, TxtLogFileType.Day, "errMsg:" +
+                    string.Format("{0}参数错误[{1}]", "OrderAudit", paramStr));        
+                Response.Redirect(WeiXinConfig.RedirectErrorPage);
+            }
+
+            int auditOrderType = int.Parse(paramArr[0]);
+            int orderId = int.Parse(paramArr[1]);
+
+            if (TokenMana.GetTokenForScanQR(code, out accsess_token, out refresh_token, out openId, out errMsg))
+            {
+                
+                string redirectUrl = string.Format("{0}?openId={1}&isReg={2}", CommonConfig.WX_Auth_OrderAuditRedirectUrl, openId);
+                Response.Redirect(redirectUrl);
+            }
+            else
+            {
+                LogHelper.SaveLog(TxtLogType.WeiXin, TxtLogContentType.Common, TxtLogFileType.Day, "errMsg:" + errMsg);
+                //重定向的错误页面                 
+                Response.Redirect(WeiXinConfig.RedirectErrorPage);
+            }
         }
     }
 }

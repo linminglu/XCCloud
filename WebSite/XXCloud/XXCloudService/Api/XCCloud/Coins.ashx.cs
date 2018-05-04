@@ -29,40 +29,24 @@ namespace XXCloudService.Api.XCCloud
         {
             try
             {
-                string errMsg = string.Empty;
-                string storageCount = dicParas.ContainsKey("storageCount") ? (dicParas["storageCount"] + "") : string.Empty;
-                string note = dicParas.ContainsKey("note") ? (dicParas["note"] + "") : string.Empty;
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 int userId = Convert.ToInt32(userTokenKeyModel.LogId);
                 string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
 
-                if (string.IsNullOrEmpty(storageCount))
-                {
-                    errMsg = "入库数量不能为空";
+                string errMsg = string.Empty;
+                if (!dicParas.Get("storageCount").Validint("入库数量", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
 
-                if (!Utils.isNumber(storageCount))
-                {
-                    errMsg = "入库数量参数格式不正确";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
+                var storageCount = dicParas.Get("storageCount").Toint();
+                var note = dicParas.Get("note");         
 
-                int iStorageCount = Convert.ToInt32(storageCount);
-                if (iStorageCount < 0)
-                {
-                    errMsg = "入库数量必不能为负数";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
-
-                IData_CoinStorageService data_CoinStorageService = BLLContainer.Resolve<IData_CoinStorageService>();
-                Data_CoinStorage data_CoinStorage = new Data_CoinStorage();
+                var data_CoinStorage = new Data_CoinStorage();
                 data_CoinStorage.DestroyTime = DateTime.Now;
                 data_CoinStorage.Note = note;
-                data_CoinStorage.StorageCount = iStorageCount;
+                data_CoinStorage.StorageCount = storageCount;
                 data_CoinStorage.UserID = userId;
                 data_CoinStorage.StoreID = storeId;
-                if (!data_CoinStorageService.Add(data_CoinStorage))
+                if (!Data_CoinStorageService.I.Add(data_CoinStorage))
                 {
                     errMsg = "更新数据库失败";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -80,17 +64,20 @@ namespace XXCloudService.Api.XCCloud
         public object GetCoinStorage(Dictionary<string, object> dicParas)
         {
             try
-            {
-                string errMsg = string.Empty;
-                string destroyTime = dicParas.ContainsKey("destroyTime") ? (dicParas["destroyTime"] + "") : string.Empty;
+            {                
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
-                                
+
+                string errMsg = string.Empty;
+                if(!dicParas.Get("destroyTime").Validdate("入库时间", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                var destroyTime = dicParas.Get("destroyTime").Todatetime();
+
                 var query = Data_CoinStorageService.N.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase));
-                if (!string.IsNullOrEmpty(destroyTime))
+                if (destroyTime != null)
                 {
-                    var dt = destroyTime.Todatetime();
-                    query = query.Where(w => DbFunctions.DiffDays(w.DestroyTime, dt) == 0);
+                    query = query.Where(w => DbFunctions.DiffDays(w.DestroyTime, destroyTime) == 0);
                 }
 
                 var result = from a in query.AsEnumerable()
@@ -121,40 +108,24 @@ namespace XXCloudService.Api.XCCloud
         {
             try
             {
-                string errMsg = string.Empty;
-                string storageCount = dicParas.ContainsKey("storageCount") ? (dicParas["storageCount"] + "") : string.Empty;
-                string note = dicParas.ContainsKey("note") ? (dicParas["note"] + "") : string.Empty;
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 int userId = Convert.ToInt32(userTokenKeyModel.LogId);
                 string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
 
-                if (string.IsNullOrEmpty(storageCount))
-                {
-                    errMsg = "销毁数量不能为空";
+                string errMsg = string.Empty;
+                if (!dicParas.Get("storageCount").Validint("销毁数量", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
 
-                if (!Utils.isNumber(storageCount))
-                {
-                    errMsg = "销毁数量参数格式不正确";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
+                var storageCount = dicParas.Get("storageCount").Toint();
+                var note = dicParas.Get("note");                               
 
-                int iStorageCount = Convert.ToInt32(storageCount);
-                if (iStorageCount < 0)
-                {
-                    errMsg = "销毁数量必不能为负数";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
-
-                IData_CoinDestoryService data_CoinDestoryService = BLLContainer.Resolve<IData_CoinDestoryService>();
-                Data_CoinDestory data_CoinDestory = new Data_CoinDestory();
+                var data_CoinDestory = new Data_CoinDestory();
                 data_CoinDestory.DestroyTime = DateTime.Now;
                 data_CoinDestory.Note = note;
-                data_CoinDestory.StorageCount = iStorageCount;
+                data_CoinDestory.StorageCount = storageCount;
                 data_CoinDestory.UserID = userId;
                 data_CoinDestory.StoreID = storeId;
-                if (!data_CoinDestoryService.Add(data_CoinDestory))
+                if (!Data_CoinDestoryService.I.Add(data_CoinDestory))
                 {
                     errMsg = "更新数据库失败";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -172,20 +143,23 @@ namespace XXCloudService.Api.XCCloud
         public object GetCoinDestory(Dictionary<string, object> dicParas)
         {
             try
-            {
-                string errMsg = string.Empty;
-                string destroyTime = dicParas.ContainsKey("destroyTime") ? (dicParas["destroyTime"] + "") : string.Empty;
+            {                
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
 
+                string errMsg = string.Empty;
+                if (!dicParas.Get("destroyTime").Validdate("销毁时间", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                var destroyTime = dicParas.Get("destroyTime").Todatetime();
+
                 var query = Data_CoinDestoryService.N.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase));
-                if (!string.IsNullOrEmpty(destroyTime))
+                if (destroyTime != null)
                 {
-                    var dt = destroyTime.Todatetime();
-                    query = query.Where(w => DbFunctions.DiffDays(w.DestroyTime, dt) == 0);
+                    query = query.Where(w => DbFunctions.DiffDays(w.DestroyTime, destroyTime) == 0);
                 }
 
-                var result = from a in query
+                var result = from a in query.AsEnumerable()
                              join b in Base_UserInfoService.N.GetModels(p => p.UserType == (int)UserType.Store) on a.UserID equals b.UserID into b1
                              from b in b1.DefaultIfEmpty()
                              select new
@@ -193,7 +167,7 @@ namespace XXCloudService.Api.XCCloud
                                  ID = a.ID,
                                  StoreID = a.StoreID,
                                  StorageCount = a.StorageCount,
-                                 DestroyTime = a.DestroyTime,
+                                 DestroyTime = Utils.ConvertFromDatetime(a.DestroyTime),
                                  UserID = a.UserID,
                                  Note = a.Note,
                                  LogName = b != null ? b.LogName : string.Empty,
@@ -213,51 +187,36 @@ namespace XXCloudService.Api.XCCloud
         {
             try
             {
-                string errMsg = string.Empty;
-                string digitLevelID = dicParas.ContainsKey("digitLevelID") ? (dicParas["digitLevelID"] + "") : string.Empty;
-                string iCardID = dicParas.ContainsKey("iCardID") ? (dicParas["iCardID"] + "") : string.Empty;                
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
 
-                if (string.IsNullOrEmpty(digitLevelID))
-                {
-                    errMsg = "数字币级别编号不能为空";
+                string errMsg = string.Empty;
+                if(!dicParas.Get("digitLevelID").Validint("数字币级别编号", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
-
-                if (!Utils.isNumber(digitLevelID))
-                {
-                    errMsg = "数字币级别编号参数格式不正确";
+                if (!dicParas.Get("iCardID").Nonempty("数字币编号", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
-
-                if (string.IsNullOrEmpty(iCardID))
-                {
-                    errMsg = "数字币编号不能为空";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
-
-                if (iCardID.Length > 16)
+                if (dicParas.Get("iCardID").Length > 16)
                 {
                     errMsg = "数字币编号长度不能超过16位";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
-                int iDigitLevelID = Convert.ToInt32(digitLevelID);
-                IData_DigitCoinService data_DigitCoinService = BLLContainer.Resolve<IData_DigitCoinService>();
-                if (data_DigitCoinService.Any(a => a.ICardID.Equals(iCardID, StringComparison.OrdinalIgnoreCase)))
+                var digitLevelID = dicParas.Get("digitLevelID").Toint();
+                var iCardID = dicParas.Get("iCardID");                
+                
+                if (Data_DigitCoinService.I.Any(a => a.ICardID.Equals(iCardID, StringComparison.OrdinalIgnoreCase)))
                 {
-                    errMsg = "该卡已存在";
+                    errMsg = "该数字币已存在";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
-                Data_DigitCoin data_DigitCoin = new Data_DigitCoin();
+                var data_DigitCoin = new Data_DigitCoin();
                 data_DigitCoin.CreateTime = DateTime.Now;
                 data_DigitCoin.ICardID = iCardID;
-                data_DigitCoin.DigitLevelID = iDigitLevelID;
+                data_DigitCoin.DigitLevelID = digitLevelID;
                 data_DigitCoin.StoreID = storeId;
                 data_DigitCoin.Status = (int)DigitStatus.Inuse;
-                if (!data_DigitCoinService.Add(data_DigitCoin))
+                if (!Data_DigitCoinService.I.Add(data_DigitCoin))
                 {
                     errMsg = "更新数据库失败";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -280,8 +239,8 @@ namespace XXCloudService.Api.XCCloud
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
 
-                IData_DigitCoinService data_DigitCoinService = BLLContainer.Resolve<IData_DigitCoinService>();
-                var data_DigitCoin = data_DigitCoinService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase) && p.Status != (int)DigitStatus.Cancel).OrderBy(or => or.ICardID).Select(o => o.ICardID).ToList();
+                var data_DigitCoin = Data_DigitCoinService.I.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase) && p.Status != (int)DigitStatus.Cancel)
+                    .OrderBy(or => or.ICardID).Select(o => o.ICardID).ToList();
 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, data_DigitCoin);
             }
@@ -296,51 +255,46 @@ namespace XXCloudService.Api.XCCloud
         {
             try
             {
-                string errMsg = string.Empty;
-                string iCardID = dicParas.ContainsKey("iCardID") ? (dicParas["iCardID"] + "") : string.Empty;
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
                 int userId = Convert.ToInt32(userTokenKeyModel.LogId);
 
-                if (string.IsNullOrEmpty(iCardID))
-                {
-                    errMsg = "数字币编号不能为空";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
+                string errMsg = string.Empty;
+                string iCardID = dicParas.Get("iCardID");
 
+                if (!iCardID.Nonempty("数字币编号", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);                
                 if (iCardID.Length > 16)
                 {
                     errMsg = "数字币编号长度不能超过16位";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
-
-                IData_DigitCoinService data_DigitCoinService = BLLContainer.Resolve<IData_DigitCoinService>();
-                if (!data_DigitCoinService.Any(a => a.ICardID.Equals(iCardID, StringComparison.OrdinalIgnoreCase)))
-                {
-                    errMsg = "该卡档案不存在";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
-
+                
                 //开启EF事务
                 using (TransactionScope ts = new TransactionScope())
                 {
                     try
                     {
-                        var data_DigitCoin = data_DigitCoinService.GetModels(p => p.ICardID.Equals(iCardID, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                        if (!Data_DigitCoinService.I.Any(a => a.ICardID.Equals(iCardID, StringComparison.OrdinalIgnoreCase)))
+                        {
+                            errMsg = "该数字币不存在";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
+                        var data_DigitCoin = Data_DigitCoinService.I.GetModels(p => p.ICardID.Equals(iCardID, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
                         data_DigitCoin.Status = (int)DigitStatus.Cancel;
-                        if (!data_DigitCoinService.Update(data_DigitCoin))
+                        if (!Data_DigitCoinService.I.Update(data_DigitCoin))
                         {
                             errMsg = "更新数字币档案失败";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 
-                        IData_DigitCoinDestroyService data_DigitCoinDestroyService = BLLContainer.Resolve<IData_DigitCoinDestroyService>();
-                        Data_DigitCoinDestroy data_DigitCoinDestroy = new Data_DigitCoinDestroy();
+                        var data_DigitCoinDestroy = new Data_DigitCoinDestroy();
                         data_DigitCoinDestroy.DestroyTime = DateTime.Now;
                         data_DigitCoinDestroy.ICCardID = iCardID;
                         data_DigitCoinDestroy.StoreID = storeId;
                         data_DigitCoinDestroy.UserID = userId;
-                        if (!data_DigitCoinDestroyService.Add(data_DigitCoinDestroy))
+                        if (!Data_DigitCoinDestroyService.I.Add(data_DigitCoinDestroy))
                         {
                             errMsg = "更新数据库失败";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -367,17 +321,20 @@ namespace XXCloudService.Api.XCCloud
         {
             try
             {
-                string errMsg = string.Empty;
-                string destroyTime = dicParas.ContainsKey("destroyTime") ? (dicParas["destroyTime"] + "") : string.Empty;
-                string iCardID = dicParas.ContainsKey("iCardID") ? (dicParas["iCardID"] + "") : string.Empty;
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
 
+                string errMsg = string.Empty;
+                if (!dicParas.Get("destroyTime").Validdate("销毁时间", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                var destroyTime = dicParas.Get("destroyTime").Todatetime();
+                var iCardID = dicParas.Get("iCardID");
+                
                 var query = Data_DigitCoinDestroyService.N.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase));
-                if (!string.IsNullOrEmpty(destroyTime))
+                if (destroyTime != null)
                 {
-                    var dt = destroyTime.Todatetime();
-                    query = query.Where(w => DbFunctions.DiffDays(w.DestroyTime, dt) == 0);
+                    query = query.Where(w => DbFunctions.DiffDays(w.DestroyTime, destroyTime) == 0);
                 }
 
                 if (!string.IsNullOrEmpty(iCardID))
@@ -385,7 +342,7 @@ namespace XXCloudService.Api.XCCloud
                     query = query.Where(w => w.ICCardID.Contains(iCardID));
                 }
 
-                var result = from a in query
+                var result = from a in query.AsEnumerable()
                              join b in Base_UserInfoService.N.GetModels(p => p.UserType == (int)UserType.Store) on a.UserID equals b.UserID into b1
                              from b in b1.DefaultIfEmpty()
                              select new
@@ -393,7 +350,7 @@ namespace XXCloudService.Api.XCCloud
                                  ID = a.ID,
                                  StoreID = a.StoreID,
                                  ICardID = a.ICCardID,
-                                 DestroyTime = a.DestroyTime,
+                                 DestroyTime = Utils.ConvertFromDatetime(a.DestroyTime),
                                  UserID = a.UserID,
                                  Note = a.Note,
                                  LogName = b != null ? b.LogName : string.Empty,

@@ -69,8 +69,8 @@ namespace XXCloudService.Api.XCCloud
                 string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
                 string errMsg = string.Empty;
 
-                IDict_BalanceTypeService dict_BalanceTypeService = BLLContainer.Resolve<IDict_BalanceTypeService>();
-                var linq = dict_BalanceTypeService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.State == 1).OrderBy(o => o.TypeID)
+                var linq = Dict_BalanceTypeService.I.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.State == 1)
+                    .OrderBy(o => o.TypeID)
                     .Select(o => new 
                     {
                         ID = o.ID,
@@ -91,30 +91,25 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 string errMsg = string.Empty;
-                string id = dicParas.ContainsKey("id") ? (dicParas["id"] + "") : string.Empty;
+                int id = dicParas.Get("id").Toint(0);
 
-                if (string.IsNullOrEmpty(id))
+                if (id == 0)
                 {
                     errMsg = "流水号不能为空";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
-                int iId = Convert.ToInt32(id);
-                IDict_BalanceTypeService dict_BalanceTypeService = BLLContainer.Resolve<IDict_BalanceTypeService>(resolveNew: true);
-                var dict_BalanceTypeModel = dict_BalanceTypeService.GetModels(p => p.ID == iId).FirstOrDefault();
-                if (dict_BalanceTypeModel == null)
+                if (!Dict_BalanceTypeService.I.Any(p => p.ID == id))
                 {
                     errMsg = "该余额类别不存在";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
-    
-                IData_BalanceType_StoreListService data_BalanceType_StoreListService = BLLContainer.Resolve<IData_BalanceType_StoreListService>(resolveNew: true);
-                IBase_StoreInfoService base_StoreInfoService = BLLContainer.Resolve<IBase_StoreInfoService>(resolveNew: true);
+
                 var linq = from t in
-                               (from a in dict_BalanceTypeService.GetModels(p => p.ID == iId)
-                                join b in data_BalanceType_StoreListService.GetModels() on a.ID equals b.BalanceIndex into b1
+                               (from a in Dict_BalanceTypeService.N.GetModels(p => p.ID == id)
+                                join b in Data_BalanceType_StoreListService.N.GetModels() on a.ID equals b.BalanceIndex into b1
                                 from b in b1.DefaultIfEmpty()
-                                join c in base_StoreInfoService.GetModels() on b.StroeID equals c.StoreID into c1
+                                join c in Base_StoreInfoService.N.GetModels() on b.StroeID equals c.StoreID into c1
                                 from c in c1.DefaultIfEmpty()                                
                                 select new
                                 {
@@ -131,7 +126,6 @@ namespace XXCloudService.Api.XCCloud
                                HKType = g.FirstOrDefault().a.HKType,
                                StoreIDs = string.Join("|", g.Select(o => o.StoreID))
                            };
-
 
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, linq);                
             }
@@ -150,75 +144,49 @@ namespace XXCloudService.Api.XCCloud
                 string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
 
                 string errMsg = string.Empty;
-                string id = dicParas.ContainsKey("id") ? (dicParas["id"] + "") : string.Empty;
-                string typeId = dicParas.ContainsKey("typeId") ? (dicParas["typeId"] + "") : string.Empty;
-                string typeName = dicParas.ContainsKey("typeName") ? (dicParas["typeName"] + "") : string.Empty;
-                string hkType = dicParas.ContainsKey("hkType") ? (dicParas["hkType"] + "") : string.Empty;
-                string note = dicParas.ContainsKey("note") ? (dicParas["note"] + "") : string.Empty;
-                string storeIds = dicParas.ContainsKey("storeIds") ? (dicParas["storeIds"] + "") : string.Empty;                
-                int iId = 0;
-                int.TryParse(id, out iId);
-
-                #region 验证参数
-
-                if (string.IsNullOrEmpty(typeId))
-                {
-                    errMsg = "类别编号不能为空";
+                if (!dicParas.Get("typeId").Validint("类别编号", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
-
-                if (!Utils.isNumber(typeId))
-                {
-                    errMsg = "类别编号格式不正确";
+                if (!dicParas.Get("typeName").Nonempty("类别名称", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
-
-                if (string.IsNullOrEmpty(typeName))
-                {
-                    errMsg = "类别名称不能为空";
+                if (!dicParas.Get("hkType").Validint("关联类别", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
-
-                if (string.IsNullOrEmpty(hkType))
-                {
-                    errMsg = "关联类别不能为空";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
-                        
-                #endregion
-
+                
+                int id = dicParas.Get("id").Toint(0);
+                var typeId = dicParas.Get("typeId").Toint();
+                var typeName = dicParas.Get("typeName");
+                var hkType = dicParas.Get("hkType").Toint();
+                var note = dicParas.Get("note");
+                var storeIds = dicParas.Get("storeIds");                
+                
                 //开启EF事务
                 using (TransactionScope ts = new TransactionScope())
                 {
                     try
                     {
-                        var iTypeId = typeId.Toint();
-                        IDict_BalanceTypeService dict_BalanceTypeService = BLLContainer.Resolve<IDict_BalanceTypeService>();
-                        if (dict_BalanceTypeService.Any(p => p.ID != iId && p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.TypeID == iTypeId))
+                        if (Dict_BalanceTypeService.I.Any(p => p.ID != id && p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.TypeID == typeId))
                         {
-                            errMsg = "同商户余额类别编号不能重复";
+                            errMsg = "同一商户下余额类别编号不能重复";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 
-                        var iHKType = hkType.Toint();
-                        if (dict_BalanceTypeService.Any(p => p.ID != iId && p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.HKType == iHKType && p.HKType != (int)HKType.NoBound))
+                        if (Dict_BalanceTypeService.I.Any(p => p.ID != id && p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.HKType != (int)HKType.NoBound && p.HKType == hkType))
                         {
-                            errMsg = "同商户余额类别的关联类别不能重复";
+                            errMsg = "同一商户下余额类别的关联类别不能重复";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 
-                        var dict_BalanceType = dict_BalanceTypeService.GetModels(p=>p.ID == iId).FirstOrDefault() ?? new Dict_BalanceType();
-                        dict_BalanceType.ID = iId;
-                        dict_BalanceType.TypeID = iTypeId;
+                        var dict_BalanceType = Dict_BalanceTypeService.I.GetModels(p=>p.ID == id).FirstOrDefault() ?? new Dict_BalanceType();
+                        dict_BalanceType.ID = id;
+                        dict_BalanceType.TypeID = typeId;
                         dict_BalanceType.TypeName = typeName;
                         dict_BalanceType.Note = note;
                         dict_BalanceType.MerchID = merchId;
-                        dict_BalanceType.HKType = iHKType;
-                        if (dict_BalanceType.ID == 0)
+                        dict_BalanceType.HKType = hkType;
+                        if (id == 0)
                         {
                             //新增
                             dict_BalanceType.State = 1;
-                            if (!dict_BalanceTypeService.Add(dict_BalanceType))
+                            if (!Dict_BalanceTypeService.I.Add(dict_BalanceType))
                             {
                                 errMsg = "添加余额类别失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -226,35 +194,43 @@ namespace XXCloudService.Api.XCCloud
                         }
                         else
                         {
+                            if (!Dict_BalanceTypeService.I.Any(p => p.ID == id))
+                            {
+                                errMsg = "该余额类别不存在";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+
                             //修改
-                            if (!dict_BalanceTypeService.Update(dict_BalanceType))
+                            if (!Dict_BalanceTypeService.I.Update(dict_BalanceType))
                             {
                                 errMsg = "修改余额类别失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                             }
                         }
 
-                        iId = dict_BalanceType.ID;
+                        id = dict_BalanceType.ID;
 
-                        //先删除已有数据，后添加
-                        IData_BalanceType_StoreListService data_BalanceType_StoreListService = BLLContainer.Resolve<IData_BalanceType_StoreListService>();
-                        foreach (var model in data_BalanceType_StoreListService.GetModels(p => p.BalanceIndex == iId))
+                        //先删除，后添加
+                        foreach (var model in Data_BalanceType_StoreListService.I.GetModels(p => p.BalanceIndex == id))
                         {
-                            data_BalanceType_StoreListService.DeleteModel(model);
+                            Data_BalanceType_StoreListService.I.DeleteModel(model);
                         }
 
-                        foreach (var storeId in storeIds.Split('|'))
+                        if (!string.IsNullOrEmpty(storeIds))
                         {
-                            if (!storeId.Nonempty("门店ID", out errMsg))
-                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            foreach (var storeId in storeIds.Split('|'))
+                            {
+                                if (!storeId.Nonempty("门店ID", out errMsg))
+                                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-                            var model = new Data_BalanceType_StoreList();
-                            model.BalanceIndex = iId;
-                            model.StroeID = storeId;
-                            data_BalanceType_StoreListService.AddModel(model);
+                                var model = new Data_BalanceType_StoreList();
+                                model.BalanceIndex = id;
+                                model.StroeID = storeId;
+                                Data_BalanceType_StoreListService.I.AddModel(model);
+                            }
                         }
-                        
-                        if (!data_BalanceType_StoreListService.SaveChanges())
+
+                        if (!Data_BalanceType_StoreListService.I.SaveChanges())
                         {
                             errMsg = "更新余额类别适用门店信息失败";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -286,47 +262,39 @@ namespace XXCloudService.Api.XCCloud
                 string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
 
                 string errMsg = string.Empty;
-                string id = dicParas.ContainsKey("id") ? (dicParas["id"] + "") : string.Empty;                
-                int iId = 0;
-                int.TryParse(id, out iId);
+                int id = dicParas.Get("id").Toint(0);
 
-                #region 验证参数
-
-                if (string.IsNullOrEmpty(id))
+                if (id == 0)
                 {
                     errMsg = "余额类别ID不能为空";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }                
-
-                #endregion
                 
                 //开启EF事务
                 using (TransactionScope ts = new TransactionScope())
                 {
                     try
                     {
-                        IDict_BalanceTypeService dict_BalanceTypeService = BLLContainer.Resolve<IDict_BalanceTypeService>();
-                        if (!dict_BalanceTypeService.Any(p => p.ID == iId))
+                        if (!Dict_BalanceTypeService.I.Any(p => p.ID == id))
                         {
                             errMsg = "该余额类别不存在";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 
-                        var dict_BalanceType = dict_BalanceTypeService.GetModels(p => p.ID == iId).FirstOrDefault();
+                        var dict_BalanceType = Dict_BalanceTypeService.I.GetModels(p => p.ID == id).FirstOrDefault();
                         dict_BalanceType.State = 0;
-                        if (!dict_BalanceTypeService.Update(dict_BalanceType))
+                        if (!Dict_BalanceTypeService.I.Update(dict_BalanceType))
                         {
                             errMsg = "删除余额类别失败";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 
-                        IData_BalanceType_StoreListService data_BalanceType_StoreListService = BLLContainer.Resolve<IData_BalanceType_StoreListService>();
-                        foreach (var model in data_BalanceType_StoreListService.GetModels(p => p.BalanceIndex == iId))
+                        foreach (var model in Data_BalanceType_StoreListService.I.GetModels(p => p.BalanceIndex == id))
                         {
-                            data_BalanceType_StoreListService.DeleteModel(model);
+                            Data_BalanceType_StoreListService.I.DeleteModel(model);
                         }
                         
-                        if (!data_BalanceType_StoreListService.SaveChanges())
+                        if (!Data_BalanceType_StoreListService.I.SaveChanges())
                         {
                             errMsg = "删除余额类别适用门店信息失败";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);

@@ -54,5 +54,13 @@ namespace XCCloudService.Common
         public static string MoveFileType = "Move";//视频文件类型
 
         public static string OtherFileType = "Other";//其他文件类型
+
+        public static string WX_Auth_OrderAudit = "WX_Auth_OrderAudit";//微信订单审核
+
+        #region "Dict_System权限配置常量"
+
+        public static string SystemRole_OrderAudit = "订单审核授权";
+
+        #endregion
     }
 }

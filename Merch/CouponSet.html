@@ -5,75 +5,6 @@
     <title>电子优惠券</title>
     <link rel="stylesheet" href="layui/css/layui.css">
 </head>
-<style>
-    .layui-form-onswitch{
-        border-color: #5FB878!important;
-        background-color: #5FB878!important;
-    }
-    .layui-form-switch{
-        height: 22px;
-        line-height: 22px;
-        width: 42px;
-        border: 1px solid #d2d2d2;
-        border-radius: 20px;
-        background-color: #fff;
-    }
-    .layui-form-switch em{
-        width: 25px;
-        color: #999!important;
-        font-size: 12px;}
-    .layui-form-switch i{
-        left: 5px;
-        top: 3px;
-        width: 16px;
-        height: 16px;
-        border-radius: 20px;
-        background-color: #d2d2d2;
-    }
-   .layui-form-onswitch i{
-        left: 32px;
-    }
-
-   #goodIsAll .layui-form-switch {
-        height: 36px;
-        line-height: 36px;
-        width: 180px;
-        border-radius: 5px;
-        border: 1px solid #orangered;
-        background-color: #999;
-    }
-
-    #goodIsAll .layui-form-switch i {
-        left: 0px;
-        top: 0px;
-        width: 95px;
-        height: 36px;
-        margin-top: -1px;
-        border-radius: 5px 0 0 5px;
-        border: 1px solid #aaa;
-        background-color: #fff;
-    }
-
-    #goodIsAll  .layui-form-switch em {
-        width: 80px;
-        color: #ffffff!important;
-        font-size: 14px;
-    }
-
-    #goodIsAll .layui-form-onswitch {
-        border-color: #1e9fff!important;
-        background-color: #1e9fff!important;
-    }
-
-    #goodIsAll  .layui-form-onswitch i {
-        left: 95px;
-        border-radius: 0 5px 5px 0;
-        border: 1px solid #aaa;
-        margin-top: -1px;
-    }
-
-
-</style>
 <body>
 <div class="layui-row" style="padding: 10px">
     <form action="" class="layui-form layui-form-pane" >
@@ -87,7 +18,7 @@
     </form>
 </div>
 <!--//弹窗-->
-<div id="addOrModify" style="padding: 10px;display: none">
+<div id="addOrModify" style="padding: 10px;display: none" class="goodIsAll">
     <form class="layui-form layui-form-pane" style="padding-left: 15px;">
         <div class="layui-form-item">
             <div class="layui-inline">
@@ -98,8 +29,8 @@
             </div>
             <div class="layui-inline">
                 <label class="layui-form-label">本券类型</label>
-                <div class="layui-input-inline" id="goodIsAll">
-                    <input type="checkbox" name="switch" lay-skin="switch" lay-text="实物券|电子" id='entryCouponFlag' lay-filter="entryCouponFlag">
+                <div class="layui-input-inline">
+                    <input type="checkbox" name="switch" lay-skin="switch" lay-text="实物券|电子券" id='entryCouponFlag' lay-filter="entryCouponFlag">
                 </div>
             </div>
             <div class="layui-inline">
@@ -108,6 +39,46 @@
                     <input type="text" class="layui-input" lay-verify="number" id="PublishCount">
                 </div>
             </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label  class="layui-form-label">派发途径</label>
+                <div class="layui-input-inline">
+                    <select name="" id="SendType" lay-filter="SendType">
+                        <option value="0">消费赠券</option>
+                        <option value="1">定向派发</option>
+                        <option value="2">抽奖赠券</option>
+                        <option value="3">街边派送</option>
+                    </select>
+                </div>
+            </div>
+            <ul style="display: inline-block">
+                <li class="layui-hide" name="disturbBox">
+                    <button type="button" class=" layui-btn layui-btn-normal" id="autoSendBtn">自动派发</button>
+                    <button type="button" class=" layui-btn layui-btn-normal" id="setVipBtn">选取派发会员</button>
+                </li>
+                <li class="" name="disturbBox">
+                    <div class="layui-inline">
+                        <label  class="layui-form-label">消费满</label>
+                        <div class="layui-input-inline" style="width: 90px">
+                            <input type="text" class="layui-input" id="OverMoney" name="disturbInput">
+                        </div>
+                        <div class="layui-form-mid">送</div>
+                        <div class="layui-input-inline" style="width: 90px">
+                            <input type="text" class="layui-input" name="disturbInput" id="FreeCouponCount">
+                            <input type="text" class="layui-input layui-hide" name="disturbInput" id="JackpotCount">
+                        </div>
+                        <div class="layui-form-mid" id="tips">张</div>
+                    </div>
+                    <div class="layui-inline layui-hide" id="JackpotActiveBox">
+                        <label  class="layui-form-label">抽奖活动</label>
+                        <div class="layui-input-inline" style="width: 142px">
+                            <select name="" id="JackpotActive" lay-filter="JackpotActive"></select>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+
         </div>
         <div class="layui-form-item">
             <div class="layui-inline">
@@ -121,17 +92,8 @@
             <div class="layui-inline">
                 <input type="checkbox" checked name="like[write]" title="使用需要授权" lay-skin="primary" id="authorFlag" lay-filter="authorFlag">
             </div>
-            <div id="showPrint" style="display: inline-block">
-                <div class="layui-inline">
-                    <label class="layui-form-label">印刷编号</label>
-                    <div class="layui-input-inline">
-                        <input type="text" class="layui-input" required id="couponCodeStart">
-                    </div>
-                    <div class="layui-form-mid">至</div>
-                    <div class="layui-input-inline">
-                        <input type="text" class="layui-input" required id="couponCodeEnd">
-                    </div>
-                </div>
+            <div class="layui-inline">
+                <input type="checkbox" name="like[write]" title="允许叠加使用" lay-skin="primary" id="AllowOverOther" lay-filter="AllowOverOther">
             </div>
         </div>
         <!--使用类别为：代价券或折扣券时显示-->
@@ -199,63 +161,90 @@
                 </div>
             </div>
         </div>
+       <!--使用期限设置-->
         <div class="layui-form-item">
             <div class="layui-inline">
-                <label class="layui-form-label" style="padding: 8px 0;">使用期限</label>
+                <label class="layui-form-label">使用期限</label>
                 <div class="layui-input-inline">
-                    <input type="text" class="layui-input" required id="startDate">
+                    <select id="usePried" lay-filter="usePried">
+                        <option value="0" selected>当天</option>
+                        <option value="1">本周</option>
+                        <option value="2">本月</option>
+                        <option value="3">本年</option>
+                        <option value="4">自定期限</option>
+                    </select>
+                </div>
+                <div class="layui-input-inline">
+                    <input type="text" class="layui-input" id="StartDate" disabled>
                 </div>
                 <div class="layui-form-mid">至</div>
                 <div class="layui-input-inline">
-                    <input type="text" class="layui-input" required id="endDate">
+                    <input type="text" class="layui-input" id="EndDate" disabled>
                 </div>
-            </div>
-            <div class="layui-inline">
-                <div class="layui-input-inline"><button type="button" class="layui-btn layui-btn-danger chooseStoreBtn">请设置适用门店</button></div>
             </div>
         </div>
         <div class="layui-form-item">
             <div class="layui-inline">
-                <label  class="layui-form-label">派发途径</label>
+                <label class="layui-form-label">时段类型</label>
                 <div class="layui-input-inline">
-                    <select name="" id="SendType" lay-filter="SendType">
-                        <option value="0">消费</option>
-                        <option value="1">定向</option>
-                        <option value="2">抽奖</option>
-                        <option value="3">街边派送</option>
+                    <select id="weekType" lay-filter="weekType">
+                        <option value="0">自定义</option>
+                        <option value="1">工作日</option>
+                        <option value="2">周末</option>
+                        <option value="3">节假日</option>
                     </select>
                 </div>
             </div>
-            <ul style="display: inline-block">
-                <li class="layui-hide" name="disturbBox">
-                    <button type="button" class=" layui-btn layui-btn-normal" id="setVipBtn">选取派发会员</button>
-                </li>
-                <li class="" name="disturbBox">
-                    <div class="layui-inline">
-                        <label  class="layui-form-label">消费满</label>
-                        <div class="layui-input-inline" style="width: 90px">
-                            <input type="text" class="layui-input" id="OverMoney" name="disturbInput">
-                        </div>
-                        <div class="layui-form-mid">送</div>
-                        <div class="layui-input-inline" style="width: 90px">
-                            <input type="text" class="layui-input" name="disturbInput" id="FreeCouponCount">
-                            <input type="text" class="layui-input layui-hide" name="disturbInput" id="JackpotCount">
-                        </div>
-                        <div class="layui-form-mid" id="tips">张</div>
-                    </div>
-                    <div class="layui-inline layui-hide" id="JackpotActiveBox">
-                        <label  class="layui-form-label">抽奖活动</label>
-                        <div class="layui-input-inline" style="width: 142px">
-                            <select name="" id="JackpotActive" lay-filter="JackpotActive"></select>
-                        </div>
-                    </div>
-                </li>
-            </ul>
+            <div class="layui-inline" id="weekSetBox">
+                <label class="layui-form-label">优惠周天</label>
+                <div class="layui-input-inline" id="weekBox" style="width: 500px">
 
+                </div>
+            </div>
+            <br>
+            <div class="layui-inline" >
+                <label class="layui-form-label">使用时段</label>
+                <div class="layui-input-inline">
+                    <input type="text" class="layui-input" id="StartTime">
+                </div>
+                <div class="layui-form-mid">
+                    至
+                </div>
+                <div class="layui-input-inline">
+                    <input type="text" class="layui-input" id="EndTime">
+                </div>
+            </div>
         </div>
         <div class="layui-form-item">
             <div class="layui-inline">
-                <label class="layui-form-label" style="padding: 8px 0;">使用说明</label>
+                    <label class="layui-form-label">不可用日期</label>
+                    <div class="layui-input-inline">
+                        <select id="noUsePried" lay-filter="noUsePried">
+                            <option>-请选择-</option>
+                            <option value="0" >当天</option>
+                            <option value="1">本周</option>
+                            <option value="2">本月</option>
+                            <option value="3">本年</option>
+                            <option value="4">自定期限</option>
+                        </select>
+                    </div>
+            </div>
+            <div class="layui-inline" >
+                <label class="layui-form-label">不可用期限</label>
+                <div class="layui-input-inline">
+                    <input type="text" class="layui-input" id="NoStartDate" disabled placeholder="请设置开始日期">
+                </div>
+                <div class="layui-form-mid">
+                    至
+                </div>
+                <div class="layui-input-inline">
+                    <input type="text" class="layui-input" id="NoEndDate" disabled placeholder="请设置结束日期">
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label" style="padding: 8px 0;">备注</label>
                 <div class="layui-input-inline" style="width: 835px">
                     <input type="text" class="layui-input" required id="Note">
                 </div>
@@ -274,7 +263,7 @@
     </form>
 </div>
 <!--适用门店的弹窗-->
-<div class="chooseStore" style="display: none">
+<div class="chooseStore goodIsAll" style="display: none">
     <form action="" class="layui-form">
         <div class="layui-form-item">
             <label class="layui-form-label">适用门店</label>
@@ -288,7 +277,7 @@
     </div>
 </div>
 <!--分配会员弹窗-->
-<div class="setVip" style="display: none">
+<div class="setVip goodIsAll" style="display: none;padding: 10px;">
     <form action="" class="layui-form">
         <div class="layui-form-item">
             <div class="layui-input-inline" id="setVipList">
@@ -300,12 +289,334 @@
         <button type="button" class="layui-btn layui-btn-normal" id="saveVipbtn">确定</button>
     </div>
 </div>
+<!--优惠券调拨弹窗-->
+<div class="couponTransfer goodIsAll" style="display: none;padding: 15px;">
+    <form class="layui-form layui-form-pane">
+        <div class="layui-form-item">
+            <label class="layui-form-label">优惠券名</label>
+            <div class="layui-input-bolck">
+                <input type="text" class="layui-input" disabled>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-inline">
+                <label class="layui-form-label">有效期</label>
+                <div class="layui-input-inline">
+                    <input type="text" class="layui-input" disabled>
+                </div>
+                <div class="layui-form-mid">至</div>
+                <div class="layui-input-inline">
+                    <input type="text" class="layui-input" disabled>
+                </div>
+            </div>
+            <div class="layui-input-inline">
+                <label class="layui-form-label">可派发数量</label>
+                <div class="layui-input-inline">
+                    <input type="text" class="layui-input" disabled>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-inline">
+                <label class="layui-form-label">调拨序号</label>
+                <div class="layui-input-inline">
+                    <input type="text" class="layui-input">
+                </div>
+                <div class="layui-form-mid">至</div>
+                <div class="layui-input-inline">
+                    <input type="text" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-input-inline">
+                <label class="layui-form-label">调拨数量</label>
+                <div class="layui-input-inline">
+                    <input type="text" class="layui-input">
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">调拨门店</label>
+            <div class="layui-input-bolck">
+                <select id=""></select>
+            </div>
+        </div>
+        <div style="text-align:center;">
+            <button type="button" class="layui-btn layui-btn-primary">保存</button>
+        </div>
+    </form>
+</div>
+<!--优惠券--》实物券导出-->
+<div class="couponExport goodIsAll" style="display: none;padding: 15px;">
+    <form class="layui-form layui-form-pane">
+        <div class="layui-form-item">
+            <label class="layui-form-label">优惠券名</label>
+            <div class="layui-input-bolck">
+                <input type="text" class="layui-input" disabled>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-inline">
+                <label class="layui-form-label">券类型</label>
+                <div class="layui-input-inline">
+                    <input type="text" class="layui-input" disabled>
+                </div>
+            </div>
+            <div class="layui-input-inline">
+                <label class="layui-form-label">可导出数量</label>
+                <div class="layui-input-inline">
+                    <input type="text" class="layui-input" disabled>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-inline">
+                <label class="layui-form-label">有效期</label>
+                <div class="layui-input-inline">
+                    <input type="text" class="layui-input">
+                </div>
+                <div class="layui-form-mid">至</div>
+                <div class="layui-input-inline">
+                    <input type="text" class="layui-input">
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">导出序号</label>
+                <div class="layui-input-bolck">
+                    <input type="text" class="layui-input">
+                </div>
+                <div class="layui-form-mid">至</div>
+                <div class="layui-input-bolck">
+                    <input type="text" class="layui-input">
+                </div>
+            </div>
+
+        </div>
+        <blockquote class="layui-elem-quote" style="text-align:center;">
+             <p style="color: red;">注意:只有实物券才可以导出</p>
+        </blockquote>
+        <div style="text-align:center;">
+            <button type="button" class="layui-btn layui-btn-primary">保存</button>
+        </div>
+    </form>
+</div>
+<!--自动调拨弹窗-->
+<div class="autoSort goodIsAll" style="display: none;padding: 15px;">
+    <form action="" class="layui-form">
+        <div class="layui-card">
+            <div class="layui-card-header">筛选条件</div>
+            <div class="layui-card-body">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <div class="layui-input-inline">
+                            <input type="checkbox" title="每月活跃次数" lay-skin="primary">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <div class="layui-input-inline">
+                            <input type="text" class="layui-input">
+                        </div>
+                        <div class="layui-form-mid">
+
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <div class="layui-input-inline">
+                            <select id="">
+                                <option>-请选择-</option>
+                                <option value="0">或者</option>
+                                <option value="1">并且</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <div class="layui-input-inline">
+                            <input type="checkbox" title="消费能力" lay-skin="primary">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <div class="layui-input-inline">
+                            <select id="">
+                                <option>-请选择-</option>
+                                <option value="0">天</option>
+                                <option value="1">周</option>
+                                <option value="2">月</option>
+                                <option value="3">季</option>
+                                <option value="4">年</option>
+                            </select>
+                        </div>
+                        <div class="layui-form-mid">
+                            消费
+                        </div>
+                        <div class="layui-input-inline">
+                            <input type="text" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <div class="layui-input-inline">
+                            <select id="">
+                                <option>-请选择-</option>
+                                <option value="0">或者</option>
+                                <option value="1">并且</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <div class="layui-input-inline">
+                            <input type="checkbox" title="消费能力" lay-skin="primary">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <div class="layui-input-inline">
+                            <select id="">
+                                <option>-请选择-</option>
+                                <option value="0">天</option>
+                                <option value="1">周</option>
+                                <option value="2">月</option>
+                                <option value="3">季</option>
+                                <option value="4">年</option>
+                            </select>
+                        </div>
+                        <div class="layui-form-mid">
+                            消费
+                        </div>
+                        <div class="layui-input-inline">
+                            <input type="text" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <div class="layui-input-inline">
+                            <select id="">
+                                <option>-请选择-</option>
+                                <option value="0">或者</option>
+                                <option value="1">并且</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <div class="layui-input-inline">
+                            <input type="checkbox" title="生日" lay-skin="primary">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <div class="layui-input-inline">
+                            <select id="">
+                                <option>-请选择-</option>
+                                <option value="0">或者</option>
+                                <option value="1">并且</option>
+                            </select>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <div class="layui-input-inline">
+                            <select id="">
+                                <option>-请选择-</option>
+                                <option value="0">或者</option>
+                                <option value="1">并且</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <div class="layui-input-inline">
+                            <input type="checkbox" title="会员级别" lay-skin="primary">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <div class="layui-input-inline">
+                            <select id="">
+                                <option>-请选择-</option>
+                                <option value="0">普通会员</option>
+                                <option value="1">银卡</option>
+                            </select>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <div class="layui-input-inline">
+                            <select id="">
+                                <option>-请选择-</option>
+                                <option value="0">或者</option>
+                                <option value="1">并且</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <div class="layui-input-inline">
+                            <input type="checkbox" title="会员余额" lay-skin="primary">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <div class="layui-input-inline">
+                            <select id="">
+                                <option>-请选择-</option>
+                                <option value="0">积分</option>
+                                <option value="1">彩票</option>
+                            </select>
+                        </div>
+                        <div class="layui-input-inline">
+                            <select id="">
+                                <option>-请选择-</option>
+                                <option value="0">大于</option>
+                                <option value="1">小于</option>
+                                <option value="1">等于</option>
+                            </select>
+                        </div>
+                        <div class="layui-input-inline">
+                            <input type="text" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-card">
+            <div class="layui-card-header">筛选条件</div>
+            <div class="layui-card-body">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">派发周期</label>
+                    <div class="layui-input-block">
+                        <select  id="d"></select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">派发时间</label>
+                    <div class="layui-input-block">
+                        <input type="text" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">派发张数</label>
+                    <div class="layui-input-block">
+                        <input type="text" class="layui-input">
+                    </div>
+                </div>
+                <div style="text-align:center;">
+                    <button type="button" class="layui-btn layui-btn-primary">确定</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
 </body>
 <script src="js/jquery-1.8.3-min.js"></script>
 <script src="layui/layui.js"></script>
 <script src="js/storeSystem.js"></script>
 <script>
-   let modelHtml= $('#addOrModify').html();
+    layui.addcss('layui_font.css');
+</script>
+<script>
+    let modelHtml= $('#addOrModify').html();
     let xc=xcActionSystem.prototype;
     let token=xc.getStorage('token');
     let Id='';
@@ -317,21 +628,30 @@
         'cols':[
              {field:'ID', title:'优惠券规则ID', align: 'center', sort: true}
             ,{field:'CouponName',title: '优惠券名称', align: 'center'}
-            ,{field:'CouponTypeStr', title: '类别', align: 'center'}
-            ,{field:'PublishCount', title: '创建张数', align: 'center'}
-            ,{field:'LeftCount', title: '剩余张数', align: 'center'}
-            ,{field:'StartTime', title: '开始时间', align: 'center'}
-            ,{field:'EndTime', title: '结束时间', align: 'center'}
+            ,{field:'CouponTypeStr', title: '券类别', align: 'center'}
+            ,{field:'PublishCount', title: '发行张数', align: 'center'}
+            ,{field:'NotAssignedCount', title: '未分配数量', align: 'center'}
+            ,{field:'AssignedCount', title: '调拨数量', align: 'center',templet:'#assigned'}
+            ,{field:'SendCount', title: '派发张数', align: 'center'}
+            ,{field:'UseCount', title: '已使用张数', align: 'center'}
+            ,{field:'ActivatedCount', title: '剩余张数', align: 'center'}
+            ,{field:'AuthorFlag', title: '使用需要授权', align: 'center',templet:'#AuthorFlag'}
+            ,{field:'CreateTime', title: '创建时间', align: 'center'}
+            ,{field:'OpUserName', title: '创建人', align: 'center'}
+            ,{field:'AllowOverOther', title: '允许叠加使用', align: 'center',templet:'#AllowOverOther'}
+            ,{field:'StartDate', title: '开始时间', align: 'center'}
+            ,{field:'EndDate', title: '结束时间', align: 'center'}
             ,{field:'Context', title: '说明', align: 'center'}
-            ,{field:'State', title: '状态', align: 'center',templet:'#changeState'}
-            ,{fixed: 'right', title: '操作', width:160, align:'center', toolbar: '#barDemo'}]
+            ,{field:'IsLock', title: '是否锁定', align: 'center',templet:'#isLock'}
+            // ,{field:'State', title: '状态', align: 'center',templet:'#changeState'}
+            ,{fixed: 'right', title: '操作', width:340, align:'center', toolbar: '#barDemo'}]
     };
     xc.getInitData(parm);
 
     let CouponType=0;
     let SendType=0;
     let entryCouponFlag=0;
-    let authorFlag=1;
+    let authorFlag=1; let AllowOverOther=0;
     let chargeType='';//兑换类型
     let goodId='';
     let projectId='';
@@ -339,6 +659,9 @@
     let balanceIndex='';
     let memberId=[];
     let storeId=[];
+
+    let weekType=0;let week=[];
+
     layui.use(['form','layer','table','laydate'],()=>{
         let form=layui.form;
         let layer=layui.layer;
@@ -447,6 +770,13 @@
                 authorFlag=0;
             }
         });
+        form.on('checkbox(AllowOverOther)',(data)=>{
+            if(data.elem.checked==true){
+                AllowOverOther=1;
+            }else {
+                AllowOverOther=0;
+            }
+        });
         //监听门店设置
         form.on('checkbox(chooseStore)',function (data) {
             if (data.elem.checked==true){
@@ -460,7 +790,71 @@
             }
             console.log(storeId);
         });
-
+        form.on('checkbox(weeks)', function(data){
+            if (data.elem.checked==true){
+                week.push(data.value);
+            }else if(data.elem.checked==false){
+                for (var i=0;i<week.length;i++){
+                    if(week[i]==data.value){
+                        week.splice(i,1);
+                    }
+                }
+            }
+        });
+        //监听有效期间选择
+        form.on('select(usePried)',function (data) {
+            if(data.value==0){
+                $('#StartDate').val(getDayStartDate()).prop('disabled',true);
+                $('#EndDate').val(getDayStartDate()).prop('disabled',true);
+            }else if(data.value==1){
+                $('#StartDate').val(getWeekStartDate()).prop('disabled',true);
+                $('#EndDate').val(getWeekEndDate()).prop('disabled',true);
+            }else if(data.value==2){
+                $('#StartDate').val(getMonthStartDate()).prop('disabled',true);
+                $('#EndDate').val(getMonthEndDate()).prop('disabled',true);
+            }else if(data.value==3){
+                $('#StartDate').val(getYearStartDate()).prop('disabled',true);
+                $('#EndDate').val(getYearEndDate()).prop('disabled',true);
+            }else if(data.value==4){
+                $('#StartDate').prop('disabled',false);
+                $('#EndDate').prop('disabled',false);
+                layer.msg('<p style="color: red">请自己设置有效期限</p>')
+            }
+        });
+        //监听有效期间的可用期限
+        form.on('select(weekType)',function (data) {
+            weekType=data.value;
+            week=[];
+            if(data.value==0){
+                $('#weekSetBox').removeClass('layui-hide');
+                xc.AddWeeks('weekBox');
+            }else {
+                $('#weekSetBox').addClass('layui-hide');
+            }
+        });
+        //监听不可用期限选择
+        form.on('select(noUsePried)',function (data) {
+            if(data.value==0){
+                $('#NoStartDate').val(getDayStartDate()).prop('disabled',true);
+                $('#NoEndDate').val(getDayStartDate()).prop('disabled',true);
+            }else if(data.value==1){
+                $('#NoStartDate').val(getWeekStartDate()).prop('disabled',true);
+                $('#NoEndDate').val(getWeekEndDate()).prop('disabled',true);
+            }else if(data.value==2){
+                $('#NoStartDate').val(getMonthStartDate()).prop('disabled',true);
+                $('#NoEndDate').val(getMonthEndDate()).prop('disabled',true);
+            }else if(data.value==3){
+                $('#NoStartDate').val(getYearStartDate()).prop('disabled',true);
+                $('#NoEndDate').val(getYearEndDate()).prop('disabled',true);
+            }else if(data.value==4){
+                $('#NoStartDate').prop('disabled',false);
+                $('#NoEndDate').prop('disabled',false);
+                layer.msg('<p style="color: red">请自己设置不可用期限</p>')
+            }else {
+                $('#NoStartDate').val('').prop('disabled',true);
+                $('#NoEndDate').val('').prop('disabled',true);
+            }
+        });
         //点击新增打开弹窗
         $('.add').on('click',()=>{
             Id='';//新增Id为空
@@ -475,17 +869,40 @@
             jackpotId='';
             memberId=[];
             storeId=[];
-
+            weekType=0; week=[];
             $('#addOrModify').html(modelHtml);
+
+            xc.AddWeeks('weekBox');
+
             laydate.render({
-                elem: '#startDate'
-                ,type: 'datetime'
+                elem: '#StartDate'
+                ,type: 'date'
                 ,value: new Date()
             });
             laydate.render({
-                elem: '#endDate'
-                ,type: 'datetime'
+                elem: '#EndDate'
+                ,type: 'date'
                 ,value: new Date()
+            });
+            laydate.render({
+                elem: '#NoStartDate'
+                ,type: 'date'
+            });
+            laydate.render({
+                elem: '#NoEndDate'
+                ,type: 'date'
+            });
+            laydate.render({
+                elem: '#StartTime'
+                ,type: 'time'
+                ,format: 'HH:mm'
+                ,value: '00:00'
+            });
+            laydate.render({
+                elem: '#EndTime'
+                ,type: 'time'
+                ,format: 'HH:mm'
+                ,value: '23:59'
             });
             form.render();
             layer.open({
@@ -655,22 +1072,44 @@
                     }
                 });
 
-            } else if(layEvent === 'del'){ //删除
-                layer.confirm('真的删除行么', function(index){
+            } else if(layEvent === 'lock'){ //删除
+                layer.confirm('确定锁定该商户下所有门店的优惠券吗', function(index){
                     Id=data.ID;
-                    let _obj={'id':data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                    let _obj={'couponId':data.ID,'isLock':1,'id':'','storeId':'','userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
                     let parseJson = JSON.stringify(_obj);
                     $.ajax({
                         type:'post',
-                        url:'/XCCloud/Coupon?action=DelCouponInfo',
+                        url:'/XCCloud/Coupon?action=LockCoupon',
                         contentType: "application/json; charset=utf-8",
                         data:{parasJson: parseJson},
                         success: function (data) {
                             data = JSON.parse(data);
-                            console.log(data);
                             if (data.result_code == 1) {
-                                obj.del();
-                                layer.close(index);
+                                layer.msg('锁定成功',{time:1500},function () {
+                                    location.href='CouponSet.html'
+                                });
+                            } else {
+                                layer.msg(data.result_msg);
+                            }
+                        }
+                    })
+                });
+            } else if(layEvent === 'unlock'){ //删除
+                layer.confirm('确定锁定该商户下所有门店的优惠券吗', function(index){
+                    Id=data.ID;
+                    let _obj={'couponId':data.ID,'isLock':0,'id':'','storeId':'','userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                    let parseJson = JSON.stringify(_obj);
+                    $.ajax({
+                        type:'post',
+                        url:'/XCCloud/Coupon?action=LockCoupon',
+                        contentType: "application/json; charset=utf-8",
+                        data:{parasJson: parseJson},
+                        success: function (data) {
+                            data = JSON.parse(data);
+                            if (data.result_code == 1) {
+                                layer.msg('解锁成功',{time:1500},function () {
+                                    location.href='CouponSet.html'
+                                });
                             } else {
                                 layer.msg(data.result_msg);
                             }
@@ -679,7 +1118,6 @@
                 });
             }
         });
-
         form.on('switch(test)', function(data){
             let ids=data.othis.parents('td').siblings('td[data-field="ID"]').children('div')[0].innerHTML;
             let _obj={'id':ids,'state':data.elem.checked==true?1:0,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
@@ -706,29 +1144,40 @@
         xcActionSystem.prototype.saveCoupon=(layer)=>{
             var index = layer.load(0, {shade: false});
             let obj={'id':Id,
+                        'merchId':'',
                         'couponName':$('#CouponName').val(),
-                        'couponCodeStart':$('#couponCodeStart').val(),
-                        'couponCodeEnd':$('#couponCodeEnd').val(),
                         'couponType':CouponType,
                         'entryCouponFlag':entryCouponFlag,
                         'authorFlag':authorFlag ,
+                'allowOverOther':AllowOverOther,
                         'overUseCount':$('#OverUseCount').val(),
                         'publishCount':$('#PublishCount').val(),
                         'couponValue':$('#couponValue').val(),
                         'couponDiscount':$('#CouponDiscount').val(),
                         'couponThreshold':$('#CouponThreshold').val(),
-                        'startTime':$('#startDate').val(),
-                        'endTime':$('#endDate').val(),
+                        'startDate':$('#StartDate').val(),
+                        'endDate':$('#EndDate').val(),
+                'weekType':weekType,
+                'week':week.length>0?week.join('|'):'',
+                'startTime':$('#StartTime').val(),
+                'endTime':$('#EndTime').val(),
+                'noStartDate':$('#NoStartDate').val(),
+                'noEndTime':$('#NoEndDate').val(),
                         'sendType':SendType,
                         'overMoney':$('#OverMoney').val(),
                         'freeCouponCount':$('#FreeCouponCount').val(),
                         'jackpotCount':$('#JackpotCount').val(),
                         'jackpotID':jackpotId,
                         'chargeType':chargeType,
+                'balanceIndex':'',
                         'chargeCount':$('#ChargeCount').val(),
                         'goodId':goodId,
                         'projectId':projectId,
-                        'memberIds':'',
+                'AutoSendCycle':'',
+                'AutoSendValue':'',
+                'AutoSendCount':'',
+                'couponConditions':[],
+                        'memberIds':[],
                         'storeIds':storeId==''?'':storeId.join('|'),
                         'context':$('#Note').val(),
                         'userToken':token,
@@ -943,15 +1392,37 @@
 
 </script>
 <script type="text/html" id="barDemo">
-    <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="edit"><i class="layui-icon">&#xe642;</i>编辑</a>
-    <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del"><i class="layui-icon">&#xe640;</i>删除</a>
-</script>
-<script type="text/html" id="changeState">
-    {{# if(d.State==1){ }}
-    <input type="checkbox" checked name="switch" lay-skin="switch" lay-text="ON|OFF" class="tb_check" lay-filter="test" disabled>
+    <a class="layui-btn layui-btn-xs layui-bg-cyan" lay-event="export"><i class="layui-icon layui-icon-zinbox-l"></i>导出</a>
+    <a class="layui-btn layui-btn-xs layui-bg-orange" lay-event="transfers"><i class="layui-icon">&#xe642;</i>实物券调拨</a>
+    <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="send"><i class="layui-icon layui-icon-zmenu-l"></i>实物券派发</a>
+    {{# if(d.IsLock==1){ }}
+    <a class="layui-btn layui-btn-xs layui-bg-green" lay-event="unlock"><i class="layui-icon layui-icon-zzunlock"></i>解锁</a>
     {{# }else{ }}
-    <input type="checkbox" name="switch" lay-skin="switch" lay-text="ON|OFF" class="tb_check" lay-filter="test" disabled>
+    <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="lock"><i class="layui-icon layui-icon-zzunlock-alt"></i>锁定</a>
     {{#  } }}
 </script>
-
+<script type="text/html" id="isLock">
+    {{# if(d.IsLock==1){ }}
+    <input type="checkbox" checked name="switch" lay-skin="switch" lay-text="锁定|未锁" class="tb_check" lay-filter="test" disabled>
+    {{# }else{ }}
+    <input type="checkbox" name="switch" lay-skin="switch" lay-text="锁定|未锁" class="tb_check" lay-filter="test" disabled>
+    {{#  } }}
+</script>
+<script type="text/html" id="AuthorFlag">
+    {{# if(d.AuthorFlag==1){ }}
+    <input type="checkbox" checked name="switch" lay-skin="switch" lay-text="yes|no" class="tb_check" lay-filter="test" disabled>
+    {{# }else{ }}
+    <input type="checkbox" name="switch" lay-skin="switch" lay-text="yes|no" class="tb_check" lay-filter="test" disabled>
+    {{#  } }}
+</script>
+<script type="text/html" id="AllowOverOther">
+    {{# if(d.AllowOverOther==1){ }}
+    <input type="checkbox" checked name="switch" lay-skin="switch" lay-text="yes|no" class="tb_check" lay-filter="test" disabled>
+    {{# }else{ }}
+    <input type="checkbox" name="switch" lay-skin="switch" lay-text="yes|no" class="tb_check" lay-filter="test" disabled>
+    {{#  } }}
+</script>
+<script type="text/html" id="assigned">
+    <button type="button" class="layui-btn layui-btn-xs layui-bg-orange"><i class="layui-icon layui-icon-zcamber-l"></i>{{d.AssignedCount}}</button>
+</script>
 </html>

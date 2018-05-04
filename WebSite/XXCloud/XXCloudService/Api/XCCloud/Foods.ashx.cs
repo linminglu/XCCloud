@@ -44,6 +44,58 @@ namespace XXCloudService.Api.XCCloud
         }
 
 
+
+        /// <summary>
+        /// 获取套餐列表
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object getOpenCardFoodList(Dictionary<string, object> dicParas)
+        {
+            string errMsg = string.Empty;
+            XCCloudUserTokenModel userTokenModel = (XCCloudUserTokenModel)(dicParas[Constant.XCCloudUserTokenModel]);
+            StoreIDDataModel userTokenDataModel = (StoreIDDataModel)(userTokenModel.DataModel);
+
+            string memberLevelId = dicParas.ContainsKey("memberLevelId") ? dicParas["memberLevelId"].ToString() : string.Empty;
+
+            if (string.IsNullOrEmpty(memberLevelId))
+            {
+                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员等级无效");
+            }
+
+            string sql = "GetMemberOpenCardFoodInfo";
+            SqlParameter[] parameters = new SqlParameter[4];
+            parameters[0] = new SqlParameter("@StoreId", userTokenDataModel.StoreId);
+            parameters[1] = new SqlParameter("@MemberLevelId", memberLevelId);
+            parameters[2] = new SqlParameter("@Result", SqlDbType.Int);
+            parameters[2].Direction = System.Data.ParameterDirection.Output;
+            parameters[3] = new SqlParameter("@ErrMsg", SqlDbType.VarChar, 200);
+            parameters[3].Direction = System.Data.ParameterDirection.Output;
+
+            System.Data.DataSet ds = XCCloudBLL.GetStoredProcedureSentence(sql, parameters);
+            if (int.Parse(parameters[2].Value.ToString()) == 1)
+            {
+                DataTable dtFoodInfo = ds.Tables[0];
+                if (dtFoodInfo.Rows.Count > 0)
+                {
+                    List<OpenCardFoodInfoModel> listFoodInfo = Utils.GetModelList<OpenCardFoodInfoModel>(dtFoodInfo).ToList();
+                    return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, listFoodInfo);
+                }
+                else
+                {
+                    List<OpenCardFoodInfoModel> listFoodInfo = new List<OpenCardFoodInfoModel>();
+                    return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, listFoodInfo);
+                }
+            }
+            else
+            {
+                errMsg = parameters[3].Value.ToString();
+                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
+            }    
+        }
+
+
         /// <summary>
         /// 获取套餐列表
         /// </summary>

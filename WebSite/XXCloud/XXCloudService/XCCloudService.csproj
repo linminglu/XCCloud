@@ -278,7 +278,7 @@
     <Content Include="Config\SAppMessageTemplate.xml">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="Imgs\ID图片20180103153738751.png" />
+    <Content Include="Imgs\masterEmv.jpg" />
     <Content Include="index.html" />
     <Content Include="MobileWeb\accredit.html" />
     <Content Include="MobileWeb\billList.html" />
@@ -380,7 +380,9 @@
     <Content Include="Api\XCCloud\GroupVerify.ashx" />
     <Content Include="Api\Service\CacheService.ashx" />
     <Content Include="Api\XCCloud\GameWatch.ashx" />
-<Content Include="Api\HaoKu\hkreq.ashx" />    <Content Include="Api\XCCloud\DigitFood.ashx" />    <None Include="Properties\PublishProfiles\111.pubxml" />
+    <Content Include="Api\HaoKu\hkreq.ashx" />
+    <Content Include="Api\XCCloud\DigitFood.ashx" />
+    <None Include="Properties\PublishProfiles\111.pubxml" />
     <None Include="Properties\PublishProfiles\qqq.pubxml" />
     <None Include="Properties\PublishProfiles\rrr.pubxml" />
     <None Include="Scripts\jquery-1.6.4-vsdoc.js" />

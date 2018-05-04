@@ -16,17 +16,25 @@ namespace XCCloudService.Model.XCCloud
     {
         public int ID { get; set; }
         public string MerchID { get; set; }
+        public Nullable<int> CouponLevel { get; set; }
         public string CouponName { get; set; }
         public Nullable<int> CouponType { get; set; }
         public Nullable<int> EntryCouponFlag { get; set; }
         public Nullable<int> AuthorFlag { get; set; }
+        public Nullable<int> AllowOverOther { get; set; }
         public Nullable<int> OverUseCount { get; set; }
         public Nullable<int> PublishCount { get; set; }
         public Nullable<decimal> CouponValue { get; set; }
         public Nullable<decimal> CouponDiscount { get; set; }
         public Nullable<decimal> CouponThreshold { get; set; }
-        public Nullable<System.DateTime> StartTime { get; set; }
-        public Nullable<System.DateTime> EndTime { get; set; }
+        public Nullable<System.DateTime> StartDate { get; set; }
+        public Nullable<System.DateTime> EndDate { get; set; }
+        public Nullable<int> WeekType { get; set; }
+        public string Week { get; set; }
+        public Nullable<System.TimeSpan> StartTime { get; set; }
+        public Nullable<System.TimeSpan> EndTime { get; set; }
+        public Nullable<System.DateTime> NoStartDate { get; set; }
+        public Nullable<System.DateTime> NoEndDate { get; set; }
         public Nullable<int> SendType { get; set; }
         public Nullable<decimal> OverMoney { get; set; }
         public Nullable<int> FreeCouponCount { get; set; }
@@ -37,6 +45,10 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> BalanceIndex { get; set; }
         public Nullable<int> GoodID { get; set; }
         public Nullable<int> ProjectID { get; set; }
+        public Nullable<int> AutoSendCycle { get; set; }
+        public Nullable<int> AutoSendValue { get; set; }
+        public Nullable<int> AutoSendCount { get; set; }
+        public Nullable<System.DateTime> CreateTime { get; set; }
         public Nullable<int> OpUserID { get; set; }
         public string Context { get; set; }
     }

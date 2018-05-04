@@ -73,7 +73,7 @@ namespace XCCloudService.Common
         /// <param name="discription"></param>
         /// <param name="errMsg"></param>
         /// <returns></returns>
-        public static bool Validdec<T>(this T t, string discription, out string errMsg)
+        public static bool Validdecimal<T>(this T t, string discription, out string errMsg)
         {
             errMsg = string.Empty;
 
@@ -90,6 +90,31 @@ namespace XCCloudService.Common
             }
 
             return true;
-        }    
+        }
+        /// <summary>
+        /// 时间验证
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="t"></param>
+        /// <param name="discription"></param>
+        /// <param name="errMsg"></param>
+        /// <returns></returns>
+        public static bool Validdate<T>(this T t, string discription, out string errMsg)
+        {
+            errMsg = string.Empty;
+
+            if (!IsNull(t))
+            {
+                var date = new DateTime();
+                if (!DateTime.TryParse(t.ToString(), out date))
+                {
+                    errMsg = discription + "格式不正确";
+                    return false;
+                }
+
+            }
+            
+            return true;            
+        }  
     }
 }

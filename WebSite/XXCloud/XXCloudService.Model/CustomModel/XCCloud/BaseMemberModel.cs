@@ -69,12 +69,12 @@ namespace XCCloudService.Model.CustomModel.XCCloud
     public class MemberBalanceModel
     {
         [DataMember(Name = "balanceIndex", Order = 1)]
-        public string BalanceIndex { set; get; }
+        public int BalanceIndex { set; get; }
 
         [DataMember(Name = "balanceName", Order = 2)]
         public string BalanceName { set; get; }
 
         [DataMember(Name = "balance", Order = 3)]
-        public string Balance { set; get; }
+        public decimal Balance { set; get; }
     }
 }

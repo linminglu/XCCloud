@@ -13,7 +13,7 @@ namespace XCCloudService.Business.Common
     {
         private static List<string> GetUploadFileFormat()
         {
-            return CommonConfig.FileFormat.Split(',').ToList<string>();
+            return CommonConfig.AddWatch_FileFormat.Split(',').ToList<string>();
         }
 
         /// <summary>
@@ -213,7 +213,7 @@ namespace XCCloudService.Business.Common
             string fileTypeFolder = GetFileFormatType(extName);
             string dateFolder = System.DateTime.Now.ToString("yyyyMMdd");
             fileName = string.Format("{0}{1}", System.DateTime.Now.ToString("yyyyMMddHHmmssfff"), new Random().Next(0, 999999).ToString().PadLeft(6, '0'));
-            folder = string.Format("{0}/{1}/{2}/{3}", CommonConfig.FileServerPhysicsPath, fileTypeFolder, clientTypeFolder, dateFolder);
+            folder = string.Format("{0}/{1}/{2}/{3}", CommonConfig.AddWatch_FileServerPhysicsPath, fileTypeFolder, clientTypeFolder, dateFolder);
             filePath = string.Format("{0}/{1}.{2}", folder, fileName,extName);
         }
 

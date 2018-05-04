@@ -600,8 +600,24 @@ namespace XXCloudService.Api.HaoKu
             {
                 string errMsg = string.Empty;
                 string memberToken = dicParas.ContainsKey("membertoken") ? dicParas["membertoken"].ToString() : string.Empty;
-                string sn = dicParas.ContainsKey("sn") ? dicParas["sn"].ToString() : string.Empty;
-                string machineSn = dicParas.ContainsKey("machineSn") ? dicParas["machineSn"].ToString() : string.Empty;
+                string strDeviceId = dicParas.ContainsKey("deviceId") ? dicParas["deviceId"].ToString() : string.Empty;
+                int deviceId = 0;
+                if (string.IsNullOrWhiteSpace(strDeviceId) || !int.TryParse(strDeviceId, out deviceId))
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "设备号错误");
+                }
+
+                Base_DeviceInfo device = Base_DeviceInfoService.I.GetModels(t => t.ID == Convert.ToInt32(deviceId)).FirstOrDefault();
+                if (device == null)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "设备不存在");
+                }
+
+                Data_GameInfo game = Data_GameInfoService.I.GetModels(t => t.ID == device.GameIndexID).FirstOrDefault();
+                if (game == null)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "游戏机不存在");
+                }
 
                 //XCGameMemberTokenModel memberTokenModel = (XCGameMemberTokenModel)(dicParas[Constant.XCGameMemberTokenModel]);
                 //string storeId = memberTokenModel.StoreId;
@@ -611,14 +627,14 @@ namespace XXCloudService.Api.HaoKu
 
                 AES.Key = HaokuConfig.CallerSecret + storeHK.HKStoreSecret;
 
-                HaokuData.DeviceData device = new HaokuData.DeviceData();
-                device.shopId = storeHK.HKShopID;
-                device.caller = HaokuConfig.Caller;
-                device.sn = AES.AESEncrypt(sn);
-                device.machineSn = AES.AESEncrypt(machineSn);
+                HaokuData.DeviceData deviceData = new HaokuData.DeviceData();
+                deviceData.shopId = storeHK.HKShopID;
+                deviceData.caller = HaokuConfig.Caller;
+                deviceData.sn = AES.AESEncrypt(device.MCUID);
+                deviceData.machineSn = AES.AESEncrypt(game.GameID);
 
                 HaokuAPI api = new HaokuAPI();
-                string response = api.Get(HaokuConfig.UnbindDevice, device, 20);
+                string response = api.Get(HaokuConfig.UnbindDevice, deviceData, 20);
                 HaokuData.RequestACK ack = JsonConvert.DeserializeObject<HaokuData.RequestACK>(response);
 
                 if (ack.statusCode != (int)ResponseCode.Success || (ack.data != null && ack.data.code != (int)ResponseCode.解绑成功))
@@ -648,8 +664,20 @@ namespace XXCloudService.Api.HaoKu
             {
                 string errMsg = string.Empty;
                 string memberToken = dicParas.ContainsKey("membertoken") ? dicParas["membertoken"].ToString() : string.Empty;
-                string sn = dicParas.ContainsKey("sn") ? dicParas["sn"].ToString() : string.Empty;
                 string status = dicParas.ContainsKey("status") ? dicParas["status"].ToString() : string.Empty;
+                string strDeviceId = dicParas.ContainsKey("deviceId") ? dicParas["deviceId"].ToString() : string.Empty;
+
+                int deviceId = 0;
+                if (string.IsNullOrWhiteSpace(strDeviceId) || !int.TryParse(strDeviceId, out deviceId))
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "设备号错误");
+                }
+
+                Base_DeviceInfo device = Base_DeviceInfoService.I.GetModels(t => t.ID == Convert.ToInt32(deviceId)).FirstOrDefault();
+                if (device == null)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "设备不存在");
+                }
 
                 //XCGameMemberTokenModel memberTokenModel = (XCGameMemberTokenModel)(dicParas[Constant.XCGameMemberTokenModel]);
                 //string storeId = memberTokenModel.StoreId;
@@ -659,14 +687,14 @@ namespace XXCloudService.Api.HaoKu
 
                 AES.Key = HaokuConfig.CallerSecret + storeHK.HKStoreSecret;
 
-                HaokuData.DeviceStatusData device = new HaokuData.DeviceStatusData();
-                device.shopId = storeHK.HKShopID;
-                device.caller = HaokuConfig.Caller;
-                device.sn = AES.AESEncrypt(sn);
-                device.status = AES.AESEncrypt(status);
+                HaokuData.DeviceStatusData deviceData = new HaokuData.DeviceStatusData();
+                deviceData.shopId = storeHK.HKShopID;
+                deviceData.caller = HaokuConfig.Caller;
+                deviceData.sn = AES.AESEncrypt(device.MCUID);
+                deviceData.status = AES.AESEncrypt(status);
 
                 HaokuAPI api = new HaokuAPI();
-                string response = api.Get(HaokuConfig.UpdateDeviceStatus, device, 20);
+                string response = api.Get(HaokuConfig.UpdateDeviceStatus, deviceData, 20);
                 HaokuData.RequestACK ack = JsonConvert.DeserializeObject<HaokuData.RequestACK>(response);
 
                 if (ack.statusCode != (int)ResponseCode.Success || (ack.data != null && ack.data.code != (int)ResponseCode.操作成功))

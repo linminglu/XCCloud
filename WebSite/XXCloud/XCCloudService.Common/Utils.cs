@@ -1655,7 +1655,14 @@ namespace XCCloudService.Common
                                 Type genericTypeDefinition = pi.PropertyType.GetGenericTypeDefinition();
                                 if (genericTypeDefinition == typeof(Nullable<>))
                                 {
-                                    obj = string.IsNullOrEmpty(value + "") ? null : Convert.ChangeType(value, Nullable.GetUnderlyingType(pi.PropertyType));
+                                    if (Nullable.GetUnderlyingType(pi.PropertyType) == typeof(TimeSpan))
+                                    {
+                                        obj = string.IsNullOrEmpty(value + "") ? null : (object)Utils.StrToTimeSpan(Convert.ToString(value));
+                                    }
+                                    else
+                                    {
+                                        obj = string.IsNullOrEmpty(value + "") ? null : Convert.ChangeType(value, Nullable.GetUnderlyingType(pi.PropertyType));
+                                    }                                    
                                 }
                             }
                             pi.SetValue(t, obj, null);
@@ -2089,9 +2096,9 @@ namespace XCCloudService.Common
         #endregion
 
         #region "时间处理"
-        public static string ConvertFromDatetime(DateTime? datetime)
+        public static string ConvertFromDatetime(DateTime? datetime, string format = "yyyy-MM-dd HH:mm:ss")
         {
-            return datetime != null ? datetime.Value.ToString("yyyy-MM-dd HH:mm:ss") : string.Empty;
+            return datetime != null ? datetime.Value.ToString(format) : string.Empty;
         }
         #endregion
 
@@ -2365,6 +2372,19 @@ namespace XCCloudService.Common
              return ip;
          }
         #endregion                
+
+
+         public static bool ExistEnumValue(Type enumType,int val)
+         {
+             foreach (int value in System.Enum.GetValues(enumType))
+             {
+                 if (value == val)
+                 {
+                     return true;
+                 }
+             }
+             return false;
+         }
 
     }
 }

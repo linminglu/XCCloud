@@ -504,15 +504,20 @@ namespace XXCloudService.Api.XCCloud
                             Data_ProjectTime_StoreListService.I.DeleteModel(model);
                         }
 
-                        var storeIdArr = storeIds.Split('|');
-                        foreach (var storeId in storeIdArr)
+                        if (!string.IsNullOrEmpty(storeIds))
                         {
-                            var model = new Data_ProjectTime_StoreList();
-                            model.ProjectTimeID = iProjectId;
-                            model.StoreID = storeId;
-                            Data_ProjectTime_StoreListService.I.AddModel(model);
-                        }
+                            foreach (var storeId in storeIds.Split('|'))
+                            {
+                                if (!storeId.Nonempty("门店ID", out errMsg))
+                                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
+                                var model = new Data_ProjectTime_StoreList();
+                                model.ProjectTimeID = iProjectId;
+                                model.StoreID = storeId;
+                                Data_ProjectTime_StoreListService.I.AddModel(model);
+                            }
+                        }
+                        
                         if (!Data_ProjectTime_StoreListService.I.SaveChanges())
                         {
                             errMsg = "更新计时项目适用门店表失败";
