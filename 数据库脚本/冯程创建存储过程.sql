@@ -503,3 +503,59 @@ as
  end catch
 
 GO
+
+CREATE proc [dbo].[CreateCouponRecord](
+@CouponID int,@SendAuthorID int,@SendTime datetime,@PublishType int,
+@SendType int,@MerchID varchar(15),@StoreID varchar(15),@IsSingle int,@PublishCount int,
+@MemberIDsType [MemberIDsType] readonly,
+@Result int output)
+as	
+	--删除现有记录
+	delete from Data_CouponList where CouponID=@CouponID
+	
+    --插入优惠券记录表
+    declare @tempMemberIDs table (MemberID int NULL)	
+	insert @tempMemberIDs select MemberID from @MemberIDsType
+    declare @count int = 1
+    declare @state int   
+    declare @memberId int 
+    declare @memberCount int
+    select @memberCount=COUNT(MemberID) from @tempMemberIDs
+    select @memberId=MemberID from (select top 1 MemberID from @tempMemberIDs order by MemberID) m
+    
+    if(@PublishType=0)  --电子优惠券
+		set @state = 2      --已激活
+    else
+    begin
+		if(@IsSingle=1)     --单门店
+			set @state = 1  --未激活
+		else
+			set @state = 0  --未分配
+    end
+    
+    while(@count<=@PublishCount)
+    begin
+		if(@memberId>0 and @count<=@memberCount)
+		begin
+			SET ROWCOUNT 1
+			select @memberId=MemberID from @tempMemberIDs			
+			SET ROWCOUNT 0			
+			delete from @tempMemberIDs where MemberID=@memberId
+		end
+		insert into Data_CouponList(CouponCode,CouponID,CouponIndex,SendAuthorID,SendTime,PublishType,SendType,MerchID,StoreID,[State],MemberID)
+		values (Lower(REPLACE(newid(),'-','')),@CouponID,@count,@SendAuthorID,@SendTime,@PublishType,@SendType,@MerchID,@StoreID,@state,@memberId)
+		set @count = @count + 1
+    end    
+    
+	set @Result = 1
+
+CREATE proc [dbo].[LockCouponRecord](
+@CouponID int,@ID int,@StoreID varchar(15),@IsLock int,
+@Result int output)
+as	
+	if(@ID > 0)
+		update Data_CouponList set IsLock=@IsLock where ID=@ID
+	else 
+		update Data_CouponList set IsLock=@IsLock where CouponID=@CouponID and ISNULL(StoreID,'')=ISNULL(@StoreID,'')
+    	
+	set @Result = 1

@@ -335,7 +335,7 @@
             <div class="layui-inline">
                 <label class="layui-form-label">调拨数量</label>
                 <div class="layui-input-inline" style="width: 115px">
-                    <input type="text" class="layui-input" id="canTransfer" disabled>
+                    <input type="text" class="layui-input" id="canTransfer" disabled style="color: red">
                 </div>
             </div>
         </div>
@@ -1272,6 +1272,9 @@
                 content:$('.sendMember')
             })
         });
+        $('#transferEndNo').on('blur',function () {
+            $('#canTransfer').val(parseInt($(this).val())-parseInt($('#transferStartNo').val())+1)
+        });
         //保存实物券调拨
         $('#saveTransfer').on('click',function () {
             let obj={'couponId':Id,
@@ -1283,7 +1286,7 @@
             if($('#transferStartNo').val()<startNo||$('#transferEndNo').val()>endNo||$('#transferStartNo').val()>$('#transferEndNo').val()){
                 layer.msg('你输入的区间有误，请检查后再保存！')
             }else {
-                if(transferStore=''){
+                if(transferStore==''){
                     layer.msg('请选择调拨门店或者先绑定适用门店')
                 }else {
                     $.ajax({
@@ -1430,13 +1433,14 @@
                         data = JSON.parse(data);
                         if (data.result_code == 1) {
                             $('#transferName').val(data.result_data[0].CouponName);
-                            $('#transferCount').val(data.result_data[0].NotActivatedCount);
+                            $('#transferCount').val(data.result_data[0].NotAssignedCount);
                             $('#transferStartDate').val(data.result_data[0].StartDate);
                             $('#transferEndDate').val(data.result_data[0].EndDate);
                             $('#transferStartNo').val(data.result_data[0].StartNo);
                             $('#transferEndNo').val(data.result_data[0].EndNo);
                             startNo=data.result_data[0].StartNo;
                             endNo=data.result_data[0].EndNo;
+                            $('#canTransfer').val(data.result_data[0].NotAssignedCount);
                             xc.sendStore('transferStore',Id,token,form,layer);
                             layer.open({
                                 title:'选择调拨优惠券',

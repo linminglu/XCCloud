@@ -393,17 +393,13 @@ namespace XXCloudService.Api.XCCloud
                     parameters[parameters.Length - 1] = new SqlParameter("@MemberIDsType", SqlDbType.Structured);
                     parameters[parameters.Length - 1].Value = listSqlDataRecord;
                     Array.Resize(ref parameters, parameters.Length + 1);
-                    parameters[parameters.Length - 1] = new SqlParameter("@ErrMsg", SqlDbType.VarChar, 200);
-                    parameters[parameters.Length - 1].Direction = ParameterDirection.Output;
-                    Array.Resize(ref parameters, parameters.Length + 1);
                     parameters[parameters.Length - 1] = new SqlParameter("@Result", SqlDbType.Int);
                     parameters[parameters.Length - 1].Direction = ParameterDirection.Output;
 
                     XCCloudBLL.ExecuteStoredProcedureSentence(storedProcedure, parameters);
                     if (parameters[parameters.Length - 1].Value.ToString() != "1")
                     {
-                        errMsg = "添加优惠券记录表失败:\n";
-                        errMsg = errMsg + parameters[parameters.Length - 2].Value.ToString();
+                        errMsg = "添加优惠券记录表失败";                        
                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                     }
                 }
@@ -904,42 +900,27 @@ namespace XXCloudService.Api.XCCloud
 
                 var storeId = dicParas.Get("storeId") ?? (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
                 var isLock = dicParas.Get("isLock").Toint();
-                var id = dicParas.Get("id").Toint();
+                var id = dicParas.Get("id").Toint(0);
 
-                //开启EF事务
-                using (TransactionScope ts = new TransactionScope())
+                string storedProcedure = "LockCouponRecord";
+                SqlParameter[] parameters = new SqlParameter[0];
+                Array.Resize(ref parameters, parameters.Length + 1);
+                parameters[parameters.Length - 1] = new SqlParameter("@CouponID", couponId);
+                Array.Resize(ref parameters, parameters.Length + 1);
+                parameters[parameters.Length - 1] = new SqlParameter("@ID", id);
+                Array.Resize(ref parameters, parameters.Length + 1);
+                parameters[parameters.Length - 1] = new SqlParameter("@StoreID", storeId);
+                Array.Resize(ref parameters, parameters.Length + 1);
+                parameters[parameters.Length - 1] = new SqlParameter("@IsLock", isLock);           
+                Array.Resize(ref parameters, parameters.Length + 1);
+                parameters[parameters.Length - 1] = new SqlParameter("@Result", SqlDbType.Int);
+                parameters[parameters.Length - 1].Direction = ParameterDirection.Output;
+
+                XCCloudBLL.ExecuteStoredProcedureSentence(storedProcedure, parameters);
+                if (parameters[parameters.Length - 1].Value.ToString() != "1")
                 {
-                    try
-                    {
-                        var query = Data_CouponListService.I.GetModels(p => p.CouponID == couponId);
-                        if (id != null)
-                        {
-                            query = query.Where(w => w.ID == id);
-                        }
-                        else if (!string.IsNullOrEmpty(storeId))
-                        {
-                            query = query.Where(w => w.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase));
-                        }
-
-                        foreach (var model in query)
-                        {
-                            model.IsLock = isLock;
-                            Data_CouponListService.I.UpdateModel(model);
-                        }
-
-                        if (!Data_CouponListService.I.SaveChanges())
-                        {
-                            errMsg = "锁定操作失败";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
-
-                        ts.Complete();
-                    }
-                    catch (Exception ex)
-                    {
-                        errMsg = ex.Message;
-                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                    }
+                    errMsg = "锁定操作失败";                    
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
