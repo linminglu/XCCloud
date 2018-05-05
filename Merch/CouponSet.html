@@ -5,6 +5,11 @@
     <title>电子优惠券</title>
     <link rel="stylesheet" href="layui/css/layui.css">
 </head>
+<style>
+    .autoSort .layui-input-inline{
+        width: 110px;
+    }
+</style>
 <body>
 <div class="layui-row" style="padding: 10px">
     <form action="" class="layui-form layui-form-pane" >
@@ -186,7 +191,7 @@
         <div class="layui-form-item">
             <div class="layui-inline">
                 <label class="layui-form-label">时段类型</label>
-                <div class="layui-input-inline">
+                <div class="layui-input-inline" style="width: 130px">
                     <select id="weekType" lay-filter="weekType">
                         <option value="0">自定义</option>
                         <option value="1">工作日</option>
@@ -197,7 +202,7 @@
             </div>
             <div class="layui-inline" id="weekSetBox">
                 <label class="layui-form-label">优惠周天</label>
-                <div class="layui-input-inline" id="weekBox" style="width: 500px">
+                <div class="layui-input-inline" id="weekBox" style="width: 570px;border: 1px solid #aaa;height: 36px">
 
                 </div>
             </div>
@@ -256,8 +261,8 @@
             </blockquote>
         </div>
         <div style="text-align: right;margin-right: 100px;">
-            <button type="button" class="layui-btn-normal layui-btn" id="cancelBtn">取消</button>
-            <button type="reset" class="layui-btn layui-btn-danger" id="resetBtn"><i class="layui-icon">&#x1002;</i>重置</button>
+            <!--<button type="button" class="layui-btn-normal layui-btn" id="cancelBtn">取消</button>-->
+            <!--<button type="reset" class="layui-btn layui-btn-danger" id="resetBtn"><i class="layui-icon">&#x1002;</i>重置</button>-->
             <button type="button" class="layui-btn layui-btn-normal" id="saveBtn"><i class="layui-icon">&#xe6af;</i>确定</button>
         </div>
     </form>
@@ -294,54 +299,118 @@
     <form class="layui-form layui-form-pane">
         <div class="layui-form-item">
             <label class="layui-form-label">优惠券名</label>
-            <div class="layui-input-bolck">
-                <input type="text" class="layui-input" disabled>
+            <div class="layui-input-block">
+                <input type="text" class="layui-input" disabled id="transferName">
             </div>
         </div>
         <div class="layui-form-item">
-            <div class="layui-input-inline">
+            <div class="layui-inline">
                 <label class="layui-form-label">有效期</label>
-                <div class="layui-input-inline">
-                    <input type="text" class="layui-input" disabled>
+                <div class="layui-input-inline" style="width: 115px">
+                    <input type="text" class="layui-input" disabled id="transferStartDate">
                 </div>
                 <div class="layui-form-mid">至</div>
-                <div class="layui-input-inline">
-                    <input type="text" class="layui-input" disabled>
+                <div class="layui-input-inline" style="width: 115px">
+                    <input type="text" class="layui-input" disabled id="transferEndDate">
                 </div>
             </div>
-            <div class="layui-input-inline">
-                <label class="layui-form-label">可派发数量</label>
-                <div class="layui-input-inline">
-                    <input type="text" class="layui-input" disabled>
+            <div class="layui-inline">
+                <label class="layui-form-label">可调拨数量</label>
+                <div class="layui-input-inline" style="width: 115px">
+                    <input type="text" class="layui-input" disabled id="transferCount">
                 </div>
             </div>
         </div>
         <div class="layui-form-item">
-            <div class="layui-input-inline">
+            <div class="layui-inline">
                 <label class="layui-form-label">调拨序号</label>
-                <div class="layui-input-inline">
-                    <input type="text" class="layui-input">
+                <div class="layui-input-inline" style="width: 115px">
+                    <input type="text" class="layui-input" id="transferStartNo">
                 </div>
                 <div class="layui-form-mid">至</div>
-                <div class="layui-input-inline">
-                    <input type="text" class="layui-input">
+                <div class="layui-input-inline" style="width: 115px">
+                    <input type="text" class="layui-input" id="transferEndNo">
                 </div>
             </div>
-            <div class="layui-input-inline">
+            <div class="layui-inline">
                 <label class="layui-form-label">调拨数量</label>
-                <div class="layui-input-inline">
-                    <input type="text" class="layui-input">
+                <div class="layui-input-inline" style="width: 115px">
+                    <input type="text" class="layui-input" id="canTransfer" disabled>
                 </div>
             </div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">调拨门店</label>
-            <div class="layui-input-bolck">
-                <select id=""></select>
+            <div class="layui-input-block">
+                <select id="transferStore" lay-filter="transferStore"></select>
             </div>
         </div>
+        <blockquote class="layui-elem-quote">
+            <p style="color:#f00;">已显示调拨序号为可派发区间，请选择你要调拨的序号范围</p>
+        </blockquote>
         <div style="text-align:center;">
-            <button type="button" class="layui-btn layui-btn-primary">保存</button>
+            <button type="button" class="layui-btn layui-btn-primary" id="saveTransfer">保存</button>
+        </div>
+    </form>
+</div>
+<!--优惠券派发弹窗-->
+<div class="couponSend goodIsAll" style="display: none;padding: 15px;">
+    <form class="layui-form layui-form-pane">
+        <div class="layui-form-item">
+            <label class="layui-form-label">优惠券名</label>
+            <div class="layui-input-block">
+                <input type="text" class="layui-input" disabled id="SendName">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">券类型</label>
+                <div class="layui-input-inline">
+                    <input type="text" class="layui-input" disabled id="SendCouponType">
+                </div>
+            </div>
+            <div class="layui-inline" style="margin-right: 0;margin-left: 8px;">
+                <label class="layui-form-label">可导出数量</label>
+                <div class="layui-input-inline">
+                    <input type="text" class="layui-input" disabled id="SendCouponCount">
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">有效期</label>
+                <div class="layui-input-inline" style="width: 115px">
+                    <input type="text" class="layui-input" disabled id="SendStartDate">
+                </div>
+                <div class="layui-form-mid">至</div>
+                <div class="layui-input-inline" style="width: 115px">
+                    <input type="text" class="layui-input" disabled id="SendEndDate">
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">派发序号</label>
+                <div class="layui-input-inline" style="width: 115px">
+                    <input type="text" class="layui-input" id="SendStartNo">
+                </div>
+                <div class="layui-form-mid">至</div>
+                <div class="layui-input-inline" style="width: 115px">
+                    <input type="text" class="layui-input" id="SendEndNo">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">派发数量</label>
+                <div class="layui-input-inline" style="width: 115px">
+                    <input type="text" class="layui-input" id="canSend" disabled>
+                </div>
+            </div>
+        </div>
+        <blockquote class="layui-elem-quote">
+            <p style="color:#f00;">已显示派发序号为可派发区间，请选择你要派发的序号范围</p>
+        </blockquote>
+        <div style="text-align:center;">
+            <button type="button" class="layui-btn layui-btn-primary" id="saveSend">保存</button>
         </div>
     </form>
 </div>
@@ -350,50 +419,50 @@
     <form class="layui-form layui-form-pane">
         <div class="layui-form-item">
             <label class="layui-form-label">优惠券名</label>
-            <div class="layui-input-bolck">
-                <input type="text" class="layui-input" disabled>
+            <div class="layui-input-block">
+                <input type="text" class="layui-input" disabled id="exportName">
             </div>
         </div>
         <div class="layui-form-item">
-            <div class="layui-input-inline">
+            <div class="layui-inline">
                 <label class="layui-form-label">券类型</label>
                 <div class="layui-input-inline">
-                    <input type="text" class="layui-input" disabled>
+                    <input type="text" class="layui-input" disabled id="exportCouponType">
                 </div>
             </div>
-            <div class="layui-input-inline">
+            <div class="layui-inline" style="margin-right: 0;margin-left: 8px;">
                 <label class="layui-form-label">可导出数量</label>
                 <div class="layui-input-inline">
-                    <input type="text" class="layui-input" disabled>
+                    <input type="text" class="layui-input" disabled id="exportCouponCount">
                 </div>
             </div>
         </div>
         <div class="layui-form-item">
-            <div class="layui-input-inline">
+            <div class="layui-inline">
                 <label class="layui-form-label">有效期</label>
                 <div class="layui-input-inline">
-                    <input type="text" class="layui-input">
+                    <input type="text" class="layui-input" id="exportStartDate" disabled>
                 </div>
                 <div class="layui-form-mid">至</div>
                 <div class="layui-input-inline">
-                    <input type="text" class="layui-input">
+                    <input type="text" class="layui-input" id="exportEndDate" disabled>
                 </div>
             </div>
         </div>
         <div class="layui-form-item">
             <div class="layui-inline">
                 <label class="layui-form-label">导出序号</label>
-                <div class="layui-input-bolck">
-                    <input type="text" class="layui-input">
+                <div class="layui-input-inline">
+                    <input type="text" class="layui-input" id="exportStartNo">
                 </div>
                 <div class="layui-form-mid">至</div>
-                <div class="layui-input-bolck">
-                    <input type="text" class="layui-input">
+                <div class="layui-input-inline">
+                    <input type="text" class="layui-input" id="exportEndNo">
                 </div>
             </div>
 
         </div>
-        <blockquote class="layui-elem-quote" style="text-align:center;">
+        <blockquote class="layui-elem-quote">
              <p style="color: red;">注意:只有实物券才可以导出</p>
         </blockquote>
         <div style="text-align:center;">
@@ -401,8 +470,238 @@
         </div>
     </form>
 </div>
-<!--自动调拨弹窗-->
+<div id="transferList" style="padding: 15px;display: none">
+    <table class="layui-hide" id="transferTable" lay-filter="transferTable"></table>
+</div>
+<!--自动派发弹窗-->
 <div class="autoSort goodIsAll" style="display: none;padding: 15px;">
+    <form action="" class="layui-form">
+        <div class="layui-card layui-col-md9">
+            <div class="layui-card-body">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <div class="layui-input-inline" style="width: 190px">
+                            <input type="checkbox" title="每月活跃次数" lay-skin="primary">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <div class="layui-input-inline">
+                            <input type="text" class="layui-input">
+                        </div>
+                        <div class="layui-form-mid">
+
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <div class="layui-input-inline">
+                            <select id="">
+                                <option>-请选择-</option>
+                                <option value="0">或者</option>
+                                <option value="1">并且</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <div class="layui-input-inline">
+                            <input type="checkbox" title="消费能力" lay-skin="primary">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <div class="layui-input-inline">
+                            <select id="">
+                                <option>-请选择-</option>
+                                <option value="0">天</option>
+                                <option value="1">周</option>
+                                <option value="2">月</option>
+                                <option value="3">季</option>
+                                <option value="4">年</option>
+                            </select>
+                        </div>
+                        <div class="layui-form-mid">
+                            消费
+                        </div>
+                        <div class="layui-input-inline">
+                            <input type="text" class="layui-input">
+                        </div>
+                        <div class="layui-form-mid">
+                            元
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <div class="layui-input-inline">
+                            <select id="">
+                                <option>-请选择-</option>
+                                <option value="0">或者</option>
+                                <option value="1">并且</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <div class="layui-input-inline">
+                            <input type="checkbox" title="输赢能力" lay-skin="primary">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <div class="layui-input-inline">
+                            <select id="">
+                                <option>-请选择-</option>
+                                <option value="0">天</option>
+                                <option value="1">周</option>
+                                <option value="2">月</option>
+                                <option value="3">季</option>
+                                <option value="4">年</option>
+                            </select>
+                        </div>
+                        <div class="layui-form-mid">
+                            输赢
+                        </div>
+                        <div class="layui-input-inline">
+                            <input type="text" class="layui-input">
+                        </div>
+                        <div class="layui-form-mid">
+                            元
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <div class="layui-input-inline">
+                            <select id="">
+                                <option>-请选择-</option>
+                                <option value="0">或者</option>
+                                <option value="1">并且</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <div class="layui-input-inline">
+                            <input type="checkbox" title="生日" lay-skin="primary">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <div class="layui-input-inline">
+                            <select id="">
+                                <option>-请选择-</option>
+                                <option value="0">或者</option>
+                                <option value="1">并且</option>
+                            </select>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <div class="layui-input-inline">
+                            <select id="">
+                                <option>-请选择-</option>
+                                <option value="0">或者</option>
+                                <option value="1">并且</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <div class="layui-input-inline">
+                            <input type="checkbox" title="会员级别" lay-skin="primary">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <div class="layui-input-inline">
+                            <select id="">
+                                <option>-请选择-</option>
+                                <option value="0">普通会员</option>
+                                <option value="1">银卡</option>
+                            </select>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <div class="layui-input-inline">
+                            <select id="">
+                                <option>-请选择-</option>
+                                <option value="0">或者</option>
+                                <option value="1">并且</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <div class="layui-input-inline">
+                            <input type="checkbox" title="会员余额" lay-skin="primary">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <div class="layui-input-inline">
+                            <select id="">
+                                <option>-请选择-</option>
+                                <option value="0">积分</option>
+                                <option value="1">彩票</option>
+                            </select>
+                        </div>
+                        <div class="layui-input-inline">
+                            <select id="">
+                                <option>-请选择-</option>
+                                <option value="0">大于</option>
+                                <option value="1">小于</option>
+                                <option value="1">等于</option>
+                            </select>
+                        </div>
+                        <div class="layui-input-inline">
+                            <input type="text" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-card layui-col-md3" >
+            <div class="layui-card-body">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">派发周期</label>
+                        <div class="layui-input-inline">
+                            <select  id="d"></select>
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">派发时间</label>
+                        <div class="layui-input-inline">
+                            <input type="text" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">派发张数</label>
+                        <div class="layui-input-inline">
+                            <input type="text" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+
+                <div style="text-align:center;">
+                    <button type="button" class="layui-btn layui-btn-primary">确定</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<!--选取派发会员-->
+<div class="selectMember" style="display: none;padding: 15px;">
+    <form class="layui-form layui-form-pane">
+        <div class="layui-form-item">
+          <div class="layui-input-block">
+              <button type="button" class="layui-btn layui-btn-normal" id="searchVipBtn">设置查询条件</button>
+          </div>
+        </div>
+        <table class="layui-hide" id="memberTable" lay-filter="memberTable"></table>
+        <div style="text-align:center;">
+            <button type="button" class="layui-btn layui-btn-primary">确定</button>
+        </div>
+    </form>
+</div>
+<div class="sendMember goodIsAll" style="display: none;padding: 15px;">
     <form action="" class="layui-form">
         <div class="layui-card">
             <div class="layui-card-header">筛选条件</div>
@@ -608,6 +907,8 @@
         </div>
     </form>
 </div>
+<!--调拨明细弹窗-->
+
 </body>
 <script src="js/jquery-1.8.3-min.js"></script>
 <script src="layui/layui.js"></script>
@@ -616,7 +917,7 @@
     layui.addcss('layui_font.css');
 </script>
 <script>
-    let modelHtml= $('#addOrModify').html();
+    // let modelHtml= $('#addOrModify').html();
     let xc=xcActionSystem.prototype;
     let token=xc.getStorage('token');
     let Id='';
@@ -631,7 +932,7 @@
             ,{field:'CouponTypeStr', title: '券类别', align: 'center'}
             ,{field:'PublishCount', title: '发行张数', align: 'center'}
             ,{field:'NotAssignedCount', title: '未分配数量', align: 'center'}
-            ,{field:'AssignedCount', title: '调拨数量', align: 'center',templet:'#assigned'}
+            ,{field:'AssignedCount', title: '已调拨数量', align: 'center',templet:'#assigned'}
             ,{field:'SendCount', title: '派发张数', align: 'center'}
             ,{field:'UseCount', title: '已使用张数', align: 'center'}
             ,{field:'ActivatedCount', title: '剩余张数', align: 'center'}
@@ -643,8 +944,7 @@
             ,{field:'EndDate', title: '结束时间', align: 'center'}
             ,{field:'Context', title: '说明', align: 'center'}
             ,{field:'IsLock', title: '是否锁定', align: 'center',templet:'#isLock'}
-            // ,{field:'State', title: '状态', align: 'center',templet:'#changeState'}
-            ,{fixed: 'right', title: '操作', width:340, align:'center', toolbar: '#barDemo'}]
+            ,{fixed: 'right', title: '操作', width:400, align:'center', toolbar: '#barDemo'}]
     };
     xc.getInitData(parm);
 
@@ -661,6 +961,8 @@
     let storeId=[];
 
     let weekType=0;let week=[];
+    let transferStore='';
+    let startNo;let endNo;
 
     layui.use(['form','layer','table','laydate'],()=>{
         let form=layui.form;
@@ -668,7 +970,6 @@
         let table=layui.table;
         let laydate=layui.laydate;
         //监听
-
         form.on('select(CouponType)',(data)=>{
             CouponType=data.value;
             if(data.value==2){
@@ -780,10 +1081,10 @@
         //监听门店设置
         form.on('checkbox(chooseStore)',function (data) {
             if (data.elem.checked==true){
-                storeId.push(data.value);
+                storeId.push({'StoreID':data.value});
             }else if(data.elem.checked==false){
                 for (var i=0;i<storeId.length;i++){
-                    if(storeId[i]==data.value){
+                    if(storeId[i].StoreID==data.value){
                         storeId.splice(i,1)
                     }
                 }
@@ -855,6 +1156,9 @@
                 $('#NoEndDate').val('').prop('disabled',true);
             }
         });
+        form.on('select(transferStore)',(data)=>{
+            transferStore=data.value;
+        });
         //点击新增打开弹窗
         $('.add').on('click',()=>{
             Id='';//新增Id为空
@@ -870,7 +1174,7 @@
             memberId=[];
             storeId=[];
             weekType=0; week=[];
-            $('#addOrModify').html(modelHtml);
+            // $('#addOrModify').html(modelHtml);
 
             xc.AddWeeks('weekBox');
 
@@ -912,167 +1216,233 @@
                 content:$('#addOrModify')
             })
         });
-        $('#addOrModify').on('click','#saveBtn',()=>{
-            xc.saveCoupon(layer)
-        });
-        //点击选择适用门店
-        $('#addOrModify').on('click','.chooseStoreBtn',()=>{
-            xc.setUsefulStore(token,form);
-            xc.getUsefulStore(Id,token,form,layer)
-            form.render();
-            indexLayer= layer.open({
-                // title:'设置适用门店',
-                type:1,
-                area:'500px',
-                content:$('.chooseStore')
-            });
-
-        });
         $('#saveStorebtn').on('click',()=>{
-            layer.close(indexLayer);
+            let arr=[];
+            if(storeId.length>0){
+                for(let i in storeId){
+                    arr.push(storeId[i].StoreID)
+                }
+            }
+            let _obj={'couponID':Id,'storeIds':arr.length>0?arr.join('|'):'','userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'}
+            let parseJson = JSON.stringify(_obj);
+            $.ajax({
+                type: 'post',
+                url: '/XCCloud/Coupon?action=SaveCouponStores',
+                contentType: "application/json; charset=utf-8",
+                data: {parasJson: parseJson},
+                success: function (data) {
+                    data = JSON.parse(data);
+                    if (data.result_code == 1) {
+                        layer.msg('适配门店设置完成',{time:1500},function () {
+                            location.href='CouponSet.html';
+                        })
+                    }else {
+                        layer.msg('操作失败！')
+                    }
+                }
+            });
         });
         $('#cancelStorebtn').on('click',()=>{
             layer.close(indexLayer);
-            storeId=JSON.parse(xc.getStorage('CouponStoreId'));
         });
+        //设置自动派发的条件
+        $('#autoSendBtn').on('click',()=>{
+            layer.open({
+                title:'设置派发会员',
+                type:'1',
+                area:'1000px',
+                content:$('.autoSort')
+            })
+        });
+        //选取派发会员
         $('#addOrModify').on('click','#setVipBtn',()=>{
-            xc.getVip(token,form,layer);
+            layer.open({
+                title:'设置派发会员',
+                type:'1',
+                area:'1000px',
+                content:$('.selectMember')
+            })
+        });
+        //查询符合条件的会员
+        $('#searchVipBtn').on('click','#setVipBtn',()=>{
+            layer.open({
+                title:'查询条件',
+                type:'1',
+                area:'1000px',
+                content:$('.sendMember')
+            })
+        });
+        //保存实物券调拨
+        $('#saveTransfer').on('click',function () {
+            let obj={'couponId':Id,
+                'startNo':$('#transferStartNo').val(),
+                'endNo':$('#transferEndNo').val(),
+                'storeId':transferStore,
+                'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+            let parseJson = JSON.stringify(obj);
+            if($('#transferStartNo').val()<startNo||$('#transferEndNo').val()>endNo||$('#transferStartNo').val()>$('#transferEndNo').val()){
+                layer.msg('你输入的区间有误，请检查后再保存！')
+            }else {
+                $.ajax({
+                    type:'post',
+                    url:'/XCCloud/Coupon?action=SaveCouponNotAssigned',
+                    contentType: "application/json; charset=utf-8",
+                    data:{parasJson: parseJson},
+                    success: function (data) {
+                        data=JSON.parse(data);
+                        console.log(data);
+                        if(data.result_code==1){
+                            layer.msg('优惠券调拨完成',{time:1500},function () {
+                                location.href='CouponSet.html';
+                            })
+                        }else {
+                            layer.msg('优惠券调拨失败')
+                        }
+                    }
+                })
+            }
+
+        });
+        //保存派发信息
+        $('#saveSend').on('click',function () {
+            let obj={'couponId':Id,
+                'startNo':$('#SendStartNo').val(),
+                'endNo':$('#SendEndNo').val(),
+                'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+            let parseJson = JSON.stringify(obj);
+            if($('#SendStartNo').val()<startNo||$('#SendEndNo').val()>endNo||$('#SendStartNo').val()>$('#SendEndNo').val()){
+                layer.msg('你输入的区间有误，请检查后再保存！')
+            }else {
+                $.ajax({
+                    type:'post',
+                    url:'/XCCloud/Coupon?action=SaveCouponNotActivated',
+                    contentType: "application/json; charset=utf-8",
+                    data:{parasJson: parseJson},
+                    success: function (data) {
+                        data=JSON.parse(data);
+                        console.log(data);
+                        if(data.result_code==1){
+                            layer.msg('优惠券派发完成',{time:1500},function () {
+                                location.href='CouponSet.html';
+                            })
+                        }else {
+                            layer.msg('优惠券派发失败')
+                        }
+                    }
+                })
+            }
+
+        });
+        //调拨信息明细
+        $('body').on('click','button[name="couponSendBtn"]',function () {
+            let _couponid=$(this).prop('id');
+            let obj={'couponId':_couponid,
+                'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+            let parseJson = JSON.stringify(obj);
+                $.ajax({
+                    type:'post',
+                    url:'/XCCloud/Coupon?action=GetCouponAssigned',
+                    contentType: "application/json; charset=utf-8",
+                    data:{parasJson: parseJson},
+                    success: function (data) {
+                        data=JSON.parse(data);
+                        if(data.result_code==1){
+                            table.render({
+                                elem: '#transferTable'
+                                , height:'250px'
+                                , size:"sm"
+                                , data: data.result_data
+                                , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+                                , cols: [[
+                                    {field:'CouponName', title:'优惠券名称', align: 'center',width:175}
+                                    ,{field:'StartEnd',title: '起止码', align: 'center',width:175} //width 支持：数字、百分比和不填写。
+                                    ,{field:'AssignedCount', title: '调拨数量', align: 'center',width:139}
+                                    ,{field:'StoreName', title: '调拨门店', align: 'center',width:175}
+                                    ,{fixed: 'right',title:'操作', width:100, align:'center', toolbar: '#barDemo2'}]]
+                                , page: {page: true, limits: [5,10, 15, 20, 30, 50, 100]}
+                                , limit: 5
+                            });
+                            layer.open({
+                                title:'优惠券调拨明细',
+                                type:1,
+                                area:'800px',
+                                content:$('#transferList')
+                            })
+                        }else {
+                            layer.msg('优惠券派发失败')
+                        }
+                    }
+                })
+
         });
         //监听table工具栏
         table.on('tool(couponSetTable)',(obj)=>{
             var data = obj.data; //获得当前行数据
+            let data1=obj.data;
             var layEvent = obj.event;
-            if(layEvent === 'edit'){ //查看
+            if(layEvent === 'export'){ //导出
                 Id=data.ID;
-                let _obj={'id':data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                let _obj={'couponID':Id,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'}
                 let parseJson = JSON.stringify(_obj);
                 $.ajax({
-                    type:'post',
-                    url:'/XCCloud/Coupon?action=GetCouponInfo',
+                    type: 'post',
+                    url: '/XCCloud/Coupon?action=GetCouponNotAssigned',
                     contentType: "application/json; charset=utf-8",
-                    data:{parasJson: parseJson},
+                    data: {parasJson: parseJson},
                     success: function (data) {
                         data = JSON.parse(data);
-                        console.log(data);
                         if (data.result_code == 1) {
-                            let arr=data.result_data;
-
-                            $('#addOrModify').html(modelHtml);
-                            laydate.render({
-                                elem: '#startDate'
-                                ,type: 'datetime'
-                                ,value: arr.StartTime
-                            });
-                            laydate.render({
-                                elem: '#endDate'
-                                ,type: 'datetime'
-                                ,value: arr.EndTime
-                            });
-                            $('#CouponName').val(arr.CouponName||'');
-                            CouponType=arr.CouponType;
-                            if(arr.CouponType==2){
-                                $('#tokenShow').removeClass('layui-hide');
-                                $('#saleShow').addClass('layui-hide');
-                            } else {
-                                $('#saleShow').removeClass('layui-hide');
-                                $('#tokenShow').addClass('layui-hide');
-                            }
-                             xc.setSelect('优惠券类别','CouponType',arr.CouponType);
-                             entryCouponFlag=arr.EntryCouponFlag;
-                             if(arr.EntryCouponFlag==1){
-                                 $('#showPrint').removeClass('layui-hide');
-                                 $('#entryCouponFlag').attr('checked',true)
-                             }else {
-                                 $('#showPrint').addClass('layui-hide');
-                                 $('#entryCouponFlag').attr('checked',false)
-                             }
-                             authorFlag=arr.AuthorFlag;
-                            if(arr.AuthorFlag==1){
-                                $('#authorFlag').attr('checked',true)
-                            }else { $('#authorFlag').attr('checked',false)}
-                                $('#OverUseCount').val(arr.OverUseCount||'');
-                                $('#PublishCount').val(arr.PublishCount||'');
-                                $('#couponValue').val(arr.CouponValue||'');
-                                $('#CouponDiscount').val(arr.CouponDiscount||'');
-                                $('#CouponThreshold').val(arr.CouponThreshold||'');
-                                SendType=arr.SendType;
-                            if(arr.SendType==3){
-                                $('body').find('li[name="disturbBox"]').each(function () {
-                                    $(this).addClass('layui-hide');
-                                });
-                                $('#JackpotActive').html('');
-                            } else if(arr.SendType==2){
-                                $('body').find('li[name="disturbBox"]').eq(1).removeClass('layui-hide').siblings().addClass('layui-hide');
-                                $('#JackpotActiveBox').removeClass('layui-hide');
-                                $('#JackpotCount').removeClass('layui-hide').siblings().addClass('layui-hide');
-
-                                $('#tips').text('次');
-                                xc.getJackpotList(token,form,arr.JackpotID);
-                                jackpotId=arr.JackpotID;
-                            }else if(arr.SendType==1){
-                                $('body').find('li[name="disturbBox"]').eq(0).removeClass('layui-hide').siblings().addClass('layui-hide');
-                                $('#JackpotActive').html('');
-                            }else if(arr.SendType==0) {
-                                $('body').find('li[name="disturbBox"]').eq(1).removeClass('layui-hide').siblings().addClass('layui-hide');
-                                $('#JackpotActiveBox').addClass('layui-hide');
-                                $('#FreeCouponCount').removeClass('layui-hide').siblings().addClass('layui-hide');
-                                $('#tips').text('张');
-                                $('#JackpotActive').html('');
-                            }
-                                $('#SendType').find('option[value="'+arr.SendType+'"]').attr('selected',true);
-                                $('#OverMoney').val(arr.OverMoney||'');
-                                $('#FreeCouponCount').val(arr.FreeCouponCount||'');
-                                $('#JackpotCount').val(arr.JackpotCount||'');
-
-                                chargeType=arr.ChargeType;
-                                // if(arr.ChargeType!=''){
-                                    $('#ChargeType').find('option[value="'+arr.ChargeType+'"]').prop('selected',true);
-                                    if(arr.ChargeType==0){
-                                        $('.chargeGoods').removeClass('layui-hide');
-                                        $('.chargeProgect').addClass('layui-hide');
-                                        $('.chargeBalance').addClass('layui-hide');
-                                        projectId='';
-                                        balanceIndex='';
-                                        $('#ProjectID').html('');
-                                        xc.getChargeGood(token,form,arr.GoodID);
-                                    } else if(arr.ChargeType==1){
-                                        $('.chargeGoods').addClass('layui-hide');
-                                        $('.chargeProgect').removeClass('layui-hide');
-                                        $('.chargeBalance').addClass('layui-hide');
-                                        goodId='';
-                                        balanceIndex='';
-                                        $('#GoodID').html('');
-                                        xc.getChargeProgect(token,form,arr.ProjectID)
-                                    }else if(arr.ChargeType==2){
-                                        $('.chargeGoods').addClass('layui-hide');
-                                        $('.chargeProgect').addClass('layui-hide');
-                                        $('.chargeBalance').removeClass('layui-hide')
-                                        goodId='';
-                                        projectId='';
-                                        balanceIndex=arr.BalanceIndex;
-                                        xc.getBalanceTypeDic(token,layer,form,'balanceType',arr.BalanceIndex);
-                                        $('#GoodID').html('');
-                                        $('#ProjectID').html('');
-                                    }
-                                $('#ChargeCount').val(arr.ChargeCount||'');
-                                goodId=arr.GoodID||'';
-                                projectId=arr.ProjectID||'';
-                                $('#Note').val(arr.Context);
-
-                            form.render();
+                            $('#exportName').val(data.result_data[0].CouponName);
+                            $('#exportCouponType').val(data.result_data[0].CouponTypeStr);
+                            $('#exportCouponCount').val(data.result_data[0].NotAssignedCount);
+                            $('#exportStartDate').val(data.result_data[0].StartDate);
+                            $('#exportEndDate').val(data.result_data[0].EndDate);
+                            $('#exportStartNo').val(data.result_data[0].StartDate);
+                            $('#exportEndNo').val(data.result_data[0].EndDate);
+                            startNo=data.result_data[0].StartNo;
+                            endNo=data.result_data[0].EndNo;
                             layer.open({
-                                title:'修改优惠券',
+                                title:'选择导出优惠券',
                                 type:'1',
-                                area:'1000px',
-                                content:$('#addOrModify')
+                                area:'670px',
+                                content:$('.couponExport')
                             })
-                        } else {
-                            layer.msg(data.result_msg);
                         }
                     }
                 });
 
-            } else if(layEvent === 'lock'){ //删除
+            }else  if(layEvent === 'transfers'){ //调拨
+                Id=data.ID;
+                transferStore='';
+                let _obj={'couponID':Id,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'}
+                let parseJson = JSON.stringify(_obj);
+                $.ajax({
+                    type: 'post',
+                    url: '/XCCloud/Coupon?action=GetCouponNotAssigned',
+                    contentType: "application/json; charset=utf-8",
+                    data: {parasJson: parseJson},
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        if (data.result_code == 1) {
+                            $('#transferName').val(data.result_data[0].CouponName);
+                            $('#transferCount').val(data.result_data[0].NotActivatedCount);
+                            $('#transferStartDate').val(data.result_data[0].StartDate);
+                            $('#transferEndDate').val(data.result_data[0].EndDate);
+                            $('#transferStartNo').val(data.result_data[0].StartNo);
+                            $('#transferEndNo').val(data.result_data[0].EndNo);
+                            startNo=data.result_data[0].StartNo;
+                            endNo=data.result_data[0].EndNo;
+                            xc.sendStore('transferStore',Id,token,form,layer);
+                            layer.open({
+                                title:'选择调拨优惠券',
+                                type:'1',
+                                area:'670px',
+                                content:$('.couponTransfer')
+                            })
+                        }
+                    }
+                });
+            }else if(layEvent === 'lock'){ //删除
                 layer.confirm('确定锁定该商户下所有门店的优惠券吗', function(index){
                     Id=data.ID;
                     let _obj={'couponId':data.ID,'isLock':1,'id':'','storeId':'','userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
@@ -1116,30 +1486,55 @@
                         }
                     })
                 });
+            }else  if(layEvent === 'setStore'){ //设置适用门店
+                Id=data.ID;
+                // xc.setUsefulStore(token,form);
+                xc.getUsefulStore(Id,token,form,layer);
+                form.render();
+                indexLayer= layer.open({
+                    // title:'设置适用门店',
+                    type:1,
+                    area:'500px',
+                    content:$('.chooseStore')
+                });
+            }else  if(layEvent === 'send'){ //实物券派发
+                Id=data.ID;
+                transferStore='';
+                if(data.NotActivatedCount>0){
+                    let _obj={'couponID':Id,'userToken':token,'storeId':'','signkey':'1f626576304bf5d95b72ece2222e42c3'}
+                    let parseJson = JSON.stringify(_obj);
+                    $.ajax({
+                        type: 'post',
+                        url: '/XCCloud/Coupon?action=GetCouponNotActivated',
+                        contentType: "application/json; charset=utf-8",
+                        data: {parasJson: parseJson},
+                        success: function (data) {
+                            data = JSON.parse(data);
+                            if (data.result_code == 1) {
+                                $('#SendName').val(data.result_data[0].CouponName);
+                                $('#SendCouponType').val(data1.CouponTypeStr);
+                                $('#SendCouponCount').val(data.result_data[0].NotAssignedCount);
+                                $('#SendStartDate').val(data.result_data[0].StartDate);
+                                $('#SendEndDate').val(data.result_data[0].EndDate);
+                                $('#SendStartNo').val(data.result_data[0].StartNo);
+                                $('#SendEndNo').val(data.result_data[0].EndNo);
+                                startNo=data.result_data[0].StartNo;
+                                endNo=data.result_data[0].EndNo;
+                                layer.open({
+                                    title:'选择派发优惠券',
+                                    type:'1',
+                                    area:'670px',
+                                    content:$('.couponSend')
+                                })
+                            }
+                        }
+                    });
+                }else {
+                   layer.msg('可派发数量为0');
+                }
             }
         });
-        form.on('switch(test)', function(data){
-            let ids=data.othis.parents('td').siblings('td[data-field="ID"]').children('div')[0].innerHTML;
-            let _obj={'id':ids,'state':data.elem.checked==true?1:0,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
-            let url='/XCCloud/Coupon?action=EnCouponInfo';
-            let parseJson = JSON.stringify(_obj);
-                $.ajax({
-                    type: "post",
-                    url: url,
-                    contentType: "application/json; charset=utf-8",
-                    data: {parasJson: parseJson},
-                    success: function (data) {
-                        data = JSON.parse(data);
-                        console.log(data)
-                        if (data.result_code == 1) {
 
-                            xc.getInitData(parm);
-                        } else {
-                            layer.msg('操作失败');
-                        }
-                    }
-                })
-        });
         //保存优惠券信息
         xcActionSystem.prototype.saveCoupon=(layer)=>{
             var index = layer.load(0, {shade: false});
@@ -1149,7 +1544,7 @@
                         'couponType':CouponType,
                         'entryCouponFlag':entryCouponFlag,
                         'authorFlag':authorFlag ,
-                'allowOverOther':AllowOverOther,
+                         'allowOverOther':AllowOverOther,
                         'overUseCount':$('#OverUseCount').val(),
                         'publishCount':$('#PublishCount').val(),
                         'couponValue':$('#couponValue').val(),
@@ -1157,26 +1552,26 @@
                         'couponThreshold':$('#CouponThreshold').val(),
                         'startDate':$('#StartDate').val(),
                         'endDate':$('#EndDate').val(),
-                'weekType':weekType,
-                'week':week.length>0?week.join('|'):'',
-                'startTime':$('#StartTime').val(),
-                'endTime':$('#EndTime').val(),
-                'noStartDate':$('#NoStartDate').val(),
-                'noEndTime':$('#NoEndDate').val(),
+                        'weekType':weekType,
+                        'week':week.length>0?week.join('|'):'',
+                        'startTime':$('#StartTime').val(),
+                        'endTime':$('#EndTime').val(),
+                        'noStartDate':$('#NoStartDate').val(),
+                        'noEndTime':$('#NoEndDate').val(),
                         'sendType':SendType,
                         'overMoney':$('#OverMoney').val(),
                         'freeCouponCount':$('#FreeCouponCount').val(),
                         'jackpotCount':$('#JackpotCount').val(),
                         'jackpotID':jackpotId,
                         'chargeType':chargeType,
-                'balanceIndex':'',
+                         'balanceIndex':'',
                         'chargeCount':$('#ChargeCount').val(),
                         'goodId':goodId,
                         'projectId':projectId,
-                'AutoSendCycle':'',
-                'AutoSendValue':'',
-                'AutoSendCount':'',
-                'couponConditions':[],
+                        'AutoSendCycle':'',
+                        'AutoSendValue':'',
+                        'AutoSendCount':'',
+                        'couponConditions':[],
                         'memberIds':[],
                         'storeIds':storeId==''?'':storeId.join('|'),
                         'context':$('#Note').val(),
@@ -1191,18 +1586,22 @@
                 data:{parasJson: parseJson},
                 success: function (data) {
                     data = JSON.parse(data);
-                    console.log(data);
-
                     if (data.result_code == 1) {
                         layer.close(index);
                         layer.msg('保存成功！');
                         location.href='CouponSet.html';
                     } else {
-                        layer.msg(data.result_msg);
+                        layer.msg(data.result_msg,{time:2000},function () {
+                            layer.close(index);
+                        });
+
                     }
                 }
             })
         };
+        $('#saveBtn').on('click',function () {
+            xc.saveCoupon(layer)
+        })
 
     });
     //加载抽奖规则
@@ -1226,13 +1625,10 @@
                             }else {
                                 $('#JackpotActive').append('<option value="'+array[i].Key+'">'+array[i].Value+'</option>')
                             }
-
                         }else {
                             $('#JackpotActive').append('<option value="'+array[i].Key+'">'+array[i].Value+'</option>')
                         }
-
                     }
-                    // $('#JackpotActive').find('option[value="'+j+'"]').attr('selected',true);
                     form.render('select');
                 }
             }
@@ -1264,7 +1660,6 @@
                         }
 
                     }
-                    // $('#GoodID').find('option[value="'+j+'"]').attr('selected',true);
                     form.render('select');
                 }
             }
@@ -1294,8 +1689,7 @@
         })
     };
     //加载可选门店
-    xcActionSystem.prototype.setUsefulStore=function (token,form,layer) {
-        let choseStore=JSON.parse(xcActionSystem.prototype.getStorage('choseStore'));
+    xcActionSystem.prototype.setUsefulStore=function (token,form,layer,selected) {
         let obj={'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
         let parseJson = JSON.stringify(obj);
         $.ajax({
@@ -1305,12 +1699,24 @@
             data:{parasJson: parseJson},
             success: function (data) {
                 data=JSON.parse(data);
-                console.log(data);
                 if(data.result_code==1){
                     $('#chooseStoreList').html('');
                     let array=data.result_data;
                     for(let i in array){
-                        if(choseStore){
+                        if(selected){
+                            let flag=false;
+                             for(let j in selected){
+                                 if(selected[j].StoreID==array[i].Key){
+                                     flag=true;
+                                 }
+                             }
+                             if(flag==true){
+                                 $('#chooseStoreList').append('<input type="checkbox" checked lay-skin="primary" value="'
+                                     +array[i].Key+'" lay-filter="chooseStore" title="'+array[i].Value+'">')
+                             }else {
+                                 $('#chooseStoreList').append('<input type="checkbox" lay-skin="primary" value="'
+                                     +array[i].Key+'" lay-filter="chooseStore" title="'+array[i].Value+'">')
+                             }
                         }else {
                             $('#chooseStoreList').append('<input type="checkbox" lay-skin="primary" value="'
                                 +array[i].Key+'" lay-filter="chooseStore" title="'+array[i].Value+'">')
@@ -1319,7 +1725,7 @@
                     form.render('checkbox');
 
                 }else {
-                    layer.msg('获取门店列表失败，err:'+data.result_msg||data.return_msg)
+                    layer.msg('获取门店列表失败')
                 }
             }
         })
@@ -1338,16 +1744,8 @@
                data=JSON.parse(data);
                console.log(data);
                if(data.result_code==1){
-                   storeId=[];
-                   let array=data.result_data;
-                   if(array.length>0){
-                       for(let i in array){
-                           $('#chooseStoreList').find('input[value="'+array[i].StoreID+'"]').attr({'checked':true});
-                           storeId.push(array[i].StoreID)
-                       }
-                       form.render('checkbox');
-                       xc.setStorage('CouponStoreId',JSON.stringify(storeId))
-                   }
+                   storeId=data.result_data;
+                   xc.setUsefulStore(token,form,layer,storeId)
                }else {
                    layer.msg('获取门店列表失败，err:'+data.result_msg||data.return_msg)
                }
@@ -1366,7 +1764,6 @@
             data:{parasJson: parseJson},
             success: function (data) {
                 data=JSON.parse(data);
-                console.log(data);
                 if(data.result_code==1){
                     let arr=data.result_data;
                     if(arr.length>0){
@@ -1389,12 +1786,42 @@
             }
         })
     };
+    //加载可调拨门店
+    xcActionSystem.prototype.sendStore=function (id,couponId,token,form,layer,selected) {
+        let choseStore=JSON.parse(xcActionSystem.prototype.getStorage('choseStore'));
+        let obj={'couponId':couponId,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+        let parseJson = JSON.stringify(obj);
+        $.ajax({
+            type:'post',
+            url:'/XCCloud/Coupon?action=GetCouponStores',
+            contentType: "application/json; charset=utf-8",
+            data:{parasJson: parseJson},
+            success: function (data) {
+                data=JSON.parse(data);
+                if(data.result_code==1){
+                 $('#'+id).html('<option>-请选择-</option>');
+                 let arr=data.result_data;
+                    for(let i in arr){
+                        $('#'+id).append('<option value="'+arr[i].StoreID+'">'+arr[i].StoreName+'</option>')
+                    }
+                  form.render();
+                }else {
+                    layer.msg('获取门店列表失败')
+                }
+            }
+        })
+    }
 
 </script>
 <script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="setStore">适用门店</a>
+    {{# if(d.NotAssignedCount>0){ }}
     <a class="layui-btn layui-btn-xs layui-bg-cyan" lay-event="export"><i class="layui-icon layui-icon-zinbox-l"></i>导出</a>
-    <a class="layui-btn layui-btn-xs layui-bg-orange" lay-event="transfers"><i class="layui-icon">&#xe642;</i>实物券调拨</a>
-    <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="send"><i class="layui-icon layui-icon-zmenu-l"></i>实物券派发</a>
+    {{#  } }}
+    {{# if(d.EntryCouponFlag==1&&d.NotAssignedCount>0){ }}
+    <a class="layui-btn layui-btn-xs layui-bg-orange" lay-event="transfers"><i class="layui-icon">&#xe642;</i>优惠券调拨</a>
+    {{#  } }}
+    <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="send">实物券派发</a>
     {{# if(d.IsLock==1){ }}
     <a class="layui-btn layui-btn-xs layui-bg-green" lay-event="unlock"><i class="layui-icon layui-icon-zzunlock"></i>解锁</a>
     {{# }else{ }}
@@ -1423,6 +1850,9 @@
     {{#  } }}
 </script>
 <script type="text/html" id="assigned">
-    <button type="button" class="layui-btn layui-btn-xs layui-bg-orange"><i class="layui-icon layui-icon-zcamber-l"></i>{{d.AssignedCount}}</button>
+    <button type="button" class="layui-btn layui-btn-xs layui-bg-orange" name='couponSendBtn' style="width: 80px" id="{{d.ID}}"><i class="layui-icon layui-icon-zcamber-l"></i>{{d.AssignedCount}}</button>
+</script>
+<script type="text/html" id="barDemo2">
+    <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="lock"><i class="layui-icon layui-icon-zzunlock-alt"></i>锁定</a>
 </script>
 </html>

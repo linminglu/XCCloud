@@ -205,10 +205,6 @@ namespace XCCloudService.Base
             {
                 ResponseImgStreamOutput(context, (byte[])resObj, signKeyToken);
             }
-            else if (apiMethodAttribute.RespDataTypeEnum == RespDataTypeEnum.FileStream)
-            {
-                ResponseFileStreamOutput(context, "", "application/ms-excel", Convert.ToString(resObj));
-            }
         }
 
 
@@ -708,19 +704,7 @@ namespace XCCloudService.Base
             HttpContext.Current.Response.ContentType = "image/png";
             HttpContext.Current.Response.BinaryWrite(bytes);  
         }
-
-        private void ResponseFileStreamOutput(HttpContext context, string fileName, string fileType, string fileContent)
-        {
-            HttpContext.Current.Response.Charset = "UTF-8";
-            HttpContext.Current.Response.ContentEncoding = System.Text.Encoding.UTF8;
-            HttpContext.Current.Response.AppendHeader("Content-Disposition", "attachment;filename=" + HttpUtility.UrlEncode(fileName, System.Text.Encoding.UTF8).ToString());
-            HttpContext.Current.Response.ContentType = fileType;
-            StringWriter tw = new System.IO.StringWriter();
-            HttpContext.Current.Response.Output.Write(fileContent);
-            HttpContext.Current.Response.Flush();
-            HttpContext.Current.Response.End();
-        }
-
+       
         /// <summary>
         /// 获取相应输出Json格式字符串
         /// </summary>

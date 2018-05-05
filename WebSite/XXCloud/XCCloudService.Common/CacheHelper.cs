@@ -52,6 +52,11 @@ namespace XCCloudService.Common
             HttpContext.Current.Cache.Insert(key, obj, null, Cache.NoAbsoluteExpiration, new TimeSpan(0, 0, expires));
         }
 
+        public static void Insert(string key, object obj, int expires, CacheItemRemovedCallback onRemoveCallback)
+        {
+            HttpContext.Current.Cache.Insert(key, obj, null, Cache.NoAbsoluteExpiration, new TimeSpan(0, 0, expires), CacheItemPriority.Default, onRemoveCallback);
+        }
+
         /// <summary>
         /// 获取缓存对象
         /// </summary>

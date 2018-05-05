@@ -17,6 +17,7 @@ using XCCloudService.Model.XCCloud;
 using XCCloudService.Model.CustomModel.XCCloud;
 using XCCloudService.Business.XCGameMana;
 using XCCloudService.Business.Common;
+using XCCloudService.Business.XCCloud;
 
 namespace XXCloudService.WeiXin
 {
@@ -72,6 +73,7 @@ namespace XXCloudService.WeiXin
                         int switchWorkstation = base_UserInfoModel.SwitchWorkstation ?? 0;
                         string merchId = string.Empty;
                         string storeId = string.Empty;
+                        int isSingle = 0;
 
                         if (userType == (int)UserType.Xc)
                         {
@@ -101,9 +103,9 @@ namespace XXCloudService.WeiXin
                                 Response.Redirect(WeiXinConfig.RedirectErrorPage + "?title=" + HttpUtility.UrlEncode("登录失败") + "&message=" + HttpUtility.UrlEncode(errMsg), false);
                             }
                             var base_StoreInfoModel = base_StoreInfoService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
-                            merchTag = base_StoreInfoModel.StoreTag;
+                            isSingle = XCCloudStoreBusiness.IsSingleStore(merchId) ? 1 : 0;                            
                         }
-                        else
+                        else if (userType == (int)UserType.Agent || userType == (int)UserType.Normal || userType == (int)UserType.Heavy)
                         {
                             if (switchMerch == 0)
                             {
@@ -123,9 +125,10 @@ namespace XXCloudService.WeiXin
                             var dataModel = new MerchDataModel { MerchID = merchId, StoreID = string.Empty, MerchType = base_MerchantInfoModel.MerchType, CreateType = base_MerchantInfoModel.CreateType, CreateUserID = base_MerchantInfoModel.CreateUserID };
                             token = XCCloudUserTokenBusiness.SetUserToken(userId.ToString(), logType, dataModel);
                             merchTag = base_MerchantInfoModel.MerchTag;
+                            isSingle = XCCloudStoreBusiness.IsSingleStore(merchId) ? 1 : 0;
                         }
-
-                        Response.Redirect(WeiXinConfig.RedirectMainPage + "?token=" + token + "&logType=" + logType + "&userType=" + userType + "&merchTag=" + merchTag +
+                        
+                        Response.Redirect(WeiXinConfig.RedirectMainPage + "?token=" + token + "&logType=" + logType + "&userType=" + userType + "&merchTag=" + merchTag + "&isSingle=" + isSingle +
                             "&switchMerch=" + switchMerch + "&switchStore=" + switchStore + "&switchWorkstation=" + switchWorkstation + "&merchId=" + merchId + "&storeId=" + storeId,
                             false);
                     }

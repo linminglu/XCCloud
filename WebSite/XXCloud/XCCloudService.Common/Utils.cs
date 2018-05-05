@@ -20,6 +20,7 @@ using XCCloudService.Common.Enum;
 using System.ComponentModel;
 using System.Drawing;
 using XCCloudService.Common.Extensions;
+using System.Data.OleDb;
 
 namespace XCCloudService.Common
 {
@@ -868,6 +869,15 @@ namespace XCCloudService.Common
         #endregion
 
         #region 文件操作
+        /// <summary>  
+        /// 将源文件的内容复制到目标文件中  
+        /// </summary>  
+        /// <param name="sourceFilePath">源文件的绝对路径</param>  
+        /// <param name="destFilePath">目标文件的绝对路径</param>  
+        public static void Copy(string sourceFilePath, string destFilePath)
+        {
+            File.Copy(sourceFilePath, destFilePath, true);
+        }  
         /// <summary>
         /// 删除单个文件
         /// </summary>
@@ -2374,7 +2384,7 @@ namespace XCCloudService.Common
         #endregion                
 
 
-         public static bool ExistEnumValue(Type enumType,int val)
+        public static bool ExistEnumValue(Type enumType,int val)
          {
              foreach (int value in System.Enum.GetValues(enumType))
              {
@@ -2386,5 +2396,89 @@ namespace XCCloudService.Common
              return false;
          }
 
+        #region "导入导出"
+        public static string ExportToExcel(DataTable dt, string note = "")
+        {
+            string fileName = "Excel";
+            string sourceFilePath = HttpContext.Current.Server.MapPath("/" + fileName + ".xlsx");
+            string destFilePath = HttpContext.Current.Server.MapPath("/" + fileName + DateTime.Now.ToString("yyyy-MM-dd HHmmss") + ".xlsx");
+            //复制文件
+            Utils.Copy(sourceFilePath, destFilePath);
+
+            string SqlConnStr = string.Format("Provider=Microsoft.ACE.OLEDB.12.0;Data Source={0};Extended Properties=\"Excel 12.0 Xml;HDR=YES;IMEX=0\"", destFilePath);
+            //  当 IMEX=0 时为“汇出模式”，这个模式开启的 Excel 档案只能用来做“写入”用途。
+            //  当 IMEX=1 时为“汇入模式”，这个模式开启的 Excel 档案只能用来做“读取”用途。
+            //  当 IMEX=2 时为“连結模式”，这个模式开启的 Excel 档案可同时支援“读取”与“写入”用途。
+            OleDbConnection con = new OleDbConnection(SqlConnStr);
+            StringBuilder CommText = new StringBuilder();
+
+            try
+            {
+                con.Open();
+
+                //获取第一个表名
+                DataTable fileTable = con.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, null);
+                string strSheetName = fileTable.Rows[0][2].ToString().Trim();
+
+                string strCmd = string.Empty;
+                var OleDb_Comm = new System.Data.OleDb.OleDbCommand();
+                OleDb_Comm.Connection = con;
+                try
+                {
+                    strCmd = "drop table [" + strSheetName + "]";
+                    OleDb_Comm.CommandText = strCmd;
+                    OleDb_Comm.ExecuteNonQuery();
+                }
+                catch
+                {
+
+                }
+                finally { OleDb_Comm.Dispose(); }
+
+                strCmd = "create Table [" + strSheetName + "](";
+                foreach (DataColumn dc in dt.Columns)
+                {
+                    strCmd = strCmd + "[" + dc.ColumnName + "] TEXT,";
+                }
+                strCmd = strCmd.Trim().Substring(0, strCmd.Length - 1);
+                strCmd += ")";
+                CommText.Append(strCmd);
+                using (OleDbCommand cmd = new OleDbCommand(CommText.ToString().Replace(':', ';').TrimEnd(';'), con))
+                {
+                    cmd.ExecuteNonQuery();
+                }
+                CommText.Remove(0, CommText.Length);
+
+                int col = dt.Columns.Count;
+                foreach (DataRow dr in dt.Rows)
+                {
+                    CommText.Append("INSERT INTO [" + strSheetName + "] VALUES(");
+                    for (int i = 0; i < col; i++)
+                    {
+                        if (i + 1 == col)
+                        {
+                            CommText.Append("'" + Convert.ToString(dr[i]) + "'");
+                        }
+                        else
+                        {
+                            CommText.Append("'" + Convert.ToString(dr[i]) + "',");
+                        }
+                    }
+                    CommText.Append(");");
+
+                    using (OleDbCommand cmd = new OleDbCommand(CommText.ToString().Replace(':', ';').TrimEnd(';'), con))
+                    {
+                        cmd.ExecuteNonQuery();
+                    }
+                    CommText.Remove(0, CommText.Length);
+                }
+            }
+            catch (Exception err) { HttpContext.Current.Response.Write(err.ToString()); con.Close(); }
+            con.Close();
+
+            return destFilePath;
+        }
+
+        #endregion
     }
 }

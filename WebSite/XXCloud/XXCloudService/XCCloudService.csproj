@@ -382,10 +382,12 @@
     <Content Include="Api\XCCloud\GameWatch.ashx" />
     <Content Include="Api\HaoKu\hkreq.ashx" />
     <Content Include="Api\XCCloud\DigitFood.ashx" />
+    <Content Include="Excel.xlsx" />
     <None Include="Properties\PublishProfiles\111.pubxml" />
     <None Include="Properties\PublishProfiles\qqq.pubxml" />
     <None Include="Properties\PublishProfiles\rrr.pubxml" />
     <None Include="Scripts\jquery-1.6.4-vsdoc.js" />
+    <Content Include="Report\ToExcel.aspx" />
     <Content Include="Scripts\jquery-1.6.4.js" />
     <Content Include="Scripts\jquery-1.6.4.min.js" />
     <Content Include="Scripts\jquery.signalR-2.2.2.js" />
@@ -1524,6 +1526,13 @@
     <Compile Include="Pay\WeiXinPayment.ashx.cs">
       <DependentUpon>WeiXinPayment.ashx</DependentUpon>
     </Compile>
+    <Compile Include="Report\ToExcel.aspx.cs">
+      <DependentUpon>ToExcel.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Report\ToExcel.aspx.designer.cs">
+      <DependentUpon>ToExcel.aspx</DependentUpon>
+    </Compile>
     <Compile Include="ResponseModels\GoodsModel.cs" />
     <Compile Include="DBService\Model\QueryModel.cs" />
     <Compile Include="DBService\SQLDAL\DataAccess.cs" />
@@ -1882,13 +1891,11 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>False</UseIIS>
+          <UseIIS>True</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>18116</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:3288/</IISUrl>
-          <OverrideIISAppRootUrl>True</OverrideIISAppRootUrl>
-          <IISAppRootUrl>http://localhost:3288/</IISAppRootUrl>
+          <IISUrl>http://localhost:18116/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

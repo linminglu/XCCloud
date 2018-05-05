@@ -303,6 +303,13 @@
             window.open(url);
         }
 
+        function do_getUserMobileSMSCode() {
+            var parasObj = {"sysId": "0", "versionNo": "0.0.0.1", "mobile": $("#txtMobile1").val(), "userToken": userToken};
+            var url = "/XCCloud/Member?action=getUserMobileSMSCode";
+            var parasJson = JSON.stringify(parasObj);
+            common(url, parasJson);
+        }
+
     </script>
         
 </head>
@@ -327,6 +334,9 @@
         &nbsp;&nbsp;&nbsp;&nbsp;
         会员等级ID:<input id="txtMemberLevelId_GetMemberOpenCardFoodInfo" placeholder="请输入会员等级" />
         <input id="Button_Member_3" type="button" value="do_GetMemberOpenCardFoodInfo(获取会员开卡套餐接口)" onclick="do_GetMemberOpenCardFoodInfo()" />
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        手机号:<input id="txtMobile1" placeholder="请输入手机号" value="15618920033" />
+        <input id="Button_Member_4" type="button" value="do_getUserMobileSMSCode(获取手机短信)" onclick="do_getUserMobileSMSCode()" />
     </div>
 
     <div title="Food" style="font-size:14px;color:#F00;border:1px solid #ccc;">

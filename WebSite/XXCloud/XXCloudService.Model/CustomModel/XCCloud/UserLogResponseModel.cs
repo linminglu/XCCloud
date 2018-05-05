@@ -37,5 +37,8 @@ namespace XCCloudService.Model.CustomModel.XCCloud
 
         [DataMember(Name = "storeId", Order = 9)]
         public string StoreID { get; set; }
+
+        [DataMember(Name = "isSingle", Order = 10)]
+        public int? IsSingle { get; set; }
     }    
 }

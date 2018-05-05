@@ -92,7 +92,7 @@ namespace XCCloudService.Common.Redis
         }
 
         /// <summary>
-        /// 获取多个Key
+        /// 获取多个Key的值
         /// </summary>
         /// <param name="listKey">Redis Key集合</param>
         /// <returns></returns>
@@ -300,12 +300,11 @@ namespace XCCloudService.Common.Redis
         public long HashDelete(string key, List<RedisValue> dataKeys)
         {
             key = AddSysCustomKey(key);
-            //List<RedisValue> dataKeys1 = new List<RedisValue>() {"1","2"};
             return Do(db => db.HashDelete(key, dataKeys.ToArray()));
         }
 
         /// <summary>
-        /// 从hash表获取数据
+        /// 从hash表获取对象
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="key"></param>
@@ -318,6 +317,40 @@ namespace XCCloudService.Common.Redis
             {
                 string value = db.HashGet(key, dataKey);
                 return ConvertObj<T>(value);
+            });
+        }
+
+        /// <summary>
+        /// 从hash表获取所有数据集合
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public List<T> HashGetAll<T>(string key)
+        {
+            key = AddSysCustomKey(key);
+            return Do(db =>
+            {
+                RedisValue[] values = db.HashValues(key);
+                return ConvetList<T>(values);
+            });
+        }
+
+        /// <summary>
+        /// 从hash表获取多个字段的数据集合
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="key"></param>
+        /// <param name="dataKey"></param>
+        /// <returns></returns>
+        public List<T> HashGetByFields<T>(string key, RedisValue[] dataKey)
+        {
+            key = AddSysCustomKey(key);
+            return Do(db =>
+            {
+                RedisValue[] value = db.HashGet(key, dataKey);
+
+                return ConvetList<T>(value);
             });
         }
 
@@ -348,18 +381,17 @@ namespace XCCloudService.Common.Redis
         }
 
         /// <summary>
-        /// 获取hashkey所有Redis key
+        /// 获取hash表所有的Field Key
         /// </summary>
-        /// <typeparam name="T"></typeparam>
         /// <param name="key"></param>
         /// <returns></returns>
-        public List<T> HashKeys<T>(string key)
+        public List<string> HashKeys(string key)
         {
             key = AddSysCustomKey(key);
             return Do(db =>
             {
                 RedisValue[] values = db.HashKeys(key);
-                return ConvetList<T>(values);
+                return ConvetStringList(values);
             });
         }
         #endregion 同步方法
@@ -1050,8 +1082,15 @@ namespace XCCloudService.Common.Redis
 
         private T Do<T>(Func<IDatabase, T> func)
         {
-            var database = _conn.GetDatabase(DbNum);
-            return func(database);
+            try
+            {
+                var database = _conn.GetDatabase(DbNum);
+                return func(database);
+            }
+            catch (RedisException ex)
+            {
+                throw ex;
+            }
         }
 
         private string ConvertJson<T>(T value)
@@ -1072,8 +1111,24 @@ namespace XCCloudService.Common.Redis
             List<T> result = new List<T>();
             foreach (var item in values)
             {
-                var model = ConvertObj<T>(item);
-                result.Add(model);
+                if (item.HasValue)
+                {
+                    var model = ConvertObj<T>(item);
+                    result.Add(model);
+                }
+            }
+            return result;
+        }
+
+        private List<string> ConvetStringList(RedisValue[] values)
+        {
+            List<string> result = new List<string>();
+            foreach (var item in values)
+            {
+                if (item.HasValue)
+                {
+                    result.Add(item.ToString());
+                }
             }
             return result;
         }

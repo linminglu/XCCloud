@@ -7,6 +7,7 @@ using XCCloudService.BLL.CommonBLL;
 using XCCloudService.BLL.Container;
 using XCCloudService.BLL.IBLL.XCCloud;
 using XCCloudService.BLL.XCCloud;
+using XCCloudService.Business.XCCloud;
 using XCCloudService.Business.XCGameMana;
 using XCCloudService.Common;
 using XCCloudService.Common.Enum;
@@ -31,6 +32,8 @@ namespace XXCloudService.Api.XCCloud
             int switchMerch = base_UserInfoModel.SwitchMerch ?? 0;
             int switchStore = base_UserInfoModel.SwitchStore ?? 0;
             int switchWorkstation = base_UserInfoModel.SwitchWorkstation ?? 0;
+            string storeId = string.Empty;
+            string merchId = string.Empty;
 
             if (userType == (int)UserType.Xc)
             {
@@ -49,8 +52,8 @@ namespace XXCloudService.Api.XCCloud
                 }
 
                 logType = (int)RoleType.StoreUser;
-                string storeId = base_UserInfoModel.StoreID;
-                string merchId = base_UserInfoModel.MerchID;
+                storeId = base_UserInfoModel.StoreID;
+                merchId = base_UserInfoModel.MerchID;
                 var dataModel = new MerchDataModel { StoreID = storeId, MerchID = merchId };
                 IBase_StoreInfoService base_StoreInfoService = BLLContainer.Resolve<IBase_StoreInfoService>();
                 if (!base_StoreInfoService.Any(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)))
@@ -63,8 +66,9 @@ namespace XXCloudService.Api.XCCloud
                 userLogResponseModel.MerchTag = base_StoreInfoModel.StoreTag;
                 userLogResponseModel.MerchID = merchId;
                 userLogResponseModel.StoreID = storeId;
+                userLogResponseModel.IsSingle = XCCloudStoreBusiness.IsSingleStore(merchId) ? 1 : 0;
             }
-            else
+            else if (userType == (int)UserType.Agent || userType == (int)UserType.Normal || userType == (int)UserType.Heavy)
             {
                 if (switchMerch == 0)
                 {
@@ -73,7 +77,7 @@ namespace XXCloudService.Api.XCCloud
                 }
 
                 logType = (int)RoleType.MerchUser;
-                string merchId = base_UserInfoModel.MerchID;
+                merchId = base_UserInfoModel.MerchID;
                 IBase_MerchantInfoService base_MerchantInfoService = BLLContainer.Resolve<IBase_MerchantInfoService>();
                 if (!base_MerchantInfoService.Any(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)))
                 {
@@ -85,9 +89,10 @@ namespace XXCloudService.Api.XCCloud
                 userLogResponseModel.Token = XCCloudUserTokenBusiness.SetUserToken(userId.ToString(), logType, dataModel);
                 userLogResponseModel.MerchTag = base_MerchantInfoModel.MerchTag;
                 userLogResponseModel.MerchID = merchId;
-                userLogResponseModel.StoreID = string.Empty;
+                userLogResponseModel.StoreID = storeId;
+                userLogResponseModel.IsSingle = XCCloudStoreBusiness.IsSingleStore(merchId) ? 1 : 0;
             }
-
+            
             userLogResponseModel.LogType = logType;
             userLogResponseModel.UserType = userType;
             userLogResponseModel.SwitchMerch = switchMerch;
