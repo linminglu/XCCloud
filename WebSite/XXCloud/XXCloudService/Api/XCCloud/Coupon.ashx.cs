@@ -251,6 +251,7 @@ namespace XXCloudService.Api.XCCloud
                 var memberIds = dicParas.GetArray("memberIds");
 
                 //开启EF事务
+                bool succeed = false;
                 using (TransactionScope ts = new TransactionScope())
                 {
                     try
@@ -292,51 +293,7 @@ namespace XXCloudService.Api.XCCloud
                             }
                         }
 
-                        id = data_CouponInfo.ID;                        
-
-                        //foreach (var model in Data_CouponListService.I.GetModels(p => p.CouponID == id))
-                        //{
-                        //    Data_CouponListService.I.DeleteModel(model);
-                        //}
-
-
-                        //for (var i = 0; i < publishCount; i++)
-                        //{
-                        //    var data_CouponListModel = new Data_CouponList();
-                        //    data_CouponListModel.CouponCode = System.Guid.NewGuid().ToString("N");
-                        //    data_CouponListModel.CouponID = id;
-                        //    data_CouponListModel.CouponIndex = i + 1;                            
-                        //    data_CouponListModel.SendAuthorID = userId;
-                        //    data_CouponListModel.SendTime = DateTime.Now;
-                        //    data_CouponListModel.PublishType = entryCouponFlag;
-                        //    data_CouponListModel.SendType = sendType;                            
-                        //    data_CouponListModel.MerchID = merchId;
-                        //    data_CouponListModel.StoreID = singleStoreId;
-                        //    if (entryCouponFlag == (int)CouponFlag.Digit)
-                        //    {
-                        //        //电子券直接派发给指定会员
-                        //        data_CouponListModel.State = (int)CouponState.Activated;
-                        //        if (memberIds != null && i < memberIds.Count())
-                        //        {
-                        //            if (!memberIds[i].Validint("会员ID", out errMsg))
-                        //                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        //            data_CouponListModel.MemberID = memberIds[i].Toint();
-                        //        }
-                        //    }
-                        //    else
-                        //    {
-                        //        //实物券直接调拨给单门店
-                        //        data_CouponListModel.State = isSingle ? (int)CouponState.NotActivated : (int)CouponState.NotAssigned;
-                        //    }           
-
-                        //    Data_CouponListService.I.AddModel(data_CouponListModel);
-                        //}
-
-                        //if (!Data_CouponListService.I.SaveChanges())
-                        //{
-                        //    errMsg = "添加优惠券记录表失败";
-                        //    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        //}                        
+                        id = data_CouponInfo.ID;                                           
 
                         //添加派发条件
                         if (couponConditions != null && couponConditions.Count() >= 0)
@@ -380,6 +337,7 @@ namespace XXCloudService.Api.XCCloud
                         }
 
                         ts.Complete();
+                        succeed = true;
                     }
                     catch (Exception ex)
                     {
@@ -388,59 +346,68 @@ namespace XXCloudService.Api.XCCloud
                     }                    
                 }
 
-                //添加未分配优惠券, 单门店直接调拨
-                string singleStoreId = string.Empty;
-                bool isSingle = XCCloudStoreBusiness.IsSingleStore(merchId, out singleStoreId);
-                string storedProcedure = "CreateCouponRecord";
-                List<SqlDataRecord> listSqlDataRecord = new List<SqlDataRecord>();
-                SqlMetaData[] MetaDataArr = new SqlMetaData[] { new SqlMetaData("MemberID", SqlDbType.Int) };
-                if (memberIds != null)
+                if (succeed)
                 {
-                    for (int i = 0; i < memberIds.Length; i++)
+                    //添加未分配优惠券, 单门店直接调拨
+                    string singleStoreId = string.Empty;
+                    bool isSingle = XCCloudStoreBusiness.IsSingleStore(merchId, out singleStoreId);
+                    string storedProcedure = "CreateCouponRecord";
+                    List<SqlDataRecord> listSqlDataRecord = new List<SqlDataRecord>();
+                    SqlMetaData[] MetaDataArr = new SqlMetaData[] { new SqlMetaData("MemberID", SqlDbType.Int) };
+                    if (memberIds != null && memberIds.Length > 0)
+                    {
+                        for (int i = 0; i < memberIds.Length; i++)
+                        {
+                            var record = new SqlDataRecord(MetaDataArr);
+                            record.SetValue(0, memberIds[i]);
+                            listSqlDataRecord.Add(record);
+                        }
+                    }
+                    else
                     {
                         var record = new SqlDataRecord(MetaDataArr);
-                        record.SetValue(0, memberIds[i]);
+                        record.SetValue(0, 0);
                         listSqlDataRecord.Add(record);
                     }
+
+                    SqlParameter[] parameters = new SqlParameter[0];
+                    Array.Resize(ref parameters, parameters.Length + 1);
+                    parameters[parameters.Length - 1] = new SqlParameter("@CouponID", id);
+                    Array.Resize(ref parameters, parameters.Length + 1);
+                    parameters[parameters.Length - 1] = new SqlParameter("@SendAuthorID", userId);
+                    Array.Resize(ref parameters, parameters.Length + 1);
+                    parameters[parameters.Length - 1] = new SqlParameter("@SendTime", DateTime.Now);
+                    Array.Resize(ref parameters, parameters.Length + 1);
+                    parameters[parameters.Length - 1] = new SqlParameter("@PublishType", entryCouponFlag);
+                    Array.Resize(ref parameters, parameters.Length + 1);
+                    parameters[parameters.Length - 1] = new SqlParameter("@SendType", sendType);
+                    Array.Resize(ref parameters, parameters.Length + 1);
+                    parameters[parameters.Length - 1] = new SqlParameter("@MerchID", merchId);
+                    Array.Resize(ref parameters, parameters.Length + 1);
+                    parameters[parameters.Length - 1] = new SqlParameter("@StoreID", singleStoreId);
+                    Array.Resize(ref parameters, parameters.Length + 1);
+                    parameters[parameters.Length - 1] = new SqlParameter("@IsSingle", isSingle ? 1 : 0);
+                    Array.Resize(ref parameters, parameters.Length + 1);
+                    parameters[parameters.Length - 1] = new SqlParameter("@PublishCount", publishCount);
+                    Array.Resize(ref parameters, parameters.Length + 1);
+                    parameters[parameters.Length - 1] = new SqlParameter("@MemberIDsType", SqlDbType.Structured);
+                    parameters[parameters.Length - 1].Value = listSqlDataRecord;
+                    Array.Resize(ref parameters, parameters.Length + 1);
+                    parameters[parameters.Length - 1] = new SqlParameter("@ErrMsg", SqlDbType.VarChar, 200);
+                    parameters[parameters.Length - 1].Direction = ParameterDirection.Output;
+                    Array.Resize(ref parameters, parameters.Length + 1);
+                    parameters[parameters.Length - 1] = new SqlParameter("@Result", SqlDbType.Int);
+                    parameters[parameters.Length - 1].Direction = ParameterDirection.Output;
+
+                    XCCloudBLL.ExecuteStoredProcedureSentence(storedProcedure, parameters);
+                    if (parameters[parameters.Length - 1].Value.ToString() != "1")
+                    {
+                        errMsg = "添加优惠券记录表失败:\n";
+                        errMsg = errMsg + parameters[parameters.Length - 2].Value.ToString();
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
                 }
-
-                SqlParameter[] parameters = new SqlParameter[0];
-                Array.Resize(ref parameters, parameters.Length + 1);
-                parameters[parameters.Length - 1] = new SqlParameter("@CouponID", id);
-                Array.Resize(ref parameters, parameters.Length + 1);
-                parameters[parameters.Length - 1] = new SqlParameter("@SendAuthorID", userId);
-                Array.Resize(ref parameters, parameters.Length + 1);
-                parameters[parameters.Length - 1] = new SqlParameter("@SendTime", DateTime.Now);
-                Array.Resize(ref parameters, parameters.Length + 1);
-                parameters[parameters.Length - 1] = new SqlParameter("@PublishType", entryCouponFlag);
-                Array.Resize(ref parameters, parameters.Length + 1);
-                parameters[parameters.Length - 1] = new SqlParameter("@SendType", sendType);
-                Array.Resize(ref parameters, parameters.Length + 1);
-                parameters[parameters.Length - 1] = new SqlParameter("@MerchID", merchId);
-                Array.Resize(ref parameters, parameters.Length + 1);
-                parameters[parameters.Length - 1] = new SqlParameter("@StoreID", singleStoreId);
-                Array.Resize(ref parameters, parameters.Length + 1);
-                parameters[parameters.Length - 1] = new SqlParameter("@IsSingle", isSingle ? 1 : 0);
-                Array.Resize(ref parameters, parameters.Length + 1);
-                parameters[parameters.Length - 1] = new SqlParameter("@PublishCount", publishCount);
-                //Array.Resize(ref parameters, parameters.Length + 1);
-                //parameters[parameters.Length - 1] = new SqlParameter("@MemberIDsType", SqlDbType.Structured);
-                //parameters[parameters.Length - 1].Value = listSqlDataRecord;
-                Array.Resize(ref parameters, parameters.Length + 1);
-                parameters[parameters.Length - 1] = new SqlParameter("@ErrMsg", SqlDbType.VarChar, 200);
-                parameters[parameters.Length - 1].Direction = ParameterDirection.Output;
-                Array.Resize(ref parameters, parameters.Length + 1);
-                parameters[parameters.Length - 1] = new SqlParameter("@Result", SqlDbType.Int);
-                parameters[parameters.Length - 1].Direction = ParameterDirection.Output;
-
-                XCCloudBLL.ExecuteStoredProcedureSentence(storedProcedure, parameters);
-                if (parameters[parameters.Length - 1].Value.ToString() != "1")
-                {
-                    errMsg = "添加优惠券记录表失败:\n";
-                    errMsg = errMsg + parameters[parameters.Length - 2].Value.ToString();
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
-
+                
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
             }
             catch (Exception e)
@@ -1099,7 +1066,7 @@ namespace XXCloudService.Api.XCCloud
                                 join b in Data_CouponListService.N.GetModels(p => p.CouponID == couponId && (p.StoreID ?? "") != "") on a.ID equals b.CouponID
                                 join c in Base_StoreInfoService.N.GetModels() on b.StoreID equals c.StoreID into c1
                                 from c in c1.DefaultIfEmpty()
-                                select new { a = a, CouponID = b.CouponID, StoreID = b.StoreID, StoreName = (c != null ? c.StoreName : string.Empty), CouponIndex = b.CouponIndex }
+                                select new { a = a, CouponID = b.CouponID, StoreID = b.StoreID, StoreName = (c != null ? c.StoreName : string.Empty), CouponIndex = b.CouponIndex, IsLock = b.IsLock }
                                 ).AsEnumerable()
                            group d by new { d.CouponID, d.StoreID } into g
                            select new
@@ -1108,8 +1075,9 @@ namespace XXCloudService.Api.XCCloud
                                CouponName = g.FirstOrDefault().a.CouponName,
                                StoreID = g.Key.StoreID,
                                StoreName = g.FirstOrDefault().StoreName,
-                               AssignedCount = g.FirstOrDefault().a.PublishCount - g.Count(),
-                               StartEnd = g.Min(m => m.CouponIndex) + "~" + g.Max(m => m.CouponIndex)
+                               AssignedCount = g.Count(),
+                               StartEnd = g.Min(m => m.CouponIndex) + "~" + g.Max(m => m.CouponIndex),
+                               IsLock = g.Min(m=>m.IsLock) == 1 ? 1 : 0
                            };
 
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, linq);
