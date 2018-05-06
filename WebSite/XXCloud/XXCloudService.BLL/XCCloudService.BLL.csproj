@@ -35,7 +35,16 @@
       <HintPath>..\packages\Autofac.4.6.1\lib\net45\Autofac.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.0.0\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.0.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -50,6 +59,7 @@
     <Compile Include="CommonBLL\XCGameManaLogBLL.cs" />
     <Compile Include="CommonBLL\XCGameBLL.cs" />
     <Compile Include="CommonBLL\XCGameManabll.cs" />
+    <Compile Include="Extentions\ObjectContextExt.cs" />
     <Compile Include="IBLL\IBase_ChainRuleService.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
@@ -913,7 +923,6 @@
     <Compile Include="XCGame\ScheduleService.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Extentions\" />
     <Folder Include="IBLL\XCCloud\" />
   </ItemGroup>
   <ItemGroup>
@@ -930,6 +939,7 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
     <None Include="IBLL\XCCloudDBModel.txt4" />
     <None Include="packages.config" />
     <None Include="XCCloud\XCCloudDBModel.txt4" />

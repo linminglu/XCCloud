@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Entity;
+using System.Data.Entity.Core.Objects;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Runtime.Remoting.Messaging;
 using System.Text;
@@ -42,7 +45,7 @@ namespace XCCloudService.DAL
                 CallContext.SetData(dbName, dbContext);
             }
             return dbContext;
-        }
+        }        
 
         private static DbContext GetDbContextByModelNamespace(string modelNamespace)
         {
@@ -75,5 +78,5 @@ namespace XCCloudService.DAL
                 default:return "";
             }
         }
-    }
+    }    
 }

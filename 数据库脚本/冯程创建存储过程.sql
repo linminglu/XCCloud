@@ -555,7 +555,9 @@ CREATE proc [dbo].[LockCouponRecord](
 as	
 	if(@ID > 0)
 		update Data_CouponList set IsLock=@IsLock where ID=@ID
-	else 
-		update Data_CouponList set IsLock=@IsLock where CouponID=@CouponID and ISNULL(StoreID,'')=ISNULL(@StoreID,'')
+	else if(ISNULL(@StoreID,'')='')
+		update Data_CouponList set IsLock=@IsLock where CouponID=@CouponID
+	else
+		update Data_CouponList set IsLock=@IsLock where CouponID=@CouponID and StoreID=@StoreID
     	
 	set @Result = 1

@@ -5,6 +5,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using XCCloudService.DAL;
 using XCCloudService.DAL.CommonDAL;
 
 namespace XCCloudService.BLL.CommonBLL
@@ -39,6 +40,6 @@ namespace XCCloudService.BLL.CommonBLL
         public static int ExecuteSql(string strSQL)
         {
             return new DataAccess(DataAccessDB.XCCloudDB).Execute(strSQL);
-        }
+        }        
     }
 }
