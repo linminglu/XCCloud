@@ -543,8 +543,8 @@ as
 			SET ROWCOUNT 0			
 			delete from @tempMemberIDs where MemberID=@memberId
 		end
-		insert into Data_CouponList(CouponCode,CouponID,CouponIndex,SendAuthorID,SendTime,PublishType,SendType,MerchID,StoreID,[State],MemberID)
-		values (Lower(REPLACE(newid(),'-','')),@CouponID,@count,@SendAuthorID,@SendTime,@PublishType,@SendType,@MerchID,@StoreID,@state,@memberId)
+		insert into Data_CouponList(CouponCode,CouponID,CouponIndex,SendAuthorID,SendTime,PublishType,SendType,MerchID,StoreID,[State],MemberID,IsLock)
+		values (Lower(REPLACE(newid(),'-','')),@CouponID,@count,@SendAuthorID,@SendTime,@PublishType,@SendType,@MerchID,@StoreID,@state,@memberId,0)
 		select @row=@@ROWCOUNT
 		if(@row!=1)
 		begin
