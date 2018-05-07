@@ -560,9 +560,13 @@ namespace XCCloudService.Common.Enum
     //优惠时段，时段类型
     public enum TimeType
     {
+        [Description("自定义")]
         Custom = 0,//自定义
+        [Description("工作日")]
         Workday = 1,//工作日
+        [Description("周末")]
         Weekend = 2,//周末
+        [Description("节假日")]
         Holiday = 3//节假日
         
     }
@@ -719,8 +723,11 @@ namespace XCCloudService.Common.Enum
     //优惠券类别
     public enum CouponType
     {
+        [Description("代金券")]
         Cash = 0,//代金
+        [Description("折扣券")]
         Discount = 1,//折扣
+        [Description("兑换券")]
         Charge = 2//兑换
     }
 
@@ -735,34 +742,48 @@ namespace XCCloudService.Common.Enum
     //派发方式
     public enum SendType
     {
+        [Description("消费赠券")]
         Consume = 0,     //消费赠券
+        [Description("定向派发")]
         Orient = 1,      //定向派发
+        [Description("抽奖赠券")]
         Jackpot = 2,     //抽奖赠券
+        [Description("街边派送")]
         Delivery = 3     //街边派送
     }
 
     //实物券标记
     public enum CouponFlag
     {
+        [Description("电子优惠券")]
         Digit = 0,//电子优惠券
+        [Description("实物优惠券")]
         Entry = 1 //实物优惠券
     }
 
     //券状态
     public enum CouponState
     {
+        [Description("未分配")]
         NotAssigned = 0,  //未分配 创建初始状态
+        [Description("未激活")]
         NotActivated = 1, //未激活 调拨门店
+        [Description("已激活")]
         Activated = 2,    //已激活 门店派发
+        [Description("已使用")]
         Applied = 3       //已使用 用户核销       
     }
     
     //派发周期
     public enum SendCycle
     {
+        [Description("每天")]
         EveryDay = 0,    //每天
+        [Description("每周")]
         EveryWeek = 1,   //每周
+        [Description("每月")]
         EveryMonth = 2,  //每月
+        [Description("每年")]
         EveryYear = 3    //每年
     }
 

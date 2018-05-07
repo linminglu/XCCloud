@@ -168,6 +168,10 @@ namespace XXCloudService.Api.XCCloud
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 if (!dicParas.Get("startDate").Validdate("使用期限", out errMsg) || !dicParas.Get("endDate").Validdate("使用期限", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (!dicParas.Get("weekType").Validint("时段类型", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (!dicParas.Get("startTime").Validdate("使用时段", out errMsg) || !dicParas.Get("endTime").Validdate("使用时段", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 if (!dicParas.Get("couponType").Nonempty("优惠券类别", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
@@ -242,6 +246,39 @@ namespace XXCloudService.Api.XCCloud
                 {
                     errMsg = "实物券不支持定向派发";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
+                //时段类型
+                if (dicParas.Get("weekType").Toint() == (int)TimeType.Custom)
+                {
+                    if (!dicParas.Get("week").Nonempty("优惠周天", out errMsg))
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
+                //使用期限
+                if (dicParas.Get("startDate").Todatetime() > dicParas.Get("endDate").Todatetime())
+                {
+                    errMsg = "使用期限范围不正确，开始时间不能大于结束时间";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
+                //使用时段
+                if (dicParas.Get("startTime").Totimespan() > dicParas.Get("endTime").Totimespan())
+                {
+                    errMsg = "使用时段范围不正确，开始时段不能大于结束时段";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
+                //不可用期限
+                if (!string.IsNullOrEmpty(dicParas.Get("noStartDate")))
+                {
+                    if (!dicParas.Get("noStartDate").Validdate("不可用期限", out errMsg) || !dicParas.Get("noEndDate").Validdate("不可用期限", out errMsg))
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    if (dicParas.Get("noStartDate").Todatetime() > dicParas.Get("noEndDate").Todatetime())
+                    {
+                        errMsg = "不可用期限范围不正确，开始时间不能大于结束时间";
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
                 }
 
                 int id = dicParas.Get("id").Toint(0);
@@ -481,6 +518,7 @@ namespace XXCloudService.Api.XCCloud
 
                 var storeList = from a in Data_Coupon_StoreListService.N.GetModels(p => p.CouponID == couponId)
                                 join b in Base_StoreInfoService.N.GetModels() on a.StoreID equals b.StoreID
+                                                                
                                 select new { StoreID = a.StoreID, StoreName = b.StoreName };
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, storeList);
             }
@@ -610,8 +648,8 @@ namespace XXCloudService.Api.XCCloud
                                StartDate = Utils.ConvertFromDatetime(g.FirstOrDefault().a.StartDate, "yyyy-MM-dd"),
                                EndDate = Utils.ConvertFromDatetime(g.FirstOrDefault().a.EndDate, "yyyy-MM-dd"),
                                NotAssignedCount = g.Count(),
-                               StartNo = g.Min(m => m.CouponIndex),
-                               EndNo = g.Max(m => m.CouponIndex)
+                               //StartNo = g.Min(m => m.CouponIndex),
+                               //EndNo = g.Max(m => m.CouponIndex)
                            };
 
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, linq);
@@ -656,8 +694,8 @@ namespace XXCloudService.Api.XCCloud
                                StartDate = Utils.ConvertFromDatetime(g.FirstOrDefault().a.StartDate, "yyyy-MM-dd"),
                                EndDate = Utils.ConvertFromDatetime(g.FirstOrDefault().a.EndDate, "yyyy-MM-dd"),
                                NotActivatedCount = g.Count(),
-                               StartNo = g.Min(m => m.CouponIndex),
-                               EndNo = g.Max(m => m.CouponIndex),
+                               //StartNo = g.Min(m => m.CouponIndex),
+                               //EndNo = g.Max(m => m.CouponIndex),
                            };
 
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, linq);
@@ -666,90 +704,141 @@ namespace XXCloudService.Api.XCCloud
             {
                 return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
             }
-        }       
+        }
 
-        [Authorize(Roles = "StoreUser")]
+        private struct NoArrayType
+        {
+            public int StartNo { get; set; }
+            public int EndNo { get; set; }
+        }
+
+        private bool checkNoArr(object[] noArr, out List<NoArrayType> nolist, out int total, out string errMsg)
+        {
+            total = 0;
+            errMsg = string.Empty;
+            nolist = new List<NoArrayType>();
+            if (noArr == null || noArr.Count() <= 0)
+            {
+                errMsg = "优惠券起止码序列不能为空";
+                return false;
+            }
+            
+            foreach (IDictionary<string, object> el in noArr)
+            {
+                if (el != null)
+                {
+                    var dicPara = new Dictionary<string, object>(el, StringComparer.OrdinalIgnoreCase);
+                    if (!dicPara.Get("startNo").Validint("开始序号", out errMsg))
+                        return false;
+                    if (!dicPara.Get("endNo").Validint("结束序号", out errMsg))
+                        return false;
+                    if (dicPara.Get("startNo").Toint() > dicPara.Get("endNo").Toint())
+                    {
+                        errMsg = "开始序号不能大于结束序号";
+                        return false;
+                    }
+                    if (dicPara.Get("startNo").Toint() == 0)
+                    {
+                        errMsg = "开始序号须大于0";
+                        return false;
+                    }
+
+                    int startNo = dicPara.Get("startNo").Toint(0);
+                    int endNo = dicPara.Get("endNo").Toint(0);
+
+                    if (!nolist.Any(p => (startNo >= p.StartNo && startNo <= p.EndNo) || (endNo >= p.StartNo && endNo <= p.EndNo)))
+                    {
+                        nolist.Add(new NoArrayType { StartNo = startNo, EndNo = endNo });
+                    }
+                    else
+                    {
+                        errMsg = "优惠券起止码范围不能重叠";
+                        return false;
+                    }
+
+                    total += endNo - startNo + 1;
+                }
+                else
+                {
+                    errMsg = "提交数据包含空对象";
+                    return false;
+                }
+            }   
+
+            return true;
+        }
+
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object SaveCouponNotAssigned(Dictionary<string, object> dicParas)
         {
             try
             {
-                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-
-                string errMsg = string.Empty;
+                string errMsg = string.Empty;                
                 int couponId = dicParas.Get("couponId").Toint(0);
                 if (couponId == 0)
                 {
                     errMsg = "优惠券ID不能为空";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
+                       
+                if (!dicParas.Get("storeId").Nonempty("门店ID不能为空", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                int total = 0;
+                var nolist = new List<NoArrayType>();         
+                if(!checkNoArr(dicParas.GetArray("noArr"), out nolist, out total, out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-                if (!dicParas.Get("startNo").Validint("开始序号", out errMsg))
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                if (!dicParas.Get("endNo").Validint("结束序号", out errMsg))
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                if (dicParas.Get("startNo").Toint() > dicParas.Get("endNo").Toint())
-                {
-                    errMsg = "开始序号不能大于结束序号";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
-                if (dicParas.Get("startNo").Toint() == 0)
-                {
-                    errMsg = "开始序号须大于0";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
-
-                int startNo = dicParas.Get("startNo").Toint(0);
-                int endNo = dicParas.Get("endNo").Toint(0);
-                var storeId = dicParas.Get("storeId") ?? (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
-
+                var storeId = dicParas.Get("storeId");
+                             
                 //开启EF事务
                 using (TransactionScope ts = new TransactionScope())
                 {
                     try
                     {
-                        if (!Data_CouponListService.I.Any(p => p.CouponID == couponId))
+                        string storedProcedure = "SaveCouponNotAssigned";
+                        List<SqlDataRecord> listSqlDataRecord = new List<SqlDataRecord>();
+                        SqlMetaData[] MetaDataArr = new SqlMetaData[] { new SqlMetaData("StartNo", SqlDbType.Int), new SqlMetaData("EndNo", SqlDbType.Int) };
+                        if (nolist != null && nolist.Count() > 0)
                         {
-                            errMsg = "该优惠券不存在";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
-
-                        //检查序列范围
-                        var linq = Data_CouponListService.I.GetModels(p => p.State == (int)CouponState.NotAssigned && p.CouponID == couponId).GroupBy(g => g.CouponID)
-                            .Select(o => new
+                            for (int i = 0; i < nolist.Count(); i++)
                             {
-                                StartNo = o.Min(m => m.CouponIndex),
-                                EndNo = o.Max(m => m.CouponIndex)
-                            });
-                        if (linq.FirstOrDefault().EndNo < endNo || linq.FirstOrDefault().StartNo > startNo)
-                        {
-                            errMsg = "输入的优惠券序列超出正常范围";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
-
-                        for (int i = startNo; i <= endNo; i++)
-                        {
-                            if (!Data_CouponListService.I.Any(p => p.CouponID == couponId && p.CouponIndex == i))
-                            {
-                                errMsg = "序号" + i + "的优惠券不存在";
-                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                var record = new SqlDataRecord(MetaDataArr);
+                                record.SetValue(0, nolist[i].StartNo);
+                                record.SetValue(1, nolist[i].EndNo);
+                                listSqlDataRecord.Add(record);
                             }
-
-                            var data_CouponList = Data_CouponListService.I.GetModels(p => p.CouponID == couponId && p.CouponIndex == i).FirstOrDefault();
-                            if (data_CouponList.State != (int)CouponState.NotAssigned)
-                            {
-                                errMsg = "序号" + i + "的优惠券已调拨";
-                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                            }
-
-                            data_CouponList.StoreID = storeId;
-                            data_CouponList.State = (int)CouponState.NotActivated;
-                            Data_CouponListService.I.UpdateModel(data_CouponList);
+                        }
+                        else
+                        {
+                            var record = new SqlDataRecord(MetaDataArr);
+                            record.SetValue(0, 0);
+                            record.SetValue(1, 0);
+                            listSqlDataRecord.Add(record);
                         }
 
-                        if (!Data_CouponListService.I.SaveChanges())
+                        SqlParameter[] parameters = new SqlParameter[0];
+                        Array.Resize(ref parameters, parameters.Length + 1);
+                        parameters[parameters.Length - 1] = new SqlParameter("@CouponID", couponId);
+                        Array.Resize(ref parameters, parameters.Length + 1);
+                        parameters[parameters.Length - 1] = new SqlParameter("@StoreID", storeId);
+                        Array.Resize(ref parameters, parameters.Length + 1);
+                        parameters[parameters.Length - 1] = new SqlParameter("@Total", total);
+                        Array.Resize(ref parameters, parameters.Length + 1);
+                        parameters[parameters.Length - 1] = new SqlParameter("@NoArrayType", SqlDbType.Structured);
+                        parameters[parameters.Length - 1].Value = listSqlDataRecord;
+                        parameters[parameters.Length - 1].TypeName = "dbo.NoArrayType";
+                        Array.Resize(ref parameters, parameters.Length + 1);
+                        parameters[parameters.Length - 1] = new SqlParameter("@Result", 0);
+                        parameters[parameters.Length - 1].Direction = ParameterDirection.Output;
+                        Array.Resize(ref parameters, parameters.Length + 1);
+                        parameters[parameters.Length - 1] = new SqlParameter("@ErrMsg", SqlDbType.VarChar, 200);
+                        parameters[parameters.Length - 1].Direction = ParameterDirection.Output;
+
+                        XCCloudBLLExt.ExecuteStoredProcedure(storedProcedure, parameters);                       
+                        if (parameters[parameters.Length - 2].Value.ToString() != "1")
                         {
-                            errMsg = "优惠券调拨失败";
+                            errMsg = "优惠券调拨失败：\n";
+                            errMsg = errMsg + parameters[parameters.Length - 1].Value.ToString();
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 
@@ -787,75 +876,60 @@ namespace XXCloudService.Api.XCCloud
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
-                if (!dicParas.Get("startNo").Validint("开始序号", out errMsg))
+                int total = 0;
+                var nolist = new List<NoArrayType>();
+                if (!checkNoArr(dicParas.GetArray("noArr"), out nolist, out total, out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                if (!dicParas.Get("endNo").Validint("结束序号", out errMsg))
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                if (dicParas.Get("startNo").Toint() > dicParas.Get("endNo").Toint())
-                {
-                    errMsg = "开始序号不能大于结束序号";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
-                if (dicParas.Get("startNo").Toint() == 0)
-                {
-                    errMsg = "开始序号须大于0";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
-
-                int startNo = dicParas.Get("startNo").Toint(0);
-                int endNo = dicParas.Get("endNo").Toint(0);
-                
                 
                 //开启EF事务
                 using (TransactionScope ts = new TransactionScope())
                 {
                     try
                     {
-                        if (!Data_CouponListService.I.Any(p => p.CouponID == couponId))
+                        string storedProcedure = "SaveCouponNotActivated";
+                        List<SqlDataRecord> listSqlDataRecord = new List<SqlDataRecord>();
+                        SqlMetaData[] MetaDataArr = new SqlMetaData[] { new SqlMetaData("StartNo", SqlDbType.Int), new SqlMetaData("EndNo", SqlDbType.Int) };
+                        if (nolist != null && nolist.Count() > 0)
                         {
-                            errMsg = "该优惠券不存在";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
-
-                        //检查序列范围
-                        var query = Data_CouponListService.I.GetModels(p => p.State == (int)CouponState.NotActivated && p.CouponID == couponId);
-                        if (!string.IsNullOrEmpty(storeId))
-                        {
-                            query = query.Where(w => w.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase));
-                        }
-                        var linq = query.GroupBy(g => g.CouponID).Select(o => new
+                            for (int i = 0; i < nolist.Count(); i++)
                             {
-                                StartNo = o.Min(m => m.CouponIndex),
-                                EndNo = o.Max(m => m.CouponIndex)
-                            });
-                        if (linq.FirstOrDefault().EndNo < endNo || linq.FirstOrDefault().StartNo > startNo)
-                        {
-                            errMsg = "输入的优惠券序列超出正常范围";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
-
-                        for (int i = startNo; i <= endNo; i++)
-                        {
-                            if (!Data_CouponListService.I.Any(p => p.CouponID == couponId && p.CouponIndex == i))
-                            {
-                                errMsg = "序号" + i + "的优惠券不存在";
-                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                var record = new SqlDataRecord(MetaDataArr);
+                                record.SetValue(0, nolist[i].StartNo);
+                                record.SetValue(1, nolist[i].EndNo);
+                                listSqlDataRecord.Add(record);
                             }
-
-                            var data_CouponList = Data_CouponListService.I.GetModels(p => p.CouponID == couponId && p.CouponIndex == i).FirstOrDefault();
-                            if (data_CouponList.State != (int)CouponState.NotActivated)
-                            {
-                                errMsg = "序号" + i + "的优惠券已派发";
-                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                            }
-
-                            data_CouponList.State = (int)CouponState.Activated;
-                            Data_CouponListService.I.UpdateModel(data_CouponList);
+                        }
+                        else
+                        {
+                            var record = new SqlDataRecord(MetaDataArr);
+                            record.SetValue(0, 0);
+                            record.SetValue(1, 0);
+                            listSqlDataRecord.Add(record);
                         }
 
-                        if (!Data_CouponListService.I.SaveChanges())
+                        SqlParameter[] parameters = new SqlParameter[0];
+                        Array.Resize(ref parameters, parameters.Length + 1);
+                        parameters[parameters.Length - 1] = new SqlParameter("@CouponID", couponId);
+                        Array.Resize(ref parameters, parameters.Length + 1);
+                        parameters[parameters.Length - 1] = new SqlParameter("@StoreID", storeId);
+                        Array.Resize(ref parameters, parameters.Length + 1);
+                        parameters[parameters.Length - 1] = new SqlParameter("@Total", total);
+                        Array.Resize(ref parameters, parameters.Length + 1);
+                        parameters[parameters.Length - 1] = new SqlParameter("@NoArrayType", SqlDbType.Structured);
+                        parameters[parameters.Length - 1].Value = listSqlDataRecord;
+                        parameters[parameters.Length - 1].TypeName = "dbo.NoArrayType";
+                        Array.Resize(ref parameters, parameters.Length + 1);
+                        parameters[parameters.Length - 1] = new SqlParameter("@Result", 0);
+                        parameters[parameters.Length - 1].Direction = ParameterDirection.Output;
+                        Array.Resize(ref parameters, parameters.Length + 1);
+                        parameters[parameters.Length - 1] = new SqlParameter("@ErrMsg", SqlDbType.VarChar, 200);
+                        parameters[parameters.Length - 1].Direction = ParameterDirection.Output;
+
+                        XCCloudBLLExt.ExecuteStoredProcedure(storedProcedure, parameters);
+                        if (parameters[parameters.Length - 2].Value.ToString() != "1")
                         {
-                            errMsg = "优惠券派发失败";
+                            errMsg = "优惠券派发失败：\n";
+                            errMsg = errMsg + parameters[parameters.Length - 1].Value.ToString();
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 
@@ -929,6 +1003,19 @@ namespace XXCloudService.Api.XCCloud
             }
         }
 
+        private bool isEveryDay(string weekDays)
+        {
+            return !string.IsNullOrEmpty(weekDays) && weekDays.Contains("1") && weekDays.Contains("2") && weekDays.Contains("3") && weekDays.Contains("4") && weekDays.Contains("5") && weekDays.Contains("6") && weekDays.Contains("7");
+        }
+
+        private string getWeekName(string weekDays)
+        {
+            return !string.IsNullOrEmpty(weekDays) ?
+                (isEveryDay(weekDays) ? "每天" : "每周" + (weekDays + "|").Replace("1|", "一、").Replace("2|", "二、").Replace("3|", "三、").Replace("4|", "四、").Replace("5|", "五、").Replace("6|", "六、").Replace("7|", "日、"))
+                .TrimEnd('、')
+                : string.Empty;
+        }
+
         [Authorize(Roles = "StoreUser")]
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.MethodToken, SysIdAndVersionNo = false)]
         public object ExportCoupon(Dictionary<string, object> dicParas)
@@ -963,9 +1050,84 @@ namespace XXCloudService.Api.XCCloud
 
                 if (!Data_CouponListService.I.Any(a => a.CouponIndex >= startNo && a.CouponIndex <= endNo && a.State != (int)CouponState.NotAssigned))
                 {
-                    errMsg = "序列中存在已分配的实物券";
+                    errMsg = "序列中存在未分配的实物券";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
+
+                var data_CouponInfo = (from a in Data_CouponInfoService.N.GetModels(p => p.ID == couponId)
+                                      join b in Data_JackpotInfoService.N.GetModels() on a.JackpotID equals b.ID into b1
+                                      from b in b1.DefaultIfEmpty()
+                                      select new {
+                                          CouponType = a.CouponType,
+                                          PublishCount = a.PublishCount,
+                                          AuthorFlag = a.AuthorFlag,
+                                          AllowOverOther = a.AllowOverOther,
+                                          SendType = a.SendType,
+                                          OverMoney = a.OverMoney,
+                                          FreeCouponCount = a.FreeCouponCount,
+                                          JackpotCount = a.JackpotCount,
+                                          JackpotID = a.JackpotID,
+                                          JackpotName = b != null ? b.ActiveName : string.Empty,
+                                          CouponThreshold = a.CouponThreshold,
+                                          CouponDiscount = a.CouponDiscount,
+                                          CouponValue = a.CouponValue,
+                                          OverUseCount = a.OverUseCount,
+                                          StartDate = a.StartDate,
+                                          EndDate = a.EndDate,
+                                          WeekType = a.WeekType,
+                                          Week = a.Week,
+                                          NoStartDate = a.NoStartDate,
+                                          NoEndDate = a.NoEndDate,
+                                          StartTime = a.StartTime,
+                                          EndTime = a.EndTime,
+                                          Context = a.Context
+                                      }).FirstOrDefault();
+                //优惠券说明
+                var note = "本" + ((CouponType)data_CouponInfo.CouponType).GetDescription() + "发行数量" + data_CouponInfo.PublishCount + "张";
+                if (data_CouponInfo.AuthorFlag == 1)
+                    note = note + "，使用需要授权";
+                if(data_CouponInfo.AllowOverOther == 1)
+                    note = note + "，允许叠加使用";
+                else
+                    note = note + "，不允许叠加使用";
+                note = note + "。\n";
+                note = note + "属于" + ((SendType)data_CouponInfo.SendType).GetDescription() + "类，";
+                if (data_CouponInfo.SendType == (int)SendType.Consume || data_CouponInfo.SendType == (int)SendType.Jackpot)
+                {
+                    note = note + "消费满" + data_CouponInfo.OverMoney + "送";
+                    if (data_CouponInfo.SendType == (int)SendType.Consume)
+                    {
+                        note = note + data_CouponInfo.FreeCouponCount + "张";
+                    }
+                    else
+                    {
+                        note = note + data_CouponInfo.JackpotCount + "次" + data_CouponInfo.JackpotName + "抽奖活动";
+                    }
+                }
+                note = note + "。\n";
+                note = note + "另可享受满" + data_CouponInfo.CouponThreshold + "元打" + data_CouponInfo.CouponDiscount
+                    + "折扣，最多可抵扣" + data_CouponInfo.CouponValue + "元，且允许同时使用" + data_CouponInfo.OverUseCount + "张";
+                note = note + "。\n";
+                note = note + "使用期限为" + Utils.ConvertFromDatetime(data_CouponInfo.StartDate, "yyyy-MM-dd") + "至"
+                    + Utils.ConvertFromDatetime(data_CouponInfo.EndDate, "yyyy-MM-dd") + "，";
+                if (data_CouponInfo.WeekType == (int)TimeType.Custom)
+                {
+                    note = note + getWeekName(data_CouponInfo.Week);
+                }
+                else if (data_CouponInfo.WeekType == (int)TimeType.Workday)
+                {
+                    note = note + ((TimeType)data_CouponInfo.WeekType).GetDescription();
+                }
+                if (data_CouponInfo.NoStartDate != null && data_CouponInfo.NoEndDate != null)
+                {
+                    note = note + "除" + Utils.ConvertFromDatetime(data_CouponInfo.NoStartDate, "yyyy-MM-dd");
+                    if ((data_CouponInfo.NoEndDate.Value - data_CouponInfo.StartDate.Value).Days > 1)
+                        note = note + "~" + Utils.ConvertFromDatetime(data_CouponInfo.NoEndDate, "yyyy-MM-dd");
+                    note = note + "外";
+                }
+                note = note + " " + Utils.TimeSpanToStr(data_CouponInfo.StartTime) + "至" + Utils.TimeSpanToStr(data_CouponInfo.EndTime);
+                note = note + "。\n";
+                note = note + "备注：" + data_CouponInfo.Context;
 
                 var linq = from c in
                                (
@@ -989,6 +1151,8 @@ namespace XXCloudService.Api.XCCloud
                 dt.Columns.Add("票号");
                 dt.Columns.Add("名称");
                 dt.Columns.Add("过期时间");
+                dt.Columns.Add("说明");
+                int i = 0;
                 foreach (var item in linq)
                 {
                     var dr = dt.NewRow();
@@ -996,7 +1160,9 @@ namespace XXCloudService.Api.XCCloud
                     dr["票号"] = item.CouponCode;
                     dr["名称"] = item.CouponName;
                     dr["过期时间"] = item.EndDate;
+                    dr["说明"] = i == 0 ? note : string.Empty;
                     dt.Rows.Add(dr);
+                    i++;
                 }
 
                 string filePath = Utils.ExportToExcel(dt);

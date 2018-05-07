@@ -514,6 +514,7 @@ as
 	delete from Data_CouponList where CouponID=@CouponID
 	
     --插入优惠券记录表
+    declare @row int
     declare @tempMemberIDs table (MemberID int NULL)	
 	insert @tempMemberIDs select MemberID from @MemberIDsType
     declare @count int = 1
@@ -544,6 +545,13 @@ as
 		end
 		insert into Data_CouponList(CouponCode,CouponID,CouponIndex,SendAuthorID,SendTime,PublishType,SendType,MerchID,StoreID,[State],MemberID)
 		values (Lower(REPLACE(newid(),'-','')),@CouponID,@count,@SendAuthorID,@SendTime,@PublishType,@SendType,@MerchID,@StoreID,@state,@memberId)
+		select @row=@@ROWCOUNT
+		if(@row!=1)
+		begin
+			set @Result = -1
+			return
+		end
+		
 		set @count = @count + 1
     end    
     
@@ -560,4 +568,180 @@ as
 	else
 		update Data_CouponList set IsLock=@IsLock where CouponID=@CouponID and StoreID=@StoreID
     	
+	set @Result = 1
+
+CREATE proc [dbo].[SaveCouponNotAssigned](
+@CouponID int,@StoreID varchar(15),@Total int,
+@NoArrayType [NoArrayType] readonly,
+@Result int output,@ErrMsg varchar(200) output)
+as	
+	--判断Total是否超出可调拨数量
+	declare @NotAssignedCount int = 0
+	select @NotAssignedCount=COUNT(ID) from Data_CouponList where CouponID=@CouponID and State=0
+	if(@Total > @NotAssignedCount)
+	begin
+		set @Result = -1
+		set @ErrMsg = '超出可调拨数量，应该小于' + Convert(varchar, @NotAssignedCount)
+		return
+	end
+	
+	--判断调拨门店是否存在
+	if(ISNULL(@StoreID,'')='')
+	begin
+		set @Result = -1
+		set @ErrMsg = '门店ID不能为空'
+		return
+	end
+	
+	if not exists (select 1 from Base_StoreInfo where StoreID=@StoreID)
+	begin
+		set @Result = -1
+		set @ErrMsg = '调拨门店不存在，编号为' + @StoreID
+		return
+	end
+	
+    --调拨优惠券记录表
+    declare @row int
+    declare @tempNoArray table (StartNo int NULL, EndNo int NULL)	
+	insert @tempNoArray select StartNo, EndNo from @NoArrayType
+    declare @count int = 0
+    select @count=COUNT(StartNo) from @tempNoArray
+    declare @startNo int
+    declare @endNo int
+    declare @i int
+    declare @ID int
+    declare @State int
+    
+    while(@count>0)
+    begin
+		SET ROWCOUNT 1
+		select @startNo=StartNo, @endNo=EndNo from @tempNoArray			
+		SET ROWCOUNT 0			
+		delete from @tempNoArray where StartNo=@startNo
+		
+		set @i = @startNo
+		while(@i<=@endNo)
+		begin			
+			select @ID=ID, @State=[State] from Data_CouponList where CouponID=@CouponID and CouponIndex=@i
+			select @row=@@ROWCOUNT
+			if(@row=0)
+			begin
+				set @Result = -1
+				set @ErrMsg = '编号为' + Convert(varchar, @CouponID) + '的优惠券第' + Convert(varchar, @i) + '张不存在'
+				return
+			end
+			
+			if(@row>1)
+			begin
+				set @Result = -1
+				set @ErrMsg = '编号为' + Convert(varchar, @CouponID) + '序号为' + Convert(varchar, @i) + '的优惠券存在' + Convert(varchar, @row) + '张'
+				return
+			end
+			
+			if(@State!=0)
+			begin
+				set @Result = -1
+				set @ErrMsg = '编号为' + Convert(varchar, @CouponID) + '的优惠券第' + Convert(varchar, @i) + '张已调拨'
+				return
+			end
+			
+			update Data_CouponList set [State]=1, StoreID=@StoreID where ID=@ID
+			select @row=@@ROWCOUNT
+			if(@row!=1)
+			begin
+				set @Result = -1
+				set @ErrMsg = '编号为' + Convert(varchar, @CouponID) + '的优惠券第' + Convert(varchar, @i) + '张调拨失败'
+				return
+			end
+					
+			set @i=@i+1
+		end 
+		
+		set @count=@count-1		
+    end    
+    
+	set @Result = 1
+
+CREATE proc [dbo].[SaveCouponNotActivated](
+@CouponID int,@StoreID varchar(15),@Total int,
+@NoArrayType [NoArrayType] readonly,
+@Result int output,@ErrMsg varchar(200) output)
+as	
+	--判断Total是否超出可派发数量
+	declare @NotActivatedCount int = 0
+	if(ISNULL(@StoreID,'')='')
+		select @NotActivatedCount=COUNT(ID) from Data_CouponList where CouponID=@CouponID and State=1
+	else
+		select @NotActivatedCount=COUNT(ID) from Data_CouponList where CouponID=@CouponID and State=1 and StoreID=@StoreID
+				
+	if(@Total > @NotActivatedCount)
+	begin
+		set @Result = -1
+		set @ErrMsg = '超出可派发数量，应该小于' + Convert(varchar, @NotActivatedCount)
+		return
+	end	
+	
+    --派发优惠券记录表
+    declare @row int
+    declare @tempNoArray table (StartNo int NULL, EndNo int NULL)	
+	insert @tempNoArray select StartNo, EndNo from @NoArrayType
+    declare @count int = 0
+    select @count=COUNT(StartNo) from @tempNoArray
+    declare @startNo int
+    declare @endNo int
+    declare @i int
+    declare @ID int
+    declare @State int
+    
+    while(@count>0)
+    begin
+		SET ROWCOUNT 1
+		select @startNo=StartNo, @endNo=EndNo from @tempNoArray			
+		SET ROWCOUNT 0			
+		delete from @tempNoArray where StartNo=@startNo
+		
+		set @i = @startNo
+		while(@i<=@endNo)
+		begin			
+			if(ISNULL(@StoreID,'')='')
+				select @ID=ID, @State=[State] from Data_CouponList where CouponID=@CouponID and CouponIndex=@i
+			else
+				select @ID=ID, @State=[State] from Data_CouponList where CouponID=@CouponID and CouponIndex=@i and StoreID=@StoreID
+			select @row=@@ROWCOUNT
+			if(@row=0)
+			begin
+				set @Result = -1
+				set @ErrMsg = '编号为' + Convert(varchar, @CouponID) + '的优惠券第' + Convert(varchar, @i) + '张不存在或已调拨给其他门店'
+				return
+			end
+
+			if(@row>1)
+			begin
+				set @Result = -1
+				set @ErrMsg = '编号为' + Convert(varchar, @CouponID) + '序号为' + Convert(varchar, @i) + '的优惠券存在' + Convert(varchar, @row) + '张'
+				return
+			end
+			
+			if(@State!=1)
+			begin
+				set @Result = -1
+				set @ErrMsg = '编号为' + Convert(varchar, @CouponID) + '的优惠券第' + Convert(varchar, @i) + '张已派发'
+				return
+			end
+			
+			update Data_CouponList set [State]=2 where ID=@ID
+			select @row=@@ROWCOUNT
+			if(@row!=1)
+			begin
+				set @Result = -1
+				set @ErrMsg = '编号为' + Convert(varchar, @CouponID) + '的优惠券第' + Convert(varchar, @i) + '张派发失败'
+				return
+			end
+					
+			set @i=@i+1
+		end 
+		
+		set @count=@count-1		
+    end    
+    
 	set @Result = 1

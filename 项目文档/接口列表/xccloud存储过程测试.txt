@@ -5,6 +5,24 @@ exec GetMemberLevel '100025420106001'
 -----------------------------------------------------------------------------------------------------------------------------------------
 
 -----------------------------------------------------------------------------------------------------------------------------------------
+--获取会员开卡套餐信息列表
+exec GetMemberOpenCardFood '100025420106001',22
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+declare @FoodDetail [FoodDetailType]
+insert into @FoodDetail(FoodId,PayType) values(129,4)
+insert into @FoodDetail(FoodId,PayType) values(136,3)
+declare @ErrMsg varchar(200)
+declare @CheckExistEffectiveOpenCardFood int
+declare @OpenCardFoodId int
+exec @CheckExistEffectiveOpenCardFood = CheckExistEffectiveOpenCardFood '100025420106001',22,@FoodDetail,@OpenCardFoodId output,@ErrMsg output
+print '@CheckExistEffectiveOpenCardFood:' + cast(@CheckExistEffectiveOpenCardFood as varchar)
+print '@OpenCardFoodId:' + cast(@OpenCardFoodId as varchar)
+print '@ErrMsg:' + @ErrMsg
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------------------------------------------------------------------
 --获取会员开卡套餐信息
 declare @Result int
 declare @ErrMsg varchar(200)
@@ -41,13 +59,20 @@ print @ErrMsg
 ********************************************************************满减促销*************************************************************
 -----------------------------------------------------------------------------------------------------------------------------------------
 --获取满减信息
+declare @MerchId int = 100025
 declare @StoreId varchar(15) = ''
-declare @MemberLevelId int = 0
-declare @ICCardId int = 10004143
+declare @MemberLevelId int = 2
+declare @MemberId int = 33
 declare @FoodPrice decimal(18,2) = 200
-declare @DiscountPrice decimal(18,2)
+declare @SubPrice decimal(18,2) = 0
+declare @DiscountRuleID int
 declare @ErrMsg varchar(200) = ''
-exec GetDiscount @StoreId,@MemberLevelId,@ICCardId,@FoodPrice,@DiscountPrice output,@ErrMsg output
+declare @RS int = 0
+exec @RS = GetDiscount @MerchId,@StoreId,@MemberLevelId,@MemberId,@FoodPrice,@DiscountRuleID output,@SubPrice output,@ErrMsg output
+print @RS
+print @ErrMsg
+print @SubPrice
+print @DiscountRuleID
 -----------------------------------------------------------------------------------------------------------------------------------------
 
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -64,8 +89,12 @@ exec GetDiscount @StoreId,@MemberLevelId,@ICCardId,@FoodPrice,@DiscountPrice out
 
 -----------------------------------------------------------------------------------------------------------------------------------------
  select dbo.GetDiscountRecordByStoreId('100025','100025420106001',1)
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------------------------------------------------
 
+-----------------------------------------------------------------------------------------------------------------------------------------
 --获取会员基础信息
 declare @ICCardID varchar(50) = '10004143'
 declare @StoreID varchar(50) = '100025420106001' 
@@ -80,7 +109,40 @@ exec [GetMemberBaseInfo] @ICCardID,@StoreID,@Result output,@MemberId output,@Err
 CREATE TABLE dbo.#Tmp_MemberBalanceInfo(BalanceIndex int,BanlanceName varchar(50) NULL,Banlance decimal NULL)
 insert into #Tmp_MemberBalanceInfo
 exec GetMemberBalanceInfo @MemberId
+-----------------------------------------------------------------------------------------------------------------------------------------
 
+-----------------------------------------------------------------------------------------------------------------------------------------
+declare @GetMemberIdRS int = 0
+declare @MemberId int = 0
+declare @StoreId varchar(15) = '100025420106001'
+declare @ICCardId int = 10004143
+declare @CanUse bit = 0
+declare @CardStatusName varchar(200) = ''
+declare @ErrMsg varchar(200) = ''
+exec @GetMemberIdRS = GetMemberId @StoreId,@ICCardId,@MemberId output,@CanUse output,@CardStatusName output,@ErrMsg output
+print @GetMemberIdRS
+print @MemberId
+print @CanUse
+print @CardStatusName
+print @ErrMsg
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+declare @MerchId int = 100025
+declare @StoreId varchar(15) = '100025420106001'
+declare @MemberLevelId int = 2
+declare @ICCardId int = 10004143
+declare @FoodPrice decimal(18,2) = 200
+declare @SubPrice decimal(18,2) = 0
+declare @DiscountRuleID int
+declare @ErrMsg varchar(200) = ''
+declare @RS int = 0
+exec @RS = GetDiscountForAPI @MerchId,@StoreId,@MemberLevelId,@ICCardId,@FoodPrice,@DiscountRuleID output,@SubPrice output,@ErrMsg output
+print @RS
+print @ErrMsg
+print @SubPrice
+print @DiscountRuleID
+-----------------------------------------------------------------------------------------------------------------------------------------
 
 --添加码表
 declare @StoreId varchar(15) = '100025420106001'
@@ -192,12 +254,25 @@ print @FoodSalePrice
 
 
 
-
+----------------------------------------------------------------------------------------------------
+declare @FoodDetailCount int
+declare @FoodDetail [FoodDetailType]
+insert into @FoodDetail(FoodId,FoodCount,PayType,PayNum) values(3,1,98305,100)
+insert into @FoodDetail(FoodId,FoodCount,PayType,PayNum) values(1,1,0,1000)
+insert into @FoodDetail(FoodId,FoodCount,PayType,PayNum) values(6,1,98306,100)
+insert into @FoodDetail(FoodId,FoodCount,PayType,PayNum) values(4,1,98307,100)
+insert into @FoodDetail(FoodId,FoodCount,PayType,PayNum) values(7,1,98308,100)
+insert into @FoodDetail(FoodId,FoodCount,PayType,PayNum) values(5,1,98309,100)
+insert into @FoodDetail(FoodId,FoodCount,PayType,PayNum) values(8,1,98315,500)
+exec GetFoodDetailCount @FoodDetail,@FoodDetailCount output
+print @FoodDetailCount
 ----------------------------------------------------------------------------------------------------
 
 ----------------------------------------------------------------------------------------------------
 declare @StoreId varchar(15) = '100025420106001'
 exec dbo.GetFoodDetail @StoreId,133
+----------------------------------------------------------------------------------------------------
+
 ----------------------------------------------------------------------------------------------------
 select * from Data_FoodInfo where FoodID in (133,135,136,138)
 declare @FoodDetailCommonQueryType FoodDetailCommonQueryType 

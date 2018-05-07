@@ -103,15 +103,16 @@ namespace XCCloudService.Common
         {
             errMsg = string.Empty;
 
-            if (!IsNull(t))
+            if (!Nonempty(t, discription, out errMsg))
             {
-                var date = new DateTime();
-                if (!DateTime.TryParse(t.ToString(), out date))
-                {
-                    errMsg = discription + "格式不正确";
-                    return false;
-                }
+                return false;
+            }
 
+            var date = new DateTime();
+            if (!DateTime.TryParse(t.ToString(), out date))
+            {
+                errMsg = discription + "格式不正确";
+                return false;
             }
             
             return true;            

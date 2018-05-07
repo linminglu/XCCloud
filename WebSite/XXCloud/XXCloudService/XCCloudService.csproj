@@ -382,6 +382,7 @@
     <Content Include="Api\XCCloud\GameWatch.ashx" />
     <Content Include="Api\HaoKu\hkreq.ashx" />
     <Content Include="Api\XCCloud\DigitFood.ashx" />
+    <Content Include="Api\XCCloud\Discount.ashx" />
     <Content Include="Excel.xlsx" />
     <None Include="Properties\PublishProfiles\111.pubxml" />
     <None Include="Properties\PublishProfiles\qqq.pubxml" />
@@ -1167,6 +1168,9 @@
     </Compile>
     <Compile Include="Api\XCCloud\DigitFood.ashx.cs">
       <DependentUpon>DigitFood.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="Api\XCCloud\Discount.ashx.cs">
+      <DependentUpon>Discount.ashx</DependentUpon>
     </Compile>
     <Compile Include="Api\XCCloud\GameWatch.ashx.cs">
       <DependentUpon>GameWatch.ashx</DependentUpon>

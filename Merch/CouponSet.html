@@ -322,22 +322,18 @@
             </div>
         </div>
         <div class="layui-form-item">
+
             <div class="layui-inline">
-                <label class="layui-form-label">调拨序号</label>
-                <div class="layui-input-inline" style="width: 115px">
-                    <input type="text" class="layui-input" id="transferStartNo">
+                <div class="layui-input-inline" >
+                   <button type="button" class="layui-btn layui-btn-normal" id="toaddNextNo">添加号码段</button>
                 </div>
-                <div class="layui-form-mid">至</div>
-                <div class="layui-input-inline" style="width: 115px">
-                    <input type="text" class="layui-input" id="transferEndNo">
+                <div class="layui-input-inline">
+                    <button type="button" class="layui-btn layui-bg-orange" id="clearNo">重新填写</button>
                 </div>
             </div>
-            <div class="layui-inline">
-                <label class="layui-form-label">调拨数量</label>
-                <div class="layui-input-inline" style="width: 115px">
-                    <input type="text" class="layui-input" id="canTransfer" disabled style="color: red">
-                </div>
-            </div>
+            <blockquote class="layui-elem-quote">
+               <p class="barCoadBox"></p>
+            </blockquote>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">调拨门店</label>
@@ -351,6 +347,26 @@
         <div style="text-align:center;">
             <button type="button" class="layui-btn layui-btn-primary" id="saveTransfer">保存</button>
         </div>
+    </form>
+</div>
+<div id="selectNo" style="display:none; padding: 15px">
+    <form action="" class="layui-form layui-form-pane">
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">调拨序号</label>
+                <div class="layui-input-inline" style="width: 115px">
+                    <input type="text" class="layui-input" id="transferStartNo">
+                </div>
+                <div class="layui-form-mid">至</div>
+                <div class="layui-input-inline" style="width: 115px">
+                    <input type="text" class="layui-input" id="transferEndNo">
+                </div>
+            </div>
+        </div>
+          <div style="text-align:center;">
+              <button type="button" class="layui-btn layui-btn-normal" id="addNextNo">确定</button>
+          </div>
+
     </form>
 </div>
 <!--优惠券派发弹窗-->
@@ -466,7 +482,7 @@
              <p style="color: red;">注意:只有实物券才可以导出</p>
         </blockquote>
         <div style="text-align:center;">
-            <button type="button" class="layui-btn layui-btn-primary">保存</button>
+            <button type="button" class="layui-btn layui-btn-primary" id="exportBtn">确认导出</button>
         </div>
     </form>
 </div>
@@ -963,12 +979,37 @@
     let weekType=0;let week=[];
     let transferStore='';
     let startNo;let endNo;
+    let noArr=[];
+    let noArrText='已选择号码段:';
 
     layui.use(['form','layer','table','laydate'],()=>{
         let form=layui.form;
         let layer=layui.layer;
         let table=layui.table;
         let laydate=layui.laydate;
+        $('#toaddNextNo').click(function () {
+            indexLayer=layer.open({
+                title:'添加号码段，点击可再次添加',
+                type:'1',
+                area:'430px',
+                content:$('#selectNo')
+            })
+        });
+        //填写调拨号码段
+        $('#addNextNo').click(function () {
+            layer.close(indexLayer);
+            noArr.push({'startNo':$('#transferStartNo').val(),'endNo':$('#transferEndNo').val()});
+            noArrText+=$('#transferStartNo').val()+'-'+$('#transferEndNo').val()+','
+            $('#transferStartNo').val('');
+            $('#transferEndNo').val('');
+            $('.barCoadBox').text(noArrText)
+        });
+        //清空调拨号码段
+        $('#clearNo').click(function () {
+            noArr=[];
+            noArrText='已选择号码段:';
+            $('.barCoadBox').text(noArrText)
+        });
         //监听
         form.on('select(CouponType)',(data)=>{
             CouponType=data.value;
@@ -1278,8 +1319,7 @@
         //保存实物券调拨
         $('#saveTransfer').on('click',function () {
             let obj={'couponId':Id,
-                'startNo':$('#transferStartNo').val(),
-                'endNo':$('#transferEndNo').val(),
+                'noArr':noArr,
                 'storeId':transferStore,
                 'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
             let parseJson = JSON.stringify(obj);
@@ -1344,9 +1384,11 @@
         //调拨信息明细
         $('body').on('click','button[name="couponSendBtn"]',function () {
             let _couponid=$(this).prop('id');
+            let  _AssignedCount=$(this).attr('data-id');
             let obj={'couponId':_couponid,
                 'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
             let parseJson = JSON.stringify(obj);
+            if(_AssignedCount>0){
                 $.ajax({
                     type:'post',
                     url:'/XCCloud/Coupon?action=GetCouponAssigned',
@@ -1381,8 +1423,36 @@
                         }
                     }
                 })
+            }else {
+                layer.msg('当前优惠券没有调拨记录！')
+            }
+
 
         });
+        //确认导出
+        $('#exportBtn').on('click',function () {
+            let _obj={'couponID':Id,
+                'startNo':$('#exportStartNo').val(),
+                'endNo':$('#exportEndNo').val(),
+                'userToken':token,
+                'signkey':'1f626576304bf5d95b72ece2222e42c3'}
+            let parseJson = JSON.stringify(_obj);
+            $.ajax({
+                type: 'post',
+                url: '/XCCloud/Coupon?action=ExportCoupon',
+                contentType: "application/json; charset=utf-8",
+                data: {parasJson: parseJson},
+                success: function (data) {
+                    data = JSON.parse(data);
+                    console.log(data)
+                    if (data.result_code == 1) {
+                        document.location.href = "/Report/ToExcel.aspx?guid=" + data.result_data;
+                        layer.closeAll()
+                    }
+                }
+            })
+
+        })
         //监听table工具栏
         table.on('tool(couponSetTable)',(obj)=>{
             var data = obj.data; //获得当前行数据
@@ -1390,38 +1460,20 @@
             var layEvent = obj.event;
             if(layEvent === 'export'){ //导出
                 Id=data.ID;
-                let _obj={'couponID':Id,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'}
-                let parseJson = JSON.stringify(_obj);
-                $.ajax({
-                    type: 'post',
-                    url: '/XCCloud/Coupon?action=GetCouponNotAssigned',
-                    contentType: "application/json; charset=utf-8",
-                    data: {parasJson: parseJson},
-                    success: function (data) {
-                        data = JSON.parse(data);
-                        if (data.result_code == 1) {
-                            $('#exportName').val(data.result_data[0].CouponName);
-                            $('#exportCouponType').val(data.result_data[0].CouponTypeStr);
-                            $('#exportCouponCount').val(data.result_data[0].NotAssignedCount);
-                            $('#exportStartDate').val(data.result_data[0].StartDate);
-                            $('#exportEndDate').val(data.result_data[0].EndDate);
-                            $('#exportStartNo').val(data.result_data[0].StartDate);
-                            $('#exportEndNo').val(data.result_data[0].EndDate);
-                            startNo=data.result_data[0].StartNo;
-                            endNo=data.result_data[0].EndNo;
-                            layer.open({
-                                title:'选择导出优惠券',
-                                type:'1',
-                                area:'670px',
-                                content:$('.couponExport')
-                            })
-                        }
-                    }
-                });
-
+                $('#exportName').val(data.CouponName);
+                $('#exportCouponType').val(data.CouponTypeStr);
+                $('#exportCouponCount').val(data.PublishCount);
+                $('#exportStartDate').val(data.StartDate);
+                $('#exportEndDate').val(data.EndDate);
+                layer.open({
+                    title:'选择导出优惠券',
+                    type:'1',
+                    area:'670px',
+                    content:$('.couponExport')
+                })
             }else  if(layEvent === 'transfers'){ //调拨
                 Id=data.ID;
-                transferStore='';
+                transferStore='';noArr=[];
                 let _obj={'couponID':Id,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'}
                 let parseJson = JSON.stringify(_obj);
                 $.ajax({
@@ -1436,10 +1488,10 @@
                             $('#transferCount').val(data.result_data[0].NotAssignedCount);
                             $('#transferStartDate').val(data.result_data[0].StartDate);
                             $('#transferEndDate').val(data.result_data[0].EndDate);
-                            $('#transferStartNo').val(data.result_data[0].StartNo);
-                            $('#transferEndNo').val(data.result_data[0].EndNo);
-                            startNo=data.result_data[0].StartNo;
-                            endNo=data.result_data[0].EndNo;
+                            // $('#transferStartNo').val(data.result_data[0].StartNo);
+                            // $('#transferEndNo').val(data.result_data[0].EndNo);
+                            // startNo=data.result_data[0].StartNo;
+                            // endNo=data.result_data[0].EndNo;
                             $('#canTransfer').val(data.result_data[0].NotAssignedCount);
                             xc.sendStore('transferStore',Id,token,form,layer);
                             layer.open({
@@ -1906,7 +1958,7 @@
     {{#  } }}
 </script>
 <script type="text/html" id="assigned">
-    <button type="button" class="layui-btn layui-btn-xs layui-bg-orange" name='couponSendBtn' style="width: 80px" id="{{d.ID}}"><i class="layui-icon layui-icon-zcamber-l"></i>{{d.AssignedCount}}</button>
+    <button type="button" class="layui-btn layui-btn-xs layui-bg-orange" name='couponSendBtn' data-id="{{d.AssignedCount}}" style="width: 80px" id="{{d.ID}}"><i class="layui-icon layui-icon-zcamber-l"></i>{{d.AssignedCount}}</button>
 </script>
 <script type="text/html" id="barDemo2">
     {{# if(d.IsLock==1){ }}

@@ -310,6 +310,22 @@
             common(url, parasJson);
         }
 
+        function do_getDiscountForAPI() {
+            var mercheId = $("#txtDiscount_mercheId_GetDiscountForAPI").val();
+            var storeId = $("#txtDiscount_storeId_GetDiscountForAPI").val();
+            var memberLevelId = $("#txtDiscount_memberLevelId_GetDiscountForAPI").val();
+            var icCardId = $("#txtDiscount_icCardID_GetDiscountForAPI").val();
+            var foodPrice = $("#txtDiscount_foodSale_GetDiscountForAPI").val();
+            var parasObj = {
+                "sysId": "0", "versionNo": "0.0.0.1", "userToken": userToken,
+                "mercheId": mercheId, "storeId": storeId, "memberLevelId": memberLevelId,
+                "icCardId": icCardId, "foodPrice": foodPrice
+            };
+            var url = "/XCCloud/Discount?action=getDiscountForAPI";
+            var parasJson = JSON.stringify(parasObj);
+            common(url, parasJson);
+        }
+
     </script>
         
 </head>
@@ -347,6 +363,14 @@
         套餐Id：<input id="txt_do_GetFoodDetail" type="text" value="1" /><input id="Button_Food_3" type="button" value="do_GetFoodDetail(获取套餐明细)" onclick="do_GetFoodDetail()" />
     </div>
 
+    <div title="Discount" style="font-size:14px;color:#F00;border:1px solid #ccc;">
+        商户ID：<input id="txtDiscount_mercheId_GetDiscountForAPI" type="text" value="100025" />
+        门店ID：<input id="txtDiscount_storeId_GetDiscountForAPI" type="text" value="100025420106001" />
+        会员级别ID：<input id="txtDiscount_memberLevelId_GetDiscountForAPI" type="text" value="2" />
+        会员ICCardID：<input id="txtDiscount_icCardID_GetDiscountForAPI" type="text" value="10004143" />
+        套餐销售金额：<input id="txtDiscount_foodSale_GetDiscountForAPI" type="text" value="300.00" />
+        <input id="btn_do_getDiscountForAPI" type="button" onclick="do_getDiscountForAPI()" value="获取满减金额"/>
+    </div>
 
     <div title="Order" style="font-size:14px;color:#F00;border:1px solid #ccc;">
         <input id="Button_Order_1" type="button" value="do_GetOrder(获取订单流水号)" onclick="do_GetOrder()" />

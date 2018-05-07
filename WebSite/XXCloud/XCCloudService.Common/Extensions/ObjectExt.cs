@@ -138,9 +138,7 @@ namespace XCCloudService.Common.Extensions
         public static TimeSpan Totimespan<T>(this T key, TimeSpan defaultvalue)
         {
             if (key.IsNull()) return defaultvalue;
-            if (TimeSpan.TryParse(key.ToString(), out defaultvalue))
-                return defaultvalue;
-            return defaultvalue;
+            return Utils.StrToTimeSpan(key.ToString(), defaultvalue);           
         }
         /// <summary>
         /// 将泛型转换为timespan型数字（失败返回null）
@@ -151,10 +149,7 @@ namespace XCCloudService.Common.Extensions
         public static TimeSpan? Totimespan<T>(this T key)
         {
             if (key.IsNull()) return null;
-            var timespan = new TimeSpan();
-            if (TimeSpan.TryParse(key.ToString(), out timespan))
-                return timespan;
-            return null;
+            return Utils.StrToTimeSpan(key.ToString());
         }
     }
 }

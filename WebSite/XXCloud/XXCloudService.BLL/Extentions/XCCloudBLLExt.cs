@@ -13,7 +13,7 @@ namespace XCCloudService.BLL.Extentions
     {
         public static void ExecuteStoredProcedure(string storedProcedureName, SqlParameter[] paramArr)
         {
-            var dbContext = DbContextFactory.CreateByContainerName("XCCloudDBEntities");
+            var dbContext = DbContextFactory.CreateByModelNamespace("XCCloudService.Model.XCCloud");
             dbContext.ExecuteStoredProcedure(storedProcedureName, paramArr);
         }
     }

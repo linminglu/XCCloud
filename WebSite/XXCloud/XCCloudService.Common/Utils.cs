@@ -359,9 +359,10 @@ namespace XCCloudService.Common
             return StrToTimeSpan(str, new TimeSpan(0, DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second));
         }
 
-        public static string TimeSpanToStr(TimeSpan ts)
+        public static string TimeSpanToStr(TimeSpan? ts)
         {
-            return string.Format("{0:00}:{1:00}", ts.Hours, ts.Minutes);
+            if (ts == null) return "00:00";
+            return string.Format("{0:00}：{1:00}", ts.Value.Hours, ts.Value.Minutes);
         }
 
         /// <summary>
@@ -2261,6 +2262,17 @@ namespace XCCloudService.Common
             return System.Enum.GetName(enumValue.GetType(), enumValue);
         }
 
+        public static string GetDescription(this System.Enum value)
+        {
+            FieldInfo field = value.GetType().GetField(value.ToString());
+
+            DescriptionAttribute attribute
+                    = Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute))
+                        as DescriptionAttribute;
+
+            return attribute == null ? null : attribute.Description;
+        }
+
         #endregion
         #region "Des加密"
 
@@ -2397,7 +2409,7 @@ namespace XCCloudService.Common
          }
 
         #region "导入导出"
-        public static string ExportToExcel(DataTable dt, string note = "")
+        public static string ExportToExcel(DataTable dt)
         {
             string fileName = "Excel";
             string sourceFilePath = HttpContext.Current.Server.MapPath("/" + fileName + ".xlsx");
