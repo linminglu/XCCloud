@@ -105,9 +105,10 @@
         <div class="layui-form-item" id="saleShow">
             <div class="layui-inline">
                 <label class="layui-form-label" style="padding: 8px 0;">折扣</label>
-                <div class="layui-input-inline" style="width: 110px;">
+                <div class="layui-input-inline" style="width: 80px;">
                     <input type="text" class="layui-input" required id="CouponDiscount">
                 </div>
+                <div class="layui-form-mid">折</div>
             </div>
             <div class="layui-inline">
                 <label class="layui-form-label" style="padding: 8px 0;">使用门槛</label>
@@ -1665,7 +1666,7 @@
                         'startTime':$('#StartTime').val(),
                         'endTime':$('#EndTime').val(),
                         'noStartDate':$('#NoStartDate').val(),
-                        'noEndTime':$('#NoEndDate').val(),
+                        'noEndDate':$('#NoEndDate').val(),
                         'sendType':SendType,
                         'overMoney':$('#OverMoney').val(),
                         'freeCouponCount':$('#FreeCouponCount').val(),
@@ -1931,16 +1932,16 @@
     {{#  } }}
     <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="send">实物券派发</a>
     {{# if(d.IsLock==1){ }}
-    <a class="layui-btn layui-btn-xs layui-bg-green" lay-event="unlock"><i class="layui-icon layui-icon-zzunlock"></i>解锁</a>
+    <a class="layui-btn layui-btn-xs layui-bg-green" lay-event="unlock"><i class="layui-icon layui-icon-zzunlock">解锁</i></a>
     {{# }else{ }}
-    <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="lock"><i class="layui-icon layui-icon-zzunlock-alt"></i>锁定</a>
+    <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="lock"><i class="layui-icon layui-icon-zzunlock-alt">锁定</i></a>
     {{#  } }}
 </script>
 <script type="text/html" id="isLock">
     {{# if(d.IsLock==1){ }}
-    <input type="checkbox" checked name="switch" lay-skin="switch" lay-text="锁定|未锁" class="tb_check" lay-filter="test" disabled>
+    <input type="checkbox"  name="switch" lay-skin="switch" lay-text="未锁|已锁" class="tb_check" lay-filter="test" disabled>
     {{# }else{ }}
-    <input type="checkbox" name="switch" lay-skin="switch" lay-text="锁定|未锁" class="tb_check" lay-filter="test" disabled>
+    <input type="checkbox" checked name="switch" lay-skin="switch" lay-text="未锁|已锁" class="tb_check" lay-filter="test" disabled>
     {{#  } }}
 </script>
 <script type="text/html" id="AuthorFlag">
@@ -1962,9 +1963,9 @@
 </script>
 <script type="text/html" id="barDemo2">
     {{# if(d.IsLock==1){ }}
-    <a class="layui-btn layui-btn-xs layui-bg-green" lay-event="unlock"><i class="layui-icon layui-icon-zzunlock"></i>解锁</a>
+    <a class="layui-btn layui-btn-xs layui-bg-green" lay-event="unlock"><i class="layui-icon layui-icon-zzunlock">解锁</i></a>
     {{# }else{ }}
-    <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="lock"><i class="layui-icon layui-icon-zzunlock-alt"></i>锁定</a>
+    <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="lock"><i class="layui-icon layui-icon-zzunlock-alt">锁定</i></a>
     {{#  } }}
 </script>
 </html>

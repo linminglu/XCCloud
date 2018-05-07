@@ -15,6 +15,6 @@ namespace XCCloudService.BLL.Extentions
         {
             var dbContext = DbContextFactory.CreateByModelNamespace("XCCloudService.Model.XCCloud");
             dbContext.ExecuteStoredProcedure(storedProcedureName, paramArr);
-        }
+        }        
     }
 }

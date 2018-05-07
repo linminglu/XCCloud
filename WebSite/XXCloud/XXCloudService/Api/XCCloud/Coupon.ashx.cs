@@ -53,37 +53,32 @@ namespace XXCloudService.Api.XCCloud
                 string errMsg = string.Empty;
                 object[] conditions = dicParas.ContainsKey("conditions") ? (object[])dicParas["conditions"] : null;
 
-                SqlParameter[] parameters = new SqlParameter[1];
-                string sqlWhere = string.Empty;
+                SqlParameter[] parameters = new SqlParameter[1];                
                 parameters[0] = new SqlParameter("@MerchId", merchId);
 
+                string sqlWhere = string.Empty;
                 if (conditions != null && conditions.Length > 0)
                 {
                     if (!QueryBLL.GenDynamicSql(conditions, "a.", ref sqlWhere, ref parameters, out errMsg))
                     {
                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                     }
+                }               
+
+                string storedProcedure = "QueryCouponInfo";
+                Array.Resize(ref parameters, parameters.Length + 1);
+                parameters[parameters.Length - 1] = new SqlParameter("@SqlWhere", sqlWhere);
+                Array.Resize(ref parameters, parameters.Length + 1);
+                parameters[parameters.Length - 1] = new SqlParameter("@Result", SqlDbType.Int);
+                parameters[parameters.Length - 1].Direction = ParameterDirection.Output;
+                System.Data.DataSet ds = XCCloudBLL.GetStoredProcedureSentence(storedProcedure, parameters);
+                if (parameters[parameters.Length - 1].Value.ToString() != "1")
+                {
+                    errMsg = "查询优惠券数据失败";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
-
-                string sql = @"select a.ID, a.CouponName, a.EntryCouponFlag, a.CouponType, b.DictKey as CouponTypeStr, a.PublishCount, (isnull(c.UseCount, 0) + isnull(d.UseCount, 0)) as UseCount, " +
-                    " isnull(f.NotAssignedCount, 0) as NotAssignedCount, isnull(g.NotActivatedCount, 0) as NotActivatedCount, isnull(h.ActivatedCount, 0) as ActivatedCount, " +
-                    " a.AuthorFlag, a.AllowOverOther, a.OpUserID, j.LogName as OpUserName, a.Context, isnull(i.IsLock, 0) as IsLock, " +
-                    " (case when isnull(a.StartDate,'')='' then '' else convert(varchar,a.StartDate,23) end) as StartDate, (case when isnull(a.EndDate,'')='' then '' else convert(varchar,a.EndDate,23) end) as EndDate, " +
-                    " (case when isnull(a.CreateTime,'')='' then '' else convert(varchar,a.CreateTime,23) end) as CreateTime " +
-                    " from Data_CouponInfo a" +
-                    " left join (select b.* from Dict_System a inner join Dict_System b on a.ID=b.PID where a.DictKey='优惠券类别' and a.PID=0) b on convert(varchar, a.CouponType)=b.DictValue " +
-                    " left join (select a.ID as CouponID, count(c.ID) as UseCount from Data_CouponInfo a inner join Data_CouponList b on a.ID=b.CouponID inner join Flw_CouponUse c on b.ID=c.CouponCode group by a.ID) c on a.ID=c.CouponID " +
-                    " left join (select a.ID as CouponID, count(b.ID) as UseCount from Data_CouponInfo a inner join Flw_CouponUse b on a.ID=b.CouponID group by a.ID) d on a.ID=d.CouponID " +
-                    " left join (select a.ID as CouponID, count(b.ID) as NotAssignedCount from Data_CouponInfo a inner join Data_CouponList b on a.ID=b.CouponID where isnull(b.State, 0)=0 group by a.ID) f on a.ID=f.CouponID " +
-                    " left join (select a.ID as CouponID, count(b.ID) as NotActivatedCount from Data_CouponInfo a inner join Data_CouponList b on a.ID=b.CouponID where isnull(b.State, 0)=1 group by a.ID) g on a.ID=g.CouponID " +
-                    " left join (select a.ID as CouponID, count(b.ID) as ActivatedCount from Data_CouponInfo a inner join Data_CouponList b on a.ID=b.CouponID where isnull(b.State, 0)=2 group by a.ID) h on a.ID=h.CouponID " +
-                    " left join (select a.ID as CouponID, min(isnull(b.IsLock,0)) as IsLock from Data_CouponInfo a inner join Data_CouponList b on a.ID=b.CouponID group by a.ID) i on a.ID=i.CouponID " +
-                    " left join Base_UserInfo j on a.OpUserID=j.UserID " +
-                    " where a.MerchID=@MerchId";
-                sql = sql + sqlWhere;
-
-                IData_CouponInfoService data_CouponInfoService = BLLContainer.Resolve<IData_CouponInfoService>();
-                var data_CouponInfo = data_CouponInfoService.SqlQuery<Data_CouponInfoModel>(sql, parameters).ToList();
+                
+                var data_CouponInfo = Utils.GetModelList<Data_CouponInfoModel>(ds.Tables[0]).ToList();
 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, data_CouponInfo);
             }
