@@ -203,20 +203,20 @@
     let token=xc.getStorage('token');
     let Id='';
     //初始化table
-    let parm1={'obj':{'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'},
+    let parm={'obj':{'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'},
         'url':'/XCCloud/Discount?action=QueryDiscountRule',
         'elem':'#fullReductionTable',
         'cols':[
             {field:'ID', title:'优惠券规则ID', align: 'center', sort: true}
             ,{field:'RuleName',title: '规则名称', align: 'center'}
-            ,{field:'ShareCount', title: '是否共享', align: 'center'}
+            ,{field:'ShareCount', title: '是否共享', align: 'center',templet:'#ShareCount1'}
             ,{field:'RuleLevel', title: '优先级', align: 'center'}
             ,{field:'StartDate', title: '开始时间', align: 'center'}
             ,{field:'EndDate', title: '结束时间', align: 'center',edit:true}
             ,{field:'Note', title: '说明', align: 'center'}
             ,{fixed: 'right', title: '操作', width:320, align:'center', toolbar: '#barDemo'}]
     };
-    xc.getInitData(parm1);
+    xc.getInitData(parm);
 
     let state='1';
     let weekType='';let week=[];
@@ -409,7 +409,7 @@
              let layevent=obj.event;
              if(layevent==='upLevel'){
                  layer.confirm('确定升级该优惠券吗', function(index){
-                     let _obj={'discountId':data.ID,'updateState':'-1','userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                     let _obj={'discountRuleId':data.ID,'updateState':'-1','userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
                      let parseJson = JSON.stringify(_obj);
                      $.ajax({
                          type:'post',
@@ -430,7 +430,7 @@
                  })
              }else if(layevent==='downLevel'){
                  layer.confirm('确定降级该优惠券吗', function(index){
-                     let _obj={'discountId':data.ID,'updateState':'-1','userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                     let _obj={'discountRuleId':data.ID,'updateState':'-1','userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
                      let parseJson = JSON.stringify(_obj);
                      $.ajax({
                          type:'post',
@@ -453,8 +453,7 @@
 
              }else if(layevent==='del'){
                  layer.confirm('确定删除该条规则吗', function(index){
-                     Id=data.ID;
-                     let _obj={'discountRuleId':data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                     let _obj={'id':data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
                      let parseJson = JSON.stringify(_obj);
                      $.ajax({
                          type:'post',
@@ -482,5 +481,12 @@
     <a class="layui-btn layui-btn-xs layui-bg-orange" lay-event="downLevel">降级优先级</a>
     <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="setStore">适用门店</a>
     <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del">删除</a>
+</script>
+<script type="text/html" id="ShareCount1">
+    {{# if(d.ShareCount==1){ }}
+    <input type="checkbox" checked name="switch" lay-skin="switch" lay-text="是|否" class="tb_check" lay-filter="test" disabled>
+    {{# }else{ }}
+    <input type="checkbox" name="switch" lay-skin="switch" lay-text="是|否" class="tb_check" lay-filter="test" disabled>
+    {{#  } }}
 </script>
 </html>
