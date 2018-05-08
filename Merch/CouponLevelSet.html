@@ -26,7 +26,6 @@
     let xc=xcActionSystem.prototype;
     let token=xc.getStorage('token');
     let couponId='';
-    let indexLayer;
     //初始化table
     let parm={'obj':{'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'},
         'url':'/XCCloud/Coupon?action=QueryCouponLevel',
@@ -50,11 +49,11 @@
        
         table.on('tool(fullReductionTable)',function (obj) {
             let data=obj.data;
-            let lay-event=data.event;
+            let layevent=obj.event;
              couponId=data.ID
-            if(lay-event==='upLevel'){ //升级
-                  layer.confirm('确定升级该优惠券吗', function(index)
-                    let _obj={'couponId':data.ID,'updateState':'1','userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+            if(layevent==='upLevel'){ //升级
+                  layer.confirm('确定升级该优惠券吗', function(index){
+                    let _obj={'couponId':data.ID,'updateState':'-1','userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
                     let parseJson = JSON.stringify(_obj);
                     $.ajax({
                         type:'post',
@@ -72,11 +71,10 @@
                             }
                         }
                     })
-                });
-
-            }else if(lay-event==='downLevel'){ //降级
-                    layer.confirm('确定降级该优惠券吗', function(index){
-                                    let _obj={'couponId':data.ID,'updateState':'-1','userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                  })
+            }else if(layevent==='downLevel'){ //降级
+                  layer.confirm('确定降级该优惠券吗', function(index){
+                                    let _obj={'couponId':data.ID,'updateState':'1','userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
                                     let parseJson = JSON.stringify(_obj);
                                     $.ajax({
                                         type:'post',
@@ -96,7 +94,6 @@
                                     })
                                 });
             }
-            // body...
         })
     })
 </script>

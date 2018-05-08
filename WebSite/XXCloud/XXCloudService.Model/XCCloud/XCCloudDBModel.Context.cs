@@ -83,7 +83,6 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Flw_Digite_Coin_Detail> Flw_Digite_Coin_Detail { get; set; }
         public virtual DbSet<Flw_Food_Exit> Flw_Food_Exit { get; set; }
         public virtual DbSet<Flw_Food_ExitDetail> Flw_Food_ExitDetail { get; set; }
-        public virtual DbSet<Flw_Food_Sale> Flw_Food_Sale { get; set; }
         public virtual DbSet<Flw_Food_SaleDetail> Flw_Food_SaleDetail { get; set; }
         public virtual DbSet<Flw_Game_Watch> Flw_Game_Watch { get; set; }
         public virtual DbSet<Flw_Game_WinPrize> Flw_Game_WinPrize { get; set; }
@@ -140,7 +139,6 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Data_GameInfo_Ext> Data_GameInfo_Ext { get; set; }
         public virtual DbSet<Data_Project_BindGame> Data_Project_BindGame { get; set; }
         public virtual DbSet<Data_Food_Detial> Data_Food_Detial { get; set; }
-        public virtual DbSet<Data_Card_Balance> Data_Card_Balance { get; set; }
         public virtual DbSet<Dict_BalanceType> Dict_BalanceType { get; set; }
         public virtual DbSet<Data_GivebackRule> Data_GivebackRule { get; set; }
         public virtual DbSet<Base_StoreHKConfig> Base_StoreHKConfig { get; set; }
@@ -149,5 +147,13 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Data_CouponCondition> Data_CouponCondition { get; set; }
         public virtual DbSet<Data_CouponInfo> Data_CouponInfo { get; set; }
         public virtual DbSet<Data_CouponList> Data_CouponList { get; set; }
+        public virtual DbSet<Data_Discount_Detail> Data_Discount_Detail { get; set; }
+        public virtual DbSet<Data_Discount_MemberLevel> Data_Discount_MemberLevel { get; set; }
+        public virtual DbSet<Data_Discount_StoreList> Data_Discount_StoreList { get; set; }
+        public virtual DbSet<Data_DiscountMember_Record> Data_DiscountMember_Record { get; set; }
+        public virtual DbSet<Data_DiscountStore_Record> Data_DiscountStore_Record { get; set; }
+        public virtual DbSet<Data_DiscountRule> Data_DiscountRule { get; set; }
+        public virtual DbSet<Flw_Food_Sale> Flw_Food_Sale { get; set; }
+        public virtual DbSet<Data_Card_Balance> Data_Card_Balance { get; set; }
     }
 }

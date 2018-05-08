@@ -92,7 +92,7 @@ namespace XXCloudService.Api.HaoKu
                             if (member != null && memberBalance != null)
                             {
                                 Data_Card_Balance model = Data_Card_BalanceService.I.GetModels(b => b.BalanceIndex == memberBalance.BalanceIndex).FirstOrDefault();
-                                model.Banlance = memberBalance.Banlance + raiseBalance;
+                                model.Balance = memberBalance.Banlance + raiseBalance;
                                 bool ret = Data_Card_BalanceService.I.Update(model);
                                 if (ret)
                                 {

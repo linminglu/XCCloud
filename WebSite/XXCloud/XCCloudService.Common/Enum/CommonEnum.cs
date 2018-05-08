@@ -556,21 +556,7 @@ namespace XCCloudService.Common.Enum
         Percent = 0,//比例
         Money = 1//金额
     }
-
-    //优惠时段，时段类型
-    public enum TimeType
-    {
-        [Description("自定义")]
-        Custom = 0,//自定义
-        [Description("工作日")]
-        Workday = 1,//工作日
-        [Description("周末")]
-        Weekend = 2,//周末
-        [Description("节假日")]
-        Holiday = 3//节假日
-        
-    }
-
+    
     //连锁门店权重配置中使用
     public enum ChainStoreWeightType
     {
@@ -773,6 +759,21 @@ namespace XCCloudService.Common.Enum
         [Description("已使用")]
         Applied = 3       //已使用 用户核销       
     }
+
+    //优惠时段，时段类型
+    public enum TimeType
+    {
+        [Description("自定义")]
+        Custom = 0,//自定义
+        [Description("工作日")]
+        Workday = 1,//工作日
+        [Description("周末")]
+        Weekend = 2,//周末
+        [Description("节假日")]
+        Holiday = 3//节假日
+
+    }
+
     
     //派发周期
     public enum SendCycle
@@ -785,6 +786,21 @@ namespace XCCloudService.Common.Enum
         EveryMonth = 2,  //每月
         [Description("每年")]
         EveryYear = 3    //每年
+    }
+
+    //满减优惠频率
+    public enum FreqType
+    {
+        [Description("天")]
+        Day = 0,    //每天
+        [Description("周")]
+        Week = 1,   //每周
+        [Description("月")]
+        Month = 2,  //每月
+        [Description("季")]
+        Season = 3,  //每季
+        [Description("年")]
+        Year = 4    //每年
     }
 
     //条件类型

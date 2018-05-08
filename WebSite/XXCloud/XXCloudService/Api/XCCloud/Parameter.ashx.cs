@@ -369,7 +369,7 @@ namespace XXCloudService.Api.XCCloud
                                              {
                                                  a = a,
                                                  MemberLevelName = b != null ? b.MemberLevelName : string.Empty
-                                             }).ToList().AsDictionaryList();
+                                             }).ToList().AsFlatDictionaryList();
                                             //select new {
                                             //    ID = a.ID,
                                             //    MemberLevelID = a.MemberLevelID,

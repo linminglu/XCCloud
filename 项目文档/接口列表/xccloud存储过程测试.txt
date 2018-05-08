@@ -199,6 +199,7 @@ print '@RS:' + cast(@RS as varchar)
 print '@ErrMsg:' + @ErrMsg  
 
 ----------------------------------------------------------------------------------------------------
+
 declare @Return int
 declare @StoreId varchar(15) = '100025420106001'
 declare @CustomerType int = 2
@@ -208,6 +209,8 @@ declare @ICCardId int = 10004143
 declare @PayCount decimal = 1000
 declare @RealPay decimal = 1000
 declare @FreePay decimal = 0
+declare @Deposit decimal = 10
+declare @OpenFee decimal = 10
 declare @UserID decimal = 3
 declare @WorkStation varchar(50) = 'lijunjie'
 declare @AuthorID int = 0
@@ -225,11 +228,24 @@ insert into @FoodDetailType(FoodId,FoodCount,PayType,PayNum) values(7,1,98308,10
 insert into @FoodDetailType(FoodId,FoodCount,PayType,PayNum) values(5,1,98309,100)
 insert into @FoodDetailType(FoodId,FoodCount,PayType,PayNum) values(8,1,98315,500)
 
-exec @Return = CreateOrder @FoodDetailType,@StoreId,@CustomerType,@Mobile,@MemberLevelId,@ICCardId,@PayCount,@RealPay,@FreePay,@UserID,
-@WorkStation,@AuthorID,@Note,@OrderSource,@SaleCoinType,@OrderFlwId output,@ErrMsg output
+exec @Return = CreateOrder @FoodDetailType,@StoreId,@CustomerType,@Mobile,@MemberLevelId,@ICCardId,@PayCount,@RealPay,@FreePay,@Deposit,@OpenFee,
+@UserID,@WorkStation,@AuthorID,@Note,@OrderSource,@SaleCoinType,@OrderFlwId output,@ErrMsg output
 print @Return 
 print @ErrMsg
 print @OrderFlwId
+
+
+select * from Flw_Order
+select * from Flw_Order_Detail
+select * from Flw_Food_Sale
+select * from Flw_Food_SaleDetail
+select * from flw_Food_Sale_Pay
+
+delete from Flw_Order
+delete from Flw_Order_Detail
+delete from Flw_Food_Sale
+delete from Flw_Food_SaleDetail
+delete from flw_Food_Sale_Pay
 
 ----------------------------------------------------------------------------------------------------
 declare @StoreId varchar(15) = '100025420106001'

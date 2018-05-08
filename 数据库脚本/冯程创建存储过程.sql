@@ -557,6 +557,8 @@ as
     
 	set @Result = 1
 
+GO
+
 CREATE proc [dbo].[LockCouponRecord](
 @CouponID int,@ID int,@StoreID varchar(15),@IsLock int,
 @Result int output)
@@ -662,6 +664,8 @@ as
     
 	set @Result = 1
 
+GO
+
 CREATE proc [dbo].[SaveCouponNotActivated](
 @CouponID int,@StoreID varchar(15),@Total int,
 @NoArrayType [NoArrayType] readonly,
@@ -746,6 +750,8 @@ as
     
 	set @Result = 1
 
+GO
+
 CREATE proc [dbo].[QueryCouponInfo](
 @MerchID varchar(15),@SqlWhere varchar(MAX),@Result int out)
 as	
@@ -769,5 +775,20 @@ as
     ' where a.MerchID=' + @MerchID + @SqlWhere
 	exec (@sql)
 	set @Result = 1
-	return
+
+GO
+
+CREATE proc [dbo].[QueryDiscountRule](
+@MerchID varchar(15),@SqlWhere varchar(MAX),@Result int out)
+as	
+	declare @sql nvarchar(max)
+	SET @sql = ''
+	SET @sql = @sql + 
+	'select a.ID, a.RuleName, a.ShareCount, a.RuleLevel, a.Note, '+        
+    '(case when isnull(a.StartDate,'''')='''' then '''' else convert(varchar,a.StartDate,23) end) as StartDate, (case when isnull(a.EndDate,'''')='''' then '''' else convert(varchar,a.EndDate,23) end) as EndDate, '+
+    ' from Data_DiscountRule a'+    
+    ' where a.State=1 and a.MerchID=' + @MerchID + @SqlWhere
+	exec (@sql)
+	set @Result = 1
+
 GO

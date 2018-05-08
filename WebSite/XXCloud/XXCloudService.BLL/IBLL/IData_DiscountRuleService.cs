@@ -7,17 +7,13 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace XCCloudService.Model.XCCloud
+namespace XCCloudService.BLL.IBLL.XCCloud
 {
-    using System;
-    using System.Collections.Generic;
     
-    public partial class Data_Card_Balance
+    using XCCloudService.Model.XCCloud;
+    
+    public interface IData_DiscountRuleService : IBaseService<Data_DiscountRule>
     {
-        public int ID { get; set; }
-        public Nullable<int> MemberID { get; set; }
-        public Nullable<int> BalanceIndex { get; set; }
-        public Nullable<decimal> Balance { get; set; }
-        public Nullable<System.DateTime> UpdateTime { get; set; }
+    		
     }
 }

@@ -7,17 +7,14 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace XCCloudService.Model.XCCloud
+namespace XCCloudService.DAL.XCCloud
 {
-    using System;
-    using System.Collections.Generic;
     
-    public partial class Data_Card_Balance
+    using XCCloudService.DAL.Base;
+    using XCCloudService.DAL.IDAL.XCCloud;
+    using XCCloudService.Model.XCCloud;
+    public partial class Data_DiscountMember_RecordDAL : BaseDAL<Data_DiscountMember_Record>, IData_DiscountMember_RecordDAL
     {
-        public int ID { get; set; }
-        public Nullable<int> MemberID { get; set; }
-        public Nullable<int> BalanceIndex { get; set; }
-        public Nullable<decimal> Balance { get; set; }
-        public Nullable<System.DateTime> UpdateTime { get; set; }
+    		
     }
 }

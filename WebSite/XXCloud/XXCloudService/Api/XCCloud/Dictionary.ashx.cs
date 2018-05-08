@@ -32,6 +32,7 @@ namespace XXCloudService.Api.XCCloud
             string dictValue = dicParas.ContainsKey("dictValue") ? dicParas["dictValue"].ToString() : string.Empty;
             string comment = dicParas.ContainsKey("comment") ? dicParas["comment"].ToString() : string.Empty;
             string enabled = dicParas.ContainsKey("enabled") ? dicParas["enabled"].ToString() : string.Empty;
+            string orderId = dicParas.ContainsKey("orderId") ? dicParas["orderId"].ToString() : string.Empty;
 
             if (string.IsNullOrEmpty(dictKey))
             {
@@ -71,6 +72,9 @@ namespace XXCloudService.Api.XCCloud
                 errMsg = "使用状态数据格式转换异常";
                 return false;
             }
+
+            if (!orderId.Validint("节点序号", out errMsg))
+                return false;
 
             return true;
         }        
@@ -144,7 +148,7 @@ namespace XXCloudService.Api.XCCloud
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
-                var dict_SystemModel = dict_SystemService.GetModels(p => p.ID.Equals(iId)).FirstOrDefault<Dict_System>();
+                var dict_SystemModel = dict_SystemService.GetModels(p => p.ID.Equals(iId)).FirstOrDefault();
 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, dict_SystemModel);
             }
@@ -165,6 +169,7 @@ namespace XXCloudService.Api.XCCloud
                 string comment = dicParas.ContainsKey("comment") ? dicParas["comment"].ToString() : string.Empty;
                 string enabled = dicParas.ContainsKey("enabled") ? dicParas["enabled"].ToString() : string.Empty;
                 string merchId = dicParas.ContainsKey("merchId") ? dicParas["merchId"].ToString() : string.Empty;
+                string orderId = dicParas.ContainsKey("orderId") ? dicParas["orderId"].ToString() : string.Empty;
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 if (userTokenKeyModel.LogType == (int)RoleType.MerchUser)
                 {
@@ -208,6 +213,7 @@ namespace XXCloudService.Api.XCCloud
                 dict_System.DictValue = dictValue;
                 dict_System.Comment = comment;
                 dict_System.Enabled = Convert.ToInt32(enabled);
+                dict_System.OrderID = Convert.ToInt32(orderId);
                 if (dicParas.ContainsKey("merchId"))
                 {
                     dict_System.MerchID = dicParas["merchId"].ToString();
@@ -239,6 +245,7 @@ namespace XXCloudService.Api.XCCloud
                 string comment = dicParas.ContainsKey("comment") ? dicParas["comment"].ToString() : string.Empty;
                 string enabled = dicParas.ContainsKey("enabled") ? dicParas["enabled"].ToString() : string.Empty;
                 string merchId = dicParas.ContainsKey("merchId") ? dicParas["merchId"].ToString() : string.Empty;
+                string orderId = dicParas.ContainsKey("orderId") ? dicParas["orderId"].ToString() : string.Empty;
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 if (userTokenKeyModel.LogType == (int)RoleType.MerchUser)
                 {
@@ -295,6 +302,7 @@ namespace XXCloudService.Api.XCCloud
                 dict_System.DictValue = dictValue;
                 dict_System.Comment = comment;
                 dict_System.Enabled = Convert.ToInt32(enabled);
+                dict_System.OrderID = Convert.ToInt32(orderId);
                 if (dicParas.ContainsKey("merchId"))
                 {
                     dict_System.MerchID = dicParas["merchId"].ToString();
@@ -326,6 +334,7 @@ namespace XXCloudService.Api.XCCloud
                 string comment = dicParas.ContainsKey("comment") ? dicParas["comment"].ToString() : string.Empty;
                 string enabled = dicParas.ContainsKey("enabled") ? dicParas["enabled"].ToString() : string.Empty;
                 string merchId = dicParas.ContainsKey("merchId") ? dicParas["merchId"].ToString() : string.Empty;
+                string orderId = dicParas.ContainsKey("orderId") ? dicParas["orderId"].ToString() : string.Empty;
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 if (userTokenKeyModel.LogType == (int)RoleType.MerchUser)
                 {
@@ -388,6 +397,7 @@ namespace XXCloudService.Api.XCCloud
                 dict_System.DictValue = dictValue;
                 dict_System.Comment = comment;
                 dict_System.Enabled = Convert.ToInt32(enabled);
+                dict_System.OrderID = Convert.ToInt32(orderId);
                 if (dicParas.ContainsKey("merchId"))
                 {
                     dict_System.MerchID = dicParas["merchId"].ToString();

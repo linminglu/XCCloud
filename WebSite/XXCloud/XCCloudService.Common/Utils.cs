@@ -1929,7 +1929,6 @@ namespace XCCloudService.Common
                 byteArr = ms.ToArray();
             }
             string jsonStr = Encoding.UTF8.GetString(byteArr);
-
             return DateTimeJsonConverter(jsonStr, @"\\/Date\((\d+)\+(\d+)\)\\/", "yyyy-MM-dd HH:mm:ss");
         }
 
@@ -2054,6 +2053,17 @@ namespace XCCloudService.Common
             return someObject;
         }
 
+        /// <summary>
+        /// 判断是否C#内置类型
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static bool IsBulitinType(Type type)
+        {
+            return (type == typeof(object) || Type.GetTypeCode(type) != TypeCode.Object);
+        }
+
+
         public static IDictionary<string, object> AsDictionary(this object source, BindingFlags bindingAttr = BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance)
         {
             var list = source.GetType().GetProperties(bindingAttr);
@@ -2063,46 +2073,47 @@ namespace XCCloudService.Common
                 propInfo => propInfo.GetValue(source, null)
             );
         }
-
+        
         /// <summary>
-        /// 判断是否C#内置类型
+        /// Flat复杂匿名类型转换，例如{obj:{pro1,pro2},pro3} -> {pro1,pro2,pro3}
         /// </summary>
-        /// <param name="type"></param>
+        /// <param name="source"></param>
         /// <returns></returns>
-        public static bool IsBulitinType(Type type)
+        public static IDictionary<string, object> AsFlatDictionary(this object source, BindingFlags bindingAttr = BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance)
         {
-            return (type == typeof(object) || Type.GetTypeCode(type) != TypeCode.Object);
-        }  
+            var dic = new Dictionary<string, object>();
+            var objlist = source.GetType().GetProperties(bindingAttr);
+            foreach (var prop in objlist)
+            {
+                if (IsBulitinType(prop.PropertyType))
+                {
+                    dic.Add(prop.Name, prop.GetValue(source, null));
+                }
+                else
+                {
+                    dic.AddRangeOverride(prop.GetValue(source, null).AsDictionary());
+                }
+            }
+
+            return dic;
+        }
 
         /// <summary>
         /// Flat复杂匿名类型转换，例如[{obj:{pro1,pro2},pro3}] -> [{pro1,pro2,pro3}]
         /// </summary>
         /// <param name="source"></param>
         /// <returns></returns>
-        public static List<IDictionary<string, object>> AsDictionaryList(this System.Collections.IEnumerable source)
+        public static List<IDictionary<string, object>> AsFlatDictionaryList(this System.Collections.IEnumerable source, BindingFlags bindingAttr = BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance)
         {
             var list = new List<IDictionary<string, object>>();
             foreach (var obj in source)
             {
-                var dic = new Dictionary<string, object>();
-                var objlist = obj.GetType().GetProperties(BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance);
-                foreach (var prop in objlist)
-                {
-                    if (IsBulitinType(prop.PropertyType))
-                    {
-                        dic.Add(prop.Name, prop.GetValue(obj, null));
-                    }
-                    else
-                    {
-                        dic.AddRangeOverride(prop.GetValue(obj, null).AsDictionary());
-                    }
-                }
-
+                var dic = obj.AsFlatDictionary(bindingAttr);
                 list.Add(dic);
             }
 
             return list;
-        }
+        }        
 
         #endregion
 

@@ -25,10 +25,10 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         [DataMember(Name = "dictValue", Order = 4)]
         public string DictValue { get; set; }
 
-        [IgnoreDataMember]
+        [DataMember(Name = "comment", Order = 4)]
         public string Comment { get; set; }
 
-        [IgnoreDataMember]
+        [DataMember(Name = "orderId", Order = 4)]
         public Nullable<int> OrderID { get; set; }
 
         [DataMember(Name = "enabled", Order = 5)]

@@ -12,12 +12,14 @@ namespace XCCloudService.Model.XCCloud
     using System;
     using System.Collections.Generic;
     
-    public partial class Data_Card_Balance
+    public partial class Data_DiscountStore_Record
     {
-        public int ID { get; set; }
-        public Nullable<int> MemberID { get; set; }
-        public Nullable<int> BalanceIndex { get; set; }
-        public Nullable<decimal> Balance { get; set; }
-        public Nullable<System.DateTime> UpdateTime { get; set; }
+        public int Id { get; set; }
+        public Nullable<int> DiscountRuleID { get; set; }
+        public Nullable<System.DateTime> RecordDate { get; set; }
+        public string MerchId { get; set; }
+        public string StoreId { get; set; }
+        public Nullable<int> StoreFreq { get; set; }
+        public Nullable<int> UseCount { get; set; }
     }
 }

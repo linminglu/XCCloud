@@ -75,6 +75,7 @@
     <Compile Include="CustomModel\XCCloud\Base_StoreInfoModel.cs" />
     <Compile Include="CustomModel\XCCloud\Base_MerchInfoModel.cs" />
     <Compile Include="CustomModel\XCCloud\Data_CouponInfoModel.cs" />
+    <Compile Include="CustomModel\XCCloud\Data_DiscountRuleModel.cs" />
     <Compile Include="CustomModel\XCCloud\Data_FoodInfoListModel.cs" />
     <Compile Include="CustomModel\XCCloud\Data_GameFreeRuleModel.cs" />
     <Compile Include="CustomModel\XCCloud\Data_GoodInventoryModel.cs" />
@@ -366,6 +367,24 @@
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_DigitCoinFood.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_DiscountMember_Record.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_DiscountRule.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_DiscountStore_Record.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_Discount_Detail.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_Discount_MemberLevel.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_Discount_StoreList.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_FoodInfo.cs">

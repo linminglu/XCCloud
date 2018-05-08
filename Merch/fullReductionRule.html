@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>满减规则</title>
+    <link rel="stylesheet" href="layui/css/layui.css">
+    <link rel="stylesheet" href="layui/css/layui_font.css">
+</head>
+<body>
+    <div class="layui-row " style="padding: 10px">
+        <form action="" class="layui-form layui-form-pane" >
+            <blockquote class="layui-elem-quote" style="text-align: right">
+                <button type="button" class="layui-btn layui-btn-normal">查询模板</button>
+                <button type="button" class="layui-btn layui-btn-normal add">新增</button>
+            </blockquote>
+            <div class="layui-col-md12 layui-col-lg12 layui-col-sm12">
+                <table class="layui-hide" id="fullReductionTable"  lay-filter="fullReductionTable"></table>
+            </div>
+        </form>
+    </div>
+<!--新增满减规则-->
+<div id="openModel" style="display: none;padding: 15px 15px 15px 30px;">
+    <form action="" class="layui-form layui-form-pane" style="">
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">规则名称</label>
+                <div class="layui-input-inline" style="width: 412px">
+                    <input type="text" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-inline goodIsAll">
+                <div class="layui-input-inline">
+                    <input type="checkbox" name="zzz" lay-skin="switch" lay-text="启用|禁用">
+                </div>
+            </div>
+        </div>
+        <!--可用时段-->
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">使用期限</label>
+                <div class="layui-input-inline">
+                    <select lay-filter="usePried">
+                        <option value="0">当天</option>
+                        <option value="1">本周</option>
+                        <option value="2">本月</option>
+                        <option value="3">本年</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-inline">
+                <div class="layui-input-inline">
+                    <input type="text" class="layui-input">
+                </div>
+                <div class="layui-form-mid">至</div>
+                <div class="layui-input-inline">
+                    <input type="text" class="layui-input">
+                </div>
+            </div>
+        </div>
+        <!--每周使用时段-->
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">时段类型</label>
+                <div class="layui-input-inline" style="width: 120px">
+                    <select id="weekType" lay-filter="weekType">
+                        <option value="0">自定义</option>
+                        <option value="1">工作日</option>
+                        <option value="2">周末</option>
+                        <option value="3">节假日</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-inline" id="weekSetBox">
+                <label class="layui-form-label">优惠周天</label>
+                <div class="layui-input-inline" id="weekBox" style="width: 411px;border: 1px solid #aaa;height: 36px">
+
+                </div>
+            </div>
+            <br>
+            <div class="layui-inline" >
+                <label class="layui-form-label">使用时段</label>
+                <div class="layui-input-inline">
+                    <input type="text" class="layui-input" id="StartTime">
+                </div>
+                <div class="layui-form-mid">
+                    至
+                </div>
+                <div class="layui-input-inline">
+                    <input type="text" class="layui-input" id="EndTime">
+                </div>
+            </div>
+        </div>
+        <!--不可用时段-->
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">不可用日期</label>
+                <div class="layui-input-inline" style="width: 153px">
+                    <select id="noUsePried" lay-filter="noUsePried">
+                        <option>-请选择-</option>
+                        <option value="0" >当天</option>
+                        <option value="1">本周</option>
+                        <option value="2">本月</option>
+                        <option value="3">本年</option>
+                        <option value="4">自定期限</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-inline" >
+                <label class="layui-form-label">不可用期限</label>
+                <div class="layui-input-inline" style="width: 153px">
+                    <input type="text" class="layui-input" id="NoStartDate" disabled placeholder="请设置开始日期">
+                </div>
+                <div class="layui-form-mid">
+                    至
+                </div>
+                <div class="layui-input-inline" style="width: 153px">
+                    <input type="text" class="layui-input" id="NoEndDate" disabled placeholder="请设置结束日期">
+                </div>
+            </div>
+        </div>
+        <!--限制规则-->
+        <div class="layui-form-item goodIsAll">
+            <div class="layui-inline">
+                <label class="layui-form-label">所有门店每</label>
+                <div class="layui-input-inline" style="width: 153px">
+                    <select  id="">
+                        <option value="0">天</option>
+                        <option value="1">周</option>
+                        <option value="2">月</option>
+                        <option value="3">年</option>
+                    </select>
+                </div>
+                <div class="layui-form-mid">限制使用</div>
+                <div class="layui-input-inline" style="width: 180px">
+                    <input type="text" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <input type="checkbox" name="zzz" lay-skin="switch" lay-text="共享次数|不共享">
+            </div>
+        </div>
+        <!--会员限制规则-->
+        <div class="layui-form-item goodIsAll">
+            <div class="layui-inline">
+                <label class="layui-form-label">会员每</label>
+                <div class="layui-input-inline" style="width: 153px">
+                    <select  id="">
+                        <option value="0">天</option>
+                        <option value="1">周</option>
+                        <option value="2">月</option>
+                        <option value="3">年</option>
+                    </select>
+                </div>
+                <div class="layui-form-mid">限制使用</div>
+                <div class="layui-input-inline" style="width: 180px">
+                    <input type="text" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <input type="checkbox" name="zzz" lay-skin="switch" lay-text="允许散客|禁止散客">
+            </div>
+        </div>
+        <!--满减规则-->
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">消费</label>
+                <div class="layui-input-inline" style="width: 125px">
+                    <input type="text" class="layui-input">
+                </div>
+                <div class="layui-input-inline" style="width: 125px">
+                    <select>
+                        <option value="0">以内</option>
+                        <option value="1">以上</option>
+                    </select>
+                </div>
+                <div class="layui-form-mid">每</div>
+                <div class="layui-input-inline" style="width: 125px">
+                    <input type="text" class="layui-input">
+                </div>
+                <div class="layui-form-mid">元,减</div>
+                <div class="layui-input-inline" style="width: 125px">
+                    <input type="text" class="layui-input">
+                </div>
+                <div class="layui-form-mid">元</div>
+            </div>
+        </div>
+
+        <div style="text-align:center;">
+            <button type="button" class="layui-btn layui-btn-normal" id="save"> 确定</button>
+        </div>
+    </form>
+</div>
+</body>
+<script src="js/jquery-1.8.3-min.js"></script>
+<script src="layui/layui.js"></script>
+<script src="js/storeSystem.js"></script>
+<script>
+    let xc=xcActionSystem.prototype;
+    let token=xc.getStorage('token');
+    let Id='';
+    //初始化table
+    let parm={'obj':{'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'},
+        'url':'/XCCloud/Discount?action=QueryDiscountRule',
+        'elem':'#fullReductionTable',
+        'cols':[
+            {field:'ID', title:'优惠券规则ID', align: 'center', sort: true}
+            ,{field:'RuleName',title: '规则名称', align: 'center'}
+            ,{field:'ShareCount', title: '是否叠加', align: 'center'}
+            ,{field:'RuleLevel', title: '优先级', align: 'center'}
+            ,{field:'StartDate', title: '开始时间', align: 'center'}
+            ,{field:'EndDate', title: '结束时间', align: 'center',edit:true}
+            ,{field:'Note', title: '说明', align: 'center'}
+            ,{fixed: 'right', title: '操作', width:320, align:'center', toolbar: '#barDemo'}]
+    };
+    xc.getInitData(parm);
+
+    layui.use(['form','table','layer'],function () {
+        let form=layui.form;
+        let table=layui.table;
+        let layer=layui.layer;
+        $('.add').on('click',function () {
+            layer.open({
+                title:'add',
+                type:1,
+                area:'800px',
+                content:$('#openModel')
+            })
+        });
+        table.on('tool(fullReductionTable)',function (obj) {
+             let data=obj.data;
+             let layevent=obj.event;
+             if(layevent==='upLevel'){
+                 layer.confirm('确定升级该优惠券吗', function(index){
+                     let _obj={'discountId':data.ID,'updateState':'-1','userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                     let parseJson = JSON.stringify(_obj);
+                     $.ajax({
+                         type:'post',
+                         url:'/XCCloud/Discount?action=UpdateDiscountLevel',
+                         contentType: "application/json; charset=utf-8",
+                         data:{parasJson: parseJson},
+                         success: function (data) {
+                             data = JSON.parse(data);
+                             if (data.result_code == 1) {
+                                 layer.msg('升级成功',{time:1500},function () {
+                                    xc.getInitData(parm)
+                                 });
+                             } else {
+                                 layer.msg(data.result_msg||return_msg);
+                             }
+                         }
+                     })
+                 })
+             }else if(layevent==='downLevel'){
+                 layer.confirm('确定降级该优惠券吗', function(index){
+                     let _obj={'discountId':data.ID,'updateState':'-1','userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                     let parseJson = JSON.stringify(_obj);
+                     $.ajax({
+                         type:'post',
+                         url:'/XCCloud/Discount?action=UpdateDiscountLevel',
+                         contentType: "application/json; charset=utf-8",
+                         data:{parasJson: parseJson},
+                         success: function (data) {
+                             data = JSON.parse(data);
+                             if (data.result_code == 1) {
+                                 layer.msg('降级成功',{time:1500},function () {
+                                     xc.getInitData(parm)
+                                 });
+                             } else {
+                                 layer.msg(data.result_msg||return_msg);
+                             }
+                         }
+                     })
+                 })
+             }else if(layevent==='setStore'){
+
+             }else if(layevent==='del'){
+                 layer.confirm('确定删除该条规则吗', function(index){
+                     Id=data.ID;
+                     let _obj={'discountRuleId':data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                     let parseJson = JSON.stringify(_obj);
+                     $.ajax({
+                         type:'post',
+                         url:'/XCCloud/Discount?action=DelDiscountRule',
+                         contentType: "application/json; charset=utf-8",
+                         data:{parasJson: parseJson},
+                         success: function (data) {
+                             data = JSON.parse(data);
+                             if (data.result_code == 1) {
+                                 layer.msg('删除成功',{time:1500},function () {
+                                   xc.getInitData(parm);
+                                 });
+                             } else {
+                                 layer.msg(data.result_msg);
+                             }
+                         }
+                     })
+                 });
+             }
+        })
+    })
+</script>
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs layui-bg-cyan" lay-event="upLevel">升级优先级</a>
+    <a class="layui-btn layui-btn-xs layui-bg-orange" lay-event="downLevel">降级优先级</a>
+    <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="setStore">适用门店</a>
+    <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del">删除</a>
+</script>
+</html>

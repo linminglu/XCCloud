@@ -387,7 +387,7 @@
                 </div>
             </div>
             <div class="layui-inline" style="margin-right: 0;margin-left: 8px;">
-                <label class="layui-form-label">可导出数量</label>
+                <label class="layui-form-label">可派发数量</label>
                 <div class="layui-input-inline">
                     <input type="text" class="layui-input" disabled id="SendCouponCount">
                 </div>
@@ -407,15 +407,16 @@
         </div>
         <div class="layui-form-item">
             <div class="layui-inline">
-                <label class="layui-form-label">派发序号</label>
-                <div class="layui-input-inline" style="width: 115px">
-                    <input type="text" class="layui-input" id="SendStartNo">
+                <div class="layui-input-inline" >
+                    <button type="button" class="layui-btn layui-btn-normal" id="toaddSendNo">添加号码段</button>
                 </div>
-                <div class="layui-form-mid">至</div>
-                <div class="layui-input-inline" style="width: 115px">
-                    <input type="text" class="layui-input" id="SendEndNo">
+                <div class="layui-input-inline">
+                    <button type="button" class="layui-btn layui-bg-orange" id="clearSendNo">重新填写</button>
                 </div>
             </div>
+            <blockquote class="layui-elem-quote">
+                <p class="barSendBox"></p>
+            </blockquote>
             <div class="layui-inline">
                 <label class="layui-form-label">派发数量</label>
                 <div class="layui-input-inline" style="width: 115px">
@@ -428,6 +429,26 @@
         </blockquote>
         <div style="text-align:center;">
             <button type="button" class="layui-btn layui-btn-primary" id="saveSend">保存</button>
+        </div>
+    </form>
+</div>
+
+<div id="selectSendNo" style="display:none; padding: 15px">
+    <form action="" class="layui-form layui-form-pane">
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">派发序号</label>
+                <div class="layui-input-inline" style="width: 115px">
+                    <input type="text" class="layui-input" id="SendStartNo">
+                </div>
+                <div class="layui-form-mid">至</div>
+                <div class="layui-input-inline" style="width: 115px">
+                    <input type="text" class="layui-input" id="SendEndNo">
+                </div>
+            </div>
+        </div>
+        <div style="text-align:center;">
+            <button type="button" class="layui-btn layui-btn-normal" id="addSendNo">确定</button>
         </div>
     </form>
 </div>
@@ -982,6 +1003,8 @@
     let startNo;let endNo;
     let noArr=[];
     let noArrText='已选择号码段:';
+    let noArrSend=[];
+    let noArrSendText='已选择号码段:';
 
     layui.use(['form','layer','table','laydate'],()=>{
         let form=layui.form;
@@ -996,6 +1019,14 @@
                 content:$('#selectNo')
             })
         });
+        $('#toaddSendNo').click(function () {
+            indexLayer=layer.open({
+                title:'添加号码段，点击可再次添加',
+                type:'1',
+                area:'430px',
+                content:$('#selectSendNo')
+            })
+        });
         //填写调拨号码段
         $('#addNextNo').click(function () {
             layer.close(indexLayer);
@@ -1005,11 +1036,47 @@
             $('#transferEndNo').val('');
             $('.barCoadBox').text(noArrText)
         });
+        $('#addSendNo').click(function () {
+            layer.close(indexLayer);
+            if(noArrSend.length>0){
+                if($('#SendStartNo').val()>noArrSend[noArrSend.length-1].endNo||$('#SendEndNo').val()<noArrSend[0].startNo){
+                    noArrSend.push({'startNo':$('#SendStartNo').val(),'endNo':$('#SendEndNo').val()});
+                    noArrSendText+=$('#SendStartNo').val()+'-'+$('#SendEndNo').val()+','
+                    $('#SendStartNo').val('');
+                    $('#SendEndNo').val('');
+                    $('.barSendBox').text(noArrSendText);
+                    let allCount=0;
+                    for( let i in noArrSend){
+                        allCount=parseInt(allCount)+parseInt(noArrSend[i].endNo)-parseInt(noArrSend[i].startNo)+1;
+                    }
+                    $('#canSend').val(allCount)
+                }else {
+                    layer.msg('  你输出的区间存在已派发部分，请核对后再次输入')
+                }
+            }else {
+                noArrSend.push({'startNo':$('#SendStartNo').val(),'endNo':$('#SendEndNo').val()});
+                noArrSendText+=$('#SendStartNo').val()+'-'+$('#SendEndNo').val()+','
+                $('#SendStartNo').val('');
+                $('#SendEndNo').val('');
+                $('.barSendBox').text(noArrSendText);
+                let allCount=0;
+                for( let i in noArrSend){
+                    allCount=parseInt(allCount)+parseInt(noArrSend[i].endNo)-parseInt(noArrSend[i].startNo)+1;
+                }
+                $('#canSend').val(allCount)
+            }
+
+        });
         //清空调拨号码段
         $('#clearNo').click(function () {
             noArr=[];
             noArrText='已选择号码段:';
             $('.barCoadBox').text(noArrText)
+        });
+        $('#clearSendNo').click(function () {
+            noArrSend=[];
+            noArrSendText='已选择号码段:';
+            $('.barSendBox').text(noArrSendText)
         });
         //监听
         form.on('select(CouponType)',(data)=>{
@@ -1348,15 +1415,13 @@
                         }
                     })
                 }
-
             }
 
         });
         //保存派发信息
         $('#saveSend').on('click',function () {
             let obj={'couponId':Id,
-                'startNo':$('#SendStartNo').val(),
-                'endNo':$('#SendEndNo').val(),
+                'noArr':noArrSend,
                 'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
             let parseJson = JSON.stringify(obj);
             if($('#SendStartNo').val()<startNo||$('#SendEndNo').val()>endNo||$('#SendStartNo').val()>$('#SendEndNo').val()){
@@ -1375,7 +1440,7 @@
                                 location.href='CouponSet.html';
                             })
                         }else {
-                            layer.msg('优惠券派发失败')
+                            layer.msg(data.result_msg||return_msg)
                         }
                     }
                 })
@@ -1575,13 +1640,9 @@
                             if (data.result_code == 1) {
                                 $('#SendName').val(data.result_data[0].CouponName);
                                 $('#SendCouponType').val(data1.CouponTypeStr);
-                                $('#SendCouponCount').val(data.result_data[0].NotAssignedCount);
+                                $('#SendCouponCount').val(data.result_data[0].NotActivatedCount);
                                 $('#SendStartDate').val(data.result_data[0].StartDate);
                                 $('#SendEndDate').val(data.result_data[0].EndDate);
-                                $('#SendStartNo').val(data.result_data[0].StartNo);
-                                $('#SendEndNo').val(data.result_data[0].EndNo);
-                                startNo=data.result_data[0].StartNo;
-                                endNo=data.result_data[0].EndNo;
                                 layer.open({
                                     title:'选择派发优惠券',
                                     type:'1',

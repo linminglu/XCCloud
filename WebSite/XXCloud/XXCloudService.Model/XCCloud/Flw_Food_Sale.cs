@@ -20,12 +20,7 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> FoodID { get; set; }
         public Nullable<int> SaleCount { get; set; }
         public Nullable<int> Point { get; set; }
-        public Nullable<int> UseCoin { get; set; }
-        public Nullable<int> CoinBalance { get; set; }
-        public Nullable<int> UsePoint { get; set; }
         public Nullable<int> PointBalance { get; set; }
-        public Nullable<int> UseLottery { get; set; }
-        public Nullable<int> LotteryBalance { get; set; }
         public Nullable<int> MemberLevelID { get; set; }
         public Nullable<decimal> Deposit { get; set; }
         public Nullable<decimal> OpenFee { get; set; }

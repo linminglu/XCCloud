@@ -27,6 +27,11 @@ namespace XCCloudService.Base
         protected int defaultPageSize = int.Parse(System.Configuration.ConfigurationManager.AppSettings["defaultPageSize"].ToString());
         protected string sysId = string.Empty;
         protected string versionNo = string.Empty;
+
+        [System.Runtime.InteropServices.DllImport("Kernel32.dll")]
+        static extern bool QueryPerformanceCounter(ref long count);
+        [System.Runtime.InteropServices.DllImport("Kernel32.dll")]
+        static extern bool QueryPerformanceFrequency(ref long count); 
  
         /// <summary>
         /// 处理请求,完成安全验证,调用接口方法
@@ -34,6 +39,13 @@ namespace XCCloudService.Base
         /// <param name="context"></param>
         public void ProcessRequest(HttpContext context)
         {
+            //long count = 0;
+            //long count1 = 0;
+            //long freq = 0;
+            //double result = 0;
+            //QueryPerformanceFrequency(ref freq);
+            //QueryPerformanceCounter(ref count);
+
             ApiRequestLog ar = new ApiRequestLog();
             context.Response.AddHeader("Access-Control-Allow-Origin", "*");
 
@@ -117,6 +129,11 @@ namespace XCCloudService.Base
                 LogHelper.SaveLog(TxtLogType.Api, TxtLogContentType.Exception, TxtLogFileType.Day, Utils.GetException(ex));
                 ar.show(apiType, requestUrl + "?action=" + action, postJson, Return_Code.F, Utils.GetException(ex), sysId);
             }
+
+            //QueryPerformanceCounter(ref count1);
+            //count = count1 - count;
+            //result = (double)(count) / (double)freq;
+            //LogHelper.SaveLog(string.Format(action + "调用耗时:{0}秒", result));
         }
 
 
