@@ -118,6 +118,12 @@
                 </div>
             </div>
         </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">选择会员等级</label>
+            <div class="layui-input-block" style="margin-left: 0px;height: 108px;overflow-y: scroll;border: 1px dashed #dedede;width: 550px" id="memberBox">
+
+            </div>
+        </div>
         <!--限制规则-->
         <div class="layui-form-item goodIsAll">
             <div class="layui-inline">
@@ -222,7 +228,8 @@
     let weekType='';let week=[];
     let StoreFreq=0; let ShareCount=0;
     let MemberFreq=0; let AllowGuest=0;
-
+    let memberLevelID=[];
+    let DiscountDetails=[];
     layui.use(['form','table','layer','laydate'],function () {
         let form=layui.form;
         let table=layui.table;
@@ -322,12 +329,28 @@
             }
         });
 
+
+
+        form.on('checkbox(ml)', function(data){
+            if (data.elem.checked==true){
+                memberLevelID.push({'memberLevelId':data.value});
+
+            }else if(data.elem.checked==false){
+                for (var i=0;i<memberLevelID.length;i++){
+                    if(memberLevelID[i].memberLevelId==data.value){
+                        memberLevelID.splice(i,1);
+                    }
+                }
+            }
+        });
         $('.add').on('click',function () {
             Id='';
             state=1;
             weekType=0;
             week=[];
             xc.AddWeeks('weekBox');
+            memberLevelID=[];
+            xc.SearchMemberLevel1('memberBox', token, layer);
 
             laydate.render({
                 elem: '#StartDate'
@@ -385,6 +408,8 @@
                 'MemberFreq':MemberFreq,
                 'MemberCount':$('#MemberCount').val(),
                 'AllowGuest':AllowGuest,
+                'discountDetails':DiscountDetails.length>0?DiscountDetails:[],
+                'discountMemberLevels':memberLevelID,
                 'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
             let parseJson = JSON.stringify(_obj);
             $.ajax({

@@ -17,8 +17,7 @@ namespace XCCloudService.Model.XCCloud
         public int ID { get; set; }
         public string MerchID { get; set; }
         public string StoreID { get; set; }
-        public Nullable<int> DepotType { get; set; }
         public string DepotName { get; set; }
-        public Nullable<int> InventoryEN { get; set; }
+        public Nullable<int> MinusEN { get; set; }
     }
 }

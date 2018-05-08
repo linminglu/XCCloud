@@ -841,7 +841,7 @@ xcActionSystem.prototype= {
                     if (data.result_code == 1) {
                       let  tableData = data.result_data;
                         for (var i in tableData){
-                            $('#'+id).append('<input type="checkbox" name="like[write]" lay-filter="ml" value="'+tableData[i].Key+'" title="'+tableData[i].Value+'"><br>')
+                            $('#'+id).append('<input type="checkbox" name="like[write]" lay-skin="primary" lay-filter="ml" value="'+tableData[i].Key+'" title="'+tableData[i].Value+'"><br>')
                         }
                         layui.use('form',function () {
                             var form=layui.form;

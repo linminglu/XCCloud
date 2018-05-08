@@ -27,9 +27,7 @@ namespace XCCloudService.Model.XCCloud
     
         public virtual DbSet<Base_ChainRule> Base_ChainRule { get; set; }
         public virtual DbSet<Base_ChainRule_Store> Base_ChainRule_Store { get; set; }
-        public virtual DbSet<Base_DepotInfo> Base_DepotInfo { get; set; }
         public virtual DbSet<Base_EnumParams> Base_EnumParams { get; set; }
-        public virtual DbSet<Base_GoodsInfo> Base_GoodsInfo { get; set; }
         public virtual DbSet<Base_MemberInfo> Base_MemberInfo { get; set; }
         public virtual DbSet<Base_MerchantInfo> Base_MerchantInfo { get; set; }
         public virtual DbSet<Base_MerchFunction> Base_MerchFunction { get; set; }
@@ -127,7 +125,6 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Data_ProjectInfo> Data_ProjectInfo { get; set; }
         public virtual DbSet<Data_GoodsStock> Data_GoodsStock { get; set; }
         public virtual DbSet<Data_GoodStorage> Data_GoodStorage { get; set; }
-        public virtual DbSet<Data_GoodStorage_Detail> Data_GoodStorage_Detail { get; set; }
         public virtual DbSet<Flw_GroupVerity> Flw_GroupVerity { get; set; }
         public virtual DbSet<Data_MerchAlipay_Shop> Data_MerchAlipay_Shop { get; set; }
         public virtual DbSet<Base_MerchAlipay> Base_MerchAlipay { get; set; }
@@ -155,5 +152,10 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Flw_Food_Sale> Flw_Food_Sale { get; set; }
         public virtual DbSet<Data_Card_Balance> Data_Card_Balance { get; set; }
         public virtual DbSet<Data_Discount_MemberLevel> Data_Discount_MemberLevel { get; set; }
+        public virtual DbSet<Base_DepotInfo> Base_DepotInfo { get; set; }
+        public virtual DbSet<Base_GoodsInfo> Base_GoodsInfo { get; set; }
+        public virtual DbSet<Data_GoodRequest> Data_GoodRequest { get; set; }
+        public virtual DbSet<Data_GoodRequest_List> Data_GoodRequest_List { get; set; }
+        public virtual DbSet<Data_GoodStorage_Detail> Data_GoodStorage_Detail { get; set; }
     }
 }

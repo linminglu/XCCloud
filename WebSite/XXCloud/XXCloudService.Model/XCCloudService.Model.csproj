@@ -429,6 +429,12 @@
     <Compile Include="XCCloud\Data_GoodInventory.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
+    <Compile Include="XCCloud\Data_GoodRequest.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_GoodRequest_List.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
     <Compile Include="XCCloud\Data_GoodsStock.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>

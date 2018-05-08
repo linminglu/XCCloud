@@ -17,8 +17,10 @@ namespace XCCloudService.Model.XCCloud
         public int ID { get; set; }
         public Nullable<int> StorageID { get; set; }
         public Nullable<int> GoodID { get; set; }
-        public Nullable<decimal> Price { get; set; }
         public Nullable<int> StorageCount { get; set; }
         public Nullable<decimal> TotalPrice { get; set; }
+        public Nullable<decimal> Price { get; set; }
+        public Nullable<decimal> Tax { get; set; }
+        public Nullable<decimal> TaxPrice { get; set; }
     }
 }

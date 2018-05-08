@@ -741,7 +741,7 @@ namespace XXCloudService.Api.XCCloud
 
                 string errMsg = string.Empty;                
                 int GoodTypeId = dict_SystemService.GetModels(p => p.DictKey.Equals("商品类别") && p.PID == 0).FirstOrDefault().ID;
-                var linq = from a in base_DepotInfoService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.InventoryEN == 1)
+                var linq = from a in base_DepotInfoService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.MinusEN == 0)
                            join b in
                                (from t in data_GoodsStockService.GetModels()
                                 group t by new { DepotID = t.DepotID, GoodID = t.GoodID } into g

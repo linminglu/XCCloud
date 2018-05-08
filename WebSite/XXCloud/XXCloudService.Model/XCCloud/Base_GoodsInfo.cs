@@ -22,6 +22,13 @@ namespace XCCloudService.Model.XCCloud
         public string GoodPhoteURL { get; set; }
         public Nullable<int> GoodType { get; set; }
         public Nullable<int> AllowStorage { get; set; }
+        public Nullable<decimal> Price { get; set; }
+        public Nullable<int> ReturnFlag { get; set; }
+        public Nullable<int> AllowCreatePoint { get; set; }
+        public Nullable<int> ReturnTime { get; set; }
+        public Nullable<int> TimeType { get; set; }
+        public Nullable<decimal> ReturnFee { get; set; }
+        public Nullable<int> FeeType { get; set; }
         public Nullable<int> Status { get; set; }
         public string Note { get; set; }
     }
