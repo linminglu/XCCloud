@@ -574,7 +574,6 @@
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="DiscountRuleID" Type="int" />
           <Property Name="MerchID" Type="varchar" MaxLength="15" />
-          <Property Name="StoreID" Type="varchar" MaxLength="15" />
           <Property Name="MemberLevelID" Type="int" />
         </EntityType>
         <EntityType Name="Data_Discount_StoreList">
@@ -2376,13 +2375,13 @@
           <EntitySet Name="Data_CouponInfo" EntityType="XCCloudDBModel.Data_CouponInfo" />
           <EntitySet Name="Data_CouponList" EntityType="XCCloudDBModel.Data_CouponList" />
           <EntitySet Name="Data_Discount_Detail" EntityType="XCCloudDBModel.Data_Discount_Detail" />
-          <EntitySet Name="Data_Discount_MemberLevel" EntityType="XCCloudDBModel.Data_Discount_MemberLevel" />
           <EntitySet Name="Data_Discount_StoreList" EntityType="XCCloudDBModel.Data_Discount_StoreList" />
           <EntitySet Name="Data_DiscountMember_Record" EntityType="XCCloudDBModel.Data_DiscountMember_Record" />
           <EntitySet Name="Data_DiscountStore_Record" EntityType="XCCloudDBModel.Data_DiscountStore_Record" />
           <EntitySet Name="Data_DiscountRule" EntityType="XCCloudDBModel.Data_DiscountRule" />
           <EntitySet Name="Flw_Food_Sale" EntityType="XCCloudDBModel.Flw_Food_Sale" />
           <EntitySet Name="Data_Card_Balance" EntityType="XCCloudDBModel.Data_Card_Balance" />
+          <EntitySet Name="Data_Discount_MemberLevel" EntityType="XCCloudDBModel.Data_Discount_MemberLevel" />
         </EntityContainer>
         <EntityType Name="Base_ChainRule">
           <Key>
@@ -4201,16 +4200,6 @@
           <Property Name="ConsumeCount" Type="Decimal" Precision="18" Scale="2" />
           <Property Name="DiscountCount" Type="Decimal" Precision="18" Scale="2" />
         </EntityType>
-        <EntityType Name="Data_Discount_MemberLevel">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="DiscountRuleID" Type="Int32" />
-          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="MemberLevelID" Type="Int32" />
-        </EntityType>
         <EntityType Name="Data_Discount_StoreList">
           <Key>
             <PropertyRef Name="ID" />
@@ -4298,6 +4287,15 @@
           <Property Name="BalanceIndex" Type="Int32" />
           <Property Name="Balance" Type="Decimal" Precision="10" Scale="2" />
           <Property Name="UpdateTime" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="Data_Discount_MemberLevel">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="DiscountRuleID" Type="Int32" />
+          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="MemberLevelID" Type="Int32" />
         </EntityType>
         </Schema>
     </edmx:ConceptualModels>
@@ -6243,17 +6241,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Data_Discount_MemberLevel">
-            <EntityTypeMapping TypeName="XCCloudDBModel.Data_Discount_MemberLevel">
-              <MappingFragment StoreEntitySet="Data_Discount_MemberLevel">
-                <ScalarProperty Name="MemberLevelID" ColumnName="MemberLevelID" />
-                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
-                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
-                <ScalarProperty Name="DiscountRuleID" ColumnName="DiscountRuleID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Data_Discount_StoreList">
             <EntityTypeMapping TypeName="XCCloudDBModel.Data_Discount_StoreList">
               <MappingFragment StoreEntitySet="Data_Discount_StoreList">
@@ -6344,6 +6331,16 @@
                 <ScalarProperty Name="Balance" ColumnName="Balance" />
                 <ScalarProperty Name="BalanceIndex" ColumnName="BalanceIndex" />
                 <ScalarProperty Name="MemberID" ColumnName="MemberID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Data_Discount_MemberLevel">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Data_Discount_MemberLevel">
+              <MappingFragment StoreEntitySet="Data_Discount_MemberLevel">
+                <ScalarProperty Name="MemberLevelID" ColumnName="MemberLevelID" />
+                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
+                <ScalarProperty Name="DiscountRuleID" ColumnName="DiscountRuleID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>

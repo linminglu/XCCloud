@@ -87,7 +87,8 @@ namespace XXCloudService.Api.XCCloud
                 if (parameters[8].Value.ToString() == "1")
                 {
                     decimal subPrice = decimal.Parse(parameters[5].Value.ToString());
-                    var obj = new { 
+                    var obj = new
+                    {
                         subPrice = Convert.ToDecimal(subPrice).ToString("0.00")
                     };
                     return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, obj);
@@ -103,6 +104,7 @@ namespace XXCloudService.Api.XCCloud
             }
         }
 
+        [Authorize(Roles = "MerchUser")]
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object QueryDiscountRule(Dictionary<string, object> dicParas)
         {
@@ -148,7 +150,8 @@ namespace XXCloudService.Api.XCCloud
                 return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
             }
         }
-        
+
+        [Authorize(Roles = "MerchUser")]
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object GetDiscountRule(Dictionary<string, object> dicParas)
         {
@@ -182,7 +185,7 @@ namespace XXCloudService.Api.XCCloud
                     MemberLevelID = o.MemberLevelID
                 });
 
-                var discountStores = Data_Discount_StoreListService.I.GetModels(p => p.DiscountRuleID == id).Select(o => new 
+                var discountStores = Data_Discount_StoreListService.I.GetModels(p => p.DiscountRuleID == id).Select(o => new
                 {
                     StoreID = o.StoreID
                 });
@@ -202,6 +205,7 @@ namespace XXCloudService.Api.XCCloud
             }
         }
 
+        [Authorize(Roles = "MerchUser")]
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object SaveDiscountRule(Dictionary<string, object> dicParas)
         {
@@ -294,7 +298,7 @@ namespace XXCloudService.Api.XCCloud
                                 errMsg = "该满减优惠规则信息不存在";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                             }
-                            
+
                             //修改
                             if (!Data_DiscountRuleService.I.Update(data_DiscountRule))
                             {
@@ -419,7 +423,7 @@ namespace XXCloudService.Api.XCCloud
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                             }
                         }
-                        
+
                         ts.Complete();
                     }
                     catch (Exception ex)
@@ -437,6 +441,7 @@ namespace XXCloudService.Api.XCCloud
             }
         }
 
+        [Authorize(Roles = "MerchUser")]
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object DelDiscountRule(Dictionary<string, object> dicParas)
         {
@@ -468,7 +473,7 @@ namespace XXCloudService.Api.XCCloud
                             errMsg = "删除满减优惠规则信息失败";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
-                        
+
                         ts.Complete();
                     }
                     catch (Exception ex)
@@ -485,6 +490,7 @@ namespace XXCloudService.Api.XCCloud
             }
         }
 
+        [Authorize(Roles = "MerchUser")]
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object GetDiscountStores(Dictionary<string, object> dicParas)
         {
@@ -505,6 +511,7 @@ namespace XXCloudService.Api.XCCloud
             }
         }
 
+        [Authorize(Roles = "MerchUser")]
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object SaveDiscountStores(Dictionary<string, object> dicParas)
         {
@@ -572,6 +579,7 @@ namespace XXCloudService.Api.XCCloud
         /// </summary>
         /// <param name="dicParas"></param>
         /// <returns></returns>
+        [Authorize(Roles = "MerchUser")]
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object UpdateDiscountLevel(Dictionary<string, object> dicParas)
         {

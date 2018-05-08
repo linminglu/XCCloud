@@ -14,7 +14,8 @@
             <!--<button type="button" class="layui-btn layui-btn-normal add">新增</button>-->
         </blockquote>
         <div class="layui-col-md12 layui-col-lg12 layui-col-sm12">
-            <table class="layui-hide" id="fullReductionTable"  lay-filter="fullReductionTable"></table>
+            <table class="layui-hide" id="CouponLevelTable"  lay-filter="CouponLevelTable"></table>
+            <table class="layui-hide" id="fullReductionTable"  lay-filter="fullReductionTable1"></table>
         </div>
     </form>
 </div>
@@ -29,7 +30,7 @@
     //初始化table
     let parm={'obj':{'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'},
         'url':'/XCCloud/Coupon?action=QueryCouponLevel',
-        'elem':'#fullReductionTable',
+        'elem':'#CouponLevelTable',
         'cols':[
             {field:'ID', title:'优惠券规则ID', align: 'center', sort: true}
             ,{field:'CouponName',title: '券类型', align: 'center'}
@@ -47,7 +48,7 @@
         let layer=layui.layer;
         let table=layui.table;
        
-        table.on('tool(fullReductionTable)',function (obj) {
+        table.on('tool(CouponLevelTable)',function (obj) {
             let data=obj.data;
             let layevent=obj.event;
              couponId=data.ID
@@ -74,25 +75,25 @@
                   })
             }else if(layevent==='downLevel'){ //降级
                   layer.confirm('确定降级该优惠券吗', function(index){
-                                    let _obj={'couponId':data.ID,'updateState':'1','userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
-                                    let parseJson = JSON.stringify(_obj);
-                                    $.ajax({
-                                        type:'post',
-                                        url:'/XCCloud/Coupon?action=UpdateCouponLevel',
-                                        contentType: "application/json; charset=utf-8",
-                                        data:{parasJson: parseJson},
-                                        success: function (data) {
-                                            data = JSON.parse(data);
-                                            if (data.result_code == 1) {
-                                                layer.msg('降级成功',{time:1500},function () {
-                                                    location.href='CouponLevelSet.html'
-                                                });
-                                            } else {
-                                                layer.msg(data.result_msg||return_msg);
-                                            }
-                                        }
-                                    })
-                                });
+                     let _obj={'couponId':data.ID,'updateState':'1','userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                     let parseJson = JSON.stringify(_obj);
+                       $.ajax({
+                                type:'post',
+                                url:'/XCCloud/Coupon?action=UpdateCouponLevel',
+                                contentType: "application/json; charset=utf-8",
+                                data:{parasJson: parseJson},
+                                success: function (data) {
+                                    data = JSON.parse(data);
+                                    if (data.result_code == 1) {
+                                        layer.msg('降级成功',{time:1500},function () {
+                                            location.href='CouponLevelSet.html'
+                                        });
+                                    } else {
+                                        layer.msg(data.result_msg||return_msg);
+                                    }
+                                }
+                            })
+                        });
             }
         })
     })

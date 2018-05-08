@@ -25,12 +25,12 @@
             <div class="layui-inline">
                 <label class="layui-form-label">规则名称</label>
                 <div class="layui-input-inline" style="width: 412px">
-                    <input type="text" class="layui-input">
+                    <input type="text" class="layui-input" id="RuleName">
                 </div>
             </div>
             <div class="layui-inline goodIsAll">
                 <div class="layui-input-inline">
-                    <input type="checkbox" name="zzz" lay-skin="switch" lay-text="启用|禁用">
+                    <input type="checkbox" checked name="zzz" lay-skin="switch" lay-text="启用|禁用" id="state" lay-filter="state">
                 </div>
             </div>
         </div>
@@ -49,11 +49,11 @@
             </div>
             <div class="layui-inline">
                 <div class="layui-input-inline">
-                    <input type="text" class="layui-input">
+                    <input type="text" class="layui-input" id="StartDate">
                 </div>
                 <div class="layui-form-mid">至</div>
                 <div class="layui-input-inline">
-                    <input type="text" class="layui-input">
+                    <input type="text" class="layui-input" id="EndDate">
                 </div>
             </div>
         </div>
@@ -72,7 +72,7 @@
             </div>
             <div class="layui-inline" id="weekSetBox">
                 <label class="layui-form-label">优惠周天</label>
-                <div class="layui-input-inline" id="weekBox" style="width: 411px;border: 1px solid #aaa;height: 36px">
+                <div class="layui-input-inline" id="weekBox" style="width: 411px;border: 1px solid #aaa;height: 72px">
 
                 </div>
             </div>
@@ -123,20 +123,22 @@
             <div class="layui-inline">
                 <label class="layui-form-label">所有门店每</label>
                 <div class="layui-input-inline" style="width: 153px">
-                    <select  id="">
+                    <select  id="StoreFreq" lay-filter="StoreFreq">
                         <option value="0">天</option>
                         <option value="1">周</option>
                         <option value="2">月</option>
-                        <option value="3">年</option>
+                        <option value="3">季</option>
+                        <option value="4">年</option>
                     </select>
                 </div>
                 <div class="layui-form-mid">限制使用</div>
-                <div class="layui-input-inline" style="width: 180px">
-                    <input type="text" class="layui-input">
+                <div class="layui-input-inline" style="width: 160px">
+                    <input type="text" class="layui-input" id="StoreCount">
                 </div>
+                <div class="layui-form-mid">次</div>
             </div>
             <div class="layui-inline">
-                <input type="checkbox" name="zzz" lay-skin="switch" lay-text="共享次数|不共享">
+                <input type="checkbox" name="zzz" lay-skin="switch" lay-text="共享次数|不共享" id="ShareCount" lay-filter="ShareCount">
             </div>
         </div>
         <!--会员限制规则-->
@@ -144,20 +146,22 @@
             <div class="layui-inline">
                 <label class="layui-form-label">会员每</label>
                 <div class="layui-input-inline" style="width: 153px">
-                    <select  id="">
+                    <select  id="MemberFreq" lay-filter="MemberFreq">
                         <option value="0">天</option>
                         <option value="1">周</option>
                         <option value="2">月</option>
-                        <option value="3">年</option>
+                        <option value="3">季</option>
+                        <option value="4">年</option>
                     </select>
                 </div>
                 <div class="layui-form-mid">限制使用</div>
-                <div class="layui-input-inline" style="width: 180px">
-                    <input type="text" class="layui-input">
+                <div class="layui-input-inline" style="width: 160px">
+                    <input type="text" class="layui-input" id="MemberCount">
                 </div>
+                <div class="layui-form-mid">次</div>
             </div>
             <div class="layui-inline">
-                <input type="checkbox" name="zzz" lay-skin="switch" lay-text="允许散客|禁止散客">
+                <input type="checkbox" name="zzz" lay-skin="switch" lay-text="允许散客|禁止散客" id="AllowGuest" lay-filter="AllowGuest">
             </div>
         </div>
         <!--满减规则-->
@@ -199,31 +203,205 @@
     let token=xc.getStorage('token');
     let Id='';
     //初始化table
-    let parm={'obj':{'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'},
+    let parm1={'obj':{'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'},
         'url':'/XCCloud/Discount?action=QueryDiscountRule',
         'elem':'#fullReductionTable',
         'cols':[
             {field:'ID', title:'优惠券规则ID', align: 'center', sort: true}
             ,{field:'RuleName',title: '规则名称', align: 'center'}
-            ,{field:'ShareCount', title: '是否叠加', align: 'center'}
+            ,{field:'ShareCount', title: '是否共享', align: 'center'}
             ,{field:'RuleLevel', title: '优先级', align: 'center'}
             ,{field:'StartDate', title: '开始时间', align: 'center'}
             ,{field:'EndDate', title: '结束时间', align: 'center',edit:true}
             ,{field:'Note', title: '说明', align: 'center'}
             ,{fixed: 'right', title: '操作', width:320, align:'center', toolbar: '#barDemo'}]
     };
-    xc.getInitData(parm);
+    xc.getInitData(parm1);
 
-    layui.use(['form','table','layer'],function () {
+    let state='1';
+    let weekType='';let week=[];
+    let StoreFreq=0; let ShareCount=0;
+    let MemberFreq=0; let AllowGuest=0;
+
+    layui.use(['form','table','layer','laydate'],function () {
         let form=layui.form;
         let table=layui.table;
         let layer=layui.layer;
+        let laydate=layui.laydate;
+
+        form.on('switch(state)',function (data) {
+            if(data.elem.checked){
+                state=1;
+            }else {
+                state=0;
+            }
+        });
+        form.on('checkbox(weeks)', function(data){
+            if (data.elem.checked==true){
+                week.push(data.value);
+            }else if(data.elem.checked==false){
+                for (var i=0;i<week.length;i++){
+                    if(week[i]==data.value){
+                        week.splice(i,1);
+                    }
+                }
+            }
+        });
+        //监听有效期间选择
+        form.on('select(usePried)',function (data) {
+            if(data.value==0){
+                $('#StartDate').val(getDayStartDate()).prop('disabled',true);
+                $('#EndDate').val(getDayStartDate()).prop('disabled',true);
+            }else if(data.value==1){
+                $('#StartDate').val(getWeekStartDate()).prop('disabled',true);
+                $('#EndDate').val(getWeekEndDate()).prop('disabled',true);
+            }else if(data.value==2){
+                $('#StartDate').val(getMonthStartDate()).prop('disabled',true);
+                $('#EndDate').val(getMonthEndDate()).prop('disabled',true);
+            }else if(data.value==3){
+                $('#StartDate').val(getYearStartDate()).prop('disabled',true);
+                $('#EndDate').val(getYearEndDate()).prop('disabled',true);
+            }else if(data.value==4){
+                $('#StartDate').prop('disabled',false);
+                $('#EndDate').prop('disabled',false);
+                layer.msg('<p style="color: red">请自己设置有效期限</p>')
+            }
+        });
+        //监听有效期间的可用期限
+        form.on('select(weekType)',function (data) {
+            weekType=data.value;
+            week=[];
+            if(data.value==0){
+                $('#weekSetBox').removeClass('layui-hide');
+                xc.AddWeeks('weekBox');
+            }else {
+                $('#weekSetBox').addClass('layui-hide');
+            }
+        });
+        //监听不可用期限选择
+        form.on('select(noUsePried)',function (data) {
+            if(data.value==0){
+                $('#NoStartDate').val(getDayStartDate()).prop('disabled',true);
+                $('#NoEndDate').val(getDayStartDate()).prop('disabled',true);
+            }else if(data.value==1){
+                $('#NoStartDate').val(getWeekStartDate()).prop('disabled',true);
+                $('#NoEndDate').val(getWeekEndDate()).prop('disabled',true);
+            }else if(data.value==2){
+                $('#NoStartDate').val(getMonthStartDate()).prop('disabled',true);
+                $('#NoEndDate').val(getMonthEndDate()).prop('disabled',true);
+            }else if(data.value==3){
+                $('#NoStartDate').val(getYearStartDate()).prop('disabled',true);
+                $('#NoEndDate').val(getYearEndDate()).prop('disabled',true);
+            }else if(data.value==4){
+                $('#NoStartDate').prop('disabled',false);
+                $('#NoEndDate').prop('disabled',false);
+                layer.msg('<p style="color: red">请自己设置不可用期限</p>')
+            }else {
+                $('#NoStartDate').val('').prop('disabled',true);
+                $('#NoEndDate').val('').prop('disabled',true);
+            }
+        });
+        form.on('select(StoreFreq)',function (data) {
+            StoreFreq=data.value;
+        });
+        form.on('switch(ShareCount)',function (data) {
+            if(data.elem.checked){
+                ShareCount=1;
+            }else {
+                ShareCount=0;
+            }
+        });
+        form.on('select(MemberFreq)',function (data) {
+            MemberFreq=data.value;
+        });
+        form.on('switch(AllowGuest)',function (data) {
+            if(data.elem.checked){
+                AllowGuest=1;
+            }else {
+                AllowGuest=0;
+            }
+        });
+
         $('.add').on('click',function () {
+            Id='';
+            state=1;
+            weekType=0;
+            week=[];
+            xc.AddWeeks('weekBox');
+
+            laydate.render({
+                elem: '#StartDate'
+                ,type: 'date'
+                ,value: new Date()
+            });
+            laydate.render({
+                elem: '#EndDate'
+                ,type: 'date'
+                ,value: new Date()
+            });
+            laydate.render({
+                elem: '#NoStartDate'
+                ,type: 'date'
+            });
+            laydate.render({
+                elem: '#NoEndDate'
+                ,type: 'date'
+            });
+            laydate.render({
+                elem: '#StartTime'
+                ,type: 'time'
+                ,format: 'HH:mm'
+                ,value: '00:00'
+            });
+            laydate.render({
+                elem: '#EndTime'
+                ,type: 'time'
+                ,format: 'HH:mm'
+                ,value: '23:59'
+            });
             layer.open({
                 title:'add',
                 type:1,
                 area:'800px',
                 content:$('#openModel')
+            })
+        });
+        $('#save').on('click',function () {
+            let _obj={'discountRuleId':Id,
+                'MerchId':'',
+                'RuleName':$('#RuleName').val(),
+                'State':state,
+                'StartDate':$('#StartDate').val(),
+                'EndDate':$('#EndDate').val(),
+                'weekType':weekType,
+                'week':week.length>0?week.join('|'):'',
+                'startTime':$('#StartTime').val(),
+                'endTime':$('#EndTime').val(),
+                'noStartDate':$('#NoStartDate').val(),
+                'noEndDate':$('#NoEndDate').val(),
+                'StoreFreq':StoreFreq,
+                'StoreCount':$('#StoreCount').val(),
+                'ShareCount':ShareCount,
+                'MemberFreq':MemberFreq,
+                'MemberCount':$('#MemberCount').val(),
+                'AllowGuest':AllowGuest,
+                'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+            let parseJson = JSON.stringify(_obj);
+            $.ajax({
+                type:'post',
+                url:'/XCCloud/Discount?action=SaveDiscountRule',
+                contentType: "application/json; charset=utf-8",
+                data:{parasJson: parseJson},
+                success: function (data) {
+                    data = JSON.parse(data);
+                    if (data.result_code == 1) {
+                        layer.msg('保存成功',{time:1500},function () {
+                            xc.getInitData(parm);
+                        });
+                    } else {
+                        layer.msg(data.result_msg||return_msg);
+                    }
+                }
             })
         });
         table.on('tool(fullReductionTable)',function (obj) {

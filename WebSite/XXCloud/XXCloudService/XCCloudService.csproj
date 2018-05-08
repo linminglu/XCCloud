@@ -382,8 +382,8 @@
     <Content Include="Api\XCCloud\GameWatch.ashx" />
     <Content Include="Api\HaoKu\hkreq.ashx" />
     <Content Include="Api\XCCloud\DigitFood.ashx" />
-    <Content Include="Api\XCCloud\Discount.ashx" />
     <Content Include="Excel.xlsx" />
+    <Content Include="Api\XCCloud\Discount.ashx" />
     <None Include="Properties\PublishProfiles\111.pubxml" />
     <None Include="Properties\PublishProfiles\qqq.pubxml" />
     <None Include="Properties\PublishProfiles\rrr.pubxml" />

@@ -148,12 +148,12 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Data_CouponInfo> Data_CouponInfo { get; set; }
         public virtual DbSet<Data_CouponList> Data_CouponList { get; set; }
         public virtual DbSet<Data_Discount_Detail> Data_Discount_Detail { get; set; }
-        public virtual DbSet<Data_Discount_MemberLevel> Data_Discount_MemberLevel { get; set; }
         public virtual DbSet<Data_Discount_StoreList> Data_Discount_StoreList { get; set; }
         public virtual DbSet<Data_DiscountMember_Record> Data_DiscountMember_Record { get; set; }
         public virtual DbSet<Data_DiscountStore_Record> Data_DiscountStore_Record { get; set; }
         public virtual DbSet<Data_DiscountRule> Data_DiscountRule { get; set; }
         public virtual DbSet<Flw_Food_Sale> Flw_Food_Sale { get; set; }
         public virtual DbSet<Data_Card_Balance> Data_Card_Balance { get; set; }
+        public virtual DbSet<Data_Discount_MemberLevel> Data_Discount_MemberLevel { get; set; }
     }
 }

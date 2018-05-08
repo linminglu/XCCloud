@@ -784,7 +784,7 @@ as
 	declare @sql nvarchar(max)
 	SET @sql = ''
 	SET @sql = @sql + 
-	'select a.ID, a.RuleName, a.ShareCount, a.RuleLevel, a.Note, '+        
+	'select a.ID, a.RuleName, a.ShareCount, a.RuleLevel, a.Note '+        
     '(case when isnull(a.StartDate,'''')='''' then '''' else convert(varchar,a.StartDate,23) end) as StartDate, (case when isnull(a.EndDate,'''')='''' then '''' else convert(varchar,a.EndDate,23) end) as EndDate, '+
     ' from Data_DiscountRule a'+    
     ' where a.State=1 and a.MerchID=' + @MerchID + @SqlWhere
