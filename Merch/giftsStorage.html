@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>礼品入库</title>
+    <title>礼品库存</title>
     <link rel="stylesheet" href="layui/css/layui.css">
 </head>
 <body>
@@ -12,7 +12,7 @@
         <button type="button" class="layui-btn layui-btn-normal"><i class="layui-icon">&#xe615;</i>查询</button>
     </blockquote>
     <div class="layui-col-lg12 layui-col-md12 layui-col-sm12 layui-col-xs12">
-        <table class="layui-hide" id="grouponTable" lay-filter="grouponTable"></table>
+        <table class="layui-hide" id="giftsStorage" lay-filter="giftsStorage"></table>
     </div>
 </div>
 <!--入库弹出层-->
@@ -76,7 +76,7 @@
            </div>
         </div>
         <div style="text-align:center;">
-            <button type="button" class="layui-btn">确定</button>
+            <button type="button" class="layui-btn" id="save">确定</button>
         </div>
     </form>
 </div>
@@ -104,7 +104,7 @@
         ,{field:'StoreName', title: '入库门店', align: 'center'}
         ,{field:'RealTime', title: '入库时间', align: 'center'}
         ,{field:'Supplier', title: '采购渠道', align: 'center'}
-        ,{field:'Supplier', title: '入库数量', align: 'center'}
+        // ,{field:'Supplier', title: '入库数量', align: 'center'}
         ,{field:'Price', title: '采购单价', align: 'center'}
         ,{field:'TotalPrice', title: '入库金额', align: 'center'}
         ,{field:'LogName', title: '入库经办人', align: 'center'}
@@ -112,7 +112,7 @@
         ,{fixed: 'right', title: '操作', width:100, align:'center', toolbar: '#barDemo'}];
     let parm={'obj':{'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'},
         'url':'/XCCloud/GoodsInfo?action=QueryGoodStorage',
-        'elem':'#productStorageTable',
+        'elem':'#giftsStorage',
         'cols':cols
     };
     xc.getInitData(parm);
@@ -131,6 +131,29 @@ layui.use(['form','layer','table'],function () {
             content:$('#openModel')
         })
     });
+    $('#save').on('click',function () {
+        let _obj={'depotName':$('#depotName').val(),
+            // 'minusEn':minusEn,
+            'userToken':token,
+            'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+        let parseJson = JSON.stringify(_obj);
+        $.ajax({
+            type:'post',
+            url:'/XCCloud/GoodsInfo?action=AddGoodStorage',
+            contentType: "application/json; charset=utf-8",
+            data:{parasJson: parseJson},
+            success: function (data) {
+                data = JSON.parse(data);
+                if (data.result_code == 1) {
+                    layer.msg('操作成功',{time:1500},function () {
+                        location.href='giftsStorage.html'
+                    })
+                } else {
+                    layer.msg(data.result_msg||data.return_msg);
+                }
+            }
+        })
+    });
     $('#searchGoods').on('click',function () {
        initGoodsTb();
         index=layer.open({
@@ -143,7 +166,7 @@ layui.use(['form','layer','table'],function () {
     $('#saveGoodBtn').on('click',function () {
         newFoodLevelTable(table,storageGood,layer,form);
         layer.close(index);
-    })
+    });
 });
     function initGoodsTb() {
         var searchText=$('#goodsName').val();

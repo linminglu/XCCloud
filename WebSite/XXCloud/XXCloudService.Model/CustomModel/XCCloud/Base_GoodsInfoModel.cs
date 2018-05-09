@@ -49,15 +49,26 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         /// <summary>
         /// 入库状态[字符串]
         /// </summary>
-        public string AllowStorageStr { get { return AllowStorage==1 ? "允许" : "不允许"; } }
+        public string AllowStorageStr { get { return AllowStorage == 1 ? "允许" : "不允许"; } set { } }
         /// <summary>
         /// 备注
         /// </summary>
         public string Note { get; set; }
+
         /// <summary>
         /// 商品来源
         /// </summary>
-        public string Source { get { return string.IsNullOrEmpty(StoreID) ? "门店" : "商户"; } }
+        public string Source { get { return string.IsNullOrEmpty(StoreID) ? "总店" : StoreName; } set { } }
+
+        /// <summary>
+        /// 销售价格
+        /// </summary>
+        public decimal? Price { get; set; }
+
+        /// <summary>
+        /// 销售积分
+        /// </summary>
+        public int? AllowCreatePoint { get; set; }
     }
 
 }
