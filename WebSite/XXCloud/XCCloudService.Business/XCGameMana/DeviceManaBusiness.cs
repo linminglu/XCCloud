@@ -39,6 +39,11 @@ namespace XCCloudService.Business.XCGameMana
             }
         }
 
+        public static void Clear()
+        {
+            deviceList.Clear();
+        }
+
         public static string GetDeviceToken()
         { 
             Random rd = new Random();

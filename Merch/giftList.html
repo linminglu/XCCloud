@@ -5,75 +5,6 @@
     <title>商品档案维护</title>
     <link rel="stylesheet" href="layui/css/layui.css">
 </head>
-<style>
-    .layui-form-onswitch{
-        border-color: #5FB878!important;
-        background-color: #5FB878!important;
-    }
-    .layui-form-switch{
-        height: 22px;
-        line-height: 22px;
-        width: 42px;
-        border: 1px solid #d2d2d2;
-        border-radius: 20px;
-        background-color: #fff;
-    }
-    .layui-form-switch em{
-        width: 25px;
-        color: #999!important;
-        font-size: 12px;}
-    .layui-form-switch i{
-        left: 5px;
-        top: 3px;
-        width: 16px;
-        height: 16px;
-        border-radius: 20px;
-        background-color: #d2d2d2;
-    }
-    .layui-form-onswitch i{
-        left: 32px;
-    }
-
-    #goodIsAll .layui-form-switch {
-        height: 36px;
-        line-height: 36px;
-        width: 180px;
-        border-radius: 5px;
-        border: 1px solid #orangered;
-        background-color: #999;
-    }
-
-    #goodIsAll .layui-form-switch i {
-        left: 0px;
-        top: 0px;
-        width: 95px;
-        height: 36px;
-        margin-top: -1px;
-        border-radius: 5px 0 0 5px;
-        border: 1px solid #aaa;
-        background-color: #fff;
-    }
-
-    #goodIsAll  .layui-form-switch em {
-        width: 80px;
-        color: #ffffff!important;
-        font-size: 14px;
-    }
-
-    #goodIsAll .layui-form-onswitch {
-        border-color: #1e9fff!important;
-        background-color: #1e9fff!important;
-    }
-
-    #goodIsAll  .layui-form-onswitch i {
-        left: 95px;
-        border-radius: 0 5px 5px 0;
-        border: 1px solid #aaa;
-        margin-top: -1px;
-    }
-
-
-</style>
 <body>
 <div class="layui-row">
     <div class="layui-col-md12 layui-col-sm12 layui-col-lg12">
@@ -160,6 +91,8 @@
                 ,{field:'GoodName', title: '商品名称', align: 'center'}
                 ,{field:'Source', title: '添加来源', align: 'center'}
                 ,{field:'AllowStorage', title: '入库状态', align: 'center',templet:'#AllowStorage'}
+                ,{field:'Price', title: '零售价格', align: 'center'}
+                ,{field:'AllowCreatePoint', title: '是否产生积分', align: 'center'}
                 ,{field:'Note', title: '备注', align: 'center'}
                 ,{fixed: 'right', title: '操作', width:260, align:'center', toolbar: '#barDemo'}]
         };

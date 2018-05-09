@@ -11,6 +11,11 @@ namespace XCCloudService.CacheService.XCGameMana
     {
         private static List<StoreCacheModel> storeList = null;
 
+        public static void Clear()
+        {
+            storeList = null;
+        }
+
         public static void Add(List<StoreCacheModel> list)
         {
             storeList = list;
@@ -25,6 +30,11 @@ namespace XCCloudService.CacheService.XCGameMana
     public class StoreDogCache
     {
         private static List<StoreDogCacheModel> storeDogList = null;
+
+        public static void Clear()
+        {
+            storeDogList = null;
+        }
 
         public static void Add(List<StoreDogCacheModel> list)
         {

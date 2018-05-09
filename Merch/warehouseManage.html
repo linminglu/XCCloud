@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>仓库管理</title>
+    <link rel="stylesheet" href="layui/css/layui.css">
+    <link rel="stylesheet" href="layui/css/layui_font.css">
+</head>
+<body>
+<div class="layui-row" style="padding: 15px;">
+    <blockquote style="text-align: right;padding-right: 150px;" class="layui-col-md12 layui-col-xs12 layui-col-lg12 layui-elem-quote">
+        <button type="button" class="layui-btn layui-btn-normal" id="search"><i class="layui-icon">&#xe654;</i>查询</button>
+        <button type="button" class="layui-btn layui-btn-normal" id="add"><i class="layui-icon">&#xe654;</i>新增</button>
+    </blockquote>
+    <table class="layui-hide" lay-filter="warehouseManage" id="warehouseManage"></table>
+</div>
+<!--新增弹窗-->
+<div id="openModel" style="padding: 15px; display: none;">
+    <form class="layui-form layui-form-pane">
+        <div class="layui-form-item">
+            <label class="layui-form-label">仓库名称</label>
+            <div class="layui-input-block">
+                <input type="text" class="layui-input" id="depotName">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <input type="checkbox" lay-filter="weatherNegative" class="layui-input" id="weatherNegative" title="库存是否允许为负" lay-skin="primary">
+            </div>
+        </div>
+        <div style="text-align:center;">
+            <button type="button" class="layui-btn layui-btn-normal" id="save">确定</button>
+        </div>
+    </form>
+</div>
+<!--bind-->
+<div id="bindModel" style="padding: 15px;display: none">
+    <form class="layui-form layui-form-pane">
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">库存下限</label>
+                <div class="layui-input-inline">
+                    <input type="text" class="layui-input" id="minVal">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">库存上限</label>
+                <div class="layui-input-inline">
+                    <input type="text" class="layui-input" id="maxVal">
+                </div>
+                <!--<div class="layui-form-mid"><button type="button" class="layui-btn layui-btn-normal" id="setTogether">批量设置</button></div>-->
+            </div>
+        </div>
+        <table class="layui-hide" id="goodList" lay-filter="goodList"></table>
+        <div style="text-align:center;">
+            <button type="button" class="layui-btn layui-btn-normal"  id="saveModify">确定</button>
+        </div>
+    </form>
+</div>
+</body>
+<script src="js/jquery-1.8.3-min.js"></script>
+<script src="layui/layui.js"></script>
+<script src="js/storeSystem.js"></script>
+<script>
+    let xc=xcActionSystem.prototype;
+    let token=xc.getStorage('token');
+    let parm={'obj':{'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'},
+        'url':'/XCCloud/DepotInfo?action=QueryDepotInfo',
+        'elem':'#warehouseManage',
+        'cols':[
+            {field:'ID', title:'仓库编号', align: 'center', sort: true}
+            ,{field:'DepotName',title: '仓库名称', align: 'center'}
+            ,{field:'MinusEN', title: '库存是否允许为负', align: 'center',templet:'#changeMinusEN'}
+            ,{field:'StoreName', title: '所属门店', align: 'center'}
+            ,{fixed: 'right', title: '操作', width:260, align:'center', toolbar: '#barDemo'}]
+    };
+    xc.getInitData(parm);
+
+    let minusEn=0;let id;
+    //selected goods
+    let checkedGood=[];let searchGood=[];
+
+
+    layui.use(['form','layer','table'],function (obj) {
+        let form=layui.form;
+        let layer=layui.layer;
+        let table=layui.table;
+        form.on('checkbox(weatherNegative)',function (data) {
+            if(data.elem.checked){
+                minusEn=1;
+            }else {
+                minusEn=0;
+            }
+        });
+
+        table.on('checkbox(goodList)', function(obj){
+            if (obj.type == "all") {
+                if(obj.checked==true){ //checkbox is checked
+                    for(let i in searchGood){
+                        checkedGood.push(searchGood[i].Barcode)
+                    }
+                }else {
+                    checkedGood=[];
+                }
+
+            } else {
+                if(obj.checked==true){ //checkbox is checked
+                    checkedGood.push(obj.data.Barcode)
+
+                }else {
+                  for(let i in checkedGood){
+                      if(checkedGood[i]==obj.data.Barcode){
+                          checkedGood.splice(i,1);
+                      }
+                  }
+                }
+            }
+            console.log(checkedGood);
+        });
+        //set depotMax or Mix for checkedMenu
+        $('#setTogether').on('click',function () {
+            if($('#minVal').val()!=''||$('#maxVal').val()!=''){
+                if(checkedGood.length>0){
+                     for(let i in searchGood){
+                         let flag=false;
+                         for(let j in checkedGood){
+                             if(searchGood[i].Barcode==checkedGood[j]){
+                                 flag=true;
+                                 break;
+                             }
+                         }
+                         //如果searchGood中有被选中的商品，则改变商品的库存下限和上限
+                         if(flag){
+                             searchGood[i].MinValue=$('#minVal').val();
+                             searchGood[i].MaxValue=$('#maxVal').val();
+                         }
+                     }
+                     console.log(searchGood)
+                }else {
+                    layer.msg('请至少选择一个商品！')
+                }
+            }
+        });
+        // save bind result
+        $('#saveModify').on('click',function () {
+            let  bindingInfos=[];
+            if($('#minVal').val()!=''||$('#maxVal').val()!=''){
+                if(checkedGood.length>0){
+                    for(let i in searchGood){
+                        let flag=false;
+                        for(let j in checkedGood){
+                            if(searchGood[i].Barcode==checkedGood[j]){
+                                flag=true;
+                                break;
+                            }
+                        }
+                        //如果searchGood中有被选中的商品，则改变商品的库存下限和上限
+                        if(flag){
+                            searchGood[i].MinValue=$('#minVal').val();
+                            searchGood[i].MaxValue=$('#maxVal').val();
+                            bindingInfos.push(searchGood[i]);
+                        }
+
+                    }
+                    console.log(bindingInfos)
+                    let _obj={'depotId':id,'userToken':token,'bindingInfos':bindingInfos,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                    let parseJson = JSON.stringify(_obj);
+                    $.ajax({
+                        type:'post',
+                        url:'/XCCloud/DepotInfo?action=SaveBindingInfo',
+                        contentType: "application/json; charset=utf-8",
+                        data:{parasJson: parseJson},
+                        success: function (data) {
+                            data = JSON.parse(data);
+                            if (data.result_code == 1) {
+                                layer.msg('绑定成功',{time:1500},function () {
+                                    location.href='warehouseManage.html'
+                                })
+                            } else {
+                                layer.msg(data.result_msg||return_msg);
+                            }
+                        }
+                    })
+                }else {
+                    layer.msg('请至少选择一个商品！')
+                }
+            }
+        });
+        //start add a rule
+        $('#add').on('click',function () {
+            layer.open({
+                title:'新增管理记录',
+                type:1,
+                area:'600px',
+                content:$('#openModel')
+            })
+        });
+        //save the rule
+        $('#save').on('click',function () {
+            let _obj={'depotName':$('#depotName').val(),'minusEn':minusEn,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+            let parseJson = JSON.stringify(_obj);
+            $.ajax({
+                type:'post',
+                url:'/XCCloud/DepotInfo?action=SaveDepotInfo',
+                contentType: "application/json; charset=utf-8",
+                data:{parasJson: parseJson},
+                success: function (data) {
+                    data = JSON.parse(data);
+                    if (data.result_code == 1) {
+                        layer.msg('操作成功',{time:1500},function () {
+                            location.href='warehouseManage.html'
+                        })
+                    } else {
+                        layer.msg(data.result_msg);
+                    }
+                }
+            })
+        });
+        table.on('tool(warehouseManage)',function (obj) {
+             let data=obj.data;
+             let layevent=obj.event;
+             id=data.ID;
+             if(layevent==='bindStore'){
+                 let _obj={'depotId':data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                 let parseJson = JSON.stringify(_obj);
+                 $.ajax({
+                     type:'post',
+                     url:'/XCCloud/DepotInfo?action=QueryBindingInfo',
+                     contentType: "application/json; charset=utf-8",
+                     data:{parasJson: parseJson},
+                     success: function (data) {
+                         data = JSON.parse(data);
+                         if (data.result_code == 1) {
+                             checkedGood=[];
+                             searchGood=data.result_data;
+                             table.render({
+                                 elem: '#goodList'
+                                 , height:'250px'
+                                 , size:"sm"
+                                 , data: searchGood
+                                 , cellMinWidth: 140 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+                                 , cols: [[{type:'checkbox'}
+                                     // ,{field:'ID', title:'库存ID', align: 'center'}
+                                     ,{field:'Barcode',title: '商品条码', align: 'center',width:200} //width 支持：数字、百分比和不填写。
+                                     ,{field:'GoodTypeStr', title: '商品类别', align: 'center',width:180}
+                                     ,{field:'GoodName', title: '商品名称', align: 'center',width:180}
+                                     ,{field:'MinValue', title: '库存下限', align: 'center',width:170}
+                                     ,{field:'MaxValue', title: '库存上限', align: 'center',width:170}
+                                     ]]
+                                 , page: {page: true, limits: [10, 15, 20, 30, 50, 100]}
+                                 , limit: 10
+                             });
+                             layer.open({
+                                 title:'当前选定仓库:'+obj.data.DepotName,
+                                 type:1,
+                                 area:'1000px',
+                                 content:$('#bindModel')
+                             })
+                         } else {
+                             layer.msg(data.result_msg||return_msg);
+                         }
+                     }
+                 })
+            }
+         })
+        });
+</script>
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs layui-bg-orange" lay-event="bindStore"><i class="layui-icon">&#xe642;</i>绑定</a>
+    <!--<a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="edit"><i class="layui-icon">&#xe642;</i>编辑</a>-->
+    <!--<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del"><i class="layui-icon">&#xe640;</i>删除</a>-->
+</script>
+<script type="text/html" id="changeMinusEN">
+    {{# if(d.MinusEN==1){ }}
+    <input type="checkbox" checked name="switch" lay-skin="switch" lay-text="是|否" class="tb_check" lay-filter="test" disabled>
+    {{# }else{ }}
+    <input type="checkbox" name="switch" lay-skin="switch" lay-text="是|否" class="tb_check" lay-filter="test" disabled>
+    {{#  } }}
+</script>
+</html>

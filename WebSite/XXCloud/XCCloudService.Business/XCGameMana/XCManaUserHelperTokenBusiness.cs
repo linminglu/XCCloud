@@ -123,6 +123,11 @@ namespace XCCloudService.Business.XCGameMana
         }
 
 
+        public static void Clear()
+        {
+            XCManaUserHelperTokenCache.Clear();
+        }
+
         private static void SetDBManaUserToken(string token,string mobile , string storeId, string storeName,int userId)
         {
             IUserTokenService userTokenService = BLLContainer.Resolve<IUserTokenService>();

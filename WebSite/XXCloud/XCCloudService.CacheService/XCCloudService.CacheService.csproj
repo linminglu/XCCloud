@@ -55,6 +55,7 @@
     <Compile Include="IconOutLockCache.cs" />
     <Compile Include="MemberICICard.cs" />
     <Compile Include="RedisCacheHelper.cs" />
+    <Compile Include="RedisCache\MemberSystemCache.cs" />
     <Compile Include="WorkFlowCache.cs" />
     <Compile Include="UDPSocketCommonQueryAnswerCache.cs" />
     <Compile Include="XCGameManaAdminUserTokenCache.cs" />

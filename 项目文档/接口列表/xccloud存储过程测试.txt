@@ -345,19 +345,19 @@ print '@Rs:' + cast(@Rs as varchar)
 print '@FreePrice:' + cast(@FreePrice as varchar)
 print '@ErrMsg:' + @ErrMsg
 
-
+-------------------------------------------------------------------------------------------------------
 declare @CouponId int
 declare @CouponCount int
 declare @Rs int
 declare @ErrMsg varchar(8000)
 declare @CouponListType [CouponListType]
-insert @CouponListType(CouponCode) values('5ca8ac12733a4b7791168cc10bd89624')
-insert @CouponListType(CouponCode) values('4fb06d7d70b1409fa9bc56224145b65d')
+insert @CouponListType(CouponCode) values('66d221152a724c4bbe7e8cbc7606195a')
+insert @CouponListType(CouponCode) values('9c4af63a9669483d90b09cf064cbaf0d')
 exec @Rs = CheckCouponInvalid '100025420106001',@CouponListType,@CouponId output,@CouponCount output,@ErrMsg output
 print '@Rs' + cast(@Rs as varchar)
 print '@CouponCount:' + cast(@CouponCount as varchar)
 print '@ErrMsg:' + @ErrMsg
-
+-------------------------------------------------------------------------------------------------------
 
 declare @FreePrice decimal(18,2) 
 exec GetDiscountPrice 100,0.92,3,@FreePrice output

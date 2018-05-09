@@ -358,6 +358,13 @@
 					<h4 class="modal-title">温馨提示</h4>
 				</div>
 				<div class="modal-body row">
+					<div class="alert alert-warning alert-dismissible" role="alert">
+						<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						<p><strong>Warning!</strong> Better check yourself, you're not looking too good.</p>
+						<p><strong>Warning!</strong> Better check yourself, you're not looking too good.</p>
+						<p><strong>Warning!</strong> Better check yourself, you're not looking too good.</p>
+
+					</div>
 					<div class="col-md-4 col-sm-4">
 						<div v-for="(item,index) in shopping" class="col-md-12 col-sm-12 shopCStyle">
 							<div class="col-md-7 col-sm-7 text-left shopCStyle">{{item.typeName}}</div>
@@ -400,9 +407,6 @@
 						<li><button type="button" class="btn btn-primary btn-lg">扫码支付</button></li>
 						<button type="button" class="btn btn-primary btn-lg">打印</button>
 					</ul>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 				</div>
 			</div>
 		</div>
@@ -478,13 +482,13 @@
 			<ul class="majorMenu fl heightKz">
 				<li @click="addCount"><a class="iconfont icon-jia" href="javascript:void(0)"></a></li>
 				<li @click="reduceCount"><a class="iconfont icon-jian" href="javascript:void(0)"></a></li>
-				<li @click="membership" v-bind:class="{cur:memberShow}"><a href="javascript:void(0)">入会办卡</a></li>
+				<li @click="membership" :class="{cur:memberShow}"><a href="javascript:void(0)">入会办卡</a></li>
 				<li @click="FastSell"><a href="javascript:void(0)">快速售币</a></li>
-				<li @click="salesAll" v-bind:class="{cur:saleShow}"><a id="sales" href="javascript:void(0)">产品销售</a></li>
-				<li @click="operationFnc" v-bind:class="{cur:operationShow}"><a href="javascript:void(0)">会员操作</a></li>
-				<li v-bind:class="{cur:returnShow}"><a href="javascript:void(0)">会员返还</a></li>
-				<li v-bind:class="{cur:returnShow}"><a href="javascript:void(0)">退货处理</a></li>
-				<li v-bind:class="{cur:cardLossShow}"><a href="javascript:void(0)">会员卡挂失</a></li>
+				<li @click="salesAll" :class="{cur:saleShow}"><a id="sales" href="javascript:void(0)">产品销售</a></li>
+				<li @click="operationFnc" :class="{cur:operationShow}"><a href="javascript:void(0)">会员操作</a></li>
+				<li :class="{cur:returnShow}"><a href="javascript:void(0)">会员返还</a></li>
+				<li :class="{cur:returnShow}"><a href="javascript:void(0)">退货处理</a></li>
+				<li :class="{cur:cardLossShow}"><a href="javascript:void(0)">会员卡挂失</a></li>
 				<!--v-bind:class="{ active: isActive, 'text-danger': hasError "				this.operationShow = false;
 				this.cardLossShow = false;
 				this.saleShow = false;
@@ -690,62 +694,61 @@
 							<div class="col-md-4 col-xs-6 McSty" ><span  class="col-md-4 col-xs-4">允许投退币：</span>
 								<div class="col-md-8 col-xs-8 pd_5">
 									<div class="switchZdy col-md-12 col-xs-12" @click="switchFnc('0')">
-										<div class="col-md-6 col-xs-6" v-bind:class="{'onSwitch':onSwitch0}" ref="aaa">允许</div>
-										<div class="col-md-6 col-xs-6" v-bind:class="{'onSwitch':!onSwitch0}" ref="bbb">不允许</div>
+										<div class="col-md-6 col-xs-6" :class="{'onSwitch':onSwitch0}" ref="aaa">允许</div>
+										<div class="col-md-6 col-xs-6" :class="{'onSwitch':!onSwitch0}" ref="bbb">不允许</div>
 									</div>
 								</div>
 							</div>
 							<div class="col-md-4 col-xs-6 McSty" ><span  class="col-md-4 col-xs-4">允许兑币：</span>
 								<div class="col-md-8 col-xs-8 pd_5">
 									<div class="switchZdy col-md-12 col-xs-12" @click="switchFnc('1')">
-										<div class="col-md-6 col-xs-6" v-bind:class="{onSwitch:onSwitch1}">允许</div>
-										<div class="col-md-6 col-xs-6" v-bind:class="{onSwitch:!onSwitch1}">不允许</div>
+										<div class="col-md-6 col-xs-6" :class="{onSwitch:onSwitch1}">允许</div>
+										<div class="col-md-6 col-xs-6" :class="{onSwitch:!onSwitch1}">不允许</div>
 									</div>
 								</div>
 							</div>
 							<div class="col-md-4 col-xs-6 McSty" ><span  class="col-md-4 col-xs-4">允许购买实物币：</span>
 								<div class="col-md-8 col-xs-8 pd_5">
 									<div class="switchZdy col-md-12 col-xs-12" @click="switchFnc('2')">
-										<div class="col-md-6 col-xs-6" v-bind:class="{onSwitch:onSwitch2}">允许</div>
-										<div class="col-md-6 col-xs-6" v-bind:class="{onSwitch:!onSwitch2}">不允许</div>
+										<div class="col-md-6 col-xs-6" :class="{onSwitch:onSwitch2}">允许</div>
+										<div class="col-md-6 col-xs-6" :class="{onSwitch:!onSwitch2}">不允许</div>
 									</div>
 								</div>
 							</div>
 							<div class="col-md-4 col-xs-6 McSty" ><span  class="col-md-4 col-xs-4">允许手工存币：</span>
 								<div class="col-md-8 col-xs-8 pd_5">
 									<div class="switchZdy col-md-12 col-xs-12" @click="switchFnc('3')">
-										<div class="col-md-6 col-xs-6" v-bind:class="{onSwitch:onSwitch3}">允许</div>
-										<div class="col-md-6 col-xs-6" v-bind:class="{onSwitch:!onSwitch3}">不允许</div>
+										<div class="col-md-6 col-xs-6" :class="{onSwitch:onSwitch3}">允许</div>
+										<div class="col-md-6 col-xs-6" :class="{onSwitch:!onSwitch3}">不允许</div>
 									</div>
 								</div>
 							</div>
 							<div class="col-md-4 col-xs-6 McSty" ><span  class="col-md-4 col-xs-4">允许手工送币：</span>
 								<div class="col-md-8 col-xs-8 pd_5">
 									<div class="switchZdy col-md-12 col-xs-12" @click="switchFnc('4')">
-										<div class="col-md-6 col-xs-6" v-bind:class="{onSwitch:onSwitch4}">允许</div>
-										<div class="col-md-6 col-xs-6" v-bind:class="{onSwitch:!onSwitch4}">不允许</div>
+										<div class="col-md-6 col-xs-6" :class="{onSwitch:onSwitch4}">允许</div>
+										<div class="col-md-6 col-xs-6" :class="{onSwitch:!onSwitch4}">不允许</div>
 									</div>
 								</div>
 							</div>
 							<div class="col-md-4 col-xs-6 McSty" ><span  class="col-md-4 col-xs-4">卡状态：</span>
 								<div class="col-md-8 col-xs-8 pd_5">
 									<div class="switchZdy col-md-12 col-xs-12" @click="switchFnc('5')">
-										<div class="col-md-6 col-xs-6" v-bind:class="{onSwitch:onSwitch5}">有效</div>
-										<div class="col-md-6 col-xs-6" v-bind:class="{onSwitch:!onSwitch5}">无效</div>
+										<div class="col-md-6 col-xs-6" :class="{onSwitch:onSwitch5}">有效</div>
+										<div class="col-md-6 col-xs-6" :class="{onSwitch:!onSwitch5}">无效</div>
 									</div>
 								</div>
 							</div>
-
-							<!--<div class="Tab col-md-12 col-xs-12">-->
-								<!--<ul>-->
-									<!--<li class="col-md-2 col-xs-2">会员代币流水</li>-->
-									<!--<li class="col-md-2 col-xs-2">代币近期汇总</li>-->
-									<!--<li class="col-md-2 col-xs-2">门票信息</li>-->
-									<!--<li class="col-md-2 col-xs-2">门票消费</li>-->
-									<!--<li class="col-md-2 col-xs-2">积分流水</li>-->
-									<!--<li class="col-md-2 col-xs-2">彩票流水</li>-->
-								<!--</ul>-->
-							<!--</div>-->
+							<div class="Tab col-md-12 col-xs-12">
+								<ul>
+									<li class="col-md-2 col-xs-2">会员代币流水</li>
+									<li class="col-md-2 col-xs-2">代币近期汇总</li>
+									<li class="col-md-2 col-xs-2">门票信息</li>
+									<li class="col-md-2 col-xs-2">门票消费</li>
+									<li class="col-md-2 col-xs-2">积分流水</li>
+									<li class="col-md-2 col-xs-2">彩票流水</li>
+								</ul>
+							</div>
 							<div  class="col-md-12 col-xs-12" style="min-height: 20em">
 								<table id="memberTable"></table>
 							</div>
@@ -1037,8 +1040,8 @@
                 that.salesAll();
                 var heightKz = $(window).height();
                 var widthKz = $(window).width();
-                alert(heightKz);
-                alert(widthKz)
+//                alert(heightKz);
+//                alert(widthKz)
             },
             inputFnc:function (inputValue) {
                 var that = this;
@@ -1146,6 +1149,7 @@
                 }).catch(function (err) {
                     console.log(err);
                 });
+                that.replacement()
             },
             operationFnc:function () {
                 var that = this;
@@ -1158,36 +1162,10 @@
                     {field:'no',title:'编号',width:150},
                     {field:'name',title:'名称',width:260},
                     {field:'addr',title:'地址',width:200}];
-                createTable("#memberTable","destroy.json",columns);
-//                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken};
-//                axios.post('/XCCloud/Member?action=getMemberLevel', obj).then(function (res) {	//获取会员等级
-//                    console.log(res.data);
-//                    if (res.data.result_code === '1') {
-//                        var memberLevel_ = [];
-//                        for(var i =0;i<res.data.result_data.length;i++){
-//                            memberLevel_.push({
-//                                coverURL:res.data.result_data[i].coverURL,
-//                                deposit: res.data.result_data[i].deposit,
-//                                memberLevelId: res.data.result_data[i].memberLevelId,
-//                                memberLevelName: res.data.result_data[i].memberLevelName,
-//                                openFee: res.data.result_data[i].openFee,
-//                                selected: false
-//                            });
-//                        }
-//                        that.memberLevel = memberLevel_;
-//                        setTimeout(function () {
-//                            var  mySwiper = new Swiper('.memberList', {
-//                                autoplay: false,//可选选项，自动滑动
-//                                slidesPerView: 5,
-//                                centeredSlides: false,
-//                                paginationClickable: true,
-//                                spaceBetween: 30
-//                            });
-//                        }, 50);
-//                    }
-//                }).catch(function (err) {
-//                    console.log(err);
-//                });
+                setTimeout(function () {
+                    createTable("#memberTable","destroy.json",columns);
+                }, 50);
+                that.replacement()
             },
             salesAll:function () {
                 var that = this;
@@ -1210,6 +1188,7 @@
                         });
                     }, 50);
 				}
+				that.replacement()
             },
             sendCode:function () {
                 const TIME_COUNT = 59;
@@ -1429,6 +1408,27 @@
                         break;
                 }
 //                this.onSwitch1 = !this.onSwitch1;
+            },
+            replacement:function () {
+				this.memberLevel = [];
+				this.memberFood = [];
+				this.memberForm = {		name:"",
+										sex:"0",
+										mobile :"",
+										IdNumber:"",
+										birthday:"",
+										mobileCode:"",
+										codeBtn:"获取验证码",
+										remark:"",
+										disabled: false
+									};
+                this.onSwitch0 = false;
+                this.onSwitch1 = false;
+                this.onSwitch2 = false;
+                this.onSwitch3 = false;
+                this.onSwitch4 = false;
+                this.onSwitch5 = false;
+
             },
             msgPrompt:function (res) {
                 var that = this;

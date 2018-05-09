@@ -326,6 +326,14 @@
             common(url, parasJson);
         }
 
+        function do_GetMemberCouponList() {
+            var icCardId = $("#txtCoupon_icCardID_GetMemberCouponList").val();
+            var parasObj = {"sysId": "0", "versionNo": "0.0.0.1", "userToken": userToken,"icCardId": icCardId};
+            var url = "/XCCloud/coupon?action=getMemberCouponList";
+            var parasJson = JSON.stringify(parasObj);
+            common(url, parasJson);
+        }
+
     </script>
         
 </head>
@@ -370,6 +378,11 @@
         会员ICCardID：<input id="txtDiscount_icCardID_GetDiscountForAPI" type="text" value="10004143" />
         套餐销售金额：<input id="txtDiscount_foodSale_GetDiscountForAPI" type="text" value="300.00" />
         <input id="btn_do_getDiscountForAPI" type="button" onclick="do_getDiscountForAPI()" value="获取满减金额"/>
+    </div>
+
+    <div title="Coupon" style="font-size:14px;color:#F00;border:1px solid #ccc;">
+        会员ICCardID：<input id="txtCoupon_icCardID_GetMemberCouponList" type="text" value="10004143" />
+        <input id="btn_GetMemberCouponList" type="button" onclick="do_GetMemberCouponList()" value="获取会员优惠券" />
     </div>
 
     <div title="Order" style="font-size:14px;color:#F00;border:1px solid #ccc;">

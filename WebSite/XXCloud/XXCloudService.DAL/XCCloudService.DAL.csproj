@@ -79,6 +79,9 @@
     <Compile Include="IDAL\IBase_EnumParamsDAL.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
+    <Compile Include="IDAL\IBase_Goodinfo_PriceDAL.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
     <Compile Include="IDAL\IBase_GoodsInfoDAL.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
@@ -334,6 +337,15 @@
     <Compile Include="IDAL\IData_SupplierListDAL.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
+    <Compile Include="IDAL\IData_WorkFlowConfigDAL.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\IData_WorkFlow_EntryDAL.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\IData_WorkFlow_NodeDAL.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
     <Compile Include="IDAL\IData_WorkstationDAL.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
@@ -541,6 +553,9 @@
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Base_EnumParamsDAL.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Base_Goodinfo_PriceDAL.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Base_GoodsInfoDAL.cs">
@@ -796,6 +811,15 @@
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_SupplierListDAL.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_WorkFlowConfigDAL.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_WorkFlow_EntryDAL.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_WorkFlow_NodeDAL.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_WorkstationDAL.cs">

@@ -58,6 +58,7 @@ namespace XCCloudService.Utility
         {
             try
             {
+                DeviceManaBusiness.Clear();
                 DeviceManaBusiness.Init();
                 LogHelper.SaveLog(TxtLogType.SystemInit, "ManaDevice Init Sucess");
             }
@@ -125,6 +126,7 @@ namespace XCCloudService.Utility
         {
             try
             {
+                MobileTokenBusiness.Clear();
                 MobileTokenBusiness.Init();
                 LogHelper.SaveLog(TxtLogType.SystemInit, "MibleTokenInit Sucess");
             }
@@ -151,6 +153,7 @@ namespace XCCloudService.Utility
         {
             try
             {
+                MemberTokenBusiness.Clear();
                 MemberTokenBusiness.Init();
                 LogHelper.SaveLog(TxtLogType.SystemInit, "MemberTokenInit Sucess");
             }
@@ -164,6 +167,7 @@ namespace XCCloudService.Utility
         {
             try
             {
+                XCCloudService.Business.XCCloud.UserBusiness.Clear();
                 XCCloudService.Business.XCCloud.UserBusiness.XcUserInit();
                 LogHelper.SaveLog(TxtLogType.SystemInit, "XcUserInit Sucess");
             }
@@ -177,6 +181,7 @@ namespace XCCloudService.Utility
         {
             try
             {
+                XCManaUserHelperTokenBusiness.Clear();
                 XCManaUserHelperTokenBusiness.Init();
                 LogHelper.SaveLog(TxtLogType.SystemInit, "XcManaUserInit Sucess");
             }
@@ -190,6 +195,7 @@ namespace XCCloudService.Utility
         {
             try
             {
+                FilterMobileBusiness.Clear();
                 string mobileStr = System.Configuration.ConfigurationManager.AppSettings["filterMobile"].ToString();
                 bool isSMSTest = bool.Parse(System.Configuration.ConfigurationManager.AppSettings["isSMSTest"].ToString());
                 string[] mobileArr = mobileStr.Split(',');
@@ -212,6 +218,7 @@ namespace XCCloudService.Utility
         {
             try
             {
+                PayList.Clear();
                 PayList.Init();
             }
             catch (Exception ex)

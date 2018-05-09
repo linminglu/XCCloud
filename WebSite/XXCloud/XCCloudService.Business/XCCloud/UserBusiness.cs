@@ -32,6 +32,11 @@ namespace XCCloudService.Business.XCCloud
             listXcUser = Utils.GetCopyList<UserInfoCacheModel, Base_UserInfo>(list);
         }
 
+        public static void Clear()
+        {
+            listXcUser = null;
+        }
+
         public static bool IsEffectiveXcUser(string openId, out UserInfoCacheModel userInfoCacheModel)
         {
             userInfoCacheModel = null;

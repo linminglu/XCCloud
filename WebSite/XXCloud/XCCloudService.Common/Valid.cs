@@ -116,6 +116,26 @@ namespace XCCloudService.Common
             }
             
             return true;            
-        }  
+        }
+        /// <summary>
+        /// 非空数组
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="t"></param>
+        /// <param name="discription"></param>
+        /// <param name="errMsg"></param>
+        /// <returns></returns>
+        public static bool Validarray(this object[] arr, string discription, out string errMsg)
+        {
+            errMsg = string.Empty;
+
+            if (arr == null || arr.Length == 0)
+            {
+                errMsg = discription + "列表不能为空";
+                return false;
+            }
+
+            return true;
+        }        
     }
 }

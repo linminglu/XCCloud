@@ -21,6 +21,11 @@ namespace XCCloudService.OrderPayCallback.Common
             }
         }
 
+        public static void Clear()
+        {
+            clientPayList.Clear();
+        }
+
         /// <summary>
         /// 收到新的支付成功订单
         /// </summary>

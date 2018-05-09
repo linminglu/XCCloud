@@ -36,6 +36,21 @@ namespace XCCloudService.Common.Redis
 
         #endregion 构造函数
 
+        public IServer GetRedisServer()
+        {
+            IServer server = null;
+            string[] redisAddress = RedisConnection.RedisConnectionString.Split(",".ToCharArray());
+            foreach (var item in redisAddress)
+            {
+                server = GetServer(item.Trim());
+                if (server.IsConnected)
+                {
+                    break;
+                }
+            }
+            return server;
+        }
+
         #region String
 
         #region 同步方法
@@ -321,7 +336,24 @@ namespace XCCloudService.Common.Redis
         }
 
         /// <summary>
-        /// 从hash表获取所有数据集合
+        /// 从hash表获取所有Field/Value集合。
+        /// HashEntry：Name为字段名，Value为值
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public HashEntry[] HashGetAll(string key)
+        {
+            key = AddSysCustomKey(key);
+            return Do(db =>
+            {
+                HashEntry[] value = db.HashGetAll(key);
+                return value;
+            });
+        }
+
+        /// <summary>
+        /// 从hash表获取所有数据集合，不包含Field。
+        /// 适用于缓存value为JSON的情况
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="key"></param>
@@ -333,6 +365,21 @@ namespace XCCloudService.Common.Redis
             {
                 RedisValue[] values = db.HashValues(key);
                 return ConvetList<T>(values);
+            });
+        }
+
+        /// <summary>
+        /// 获取hash表所有的Field Key
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public List<string> HashKeys(string key)
+        {
+            key = AddSysCustomKey(key);
+            return Do(db =>
+            {
+                RedisValue[] values = db.HashKeys(key);
+                return ConvetStringList(values);
             });
         }
 
@@ -378,21 +425,6 @@ namespace XCCloudService.Common.Redis
         {
             key = AddSysCustomKey(key);
             return Do(db => db.HashDecrement(key, dataKey, val));
-        }
-
-        /// <summary>
-        /// 获取hash表所有的Field Key
-        /// </summary>
-        /// <param name="key"></param>
-        /// <returns></returns>
-        public List<string> HashKeys(string key)
-        {
-            key = AddSysCustomKey(key);
-            return Do(db =>
-            {
-                RedisValue[] values = db.HashKeys(key);
-                return ConvetStringList(values);
-            });
         }
         #endregion 同步方法
 
@@ -1084,7 +1116,7 @@ namespace XCCloudService.Common.Redis
         {
             try
             {
-                var database = _conn.GetDatabase(DbNum);
+                var database = GetDatabase();
                 return func(database);
             }
             catch (RedisException ex)

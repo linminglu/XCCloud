@@ -277,6 +277,7 @@ namespace XCCloudService.Business.Common
             var models = mobileTokenService.GetModels(p => true).ToList().Where(p=>!string.IsNullOrWhiteSpace(p.Token)).ToList();
             if (models.Count > 0)
             {
+                MobileTokenCache.Clear();
                 foreach (var item in models)
                 {
                     MobileTokenCache.AddToken(CommonConfig.PrefixKey +  item.Mobile, item.Token);
@@ -442,6 +443,11 @@ namespace XCCloudService.Business.Common
                 return true;
             }
             return false;
+        }
+
+        public static void Clear()
+        {
+            MobileTokenCache.Clear();
         }
     }
 }

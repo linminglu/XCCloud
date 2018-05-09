@@ -140,5 +140,12 @@ namespace XCCloudService.Business.XCGame
                 memberTokenService.Update(model);                
             }
         }
+
+
+        public static void Clear()
+        {
+            XCGameMemberTokenCache.Clear();
+        }
+
     }
 }

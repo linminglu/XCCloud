@@ -75,6 +75,9 @@
     <Compile Include="IBLL\IBase_EnumParamsService.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
+    <Compile Include="IBLL\IBase_Goodinfo_PriceService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
     <Compile Include="IBLL\IBase_GoodsInfoService.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
@@ -330,6 +333,15 @@
     <Compile Include="IBLL\IData_SupplierListService.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
+    <Compile Include="IBLL\IData_WorkFlowConfigService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IData_WorkFlow_EntryService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IBLL\IData_WorkFlow_NodeService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
     <Compile Include="IBLL\IData_WorkstationService.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
@@ -537,6 +549,9 @@
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Base_EnumParamsService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Base_Goodinfo_PriceService.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Base_GoodsInfoService.cs">
@@ -792,6 +807,15 @@
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_SupplierListService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_WorkFlowConfigService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_WorkFlow_EntryService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_WorkFlow_NodeService.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_WorkstationService.cs">

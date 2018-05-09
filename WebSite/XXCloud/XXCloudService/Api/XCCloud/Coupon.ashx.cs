@@ -24,7 +24,7 @@ using XCCloudService.BLL.Extentions;
 
 namespace XXCloudService.Api.XCCloud
 {
-    [Authorize(Roles = "MerchUser")]
+    [Authorize(Roles = "MerchUser,StoreUser")]
     /// <summary>
     /// Coupon 的摘要说明
     /// </summary>
@@ -1052,12 +1052,19 @@ namespace XXCloudService.Api.XCCloud
                 var data_CouponInfo = (from a in Data_CouponInfoService.N.GetModels(p => p.ID == couponId)
                                       join b in Data_JackpotInfoService.N.GetModels() on a.JackpotID equals b.ID into b1
                                       from b in b1.DefaultIfEmpty()
+                                      join c in Base_GoodsInfoService.N.GetModels() on a.GoodID equals c.ID into c1
+                                      from c in c1.DefaultIfEmpty()
+                                      join d in Data_ProjectInfoService.N.GetModels() on a.ProjectID equals d.ID into d1
+                                      from d in d1.DefaultIfEmpty()
+                                      join e in Dict_BalanceTypeService.N.GetModels() on a.BalanceIndex equals e.ID into e1
+                                      from e in e1.DefaultIfEmpty()
                                       select new {
                                           CouponType = a.CouponType,
                                           PublishCount = a.PublishCount,
                                           AuthorFlag = a.AuthorFlag,
                                           AllowOverOther = a.AllowOverOther,
                                           SendType = a.SendType,
+                                          ChargeType = a.ChargeType,
                                           OverMoney = a.OverMoney,
                                           FreeCouponCount = a.FreeCouponCount,
                                           JackpotCount = a.JackpotCount,
@@ -1075,14 +1082,18 @@ namespace XXCloudService.Api.XCCloud
                                           NoEndDate = a.NoEndDate,
                                           StartTime = a.StartTime,
                                           EndTime = a.EndTime,
-                                          Context = a.Context
+                                          Context = a.Context,
+                                          GoodName = c != null ? c.GoodName : string.Empty,
+                                          ProjectName = d != null ? d.ProjectName : string.Empty,
+                                          BalanceTypeStr = e != null ? e.TypeName : string.Empty,
+                                          ChargeCount = a.ChargeCount
                                       }).FirstOrDefault();
                 //优惠券说明
                 var note = "本" + ((CouponType)data_CouponInfo.CouponType).GetDescription() + "发行数量" + data_CouponInfo.PublishCount + "张";
                 if (data_CouponInfo.AuthorFlag == 1)
                     note = note + "，使用需要授权";
                 if(data_CouponInfo.AllowOverOther == 1)
-                    note = note + "，允许叠加使用";
+                    note = note + "，允许与其它规则叠加";
                 else
                     note = note + "，不允许叠加使用";
                 note = note + "。\n";
@@ -1100,8 +1111,32 @@ namespace XXCloudService.Api.XCCloud
                     }
                 }
                 note = note + "。\n";
-                note = note + "另可享受满" + data_CouponInfo.CouponThreshold + "元打" + data_CouponInfo.CouponDiscount
-                    + "折扣，最多可抵扣" + data_CouponInfo.CouponValue + "元，且允许同时使用" + data_CouponInfo.OverUseCount + "张";
+                if (data_CouponInfo.CouponType == (int)CouponType.Cash)
+                {
+                    note = note + "另可享受满" + data_CouponInfo.CouponThreshold + "元" + (data_CouponInfo.CouponDiscount < 100 ? "打" + data_CouponInfo.CouponDiscount + "折扣，再" : string.Empty)
+                                + "扣减" + data_CouponInfo.CouponValue + "元，且允许同时使用" + data_CouponInfo.OverUseCount + "张";
+                }
+                else if (data_CouponInfo.CouponType == (int)CouponType.Discount)
+                {
+                    note = note + "另可享受满" + data_CouponInfo.CouponThreshold + "元打" + data_CouponInfo.CouponDiscount 
+                                + "折扣，最多抵扣" + data_CouponInfo.CouponValue + "元，且允许同时使用" + data_CouponInfo.OverUseCount + "张";
+                }
+                else if (data_CouponInfo.CouponType == (int)CouponType.Charge)
+                {
+                    if (data_CouponInfo.ChargeType == (int)ChargeType.Coin)
+                    {
+                        note = note + "另可兑换" + data_CouponInfo.BalanceTypeStr + data_CouponInfo.ChargeCount;
+                    }
+                    else if(data_CouponInfo.ChargeType == (int)ChargeType.Good)
+                    {
+                        note = note + "另可兑换礼品" + data_CouponInfo.GoodName + data_CouponInfo.ChargeCount + "个";
+                    }
+                    else if (data_CouponInfo.ChargeType == (int)ChargeType.Project)
+                    {
+                        note = note + "另可兑换" + data_CouponInfo.ProjectName + "门票" + data_CouponInfo.ChargeCount + "张";
+                    }
+                }
+                
                 note = note + "。\n";
                 note = note + "使用期限为" + Utils.ConvertFromDatetime(data_CouponInfo.StartDate, "yyyy-MM-dd") + "至"
                     + Utils.ConvertFromDatetime(data_CouponInfo.EndDate, "yyyy-MM-dd") + "，";
@@ -1120,7 +1155,7 @@ namespace XXCloudService.Api.XCCloud
                         note = note + "~" + Utils.ConvertFromDatetime(data_CouponInfo.NoEndDate, "yyyy-MM-dd");
                     note = note + "外";
                 }
-                note = note + " " + Utils.TimeSpanToStr(data_CouponInfo.StartTime) + "至" + Utils.TimeSpanToStr(data_CouponInfo.EndTime);
+                note = note + "，优惠时段为" + Utils.TimeSpanToStr(data_CouponInfo.StartTime) + "至" + Utils.TimeSpanToStr(data_CouponInfo.EndTime);
                 note = note + "。\n";
                 note = note + "备注：" + data_CouponInfo.Context;
 
@@ -1384,6 +1419,44 @@ namespace XXCloudService.Api.XCCloud
             catch (Exception e)
             {
                 return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object getMemberCouponList(Dictionary<string, object> dicParas)
+        {
+            XCCloudUserTokenModel userTokenModel = (XCCloudUserTokenModel)(dicParas[Constant.XCCloudUserTokenModel]);
+            StoreIDDataModel userTokenDataModel = (StoreIDDataModel)(userTokenModel.DataModel);
+
+            string icCardId = dicParas.ContainsKey("icCardId") ? dicParas["icCardId"].ToString() : string.Empty;
+            if (string.IsNullOrEmpty(icCardId))
+            {
+                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员卡号无效");
+            }
+            
+            string sql = "GetMemberCouponList";
+
+            SqlParameter[] parameters = new SqlParameter[2];
+            parameters[0] = new SqlParameter("@StoreId", userTokenDataModel.StoreId);
+            parameters[1] = new SqlParameter("@ICCardId", icCardId);
+
+            System.Data.DataSet ds = XCCloudBLL.GetStoredProcedureSentence(sql, parameters);
+            if (ds != null && ds.Tables.Count >= 2)
+            {
+                List<MemberCouponTypeModel> listMemberCouponType = Utils.GetModelList<MemberCouponTypeModel>(ds.Tables[0]);
+                List<MemberCouponDetailModel> listMemberCouponDetail = Utils.GetModelList<MemberCouponDetailModel>(ds.Tables[1]);
+
+                for (int i = 0; i < listMemberCouponType.Count; i++)
+                {
+                    listMemberCouponType[i].MemberCouponDetail = listMemberCouponDetail.Where<MemberCouponDetailModel>(p => p.CouponType == listMemberCouponType[i].CouponType).ToList<MemberCouponDetailModel>();
+                }
+
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, listMemberCouponType);
+            }
+            else
+            {
+                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, parameters[7].Value.ToString());
             }
         }
     }

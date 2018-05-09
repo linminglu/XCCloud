@@ -14,7 +14,7 @@ namespace XCCloudService.Model.XCCloud
     
     public partial class Base_GoodsInfo
     {
-        public int ID { get; set; }
+        public string ID { get; set; }
         public string StoreID { get; set; }
         public string Barcode { get; set; }
         public string MerchID { get; set; }

@@ -30,5 +30,10 @@ namespace XCCloudService.CacheService
         {
             _memberTokenDic.Remove(key);
         }
+
+        public static void Clear()
+        {
+            _memberTokenDic.Clear();
+        }
     }
 }

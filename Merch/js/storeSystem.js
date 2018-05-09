@@ -1635,7 +1635,7 @@ xcActionSystem.prototype= {
         });
     },
     //获取游乐项目字典
-    getProjectGames:function (token,layer,form,id) {
+    getProjectGames:function (token,layer,form,id,arrChecked) {
         let _obj={'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
         let parseJson = JSON.stringify(_obj);
         $.ajax({
@@ -1649,7 +1649,23 @@ xcActionSystem.prototype= {
                     let arr=data.result_data;
                     $('#'+id).html('');
                     for(let i in arr){
-                         $('#'+id).append('<input value="'+arr[i].ID+'" type="checkbox" lay-skin="primary" title="'+arr[i].Name+'">')
+                        if(arrChecked){
+                            let flag=false;
+                            for(let j in arrChecked){
+                                if(arr[i].ID==arrChecked[j].gameId){
+                                    flag=true;
+                                    break;
+                                }
+                            }
+                            if(flag=='true'){
+                                $('#'+id).append('<input value="'+arr[i].ID+'" checked lay-filter="project" type="checkbox" lay-skin="primary" title="'+arr[i].Name+'">')
+                            }else {
+                                $('#'+id).append('<input value="'+arr[i].ID+'" lay-filter="project" type="checkbox" lay-skin="primary" title="'+arr[i].Name+'">')
+                            }
+                        }else {
+                            $('#'+id).append('<input value="'+arr[i].ID+'" lay-filter="project" type="checkbox" lay-skin="primary" title="'+arr[i].Name+'">')
+                        }
+
                     }
                     form.render();
                 } else {

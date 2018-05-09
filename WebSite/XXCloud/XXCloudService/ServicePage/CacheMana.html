@@ -27,6 +27,7 @@
                 });
             });
         });
+
         function login() {
             var userMobile = $("#txtUserMobile").val();
             var password = $("#txtPassword").val();
@@ -70,18 +71,61 @@
                 }
             });
         }
+
+        function changeImgCode() {
+            $("#imgCode").attr("src", "/ServicePage/validateimg.aspx?t=" + Math.random());
+        }
+
+        function common(url, data) {
+            $.ajax({
+                type: "get",
+                url: url,
+                contentType: "application/json; charset=utf-8",
+                data: data,
+                success: function (data) {
+                    data = JSON.parse(data);
+                    console.log(data);
+                },
+                error: function (error) {
+                    alert(1);  //这个地方也用到了
+                }
+            });
+        }
+
+        function reload() {
+            var data = { "userToken": userToken, "index": $("#selIndex").val() };
+            var url = "/service/CacheService?action=reloadCacheData";
+            common(url, data);
+        }
+
     </script>
 
 </head>
 <body>
     <div>
-        用户名：<input id="txtUserMobile" type="text" />&nbsp;&nbsp;
-        密码：<input id="txtPassword" type="text" />&nbsp;&nbsp;
+        用户名：<input id="txtUserMobile" type="text" value="15618920033" />&nbsp;&nbsp;
+        密码：<input id="txtPassword" type="password" />&nbsp;&nbsp;
         验证码：<input id="txtImgCode" type="text" /><img id="imgCode" src="/ServicePage/validateimg.aspx" onclick="changeImgCode()" />
         <input id="btnLogin" type="button" value="用户登录" onclick="login()" />
         <span id="txtLoginResult"></span>
     </div>
-    <form class="layui-form" action="">
+    <div>
+        <select id="selIndex">
+            <option value="1">StoreInit</option>
+            <option value="2">StoreDogInit</option>
+            <option value="3">MibleTokenInit</option>
+            <option value="4">MemberTokenInit</option>
+            <option value="5">RS232MibleTokenInit</option>
+            <option value="6">XCCloudUserInit</option>
+            <option value="7">XCGameManaDeviceInit</option>
+            <option value="8">XCCloudManaUserInit</option>
+            <option value="9">FilterMobileInit</option>
+            <option value="10">XinchenPayInit</option>
+        </select>
+        <input id="btnReload" type="button" value="刷新缓存" onclick="reload()" />
+    </div>
+    
+    <!--<form class="layui-form" action="">
         <div class="layui-form-item">
             <div class="layui-input-block" id="divIns">
                 <input type="checkbox" name="like" title="XCGame门店总表" value="1">
@@ -102,6 +146,6 @@
                 <button id="btnSelAllIns" class="layui-btn layui-btn-normal">全选</button>
             </div>
         </div>
-    </div>
+    </div>-->
 </body>
 </html>

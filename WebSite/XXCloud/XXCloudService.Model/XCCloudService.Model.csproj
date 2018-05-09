@@ -87,6 +87,7 @@
     <Compile Include="CustomModel\XCCloud\Flw_OrderModel.cs" />
     <Compile Include="CustomModel\XCCloud\FoodInfoModel.cs" />
     <Compile Include="CustomModel\XCCloud\MemberBalancesModel.cs" />
+    <Compile Include="CustomModel\XCCloud\MemberCouponModel.cs" />
     <Compile Include="CustomModel\XCCloud\Member\MemberRegisterResponseModel.cs" />
     <Compile Include="CustomModel\XCCloud\MenuInfoModel.cs" />
     <Compile Include="CustomModel\XCCloud\Order\OrderMainModel.cs" />
@@ -262,6 +263,9 @@
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Base_EnumParams.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Base_Goodinfo_Price.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Base_GoodsInfo.cs">
@@ -517,6 +521,15 @@
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_SupplierList.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_WorkFlowConfig.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_WorkFlow_Entry.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_WorkFlow_Node.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_Workstation.cs">

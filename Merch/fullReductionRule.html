@@ -6,6 +6,9 @@
     <link rel="stylesheet" href="layui/css/layui.css">
     <link rel="stylesheet" href="layui/css/layui_font.css">
 </head>
+<style>
+    .layui-layer-page .layui-layer-content {overflow-y: scroll!important;}
+</style>
 <body>
     <div class="layui-row " style="padding: 10px">
         <form action="" class="layui-form layui-form-pane" >
@@ -18,9 +21,9 @@
             </div>
         </form>
     </div>
-<!--新增满减规则-->
-<div id="openModel" style="display: none;padding: 15px 15px 15px 30px;">
-    <form action="" class="layui-form layui-form-pane" style="">
+    <!--新增满减规则-->
+    <div id="openModel" style="display: none;padding: 15px 15px 15px 30px;">
+    <form action="" class="layui-form layui-form-pane">
         <div class="layui-form-item">
             <div class="layui-inline">
                 <label class="layui-form-label">规则名称</label>
@@ -72,7 +75,7 @@
             </div>
             <div class="layui-inline" id="weekSetBox">
                 <label class="layui-form-label">优惠周天</label>
-                <div class="layui-input-inline" id="weekBox" style="width: 411px;border: 1px solid #aaa;height: 72px">
+                <div class="layui-input-inline" id="weekBox" style="width: 625px;border: 1px solid rgb(230,230,230);height: 36px">
 
                 </div>
             </div>
@@ -171,27 +174,37 @@
             </div>
         </div>
         <!--满减规则-->
-        <div class="layui-form-item">
-            <div class="layui-inline">
-                <label class="layui-form-label">消费</label>
-                <div class="layui-input-inline" style="width: 125px">
-                    <input type="text" class="layui-input">
+        <div class="layui-form-item reduceBox-item ">
+            <div class="reduceBox" style="display: inline-block">
+                <div class="layui-inline">
+                    <label class="layui-form-label">消费</label>
+                    <div class="layui-input-inline" style="width: 105px">
+                        <input type="text" class="layui-input" name="limitCount">
+                    </div>
+                    <div class="layui-input-inline" style="width: 105px">
+                        <select lay-ignore style="height: 36px;width: 105px" name="limitType">
+                            <option value="0">以内</option>
+                            <option value="1">以上</option>
+                        </select>
+                    </div>
+                    <div class="layui-form-mid">每</div>
+                    <div class="layui-input-inline" style="width: 105px">
+                        <input type="text" class="layui-input" name="consumeCount">
+                    </div>
+                    <div class="layui-form-mid">元,减</div>
+                    <div class="layui-input-inline" style="width: 105px">
+                        <input type="text" class="layui-input" name="discountCount">
+                    </div>
+                    <div class="layui-form-mid">元</div>
                 </div>
-                <div class="layui-input-inline" style="width: 125px">
-                    <select>
-                        <option value="0">以内</option>
-                        <option value="1">以上</option>
-                    </select>
-                </div>
-                <div class="layui-form-mid">每</div>
-                <div class="layui-input-inline" style="width: 125px">
-                    <input type="text" class="layui-input">
-                </div>
-                <div class="layui-form-mid">元,减</div>
-                <div class="layui-input-inline" style="width: 125px">
-                    <input type="text" class="layui-input">
-                </div>
-                <div class="layui-form-mid">元</div>
+            </div>
+            <div class="layui-btn-group">
+                <button class="layui-btn layui-btn-sm" type="button" id="addMore">
+                    <i class="layui-icon">&#xe654;</i>
+                </button>
+                <button class="layui-btn layui-btn-sm" type="button" id="reduceBtn">
+                    <i class="layui-icon">&#xe642;</i>
+                </button>
             </div>
         </div>
 
@@ -200,6 +213,19 @@
         </div>
     </form>
 </div>
+    <!--适用门店的弹窗-->
+    <div class="chooseStore goodIsAll" style="display: none">
+        <form action="" class="layui-form">
+            <div class="layui-form-item">
+                <label class="layui-form-label">适用门店</label>
+                <div class="layui-input-inline" id="chooseStoreList">
+                </div>
+            </div>
+        </form>
+        <div style="text-align:right;padding-right: 50px;margin-bottom: 15px">
+            <button type="button" class="layui-btn layui-btn-normal" id="saveStorebtn">确定</button>
+        </div>
+    </div>
 </body>
 <script src="js/jquery-1.8.3-min.js"></script>
 <script src="layui/layui.js"></script>
@@ -230,6 +256,7 @@
     let MemberFreq=0; let AllowGuest=0;
     let memberLevelID=[];
     let DiscountDetails=[];
+    let storeId=[];
     layui.use(['form','table','layer','laydate'],function () {
         let form=layui.form;
         let table=layui.table;
@@ -329,7 +356,19 @@
             }
         });
 
-
+        //监听门店设置
+        form.on('checkbox(chooseStore)',function (data) {
+            if (data.elem.checked==true){
+                storeId.push({'StoreID':data.value});
+            }else if(data.elem.checked==false){
+                for (var i=0;i<storeId.length;i++){
+                    if(storeId[i].StoreID==data.value){
+                        storeId.splice(i,1)
+                    }
+                }
+            }
+            console.log(storeId);
+        });
 
         form.on('checkbox(ml)', function(data){
             if (data.elem.checked==true){
@@ -343,13 +382,26 @@
                 }
             }
         });
+
+        $('#addMore').click(function () {
+            $('.reduceBox-item').append($('body').find($('.reduceBox')).eq(0).clone())
+        });
+        $('#reduceBtn').click(function () {
+            if($('.reduceBox-item').find($('.reduceBox')).length>1){
+                $('.reduceBox-item').find($('.reduceBox')).last().remove();
+            }else {
+                layer.msg('此项不允许删除')
+            }
+        });
         $('.add').on('click',function () {
             Id='';
-            state=1;
-            weekType=0;
-            week=[];
+             state='1';
+             weekType=''; week=[];
+             StoreFreq=0;  ShareCount=0;
+             MemberFreq=0;  AllowGuest=0;
+             memberLevelID=[];
+             DiscountDetails=[];
             xc.AddWeeks('weekBox');
-            memberLevelID=[];
             xc.SearchMemberLevel1('memberBox', token, layer);
 
             laydate.render({
@@ -385,17 +437,24 @@
             layer.open({
                 title:'add',
                 type:1,
-                area:'800px',
+                area:['830px','600px'],
                 content:$('#openModel')
             })
         });
         $('#save').on('click',function () {
+          $('.reduceBox-item .reduceBox').each(function () {
+              DiscountDetails.push({'limitCount':$(this).find('input[name="limitCount"]').val(),
+                 'limitType':$(this).find('select[name="limitType"] option:selected').val(),
+                  'consumeCount':$(this).find('input[name="consumeCount"]').val(),
+                  'discountCount':$(this).find('input[name="discountCount"]').val()})
+          });
             let _obj={'discountRuleId':Id,
                 'MerchId':'',
                 'RuleName':$('#RuleName').val(),
                 'State':state,
                 'StartDate':$('#StartDate').val(),
                 'EndDate':$('#EndDate').val(),
+
                 'weekType':weekType,
                 'week':week.length>0?week.join('|'):'',
                 'startTime':$('#StartTime').val(),
@@ -421,7 +480,7 @@
                     data = JSON.parse(data);
                     if (data.result_code == 1) {
                         layer.msg('保存成功',{time:1500},function () {
-                            xc.getInitData(parm);
+                            location.href='fullReductionRule.html'
                         });
                     } else {
                         layer.msg(data.result_msg||return_msg);
@@ -429,9 +488,37 @@
                 }
             })
         });
+        //保存适用门店
+        $('#saveStorebtn').on('click',function () {
+            let arr=[];
+            if(storeId.length>0){
+                for(let i in storeId){
+                    arr.push(storeId[i].StoreID)
+                }
+            }
+            let _obj={'discountRuleId':Id,'storeIds':arr.length>0?arr.join('|'):'','userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'}
+            let parseJson = JSON.stringify(_obj);
+            $.ajax({
+                type: 'post',
+                url: '/XCCloud/Discount?action=SaveDiscountStores',
+                contentType: "application/json; charset=utf-8",
+                data: {parasJson: parseJson},
+                success: function (data) {
+                    data = JSON.parse(data);
+                    if (data.result_code == 1) {
+                        layer.msg('适配门店设置完成',{time:1500},function () {
+                            location.href='fullReductionRule.html';
+                        })
+                    }else {
+                        layer.msg('操作失败！')
+                    }
+                }
+            });
+        })
         table.on('tool(fullReductionTable)',function (obj) {
              let data=obj.data;
              let layevent=obj.event;
+            Id=data.ID;
              if(layevent==='upLevel'){
                  layer.confirm('确定升级该优惠券吗', function(index){
                      let _obj={'discountRuleId':data.ID,'updateState':'-1','userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
@@ -475,7 +562,13 @@
                      })
                  })
              }else if(layevent==='setStore'){
-
+                 getUsefulStore(Id,token,form,layer);
+                 form.render();
+                 indexLayer= layer.open({
+                     type:1,
+                     area:'500px',
+                     content:$('.chooseStore')
+                 });
              }else if(layevent==='del'){
                  layer.confirm('确定删除该条规则吗', function(index){
                      let _obj={'id':data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
@@ -499,7 +592,71 @@
                  });
              }
         })
-    })
+    });
+
+    //加载可选门店
+    function setUsefulStore(token,form,layer,selected) {
+        let obj={'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+        let parseJson = JSON.stringify(obj);
+        $.ajax({
+            type:'post',
+            url:'/XCCloud/StoreInfo?action=GetUnderStores',
+            contentType: "application/json; charset=utf-8",
+            data:{parasJson: parseJson},
+            success: function (data) {
+                data=JSON.parse(data);
+                if(data.result_code==1){
+                    $('#chooseStoreList').html('');
+                    let array=data.result_data;
+                    for(let i in array){
+                        if(selected){
+                            let flag=false;
+                            for(let j in selected){
+                                if(selected[j].StoreID==array[i].Key){
+                                    flag=true;
+                                }
+                            }
+                            if(flag==true){
+                                $('#chooseStoreList').append('<input type="checkbox" checked lay-skin="primary" value="'
+                                    +array[i].Key+'" lay-filter="chooseStore" title="'+array[i].Value+'">')
+                            }else {
+                                $('#chooseStoreList').append('<input type="checkbox" lay-skin="primary" value="'
+                                    +array[i].Key+'" lay-filter="chooseStore" title="'+array[i].Value+'">')
+                            }
+                        }else {
+                            $('#chooseStoreList').append('<input type="checkbox" lay-skin="primary" value="'
+                                +array[i].Key+'" lay-filter="chooseStore" title="'+array[i].Value+'">')
+                        }
+                    }
+                    form.render('checkbox');
+
+                }else {
+                    layer.msg('获取门店列表失败')
+                }
+            }
+        })
+    };
+    //获取已选门店
+    function getUsefulStore(couponId,token,form,layer) {
+        let obj={'discountRuleId':couponId,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+        let parseJson = JSON.stringify(obj);
+        $.ajax({
+            type:'post',
+            url:'/XCCloud/Discount?action=GetDiscountStores',
+            contentType: "application/json; charset=utf-8",
+            data:{parasJson: parseJson},
+            success: function (data) {
+                data=JSON.parse(data);
+                console.log(data);
+                if(data.result_code==1){
+                    storeId=data.result_data;
+                    setUsefulStore(token,form,layer,storeId)
+                }else {
+                    layer.msg('获取门店列表失败，err:'+data.result_msg||data.return_msg)
+                }
+            }
+        })
+    };
 </script>
 <script type="text/html" id="barDemo">
     <a class="layui-btn layui-btn-xs layui-bg-cyan" lay-event="upLevel">升级优先级</a>

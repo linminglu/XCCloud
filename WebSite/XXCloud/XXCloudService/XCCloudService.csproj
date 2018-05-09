@@ -403,6 +403,7 @@
     <Content Include="Test\api.aspx" />
     <Content Include="Test\payTest.html" />
     <Content Include="Test\pposTest.aspx" />
+    <Content Include="Test\redisTest.aspx" />
     <Content Include="Test\SignalRNotifyClientTest.html" />
     <Content Include="Test\SocketTest.aspx" />
     <Content Include="Test\upload.html" />
@@ -1578,6 +1579,13 @@
     </Compile>
     <Compile Include="Test\pposTest.aspx.designer.cs">
       <DependentUpon>pposTest.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Test\redisTest.aspx.cs">
+      <DependentUpon>redisTest.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Test\redisTest.aspx.designer.cs">
+      <DependentUpon>redisTest.aspx</DependentUpon>
     </Compile>
     <Compile Include="Test\SocketTest.ashx.cs">
       <DependentUpon>SocketTest.ashx</DependentUpon>

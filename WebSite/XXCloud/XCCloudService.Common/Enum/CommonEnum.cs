@@ -720,8 +720,11 @@ namespace XCCloudService.Common.Enum
     //兑换方式
     public enum ChargeType
     {
+        [Description("礼品")]
         Good = 0,//礼品
+        [Description("门票")]
         Project = 1,//门票
+        [Description("代币")]
         Coin = 2//代币
     }
 

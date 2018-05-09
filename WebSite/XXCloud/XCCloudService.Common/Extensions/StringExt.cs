@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using XCCloudService.Common.Enum;
 
 namespace XCCloudService.Common.Extensions
 {
@@ -24,6 +25,17 @@ namespace XCCloudService.Common.Extensions
             {
                 return false;
             }
+        }
+        /// <summary>
+        /// 生成扩展门店ID
+        /// </summary>
+        /// <param name="content"></param>
+        /// <param name="roleType"></param>
+        /// <param name="merchId"></param>
+        /// <returns></returns>
+        public static string ToExtStoreID(this string content)
+        {
+            return (content ?? "").PadRight(15, '0');
         }
     }
 }

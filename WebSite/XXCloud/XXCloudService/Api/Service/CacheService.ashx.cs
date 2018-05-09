@@ -15,8 +15,16 @@ namespace XXCloudService.Api.Service
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCGameManamAdminUserToken, SysIdAndVersionNo = false)]
         public object reloadCacheData(Dictionary<string, object> dicParas)
         {
-            string index = dicParas.ContainsKey("index") ? dicParas["index"].ToString() : string.Empty;
-            return null;
+            try
+            {
+                string index = dicParas.ContainsKey("index") ? dicParas["index"].ToString() : string.Empty;
+                reloadSingleCacheData(int.Parse(index));
+                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.T, "");
+            }
+            catch(Exception e)
+            {
+                throw e;
+            }
         }
 
         private void reloadSingleCacheData(int cacheDataIndex)

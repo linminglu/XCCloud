@@ -103,7 +103,7 @@ namespace XXCloudService.Api.XCCloud
                 IData_Jackpot_LevelService data_Jackpot_LevelService = BLLContainer.Resolve<IData_Jackpot_LevelService>(resolveNew: true);
                 IBase_GoodsInfoService base_GoodsInfoService = BLLContainer.Resolve<IBase_GoodsInfoService>(resolveNew: true);
                 var JackpotLevels = from a in data_Jackpot_LevelService.GetModels(p => p.ActiveID == iId)
-                                    join b in base_GoodsInfoService.GetModels() on a.GoodID equals b.ID
+                                    join b in base_GoodsInfoService.GetModels() on (a.GoodID+"") equals b.ID
                                     select new
                                     {
                                         LevelName = a.LevelName,

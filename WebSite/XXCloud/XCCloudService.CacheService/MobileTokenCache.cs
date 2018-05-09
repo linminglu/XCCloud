@@ -16,6 +16,11 @@ namespace XCCloudService.CacheService
             get { return _mobileTokenHt; }
         }
 
+        public static void Clear()
+        {
+            _mobileTokenHt.Clear();
+        }
+
         public static void AddToken(string mobile,string token)
         {
             _mobileTokenHt[token] = new MobileTokenModel(mobile);

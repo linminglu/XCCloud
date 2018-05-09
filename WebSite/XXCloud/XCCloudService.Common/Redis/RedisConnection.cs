@@ -22,7 +22,7 @@ namespace XCCloudService.Common.Redis
         /// <summary>
         /// 连接字符串
         /// </summary>
-        private static readonly string RedisConnectionString = ConfigurationManager.AppSettings["RedisServers"];
+        public static readonly string RedisConnectionString = ConfigurationManager.AppSettings["RedisServers"];
 
         private static readonly object Locker = new object();
         private static ConnectionMultiplexer _instance;

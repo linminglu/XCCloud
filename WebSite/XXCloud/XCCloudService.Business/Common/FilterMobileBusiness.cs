@@ -15,6 +15,11 @@ namespace XCCloudService.Business.Common
             mobileList.Add(mobile);
         }
 
+        public static void Clear()
+        {
+            mobileList.Clear();
+        }
+
         public static bool ExistMobile(string mobile)
         {
             return mobileList.Where(p => p.ToString().Equals(mobile)).Count() > 0;

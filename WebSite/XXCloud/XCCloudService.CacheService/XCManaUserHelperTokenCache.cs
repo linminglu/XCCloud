@@ -21,6 +21,11 @@ namespace XCCloudService.CacheService
             _userTokenDic[key] = obj;
         }
 
+        public static void Clear()
+        {
+            _userTokenDic.Clear();
+        }
+
         public static bool ExistToken(string key)
         {
             return _userTokenDic.ContainsKey(key);

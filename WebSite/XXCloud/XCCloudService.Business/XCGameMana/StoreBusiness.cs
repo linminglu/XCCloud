@@ -150,6 +150,7 @@ namespace XCCloudService.Business.XCGameMana
             DataTable dt = ds.Tables[0];
             if (dt.Rows.Count > 0)
             {
+                StoreCache.Clear();
                 var list = Utils.GetModelList<StoreCacheModel>(ds.Tables[0]).ToList();
                 StoreCache.Add(list);
             }            
@@ -164,6 +165,7 @@ namespace XCCloudService.Business.XCGameMana
             DataTable dt = ds.Tables[0];
             if (dt.Rows.Count > 0)
             {
+                StoreDogCache.Clear();
                 var list = Utils.GetModelList<StoreDogCacheModel>(ds.Tables[0]).ToList();
                 StoreDogCache.Add(list);
             }

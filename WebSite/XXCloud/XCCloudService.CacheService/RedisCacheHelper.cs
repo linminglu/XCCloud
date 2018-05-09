@@ -5,12 +5,62 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using XCCloudService.Common;
 using XCCloudService.Common.Redis;
 
 namespace XCCloudService.CacheService
 {
     public class RedisCacheHelper
     {
+        const string SerialNoDateKey = "SerialNoDateKey";
+        const string SerialNoKey = "SerialNoKey";
+
+        private static LoadedLuaScript luaScript { get; set; }
+
+        public static string CreateSerialNo(string storeId)
+        {
+            RedisHelper redisHelper = new RedisHelper();
+
+            string date = DateTime.Now.ToString("yyyyMMdd");
+            IServer server = redisHelper.GetRedisServer();
+            IDatabase db = redisHelper.GetDatabase();
+
+            string strLuaScript =
+                " local currDate = tostring(@currDate) " +
+                " if not currDate then " +
+                "     return 0 " +
+                " end " +
+                " local vals = redis.call(\"HMGET\", @SerialNoKey, \"SerialNo\", \"RedisDate\"); " +
+                " local SerialNo = tonumber(vals[1]) " +
+                " local redisDate = vals[2] " +
+                " if redisDate ~= currDate then " +
+                "     redis.call(\"HMSET\", @SerialNoKey, \"SerialNo\", 1, \"RedisDate\", currDate); " +
+                "     SerialNo = 1; " +
+                " end " +
+                " if not SerialNo then " +
+                "     return 0 " +
+                " end " +
+                " redis.call(\"HINCRBY\", @SerialNoKey, \"SerialNo\", 1) " +
+                " return SerialNo";
+
+            if (luaScript == null || !server.ScriptExists(luaScript.Hash))
+            {
+                var prepared = LuaScript.Prepare(strLuaScript);
+                luaScript = prepared.Load(server);
+            }
+
+            RedisResult ret = luaScript.Evaluate(db, new { currDate = date, SerialNoDateKey = SerialNoDateKey, SerialNoKey = SerialNoKey });
+
+            string serialNo = string.Empty;
+            if (ret.IsNull || string.IsNullOrEmpty(ret.ToString()) || ret.ToString() == "0")
+            {
+                return "";
+            }
+
+            serialNo = storeId + date + ret.ToString().PadLeft(9, '0');
+            return serialNo;
+        }
+
         #region String
         /// <summary>
         /// 保存单个key value
@@ -163,7 +213,20 @@ namespace XCCloudService.CacheService
         }
 
         /// <summary>
-        /// 从hash表获取所有数据集合
+        /// 从hash表获取所有Field/Value集合。
+        /// HashEntry：Name为字段名，Value为值
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public HashEntry[] HashGetAll(string key)
+        {
+            RedisHelper redisHelper = new RedisHelper();
+            return redisHelper.HashGetAll(key);
+        }
+
+        /// <summary>
+        /// 从hash表获取所有数据集合，不包含Field。
+        /// 适用于缓存value为JSON的情况
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="key"></param>

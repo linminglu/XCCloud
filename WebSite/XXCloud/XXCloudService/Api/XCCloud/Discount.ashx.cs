@@ -426,9 +426,9 @@ namespace XXCloudService.Api.XCCloud
 
                         ts.Complete();
                     }
-                    catch (Exception ex)
+                    catch (Exception e)
                     {
-                        errMsg = ex.Message;
+                        errMsg = e.Message;
                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                     }
                 }
