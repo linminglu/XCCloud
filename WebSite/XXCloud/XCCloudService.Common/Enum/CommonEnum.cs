@@ -825,6 +825,18 @@ namespace XCCloudService.Common.Enum
         MemberBalance = 5    //会员余额
     }
 
+    //工作类别
+    public enum WorkType
+    {
+        GoodRequest = 0     //调拨申请
+    }
+
+    //工作事件类别
+    public enum WorkEventType
+    {
+        GoodRequest = 0     //产品调拨对应表格 Data_GoodRequest
+    }
+
     /// <summary>
     /// 支付方式
     /// </summary>

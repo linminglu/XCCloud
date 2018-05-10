@@ -95,10 +95,10 @@ namespace XCCloudService.WorkFlow
         [Description("处理已审核拒绝")]
         DealVerifiedRefuse = 6, 
         /// <summary>
-        /// 停用
+        /// 结束
         /// </summary>
-        [Description("停用")]
-        Stopped = 7
+        [Description("结束")]
+        End = 7
     }
 
     /// <summary>
@@ -108,20 +108,23 @@ namespace XCCloudService.WorkFlow
     {
         State _state = State.Open;
 
-        StateMachine<State, Trigger>.TriggerWithParameters<Data_WorkFlow_Entry> _setRequestTrigger;
+        StateMachine<State, Trigger>.TriggerWithParameters<int> _setRequestTrigger;
         StateMachine<State, Trigger>.TriggerWithParameters<int> _setCancelTrigger;
-        StateMachine<State, Trigger>.TriggerWithParameters<string> _setRequestVerifiedPassTrigger;
-        StateMachine<State, Trigger>.TriggerWithParameters<string> _setRequestVerifiedRefuseTrigger;
-        StateMachine<State, Trigger>.TriggerWithParameters<string> _setDealVerifiedPassTrigger;
-        StateMachine<State, Trigger>.TriggerWithParameters<string> _setDealVerifiedRefuseTrigger;
+        StateMachine<State, Trigger>.TriggerWithParameters<int> _setDealTrigger;
+        StateMachine<State, Trigger>.TriggerWithParameters<int> _setCloseTrigger;
+        StateMachine<State, Trigger>.TriggerWithParameters<int, string> _setRequestVerifiedPassTrigger;
+        StateMachine<State, Trigger>.TriggerWithParameters<int, string> _setRequestVerifiedRefuseTrigger;
+        StateMachine<State, Trigger>.TriggerWithParameters<int, string> _setDealVerifiedPassTrigger;
+        StateMachine<State, Trigger>.TriggerWithParameters<int, string> _setDealVerifiedRefuseTrigger;
 
-        private Data_WorkFlow_Entry _curEntry;
+        private string workId;
+        private string eventId;
 
-        public GoodReqWorkFlow()
+        public GoodReqWorkFlow(string workId, string eventId)
         {
             _machine = new StateMachine<State, Trigger>(() => _state, s => _state = s);
 
-            _setRequestTrigger = _machine.SetTriggerParameters<Data_WorkFlow_Entry>(Trigger.Request);
+            _setRequestTrigger = _machine.SetTriggerParameters<int>(Trigger.Request);
             _setCancelTrigger = _machine.SetTriggerParameters<int>(Trigger.Cancel);
             _setRequestVerifiedPassTrigger = _machine.SetTriggerParameters<string>(Trigger.RequestVerifiedPass);
             _setRequestVerifiedRefuseTrigger = _machine.SetTriggerParameters<string>(Trigger.RequestVerifiedRefuse);
@@ -138,6 +141,7 @@ namespace XCCloudService.WorkFlow
                 .Permit(Trigger.RequestVerifiedRefuse, State.RequestVerifiedRefuse);
 
             _machine.Configure(State.RequestVerifiedPass)
+                .SubstateOf(State.Requested)
                 .OnEntryFrom(_setRequestVerifiedPassTrigger, (note) => OnRequestVerifiedPass(note), "申请已审核通过")
                 .PermitIf(Trigger.Cancel, State.Requested, () => IsCanceled, "撤销审核，返回上一步")
                 .Permit(Trigger.Deal, State.Dealed);
@@ -164,7 +168,7 @@ namespace XCCloudService.WorkFlow
                 .Permit(Trigger.Close, State.Stopped);
 
             _machine.Configure(State.Stopped)
-                .OnEntry(t => OnStopped(), "停用流程");
+                .OnEntry(t => OnStopped(), "流程结束");
         }
 
         #region 属性
