@@ -5,6 +5,14 @@
     <title>商品档案维护</title>
     <link rel="stylesheet" href="layui/css/layui.css">
 </head>
+<style>
+    .layui-form-pane .layui-inline .layui-form-label{padding: 8px 0;}
+    #test2{width: 300px;height: 170px;border: 1px solid #8D8D8D;position: relative;}
+    #imgBtn{width: 60px;height: 60px;position: absolute;top: 55px;left: 130px;cursor: pointer;}
+    .imgBox button{position: absolute;top: 15px;right: 15px;}
+    .imgBox button i {font-size: 24px;color: red;}
+    #timeTypeSetBox .layui-input-inline,#timeTypeSetBox .layui-form-label{width: 90px;}
+</style>
 <body>
 <div class="layui-row">
     <div class="layui-col-md12 layui-col-sm12 layui-col-lg12">
@@ -17,56 +25,168 @@
 </div>
 
 <!--新增商品弹窗-->
-<div id="addNewProduct" style="display: none;padding: 15px">
+<div id="addNewProduct" style="display: none;padding: 15px;height:500px;overflow-y: scroll">
     <form action="" class="layui-form layui-form-pane">
-        <div class="layui-form-item">
-            <div class="layui-inline">
-                <label class="layui-form-label">商品条码</label>
-                <div class="layui-input-inline" style="width: 300px;">
-                    <input type="text" class="layui-input" id="Barcode" readonly>
-                </div>
-                <div class="layui-input-inline" style="width: 100px">
-                    <button type="button" class="layui-btn layui-btn-normal" id="createBarcodeBtn">自动生成</button>
-                </div>
-                <div class="layui-input-inline" style="width: 100px">
-                    <button type="button" class="layui-btn layui-btn-normal">打印条码</button>
-                </div>
-            </div>
-            <div class="layui-inline">
-                <label class="layui-form-label">商品名称</label>
-                <div class="layui-input-inline">
-                    <input type="text" class="layui-input" id="GoodName">
+        <div class="layui-col-md8">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">商品条码</label>
+                    <div class="layui-input-inline" style="width: 298px;">
+                        <input type="text" class="layui-input" id="Barcode" readonly>
+                    </div>
+                    <div class="layui-input-inline" style="width: 100px">
+                        <button type="button" class="layui-btn layui-btn-normal" id="createBarcodeBtn">自动生成</button>
+                    </div>
+                    <div class="layui-input-inline" style="width: 100px">
+                        <button type="button" class="layui-btn layui-btn-normal">打印条码</button>
+                    </div>
                 </div>
             </div>
-            <div class="layui-inline">
-                <label class="layui-form-label">商品类别</label>
-                <div class="layui-input-inline">
-                    <select type="select" id="GoodType" lay-filter="GoodType" title="商品类别"></select>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">商品名称</label>
+                    <div class="layui-input-inline">
+                        <input type="text" class="layui-input" id="GoodName">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">商品类别</label>
+                    <div class="layui-input-inline">
+                        <select type="select" id="GoodType" lay-filter="GoodType" title="商品类别"></select>
+                    </div>
                 </div>
             </div>
-            <div class="layui-inline" id="goodIsAll">
-                <label class="layui-form-label">商品状态</label>
-                <div class="layui-input-inline">
-                    <input type="checkbox" checked lay-skin="switch" lay-text="有效|无效" id="Status" lay-filter="Status">
+            <div class="layui-form-item">
+                <div class="layui-inline goodIsAll">
+                    <label class="layui-form-label">商品状态</label>
+                    <div class="layui-input-inline">
+                        <input type="checkbox" checked lay-skin="switch" lay-text="有效|无效" id="Status" lay-filter="Status">
+                    </div>
                 </div>
-            </div>
-            <div class="layui-inline">
+                <div class="layui-inline">
                 <label class="layui-form-label">添加来源</label>
                 <div class="layui-input-inline">
                     <input type="text" class="layui-input" id="Source" disabled readonly>
                 </div>
             </div>
-            <div class="layui-inline">
-                <label class="layui-form-label">&nbsp;备注&nbsp;</label>
-                <div class="layui-input-inline" style="width: 513px;">
-                    <input type="text" class="layui-input" id="Note">
+            </div>
+            <div class="layui-form-item">
+                    <label class="layui-form-label">零售价格</label>
+                    <div class="layui-input-block">
+                        <input type="text" class="layui-input" id="Prices">
+                    </div>
+            </div>
+        </div>
+        <div class="layui-col-md4">
+            <div class="layui-card" style="height: 220px">
+                <div class="layui-card-header">
+                    选择上传礼品图片
+                </div>
+                <div class="layui-card-body">
+                    <div id="test2">
+                        <div id="imgBtn"><i class="layui-icon" style="font-size: 60px;color: #9F9F9F">&#xe654;</i></div>
+                        <div class="layui-upload-list" id="demo2" style="margin: 0;">
+                            <input id="nameImage" name="list[0]" maxlength="255" class="input-xlarge required" type="hidden">
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-        <div style="margin-bottom: 15px; text-align:center;">
-            <button type="reset" class="layui-btn layui-hide" id="reset">重置</button>
-            <button type="button" class="layui-btn layui-btn-danger" id="cancel"><i class="layui-icon">&#x1006;</i>取消</button>
-            <button type="button" class="layui-btn layui-btn-normal" id="save"><i class="layui-icon">&#xe605;</i>保存</button>
+
+         <div class="layui-col-md12 layui-card">
+             <div class="layui-card-header">
+                 <div class="layui-form-item">
+                     <div class="layui-inline">
+                         <label class="layui-form-label">兑换回购价格</label>
+                     </div>
+                     <div class="layui-inline">
+                         <div class="layui-input-inline">
+                             <select  id="balanceType" lay-filter="balanceType"></select>
+                         </div>
+                     </div>
+                     <div class="layui-inline">
+                         <label class="layui-form-label" style="width: 60px">兑换</label>
+                         <div class="layui-input-inline" style="width: 150px">
+                             <input type="text"  id="salePrice" class="layui-input">
+                         </div>
+                     </div>
+                     <div class="layui-inline">
+                         <label class="layui-form-label" style="width: 60px">回购</label>
+                         <div class="layui-input-inline" style="width: 150px">
+                             <input type="text"  id="backPrice" class="layui-input" placeholder="必须小于兑换价格">
+                         </div>
+                     </div>
+                     <div class="layui-inline">
+                         <div class="layui-input-inline" style="width: 60px">
+                            <button type="button" class="layui-btn" id="setPrice"><i class="layui-icon">&#xe654;</i></button>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+             <div class="layui-card-body" style="border: 1px solid #fff">
+                 <table class="layui-hide" id="priceTable" lay-filter="priceTable"></table>
+             </div>
+         </div>
+        <div style="" class="layui-col-md12">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <div class="layui-input-inline">
+                        <input type="checkbox" id="ReturnFlag" lay-filter="ReturnFlag" title="允许退货" lay-skin="primary">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <div class="layui-input-inline">
+                        <input type="checkbox" id="AllowCreatePoint" lay-filter="AllowCreatePoint" title="零售产生积分" lay-skin="primary">
+                    </div>
+                </div>
+                <br>
+                <div class="layui-inline">
+                    <label class="layui-form-label" style="width: 80px">销售</label>
+                    <div class="layui-input-inline" style="width: 80px">
+                        <input type="text" class="layui-input" id="sold">
+                    </div>
+                    <div class="layui-input-inline" style="width: 140px">
+                        <select name="" id="time" lay-filter="time">
+                            <option value="0">小时</option>
+                            <option value="1">天</option>
+                        </select>
+                    </div>
+                    <div class="layui-form-mid">
+                       后不可退货
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">退货手续费</label>
+                    <div class="layui-input-inline"  style="width: 40px">
+                        <input type="checkbox" id="money" lay-filter="money" lay-skin="primary">
+                    </div>
+                    <div class="layui-input-inline"  style="width: 80px">
+                        <input type="text" id="setmoney" class="layui-input">
+                    </div>
+                    <div class="layui-form-mid">
+                        元
+                    </div>
+                    <div class="layui-input-inline"  style="width: 40px">
+                        <input type="checkbox" id="present" lay-filter="present" lay-skin="primary">
+                    </div>
+                    <div class="layui-input-inline"  style="width: 80px">
+                        <input type="text" id="setpresent" class="layui-input">
+                    </div>
+                    <div class="layui-form-mid">
+                        %
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">&nbsp;备注&nbsp;</label>
+                <div class="layui-input-block">
+                    <input type="text" class="layui-input" id="Note">
+                </div>
+            </div>
+            <div style="margin-bottom: 15px; text-align:center;">
+                <button type="button" class="layui-btn layui-btn-normal" id="save"><i class="layui-icon">&#xe605;</i>保存</button>
+            </div>
+
         </div>
     </form>
 </div>
@@ -75,11 +195,16 @@
 <script src="layui/layui.js"></script>
 <script src="js/storeSystem.js"></script>
 <script>
-    window.onload=()=>{
+
+
         let xc=xcActionSystem.prototype;
         let token=xc.getStorage('token');
         let Status=1;let GoodType='';let id='';
+        let priceArr=[];let balanceType='';let balanceTypeStr='';
         let AllowStorage=0;
+        let ReturnFlag=0;let AllowCreatePoint=0;let time=0;
+        let money=0;let present=0;
+
         //初始化表格
         let parm={'obj':{'conditions':[],'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'},
             'url':'/XCCloud/GoodsInfo?action=QueryGoodsInfo',
@@ -92,34 +217,152 @@
                 ,{field:'Source', title: '添加来源', align: 'center'}
                 ,{field:'AllowStorage', title: '入库状态', align: 'center',templet:'#AllowStorage'}
                 ,{field:'Price', title: '零售价格', align: 'center'}
-                ,{field:'AllowCreatePoint', title: '是否产生积分', align: 'center'}
+                ,{field:'AllowCreatePoint', title: '是否产生积分', align: 'center',templet:'#createPoint'}
                 ,{field:'Note', title: '备注', align: 'center'}
                 ,{fixed: 'right', title: '操作', width:260, align:'center', toolbar: '#barDemo'}]
         };
         xc.getInitData(parm);
-        layui.use(['layer','form','table'],()=>{
+        layui.addcss('layui_font.css');
+        layui.use(['layer','form','table','upload'],()=>{
             let layer=layui.layer;
             let form=layui.form;
-            let table=layui.table;
+            let table=layui.table;let upload=layui.upload;
+            form.on('select(GoodType)',(data)=>{
+                GoodType=data.value;
+            });
+            form.on('select(balanceType)',(data)=>{
+                balanceType=data.value;
+                balanceTypeStr=data.elem[data.elem.selectedIndex].text;
+            });
+            form.on('switch(Status)',(data)=>{
+                if(data.elem.checked==true){
+                    Status=1;
+                }else {
+                    Status=0;
+                }
+            });
+            form.on('checkbox(ReturnFlag)',(data)=>{
+                if(data.elem.checked==true){
+                    ReturnFlag=1;
+                }else {
+                    ReturnFlag=0;
+                }
+            });
+            form.on('checkbox(AllowCreatePoint)',(data)=>{
+                if(data.elem.checked==true){
+                    AllowCreatePoint=1;
+                }else {
+                    AllowCreatePoint=0;
+                }
+            });
+            form.on('select(time)',(data)=>{
+                time=data.value;
+            });
+            form.on('checkbox(money)',(data)=>{
+                if(data.elem.checked==true){
+                    money=1;
+                }else {
+                    money=0;
+                }
+                $('#present').attr({'checked':false});
+                form.render('checkbox');
+                $('#setmoney').val('');
+            });
+            form.on('checkbox(present)',(data)=>{
+                if(data.elem.checked==true){
+                    present=1;
+                }else {
+                    present=0;
+                }
+                $('#money').attr({'checked':false});
+                form.render('checkbox');
+              $('#setpresent').val('');
+            });
+
+            //上传图片
+            var demoListViewStore=$('#demo2'),uploadListInsStore=upload.render({
+                elem: '#imgBtn'
+                ,url: '/XCCloud/Promotion?action=UploadFoodPhoto'
+                ,data:{'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'}
+                ,multiple: true
+                ,accept:"images"
+                ,size:1000
+                ,auto:true
+                ,done: function(res,index,upload){
+                    //上传完毕
+                    console.log(res);
+                    if(res.result_code==1){
+                        $('#demo2').children('div[class="imgBox"]').remove();
+                        $('#demo2 .loadTips').addClass('layui-hide');
+                        $('#demo2') .append('<div style="display: inline-block;position: relative" class="imgBox">' +
+                            '<button type="button" ><i class="layui-icon"><i class="layui-icon">&#xe640</i></i></button>' +
+                            '<img src="'+ res.result_data[0].Value +'" alt="'+ res.result_data[0].Value +'" class="layui-upload-img_md" ' +
+                            'style="display: block;width: 300px;height: 170px"></div>');
+                        layer.msg("图片上传成功！");
+                        $('.imgBox button').click(function () {
+                            $(this).parent('div').remove();
+                        });
+                        $('.imgBox img').click(function () {
+                            layer.open({
+                                title:  res.result_data.ID,
+                                type: 1,
+                                area: ['600px','400px'], //宽高
+                                content: '<div><img src="'+res.result_data[0].Value+'" alt="" style="display: block;"></div>'
+                            });
+                        });
+                    }else{
+                        layer.msg(res.return_msg);
+                    }
+                }
+                ,error:function(index,upload){
+                    layer.msg("服务器返回错误！");
+                    layer.closeAll('loading');
+                }
+            });
             $('#addNew').on('click',()=>{
-                Status=1; GoodType='';id='';
+                 Status=1; GoodType=''; id='';
+                 priceArr=[]; balanceType=''; balanceTypeStr='';
+                 AllowStorage=0;
+                 ReturnFlag=0; AllowCreatePoint=0; time=0;
+                 money=0; present=0;
                 $('#createBarcodeBtn').removeClass('layui-hide');
                 $('#Status').attr('disabled',true);
                 form.render();
                 xc.setSelect('商品类别','GoodType');
-                $('#reset').trigger('click');
-                xc.openProductAdd(layer,'新增商品','680px','addNewProduct')
-            });
-            $('#cancel').on('click',()=>{
-                xc.closeAll(layer);
+                xc.getBalanceTypeDic(token,layer,form,'balanceType');
+                layer.open({
+                    title:'新增商品',
+                    area:'1030px',
+                    type:1,
+                    content:$('#addNewProduct'),
+                    cancel: function(index, layero){
+                      location.href='giftList.html'
+                    }
+                })
             });
             $('#save').on('click',()=>{
+                let feeTypes;let ReturnFees;
+                if(money==0&&present==0){
+                    layer.msg('请设置退货手续费')
+                }else {
+                    money==0?feeTypes=1:feeTypes=0
+                    money=0?ReturnFees=$('#setpresent').val():ReturnFees=$('#setmoney').val()
+                }
                 let _obj={ 'id':id,
                     'Barcode':$('#Barcode').val(),
                     'Status':Status,
                     'GoodType':GoodType,
                     'GoodName':$('#GoodName').val(),
                     'AllowStorage':0,
+                    'returnFlag':ReturnFlag,
+                    'allowCreatePoint':AllowCreatePoint,
+                    'returnTime':$('#sold').val(),
+                    'timeType':time,
+                    'price':$('#Prices').val(),
+                    'feeType':feeTypes,
+                    'ReturnFee':ReturnFees,
+                    'GoodPhoteURL':$('.layui-upload-img_md').attr('src'),
+                    'GoodInfoPrice':priceArr,
                     'Note':$('#Note').val(),
                     'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
                 let url='/XCCloud/GoodsInfo?action=SaveGoodsInfo';
@@ -132,15 +375,83 @@
                     success: function (data) {
                         data=JSON.parse(data);
                         if(data.result_code==1){
-                            layer.msg('保存成功');
-                            layer.closeAll();
-                            xc.getInitData(parm);
+                            layer.msg('保存成功',{time:1000},function () {
+                                location.href='giftList.html'
+                            });
                         }else {
                             layer.msg(data.result_msg)
                         }
                     }
 
                 })
+            });
+            //零售回购价格设置
+            $('#setPrice').on('click',()=>{
+                if(priceArr.length>0){
+                    let flag=false;
+                    for (let i in priceArr){
+                        if(priceArr[i].BalanceIndex==balanceType){
+                            flag=true;
+                        }
+                    }
+                    if(flag){
+                        layer.open({
+                            title:'tips',
+                            area:'300px',
+                            content:'该余额类型已存在，如需修改请先删除该余额类型！'
+                        })
+                    }else {
+                        //表格数据增加一条
+                    priceArr.push({'BalanceIndex':balanceType,
+                        'BalanceIndexStr':balanceTypeStr,
+                        'Count0':$('#salePrice').val(),
+                        'Count1':$('#backPrice').val(),
+                    });
+                    //渲染表格
+                    table.render({
+                        elem: '#priceTable'
+                        , height:'250px'
+                        , size:"sm"
+                        , data: priceArr
+                        , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+                        , cols: [[{field:'BalanceIndexStr', title: '余额类别', align: 'center',width:265}
+                            ,{field:'Count0', title: '兑换价格', align: 'center',width:265}
+                            ,{field:'Count1', title: '回购价格', align: 'center',width:270}
+                            ,{fixed: 'right',title:'操作', width:140, align:'center', toolbar: '#barDemo2'}]]
+                    });
+                    //初始化输入框
+                    balanceType='';
+                    balanceTypeStr='';
+                    xc.getBalanceTypeDic(token,layer,form,'balanceType');
+                    $('#salePrice').val('');
+                    $('#backPrice').val('');
+                }
+                }else {
+                    //表格数据增加一条
+                    priceArr.push({'BalanceIndex':balanceType,
+                        'BalanceIndexStr':balanceTypeStr,
+                        'Count0':$('#salePrice').val(),
+                        'Count1':$('#backPrice').val(),
+                    });
+                    //渲染表格
+                    table.render({
+                        elem: '#priceTable'
+                        , height:'250px'
+                        , size:"sm"
+                        , data: priceArr
+                        , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+                        , cols: [[{field:'BalanceIndexStr', title: '余额类别', align: 'center',width:265}
+                            ,{field:'Count0', title: '兑换价格', align: 'center',width:265}
+                            ,{field:'Count1', title: '回购价格', align: 'center',width:270}
+                            ,{fixed: 'right',title:'操作', width:140, align:'center', toolbar: '#barDemo2'}]]
+                    });
+                    //初始化输入框
+                    balanceType='';
+                    balanceTypeStr='';
+                    xc.getBalanceTypeDic(token,layer,form,'balanceType');
+                    $('#salePrice').val('');
+                    $('#backPrice').val('');
+                }
             });
            //自动生成商品条码
             $('#createBarcodeBtn').on('click',function () {
@@ -161,12 +472,12 @@
                     }
 
                 })
-            })
+            });
             table.on('tool(productFileTable)',(obj)=>{
                 let data=obj.data;
                 let event=obj.event;
+                id=data.ID;
                 if(event === 'edit'){ //查看
-                    id=data.ID;
                     $('#Status').attr('disabled',false);
                     form.render();
                     let _obj={'id':data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
@@ -179,15 +490,70 @@
                         data: { parasJson: parasJson },
                         success: function (data) {
                             data=JSON.parse(data);
+                            console.log(data);
                             if(data.result_code==1){
                                 let arr=data.result_data;
+                                Status=1; GoodType=arr.GoodType; id=arr.ID;
+                                priceArr=arr.goodInfoPrice;
+                                table.render({
+                                    elem: '#priceTable'
+                                    , height:'250px'
+                                    , size:"sm"
+                                    , data: priceArr
+                                    , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+                                    , cols: [[{field:'BalanceIndexStr', title: '余额类别', align: 'center',width:265}
+                                        ,{field:'Count0', title: '兑换价格', align: 'center',width:265}
+                                        ,{field:'Count1', title: '回购价格', align: 'center',width:270}
+                                        ,{fixed: 'right',title:'操作', width:140, align:'center', toolbar: '#barDemo2'}]]
+                                });
+                                AllowStorage=arr.AllowStorage;
+                                ReturnFlag=arr.ReturnFlag; AllowCreatePoint=arr.AllowCreatePoint; time=arr.TimeType;
+                                if(arr.AllowCreatePoint==1){
+                                    $('#AllowCreatePoint').attr({'checked':true})
+                                }else {
+                                    $('#AllowCreatePoint').attr({'checked':false})
+                                }
+                                if(arr.ReturnFlag==1){
+                                    $('#ReturnFlag').attr({'checked':true})
+                                }else {
+                                    $('#ReturnFlag').attr({'checked':false})
+                                }
+                                if(arr.FeeType==0){
+                                    money=1; present=0;
+                                    $('#setmoney').val(arr.ReturnFee);
+                                    $('#money').attr({'checked':true})
+                                }else {
+                                    money=0; present=1;
+                                    $('#setpresent').val(arr.ReturnFee);
+                                    $('#present').attr({'checked':true})
+                                }
+                                $('#time').find('option[value="'+arr.TimeType+'"]').prop({'selected':true});
                                 $('#Barcode').val(arr.Barcode);
+                                $('#Prices').val(arr.Price);
                                 $('#createBarcodeBtn').addClass('layui-hide');
-                                GoodType=arr.GoodType;
                                 xc.setSelect('商品类别','GoodType',arr.GoodType);
                                 $('#GoodName').val(arr.GoodName);
+                                $('#sold').val(arr.ReturnTime);
                                 $('#Note').val(arr.Note);
-                                xc.openProductAdd(layer,'新增商品','680px','addNewProduct')
+                                if(arr.GoodPhoteURL){
+                                    $('#demo2') .append('<div style="display: inline-block;position: relative" class="imgBox">' +
+                                        '<button type="button" ><i class="layui-icon"><i class="layui-icon">&#xe640</i></i></button>' +
+                                        '<img src="'+ arr.GoodPhoteURL +'" class="layui-upload-img_md" ' +
+                                        'style="display: block;width: 300px;height: 170px"></div>');
+                                    $('.imgBox button').click(function () {
+                                        $(this).parent('div').remove();
+                                    });
+                                }
+                                form.render();
+                                layer.open({
+                                    title:'新增商品',
+                                    area:'1030px',
+                                    type:1,
+                                    content:$('#addNewProduct'),
+                                    cancel: function(index, layero){
+                                        location.href='giftList.html'
+                                    }
+                                })
                             }else {
                                 layer.msg(data.result_msg)
                             }
@@ -218,9 +584,29 @@
 
                     })
                 }else if(event === 'allow'){
+                    let _obj={'id':data.ID,'allowStorage':1,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                    let url='/XCCloud/GoodsInfo?action=AllowGoodsStorage';
+                    let parasJson = JSON.stringify(_obj);
+                    $.ajax({
+                        type: "post",
+                        url: url,
+                        contentType: "application/json; charset=utf-8",
+                        data: { parasJson: parasJson },
+                        success: function (data) {
+                            data=JSON.parse(data);
+                            if(data.result_code==1){
+                                layer.confirm('确定修改为可入库吗？', function(index){
+                                    xc.getInitData(parm);
+                                    layer.msg('修改状态成功！');
+                                });
+                            }else {
+                                layer.msg(data.result_msg)
+                            }
+                        }
 
+                    })
                 }else if(event === 'forbid'){
-                    let _obj={'id':data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                    let _obj={'id':data.ID,'allowStorage':0,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
                     let url='/XCCloud/GoodsInfo?action=AllowGoodsStorage';
                     let parasJson = JSON.stringify(_obj);
                     $.ajax({
@@ -244,33 +630,45 @@
                 }
             });
             //事件监听
-            form.on('select(GoodType)',(data)=>{
-                GoodType=data.value;
-            })
-            form.on('switch(Status)',(data)=>{
-                if(data.elem.checked==true){
-                    Status=1;
-                }else {
-                    Status=0;
+            table.on('tool(priceTable)',(obj)=> {
+                let data = obj.data;
+                let event = obj.event;
+                if (event === 'del') { //查看
+                    for( let  i in priceArr){
+                        if(priceArr[i].BalanceIndexStr==data.BalanceIndexStr){
+                            priceArr.splice(i,1);
+                            obj.del();
+                        }
+                    }
                 }
             })
         });
-    }
+
 </script>
 <script type="text/html" id="barDemo">
     <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="edit"> <i class="layui-icon">&#xe642;</i>修改</a>
     <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del"> <i class="layui-icon">&#xe640;</i>删除</a>
     {{# if(d.AllowStorage==1){ }}
-    <a class="layui-btn layui-btn-xs layui-btn-normal layui-bg-orange" lay-event="allow"> <i class="layui-icon">&#xe642;</i>禁止入库</a>
+    <a class="layui-btn layui-btn-xs layui-btn-normal layui-bg-orange" lay-event="forbid"> <i class="layui-icon">&#xe642;</i>禁止入库</a>
     {{# }else{ }}
-    <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="forbid"> <i class="layui-icon">&#xe642;</i>允许入库</a>
+    <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="allow"> <i class="layui-icon">&#xe642;</i>允许入库</a>
     {{#  } }}
+</script>
+<script type="text/html" id="barDemo2">
+    <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del"> <i class="layui-icon">&#xe640;</i>删除</a>
 </script>
 <script type="text/html" id="AllowStorage">
     {{# if(d.AllowStorage==1){ }}
     <input type="checkbox" checked name="switch" lay-skin="switch" lay-text="允许|禁止" class="tb_check" lay-filter="test" disabled>
     {{# }else{ }}
     <input type="checkbox" name="switch" lay-skin="switch" lay-text="允许|禁止" class="tb_check" lay-filter="test" disabled>
+    {{#  } }}
+</script>
+<script type="text/html" id="createPoint">
+    {{# if(d.AllowCreatePoint==1){ }}
+    <input type="checkbox" checked name="switch" lay-skin="switch" lay-text="是|否" class="tb_check" lay-filter="test" disabled>
+    {{# }else{ }}
+    <input type="checkbox" name="switch" lay-skin="switch" lay-text="是|否" class="tb_check" lay-filter="test" disabled>
     {{#  } }}
 </script>
 </html>

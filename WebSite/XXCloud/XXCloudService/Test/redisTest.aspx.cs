@@ -10,6 +10,12 @@ namespace XXCloudService.Test
 {
     public partial class redisTest : System.Web.UI.Page
     {
+        //protected override void OnInit(EventArgs e)
+        //{
+        //    this.Button1
+        //    base.OnInit(e);
+        //}
+
         protected void Page_Load(object sender, EventArgs e)
         {
 

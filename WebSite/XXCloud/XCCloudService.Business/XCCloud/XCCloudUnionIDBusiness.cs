@@ -65,7 +65,7 @@ namespace XCCloudService.Business.XCCloud
         public static bool GetUnionID(string openId, out string unionId)
         {
             unionId = string.Empty;
-            string key = Constant.WeiXinUnionId + "_" + unionId;
+            string key = Constant.WeiXinUnionId + "_" + openId;
             var query = from item in XCCloudUnionIDCache.UnionIDHt.Cast<DictionaryEntry>()
                         where item.Key.ToString().Equals(key)
                         select item.Value.ToString();

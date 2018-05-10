@@ -80,6 +80,7 @@
     <Compile Include="XCCloud\Flw_OrderBusiness.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="XCCloud\FlwFoodOrderBusiness.cs" />
     <Compile Include="XCCloud\MemberBusiness.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -96,6 +97,7 @@
     <Compile Include="XCCloud\WebAppInitBusiness.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="XCCloud\WorkFlowBusiness.cs" />
     <Compile Include="XCCloud\XCCloudUnionIDBusiness.cs" />
     <Compile Include="XCGameManaLog\UDPDBBusiness.cs" />
     <Compile Include="XCGameMana\DataOrderQueryBusiness.cs" />

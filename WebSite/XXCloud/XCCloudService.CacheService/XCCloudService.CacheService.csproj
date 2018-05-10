@@ -52,6 +52,7 @@
     <Compile Include="CacheType.cs" />
     <Compile Include="DataOrderCaChe.cs" />
     <Compile Include="DeviceStateCache.cs" />
+    <Compile Include="FlwFoodOrderCache.cs" />
     <Compile Include="IconOutLockCache.cs" />
     <Compile Include="MemberICICard.cs" />
     <Compile Include="RedisCacheHelper.cs" />

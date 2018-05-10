@@ -22,9 +22,9 @@
                 <h2 class="layui-colla-title">兑换规则</h2>
                 <div class="layui-colla-content layui-show">
                    <div class="layui-form-item">
-                       <div class="layui-inline">
-                           <label class="layui-form-label">原类型</label>
-                           <div class="layui-input-inline">
+                       <div class="layui-inline" >
+                           <label class="layui-form-label" style="width: 70px">原类型</label>
+                           <div class="layui-input-inline" style="width: 100px">
                                <select id="sourceType" lay-filter="sourceType">
                                    <option value="0">一级</option>
                                    <option value="1">er级</option>
@@ -33,15 +33,15 @@
                                </select>
                            </div>
                        </div>
-                       <div class="layui-inline">
-                           <label class="layui-form-label">原数量</label>
-                           <div class="layui-input-inline">
+                       <div class="layui-inline" >
+                           <label class="layui-form-label" style="width: 70px">原数量</label>
+                           <div class="layui-input-inline" style="width: 70px">
                                <input type="text" class="layui-input" id="sourceCount">
                            </div>
                        </div>
-                       <div class="layui-inline">
-                           <label class="layui-form-label">兑币类型</label>
-                           <div class="layui-input-inline">
+                       <div class="layui-inline" >
+                           <label class="layui-form-label" style="width: 70px">兑币类型</label>
+                           <div class="layui-input-inline" style="width: 100px">
                                <select id="chargeType" lay-filter="chargeType">
                                    <option value="0">一级</option>
                                    <option value="1">er级</option>
@@ -50,21 +50,20 @@
                                </select>
                            </div>
                        </div>
-                       <br>
-                       <div class="layui-inline">
-                           <label class="layui-form-label">兑币数量</label>
-                           <div class="layui-input-inline">
+                       <div class="layui-inline" >
+                           <label class="layui-form-label" style="width: 70px">兑币数量</label>
+                           <div class="layui-input-inline" style="width: 70px">
                                <input type="text" class="layui-input" id="chargeCount">
                            </div>
                        </div>
                        <div class="layui-inline">
-                           <label class="layui-form-label">警戒值</label>
-                           <div class="layui-input-inline">
+                           <label class="layui-form-label" style="width: 70px">警戒值</label>
+                           <div class="layui-input-inline" style="width: 70px">
                                <input type="text" class="layui-input" id="alertValue">
                            </div>
-                       </div>
-                       <div class="layui-input-inline">
-                           <div class="layui-input-inline">
+                       </div >
+                       <div class="layui-inline">
+                           <div class="layui-input-inline" style="width: 70px">
                               <button type="button" class="layui-btn layui-btn-normal" id="rulesBtn">新增</button>
                            </div>
                        </div>
@@ -766,9 +765,9 @@
     });
 </script>
 <script type="text/html" id="barDemo">
-    <a class="layui-btn  layui-btn-sm layui-btn-danger" lay-event="del"><i class="layui-icon">&#xe640;</i>删除</a>
+    <a class="layui-btn  layui-btn-xs layui-btn-danger" lay-event="del"><i class="layui-icon">&#xe640;</i>删除</a>
 </script>
 <script type="text/html" id="barDemoRule">
-    <a class="layui-btn  layui-btn-sm layui-btn-danger" lay-event="del"><i class="layui-icon">&#xe640;</i>删除</a>
+    <a class="layui-btn  layui-btn-xs layui-btn-danger" lay-event="del"><i class="layui-icon">&#xe640;</i>删除</a>
 </script>
 </html>

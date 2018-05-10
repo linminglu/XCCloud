@@ -5,9 +5,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Web;
-using XCCloudService.CacheService;
 using XCCloudService.WorkFlow;
 using System.Web.SessionState;
+using XCCloudService.Business.XCCloud;
 
 namespace XXCloudService.Test.WorkFlowTest
 {
@@ -43,14 +43,16 @@ namespace XXCloudService.Test.WorkFlowTest
             string handler = p["handler"];
             int count = Convert.ToInt32(p["count"]);
 
-            StockWorkFlow stockWorkFlow = WorkFlowCache<StockWorkFlow>.Find(w => w.Token.Equals(workFlowToken));
+            StockWorkFlow stockWorkFlow = null;
+            WorkFlowBusiness.Get<StockWorkFlow>(workFlowToken, out stockWorkFlow);
             stockWorkFlow.Request(handler, count);
         }
 
         private void fireStore(Dictionary<string, string> p)
         {
             string workFlowToken = HttpContext.Current.Session["workflowtoken"].ToString();
-            StockWorkFlow stockWorkFlow = WorkFlowCache<StockWorkFlow>.Find(w => w.Token.Equals(workFlowToken));
+            StockWorkFlow stockWorkFlow = null;
+            WorkFlowBusiness.Get<StockWorkFlow>(workFlowToken, out stockWorkFlow);
             stockWorkFlow.Store();
         }
 

@@ -152,14 +152,14 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Data_GoodStorage_Detail> Data_GoodStorage_Detail { get; set; }
         public virtual DbSet<Base_DepotInfo> Base_DepotInfo { get; set; }
         public virtual DbSet<Base_Goodinfo_Price> Base_Goodinfo_Price { get; set; }
-        public virtual DbSet<Base_GoodsInfo> Base_GoodsInfo { get; set; }
         public virtual DbSet<Data_GoodsStock> Data_GoodsStock { get; set; }
         public virtual DbSet<Data_CouponInfo> Data_CouponInfo { get; set; }
         public virtual DbSet<Data_Food_Detial> Data_Food_Detial { get; set; }
-        public virtual DbSet<Data_WorkFlow_Entry> Data_WorkFlow_Entry { get; set; }
         public virtual DbSet<Data_WorkFlow_Node> Data_WorkFlow_Node { get; set; }
         public virtual DbSet<Data_WorkFlowConfig> Data_WorkFlowConfig { get; set; }
         public virtual DbSet<Data_GoodRequest_List> Data_GoodRequest_List { get; set; }
         public virtual DbSet<Data_GoodRequest> Data_GoodRequest { get; set; }
+        public virtual DbSet<Data_WorkFlow_Entry> Data_WorkFlow_Entry { get; set; }
+        public virtual DbSet<Base_GoodsInfo> Base_GoodsInfo { get; set; }
     }
 }

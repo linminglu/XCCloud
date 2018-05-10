@@ -46,7 +46,7 @@
 		.clearfix:after {content: ".";display: block;clear: both;visibility: hidden;line-height: 0;height: 0;}
 		.clearfix {display: inline-block;}
 		/*-----------------------------*/
-		.heightKz{overflow: hidden;}
+		.heightKz{overflow-y:auto;overflow-x:hidden;}
 		/*高度控制*/
 		.boxShadow{box-shadow: 0 0 2px #FF8C00;background-color: #3c8dbc;}
 
@@ -64,7 +64,7 @@
 		.hidden{display: none;}
 		.show{display: block;}
 
-		.majorMenu{width: 100px; height: inherit;padding-top: 2em;margin-top: 50px;margin-left: 0.5em;margin-right: 0.5em;background: #3c8dbc;min-height: 40em;}
+		.majorMenu{width: 100px; height: inherit;padding-top: 2em;margin-top: 1em;margin-left: 0.5em;margin-right: 0.5em;background: #3c8dbc;min-height: 40em;}
 		.majorMenu li{width: 100%;height: 3.6em;margin: 5px 0;}
 		.majorMenu li a{display: block;width: 100%;height: 100%;line-height: 3em; font-size: 1.1em;text-align: center;color: #fff;padding: 0;font-weight: 500;}
 		.majorMenu li a:hover{background-color: #589dc6;color: #fff;}
@@ -87,9 +87,9 @@
 		.member li{font-size: 1em; overflow:hidden!important; text-overflow:ellipsis!important; white-space:nowrap!important;margin-top: 0.5em;}
 		.shopCart ul{min-height: 40em;}
 		.shopCart ul li span{font-size: 1em;margin-top: 0.5em;text-align: center;}
-		.Checkout{position: absolute;left: 0;bottom: 0.5em;z-index: 9;color: #555555;}
+		.Checkout{position: absolute;left: 0;bottom: 0.2em;z-index: 9;color: #555555;}
 		.CheckoutBtn button{margin: 1em 0.5em;color: #fff;font-size: 1.2em;width: 40%;}
-		/*.CountH{background: rgba(0,0,0,0.1); filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#10000000,endColorstr=#10000000);border-color: #f0f0f0;}*/
+		/*.CountH{background: rgba(0,0,0,0.1):DXImageTransform.Microsoft.gradient(startColorstr=#10000000,endColorstr=#10000000);border-color: #f0f0f0;}*/
 		.CheckoutBtn .btn-danger{background-color: #f82806;border: 1px solid #f82806;}
 		.CheckoutBtn .btn-success{background-color: #5CB05A;border: 1px solid #5CB05A;}
 		/*产品销售*/
@@ -489,11 +489,9 @@
 				<li :class="{cur:returnShow}"><a href="javascript:void(0)">会员返还</a></li>
 				<li :class="{cur:returnShow}"><a href="javascript:void(0)">退货处理</a></li>
 				<li :class="{cur:cardLossShow}"><a href="javascript:void(0)">会员卡挂失</a></li>
-				<!--v-bind:class="{ active: isActive, 'text-danger': hasError "				this.operationShow = false;
-				this.cardLossShow = false;
-				this.saleShow = false;
-				this.memberShow = true;
-				this.returnShow = false;-->
+
+
+				<!--<li @click="membershipReading" :class="{cur:cardLossShow}"><a href="javascript:void(0)">读卡</a></li>-->
 			</ul>
 			<!--右边显示内容-->
 			<div class="heightKz">
@@ -1038,10 +1036,11 @@
                 that.userToken = userToken;
                 that.storeId = storeId;
                 that.salesAll();
-                var heightKz = $(window).height();
+                var heightkz = $(window).height()-$('.boxShadow').height()-100;
                 var widthKz = $(window).width();
-//                alert(heightKz);
-//                alert(widthKz)
+                console.log(heightkz);
+                $('.heightKz').height(heightkz);
+
             },
             inputFnc:function (inputValue) {
                 var that = this;

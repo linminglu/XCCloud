@@ -10,6 +10,7 @@ using XCCloudService.Base;
 using XCCloudService.BLL.Container;
 using XCCloudService.BLL.IBLL.XCCloud;
 using XCCloudService.BLL.XCCloud;
+using XCCloudService.CacheService;
 using XCCloudService.Common;
 using XCCloudService.Common.Enum;
 using XCCloudService.Common.Extensions;
@@ -26,12 +27,6 @@ namespace XXCloudService.Api.XCCloud
     /// </summary>
     public class GoodsInfo : ApiBase
     {
-        IDict_SystemService dict_SystemService = BLLContainer.Resolve<IDict_SystemService>(resolveNew: true);
-        IData_GoodInventoryService data_GoodInventoryService = BLLContainer.Resolve<IData_GoodInventoryService>(resolveNew: true);
-        IBase_DepotInfoService base_DepotInfoService = BLLContainer.Resolve<IBase_DepotInfoService>(resolveNew: true);
-        IData_GoodsStockService data_GoodsStockService = BLLContainer.Resolve<IData_GoodsStockService>(resolveNew: true);
-        IBase_StoreInfoService base_StoreInfoService = BLLContainer.Resolve<IBase_StoreInfoService>(resolveNew: true);
-        IBase_GoodsInfoService base_GoodsInfoService = BLLContainer.Resolve<IBase_GoodsInfoService>(resolveNew: true);
 
         #region 商品档案维护
         /// <summary>
@@ -158,14 +153,17 @@ namespace XXCloudService.Api.XCCloud
                 if (!Base_GoodsInfoService.I.Any(a => a.ID.Equals(id, StringComparison.OrdinalIgnoreCase)))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, "该商品信息不存在");
 
-                var goodInfoPrice = from a in Base_Goodinfo_PriceService.N.GetModels(p => p.GoodID.Equals(id, StringComparison.OrdinalIgnoreCase))
-                                    join b in Dict_BalanceTypeService.N.GetModels() on a.BalanceIndex equals b.ID
-                                    select new 
+                var goodInfoPrice = from t in
+                                        (from a in Base_Goodinfo_PriceService.N.GetModels(p => p.GoodID.Equals(id, StringComparison.OrdinalIgnoreCase))
+                                         join b in Dict_BalanceTypeService.N.GetModels() on a.BalanceIndex equals b.ID
+                                         select new { a = a, BalanceIndexStr = b.TypeName })
+                                    group t by t.a.BalanceIndex into g
+                                    select new
                                     {
-                                        OperateTypei = a.OperateTypei,
-                                        BalanceIndex = a.BalanceIndex,
-                                        BalanceIndexStr = b.TypeName,
-                                        Count = a.Count
+                                        BalanceIndex = g.Key,
+                                        BalanceIndexStr = g.FirstOrDefault().BalanceIndexStr,
+                                        Count0 = g.Any(w => w.a.OperateTypei == 0) ? g.Where(w => w.a.OperateTypei == 0).FirstOrDefault().a.Count : (decimal?)null,
+                                        Count1 = g.Any(w => w.a.OperateTypei == 1) ? g.Where(w => w.a.OperateTypei == 1).FirstOrDefault().a.Count : (decimal?)null
                                     };
 
                 var linq = new
@@ -252,6 +250,12 @@ namespace XXCloudService.Api.XCCloud
                         Utils.GetModel(dicParas, ref base_GoodsInfo);
                         if (id.IsNull())
                         {
+                            //生成ID
+                            id = RedisCacheHelper.CreateSerialNo((userTokenKeyModel.LogType == (int)RoleType.MerchUser ? merchId : storeId).ToExtStoreID());
+                            if (!id.Nonempty("ID", out errMsg))
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                            base_GoodsInfo.ID = id;
                             //总店添加的商品是默认入库的？
                             base_GoodsInfo.AllowStorage = userTokenKeyModel.LogType == (int)RoleType.MerchUser ? 1 : 0;
                             base_GoodsInfo.MerchID = merchId;
@@ -282,33 +286,63 @@ namespace XXCloudService.Api.XCCloud
                                 Base_Goodinfo_PriceService.I.DeleteModel(model);
                             }
 
+                            List<Base_Goodinfo_Price> priceList = new List<Base_Goodinfo_Price>();
                             foreach (IDictionary<string, object> el in goodInfoPrice)
                             {
                                 if (el != null)
                                 {
                                     var dicPara = new Dictionary<string, object>(el, StringComparer.OrdinalIgnoreCase);
-                                    if (!dicPara.Get("operateTypei").Validint("操作类别", out errMsg))
-                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    //if (!dicPara.Get("operateTypei").Validint("操作类别", out errMsg))
+                                    //    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                                     if (!dicPara.Get("balanceIndex").Validint("余额类别", out errMsg))
                                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                                    if (!dicPara.Get("count").Validdecimal("数量", out errMsg))
+                                    if (!dicPara.Get("count0").Validdecimal("数量", out errMsg) && !dicPara.Get("count1").Validdecimal("数量", out errMsg))
                                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-                                    //回购价大于兑换价需要系统提示，operateTypei=1回购 0兑换
-                                    var operateTypei = dicPara.Get("operateTypei").Toint();
+                                    //回购价大于兑换价需要系统提示，operateTypei=0兑换1回购 
+                                    //var operateTypei = dicPara.Get("operateTypei").Toint();
                                     var balanceIndex = dicPara.Get("balanceIndex").Toint();
-                                    var count = dicPara.Get("count").Todecimal();
-                                    if ((operateTypei == 1 && Base_Goodinfo_PriceService.I.Any(a => a.OperateTypei == 0 && a.BalanceIndex == balanceIndex && a.Count < count)) ||
-                                        (operateTypei == 0 && Base_Goodinfo_PriceService.I.Any(a => a.OperateTypei == 1 && a.BalanceIndex == balanceIndex && a.Count > count)))
+                                    var count0 = dicPara.Get("count0").Todecimal();
+                                    var count1 = dicPara.Get("count1").Todecimal();
+                                    //if ((operateTypei == 1 && Base_Goodinfo_PriceService.I.Any(a => a.OperateTypei == 0 && a.BalanceIndex == balanceIndex && a.Count < count)) ||
+                                    //    (operateTypei == 0 && Base_Goodinfo_PriceService.I.Any(a => a.OperateTypei == 1 && a.BalanceIndex == balanceIndex && a.Count > count)))
+                                    if (count0 <= count1)
                                     {
                                         errMsg = "同一余额类别，回购价不能大于兑换价";
                                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                                     }
 
-                                    var base_Goodinfo_Price = new Base_Goodinfo_Price();
-                                    Utils.GetModel(dicPara, ref base_Goodinfo_Price);
-                                    base_Goodinfo_Price.GoodID = id;
+                                    if (priceList.Any(a => a.BalanceIndex == balanceIndex))
+                                    {
+                                        errMsg = "相同余额类别不能重复添加";
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    }
+
+                                    var base_Goodinfo_Price = new Base_Goodinfo_Price();                                    
+                                    //生成ID
+                                    id = RedisCacheHelper.CreateSerialNo((userTokenKeyModel.LogType == (int)RoleType.MerchUser ? merchId : storeId).ToExtStoreID());
+                                    if (!id.Nonempty("ID", out errMsg))
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    base_Goodinfo_Price.ID = id;
+                                    base_Goodinfo_Price.BalanceIndex = balanceIndex;
+                                    base_Goodinfo_Price.OperateTypei = 0;
+                                    base_Goodinfo_Price.Count = count0;
+                                    base_Goodinfo_Price.GoodID = base_GoodsInfo.ID;
                                     Base_Goodinfo_PriceService.I.AddModel(base_Goodinfo_Price);
+                                    priceList.Add(base_Goodinfo_Price);
+
+                                    base_Goodinfo_Price = new Base_Goodinfo_Price();
+                                    //生成ID
+                                    id = RedisCacheHelper.CreateSerialNo((userTokenKeyModel.LogType == (int)RoleType.MerchUser ? merchId : storeId).ToExtStoreID());
+                                    if (!id.Nonempty("ID", out errMsg))
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    base_Goodinfo_Price.ID = id;
+                                    base_Goodinfo_Price.BalanceIndex = balanceIndex;
+                                    base_Goodinfo_Price.OperateTypei = 1;
+                                    base_Goodinfo_Price.Count = count1;
+                                    base_Goodinfo_Price.GoodID = base_GoodsInfo.ID;
+                                    Base_Goodinfo_PriceService.I.AddModel(base_Goodinfo_Price);
+                                    priceList.Add(base_Goodinfo_Price);
                                 }
                                 else
                                 {
@@ -326,6 +360,10 @@ namespace XXCloudService.Api.XCCloud
 
                         ts.Complete();
                     }
+                    catch (DbEntityValidationException e)
+                    {
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, e.EntityValidationErrors.ToErrors());
+                    }
                     catch (Exception e)
                     {
                         errMsg = e.Message;
@@ -334,11 +372,7 @@ namespace XXCloudService.Api.XCCloud
                 }
 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
-            }
-            catch (DbEntityValidationException e)
-            {
-                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, e.EntityValidationErrors.ToErrors());
-            }
+            }            
             catch (Exception e)
             {
                 return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
@@ -362,14 +396,17 @@ namespace XXCloudService.Api.XCCloud
                 var errMsg = string.Empty;
                 if (!dicParas.Get("id").Nonempty("商品ID", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (!dicParas.Get("allowStorage").Validint("是否允许入库", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
                 var id = dicParas.Get("id");
+                var allowStorage = dicParas.Get("allowStorage").Toint();
 
                 if (!Base_GoodsInfoService.I.Any(a => a.ID.Equals(id, StringComparison.OrdinalIgnoreCase)))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, "该商品信息不存在");
 
                 var base_GoodsInfo = Base_GoodsInfoService.I.GetModels(p => p.ID.Equals(id, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
-                base_GoodsInfo.AllowStorage = 1;
+                base_GoodsInfo.AllowStorage = allowStorage;
                 if (!Base_GoodsInfoService.I.Update(base_GoodsInfo))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, "修改商品信息失败");
 

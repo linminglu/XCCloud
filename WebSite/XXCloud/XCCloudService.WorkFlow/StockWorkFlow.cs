@@ -61,6 +61,7 @@ namespace XCCloudService.WorkFlow
     /// </summary>
     public class StockWorkFlow : BaseWorkFlow<StockState, StockTrigger>
     {
+        protected string _token = Guid.NewGuid().ToString("N");
 
         StockState _state = StockState.Normal;
 
@@ -73,6 +74,12 @@ namespace XCCloudService.WorkFlow
         string _handler;
         int _count;
         const int _upper = 500;
+
+        public string Token
+        {
+            get { return _token; }
+        }
+
         
         public StockWorkFlow()
         {

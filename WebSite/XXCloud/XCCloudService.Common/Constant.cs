@@ -62,5 +62,7 @@ namespace XCCloudService.Common
         public static string SystemRole_OrderAudit = "订单审核授权";
 
         #endregion
+
+        public static string Workflow = "Workflow";//工作流
     }
 }

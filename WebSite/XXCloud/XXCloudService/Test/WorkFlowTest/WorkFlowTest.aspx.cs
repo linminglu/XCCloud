@@ -6,10 +6,10 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using XCCloudService.WorkFlow;
-using XCCloudService.CacheService;
 using XCCloudService.Business.Common;
 using XCCloudService.Common;
 using System.Web.Services;
+using XCCloudService.Business.XCCloud;
 
 namespace XXCloudService.Test.WorkFlowTest
 {
@@ -21,9 +21,9 @@ namespace XXCloudService.Test.WorkFlowTest
         protected void Page_Load(object sender, EventArgs e)
         {
             ViewState["warningservertoken"] = MobileTokenBusiness.SetMobileToken("warningserver");
-            WorkFlowCache<StockWorkFlow>.RemoveAll(p => p.Token.Equals(Convert.ToString(Session["workflowtoken"])));
+            WorkFlowBusiness.Remove(Convert.ToString(Session["workflowtoken"]));
             stockWorkFlow = new StockWorkFlow();
-            WorkFlowCache<StockWorkFlow>.Add(stockWorkFlow);
+            WorkFlowBusiness.Set<StockWorkFlow>(Convert.ToString(Session["workflowtoken"]), stockWorkFlow);
             Session["workflowtoken"] = stockWorkFlow.Token;
         }
 

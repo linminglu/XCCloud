@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -7,38 +8,38 @@ using System.Threading.Tasks;
 
 namespace XCCloudService.CacheService
 {
-    public class WorkFlowCache<T>
+    public class WorkFlowCache
     {
-        private static List<T> _workFlowList = new List<T>();
+        private static Hashtable _workFlowHt = new Hashtable();
 
-        public static void Add(T t)
+        public static Hashtable WorkFlowHt
         {
-            _workFlowList.Add(t);
-        }
-
-        public static bool Exist(Predicate<T> match)
-        {
-            return _workFlowList.Exists(match);
-        }
-
-        public static bool Remove(T t)
-        {
-            return _workFlowList.Remove(t);
-        }
-
-        public static int RemoveAll(Predicate<T> match)
-        {
-            return _workFlowList.RemoveAll(match);
-        }
-
-        public static T Find(Predicate<T> match)
-        {
-            return _workFlowList.Find(match);
+            get { return _workFlowHt; }
         }
 
         public static void Clear()
         {
-            _workFlowList.Clear();
+            _workFlowHt.Clear();
         }
+
+        public static void Add<T>(string key, T t)
+        {
+            _workFlowHt.Add(key, t);
+        }
+
+        public static void Update<T>(string key, T t)
+        {
+            _workFlowHt[key] = t;
+        }
+
+        public static void Remove(string key)
+        {
+            _workFlowHt.Remove(key);
+        }
+
+        public static bool Exist(string key)
+        {
+            return _workFlowHt.ContainsKey(key);
+        }        
     }
 }
