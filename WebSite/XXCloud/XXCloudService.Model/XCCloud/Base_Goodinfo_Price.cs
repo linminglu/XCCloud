@@ -14,8 +14,8 @@ namespace XCCloudService.Model.XCCloud
     
     public partial class Base_Goodinfo_Price
     {
-        public string ID { get; set; }
-        public string GoodID { get; set; }
+        public int ID { get; set; }
+        public Nullable<int> GoodID { get; set; }
         public Nullable<int> OperateTypei { get; set; }
         public Nullable<int> BalanceIndex { get; set; }
         public Nullable<decimal> Count { get; set; }

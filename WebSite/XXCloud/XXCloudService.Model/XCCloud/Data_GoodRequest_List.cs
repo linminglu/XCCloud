@@ -14,15 +14,17 @@ namespace XCCloudService.Model.XCCloud
     
     public partial class Data_GoodRequest_List
     {
-        public string ID { get; set; }
-        public string RequestID { get; set; }
-        public string GoodID { get; set; }
+        public int ID { get; set; }
+        public Nullable<int> RequestID { get; set; }
+        public Nullable<int> GoodID { get; set; }
         public Nullable<int> RequestCount { get; set; }
         public Nullable<int> SendCount { get; set; }
         public Nullable<decimal> CostPrice { get; set; }
         public Nullable<decimal> Tax { get; set; }
+        public string InStoreID { get; set; }
+        public Nullable<int> InDeportID { get; set; }
         public string OutStoreID { get; set; }
-        public string OutDepotID { get; set; }
+        public Nullable<int> OutDepotID { get; set; }
         public Nullable<System.DateTime> SendTime { get; set; }
         public Nullable<int> LogistType { get; set; }
         public string LogistOrderID { get; set; }

@@ -148,13 +148,13 @@ namespace XXCloudService.Api.XCCloud
                 if (!dicParas.Get("id").Nonempty("商品ID", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-                var id = dicParas.Get("id");
+                var id = dicParas.Get("id").Toint();
 
-                if (!Base_GoodsInfoService.I.Any(a => a.ID.Equals(id, StringComparison.OrdinalIgnoreCase)))
+                if (!Base_GoodsInfoService.I.Any(a => a.ID == id))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, "该商品信息不存在");
 
                 var goodInfoPrice = from t in
-                                        (from a in Base_Goodinfo_PriceService.N.GetModels(p => p.GoodID.Equals(id, StringComparison.OrdinalIgnoreCase))
+                                        (from a in Base_Goodinfo_PriceService.N.GetModels(p => p.GoodID == id)
                                          join b in Dict_BalanceTypeService.N.GetModels() on a.BalanceIndex equals b.ID
                                          select new { a = a, BalanceIndexStr = b.TypeName })
                                     group t by t.a.BalanceIndex into g
@@ -168,7 +168,7 @@ namespace XXCloudService.Api.XCCloud
 
                 var linq = new
                 {
-                    base_GoodsInfo = Base_GoodsInfoService.I.GetModels(p => p.ID.Equals(id, StringComparison.OrdinalIgnoreCase)).FirstOrDefault(),
+                    base_GoodsInfo = Base_GoodsInfoService.I.GetModels(p => p.ID == id).FirstOrDefault(),
                     goodInfoPrice = goodInfoPrice
                 }.AsFlatDictionary();
 
@@ -232,7 +232,7 @@ namespace XXCloudService.Api.XCCloud
                 if (!dicParas.Get("barCode").Nonempty("商品条码", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-                var id = dicParas.Get("id");
+                var id = dicParas.Get("id").Toint(0);
                 var barCode = dicParas.Get("barCode");
                 var goodInfoPrice = dicParas.GetArray("goodInfoPrice");
 
@@ -241,21 +241,15 @@ namespace XXCloudService.Api.XCCloud
                 {
                     try
                     {
-                        if (Base_GoodsInfoService.I.Any(a => !a.ID.Equals(id, StringComparison.OrdinalIgnoreCase) && a.Barcode.Equals(barCode, StringComparison.OrdinalIgnoreCase)))
+                        if (Base_GoodsInfoService.I.Any(a => a.ID != id && a.Barcode.Equals(barCode, StringComparison.OrdinalIgnoreCase)))
                         {
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, "该商品条码已存在");
                         }
 
-                        var base_GoodsInfo = Base_GoodsInfoService.I.GetModels(p => p.ID.Equals(id, StringComparison.OrdinalIgnoreCase)).FirstOrDefault() ?? new Base_GoodsInfo();
+                        var base_GoodsInfo = Base_GoodsInfoService.I.GetModels(p => p.ID == id).FirstOrDefault() ?? new Base_GoodsInfo();
                         Utils.GetModel(dicParas, ref base_GoodsInfo);
-                        if (id.IsNull())
-                        {
-                            //生成ID
-                            id = RedisCacheHelper.CreateSerialNo((userTokenKeyModel.LogType == (int)RoleType.MerchUser ? merchId : storeId).ToExtStoreID());
-                            if (!id.Nonempty("ID", out errMsg))
-                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-
-                            base_GoodsInfo.ID = id;
+                        if (id == 0)
+                        {                            
                             //总店添加的商品是默认入库的？
                             base_GoodsInfo.AllowStorage = userTokenKeyModel.LogType == (int)RoleType.MerchUser ? 1 : 0;
                             base_GoodsInfo.MerchID = merchId;
@@ -265,7 +259,7 @@ namespace XXCloudService.Api.XCCloud
                         }
                         else
                         {
-                            if (base_GoodsInfo.ID.IsNull())
+                            if (base_GoodsInfo.ID == 0)
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, "该商品信息不存在");
                             if (!storeId.IsNull() && base_GoodsInfo.StoreID != storeId)
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, "禁止跨门店修改商品信息");
@@ -281,7 +275,7 @@ namespace XXCloudService.Api.XCCloud
                         if (goodInfoPrice != null && goodInfoPrice.Count() >= 0)
                         {
                             //先删除，后添加
-                            foreach (var model in Base_Goodinfo_PriceService.I.GetModels(p => p.GoodID.Equals(id, StringComparison.OrdinalIgnoreCase)))
+                            foreach (var model in Base_Goodinfo_PriceService.I.GetModels(p => p.GoodID == id))
                             {
                                 Base_Goodinfo_PriceService.I.DeleteModel(model);
                             }
@@ -318,29 +312,19 @@ namespace XXCloudService.Api.XCCloud
                                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                                     }
 
-                                    var base_Goodinfo_Price = new Base_Goodinfo_Price();                                    
-                                    //生成ID
-                                    id = RedisCacheHelper.CreateSerialNo((userTokenKeyModel.LogType == (int)RoleType.MerchUser ? merchId : storeId).ToExtStoreID());
-                                    if (!id.Nonempty("ID", out errMsg))
-                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                                    base_Goodinfo_Price.ID = id;
+                                    var base_Goodinfo_Price = new Base_Goodinfo_Price();
                                     base_Goodinfo_Price.BalanceIndex = balanceIndex;
                                     base_Goodinfo_Price.OperateTypei = 0;
                                     base_Goodinfo_Price.Count = count0;
-                                    base_Goodinfo_Price.GoodID = base_GoodsInfo.ID;
+                                    base_Goodinfo_Price.GoodID = id;
                                     Base_Goodinfo_PriceService.I.AddModel(base_Goodinfo_Price);
                                     priceList.Add(base_Goodinfo_Price);
 
-                                    base_Goodinfo_Price = new Base_Goodinfo_Price();
-                                    //生成ID
-                                    id = RedisCacheHelper.CreateSerialNo((userTokenKeyModel.LogType == (int)RoleType.MerchUser ? merchId : storeId).ToExtStoreID());
-                                    if (!id.Nonempty("ID", out errMsg))
-                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                                    base_Goodinfo_Price.ID = id;
+                                    base_Goodinfo_Price = new Base_Goodinfo_Price();                                    
                                     base_Goodinfo_Price.BalanceIndex = balanceIndex;
                                     base_Goodinfo_Price.OperateTypei = 1;
                                     base_Goodinfo_Price.Count = count1;
-                                    base_Goodinfo_Price.GoodID = base_GoodsInfo.ID;
+                                    base_Goodinfo_Price.GoodID = id;
                                     Base_Goodinfo_PriceService.I.AddModel(base_Goodinfo_Price);
                                     priceList.Add(base_Goodinfo_Price);
                                 }
@@ -394,18 +378,18 @@ namespace XXCloudService.Api.XCCloud
                 var merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
 
                 var errMsg = string.Empty;
-                if (!dicParas.Get("id").Nonempty("商品ID", out errMsg))
+                if (!dicParas.Get("id").Validint("商品ID", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 if (!dicParas.Get("allowStorage").Validint("是否允许入库", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-                var id = dicParas.Get("id");
+                var id = dicParas.Get("id").Toint(0);
                 var allowStorage = dicParas.Get("allowStorage").Toint();
 
-                if (!Base_GoodsInfoService.I.Any(a => a.ID.Equals(id, StringComparison.OrdinalIgnoreCase)))
+                if (!Base_GoodsInfoService.I.Any(a => a.ID == id))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, "该商品信息不存在");
 
-                var base_GoodsInfo = Base_GoodsInfoService.I.GetModels(p => p.ID.Equals(id, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                var base_GoodsInfo = Base_GoodsInfoService.I.GetModels(p => p.ID == id).FirstOrDefault();
                 base_GoodsInfo.AllowStorage = allowStorage;
                 if (!Base_GoodsInfoService.I.Update(base_GoodsInfo))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, "修改商品信息失败");
@@ -436,15 +420,15 @@ namespace XXCloudService.Api.XCCloud
                 var merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
 
                 var errMsg = string.Empty;
-                if (!dicParas.Get("id").Nonempty("商品ID", out errMsg))
+                if (!dicParas.Get("id").Validint("商品ID", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-                var id = dicParas.Get("id");
+                var id = dicParas.Get("id").Toint();
 
-                if (!Base_GoodsInfoService.I.Any(a => a.ID.Equals(id, StringComparison.OrdinalIgnoreCase)))
+                if (!Base_GoodsInfoService.I.Any(a => a.ID == id))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, "该商品信息不存在");
 
-                var base_GoodsInfo = Base_GoodsInfoService.I.GetModels(p => p.ID.Equals(id, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                var base_GoodsInfo = Base_GoodsInfoService.I.GetModels(p => p.ID == id).FirstOrDefault();
 
                 if (!storeId.IsNull() && base_GoodsInfo.StoreID != storeId)
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, "无法删除其他门店的商品信息");
@@ -457,6 +441,207 @@ namespace XXCloudService.Api.XCCloud
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, "商品信息删除失败");
 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        #endregion
+
+        #region 商品调拨管理
+        /// <summary>
+        /// 商品查询列表
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object QueryGoodRequest(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
+                string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
+                string errMsg = string.Empty;
+                object[] conditions = dicParas.ContainsKey("conditions") ? (object[])dicParas["conditions"] : null;
+
+                SqlParameter[] parameters = new SqlParameter[0];
+                string sqlWhere = string.Empty;
+
+                if (conditions != null && conditions.Length > 0)
+                    if (!QueryBLL.GenDynamicSql(conditions, "a.", ref sqlWhere, ref parameters, out errMsg))
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+
+                #region Sql语句
+                string sql = @"SELECT
+                                    /*调拨单ID*/
+                                	a.ID,
+                                	/*申请时间*/
+                                	(case when ISNULL(d.CreateTime,'')='' then '' else convert(varchar,d.CreateTime,23) end) AS RequestTime,
+                                	/*申请门店*/
+                                	b.StoreName AS RequestStore,
+                                	/*申请人*/
+                                	u.LogName AS Requester,
+                                	/*申请仓库*/
+                                	dep.DepotName AS RequestDepot,
+                                	/*调拨方式*/
+                                	a.RequstType,
+                                	/*调拨状态*/
+                                	f.State,
+                                	/*调拨门店*/
+                                	c.StoreName AS SendStore,
+                                	/*调拨仓库*/
+                                	outDep.DepotName AS OutDepot,
+                                	/*调拨时间*/
+                                	(case when ISNULL(g.DealTime,'')='' then '' else convert(varchar,g.DealTime,23) end) AS DealTime,
+                                	/*调拨说明*/
+                                	g.Note
+                                FROM
+                                	Data_GoodRequest a
+                                LEFT JOIN Base_StoreInfo b ON a.StoreID = b.StoreID
+                                LEFT JOIN Base_StoreInfo c ON a.SendStoreID = c.StoreID
+                                LEFT JOIN Base_DepotInfo dep ON a.RequestDepot = dep.ID
+                                INNER JOIN Data_WorkFlow_Entry d ON a.ID = d.EventID
+                                INNER JOIN Data_WorkFlow_Node e ON d.NodeID = e.ID AND e.NodeType = 0 /*开始节点*/
+                                INNER JOIN Base_UserInfo u ON d.UserID = u.UserID
+                                INNER JOIN Data_WorkFlowConfig f ON d.WorkID = f.ID AND f.WorkType = 0 /*调拨申请*/
+                                LEFT JOIN (
+                                	SELECT
+                                		*, ROW_NUMBER() over(partition by EventID order by CreateTime) as RowNum
+                                	FROM
+                                		Data_WorkFlow_Entry                                                         
+                                	WHERE
+                                		b.State = 4 /*调拨方处理*/
+                                    AND b.EventType = 0 /*产品调拨对应表格 Data_GoodRequest*/                                                                            
+                                ) g ON a.ID = g.EventID and g.RowNum <= 1
+                                LEFT JOIN (
+                                	SELECT
+                                		*, ROW_NUMBER() over(partition by RequestID order by SendTime) as RowNum
+                                	FROM
+                                		Data_GoodRequest_List                                	
+                                ) h ON a.ID = h.RequestID and h.RowNum <= 1
+                                INNER JOIN Base_DepotInfo outDepot ON h.OutDepotID = outDepot.ID
+                            ";
+                sql += " AND a.MerchID='" + merchId + "'";
+                if (!storeId.IsNull())
+                    sql += " AND (a.StoreID='" + storeId + "' or a.SendStoreID='" + storeId + "')";
+                                
+                #endregion
+
+                var list = Base_GoodsInfoService.I.SqlQuery<Data_GoodRequestList>(sql, parameters).ToList();
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, list);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        /// <summary>
+        /// 查询调拨明细
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object QueryGoodRequestList(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
+                string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
+                string errMsg = string.Empty;
+                object[] conditions = dicParas.ContainsKey("conditions") ? (object[])dicParas["conditions"] : null;
+
+                SqlParameter[] parameters = new SqlParameter[0];
+                string sqlWhere = string.Empty;
+
+                if (conditions != null && conditions.Length > 0)
+                    if (!QueryBLL.GenDynamicSql(conditions, "a.", ref sqlWhere, ref parameters, out errMsg))
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+
+                #region Sql语句
+                string sql = @"SELECT
+                                    /*调拨单ID*/
+                                	a.ID,
+                                    /*调拨单号*/
+                                	a.RequestCode,
+                                	/*创建时间*/
+                                	(case when ISNULL(a.CreateTime,'')='' then '' else convert(varchar,a.CreateTime,20) end) AS CreateTime,
+                                	/*创建门店*/
+                                	createstore.StoreName AS CreateStore,
+                                	/*创建人*/
+                                	u.LogName AS CreateUser,                                	
+                                	/*调拨方式*/
+                                	a.RequstType,
+                                    /*调拨出库门店*/
+                                    (case when a.RequstType=2 then requestoutstore.StoreName else outstore.StoreName end) AS OutStoreName,
+                                    /*调拨出库仓库*/
+                                	(case when a.RequstType=2 then requestoutdepot.DepotName else outdepot.DepotName end) AS OutDepotName,
+                                    /*出库时间*/
+                                	(case when ISNULL(b.CreateTime,'')='' then '' else convert(varchar,b.CreateTime,20) end) AS OutDepotTime,
+                                	/*调拨入库门店*/
+                                	(case when a.RequstType=2 then instore.StoreName else requestinstore.StoreName end) AS InStoreName,
+                                	/*调拨入库仓库*/
+                                	(case when a.RequstType=2 then indepot.DepotName else requestindepot.DepotName end) AS InDepotName,
+                                    /*入库时间*/
+                                	(case when ISNULL(c.CreateTime,'')='' then '' else convert(varchar,c.CreateTime,20) end) AS InDepotTime,
+                                    /*调拨状态*/
+                                	f.State,
+                                	/*调拨说明*/
+                                	f.Note
+                                FROM
+                                	Data_GoodRequest a
+                                LEFT JOIN Base_StoreInfo createstore ON a.CreateStoreID = createstore.StoreID
+                                LEFT JOIN Base_UserInfo u ON a.CreateUserID = u.UserID
+                                LEFT JOIN Base_StoreInfo requestoutstore ON a.RequestOutStoreID = requestoutstore.StoreID
+                                LEFT JOIN Base_StoreInfo requestinstore ON a.RequestInStoreID = requestinstore.StoreID
+                                LEFT JOIN Base_DepotInfo requestoutdepot ON a.RequestOutDepotID = requestoutdepot.ID
+                                LEFT JOIN Base_DepotInfo requestindepot ON a.RequestInDepotID = requestindepot.ID
+                                LEFT JOIN (
+                                	SELECT
+                                		*, ROW_NUMBER() over(partition by EventID order by CreateTime) as RowNum
+                                	FROM
+                                		Data_WorkFlow_Entry                                                         
+                                	WHERE
+                                		b.State = 4 /*调拨出库*/
+                                    AND b.EventType = 0 /*产品调拨对应表格 Data_GoodRequest*/                                                                            
+                                ) b ON a.ID = b.EventID and b.RowNum <= 1
+                                LEFT JOIN (
+                                	SELECT
+                                		*, ROW_NUMBER() over(partition by EventID order by CreateTime) as RowNum
+                                	FROM
+                                		Data_WorkFlow_Entry                                                         
+                                	WHERE
+                                		b.State = 7 /*调拨入库*/
+                                    AND b.EventType = 0 /*产品调拨对应表格 Data_GoodRequest*/                                                                            
+                                ) c ON a.ID = c.EventID and c.RowNum <= 1
+                                LEFT JOIN (
+                                	SELECT
+                                		*, ROW_NUMBER() over(partition by RequestID order by SendTime) as RowNum
+                                	FROM
+                                		Data_GoodRequest_List                                	
+                                ) g ON a.ID = g.RequestID and g.RowNum <= 1                                
+                                INNER JOIN Base_StoreInfo outstore ON a.OutStoreID = outstore.StoreID
+                                INNER JOIN Base_StoreInfo instore ON a.InStoreID = instore.StoreID
+                                INNER JOIN Base_DepotInfo outdepot ON a.OutDepotID = outdepot.ID
+                                INNER JOIN Base_DepotInfo indepot ON a.InDepotID = indepot.ID
+                                INNER JOIN Data_WorkFlow_Entry d ON a.ID = d.EventID
+                                INNER JOIN Data_WorkFlow_Node e ON d.NodeID = e.ID AND e.NodeType = 0 /*开始节点*/                                
+                                INNER JOIN Data_WorkFlowConfig f ON d.WorkID = f.ID AND f.WorkType = 0 /*调拨申请*/                                                               
+                            ";
+                sql += " AND a.MerchID='" + merchId + "'";
+                if (!storeId.IsNull())
+                    sql += " AND (a.StoreID='" + storeId + "' or a.SendStoreID='" + storeId + "')";
+
+                #endregion
+
+                var list = Base_GoodsInfoService.I.SqlQuery<Data_GoodRequestList>(sql, parameters).ToList();
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, list);
             }
             catch (Exception e)
             {

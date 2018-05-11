@@ -825,6 +825,79 @@ namespace XCCloudService.Common.Enum
         MemberBalance = 5    //会员余额
     }
 
+    //礼品调拨类型
+    public enum RequestType
+    {
+        [Description("门店间申请")]
+        RequestStore = 0,   //门店间申请
+        [Description("门店向总部申请")]
+        RequestMerch = 1,   //门店向总部申请
+        [Description("总部配货")]
+        MerchSend = 2,      //总部配货
+        [Description("总部申请")]
+        MerchRequest = 3    //总部申请
+    }
+
+    //工作流状态
+    public enum WorkflowState
+    {
+        /// <summary>
+        /// 开始
+        /// </summary>
+        [Description("开始")]
+        Open = 0,
+        /// <summary>
+        /// 申请
+        /// </summary>
+        [Description("申请")]
+        Requested = 1,
+        /// <summary>
+        /// 申请审核通过
+        /// </summary>
+        [Description("申请审核通过")]
+        RequestVerifiedPass = 2,
+        /// <summary>
+        /// 申请审核拒绝
+        /// </summary>
+        [Description("申请审核拒绝")]
+        RequestVerifiedRefuse = 3,
+        /// <summary>
+        /// 调拨方处理
+        /// </summary>
+        [Description("调拨方处理")]
+        SendDealed = 4,
+        /// <summary>
+        /// 调拨方处理审核通过
+        /// </summary>
+        [Description("调拨方处理审核通过")]
+        SendDealVerifiedPass = 5,
+        /// <summary>
+        /// 调拨方处理审核拒绝
+        /// </summary>
+        [Description("调拨方处理审核拒绝")]
+        SendDealVerifiedRefuse = 6,
+        /// <summary>
+        /// 申请方处理
+        /// </summary>
+        [Description("申请方处理")]
+        RequestDealed = 7,
+        /// <summary>
+        /// 申请方处理审核通过
+        /// </summary>
+        [Description("申请方处理审核通过")]
+        RequestDealVerifiedPass = 8,
+        /// <summary>
+        /// 申请方处理审核拒绝
+        /// </summary>
+        [Description("申请方处理审核拒绝")]
+        RequestDealVerifiedRefuse = 9,
+        /// <summary>
+        /// 结束
+        /// </summary>
+        [Description("结束")]
+        End = 10
+    }
+
     //工作流工作类别
     public enum WorkflowType
     {
@@ -835,7 +908,7 @@ namespace XCCloudService.Common.Enum
     public enum WorkflowEventType
     {
         GoodRequest = 0     //产品调拨对应表格 Data_GoodRequest
-    }
+    }    
 
     /// <summary>
     /// 支付方式

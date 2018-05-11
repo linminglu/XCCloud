@@ -23,77 +23,86 @@
 
 <div class="" style="padding: 5px;">
     <div class="layui-col-sm6 layui-col-md6">
-        <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
-            <legend>功能权限列表</legend>
-        </fieldset>
-
-        <ul id="demo2" style="height: 550px;overflow-y: scroll;border: 1px dashed #aaa;padding: 15px;"></ul>
-    </div>
-    <div class="layui-col-sm6 layui-col-md6 textContent">
-        <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
-            <legend>功能权限操作</legend>
-        </fieldset>
-        <div style="height: 550px;border: 1px dashed #aaa;padding: 15px;">
-            <div class="layui-form-item">
-                <label class="layui-form-label">节点名称</label>
-                <div class="layui-input-block">
-                    <input type="text" name="title" lay-verify="title" id="treesName" autocomplete="off" placeholder="节点名称" class="layui-input">
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">节点值</label>
-                <div class="layui-input-block">
-                    <input type="text" name="title" lay-verify="title" id="treesValue" autocomplete="off" placeholder="节点值" class="layui-input">
-                </div>
-            </div>
-            <div class="layui-form-item" style="display: none;">
-                <label class="layui-form-label">商户id</label>
-                <div class="layui-input-block">
-                    <input type="text" name="title" lay-verify="title" id="treesMerch" autocomplete="off" placeholder="商户ID" class="layui-input" readonly>
-                </div>
-            </div>
-            <div class="layui-form-item" style="">
-                <label class="layui-form-label">ID(测试用)</label>
-                <div class="layui-input-block">
-                    <input type="text" name="title" lay-verify="title" id="treesID" autocomplete="off" placeholder="节点id" class="layui-input" readonly>
-                </div>
-            </div>
-            <div class="layui-form-item" style="display: none;">
-                <label class="layui-form-label">pID</label>
-                <div class="layui-input-block">
-                    <input type="text" name="title" lay-verify="title" id="treesPID" autocomplete="off" placeholder="节点pID" class="layui-input" readonly>
-                </div>
-            </div>
-            <div class="layui-form-item layui-form-text">
-                <label class="layui-form-label">说明</label>
-                <div class="layui-input-block">
-                    <textarea placeholder="请输入内容(500字以内)" id="treesNote" class="layui-textarea"></textarea>
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <div class="switch">
-                    <span class="switch-left">禁用</span>
-                    <span class="switch-right switch-checked" id="thisSwitch">启用</span>
-                </div>
-            </div>
-            <div style="text-align: center">
-                <button class="layui-btn layui-btn-danger" type="button" onclick="modifyNodes()">修改当前节点</button>
-                <button class="layui-btn layui-btn-normal" type="button" onclick="addMainNodes()">添加主节点</button>
-                <button class="layui-btn layui-btn-normal" type="button" onclick="addChildNodes()">添加子节点</button>
-                <button class="layui-btn layui-btn-danger" type="button" onclick="deleteNodes()">删除节点</button>
+        <div class="layui-card">
+            <div class="layui-card-header">功能权限列表</div>
+            <div class="layui-card-body">
+                <ul id="demo2" style="height: 550px;overflow-y: scroll;border: 1px dashed #aaa;padding: 15px;"></ul>
             </div>
         </div>
 
+
+
+
+    </div>
+    <div class="layui-col-sm6 layui-col-md6 textContent">
+        <div class="layui-card">
+            <div class="layui-card-header">功能权限操作</div>
+            <div class="layui-card-body">  <div style="height: 550px;border: 1px dashed #aaa;padding: 15px;">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">节点名称</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="title" lay-verify="title" id="treesName" autocomplete="off" placeholder="节点名称" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">节点值</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="title" lay-verify="title" id="treesValue" autocomplete="off" placeholder="节点值" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item" style="display: none;">
+                    <label class="layui-form-label">商户id</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="title" lay-verify="title" id="treesMerch" autocomplete="off" placeholder="商户ID" class="layui-input" readonly>
+                    </div>
+                </div>
+                <div class="layui-form-item" style="">
+                    <label class="layui-form-label">ID(测试用)</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="title" lay-verify="title" id="treesID" autocomplete="off" placeholder="节点id" class="layui-input" readonly>
+                    </div>
+                </div>
+                <div class="layui-form-item" style="">
+                    <label class="layui-form-label">设置序号</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="title" lay-verify="title" id="orderId" autocomplete="off" placeholder="从1开始" class="layui-input" >
+                    </div>
+                </div>
+                <div class="layui-form-item" style="display: none;">
+                    <label class="layui-form-label">pID</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="title" lay-verify="title" id="treesPID" autocomplete="off" placeholder="节点pID" class="layui-input" readonly>
+                    </div>
+                </div>
+                <div class="layui-form-item layui-form-text">
+                    <label class="layui-form-label">说明</label>
+                    <div class="layui-input-block">
+                        <textarea placeholder="请输入内容(500字以内)" id="treesNote" class="layui-textarea"></textarea>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="switch">
+                        <span class="switch-left">禁用</span>
+                        <span class="switch-right switch-checked" id="thisSwitch">启用</span>
+                    </div>
+                </div>
+                <div style="text-align: center">
+                    <button class="layui-btn layui-btn-danger" type="button" onclick="modifyNodes()">修改当前节点</button>
+                    <button class="layui-btn layui-btn-normal" type="button" onclick="addMainNodes()">添加主节点</button>
+                    <button class="layui-btn layui-btn-normal" type="button" onclick="addChildNodes()">添加子节点</button>
+                    <button class="layui-btn layui-btn-danger" type="button" onclick="deleteNodes()">删除节点</button>
+                </div>
+            </div></div>
+        </div>
     </div>
 
 </div>
     <script type="text/javascript" src="jquery-1.8.3-min.js"></script>
     <script src="layui/layui.js" charset="utf-8"></script>
     <script src="layui-xtree/layui-xtree.js" charset="utf-8"></script>
-<script src="../js/manchartSystem.js"></script>
-    <!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
+    <script src="../js/manchartSystem.js"></script>
+
     <script>
-        var a111=""; var a222="";
         var token=getStorage('token');
         function setEnabled() {
             $('.switch span').on('click',function () {
@@ -152,7 +161,7 @@
             var enabled=document.getElementById("thisSwitch").classList.contains('switch-checked')? 1 :0;
 //            var merchId=document.getElementById("treesMerch").value;
 
-            var parasObj = {"dictKey":dictKey,"dictValue":dictValue,"comment":comment,"enabled":enabled,
+            var parasObj = {"dictKey":dictKey,"dictValue":dictValue,'orderId':$('#orderId').val(),"comment":comment,"enabled":enabled,
                  "userToken": token, "signkey": "1f626576304bf5d95b72ece2222e42c3" };
             var url = "/xccloud/Dictionary?action=AddRoot";
             var parasJson = JSON.stringify(parasObj);
@@ -180,7 +189,7 @@
 
             var ID=document.getElementById("treesID").value;
 
-            var parasObj = {"dictKey":dictKey,"dictValue":dictValue,"comment":comment,"enabled":enabled,"ID":ID,
+            var parasObj = {"dictKey":dictKey,"dictValue":dictValue,"comment":comment,"enabled":enabled,"ID":ID,'orderId':$('#orderId').val(),
                  "userToken": token, "signkey": "1f626576304bf5d95b72ece2222e42c3" };
             var url = "/xccloud/Dictionary?action=AddSub";
             var parasJson = JSON.stringify(parasObj);
@@ -209,7 +218,7 @@
             var ID=document.getElementById("treesID").value;
             var pID=document.getElementById("treesPID").value;
 
-            var parasObj = {"dictKey":dictKey,"dictValue":dictValue,"comment":comment,"enabled":enabled,"id":ID,
+            var parasObj = {"dictKey":dictKey,"dictValue":dictValue,"comment":comment,"enabled":enabled,"id":ID,'orderId':$('#orderId').val(),
                  "userToken": token, "signkey": "1f626576304bf5d95b72ece2222e42c3" };
             var url = "/xccloud/Dictionary?action=SetSub";
             var parasJson = JSON.stringify(parasObj);
@@ -250,6 +259,5 @@
             })
         }
     </script>
-
 </body>
 </html>

@@ -11,6 +11,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using XCCloudService.Business.Common;
 using XCCloudService.Business.XCGameMana;
+using XCCloudService.CacheService;
 using XCCloudService.Common;
 using XCCloudService.Common.Enum;
 using XCCloudService.Model.XCGameManager;
@@ -71,6 +72,14 @@ namespace XXCloudService.CallBack
                                 if (!MobileTokenBusiness.GetAliId(order.Mobile, out aliId, out msg))
                                 {
                                     bool ret = MobileTokenBusiness.UpdateAliBuyerId(order.Mobile, buyer_id);
+                                    if (ret)
+                                    {
+                                        MobileTokenModel model = MobileTokenCache.MobileTokenList.FirstOrDefault(t => t.Mobile.Equals(order.Mobile));
+                                        if (model != null)
+                                        {
+                                            MobileTokenCache.AddToken(model.Token, model);
+                                        }
+                                    }
                                 }
 
                                 IAopClient client = new DefaultAopClient(AliPayConfig.serverUrl, AliPayConfig.miniAppId, AliPayConfig.merchant_miniapp_private_key, "json", "1.0", "RSA2", AliPayConfig.alipay_miniapp_public_key, AliPayConfig.charset, false);

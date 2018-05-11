@@ -9,13 +9,11 @@ namespace XCCloudService.CacheService.XCGameMana
 {
     public class StoreCache
     {
-        public const string storeCacheKey = "storeCacheKey";
-        private static List<StoreCacheModel> storeList = null;
+        public const string storeCacheKey = "redisStoreCacheKey";
 
         public static void Clear()
         {
             RedisCacheHelper.KeyDelete(storeCacheKey);  
-            storeList = null;
         }
 
         public static void Remove(StoreCacheModel item)

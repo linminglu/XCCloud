@@ -13,6 +13,7 @@ using XCCloudService.BLL.IBLL.XCCloud;
 using XCCloudService.BLL.XCCloud;
 using XCCloudService.Business.XCCloud;
 using XCCloudService.Business.XCGameMana;
+using XCCloudService.CacheService;
 using XCCloudService.CacheService.XCCloud;
 using XCCloudService.Common;
 using XCCloudService.Common.Enum;
@@ -35,8 +36,7 @@ namespace XXCloudService.Api.XCCloud
         /// </summary>
         /// <param name="dicParas"></param>
         /// <returns></returns>
-        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.MethodToken)]
-       
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.MethodToken)] 
         public object getOrder(Dictionary<string, object> dicParas)
         {
             try
@@ -221,6 +221,73 @@ namespace XXCloudService.Api.XCCloud
             else
             {
                 return new ResponseModel(Return_Code.T, "", Result_Code.F, sqlParameter[15].Value.ToString());
+            }
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        [Authorize(Roles = "XcUser,XcAdmin")]
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object addOrderToCache(Dictionary<string, object> dicParas)
+        {
+            string errMsg = string.Empty;
+            string orderFlwId = dicParas.ContainsKey("orderFlwId") ? dicParas["orderFlwId"].ToString() : string.Empty;
+            string customerType = dicParas.ContainsKey("customerType") ? dicParas["customerType"].ToString() : string.Empty;
+            string icCardId = dicParas.ContainsKey("icCardId") ? dicParas["icCardId"].ToString() : string.Empty;
+
+            XCCloudUserTokenModel userTokenModel = (XCCloudUserTokenModel)(dicParas[Constant.XCCloudUserTokenModel]);
+            StoreIDDataModel userTokenDataModel = (StoreIDDataModel)(userTokenModel.DataModel);
+
+            if (string.IsNullOrEmpty(orderFlwId))
+            {
+                return new ResponseModel(Return_Code.T, "", Result_Code.F, "订单Id参数不能为空");
+            }
+
+            if (string.IsNullOrEmpty(customerType))
+            {
+                return new ResponseModel(Return_Code.T, "", Result_Code.F, "客户类型参数不能为空");
+            }
+
+            if (!string.IsNullOrEmpty(icCardId) && !Utils.isNumber(icCardId))
+            {
+                return new ResponseModel(Return_Code.T, "", Result_Code.F, "会员卡Id参数应为整数类型");
+            }
+
+            string storedProcedure = "CheckCacheOrder";
+            SqlParameter[] sqlParameter = new SqlParameter[6];
+            sqlParameter[0] = new SqlParameter("@StoreID", SqlDbType.VarChar);
+            sqlParameter[0].Value = userTokenDataModel.StoreId;
+            sqlParameter[1] = new SqlParameter("@FlwOrderId", SqlDbType.VarChar);
+            sqlParameter[1].Value = orderFlwId;
+            sqlParameter[2] = new SqlParameter("@CustomerType", SqlDbType.Int);
+            sqlParameter[2].Value = customerType;
+            sqlParameter[3] = new SqlParameter("@ICCardID", SqlDbType.Int);
+            sqlParameter[3].Value = icCardId;
+            sqlParameter[4] = new SqlParameter("@ErrMsg", SqlDbType.VarChar, 200);
+            sqlParameter[4].Direction = ParameterDirection.Output;
+            sqlParameter[5] = new SqlParameter("@Return", SqlDbType.Int);
+            sqlParameter[5].Direction = ParameterDirection.ReturnValue;
+            XCCloudBLL.ExecuteStoredProcedureSentence(storedProcedure, sqlParameter);
+
+            if (sqlParameter[5].Value.ToString() == "1")
+            {
+                if (FlwFoodOrderBusiness.Exist(orderFlwId))
+                {
+                    return new ResponseModel(Return_Code.T, "", Result_Code.T, "");
+                }
+                else
+                {
+                    FoodOrderCacheModel orderModel = new FoodOrderCacheModel(userTokenDataModel.MerchId, userTokenDataModel.StoreId, orderFlwId, int.Parse(customerType), int.Parse(icCardId), userTokenDataModel.WorkStation);
+                    FlwFoodOrderBusiness.Add(orderModel);
+                    return new ResponseModel(Return_Code.T, "", Result_Code.T, "");                    
+                }
+            }
+            else
+            {
+                return new ResponseModel(Return_Code.T, "", Result_Code.F, sqlParameter[4].Value.ToString());
             }
         }
 

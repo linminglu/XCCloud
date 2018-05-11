@@ -14,11 +14,11 @@ namespace XCCloudService.Model.XCCloud
     
     public partial class Data_WorkFlow_Entry
     {
-        public string ID { get; set; }
-        public string WorkID { get; set; }
-        public string EventID { get; set; }
+        public int ID { get; set; }
+        public Nullable<int> WorkID { get; set; }
+        public Nullable<int> EventID { get; set; }
         public Nullable<int> EventType { get; set; }
-        public string NodeID { get; set; }
+        public Nullable<int> NodeID { get; set; }
         public Nullable<int> UserID { get; set; }
         public Nullable<int> State { get; set; }
         public Nullable<System.DateTime> CreateTime { get; set; }

@@ -21,6 +21,11 @@ namespace XCCloudService.CacheService
             return (FoodOrderCacheModel)(_foodOrderHt[orderId]);
         }
 
+        public static bool Exist(string orderId)
+        {
+            return _foodOrderHt.ContainsKey(orderId);
+        }
+
         public static void Remove(string storeId)
         {
             _foodOrderHt.Remove(storeId);
@@ -29,13 +34,14 @@ namespace XCCloudService.CacheService
 
     public class FoodOrderCacheModel
     {
-        public FoodOrderCacheModel(string merchId, string storeId, string orderId, int customerType, int icCardId)
+        public FoodOrderCacheModel(string merchId, string storeId, string orderId, int customerType, int icCardId,string workStation)
         {
             this.MerchId = merchId;
             this.StoreId = storeId;
             this.OrderId = orderId;
             this.CustomerType = customerType;
             this.ICCardId = icCardId;
+            this.WorkStation = workStation;
             this.CreateTime = System.DateTime.Now;
         }
 
@@ -50,5 +56,7 @@ namespace XCCloudService.CacheService
         public int CustomerType { set; get; }
 
         public int ICCardId { set; get; }
+
+        public string WorkStation { set; get; }
     }
 }

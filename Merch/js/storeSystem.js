@@ -94,13 +94,13 @@ function getMonthEndDate(){
 //获得本季度的开始日期
 function getQuarterStartDate(){
     //var quarterStartDate = new Date(nowYear, getQuarterStartMonth(), 1);
-    var quarterStartDate = new Date(nowYear, getQuarterStartMonth()+3, 1);
+    var quarterStartDate = new Date(nowYear, getQuarterStartMonth(), 1);
     return formatDate(quarterStartDate).slice(0,10);
 }
 
 //或的本季度的结束日期
 function getQuarterEndDate(){
-    var quarterEndMonth = getQuarterStartMonth()+3 + 2;
+    var quarterEndMonth = getQuarterStartMonth() + 2;
     //var quarterStartDate = new Date(nowYear, quarterEndMonth, getMonthDays(quarterEndMonth));
     var quarterStartDate = new Date(nowYear, quarterEndMonth, getMonthDays(quarterEndMonth),23,59,59);
     return formatDate(quarterStartDate).slice(0,10);
@@ -260,20 +260,40 @@ xcActionSystem.prototype= {
                                 console.log(data);
                                 if (data.Result_Code == "1"||data.result_code==1) {
                                     tableData = data.Result_Data||data.result_data;
-
                                     table.render({
                                             elem: parm.elem
-                                            , data: tableData,
-                                            height:parm.height
+                                            , data: tableData
+                                            , height:'full-125'
                                             , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
                                             , cols: [parm.cols]
                                             , page: {page: true, limits: [10, 15, 20, 30, 50, 100]}
                                             , limit: 10
+                                            ,total:parm.total
+                                            ,done:function () {
+                                             if(this.total){
+                                                let _col=this.cols[0];
+                                                let _data=this.data;
+                                                var intHtml = '<tr style="background-color: #93D1FF">';
+                                                intHtml+='<td style="text-align:center;">合计:'+this.data.length+'条</td>';
+                                                for(let i=1;i<_col.length;i++){
+                                                    if(_col[i].total){
+                                                        let index=_col[i].field;
+                                                        let count=0;
+                                                        for(let j in _data){
+                                                            count+=parseInt(_data[j][index])
+                                                        }
+                                                        intHtml+='<td style="color: red;font-weight: bold;text-align:center;">'+count+'</td>'
+                                                    }else {
+                                                        intHtml+='<td></td>'
+                                                    }
+                                                }
+                                                $(".layui-table-body.layui-table-main tbody").append(intHtml);
+                                            }
+                                            }
                                         });
                                     layer.close(index);
                                 }  else {
-                                 layer.msg(data.result_msg);
-
+                                 layer.msg(data.result_msg||data.return_msg);
                                 }
                             }
                         })

@@ -16,7 +16,7 @@ namespace XCCloudService.WorkFlow.Base
         protected DateTime _lastUpdate;
         protected string _description;
 
-        public TState State
+        protected TState State
         {
             get
             {

@@ -26,7 +26,7 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="varchar" MaxLength="32" Nullable="false" />
+          <Property Name="ID" Type="int" Nullable="false" />
           <Property Name="MerchID" Type="varchar" MaxLength="15" />
           <Property Name="StoreID" Type="varchar" MaxLength="15" />
           <Property Name="DepotName" Type="varchar" MaxLength="50" />
@@ -76,8 +76,8 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="varchar" MaxLength="32" Nullable="false" />
-          <Property Name="GoodID" Type="varchar" MaxLength="32" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="GoodID" Type="int" />
           <Property Name="OperateTypei" Type="int" />
           <Property Name="BalanceIndex" Type="int" />
           <Property Name="Count" Type="numeric" Precision="10" Scale="2" />
@@ -86,7 +86,7 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="varchar" MaxLength="32" Nullable="false" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="StoreID" Type="varchar" MaxLength="15" />
           <Property Name="Barcode" Type="varchar" MaxLength="20" />
           <Property Name="MerchID" Type="varchar" MaxLength="15" />
@@ -504,7 +504,7 @@
           <Property Name="ChargeType" Type="int" />
           <Property Name="ChargeCount" Type="int" />
           <Property Name="BalanceIndex" Type="int" />
-          <Property Name="GoodID" Type="varchar" MaxLength="32" />
+          <Property Name="GoodID" Type="int" />
           <Property Name="ProjectID" Type="int" />
           <Property Name="AutoSendCycle" Type="int" />
           <Property Name="AutoSendValue" Type="int" />
@@ -661,7 +661,7 @@
           <Property Name="OperateType" Type="int" />
           <Property Name="WeightType" Type="int" />
           <Property Name="WeightValue" Type="decimal" Precision="18" Scale="2" />
-          <Property Name="ContainID" Type="varchar" MaxLength="32" />
+          <Property Name="ContainID" Type="int" />
           <Property Name="ContainCount" Type="int" />
           <Property Name="Days" Type="int" />
           <Property Name="ValidType" Type="int" />
@@ -892,27 +892,34 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="varchar" MaxLength="32" Nullable="false" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RequestCode" Type="varchar" MaxLength="32" />
           <Property Name="MerchID" Type="varchar" MaxLength="15" />
-          <Property Name="StoreID" Type="varchar" MaxLength="15" />
+          <Property Name="CreateStoreID" Type="varchar" MaxLength="15" />
+          <Property Name="CreateUserID" Type="int" />
+          <Property Name="CreateTime" Type="datetime" />
           <Property Name="RequstType" Type="int" />
           <Property Name="RequestReason" Type="varchar" MaxLength="200" />
-          <Property Name="RequestDepot" Type="varchar" MaxLength="32" />
-          <Property Name="SendStoreID" Type="varchar" MaxLength="15" />
+          <Property Name="RequestOutStoreID" Type="varchar" MaxLength="15" />
+          <Property Name="RequestOutDepotID" Type="int" />
+          <Property Name="RequestInStoreID" Type="varchar" MaxLength="15" />
+          <Property Name="RequestInDepotID" Type="int" />
         </EntityType>
         <EntityType Name="Data_GoodRequest_List">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="varchar" MaxLength="32" Nullable="false" />
-          <Property Name="RequestID" Type="varchar" MaxLength="32" />
-          <Property Name="GoodID" Type="varchar" MaxLength="32" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RequestID" Type="int" />
+          <Property Name="GoodID" Type="int" />
           <Property Name="RequestCount" Type="int" />
           <Property Name="SendCount" Type="int" />
           <Property Name="CostPrice" Type="numeric" Precision="10" Scale="2" />
           <Property Name="Tax" Type="numeric" Precision="10" Scale="6" />
+          <Property Name="InStoreID" Type="varchar" MaxLength="15" />
+          <Property Name="InDeportID" Type="int" />
           <Property Name="OutStoreID" Type="varchar" MaxLength="15" />
-          <Property Name="OutDepotID" Type="varchar" MaxLength="32" />
+          <Property Name="OutDepotID" Type="int" />
           <Property Name="SendTime" Type="datetime" />
           <Property Name="LogistType" Type="int" />
           <Property Name="LogistOrderID" Type="varchar" MaxLength="32" />
@@ -921,9 +928,9 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="varchar" MaxLength="32" Nullable="false" />
-          <Property Name="DepotID" Type="varchar" MaxLength="32" />
-          <Property Name="GoodID" Type="varchar" MaxLength="32" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="DepotID" Type="int" />
+          <Property Name="GoodID" Type="int" />
           <Property Name="MinValue" Type="int" />
           <Property Name="MaxValue" Type="int" />
           <Property Name="InitialValue" Type="int" />
@@ -1305,11 +1312,11 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="varchar" MaxLength="32" Nullable="false" />
-          <Property Name="WorkID" Type="varchar" MaxLength="32" />
-          <Property Name="EventID" Type="varchar" MaxLength="32" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="WorkID" Type="int" />
+          <Property Name="EventID" Type="int" />
           <Property Name="EventType" Type="int" />
-          <Property Name="NodeID" Type="varchar" MaxLength="32" />
+          <Property Name="NodeID" Type="int" />
           <Property Name="UserID" Type="int" />
           <Property Name="State" Type="int" />
           <Property Name="CreateTime" Type="datetime" />
@@ -1320,8 +1327,8 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="varchar" MaxLength="32" Nullable="false" />
-          <Property Name="WorkID" Type="varchar" MaxLength="32" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="WorkID" Type="int" />
           <Property Name="OrderNumber" Type="int" />
           <Property Name="NodeType" Type="int" />
           <Property Name="UserType" Type="int" />
@@ -1332,7 +1339,7 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="varchar" MaxLength="32" Nullable="false" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="MerchID" Type="varchar" MaxLength="15" />
           <Property Name="WorkName" Type="varchar" MaxLength="100" />
           <Property Name="WorkType" Type="int" />
@@ -2470,15 +2477,15 @@
           <EntitySet Name="Data_GoodStorage_Detail" EntityType="XCCloudDBModel.Data_GoodStorage_Detail" />
           <EntitySet Name="Base_DepotInfo" EntityType="XCCloudDBModel.Base_DepotInfo" />
           <EntitySet Name="Base_Goodinfo_Price" EntityType="XCCloudDBModel.Base_Goodinfo_Price" />
+          <EntitySet Name="Base_GoodsInfo" EntityType="XCCloudDBModel.Base_GoodsInfo" />
           <EntitySet Name="Data_GoodsStock" EntityType="XCCloudDBModel.Data_GoodsStock" />
-          <EntitySet Name="Data_CouponInfo" EntityType="XCCloudDBModel.Data_CouponInfo" />
-          <EntitySet Name="Data_Food_Detial" EntityType="XCCloudDBModel.Data_Food_Detial" />
+          <EntitySet Name="Data_WorkFlow_Entry" EntityType="XCCloudDBModel.Data_WorkFlow_Entry" />
           <EntitySet Name="Data_WorkFlow_Node" EntityType="XCCloudDBModel.Data_WorkFlow_Node" />
           <EntitySet Name="Data_WorkFlowConfig" EntityType="XCCloudDBModel.Data_WorkFlowConfig" />
-          <EntitySet Name="Data_GoodRequest_List" EntityType="XCCloudDBModel.Data_GoodRequest_List" />
+          <EntitySet Name="Data_Food_Detial" EntityType="XCCloudDBModel.Data_Food_Detial" />
+          <EntitySet Name="Data_CouponInfo" EntityType="XCCloudDBModel.Data_CouponInfo" />
           <EntitySet Name="Data_GoodRequest" EntityType="XCCloudDBModel.Data_GoodRequest" />
-          <EntitySet Name="Data_WorkFlow_Entry" EntityType="XCCloudDBModel.Data_WorkFlow_Entry" />
-          <EntitySet Name="Base_GoodsInfo" EntityType="XCCloudDBModel.Base_GoodsInfo" />
+          <EntitySet Name="Data_GoodRequest_List" EntityType="XCCloudDBModel.Data_GoodRequest_List" />
         </EntityContainer>
         <EntityType Name="Base_ChainRule">
           <Key>
@@ -4300,7 +4307,7 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="ID" Type="Int32" Nullable="false" />
           <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
           <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
           <Property Name="DepotName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
@@ -4310,19 +4317,41 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="false" />
-          <Property Name="GoodID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="GoodID" Type="Int32" />
           <Property Name="OperateTypei" Type="Int32" />
           <Property Name="BalanceIndex" Type="Int32" />
           <Property Name="Count" Type="Decimal" Precision="10" Scale="2" />
+        </EntityType>
+        <EntityType Name="Base_GoodsInfo">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="Barcode" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="GoodName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="GoodPhoteURL" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="GoodType" Type="Int32" />
+          <Property Name="AllowStorage" Type="Int32" />
+          <Property Name="Price" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="ReturnFlag" Type="Int32" />
+          <Property Name="AllowCreatePoint" Type="Int32" />
+          <Property Name="ReturnTime" Type="Int32" />
+          <Property Name="TimeType" Type="Int32" />
+          <Property Name="ReturnFee" Type="Decimal" Precision="10" Scale="6" />
+          <Property Name="FeeType" Type="Int32" />
+          <Property Name="Status" Type="Int32" />
+          <Property Name="Note" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="Data_GoodsStock">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="false" />
-          <Property Name="DepotID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
-          <Property Name="GoodID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="DepotID" Type="Int32" />
+          <Property Name="GoodID" Type="Int32" />
           <Property Name="MinValue" Type="Int32" />
           <Property Name="MaxValue" Type="Int32" />
           <Property Name="InitialValue" Type="Int32" />
@@ -4330,6 +4359,61 @@
           <Property Name="RemainCount" Type="Int32" />
           <Property Name="InitialAvgValue" Type="Decimal" Precision="10" Scale="2" />
           <Property Name="Note" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Data_WorkFlow_Entry">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="WorkID" Type="Int32" />
+          <Property Name="EventID" Type="Int32" />
+          <Property Name="EventType" Type="Int32" />
+          <Property Name="NodeID" Type="Int32" />
+          <Property Name="UserID" Type="Int32" />
+          <Property Name="State" Type="Int32" />
+          <Property Name="CreateTime" Type="DateTime" Precision="3" />
+          <Property Name="AuthorID" Type="Int32" />
+          <Property Name="Note" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Data_WorkFlow_Node">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="WorkID" Type="Int32" />
+          <Property Name="OrderNumber" Type="Int32" />
+          <Property Name="NodeType" Type="Int32" />
+          <Property Name="UserType" Type="Int32" />
+          <Property Name="AuthorFlag" Type="Int32" />
+          <Property Name="Timeout" Type="Int32" />
+        </EntityType>
+        <EntityType Name="Data_WorkFlowConfig">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="WorkName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="WorkType" Type="Int32" />
+          <Property Name="State" Type="Int32" />
+          <Property Name="Note" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Data_Food_Detial">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FoodID" Type="Int32" />
+          <Property Name="FoodType" Type="Int32" />
+          <Property Name="BalanceType" Type="Int32" />
+          <Property Name="OperateType" Type="Int32" />
+          <Property Name="WeightType" Type="Int32" />
+          <Property Name="WeightValue" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="ContainID" Type="Int32" />
+          <Property Name="ContainCount" Type="Int32" />
+          <Property Name="Days" Type="Int32" />
+          <Property Name="ValidType" Type="Int32" />
+          <Property Name="Status" Type="Int32" />
         </EntityType>
         <EntityType Name="Data_CouponInfo">
           <Key>
@@ -4364,7 +4448,7 @@
           <Property Name="ChargeType" Type="Int32" />
           <Property Name="ChargeCount" Type="Int32" />
           <Property Name="BalanceIndex" Type="Int32" />
-          <Property Name="GoodID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="GoodID" Type="Int32" />
           <Property Name="ProjectID" Type="Int32" />
           <Property Name="AutoSendCycle" Type="Int32" />
           <Property Name="AutoSendValue" Type="Int32" />
@@ -4373,111 +4457,41 @@
           <Property Name="OpUserID" Type="Int32" />
           <Property Name="Context" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
         </EntityType>
-        <EntityType Name="Data_Food_Detial">
+        <EntityType Name="Data_GoodRequest">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="FoodID" Type="Int32" />
-          <Property Name="FoodType" Type="Int32" />
-          <Property Name="BalanceType" Type="Int32" />
-          <Property Name="OperateType" Type="Int32" />
-          <Property Name="WeightType" Type="Int32" />
-          <Property Name="WeightValue" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="ContainID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
-          <Property Name="ContainCount" Type="Int32" />
-          <Property Name="Days" Type="Int32" />
-          <Property Name="ValidType" Type="Int32" />
-          <Property Name="Status" Type="Int32" />
-        </EntityType>
-        <EntityType Name="Data_WorkFlow_Node">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="false" />
-          <Property Name="WorkID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
-          <Property Name="OrderNumber" Type="Int32" />
-          <Property Name="NodeType" Type="Int32" />
-          <Property Name="UserType" Type="Int32" />
-          <Property Name="AuthorFlag" Type="Int32" />
-          <Property Name="Timeout" Type="Int32" />
-        </EntityType>
-        <EntityType Name="Data_WorkFlowConfig">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="RequestCode" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
           <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="WorkName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="WorkType" Type="Int32" />
-          <Property Name="State" Type="Int32" />
-          <Property Name="Note" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="CreateStoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="CreateUserID" Type="Int32" />
+          <Property Name="CreateTime" Type="DateTime" Precision="3" />
+          <Property Name="RequstType" Type="Int32" />
+          <Property Name="RequestReason" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="RequestOutStoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="RequestOutDepotID" Type="Int32" />
+          <Property Name="RequestInStoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="RequestInDepotID" Type="Int32" />
         </EntityType>
         <EntityType Name="Data_GoodRequest_List">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="false" />
-          <Property Name="RequestID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
-          <Property Name="GoodID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RequestID" Type="Int32" />
+          <Property Name="GoodID" Type="Int32" />
           <Property Name="RequestCount" Type="Int32" />
           <Property Name="SendCount" Type="Int32" />
           <Property Name="CostPrice" Type="Decimal" Precision="10" Scale="2" />
           <Property Name="Tax" Type="Decimal" Precision="10" Scale="6" />
+          <Property Name="InStoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="InDeportID" Type="Int32" />
           <Property Name="OutStoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="OutDepotID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="OutDepotID" Type="Int32" />
           <Property Name="SendTime" Type="DateTime" Precision="3" />
           <Property Name="LogistType" Type="Int32" />
           <Property Name="LogistOrderID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
-        </EntityType>
-        <EntityType Name="Data_GoodRequest">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="false" />
-          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="RequstType" Type="Int32" />
-          <Property Name="RequestReason" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
-          <Property Name="RequestDepot" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
-          <Property Name="SendStoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-        </EntityType>
-        <EntityType Name="Data_WorkFlow_Entry">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="false" />
-          <Property Name="WorkID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
-          <Property Name="EventID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
-          <Property Name="EventType" Type="Int32" />
-          <Property Name="NodeID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
-          <Property Name="UserID" Type="Int32" />
-          <Property Name="State" Type="Int32" />
-          <Property Name="CreateTime" Type="DateTime" Precision="3" />
-          <Property Name="AuthorID" Type="Int32" />
-          <Property Name="Note" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
-        </EntityType>
-        <EntityType Name="Base_GoodsInfo">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="false" />
-          <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="Barcode" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="GoodName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="GoodPhoteURL" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
-          <Property Name="GoodType" Type="Int32" />
-          <Property Name="AllowStorage" Type="Int32" />
-          <Property Name="Price" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="ReturnFlag" Type="Int32" />
-          <Property Name="AllowCreatePoint" Type="Int32" />
-          <Property Name="ReturnTime" Type="Int32" />
-          <Property Name="TimeType" Type="Int32" />
-          <Property Name="ReturnFee" Type="Decimal" Precision="10" Scale="6" />
-          <Property Name="FeeType" Type="Int32" />
-          <Property Name="Status" Type="Int32" />
-          <Property Name="Note" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
         </EntityType>
         </Schema>
     </edmx:ConceptualModels>
@@ -6446,6 +6460,29 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="Base_GoodsInfo">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Base_GoodsInfo">
+              <MappingFragment StoreEntitySet="Base_GoodsInfo">
+                <ScalarProperty Name="Note" ColumnName="Note" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="FeeType" ColumnName="FeeType" />
+                <ScalarProperty Name="ReturnFee" ColumnName="ReturnFee" />
+                <ScalarProperty Name="TimeType" ColumnName="TimeType" />
+                <ScalarProperty Name="ReturnTime" ColumnName="ReturnTime" />
+                <ScalarProperty Name="AllowCreatePoint" ColumnName="AllowCreatePoint" />
+                <ScalarProperty Name="ReturnFlag" ColumnName="ReturnFlag" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="AllowStorage" ColumnName="AllowStorage" />
+                <ScalarProperty Name="GoodType" ColumnName="GoodType" />
+                <ScalarProperty Name="GoodPhoteURL" ColumnName="GoodPhoteURL" />
+                <ScalarProperty Name="GoodName" ColumnName="GoodName" />
+                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
+                <ScalarProperty Name="Barcode" ColumnName="Barcode" />
+                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Data_GoodsStock">
             <EntityTypeMapping TypeName="XCCloudDBModel.Data_GoodsStock">
               <MappingFragment StoreEntitySet="Data_GoodsStock">
@@ -6458,6 +6495,65 @@
                 <ScalarProperty Name="MinValue" ColumnName="MinValue" />
                 <ScalarProperty Name="GoodID" ColumnName="GoodID" />
                 <ScalarProperty Name="DepotID" ColumnName="DepotID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Data_WorkFlow_Entry">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Data_WorkFlow_Entry">
+              <MappingFragment StoreEntitySet="Data_WorkFlow_Entry">
+                <ScalarProperty Name="Note" ColumnName="Note" />
+                <ScalarProperty Name="AuthorID" ColumnName="AuthorID" />
+                <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
+                <ScalarProperty Name="State" ColumnName="State" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="NodeID" ColumnName="NodeID" />
+                <ScalarProperty Name="EventType" ColumnName="EventType" />
+                <ScalarProperty Name="EventID" ColumnName="EventID" />
+                <ScalarProperty Name="WorkID" ColumnName="WorkID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Data_WorkFlow_Node">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Data_WorkFlow_Node">
+              <MappingFragment StoreEntitySet="Data_WorkFlow_Node">
+                <ScalarProperty Name="Timeout" ColumnName="Timeout" />
+                <ScalarProperty Name="AuthorFlag" ColumnName="AuthorFlag" />
+                <ScalarProperty Name="UserType" ColumnName="UserType" />
+                <ScalarProperty Name="NodeType" ColumnName="NodeType" />
+                <ScalarProperty Name="OrderNumber" ColumnName="OrderNumber" />
+                <ScalarProperty Name="WorkID" ColumnName="WorkID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Data_WorkFlowConfig">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Data_WorkFlowConfig">
+              <MappingFragment StoreEntitySet="Data_WorkFlowConfig">
+                <ScalarProperty Name="Note" ColumnName="Note" />
+                <ScalarProperty Name="State" ColumnName="State" />
+                <ScalarProperty Name="WorkType" ColumnName="WorkType" />
+                <ScalarProperty Name="WorkName" ColumnName="WorkName" />
+                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Data_Food_Detial">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Data_Food_Detial">
+              <MappingFragment StoreEntitySet="Data_Food_Detial">
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="ValidType" ColumnName="ValidType" />
+                <ScalarProperty Name="Days" ColumnName="Days" />
+                <ScalarProperty Name="ContainCount" ColumnName="ContainCount" />
+                <ScalarProperty Name="ContainID" ColumnName="ContainID" />
+                <ScalarProperty Name="WeightValue" ColumnName="WeightValue" />
+                <ScalarProperty Name="WeightType" ColumnName="WeightType" />
+                <ScalarProperty Name="OperateType" ColumnName="OperateType" />
+                <ScalarProperty Name="BalanceType" ColumnName="BalanceType" />
+                <ScalarProperty Name="FoodType" ColumnName="FoodType" />
+                <ScalarProperty Name="FoodID" ColumnName="FoodID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -6505,45 +6601,20 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Data_Food_Detial">
-            <EntityTypeMapping TypeName="XCCloudDBModel.Data_Food_Detial">
-              <MappingFragment StoreEntitySet="Data_Food_Detial">
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="ValidType" ColumnName="ValidType" />
-                <ScalarProperty Name="Days" ColumnName="Days" />
-                <ScalarProperty Name="ContainCount" ColumnName="ContainCount" />
-                <ScalarProperty Name="ContainID" ColumnName="ContainID" />
-                <ScalarProperty Name="WeightValue" ColumnName="WeightValue" />
-                <ScalarProperty Name="WeightType" ColumnName="WeightType" />
-                <ScalarProperty Name="OperateType" ColumnName="OperateType" />
-                <ScalarProperty Name="BalanceType" ColumnName="BalanceType" />
-                <ScalarProperty Name="FoodType" ColumnName="FoodType" />
-                <ScalarProperty Name="FoodID" ColumnName="FoodID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Data_WorkFlow_Node">
-            <EntityTypeMapping TypeName="XCCloudDBModel.Data_WorkFlow_Node">
-              <MappingFragment StoreEntitySet="Data_WorkFlow_Node">
-                <ScalarProperty Name="Timeout" ColumnName="Timeout" />
-                <ScalarProperty Name="AuthorFlag" ColumnName="AuthorFlag" />
-                <ScalarProperty Name="UserType" ColumnName="UserType" />
-                <ScalarProperty Name="NodeType" ColumnName="NodeType" />
-                <ScalarProperty Name="OrderNumber" ColumnName="OrderNumber" />
-                <ScalarProperty Name="WorkID" ColumnName="WorkID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Data_WorkFlowConfig">
-            <EntityTypeMapping TypeName="XCCloudDBModel.Data_WorkFlowConfig">
-              <MappingFragment StoreEntitySet="Data_WorkFlowConfig">
-                <ScalarProperty Name="Note" ColumnName="Note" />
-                <ScalarProperty Name="State" ColumnName="State" />
-                <ScalarProperty Name="WorkType" ColumnName="WorkType" />
-                <ScalarProperty Name="WorkName" ColumnName="WorkName" />
+          <EntitySetMapping Name="Data_GoodRequest">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Data_GoodRequest">
+              <MappingFragment StoreEntitySet="Data_GoodRequest">
+                <ScalarProperty Name="RequestInDepotID" ColumnName="RequestInDepotID" />
+                <ScalarProperty Name="RequestInStoreID" ColumnName="RequestInStoreID" />
+                <ScalarProperty Name="RequestOutDepotID" ColumnName="RequestOutDepotID" />
+                <ScalarProperty Name="RequestOutStoreID" ColumnName="RequestOutStoreID" />
+                <ScalarProperty Name="RequestReason" ColumnName="RequestReason" />
+                <ScalarProperty Name="RequstType" ColumnName="RequstType" />
+                <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
+                <ScalarProperty Name="CreateUserID" ColumnName="CreateUserID" />
+                <ScalarProperty Name="CreateStoreID" ColumnName="CreateStoreID" />
                 <ScalarProperty Name="MerchID" ColumnName="MerchID" />
+                <ScalarProperty Name="RequestCode" ColumnName="RequestCode" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -6556,64 +6627,14 @@
                 <ScalarProperty Name="SendTime" ColumnName="SendTime" />
                 <ScalarProperty Name="OutDepotID" ColumnName="OutDepotID" />
                 <ScalarProperty Name="OutStoreID" ColumnName="OutStoreID" />
+                <ScalarProperty Name="InDeportID" ColumnName="InDeportID" />
+                <ScalarProperty Name="InStoreID" ColumnName="InStoreID" />
                 <ScalarProperty Name="Tax" ColumnName="Tax" />
                 <ScalarProperty Name="CostPrice" ColumnName="CostPrice" />
                 <ScalarProperty Name="SendCount" ColumnName="SendCount" />
                 <ScalarProperty Name="RequestCount" ColumnName="RequestCount" />
                 <ScalarProperty Name="GoodID" ColumnName="GoodID" />
                 <ScalarProperty Name="RequestID" ColumnName="RequestID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Data_GoodRequest">
-            <EntityTypeMapping TypeName="XCCloudDBModel.Data_GoodRequest">
-              <MappingFragment StoreEntitySet="Data_GoodRequest">
-                <ScalarProperty Name="SendStoreID" ColumnName="SendStoreID" />
-                <ScalarProperty Name="RequestDepot" ColumnName="RequestDepot" />
-                <ScalarProperty Name="RequestReason" ColumnName="RequestReason" />
-                <ScalarProperty Name="RequstType" ColumnName="RequstType" />
-                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
-                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Data_WorkFlow_Entry">
-            <EntityTypeMapping TypeName="XCCloudDBModel.Data_WorkFlow_Entry">
-              <MappingFragment StoreEntitySet="Data_WorkFlow_Entry">
-                <ScalarProperty Name="Note" ColumnName="Note" />
-                <ScalarProperty Name="AuthorID" ColumnName="AuthorID" />
-                <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
-                <ScalarProperty Name="State" ColumnName="State" />
-                <ScalarProperty Name="UserID" ColumnName="UserID" />
-                <ScalarProperty Name="NodeID" ColumnName="NodeID" />
-                <ScalarProperty Name="EventType" ColumnName="EventType" />
-                <ScalarProperty Name="EventID" ColumnName="EventID" />
-                <ScalarProperty Name="WorkID" ColumnName="WorkID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Base_GoodsInfo">
-            <EntityTypeMapping TypeName="XCCloudDBModel.Base_GoodsInfo">
-              <MappingFragment StoreEntitySet="Base_GoodsInfo">
-                <ScalarProperty Name="Note" ColumnName="Note" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="FeeType" ColumnName="FeeType" />
-                <ScalarProperty Name="ReturnFee" ColumnName="ReturnFee" />
-                <ScalarProperty Name="TimeType" ColumnName="TimeType" />
-                <ScalarProperty Name="ReturnTime" ColumnName="ReturnTime" />
-                <ScalarProperty Name="AllowCreatePoint" ColumnName="AllowCreatePoint" />
-                <ScalarProperty Name="ReturnFlag" ColumnName="ReturnFlag" />
-                <ScalarProperty Name="Price" ColumnName="Price" />
-                <ScalarProperty Name="AllowStorage" ColumnName="AllowStorage" />
-                <ScalarProperty Name="GoodType" ColumnName="GoodType" />
-                <ScalarProperty Name="GoodPhoteURL" ColumnName="GoodPhoteURL" />
-                <ScalarProperty Name="GoodName" ColumnName="GoodName" />
-                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
-                <ScalarProperty Name="Barcode" ColumnName="Barcode" />
-                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>

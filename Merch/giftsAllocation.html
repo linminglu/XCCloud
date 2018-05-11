@@ -13,41 +13,40 @@
         </blockquote>
         <table class="layui-hide" lay-filter="giftAllocationTB" id="giftAllocationTB"></table>
     </div>
-<!--弹窗1-->
+<!--申请-->
     <div id="openModel" style="display:none; padding: 15px;">
         <form action="" class="layui-form layui-form-pane">
             <div class="layui-form-item">
                 <div class="layui-inline">
                     <label for="" class="layui-form-label">申请仓库</label>
                     <div class="layui-input-inline">
-                        <select name="" id=""></select>
+                        <select name="" id="ApplyDepot"  lay-filter="ApplyDepot"></select>
                     </div>
                 </div>
                 <div class="layui-inline">
                     <label for="" class="layui-form-label">调拨方式</label>
                     <div class="layui-input-inline">
-                        <select name="" id="">
+                        <select name="" id="RequstType" lay-filter="RequstType">
                             <option value="0">门店间申请</option>
                             <option value="1">总部派发</option>
-                            <option value="2">总部申请</option></select>
+                            <option value="2">总部申请</option>
+                        </select>
                     </div>
                 </div>
                 <div class="layui-inline">
                     <label for="" class="layui-form-label">调拨门店</label>
                     <div class="layui-input-inline">
-                        <select name="" id=""></select>
+                        <select name="" id="SendStoreId" lay-filter="SendStoreId"></select>
                     </div>
                 </div>
             </div>
             <div class="layui-form-item">
-               <!--<div class="layui-inline">-->
                    <label for="" class="layui-form-label">调拨原因</label>
                    <div class="layui-input-block" style="width: 838px">
-                       <input type="text" class="layui-input">
+                       <input type="text" class="layui-input" id="RequestReason">
                    </div>
-               <!--</div>-->
             </div>
-            <div class="layui-form-item">
+            <div class="layui-form-item layui-hide">
                 <div class="layui-inline">
                     <label for="" class="layui-form-label">物流公司</label>
                     <div class="layui-input-inline">
@@ -73,13 +72,33 @@
             </div>
             <table class="layui-hide" id="giftsList" lay-filter="giftsList"></table>
             <div style="text-align:right;padding-right: 100px;">
-                <button type="button" id="save" class="layui-btn layui-btn-normal">确定</button>
+                <button type="button" id="submitApply" class="layui-btn layui-btn-normal">确定</button>
             </div>
         </form>
     </div>
 <!--弹窗2-->
-    <div id="goodsBox">
+    <div id="goodsBox" style="display:none; padding: 15px;">
         <table class="layui-hide" id="goodsList" lay-filter="goodsList"></table>
+    </div>
+<!--审核-->
+    <div id="checkModel" style="display:none; padding: 15px;">
+        <form action="" class="layui-form layui-form-pane">
+            <div class="layui-form-item goodIsAll">
+                <label class="layui-form-label">审核结果</label>
+                <div class="layui-input-block">
+                    <input type="checkbox" name="switch" lay-skin="switch" lay-text="通过|拒绝" id="checkState" lay-filter="checkState">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">审核意见</label>
+                <div class="layui-input-block">
+                    <input type="text"  class="layui-input" id="checkNote">
+                </div>
+            </div>
+            <div style="text-align:center;">
+                <button type="button" class="layui-btn layui-btn-normal" id="submitCheck">确定</button>
+            </div>
+        </form>
     </div>
 </body>
 <script src="js/jquery-1.8.3-min.js"></script>
@@ -94,109 +113,194 @@
     let xc=xcActionSystem.prototype;
     let token=xc.getStorage('token');
     let parm={'obj':{'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'},
-        'url':'/XCCloud/DepotInfo?action=QueryDepotInfo',
+        'url':'/XCCloud/GoodsInfo?action=QueryGoodRequestInfo',
         'elem':'#warehouseManage',
         'cols':[
-             {field:'ID', title:'申请时间', align: 'center', sort: true}
-            ,{field:'DepotName',title: '申请门店', align: 'center'}
-            ,{field:'MinusEN', title: '申请人', align: 'center',templet:'#changeMinusEN'}
-            ,{field:'StoreName', title: '申请仓库', align: 'center'}
-            ,{field:'StoreName', title: '调拨方式', align: 'center'}
-            ,{field:'StoreName', title: '调拨状态', align: 'center'}
-            ,{field:'StoreName', title: '调拨门店', align: 'center'}
-            ,{field:'StoreName', title: '调拨仓库', align: 'center'}
-            ,{field:'StoreName', title: '调拨时间', align: 'center'}
-            ,{field:'StoreName', title: '调拨说明', align: 'center'}
+             {field:'ID', title:'调拨单ID', align: 'center', sort: true}
+            ,{field:'RequestTime',title: '申请时间', align: 'center'}
+            ,{field:'RequestStore',title: '申请门店', align: 'center'}
+            ,{field:'Requester', title: '申请人', align: 'center'}
+            ,{field:'RequestDepot', title: '申请仓库', align: 'center'}
+            ,{field:'RequstType', title: '调拨方式', align: 'center',templet:'#reqType'}
+            ,{field:'State', title: '调拨状态', align: 'center',templet:'#reqState'}
+            ,{field:'SendStore', title: '调拨门店', align: 'center'}
+            ,{field:'OutDepot', title: '调拨仓库', align: 'center'}
+            ,{field:'DealTime', title: '调拨时间', align: 'center'}
+            ,{field:'RequestReason', title: '调拨说明', align: 'center'}
             ,{fixed: 'right', title: '操作', width:260, align:'center', toolbar: '#barDemo'}]
     };
     xc.getInitData(parm);
-
+    let requestId;//调拨单号
+    let checkState;
+    let RequestDepotId;let RequstType;let SendStoreId;let GoodRequests;
+    layui.addcss('layui_font.css');
     layui.use(['form','table','layer'],function () {
-            let form=layui.form;
-            let table=layui.table;
-            let layer=layui.layer;
-            //监听选中商品
-            table.on('checkbox(goodsList)', function(obj){
-                if (obj.type == "all") {
-                    var csss = $(".layui-table-cell.laytable-cell-checkbox");
-                    csss.each(function(index, e){
-                        e.children[0].checked = false;
-                        e.children[1].className="layui-unselect layui-form-checkbox";
-                        checkListGoods=[];
-                    });
-                } else {
-                    if(obj.checked==true){
-                        checkListGoods=[{'foodDetailType':2,'ProjectName': obj.data.GoodName,'FoodTypeStr':'商品',
-                            'ContainID':obj.data.ID,'WeightValue':obj.data.Price,'ContainCount':1,'Days':''}]
-                    }else {
-                        checkListGoods=[];
-                    }
-                    var csss = $(".layui-table-cell.laytable-cell-checkbox");
-                    csss.each(function(index, e){
-                        var dataIndex = e.parentNode.parentNode.getAttribute("data-index");
-                        if (dataIndex != null) {
-                            if(dataIndex != obj.data.LAY_TABLE_INDEX){
-                                e.children[0].checked = false;
-                                e.children[1].className="layui-unselect layui-form-checkbox";
-                            }
-                        } else {
+        let form=layui.form;
+        let table=layui.table;
+        let layer=layui.layer;
+        form.on('select(ApplyDepot)',function (data) {
+            RequestDepotId=data.value;
+        });
+        form.on('select(RequstType)',function (data) {
+            RequstType=data.value;
+        });
+        form.on('select(SendStoreId)',function (data){
+            SendStoreId=data.value;
+        });
+        form.on('switch(checkState)',function (data) {
+            if(data.elem.checked){
+                checkState=1;
+            }else {
+                checkState=0;
+            }
+        });
+        //监听选中商品
+        table.on('checkbox(goodsList)', function(obj){
+            if (obj.type == "all") {
+                var csss = $(".layui-table-cell.laytable-cell-checkbox");
+                csss.each(function(index, e){
+                    e.children[0].checked = false;
+                    e.children[1].className="layui-unselect layui-form-checkbox";
+                    checkListGoods=[];
+                });
+            } else {
+                if(obj.checked==true){
+                    checkListGoods=[{'foodDetailType':2,'ProjectName': obj.data.GoodName,'FoodTypeStr':'商品',
+                        'ContainID':obj.data.ID,'WeightValue':obj.data.Price,'ContainCount':1,'Days':''}]
+                }else {
+                    checkListGoods=[];
+                }
+                var csss = $(".layui-table-cell.laytable-cell-checkbox");
+                csss.each(function(index, e){
+                    var dataIndex = e.parentNode.parentNode.getAttribute("data-index");
+                    if (dataIndex != null) {
+                        if(dataIndex != obj.data.LAY_TABLE_INDEX){
                             e.children[0].checked = false;
                             e.children[1].className="layui-unselect layui-form-checkbox";
                         }
-                    });
-                }
-            });
-            //弹出层
-            $('#applyBtn').on('click',function () {
-                layer.open({
-                    title:'申请记录',
-                    type:1,
-                    area:'1000px',
-                    content:$('#openModel')
+                    } else {
+                        e.children[0].checked = false;
+                        e.children[1].className="layui-unselect layui-form-checkbox";
+                    }
                 });
-                initGoodsTb();
-            });
-            $('#searchGoodBtn').on('click',function () {
-                layer.open({
-                    title:'库存礼品列表',
-                    type:1,
-                    area:'1000px',
-                    content:$('#goodsBox')
-                });
-                initGoodsTb();
-            });
-            let arr=[{'SaleTime':'2018-3-15','DigitNumber':'200','DigitName':'七号数字币','Count':40,'Money':'499','SaleMachine':'售币机'},
-                {'SaleTime':'2018-3-15','DigitNumber':'200','DigitName':'七号数字币','Count':40,'Money':'499','SaleMachine':'售币机'},
-                {'SaleTime':'2018-3-15','DigitNumber':'200','DigitName':'七号数字币','Count':40,'Money':'499','SaleMachine':'售币机'},
-                {'SaleTime':'2018-3-15','DigitNumber':'200','DigitName':'七号数字币','Count':40,'Money':'499','SaleMachine':'售币机'},
-                {'SaleTime':'2018-3-15','DigitNumber':'200','DigitName':'七号数字币','Count':40,'Money':'499','SaleMachine':'售币机'},
-                {'SaleTime':'2018-3-15','DigitNumber':'200','DigitName':'七号数字币','Count':40,'Money':'499','SaleMachine':'售币机'},
-                {'SaleTime':'2018-3-15','DigitNumber':'200','DigitName':'七号数字币','Count':40,'Money':'499','SaleMachine':'售币机'},
-                {'SaleTime':'2018-3-15','DigitNumber':'200','DigitName':'七号数字币','Count':40,'Money':'499','SaleMachine':'售币机'},
-                {'SaleTime':'2018-3-15','DigitNumber':'200','DigitName':'七号数字币','Count':40,'Money':'499','SaleMachine':'售币机'},
-                {'SaleTime':'2018-3-15','DigitNumber':'200','DigitName':'七号数字币','Count':40,'Money':'499','SaleMachine':'售币机'},];
-            layui.table.render({
-                elem: '#giftAllocationTB'
-                , data: arr
-                // , size:'sm'
-                , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
-                , cols: [[{field:'SaleTime', title:'商品条码', align: 'center'}
-                    ,{field:'DigitNumber',title: '商品类别', align: 'center'} //width 支持：数字、百分比和不填写。
-                    ,{field:'DigitName', title: '商品名称', align: 'center',templet:'#prob'}
-                    ,{field:'Count', title: '调配时间', align: 'center'}
-                    ,{field:'Money', title: '申请门店', align: 'center'}
-                    ,{field:'SaleMachine', title: '申请仓库', align: 'center'}
-                    ,{field:'SaleMachine', title: '调配门店', align: 'center',edit: 'text'}
-                    ,{field:'SaleMachine', title: '调配说明', align: 'center',edit: 'text'}
-                    ,{field:'SaleMachine', title: '调配结果', align: 'center',edit: 'text'}
-                    ,{fixed: 'right',title: '操作' ,width:200, align:'center', toolbar: '#barDemo'}]]
-                , page: {page: true, limits: [5,10, 15, 20, 30, 50, 100]}
-                , limit: 10
-            });
+            }
+        });
+        table.on('tool(giftAllocationTB)', function(obj){
+           let _data=obj.data;
+           let layevent=obj.event;
+            requestId=_data.ID;
+            if(layevent==='edit'){
 
+            }else if(layevent==='check'){
 
-        })
+            }else if(layevent==='handle'){
 
+            }
+        });
+        //弹出层
+        $('#applyBtn').on('click',function () {
+            layer.open({
+                title:'申请记录',
+                type:1,
+                area:'1000px',
+                content:$('#openModel')
+            });
+            initGoodsTb();
+        });
+        $('#searchGoodBtn').on('click',function () {
+            layer.open({
+                title:'库存礼品列表',
+                type:1,
+                area:'1000px',
+                content:$('#goodsBox')
+            });
+            initGoodsTb();
+        });
+        let arr=[{'SaleTime':'2018-3-15','DigitNumber':'200','DigitName':'七号数字币','Count':40,'Money':'499','SaleMachine':'售币机'},
+            {'SaleTime':'2018-3-15','DigitNumber':'200','DigitName':'七号数字币','Count':40,'Money':'499','SaleMachine':'售币机'},
+            {'SaleTime':'2018-3-15','DigitNumber':'200','DigitName':'七号数字币','Count':40,'Money':'499','SaleMachine':'售币机'},
+            {'SaleTime':'2018-3-15','DigitNumber':'200','DigitName':'七号数字币','Count':40,'Money':'499','SaleMachine':'售币机'},
+            {'SaleTime':'2018-3-15','DigitNumber':'200','DigitName':'七号数字币','Count':40,'Money':'499','SaleMachine':'售币机'},
+            {'SaleTime':'2018-3-15','DigitNumber':'200','DigitName':'七号数字币','Count':40,'Money':'499','SaleMachine':'售币机'},
+            {'SaleTime':'2018-3-15','DigitNumber':'200','DigitName':'七号数字币','Count':40,'Money':'499','SaleMachine':'售币机'},
+            {'SaleTime':'2018-3-15','DigitNumber':'200','DigitName':'七号数字币','Count':40,'Money':'499','SaleMachine':'售币机'},
+            {'SaleTime':'2018-3-15','DigitNumber':'200','DigitName':'七号数字币','Count':40,'Money':'499','SaleMachine':'售币机'},
+            {'SaleTime':'2018-3-15','DigitNumber':'200','DigitName':'七号数字币','Count':40,'Money':'499','SaleMachine':'售币机'},];
+        layui.table.render({
+            elem: '#giftAllocationTB'
+            , data: arr
+            // , size:'sm'
+            , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+            , cols: [[{field:'SaleTime', title:'商品条码', align: 'center'}
+                ,{field:'DigitNumber',title: '商品类别', align: 'center'} //width 支持：数字、百分比和不填写。
+                ,{field:'DigitName', title: '商品名称', align: 'center',templet:'#prob'}
+                ,{field:'Count', title: '调配时间', align: 'center'}
+                ,{field:'Money', title: '申请门店', align: 'center'}
+                ,{field:'SaleMachine', title: '申请仓库', align: 'center'}
+                ,{field:'SaleMachine', title: '调配门店', align: 'center',edit: 'text'}
+                ,{field:'SaleMachine', title: '调配说明', align: 'center',edit: 'text'}
+                ,{field:'SaleMachine', title: '调配结果', align: 'center',edit: 'text'}
+                ,{fixed: 'right',title: '操作' ,width:200, align:'center', toolbar: '#barDemo'}]]
+            , page: {page: true, limits: [5,10, 15, 20, 30, 50, 100]}
+            , limit: 10
+        });
+        //save apply
+       $('#submitApply').on('click',function () {
+           let _obj={ 'requestDepot':RequestDepotId,
+               'requstType':RequstType,
+               'sendStoreId':SendStoreId,
+               'requestReason':$('#RequestReason').val(),
+               'goodRequests':GoodRequests,
+               'userToken':token,
+               'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+           let url='/XCCloud/GoodsInfo?action=SaveGoodsInfo';
+           let parasJson = JSON.stringify(_obj);
+           $.ajax({
+               type: "post",
+               url: url,
+               contentType: "application/json; charset=utf-8",
+               data: { parasJson: parasJson },
+               success: function (data) {
+                   data=JSON.parse(data);
+                   if(data.result_code==1){
+                       layer.msg('保存成功',{time:1000},function () {
+                           location.href='giftsAllocation.html'
+                       });
+                   }else {
+                       layer.msg(data.result_msg||data.return_msg)
+                   }
+               }
+
+           })
+       });
+       //Handle check
+       $('#submitCheck').on('click',function () {
+           let _obj={ 'requestId':requestId,
+               'state':checkState,
+               'note':$('#checkNote').val(),
+               'userToken':token,
+               'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+           let url='/XCCloud/GoodsInfo?action=GoodRequestVerify';
+           let parasJson = JSON.stringify(_obj);
+           $.ajax({
+               type: "post",
+               url: url,
+               contentType: "application/json; charset=utf-8",
+               data: { parasJson: parasJson },
+               success: function (data) {
+                   data=JSON.parse(data);
+                   if(data.result_code==1){
+                       layer.msg('保存成功',{time:1000},function () {
+                           location.href='giftsAllocation.html'
+                       });
+                   }else {
+                       layer.msg(data.result_msg||data.return_msg)
+                   }
+               }
+
+           })
+       });
+    })
     function initGoodsTb() {
         var searchText=$('#searchText').val();
         var parm={'obj':{'goodNameOrBarcode':searchText,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'},
@@ -213,5 +317,25 @@
             ]};
         xc.getInitData(parm);
     }
+</script>
+<script type="text/html" id="reqType">
+    {{# if(d.RequstType==0){ }}
+    门店申请
+    {{# }else if(d.RequstType==1){ }}
+    总部配货
+    {{# }else if(d.RequstType==2){ }}
+    总部申请
+    {{#  } }}
+</script>
+<script type="text/html" id="reqState">
+    {{# if(d.State==0){ }}
+    申请
+    {{# }else if(d.State==1){ }}
+    审核通过
+    {{# }else if(d.State==2){ }}
+    审核拒绝
+    {{# }else if(d.State==3){ }}
+    处理
+    {{#  } }}
 </script>
 </html>

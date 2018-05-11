@@ -50,17 +50,7 @@
                                     <select id="FoodType" lay-filter="FoodType" ></select>
                                 </div>
                             </div>
-                            <br>
-                            <div class="layui-inline">
-                                <label class="layui-form-label" >有效期</label>
-                                <div class="layui-input-inline" style="width: 190px">
-                                    <input type="text" class="layui-input" id="StartTime">
-                                </div>
-                                <div class="layui-form-mid">至</div>
-                                <div class="layui-input-inline" style="width: 290px">
-                                    <input type="text" class="layui-input" id="EndTime">
-                                </div>
-                            </div>
+
                             <br>
                             <div class="layui-inline">
                                 <label class="layui-form-label" >散客价</label>
@@ -101,6 +91,78 @@
                                     <input type="checkbox" id="AllowInternet" name="open" lay-skin="switch" lay-filter="AllowInternet" lay-text="允许|禁止">
                                 </div>
                             </div>
+                            <br>
+                            <div class="layui-inline">
+                                <label class="layui-form-label" >有效期</label>
+                                <div class="layui-input-inline" style="width: 160px">
+                                    <select id="timeType" lay-filter="usePried">
+
+                                        <option value="0">当天</option>
+                                        <option value="1">当周</option>
+                                        <option value="2">当月</option>
+                                        <option value="3">本季</option>
+                                        <option value="4">本年</option>
+                                        <option value="5">自定义</option>
+                                    </select>
+                                </div>
+                                <div class="layui-input-inline" style="width: 160px">
+                                    <input type="text" class="layui-input" id="StartTime" disabled>
+                                </div>
+                                <div class="layui-form-mid">至</div>
+                                <div class="layui-input-inline" style="width: 160px">
+                                    <input type="text" class="layui-input" id="EndTime" disabled>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="layui-col-md4">
+                        <div class="layui-card">
+                            <div class="layui-card-header"style="height: 18px;line-height: 18px;!important;">
+                                上传图片
+                            </div>
+                            <div class="layui-card-body" >
+                                <div id="test2">
+                                    <div id="imgBtn"><i class="layui-icon" style="font-size: 60px;color: #9F9F9F">&#xe654;</i></div>
+                                    <div class="layui-upload-list" id="demo2" style="margin: 0;">
+                                        <input id="nameImage" name="list[0]" maxlength="255" class="input-xlarge required" type="hidden">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="layui-col-md12">
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <div class="layui-input-inline"style="width: 130px">
+                                    <input type="checkbox"  title="不可用日期" lay-skin="primary" id="isUseful" lay-filter="isUseful">
+                                </div>
+                                <div class="layui-input-inline" style="width: 150px">
+                                    <select id="noTimeType" lay-filter="noUsePried">
+
+                                        <option value="0">当天</option>
+                                        <option value="1">当周</option>
+                                        <option value="2">当月</option>
+                                        <option value="3">本季</option>
+                                        <option value="4">本年</option>
+                                        <option value="5">自定义</option>
+                                    </select>
+                                </div>
+                                <div class="layui-input-inline" style="width: 150px">
+                                    <input type="text" class="layui-input" id="NoStartTime" disabled>
+                                </div>
+                                <div class="layui-form-mid">至</div>
+                                <div class="layui-input-inline" style="width: 150px">
+                                    <input type="text" class="layui-input" id="NoEndTime" disabled>
+                                </div>
+                                <div class="layui-form-mid">会员卡续费日期</div>
+                                <div class="layui-input-inline" style="width: 150px">
+                                    <input type="text" class="layui-input" id="timeLong" >
+                                </div>
+                                <div class="layui-form-mid">天，0为不处理</div>
+                            </div>
+
                         </div>
                         <div class="layui-form-item layui-hide" id="otherShow">
                             <div class="layui-inline">
@@ -122,22 +184,6 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="layui-col-md4">
-                        <div class="layui-card">
-                            <div class="layui-card-header">
-                                上传图片
-                            </div>
-                            <div class="layui-card-body">
-                                <div id="test2">
-                                    <div id="imgBtn"><i class="layui-icon" style="font-size: 60px;color: #9F9F9F">&#xe654;</i></div>
-                                    <div class="layui-upload-list" id="demo2" style="margin: 0;">
-                                        <input id="nameImage" name="list[0]" maxlength="255" class="input-xlarge required" type="hidden">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
                     </div>
                 </div>
             </div>
@@ -439,8 +485,8 @@
         'cols':[
             {field:'FoodID', title:'套餐编号', align: 'center', sort: true}
             ,{field:'FoodName',title: '套餐名称', align: 'center'} //width 支持：数字、百分比和不填写。
-            ,{field:'ClientPrice', title: '散客价', align: 'center'}
-            ,{field:'MemberPrice', title: '会员价', align: 'center'}
+            ,{field:'ClientPrice', title: '散客价', align: 'center',total:true}
+            ,{field:'MemberPrice', title: '会员价', align: 'center',total:true}
             ,{field:'FoodTypeStr', title: '套餐类别', align: 'center'}
             // ,{field:'RechargeTypeStr', title: '充值方式', align: 'center'}
             ,{field:'AllowInternet', title: '是否允许第三方', align: 'center',templet:'#internet'}
@@ -448,7 +494,9 @@
             ,{field:'ForeAuthorize', title: '是否允许前台授权', align: 'center',templet:'#authorize'}
             ,{field:'StartTime', title: '启用时间', align: 'center'}
             ,{field:'EndTime', title: '停用时间', align: 'center'}
-            ,{fixed: 'right', title: '操作', width:260, align:'center', toolbar: '#barDemo'}]
+            ,{fixed: 'right', title: '操作', width:260, align:'center', toolbar: '#barDemo'}
+            ]
+        ,total:true
     };
     xc.getInitData(parm);
     let foodID='';
@@ -596,12 +644,68 @@
             }
             console.log(_storeId);
         });
+        //监听有效期间选择
+        form.on('select(usePried)',function (data) {
+            if(data.value==0){
+                $('#StartTime').val(getDayStartDate()).prop('disabled',true);
+                $('#EndTime').val(getDayStartDate()).prop('disabled',true);
+            }else if(data.value==1){
+                $('#StartTime').val(getWeekStartDate()).prop('disabled',true);
+                $('#EndTime').val(getWeekEndDate()).prop('disabled',true);
+            }else if(data.value==2){
+                $('#StartTime').val(getMonthStartDate()).prop('disabled',true);
+                $('#EndTime').val(getMonthEndDate()).prop('disabled',true);
+            }else if(data.value==4){
+                $('#StartTime').val(getYearStartDate()).prop('disabled',true);
+                $('#EndTime').val(getYearEndDate()).prop('disabled',true);
+            }else if(data.value==3){
+                $('#StartTime').val(getQuarterStartDate()).prop('disabled',true);
+                $('#EndTime').val(getQuarterEndDate()).prop('disabled',true);
+            }else if(data.value==5){
+                $('#StartTime').prop('disabled',false);
+                $('#EndTime').prop('disabled',false);
+                layer.msg('<p style="color: red">请自己设置有效期限</p>')
+            }
+        });
+
+        //监听不可用期限选择
+        form.on('select(noUsePried)',function (data) {
+            if(data.value==0){
+                $('#NoStartTime').val(getDayStartDate()).prop('disabled',true);
+                $('#NoEndTime').val(getDayStartDate()).prop('disabled',true);
+            }else if(data.value==1){
+                $('#NoStartTime').val(getWeekStartDate()).prop('disabled',true);
+                $('#NoEndTime').val(getWeekEndDate()).prop('disabled',true);
+            }else if(data.value==2){
+                $('#NoStartTime').val(getMonthStartDate()).prop('disabled',true);
+                $('#NoEndTime').val(getMonthEndDate()).prop('disabled',true);
+            }else if(data.value==4){
+                $('#NoStartTime').val(getYearStartDate()).prop('disabled',true);
+                $('#NoEndTime').val(getYearEndDate()).prop('disabled',true);
+            }else if(data.value==3){
+                $('#NoStartTime').val(getQuarterStartDate()).prop('disabled',true);
+                $('#NoEndTime').val(getQuarterEndDate()).prop('disabled',true);
+            }else if(data.value==5){
+                $('#NoStartTime').prop('disabled',false);
+                $('#NoEndTime').prop('disabled',false);
+                layer.msg('<p style="color: red">请自己设置不可用期限</p>')
+            }else {
+                $('#NoStartDate').val('').prop('disabled',true);
+                $('#NoEndTime').val('').prop('disabled',true);
+            }
+        });
         //渲染时间
         laydate.render({
             elem: '#StartTime',type: 'date',value:new Date()
         });
         laydate.render({
             elem: '#EndTime',type: 'date',value:new Date()
+        });
+        laydate.render({
+            elem: '#NoStartTime',type: 'date',value:new Date()
+        });
+        laydate.render({
+            elem: '#NoEndTime',type: 'date',value:new Date()
         });
         table.on('checkbox(giftTable)', function(obj){
             if (obj.type == "all") {

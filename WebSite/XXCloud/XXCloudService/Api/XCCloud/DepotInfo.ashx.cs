@@ -118,9 +118,9 @@ namespace XXCloudService.Api.XCCloud
                 if (!dicParas.Get("minusEn").Validint("是否运行为负", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-                var id = dicParas.Get("id");
+                var id = dicParas.Get("id").Toint();
 
-                if(!Base_DepotInfoService.I.Any(p=>p.ID.Equals(id, StringComparison.OrdinalIgnoreCase)))
+                if(!Base_DepotInfoService.I.Any(p=>p.ID == id))
                 {
                     errMsg = "该仓库信息不存在";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -151,24 +151,18 @@ namespace XXCloudService.Api.XCCloud
                 if (!dicParas.Get("minusEn").Validint("是否允许为负", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg); 
 
-                var id = dicParas.Get("id");
+                var id = dicParas.Get("id").Toint(0);
                 var depotName = dicParas.Get("depotName");
                 var minusEn = dicParas.Get("minusEn").Toint();
 
-                var base_DepotInfo = Base_DepotInfoService.I.GetModels(p => p.ID.Equals(id, StringComparison.OrdinalIgnoreCase)).FirstOrDefault() ?? new Base_DepotInfo();
+                var base_DepotInfo = Base_DepotInfoService.I.GetModels(p => p.ID == id).FirstOrDefault() ?? new Base_DepotInfo();
                 base_DepotInfo.MerchID = merchId;
                 base_DepotInfo.StoreID = storeId;
                 base_DepotInfo.DepotName = depotName;
                 base_DepotInfo.MinusEN = minusEn;
-                if (id.IsNull())
-                {
-                    //生成ID
-                    id = RedisCacheHelper.CreateSerialNo((userTokenKeyModel.LogType == (int)RoleType.MerchUser ? merchId : storeId).ToExtStoreID());
-                    if (!id.Nonempty("ID", out errMsg))
-                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-
+                if (id == 0)
+                {                    
                     //新增
-                    base_DepotInfo.ID = id;
                     if (!Base_DepotInfoService.I.Add(base_DepotInfo))
                     {
                         errMsg = "添加仓库信息失败";
@@ -177,7 +171,7 @@ namespace XXCloudService.Api.XCCloud
                 }
                 else
                 {
-                    if (base_DepotInfo.ID.IsNull())
+                    if (base_DepotInfo.ID == 0)
                     {
                         errMsg = "该仓库信息不存在";
                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -208,15 +202,15 @@ namespace XXCloudService.Api.XCCloud
                 if (!dicParas.Get("id").Nonempty("仓库编号", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-                var id = dicParas.Get("id");
+                var id = dicParas.Get("id").Toint();
                 
-                if (!Base_DepotInfoService.I.Any(a => a.ID.Equals(id, StringComparison.OrdinalIgnoreCase)))
+                if (!Base_DepotInfoService.I.Any(a => a.ID == id))
                 {
                     errMsg = "该仓库信息不存在";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
-                var base_DepotInfo = Base_DepotInfoService.I.GetModels(p => p.ID.Equals(id, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                var base_DepotInfo = Base_DepotInfoService.I.GetModels(p => p.ID == id).FirstOrDefault();
                 if (!Base_DepotInfoService.I.Update(base_DepotInfo))
                 {
                     errMsg = "删除仓库信息失败";
@@ -241,10 +235,10 @@ namespace XXCloudService.Api.XCCloud
                 string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
 
                 string errMsg = string.Empty;
-                if (!dicParas.Get("depotId").Nonempty("仓库编号", out errMsg))
+                if (!dicParas.Get("depotId").Validint("仓库编号", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-                var depotId = dicParas.Get("depotId");
+                var depotId = dicParas.Get("depotId").Toint(0) ;
 
                 var query = Base_GoodsInfoService.N.GetModels(p => p.AllowStorage == 1); //只显示允许入库的同级商品
                 if (userTokenKeyModel.LogType == (int)RoleType.MerchUser)
@@ -260,7 +254,7 @@ namespace XXCloudService.Api.XCCloud
                 }
 
                 var result = from a in query
-                             join b in Data_GoodsStockService.N.GetModels(p=>p.DepotID.Equals(depotId, StringComparison.OrdinalIgnoreCase)) on a.ID equals b.GoodID into b1
+                             join b in Data_GoodsStockService.N.GetModels(p => p.DepotID == depotId) on a.ID equals b.GoodID into b1
                              from b in b1.DefaultIfEmpty()
                              join c in Dict_SystemService.N.GetModels() on (a.GoodType + "") equals c.DictValue into c1
                              from c in c1.DefaultIfEmpty()
@@ -268,7 +262,7 @@ namespace XXCloudService.Api.XCCloud
                              orderby a.ID
                              select new
                              {
-                                 ID = b != null ? b.ID : string.Empty,
+                                 ID = b != null ? b.ID : 0,
                                  GoodID = a.ID,
                                  Barcode = a.Barcode,
                                  GoodTypeStr = c != null ? c.DictKey : string.Empty,
@@ -295,12 +289,12 @@ namespace XXCloudService.Api.XCCloud
                 string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
 
                 string errMsg = string.Empty;
-                if (!dicParas.Get("depotId").Nonempty("仓库编号", out errMsg))
+                if (!dicParas.Get("depotId").Validint("仓库编号", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 if (!dicParas.GetArray("bindingInfos").Validarray("绑定信息", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 
-                var depotId = dicParas.Get("depotId");
+                var depotId = dicParas.Get("depotId").Toint();
                 var bindingInfos = dicParas.GetArray("bindingInfos");
                 
                 //开启EF事务
@@ -313,38 +307,32 @@ namespace XXCloudService.Api.XCCloud
                             if (el != null)
                             {
                                 var dicPara = new Dictionary<string, object>(el, StringComparer.OrdinalIgnoreCase);
-                                if (!dicPara.Get("goodId").Nonempty("商品ID", out errMsg))
+                                if (!dicPara.Get("goodId").Validint("商品ID", out errMsg))
                                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                                 if (!dicPara.Get("minValue").Validint("库存下限", out errMsg))
                                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                                 if (!dicPara.Get("maxValue").Validint("库存上限", out errMsg))
                                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                                 
-                                var id = dicPara.Get("id");
-                                var goodId = dicPara.Get("goodId");
+                                var id = dicPara.Get("id").Toint(0);
+                                var goodId = dicPara.Get("goodId").Toint();
                                 var minValue = dicPara.Get("minValue").Toint();
                                 var maxValue = dicPara.Get("maxValue").Toint();
 
-                                var data_GoodsStock = Data_GoodsStockService.I.GetModels(p => p.ID.Equals(id, StringComparison.OrdinalIgnoreCase)).FirstOrDefault() ?? new Data_GoodsStock();                                
+                                var data_GoodsStock = Data_GoodsStockService.I.GetModels(p => p.ID == id).FirstOrDefault() ?? new Data_GoodsStock();                                
                                 data_GoodsStock.DepotID = depotId;                                
                                 data_GoodsStock.GoodID = goodId;
                                 data_GoodsStock.MinValue = minValue;
                                 data_GoodsStock.MaxValue = maxValue;
-                                if (id.IsNull())
-                                {
-                                    //生成ID
-                                    id = RedisCacheHelper.CreateSerialNo((userTokenKeyModel.LogType == (int)RoleType.MerchUser ? merchId : storeId).ToExtStoreID());
-                                    if (!id.Nonempty("ID", out errMsg))
-                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-
-                                    data_GoodsStock.ID = id;
+                                if (id == 0)
+                                {                                    
                                     data_GoodsStock.InitialValue = 0;
                                     data_GoodsStock.InitialTime = DateTime.Now;
                                     Data_GoodsStockService.I.AddModel(data_GoodsStock);
                                 }
                                 else
                                 {
-                                    if (data_GoodsStock.ID.IsNull())
+                                    if (data_GoodsStock.ID == 0)
                                     {
                                         errMsg = "该库存信息不存在";
                                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);

@@ -38,7 +38,14 @@ namespace XCCloudService.Common
         /// <summary>
         /// 缓存key前缀
         /// </summary>
-        public static string PrefixKey = "RS232";
+        //public static string PrefixKey = "RS232";
+        public static string PrefixKey
+        {
+            get
+            {
+                return "RS232";
+            }
+        }
 
 
         public static string SAppMessagePushXmlFilePath = System.Web.HttpContext.Current.Server.MapPath("/Config/SAppMessageTemplate.xml");

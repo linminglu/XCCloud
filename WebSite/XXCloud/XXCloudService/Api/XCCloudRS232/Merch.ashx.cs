@@ -161,11 +161,10 @@ namespace XXCloudService.Api.XCCloudRS232
                     merch.State = 1; //状态激活
                     merchService.Update(merch);
 
-                    string mobileToken = string.Empty;
-                    if (!MobileTokenBusiness.ExistMobile(CommonConfig.PrefixKey + mobile))
-                    {
-                        MobileTokenBusiness.AddToken(CommonConfig.PrefixKey + mobile, token);
-                    }
+                    MobileTokenModel model = new MobileTokenModel();
+                    model.Mobile = mobile;
+                    model.Token = token;
+                    MobileTokenCache.AddToken(CommonConfig.PrefixKey + mobile, model);
                 }
 
                 MerchModel merchModel = new MerchModel(merch.MerchName, merch.OPName, merch.Token, merch.State);

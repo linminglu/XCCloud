@@ -96,6 +96,14 @@ namespace XCCloudService.Common
             return false;
         }
 
+        public static bool IsInt(object expression)
+        {
+            if (expression != null)
+                return Regex.IsMatch(expression.ToString(), @"^([0-9])[0-9]*(\.\w*)?$");
+
+            return false;
+        }
+
         public static bool IsDecimal(object expression)
         {
             try

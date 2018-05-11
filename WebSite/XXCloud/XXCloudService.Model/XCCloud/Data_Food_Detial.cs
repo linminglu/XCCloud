@@ -21,7 +21,7 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> OperateType { get; set; }
         public Nullable<int> WeightType { get; set; }
         public Nullable<decimal> WeightValue { get; set; }
-        public string ContainID { get; set; }
+        public Nullable<int> ContainID { get; set; }
         public Nullable<int> ContainCount { get; set; }
         public Nullable<int> Days { get; set; }
         public Nullable<int> ValidType { get; set; }

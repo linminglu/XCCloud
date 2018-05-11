@@ -43,7 +43,7 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> ChargeType { get; set; }
         public Nullable<int> ChargeCount { get; set; }
         public Nullable<int> BalanceIndex { get; set; }
-        public string GoodID { get; set; }
+        public Nullable<int> GoodID { get; set; }
         public Nullable<int> ProjectID { get; set; }
         public Nullable<int> AutoSendCycle { get; set; }
         public Nullable<int> AutoSendValue { get; set; }

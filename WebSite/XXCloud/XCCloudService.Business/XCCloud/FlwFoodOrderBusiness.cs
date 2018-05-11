@@ -19,6 +19,11 @@ namespace XCCloudService.CacheService
             return FlwFoodOrderCache.GetModel(orderId);
         }
 
+        public static bool Exist(string orderId)
+        {
+            return FlwFoodOrderCache.Exist(orderId);
+        }
+
         public static void Remove(string storeId)
         {
             FlwFoodOrderCache.Remove(storeId);

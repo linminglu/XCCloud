@@ -173,11 +173,13 @@
                 <label class="layui-form-label">使用期限</label>
                 <div class="layui-input-inline">
                     <select id="usePried" lay-filter="usePried">
-                        <option value="0" selected>当天</option>
+                        <option>-请选择-</option>
+                        <option value="0" >当天</option>
                         <option value="1">本周</option>
                         <option value="2">本月</option>
-                        <option value="3">本年</option>
-                        <option value="4">自定期限</option>
+                        <option value="3">本季</option>
+                        <option value="4">本年</option>
+                        <option value="5">自定期限</option>
                     </select>
                 </div>
                 <div class="layui-input-inline">
@@ -230,8 +232,9 @@
                             <option value="0" >当天</option>
                             <option value="1">本周</option>
                             <option value="2">本月</option>
-                            <option value="3">本年</option>
-                            <option value="4">自定期限</option>
+                            <option value="3">本季</option>
+                            <option value="4">本年</option>
+                            <option value="5">自定期限</option>
                         </select>
                     </div>
             </div>
@@ -955,7 +958,6 @@
     layui.addcss('layui_font.css');
 </script>
 <script>
-    // let modelHtml= $('#addOrModify').html();
     let xc=xcActionSystem.prototype;
     let token=xc.getStorage('token');
     let Id='';
@@ -1222,10 +1224,13 @@
             }else if(data.value==2){
                 $('#StartDate').val(getMonthStartDate()).prop('disabled',true);
                 $('#EndDate').val(getMonthEndDate()).prop('disabled',true);
-            }else if(data.value==3){
+            }else if(data.value==4){
                 $('#StartDate').val(getYearStartDate()).prop('disabled',true);
                 $('#EndDate').val(getYearEndDate()).prop('disabled',true);
-            }else if(data.value==4){
+            }else if(data.value==3){
+                $('#StartDate').val(getQuarterStartDate()).prop('disabled',true);
+                $('#EndDate').val(getQuarterEndDate()).prop('disabled',true);
+            }else if(data.value==5){
                 $('#StartDate').prop('disabled',false);
                 $('#EndDate').prop('disabled',false);
                 layer.msg('<p style="color: red">请自己设置有效期限</p>')
@@ -1253,10 +1258,13 @@
             }else if(data.value==2){
                 $('#NoStartDate').val(getMonthStartDate()).prop('disabled',true);
                 $('#NoEndDate').val(getMonthEndDate()).prop('disabled',true);
-            }else if(data.value==3){
+            }else if(data.value==4){
                 $('#NoStartDate').val(getYearStartDate()).prop('disabled',true);
                 $('#NoEndDate').val(getYearEndDate()).prop('disabled',true);
-            }else if(data.value==4){
+            }else if(data.value==3){
+                $('#NoStartDate').val(getQuarterStartDate()).prop('disabled',true);
+                $('#NoEndDate').val(getQuarterEndDate()).prop('disabled',true);
+            }else if(data.value==5){
                 $('#NoStartDate').prop('disabled',false);
                 $('#NoEndDate').prop('disabled',false);
                 layer.msg('<p style="color: red">请自己设置不可用期限</p>')
@@ -1615,7 +1623,6 @@
                 });
             }else  if(layEvent === 'setStore'){ //设置适用门店
                 Id=data.ID;
-                // xc.setUsefulStore(token,form);
                 xc.getUsefulStore(Id,token,form,layer);
                 form.render();
                 indexLayer= layer.open({

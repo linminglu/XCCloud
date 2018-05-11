@@ -126,7 +126,6 @@ namespace XCCloudService.Utility
         {
             try
             {
-                MobileTokenBusiness.Clear();
                 MobileTokenBusiness.Init();
                 LogHelper.SaveLog(TxtLogType.SystemInit, "MibleTokenInit Sucess");
             }

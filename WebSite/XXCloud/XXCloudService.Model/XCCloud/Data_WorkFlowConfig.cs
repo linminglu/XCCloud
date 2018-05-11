@@ -14,7 +14,7 @@ namespace XCCloudService.Model.XCCloud
     
     public partial class Data_WorkFlowConfig
     {
-        public string ID { get; set; }
+        public int ID { get; set; }
         public string MerchID { get; set; }
         public string WorkName { get; set; }
         public Nullable<int> WorkType { get; set; }

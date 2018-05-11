@@ -265,7 +265,7 @@ namespace XXCloudService.Api.XCCloud
                         var foodDetailType = dicPara.Get("foodDetailType").Toint();
                         var balanceType = dicPara.Get("balanceType").Toint();
                         var operateType = dicPara.Get("operateType").Toint();
-                        var containId = dicPara.Get("containId");
+                        var containId = dicPara.Get("containId").Toint();
                         var containCount = dicPara.Get("containCount").Toint();
                         var weightValue = dicPara.Get("weightValue").Todecimal();
                         var days = dicPara.Get("days").Toint();
@@ -442,28 +442,28 @@ namespace XXCloudService.Api.XCCloud
                 int FoodDetailTypeId = Dict_SystemService.I.GetModels(p => p.DictKey.Equals("套餐类别") && p.PID == FoodDetailId).FirstOrDefault().ID;
                 int FeeTypeId = Dict_SystemService.I.GetModels(p => p.DictKey.Equals("计费方式")).FirstOrDefault().ID;
                 var FoodDetials = from a in Data_Food_DetialService.N.GetModels(p => p.FoodID == foodId && p.Status == 1)
-                                  join b in Data_ProjectInfoService.N.GetModels() on new { ContainID = a.ContainID, FoodType = a.FoodType } equals new { ContainID = b.ID + "", FoodType = (int?)FoodDetailType.Ticket } into b1
+                                  join b in Data_ProjectInfoService.N.GetModels() on new { ContainID = a.ContainID, FoodType = a.FoodType } equals new { ContainID = (int?)b.ID, FoodType = (int?)FoodDetailType.Ticket } into b1
                                   from b in b1.DefaultIfEmpty()
-                                  join c in Base_GoodsInfoService.N.GetModels() on new { ContainID = a.ContainID, FoodType = a.FoodType } equals new { ContainID = c.ID, FoodType = (int?)FoodDetailType.Good } into c1
+                                  join c in Base_GoodsInfoService.N.GetModels() on new { ContainID = a.ContainID, FoodType = a.FoodType } equals new { ContainID = (int?)c.ID, FoodType = (int?)FoodDetailType.Good } into c1
                                   from c in c1.DefaultIfEmpty()
                                   join d in Dict_SystemService.N.GetModels(p => p.PID == FoodDetailTypeId) on (a.FoodType + "") equals d.DictValue into d1
                                   from d in d1.DefaultIfEmpty()
-                                  join f in Dict_BalanceTypeService.N.GetModels(p=>p.State == 1) on a.BalanceType equals f.ID into f1
+                                  join f in Dict_BalanceTypeService.N.GetModels(p => p.State == 1) on a.BalanceType equals f.ID into f1
                                   from f in f1.DefaultIfEmpty()
-                                  join g in Data_CouponInfoService.N.GetModels() on new { ContainID = a.ContainID, FoodType = a.FoodType } equals new { ContainID = g.ID + "", FoodType = (int?)FoodDetailType.Coupon } into g1
+                                  join g in Data_CouponInfoService.N.GetModels() on new { ContainID = a.ContainID, FoodType = a.FoodType } equals new { ContainID = (int?)g.ID, FoodType = (int?)FoodDetailType.Coupon } into g1
                                   from g in g1.DefaultIfEmpty()
-                                  join h in Data_DigitCoinFoodService.N.GetModels() on new { ContainID = a.ContainID, FoodType = a.FoodType } equals new { ContainID = h.ID + "", FoodType = (int?)FoodDetailType.Digit } into h1
+                                  join h in Data_DigitCoinFoodService.N.GetModels() on new { ContainID = a.ContainID, FoodType = a.FoodType } equals new { ContainID = (int?)h.ID, FoodType = (int?)FoodDetailType.Digit } into h1
                                   from h in h1.DefaultIfEmpty()
                                   select new
                                   {
                                       ID = a.ID,
                                       ContainID = a.ContainID,
-                                      ProjectName = (a.FoodType == (int)FoodDetailType.Coin) ? "游戏币" : 
-                                                    (a.FoodType == (int)FoodDetailType.Digit) ? (h != null ? h.FoodName : string.Empty) : 
+                                      ProjectName = (a.FoodType == (int)FoodDetailType.Coin) ? "游戏币" :
+                                                    (a.FoodType == (int)FoodDetailType.Digit) ? (h != null ? h.FoodName : string.Empty) :
                                                     (a.FoodType == (int)FoodDetailType.Good) ? (c != null ? c.GoodName : string.Empty) :
-                                                    (a.FoodType == (int)FoodDetailType.Ticket) ? (b != null ? b.ProjectName : string.Empty) : 
+                                                    (a.FoodType == (int)FoodDetailType.Ticket) ? (b != null ? b.ProjectName : string.Empty) :
                                                     (a.FoodType == (int)FoodDetailType.Coupon) ? (g != null ? g.CouponName : string.Empty) : string.Empty,
-                                      FoodDetailType = a.FoodType,                                      
+                                      FoodDetailType = a.FoodType,
                                       FoodDetailTypeStr = (a.FoodType == (int)FoodDetailType.Coin) ? (f != null ? f.TypeName : string.Empty) : (d != null ? d.DictKey : string.Empty),
                                       ContainCount = a.ContainCount,
                                       Days = a.Days,

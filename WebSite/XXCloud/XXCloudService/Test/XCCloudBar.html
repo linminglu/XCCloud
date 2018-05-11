@@ -340,6 +340,19 @@
             common(url, parasJson);
         }
 
+        function do_addOrderToCache() {
+            var customerType = $("#sel_CustomerType_do_addOrderToCache").val();
+            var orderFlwId = $("#txt_FlwOrderId_do_addOrderToCache").val();
+            var icCardId = $("#txt_MemberCardId_do_addOrderToCache").val();
+            var parasObj = {
+                "sysId": "0", "versionNo": "0.0.0.1", "userToken": userToken, "customerType": customerType,
+                "orderFlwId": orderFlwId, "icCardId": icCardId
+            };
+            var url = "/XCCloud/Order?action=addOrderToCache";
+            var parasJson = JSON.stringify(parasObj);
+            common(url, parasJson);
+        }
+
     </script>
         
 </head>
@@ -404,6 +417,12 @@
         会员开卡费用:<input id="txtOpenFee_do_addOrder" placeholder="请输入会员手机号码" style="width:50px" value="10.00" />
         会员押金:<input id="txtDeposit_do_addOrder" placeholder="请输入会员手机号码" style="width:50px" value="20.00" />
         <input id="btn_do_addOrder" type="button" value="do_addOrder(添加订单)" onclick="do_addOrder()" />
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        客户类型:<select id="sel_CustomerType_do_addOrderToCache"><option value="0">散客</option><option value="1">入会</option><option value="2">会员</option></select>
+        订单号:<input id="txt_FlwOrderId_do_addOrderToCache" placeholder="请输订单号" style="width:160px" value="0" />
+        会员卡号:<input id="txt_MemberCardId_do_addOrderToCache" placeholder="请输入会员卡号" style="width:80px" value="10004143" />
+        <input id="btn_do_addOrderToCache" type="button" value="do_addOrderToCache(添加订单)" onclick="do_addOrderToCache()" />
+
         <!--<input id="Buttonorder_payOrder" type="button" value="payOrder(完成订单支付)" onclick="payOrder()" />-->
     </div>
 

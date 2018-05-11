@@ -39,6 +39,14 @@ namespace XCCloudService.WeiXin.Api
                 {
                     MobileTokenModel mobileTokenModel = (MobileTokenModel)(dicParas[Constant.MobileTokenModel]);
                     MobileTokenBusiness.UpdateOpenId(mobileTokenModel.Mobile, sessionModel.OpenId);
+
+                    //更新缓存中的openId
+                    var model = MobileTokenCache.GetMobileTokenModel(mobileTokenModel.Token);
+                    if (model != null)
+                    {
+                        model.WeiXinId = sessionModel.OpenId;
+                        MobileTokenCache.AddToken(model.Token, model);
+                    }
                 }
                 catch
                 {

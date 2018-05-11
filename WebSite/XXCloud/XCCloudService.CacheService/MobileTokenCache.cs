@@ -9,89 +9,58 @@ namespace XCCloudService.CacheService
 {
     public class MobileTokenCache
     {
-        private static Hashtable _mobileTokenHt = new Hashtable();
+        public const string mobileTokenCacheKey = "redisMobileTokenCacheKey";
 
-        public static Hashtable MobileTokenHt
+        public static List<MobileTokenModel> MobileTokenList
         {
-            get { return _mobileTokenHt; }
+            get {
+                List<MobileTokenModel> List = RedisCacheHelper.HashGetAll<MobileTokenModel>(mobileTokenCacheKey);
+                return List;
+            }            
         }
 
         public static void Clear()
         {
-            _mobileTokenHt.Clear();
+            RedisCacheHelper.KeyDelete(mobileTokenCacheKey);  
         }
 
         public static void AddToken(string mobile,string token)
         {
-            _mobileTokenHt[token] = new MobileTokenModel(mobile);
+            MobileTokenModel model = new MobileTokenModel(mobile);
+            model.Token = token;
+            RedisCacheHelper.HashSet<MobileTokenModel>(mobileTokenCacheKey, token, model);
         }
 
         public static void AddToken(string token, string mobile, string thirdType, string userThirdId)
         {
             var model = new MobileTokenModel(mobile);
+            model.Token = token;
             model.WeiXinId = thirdType == "0" && !string.IsNullOrEmpty(userThirdId) ? userThirdId : string.Empty;
             model.AliId = thirdType == "1" && !string.IsNullOrEmpty(userThirdId) ? userThirdId : string.Empty;
-            _mobileTokenHt[token] = model;
+
+            AddToken(token, model);
         }
 
-        //public static void UpdateToken(string token, string mobile, string thirdType, string userThirdId)
-        //{
-        //    var model = (MobileTokenModel)(_mobileTokenHt[token]);
-        //    model.WeiXinId = thirdType == "0" && !string.IsNullOrEmpty(userThirdId) ? userThirdId : model.WeiXinId;
-        //    model.AliId = thirdType == "1" && !string.IsNullOrEmpty(userThirdId) ? userThirdId : model.AliId;
-        //    _mobileTokenHt[token] = model;
-        //}
-
-        public static void AddToken(string token,MobileTokenModel model)
+        public static void AddToken(string token, MobileTokenModel model)
         {
-            _mobileTokenHt[token] = model;
+            RedisCacheHelper.HashSet<MobileTokenModel>(mobileTokenCacheKey, token, model);
         }
 
         public static bool ExistToken(string token)
         {
-            if (_mobileTokenHt.ContainsKey(token))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            bool isHave = RedisCacheHelper.HashExists(mobileTokenCacheKey, token);
+            return isHave;
+        }
+
+        public static MobileTokenModel GetMobileTokenModel(string token)
+        {
+            MobileTokenModel model = RedisCacheHelper.HashGet<MobileTokenModel>(mobileTokenCacheKey, token);
+            return model;
         }
 
         public static void RemoveToken(string token)
         {
-            _mobileTokenHt.Remove(token);
-        }
-
-        public static bool ExistTokenByKey(string key)
-        {
-            return _mobileTokenHt.ContainsKey(key);
-        }
-
-        //public static bool ExistTokenByKey(string token)
-        //{
-        //    return _mobileTokenHt.ContainsKey(token);
-        //}
-
-        public static void UpdateTokenByKey(string key, string value)
-        {
-            _mobileTokenHt[key] = value;
-        }
-
-        public static string GetKeyByValue(string value)
-        {
-            var query = from item in _mobileTokenHt.Cast<DictionaryEntry>() 
-            where item.Value.ToString().Equals(value) 
-            select item.Key.ToString();
-            if (query.Count() == 0)
-            {
-                return null;
-            }
-            else
-            {
-                return query.First(); 
-            }
+            RedisCacheHelper.HashDelete(mobileTokenCacheKey, token);
         }
     }
 
@@ -112,13 +81,14 @@ namespace XCCloudService.CacheService
 
 
 
-        public MobileTokenModel(string mobile,string weixinId,string aliId)
+        public MobileTokenModel(string mobile, string weixinId, string aliId)
         {
             this.Mobile = mobile;
             this.WeiXinId = weixinId;
             this.AliId = aliId;
         }
 
+        public string Token { get; set; }
         public string Mobile { set; get; }
 
         public string WeiXinId { set; get; }
