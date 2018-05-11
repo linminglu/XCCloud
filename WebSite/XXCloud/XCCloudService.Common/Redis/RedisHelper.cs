@@ -862,7 +862,7 @@ namespace XCCloudService.Common.Redis
         }
 
         /// <summary>
-        /// 判断key是否存储
+        /// 判断key是否存在
         /// </summary>
         /// <param name="key">redis key</param>
         /// <returns></returns>

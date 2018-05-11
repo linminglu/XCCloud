@@ -9,21 +9,47 @@ namespace XCCloudService.CacheService.XCGameMana
 {
     public class StoreCache
     {
+        public const string storeCacheKey = "storeCacheKey";
         private static List<StoreCacheModel> storeList = null;
 
         public static void Clear()
         {
+            RedisCacheHelper.KeyDelete(storeCacheKey);  
             storeList = null;
         }
 
-        public static void Add(List<StoreCacheModel> list)
+        public static void Remove(StoreCacheModel item)
         {
-            storeList = list;
+            RedisCacheHelper.HashDelete(storeCacheKey, item.StoreID);
+        }
+
+        /// <summary>
+        /// 初始化
+        /// </summary>
+        /// <param name="list"></param>
+        public static void Init(List<StoreCacheModel> list)
+        {
+            foreach (var item in list)
+            {
+                RedisCacheHelper.HashSet<StoreCacheModel>(storeCacheKey, item.StoreID, item);
+            }
+        }
+
+        public static void Add(StoreCacheModel model)
+        {
+            RedisCacheHelper.HashSet<StoreCacheModel>(storeCacheKey, model.StoreID, model);
         }
 
         public static List<StoreCacheModel> GetStore()
         {
+            List<StoreCacheModel> storeList = RedisCacheHelper.HashGetAll<StoreCacheModel>(storeCacheKey);
             return storeList;
+        }
+
+        public static StoreCacheModel GetStoreModel(string storeId)
+        {
+            StoreCacheModel store = RedisCacheHelper.HashGet<StoreCacheModel>(storeCacheKey, storeId);
+            return store;
         }
     }
 

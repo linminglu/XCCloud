@@ -113,12 +113,12 @@ namespace XXCloudService.Api.XCCloud
             List<OrderBuyDetailModel> buyDetailList = Utils.DataContractJsonDeserializer<List<OrderBuyDetailModel>>(buyDetailsJson);
             string customerType = dicParas.ContainsKey("customerType") ? dicParas["customerType"].ToString() : string.Empty;
             string memberLevelId = dicParas.ContainsKey("memberLevelId") ? dicParas["memberLevelId"].ToString() : string.Empty;
-            //string foodCount = dicParas.ContainsKey("foodCount") ? dicParas["foodCount"].ToString() : string.Empty;
-            //string goodCount = dicParas.ContainsKey("goodCount") ? dicParas["goodCount"].ToString() : string.Empty;
             string icCardId = dicParas.ContainsKey("icCardId") ? dicParas["icCardId"].ToString() : string.Empty;
             string payCount = dicParas.ContainsKey("payCount") ? dicParas["payCount"].ToString() : string.Empty;
             string freePay = dicParas.ContainsKey("freePay") ? dicParas["freePay"].ToString() : string.Empty;
             string realPay = dicParas.ContainsKey("realPay") ? dicParas["realPay"].ToString() : string.Empty;
+            string deposit = dicParas.ContainsKey("deposit") ? dicParas["deposit"].ToString() : string.Empty;
+            string openFee = dicParas.ContainsKey("openFee") ? dicParas["openFee"].ToString() : string.Empty;
             string scheduleId = dicParas.ContainsKey("scheduleId") ? dicParas["scheduleId"].ToString() : string.Empty;
             string workStation = dicParas.ContainsKey("workStation") ? dicParas["workStation"].ToString() : string.Empty;
             string authorId = dicParas.ContainsKey("authorId") ? dicParas["authorId"].ToString() : string.Empty;
@@ -135,7 +135,7 @@ namespace XXCloudService.Api.XCCloud
                     new SqlMetaData("foodId", SqlDbType.Int), 
                     new SqlMetaData("foodCount", SqlDbType.Int),
                     new SqlMetaData("payType", SqlDbType.Int),
-                    new SqlMetaData("payNum", SqlDbType.Decimal)
+                    new SqlMetaData("payNum", SqlDbType.Decimal,18,2)
             };
 
             
@@ -155,8 +155,6 @@ namespace XXCloudService.Api.XCCloud
                 listSqlDataRecord.Add(record);
             }
 
-           
-
             SqlParameter[] sqlParameter = new SqlParameter[18];
             sqlParameter[0] = new SqlParameter("@FoodDetail", SqlDbType.Structured);
             sqlParameter[0].Value = listSqlDataRecord;
@@ -170,11 +168,11 @@ namespace XXCloudService.Api.XCCloud
             sqlParameter[3] = new SqlParameter("@PayCount", SqlDbType.Decimal);
             sqlParameter[3].Value = payCount;
 
-            sqlParameter[4] = new SqlParameter("@FreePay", SqlDbType.Decimal);
-            sqlParameter[4].Value = freePay;
+            sqlParameter[4] = new SqlParameter("@Deposit", SqlDbType.Decimal);
+            sqlParameter[4].Value = deposit;
 
-            sqlParameter[5] = new SqlParameter("@RealPay", SqlDbType.Decimal);
-            sqlParameter[5].Value = realPay;
+            sqlParameter[5] = new SqlParameter("@OpenFee", SqlDbType.Decimal);
+            sqlParameter[5].Value = openFee;
 
             sqlParameter[6] = new SqlParameter("@UserID", SqlDbType.Int);
             sqlParameter[6].Value = userTokenModel.LogId;
@@ -356,8 +354,6 @@ namespace XXCloudService.Api.XCCloud
             string storeId = dicParas.ContainsKey("storeId") ? dicParas["storeId"].ToString() : string.Empty;
             string icCardId = dicParas.ContainsKey("icCardId") ? dicParas["icCardId"].ToString() : string.Empty;
             string payCount = dicParas.ContainsKey("payCount") ? dicParas["payCount"].ToString() : string.Empty;
-            string freePay = dicParas.ContainsKey("freePay") ? dicParas["freePay"].ToString() : string.Empty;
-            string realPay = dicParas.ContainsKey("realPay") ? dicParas["realPay"].ToString() : string.Empty;
             string scheduleId = dicParas.ContainsKey("scheduleId") ? dicParas["scheduleId"].ToString() : string.Empty;
             string workStation = dicParas.ContainsKey("workStation") ? dicParas["workStation"].ToString() : string.Empty;
             string authorId = dicParas.ContainsKey("authorId") ? dicParas["authorId"].ToString() : string.Empty;
@@ -365,27 +361,9 @@ namespace XXCloudService.Api.XCCloud
             string orderSource = dicParas.ContainsKey("orderSource") ? dicParas["orderSource"].ToString() : string.Empty;
             string saleCoinType = dicParas.ContainsKey("saleCoinType") ? dicParas["saleCoinType"].ToString() : string.Empty;
 
-            if (!XCCloudStoreBusiness.IsEffectiveStore(storeId))
-            {
-                errMsg = "门店无效";
-                return false;
-            }
-
             if (!Utils.IsDecimal(payCount))
             {
                 errMsg = "应付金额无效";
-                return false;
-            }
-
-            if (!Utils.IsDecimal(realPay))
-            {
-                errMsg = "实付金额无效";
-                return false;
-            }
-
-            if (!Utils.IsDecimal(freePay))
-            {
-                errMsg = "减免金额无效";
                 return false;
             }
 

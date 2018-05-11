@@ -83,8 +83,6 @@
 		.shopCart ul li h4{font-weight: 600;}
 		.strongStyle{font-size: 1.2em;padding: 0;margin: 0.2em 0;}
 		/*会员信息*/
-		.member{padding: 0.5em;color: #666;border-bottom: 1px solid #666666;background-color: #f9f9f9;}
-		.member li{font-size: 1em; overflow:hidden!important; text-overflow:ellipsis!important; white-space:nowrap!important;margin-top: 0.5em;}
 		.shopCart ul{min-height: 40em;}
 		.shopCart ul li span{font-size: 1em;margin-top: 0.5em;text-align: center;}
 		.Checkout{position: absolute;left: 0;bottom: 0.2em;z-index: 9;color: #555555;}
@@ -213,7 +211,7 @@
 		.tableTag{background-color: #00F7DE;}
 		.tableTag .selectSty select{background-color: #00F7DE;}
 		.selectSty select{width: auto!important;}
-		.detailHide{display: block;}
+		.detailHide{display: none;}
 		/*弹出层修改*/
 		.modal-dialog{margin-top: 13em;}
 		.formNum a{display: block;background-color: #555555;color: #fff;border-top: 1px solid #fefefe;border-left: 1px solid #fefefe;padding: 1em;text-align: center;font-size: 1.2em;}
@@ -227,7 +225,7 @@
 		::-webkit-scrollbar {/*滚动条整体样式*/  width: 5px;  /*高宽分别对应横竖滚动条的尺寸*/  height: 1px;}
 		::-webkit-scrollbar-thumb {/*滚动条里面小方块*/ border-radius: 10px; -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2); background: #535353;}
 		::-webkit-scrollbar-track {/*滚动条里面轨道*/-webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);border-radius: 10px;background: #EDEDED;}
-		/*	会员入会等级列表*/
+		/*会员入会等级列表*/
 		.enrollment{padding: 2em;}
 		.memberList{height: 11em;margin: 1em auto;}
 		.memberList ul .swiper-slide{cursor: pointer;height: 9em;position: relative;text-align: center;padding: 0.5em 0.2em;}
@@ -237,6 +235,11 @@
 		.memberText h4{line-height: 40px;font-size: 0.8em;}
         .readCard{padding: 0;height: 2em;line-height: 2em;}
         input.btnSendCode{line-height: 0;}
+		#footer { position:fixed; bottom:0; left:0; width:100%; height:32px; background-color:#B8D0FA;z-index: 3;}
+		#expander{ width:100%; height:1px; background-color:#999;}
+		#expander:hover{ cursor:n-resize;}
+		.member{color: #666;border-bottom: 1px solid #666666;background-color: #f9f9f9;line-height: 32px;}
+		.member li{font-size: 1em;display: inline;margin-right: 10px;}
 	</style>
 </head>
 <body>
@@ -358,13 +361,6 @@
 					<h4 class="modal-title">温馨提示</h4>
 				</div>
 				<div class="modal-body row">
-					<div class="alert alert-warning alert-dismissible" role="alert">
-						<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-						<p><strong>Warning!</strong> Better check yourself, you're not looking too good.</p>
-						<p><strong>Warning!</strong> Better check yourself, you're not looking too good.</p>
-						<p><strong>Warning!</strong> Better check yourself, you're not looking too good.</p>
-
-					</div>
 					<div class="col-md-4 col-sm-4">
 						<div v-for="(item,index) in shopping" class="col-md-12 col-sm-12 shopCStyle">
 							<div class="col-md-7 col-sm-7 text-left shopCStyle">{{item.typeName}}</div>
@@ -433,15 +429,6 @@
 		<div class="row">
 			<!--左边购物车-->
 			<div class="fl majorLeft">
-				<div class="corner"></div>
-				<ul class="member col-md-12 col-sm-12">
-					<li class="col-md-7 col-sm-7"><span>会员卡号：4444444444444454545454</span></li>
-					<li class="col-md-5 col-sm-5"><span>代币：</span></li>
-					<li class="col-md-7 col-sm-5"><span>会员姓名：</span></li>
-					<li class="col-md-5 col-sm-5"><span>积分：</span></li>
-					<li class="col-md-7 col-sm-5"><span>会员等级：</span></li>
-					<li class="col-md-5 col-sm-5"><span>彩票：</span></li>
-				</ul>
 				<div class="shopCart col-md-12 col-sm-12">
 					<div class="shopTable">
 						<table class="table table-bordered col-md-12 col-sm-12" id="shopTable">
@@ -489,8 +476,6 @@
 				<li :class="{cur:returnShow}"><a href="javascript:void(0)">会员返还</a></li>
 				<li :class="{cur:returnShow}"><a href="javascript:void(0)">退货处理</a></li>
 				<li :class="{cur:cardLossShow}"><a href="javascript:void(0)">会员卡挂失</a></li>
-
-
 				<!--<li @click="membershipReading" :class="{cur:cardLossShow}"><a href="javascript:void(0)">读卡</a></li>-->
 			</ul>
 			<!--右边显示内容-->
@@ -761,7 +746,6 @@
 						</div>
 					</div>
 				</div>
-
 				<!--会员入会-->
 				<div class="enrollment" v-if="memberShow">
 					<div class="MemberMain">
@@ -881,7 +865,16 @@
 			</tr>
 		</table>
 	</div>
-
+	<div id="footer"><div id="expander"></div>
+		<ul class="member">
+			<li><span>会员卡号：4444444444444454545454</span></li>
+			<li><span>代币：</span></li>
+			<li><span>会员姓名：</span></li>
+			<li><span>积分：</span></li>
+			<li><span>会员等级：</span></li>
+			<li><span>彩票：</span></li>
+		</ul>
+	</div>
 </div>
 
 <script src="js/jquery-2.1.3.min.js"></script>
@@ -1451,7 +1444,6 @@
         $("#shopTable tbody").on("click","tr",function () {
             $(this).addClass('tableTag').siblings().removeClass('tableTag');
         });
-
     });
 
     function detailTime(index) {

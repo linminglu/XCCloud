@@ -23,8 +23,7 @@ namespace XCCloudService.Business.XCGameMana
         public bool IsEffectiveStore(string storeId,ref StoreCacheModel storeModel, out string errMsg)
         {
             errMsg = string.Empty;
-            List<StoreCacheModel> list = StoreCache.GetStore();
-            var model = list.Where<StoreCacheModel>(p => p.StoreID.Equals(storeId)).FirstOrDefault<StoreCacheModel>();
+            var model = StoreCache.GetStoreModel(storeId);
             if (model == null)
             {
                 errMsg = "门店信息不存在";
@@ -41,8 +40,7 @@ namespace XCCloudService.Business.XCGameMana
         {
             errMsg = string.Empty;
             storeName = string.Empty;
-            List<StoreCacheModel> list = StoreCache.GetStore();
-            var model = list.Where<StoreCacheModel>(p => p.StoreID.Equals(storeId)).FirstOrDefault<StoreCacheModel>();
+            var model = StoreCache.GetStoreModel(storeId);
             if (model == null)
             {
                 errMsg = "门店信息不存在";
@@ -59,8 +57,7 @@ namespace XCCloudService.Business.XCGameMana
         {
             errMsg = string.Empty;
             deviceStoreType = XCGameManaDeviceStoreType.Store;
-            List<StoreCacheModel> list = StoreCache.GetStore();
-            var model = list.Where<StoreCacheModel>(p => p.StoreID.Equals(storeId)).FirstOrDefault<StoreCacheModel>();
+            var model = StoreCache.GetStoreModel(storeId);
             if (model == null)
             {
                 errMsg = "门店信息不存在";
@@ -77,8 +74,7 @@ namespace XCCloudService.Business.XCGameMana
         public bool IsEffectiveStore(string storeId, out string errMsg)
         {
             errMsg = string.Empty;
-            List<StoreCacheModel> list = StoreCache.GetStore();
-            var model = list.Where<StoreCacheModel>(p => p.StoreID.Equals(storeId)).FirstOrDefault<StoreCacheModel>();
+            var model = StoreCache.GetStoreModel(storeId);
             if (model == null)
             {
                 errMsg = "门店信息不存在";
@@ -101,8 +97,7 @@ namespace XCCloudService.Business.XCGameMana
         {
             errMsg = string.Empty;
             xcGameDBName = string.Empty;
-            List<StoreCacheModel> list = StoreCache.GetStore();
-            var model = list.Where<StoreCacheModel>(p => p.StoreID.Equals(storeId)).FirstOrDefault<StoreCacheModel>();
+            var model = StoreCache.GetStoreModel(storeId);
             if (model == null)
             {
                 errMsg = "门店信息不存在";
@@ -121,8 +116,7 @@ namespace XCCloudService.Business.XCGameMana
             errMsg = string.Empty;
             password = string.Empty;
             xcGameDBName = string.Empty;
-            List<StoreCacheModel> list = StoreCache.GetStore();
-            var model = list.Where<StoreCacheModel>(p => p.StoreID.Equals(storeId)).FirstOrDefault<StoreCacheModel>();
+            var model = StoreCache.GetStoreModel(storeId);
             if (model == null)
             {
                 errMsg = "门店信息不存在";
@@ -143,17 +137,20 @@ namespace XCCloudService.Business.XCGameMana
 
         public static void StoreInit()
         {
-            string errMsg = string.Empty;
-            IStoreService storeService = BLLContainer.Resolve<IStoreService>();
-            string sql = " select ID as StoreID,store_password as StorePassword,store_dbname as StoreDBName,companyname as StoreName,StoreType,StoreDBDeployType from t_store where state = 1";
-            System.Data.DataSet ds = XCGameManabll.ExecuteQuerySentence(sql, null);
-            DataTable dt = ds.Tables[0];
-            if (dt.Rows.Count > 0)
+            if (!RedisCacheHelper.KeyExists(StoreCache.storeCacheKey))
             {
-                StoreCache.Clear();
-                var list = Utils.GetModelList<StoreCacheModel>(ds.Tables[0]).ToList();
-                StoreCache.Add(list);
-            }            
+                string errMsg = string.Empty;
+                IStoreService storeService = BLLContainer.Resolve<IStoreService>();
+                string sql = " select ID as StoreID,store_password as StorePassword,store_dbname as StoreDBName,companyname as StoreName,StoreType,StoreDBDeployType from t_store where state = 1";
+                System.Data.DataSet ds = XCGameManabll.ExecuteQuerySentence(sql, null);
+                DataTable dt = ds.Tables[0];
+                if (dt.Rows.Count > 0)
+                {
+                    StoreCache.Clear();
+                    var list = Utils.GetModelList<StoreCacheModel>(ds.Tables[0]).ToList();
+                    StoreCache.Init(list);
+                }
+            }         
         }
 
         public static void StoreDogInit()

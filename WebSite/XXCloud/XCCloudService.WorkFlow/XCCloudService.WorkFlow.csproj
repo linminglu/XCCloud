@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Base\BaseWorkFlow.cs" />
+    <Compile Include="GoodReqWorkFlow.cs" />
     <Compile Include="StockWorkFlow.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -59,6 +60,10 @@
     <ProjectReference Include="..\XCCloudService.Socket\XCCloudService.SocketService.TCP.csproj">
       <Project>{1201063a-0f56-4cfd-abe7-be685df27477}</Project>
       <Name>XCCloudService.SocketService.TCP</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\XXCloudService.Model\XCCloudService.Model.csproj">
+      <Project>{1e38ec5a-0a89-4d9e-9cdf-6f79c580b6a1}</Project>
+      <Name>XCCloudService.Model</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

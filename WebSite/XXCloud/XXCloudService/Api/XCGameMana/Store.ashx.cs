@@ -303,14 +303,13 @@ namespace XCCloudService.Api.XCGameMana
 
             if (storeService.Add(store))
             {
-                List<StoreCacheModel> list = StoreCache.GetStore();
                 StoreCacheModel model = new StoreCacheModel();
                 model.StoreID = storeId;
                 model.StoreName = companyname;
                 model.StorePassword = store_password;
                 model.StoreType = Convert.ToInt32(store.StoreType);
                 model.StoreDBName = store_dbname;
-                list.Add(model);
+                StoreCache.Add(model);
             }
 
             return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.T, "");
@@ -331,11 +330,10 @@ namespace XCCloudService.Api.XCGameMana
 
                 if (storeService.Delete(storeModel))
                 {
-                    List<StoreCacheModel> list = StoreCache.GetStore();
-                    StoreCacheModel storeCacheModel = list.Where<StoreCacheModel>(p => p.StoreID == storeId).FirstOrDefault<StoreCacheModel>();
+                    StoreCacheModel storeCacheModel = StoreCache.GetStoreModel(storeId);
                     if (storeCacheModel != null)
                     { 
-                        list.Remove(storeCacheModel);
+                        StoreCache.Remove(storeCacheModel);
                     }    
                 }
 
@@ -398,17 +396,15 @@ namespace XCCloudService.Api.XCGameMana
 
             if (storeService.Update(store))
             {
-                List<StoreCacheModel> list = StoreCache.GetStore();
-                StoreCacheModel storeCacheModel = list.Where<StoreCacheModel>(p => p.StoreID == storeId).FirstOrDefault<StoreCacheModel>();
+                StoreCacheModel storeCacheModel = StoreCache.GetStoreModel(storeId);
                 if (storeCacheModel == null)
                 {
-                    StoreCacheModel model = new StoreCacheModel();
-                    model.StoreID = storeId;
-                    model.StoreName = companyname;
-                    model.StorePassword = store_password;
-                    model.StoreType = Convert.ToInt32(store.StoreType);
-                    model.StoreDBName = store.store_dbname;
-                    list.Add(model);
+                    storeCacheModel = new StoreCacheModel();
+                    storeCacheModel.StoreID = storeId;
+                    storeCacheModel.StoreName = companyname;
+                    storeCacheModel.StorePassword = store_password;
+                    storeCacheModel.StoreType = Convert.ToInt32(store.StoreType);
+                    storeCacheModel.StoreDBName = store.store_dbname;
                 }
                 else
                 {
@@ -417,6 +413,7 @@ namespace XCCloudService.Api.XCGameMana
                     storeCacheModel.StoreType = Convert.ToInt32(store.StoreType);
                     storeCacheModel.StoreDBName = store.store_dbname;        
                 }
+                StoreCache.Add(storeCacheModel);
             }
 
             return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.T, "");

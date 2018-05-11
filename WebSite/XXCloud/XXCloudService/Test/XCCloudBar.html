@@ -30,7 +30,7 @@
             $("#txtWorkStation").val("lijunjie"); 
             $("#txtOpenICCardId").val("10004143");
             $("#txtMemberLevelId_do_addOrder").val(0);
-            $("#txtMemberCardId_do_addOrder").val(0);
+            $("#txtMemberCardId_do_addOrder").val(10004143);
             selCustomerTypeInit();
         });
 
@@ -143,10 +143,18 @@
         }
 
         function do_addOrder() {
-            var buyDetail1 = { foodId: "133", foodCount: "1", payType: "0", payNum: 40.00 }
-            var buyDetail2 = { foodId: "135", foodCount: "1", payType: "2", payNum: 1000 }
-            var buyDetail3 = { foodId: "136", foodCount: "1", payType: "3", payNum: 1000 }
-            var buyDetail4 = { foodId: "138", foodCount: "1", payType: "0", payNum: 80.00 }
+
+            //insert into @FoodDetailType(FoodId,FoodCount,PayType,PayNum) values(1,1,0,1/2.0)
+            //insert into @FoodDetailType(FoodId,FoodCount,PayType,PayNum) values(3,2,0,10/2.0)
+            //--insert into @FoodDetailType(FoodId,FoodCount,PayType,PayNum) values(101,1,0,20/2.0)--开卡套餐
+            //--insert into @FoodDetailType(FoodId,FoodCount,PayType,PayNum) values(3,1,98305,100)
+            //insert into @FoodDetailType(FoodId,FoodCount,PayType,PayNum) values(6,1,98306,100)
+            //insert into @FoodDetailType(FoodId,FoodCount,PayType,PayNum) values(4,1,98307,100)
+
+            var buyDetail1 = { foodId: "1", foodCount: "1", payType: "0", payNum: 0.5}
+            var buyDetail2 = { foodId: "3", foodCount: "2", payType: "0", payNum: 5.0 }
+            var buyDetail3 = { foodId: "6", foodCount: "1", payType: "98306", payNum: 100 }
+            var buyDetail4 = { foodId: "4", foodCount: "1", payType: "98307", payNum: 100 }
 
             var buyDetails = new Array();
             buyDetails.push(buyDetail1);
@@ -156,14 +164,13 @@
 
             var parasObj = {
                 buyDetails: JSON.stringify(buyDetails),
-                customerType: $("#selCustomerType").val(),
-                mobile: $("#txtMobile_do_addOrder").val(),
+                customerType: $("#sel_CustomerType_addOrder").val(),
                 memberLevelId: $("#txtMemberLevelId_do_addOrder").val(),
-                storeId: $("#txtStoreId").val(),
                 icCardId: $("#txtMemberCardId_do_addOrder").val(),
-                payCount: 120,
-                realPay: 120,
-                freePay:0,
+                mobile: $("#txtMobile_do_addOrder").val(),    
+                payCount: $("#txtPayCount_do_addOrder").val(),
+                deposit: $("#txtDeposit_do_addOrder").val(),
+                openFee: $("#txtOpenFee_do_addOrder").val(),
                 scheduleId:1,
                 workStation: "lijunjie",
                 authorId:"0",
@@ -173,7 +180,6 @@
                 userToken: $("#txtUserToken").val()
             };
             var url = "/XCCloud/Order?action=addOrder";
-            var parasJson = JSON.stringify(parasObj);
             var parasJson = JSON.stringify(parasObj);
             $.ajax({
                 type: "post",
@@ -390,12 +396,15 @@
     </div>
 
     <div title="do_addOrder" style="font-size:14px;color:#F00;border:1px solid #ccc;">
-        客户类型:<select id="selCustomerType"><option value="0">散客</option><option value="1">入会</option><option value="2">会员</option></select>
-        会员级别（如果散客输入0）:<input id="txtMemberLevelId_do_addOrder" placeholder="会员级别（如果散客输入0）" />
-        会员卡号:<input id="txtMemberCardId_do_addOrder" placeholder="请输入会员卡号" />
-        会员手机号码:<input id="txtMobile_do_addOrder" placeholder="请输入会员手机号码" />
-        <input id="Buttonorder_12222" type="button" value="do_addOrder(添加订单)" onclick="do_addOrder()" />
-        <input id="Buttonorder_payOrder" type="button" value="payOrder(完成订单支付)" onclick="payOrder()" />
+        客户类型:<select id="sel_CustomerType_addOrder"><option value="0">散客</option><option value="1">入会</option><option value="2">会员</option></select>
+        会员级别（如果散客输入0）:<input id="txtMemberLevelId_do_addOrder" placeholder="请输入会员级别（如果散客输入0）" value="0" style="width:25px" />
+        会员卡号:<input id="txtMemberCardId_do_addOrder" placeholder="请输入会员卡号" style="width:80px" value="10004143" />
+        会员手机号码:<input id="txtMobile_do_addOrder" placeholder="请输入会员手机号码" style="width:100px" value="15618920033" />
+        应付:<input id="txtPayCount_do_addOrder" placeholder="请输入应付" style="width:50px" value="5.5" />
+        会员开卡费用:<input id="txtOpenFee_do_addOrder" placeholder="请输入会员手机号码" style="width:50px" value="10.00" />
+        会员押金:<input id="txtDeposit_do_addOrder" placeholder="请输入会员手机号码" style="width:50px" value="20.00" />
+        <input id="btn_do_addOrder" type="button" value="do_addOrder(添加订单)" onclick="do_addOrder()" />
+        <!--<input id="Buttonorder_payOrder" type="button" value="payOrder(完成订单支付)" onclick="payOrder()" />-->
     </div>
 
     <div title="do_getOrderAuditQR" style="font-size:14px;color:#F00;border:1px solid #ccc;">

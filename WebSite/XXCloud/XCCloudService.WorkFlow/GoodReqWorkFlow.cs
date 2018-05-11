@@ -21,30 +21,20 @@ namespace XCCloudService.WorkFlow
         [Description("申请")]
         Request,
         /// <summary>
-        /// 申请已审核通过
+        /// 申请审核
         /// </summary>
-        [Description("申请已审核通过")]
-        RequestVerifiedPass,
-        /// <summary>
-        /// 申请已审核拒绝
-        /// </summary>
-        [Description("申请已审核拒绝")]
-        RequestVerifiedRefuse,
+        [Description("申请审核")]
+        RequestVerify,        
         /// <summary>
         /// 处理
         /// </summary>
         [Description("处理")]
         Deal,
         /// <summary>
-        /// 处理已审核通过
+        /// 处理审核
         /// </summary>
-        [Description("处理已审核通过")]
-        DealVerifiedPass,
-        /// <summary>
-        /// 处理已审核拒绝
-        /// </summary>
-        [Description("处理已审核拒绝")]
-        DealVerifiedRefuse,
+        [Description("处理审核")]
+        DealVerify,
         /// <summary>
         /// 撤销
         /// </summary>
@@ -112,63 +102,69 @@ namespace XCCloudService.WorkFlow
         StateMachine<State, Trigger>.TriggerWithParameters<int> _setCancelTrigger;
         StateMachine<State, Trigger>.TriggerWithParameters<int> _setDealTrigger;
         StateMachine<State, Trigger>.TriggerWithParameters<int> _setCloseTrigger;
-        StateMachine<State, Trigger>.TriggerWithParameters<int, string> _setRequestVerifiedPassTrigger;
-        StateMachine<State, Trigger>.TriggerWithParameters<int, string> _setRequestVerifiedRefuseTrigger;
-        StateMachine<State, Trigger>.TriggerWithParameters<int, string> _setDealVerifiedPassTrigger;
-        StateMachine<State, Trigger>.TriggerWithParameters<int, string> _setDealVerifiedRefuseTrigger;
+        StateMachine<State, Trigger>.TriggerWithParameters<int, int, string> _setRequestVerifyTrigger;
+        StateMachine<State, Trigger>.TriggerWithParameters<int, int, string> _setDealVerifyTrigger;
 
         private string workId;
         private string eventId;
+        private int userId;
+        private State state;
+        private string note;
 
-        public GoodReqWorkFlow(string workId, string eventId)
+        public GoodReqWorkFlow(string workId, string eventId, State state)
         {
+            _state = state;
             _machine = new StateMachine<State, Trigger>(() => _state, s => _state = s);
 
             _setRequestTrigger = _machine.SetTriggerParameters<int>(Trigger.Request);
             _setCancelTrigger = _machine.SetTriggerParameters<int>(Trigger.Cancel);
-            _setRequestVerifiedPassTrigger = _machine.SetTriggerParameters<string>(Trigger.RequestVerifiedPass);
-            _setRequestVerifiedRefuseTrigger = _machine.SetTriggerParameters<string>(Trigger.RequestVerifiedRefuse);
-            _setDealVerifiedPassTrigger = _machine.SetTriggerParameters<string>(Trigger.DealVerifiedPass);
-            _setDealVerifiedRefuseTrigger = _machine.SetTriggerParameters<string>(Trigger.DealVerifiedRefuse);
+            _setDealTrigger = _machine.SetTriggerParameters<int>(Trigger.Deal);
+            _setCloseTrigger = _machine.SetTriggerParameters<int>(Trigger.Close);
+            _setRequestVerifyTrigger = _machine.SetTriggerParameters<int, int, string>(Trigger.RequestVerify);
+            _setDealVerifyTrigger = _machine.SetTriggerParameters<int, int, string>(Trigger.DealVerify);
 
             _machine.Configure(State.Open)
                 .Permit(Trigger.Request, State.Requested);
 
             _machine.Configure(State.Requested)
-                .OnEntryFrom(_setRequestTrigger, (entry)=> OnRequested(entry), "提交调拨申请")
-                .PermitIf(_setCancelTrigger, State.Stopped, (userId) => IsCanceled(userId), "撤销申请，停用流程")
-                .Permit(Trigger.RequestVerifiedPass, State.RequestVerifiedPass)
-                .Permit(Trigger.RequestVerifiedRefuse, State.RequestVerifiedRefuse);
+                .OnEntryFrom(_setRequestTrigger, (userId) => OnRequested(userId), "提交调拨申请")
+                .PermitIf(_setCancelTrigger, State.End, (userId) => IsCanceled(userId), "撤销申请")
+                .PermitIf(_setRequestVerifyTrigger, State.RequestVerifiedPass, (userId, s, note) => s == 1)
+                .PermitIf(_setRequestVerifyTrigger, State.RequestVerifiedRefuse, (userId, s, note) => s == 0);
 
             _machine.Configure(State.RequestVerifiedPass)
                 .SubstateOf(State.Requested)
-                .OnEntryFrom(_setRequestVerifiedPassTrigger, (note) => OnRequestVerifiedPass(note), "申请已审核通过")
-                .PermitIf(Trigger.Cancel, State.Requested, () => IsCanceled, "撤销审核，返回上一步")
+                .OnEntryFrom(_setRequestVerifyTrigger, (userId, s, note) => OnRequestVerified(userId, s, note), "申请已审核通过")
+                .PermitIf(_setCancelTrigger, State.Requested, (userId) => IsCanceled(userId), "撤销申请审核，返回上一步")
                 .Permit(Trigger.Deal, State.Dealed);
 
             _machine.Configure(State.RequestVerifiedRefuse)
-                .OnEntryFrom(_setRequestVerifiedRefuseTrigger, (note) => OnRequestVerifiedRefuse(note), "申请已审核拒绝")
-                .PermitIf(Trigger.Cancel, State.Requested, () => IsCanceled, "撤销审核，返回上一步")
-                .Permit(Trigger.Close, State.Stopped);
+                .SubstateOf(State.Requested)
+                .OnEntryFrom(_setRequestVerifyTrigger, (userId, s, note) => OnRequestVerified(userId, s, note), "申请已审核拒绝")
+                .PermitIf(_setCancelTrigger, State.Requested, (userId) => IsCanceled(userId), "撤销申请审核，返回上一步")
+                .Permit(Trigger.Close, State.End);
 
             _machine.Configure(State.Dealed)
-                .OnEntry(t => OnDealed(), "处理调拨申请单")
-                .PermitIf(Trigger.Cancel, State.RequestVerifiedPass, () => IsCanceled, "撤销处理操作，返回上一步")
-                .Permit(Trigger.DealVerifiedPass, State.DealVerifiedPass)
-                .Permit(Trigger.DealVerifiedRefuse, State.DealVerifiedRefuse);
+                .SubstateOf(State.RequestVerifiedPass)
+                .OnEntryFrom(_setDealTrigger, (userId) => OnDealed(userId), "处理调拨申请单")
+                .PermitIf(_setCancelTrigger, State.RequestVerifiedPass, (userId) => IsCanceled(userId), "撤销处理，返回上一步")
+                .PermitIf(_setDealVerifyTrigger, State.DealVerifiedPass, (userId, s, note) => s == 1)
+                .PermitIf(_setDealVerifyTrigger, State.DealVerifiedRefuse, (userId, s, note) => s == 0);
 
             _machine.Configure(State.DealVerifiedPass)
-                .OnEntryFrom(_setDealVerifiedPassTrigger, (note) => OnDealVerifiedPass(note), "处理已审核通过")
-                .PermitIf(Trigger.Cancel, State.Dealed, () => IsCanceled, "撤销处理审核，返回上一步")
-                .Permit(Trigger.Close, State.Stopped);
+                .SubstateOf(State.Dealed)
+                .OnEntryFrom(_setDealVerifyTrigger, (userId, s, note) => OnDealVerified(userId, s, note), "处理已审核通过")
+                .PermitIf(_setCancelTrigger, State.Dealed, (userId) => IsCanceled(userId), "撤销处理审核，返回上一步")
+                .Permit(Trigger.Close, State.End);
 
             _machine.Configure(State.DealVerifiedRefuse)
-                .OnEntryFrom(_setDealVerifiedRefuseTrigger, (note) => OnDealVerifiedRefuse(note), "处理已审核拒绝")
-                .PermitIf(Trigger.Cancel, State.Dealed, () => IsCanceled, "撤销处理审核，返回上一步")
-                .Permit(Trigger.Close, State.Stopped);
+                .SubstateOf(State.Dealed)
+                .OnEntryFrom(_setDealVerifyTrigger, (userId, s, note) => OnDealVerified(userId, s, note), "处理已审核拒绝")
+                .PermitIf(_setCancelTrigger, State.Dealed, (userId) => IsCanceled(userId), "撤销处理审核，返回上一步")
+                .Permit(Trigger.Close, State.End);
 
-            _machine.Configure(State.Stopped)
-                .OnEntry(t => OnStopped(), "流程结束");
+            _machine.Configure(State.End)
+                .OnEntryFrom(_setCloseTrigger, (userId) => OnClosed(userId), "流程结束");
         }
 
         #region 属性
@@ -195,93 +191,40 @@ namespace XCCloudService.WorkFlow
         }
 
 
-        void OnRequested(Data_WorkFlow_Entry entry)
+        void OnRequested(int userId)
         {
-            _curEntry = entry;
+            
         }
 
-        void OnRequested(string handler, int count)
+        void OnRequestVerified(int userId, int state, string note)
         {
-            _handler = handler;
-            _count = (int)count;
-            _description = "检查入库限额, 当前申请数:" + _count;
-            WorkFlowServiceBusiness.Send(_requester, new { answerMsg=_description, answerTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") });
 
-            if (_count > _upper)
-            {
-                _machine.Fire(StockTrigger.Abort);
-            }
-            else
-            {
-                _description = _requester + "向商户提交申请, 处理人:" + _handler + ", 请求数:" + _count;
-                WorkFlowServiceBusiness.Send(_requester, new { answerMsg = _description, answerTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") });
-            }
         }
 
-        void OnAborted()
+        void OnDealed(int userId)
         {
-            _description = "超过入库限额数:" + _upper;
-            WorkFlowServiceBusiness.Send(_requester, new { answerMsg = _description, answerTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") });
+
         }
-               
-        void OnDeferred()
+
+        void OnDealVerified(int userId, int state, string note)
         {
-            _description = "延期处理";
-            WorkFlowServiceBusiness.Send(_requester, new { answerMsg = _description, answerTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") });
-            WorkFlowServiceBusiness.Send(_handler, new { answerMsg = _description, answerTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") });
+
         }
         
-
-        void OnRefused(string description)
+        void OnClosed(int userId)
         {
-            _description = description;
-            WorkFlowServiceBusiness.Send(_requester, new { answerMsg = _description, answerTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") });
-            WorkFlowServiceBusiness.Send(_handler, new { answerMsg = _description, answerTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") });
-        }
 
-        void OnStored()
-        {
-            _description = "入库成功, 处理人:" + _handler + ", 处理数:" + _count;
-            WorkFlowServiceBusiness.Send(_requester, new { answerMsg = _description, answerTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") });
-            WorkFlowServiceBusiness.Send(_handler, new { answerMsg = _description, answerTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") });
         }
-
+        
         #endregion
 
         #region 方法
 
-        public void Warn(string sender, string requester)
-        {            
-            _machine.Fire(_setWarnTrigger, sender, requester);
-        }
-
-        public void Request(string handler, int count)
-        {            
-            if (_machine.CanFire(StockTrigger.Request))
-            {
-                _machine.Fire(_setRequestTrigger, handler, (int)count);
-            }
-            else
-            {
-                _description = "不能重复申请";
-                WorkFlowServiceBusiness.Send(_requester, new { answerMsg = _description, answerTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") });
-            }
-        }
-
-        public void Defer()
+        public bool Request(int userId, out string errMsg)
         {
-            _machine.Fire(StockTrigger.Defer);
-        }
-
-        public void Refuse()
-        {
-            _machine.Fire(StockTrigger.Refuse);
-        }
-
-        public void Store()
-        {
-            _machine.Fire(StockTrigger.Store);
-        }
+            errMsg = string.Empty;
+            return false;
+        }        
 
         #endregion
 
