@@ -100,15 +100,17 @@ declare @ICCardID varchar(50) = '10004143'
 declare @StoreID varchar(50) = '100025420106001' 
 declare @Result int = 0
 declare @ErrMsg varchar(200) = ''
-declare @MemberId int
+declare @MemberId varchar(32)
+declare @CardId int
 CREATE TABLE dbo.#Tmp_MemberBaseInfo(CardId int,ICCardID varchar(20) NULL,MemberLevelID int NULL,MemberName varchar(50) NULL,Gender int NULL,Birthday varchar(100) NULL,
 IDCard varchar(18) NULL,Mobile varchar(11) NULL,Deposit numeric(18, 2) NULL,Note text NULL,EndDate varchar(100) NULL,RepeatCode int NULL,MemberState int NULL,CardStatus int NULL,
 MemberLevelName varchar(20) NULL,StoreID varchar(15) NOT NULL,StoreName varchar(50) NULL)
 insert into #Tmp_MemberBaseInfo
-exec [GetMemberBaseInfo] @ICCardID,@StoreID,@Result output,@MemberId output,@ErrMsg output
+exec [GetMemberBaseInfo] @ICCardID,@StoreID,@Result output,@MemberId output,@CardId output,@ErrMsg output
 CREATE TABLE dbo.#Tmp_MemberBalanceInfo(BalanceIndex int,BanlanceName varchar(50) NULL,Banlance decimal NULL)
 insert into #Tmp_MemberBalanceInfo
 exec GetMemberBalanceInfo @MemberId
+
 -----------------------------------------------------------------------------------------------------------------------------------------
 
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -215,7 +217,8 @@ declare @AuthorID int = 0
 declare @Note varchar(500) = ''
 declare @OrderSource int = 0
 declare @SaleCoinType int = 1
-declare @OrderFlwId int = 0
+
+declare @OrderFlwId varchar(32) = 0
 declare @ErrMsg varchar(200) = ''
 declare @FoodDetailType [FoodDetailType]
 insert into @FoodDetailType(FoodId,FoodCount,PayType,PayNum) values(1,1,0,1/2.0)
@@ -227,9 +230,9 @@ insert into @FoodDetailType(FoodId,FoodCount,PayType,PayNum) values(4,1,98307,10
 --insert into @FoodDetailType(FoodId,FoodCount,PayType,PayNum) values(7,1,98308,100)
 --insert into @FoodDetailType(FoodId,FoodCount,PayType,PayNum) values(5,1,98309,100)
 --insert into @FoodDetailType(FoodId,FoodCount,PayType,PayNum) values(8,1,98315,500)
-
+declare @FlwSeedId varchar(29) = '100025420106001' + '20180512' + '000003'
 exec @Return = CreateOrder @FoodDetailType,@StoreId,@CustomerType,@Mobile,@MemberLevelId,@ICCardId,@PayCount,@Deposit,@OpenFee,
-@UserID,@WorkStation,@AuthorID,@Note,@OrderSource,@SaleCoinType,@OrderFlwId output,@ErrMsg output
+@UserID,@WorkStation,@AuthorID,@Note,@OrderSource,@SaleCoinType,@FlwSeedId,@OrderFlwId output,@ErrMsg output
 print @Return 
 print @ErrMsg
 print @OrderFlwId

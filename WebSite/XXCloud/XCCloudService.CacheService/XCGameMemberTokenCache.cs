@@ -3,37 +3,48 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using XCCloudService.Model.CustomModel.XCGame;
 
 namespace XCCloudService.CacheService
 {
     public class XCGameMemberTokenCache
     {
-        private static Dictionary<string, object> _memberTokenDic = new Dictionary<string, object>();
+        public const string xcGameMemberTokenCacheKey = "redisXCGameMemberTokenCacheKey";
 
-        public static Dictionary<string, object> MemberTokenHTDic
+        public static List<XCGameMemberTokenModel> MemberTokenModelList
         {
-            get { return _memberTokenDic; }
+            get {
+                List<XCGameMemberTokenModel> List = RedisCacheHelper.HashGetAll<XCGameMemberTokenModel>(xcGameMemberTokenCacheKey);
+                return List;
+            }
         }
 
-        public static void AddToken(string key, object obj)
+        public static void AddToken(string key, XCGameMemberTokenModel model)
         {
-            _memberTokenDic[key] = obj;
+            RedisCacheHelper.HashSet<XCGameMemberTokenModel>(xcGameMemberTokenCacheKey, key, model);
         }
 
 
         public static bool ExistToken(string key)
         {
-            return _memberTokenDic.ContainsKey(key);
+            bool isHave = RedisCacheHelper.HashExists(xcGameMemberTokenCacheKey, key);
+            return isHave;
+        }
+
+        public static XCGameMemberTokenModel GetModel(string token)
+        {
+            XCGameMemberTokenModel model = RedisCacheHelper.HashGet<XCGameMemberTokenModel>(xcGameMemberTokenCacheKey, token);
+            return model;
         }
 
         public static void Remove(string key)
         {
-            _memberTokenDic.Remove(key);
+            RedisCacheHelper.HashDelete(xcGameMemberTokenCacheKey, key);
         }
 
         public static void Clear()
         {
-            _memberTokenDic.Clear();
+            RedisCacheHelper.KeyDelete(xcGameMemberTokenCacheKey);  
         }
     }
 }

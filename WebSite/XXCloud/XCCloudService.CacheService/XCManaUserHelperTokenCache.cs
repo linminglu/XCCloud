@@ -9,31 +9,40 @@ namespace XCCloudService.CacheService
 {
     public class XCManaUserHelperTokenCache
     {
-        private static Dictionary<string, object> _userTokenDic = new Dictionary<string, object>();
+        public const string XCManaUserTokenCacheKey = "redisXCManaUserTokenCacheKey";
 
-        public static Dictionary<string, object> UserTokenHTDic
+        public static List<XCManaUserHelperTokenModel> UserTokenList
         {
-            get { return _userTokenDic; }
+            get {
+                List<XCManaUserHelperTokenModel> List = RedisCacheHelper.HashGetAll<XCManaUserHelperTokenModel>(XCManaUserTokenCacheKey);
+                return List;
+            }  
         }
 
-        public static void AddToken(string key, object obj)
+        public static void AddToken(string key, XCManaUserHelperTokenModel model)
         {
-            _userTokenDic[key] = obj;
+            RedisCacheHelper.HashSet<XCManaUserHelperTokenModel>(XCManaUserTokenCacheKey, key, model);
+        }
+
+        public static XCManaUserHelperTokenModel GetModel(string token)
+        {
+            XCManaUserHelperTokenModel model = RedisCacheHelper.HashGet<XCManaUserHelperTokenModel>(XCManaUserTokenCacheKey, token);
+            return model;
         }
 
         public static void Clear()
         {
-            _userTokenDic.Clear();
+            RedisCacheHelper.KeyDelete(XCManaUserTokenCacheKey);  
         }
 
         public static bool ExistToken(string key)
         {
-            return _userTokenDic.ContainsKey(key);
+            return RedisCacheHelper.HashExists(XCManaUserTokenCacheKey, key);
         }
 
         public static void Remove(string key)
         {
-            _userTokenDic.Remove(key);
+            RedisCacheHelper.HashDelete(XCManaUserTokenCacheKey, key);
         }
     }
 
@@ -61,14 +70,16 @@ namespace XCCloudService.CacheService
 
         }
 
-        public XCManaUserHelperTokenModel(string storeId, string storeName, string mobile, int userId)
+        public XCManaUserHelperTokenModel(string token, string storeId, string storeName, string mobile, int userId)
         {
+            this.Token = token;
             this.StoreId = storeId;
             this.StoreName = storeName;
             this.Mobile = mobile;
             this.UserId = userId;
         }
 
+        public string Token { get; set; }
         public string StoreId { set; get; }
 
         public string StoreName { set; get; }

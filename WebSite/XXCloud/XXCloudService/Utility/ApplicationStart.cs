@@ -17,6 +17,7 @@ using XCCloudService.Model.WeiXin.Session;
 using XCCloudService.SocketService.TCP.Business;
 using XCCloudService.SocketService.UDP;
 using XCCloudService.OrderPayCallback.Common;
+using XCCloudService.Business.XCCloud;
 
 namespace XCCloudService.Utility
 {
@@ -31,16 +32,16 @@ namespace XCCloudService.Utility
                 //TestInit();
                 //TCPSocketInit();
                 UDPSocketInit();
-                StoreInit();
+                StoreInit(); //redis
                 StoreDogInit();
-                MibleTokenInit();
-                MemberTokenInit();
-                RS232MibleTokenInit();
-                XCCloudUserInit();
+                MibleTokenInit(); //redis
+                MemberTokenInit();//redis
+                RS232MibleTokenInit();//redis
+                XCCloudUserInit();//redis
                 XCGameManaDeviceInit();
-                XCCloudManaUserInit();
+                XCCloudManaUserInit();//redis
                 FilterMobileInit();
-                XinchenPayInit();
+                XinchenPayInit(); 
             }
             catch(Exception e)
             {
@@ -152,7 +153,7 @@ namespace XCCloudService.Utility
         {
             try
             {
-                MemberTokenBusiness.Clear();
+                //MemberTokenBusiness.Clear();
                 MemberTokenBusiness.Init();
                 LogHelper.SaveLog(TxtLogType.SystemInit, "MemberTokenInit Sucess");
             }
@@ -166,9 +167,12 @@ namespace XCCloudService.Utility
         {
             try
             {
-                XCCloudService.Business.XCCloud.UserBusiness.Clear();
-                XCCloudService.Business.XCCloud.UserBusiness.XcUserInit();
-                LogHelper.SaveLog(TxtLogType.SystemInit, "XcUserInit Sucess");
+                if (RedisCacheHelper.KeyExists(UserBusiness.userInfoCacheKey))
+                {
+                    //XCCloudService.Business.XCCloud.UserBusiness.Clear();
+                    XCCloudService.Business.XCCloud.UserBusiness.XcUserInit();
+                    LogHelper.SaveLog(TxtLogType.SystemInit, "XcUserInit Sucess");
+                }
             }
             catch (Exception ex)
             {
@@ -180,7 +184,7 @@ namespace XCCloudService.Utility
         {
             try
             {
-                XCManaUserHelperTokenBusiness.Clear();
+                //XCManaUserHelperTokenBusiness.Clear();
                 XCManaUserHelperTokenBusiness.Init();
                 LogHelper.SaveLog(TxtLogType.SystemInit, "XcManaUserInit Sucess");
             }

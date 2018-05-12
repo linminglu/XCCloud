@@ -28,5 +28,26 @@ namespace XCCloudService.CacheService
         {
             FlwFoodOrderCache.Remove(storeId);
         }
+
+        public static List<FoodOrderCacheModel> GetOrderListByWorkStation(string storeId,string workStation)
+        {
+            List<FoodOrderCacheModel> list = new List<FoodOrderCacheModel>();
+            var query = from item in FlwFoodOrderCache.FoodOrderHt
+                        where ((FoodOrderCacheModel)(item.Value)).StoreId.Equals(storeId) && ((FoodOrderCacheModel)(item.Value)).WorkStation == workStation
+                        select item.Key.ToString();
+            if (query.Count() == 0)
+            {
+                return list;
+            }
+            else
+            {
+                var models = query.ToList<string>();
+                foreach (var m in models)
+                {
+                    list.Add(FlwFoodOrderCache.GetModel(m.ToString()));
+                }
+                return list;
+            }
+        }
     }
 }

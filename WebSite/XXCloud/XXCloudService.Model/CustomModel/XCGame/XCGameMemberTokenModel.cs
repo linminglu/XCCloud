@@ -8,8 +8,9 @@ namespace XCCloudService.Model.CustomModel.XCGame
 {
     public class XCGameMemberTokenModel
     {
-        public XCGameMemberTokenModel(string storeId, string mobile, string icCardId, string memberLevelName, string storeName,string EndTime)
+        public XCGameMemberTokenModel(string token, string storeId, string mobile, string icCardId, string memberLevelName, string storeName,string EndTime)
         {
+            this.Token = token;
             this.StoreId = storeId;
             this.Mobile = mobile;
             this.ICCardId = icCardId;
@@ -17,6 +18,8 @@ namespace XCCloudService.Model.CustomModel.XCGame
             this.StoreName = storeName;
             this.EndTime = EndTime;
         }
+
+        public string Token { get; set; }
 
         public string StoreId { set; get; }
 

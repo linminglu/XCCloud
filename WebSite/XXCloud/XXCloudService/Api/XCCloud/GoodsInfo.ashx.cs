@@ -479,95 +479,6 @@ namespace XXCloudService.Api.XCCloud
                 string sql = @"SELECT
                                     /*调拨单ID*/
                                 	a.ID,
-                                	/*申请时间*/
-                                	(case when ISNULL(d.CreateTime,'')='' then '' else convert(varchar,d.CreateTime,23) end) AS RequestTime,
-                                	/*申请门店*/
-                                	b.StoreName AS RequestStore,
-                                	/*申请人*/
-                                	u.LogName AS Requester,
-                                	/*申请仓库*/
-                                	dep.DepotName AS RequestDepot,
-                                	/*调拨方式*/
-                                	a.RequstType,
-                                	/*调拨状态*/
-                                	f.State,
-                                	/*调拨门店*/
-                                	c.StoreName AS SendStore,
-                                	/*调拨仓库*/
-                                	outDep.DepotName AS OutDepot,
-                                	/*调拨时间*/
-                                	(case when ISNULL(g.DealTime,'')='' then '' else convert(varchar,g.DealTime,23) end) AS DealTime,
-                                	/*调拨说明*/
-                                	g.Note
-                                FROM
-                                	Data_GoodRequest a
-                                LEFT JOIN Base_StoreInfo b ON a.StoreID = b.StoreID
-                                LEFT JOIN Base_StoreInfo c ON a.SendStoreID = c.StoreID
-                                LEFT JOIN Base_DepotInfo dep ON a.RequestDepot = dep.ID
-                                INNER JOIN Data_WorkFlow_Entry d ON a.ID = d.EventID
-                                INNER JOIN Data_WorkFlow_Node e ON d.NodeID = e.ID AND e.NodeType = 0 /*开始节点*/
-                                INNER JOIN Base_UserInfo u ON d.UserID = u.UserID
-                                INNER JOIN Data_WorkFlowConfig f ON d.WorkID = f.ID AND f.WorkType = 0 /*调拨申请*/
-                                LEFT JOIN (
-                                	SELECT
-                                		*, ROW_NUMBER() over(partition by EventID order by CreateTime) as RowNum
-                                	FROM
-                                		Data_WorkFlow_Entry                                                         
-                                	WHERE
-                                		b.State = 4 /*调拨方处理*/
-                                    AND b.EventType = 0 /*产品调拨对应表格 Data_GoodRequest*/                                                                            
-                                ) g ON a.ID = g.EventID and g.RowNum <= 1
-                                LEFT JOIN (
-                                	SELECT
-                                		*, ROW_NUMBER() over(partition by RequestID order by SendTime) as RowNum
-                                	FROM
-                                		Data_GoodRequest_List                                	
-                                ) h ON a.ID = h.RequestID and h.RowNum <= 1
-                                INNER JOIN Base_DepotInfo outDepot ON h.OutDepotID = outDepot.ID
-                            ";
-                sql += " AND a.MerchID='" + merchId + "'";
-                if (!storeId.IsNull())
-                    sql += " AND (a.StoreID='" + storeId + "' or a.SendStoreID='" + storeId + "')";
-                                
-                #endregion
-
-                var list = Base_GoodsInfoService.I.SqlQuery<Data_GoodRequestList>(sql, parameters).ToList();
-                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, list);
-            }
-            catch (Exception e)
-            {
-                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
-            }
-        }
-
-        /// <summary>
-        /// 查询调拨明细
-        /// </summary>
-        /// <param name="dicParas"></param>
-        /// <returns></returns>
-        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
-        public object QueryGoodRequestList(Dictionary<string, object> dicParas)
-        {
-            try
-            {
-                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
-                string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
-                string errMsg = string.Empty;
-                object[] conditions = dicParas.ContainsKey("conditions") ? (object[])dicParas["conditions"] : null;
-
-                SqlParameter[] parameters = new SqlParameter[0];
-                string sqlWhere = string.Empty;
-
-                if (conditions != null && conditions.Length > 0)
-                    if (!QueryBLL.GenDynamicSql(conditions, "a.", ref sqlWhere, ref parameters, out errMsg))
-                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-
-
-                #region Sql语句
-                string sql = @"SELECT
-                                    /*调拨单ID*/
-                                	a.ID,
                                     /*调拨单号*/
                                 	a.RequestCode,
                                 	/*创建时间*/
@@ -591,9 +502,9 @@ namespace XXCloudService.Api.XCCloud
                                     /*入库时间*/
                                 	(case when ISNULL(c.CreateTime,'')='' then '' else convert(varchar,c.CreateTime,20) end) AS InDepotTime,
                                     /*调拨状态*/
-                                	f.State,
+                                	d.State,
                                 	/*调拨说明*/
-                                	f.Note
+                                	d.Note
                                 FROM
                                 	Data_GoodRequest a
                                 LEFT JOIN Base_StoreInfo createstore ON a.CreateStoreID = createstore.StoreID
@@ -609,7 +520,7 @@ namespace XXCloudService.Api.XCCloud
                                 		Data_WorkFlow_Entry                                                         
                                 	WHERE
                                 		b.State = 4 /*调拨出库*/
-                                    AND b.EventType = 0 /*产品调拨对应表格 Data_GoodRequest*/                                                                            
+                                    AND b.EventType = 0 /*产品调拨对应表格 Data_GoodRequest*/
                                 ) b ON a.ID = b.EventID and b.RowNum <= 1
                                 LEFT JOIN (
                                 	SELECT
@@ -622,6 +533,14 @@ namespace XXCloudService.Api.XCCloud
                                 ) c ON a.ID = c.EventID and c.RowNum <= 1
                                 LEFT JOIN (
                                 	SELECT
+                                		*, ROW_NUMBER() over(partition by EventID order by CreateTime) as RowNum
+                                	FROM
+                                		Data_WorkFlow_Entry                                                         
+                                	WHERE
+                                		b.EventType = 0 /*产品调拨对应表格 Data_GoodRequest*/
+                                ) d ON a.ID = d.EventID and b.RowNum <= 1
+                                LEFT JOIN (
+                                	SELECT
                                 		*, ROW_NUMBER() over(partition by RequestID order by SendTime) as RowNum
                                 	FROM
                                 		Data_GoodRequest_List                                	
@@ -630,9 +549,6 @@ namespace XXCloudService.Api.XCCloud
                                 INNER JOIN Base_StoreInfo instore ON a.InStoreID = instore.StoreID
                                 INNER JOIN Base_DepotInfo outdepot ON a.OutDepotID = outdepot.ID
                                 INNER JOIN Base_DepotInfo indepot ON a.InDepotID = indepot.ID
-                                INNER JOIN Data_WorkFlow_Entry d ON a.ID = d.EventID
-                                INNER JOIN Data_WorkFlow_Node e ON d.NodeID = e.ID AND e.NodeType = 0 /*开始节点*/                                
-                                INNER JOIN Data_WorkFlowConfig f ON d.WorkID = f.ID AND f.WorkType = 0 /*调拨申请*/                                                               
                             ";
                 sql += " AND a.MerchID='" + merchId + "'";
                 if (!storeId.IsNull())
@@ -642,6 +558,24 @@ namespace XXCloudService.Api.XCCloud
 
                 var list = Base_GoodsInfoService.I.SqlQuery<Data_GoodRequestList>(sql, parameters).ToList();
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, list);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        /// <summary>
+        /// 查询调拨明细
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object QueryGoodRequestDetail(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
             }
             catch (Exception e)
             {

@@ -475,12 +475,12 @@ namespace XCCloudService.Api.XCCloud
                 }
                 #endregion
 
+                var iUserId = 0;
                 //开启EF事务
-                using (TransactionScope ts = new TransactionScope())
+                using (TransactionScope ts = new TransactionScope(TransactionScopeOption.RequiresNew))
                 {
                     try
-                    {
-                        var iUserId = 0;
+                    {                        
                         int.TryParse(userId, out iUserId);
                         IBase_UserInfoService base_UserInfoService = BLLContainer.Resolve<IBase_UserInfoService>();
                         if (base_UserInfoService.Any(p => p.UserID != iUserId && p.LogName.Equals(logName, StringComparison.OrdinalIgnoreCase)))
@@ -570,10 +570,13 @@ namespace XCCloudService.Api.XCCloud
                 if (!string.IsNullOrEmpty(pwd))
                 {
                     NewPasswordMessagePush(openId, logName, pwd);
-                }
 
-                //更新缓存
-                UserBusiness.XcUserInit();
+                    //添加缓存
+                    UserInfoCacheModel model = new UserInfoCacheModel();
+                    model.OpenID = openId;
+                    model.UserID = iUserId;
+                    UserBusiness.AddCache(openId, model);
+                }                
 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
             }

@@ -8,6 +8,13 @@
 <style>
     .layui-colla-content1 .lfl1{width: 135px}
    .layui-colla-title{line-height: 34px;height: 34px;}
+    .layui-form-pane .layui-inline .layui-form-label{padding: 8px 0;}
+    #test2{width: 300px;height: 170px;border: 1px solid #8D8D8D;position: relative;}
+    #imgBtn{width: 60px;height: 60px;position: absolute;top: 70px;left: 130px;cursor: pointer;}
+    .imgBox button{position: absolute;top: 15px;right: 15px;}
+    .imgBox button i {font-size: 24px;color: red;}
+    #timeTypeSetBox .layui-input-inline,#timeTypeSetBox .layui-form-label{width: 90px;}
+    /*.goodConvert .layui-input-inline{width: 140px;}*/
 </style>
 <body>
     <div class="layui-row" style="padding: 15px">
@@ -23,41 +30,45 @@
     </div>
 
   <!--//弹出层-->
-  <div id="openModel" style="display: none">
+  <div id="openModel" style="display: none;height: 550px;overflow-y: auto;">
       <form action="" class="layui-form layui-form-pane">
-          <div class="layui-collapse" lay-accordion>
+          <div class="layui-collapse" > <!--//lay-accordion-->
               <div class="layui-colla-item">
-                  <h2 class="layui-colla-title">封面</h2>
-                  <div class="layui-colla-content layui-show">
-                      <div style="width: 50%;display: inline-block">
-                          <div class="layui-form-item">
-                              <div class="layui-inline">
-                                  <label  class="layui-form-label" style="padding: 8px 0;">会员级别名称</label>
-                                  <div class="layui-input-inline">
-                                      <input type="text" class="layui-input" id="MemberLevelName">
+                  <!--<h2 class="layui-colla-title">封面</h2>-->
+                  <div class="layui-colla-content layui-show layui-col-md12">
+                      <div class="layui-card layui-col-md6" style="height: 192px">
+                          <div class="layui-card-body">
+                              <div class="layui-form-item">
+                                  <div class="layui-inline">
+                                      <label  class="layui-form-label" style="padding: 8px 0;">会员级别名称</label>
+                                      <div class="layui-input-inline">
+                                          <input type="text" class="layui-input" id="MemberLevelName">
+                                      </div>
                                   </div>
-                              </div>
-                              <div class="layui-inline goodIsAll">
-                                  <label  class="layui-form-label" style="padding: 8px 0!important;">会员级别状态</label>
-                                  <div class="layui-input-inline">
-                                      <input type="checkbox" name="zzz" lay-skin="switch" lay-text="启用|禁用" id="State" lay-filter="State">
+                                  <div class="layui-inline goodIsAll">
+                                      <label  class="layui-form-label" style="padding: 8px 0!important;">会员级别状态</label>
+                                      <div class="layui-input-inline">
+                                          <input type="checkbox" name="zzz" lay-skin="switch" lay-text="启用|禁用" id="State" lay-filter="State">
+                                      </div>
                                   </div>
                               </div>
                           </div>
                       </div>
-                      <div style="width: 480px;display: inline-block">
-                          <div id="test2">
-                              <div id="imgBtn" style="width: 80px;display: inline-block"><i class="layui-icon" style="font-size: 60px;color: #9F9F9F">&#xe654;</i></div>
-                              <div class="layui-upload-list" id="demo2" style="margin: 0;display: inline-block">
-                                  <input id="nameImage" name="list[0]" maxlength="255" class="input-xlarge required" type="hidden">
+                      <div class="layui-card layui-col-md6">
+                          <div class="layui-card-body">
+                              <div id="test2">
+                                  <div id="imgBtn" style="width: 80px;display: inline-block"><i class="layui-icon" style="font-size: 60px;color: #9F9F9F">&#xe654;</i></div>
+                                  <div class="layui-upload-list" id="demo2" style="margin: 0;display: inline-block">
+                                      <input id="nameImage" name="list[0]" maxlength="255" class="input-xlarge required" type="hidden">
+                                  </div>
                               </div>
                           </div>
                       </div>
                   </div>
 
               </div>
-              <div class="layui-colla-item">
-                  <h2 class="layui-colla-title">开卡</h2>
+              <div class="layui-colla-item goodIsAll ">
+                  <h2 class="layui-colla-title layui-col-md12">开卡</h2>
                   <div class="layui-colla-content  layui-colla-content1 " >
                      <div class="layui-form-item">
                          <div class="layui-inline">
@@ -82,13 +93,6 @@
                              <div class="layui-form-mid">(天)</div>
                          </div>
                          <div class="layui-inline">
-                             <label  class="layui-form-label ">兑换折扣率</label>
-                             <div class="layui-input-inline lfl1">
-                                 <input type="text" class="layui-input" id="priceOff">
-                             </div>
-                             <div class="layui-form-mid">(0.00-1.00)</div>
-                         </div>
-                         <div class="layui-inline">
                              <label  class="layui-form-label ">有效天数</label>
                              <div class="layui-input-inline lfl1">
                                  <input type="text" class="layui-input" id="validday">
@@ -96,11 +100,11 @@
                              <div class="layui-form-mid">(天)</div>
                          </div>
                          <div class="layui-inline">
-                             <label  class="layui-form-label ">兑币范围</label>
+                             <label  class="layui-form-label ">最小退币数</label>
                              <div class="layui-input-inline lfl1">
                                  <input type="text" class="layui-input" id="minCoin">
                              </div>
-                             <div class="layui-form-mid">至</div>
+                             <div class="layui-form-mid">最大退币数</div>
                              <div class="layui-input-inline lfl1">
                                  <input type="text" class="layui-input" id="maxCoin">
                              </div>
@@ -116,6 +120,14 @@
                              <label  class="layui-form-label" style="padding: 8px 0!important;">身份证读卡</label>
                              <div class="layui-input-inline">
                                  <input type="checkbox" name="zzz"  checked lay-skin="switch" lay-text="启用|禁用" id="useReadID" lay-filter="useReadID">
+                             </div>
+                         </div>
+                         <div class="layui-inline goodIsAll">
+                             <div class="layui-input-inline">
+                                 <input type="checkbox" title="一张身份证只能办一张卡"  checked   id="cardOnly" lay-filter="cardOnly">
+                             </div>
+                             <div class="layui-input-inline">
+                                 <input type="checkbox"  title="一张手机号只能办一张卡"   checked   id="phoneOnly" lay-filter="phoneOnly">
                              </div>
                          </div>
                          <br>
@@ -166,6 +178,12 @@
                               </div>
                           </div>
                           <div class="layui-inline">
+                              <label  class="layui-form-label">补卡费</label>
+                              <div class="layui-input-inline">
+                                  <input type="text" class="layui-input" id="rechangeFee">
+                              </div>
+                          </div>
+                          <div class="layui-inline">
                               <label  class="layui-form-label">续期费</label>
                               <div class="layui-input-inline">
                                   <input type="text" class="layui-input" id="continueFee">
@@ -183,12 +201,27 @@
                           <div class="layui-inline"><label class="layui-form-label" style="padding: 8px 0!important;">升级累计消费</label>
                               <div class="layui-input-inline"><input type="text" class="layui-input" id="consumeTotal"></div>
                           </div>
+                          <div class="layui-inline"><label class="layui-form-label" style="padding: 8px 0!important;">升级到</label>
+                              <div class="layui-input-inline">
+                                  <select>
+                                      <option value="0">不升级</option>
+                                  </select>
+                              </div>
+                          </div>
                           <div class="layui-inline"><label  class="layui-form-label" style="padding: 8px 0!important;">降级非活跃天数</label>
                               <div class="layui-input-inline"><input type="text" class="layui-input" id="nonActiveDays"></div>
+                          </div>
+                          <div class="layui-inline"><label class="layui-form-label" style="padding: 8px 0!important;">降级到</label>
+                              <div class="layui-input-inline">
+                                  <select>
+                                      <option value="0">不降级</option>
+                                  </select>
+                              </div>
                           </div>
                       </div>
                   </div>
               </div>
+
               <div class="layui-colla-item">
                   <h2 class="layui-colla-title">送币规则</h2>
                   <div class="layui-colla-content ">
@@ -233,6 +266,52 @@
                   </div>
               </div>
               <div class="layui-colla-item">
+                  <h2 class="layui-colla-title">商品兑换折扣率</h2>
+                  <div class="layui-colla-content ">
+                      <div class="layui-form-item goodConvert">
+                          <div class="goodRules">
+                              <div class="layui-inline" style="margin-right: 0;">
+                                  <label class="layui-form-label" style="width: 80px;">余额类别</label>
+                                  <div class="layui-input-inline" style="width: 100px;">
+                                      <select name="" lay-filter="freeRate"></select>
+                                  </div>
+                              </div>
+                              <div class="layui-inline" style="margin-right: 0;">
+                                  <label  class="layui-form-label" style="width: 80px;">兑换折扣</label>
+                                  <div class="layui-input-inline" style="width: 60px;">
+                                      <input type="text" class="layui-input">
+                                  </div>
+                                  <div class="layui-form-mid">%</div>
+                              </div>
+                              <div class="layui-inline" style="margin-right: 0;">
+                                  <div class="layui-input-inline" style="width: 110px;">
+                                      <input type="checkbox"   title="需要授权" lay-skin="primary">
+                                  </div>
+                              </div>
+                              <div class="layui-inline" style="margin-right: 0;">
+                                  <label  class="layui-form-label" style="width: 100px;">最大存储余额</label>
+                                  <div class="layui-input-inline" style="width: 90px;">
+                                      <input type="text" class="layui-input" >
+                                  </div>
+                                  <div  class="layui-form-mid" style="width: 100px;">单词最大增加数</div>
+                                  <div class="layui-input-inline" style="width: 88px;">
+                                      <input type="text" class="layui-input">
+                                  </div>
+                              </div>
+                          </div>
+
+                          <div class="layui-btn-group">
+                              <button class="layui-btn layui-btn-sm" type="button" id="addMore">
+                                  <i class="layui-icon">&#xe654;</i>
+                              </button>
+                              <button class="layui-btn layui-btn-sm" type="button" id="reduceBtn">
+                                  <i class="layui-icon">&#x1006;</i>
+                              </button>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              <div class="layui-colla-item">
                   <h2 class="layui-colla-title">兑换方式</h2>
                   <div class="layui-colla-content ">
                       <div class="layui-form-item">
@@ -267,41 +346,51 @@
                   <h2 class="layui-colla-title">预赠币</h2>
                   <div class="layui-colla-content ">
                       <div class="layui-form-item freeLast">
-                          <div class="layui-inline">
-                              <label  class="layui-form-label" style="width: 90px">充值满</label>
-                              <div class="layui-input-inline" style="width: 60px">
-                                  <input type="text" class="layui-input" id="chargeTotal">
-                              </div>
-                              <div class="layui-form-mid">元，预赠方式</div>
-                              <div class="layui-input-inline" style="width: 130px">
-                                  <select name="" id="freeBalanceType" lay-filter="freeBalanceType"></select>
-                              </div>
-                              <div class="layui-form-mid">元，预赠币</div>
-                              <div class="layui-input-inline" style="width: 60px">
-                                  <input type="text" class="layui-input" id="freeCount">
-                              </div>
-                              <div class="layui-form-mid">最小间隔</div>
-                              <div class="layui-input-inline" style="width: 60px" >
-                                  <input type="text" class="layui-input" id="minSpaceDays">
-                              </div>
-                              <div class="layui-form-mid">天,可领</div>
-                              <div class="layui-input-inline" style="width: 60px">
-                                  <input type="text" class="layui-input" id="onceFreeCount">
-                              </div>
-                              <div class="layui-form-mid">币,有效天数</div>
-                              <div class="layui-input-inline" style="width: 60px">
-                                  <input type="text" class="layui-input" id="expireDays">
-                              </div>
-                              <div class="layui-input-inline" style="width: 60px">
-                                  <button type="button" class="layui-btn layui-btn-normal" id="addFreeRule">添加</button>
+                          <div class="sendBox">
+                              <div class="layui-inline reduceBox">
+                                  <label  class="layui-form-label" style="width: 90px">充值满</label>
+                                  <div class="layui-input-inline" style="width: 60px">
+                                      <input type="text" class="layui-input" id="chargeTotal">
+                                  </div>
+                                  <div class="layui-form-mid">元，预赠方式</div>
+                                  <div class="layui-input-inline" style="width: 130px">
+                                      <select name="" id="freeBalanceType" lay-filter="freeBalanceType"></select>
+                                  </div>
+                                  <div class="layui-form-mid">元，预赠币</div>
+                                  <div class="layui-input-inline" style="width: 60px">
+                                      <input type="text" class="layui-input" id="freeCount">
+                                  </div>
+                                  <div class="layui-form-mid">最小间隔</div>
+                                  <div class="layui-input-inline" style="width: 60px" >
+                                      <input type="text" class="layui-input" id="minSpaceDays">
+                                  </div>
+                                  <div class="layui-form-mid">天,可领</div>
+                                  <div class="layui-input-inline" style="width: 60px">
+                                      <input type="text" class="layui-input" id="onceFreeCount">
+                                  </div>
+                                  <div class="layui-form-mid">币,有效天数</div>
+                                  <div class="layui-input-inline" style="width: 60px">
+                                      <input type="text" class="layui-input" id="expireDays">
+                                  </div>
+                                  <div class="layui-input-inline" style="width: 60px">
+                                      <button type="button" class="layui-btn layui-btn-normal" id="addFreeRule">添加</button>
+                                  </div>
                               </div>
                           </div>
 
+                          <div class="layui-btn-group">
+                              <button class="layui-btn layui-btn-sm" type="button" id="addMore1">
+                                  <i class="layui-icon">&#xe654;</i>
+                              </button>
+                              <button class="layui-btn layui-btn-sm" type="button" id="reduceBtn1">
+                                  <i class="layui-icon">&#x1006;</i>
+                              </button>
+                          </div>
                       </div>
-                      <div style="text-align:right;">
+                      <!--<div style="text-align:right;">-->
 
-                      </div>
-                      <table class="layui-hide" id="sendCoinTable" lay-filter="sendCoinTable"></table>
+                      <!--</div>-->
+                      <!--<table class="layui-hide" id="sendCoinTable" lay-filter="sendCoinTable"></table>-->
                   </div>
               </div>
           </div>
@@ -374,6 +463,16 @@
             form=layui.form,
             element=layui.element;
           let  upload=layui.upload;
+
+        $('#addMore').click(function () {
+            $('.goodConvert').append($('body').find($('.goodRules')).eq(0).clone())
+        });
+        $('#reduceBtn').click(function () {
+            if($('.goodConvert').find($('.goodRules')).length>1){
+                $('.goodConvert').find($('.goodRules')).last().remove();
+            }else {
+            }
+        });
         //新增按钮
         $('#add').on('click',()=>{
              needAuthor=1; mustPhone=0; mustIDCard=0; useReadID=1; readFace=0; readPlam=0;
@@ -387,8 +486,9 @@
             xc.getBalanceTypeDic(token,layer,form,'freeBalanceType');
             layer.open({
                 type:1,
-                area:'1000px',
+                area:'1030px',
                 shade:0.6,
+                offset:'20px',
                 content:$('#openModel')
             });
         });

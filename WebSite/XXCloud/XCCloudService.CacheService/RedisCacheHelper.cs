@@ -59,7 +59,7 @@ namespace XCCloudService.CacheService
                     return "";
                 }
 
-                serialNo = storeId + date + ret.ToString().PadLeft(9, '0');
+                serialNo = storeId + date + ret.ToString().PadLeft(6, '0');
                 return serialNo;
             }
             catch

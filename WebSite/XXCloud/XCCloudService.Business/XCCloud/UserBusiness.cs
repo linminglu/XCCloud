@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using XCCloudService.BLL.Container;
 using XCCloudService.BLL.IBLL.XCCloud;
+using XCCloudService.CacheService;
 using XCCloudService.Common;
 using XCCloudService.Common.Enum;
 using XCCloudService.Model.CustomModel.XCCloud.User;
@@ -14,38 +15,45 @@ namespace XCCloudService.Business.XCCloud
 {
     public class UserBusiness
     {
-        private static List<UserInfoCacheModel> listXcUser = null;
+        public const string userInfoCacheKey = "redisXCUserInfoCacheKey";
 
         public static List<UserInfoCacheModel> XcUserInfoList 
         {
             get 
             {
-                if (listXcUser == null) XcUserInit();
-                return listXcUser; 
+                List<UserInfoCacheModel> List = RedisCacheHelper.HashGetAll<UserInfoCacheModel>(userInfoCacheKey);
+                return List;
             }
+        }
+
+        public static void AddCache(string openId, UserInfoCacheModel model)
+        {
+            RedisCacheHelper.HashSet<UserInfoCacheModel>(userInfoCacheKey, openId, model);
         }
 
         public static void XcUserInit()
         {
             IBase_UserInfoService base_UserInfoService = BLLContainer.Resolve<IBase_UserInfoService>();
             var list = base_UserInfoService.GetModels(p => p.UserType == (int)UserType.Xc).ToList();
-            listXcUser = Utils.GetCopyList<UserInfoCacheModel, Base_UserInfo>(list);
+            foreach (var item in list)
+            {
+                RedisCacheHelper.HashSet<UserInfoCacheModel>(userInfoCacheKey, item.OpenID, new UserInfoCacheModel() { OpenID = item.OpenID, UserID = item.UserID });
+            }
         }
 
         public static void Clear()
         {
-            listXcUser = null;
+            RedisCacheHelper.KeyDelete(userInfoCacheKey);  
         }
 
         public static bool IsEffectiveXcUser(string openId, out UserInfoCacheModel userInfoCacheModel)
         {
             userInfoCacheModel = null;
-            if (XcUserInfoList.Any<UserInfoCacheModel>(p => p.OpenID.Equals(openId, StringComparison.OrdinalIgnoreCase)))
+            if (RedisCacheHelper.HashExists(userInfoCacheKey, openId))
             {
-                userInfoCacheModel = XcUserInfoList.Where(p => p.OpenID.Equals(openId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                userInfoCacheModel = RedisCacheHelper.HashGet<UserInfoCacheModel>(userInfoCacheKey, openId);
                 return true;
             }
-
             return false;
         }        
     }

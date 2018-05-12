@@ -76,7 +76,7 @@ namespace XCCloudService.Business.XCGameMana
             {
                 for (int i = 0; i < list.Count; i++)
                 {
-                    XCManaUserHelperTokenModel tokenModel = new XCManaUserHelperTokenModel(list[i].StoreId, list[i].StoreName, list[i].Mobile, Convert.ToInt32(list[i].UserId));
+                    XCManaUserHelperTokenModel tokenModel = new XCManaUserHelperTokenModel(list[i].Token, list[i].StoreId, list[i].StoreName, list[i].Mobile, Convert.ToInt32(list[i].UserId));
                     XCManaUserHelperTokenCache.AddToken(list[i].Token, tokenModel);
                 }
             }

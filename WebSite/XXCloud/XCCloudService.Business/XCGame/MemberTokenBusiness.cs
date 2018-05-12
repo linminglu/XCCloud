@@ -21,19 +21,14 @@ namespace XCCloudService.Business.XCGame
             //设置会员token
             string newToken = System.Guid.NewGuid().ToString("N");
             string token = string.Empty;
-            if (GetMemberTokenModel(storeId, mobile, out token))
-            {   
-                SetDBMemberToken(newToken, storeId, mobile, MemberLevelName, storeName, icCardId, EndTime);
-                XCGameMemberTokenCache.Remove(token);
-                XCGameMemberTokenModel tokenModel = new XCGameMemberTokenModel(storeId, mobile, icCardId, MemberLevelName, storeName,EndTime);
-                XCGameMemberTokenCache.AddToken(newToken, tokenModel);
-            }
-            else
-            {
-                SetDBMemberToken(newToken, storeId, mobile, MemberLevelName, storeName, icCardId, EndTime);
-                XCGameMemberTokenModel tokenModel = new XCGameMemberTokenModel(storeId, mobile, icCardId, MemberLevelName, storeName, EndTime);
-                XCGameMemberTokenCache.AddToken(newToken, tokenModel);
-            }
+            //if (GetMemberTokenModel(storeId, mobile, out token))
+            //{   
+            //    XCGameMemberTokenCache.Remove(token);
+            //}
+
+            SetDBMemberToken(newToken, storeId, mobile, MemberLevelName, storeName, icCardId, EndTime);
+            XCGameMemberTokenModel tokenModel = new XCGameMemberTokenModel(newToken, storeId, mobile, icCardId, MemberLevelName, storeName, EndTime);
+            XCGameMemberTokenCache.AddToken(newToken, tokenModel);
 
             return newToken;
         }
@@ -41,10 +36,10 @@ namespace XCCloudService.Business.XCGame
 
         public static XCGameMemberTokenModel GetMemberTokenModel(string token)
         {
-            if (XCGameMemberTokenCache.MemberTokenHTDic.ContainsKey(token))
+            if (XCGameMemberTokenCache.ExistToken(token))
             {
-                XCGameMemberTokenModel tokenModel = (XCGameMemberTokenModel)(XCGameMemberTokenCache.MemberTokenHTDic[token]);
-                if(Convert.ToDateTime(tokenModel.EndTime + " 23:59:59") > System.DateTime.Now)
+                XCGameMemberTokenModel tokenModel = XCGameMemberTokenCache.GetModel(token);
+                if (Convert.ToDateTime(tokenModel.EndTime + " 23:59:59") > System.DateTime.Now)
                 {
                     return tokenModel;
                 }
@@ -81,16 +76,15 @@ namespace XCCloudService.Business.XCGame
         public static bool GetMemberTokenModel(string storeId,string mobile,out string token)
         {
             token = string.Empty;
-            var query = from item in XCGameMemberTokenCache.MemberTokenHTDic
-                        where ((XCGameMemberTokenModel)(item.Value)).StoreId.Equals(storeId) && ((XCGameMemberTokenModel)(item.Value)).Mobile.Equals(mobile)
-                        select item.Key.ToString();
-            if (query.Count() == 0)
+
+            XCGameMemberTokenModel model = XCGameMemberTokenCache.MemberTokenModelList.FirstOrDefault(t => t.StoreId.Equals(storeId) && t.Mobile.Equals(mobile));
+            if (model == null)
             {
                 return false;
             }
             else
             {
-                token = query.First();
+                token = model.Token;
                 return true;   
             }
         }
@@ -98,17 +92,19 @@ namespace XCCloudService.Business.XCGame
 
         public static void Init()
         {
-            IMemberTokenService apirequestlogservice = BLLContainer.Resolve<IMemberTokenService>();
-            var model = apirequestlogservice.GetModels(p => 1 == 1).ToList<T_MemberToken>();
-            if (model.Count > 0)
+            if (!RedisCacheHelper.KeyExists(XCGameMemberTokenCache.xcGameMemberTokenCacheKey))
             {
-                for (int i = 0; i < model.Count; i++)
+                IMemberTokenService apirequestlogservice = BLLContainer.Resolve<IMemberTokenService>();
+                var model = apirequestlogservice.GetModels(p => 1 == 1).ToList<T_MemberToken>();
+                if (model.Count > 0)
                 {
-                    XCGameMemberTokenModel tokenModel = new XCGameMemberTokenModel(model[i].StoreId, model[i].Phone, model[i].ICCardID, model[i].MemberLevelName, model[i].StoreName,model[i].EndTime);
-                    XCGameMemberTokenCache.AddToken(model[i].Token, tokenModel);
+                    for (int i = 0; i < model.Count; i++)
+                    {
+                        XCGameMemberTokenModel tokenModel = new XCGameMemberTokenModel(model[i].Token, model[i].StoreId, model[i].Phone, model[i].ICCardID, model[i].MemberLevelName, model[i].StoreName, model[i].EndTime);
+                        XCGameMemberTokenCache.AddToken(model[i].Token, tokenModel);
+                    }
                 }
             }
-
         }
 
 

@@ -129,7 +129,6 @@ namespace XXCloudService.Api.XCCloud
 
             string storedProcedure = "CreateOrder";
             String[] Ary = new String[] { "数据0", "数据1", "数据2", "数据3"};
-
             List<SqlDataRecord> listSqlDataRecord = new List<SqlDataRecord>();
             SqlMetaData[] MetaDataArr = new SqlMetaData[] { 
                     new SqlMetaData("foodId", SqlDbType.Int), 
@@ -138,7 +137,8 @@ namespace XXCloudService.Api.XCCloud
                     new SqlMetaData("payNum", SqlDbType.Decimal,18,2)
             };
 
-            
+            string flwSendId = RedisCacheHelper.CreateSerialNo(userTokenDataModel.StoreId);
+
             for (int i = 0; i < buyDetailList.Count; i++)
             {
                 List<object> listParas = new List<object>();
@@ -155,7 +155,7 @@ namespace XXCloudService.Api.XCCloud
                 listSqlDataRecord.Add(record);
             }
 
-            SqlParameter[] sqlParameter = new SqlParameter[18];
+            SqlParameter[] sqlParameter = new SqlParameter[19];
             sqlParameter[0] = new SqlParameter("@FoodDetail", SqlDbType.Structured);
             sqlParameter[0].Value = listSqlDataRecord;
 
@@ -204,11 +204,14 @@ namespace XXCloudService.Api.XCCloud
             sqlParameter[15] = new SqlParameter("@ErrMsg", SqlDbType.VarChar,200);
             sqlParameter[15].Direction = ParameterDirection.Output;
 
-            sqlParameter[16] = new SqlParameter("@OrderFlwID", SqlDbType.Int);
-            sqlParameter[16].Direction = ParameterDirection.Output;
+            sqlParameter[16] = new SqlParameter("@FlwSeedId", SqlDbType.VarChar, 32);
+            sqlParameter[16].Value = flwSendId;
 
-            sqlParameter[17] = new SqlParameter("@Return", SqlDbType.Int);
-            sqlParameter[17].Direction = ParameterDirection.ReturnValue;
+            sqlParameter[17] = new SqlParameter("@OrderFlwID", SqlDbType.VarChar,32);
+            sqlParameter[17].Direction = ParameterDirection.Output;
+
+            sqlParameter[18] = new SqlParameter("@Return", SqlDbType.Int);
+            sqlParameter[18].Direction = ParameterDirection.ReturnValue;
 
             XCCloudBLL.ExecuteStoredProcedureSentence(storedProcedure, sqlParameter);
             if (sqlParameter[17].Value.ToString() == "1")
@@ -290,6 +293,31 @@ namespace XXCloudService.Api.XCCloud
                 return new ResponseModel(Return_Code.T, "", Result_Code.F, sqlParameter[4].Value.ToString());
             }
         }
+
+
+
+        [Authorize(Roles = "XcUser,XcAdmin")]
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object getCacheOrder(Dictionary<string, object> dicParas)
+        {
+            string errMsg = string.Empty;
+            XCCloudUserTokenModel userTokenModel = (XCCloudUserTokenModel)(dicParas[Constant.XCCloudUserTokenModel]);
+            StoreIDDataModel userTokenDataModel = (StoreIDDataModel)(userTokenModel.DataModel);
+
+            List<FoodOrderCacheModel> list = FlwFoodOrderBusiness.GetOrderListByWorkStation(userTokenDataModel.StoreId, userTokenDataModel.WorkStation);
+
+            List<object> listObj = new List<object>();
+            for (int i = 0; i < list.Count; i++)
+            {
+                var obj = new {
+                    flwOrderId = list[i].FlwOrderId
+                };
+                listObj.Add(obj);
+            }
+            return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, listObj);
+        }
+
+
 
         /// <summary>
         /// 获取订单详情

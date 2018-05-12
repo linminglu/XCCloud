@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Transactions;
 using XCCloudService.BLL.XCCloud;
 using XCCloudService.Common;
 using XCCloudService.Common.Enum;
@@ -14,48 +15,66 @@ using XCCloudService.WorkFlow.Base;
 
 namespace XCCloudService.WorkFlow
 {
+    public enum NodeType
+    {
+        /// <summary>
+        /// 开始
+        /// </summary>
+        [Description("开始")]
+        Start = 0,
+        /// <summary>
+        /// 过程
+        /// </summary>
+        [Description("过程")]
+        Process = 1,
+        /// <summary>
+        /// 结束
+        /// </summary>
+        [Description("结束")]
+        End = 2
+    }
     public enum Trigger
     {
         /// <summary>
-        /// 申请
+        /// 调拨申请
         /// </summary>
-        [Description("申请")]
-        Request,
+        [Description("调拨申请")]
+        Request = 1,
         /// <summary>
-        /// 申请审核
+        /// 调拨申请审核
         /// </summary>
-        [Description("申请审核")]
-        RequestVerify,        
+        [Description("调拨申请审核")]
+        RequestVerify = 2,        
         /// <summary>
         /// 调拨出库
         /// </summary>
         [Description("调拨出库")]
-        SendDeal,
+        SendDeal = 3,
         /// <summary>
         /// 调拨出库审核
         /// </summary>
         [Description("调拨出库审核")]
-        SendDealVerify,
+        SendDealVerify = 4,
         /// <summary>
         /// 调拨入库
         /// </summary>
         [Description("调拨入库")]
-        RequestDeal,
+        RequestDeal = 5,
         /// <summary>
         /// 调拨入库审核
         /// </summary>
         [Description("调拨入库审核")]
-        RequestDealVerify,
+        RequestDealVerify = 6,
         /// <summary>
         /// 撤销
         /// </summary>
         [Description("撤销")]
-        Cancel,
+        Cancel = 7,
         /// <summary>
-        /// 关闭
+        /// 调拨流程关闭
         /// </summary>
-        [Description("关闭")]
-        Close
+        [Description("调拨流程关闭")]
+        Close = 8
     }
 
     public enum State
@@ -68,53 +87,53 @@ namespace XCCloudService.WorkFlow
         /// <summary>
         /// 申请
         /// </summary>
-        [Description("申请")]
+        [Description("已申请")]
         Requested = 1,
         /// <summary>
-        /// 申请审核通过
+        /// 申请审核已通过
         /// </summary>
-        [Description("申请审核通过")]
+        [Description("申请审核已通过")]
         RequestVerifiedPass = 2,
         /// <summary>
-        /// 申请审核拒绝
+        /// 申请审核已拒绝
         /// </summary>
-        [Description("申请审核拒绝")]
+        [Description("申请审核已拒绝")]
         RequestVerifiedRefuse = 3,
         /// <summary>
-        /// 调拨出库
+        /// 调拨已出库
         /// </summary>
-        [Description("调拨出库")]
+        [Description("调拨已出库")]
         SendDealed = 4,
         /// <summary>
-        /// 调拨出库审核通过
+        /// 调拨出库审核已通过
         /// </summary>
-        [Description("调拨出库审核通过")]
+        [Description("调拨出库审核已通过")]
         SendDealVerifiedPass = 5,
         /// <summary>
-        /// 调拨出库审核拒绝
+        /// 调拨出库审核已拒绝
         /// </summary>
-        [Description("调拨出库审核拒绝")]
+        [Description("调拨出库审核已拒绝")]
         SendDealVerifiedRefuse = 6,
         /// <summary>
-        /// 调拨入库
+        /// 调拨已入库
         /// </summary>
-        [Description("调拨入库")]
+        [Description("调拨已入库")]
         RequestDealed = 7,
         /// <summary>
-        /// 调拨入库审核通过
+        /// 调拨入库审核已通过
         /// </summary>
-        [Description("调拨入库审核通过")]
+        [Description("调拨入库审核已通过")]
         RequestDealVerifiedPass = 8,
         /// <summary>
-        /// 调拨入库审核拒绝
+        /// 调拨入库审核已拒绝
         /// </summary>
-        [Description("调拨入库审核拒绝")]
+        [Description("调拨入库审核已拒绝")]
         RequestDealVerifiedRefuse = 9,
         /// <summary>
         /// 结束
         /// </summary>
         [Description("结束")]
-        End = 10
+        Closed = 10
     }
 
     /// <summary>
@@ -124,36 +143,84 @@ namespace XCCloudService.WorkFlow
     {
         State _state = State.Open;
 
-        StateMachine<State, Trigger>.TriggerWithParameters<int> _setRequestTrigger;
-        StateMachine<State, Trigger>.TriggerWithParameters<int, int, string> _setRequestVerifyTrigger;        
-        StateMachine<State, Trigger>.TriggerWithParameters<int> _setSendDealTrigger;
-        StateMachine<State, Trigger>.TriggerWithParameters<int, int, string> _setSendDealVerifyTrigger;
-        StateMachine<State, Trigger>.TriggerWithParameters<int> _setRequestDealTrigger;
-        StateMachine<State, Trigger>.TriggerWithParameters<int, int, string> _setRequestDealVerifyTrigger;
-        StateMachine<State, Trigger>.TriggerWithParameters<int> _setCancelTrigger;        
-        StateMachine<State, Trigger>.TriggerWithParameters<int> _setCloseTrigger;        
+        StateMachine<State, Trigger>.TriggerWithParameters<int> _setRequestVerifyTrigger;        
+        StateMachine<State, Trigger>.TriggerWithParameters<int> _setSendDealVerifyTrigger;
+        StateMachine<State, Trigger>.TriggerWithParameters<int> _setRequestDealVerifyTrigger;        
 
-        private string _workId;
-        private string _eventId;
+        private int _workId;
+        private int _eventId;
         private int _requestType;
-        private int _userId;
 
-        public GoodReqWorkFlow(string workId, string eventId, int requestType, State state)
+        /// <summary>
+        /// 获取工作流编号，如果没有就生成配置信息
+        /// </summary>
+        /// <param name="eventId"></param>
+        /// <returns></returns>
+        private int GetWorkId(int eventId)
         {
-            _workId = workId;
+            if (!Data_WorkFlow_EntryService.I.Any(a => a.EventID == eventId && a.EventType == (int)WorkflowEventType.GoodRequest))
+            {
+                if (!Data_GoodRequestService.I.Any(a => a.ID == eventId))
+                {
+                    return 0;
+                }
+
+                var merchId = Data_GoodRequestService.I.GetModels(p => p.ID == eventId).FirstOrDefault().MerchID;
+                if (!Data_WorkFlowConfigService.I.Any(a => a.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && a.WorkType == (int)WorkflowType.GoodRequest))
+                {
+                    //开启EF事务
+                    using (TransactionScope ts = new TransactionScope())
+                    {
+                        try
+                        {
+                            var configModel = new Data_WorkFlowConfig { MerchID = merchId, WorkType = (int)WorkflowType.GoodRequest, State = 1 };
+                            if (!Data_WorkFlowConfigService.I.Add(configModel))
+                            {
+                                return 0;
+                            }
+                            foreach (Trigger t in Enum.GetValues(typeof(Trigger)))
+                            {
+                                var nodeModel = new Data_WorkFlow_Node();
+                                nodeModel.WorkID = configModel.ID;
+                                nodeModel.OrderNumber = (int)t;
+                                Data_WorkFlow_NodeService.I.AddModel(nodeModel);
+                            }
+                            if (!Data_WorkFlow_NodeService.I.SaveChanges())
+                            {
+                                return 0;
+                            }
+
+                            return configModel.ID;
+                        }                        
+                        catch
+                        {
+                            return 0;
+                        }
+                    }
+                    
+                }
+                else
+                {
+                    return Data_WorkFlowConfigService.I.GetModels(a => a.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && a.WorkType == (int)WorkflowType.GoodRequest).FirstOrDefault().ID;
+                }
+            }
+            else
+            {
+                return Data_WorkFlow_EntryService.I.GetModels(a => a.EventID == eventId && a.EventType == (int)WorkflowEventType.GoodRequest).FirstOrDefault().WorkID ?? 0;
+            }
+        }
+
+        public GoodReqWorkFlow(int eventId, int requestType, State state)
+        {
+            _workId = GetWorkId(eventId);
             _eventId = eventId;
             _requestType = requestType;
             _state = state;            
             _machine = new StateMachine<State, Trigger>(() => _state, s => _state = s);
 
-            _setRequestTrigger = _machine.SetTriggerParameters<int>(Trigger.Request);
-            _setRequestVerifyTrigger = _machine.SetTriggerParameters<int, int, string>(Trigger.RequestVerify);
-            _setSendDealTrigger = _machine.SetTriggerParameters<int>(Trigger.SendDeal);
-            _setSendDealVerifyTrigger = _machine.SetTriggerParameters<int, int, string>(Trigger.SendDealVerify);
-            _setRequestDealTrigger = _machine.SetTriggerParameters<int>(Trigger.RequestDeal);
-            _setRequestDealVerifyTrigger = _machine.SetTriggerParameters<int, int, string>(Trigger.RequestDealVerify);
-            _setCancelTrigger = _machine.SetTriggerParameters<int>(Trigger.Cancel);            
-            _setCloseTrigger = _machine.SetTriggerParameters<int>(Trigger.Close);            
+            _setRequestVerifyTrigger = _machine.SetTriggerParameters<int>(Trigger.RequestVerify);
+            _setSendDealVerifyTrigger = _machine.SetTriggerParameters<int>(Trigger.SendDealVerify);
+            _setRequestDealVerifyTrigger = _machine.SetTriggerParameters<int>(Trigger.RequestDealVerify);
             
             _machine.Configure(State.Open)
                 .PermitIf(Trigger.Request, State.Requested, () => _requestType == (int)RequestType.RequestStore 
@@ -162,78 +229,61 @@ namespace XCCloudService.WorkFlow
                 .PermitIf(Trigger.SendDeal, State.SendDealed, () => _requestType == (int)RequestType.MerchSend, "总店配送");
 
             _machine.Configure(State.Requested)
-                .SubstateOf(State.Open)
-                .OnEntryFrom(_setRequestTrigger, (userId) => OnRequested(userId), "申请")
-                .PermitIf(_setCancelTrigger, State.End, (userId) => IsCanceled(userId), "撤销申请")
-                .PermitIf(_setRequestVerifyTrigger, State.RequestVerifiedPass, (userId, s, note) => (_requestType == (int)RequestType.RequestStore 
-                                                                                                || _requestType == (int)RequestType.RequestMerch) && s == 1)
-                .PermitIf(_setRequestVerifyTrigger, State.RequestVerifiedRefuse, (userId, s, note) => (_requestType == (int)RequestType.RequestStore
-                                                                                                || _requestType == (int)RequestType.RequestMerch) && s == 0)
-                .PermitIf(_setSendDealTrigger, State.SendDealed, (userId) => _requestType == (int)RequestType.MerchRequest);
+                .Permit(Trigger.Cancel, State.Closed)
+                .PermitIf(_setRequestVerifyTrigger, State.RequestVerifiedPass, (s) => (_requestType == (int)RequestType.RequestStore 
+                                                                               || _requestType == (int)RequestType.RequestMerch) && s == 1)
+                .PermitIf(_setRequestVerifyTrigger, State.RequestVerifiedRefuse, (s) => (_requestType == (int)RequestType.RequestStore
+                                                                                 || _requestType == (int)RequestType.RequestMerch) && s == 0)
+                .PermitIf(Trigger.SendDeal, State.SendDealed, () => _requestType == (int)RequestType.MerchRequest);
 
             _machine.Configure(State.RequestVerifiedPass)
-                .SubstateOf(State.Requested)
-                .OnEntryFrom(_setRequestVerifyTrigger, (userId, s, note) => OnRequestVerified(userId, s, note), "申请审核通过")
-                .PermitIf(_setCancelTrigger, State.Requested, (userId) => IsCanceled(userId), "撤销申请审核，返回上一步")
+                .Permit(Trigger.Cancel, State.Requested)
                 .Permit(Trigger.SendDeal, State.SendDealed);
 
             _machine.Configure(State.RequestVerifiedRefuse)
-                .SubstateOf(State.Requested)
-                .OnEntryFrom(_setRequestVerifyTrigger, (userId, s, note) => OnRequestVerified(userId, s, note), "申请审核拒绝")
-                .PermitIf(_setCancelTrigger, State.Requested, (userId) => IsCanceled(userId), "撤销申请审核，返回上一步")
-                .Permit(Trigger.Close, State.End);
+                .Permit(Trigger.Cancel, State.Requested)
+                .Permit(Trigger.Close, State.Closed);
 
             _machine.Configure(State.SendDealed)
-                .SubstateOf(State.RequestVerifiedPass)
-                .OnEntryFrom(_setSendDealTrigger, (userId) => OnSendDealed(userId), "调拨出库")
-                .PermitIf(_setCancelTrigger, State.RequestVerifiedPass, (userId) => _requestType == (int)RequestType.RequestStore && IsCanceled(userId), "撤销调拨出库，返回上一步")
-                .PermitIf(_setCancelTrigger, State.Requested, (userId) => _requestType == (int)RequestType.MerchRequest && IsCanceled(userId), "撤销调拨出库，返回上一步")
-                .PermitIf(_setCancelTrigger, State.Open, (userId) => _requestType == (int)RequestType.MerchSend && IsCanceled(userId), "撤销调拨出库，返回上一步")
-                .PermitIf(_setSendDealVerifyTrigger, State.SendDealVerifiedPass, (userId, s, note) => _requestType == (int)RequestType.RequestStore && s == 1)
-                .PermitIf(_setSendDealVerifyTrigger, State.SendDealVerifiedRefuse, (userId, s, note) => _requestType == (int)RequestType.RequestStore && s == 0)
-                .PermitIf(_setRequestDealTrigger, State.RequestDealed, (userId) => _requestType == (int)RequestType.MerchRequest 
-                                                                                || _requestType == (int)RequestType.MerchSend
-                                                                                || _requestType == (int)RequestType.RequestMerch);
+                .PermitReentry(Trigger.SendDeal)
+                .PermitIf(Trigger.Cancel, State.RequestVerifiedPass, () => _requestType == (int)RequestType.RequestStore, "撤销调拨出库，返回上一步")
+                .PermitIf(Trigger.Cancel, State.Requested, () => _requestType == (int)RequestType.MerchRequest, "撤销调拨出库，返回上一步")
+                .PermitIf(Trigger.Cancel, State.Open, () => _requestType == (int)RequestType.MerchSend, "撤销调拨出库，返回上一步")
+                .PermitIf(_setSendDealVerifyTrigger, State.SendDealVerifiedPass, (s) => _requestType == (int)RequestType.RequestStore && s == 1)
+                .PermitIf(_setSendDealVerifyTrigger, State.SendDealVerifiedRefuse, (s) => _requestType == (int)RequestType.RequestStore && s == 0)
+                .PermitIf(Trigger.RequestDeal, State.RequestDealed, () => _requestType == (int)RequestType.MerchRequest 
+                                                                    || _requestType == (int)RequestType.MerchSend
+                                                                    || _requestType == (int)RequestType.RequestMerch);
 
             _machine.Configure(State.SendDealVerifiedPass)
-                .SubstateOf(State.SendDealed)
-                .OnEntryFrom(_setSendDealVerifyTrigger, (userId, s, note) => OnSendDealVerified(userId, s, note), "调拨出库审核通过")
-                .PermitIf(_setCancelTrigger, State.SendDealed, (userId) => IsCanceled(userId), "撤销调拨出库审核，返回上一步")
+                .Permit(Trigger.Cancel, State.SendDealed)
                 .Permit(Trigger.RequestDeal, State.RequestDealed);
 
             _machine.Configure(State.SendDealVerifiedRefuse)
-                .SubstateOf(State.SendDealed)
-                .OnEntryFrom(_setSendDealVerifyTrigger, (userId, s, note) => OnSendDealVerified(userId, s, note), "调拨出库审核拒绝")
-                .PermitIf(_setCancelTrigger, State.SendDealed, (userId) => IsCanceled(userId), "撤销调拨出库审核，返回上一步")
-                .Permit(Trigger.Close, State.End);
+                .Permit(Trigger.Cancel, State.SendDealed)
+                .Permit(Trigger.Close, State.Closed);
 
             _machine.Configure(State.RequestDealed)
-                .SubstateOf(State.SendDealVerifiedPass)
-                .OnEntryFrom(_setRequestDealTrigger, (userId) => OnRequestDealed(userId), "调拨入库")
-                .PermitIf(_setCancelTrigger, State.SendDealVerifiedPass, (userId) => _requestType == (int)RequestType.RequestStore && IsCanceled(userId), "撤销调拨入库，返回上一步")
-                .PermitIf(_setCancelTrigger, State.SendDealed, (userId) => (_requestType == (int)RequestType.MerchRequest 
-                                                                        || _requestType == (int)RequestType.MerchSend
-                                                                        || _requestType == (int)RequestType.RequestMerch) && IsCanceled(userId), "撤销调拨入库，返回上一步")
-                .PermitIf(_setRequestDealVerifyTrigger, State.RequestDealVerifiedPass, (userId, s, note) => _requestType == (int)RequestType.RequestStore && s == 1)
-                .PermitIf(_setRequestDealVerifyTrigger, State.RequestDealVerifiedRefuse, (userId, s, note) => _requestType == (int)RequestType.RequestStore && s == 0)
-                .PermitIf(Trigger.Close, State.End, () => _requestType == (int)RequestType.MerchRequest 
-                                                    || _requestType == (int)RequestType.MerchSend
-                                                    || _requestType == (int)RequestType.RequestMerch);
+                .PermitIf(Trigger.Cancel, State.SendDealVerifiedPass, () => _requestType == (int)RequestType.RequestStore, "撤销调拨入库，返回上一步")
+                .PermitIf(Trigger.Cancel, State.SendDealed, () => _requestType == (int)RequestType.MerchRequest 
+                                                            || _requestType == (int)RequestType.MerchSend
+                                                            || _requestType == (int)RequestType.RequestMerch, "撤销调拨入库，返回上一步")
+                .PermitIf(_setRequestDealVerifyTrigger, State.RequestDealVerifiedPass, (s) => _requestType == (int)RequestType.RequestStore && s == 1)
+                .PermitIf(_setRequestDealVerifyTrigger, State.RequestDealVerifiedRefuse, (s) => _requestType == (int)RequestType.RequestStore && s == 0)
+                .PermitIf(Trigger.Close, State.Closed, () => _requestType == (int)RequestType.MerchRequest 
+                                                       || _requestType == (int)RequestType.MerchSend
+                                                       || _requestType == (int)RequestType.RequestMerch);
 
             _machine.Configure(State.RequestDealVerifiedPass)
-                .SubstateOf(State.RequestDealed)
-                .OnEntryFrom(_setRequestDealVerifyTrigger, (userId, s, note) => OnRequestDealVerified(userId, s, note), "调拨入库审核通过")
-                .PermitIf(_setCancelTrigger, State.RequestDealed, (userId) => IsCanceled(userId), "撤销调拨入库审核，返回上一步")
-                .Permit(Trigger.Close, State.End);
+                .Permit(Trigger.Cancel, State.RequestDealed)
+                .Permit(Trigger.Close, State.Closed);
 
             _machine.Configure(State.RequestDealVerifiedRefuse)
-                .SubstateOf(State.RequestDealed)
-                .OnEntryFrom(_setRequestDealVerifyTrigger, (userId, s, note) => OnRequestDealVerified(userId, s, note), "调拨入库审核拒绝")
-                .PermitIf(_setCancelTrigger, State.RequestDealed, (userId) => IsCanceled(userId), "撤销调拨入库审核，返回上一步")
-                .Permit(Trigger.Close, State.End);
+                .Permit(Trigger.Cancel, State.RequestDealed)
+                .Permit(Trigger.Close, State.Closed);
 
-            _machine.Configure(State.End)
-                .OnEntryFrom(_setCloseTrigger, (userId) => OnClosed(userId), "流程结束");
+            _machine.Configure(State.Closed)
+                .OnEntry(t => OnClosed(), "流程结束");
         }
 
         #region 属性
@@ -253,58 +303,70 @@ namespace XCCloudService.WorkFlow
 
         #region 事件
 
-        bool IsCanceled(int userId)
-        {
-            var theUser = Base_UserInfoService.I.GetModels(p => p.UserID == userId).FirstOrDefault();            
-            var lastUser = Base_UserInfoService.I.GetModels(p => p.UserID == _userId).FirstOrDefault();
-            //如果用户角色不同不能撤销
-            if (theUser.UserType != lastUser.UserType)
-            {
-                return false;
-            }
-           
-            return true;
-        }
-
-
-        void OnRequested(int userId)
+        void OnClosed()
         {
             
-        }
-
-        void OnRequestVerified(int userId, int state, string note)
-        {
-
-        }
-
-        void OnSendDealed(int userId)
-        {
-
-        }
-
-        void OnSendDealVerified(int userId, int state, string note)
-        {
-
-        }
-
-        void OnRequestDealed(int userId)
-        {
-
-        }
-
-        void OnRequestDealVerified(int userId, int state, string note)
-        {
-
-        }
-        
-        void OnClosed(int userId)
-        {
-
         }
         
         #endregion
 
         #region 方法
+
+        private bool IsValidUser(int userId, out string errMsg)
+        {
+            errMsg = string.Empty;
+            var user = Base_UserInfoService.I.GetModels(p => p.UserID == userId).FirstOrDefault();
+            if (user == null)
+            {
+                errMsg = "当前操作用户不存在";
+                return false;
+            }
+
+            return true;
+        }
+
+        private bool AddWorkEntry(int userId, Trigger t, State s, out string errMsg)
+        {
+            errMsg = string.Empty;
+
+            try
+            {
+                //判断操作用户是否存在
+                if (!IsValidUser(userId, out errMsg)) return false;
+
+                //获取工作节点
+                var workNode = Data_WorkFlow_NodeService.I.GetModels(p => p.WorkID == _workId && p.OrderNumber == (int)t).FirstOrDefault();
+                if (workNode == null)
+                {
+                    errMsg = "当前工作节点不存在";
+                    return false;
+                }
+
+                //生成工作记录
+                var nodeId = workNode.ID;                
+                var entry = new Data_WorkFlow_Entry();
+                entry.WorkID = _workId;
+                entry.EventID = _eventId;
+                entry.EventType = (int)WorkflowEventType.GoodRequest;
+                entry.NodeID = nodeId;
+                entry.UserID = userId;
+                entry.State = (int)s;
+                entry.CreateTime = DateTime.Now;
+                entry.Note = s.GetDescription();
+                if (!Data_WorkFlow_EntryService.I.Add(entry))
+                {
+                    errMsg = t.GetDescription() + "失败";
+                    return false;
+                }
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                errMsg = e.Message;
+                return false;
+            }            
+        }
 
         public bool Request(int userId, out string errMsg)
         {
@@ -314,7 +376,10 @@ namespace XCCloudService.WorkFlow
             {
                 if (_machine.CanFire(Trigger.Request))
                 {
-                    _machine.Fire(_setRequestTrigger, userId);
+                    if (!AddWorkEntry(userId, Trigger.Request, State.Requested, out errMsg)) return false;
+
+                    _machine.Fire(Trigger.Request);  
+                  
                     return true;
                 }
                 else
@@ -324,13 +389,13 @@ namespace XCCloudService.WorkFlow
             }
             catch (Exception e)
             {
-                errMsg = e.Message;
+                errMsg = e.Message;                
             }
-            
+
             return false;
         }
 
-        public bool RequestVerify(int userId, int s, string note, out string errMsg)
+        public bool RequestVerify(int userId, int state, string note, out string errMsg)
         {
             errMsg = string.Empty;
 
@@ -338,7 +403,10 @@ namespace XCCloudService.WorkFlow
             {
                 if (_machine.CanFire(Trigger.RequestVerify))
                 {
-                    _machine.Fire(_setRequestVerifyTrigger, userId, s, note);
+                    if (!AddWorkEntry(userId, Trigger.RequestVerify, state == 1 ? State.RequestVerifiedPass : State.RequestVerifiedRefuse, out errMsg)) return false;
+
+                    _machine.Fire(_setRequestVerifyTrigger, state);
+
                     return true;
                 }
                 else
@@ -362,7 +430,10 @@ namespace XCCloudService.WorkFlow
             {
                 if (_machine.CanFire(Trigger.SendDeal))
                 {
-                    _machine.Fire(_setSendDealTrigger, userId);
+                    if (!AddWorkEntry(userId, Trigger.SendDeal, State.SendDealed, out errMsg)) return false;
+
+                    _machine.Fire(Trigger.SendDeal);
+
                     return true;
                 }
                 else
@@ -378,7 +449,7 @@ namespace XCCloudService.WorkFlow
             return false;
         }
 
-        public bool SendDealVerify(int userId, int s, string note, out string errMsg)
+        public bool SendDealVerify(int userId, int state, string note, out string errMsg)
         {
             errMsg = string.Empty;
 
@@ -386,7 +457,10 @@ namespace XCCloudService.WorkFlow
             {
                 if (_machine.CanFire(Trigger.SendDealVerify))
                 {
-                    _machine.Fire(_setSendDealVerifyTrigger, userId, s, note);
+                    if (!AddWorkEntry(userId, Trigger.SendDealVerify, state == 1 ? State.SendDealVerifiedPass : State.SendDealVerifiedRefuse, out errMsg)) return false;
+
+                    _machine.Fire(_setSendDealVerifyTrigger, state);
+
                     return true;
                 }
                 else
@@ -410,7 +484,10 @@ namespace XCCloudService.WorkFlow
             {
                 if (_machine.CanFire(Trigger.RequestDeal))
                 {
-                    _machine.Fire(_setRequestDealTrigger, userId);
+                    if (!AddWorkEntry(userId, Trigger.RequestDeal, State.RequestDealed, out errMsg)) return false;
+
+                    _machine.Fire(Trigger.RequestDeal);
+
                     return true;
                 }
                 else
@@ -426,7 +503,7 @@ namespace XCCloudService.WorkFlow
             return false;
         }
 
-        public bool RequestDealVerify(int userId, int s, string note, out string errMsg)
+        public bool RequestDealVerify(int userId, int state, string note, out string errMsg)
         {
             errMsg = string.Empty;
 
@@ -434,7 +511,10 @@ namespace XCCloudService.WorkFlow
             {
                 if (_machine.CanFire(Trigger.RequestDealVerify))
                 {
-                    _machine.Fire(_setRequestDealVerifyTrigger, userId, s, note);
+                    if (!AddWorkEntry(userId, Trigger.RequestDealVerify, state == 1 ? State.RequestDealVerifiedPass : State.RequestDealVerifiedRefuse, out errMsg)) return false;
+
+                    _machine.Fire(_setRequestDealVerifyTrigger, state);
+
                     return true;
                 }
                 else
@@ -455,10 +535,48 @@ namespace XCCloudService.WorkFlow
             errMsg = string.Empty;
 
             try
-            {
+            {                
                 if (_machine.CanFire(Trigger.Cancel))
                 {
-                    _machine.Fire(_setCancelTrigger, userId);
+                    if (!IsValidUser(userId, out errMsg)) return false;
+                        
+                    var theUser = Base_UserInfoService.I.GetModels(p => p.UserID == userId).FirstOrDefault();
+                    
+                    //获取当前工作记录
+                    var entry = Data_WorkFlow_EntryService.I.GetModels(p => p.EventType == (int)WorkflowEventType.GoodRequest && p.WorkID == _workId && p.EventID == _eventId).OrderByDescending(or => or.CreateTime).FirstOrDefault();
+                    if (entry != null)
+                    {
+                        //获取当前工作用户
+                        var workUserId = entry.UserID;
+                        var workUser = Base_UserInfoService.I.GetModels(p => p.UserID == workUserId).FirstOrDefault();
+                        if (workUser == null)
+                        {
+                            errMsg = "当前工作用户不存在";
+                            return false;
+                        }
+                        
+                        //如果用户角色不同不能撤销
+                        if (theUser.UserType != workUser.UserType)
+                        {
+                            errMsg = "当前操作用户不能执行撤销操作";
+                            return false;
+                        }
+
+                        //不能撤销其他门店用户流程
+                        if (workUser.MerchID != theUser.MerchID || workUser.StoreID != theUser.StoreID)
+                        {
+                            errMsg = "不能撤销其他门店的工作";
+                            return false;
+                        }
+
+                        if (!Data_WorkFlow_EntryService.I.Delete(entry))
+                        {
+                            errMsg = "撤销工作失败";
+                            return false;
+                        }
+                    }
+                    
+                    _machine.Fire(Trigger.Cancel);
                     return true;
                 }
                 else
@@ -480,9 +598,12 @@ namespace XCCloudService.WorkFlow
 
             try
             {
-                if (_machine.CanFire(Trigger.Close))
+                if (_machine.CanFire(Trigger.Request))
                 {
-                    _machine.Fire(_setCloseTrigger, userId);
+                    if (!AddWorkEntry(userId, Trigger.Close, State.Closed, out errMsg)) return false;
+
+                    _machine.Fire(Trigger.Request);
+
                     return true;
                 }
                 else

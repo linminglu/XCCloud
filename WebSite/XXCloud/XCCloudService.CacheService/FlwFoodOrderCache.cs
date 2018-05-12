@@ -9,11 +9,16 @@ namespace XCCloudService.CacheService
 {
     public class FlwFoodOrderCache
     {
-        private static Hashtable _foodOrderHt = new Hashtable();
+        private static Dictionary<string, object> _foodOrderHt = new Dictionary<string, object>();
+
+        public static Dictionary<string, object> FoodOrderHt
+        {
+            get { return _foodOrderHt; }
+        }
 
         public static void Add(FoodOrderCacheModel model)
         {
-            _foodOrderHt.Add(model.OrderId, model);
+            _foodOrderHt.Add(model.FlwOrderId, model);
         }
 
         public static FoodOrderCacheModel GetModel(string orderId)
@@ -34,11 +39,11 @@ namespace XCCloudService.CacheService
 
     public class FoodOrderCacheModel
     {
-        public FoodOrderCacheModel(string merchId, string storeId, string orderId, int customerType, int icCardId,string workStation)
+        public FoodOrderCacheModel(string merchId, string storeId, string flwOrderId, int customerType, int icCardId, string workStation)
         {
             this.MerchId = merchId;
             this.StoreId = storeId;
-            this.OrderId = orderId;
+            this.FlwOrderId = flwOrderId;
             this.CustomerType = customerType;
             this.ICCardId = icCardId;
             this.WorkStation = workStation;
@@ -49,7 +54,7 @@ namespace XCCloudService.CacheService
 
         public string StoreId { set; get; }
 
-        public string OrderId { set; get; }
+        public string FlwOrderId { set; get; }
 
         public DateTime CreateTime { set; get; }
 
