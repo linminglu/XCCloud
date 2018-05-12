@@ -14,25 +14,20 @@
         <table class="layui-hide" id="memberBalanceTb"  lay-filter="memberBalanceTb"></table>
     </div>
 </div>
-<div id="openModel" style="display:none;padding: 0 15px">
+<div id="openModel" style="display:none;padding: 0 15px;max-height: 550px;overflow-y: auto">
     <form class="layui-form ">
-        <div class="layui-col-md7" style="height: 300px;border: 1px dashed #aaa; padding: 15px;">
-            <div class="layui-form-item">
-                <div class="layui-inline">
-                    <label class="layui-form-label">类别编号</label>
-                    <div class="layui-input-inline">
-                        <input type="text" class="layui-input" id="TypeID" name="unchange">
-                    </div>
-                </div>
-                <div class="layui-inline">
+        <div class="layui-col-md7" style="height: 400px;border: 1px dashed #aaa; padding: 15px;">
+            <!--<div class="layui-form-item">-->
+
+                <div class="layui-form-item">
                     <label class="layui-form-label">类别名称</label>
-                    <div class="layui-input-inline">
+                    <div class="layui-input-block">
                         <input type="text" class="layui-input" id="TypeName" name="unchange">
                     </div>
                 </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label">关联类别</label>
-                    <div class="layui-input-inline">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">映射类别</label>
+                    <div class="layui-input-block">
                         <select id="HKType" lay-filter="HKType">
                             <option >-请选择-</option>
                             <option value="0" >不绑定</option>
@@ -42,15 +37,32 @@
                         </select>
                     </div>
                 </div>
-                <div class="layui-inline">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">保留小数位</label>
+                    <div class="layui-input-block">
+                        <input type="text" class="layui-input" id="saveFloat" name="unchange">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" style="padding:8px 0;width: 90px">保留小数规则</label>
+                    <div class="layui-input-block">
+                        <select id="saveFloatRule" name="unchange">
+                            <option >-请选择-</option>
+                            <option value="0">全部舍弃</option>
+                            <option value="1">全部保留</option>
+                            <option value="2">四舍五入</option>
+                      </select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
                     <label class="layui-form-label" style="height: 185px;">适用说明</label>
-                    <div class="layui-input-inline">
+                    <div class="layui-input-block">
                         <textarea name="" id="Note" class="layui-textarea" style="height: 135px;"></textarea>
                     </div>
                 </div>
-            </div>
+            <!--</div>-->
         </div>
-        <div class="layui-col-md5" style="height: 300px;overflow-y: scroll;border: 1px dashed #aaa ;padding: 15px;border-left: none;">
+        <div class="layui-col-md5" style="height: 400px;overflow-y: scroll;border: 1px dashed #aaa ;padding: 15px;border-left: none;">
             <div class="layui-form-item">
                 <div class="layui-inline" style="">
                     <div class="layui-input-inline" id="balanceStoreList">
