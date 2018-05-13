@@ -75,6 +75,10 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         /// 调拨说明
         /// </summary>
         public string Note { get; set; }
+        /// <summary>
+        /// 允许的操作
+        /// </summary>
+        public IEnumerable<int> PermittedTriggers { get; set; }
     }
 
 }

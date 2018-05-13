@@ -70,81 +70,73 @@ namespace XXCloudService.Test.WorkFlowTest
         {
             int eventId = Convert.ToInt32(p["eventId"]);
             int userId = Convert.ToInt32(p["userId"]);
-            int requestType = Convert.ToInt32(p["requestType"]);
 
-            var wf = new GoodReqWorkFlow(requestType);
+            var wf = new GoodReqWorkFlow(eventId);
             var errMsg = string.Empty;
-            var ret = wf.Request(eventId, userId, out errMsg);
+            var ret = wf.Request(userId, out errMsg);
         }
         private void fireGoodRequestV(Dictionary<string, string> p)
         {
             int eventId = Convert.ToInt32(p["eventId"]);
             int userId = Convert.ToInt32(p["userId"]);
-            int requestType = Convert.ToInt32(p["requestType"]);
 
-            var wf = new GoodReqWorkFlow(requestType);
+            var wf = new GoodReqWorkFlow(eventId);
             var errMsg = string.Empty;
-            var ret = wf.RequestVerify(eventId, userId, 1, string.Empty, out errMsg);
+            var ret = wf.RequestVerify(userId, 1, string.Empty, out errMsg);
         }
         private void fireGoodOut(Dictionary<string, string> p)
         {
             int eventId = Convert.ToInt32(p["eventId"]);
             int userId = Convert.ToInt32(p["userId"]);
-            int requestType = Convert.ToInt32(p["requestType"]);
 
-            var wf = new GoodReqWorkFlow(requestType);
+            var wf = new GoodReqWorkFlow(eventId);
             var errMsg = string.Empty;
-            var ret = wf.SendDeal(eventId, userId, out errMsg);
+            var ret = wf.SendDeal(userId, out errMsg);
         }
         private void fireGoodOutV(Dictionary<string, string> p)
         {
             int eventId = Convert.ToInt32(p["eventId"]);
             int userId = Convert.ToInt32(p["userId"]);
-            int requestType = Convert.ToInt32(p["requestType"]);
 
-            var wf = new GoodReqWorkFlow(requestType);
+            var wf = new GoodReqWorkFlow(eventId);
             var errMsg = string.Empty;
-            var ret = wf.SendDealVerify(eventId, userId, 1, string.Empty, out errMsg);
+            var ret = wf.SendDealVerify(userId, 1, string.Empty, out errMsg);
         }
         private void fireGoodIn(Dictionary<string, string> p)
         {
             int eventId = Convert.ToInt32(p["eventId"]);
             int userId = Convert.ToInt32(p["userId"]);
-            int requestType = Convert.ToInt32(p["requestType"]);
 
-            var wf = new GoodReqWorkFlow(requestType);
+            var wf = new GoodReqWorkFlow(eventId);
             var errMsg = string.Empty;
-            var ret = wf.RequestDeal(eventId, userId, out errMsg);
+            var ret = wf.RequestDeal(userId, out errMsg);
         }
         private void fireGoodInV(Dictionary<string, string> p)
         {
             int eventId = Convert.ToInt32(p["eventId"]);
             int userId = Convert.ToInt32(p["userId"]);
-            int requestType = Convert.ToInt32(p["requestType"]);
 
-            var wf = new GoodReqWorkFlow(requestType);
+            var wf = new GoodReqWorkFlow(eventId);
             var errMsg = string.Empty;
-            var ret = wf.RequestDealVerify(eventId, userId, 1, string.Empty, out errMsg);
+            var ret = wf.RequestDealVerify(userId, 1, string.Empty, out errMsg);
         }
         private void fireCancel(Dictionary<string, string> p)
         {
             int eventId = Convert.ToInt32(p["eventId"]);
             int userId = Convert.ToInt32(p["userId"]);
-            int requestType = Convert.ToInt32(p["requestType"]);
 
-            var wf = new GoodReqWorkFlow(requestType);
+            var wf = new GoodReqWorkFlow(eventId);
             var errMsg = string.Empty;
-            var ret = wf.Cancel(eventId, userId, out errMsg);
+            var ret = wf.Cancel(userId, out errMsg);
         }
         private void fireClose(Dictionary<string, string> p)
         {
             int eventId = Convert.ToInt32(p["eventId"]);
             int userId = Convert.ToInt32(p["userId"]);
-            int requestType = Convert.ToInt32(p["requestType"]);
 
-            var wf = new GoodReqWorkFlow(requestType);
+            var wf = new GoodReqWorkFlow(eventId);
             var errMsg = string.Empty;
-            var ret = wf.Close(eventId, userId, out errMsg);
+            var ret = wf.Close(userId, out errMsg);
         }
 
         public bool IsReusable

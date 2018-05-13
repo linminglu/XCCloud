@@ -23,57 +23,49 @@
         }        
 
         function fireGoodRequest() {
-            var input = document.getElementById('requestType');
-            var parasObj = { "eventId": 1, "userId": 10, "requestType": input.value };
+            var parasObj = { "eventId": 1, "userId": 10 };
             var url = "/Test/WorkFlowTest/WorkFlowHandler.ashx?method=fireGoodRequest";
             var parasJson = JSON.stringify(parasObj);
             common(url, parasJson);
         }
         function fireGoodRequestV() {
-            var input = document.getElementById('requestType');
-            var parasObj = { "eventId": 1, "userId": 10, "requestType": input.value };
+            var parasObj = { "eventId": 1, "userId": 10 };
             var url = "/Test/WorkFlowTest/WorkFlowHandler.ashx?method=fireGoodRequestV";
             var parasJson = JSON.stringify(parasObj);
             common(url, parasJson);
         }
         function fireGoodOut() {
-            var input = document.getElementById('requestType');
-            var parasObj = { "eventId": 1, "userId": 10, "requestType": input.value };
+            var parasObj = { "eventId": 1, "userId": 10 };
             var url = "/Test/WorkFlowTest/WorkFlowHandler.ashx?method=fireGoodOut";
             var parasJson = JSON.stringify(parasObj);
             common(url, parasJson);
         }
         function fireGoodOutV() {
-            var input = document.getElementById('requestType');
-            var parasObj = { "eventId": 1, "userId": 10, "requestType": input.value };
+            var parasObj = { "eventId": 1, "userId": 10 };
             var url = "/Test/WorkFlowTest/WorkFlowHandler.ashx?method=fireGoodOutV";
             var parasJson = JSON.stringify(parasObj);
             common(url, parasJson);
         }
         function fireGoodIn() {
-            var input = document.getElementById('requestType');
-            var parasObj = { "eventId": 1, "userId": 10, "requestType": input.value };
+            var parasObj = { "eventId": 1, "userId": 10 };
             var url = "/Test/WorkFlowTest/WorkFlowHandler.ashx?method=fireGoodIn";
             var parasJson = JSON.stringify(parasObj);
             common(url, parasJson);
         }
         function fireGoodInV() {
-            var input = document.getElementById('requestType');
-            var parasObj = { "eventId": 1, "userId": 10, "requestType": input.value };
+            var parasObj = { "eventId": 1, "userId": 10 };
             var url = "/Test/WorkFlowTest/WorkFlowHandler.ashx?method=fireGoodInV";
             var parasJson = JSON.stringify(parasObj);
             common(url, parasJson);
         }
         function fireCancel() {
-            var input = document.getElementById('requestType');
-            var parasObj = { "eventId": 1, "userId": 10, "requestType": input.value };
+            var parasObj = { "eventId": 1, "userId": 10 };
             var url = "/Test/WorkFlowTest/WorkFlowHandler.ashx?method=fireCancel";
             var parasJson = JSON.stringify(parasObj);
             common(url, parasJson);
         }
         function fireClose() {
-            var input = document.getElementById('requestType');
-            var parasObj = { "eventId": 1, "userId": 10, "requestType": input.value };
+            var parasObj = { "eventId": 1, "userId": 10 };
             var url = "/Test/WorkFlowTest/WorkFlowHandler.ashx?method=fireClose";
             var parasJson = JSON.stringify(parasObj);
             common(url, parasJson);
@@ -83,7 +75,6 @@
 </head>
 <body>
     <form id="sendForm">
-        <input id="requestType" placeholder="调拨方式" value="0" />
         <input type="button" value="申请" onclick="fireGoodRequest()" />
         <input type="button" value="申请审核" onclick="fireGoodRequestV()" />
         <input type="button" value="出库" onclick="fireGoodOut()" />

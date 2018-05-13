@@ -17,6 +17,7 @@ using XCCloudService.Common.Extensions;
 using XCCloudService.DBService.BLL;
 using XCCloudService.Model.CustomModel.XCCloud;
 using XCCloudService.Model.XCCloud;
+using XCCloudService.WorkFlow;
 using XXCloudService.Api.XCCloud.Common;
 
 namespace XXCloudService.Api.XCCloud
@@ -557,6 +558,11 @@ namespace XXCloudService.Api.XCCloud
                 #endregion
 
                 var list = Base_GoodsInfoService.I.SqlQuery<Data_GoodRequestList>(sql, parameters).ToList();
+                foreach (var model in list)
+                {
+                    model.PermittedTriggers = new GoodReqWorkFlow(model.ID).PermittedTriggers.Cast<int>();
+                }
+                
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, list);
             }
             catch (Exception e)

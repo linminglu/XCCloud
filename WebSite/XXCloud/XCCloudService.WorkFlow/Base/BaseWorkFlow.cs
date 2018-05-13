@@ -23,22 +23,22 @@ namespace XCCloudService.WorkFlow.Base
                 return _machine.State;
             }            
         }
-        
-        public string Description
-        {
-            get
-            {
-                return _description;
-            }
-        }
 
         public IEnumerable<TTrigger> PermittedTriggers
         {
             get
             {
                 return _machine.PermittedTriggers;
-            }
+            } 
         }
+
+        public string Description
+        {
+            get
+            {
+                return _description;
+            }
+        }        
 
         public DateTime LastUpdate
         {
