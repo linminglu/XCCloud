@@ -32,6 +32,14 @@ namespace XCCloudService.WorkFlow.Base
             }
         }
 
+        public IEnumerable<TTrigger> PermittedTriggers
+        {
+            get
+            {
+                return _machine.PermittedTriggers;
+            }
+        }
+
         public DateTime LastUpdate
         {
             get

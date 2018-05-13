@@ -147,93 +147,79 @@ namespace XCCloudService.WorkFlow
         StateMachine<State, Trigger>.TriggerWithParameters<int> _setSendDealVerifyTrigger;
         StateMachine<State, Trigger>.TriggerWithParameters<int> _setRequestDealVerifyTrigger;        
 
-        private int _workId;
-        private int _eventId;
         private int _requestType;
 
         /// <summary>
-        /// 获取工作流编号，如果没有就生成配置信息
+        /// 获取工作流状态
         /// </summary>
         /// <param name="eventId"></param>
         /// <returns></returns>
-        private int GetWorkId(int eventId)
+        private bool GetWorkState(int eventId, out int workId, out State state, out string errMsg)
         {
-            if (!Data_WorkFlow_EntryService.I.Any(a => a.EventID == eventId && a.EventType == (int)WorkflowEventType.GoodRequest))
-            {
-                if (!Data_GoodRequestService.I.Any(a => a.ID == eventId))
-                {
-                    return 0;
-                }
+            errMsg = string.Empty;
+            workId = 0;
+            state = State.Open;
 
+            if (!Data_GoodRequestService.I.Any(a => a.ID == eventId))
+            {
+                errMsg = "该礼品调拨单不存在";
+                return false;
+            }
+
+            if (Data_WorkFlow_EntryService.I.Any(a => a.EventID == eventId && a.EventType == (int)WorkflowEventType.GoodRequest))
+            {
+                //获取当前工作信息
+                var lastEntry = Data_WorkFlow_EntryService.I.GetModels(a => a.EventID == eventId && a.EventType == (int)WorkflowEventType.GoodRequest).OrderByDescending(or => or.CreateTime).FirstOrDefault();
+                workId = lastEntry.WorkID ?? 0;
+                state = (State)(lastEntry.State ?? 0);                
+            }
+
+            var id = workId;
+            if (!Data_WorkFlowConfigService.I.Any(a => a.ID == id))
+            {
                 var merchId = Data_GoodRequestService.I.GetModels(p => p.ID == eventId).FirstOrDefault().MerchID;
-                if (!Data_WorkFlowConfigService.I.Any(a => a.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && a.WorkType == (int)WorkflowType.GoodRequest))
+
+                //开启EF事务
+                using (TransactionScope ts = new TransactionScope())
                 {
-                    //开启EF事务
-                    using (TransactionScope ts = new TransactionScope())
+                    try
                     {
-                        try
+                        var configModel = new Data_WorkFlowConfig { MerchID = merchId, WorkType = (int)WorkflowType.GoodRequest, State = 1 };
+                        if (!Data_WorkFlowConfigService.I.Add(configModel))
                         {
-                            var configModel = new Data_WorkFlowConfig { MerchID = merchId, WorkType = (int)WorkflowType.GoodRequest, State = 1 };
-                            if (!Data_WorkFlowConfigService.I.Add(configModel))
-                            {
-                                return 0;
-                            }
-
-                            foreach (Trigger t in Enum.GetValues(typeof(Trigger)))
-                            {
-                                var nodeModel = new Data_WorkFlow_Node();
-                                nodeModel.WorkID = configModel.ID;
-                                nodeModel.OrderNumber = (int)t;
-                                Data_WorkFlow_NodeService.I.AddModel(nodeModel);
-                            }
-                            if (!Data_WorkFlow_NodeService.I.SaveChanges())
-                            {
-                                return 0;
-                            }
-
-                            ts.Complete();
-                            return configModel.ID;
-                        }                        
-                        catch
-                        {
-                            return 0;
+                            errMsg = "添加工作流配置信息失败";
+                            return false;
                         }
+
+                        foreach (Trigger t in Enum.GetValues(typeof(Trigger)))
+                        {
+                            var nodeModel = new Data_WorkFlow_Node();
+                            nodeModel.WorkID = configModel.ID;
+                            nodeModel.OrderNumber = (int)t;
+                            Data_WorkFlow_NodeService.I.AddModel(nodeModel);
+                        }
+                        if (!Data_WorkFlow_NodeService.I.SaveChanges())
+                        {
+                            errMsg = "添加工作流节点信息失败";
+                            return false;
+                        }
+
+                        workId = configModel.ID;
+                        ts.Complete();
                     }
-                    
+                    catch (Exception e)
+                    {
+                        errMsg = e.Message;
+                        return false;
+                    }
                 }
-                else
-                {
-                    return Data_WorkFlowConfigService.I.GetModels(a => a.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && a.WorkType == (int)WorkflowType.GoodRequest).FirstOrDefault().ID;
-                }
             }
-            else
-            {
-                return Data_WorkFlow_EntryService.I.GetModels(a => a.EventID == eventId && a.EventType == (int)WorkflowEventType.GoodRequest).FirstOrDefault().WorkID ?? 0;
-            }
-        }
-        /// <summary>
-        /// 获取工作流编号，如果没有就生成配置信息
-        /// </summary>
-        /// <param name="eventId"></param>
-        /// <returns></returns>
-        private State GetWorkState(int eventId)
-        {
-            if (!Data_WorkFlow_EntryService.I.Any(a => a.EventID == eventId && a.EventType == (int)WorkflowEventType.GoodRequest))
-            {
-                return State.Open;
-            }
-            else
-            {
-                return (State)(Data_WorkFlow_EntryService.I.GetModels(a => a.EventID == eventId && a.EventType == (int)WorkflowEventType.GoodRequest).FirstOrDefault().State ?? 0);
 
-            }
+            return true;
         }
-
-        public GoodReqWorkFlow(int eventId, int requestType)
+        
+        public GoodReqWorkFlow(int requestType)
         {
-            _workId = GetWorkId(eventId);
-            _state = GetWorkState(eventId);
-            _eventId = eventId;
             _requestType = requestType;            
             _machine = new StateMachine<State, Trigger>(() => _state, s => _state = s);
 
@@ -280,6 +266,7 @@ namespace XCCloudService.WorkFlow
                 .Permit(Trigger.Close, State.Closed);
 
             _machine.Configure(State.RequestDealed)
+                .PermitReentry(Trigger.RequestDeal)                
                 .PermitIf(Trigger.Cancel, State.SendDealVerifiedPass, () => _requestType == (int)RequestType.RequestStore, "撤销调拨入库，返回上一步")
                 .PermitIf(Trigger.Cancel, State.SendDealed, () => _requestType == (int)RequestType.MerchRequest 
                                                             || _requestType == (int)RequestType.MerchSend
@@ -340,7 +327,7 @@ namespace XCCloudService.WorkFlow
             return true;
         }
 
-        private bool AddWorkEntry(int userId, Trigger t, State s, out string errMsg, string note = "")
+        private bool AddWorkEntry(int eventId, int workId, int userId, Trigger t, State s, out string errMsg, string note = "")
         {
             errMsg = string.Empty;
 
@@ -350,29 +337,32 @@ namespace XCCloudService.WorkFlow
                 if (!IsValidUser(userId, out errMsg)) return false;
 
                 //获取工作节点
-                var workNode = Data_WorkFlow_NodeService.I.GetModels(p => p.WorkID == _workId && p.OrderNumber == (int)t).FirstOrDefault();
+                var workNode = Data_WorkFlow_NodeService.I.GetModels(p => p.WorkID == workId && p.OrderNumber == (int)t).FirstOrDefault();
                 if (workNode == null)
                 {
                     errMsg = "当前工作节点不存在";
                     return false;
                 }
 
-                //生成工作记录
-                var nodeId = workNode.ID;                
-                var entry = new Data_WorkFlow_Entry();
-                entry.WorkID = _workId;
-                entry.EventID = _eventId;
-                entry.EventType = (int)WorkflowEventType.GoodRequest;
-                entry.NodeID = nodeId;
-                entry.UserID = userId;
-                entry.State = (int)s;
-                entry.CreateTime = DateTime.Now;
-                entry.Note = s.GetDescription() + (!string.IsNullOrEmpty(note) ? " " + note : string.Empty);
-                if (!Data_WorkFlow_EntryService.I.Add(entry))
+                if (!Data_WorkFlow_EntryService.I.Any(p => p.EventType == (int)WorkflowEventType.GoodRequest && p.WorkID == workId && p.EventID == eventId && p.State == (int)s))
                 {
-                    errMsg = t.GetDescription() + "失败";
-                    return false;
-                }
+                    //生成工作记录
+                    var nodeId = workNode.ID;
+                    var entry = new Data_WorkFlow_Entry();
+                    entry.WorkID = workId;
+                    entry.EventID = eventId;
+                    entry.EventType = (int)WorkflowEventType.GoodRequest;
+                    entry.NodeID = nodeId;
+                    entry.UserID = userId;
+                    entry.State = (int)s;
+                    entry.CreateTime = DateTime.Now;
+                    entry.Note = s.GetDescription() + (!string.IsNullOrEmpty(note) ? " " + note : string.Empty);
+                    if (!Data_WorkFlow_EntryService.I.Add(entry))
+                    {
+                        errMsg = t.GetDescription() + "失败";
+                        return false;
+                    }
+                }                
 
                 return true;
             }
@@ -383,15 +373,18 @@ namespace XCCloudService.WorkFlow
             }            
         }
 
-        public bool Request(int userId, out string errMsg)
+        public bool Request(int eventId, int userId, out string errMsg)
         {
-            errMsg = string.Empty;
+            errMsg = string.Empty;            
 
             try
             {
+                int workId = 0;
+                if (!GetWorkState(eventId, out workId, out _state, out errMsg)) return false;
+                
                 if (_machine.CanFire(Trigger.Request))
                 {
-                    if (!AddWorkEntry(userId, Trigger.Request, State.Requested, out errMsg)) return false;
+                    if (!AddWorkEntry(eventId, workId, userId, Trigger.Request, State.Requested, out errMsg)) return false;
 
                     _machine.Fire(Trigger.Request);  
                   
@@ -410,15 +403,18 @@ namespace XCCloudService.WorkFlow
             return false;
         }
 
-        public bool RequestVerify(int userId, int state, string note, out string errMsg)
+        public bool RequestVerify(int eventId, int userId, int state, string note, out string errMsg)
         {
             errMsg = string.Empty;
 
             try
             {
+                int workId = 0;
+                if (!GetWorkState(eventId, out workId, out _state, out errMsg)) return false;
+
                 if (_machine.CanFire(Trigger.RequestVerify))
                 {
-                    if (!AddWorkEntry(userId, Trigger.RequestVerify, state == 1 ? State.RequestVerifiedPass : State.RequestVerifiedRefuse, out errMsg, note)) return false;
+                    if (!AddWorkEntry(eventId, workId, userId, Trigger.RequestVerify, state == 1 ? State.RequestVerifiedPass : State.RequestVerifiedRefuse, out errMsg, note)) return false;
 
                     _machine.Fire(_setRequestVerifyTrigger, state);
 
@@ -437,15 +433,18 @@ namespace XCCloudService.WorkFlow
             return false;
         }
 
-        public bool SendDeal(int userId, out string errMsg)
+        public bool SendDeal(int eventId, int userId, out string errMsg)
         {
             errMsg = string.Empty;
 
             try
             {
+                int workId = 0;
+                if (!GetWorkState(eventId, out workId, out _state, out errMsg)) return false;
+
                 if (_machine.CanFire(Trigger.SendDeal))
                 {
-                    if (!AddWorkEntry(userId, Trigger.SendDeal, State.SendDealed, out errMsg)) return false;
+                    if (!AddWorkEntry(eventId, workId, userId, Trigger.SendDeal, State.SendDealed, out errMsg)) return false;
 
                     _machine.Fire(Trigger.SendDeal);
 
@@ -464,15 +463,18 @@ namespace XCCloudService.WorkFlow
             return false;
         }
 
-        public bool SendDealVerify(int userId, int state, string note, out string errMsg)
+        public bool SendDealVerify(int eventId, int userId, int state, string note, out string errMsg)
         {
             errMsg = string.Empty;
 
             try
             {
+                int workId = 0;
+                if (!GetWorkState(eventId, out workId, out _state, out errMsg)) return false;
+
                 if (_machine.CanFire(Trigger.SendDealVerify))
                 {
-                    if (!AddWorkEntry(userId, Trigger.SendDealVerify, state == 1 ? State.SendDealVerifiedPass : State.SendDealVerifiedRefuse, out errMsg, note)) return false;
+                    if (!AddWorkEntry(eventId, workId, userId, Trigger.SendDealVerify, state == 1 ? State.SendDealVerifiedPass : State.SendDealVerifiedRefuse, out errMsg, note)) return false;
 
                     _machine.Fire(_setSendDealVerifyTrigger, state);
 
@@ -491,15 +493,18 @@ namespace XCCloudService.WorkFlow
             return false;
         }
 
-        public bool RequestDeal(int userId, out string errMsg)
+        public bool RequestDeal(int eventId, int userId, out string errMsg)
         {
             errMsg = string.Empty;
 
             try
             {
+                int workId = 0;
+                if (!GetWorkState(eventId, out workId, out _state, out errMsg)) return false;
+
                 if (_machine.CanFire(Trigger.RequestDeal))
                 {
-                    if (!AddWorkEntry(userId, Trigger.RequestDeal, State.RequestDealed, out errMsg)) return false;
+                    if (!AddWorkEntry(eventId, workId, userId, Trigger.RequestDeal, State.RequestDealed, out errMsg)) return false;
 
                     _machine.Fire(Trigger.RequestDeal);
 
@@ -518,15 +523,18 @@ namespace XCCloudService.WorkFlow
             return false;
         }
 
-        public bool RequestDealVerify(int userId, int state, string note, out string errMsg)
+        public bool RequestDealVerify(int eventId, int userId, int state, string note, out string errMsg)
         {
             errMsg = string.Empty;
 
             try
             {
+                int workId = 0;
+                if (!GetWorkState(eventId, out workId, out _state, out errMsg)) return false;
+
                 if (_machine.CanFire(Trigger.RequestDealVerify))
                 {
-                    if (!AddWorkEntry(userId, Trigger.RequestDealVerify, state == 1 ? State.RequestDealVerifiedPass : State.RequestDealVerifiedRefuse, out errMsg, note)) return false;
+                    if (!AddWorkEntry(eventId, workId, userId, Trigger.RequestDealVerify, state == 1 ? State.RequestDealVerifiedPass : State.RequestDealVerifiedRefuse, out errMsg, note)) return false;
 
                     _machine.Fire(_setRequestDealVerifyTrigger, state);
 
@@ -545,20 +553,24 @@ namespace XCCloudService.WorkFlow
             return false;
         }
 
-        public bool Cancel(int userId, out string errMsg)
+        public bool Cancel(int eventId, int userId, out string errMsg)
         {
             errMsg = string.Empty;
 
             try
-            {                
+            {
+                int workId = 0;
+                if (!GetWorkState(eventId, out workId, out _state, out errMsg)) return false;
+
                 if (_machine.CanFire(Trigger.Cancel))
                 {
                     if (!IsValidUser(userId, out errMsg)) return false;
                         
                     var theUser = Base_UserInfoService.I.GetModels(p => p.UserID == userId).FirstOrDefault();
-                    
+
                     //获取当前工作记录
-                    var entry = Data_WorkFlow_EntryService.I.GetModels(p => p.EventType == (int)WorkflowEventType.GoodRequest && p.WorkID == _workId && p.EventID == _eventId).OrderByDescending(or => or.CreateTime).FirstOrDefault();
+                    var entry = Data_WorkFlow_EntryService.I.GetModels(p => p.EventType == (int)WorkflowEventType.GoodRequest && p.WorkID == workId
+                        && p.EventID == eventId && p.State == (int)_state).FirstOrDefault();
                     if (entry != null)
                     {
                         //获取当前工作用户
@@ -607,17 +619,20 @@ namespace XCCloudService.WorkFlow
             return false;
         }
 
-        public bool Close(int userId, out string errMsg)
+        public bool Close(int eventId, int userId, out string errMsg)
         {
             errMsg = string.Empty;
 
             try
             {
-                if (_machine.CanFire(Trigger.Request))
-                {
-                    if (!AddWorkEntry(userId, Trigger.Close, State.Closed, out errMsg)) return false;
+                int workId = 0;
+                if (!GetWorkState(eventId, out workId, out _state, out errMsg)) return false;
 
-                    _machine.Fire(Trigger.Request);
+                if (_machine.CanFire(Trigger.Close))
+                {
+                    if (!AddWorkEntry(eventId, workId, userId, Trigger.Close, State.Closed, out errMsg)) return false;
+
+                    _machine.Fire(Trigger.Close);
 
                     return true;
                 }
