@@ -835,7 +835,7 @@ namespace XXCloudService.Api.XCCloud
                                     /*已调拨数量*/
                                     a.FinishCount
                                 FROM (
-                                    SELECT RequestID, GoodID, RequestCount, SUM(SendCount) AS FinishCount
+                                    SELECT RequestID, GoodID, RequestCount, ISNULL(SUM(SendCount),0) AS FinishCount
                                     FROM
                                 	    Data_GoodRequest_List
                                     GROUP BY RequestID, GoodID, RequestCount
@@ -964,11 +964,12 @@ namespace XXCloudService.Api.XCCloud
                                     a.Tax
                                 FROM (
                                     SELECT
-                                		*, ROW_NUMBER() over(partition by RequestID,GoodID order by SendTime desc) as RowNum
+                                		*
                                 	FROM
-                                		Data_GoodRequest_List                                    
+                                		Data_GoodRequest_List 
+                                    WHERE StorageCount = 0 /*未入库记录*/                                
                                 ) a                                
-                                INNER JOIN Base_GoodsInfo b ON a.GoodID = b.ID AND a.RowNum <= 1
+                                INNER JOIN Base_GoodsInfo b ON a.GoodID = b.ID
                                 INNER JOIN (
                                 	SELECT
                                 		b.*
@@ -980,6 +981,7 @@ namespace XXCloudService.Api.XCCloud
                                 	AND a.PID = 0
                                 ) c ON CONVERT (VARCHAR, b.GoodType) = c.DictValue                                
                                 WHERE b.Status = 1
+                                ORDER BY a.SendTime
                             ";
                 sql += " AND a.RequestID=" + requestId;
 
@@ -1109,12 +1111,7 @@ namespace XXCloudService.Api.XCCloud
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 
-                        var requestId = data_GoodRequest.ID;
-
-                        //工作流更新
-                        var wf = new GoodReqWorkFlow(requestId, userId);
-                        if (!wf.Request(out errMsg))
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        var requestId = data_GoodRequest.ID;                        
 
                         //添加调拨明细
                         if (goodRequestDetails != null && goodRequestDetails.Count() >= 0)
@@ -1124,28 +1121,28 @@ namespace XXCloudService.Api.XCCloud
                                 if (el != null)
                                 {
                                     var dicPara = new Dictionary<string, object>(el, StringComparer.OrdinalIgnoreCase);
-                                    if (!dicPara.Get("goodId").Validint("商品ID", out errMsg))
+                                    if (!dicPara.Get("goodId").Validintnozero("商品ID", out errMsg))
                                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                                     if (requstType == 2)
                                     {
-                                        if (!dicPara.Get("sendCount").Validint("实发数量", out errMsg))
+                                        if (!dicPara.Get("sendCount").Validintnozero("实发数量", out errMsg))
                                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                                        if (!dicPara.Get("costPrice").Validdecimal("含税单价", out errMsg))
+                                        if (!dicPara.Get("costPrice").Validdecimalnozero("含税单价", out errMsg))
                                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                                        if (!dicPara.Get("tax").Validdecimal("税率", out errMsg))
+                                        if (!dicPara.Get("tax").Validdecimalnozero("税率", out errMsg))
                                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);                                        
                                     }
                                     else
                                     {
-                                        if (!dicPara.Get("requestCount").Validint("申请数量", out errMsg))
-                                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                        if (!dicPara.Get("requestCount").Validintnozero("申请数量", out errMsg))
+                                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);                                        
                                     }
 
                                     var goodId = dicPara.Get("goodId").Toint();
                                     var requestCount = dicPara.Get("requestCount").Toint(0);
                                     var sendCount = dicPara.Get("sendCount").Toint(0);
-                                    var costPrice = dicPara.Get("costPrice").Todecimal();
-                                    var tax = dicPara.Get("tax").Todecimal();
+                                    var costPrice = dicPara.Get("costPrice").Todecimal(0);
+                                    var tax = dicPara.Get("tax").Todecimal(0);
 
                                     var data_GoodRequest_List = new Data_GoodRequest_List();
                                     data_GoodRequest_List.RequestID = requestId;
@@ -1173,7 +1170,12 @@ namespace XXCloudService.Api.XCCloud
                                 errMsg = "添加调拨明细失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                             }
-                        }                        
+                        }
+
+                        //工作流更新
+                        var wf = new GoodReqWorkFlow(requestId, userId);
+                        if (!wf.Request(out errMsg))
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
                         ts.Complete();
                     }
@@ -1449,15 +1451,15 @@ namespace XXCloudService.Api.XCCloud
                                 if (el != null)
                                 {
                                     var dicPara = new Dictionary<string, object>(el, StringComparer.OrdinalIgnoreCase);
-                                    if (!dicPara.Get("outDepotId").Validint("出库仓库ID", out errMsg))
+                                    if (!dicPara.Get("outDepotId").Validintnozero("出库仓库ID", out errMsg))
                                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                                    if (!dicPara.Get("goodId").Validint("商品ID", out errMsg))
+                                    if (!dicPara.Get("goodId").Validintnozero("商品ID", out errMsg))
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);                                    
+                                    if (!dicPara.Get("sendCount").Validintnozero("实发数量", out errMsg))
                                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                                    if (!dicPara.Get("sendCount").Validint("实发数量", out errMsg))
+                                    if (!dicPara.Get("costPrice").Validdecimalnozero("含税单价", out errMsg))
                                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                                    if (!dicPara.Get("costPrice").Validdecimal("含税单价", out errMsg))
-                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                                    if (!dicPara.Get("tax").Validdecimal("税率", out errMsg))
+                                    if (!dicPara.Get("tax").Validdecimalnozero("税率", out errMsg))
                                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
                                     var goodId = dicPara.Get("goodId").Toint();
@@ -1466,46 +1468,89 @@ namespace XXCloudService.Api.XCCloud
                                     var costPrice = dicPara.Get("costPrice").Todecimal();
                                     var tax = dicPara.Get("tax").Todecimal();
 
-                                    var data_GoodRequest_List = Data_GoodRequest_ListService.I.GetModels(p => p.RequestID == requestId && p.GoodID == goodId).OrderByDescending(or => or.SendTime).FirstOrDefault() ?? new Data_GoodRequest_List();
-                                    data_GoodRequest_List.RequestID = requestId;
-                                    data_GoodRequest_List.GoodID = goodId;
-                                    data_GoodRequest_List.OutDepotID = outDepotId;
-                                    data_GoodRequest_List.SendCount = sendCount;
-                                    data_GoodRequest_List.StorageCount = 0;
-                                    data_GoodRequest_List.CostPrice = costPrice;
-                                    data_GoodRequest_List.Tax = tax;
-                                    data_GoodRequest_List.LogistType = logistType;
-                                    data_GoodRequest_List.LogistOrderID = logistOrderId;
-                                    data_GoodRequest_List.SendTime = DateTime.Now;
-                                    Data_GoodRequest_ListService.I.AddModel(data_GoodRequest_List);
+                                    var id = 0;
+                                    bool isAdd = false;
+                                    if (Data_GoodRequest_ListService.I.GetCount(p => p.RequestID == requestId && p.GoodID == goodId) == 1)
+                                    {
+                                        var data_GoodRequest_List = Data_GoodRequest_ListService.I.GetModels(p => p.RequestID == requestId && p.GoodID == goodId).FirstOrDefault();
+                                        if (data_GoodRequest_List.SendCount == 0)
+                                        {
+                                            id = data_GoodRequest_List.ID;
+                                            data_GoodRequest_List.RequestID = requestId;
+                                            data_GoodRequest_List.GoodID = goodId;
+                                            data_GoodRequest_List.OutDepotID = outDepotId;
+                                            data_GoodRequest_List.SendCount = sendCount;
+                                            data_GoodRequest_List.StorageCount = 0;
+                                            data_GoodRequest_List.CostPrice = costPrice;
+                                            data_GoodRequest_List.Tax = tax;
+                                            data_GoodRequest_List.LogistType = logistType;
+                                            data_GoodRequest_List.LogistOrderID = logistOrderId;
+                                            data_GoodRequest_List.SendTime = DateTime.Now;
+                                            if (!Data_GoodRequest_ListService.I.Update(data_GoodRequest_List))
+                                            {
+                                                errMsg = "更新调拨明细信息失败";
+                                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            isAdd = true;
+                                        }
+                                    }
+                                    else
+                                        isAdd = true;
 
+                                    if (isAdd)
+                                    {
+                                        var data_GoodRequest_List = new Data_GoodRequest_List();
+                                        data_GoodRequest_List.RequestID = requestId;
+                                        data_GoodRequest_List.GoodID = goodId;
+                                        data_GoodRequest_List.OutDepotID = outDepotId;
+                                        data_GoodRequest_List.SendCount = sendCount;
+                                        data_GoodRequest_List.StorageCount = 0;
+                                        data_GoodRequest_List.CostPrice = costPrice;
+                                        data_GoodRequest_List.Tax = tax;
+                                        data_GoodRequest_List.LogistType = logistType;
+                                        data_GoodRequest_List.LogistOrderID = logistOrderId;
+                                        data_GoodRequest_List.SendTime = DateTime.Now;
+                                        if (!Data_GoodRequest_ListService.I.Add(data_GoodRequest_List))
+                                        {
+                                            errMsg = "更新调拨明细信息失败";
+                                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                        }
+
+                                        id = data_GoodRequest_List.ID;
+                                    }
+                                    
                                     var data_GoodRequest = Data_GoodRequestService.I.GetModels(p => p.ID == requestId).FirstOrDefault();
                                     data_GoodRequest.RequestOutDepotID = outDepotId;
-                                    Data_GoodRequestService.I.UpdateModel(data_GoodRequest);
-
+                                    if (!Data_GoodRequestService.I.Update(data_GoodRequest))
+                                    {
+                                        errMsg = "更新调拨信息失败";
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    }
+                                                                    
                                     //添加出库存异动信息
                                     var data_GoodStock_Record = new Data_GoodStock_Record();
                                     data_GoodStock_Record.DepotID = outDepotId;
                                     data_GoodStock_Record.GoodID = goodId;
                                     data_GoodStock_Record.SourceType = (int)SourceType.GoodRequest;
-                                    data_GoodStock_Record.SourceID = requestId;
+                                    data_GoodStock_Record.SourceID = id;
                                     data_GoodStock_Record.StockFlag = (int)StockFlag.Out;
                                     data_GoodStock_Record.StockCount = sendCount;
                                     data_GoodStock_Record.CreateTime = DateTime.Now;
-                                    Data_GoodStock_RecordService.I.AddModel(data_GoodStock_Record);
+                                    if (!Data_GoodStock_RecordService.I.Add(data_GoodStock_Record))
+                                    {
+                                        errMsg = "添加调拨出库记录失败";
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    }
                                 }
                                 else
                                 {
                                     errMsg = "提交数据包含空对象";
                                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                                 }
-                            }
-
-                            if (!Data_GoodRequest_ListService.I.SaveChanges())
-                            {
-                                errMsg = "添加调拨明细失败";
-                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                            }
+                            }                            
                         }
 
                         ts.Complete();
@@ -1545,18 +1590,14 @@ namespace XXCloudService.Api.XCCloud
                 var userId = userTokenKeyModel.LogId.Toint(0);
 
                 var errMsg = string.Empty;
-                var requestId = dicParas.Get("requestId").Toint(0);
-                if (requestId == 0)
-                {
-                    errMsg = "调拨单ID不能为空";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
-
-                if (!dicParas.Get("inDepotId").Validint("入库仓库ID", out errMsg))
+                if (!dicParas.Get("requestId").Validintnozero("调拨单ID", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);               
+                if (!dicParas.Get("inDepotId").Validintnozero("入库仓库ID", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 if (!dicParas.GetArray("goodRequestDetails").Validarray("调拨明细", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
+                var requestId = dicParas.Get("requestId").Toint(0);
                 var inDepotId = dicParas.Get("inDepotId").Toint();
                 var goodRequestDetails = dicParas.GetArray("goodRequestDetails");
 
@@ -1584,15 +1625,12 @@ namespace XXCloudService.Api.XCCloud
                                 if (el != null)
                                 {
                                     var dicPara = new Dictionary<string, object>(el, StringComparer.OrdinalIgnoreCase);
-                                    var id = dicPara.Get("id").Toint(0);
-                                    if (id == 0)
-                                    {
-                                        errMsg = "调拨明细ID不能为空";
-                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                                    }                                 
-                                    if (!dicPara.Get("storageCount").Validint("入库数量", out errMsg))
+                                    if (!dicPara.Get("id").Validintnozero("调拨明细ID", out errMsg))
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);                                                               
+                                    if (!dicPara.Get("storageCount").Validintnozero("入库数量", out errMsg))
                                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
+                                    var id = dicPara.Get("id").Toint();
                                     var storageCount = dicPara.Get("storageCount").Toint();
                                     var data_GoodRequest_List = Data_GoodRequest_ListService.I.GetModels(p => p.ID == id).FirstOrDefault();
                                     data_GoodRequest_List.StorageCount = storageCount;
@@ -1608,7 +1646,7 @@ namespace XXCloudService.Api.XCCloud
                                     data_GoodStock_Record.DepotID = inDepotId;
                                     data_GoodStock_Record.GoodID = data_GoodRequest_List.GoodID;
                                     data_GoodStock_Record.SourceType = (int)SourceType.GoodRequest;
-                                    data_GoodStock_Record.SourceID = requestId;
+                                    data_GoodStock_Record.SourceID = id;
                                     data_GoodStock_Record.StockFlag = (int)StockFlag.In;
                                     data_GoodStock_Record.StockCount = storageCount;
                                     data_GoodStock_Record.CreateTime = DateTime.Now;

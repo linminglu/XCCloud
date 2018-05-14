@@ -92,6 +92,58 @@ namespace XCCloudService.Common
             return true;
         }
         /// <summary>
+        /// 正整数验证
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="t"></param>
+        /// <param name="discription"></param>
+        /// <param name="errMsg"></param>
+        /// <returns></returns>
+        public static bool Validintnozero<T>(this T t, string discription, out string errMsg)
+        {
+            errMsg = string.Empty;
+
+            if (!Nonempty(t, discription, out errMsg))
+            {
+                return false;
+            }
+
+            var value = 0;
+            if (!int.TryParse(t.ToString(), out value) || value <= 0)
+            {
+                errMsg = discription + "格式不正确，须为正整数";
+                return false;
+            }
+
+            return true;
+        }
+        /// <summary>
+        /// 正实数验证
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="t"></param>
+        /// <param name="discription"></param>
+        /// <param name="errMsg"></param>
+        /// <returns></returns>
+        public static bool Validdecimalnozero<T>(this T t, string discription, out string errMsg)
+        {
+            errMsg = string.Empty;
+
+            if (!Nonempty(t, discription, out errMsg))
+            {
+                return false;
+            }
+
+            var value = 0M;
+            if (!decimal.TryParse(t.ToString(), out value) || value <= 0)
+            {
+                errMsg = discription + "格式不正确，须为正实数";
+                return false;
+            }
+
+            return true;
+        }
+        /// <summary>
         /// 时间验证
         /// </summary>
         /// <typeparam name="T"></typeparam>
