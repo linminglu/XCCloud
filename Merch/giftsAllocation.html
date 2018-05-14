@@ -17,19 +17,31 @@
     <div id="openModel" style="display:none; padding: 15px;">
         <form action="" class="layui-form layui-form-pane">
             <div class="layui-form-item">
-                <div class="layui-inline">
-                    <label for="" class="layui-form-label">申请仓库</label>
-                    <div class="layui-input-inline">
-                        <select name="" id="ApplyDepot"  lay-filter="ApplyDepot"></select>
-                    </div>
-                </div>
+                <!--<div class="layui-inline">-->
+                    <!--<label for="" class="layui-form-label">申请仓库</label>-->
+                    <!--<div class="layui-input-inline">-->
+                        <!--<select name="" id="ApplyDepot"  lay-filter="ApplyDepot">-->
+                            <!--<option>-请选择-</option>-->
+                            <!--<option value="2">总部向门店派货</option>-->
+                            <!--<option value="3">总部向门店申请</option>-->
+                        <!--</select>-->
+                    <!--</div>-->
+                <!--</div>-->
                 <div class="layui-inline">
                     <label for="" class="layui-form-label">调拨方式</label>
                     <div class="layui-input-inline">
                         <select name="" id="RequstType" lay-filter="RequstType">
-                            <option value="0">门店间申请</option>
-                            <option value="1">总部派发</option>
-                            <option value="2">总部申请</option>
+                            <option>-请选择-</option>
+                            <option value="2">总部向门店派货</option>
+                            <option value="3">总部向门店申请</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label for="" class="layui-form-label">发货仓库</label>
+                    <div class="layui-input-inline">
+                        <select name="" id="outDepotId" lay-filter="outDepotId">
+
                         </select>
                     </div>
                 </div>
@@ -113,8 +125,8 @@
     let xc=xcActionSystem.prototype;
     let token=xc.getStorage('token');
     let parm={'obj':{'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'},
-        'url':'/XCCloud/GoodsInfo?action=QueryGoodRequestInfo',
-        'elem':'#warehouseManage',
+        'url':'/XCCloud/GoodsInfo?action=QueryGoodRequest',
+        'elem':'#giftAllocationTB',
         'cols':[
              {field:'ID', title:'调拨单ID', align: 'center', sort: true}
             ,{field:'RequestTime',title: '申请时间', align: 'center'}
@@ -131,8 +143,9 @@
     };
     xc.getInitData(parm);
     let requestId;//调拨单号
+    let outDepotId;//出库仓库
     let checkState;
-    let RequestDepotId;let RequstType;let SendStoreId;let GoodRequests;
+   let RequstType;let SendStoreId;let GoodRequests;
     layui.addcss('layui_font.css');
     layui.use(['form','table','layer'],function () {
         let form=layui.form;
@@ -199,6 +212,7 @@
         });
         //弹出层
         $('#applyBtn').on('click',function () {
+            xc.getDepotDic(token,layer,form,'outDepotId');
             layer.open({
                 title:'申请记录',
                 type:1,
@@ -215,34 +229,6 @@
                 content:$('#goodsBox')
             });
             initGoodsTb();
-        });
-        let arr=[{'SaleTime':'2018-3-15','DigitNumber':'200','DigitName':'七号数字币','Count':40,'Money':'499','SaleMachine':'售币机'},
-            {'SaleTime':'2018-3-15','DigitNumber':'200','DigitName':'七号数字币','Count':40,'Money':'499','SaleMachine':'售币机'},
-            {'SaleTime':'2018-3-15','DigitNumber':'200','DigitName':'七号数字币','Count':40,'Money':'499','SaleMachine':'售币机'},
-            {'SaleTime':'2018-3-15','DigitNumber':'200','DigitName':'七号数字币','Count':40,'Money':'499','SaleMachine':'售币机'},
-            {'SaleTime':'2018-3-15','DigitNumber':'200','DigitName':'七号数字币','Count':40,'Money':'499','SaleMachine':'售币机'},
-            {'SaleTime':'2018-3-15','DigitNumber':'200','DigitName':'七号数字币','Count':40,'Money':'499','SaleMachine':'售币机'},
-            {'SaleTime':'2018-3-15','DigitNumber':'200','DigitName':'七号数字币','Count':40,'Money':'499','SaleMachine':'售币机'},
-            {'SaleTime':'2018-3-15','DigitNumber':'200','DigitName':'七号数字币','Count':40,'Money':'499','SaleMachine':'售币机'},
-            {'SaleTime':'2018-3-15','DigitNumber':'200','DigitName':'七号数字币','Count':40,'Money':'499','SaleMachine':'售币机'},
-            {'SaleTime':'2018-3-15','DigitNumber':'200','DigitName':'七号数字币','Count':40,'Money':'499','SaleMachine':'售币机'},];
-        layui.table.render({
-            elem: '#giftAllocationTB'
-            , data: arr
-            // , size:'sm'
-            , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
-            , cols: [[{field:'SaleTime', title:'商品条码', align: 'center'}
-                ,{field:'DigitNumber',title: '商品类别', align: 'center'} //width 支持：数字、百分比和不填写。
-                ,{field:'DigitName', title: '商品名称', align: 'center',templet:'#prob'}
-                ,{field:'Count', title: '调配时间', align: 'center'}
-                ,{field:'Money', title: '申请门店', align: 'center'}
-                ,{field:'SaleMachine', title: '申请仓库', align: 'center'}
-                ,{field:'SaleMachine', title: '调配门店', align: 'center',edit: 'text'}
-                ,{field:'SaleMachine', title: '调配说明', align: 'center',edit: 'text'}
-                ,{field:'SaleMachine', title: '调配结果', align: 'center',edit: 'text'}
-                ,{fixed: 'right',title: '操作' ,width:200, align:'center', toolbar: '#barDemo'}]]
-            , page: {page: true, limits: [5,10, 15, 20, 30, 50, 100]}
-            , limit: 10
         });
         //save apply
        $('#submitApply').on('click',function () {

@@ -151,6 +151,7 @@ namespace XCCloudService.WorkFlow
         private int _workId;
         private int _eventId;
         private int _userId;
+        private int _userType;
 
         /// <summary>
         /// 获取工作流状态
@@ -218,13 +219,49 @@ namespace XCCloudService.WorkFlow
             return (State)(Data_WorkFlow_EntryService.I.GetModels(p => p.EventID == eventId && p.WorkID == workId && p.EventType == (int)WorkflowEventType.GoodRequest).OrderByDescending(or => or.CreateTime)
                 .Select(o => o.State).FirstOrDefault() ?? 0);
         }
+
+        private int GetUserType(int userId)
+        {
+            return Base_UserInfoService.I.GetModels(p => p.UserID == userId).Select(o => o.UserType).FirstOrDefault() ?? 0;
+        }
+
+        private bool IsValidUser(out string errMsg)
+        {
+            errMsg = string.Empty;
+            var theUser = Base_UserInfoService.I.GetModels(p => p.UserID == _userId).FirstOrDefault();
+
+            //获取当前工作记录
+            var entry = Data_WorkFlow_EntryService.I.GetModels(p => p.EventType == (int)WorkflowEventType.GoodRequest && p.WorkID == _workId
+                && p.EventID == _eventId && p.State == (int)_state).FirstOrDefault();
+            if (entry != null)
+            {
+                //获取当前工作用户
+                var workUserId = entry.UserID;
+                var workUser = Base_UserInfoService.I.GetModels(p => p.UserID == workUserId).FirstOrDefault();
+                if (workUser == null)
+                {
+                    errMsg = "当前工作用户不存在";
+                    return false;
+                }
+
+                //不能撤销其他门店用户流程
+                if ((workUser.MerchID ?? "") != (theUser.MerchID ?? "") || (workUser.StoreID ?? "") != (theUser.StoreID ?? ""))
+                {
+                    errMsg = "不能撤销其他门店的工作";
+                    return false;
+                }                
+            }
+            return true;
+        }
         
         public GoodReqWorkFlow(int eventId, int userId)
         {
+            _eventId = eventId;
             _requestType = GetWorkRequestType(eventId);
             _workId = GetWorkId(eventId);
             _state = GetWorkState(eventId, _workId);
             _userId = userId;
+            _userType = GetUserType(_userId);
                         
             _machine = new StateMachine<State, Trigger>(() => _state, s => _state = s);            
 
@@ -233,61 +270,89 @@ namespace XCCloudService.WorkFlow
             _setRequestDealVerifyTrigger = _machine.SetTriggerParameters<int>(Trigger.RequestDealVerify);
             
             _machine.Configure(State.Open)
-                .PermitIf(Trigger.Request, State.Requested, () => _requestType == (int)RequestType.RequestStore || _requestType == (int)RequestType.MerchRequest || _requestType == (int)RequestType.RequestMerch, "门店或总店申请")
-                .PermitIf(Trigger.Request, State.SendDealed, () => _requestType == (int)RequestType.MerchSend, "总店配送");
+                .PermitIf(Trigger.Request, State.Requested, () => 
+                    (_requestType == (int)RequestType.RequestStore && (_userType == (int)UserType.Store || _userType == (int)UserType.StoreBoss)) || 
+                    (_requestType == (int)RequestType.MerchRequest && (_userType == (int)UserType.Normal||_userType == (int)UserType.Heavy))      || 
+                    (_requestType == (int)RequestType.RequestMerch && (_userType == (int)UserType.Store || _userType == (int)UserType.StoreBoss)), "门店或总店申请")
+                .PermitIf(Trigger.Request, State.SendDealed, () => 
+                    (_requestType == (int)RequestType.MerchSend && (_userType == (int)UserType.Normal || _userType == (int)UserType.Heavy)), "总店配送");
 
             _machine.Configure(State.Requested)
-                .PermitDynamic(_setRequestVerifyTrigger, s => (_requestType == (int)RequestType.RequestStore || _requestType == (int)RequestType.RequestMerch) && s == 1 
-                                                        ? State.RequestVerifiedPass : State.RequestVerifiedRefuse)               
-                .PermitIf(Trigger.SendDeal, State.SendDealed, () => _requestType == (int)RequestType.MerchRequest);
+                .PermitDynamic(_setRequestVerifyTrigger, s => 
+                    (
+                     (_requestType == (int)RequestType.RequestStore && (_userType == (int)UserType.Normal || _userType == (int)UserType.Heavy)) ||
+                     (_requestType == (int)RequestType.RequestMerch && (_userType == (int)UserType.Normal || _userType == (int)UserType.Heavy))
+                    ) 
+                    && s == 1 ? State.RequestVerifiedPass : State.RequestVerifiedRefuse)
+                .PermitIf(Trigger.SendDeal, State.SendDealed, () => 
+                    (_requestType == (int)RequestType.MerchRequest && (_userType == (int)UserType.Store || _userType == (int)UserType.StoreBoss)));
 
             _machine.Configure(State.RequestVerifiedPass)
-                .Permit(Trigger.Cancel, State.Requested)
-                .Permit(Trigger.SendDeal, State.SendDealed);
+                .PermitIf(Trigger.Cancel, State.Requested, () => (_userType == (int)UserType.Normal || _userType == (int)UserType.Heavy))
+                .PermitIf(Trigger.SendDeal, State.SendDealed, () => (_userType == (int)UserType.Store || _userType == (int)UserType.StoreBoss));
 
             _machine.Configure(State.RequestVerifiedRefuse)
-                .Permit(Trigger.Cancel, State.Requested)
-                .Permit(Trigger.Close, State.Closed);
+                .PermitIf(Trigger.Cancel, State.Requested, () => (_userType == (int)UserType.Normal || _userType == (int)UserType.Heavy))
+                .PermitIf(Trigger.Close, State.Closed, () => (_userType == (int)UserType.Normal || _userType == (int)UserType.Heavy));
 
             _machine.Configure(State.SendDealed)
                 .PermitReentry(Trigger.SendDeal)
-                .PermitIf(Trigger.Cancel, State.RequestVerifiedPass, () => _requestType == (int)RequestType.RequestStore, "撤销调拨出库，返回上一步")
-                .PermitIf(Trigger.Cancel, State.Requested, () => _requestType == (int)RequestType.MerchRequest, "撤销调拨出库，返回上一步")
-                .PermitDynamic(_setSendDealVerifyTrigger, s => _requestType == (int)RequestType.RequestStore && s == 1 ? State.SendDealVerifiedPass : State.SendDealVerifiedRefuse)
-                .PermitIf(Trigger.RequestDeal, State.RequestDealed, () => _requestType == (int)RequestType.MerchRequest 
-                                                                    || _requestType == (int)RequestType.MerchSend
-                                                                    || _requestType == (int)RequestType.RequestMerch);
+                .PermitIf(Trigger.Cancel, State.RequestVerifiedPass, () =>
+                    (_requestType == (int)RequestType.RequestStore && (_userType == (int)UserType.Store || _userType == (int)UserType.StoreBoss)), "撤销调拨出库，返回上一步")
+                .PermitIf(Trigger.Cancel, State.Requested, () =>
+                    (_requestType == (int)RequestType.MerchRequest && (_userType == (int)UserType.Store || _userType == (int)UserType.StoreBoss)), "撤销调拨出库，返回上一步")
+                .PermitDynamic(_setSendDealVerifyTrigger, s => 
+                    (_requestType == (int)RequestType.RequestStore && (_userType == (int)UserType.Normal || _userType == (int)UserType.Heavy))
+                    && s == 1 ? State.SendDealVerifiedPass : State.SendDealVerifiedRefuse)
+                .PermitIf(Trigger.RequestDeal, State.RequestDealed, () => 
+                    (
+                     (_requestType == (int)RequestType.MerchRequest && (_userType == (int)UserType.Normal || _userType == (int)UserType.Heavy)) ||
+                     (_requestType == (int)RequestType.MerchSend && (_userType == (int)UserType.Store || _userType == (int)UserType.StoreBoss)) ||
+                     (_requestType == (int)RequestType.RequestMerch && (_userType == (int)UserType.Store || _userType == (int)UserType.StoreBoss))
+                    ));
 
             _machine.Configure(State.SendDealVerifiedPass)
-                .Permit(Trigger.Cancel, State.SendDealed)
-                .Permit(Trigger.RequestDeal, State.RequestDealed);
+                .PermitIf(Trigger.Cancel, State.SendDealed, () => (_userType == (int)UserType.Normal || _userType == (int)UserType.Heavy))
+                .PermitIf(Trigger.RequestDeal, State.RequestDealed, () => (_userType == (int)UserType.Store || _userType == (int)UserType.StoreBoss));
 
             _machine.Configure(State.SendDealVerifiedRefuse)
-                .Permit(Trigger.Cancel, State.SendDealed)
-                .Permit(Trigger.Close, State.Closed);
+                .PermitIf(Trigger.Cancel, State.SendDealed, () => (_userType == (int)UserType.Normal || _userType == (int)UserType.Heavy))
+                .PermitIf(Trigger.Close, State.Closed, () => (_userType == (int)UserType.Normal || _userType == (int)UserType.Heavy));
 
             _machine.Configure(State.RequestDealed)
                 .PermitReentry(Trigger.RequestDeal)                
-                .PermitIf(Trigger.Cancel, State.SendDealVerifiedPass, () => _requestType == (int)RequestType.RequestStore, "撤销调拨入库，返回上一步")
-                .PermitIf(Trigger.Cancel, State.SendDealed, () => _requestType == (int)RequestType.MerchRequest 
-                                                            || _requestType == (int)RequestType.MerchSend
-                                                            || _requestType == (int)RequestType.RequestMerch, "撤销调拨入库，返回上一步")
-                .PermitDynamic(_setRequestDealVerifyTrigger, s => _requestType == (int)RequestType.RequestStore && s == 1 ? State.RequestDealVerifiedPass : State.RequestDealVerifiedRefuse)               
-                .PermitIf(Trigger.Close, State.Closed, () => _requestType == (int)RequestType.MerchRequest 
-                                                       || _requestType == (int)RequestType.MerchSend
-                                                       || _requestType == (int)RequestType.RequestMerch)
-                .PermitIf(Trigger.SendDeal, State.SendDealed, () => _requestType == (int)RequestType.MerchRequest 
-                                                       || _requestType == (int)RequestType.MerchSend
-                                                       || _requestType == (int)RequestType.RequestMerch);
+                .PermitIf(Trigger.Cancel, State.SendDealVerifiedPass, () =>
+                    (_requestType == (int)RequestType.RequestStore && (_userType == (int)UserType.Store || _userType == (int)UserType.StoreBoss)), "撤销调拨入库，返回上一步")
+                .PermitIf(Trigger.Cancel, State.SendDealed, () => 
+                    (
+                     (_requestType == (int)RequestType.MerchRequest && (_userType == (int)UserType.Normal || _userType == (int)UserType.Heavy)) || 
+                     (_requestType == (int)RequestType.MerchSend && (_userType == (int)UserType.Store || _userType == (int)UserType.StoreBoss)) || 
+                     (_requestType == (int)RequestType.RequestMerch && (_userType == (int)UserType.Store || _userType == (int)UserType.StoreBoss))
+                    ), "撤销调拨入库，返回上一步")
+                .PermitDynamic(_setRequestDealVerifyTrigger, s =>
+                    (_requestType == (int)RequestType.RequestStore && (_userType == (int)UserType.Normal || _userType == (int)UserType.Heavy))
+                    && s == 1 ? State.RequestDealVerifiedPass : State.RequestDealVerifiedRefuse)               
+                .PermitIf(Trigger.Close, State.Closed, () => 
+                    (
+                     (_requestType == (int)RequestType.MerchRequest && (_userType == (int)UserType.Normal || _userType == (int)UserType.Heavy)) || 
+                     (_requestType == (int)RequestType.MerchSend && (_userType == (int)UserType.Store || _userType == (int)UserType.StoreBoss)) ||
+                     (_requestType == (int)RequestType.RequestMerch && (_userType == (int)UserType.Store || _userType == (int)UserType.StoreBoss))
+                    ))
+                .PermitIf(Trigger.SendDeal, State.SendDealed, () => 
+                    (
+                     (_requestType == (int)RequestType.MerchRequest && (_userType == (int)UserType.Store || _userType == (int)UserType.StoreBoss)) ||
+                     (_requestType == (int)RequestType.MerchSend && (_userType == (int)UserType.Normal || _userType == (int)UserType.Heavy))       ||
+                     (_requestType == (int)RequestType.RequestMerch && (_userType == (int)UserType.Normal || _userType == (int)UserType.Heavy))
+                    ));
 
             _machine.Configure(State.RequestDealVerifiedPass)
-                .Permit(Trigger.Cancel, State.RequestDealed)
-                .PermitIf(Trigger.SendDeal, State.SendDealed)
-                .Permit(Trigger.Close, State.Closed);
+                .PermitIf(Trigger.Cancel, State.RequestDealed, () => (_userType == (int)UserType.Normal || _userType == (int)UserType.Heavy))
+                .PermitIf(Trigger.SendDeal, State.SendDealed, () => (_userType == (int)UserType.Store || _userType == (int)UserType.StoreBoss))
+                .PermitIf(Trigger.Close, State.Closed, () => (_userType == (int)UserType.Normal || _userType == (int)UserType.Heavy));
 
             _machine.Configure(State.RequestDealVerifiedRefuse)
-                .Permit(Trigger.Cancel, State.RequestDealed)
-                .Permit(Trigger.Close, State.Closed);
+                .PermitIf(Trigger.Cancel, State.RequestDealed, () => (_userType == (int)UserType.Normal || _userType == (int)UserType.Heavy))
+                .PermitIf(Trigger.Close, State.Closed, () => (_userType == (int)UserType.Normal || _userType == (int)UserType.Heavy));
 
             _machine.Configure(State.Closed)
                 .OnEntry(t => OnClosed(), "流程结束");
@@ -370,6 +435,8 @@ namespace XCCloudService.WorkFlow
             {               
                 if (_machine.CanFire(Trigger.Request))
                 {
+                    if (!IsValidUser(out errMsg)) return false;
+                    
                     if (!AddWorkEntry(_eventId, _workId, _userId, Trigger.Request, State.Requested, out errMsg)) return false;
 
                     _machine.Fire(Trigger.Request);  
@@ -505,6 +572,7 @@ namespace XCCloudService.WorkFlow
             {
                 if (_machine.CanFire(Trigger.RequestDealVerify))
                 {
+
                     if (!AddWorkEntry(_eventId, _workId, _userId, Trigger.RequestDealVerify, state == 1 ? State.RequestDealVerifiedPass : State.RequestDealVerifiedRefuse, out errMsg, note)) return false;
 
                     _machine.Fire(_setRequestDealVerifyTrigger, state);
@@ -547,16 +615,9 @@ namespace XCCloudService.WorkFlow
                             errMsg = "当前工作用户不存在";
                             return false;
                         }
-                        
-                        //如果用户角色不同不能撤销
-                        if (theUser.UserType != workUser.UserType)
-                        {
-                            errMsg = "当前操作用户不能执行撤销操作";
-                            return false;
-                        }
 
                         //不能撤销其他门店用户流程
-                        if (workUser.MerchID != theUser.MerchID || workUser.StoreID != theUser.StoreID)
+                        if ((workUser.MerchID ?? "") != (theUser.MerchID ?? "") || (workUser.StoreID ?? "") != (theUser.StoreID ?? ""))
                         {
                             errMsg = "不能撤销其他门店的工作";
                             return false;

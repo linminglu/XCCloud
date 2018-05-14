@@ -1143,7 +1143,6 @@ xcActionSystem.prototype= {
 
         })
     },
-
     //数字币新增 修改
     Digit: function (layer,token,parm,foodId) {
         let FoodId=foodId||'';
@@ -1206,7 +1205,6 @@ xcActionSystem.prototype= {
 
         })
     },
-
     //初始化页面
     initDiscountPage: function (xc,token,foodId) {
         var _obj={'foodId':foodId,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
@@ -1353,8 +1351,6 @@ xcActionSystem.prototype= {
 
     },
     //..........................................门票项目管理..............................................
-
-
     //弹出
     outIframe: function (layer) {
         layer.open({
@@ -1412,7 +1408,6 @@ xcActionSystem.prototype= {
         });
     },
     //......................................游戏机档案维护
-
     //获取会员级别列表
     gameMemberLevel: function (token,form,layer) {
             let obj = {
@@ -1446,51 +1441,51 @@ xcActionSystem.prototype= {
     //......................................设备管理
     //加载路由器列表
     getRouteDevice:function (token,layer,form,id) {
-    let _obj={'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
-    let parseJson = JSON.stringify(_obj);
-    $.ajax({
-        type:'post',
-        url:'/XCCloud/DeviceInfo?action=GetRouteDevice',
-        contentType: "application/json; charset=utf-8",
-        data:{parasJson: parseJson},
-        success: function (data) {
-            data = JSON.parse(data);
-            if (data.result_code == 1) {
-                let arr=data.result_data;
-                $('#'+id).html('<option>-请选择-</option>');
-                for(let i in arr){
-                    $('#'+id).append('<option value="'+arr[i].ID+'">'+arr[i].DeviceName+'</option>')
+        let _obj={'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+        let parseJson = JSON.stringify(_obj);
+        $.ajax({
+            type:'post',
+            url:'/XCCloud/DeviceInfo?action=GetRouteDevice',
+            contentType: "application/json; charset=utf-8",
+            data:{parasJson: parseJson},
+            success: function (data) {
+                data = JSON.parse(data);
+                if (data.result_code == 1) {
+                    let arr=data.result_data;
+                    $('#'+id).html('<option>-请选择-</option>');
+                    for(let i in arr){
+                        $('#'+id).append('<option value="'+arr[i].ID+'">'+arr[i].DeviceName+'</option>')
+                    }
+                    form.render('select');
+                } else {
+                    layer.msg(data.result_msg);
                 }
-                form.render('select');
-            } else {
-                layer.msg(data.result_msg);
             }
-        }
-    });
+        });
 },
     //加载游戏机列表
     getGameInfoDic:function (token,layer,form,id) {
-    let _obj={'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
-    let parseJson = JSON.stringify(_obj);
-    $.ajax({
-        type:'post',
-        url:'/XCCloud/GameInfo?action=GetGameInfoDic',
-        contentType: "application/json; charset=utf-8",
-        data:{parasJson: parseJson},
-        success: function (data) {
-            data = JSON.parse(data);
-            if (data.result_code == 1) {
-                let arr=data.result_data;
-                $('#'+id).html('<option>-请选择-</option>');
-                for(let i in arr){
-                    $('#'+id).append('<option value="'+arr[i].Key+'">'+arr[i].Value+'</option>')
+        let _obj={'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+        let parseJson = JSON.stringify(_obj);
+        $.ajax({
+            type:'post',
+            url:'/XCCloud/GameInfo?action=GetGameInfoDic',
+            contentType: "application/json; charset=utf-8",
+            data:{parasJson: parseJson},
+            success: function (data) {
+                data = JSON.parse(data);
+                if (data.result_code == 1) {
+                    let arr=data.result_data;
+                    $('#'+id).html('<option>-请选择-</option>');
+                    for(let i in arr){
+                        $('#'+id).append('<option value="'+arr[i].Key+'">'+arr[i].Value+'</option>')
+                    }
+                    form.render('select');
+                } else {
+                    layer.msg(data.result_msg);
                 }
-                form.render('select');
-            } else {
-                layer.msg(data.result_msg);
             }
-        }
-    });
+        });
 },
     //......................................门票设定
     //获取门票字典列表
@@ -1760,5 +1755,38 @@ xcActionSystem.prototype= {
                 }
             }
         })
-    }
+    },
+    //..........................................礼品管理..............................................
+    //获取仓库字典
+    getDepotDic:function (token,layer,form,id,selected) {
+        let _obj={'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+        let parseJson = JSON.stringify(_obj);
+        $.ajax({
+            type:'post',
+            url:'/XCCloud/DepotInfo?action=GetDepotDic',
+            contentType: "application/json; charset=utf-8",
+            data:{parasJson: parseJson},
+            success: function (data) {
+                data = JSON.parse(data);
+                if (data.result_code == 1) {
+                    let arr=data.result_data;
+                    $('#'+id).html('<option>-请选择-</option>');
+                    for(let i in arr){
+                        if(selected){
+                            if(arr[i].ID==selected){
+                                $('#'+id).append('<option value="'+arr[i].ID+'" selected>'+arr[i].DepotName+'</option>')
+                            }else {
+                                $('#'+id).append('<option value="'+arr[i].ID+'">'+arr[i].DepotName+'</option>')
+                            }
+                        }else {
+                            $('#'+id).append('<option value="'+arr[i].ID+'">'+arr[i].DepotName+'</option>')
+                        }
+                    }
+                    form.render('select');
+                } else {
+                    layer.msg(data.result_msg||data.return_msg);
+                }
+            }
+        });
+    },
 };
