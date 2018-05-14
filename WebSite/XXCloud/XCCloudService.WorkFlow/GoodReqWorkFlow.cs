@@ -157,42 +157,18 @@ namespace XCCloudService.WorkFlow
         private string _outStoreId;
         private string _storeId;
         private string _merchId;
-
+        
         /// <summary>
-        /// 获取事件的商户和出入库门店ID
+        /// 获取工作流ID
         /// </summary>
-        private void GetEventMerchAndStores()
-        {
-            var data_GoodRequest = Data_GoodRequestService.I.GetModels(p => p.ID == _eventId).FirstOrDefault() ?? new Data_GoodRequest();
-            _targetMerchId = data_GoodRequest.MerchID ?? "";
-            _inStoreId = data_GoodRequest.RequestInStoreID ?? "";
-            _outStoreId = data_GoodRequest.RequestOutStoreID ?? "";
-        }
-
-        /// <summary>
-        /// 获取操作用户的商户和门店ID
-        /// </summary>
-        private void GetUserMerchAndStore()
-        {
-            var base_UserInfo = Base_UserInfoService.I.GetModels(p => p.UserID == _userId).FirstOrDefault() ?? new Base_UserInfo();
-            _merchId = base_UserInfo.MerchID ?? "";
-            _storeId = base_UserInfo.StoreID ?? "";
-        }
-
-        /// <summary>
-        /// 获取工作流状态
-        /// </summary>
-        /// <param name="eventId"></param>
         /// <returns></returns>
-        private int GetWorkId(int eventId)
+        private void GetWorkId()
         {
-            var workId = 0;
-            if (!Data_GoodRequestService.I.Any(a=>a.ID == eventId && (a.MerchID??"") != ""))
-            {
-                return workId;
-            }
+            _workId = 0;
 
-            var merchId = Data_GoodRequestService.I.GetModels(p => p.ID == eventId && (p.MerchID ?? "") != "").Select(o => o.MerchID).FirstOrDefault();
+            if (!Data_GoodRequestService.I.Any(a => a.ID == _eventId && (a.MerchID ?? "") != "")) return;
+
+            var merchId = Data_GoodRequestService.I.GetModels(p => p.ID == _eventId && (p.MerchID ?? "") != "").Select(o => o.MerchID).FirstOrDefault() ?? "";
             if (!Data_WorkFlowConfigService.I.Any(a => a.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && a.WorkType == (int)WorkflowType.GoodRequest))
             {
                 //开启EF事务
@@ -201,10 +177,8 @@ namespace XCCloudService.WorkFlow
                     try
                     {
                         var configModel = new Data_WorkFlowConfig { MerchID = merchId, WorkType = (int)WorkflowType.GoodRequest, State = 1 };
-                        if (!Data_WorkFlowConfigService.I.Add(configModel))
-                        {
-                            return workId;
-                        }
+
+                        if (!Data_WorkFlowConfigService.I.Add(configModel)) return;
 
                         foreach (Trigger t in Enum.GetValues(typeof(Trigger)))
                         {
@@ -213,52 +187,62 @@ namespace XCCloudService.WorkFlow
                             nodeModel.OrderNumber = (int)t;
                             Data_WorkFlow_NodeService.I.AddModel(nodeModel);
                         }
-                        if (!Data_WorkFlow_NodeService.I.SaveChanges())
-                        {
-                            return workId;
-                        }
 
-                        workId = configModel.ID;
+                        if (!Data_WorkFlow_NodeService.I.SaveChanges()) return;
+
+                        _workId = configModel.ID;
                         ts.Complete();
                     }
-                    catch (Exception e)
+                    catch
                     {
-                        return workId;
+                        return;
                     }
                 }
             }
             else
             {
-                workId = Data_WorkFlowConfigService.I.GetModels(a => a.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && a.WorkType == (int)WorkflowType.GoodRequest).FirstOrDefault().ID;
+                _workId = Data_WorkFlowConfigService.I.GetModels(a => a.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && a.WorkType == (int)WorkflowType.GoodRequest).FirstOrDefault().ID;
             }
-
-            return workId;
         }
 
-        private int GetWorkRequestType(int eventId)
+        /// <summary>
+        /// 获取调拨方式
+        /// </summary>
+        /// <param name="eventId"></param>
+        /// <returns></returns>
+        private void GetRequestType()
         {
-            return Data_GoodRequestService.I.GetModels(p => p.ID == eventId).Select(o => o.RequstType).FirstOrDefault() ?? 0;
+            _requestType = Data_GoodRequestService.I.GetModels(p => p.ID == _eventId).Select(o => o.RequstType).FirstOrDefault() ?? 0;
         }
 
-        private State GetWorkState(int eventId, int workId)
+        /// <summary>
+        /// 获取当前工作状态
+        /// </summary>
+        private void GetWorkState()
         {
-            return (State)(Data_WorkFlow_EntryService.I.GetModels(p => p.EventID == eventId && p.WorkID == workId && p.EventType == (int)WorkflowEventType.GoodRequest).OrderByDescending(or => or.CreateTime)
+            _state = (State)(Data_WorkFlow_EntryService.I.GetModels(p => p.EventID == _eventId && p.WorkID == _workId && p.EventType == (int)WorkflowEventType.GoodRequest).OrderByDescending(or => or.CreateTime)
                 .Select(o => o.State).FirstOrDefault() ?? 0);
         }
 
-        private int GetUserType(int userId)
+        /// <summary>
+        /// 获取用户信息
+        /// </summary>
+        private void GetUserInfo()
         {
-            return Base_UserInfoService.I.GetModels(p => p.UserID == userId).Select(o => o.UserType).FirstOrDefault() ?? 0;
+            var base_UserInfo = Base_UserInfoService.I.GetModels(p => p.UserID == _userId).FirstOrDefault() ?? new Base_UserInfo();
+            _userType = base_UserInfo.UserType ?? 0;
+            _merchId = base_UserInfo.MerchID ?? "";
+            _storeId = base_UserInfo.StoreID ?? "";
         }        
         
         public GoodReqWorkFlow(int eventId, int userId)
         {
             _eventId = eventId;
-            _requestType = GetWorkRequestType(eventId);
-            _workId = GetWorkId(eventId);
-            _state = GetWorkState(eventId, _workId);
             _userId = userId;
-            _userType = GetUserType(_userId);
+            GetRequestType();
+            GetWorkId();
+            GetWorkState();            
+            GetUserInfo();
                         
             _machine = new StateMachine<State, Trigger>(() => _state, s => _state = s);            
 
@@ -630,7 +614,7 @@ namespace XCCloudService.WorkFlow
             {
                 if (_machine.CanFire(Trigger.Cancel))
                 {                                           
-                    //获取当前工作记录
+                    //获取待撤销工作记录
                     var entry = Data_WorkFlow_EntryService.I.GetModels(p => p.EventType == (int)WorkflowEventType.GoodRequest && p.WorkID == _workId
                         && p.EventID == _eventId && p.State == (int)_state).FirstOrDefault();
                     if (entry != null)
