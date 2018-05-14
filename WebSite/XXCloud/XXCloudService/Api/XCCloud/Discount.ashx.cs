@@ -30,14 +30,14 @@ namespace XXCloudService.Api.XCCloud
                 XCCloudUserTokenModel userTokenModel = (XCCloudUserTokenModel)(dicParas[Constant.XCCloudUserTokenModel]);
                 StoreIDDataModel userTokenDataModel = (StoreIDDataModel)(userTokenModel.DataModel);
 
-                int memberLevelId = 0;
+                int customerType = 0;
                 int icCardId = 0;
                 decimal foodPrice = 0;
-                string memberLevelIdStr = dicParas.ContainsKey("memberLevelId") ? dicParas["memberLevelId"].ToString() : string.Empty;
+                string customerTypeStr = dicParas.ContainsKey("customerType") ? dicParas["customerType"].ToString() : string.Empty;
                 string icCardIdStr = dicParas.ContainsKey("icCardId") ? dicParas["icCardId"].ToString() : string.Empty;
                 string foodPriceStr = dicParas.ContainsKey("foodPrice") ? dicParas["foodPrice"].ToString() : string.Empty;
 
-                if (string.IsNullOrEmpty(memberLevelIdStr))
+                if (string.IsNullOrEmpty(customerTypeStr))
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员级别参数不能为空");
                 }
@@ -52,7 +52,7 @@ namespace XXCloudService.Api.XCCloud
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "套餐价格参数不能为空");
                 }
 
-                if (!int.TryParse(memberLevelIdStr, out memberLevelId))
+                if (!int.TryParse(customerTypeStr, out customerType))
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员级别数据类型不正确");
                 }
@@ -68,34 +68,38 @@ namespace XXCloudService.Api.XCCloud
                 }
 
                 string sql = "GetDiscountForAPI";
-                SqlParameter[] parameters = new SqlParameter[9];
+                SqlParameter[] parameters = new SqlParameter[10];
                 parameters[0] = new SqlParameter("@MerchId", userTokenDataModel.MerchId);
                 parameters[1] = new SqlParameter("@StoreId", userTokenDataModel.StoreId);
-                parameters[2] = new SqlParameter("@MemberLevelId", memberLevelId);
+                parameters[2] = new SqlParameter("@CustomerType", customerType);
                 parameters[3] = new SqlParameter("@ICCardId", icCardId);
                 parameters[4] = new SqlParameter("@FoodPrice", foodPrice);
                 parameters[5] = new SqlParameter("@SubPrice", SqlDbType.Decimal);
                 parameters[5].Direction = ParameterDirection.Output;
                 parameters[6] = new SqlParameter("@DiscountRuleID", SqlDbType.Int);
                 parameters[6].Direction = ParameterDirection.Output;
-                parameters[7] = new SqlParameter("@ErrMsg", SqlDbType.VarChar, 200);
+                parameters[7] = new SqlParameter("@DiscountRuleName", SqlDbType.VarChar,200);
                 parameters[7].Direction = ParameterDirection.Output;
-                parameters[8] = new SqlParameter("@RS", SqlDbType.Int);
-                parameters[8].Direction = ParameterDirection.ReturnValue;
+                parameters[8] = new SqlParameter("@ErrMsg", SqlDbType.VarChar, 200);
+                parameters[8].Direction = ParameterDirection.Output;
+                parameters[9] = new SqlParameter("@RS", SqlDbType.Int);
+                parameters[9].Direction = ParameterDirection.ReturnValue;
 
                 System.Data.DataSet ds = XCCloudBLL.GetStoredProcedureSentence(sql, parameters);
-                if (parameters[8].Value.ToString() == "1")
+                if (parameters[9].Value.ToString() == "1")
                 {
                     decimal subPrice = decimal.Parse(parameters[5].Value.ToString());
                     var obj = new
                     {
-                        subPrice = Convert.ToDecimal(subPrice).ToString("0.00")
+                        discountRuleId = int.Parse(parameters[6].Value.ToString()),
+                        discountRuleName = parameters[7].Value.ToString(),
+                        subPrice = Convert.ToDecimal(parameters[5].Value).ToString("0.00")
                     };
-                    return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, obj);
+                    return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, obj);
                 }
                 else
                 {
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, parameters[7].Value.ToString());
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, parameters[8].Value.ToString());
                 }
             }
             catch (Exception e)
@@ -103,6 +107,30 @@ namespace XXCloudService.Api.XCCloud
                 throw e;
             }
         }
+
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object getDiscountRuleList(Dictionary<string, object> dicParas)
+        {
+            XCCloudUserTokenModel userTokenModel = (XCCloudUserTokenModel)(dicParas[Constant.XCCloudUserTokenModel]);
+            StoreIDDataModel userTokenDataModel = (StoreIDDataModel)(userTokenModel.DataModel);
+
+            string sql = "GetDiscountRuleList";
+            SqlParameter[] parameters = new SqlParameter[2];
+            parameters[0] = new SqlParameter("@MerchId", userTokenDataModel.MerchId);
+            parameters[1] = new SqlParameter("@StoreId", userTokenDataModel.StoreId);
+
+            System.Data.DataSet ds = XCCloudBLL.GetStoredProcedureSentence(sql, parameters);
+            if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+            {
+                List<Data_DistinctInfoModel> list = Utils.GetModelList<Data_DistinctInfoModel>(ds.Tables[0]);
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, list);
+            }
+            else
+            {
+                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, parameters[8].Value.ToString());
+            }
+        }
+
 
         [Authorize(Roles = "MerchUser")]
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]

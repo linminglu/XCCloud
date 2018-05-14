@@ -150,6 +150,7 @@ namespace XCCloudService.WorkFlow
         private int _requestType;
         private int _workId;
         private int _eventId;
+        private int _userId;
 
         /// <summary>
         /// 获取工作流状态
@@ -214,15 +215,16 @@ namespace XCCloudService.WorkFlow
 
         private State GetWorkState(int eventId, int workId)
         {
-            return (State)(Data_WorkFlow_EntryService.I.GetModels(p => p.EventID == eventId && p.WorkID == workId && p.EventType == (int)WorkflowEventType.GoodRequest)
+            return (State)(Data_WorkFlow_EntryService.I.GetModels(p => p.EventID == eventId && p.WorkID == workId && p.EventType == (int)WorkflowEventType.GoodRequest).OrderByDescending(or => or.CreateTime)
                 .Select(o => o.State).FirstOrDefault() ?? 0);
         }
         
-        public GoodReqWorkFlow(int eventId)
+        public GoodReqWorkFlow(int eventId, int userId)
         {
             _requestType = GetWorkRequestType(eventId);
             _workId = GetWorkId(eventId);
             _state = GetWorkState(eventId, _workId);
+            _userId = userId;
                         
             _machine = new StateMachine<State, Trigger>(() => _state, s => _state = s);            
 
@@ -231,13 +233,10 @@ namespace XCCloudService.WorkFlow
             _setRequestDealVerifyTrigger = _machine.SetTriggerParameters<int>(Trigger.RequestDealVerify);
             
             _machine.Configure(State.Open)
-                .PermitIf(Trigger.Request, State.Requested, () => _requestType == (int)RequestType.RequestStore 
-                                                            || _requestType == (int)RequestType.MerchRequest
-                                                            || _requestType == (int)RequestType.RequestMerch, "门店或总店申请")
-                .PermitIf(Trigger.SendDeal, State.SendDealed, () => _requestType == (int)RequestType.MerchSend, "总店配送");
+                .PermitIf(Trigger.Request, State.Requested, () => _requestType == (int)RequestType.RequestStore || _requestType == (int)RequestType.MerchRequest || _requestType == (int)RequestType.RequestMerch, "门店或总店申请")
+                .PermitIf(Trigger.Request, State.SendDealed, () => _requestType == (int)RequestType.MerchSend, "总店配送");
 
             _machine.Configure(State.Requested)
-                .Permit(Trigger.Cancel, State.Closed)
                 .PermitDynamic(_setRequestVerifyTrigger, s => (_requestType == (int)RequestType.RequestStore || _requestType == (int)RequestType.RequestMerch) && s == 1 
                                                         ? State.RequestVerifiedPass : State.RequestVerifiedRefuse)               
                 .PermitIf(Trigger.SendDeal, State.SendDealed, () => _requestType == (int)RequestType.MerchRequest);
@@ -254,7 +253,6 @@ namespace XCCloudService.WorkFlow
                 .PermitReentry(Trigger.SendDeal)
                 .PermitIf(Trigger.Cancel, State.RequestVerifiedPass, () => _requestType == (int)RequestType.RequestStore, "撤销调拨出库，返回上一步")
                 .PermitIf(Trigger.Cancel, State.Requested, () => _requestType == (int)RequestType.MerchRequest, "撤销调拨出库，返回上一步")
-                .PermitIf(Trigger.Cancel, State.Open, () => _requestType == (int)RequestType.MerchSend, "撤销调拨出库，返回上一步")
                 .PermitDynamic(_setSendDealVerifyTrigger, s => _requestType == (int)RequestType.RequestStore && s == 1 ? State.SendDealVerifiedPass : State.SendDealVerifiedRefuse)
                 .PermitIf(Trigger.RequestDeal, State.RequestDealed, () => _requestType == (int)RequestType.MerchRequest 
                                                                     || _requestType == (int)RequestType.MerchSend
@@ -277,10 +275,14 @@ namespace XCCloudService.WorkFlow
                 .PermitDynamic(_setRequestDealVerifyTrigger, s => _requestType == (int)RequestType.RequestStore && s == 1 ? State.RequestDealVerifiedPass : State.RequestDealVerifiedRefuse)               
                 .PermitIf(Trigger.Close, State.Closed, () => _requestType == (int)RequestType.MerchRequest 
                                                        || _requestType == (int)RequestType.MerchSend
+                                                       || _requestType == (int)RequestType.RequestMerch)
+                .PermitIf(Trigger.SendDeal, State.SendDealed, () => _requestType == (int)RequestType.MerchRequest 
+                                                       || _requestType == (int)RequestType.MerchSend
                                                        || _requestType == (int)RequestType.RequestMerch);
 
             _machine.Configure(State.RequestDealVerifiedPass)
                 .Permit(Trigger.Cancel, State.RequestDealed)
+                .PermitIf(Trigger.SendDeal, State.SendDealed)
                 .Permit(Trigger.Close, State.Closed);
 
             _machine.Configure(State.RequestDealVerifiedRefuse)
@@ -317,28 +319,12 @@ namespace XCCloudService.WorkFlow
 
         #region 方法
 
-        private bool IsValidUser(int userId, out string errMsg)
-        {
-            errMsg = string.Empty;
-            var user = Base_UserInfoService.I.GetModels(p => p.UserID == userId).FirstOrDefault();
-            if (user == null)
-            {
-                errMsg = "当前操作用户不存在";
-                return false;
-            }
-
-            return true;
-        }
-
         private bool AddWorkEntry(int eventId, int workId, int userId, Trigger t, State s, out string errMsg, string note = "")
         {
             errMsg = string.Empty;
 
             try
             {
-                //判断操作用户是否存在
-                if (!IsValidUser(userId, out errMsg)) return false;
-
                 //获取工作节点
                 var workNode = Data_WorkFlow_NodeService.I.GetModels(p => p.WorkID == workId && p.OrderNumber == (int)t).FirstOrDefault();
                 if (workNode == null)
@@ -376,7 +362,7 @@ namespace XCCloudService.WorkFlow
             }            
         }
 
-        public bool Request(int userId, out string errMsg)
+        public bool Request(out string errMsg)
         {
             errMsg = string.Empty;            
 
@@ -384,7 +370,7 @@ namespace XCCloudService.WorkFlow
             {               
                 if (_machine.CanFire(Trigger.Request))
                 {
-                    if (!AddWorkEntry(_eventId, _workId, userId, Trigger.Request, State.Requested, out errMsg)) return false;
+                    if (!AddWorkEntry(_eventId, _workId, _userId, Trigger.Request, State.Requested, out errMsg)) return false;
 
                     _machine.Fire(Trigger.Request);  
                   
@@ -403,7 +389,7 @@ namespace XCCloudService.WorkFlow
             return false;
         }
 
-        public bool RequestVerify(int userId, int state, string note, out string errMsg)
+        public bool RequestVerify(int state, string note, out string errMsg)
         {
             errMsg = string.Empty;
 
@@ -411,7 +397,7 @@ namespace XCCloudService.WorkFlow
             {
                 if (_machine.CanFire(Trigger.RequestVerify))
                 {
-                    if (!AddWorkEntry(_eventId, _workId, userId, Trigger.RequestVerify, state == 1 ? State.RequestVerifiedPass : State.RequestVerifiedRefuse, out errMsg, note)) return false;
+                    if (!AddWorkEntry(_eventId, _workId, _userId, Trigger.RequestVerify, state == 1 ? State.RequestVerifiedPass : State.RequestVerifiedRefuse, out errMsg, note)) return false;
 
                     _machine.Fire(_setRequestVerifyTrigger, state);
 
@@ -430,7 +416,7 @@ namespace XCCloudService.WorkFlow
             return false;
         }
 
-        public bool SendDeal(int userId, out string errMsg)
+        public bool SendDeal(out string errMsg)
         {
             errMsg = string.Empty;
 
@@ -438,7 +424,7 @@ namespace XCCloudService.WorkFlow
             {
                 if (_machine.CanFire(Trigger.SendDeal))
                 {
-                    if (!AddWorkEntry(_eventId, _workId, userId, Trigger.SendDeal, State.SendDealed, out errMsg)) return false;
+                    if (!AddWorkEntry(_eventId, _workId, _userId, Trigger.SendDeal, State.SendDealed, out errMsg)) return false;
 
                     _machine.Fire(Trigger.SendDeal);
 
@@ -457,7 +443,7 @@ namespace XCCloudService.WorkFlow
             return false;
         }
 
-        public bool SendDealVerify(int userId, int state, string note, out string errMsg)
+        public bool SendDealVerify(int state, string note, out string errMsg)
         {
             errMsg = string.Empty;
 
@@ -465,7 +451,7 @@ namespace XCCloudService.WorkFlow
             {
                 if (_machine.CanFire(Trigger.SendDealVerify))
                 {
-                    if (!AddWorkEntry(_eventId, _workId, userId, Trigger.SendDealVerify, state == 1 ? State.SendDealVerifiedPass : State.SendDealVerifiedRefuse, out errMsg, note)) return false;
+                    if (!AddWorkEntry(_eventId, _workId, _userId, Trigger.SendDealVerify, state == 1 ? State.SendDealVerifiedPass : State.SendDealVerifiedRefuse, out errMsg, note)) return false;
 
                     _machine.Fire(_setSendDealVerifyTrigger, state);
 
@@ -484,7 +470,7 @@ namespace XCCloudService.WorkFlow
             return false;
         }
 
-        public bool RequestDeal(int userId, out string errMsg)
+        public bool RequestDeal(out string errMsg)
         {
             errMsg = string.Empty;
 
@@ -492,7 +478,7 @@ namespace XCCloudService.WorkFlow
             {
                 if (_machine.CanFire(Trigger.RequestDeal))
                 {
-                    if (!AddWorkEntry(_eventId, _workId, userId, Trigger.RequestDeal, State.RequestDealed, out errMsg)) return false;
+                    if (!AddWorkEntry(_eventId, _workId, _userId, Trigger.RequestDeal, State.RequestDealed, out errMsg)) return false;
 
                     _machine.Fire(Trigger.RequestDeal);
 
@@ -511,7 +497,7 @@ namespace XCCloudService.WorkFlow
             return false;
         }
 
-        public bool RequestDealVerify(int userId, int state, string note, out string errMsg)
+        public bool RequestDealVerify(int state, string note, out string errMsg)
         {
             errMsg = string.Empty;
 
@@ -519,7 +505,7 @@ namespace XCCloudService.WorkFlow
             {
                 if (_machine.CanFire(Trigger.RequestDealVerify))
                 {
-                    if (!AddWorkEntry(_eventId, _workId, userId, Trigger.RequestDealVerify, state == 1 ? State.RequestDealVerifiedPass : State.RequestDealVerifiedRefuse, out errMsg, note)) return false;
+                    if (!AddWorkEntry(_eventId, _workId, _userId, Trigger.RequestDealVerify, state == 1 ? State.RequestDealVerifiedPass : State.RequestDealVerifiedRefuse, out errMsg, note)) return false;
 
                     _machine.Fire(_setRequestDealVerifyTrigger, state);
 
@@ -538,17 +524,15 @@ namespace XCCloudService.WorkFlow
             return false;
         }
 
-        public bool Cancel(int userId, out string errMsg)
+        public bool Cancel(out string errMsg)
         {
             errMsg = string.Empty;
 
             try
             {
                 if (_machine.CanFire(Trigger.Cancel))
-                {
-                    if (!IsValidUser(userId, out errMsg)) return false;
-                        
-                    var theUser = Base_UserInfoService.I.GetModels(p => p.UserID == userId).FirstOrDefault();
+                {                        
+                    var theUser = Base_UserInfoService.I.GetModels(p => p.UserID == _userId).FirstOrDefault();
 
                     //获取当前工作记录
                     var entry = Data_WorkFlow_EntryService.I.GetModels(p => p.EventType == (int)WorkflowEventType.GoodRequest && p.WorkID == _workId
@@ -601,7 +585,7 @@ namespace XCCloudService.WorkFlow
             return false;
         }
 
-        public bool Close(int userId, out string errMsg)
+        public bool Close(out string errMsg)
         {
             errMsg = string.Empty;
 
@@ -609,7 +593,7 @@ namespace XCCloudService.WorkFlow
             {
                 if (_machine.CanFire(Trigger.Close))
                 {
-                    if (!AddWorkEntry(_eventId, _workId, userId, Trigger.Close, State.Closed, out errMsg)) return false;
+                    if (!AddWorkEntry(_eventId, _workId, _userId, Trigger.Close, State.Closed, out errMsg)) return false;
 
                     _machine.Fire(Trigger.Close);
 

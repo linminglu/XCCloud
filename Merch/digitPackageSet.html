@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="layui/css/layui.css">
 </head>
 <body>
-<div class="layui-row">
+<div class="layui-row" style="padding: 15px">
     <blockquote class="layui-elem-quote" style="text-align: right">
         <button type="button" class="layui-btn layui-btn-normal" i18n-content="查询模板"></button>
         <button type="button" class="layui-btn layui-btn-normal add" i18n-content="新增"></button>
@@ -184,6 +184,7 @@
         $('.add').on('click',function () {
              id='';BalanceType='';  AuthorFlag=0;
             xc.getBalanceTypeDic(token,layer,form,'BalanceType');
+            $('#openModel').find('input').val('');
             layer.open({
                 title:'新增套餐',
                 type:1,

@@ -14,7 +14,7 @@ namespace XCCloudService.Model.XCCloud
     
     public partial class Data_Member_Card
     {
-        public int ID { get; set; }
+        public string ID { get; set; }
         public string ICCardID { get; set; }
         public Nullable<int> ParentCard { get; set; }
         public Nullable<int> CardType { get; set; }
@@ -22,7 +22,7 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> CardLimit { get; set; }
         public Nullable<int> AllowIn { get; set; }
         public Nullable<int> AllowOut { get; set; }
-        public Nullable<int> MemberID { get; set; }
+        public string MemberID { get; set; }
         public Nullable<int> MemberLevelID { get; set; }
         public Nullable<System.DateTime> CreateTime { get; set; }
         public Nullable<System.DateTime> EndDate { get; set; }

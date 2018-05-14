@@ -626,7 +626,7 @@ namespace XCCloudService.Api.XCCloud
 
                 var linq = from a in Base_StoreInfoService.N.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && (p.StoreState == (int)StoreState.Open || p.StoreState == (int)StoreState.Valid))
                            join b in Data_Member_Card_StoreService.N.GetModels() on a.StoreID equals b.StoreID
-                           join c in Data_Member_CardService.N.GetModels() on b.CardID equals c.ID
+                           join c in Data_Member_CardService.N.GetModels() on (b.CardID + "") equals c.ID
                            join d in Base_MemberInfoService.N.GetModels() on c.MemberID equals d.ID
                            select new
                            {

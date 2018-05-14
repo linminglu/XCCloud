@@ -75,9 +75,9 @@
 		.navStyle h4{font-size: 1.2em;line-height: 1.5em;text-indent: 12px;}
 		.navT{width: 80px;margin-top: 2.25em;padding-left: 0.2em;color: #fff;font-weight: 500;}
 		.navbar-right{margin-right: 1em;}
-		.majorLeft{width: 320px; padding: 8px; background: #fff;position:relative;overflow:hidden;margin-top: 5px;}
-		.shopCart{padding-top: 1.5em;position: relative;min-height: 46em;}
-		.shopCart ul{min-height: 5em;max-height: 40em; overflow-x: hidden;overflow-y:auto;padding: 0;}
+
+		.shopCart{position: relative;width: 320px; padding: 1.5em 0.5em 0.5em 0.5em; background: #fff;overflow:hidden;margin-top: 5px;}
+		.shopCart ul{min-height: 5em;max-height: 30em; overflow-x: hidden;overflow-y:auto;padding: 0;}
 		.shopCart ul li{border: 1px solid #47aedc;height: 6.7em; margin-top: 0.5em;padding-top: 0.6em;padding-left: 0.8em;}
 		.shopCStyle{line-height: 1.8em;font-size: 1em;padding: 0;color: #666666;}
 		.shopCart ul li h4{font-weight: 600;}
@@ -85,7 +85,7 @@
 		/*会员信息*/
 		.shopCart ul{min-height: 40em;}
 		.shopCart ul li span{font-size: 1em;margin-top: 0.5em;text-align: center;}
-		.Checkout{position: absolute;left: 0;bottom: 0.2em;z-index: 9;color: #555555;}
+		.Checkout{position: absolute;left: 0;bottom: 0.2em;z-index: 3;color: #555555;}
 		.CheckoutBtn button{margin: 1em 0.5em;color: #fff;font-size: 1.2em;width: 40%;}
 		/*.CountH{background: rgba(0,0,0,0.1):DXImageTransform.Microsoft.gradient(startColorstr=#10000000,endColorstr=#10000000);border-color: #f0f0f0;}*/
 		.CheckoutBtn .btn-danger{background-color: #f82806;border: 1px solid #f82806;}
@@ -112,9 +112,9 @@
         .memberSelected img{width: 50px;height: 45px;}
         .MtcList ul li .MtcListTxt p{margin-top: 1.2em;}
 		.MtcList .swiper-wrapper{padding: 2em auto}
-		.McSty{margin: 0.5em 0;line-height: 2em;}
-        .McText{margin: 1em 0;line-height: 2em;}
-		.McText span,.McSty span{text-align: left;padding: 0;font-size: 1.2em;}
+		.McSty{margin: 0.5em 0;line-height: 2em;padding-right: 0;}
+        .McText{margin: 0.5em 0;line-height: 2em;}
+		.McText span,.McSty span{text-align: left;padding: 0;font-size: 1em;}
 		.McText input{height: 2em;width: 100%;line-height:2em;padding-left: 0.5em; }
 		.McText select{height: 2em;width: 100%;line-height:2em; padding: 0 0 0 0.5em;}
 
@@ -235,10 +235,11 @@
 		.memberText h4{line-height: 40px;font-size: 0.8em;}
         .readCard{padding: 0;height: 2em;line-height: 2em;}
         input.btnSendCode{line-height: 0;}
-		#footer { position:fixed; bottom:0; left:0; width:100%; height:32px; background-color:#B8D0FA;z-index: 3;}
-		#expander{ width:100%; height:1px; background-color:#999;}
-		#expander:hover{ cursor:n-resize;}
-		.member{color: #666;border-bottom: 1px solid #666666;background-color: #f9f9f9;line-height: 32px;}
+		.footer { position:fixed; bottom:0; left:0; width:100%; height:32px;z-index: 9;padding-left: 2em;border-top: 1px solid #999;background-color: #f9f9f9;line-height: 32px;}
+		.membershipDetails{height: 10em;overflow-y:auto;overflow-x: hidden;}
+
+
+		.member{color: #666;}
 		.member li{font-size: 1em;display: inline;margin-right: 10px;}
 	</style>
 </head>
@@ -364,7 +365,7 @@
 					<div class="col-md-4 col-sm-4">
 						<div v-for="(item,index) in shopping" class="col-md-12 col-sm-12 shopCStyle">
 							<div class="col-md-7 col-sm-7 text-left shopCStyle">{{item.typeName}}</div>
-							<div class="col-md-5 col-sm-5 text-right shopCStyle">{{item.useCount}}</div>
+							<div class="col-md-5 col-sm-5 text-right shopCStyle">{{item.payNum}}</div>
 						</div>
 						<ul class="col-md-12 col-sm-12 payment shopCStyle">
 							<li>
@@ -407,6 +408,90 @@
 			</div>
 		</div>
 	</div>
+	<!--手工存币弹出层-->
+	<div class="modal fade bs-example-modal-lg" id="ManualSModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title">温馨提示</h4>
+				</div>
+				<div class="modal-body row">
+					<div class="col-md-12 col-xs-12 PopSty"><span class="col-md-8 col-xs-8">会员卡号：</span><em class="col-md-4 col-xs-4">姓名：</em></div>
+					<div class="col-md-12 col-xs-12 PopSty"><span class="col-md-8 col-xs-8">代币：</span></div>
+					<div class="col-md-12 col-xs-12 PopSty"><span class="col-md-8 col-xs-8">积分：</span></div>
+					<div class="col-md-12 col-xs-12 PopSty"><span class="col-md-6 col-xs-6">彩票：</span><span class="col-md-3 col-xs-3">存币数：</span><input class="col-md-3 col-xs-3" type="text"></div>
+					<div class="col-md-12 col-xs-12 PopSty Poptarea"><span class="col-md-3 col-xs-3">备注：</span><label class="col-md-9 col-xs-9"><textarea  class="form-control"></textarea></label></div>
+					<div class="col-md-12 text-right PopSty"><button type="button" class="btn btn-info">手工存币</button></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--提币弹出层-->
+	<div class="modal fade bs-example-modal-lg" id="currencySModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title">温馨提示</h4>
+				</div>
+				<div class="modal-body row">
+					<div class="col-md-12 col-xs-12 PopSty"><span class="col-md-8 col-xs-8">会员卡号：</span><em class="col-md-4 col-xs-4">姓名：</em></div>
+					<div class="col-md-12 col-xs-12 PopSty"><span class="col-md-8 col-xs-8">代币：</span></div>
+					<div class="col-md-12 col-xs-12 PopSty"><span class="col-md-6 col-xs-6">积分：</span><span class="col-md-3 col-xs-3">提币数：</span><input class="col-md-3 col-xs-3" type="text"></div>
+					<div class="col-md-12 col-xs-12 PopSty"><span class="col-md-6 col-xs-6">彩票：</span><span class="col-md-3 col-xs-3">密码：</span><input class="col-md-3 col-xs-3" type="text"></div>
+
+					<div class="col-md-12 col-xs-12 PopSty Poptarea"><span class="col-md-3 col-xs-3">备注：</span><label class="col-md-9 col-xs-9"><textarea  class="form-control"></textarea></label></div>
+					<div class="col-md-12 text-right PopSty"><button type="button" class="btn btn-info">提币</button></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--送币弹出层-->
+	<div class="modal fade bs-example-modal-lg" id="SendSModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title">温馨提示</h4>
+				</div>
+				<div class="modal-body row">
+					<div class="col-md-12 col-xs-12 PopSty"><span class="col-md-8 col-xs-8">会员卡号：</span><em class="col-md-4 col-xs-4">姓名：</em></div>
+					<div class="col-md-12 col-xs-12 PopSty"><span class="col-md-8 col-xs-8">代币：</span></div>
+					<div class="col-md-12 col-xs-12 PopSty"><span class="col-md-6 col-xs-6">积分：</span><span class="col-md-3 col-xs-3">可送币：</span><input class="col-md-3 col-xs-3" type="text"></div>
+					<div class="col-md-12 col-xs-12 PopSty"><span class="col-md-4 col-xs-4">彩票：</span><span class="col-md-3 col-xs-3">送币方式：</span>
+						<div class="col-md-5 col-xs-5 switchZdy">
+							<div class="col-md-6 col-xs-6 onSwitch">允许</div>
+							<div class="col-md-6 col-xs-6">不允许</div>
+						</div>
+					</div>
+
+					<div class="col-md-12 col-xs-12 PopSty Poptarea"><span class="col-md-3 col-xs-3">备注：</span><label class="col-md-9 col-xs-9"><textarea  class="form-control"></textarea></label></div>
+					<div class="col-md-12 text-right PopSty"><button type="button" class="btn btn-info">送币</button></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--退卡弹出层-->
+	<div class="modal fade bs-example-modal-lg" id="backCardSModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title">温馨提示</h4>
+				</div>
+				<div class="modal-body row">
+					<div class="col-md-12 col-xs-12 PopSty"><span class="col-md-8 col-xs-8">会员卡号：</span><em class="col-md-4 col-xs-4">姓名：</em></div>
+					<div class="col-md-12 col-xs-12 PopSty"><span class="col-md-6 col-xs-6">代币：</span><span class="col-md-3 col-xs-3">代币价值：</span><input class="col-md-3 col-xs-3" type="text"></div>
+					<div class="col-md-12 col-xs-12 PopSty"><span class="col-md-6 col-xs-6">积分：</span><span class="col-md-3 col-xs-3">卡内押金：</span><input class="col-md-3 col-xs-3" type="text"></div>
+					<div class="col-md-12 col-xs-12 PopSty"><span class="col-md-6 col-xs-6">彩票：</span><span class="col-md-3 col-xs-3">合计金额：</span><input class="col-md-3 col-xs-3" type="text"></div>
+
+					<div class="col-md-12 col-xs-12 PopSty Poptarea"><span class="col-md-3 col-xs-3">备注：</span><label class="col-md-9 col-xs-9"><textarea  class="form-control"></textarea></label></div>
+					<div class="col-md-12 text-right PopSty"><button type="button" class="btn btn-info">退卡</button></div>
+				</div>
+			</div>
+		</div>
+	</div>
 	<!-- Modal(通用提示框) -->
 	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 		<div class="modal-dialog" role="document">
@@ -428,42 +513,39 @@
 	<div class="container-fluid">
 		<div class="row">
 			<!--左边购物车-->
-			<div class="fl majorLeft">
-				<div class="shopCart col-md-12 col-sm-12">
-					<div class="shopTable">
-						<table class="table table-bordered col-md-12 col-sm-12" id="shopTable">
-							<thead style="background: #f5f5f5">
-							<tr>
-								<th>商品名</th>
-								<th>数量</th>
-								<th>单价</th>
-							</tr>
-							</thead>
-							<tbody>
-							<tr v-for="items in shopData">
-								<td>{{items.foodName}}</td>
-								<td>{{items.amount}}</td>
-								<!--<td>{{items.vipPrice}}</td>-->
-								<td class="selectSty">
-									<select v-model="items.selected">
-										<option v-for="(option,index) in (items.detailInfoList)" :value="index">
-											{{ option.typeName}}：{{ option.useCount}}
-										</option>
-									</select>
-								</td>
-							</tr>
-							</tbody>
-						</table>
-					</div>
-					<div class="Checkout col-md-12 col-sm-12">
-						<div v-for="(item,index) in shopping" class="col-md-12 col-sm-12 shopCStyle">
-							<div class="col-md-7 col-sm-7 text-left shopCStyle">{{item.typeName}}</div>
-							<div class="col-md-5 col-sm-5 text-right shopCStyle">{{item.useCount}}</div>
-						</div>
-						<div class="CheckoutBtn col-md-12 col-sm-12 shopCStyle"><button type="button" class="btn btn-danger">挂单</button><button type="button" class="btn btn-success" @click="closeAccounts">结账</button></div>
-					</div>
+			<div class="shopCart col-md-12 col-sm-12 fl majorLeft heightKz">
+				<div class="shopTable">
+					<table class="table table-bordered col-md-12 col-sm-12" id="shopTable">
+						<thead style="background: #f5f5f5">
+						<tr>
+							<th>商品名</th>
+							<th>数量</th>
+							<th>单价</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr v-for="items in shopData">
+							<td>{{items.foodName}}</td>
+							<td>{{items.amount}}</td>
+							<!--<td>{{items.vipPrice}}</td>-->
+							<td class="selectSty">
+								<select v-model="items.selected">
+									<option v-for="(option,index) in (items.detailInfoList)" :value="index">
+										{{ option.typeName}}：{{ option.useCount}}
+									</option>
+								</select>
+							</td>
+						</tr>
+						</tbody>
+					</table>
 				</div>
-
+				<div class="Checkout col-md-12 col-sm-12">
+					<div v-for="(item,index) in shopping" class="col-md-12 col-sm-12 shopCStyle">
+						<div class="col-md-7 col-sm-7 text-left shopCStyle">{{item.typeName}}</div>
+						<div class="col-md-5 col-sm-5 text-right shopCStyle">{{item.payNum}}</div>
+					</div>
+					<div class="CheckoutBtn col-md-12 col-sm-12 shopCStyle"><button type="button" class="btn btn-danger">挂单</button><button type="button" class="btn btn-success" @click="closeAccounts">结账</button></div>
+				</div>
 			</div>
 			<!--中间菜单-->
 			<ul class="majorMenu fl heightKz">
@@ -476,7 +558,7 @@
 				<li :class="{cur:returnShow}"><a href="javascript:void(0)">会员返还</a></li>
 				<li :class="{cur:returnShow}"><a href="javascript:void(0)">退货处理</a></li>
 				<li :class="{cur:cardLossShow}"><a href="javascript:void(0)">会员卡挂失</a></li>
-				<!--<li @click="membershipReading" :class="{cur:cardLossShow}"><a href="javascript:void(0)">读卡</a></li>-->
+				<li @click="membershipReading" :class="{cur:cardLossShow}"><a href="javascript:void(0)">读卡</a></li>
 			</ul>
 			<!--右边显示内容-->
 			<div class="heightKz">
@@ -539,8 +621,6 @@
 								<span class="col-md-2 col-xs-6">彩票：</span>
 							</div>
 
-
-
 						</div>
 						<div class="row">
 							<div class="col-md-4 col-xs-6 McSty" ><span  class="col-md-4 col-xs-4">允许投退币：</span>
@@ -599,63 +679,6 @@
 				<!--会员操作-->
 				<div class="Operation" v-if="operationShow">
 					<div class="container-fluid">
-						<div class="ManualS hidden row">
-							<div class="PopupK">
-								<a class="layerCancel iconfont icon-cha" href="javascript:void(0);"></a>
-
-								<div class="col-md-12 col-xs-12 PopSty"><span class="col-md-8 col-xs-8">会员卡号：</span><em class="col-md-4 col-xs-4">姓名：</em></div>
-								<div class="col-md-12 col-xs-12 PopSty"><span class="col-md-8 col-xs-8">代币：</span></div>
-								<div class="col-md-12 col-xs-12 PopSty"><span class="col-md-8 col-xs-8">积分：</span></div>
-								<div class="col-md-12 col-xs-12 PopSty"><span class="col-md-6 col-xs-6">彩票：</span><span class="col-md-3 col-xs-3">存币数：</span><input class="col-md-3 col-xs-3" type="text"></div>
-
-								<div class="col-md-12 col-xs-12 PopSty Poptarea"><span class="col-md-3 col-xs-3">备注：</span><label class="col-md-9 col-xs-9"><textarea  class="form-control"></textarea></label></div>
-								<div class="col-md-12 text-right PopSty"><button type="button" class="btn btn-info">手工存币</button></div>
-							</div>
-						</div>
-						<div class="CurrencyS hidden row">
-							<div class="PopupK">
-								<a class="layerCancel iconfont icon-cha" href="javascript:void(0);"></a>
-
-								<div class="col-md-12 col-xs-12 PopSty"><span class="col-md-8 col-xs-8">会员卡号：</span><em class="col-md-4 col-xs-4">姓名：</em></div>
-								<div class="col-md-12 col-xs-12 PopSty"><span class="col-md-8 col-xs-8">代币：</span></div>
-								<div class="col-md-12 col-xs-12 PopSty"><span class="col-md-6 col-xs-6">积分：</span><span class="col-md-3 col-xs-3">提币数：</span><input class="col-md-3 col-xs-3" type="text"></div>
-								<div class="col-md-12 col-xs-12 PopSty"><span class="col-md-6 col-xs-6">彩票：</span><span class="col-md-3 col-xs-3">密码：</span><input class="col-md-3 col-xs-3" type="text"></div>
-
-								<div class="col-md-12 col-xs-12 PopSty Poptarea"><span class="col-md-3 col-xs-3">备注：</span><label class="col-md-9 col-xs-9"><textarea  class="form-control"></textarea></label></div>
-								<div class="col-md-12 text-right PopSty"><button type="button" class="btn btn-info">提币</button></div>
-							</div>
-						</div>
-						<div class="SendS hidden row">
-							<div class="PopupK">
-								<a class="layerCancel iconfont icon-cha" href="javascript:void(0);"></a>
-								<div class="col-md-12 col-xs-12 PopSty"><span class="col-md-8 col-xs-8">会员卡号：</span><em class="col-md-4 col-xs-4">姓名：</em></div>
-								<div class="col-md-12 col-xs-12 PopSty"><span class="col-md-8 col-xs-8">代币：</span></div>
-								<div class="col-md-12 col-xs-12 PopSty"><span class="col-md-6 col-xs-6">积分：</span><span class="col-md-3 col-xs-3">可送币：</span><input class="col-md-3 col-xs-3" type="text"></div>
-								<div class="col-md-12 col-xs-12 PopSty"><span class="col-md-4 col-xs-4">彩票：</span><span class="col-md-3 col-xs-3">送币方式：</span>
-									<div class="col-md-5 col-xs-5 switchZdy">
-										<div class="col-md-6 col-xs-6 onSwitch">允许</div>
-										<div class="col-md-6 col-xs-6">不允许</div>
-									</div>
-								</div>
-
-								<div class="col-md-12 col-xs-12 PopSty Poptarea"><span class="col-md-3 col-xs-3">备注：</span><label class="col-md-9 col-xs-9"><textarea  class="form-control"></textarea></label></div>
-								<div class="col-md-12 text-right PopSty"><button type="button" class="btn btn-info">送币</button></div>
-							</div>
-						</div>
-						<div class="backCardS hidden row">
-							<div class="PopupK">
-								<a class="layerCancel iconfont icon-cha" href="javascript:void(0);"></a>
-
-								<div class="col-md-12 col-xs-12 PopSty"><span class="col-md-8 col-xs-8">会员卡号：</span><em class="col-md-4 col-xs-4">姓名：</em></div>
-								<div class="col-md-12 col-xs-12 PopSty"><span class="col-md-6 col-xs-6">代币：</span><span class="col-md-3 col-xs-3">代币价值：</span><input class="col-md-3 col-xs-3" type="text"></div>
-								<div class="col-md-12 col-xs-12 PopSty"><span class="col-md-6 col-xs-6">积分：</span><span class="col-md-3 col-xs-3">卡内押金：</span><input class="col-md-3 col-xs-3" type="text"></div>
-								<div class="col-md-12 col-xs-12 PopSty"><span class="col-md-6 col-xs-6">彩票：</span><span class="col-md-3 col-xs-3">合计金额：</span><input class="col-md-3 col-xs-3" type="text"></div>
-
-								<div class="col-md-12 col-xs-12 PopSty Poptarea"><span class="col-md-3 col-xs-3">备注：</span><label class="col-md-9 col-xs-9"><textarea  class="form-control"></textarea></label></div>
-								<div class="col-md-12 text-right PopSty"><button type="button" class="btn btn-info">退卡</button></div>
-							</div>
-						</div>
-
 						<div class="row">
 							<h3 class="hStyle titleSty">用户信息</h3>
 							<div class="McText col-md-12 col-xs-12">
@@ -674,7 +697,7 @@
 								<span class="col-md-1 col-xs-1">证件号码：</span><label class="col-md-5 col-xs-5"><input type="text" class="form-control"/></label>
 								<span class="col-md-1 col-xs-1">微信：</span><label class="col-md-4 col-xs-5"><input type="text" class="form-control" /></label>
 							</div>
-							<div class="col-md-4 col-xs-6 McSty" ><span  class="col-md-4 col-xs-4">允许投退币：</span>
+							<div class="col-md-4 col-xs-6 McSty" ><span  class="col-md-3 col-xs-3">允许投退币：</span>
 								<div class="col-md-8 col-xs-8 pd_5">
 									<div class="switchZdy col-md-12 col-xs-12" @click="switchFnc('0')">
 										<div class="col-md-6 col-xs-6" :class="{'onSwitch':onSwitch0}" ref="aaa">允许</div>
@@ -682,7 +705,7 @@
 									</div>
 								</div>
 							</div>
-							<div class="col-md-4 col-xs-6 McSty" ><span  class="col-md-4 col-xs-4">允许兑币：</span>
+							<div class="col-md-4 col-xs-6 McSty" ><span  class="col-md-3 col-xs-3">允许兑币：</span>
 								<div class="col-md-8 col-xs-8 pd_5">
 									<div class="switchZdy col-md-12 col-xs-12" @click="switchFnc('1')">
 										<div class="col-md-6 col-xs-6" :class="{onSwitch:onSwitch1}">允许</div>
@@ -690,7 +713,7 @@
 									</div>
 								</div>
 							</div>
-							<div class="col-md-4 col-xs-6 McSty" ><span  class="col-md-4 col-xs-4">允许购买实物币：</span>
+							<div class="col-md-4 col-xs-6 McSty" ><span  class="col-md-3 col-xs-3">允许购买实物币：</span>
 								<div class="col-md-8 col-xs-8 pd_5">
 									<div class="switchZdy col-md-12 col-xs-12" @click="switchFnc('2')">
 										<div class="col-md-6 col-xs-6" :class="{onSwitch:onSwitch2}">允许</div>
@@ -698,7 +721,7 @@
 									</div>
 								</div>
 							</div>
-							<div class="col-md-4 col-xs-6 McSty" ><span  class="col-md-4 col-xs-4">允许手工存币：</span>
+							<div class="col-md-4 col-xs-6 McSty" ><span  class="col-md-3 col-xs-3">允许手工存币：</span>
 								<div class="col-md-8 col-xs-8 pd_5">
 									<div class="switchZdy col-md-12 col-xs-12" @click="switchFnc('3')">
 										<div class="col-md-6 col-xs-6" :class="{onSwitch:onSwitch3}">允许</div>
@@ -706,7 +729,7 @@
 									</div>
 								</div>
 							</div>
-							<div class="col-md-4 col-xs-6 McSty" ><span  class="col-md-4 col-xs-4">允许手工送币：</span>
+							<div class="col-md-4 col-xs-6 McSty" ><span  class="col-md-3 col-xs-3">允许手工送币：</span>
 								<div class="col-md-8 col-xs-8 pd_5">
 									<div class="switchZdy col-md-12 col-xs-12" @click="switchFnc('4')">
 										<div class="col-md-6 col-xs-6" :class="{onSwitch:onSwitch4}">允许</div>
@@ -714,7 +737,7 @@
 									</div>
 								</div>
 							</div>
-							<div class="col-md-4 col-xs-6 McSty" ><span  class="col-md-4 col-xs-4">卡状态：</span>
+							<div class="col-md-4 col-xs-6 McSty" ><span  class="col-md-3 col-xs-3">卡状态：</span>
 								<div class="col-md-8 col-xs-8 pd_5">
 									<div class="switchZdy col-md-12 col-xs-12" @click="switchFnc('5')">
 										<div class="col-md-6 col-xs-6" :class="{onSwitch:onSwitch5}">有效</div>
@@ -732,21 +755,21 @@
 									<li class="col-md-2 col-xs-2">彩票流水</li>
 								</ul>
 							</div>
-							<div  class="col-md-12 col-xs-12" style="min-height: 20em">
-								<table id="memberTable"></table>
+							<div  class="col-md-12 col-xs-12">
+								<table id="memberTable" style="height: 25em"></table>
 							</div>
 						</div>
-
 						<div class="row text-center">
 							<div class="col-md-4"></div>
-							<div class="col-md-2 col-xs-3"><button id="saveManual" type="button" class="btn btn-info">手工存币</button></div>
-							<div class="col-md-2 col-xs-3"><button id="CurrencyM" type="button" class="btn btn-info">提币</button></div>
-							<div class="col-md-2 col-xs-3"><button id="SendM" type="button" class="btn btn-info">送币</button></div>
-							<div class="col-md-2 col-xs-3"><button id="backCardM" type="button" class="btn btn-info">退卡</button></div>
+							<div class="col-md-2 col-xs-3"><button @click="saveManual" type="button" class="btn btn-info">手工存币</button></div>
+							<div class="col-md-2 col-xs-3"><button @click="currency" type="button" class="btn btn-info">提币</button></div>
+							<div class="col-md-2 col-xs-3"><button @click="sendCoin" type="button" class="btn btn-info">送币</button></div>
+							<div class="col-md-2 col-xs-3"><button @click="backCard" type="button" class="btn btn-info">退卡</button></div>
 						</div>
 					</div>
 				</div>
 				<!--会员入会-->
+				<!---->
 				<div class="enrollment" v-if="memberShow">
 					<div class="MemberMain">
 						<h3>选择入会等级</h3>
@@ -865,7 +888,12 @@
 			</tr>
 		</table>
 	</div>
-	<div id="footer"><div id="expander"></div>
+	<div class="footer" @click="membershipDetails" :class="{membershipDetails:footerShow}">
+		<!--<p v-for="(items,index) in detailData">-->
+			<!--<td>{{items.detailFoodTypeName}}</td>-->
+			<!--<td>{{items.containCount}}</td>-->
+			<!--<td>{{items.containName}}</td>-->
+		<!--</p>-->
 		<ul class="member">
 			<li><span>会员卡号：4444444444444454545454</span></li>
 			<li><span>代币：</span></li>
@@ -883,7 +911,7 @@
 <!-- 引入 Vue -->
 <script src="js/vue.js"></script>
 <script src="js/axios.min.js"></script>
-
+<!-- 引入 bootstrap-table -->
 <script src="js/bootstrap-table.js"></script>
 <script src="js/bootstrap-table-zh-CN.js"></script>
 <script>
@@ -896,12 +924,13 @@
             shopData:[],
             userToken:'',
             storeId:'',
-            memberLevelId:0,
+            memberLevelId:21,
 			saleData:[],
             detailData :[],
             shopping :[],
             memberLevel :[],
             memberFood :[],
+            buyDetails :[],
             memberForm:{
                 name:"",
                 sex:"0",
@@ -914,7 +943,6 @@
                 disabled: false
             },
             handle:{
-
 			},
             onSwitch0:false,
             onSwitch1:false,
@@ -935,10 +963,12 @@
 			saleData5:[],
             fastMoney:"1",
             fastAmount:"2",
+            customerType:"2",
             inputCash:"",
             inputMoney:"",
             inputAmount:"",
-
+            footerShow:false,
+            icCardId:"10004143"
         },
         mounted: function () {
             this.Initialize()
@@ -979,11 +1009,13 @@
                         shoppingList.push({
                             typeName:newValue[i].detailInfoList[newValue[i].selected].typeName,
                             foodId:newValue[i].detailInfoList[newValue[i].selected].foodId,
-                            balanceType:newValue[i].detailInfoList[newValue[i].selected].balanceType,
-                            useCount:parseFloat(newValue[i].detailInfoList[newValue[i].selected].useCount)*parseFloat(newValue[i].amount)
+                            payType:newValue[i].detailInfoList[newValue[i].selected].balanceType,
+                            foodCount:newValue[i].amount,
+                            payNum:parseFloat(newValue[i].detailInfoList[newValue[i].selected].useCount)*parseFloat(newValue[i].amount)
 						})
 					}
 					console.log(shoppingList);
+					that.buyDetails =shoppingList;
 					var shopping = [];
                     for(var i= 0;i<shoppingList.length;i++){
 						var flag=false;
@@ -991,14 +1023,14 @@
                             shopping.push({
                                 typeName:shoppingList[i].typeName,
                                 foodId:shoppingList[i].foodId,
-                                balanceType:shoppingList[i].balanceType,
-                                useCount:shoppingList[i].useCount
+                                payType:shoppingList[i].payType,
+                                payNum:shoppingList[i].payNum
                             })
                         }else {
                             for( var j in shopping){
                                 if(shopping[j].typeName == shoppingList[i].typeName){
                                     flag=true;
-                                    shopping[j].useCount=shopping[j].useCount+shoppingList[i].useCount
+                                    shopping[j].payNum=shopping[j].payNum+shoppingList[i].payNum;
                                     break
                                 }
                                 console.log(flag);
@@ -1008,14 +1040,13 @@
                                 shopping.push({
 									typeName:shoppingList[i].typeName,
 									foodId:shoppingList[i].foodId,
-									balanceType:shoppingList[i].balanceType,
-									useCount:shoppingList[i].useCount
+                                    payType:shoppingList[i].payType,
+                                    payNum:shoppingList[i].payNum
 								})
                             }
 						}
-
 					}
-//					console.log(shopping)
+					console.log(shopping)
 					that.shopping = shopping
                 },
                 deep:true
@@ -1087,14 +1118,17 @@
 
 
             },
+//			快速售币
             FastSell:function () {
                 $('#fastModal').modal('show');
                this.onFocus = true;
             },
+//			回车提交事件
             inputMoneySubmit:function () {
                 alert(111);
 //                document.getElementById('fastAmountFocus ').focus();
             },
+//			结账按钮
             closeAccounts:function () {
 				var that =this;
 				console.log(that.shopData== "");
@@ -1102,9 +1136,36 @@
                     that.msg = "购物车是空的，亲！";
                     $('#myModal').modal('show');
 				}else {
-                    $('#checkoutModal').modal('show');
+                    console.log(that.buyDetails);
+                    var foodCount =0;
+                    for(var i = 0;i< that.buyDetails.length ;i++){
+                        foodCount =foodCount+parseFloat(that.buyDetails[i].foodCount);
+					}
+                    console.log(foodCount);
+                    var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,buyDetails:JSON.stringify(that.buyDetails),customerType:that.customerType,mobile:"",memberLevelId:that.memberLevelId,icCardId:that.icCardId,payCount:"0",foodCount:foodCount,deposit:"0",openFee:"0",workStation:"lijunjie",authorId:"0",note:"",orderSource:"0",saleCoinType:"1"};
+
+                    axios.post('/xccloud/order?action=addOrder', obj).then(function (res) {	//创建订单
+                        console.log(res.data);
+                        that.msgPrompt(res.data);
+                        if (res.data.result_code === '1') {
+                            $('#checkoutModal').modal('show');
+                            var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,icCardId:that.icCardId};
+                            axios.post('/XCCloud/coupon?action=getMemberCouponList', obj).then(function (res) {	//创建订单
+                                console.log(res.data);
+                                that.msgPrompt(res.data);
+                                if (res.data.result_code === '1') {
+                                    $('#checkoutModal').modal('show');
+                                }
+                            }).catch(function (err) {
+                                console.log(err);
+                            });
+                        }
+                    }).catch(function (err) {
+                        console.log(err);
+                    });
 				}
             },
+//			会员入会（获取会员等级）
             membership:function () {
 				this.operationShow = false;
 				this.cardLossShow = false;
@@ -1115,6 +1176,7 @@
                 var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken};
                 axios.post('/XCCloud/Member?action=getMemberLevel', obj).then(function (res) {	//获取会员等级
                     console.log(res.data);
+                    that.msgPrompt(res.data);
                     if (res.data.result_code === '1') {
                         var memberLevel_ = [];
                         for(var i =0;i<res.data.result_data.length;i++){
@@ -1143,6 +1205,7 @@
                 });
                 that.replacement()
             },
+//			会员操作
             operationFnc:function () {
                 var that = this;
                 this.operationShow = true;
@@ -1159,6 +1222,7 @@
                 }, 50);
                 that.replacement()
             },
+//			销售列表
             salesAll:function () {
                 var that = this;
                 if(!this.saleShow){
@@ -1182,6 +1246,7 @@
 				}
 				that.replacement()
             },
+//			发送验证码
             sendCode:function () {
                 const TIME_COUNT = 59;
                 if (!event.target.disabled) {
@@ -1205,6 +1270,7 @@
 					}, 1000)
                 }
             },
+//			会员入会（会员等级获取对应会员套餐）
             membershipFood:function (index) {
                 var that = this;
 				if(that.memberLevel[index].selected){
@@ -1221,6 +1287,7 @@
                     console.log(obj);
 					axios.post('/XCCloud/Foods?action=getOpenCardFoodList', obj).then(function (res) {	//获取入会套餐
                         console.log(res.data);
+                        that.msgPrompt(res.data);
                         if (res.data.result_code === '1') {
                             var memberFood_ = [];
                             for(var i =0;i<res.data.result_data.length;i++){
@@ -1252,6 +1319,7 @@
                     });
 				}
             },
+//			选中会员入会套餐
             foodSelected:function (index) {
                 var that = this;
                 if(that.memberFood[index].selected){
@@ -1265,11 +1333,13 @@
                     that.memberFood[index].selected = true;
                 }
             },
+//			获取销售的函数
 			getMeal:function(customerType,foodType) {			//获取销售列表
 				var that = this;
                 var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken ,customerType:customerType,memberLevelId:that.memberLevelId,foodTypeStr:foodType};
                 axios.post('/api/XCCloud/Foods.ashx?action=getFoodList', obj).then(function (res) {
                     console.log(res.data);
+                    that.msgPrompt(res.data);
                     if (res.data.result_code === '1') {
                         that.saleData =res.data.result_data;
                     }
@@ -1278,6 +1348,7 @@
                     console.log(err);
                 });
     		},
+//			产品添加到购物车
             deletePerson: function(index) {
                 var that = this;
                 console.log("点击的索引值" + index);
@@ -1336,6 +1407,7 @@
                     }
                 }
             },
+//			产品详情
             details:function(index){
                 var that = this;
                 console.log(that.saleData[index]);
@@ -1351,17 +1423,20 @@
 				  console.log(err);
 			  });
 			},
+//			产品标题筛选
             screening:function (index) {		//saleTitle(标题函数)
 				console.log(index);
 				$(".saleTitleBg").find("li").eq(index).addClass("on").siblings().removeClass("on");
                 this.getMeal(0,index);
             },
+//			购物车+
             addCount:function(){	//+号的购物车管理
                 var that = this;
                 var tagIndex = $("#shopTable tbody").find("tr").index($('.tableTag'));
                 console.log(tagIndex);
                 that.shopData[tagIndex].amount++
 			},
+//			购物车-
             reduceCount:function(){	//+号的购物车管理
                 var that = this;
                 var tagIndex = $("#shopTable tbody").find("tr").index($('.tableTag'));
@@ -1370,10 +1445,17 @@
                     that.shopData[tagIndex].amount--
 				}else {
                     that.shopData.splice(tagIndex,1);
-                    $("#shopTable tbody").find("tr").eq(tagIndex-1).addClass('tableTag').siblings().removeClass('tableTag')
+                    alert(tagIndex);
+                    if(tagIndex ==0){
+                        $("#shopTable tbody").find("tr").eq(tagIndex).addClass('tableTag').siblings().removeClass('tableTag')
+					}else {
+                        $("#shopTable tbody").find("tr").eq(tagIndex-1).addClass('tableTag').siblings().removeClass('tableTag')
+					}
+
                 }
 
             },
+//			会员操作开关参数
             switchFnc:function (switchIndex) {
                 var that = this;
                 switch(switchIndex){
@@ -1401,6 +1483,7 @@
                 }
 //                this.onSwitch1 = !this.onSwitch1;
             },
+//			会员操作表格显示
             replacement:function () {
 				this.memberLevel = [];
 				this.memberFood = [];
@@ -1422,6 +1505,35 @@
                 this.onSwitch5 = false;
 
             },
+//			读取会员卡，更新会员消息
+            membershipReading: function(){
+
+
+			},
+//			存币
+            saveManual:function () {
+
+            	$('#ManualSModal').modal('show');
+            },
+//			提币
+			currency:function () {
+                $('#currencySModal').modal('show');
+            },
+//			送币
+			sendCoin:function () {
+                $('#SendSModal').modal('show');
+
+            },
+//			退卡
+			backCard:function(){
+                $('#backCardSModal').modal('show');
+			},
+//			获取会员详细信息
+            membershipDetails:function () {
+			    var that = this;
+                that.footerShow = !that.footerShow;
+            },
+//			通用消息提示
             msgPrompt:function (res) {
                 var that = this;
                 if(res.return_code == 0){
@@ -1445,7 +1557,7 @@
             $(this).addClass('tableTag').siblings().removeClass('tableTag');
         });
     });
-
+//	详情
     function detailTime(index) {
         var detailHide = $('.detailHide').html();
         console.log(detailHide);
@@ -1475,14 +1587,15 @@
             sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
             pageNumber:1,                       //初始化加载第一页，默认第一页
             pageSize: 5,                       //每页的记录行数（*）
-            pageList: [5,10, 25, 50, 100],        //可供选择的每页的行数（*）
+//            pageList: [5,10, 25, 50, 100],        //可供选择的每页的行数（*）
             search: false,                       //是否显示表格搜索，此搜索是客户端搜索，不会进服务端，所以，个人感觉意义不大
             strictSearch: true,
             showColumns: true,                  //是否显示所有的列
             showRefresh: true,                  //是否显示刷新按钮
             minimumCountColumns: 2,             //最少允许的列数
             clickToSelect: true,                //是否启用点击选中行
-            // height: $(window.top).height()-200,                        //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
+//            height:500,
+//             height: $(window.top).height()-200,                        //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
             uniqueId: "ID",                     //每一行的唯一标识，一般为主键列
             showToggle:true,
             showFooter:true,                 //是否显示详细视图和列表视图的切换按钮

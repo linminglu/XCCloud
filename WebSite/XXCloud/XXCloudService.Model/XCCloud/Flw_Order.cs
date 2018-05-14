@@ -14,7 +14,7 @@ namespace XCCloudService.Model.XCCloud
     
     public partial class Flw_Order
     {
-        public int ID { get; set; }
+        public string ID { get; set; }
         public string StoreID { get; set; }
         public string OrderID { get; set; }
         public Nullable<int> FoodCount { get; set; }

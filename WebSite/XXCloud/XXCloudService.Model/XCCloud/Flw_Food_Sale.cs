@@ -14,7 +14,7 @@ namespace XCCloudService.Model.XCCloud
     
     public partial class Flw_Food_Sale
     {
-        public int ID { get; set; }
+        public string ID { get; set; }
         public string StoreID { get; set; }
         public Nullable<int> FlowType { get; set; }
         public Nullable<int> FoodID { get; set; }

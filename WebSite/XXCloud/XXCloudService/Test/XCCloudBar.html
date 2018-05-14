@@ -319,12 +319,12 @@
         function do_getDiscountForAPI() {
             var mercheId = $("#txtDiscount_mercheId_GetDiscountForAPI").val();
             var storeId = $("#txtDiscount_storeId_GetDiscountForAPI").val();
-            var memberLevelId = $("#txtDiscount_memberLevelId_GetDiscountForAPI").val();
+            var customerType = $("#sel_CustomerType_do_getDiscountForAPI").val();
             var icCardId = $("#txtDiscount_icCardID_GetDiscountForAPI").val();
             var foodPrice = $("#txtDiscount_foodSale_GetDiscountForAPI").val();
             var parasObj = {
                 "sysId": "0", "versionNo": "0.0.0.1", "userToken": userToken,
-                "mercheId": mercheId, "storeId": storeId, "memberLevelId": memberLevelId,
+                "mercheId": mercheId, "storeId": storeId, "customerType": customerType,
                 "icCardId": icCardId, "foodPrice": foodPrice
             };
             var url = "/XCCloud/Discount?action=getDiscountForAPI";
@@ -353,6 +353,13 @@
             common(url, parasJson);
         }
 
+        function do_GetDiscountRuleList() {
+            var parasObj = { "sysId": "0", "versionNo": "0.0.0.1", "userToken": userToken };
+            var url = "/XCCloud/Discount?action=getDiscountRuleList";
+            var parasJson = JSON.stringify(parasObj);
+            common(url, parasJson);
+        }
+
     </script>
         
 </head>
@@ -366,10 +373,6 @@
         用户token:<input id="txtUserToken" placeholder="请输入用户token" />  
     </div>
 
-
-    
-    订单Id:<input id="txtOrderId" placeholder="请输入订单Id" />
-
     <div title="Member" style="font-size:14px;color:#F00;border:1px solid #ccc;">
         <input id="Button_Member_1" type="button" value="do_MemberLevel(获取会员等级)" onclick="do_MemberLevel()" />
         &nbsp;&nbsp;&nbsp;&nbsp;
@@ -381,6 +384,7 @@
         手机号:<input id="txtMobile1" placeholder="请输入手机号" value="15618920033" />
         <input id="Button_Member_4" type="button" value="do_getUserMobileSMSCode(获取手机短信)" onclick="do_getUserMobileSMSCode()" />
     </div>
+    <br />
 
     <div title="Food" style="font-size:14px;color:#F00;border:1px solid #ccc;">
         <input id="Button_Food_1" type="button" value="getFoodType(获取套餐类别)" onclick="getFoodType()" />
@@ -389,26 +393,31 @@
         &nbsp;&nbsp;&nbsp;&nbsp;
         套餐Id：<input id="txt_do_GetFoodDetail" type="text" value="1" /><input id="Button_Food_3" type="button" value="do_GetFoodDetail(获取套餐明细)" onclick="do_GetFoodDetail()" />
     </div>
+    <br />
 
     <div title="Discount" style="font-size:14px;color:#F00;border:1px solid #ccc;">
-        商户ID：<input id="txtDiscount_mercheId_GetDiscountForAPI" type="text" value="100025" />
-        门店ID：<input id="txtDiscount_storeId_GetDiscountForAPI" type="text" value="100025420106001" />
-        会员级别ID：<input id="txtDiscount_memberLevelId_GetDiscountForAPI" type="text" value="2" />
-        会员ICCardID：<input id="txtDiscount_icCardID_GetDiscountForAPI" type="text" value="10004143" />
-        套餐销售金额：<input id="txtDiscount_foodSale_GetDiscountForAPI" type="text" value="300.00" />
+        <!--商户ID：<input id="txtDiscount_mercheId_GetDiscountForAPI" type="text" value="100025" />
+        门店ID：<input id="txtDiscount_storeId_GetDiscountForAPI" type="text" value="100025420106001" />-->
+        客户类型:<select id="sel_CustomerType_do_getDiscountForAPI"><option value="0">散客</option><option value="1">入会</option><option value="2">会员</option></select>
+        会员ICCardID：<input id="txtDiscount_icCardID_GetDiscountForAPI" type="text" value="10004143" style="width:80px" />
+        套餐销售金额：<input id="txtDiscount_foodSale_GetDiscountForAPI" type="text" value="300.00" style="width:60px" />
         <input id="btn_do_getDiscountForAPI" type="button" onclick="do_getDiscountForAPI()" value="获取满减金额"/>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <input id="btn_do_GetDiscountRuleList" type="button" onclick="do_GetDiscountRuleList()" value="获取满减规则列表" />
     </div>
+    <br />
 
     <div title="Coupon" style="font-size:14px;color:#F00;border:1px solid #ccc;">
         会员ICCardID：<input id="txtCoupon_icCardID_GetMemberCouponList" type="text" value="10004143" />
         <input id="btn_GetMemberCouponList" type="button" onclick="do_GetMemberCouponList()" value="获取会员优惠券" />
     </div>
+    <br />
 
     <div title="Order" style="font-size:14px;color:#F00;border:1px solid #ccc;">
         <input id="Button_Order_1" type="button" value="do_GetOrder(获取订单流水号)" onclick="do_GetOrder()" />
     </div>
 
-    <div title="do_addOrder" style="font-size:14px;color:#F00;border:1px solid #ccc;">
+    <div title="order" style="font-size:14px;color:#F00;border:1px solid #ccc;">
         客户类型:<select id="sel_CustomerType_addOrder"><option value="0">散客</option><option value="1">入会</option><option value="2">会员</option></select>
         会员级别（如果散客输入0）:<input id="txtMemberLevelId_do_addOrder" placeholder="请输入会员级别（如果散客输入0）" value="0" style="width:25px" />
         会员卡号:<input id="txtMemberCardId_do_addOrder" placeholder="请输入会员卡号" style="width:80px" value="10004143" />
@@ -422,8 +431,11 @@
         订单号:<input id="txt_FlwOrderId_do_addOrderToCache" placeholder="请输订单号" style="width:160px" value="0" />
         会员卡号:<input id="txt_MemberCardId_do_addOrderToCache" placeholder="请输入会员卡号" style="width:80px" value="10004143" />
         <input id="btn_do_addOrderToCache" type="button" value="do_addOrderToCache(添加订单)" onclick="do_addOrderToCache()" />
-
         <!--<input id="Buttonorder_payOrder" type="button" value="payOrder(完成订单支付)" onclick="payOrder()" />-->
+    </div>
+
+    <div title="discount" style="font-size:14px;color:#F00;border:1px solid #ccc;">
+        
     </div>
 
     <div title="do_getOrderAuditQR" style="font-size:14px;color:#F00;border:1px solid #ccc;">
@@ -457,7 +469,7 @@
 
 
 
-    <br />
+   <br />
 
 </body>
 </html>

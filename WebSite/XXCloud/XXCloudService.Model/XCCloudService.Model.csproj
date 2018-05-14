@@ -71,6 +71,7 @@
     <Compile Include="CustomModel\XCCloud\BaiduMapModel.cs" />
     <Compile Include="CustomModel\XCCloud\BaseMemberModel.cs" />
     <Compile Include="CustomModel\XCCloud\Base_FoodType.cs" />
+    <Compile Include="CustomModel\XCCloud\Data_DistinctInfoModel.cs" />
     <Compile Include="CustomModel\XCCloud\Data_GoodRequestModel.cs" />
     <Compile Include="CustomModel\XCCloud\Base_GoodsInfoModel.cs" />
     <Compile Include="CustomModel\XCCloud\Base_StoreInfoModel.cs" />

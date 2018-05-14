@@ -1,10 +1,3 @@
-/**
- * Created by Administrator on 2017-08-29.
- */
-
-
-
-
 
 $(function() {
     var data1 = [
@@ -57,25 +50,10 @@ $(function() {
                     enabled: false
                 },
                 title: {
-                    text: '今日营收总览',
+                    text: '',
                     align: 'left',
                    style: { "color": "#333333", "fontSize": "24px", "fontWeight": "bold" }
                 },
-                //tooltip: {
-                //    borderWidth: 0,
-                //    backgroundColor: 'none',
-                //    shadow: false,
-                //    style: {
-                //        fontSize: '16px'
-                //    }
-                //    //pointFormat: '{series.name}<br><span style="font-size:2em; color: {point.color}; font-weight: bold">{point.y}%</span>',
-                //    //positioner: function (labelWidth, labelHeight) {
-                //    //    return {
-                //    //        x: 450 - labelWidth / 2,
-                //    //        y: 150
-                //    //    };
-                //    //}
-                //},
                 pane: {
                     startAngle: 0,
                     endAngle: -360,
@@ -192,7 +170,7 @@ $(function() {
             enabled: false
         },
         title: {
-            text: '今日营收分析',
+            text: '',
             align:'left',
             style: { "color": "#333333", "fontSize": "24px", "fontWeight": "bold" }
         },
@@ -346,7 +324,7 @@ $(function() {
             enabled: false
         },
         title: {
-            text: '今日吧台营收',
+            text: '',
             align:'left',
             style: { "color": "#333333", "fontSize": "24px", "fontWeight": "bold" }
         },
@@ -477,7 +455,7 @@ $(function() {
     });
     $('#homeLine').highcharts({
         title: {
-            text: '客流量分析',
+            text: '',
             align:'left',
             style: { "color": "#333333", "fontSize": "24px", "fontWeight": "bold" }
         },
@@ -549,7 +527,7 @@ $(function() {
             type: 'column'
         },
         title: {
-            text: "游戏机台盈亏排行榜",
+            text: "",
             align:'left',
             style: { "color": "#333333", "fontSize": "24px", "fontWeight": "bold" }
         },

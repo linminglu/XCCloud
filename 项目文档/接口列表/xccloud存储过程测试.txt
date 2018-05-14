@@ -132,18 +132,20 @@ print @ErrMsg
 -----------------------------------------------------------------------------------------------------------------------------------------
 declare @MerchId int = 100025
 declare @StoreId varchar(15) = '100025420106001'
-declare @MemberLevelId int = 2
+declare @CustomerType int = 2
 declare @ICCardId int = 10004143
 declare @FoodPrice decimal(18,2) = 200
 declare @SubPrice decimal(18,2) = 0
 declare @DiscountRuleID int
 declare @ErrMsg varchar(200) = ''
+declare @DiscountRuleName varchar(200) = ''
 declare @RS int = 0
-exec @RS = GetDiscountForAPI @MerchId,@StoreId,@MemberLevelId,@ICCardId,@FoodPrice,@DiscountRuleID output,@SubPrice output,@ErrMsg output
+exec @RS = GetDiscountForAPI @MerchId,@StoreId,@CustomerType,@ICCardId,@FoodPrice,@DiscountRuleID output,@SubPrice output,@DiscountRuleName output,@ErrMsg output
 print @RS
 print @ErrMsg
 print @SubPrice
 print @DiscountRuleID
+print @DiscountRuleName
 -----------------------------------------------------------------------------------------------------------------------------------------
 
 --Ìí¼ÓÂë±í

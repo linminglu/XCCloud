@@ -22,6 +22,7 @@ using XCCloudService.DBService.BLL;
 using XCCloudService.Model.CustomModel.XCCloud;
 using XCCloudService.Model.CustomModel.XCCloud.Order;
 using XCCloudService.Model.XCCloud;
+using XCCloudService.Common.Extensions;
 
 namespace XXCloudService.Api.XCCloud
 {
@@ -214,10 +215,10 @@ namespace XXCloudService.Api.XCCloud
             sqlParameter[18].Direction = ParameterDirection.ReturnValue;
 
             XCCloudBLL.ExecuteStoredProcedureSentence(storedProcedure, sqlParameter);
-            if (sqlParameter[17].Value.ToString() == "1")
+            if (sqlParameter[18].Value.ToString() == "1")
             {
                 var obj = new {
-                    orderFlwId = Convert.ToInt32(sqlParameter[16].Value)
+                    orderFlwId = sqlParameter[17].Value.ToString()
                 };
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, obj);
             }
@@ -446,10 +447,8 @@ namespace XXCloudService.Api.XCCloud
         private bool CheckAddOrderParams(Dictionary<string, object> dicParas,out string errMsg)
         {
             errMsg = string.Empty;
-            string storeId = dicParas.ContainsKey("storeId") ? dicParas["storeId"].ToString() : string.Empty;
             string icCardId = dicParas.ContainsKey("icCardId") ? dicParas["icCardId"].ToString() : string.Empty;
             string payCount = dicParas.ContainsKey("payCount") ? dicParas["payCount"].ToString() : string.Empty;
-            string scheduleId = dicParas.ContainsKey("scheduleId") ? dicParas["scheduleId"].ToString() : string.Empty;
             string workStation = dicParas.ContainsKey("workStation") ? dicParas["workStation"].ToString() : string.Empty;
             string authorId = dicParas.ContainsKey("authorId") ? dicParas["authorId"].ToString() : string.Empty;
             string note = dicParas.ContainsKey("note") ? dicParas["note"].ToString() : string.Empty;
@@ -459,12 +458,6 @@ namespace XXCloudService.Api.XCCloud
             if (!Utils.IsDecimal(payCount))
             {
                 errMsg = "应付金额无效";
-                return false;
-            }
-
-            if (!Utils.isNumber(scheduleId))
-            {
-                errMsg = "班次Id不正确";
                 return false;
             }
 
@@ -573,11 +566,11 @@ namespace XXCloudService.Api.XCCloud
         {
             try
             {
-                string errMsg = string.Empty;
-                int orderFlwId = (dicParas.ContainsKey("id") && Utils.isNumber(dicParas["id"])) ? Convert.ToInt32(dicParas["id"]) : 0;
+                string errMsg = string.Empty;                
+                var orderFlwId = dicParas.Get("id");
 
                 IFlw_OrderService flw_OrderService = BLLContainer.Resolve<IFlw_OrderService>();
-                if (!flw_OrderService.Any(p => p.ID == orderFlwId))
+                if (!flw_OrderService.Any(p => p.ID.Equals(orderFlwId, StringComparison.OrdinalIgnoreCase)))
                 {
                     errMsg = "该订单不存在";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);

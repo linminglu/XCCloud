@@ -110,7 +110,7 @@
     function WebSocketTest() {
         if ("WebSocket" in window)
         {
-            // 打开一个 web socket
+            // 打开一个 websocket
             ws.onopen = function() {
                 console.log("连接成功");
                 var msgTypeA =JSON.stringify({"msgType":"1"});
@@ -169,7 +169,7 @@
         console.log(11111);
         var username=$('#username_login').val();
         var password=$('#password_login').val();
-        var obj={'loginName':"lijunjie",'password':"123456",'workStation':'CHENWU-PC','dogId':'139134557'};
+        var obj={'loginName':"lijunjie",'password':"123456",'workStation':'lijunjie','dogId':'22222222'};
         var url='/xccloud/UserInfo?action=barLogin';           //登录接口
         var parasJson = JSON.stringify(obj);
 
@@ -190,7 +190,7 @@
                         console.log(storeId);
                         setStorage('userToken',userToken);
                         setStorage('storeId',storeId);
-                        window.location.href='index.html';
+//                        window.location.href='sales.html';
 //                        http://localhost:3288/WebBar/frontDesk/index.html
 //                        http://localhost:3288/WebBar/frontDesk/login.html
 //                        if(data.result_data.logType==2){

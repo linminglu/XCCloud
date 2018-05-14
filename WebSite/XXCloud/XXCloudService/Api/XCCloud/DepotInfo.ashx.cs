@@ -38,6 +38,11 @@ namespace XXCloudService.Api.XCCloud
                 string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
                 string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
 
+                if (!dicParas.Get("merchId").IsNull())
+                    merchId = dicParas.Get("merchId");
+                if (!dicParas.Get("storeId").IsNull())
+                    storeId = dicParas.Get("storeId");
+
                 IBase_DepotInfoService base_DepotInfoService = BLLContainer.Resolve<IBase_DepotInfoService>();
                 IQueryable<Base_DepotInfo> query = null;
                 if (userTokenKeyModel.LogType == (int)RoleType.MerchUser)

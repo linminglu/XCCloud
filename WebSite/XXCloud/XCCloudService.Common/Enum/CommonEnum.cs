@@ -699,13 +699,7 @@ namespace XCCloudService.Common.Enum
         Ticket = 0,//门票
         Time = 1 //计时
     }
-
-    public enum StockFlag
-    {
-        In = 0,//入库
-        Out = 1//出库
-    }
-
+    
     //优惠券类别
     public enum CouponType
     {
@@ -837,6 +831,22 @@ namespace XCCloudService.Common.Enum
         [Description("总部申请")]
         MerchRequest = 3    //总部申请
     }
+
+    //数据异动类别
+    public enum SourceType
+    {
+        GoodStorage = 0,    //入库单
+        GoodRequest = 1,    //调拨单
+        GoodReload = 2      //安装记录
+    }
+
+    //出入库标志
+    public enum StockFlag
+    {
+        In = 0,//入库
+        Out = 1//出库
+    }
+
 
     //工作流状态
     public enum WorkflowState

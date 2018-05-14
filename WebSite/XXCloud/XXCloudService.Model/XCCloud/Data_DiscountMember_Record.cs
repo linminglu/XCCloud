@@ -19,7 +19,7 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<System.DateTime> RecordDate { get; set; }
         public string MerchId { get; set; }
         public string StoreId { get; set; }
-        public Nullable<int> MemberId { get; set; }
+        public string MemberId { get; set; }
         public Nullable<int> MemberFreq { get; set; }
         public Nullable<int> UseCount { get; set; }
     }

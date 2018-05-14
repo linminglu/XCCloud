@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="layui/css/layui.css">
 </head>
 <body>
-<div class="layui-row">
+<div class="layui-row" style="padding: 15px;background-color: #f1f1f1">
     <blockquote class="layui-elem-quote" style="text-align: right;padding-right: 100px;">
         <button type="button" class="layui-btn layui-btn-normal" id="add">新增</button>
     </blockquote>
@@ -108,6 +108,18 @@
         form.on('select(HKType)',function (data) {
             HKType=data.value;
         });
+        // let className;let academy;
+        // form.on('select(className)',function (data) {
+        //     className=data.value;
+        //     if(academy!=""){
+        //         $.post('/user/findClassName',{
+        //
+        //         }),function (data) {
+        //             遍历data,插入第三个select中;
+        //             form.render()
+        //         }
+        //     }
+        // });
         $('#add').on('click',function () {
             setStore(form,token);
             HKType='';
@@ -135,7 +147,6 @@
                 contentType: "application/json; charset=utf-8",
                 data:{parasJson: parseJson},
                 success: function (data) {
-
                     data = JSON.parse(data);
                     if (data.result_code == 1) {
                         layer.msg('保存成功！');

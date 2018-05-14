@@ -9,12 +9,12 @@
     <link rel="stylesheet" href="css/xinChen.css">
 </head>
 <body>
-<div class="layui-carousel" id="test1">
-    <div carousel-item>
+<!--<div class="layui-carousel" id="test1">-->
+    <!--<div carousel-item>-->
         <div class="layui-row" style="padding: 15px;background-color: #f1f1f1">
-            <div class="layui-col-md6 " id="loopContainer" style="padding-right: 20px;">
-                <div class="layui-card">
-                    <div class="layui-card-header"></div>
+            <div class="layui-col-lg4 layui-col-md6 layui-col-sm12" id="loopContainer" style="padding:0 10px;">
+                <div class="layui-card" style="margin-bottom: 15px;">
+                    <div class="layui-card-header">今日营收总览</div>
                     <div class="layui-card-body">
                         <div id="news" >
                             <ul>
@@ -23,56 +23,67 @@
                                 <li><span class="sellTime">当前已完成：</span><span class="sellValue"></span></li>
                             </ul>
                         </div>
-                        <div id="loop" style="min-width:400px;height: 350px">
+                        <div id="loop" style="min-width:350px;height: 350px">
 
                         </div>
                     </div>
                 </div>
             </div >
-            <div class="layui-col-md6 layui-col-lg6 layui-col-sm6" >
-                <div class="layui-card">
-                    <div class="layui-card-header"></div>
+            <div class="layui-col-lg4 layui-col-md6 layui-col-sm12" style="padding:0 10px;">
+                <div class="layui-card" style="margin-bottom: 15px;">
+                    <div class="layui-card-header">今日营收分析</div>
                     <div class="layui-card-body">
                         <div id="circle" style="min-width:400px;height: 350px"></div>
                     </div>
                 </div>
             </div>
-            <div class="layui-col-md12 layui-col-lg12 layui-col-sm12" style="padding-top: 20px">
-
-                <div class="layui-card">
-                    <div class="layui-card-header"></div>
+            <div class="layui-col-lg4 layui-col-md12 layui-col-sm12" style="padding:0 10px;">
+                <div class="layui-card" style="margin-bottom: 15px;">
+                    <div class="layui-card-header">吧台营收</div>
                     <div class="layui-card-body">
-                        <div id="histogram" style="min-width:400px;"class="homeChart"></div>
+                        <div id="histogram" style="min-width:350px;height: 350px"class="homeChart"></div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="layui-row" style="padding: 15px;background-color: #f1f1f1">
-            <div class="layui-col-md12 layui-col-lg12 layui-col-sm12">
-                <div id="homeLine" style="min-width:400px;"class="homeChart">
+        <!--</div>-->
+        <!--<div class="layui-row" style="padding: 15px;background-color: #f1f1f1">-->
+            <div class="layui-col-lg6 layui-col-md12 layui-col-sm12" style="padding:0 10px;">
+                <div class="layui-card" style="margin-bottom: 15px;">
+                    <div class="layui-card-header">客流量分析</div>
+                    <div class="layui-card-body">
+                        <div id="homeLine" style="min-width:400px;"class="homeChart">
+                        </div>
+                    </div>
                 </div>
+
             </div>
-            <div class="layui-col-md12 layui-col-lg12 layui-col-sm12" style="padding-top: 20px">
-                <div id="profitLoss" style="min-width:400px;"class="homeChart"></div>
+            <div class="layui-col-md12 layui-col-lg6 layui-col-sm12" style="padding:0 10px;">
+                <div class="layui-card" style="margin-bottom: 15px;">
+                    <div class="layui-card-header">游戏机台盈亏排行</div>
+                    <div class="layui-card-body">
+                        <div id="profitLoss" style="min-width:350px;"class="homeChart"></div>
+                    </div>
+                </div>
+
             </div>
         </div>
-    </div>
-</div>
+    <!--</div>-->
+<!--</div>-->
 <!-- 条目中可以是任意内容，如：<img src=""> -->
 
 <script src="layui/layui.js"></script>
 <script>
-    layui.use('carousel', function(){
-        var carousel = layui.carousel;
-        //建造实例
-        carousel.render({
-            elem: '#test1'
-            ,width: '100%' //设置容器宽度
-            ,height:'800px'
-            ,arrow: 'always' //始终显示箭头
-            //,anim: 'updown' //切换动画方式
-        });
-    });
+    // layui.use('carousel', function(){
+    //     var carousel = layui.carousel;
+    //     //建造实例
+    //     carousel.render({
+    //         elem: '#test1'
+    //         ,width: '100%' //设置容器宽度
+    //         ,height:'800px'
+    //         ,arrow: 'always' //始终显示箭头
+    //         //,anim: 'updown' //切换动画方式
+    //     });
+    // });
 </script>
 <script src="js/jquery-1.8.3-min.js"></script>
 <script src="js/heightCharts.js"></script>

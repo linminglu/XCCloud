@@ -38,11 +38,19 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         /// <summary>
         /// 调拨方式[字符串]
         /// </summary>
-        public string RequstTypeStr { get { return RequstType != null ? ((RequestType)RequstType).GetDescription() : string.Empty; } set { } }        
+        public string RequstTypeStr { get { return RequstType != null ? ((RequestType)RequstType).GetDescription() : string.Empty; } set { } }
+        /// <summary>
+        /// 调拨出库门店ID
+        /// </summary>
+        public string OutStoreID { get; set; }
         /// <summary>
         /// 调拨出库门店
         /// </summary>
         public string OutStoreName { get; set; }
+        /// <summary>
+        /// 调拨出库仓库ID
+        /// </summary>
+        public int? OutDepotID { get; set; }
         /// <summary>
         /// 调拨出库仓库
         /// </summary>
@@ -52,9 +60,17 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         /// </summary>
         public string OutDepotTime { get; set; }
         /// <summary>
+        /// 调拨入库门店ID
+        /// </summary>
+        public string InStoreID { get; set; }
+        /// <summary>
         /// 调拨入库门店
         /// </summary>
         public string InStoreName { get; set; }
+        /// <summary>
+        /// 调拨入库仓库ID
+        /// </summary>
+        public int? InDepotID { get; set; }
         /// <summary>
         /// 调拨入库仓库
         /// </summary>
@@ -63,6 +79,10 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         /// 入库时间
         /// </summary>
         public string InDepotTime { get; set; }
+        /// <summary>
+        /// 调拨原因
+        /// </summary>
+        public string RequestReason { get; set; }
         /// <summary>
         /// 调拨状态
         /// </summary>
@@ -81,4 +101,55 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         public IEnumerable<int> PermittedTriggers { get; set; }
     }
 
+    public class Data_GoodsStockList
+    {
+        public int? GoodID { get; set; }
+        public string GoodName { get; set; }
+        public int? RemainCount { get; set; }
+        public int? AvailableCount { get; set; }
+    }
+
+    public class Data_GoodRequest_ListList
+    {
+        public int ID { get; set; }
+        public int? GoodID { get; set; }
+        public string Barcode { get; set; }
+        public string GoodName { get; set; }
+        public string GoodTypeStr { get; set; }
+        public int? RequestCount { get; set; }
+        public int? SendCount { get; set; }
+        public decimal? CostPrice { get; set; }
+        public decimal? Tax { get; set; }
+        public int? RemainCount { get; set; }
+        public int? AvailableCount { get; set; }
+        public int? LogistType { get; set; }
+        public string LogistTypeStr { get; set; }
+        public string LogistOrderID { get; set; }
+        public string SendTime { get; set; }
+    }
+
+    public class Data_GoodSendDealList
+    {
+        public int RequestID { get; set; }
+        public int? GoodID { get; set; }
+        public string Barcode { get; set; }
+        public string GoodName { get; set; }
+        public string GoodTypeStr { get; set; }
+        public int? RequestCount { get; set; }
+        public int? FinishCount { get; set; }        
+    }
+
+    public class Data_GoodRequestDealList
+    {
+        public int ID { get; set; }
+        public int RequestID { get; set; }
+        public int? GoodID { get; set; }
+        public string Barcode { get; set; }
+        public string GoodName { get; set; }
+        public string GoodTypeStr { get; set; }
+        public int? RequestCount { get; set; }
+        public int? SendCount { get; set; }
+        public decimal? CostPrice { get; set; }
+        public decimal? Tax { get; set; }
+    }
 }
