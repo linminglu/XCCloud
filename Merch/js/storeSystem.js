@@ -1758,8 +1758,8 @@ xcActionSystem.prototype= {
     },
     //..........................................礼品管理..............................................
     //获取仓库字典
-    getDepotDic:function (token,layer,form,id,selected) {
-        let _obj={'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+    getDepotDic:function (merchId,storeId,token,layer,form,id,selected) {
+        let _obj={'merchId':merchId,'storeId':storeId,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
         let parseJson = JSON.stringify(_obj);
         $.ajax({
             type:'post',

@@ -9,7 +9,7 @@ namespace XCCloudService.Model.CustomModel.XCCloud
 {
     public class Base_GoodsInfoList
     {
-        public string ID { get; set; }
+        public int ID { get; set; }
         /// <summary>
         /// 商品条码
         /// </summary>

@@ -55,7 +55,6 @@ namespace XXCloudService.Api.XCCloud
                 }
 
                 var result = from a in query
-                             where a.MinusEN==0
                              orderby a.ID
                              select new
                              {
