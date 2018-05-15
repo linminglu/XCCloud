@@ -666,7 +666,7 @@ namespace XCCloudService.Api.XCCloud
                                     LogName = a.LogName,
                                     Mobile = a.Mobile,
                                     IsAdminStr = a.IsAdmin == 1 ? "是" : "否",
-                                    StoreName = b != null ? b.StoreName : string.Empty,
+                                    StoreName = b != null ? b.StoreName : "总店",
                                     UserGroupName = c != null ? c.GroupName : string.Empty,
                                     UserStatusStr = d != null ? d.DictKey : string.Empty
                                 };
@@ -759,9 +759,9 @@ namespace XCCloudService.Api.XCCloud
                 string isAdmin = dicParas.ContainsKey("isAdmin") ? (dicParas["isAdmin"] + "") : string.Empty;
                 string userType = dicParas.ContainsKey("userType") ? (dicParas["userType"] + "") : string.Empty;
                 string switchmerch = dicParas.ContainsKey("switchmerch") ? (dicParas["switchmerch"] + "") : string.Empty;
-            string switchstore = dicParas.ContainsKey("switchstore") ? (dicParas["switchstore"] + "") : string.Empty;
-            string switchworkstation = dicParas.ContainsKey("switchworkstation") ? (dicParas["switchworkstation"] + "") : string.Empty;
-            int iUserId = Convert.ToInt32(userId);
+                string switchstore = dicParas.ContainsKey("switchstore") ? (dicParas["switchstore"] + "") : string.Empty;
+                string switchworkstation = dicParas.ContainsKey("switchworkstation") ? (dicParas["switchworkstation"] + "") : string.Empty;
+                int iUserId = Convert.ToInt32(userId);
 
                 if (string.IsNullOrEmpty(userId))
                 {
@@ -939,7 +939,7 @@ namespace XCCloudService.Api.XCCloud
                 string switchmerch = dicParas.ContainsKey("switchmerch") ? (dicParas["switchmerch"] + "") : string.Empty;
                 string switchstore = dicParas.ContainsKey("switchstore") ? (dicParas["switchstore"] + "") : string.Empty;
                 string switchworkstation = dicParas.ContainsKey("switchworkstation") ? (dicParas["switchworkstation"] + "") : string.Empty;
-            int iUserId, iState; 
+                int iUserId, iState; 
 
                 if (string.IsNullOrEmpty(userId))
                 {

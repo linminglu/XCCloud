@@ -521,11 +521,11 @@ function login_merch(){
                     setStorage('token',data.result_data.token);
                     setStorage('usernames',username);
                     setStorage('xc_language','Chinese');
-                    if(data.result_data.logType==2){
-                        window.location.href='indexStore.html?'+(Date.parse(new Date())/1000);
-                    }else {
+                    // if(data.result_data.logType==2){
+                    //     window.location.href='indexStore.html?'+(Date.parse(new Date())/1000);
+                    // }else {
                         window.location.href='index1.html?'+(Date.parse(new Date())/1000);
-                    }
+                    // }
                 }
             }
         })

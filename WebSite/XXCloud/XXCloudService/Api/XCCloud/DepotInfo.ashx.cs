@@ -98,7 +98,7 @@ namespace XXCloudService.Api.XCCloud
                                  ID = a.ID,
                                  DepotName = a.DepotName,
                                  MinusEN = a.MinusEN,
-                                 StoreName = b != null ? b.StoreName : string.Empty
+                                 StoreName = b != null ? b.StoreName : "总店"
                              };
 
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, result);

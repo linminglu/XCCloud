@@ -17,7 +17,7 @@ using XCCloudService.Model.XCCloud;
 
 namespace XXCloudService.Api.XCCloud
 {
-    [Authorize(Roles = "MerchUser")]
+    [Authorize(Roles = "MerchUser, StoreUser")]
     /// <summary>
     /// BalanceType 的摘要说明
     /// </summary>
@@ -35,8 +35,7 @@ namespace XXCloudService.Api.XCCloud
                                (from a in Dict_BalanceTypeService.N.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.State == 1)
                                 join b in Data_BalanceType_StoreListService.N.GetModels() on a.ID equals b.BalanceIndex into b1
                                 from b in b1.DefaultIfEmpty()
-                                join c in Base_StoreInfoService.N.GetModels() on b.StroeID equals c.StoreID into c1
-                                from c in c1.DefaultIfEmpty()                                
+                                join c in Base_StoreInfoService.N.GetModels() on b.StroeID equals c.StoreID                              
                                 select new
                                 {
                                     a = a,
@@ -67,15 +66,19 @@ namespace XXCloudService.Api.XCCloud
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
+                string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
                 string errMsg = string.Empty;
 
-                var linq = Dict_BalanceTypeService.I.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.State == 1)
-                    .OrderBy(o => o.TypeID)
-                    .Select(o => new 
-                    {
-                        ID = o.ID,
-                        TypeName = o.TypeName
-                    });
+                var linq = from a in Dict_BalanceTypeService.N.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.State == 1)
+                           join b in Data_BalanceType_StoreListService.N.GetModels() on a.ID equals b.BalanceIndex into b1
+                           from b in b1.DefaultIfEmpty()
+                           where (b.StroeID ?? "") == storeId
+                           orderby a.TypeID
+                           select new 
+                           {
+                               ID = a.ID,
+                               TypeName = a.TypeName
+                           };
 
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, linq);
             }

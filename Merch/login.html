@@ -74,14 +74,14 @@
 </div>
 <script>
     window.localStorage.clear();
-    var obj = new WxLogin({
-        id:"codeBox",
-        appid: "wx643b076d171ecb3c",
-        scope: "snsapi_login",
-        redirect_uri: "http://test.4000051530.com/WeiXin/Login.aspx",
-        style: "black",
-        href: "https://mp.4000051530.com/merch/css/wxCode.css"
-    });
+   // var obj = new WxLogin({
+     //   id:"codeBox",
+      //  appid: "wx643b076d171ecb3c",
+       // scope: "snsapi_login",
+      //  redirect_uri: "http://test.4000051530.com/WeiXin/Login.aspx",
+      //  style: "black",
+      //  href: "https://mp.4000051530.com/merch/css/wxCode.css"
+  //  });
     $("body").keydown(function() {
         if (event.keyCode == "13") {//keyCode=13是回车键
             login_merch();

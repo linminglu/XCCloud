@@ -22,7 +22,7 @@ namespace XCCloudService.Model.XCCloud
         public string StoreID { get; set; }
         public Nullable<int> PublishType { get; set; }
         public Nullable<int> SendType { get; set; }
-        public Nullable<int> MemberID { get; set; }
+        public string MemberID { get; set; }
         public Nullable<int> SendAuthorID { get; set; }
         public Nullable<System.DateTime> SendTime { get; set; }
         public Nullable<int> WorkStationID { get; set; }

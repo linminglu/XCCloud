@@ -17,16 +17,6 @@
     <div id="openModel" style="display:none; padding: 15px;">
         <form action="" class="layui-form layui-form-pane">
             <div class="layui-form-item">
-                <!--<div class="layui-inline">-->
-                    <!--<label for="" class="layui-form-label">申请仓库</label>-->
-                    <!--<div class="layui-input-inline">-->
-                        <!--<select name="" id="ApplyDepot"  lay-filter="ApplyDepot">-->
-                            <!--<option>-请选择-</option>-->
-                            <!--<option value="2">总部向门店派货</option>-->
-                            <!--<option value="3">总部向门店申请</option>-->
-                        <!--</select>-->
-                    <!--</div>-->
-                <!--</div>-->
                 <div class="layui-inline">
                     <label for="" class="layui-form-label">调拨方式</label>
                     <div class="layui-input-inline">
@@ -37,18 +27,32 @@
                         </select>
                     </div>
                 </div>
-                <div class="layui-inline">
+                <div class="layui-inline" id="OutDepBox">
                     <label for="" class="layui-form-label">发货仓库</label>
                     <div class="layui-input-inline">
-                        <select name="" id="outDepotId" lay-filter="outDepotId">
+                        <select name="" id="OutDepotId" lay-filter="OutDepotId">
 
                         </select>
                     </div>
                 </div>
-                <div class="layui-inline">
+                <div class="layui-inline layui-hide" id="InDepBox">
+                    <label for="" class="layui-form-label">申请仓库</label>
+                    <div class="layui-input-inline">
+                        <select name="" id="InDepotId" lay-filter="InDepotId">
+
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-inline" id="InStoreBox">
+                    <label class="layui-form-label">调配门店</label>
+                    <div class="layui-input-inline">
+                        <select name="" id="InStoreId" lay-filter="InStoreId"></select>
+                    </div>
+                </div>
+                <div class="layui-inline layui-hide" id="OutStoreBox">
                     <label for="" class="layui-form-label">调拨门店</label>
                     <div class="layui-input-inline">
-                        <select name="" id="SendStoreId" lay-filter="SendStoreId"></select>
+                        <select name="" id="OutStoreId" lay-filter="OutStoreId"></select>
                     </div>
                 </div>
             </div>
@@ -89,7 +93,7 @@
         </form>
     </div>
 <!--弹窗2-->
-    <div id="goodsBox" style="display:none; padding: 15px;">
+    <div id="goodsBox" style="display:none; padding: 15px;height: 400px;overflow-y: auto">
         <table class="layui-hide" id="goodsList" lay-filter="goodsList"></table>
     </div>
 <!--审核-->
@@ -143,23 +147,49 @@
     };
     xc.getInitData(parm);
     let requestId;//调拨单号
-    let outDepotId;//出库仓库
+
     let checkState;
-   let RequstType;let SendStoreId;let GoodRequests;
+   let RequstType;
+    //出库仓库
+   let OutDepotId; let InDepotId;
+    let OutStoreId;let InStoreId;
+   let GoodRequests;
     layui.addcss('layui_font.css');
     layui.use(['form','table','layer'],function () {
         let form=layui.form;
         let table=layui.table;
         let layer=layui.layer;
-        form.on('select(ApplyDepot)',function (data) {
-            RequestDepotId=data.value;
-        });
         form.on('select(RequstType)',function (data) {
             RequstType=data.value;
-        });
-        form.on('select(SendStoreId)',function (data){
-            SendStoreId=data.value;
-        });
+            if(data.value==2){
+                $('#OutDepBox').removeClass('layui-hide');
+                $('#InStoreBox').removeClass('layui-hide');
+                $('#InDepBox').addClass('layui-hide');
+                $('#OutStoreBox').addClass('layui-hide');
+                xc.getDepotDic('','',token,layer,form,'OutDepotId');
+                xc.GetStoreList(token,layer,form,'InStoreId');
+            }else if(data.value==3){
+                $('#OutDepBox').addClass('layui-hide');
+                $('#InStoreBox').addClass('layui-hide');
+                $('#InDepBox').removeClass('layui-hide');
+                $('#OutStoreBox').removeClass('layui-hide');
+                xc.getDepotDic('','',token,layer,form,'InDepotId');
+                xc.GetStoreList(token,layer,form,'OutStoreId');
+            }
+            OutDepotId='';InStoreId=''; InDepotId='';OutStoreId='';
+        });//调拨方式
+        form.on('select(OutDepotId)',function (data) {
+            OutDepotId=data.value;
+        });//发货仓库
+        form.on('select(InDepotId)',function (data) {
+            InDepotId=data.value;
+        });//发货仓库
+        form.on('select(OutStoreId)',function (data){
+            OutStoreId=data.value;
+        });//调拨门店
+        form.on('select(InStoreId)',function (data){
+            InStoreId=data.value;
+        });//调配门店
         form.on('switch(checkState)',function (data) {
             if(data.elem.checked){
                 checkState=1;
@@ -212,30 +242,34 @@
         });
         //弹出层
         $('#applyBtn').on('click',function () {
-            xc.getDepotDic('','',token,layer,form,'outDepotId');
-            xc.GetStoreList(token,layer,form,'SendStoreId');
+            xc.getDepotDic('','',token,layer,form,'OutDepotId');
+            xc.GetStoreList(token,layer,form,'InStoreId');
             layer.open({
                 title:'申请记录',
                 type:1,
                 area:'1000px',
                 content:$('#openModel')
             });
-            initGoodsTb();
         });
         $('#searchGoodBtn').on('click',function () {
-            layer.open({
-                title:'库存礼品列表',
-                type:1,
-                area:['1000px','400px'],
-                content:$('#goodsBox')
-            });
-            initGoodsTb();
+            if(RequstType==2){
+                initGoodsTb('',OutDepotId,'',table);
+            }else if(RequstType==3){
+                initGoodsTb('',InDepotId,'',table);
+            }
         });
         //save apply
        $('#submitApply').on('click',function () {
-           let _obj={ 'requestDepot':RequestDepotId,
+           let _outStore;let _outDepot; let _inDepot;
+
+
+            if(RequstType==2){_outStore=SendStoreId; _outDepot=outDepotId;  _inDepot='';
+            }else if(RequstType==3){_outStore=SendStoreId; _outDepot=outDepotId;  _inDepot='';}
+           let _obj={
                'requstType':RequstType,
-               'sendStoreId':SendStoreId,
+               'outStoreId':_outStore,
+               'outDepotId':_outDepot,
+               'inDepotId':_inDepot,
                'requestReason':$('#RequestReason').val(),
                'goodRequests':GoodRequests,
                'userToken':token,
@@ -288,21 +322,54 @@
            })
        });
     });
-    function initGoodsTb() {
-        var searchText=$('#searchText').val();
-        var parm={'obj':{'goodNameOrBarcode':searchText,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'},
-            'url':'/XCCloud/Promotion?action=GetGoodsInfoList',
-            'elem':'#goodsList',
-            'height':'210px',
-            'cols':[ {field:'ID', title: '商品ID', align: 'center'}
-                ,{field:'Barcode', title: '商品条码', align: 'center'}
-                ,{field:'GoodName', title: '商品名称', align: 'center'}
-                ,{field:'GoodTypeStr', title: '商品类别', align: 'center'}
-                ,{field:'Points', title: '申请数量', align: 'center',edit: 'text'}
-                ,{field:'Price', title: '库存', align: 'center',edit: 'text'}
-                ,{type:'checkbox'}
-            ]};
-        xc.getInitData(parm);
+    function initGoodsTb(a,b,c,table) {
+        if(b!=''){
+            let obj={
+                'notGoodIds':a,
+                'inOrOutDepotId':b,
+                'goodId':c,
+                'userToken':token,
+                'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+            let parseJson = JSON.stringify(obj);
+            var index = layer.load(0, {shade: false});
+            $.ajax({
+                type: "post",
+                url: '/XCCloud/GoodsInfo?action=QueryGoodsStock',
+                contentType: "application/json; charset=utf-8",
+                data: {parasJson: parseJson},
+                success: function (data) {
+                    data = JSON.parse(data);
+                    if (data.result_code == 1) {
+                        let arr = data.result_data;
+                        table.render({
+                            elem: '#goodsList'
+                            , data: arr
+                            , height:'270px'
+                            , cellMinWidth: 100 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+                            , cols: [[
+                                {type: 'checkbox'}
+                                , {field: 'GoodID ', title: '商品ID', align: 'center'}
+                                , {field: 'GoodName ', title: '商品名称', align: 'center'}
+                                , {field: 'RemainCount ', title: '库存', align: 'center'}
+                                , {field: 'AvailableCount ', title: '可调拨数量', align: 'center'}
+                            ]]
+                        })
+                        layer.close(index);
+                        layer.open({
+                            title:'库存礼品列表',
+                            type:1,
+                            area:['1000px','400px'],
+                            content:$('#goodsBox')
+                        });
+                    }else {
+                        layer.close(index);
+                        layer.msg(data.result_msg||data.return_msg)
+                    }
+                }
+            });
+        }else {
+            layer.msg('申请仓库或发货仓库不能为空！')
+        }
     }
 </script>
 <script type="text/html" id="reqType">

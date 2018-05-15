@@ -623,7 +623,9 @@
 <script src="layui/layui.js"></script>
 <script src="js/magicsuggest-1.2.2.js"></script>
 <script src="js/manchartSystem.js"></script>
+<script src="js/storeSystem.js"></script>
 <script>
+	let xc=xcActionSystem.prototype;
         var token=getStorage('token'),logType=getStorage('logType'),bankTypes='',selttleTypes='',storeStatusModify='',settleTypeModify='';
         let StoreTag=0;
         layui.use('form', function() {
@@ -674,7 +676,7 @@
             ,{field:'StoreStateStr', title: '门店状态',  align: 'center'}
             ,{fixed: 'right', title: '操作', width:370, align:'center', toolbar: '#barDemo'}
         ]};
-        getInitData(parm);
+        xc.getInitData(parm);
         layui.use(['upload','form','layer','table','laydate'], function(){
             var $ = layui.jquery,upload = layui.upload,form=layui.form,layer=layui.layer,table=layui.table,laydate=layui.laydate;
             table.on('tool(storeList)', function (obj) { //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
@@ -707,18 +709,18 @@
                                 }
                                 $('#storeNameLookDetils').val(arr.StoreName);
                                 $('#lookPasswordLookDetils').val(arr.Password);
-                                $('#authorExpireDateLookDetils').val(timeStamp2String(arr.AuthorExpireDate));
+                                $('#authorExpireDateLookDetils').val(arr.AuthorExpireDate);
                                 $('#demo2LookDetils').html("").append(' <img src="'+arr.ShopSignPhoto+'" style="display: block;width: 200px;height: 160px;margin: 0 auto">');
                                 $('#AddressLookDetils').val(arr.Address);
                                 $('#lngLookDetils').val(arr.Lng);
                                 $('#latLookDetils').val(arr.Lat);
                                 $('#contractsLookDetils').val(arr.Contacts);
                                 $('#idCardLookDetils').val(arr.IDCard);
-                                $('#idExpireDateLookDetils').val(timeStamp2String(arr.IDExpireDate));
+                                $('#idExpireDateLookDetils').val(arr.IDExpireDate);
                                 $('#mobileLookDetils').val(arr.Mobile);
                                 $('#licenceIdLookDetils').val(arr.LicenceID);
                                 $('#demo3LookDetils').html("").append(' <img src="'+arr.LicencePhoto+'" style="display: block;width: 200px;height: 160px;margin: 0 auto">');
-                                $('#licenceExpireDateLookDetils').val(timeStamp2String(arr.LicenceExpireDate));
+                                $('#licenceExpireDateLookDetils').val(arr.LicenceExpireDate);
                                 //银行类型
                                 $('#bankTypeLookDetils').val(arr.BankTypeStr);
                                 $('#bankCodeLookDetils').val(arr.BankCode);

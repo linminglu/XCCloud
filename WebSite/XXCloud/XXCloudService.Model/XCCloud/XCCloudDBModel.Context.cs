@@ -134,14 +134,12 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Data_DigitCoinFood> Data_DigitCoinFood { get; set; }
         public virtual DbSet<Data_GameInfo> Data_GameInfo { get; set; }
         public virtual DbSet<Data_CouponCondition> Data_CouponCondition { get; set; }
-        public virtual DbSet<Data_CouponList> Data_CouponList { get; set; }
         public virtual DbSet<Data_Discount_Detail> Data_Discount_Detail { get; set; }
         public virtual DbSet<Data_Discount_StoreList> Data_Discount_StoreList { get; set; }
         public virtual DbSet<Data_DiscountStore_Record> Data_DiscountStore_Record { get; set; }
         public virtual DbSet<Data_DiscountRule> Data_DiscountRule { get; set; }
         public virtual DbSet<Data_Discount_MemberLevel> Data_Discount_MemberLevel { get; set; }
         public virtual DbSet<Data_GoodStorage_Detail> Data_GoodStorage_Detail { get; set; }
-        public virtual DbSet<Base_DepotInfo> Base_DepotInfo { get; set; }
         public virtual DbSet<Base_Goodinfo_Price> Base_Goodinfo_Price { get; set; }
         public virtual DbSet<Base_GoodsInfo> Base_GoodsInfo { get; set; }
         public virtual DbSet<Data_GoodsStock> Data_GoodsStock { get; set; }
@@ -161,5 +159,7 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Flw_Food_SaleDetail> Flw_Food_SaleDetail { get; set; }
         public virtual DbSet<Flw_Order> Flw_Order { get; set; }
         public virtual DbSet<Flw_Order_Detail> Flw_Order_Detail { get; set; }
+        public virtual DbSet<Base_DepotInfo> Base_DepotInfo { get; set; }
+        public virtual DbSet<Data_CouponList> Data_CouponList { get; set; }
     }
 }

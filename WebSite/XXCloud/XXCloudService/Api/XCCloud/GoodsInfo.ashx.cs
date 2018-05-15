@@ -97,6 +97,10 @@ namespace XXCloudService.Api.XCCloud
                                 WHERE
                                 	a.Status = 1";
                 sql += " AND a.MerchID='" + merchId + "'";
+                if (!storeId.IsNull())
+                {
+                    sql += " AND a.StoreID='" + storeId + "'";
+                }
                 #endregion
 
                 var list = Base_GoodsInfoService.I.SqlQuery<Base_GoodsInfoList>(sql, parameters).ToList();
@@ -201,7 +205,7 @@ namespace XXCloudService.Api.XCCloud
                 {
                     string num5 = Utils.getNumRandomCode(5);
                     barcode = (userTokenKeyModel.LogType == (int)RoleType.MerchUser) ? merchId : storeId;
-                    barcode = barcode.Toint(0).ToString().PadRight(15, '0') + num5;
+                    barcode = barcode.PadRight(15, '0') + num5;
                 }
                 while (Base_GoodsInfoService.I.Any(a => a.Barcode.Equals(barcode, StringComparison.OrdinalIgnoreCase)));
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, new { BarCode = barcode });
@@ -449,6 +453,30 @@ namespace XXCloudService.Api.XCCloud
             }
         }
 
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object UploadGoodPhoto(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                string errMsg = string.Empty;
+                Dictionary<string, string> imageInfo = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+                List<string> imageUrls = new List<string>();
+                if (!Utils.UploadImageFile("/XCCloud/Good/", out imageUrls, out errMsg))
+                {
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
+                imageInfo.Add("ImageURL", imageUrls.First());
+
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, imageInfo);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
         #endregion
 
         #region 商品调拨管理
@@ -606,7 +634,7 @@ namespace XXCloudService.Api.XCCloud
                                 		Data_GoodsStock                                                                                         	
                                 ) b ON a.ID = b.ID and b.RowNum <= 1 
                                 INNER JOIN Base_GoodsInfo c ON b.GoodID = c.ID 
-                                WHERE c.Status = 1 AND a.DepotID = " + inOrOutDepotId;
+                                WHERE c.AllowStorage = 1 AND c.Status = 1 AND a.DepotID = " + inOrOutDepotId;
                 if (!goodId.IsNull())
                     sql += sql + " AND a.GoodID=" + goodId;
                 #endregion
