@@ -76,22 +76,43 @@ GO
 Create Proc [dbo].[SP_DictionaryNodes](@MerchID nvarchar(15), @DictKey nvarchar(50), @RootID int output)
 as
  begin
-	declare @sql nvarchar(max)
-	SET @sql = ''
-	SET @sql = @sql + 'select * from Dict_System where 1=1'
+	--declare @sql nvarchar(max)
+	--SET @sql = ''
+	--SET @sql = @sql + 'select * from Dict_System where 1=1'
 
-	SET @sql = @sql + ' and IsNull(MerchID, '''')=IsNull(@MerchID, '''')'
+	--SET @sql = @sql + ' and IsNull(MerchID, '''')=IsNull(@MerchID, '''')'
+	--if(IsNull(@DictKey, '') <> '')
+	--	begin	
+	--		select @RootID=ID from (select top 1 ID from Dict_System where DictKey=@DictKey 
+	--		and IsNull(MerchID, '')=IsNull(@MerchID, '')) m
+	--		if not exists (select 0 from Dict_System where PID=@RootID)
+	--			return
+	--		SET @sql = @sql + ' and PID=@RootID'
+	--	end
+	----exec (@sql)
+	--SET @sql = @sql + ' order by OrderID'
+	--exec sp_executesql @sql, N'@MerchID nvarchar(15), @DictKey nvarchar(50), @RootID int', @MerchID, @DictKey, @RootID
+	SET @RootID = 0	
 	if(IsNull(@DictKey, '') <> '')
-		begin	
-			select @RootID=ID from (select top 1 ID from Dict_System where DictKey=@DictKey 
-			and IsNull(MerchID, '')=IsNull(@MerchID, '')) m
-			if not exists (select 0 from Dict_System where PID=@RootID)
-				return
-			SET @sql = @sql + ' and PID=@RootID'
-		end
-	--exec (@sql)
-	SET @sql = @sql + ' order by OrderID'
-	exec sp_executesql @sql, N'@MerchID nvarchar(15), @DictKey nvarchar(50), @RootID int', @MerchID, @DictKey, @RootID
+	begin	
+		select @RootID=ID from (select top 1 ID from Dict_System where DictKey=@DictKey 
+		and IsNull(MerchID, '')=IsNull(@MerchID, '')) m
+		if not exists (select 0 from Dict_System where PID=@RootID)
+			return		
+	end
+	
+	;WITH 
+	LOCS(ID,PID,DictKey,DictValue,Comment,OrderID,[Enabled],MerchID,DictLevel)
+	AS
+	(
+	SELECT ID,PID,DictKey,DictValue,Comment,OrderID,[Enabled],MerchID,DictLevel FROM Dict_System WHERE PID=@RootID
+	UNION ALL
+	SELECT A.ID,A.PID,A.DictKey,A.DictValue,A.Comment,A.OrderID,A.[Enabled],A.MerchID,A.DictLevel FROM Dict_System A JOIN LOCS B ON 
+	--B.ParentID=A.FunctionID 
+	A.PID = B.ID
+	)
+	
+	SELECT DISTINCT ID,PID,DictKey,DictValue,Comment,OrderID,[Enabled],MerchID,DictLevel from LOCS order by OrderID
  end
 
 GO

@@ -891,12 +891,22 @@ xcActionSystem.prototype= {
                 if(data.result_code=="1"){
                     var arr=data.result_data;
                     $('#'+id).html('<option value="">-请选择-</option>');
-                    for(i in arr){
-                        $('#'+id).append("<option value='"+arr[i].dictValue+"' name='"+arr[i].name+"'title='"+arr[i].name+"'>"+arr[i].name+"</option>");
-                    }
-                    var _text= $('#'+id).find('option[value='+m+']').text();
-                    $('#'+id).find('option[value='+m+']').remove();
-                    $('#'+id).append("<option value='"+m+"' selected>"+_text+"</option>");
+
+                        for(i in arr){
+                            if(m){
+                                if(arr[i].dictValue==m){
+                                    $('#'+id).append("<option  selected value='"+arr[i].dictValue+"' name='"+arr[i].name+"'title='"+arr[i].name+"'>"+arr[i].name+"</option>");
+                                }else {
+                                    $('#'+id).append("<option value='"+arr[i].dictValue+"' name='"+arr[i].name+"'title='"+arr[i].name+"'>"+arr[i].name+"</option>");
+                                }
+                            }else {
+                                $('#'+id).append("<option value='"+arr[i].dictValue+"' name='"+arr[i].name+"'title='"+arr[i].name+"'>"+arr[i].name+"</option>");
+                            }
+
+                        }
+                    // var _text= $('#'+id).find('option[value='+m+']').text();
+                    // $('#'+id).find('option[value='+m+']').remove();
+                    // $('#'+id).append("<option value='"+m+"' selected>"+_text+"</option>");
                     layui.use(['form'], function() {
                         var form = layui.form;
                         form.render('select');

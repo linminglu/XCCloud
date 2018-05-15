@@ -268,7 +268,7 @@ namespace XXCloudService.Api.XCCloud
                         var containId = dicPara.Get("containId").Toint();
                         var containCount = dicPara.Get("containCount").Toint();
                         var weightValue = dicPara.Get("weightValue").Todecimal();
-                        var days = dicPara.Get("days").Toint();
+                        //var days = dicPara.Get("days").Toint();
 
                         if (!foodDetailType.Nonempty("套餐内容类别", out errMsg)) 
                             return false;
@@ -286,11 +286,11 @@ namespace XXCloudService.Api.XCCloud
                         if (!weightValue.Validdecimal("权重价值", out errMsg)) 
                             return false;
 
-                        if (foodDetailType == (int)FoodDetailType.Ticket || foodDetailType == (int)FoodDetailType.Coupon)
-                        {
-                            if (!days.Validint("有效天数", out errMsg))
-                                return false;
-                        }
+                        //if (foodDetailType == (int)FoodDetailType.Ticket || foodDetailType == (int)FoodDetailType.Coupon)
+                        //{
+                        //    if (!days.Validint("有效天数", out errMsg))
+                        //        return false;
+                        //}
 
                         var data_Food_DetialModel = new Data_Food_Detial();
                         data_Food_DetialModel.FoodID = iFoodId;
@@ -301,7 +301,7 @@ namespace XXCloudService.Api.XCCloud
                         data_Food_DetialModel.ContainID = containId;
                         data_Food_DetialModel.WeightType = (int)WeightType.Money;
                         data_Food_DetialModel.WeightValue = weightValue;
-                        data_Food_DetialModel.Days = days;
+                        //data_Food_DetialModel.Days = days;
                         data_Food_DetialModel.OperateType = operateType;
                         Data_Food_DetialService.I.AddModel(data_Food_DetialModel);
                     }
@@ -466,7 +466,7 @@ namespace XXCloudService.Api.XCCloud
                                       FoodDetailType = a.FoodType,
                                       FoodDetailTypeStr = (a.FoodType == (int)FoodDetailType.Coin) ? (f != null ? f.TypeName : string.Empty) : (d != null ? d.DictKey : string.Empty),
                                       ContainCount = a.ContainCount,
-                                      Days = a.Days,
+                                      //Days = a.Days,
                                       WeightValue = a.WeightValue,
                                       OperateType = a.OperateType
                                   };

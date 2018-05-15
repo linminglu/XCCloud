@@ -178,7 +178,6 @@
 		/*弹出消息*/
 		.conF{position: fixed;top: 50%;left: 50%;width: 400px;height: 100px; margin-top:-50px;margin-left: -200px;text-align: center;background: rgba(0,0,0,0.6);z-index: 999;display: none;}
 		.conF span{display: inline-block;*display: inline;*zoom: 1;padding: 10px;font-size: 1.3em;margin-top: 30px;color: red;}
-		.sumPrice{font-size: 1.2em;color: red;}
 
 		/*select属性设置*/
 		.selectSty{padding: 0!important;}
@@ -235,8 +234,8 @@
 		.memberText h4{line-height: 40px;font-size: 0.8em;}
         .readCard{padding: 0;height: 2em;line-height: 2em;}
         input.btnSendCode{line-height: 0;}
-		.footer { position:fixed; bottom:0; left:0; width:100%; height:32px;z-index: 9;padding-left: 2em;border-top: 1px solid #999;background-color: #f9f9f9;line-height: 32px;}
-		.membershipDetails{height: 10em;overflow-y:auto;overflow-x: hidden;}
+		.footer { position:fixed; bottom:0; left:0; width:100%; height:32px;z-index: 9;padding-left: 2em;border-top: 1px solid #999;background-color: #f9f9f9;line-height: 32px;cursor: pointer;}
+		.membershipDetails{height: 20em;overflow-y:auto;overflow-x: hidden;}
 
 
 		.member{color: #666;}
@@ -361,16 +360,21 @@
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 					<h4 class="modal-title">温馨提示</h4>
 				</div>
-				<div class="modal-body row">
+				<div class="modal-body row" v-if="inputCashFocus">
 					<div class="col-md-4 col-sm-4">
-						<div v-for="(item,index) in shopping" class="col-md-12 col-sm-12 shopCStyle">
+						<div v-for="(item,index) in shopping" :key="index" class="col-md-12 col-sm-12 shopCStyle">
 							<div class="col-md-7 col-sm-7 text-left shopCStyle">{{item.typeName}}</div>
 							<div class="col-md-5 col-sm-5 text-right shopCStyle">{{item.payNum}}</div>
 						</div>
 						<ul class="col-md-12 col-sm-12 payment shopCStyle">
 							<li>
-								<div class="inputNm col-md-12 col-sm-12 shopCStyle"><span class="col-md-5 col-sm-5 shopCStyle">实收现金：</span><label class="col-md-7 col-sm-7"><input v-model="inputCash" id="input1" type="text" class="form-control" oninput="sumPrice()"/></label></div><!--onpropertychange="sumPrice()"-->
-								<div class="col-md-12 col-sm-12 shopCStyle"><span class="col-md-5 col-sm-5 shopCStyle">找零：</span><label class="col-md-7 col-sm-7"><input class="form-control" type="text" id="input2" placeholder="" readonly></label></div>
+								<div class="inputNm col-md-12 col-sm-12 shopCStyle">
+									<span class="col-md-5 col-sm-5 shopCStyle">实收现金：</span>
+									<label class="col-md-7 col-sm-7"><input :autofocus="inputCashFocus" v-model.number="inputCash" @focus.once="sumPrice()" type="text" class="form-control"/></label>
+								</div>
+								<div class="col-md-12 col-sm-12 shopCStyle">
+									<span class="col-md-5 col-sm-5 shopCStyle">找零：</span>
+									<label class="col-md-7 col-sm-7"><input class="form-control" type="text" v-model.number="cashChange"  placeholder="" readonly></label></div>
 							</li>
 							<li class="hidden">
 								<div class="col-md-12 col-sm-12 shopCStyle"><span class="col-md-5 col-sm-5 pad_0">扣储值金：</span><label class="col-md-7 col-sm-7"><input id="input3" type="text" class="form-control" /></label></div>
@@ -383,7 +387,7 @@
 						</ul>
 						<div class="col-md-12 col-sm-12 shopCStyle" style="margin-top: 1em"><button type="button" class="btn btn-danger">结账</button></div>
 					</div>
-					<div class="formNum formNum2 col-md-6 col-sm-6">
+					<div class="formNum formNum2 col-md-4 col-sm-4">
 						<div class=" col-md-4 col-sm-4 pad_0"><a href="javascript:void(0);" class="num">1</a></div>
 						<div class=" col-md-4 col-sm-4 pad_0"><a href="javascript:void(0);" class="num">2</a></div>
 						<div class=" col-md-4 col-sm-4 pad_0"><a href="javascript:void(0);" class="num">3</a></div>
@@ -889,11 +893,6 @@
 		</table>
 	</div>
 	<div class="footer" @click="membershipDetails" :class="{membershipDetails:footerShow}">
-		<!--<p v-for="(items,index) in detailData">-->
-			<!--<td>{{items.detailFoodTypeName}}</td>-->
-			<!--<td>{{items.containCount}}</td>-->
-			<!--<td>{{items.containName}}</td>-->
-		<!--</p>-->
 		<ul class="member">
 			<li><span>会员卡号：4444444444444454545454</span></li>
 			<li><span>代币：</span></li>
@@ -901,6 +900,10 @@
 			<li><span>积分：</span></li>
 			<li><span>会员等级：</span></li>
 			<li><span>彩票：</span></li>
+		</ul>
+		<ul v-for="(item,index) in footerData" :key="index">
+			<h3>{{item.couponTypeName}}</h3>
+			<li v-for="(items,index) in (item.MemberCouponDetail)">{{items.couponName}}</li>
 		</ul>
 	</div>
 </div>
@@ -965,10 +968,14 @@
             fastAmount:"2",
             customerType:"2",
             inputCash:"",
+            cashChange:"",
             inputMoney:"",
             inputAmount:"",
             footerShow:false,
-            icCardId:"10004143"
+            inputCashFocus:false,
+            payCount:0,
+            icCardId:"10004143",
+            footerData:[]
         },
         mounted: function () {
             this.Initialize()
@@ -1000,7 +1007,7 @@
                     that.inputAmount = parseInt(that.inputMoney*that.fastAmount/that.fastMoney);
                 }
             },
-            'shopData':{
+            shopData:{
                 handler:function(newValue){
                     var that = this;
                     console.log(newValue);
@@ -1046,10 +1053,14 @@
                             }
 						}
 					}
-					console.log(shopping)
+					console.log(shopping);
 					that.shopping = shopping
                 },
                 deep:true
+            },
+            inputCash:function () {
+                var cashChange = this.inputCash - this.payCount;
+                this.cashChange = cashChange.toFixed(2);
             }
         },
         methods: {
@@ -1077,7 +1088,6 @@
                         inputV_ = parseFloat(inputV_);
                         if(isNaN(parseFloat(inputV_))){
                             inputV_ = "";
-                            console.log("不是数字")
                         }
                         if(isDot){
                             inputVl = inputV_+'.'+this.innerHTML;
@@ -1106,17 +1116,6 @@
 					that.inputAmount = "";
 					that.inputMoney = "";
                 })
-//                   <!--var valNem =idVal.val();-->
-//                        <!--var valNum =valNem.substring(0,valNem.length-1);-->
-//                        <!--idVal.val(valNum);-->
-//
-//                        <!--});-->
-//                        <!--$('.removeAll').on("click",function(){-->
-//
-//                        <!--idVal.val("");-->
-//                        <!--});-->
-
-
             },
 //			快速售币
             FastSell:function () {
@@ -1131,6 +1130,8 @@
 //			结账按钮
             closeAccounts:function () {
 				var that =this;
+				that.inputCash = "";
+				that.cashChange = "";
 				console.log(that.shopData== "");
                 if(that.shopData == ""){
                     that.msg = "购物车是空的，亲！";
@@ -1138,10 +1139,16 @@
 				}else {
                     console.log(that.buyDetails);
                     var foodCount =0;
+                    var payCount =0;
                     for(var i = 0;i< that.buyDetails.length ;i++){
                         foodCount =foodCount+parseFloat(that.buyDetails[i].foodCount);
+                        if(that.buyDetails[i].typeName == "现金") {
+                            payCount = parseFloat(that.buyDetails[i].payNum) + payCount
+                        }
 					}
                     console.log(foodCount);
+                    console.log(payCount);
+                    that.payCount = payCount;
                     var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,buyDetails:JSON.stringify(that.buyDetails),customerType:that.customerType,mobile:"",memberLevelId:that.memberLevelId,icCardId:that.icCardId,payCount:"0",foodCount:foodCount,deposit:"0",openFee:"0",workStation:"lijunjie",authorId:"0",note:"",orderSource:"0",saleCoinType:"1"};
 
                     axios.post('/xccloud/order?action=addOrder', obj).then(function (res) {	//创建订单
@@ -1149,21 +1156,66 @@
                         that.msgPrompt(res.data);
                         if (res.data.result_code === '1') {
                             $('#checkoutModal').modal('show');
+                            that.inputCashFocus = true;
                             var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,icCardId:that.icCardId};
-                            axios.post('/XCCloud/coupon?action=getMemberCouponList', obj).then(function (res) {	//创建订单
-                                console.log(res.data);
-                                that.msgPrompt(res.data);
-                                if (res.data.result_code === '1') {
-                                    $('#checkoutModal').modal('show');
-                                }
-                            }).catch(function (err) {
-                                console.log(err);
-                            });
+//                            axios.post('/XCCloud/coupon?action=getMemberCouponList', obj).then(function (res) {	//创建订单
+//                                console.log(res.data);
+//                                that.msgPrompt(res.data);
+//                                if (res.data.result_code === '1') {
+//                                    $('#checkoutModal').modal('show');
+//                                }
+//                            }).catch(function (err) {
+//                                console.log(err);
+//                            });
+//                            var fullReduction={sysId: sysId,versionNo: versionNo,userToken:that.userToken,customerType:that.customerType,icCardId:that.icCardId,foodPrice:""};
+//                            axios.post('/XCCloud/coupon?action=getMemberCouponList', fullReduction).then(function (res) {	//创建订单
+//                                console.log(res.data);
+//                                that.msgPrompt(res.data);
+//                                if (res.data.result_code === '1') {
+//                                    $('#checkoutModal').modal('show');
+//                                }
+//                            }).catch(function (err) {
+//                                console.log(err);
+//                            });
                         }
                     }).catch(function (err) {
                         console.log(err);
                     });
 				}
+            },
+//			结账输入
+            sumPrice:function () {
+                var that = this;
+                var isDot = false;
+                $('.formNum2 div .num').click(function () {
+                    var inputV_ = parseFloat(that.inputCash);
+                    if(this.innerHTML == "."){
+                        isDot = true;
+                    } else {
+                        if(isNaN(parseFloat(inputV_))){
+                            inputV_ = "";
+                            console.log("不是数字")
+                        }
+                        if(isDot){
+                            inputVl = inputV_+'.'+this.innerHTML;
+                        }else {
+                            inputVl = inputV_+''+this.innerHTML;
+                        }
+                        isDot = false;
+                        console.log(inputVl);
+                        that.inputCash = inputVl;
+                    }
+                });
+                $('.formNum2 div .remove').click(function() {
+                    var inputV_ = parseFloat(that.inputCash);
+                    var inputVl = inputV_.toString();
+                    if(inputVl.length <= 1){
+                        inputVl = "0"
+                    }else {
+                        inputVl = inputVl.substring(0,inputVl.length-1);
+                    }
+                    that.inputCash = inputVl;
+                });
             },
 //			会员入会（获取会员等级）
             membership:function () {
@@ -1509,10 +1561,10 @@
             membershipReading: function(){
 
 
+
 			},
 //			存币
             saveManual:function () {
-
             	$('#ManualSModal').modal('show');
             },
 //			提币
@@ -1522,7 +1574,6 @@
 //			送币
 			sendCoin:function () {
                 $('#SendSModal').modal('show');
-
             },
 //			退卡
 			backCard:function(){
@@ -1531,7 +1582,22 @@
 //			获取会员详细信息
             membershipDetails:function () {
 			    var that = this;
-                that.footerShow = !that.footerShow;
+                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,icCardId:that.icCardId};
+                console.log(obj);
+                if(that.footerShow){
+                    that.footerShow = false;
+				}else {
+                    axios.post('/XCCloud/coupon?action=getMemberCouponList', obj).then(function (res) {	//获取会员优惠券
+                        console.log(res.data);
+                        that.msgPrompt(res.data);
+                        if (res.data.result_code === '1') {
+                            that.footerData = res.data.result_data;
+                            that.footerShow = !that.footerShow;
+                        }
+                    }).catch(function (err) {
+                        console.log(err);
+                    });
+				}
             },
 //			通用消息提示
             msgPrompt:function (res) {

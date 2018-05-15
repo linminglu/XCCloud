@@ -1376,9 +1376,9 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ID" Type="int" Nullable="false" />
           <Property Name="MerchID" Type="varchar" MaxLength="15" />
-          <Property Name="TypeID" Type="int" />
+          <Property Name="TypeID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="TypeName" Type="varchar" MaxLength="50" />
           <Property Name="HKType" Type="int" />
           <Property Name="Note" Type="varchar" MaxLength="200" />
@@ -2454,7 +2454,6 @@
           <EntitySet Name="Dict_FunctionMenu" EntityType="XCCloudDBModel.Dict_FunctionMenu" />
           <EntitySet Name="Data_GameInfo_Ext" EntityType="XCCloudDBModel.Data_GameInfo_Ext" />
           <EntitySet Name="Data_Project_BindGame" EntityType="XCCloudDBModel.Data_Project_BindGame" />
-          <EntitySet Name="Dict_BalanceType" EntityType="XCCloudDBModel.Dict_BalanceType" />
           <EntitySet Name="Data_GivebackRule" EntityType="XCCloudDBModel.Data_GivebackRule" />
           <EntitySet Name="Base_StoreHKConfig" EntityType="XCCloudDBModel.Base_StoreHKConfig" />
           <EntitySet Name="Data_DigitCoinFood" EntityType="XCCloudDBModel.Data_DigitCoinFood" />
@@ -2487,6 +2486,7 @@
           <EntitySet Name="Flw_Order_Detail" EntityType="XCCloudDBModel.Flw_Order_Detail" />
           <EntitySet Name="Base_DepotInfo" EntityType="XCCloudDBModel.Base_DepotInfo" />
           <EntitySet Name="Data_CouponList" EntityType="XCCloudDBModel.Data_CouponList" />
+          <EntitySet Name="Dict_BalanceType" EntityType="XCCloudDBModel.Dict_BalanceType" />
         </EntityContainer>
         <EntityType Name="Base_ChainRule">
           <Key>
@@ -3939,18 +3939,6 @@
           <Property Name="ProjectID" Type="Int32" />
           <Property Name="GameID" Type="Int32" />
         </EntityType>
-        <EntityType Name="Dict_BalanceType">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="TypeID" Type="Int32" />
-          <Property Name="TypeName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="HKType" Type="Int32" />
-          <Property Name="Note" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
-          <Property Name="State" Type="Int32" />
-        </EntityType>
         <EntityType Name="Data_GivebackRule">
           <Key>
             <PropertyRef Name="ID" />
@@ -4494,6 +4482,18 @@
           <Property Name="WorkStationID" Type="Int32" />
           <Property Name="State" Type="Int32" />
           <Property Name="IsLock" Type="Int32" />
+        </EntityType>
+        <EntityType Name="Dict_BalanceType">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="TypeID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TypeName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="HKType" Type="Int32" />
+          <Property Name="Note" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="State" Type="Int32" />
         </EntityType>
         </Schema>
     </edmx:ConceptualModels>
@@ -6053,19 +6053,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Dict_BalanceType">
-            <EntityTypeMapping TypeName="XCCloudDBModel.Dict_BalanceType">
-              <MappingFragment StoreEntitySet="Dict_BalanceType">
-                <ScalarProperty Name="State" ColumnName="State" />
-                <ScalarProperty Name="Note" ColumnName="Note" />
-                <ScalarProperty Name="HKType" ColumnName="HKType" />
-                <ScalarProperty Name="TypeName" ColumnName="TypeName" />
-                <ScalarProperty Name="TypeID" ColumnName="TypeID" />
-                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Data_GivebackRule">
             <EntityTypeMapping TypeName="XCCloudDBModel.Data_GivebackRule">
               <MappingFragment StoreEntitySet="Data_GivebackRule">
@@ -6638,6 +6625,19 @@
                 <ScalarProperty Name="CouponID" ColumnName="CouponID" />
                 <ScalarProperty Name="CouponCode" ColumnName="CouponCode" />
                 <ScalarProperty Name="CouponIndex" ColumnName="CouponIndex" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Dict_BalanceType">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Dict_BalanceType">
+              <MappingFragment StoreEntitySet="Dict_BalanceType">
+                <ScalarProperty Name="State" ColumnName="State" />
+                <ScalarProperty Name="Note" ColumnName="Note" />
+                <ScalarProperty Name="HKType" ColumnName="HKType" />
+                <ScalarProperty Name="TypeName" ColumnName="TypeName" />
+                <ScalarProperty Name="TypeID" ColumnName="TypeID" />
+                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>

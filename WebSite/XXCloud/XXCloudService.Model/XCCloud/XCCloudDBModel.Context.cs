@@ -128,7 +128,6 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Dict_FunctionMenu> Dict_FunctionMenu { get; set; }
         public virtual DbSet<Data_GameInfo_Ext> Data_GameInfo_Ext { get; set; }
         public virtual DbSet<Data_Project_BindGame> Data_Project_BindGame { get; set; }
-        public virtual DbSet<Dict_BalanceType> Dict_BalanceType { get; set; }
         public virtual DbSet<Data_GivebackRule> Data_GivebackRule { get; set; }
         public virtual DbSet<Base_StoreHKConfig> Base_StoreHKConfig { get; set; }
         public virtual DbSet<Data_DigitCoinFood> Data_DigitCoinFood { get; set; }
@@ -161,5 +160,6 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Flw_Order_Detail> Flw_Order_Detail { get; set; }
         public virtual DbSet<Base_DepotInfo> Base_DepotInfo { get; set; }
         public virtual DbSet<Data_CouponList> Data_CouponList { get; set; }
+        public virtual DbSet<Dict_BalanceType> Dict_BalanceType { get; set; }
     }
 }

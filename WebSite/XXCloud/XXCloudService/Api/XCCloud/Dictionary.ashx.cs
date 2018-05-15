@@ -17,6 +17,7 @@ using XCCloudService.DAL;
 using XCCloudService.Model.CustomModel.XCCloud;
 using XCCloudService.Model.XCCloud;
 using XXCloudService.Api.XCCloud.Common;
+using XCCloudService.Common.Extensions;
 
 namespace XXCloudService.Api.XCCloud
 {
@@ -73,8 +74,8 @@ namespace XXCloudService.Api.XCCloud
                 return false;
             }
 
-            if (!orderId.Validint("节点序号", out errMsg))
-                return false;
+            //if (!orderId.Validint("节点序号", out errMsg))
+            //    return false;
 
             return true;
         }        
@@ -87,6 +88,7 @@ namespace XXCloudService.Api.XCCloud
                 string errMsg = string.Empty;
                 string merchId = dicParas.ContainsKey("merchId") ? dicParas["merchId"].ToString() : string.Empty;
                 string dictKey = dicParas.ContainsKey("dictKey") ? dicParas["dictKey"].ToString() : string.Empty;
+                string enabled = dicParas.ContainsKey("enabled") ? dicParas["enabled"].ToString() : string.Empty;
                 
                 string sql = " exec  SP_DictionaryNodes @MerchID,@DictKey,@RootID output ";
                 SqlParameter[] parameters = new SqlParameter[3];
@@ -100,7 +102,12 @@ namespace XXCloudService.Api.XCCloud
                     errMsg = "没有找到节点信息";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
-                var dictionaryResponse = Utils.GetModelList<DictionaryResponseModel>(ds.Tables[0]).ToList();
+                var dictionaryResponse = Utils.GetModelList<DictionaryResponseModel>(ds.Tables[0]);
+                if (!enabled.IsNull())
+                {
+                    dictionaryResponse = dictionaryResponse.Where(w => w.Enabled == enabled.Toint()).ToList();
+                }
+
                 int rootId = 0;
                 int.TryParse(parameters[2].Value.ToString(), out rootId);                
 
@@ -213,7 +220,7 @@ namespace XXCloudService.Api.XCCloud
                 dict_System.DictValue = dictValue;
                 dict_System.Comment = comment;
                 dict_System.Enabled = Convert.ToInt32(enabled);
-                dict_System.OrderID = Convert.ToInt32(orderId);
+                dict_System.OrderID = orderId.Toint();
                 if (dicParas.ContainsKey("merchId"))
                 {
                     dict_System.MerchID = dicParas["merchId"].ToString();
@@ -302,7 +309,7 @@ namespace XXCloudService.Api.XCCloud
                 dict_System.DictValue = dictValue;
                 dict_System.Comment = comment;
                 dict_System.Enabled = Convert.ToInt32(enabled);
-                dict_System.OrderID = Convert.ToInt32(orderId);
+                dict_System.OrderID = orderId.Toint();
                 if (dicParas.ContainsKey("merchId"))
                 {
                     dict_System.MerchID = dicParas["merchId"].ToString();
@@ -397,7 +404,7 @@ namespace XXCloudService.Api.XCCloud
                 dict_System.DictValue = dictValue;
                 dict_System.Comment = comment;
                 dict_System.Enabled = Convert.ToInt32(enabled);
-                dict_System.OrderID = Convert.ToInt32(orderId);
+                dict_System.OrderID = orderId.Toint();
                 if (dicParas.ContainsKey("merchId"))
                 {
                     dict_System.MerchID = dicParas["merchId"].ToString();

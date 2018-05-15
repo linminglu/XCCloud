@@ -108,7 +108,6 @@
         <EntityTypeShape EntityType="XCCloudDBModel.Dict_FunctionMenu" Width="1.5" PointX="7.375" PointY="24.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_GameInfo_Ext" Width="1.5" PointX="0.75" PointY="34.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_Project_BindGame" Width="1.5" PointX="11.375" PointY="18.75" />
-        <EntityTypeShape EntityType="XCCloudDBModel.Dict_BalanceType" Width="1.5" PointX="34.375" PointY="23.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_GivebackRule" Width="1.5" PointX="17.375" PointY="18.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Base_StoreHKConfig" Width="1.5" PointX="35.375" PointY="0.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_DigitCoinFood" Width="1.5" PointX="35.375" PointY="4.75" />
@@ -141,6 +140,7 @@
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_Order_Detail" Width="1.5" PointX="7.75" PointY="21.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Base_DepotInfo" Width="1.5" PointX="37.375" PointY="4.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_CouponList" Width="1.5" PointX="35.375" PointY="8.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.Dict_BalanceType" Width="1.5" PointX="37.375" PointY="7.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

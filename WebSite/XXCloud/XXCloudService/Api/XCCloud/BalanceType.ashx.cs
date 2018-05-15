@@ -33,21 +33,27 @@ namespace XXCloudService.Api.XCCloud
 
                 var linq = from d in
                                (from a in Dict_BalanceTypeService.N.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.State == 1)
+                                join d in Dict_SystemService.N.GetModels() on (a.HKType + "") equals d.DictValue into d1
+                                from d in d1.DefaultIfEmpty()
+                                join e in Dict_SystemService.N.GetModels() on d.PID equals e.ID
+                                where e.DictKey == "关联类别"
                                 join b in Data_BalanceType_StoreListService.N.GetModels() on a.ID equals b.BalanceIndex into b1
                                 from b in b1.DefaultIfEmpty()
                                 join c in Base_StoreInfoService.N.GetModels() on b.StroeID equals c.StoreID                              
                                 select new
                                 {
                                     a = a,
+                                    HkTypeStr = d != null ? d.DictKey : string.Empty,
                                     StoreName = c != null ? c.StoreName : string.Empty
                                 }).AsEnumerable()
                            group d by d.a.ID into g                           
                            select new
                            {
                                ID = g.Key,
-                               TypeID = g.FirstOrDefault().a.TypeID,
+                               //TypeID = g.FirstOrDefault().a.TypeID,
                                TypeName = g.FirstOrDefault().a.TypeName,
                                Note = g.FirstOrDefault().a.Note,
+                               HkTypeStr = g.FirstOrDefault().HkTypeStr,
                                StoreNames = string.Join("|", g.OrderBy(o => o.StoreName).Select(o => o.StoreName))
                            };
                            
@@ -123,7 +129,7 @@ namespace XXCloudService.Api.XCCloud
                            select new
                            {
                                ID = g.Key,
-                               TypeID = g.FirstOrDefault().a.TypeID,
+                               //TypeID = g.FirstOrDefault().a.TypeID,
                                TypeName = g.FirstOrDefault().a.TypeName,
                                Note = g.FirstOrDefault().a.Note,
                                HKType = g.FirstOrDefault().a.HKType,
@@ -147,15 +153,15 @@ namespace XXCloudService.Api.XCCloud
                 string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
 
                 string errMsg = string.Empty;
-                if (!dicParas.Get("typeId").Validint("类别编号", out errMsg))
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                //if (!dicParas.Get("typeId").Validint("类别编号", out errMsg))
+                //    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 if (!dicParas.Get("typeName").Nonempty("类别名称", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 if (!dicParas.Get("hkType").Validint("关联类别", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 
                 int id = dicParas.Get("id").Toint(0);
-                var typeId = dicParas.Get("typeId").Toint();
+                //var typeId = dicParas.Get("typeId").Toint();
                 var typeName = dicParas.Get("typeName");
                 var hkType = dicParas.Get("hkType").Toint();
                 var note = dicParas.Get("note");
@@ -166,21 +172,20 @@ namespace XXCloudService.Api.XCCloud
                 {
                     try
                     {
-                        if (Dict_BalanceTypeService.I.Any(p => p.ID != id && p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.TypeID == typeId))
-                        {
-                            errMsg = "同一商户下余额类别编号不能重复";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
-
-                        if (Dict_BalanceTypeService.I.Any(p => p.ID != id && p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.HKType != (int)HKType.NoBound && p.HKType == hkType))
-                        {
-                            errMsg = "同一商户下余额类别的关联类别不能重复";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
+                        //if (Dict_BalanceTypeService.I.Any(p => p.ID != id && p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.TypeID == typeId))
+                        //{
+                        //    errMsg = "同一商户下余额类别编号不能重复";
+                        //    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        //}
+                        //if (Dict_BalanceTypeService.I.Any(p => p.ID != id && p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.HKType != (int)HKType.NoBound && p.HKType == hkType))
+                        //{
+                        //    errMsg = "同一商户下余额类别的关联类别不能重复";
+                        //    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        //}
 
                         var dict_BalanceType = Dict_BalanceTypeService.I.GetModels(p=>p.ID == id).FirstOrDefault() ?? new Dict_BalanceType();
                         dict_BalanceType.ID = id;
-                        dict_BalanceType.TypeID = typeId;
+                        //dict_BalanceType.TypeID = typeId;
                         dict_BalanceType.TypeName = typeName;
                         dict_BalanceType.Note = note;
                         dict_BalanceType.MerchID = merchId;

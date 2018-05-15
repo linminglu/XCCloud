@@ -94,7 +94,10 @@
     </div>
 <!--弹窗2-->
     <div id="goodsBox" style="display:none; padding: 15px;height: 400px;overflow-y: auto">
-        <table class="layui-hide" id="goodsList" lay-filter="goodsList"></table>
+        <table class="layui-hide" id="goodList" lay-filter="goodList"></table>
+        <div style="text-align:center;">
+            <button type="button" class="layui-btn layui-btn-normal" id="saveGoodsBtn">保存</button>
+        </div>
     </div>
 <!--审核-->
     <div id="checkModel" style="display:none; padding: 15px;">
@@ -146,6 +149,8 @@
             ,{fixed: 'right', title: '操作', width:260, align:'center', toolbar: '#barDemo'}]
     };
     xc.getInitData(parm);
+    let indexer;
+    let checkListGoods=[];
     let requestId;//调拨单号
 
     let checkState;
@@ -198,34 +203,38 @@
             }
         });
         //监听选中商品
-        table.on('checkbox(goodsList)', function(obj){
+        table.on('checkbox(goodList)', function(obj){
             if (obj.type == "all") {
-                var csss = $(".layui-table-cell.laytable-cell-checkbox");
-                csss.each(function(index, e){
-                    e.children[0].checked = false;
-                    e.children[1].className="layui-unselect layui-form-checkbox";
-                    checkListGoods=[];
-                });
             } else {
                 if(obj.checked==true){
-                    checkListGoods=[{'foodDetailType':2,'ProjectName': obj.data.GoodName,'FoodTypeStr':'商品',
-                        'ContainID':obj.data.ID,'WeightValue':obj.data.Price,'ContainCount':1,'Days':''}]
-                }else {
-                    checkListGoods=[];
-                }
-                var csss = $(".layui-table-cell.laytable-cell-checkbox");
-                csss.each(function(index, e){
-                    var dataIndex = e.parentNode.parentNode.getAttribute("data-index");
-                    if (dataIndex != null) {
-                        if(dataIndex != obj.data.LAY_TABLE_INDEX){
-                            e.children[0].checked = false;
-                            e.children[1].className="layui-unselect layui-form-checkbox";
+                    let flag=false;
+                    for(let i in checkListGoods){
+                        if(checkListGoods[i].GoodID==obj.data.GoodID){
+                            flag=true;
+                            break;
                         }
-                    } else {
-                        e.children[0].checked = false;
-                        e.children[1].className="layui-unselect layui-form-checkbox";
                     }
-                });
+                    if(flag==false){
+                        checkListGoods.push({
+                            'GoodID':obj.data.GoodID,
+                            'GoodName':obj.data.GoodName,
+                            'requestCount':'',
+                            'tax':'',
+                            'costPrice':'',
+                            'RemainCount':obj.data.RemainCount,
+                            'AvailableCount':obj.data.AvailableCount
+                        });
+                    }
+                 
+                }else {
+                    for(let i in checkListGoods){
+                        if(checkListGoods[i].GoodID==obj.data.GoodID){
+                            checkListGoods.splice(i,1);
+                            break;
+                        }
+                    }
+                }
+                console.log(checkListGoods);
             }
         });
         table.on('tool(giftAllocationTB)', function(obj){
@@ -251,11 +260,18 @@
                 content:$('#openModel')
             });
         });
+        //
+        $('#saveGoodsBtn').on('click',function () {
+            initSendTable(table,checkListGoods);
+            layer.close(indexer)
+        })
         $('#searchGoodBtn').on('click',function () {
             if(RequstType==2){
                 initGoodsTb('',OutDepotId,'',table);
             }else if(RequstType==3){
                 initGoodsTb('',InDepotId,'',table);
+            }else {
+                layer.msg('请先选择调拨方式！')
             }
         });
         //save apply
@@ -337,25 +353,29 @@
                 url: '/XCCloud/GoodsInfo?action=QueryGoodsStock',
                 contentType: "application/json; charset=utf-8",
                 data: {parasJson: parseJson},
-                success: function (data) {
-                    data = JSON.parse(data);
-                    if (data.result_code == 1) {
-                        let arr = data.result_data;
+                success: function (_data) {
+                    _data = JSON.parse(_data);
+                    if (_data.result_code == 1) {
+                        let arr=[];
+                         arr = _data.result_data;
                         table.render({
-                            elem: '#goodsList'
+                            elem: '#goodList'
                             , data: arr
-                            , height:'270px'
+                            , height:'220px'
+                            , size:'sm'
                             , cellMinWidth: 100 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
                             , cols: [[
-                                {type: 'checkbox'}
-                                , {field: 'GoodID ', title: '商品ID', align: 'center'}
-                                , {field: 'GoodName ', title: '商品名称', align: 'center'}
-                                , {field: 'RemainCount ', title: '库存', align: 'center'}
-                                , {field: 'AvailableCount ', title: '可调拨数量', align: 'center'}
+                                   {type: 'checkbox'}
+                                , {field: 'GoodID', title: '商品ID', align: 'center',width:230}
+                                , {field: 'GoodName', title: '商品名称', align: 'center',width:230}
+                                , {field: 'RemainCount', title: '库存', align: 'center',width:230}
+                                , {field: 'AvailableCount', title: '可调拨数量', align: 'center',width:220}
                             ]]
-                        })
+                            , page: {page: true, limits: [5,10, 15, 20, 30, 50]}
+                            , limit: 5
+                        });
                         layer.close(index);
-                        layer.open({
+                    indexer=layer.open({
                             title:'库存礼品列表',
                             type:1,
                             area:['1000px','400px'],
@@ -363,13 +383,36 @@
                         });
                     }else {
                         layer.close(index);
-                        layer.msg(data.result_msg||data.return_msg)
+                        layer.msg(_data.result_msg||_data.return_msg)
                     }
                 }
             });
         }else {
             layer.msg('申请仓库或发货仓库不能为空！')
         }
+    }
+    function initSendTable(table,checkListGood) {
+        table.render({
+            elem: '#giftsList'
+            , data: checkListGood
+            , height:'220px'
+            , size:'sm'
+            , cellMinWidth: 90 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+            , cols: [[
+                 {field: 'GoodID', title: '商品ID', align: 'center',width:100}
+                , {field: 'GoodName', title: '商品名称', align: 'center',width:100}
+                , {field: 'RemainCount', title: '库存', align: 'center',width:100}
+                , {field: 'requestCount', title: '申请数量', align: 'center',width:100}
+                , {field: 'costPrice', title: '不含税单价', align: 'center',width:100}
+                , {field: 'tax', title: '税率', align: 'center',width:100}
+                , {field: 'costPrice', title: '含税代价', align: 'center',width:100}
+                , {field: 'RemainCount', title: '库存', align: 'center',width:100}
+                , {field: 'AvailableCount', title: '可调拨数', align: 'center',width:100}
+
+            ]]
+            , page: {page: true, limits: [5,10, 15, 20, 30, 50]}
+            , limit: 5
+        });
     }
 </script>
 <script type="text/html" id="reqType">

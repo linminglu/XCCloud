@@ -1715,6 +1715,21 @@ namespace XXCloudService.Api.XCCloud
             }
         }
 
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object DownloadGoodRequestTemplate(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                string templateUrl = @"/XCCloud/Report/DownloadTemplate.aspx?templateName=GoodRequestTemplate";
+
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, HttpUtility.UrlEncode(templateUrl));
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
         #endregion
 
         #region 商品入库管理

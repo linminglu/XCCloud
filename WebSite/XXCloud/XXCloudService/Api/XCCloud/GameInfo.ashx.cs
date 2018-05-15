@@ -38,9 +38,8 @@ namespace XXCloudService.Api.XCCloud
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
 
-                int GameTypeId = dict_SystemService.GetModels(p => p.DictKey.Equals("游戏机类型")).FirstOrDefault().ID;
                 var data_GameInfo = from a in data_GameInfoService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase))
-                                    join b in dict_SystemService.GetModels(p => p.PID == GameTypeId) on a.GameType equals b.DictValue into b1
+                                    join b in dict_SystemService.GetModels() on a.GameType equals (b.ID + "") into b1
                                     from b in b1.DefaultIfEmpty()
                                     join c in data_GameInfo_ExtService.GetModels(p => p.ValidFlag == 1) on a.ID equals c.GameID into c1
                                     from c in c1.DefaultIfEmpty()
@@ -114,22 +113,18 @@ namespace XXCloudService.Api.XCCloud
                 int iId = 0;
                 int.TryParse(id, out iId);
                 IData_GameInfoService data_GameInfoService = BLLContainer.Resolve<IData_GameInfoService>(resolveNew: true);
-                if (!data_GameInfoService.Any(a => a.ID == iId))
-                {
-                    errMsg = "该游戏机信息不存在";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
-
-                IDict_SystemService dict_SystemService = BLLContainer.Resolve<IDict_SystemService>(resolveNew: true);                
+                var data_GameInfo = data_GameInfoService.GetModels(p => p.ID == iId).FirstOrDefault() ?? new Data_GameInfo();
+                IDict_SystemService dict_SystemService = BLLContainer.Resolve<IDict_SystemService>(resolveNew: true);
                 int GameInfoId = dict_SystemService.GetModels(p => p.DictKey.Equals("游戏机档案维护")).FirstOrDefault().ID;
-                var result = (from a in data_GameInfoService.GetModels(p => p.ID == iId).FirstOrDefault().AsDictionary()
-                             join b in dict_SystemService.GetModels(p => p.PID == GameInfoId) on a.Key equals b.DictKey into b1
-                             from b in b1.DefaultIfEmpty()
-                             select new { 
-                                 name = a.Key,
-                                 value = a.Value,
-                                 comment = b != null ? b.Comment : string.Empty
-                             }).ToList();
+                var result = (from a in data_GameInfo.AsDictionary()
+                              join b in dict_SystemService.GetModels(p => p.PID == GameInfoId) on a.Key equals b.DictKey into b1
+                              from b in b1.DefaultIfEmpty()
+                              select new
+                              {
+                                  name = a.Key,
+                                  value = a.Value,
+                                  comment = b != null ? b.Comment : string.Empty
+                              }).ToList();
 
                 IData_GameInfo_ExtService data_GameInfo_ExtService = BLLContainer.Resolve<IData_GameInfo_ExtService>();
                 IData_GameInfo_PhotoService data_GameInfo_PhotoService = BLLContainer.Resolve<IData_GameInfo_PhotoService>();
@@ -140,7 +135,7 @@ namespace XXCloudService.Api.XCCloud
                 result.Add(new { name = "Evaluation", value = (object)data_GameInfo_Ext.Evaluation, comment = string.Empty });
                 result.Add(new { name = "Price", value = (object)data_GameInfo_Ext.Price, comment = string.Empty });
                 result.Add(new { name = "LowLimit", value = (object)data_GameInfo_Ext.LowLimit, comment = string.Empty });
-                result.Add(new { name = "HighLimit", value = (object)data_GameInfo_Ext.HighLimit, comment = string.Empty });    
+                result.Add(new { name = "HighLimit", value = (object)data_GameInfo_Ext.HighLimit, comment = string.Empty });
 
                 List<string> PhotoURLs = new List<string>();
                 if (data_GameInfo_PhotoService.Any(p => p.GameID == iId))
@@ -148,66 +143,18 @@ namespace XXCloudService.Api.XCCloud
                     foreach (var model in data_GameInfo_PhotoService.GetModels(p => p.GameID == iId))
                     {
                         PhotoURLs.Add(model.PhotoURL);
-                    }                    
+                    }
                 }
+
                 result.Add(new { name = "PhotoURLs", value = (object)PhotoURLs, comment = string.Empty });
-                
-                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, result);
+
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, result);                            
             }
             catch (Exception e)
             {
                 return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
             }
-        }
-
-        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
-        public object GetGameInfoByName(Dictionary<string, object> dicParas)
-        {
-            try
-            {
-                string errMsg = string.Empty;
-                string gameName = dicParas.ContainsKey("gameName") ? (dicParas["gameName"] + "") : string.Empty;
-                if (string.IsNullOrEmpty(gameName))
-                {
-                    errMsg = "游戏机名称参数不能为空";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
-
-                IData_GameInfoService data_GameInfoService = BLLContainer.Resolve<IData_GameInfoService>(resolveNew: true);
-                if (!data_GameInfoService.Any(a => a.GameName.Equals(gameName, StringComparison.OrdinalIgnoreCase)))
-                {
-                    errMsg = "该游戏机信息不存在";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
-
-                IDict_SystemService dict_SystemService = BLLContainer.Resolve<IDict_SystemService>(resolveNew: true);
-                int GameInfoId = dict_SystemService.GetModels(p => p.DictKey.Equals("游戏机档案维护")).FirstOrDefault().ID;
-                var data_GameInfo = data_GameInfoService.GetModels(p => p.GameName.Equals(gameName, StringComparison.OrdinalIgnoreCase)).FirstOrDefault() ?? new Data_GameInfo();
-                var result = (from a in data_GameInfo.AsDictionary()
-                              select new
-                              {
-                                  name = a.Key,
-                                  value = a.Value
-                              }).ToList();
-
-                IData_GameInfo_ExtService data_GameInfo_ExtService = BLLContainer.Resolve<IData_GameInfo_ExtService>();
-                int iId = data_GameInfo.ID;
-                var data_GameInfo_Ext = data_GameInfo_ExtService.GetModels(p => p.GameID == iId && p.ValidFlag == 1).FirstOrDefault() ?? new Data_GameInfo_Ext();
-                result.Add(new { name = "GameCode", value = (object)data_GameInfo_Ext.GameCode });
-                result.Add(new { name = "Area", value = (object)data_GameInfo_Ext.Area });
-                result.Add(new { name = "ChangeTime", value = (object)Utils.ConvertFromDatetime(data_GameInfo_Ext.ChangeTime) });
-                result.Add(new { name = "Evaluation", value = (object)data_GameInfo_Ext.Evaluation });
-                result.Add(new { name = "Price", value = (object)data_GameInfo_Ext.Price });
-                result.Add(new { name = "LowLimit", value = (object)data_GameInfo_Ext.LowLimit });
-                result.Add(new { name = "HighLimit", value = (object)data_GameInfo_Ext.HighLimit });    
-
-                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, result);
-            }
-            catch (Exception e)
-            {
-                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
-            }
-        }
+        }       
 
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object SaveGameInfo(Dictionary<string, object> dicParas)

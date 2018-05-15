@@ -278,6 +278,7 @@
     <Content Include="Config\SAppMessageTemplate.xml">
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="Excel.xlsx" />
     <Content Include="Imgs\masterEmv.jpg" />
     <Content Include="index.html" />
     <Content Include="MobileWeb\accredit.html" />
@@ -382,12 +383,14 @@
     <Content Include="Api\XCCloud\GameWatch.ashx" />
     <Content Include="Api\HaoKu\hkreq.ashx" />
     <Content Include="Api\XCCloud\DigitFood.ashx" />
-    <Content Include="Excel.xlsx" />
     <Content Include="Api\XCCloud\Discount.ashx" />
+    <Content Include="HolidayConfig.json" />
+    <Content Include="GoodRequestTemplate.xlsx" />
     <None Include="Properties\PublishProfiles\111.pubxml" />
     <None Include="Properties\PublishProfiles\qqq.pubxml" />
     <None Include="Properties\PublishProfiles\rrr.pubxml" />
     <None Include="Scripts\jquery-1.6.4-vsdoc.js" />
+    <Content Include="Report\DownloadTemplate.aspx" />
     <Content Include="Report\ToExcel.aspx" />
     <Content Include="Scripts\jquery-1.6.4.js" />
     <Content Include="Scripts\jquery-1.6.4.min.js" />
@@ -1531,6 +1534,13 @@
     </Compile>
     <Compile Include="Pay\WeiXinPayment.ashx.cs">
       <DependentUpon>WeiXinPayment.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="Report\DownloadTemplate.aspx.cs">
+      <DependentUpon>DownloadTemplate.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Report\DownloadTemplate.aspx.designer.cs">
+      <DependentUpon>DownloadTemplate.aspx</DependentUpon>
     </Compile>
     <Compile Include="Report\ToExcel.aspx.cs">
       <DependentUpon>ToExcel.aspx</DependentUpon>
