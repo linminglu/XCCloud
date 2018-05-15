@@ -17,60 +17,7 @@
 <body>
 <div class="goodIsAll" style="padding: 5px; ">
     <form action="" class="layui-form layui-form-pane">
-        <div class="layui-collapse" lay-accordion="">
-            <div class="layui-colla-item lci4">
-                <h2 class="layui-colla-title">兑换规则</h2>
-                <div class="layui-colla-content layui-show">
-                   <div class="layui-form-item">
-                       <div class="layui-inline" >
-                           <label class="layui-form-label" style="width: 70px">原类型</label>
-                           <div class="layui-input-inline" style="width: 100px">
-                               <select id="sourceType" lay-filter="sourceType">
-                                   <option value="0">一级</option>
-                                   <option value="1">er级</option>
-                                   <option value="2">三级</option>
-                                   <option value="3">四级</option>
-                               </select>
-                           </div>
-                       </div>
-                       <div class="layui-inline" >
-                           <label class="layui-form-label" style="width: 70px">原数量</label>
-                           <div class="layui-input-inline" style="width: 70px">
-                               <input type="text" class="layui-input" id="sourceCount">
-                           </div>
-                       </div>
-                       <div class="layui-inline" >
-                           <label class="layui-form-label" style="width: 70px">兑币类型</label>
-                           <div class="layui-input-inline" style="width: 100px">
-                               <select id="chargeType" lay-filter="chargeType">
-                                   <option value="0">一级</option>
-                                   <option value="1">er级</option>
-                                   <option value="2">三级</option>
-                                   <option value="3">四级</option>
-                               </select>
-                           </div>
-                       </div>
-                       <div class="layui-inline" >
-                           <label class="layui-form-label" style="width: 70px">兑币数量</label>
-                           <div class="layui-input-inline" style="width: 70px">
-                               <input type="text" class="layui-input" id="chargeCount">
-                           </div>
-                       </div>
-                       <div class="layui-inline">
-                           <label class="layui-form-label" style="width: 70px">警戒值</label>
-                           <div class="layui-input-inline" style="width: 70px">
-                               <input type="text" class="layui-input" id="alertValue">
-                           </div>
-                       </div >
-                       <div class="layui-inline">
-                           <div class="layui-input-inline" style="width: 70px">
-                              <button type="button" class="layui-btn layui-btn-normal" id="rulesBtn">新增</button>
-                           </div>
-                       </div>
-                   </div>
-                    <table class="layui-hide" lay-filter="chargeRules" id="chargeRules"></table>
-                </div>
-            </div>
+        <div class="layui-collapse">
             <div class="layui-colla-item lci1">
                 <h2 class="layui-colla-title">运营参数设定</h2>
                 <div class="layui-colla-content ">
@@ -88,11 +35,9 @@
                             </div>
                         </div>
                         <div class="layui-inline">
-                            <label class="layui-form-label">条码退款方式</label>
+                            <label class="layui-form-label">每次售币最小币数</label>
                             <div class="layui-input-inline">
-                                <select name="interest" lay-filter="cmbMemberBalance"  id="cmbMemberBalance">
-
-                                </select>
+                                <input type="text" class="layui-input">
                             </div>
                         </div>
                     </div>
@@ -101,12 +46,26 @@
                         <div class="layui-inline">
                             <label class="layui-form-label">营业日期内班次个数</label>
                             <div class="layui-input-inline" style="width: 100px;">
-                                <input type="text" id="txtBusinessClass" name="price_min" placeholder="输入一个整数" autocomplete="off" class="layui-input">
+                                <select  id="txtBusinessClass"lay-filter="txtBusinessClass">
+                                    <option>-请选择-</option>
+                                    <option value="0">A班</option>
+                                    <option value="1">AB班</option>
+                                    <option value="2">ABC班</option>
+                                </select>
                             </div>
-                            <div class="layui-form-mid">个 <span>(设定后下个营业日期内生效)</span></div>
-
+                            <div class="layui-form-mid"><span>(设定后下个营业日期内生效)</span></div>
                         </div>
-
+                        <div class="layui-inline">
+                            <label class="layui-form-label">授权通道</label>
+                            <div class="layui-input-inline" style="width: 100px;">
+                                <select  id="AuthorityWay"lay-filter="AuthorityWay">
+                                    <option>-请选择-</option>
+                                    <option value="0">授权卡</option>
+                                    <option value="1">公众号通知</option>
+                                    <option value="2">扫码授权</option>
+                                </select>
+                            </div>
+                        </div>
                         <div class="layui-inline">
                             <label class="layui-form-label" style="white-space: normal;padding: 0;">换班时需要输入实点数</label>
                             <div class="layui-input-inline" style="width: 100px;">
@@ -115,28 +74,55 @@
 
                         </div>
                     </div>
+                    <hr class="layui-bg-blue">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input">
+                            </div>
+                            <div class="layui-form-mid">元=</div>
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input">
+                            </div>
+                            <div class="layui-input-inline">
+                                <select>
+                                    <option value="0">代币</option>
+                                    <option value="1">A币</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <div class="layui-input-inline">
+                                    <div class="layui-btn-group">
+                                        <button type="button" class="layui-btn"> <i class="layui-icon">&#xe654;</i></button>
+                                        <button type="button" class="layui-btn"><i class="layui-icon layui-icon-close"></i></button>
+                                    </div>
+                            </div>
+                        </div>
+                        <blockquote>例如：设置1元=1代币时，套餐为100元150币，则会员赠送代币为50币。若需要退款时，仅按照非赠送（100币）值退款，赠送代币不能退。</blockquote>
+                    </div>
                 </div>
             </div>
             <div class="layui-colla-item lci2">
-                <h2 class="layui-colla-title">会员设定</h2>
+                <h2 class="layui-colla-title">博彩专用设定</h2>
                 <div class="layui-colla-content">
                     <div class="layui-form-item ">
                         <div class="layui-inline">
-                            <label class="layui-form-label">每次售币最小币数</label>
+                            <label class="layui-form-label">每天免授权赢币上限</label>
                             <div class="layui-input-inline">
                                 <input type="text" id="txtOnceSellCoinMin" name="title" lay-verify="title" autocomplete="off" placeholder="请输入标题" class="layui-input">
                             </div>
                         </div>
 
                         <div class="layui-inline">
-                            <label class="layui-form-label">每次售币最大币数</label>
+                            <label class="layui-form-label">每天免授权赢币倍数</label>
                             <div class="layui-input-inline">
                                 <input type="text" id="txtOnceSellCoinMax" name="title" lay-verify="title" autocomplete="off" placeholder="请输入标题" class="layui-input">
                             </div>
                         </div>
 
                         <div class="layui-inline">
-                            <label class="layui-form-label">每次最小退币数</label>
+                            <label class="layui-form-label">每次免授权赢币上限</label>
                             <div class="layui-input-inline">
                                 <input type="text" id="txtOnceRefunMin" name="title" lay-verify="title" autocomplete="off" placeholder="请输入标题" class="layui-input">
                             </div>
@@ -144,26 +130,53 @@
                     </div>
                     <div class="layui-form-item ">
                         <div class="layui-inline">
-                            <label class="layui-form-label">每天免授权赢币上限</label>
+                            <label class="layui-form-label">每天免授权退币上限</label>
                             <div class="layui-input-inline">
                                 <input type="text" id="txtDayWithoutRightWinCoinMax" name="title" lay-verify="title" autocomplete="off" placeholder="请输入标题" class="layui-input">
                             </div>
                         </div>
 
                         <div class="layui-inline">
-                            <label class="layui-form-label">每天免授权赢币倍数</label>
+                            <label class="layui-form-label">条码退款方式</label>
                             <div class="layui-input-inline">
-                                <input type="text" id="txtWithoutRightWinCoinTimes" name="title" lay-verify="title" autocomplete="off" placeholder="请输入标题" class="layui-input">
+                                <select name="" id="">
+                                    <option>-请选择-</option>
+                                    <option value="0">显示退款和退到会员卡</option>
+                                    <option value="1">仅显示退款</option>
+                                    <option value="2">仅显示退到会员卡</option>
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="layui-form-item ">
+                        <div class="layui-inline">
+                            <label class="layui-form-label" style="white-space: normal;padding: 0;">临时开卡是否显示手机号输入框</label>
+                            <div class="layui-input-inline">
+                                <input type="checkbox" lay-filter="showPhone" lay-skin="switch" lay-text="启用|禁用" id="chkTempShowPhone">
                             </div>
                         </div>
 
                         <div class="layui-inline">
-                            <label class="layui-form-label">每次免授权退币上限</label>
+                            <label class="layui-form-label" style="white-space: normal;padding: 0;">临时卡首次入会验证短信码</label>
                             <div class="layui-input-inline">
-                                <input type="text" id="txtOnceWithoutRightRefundMax" name="title" lay-verify="title" autocomplete="off" placeholder="请输入标题" class="layui-input">
+                                <input type="checkbox" lay-filter="afmsc" lay-skin="switch" lay-text="启用|禁用" id="chkTempAllowFirstMemberSmsCode">
+                            </div>
+                        </div>
+
+                        <div class="layui-inline">
+                            <label class="layui-form-label">临时卡是否允许返还</label>
+                            <div class="layui-input-inline">
+                                <input type="checkbox" lay-filter="Giveback" lay-skin="switch" lay-text="启用|禁用" id="chkTempGiveback">
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+            <div class="layui-colla-item">
+                <h2 class="layui-colla-title">会员设定</h2>
+                <div class="layui-colla-content">
                     <div class="layui-form-item ">
                         <div class="layui-inline">
                             <label class="layui-form-label">每天免授权退币上限</label>
@@ -210,78 +223,150 @@
                             </div>
                         </div>
                     </div>
-                    <div class="layui-form-item  show_block_short">
+                </div>
+            </div>
+            <div class="layui-colla-item lci3">
+                <h2 class="layui-colla-title">返还设定</h2>
+                <div class="layui-colla-content">
+                    <div class="layui-form-item ">
                         <div class="layui-inline">
-                            <label class="layui-form-label" style="white-space: normal;padding: 0;">吧台退款时必须抓拍照片</label>
+                            <label class="layui-form-label" style="white-space: normal;padding: 0;">返还时卡里余额不能超过</label>
                             <div class="layui-input-inline">
-                                <input type="checkbox" lay-filter="chkExitMoneyCatch" lay-skin="switch" lay-text="启用|禁用" id="chkExitMoneyCatch">
+                                <input type="text" id="txtGiveBackMax" name="title" lay-verify="title" autocomplete="off" placeholder="请输入标题" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label" style="white-space: normal;padding: 0;">退款后禁止拿返还时间(分)</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="txtExitMoneyGiveBackTime" name="title" lay-verify="title" autocomplete="off" placeholder="请输入标题" class="layui-input">
                             </div>
                         </div>
 
                         <div class="layui-inline">
-                            <label class="layui-form-label">入会是否验证短信码</label>
+                            <label class="layui-form-label" style="white-space: normal;padding: 0;">拿返还时是否验证短信码</label>
                             <div class="layui-input-inline">
-                                <input type="checkbox" lay-filter="ams" lay-skin="switch" lay-text="启用|禁用" id="chkAllowMemberSmsCode">
+                                <input type="checkbox" lay-filter="GiveBackAllowSmsCode" lay-skin="switch" lay-text="启用|禁用" id="chkGiveBackAllowSmsCode">
                             </div>
                         </div>
                     </div>
-                    <div class="layui-form-item ">
+                    <hr class="layui-bg-blue">
+                    <div style="text-align: right">
+                       <button type="button" class="layui-btn layui-btn-normal layui-btn-primary" id="addNewBackRule"> 新增</button>
+                    </div>
+                    <div>
+                        <table class="layui-hide" id="test" lay-filter="test"></table>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-colla-item lci4">
+                <h2 class="layui-colla-title">游乐项目规则设定</h2>
+                <div class="layui-colla-content layui-show">
+                   <div class="layui-form-item">
+                       <div class="layui-inline">
+                           <div class="layui-input-inline">
+                               <input type="checkbox" title="陪同票是否必须与主票一同出闸">
+                           </div>
+                       </div>
+                       <div class="layui-inline">
+                           <div class="layui-input-inline">
+                               <input type="checkbox" title="离场时间是否进行累计">
+                           </div>
+                       </div>
+                   </div>
+                    <div class="layui-form-item">
                         <div class="layui-inline">
-                            <label class="layui-form-label" style="white-space: normal;padding: 0;">临时开卡是否显示手机号输入框</label>
+                            <div class="layui-form-mid">散客领取卡进行计时项目游玩时,自动入会</div>
                             <div class="layui-input-inline">
-                                <input type="checkbox" lay-filter="showPhone" lay-skin="switch" lay-text="启用|禁用" id="chkTempShowPhone">
+                                <select name="" id=""></select>
                             </div>
+                            <div class="layui-form-mid">级别</div>
                         </div>
-
                         <div class="layui-inline">
-                            <label class="layui-form-label" style="white-space: normal;padding: 0;">临时卡首次入会验证短信码</label>
+                            <div class="layui-form-mid">散客打印门票时需要强制填写如下信息</div>
                             <div class="layui-input-inline">
-                                <input type="checkbox" lay-filter="afmsc" lay-skin="switch" lay-text="启用|禁用" id="chkTempAllowFirstMemberSmsCode">
-                            </div>
-                        </div>
-
-                        <div class="layui-inline">
-                            <label class="layui-form-label">临时卡是否允许返还</label>
-                            <div class="layui-input-inline">
-                                <input type="checkbox" lay-filter="Giveback" lay-skin="switch" lay-text="启用|禁用" id="chkTempGiveback">
+                                <input type="checkbox" title="姓名">
+                                <input type="checkbox" title="手机">
+                                <input type="checkbox" title="性别">
+                                <input type="checkbox" title="身份证">
+                                <input type="checkbox" title="生日">
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <!--<div class="layui-colla-item lci3">-->
-                <!--<h2 class="layui-colla-title">返还设定</h2>-->
-                <!--<div class="layui-colla-content">-->
-                    <!--<div class="layui-form-item ">-->
-                        <!--<div class="layui-inline">-->
-                            <!--<label class="layui-form-label" style="white-space: normal;padding: 0;">返还时卡里余额不能超过</label>-->
-                            <!--<div class="layui-input-inline">-->
-                                <!--<input type="text" id="txtGiveBackMax" name="title" lay-verify="title" autocomplete="off" placeholder="请输入标题" class="layui-input">-->
-                            <!--</div>-->
-                        <!--</div>-->
-                        <!--<div class="layui-inline">-->
-                            <!--<label class="layui-form-label" style="white-space: normal;padding: 0;">退款后禁止拿返还时间(分)</label>-->
-                            <!--<div class="layui-input-inline">-->
-                                <!--<input type="text" id="txtExitMoneyGiveBackTime" name="title" lay-verify="title" autocomplete="off" placeholder="请输入标题" class="layui-input">-->
-                            <!--</div>-->
-                        <!--</div>-->
+            <div class="layui-colla-item lci4">
+                <h2 class="layui-colla-title">兑换规则</h2>
+                <div class="layui-colla-content layui-show">
+                    <div class="layui-form-item">
+                        <div class="layui-inline" >
+                            <label class="layui-form-label" style="width: 70px">每日额度</label>
+                            <div class="layui-input-inline" style="width: 100px">
+                                <input type="text" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline" >
+                            <label class="layui-form-label" style="width: 70px">最大发卡张数</label>
+                            <div class="layui-input-inline" style="width: 100px">
+                                <input type="text" class="layui-input">
+                            </div>
+                        </div>
+                    </div>
 
-                        <!--<div class="layui-inline">-->
-                            <!--<label class="layui-form-label" style="white-space: normal;padding: 0;">拿返还时是否验证短信码</label>-->
-                            <!--<div class="layui-input-inline">-->
-                                <!--<input type="checkbox" lay-filter="GiveBackAllowSmsCode" lay-skin="switch" lay-text="启用|禁用" id="chkGiveBackAllowSmsCode">-->
-                            <!--</div>-->
-                        <!--</div>-->
-                    <!--</div>-->
-                    <!--<hr class="layui-bg-blue">-->
-                    <!--<div style="text-align: right">-->
-                       <!--<button type="button" class="layui-btn layui-btn-normal layui-btn-primary" id="addNewBackRule"> 新增</button>-->
-                    <!--</div>-->
-                    <!--<div>-->
-                        <!--<table class="layui-hide" id="test" lay-filter="test"></table>-->
-                    <!--</div>-->
-                <!--</div>-->
-            <!--</div>-->
+                </div>
+            </div>
+            <div class="layui-colla-item lci4">
+                <h2 class="layui-colla-title">招待币/补币规则</h2>
+                <div class="layui-colla-content layui-show">
+                    <div class="layui-form-item">
+                        <div class="layui-inline" >
+                            <label class="layui-form-label" style="width: 70px">原类型</label>
+                            <div class="layui-input-inline" style="width: 100px">
+                                <select id="sourceType" lay-filter="sourceType">
+                                    <option value="0">一级</option>
+                                    <option value="1">er级</option>
+                                    <option value="2">三级</option>
+                                    <option value="3">四级</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-inline" >
+                            <label class="layui-form-label" style="width: 70px">原数量</label>
+                            <div class="layui-input-inline" style="width: 70px">
+                                <input type="text" class="layui-input" id="sourceCount">
+                            </div>
+                        </div>
+                        <div class="layui-inline" >
+                            <label class="layui-form-label" style="width: 70px">兑币类型</label>
+                            <div class="layui-input-inline" style="width: 100px">
+                                <select id="chargeType" lay-filter="chargeType">
+                                    <option value="0">一级</option>
+                                    <option value="1">er级</option>
+                                    <option value="2">三级</option>
+                                    <option value="3">四级</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-inline" >
+                            <label class="layui-form-label" style="width: 70px">兑币数量</label>
+                            <div class="layui-input-inline" style="width: 70px">
+                                <input type="text" class="layui-input" id="chargeCount">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label" style="width: 70px">警戒值</label>
+                            <div class="layui-input-inline" style="width: 70px">
+                                <input type="text" class="layui-input" id="alertValue">
+                            </div>
+                        </div >
+                        <div class="layui-inline">
+                            <div class="layui-input-inline" style="width: 70px">
+                                <button type="button" class="layui-btn layui-btn-normal" id="rulesBtn">新增</button>
+                            </div>
+                        </div>
+                    </div>
+                    <table class="layui-hide" lay-filter="chargeRules" id="chargeRules"></table>
+                </div>
+            </div>
         </div>
         <div style="text-align: right;margin: 20px;">
             <button type="button" class="layui-btn layui-btn-normal">重置</button>
