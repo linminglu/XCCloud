@@ -578,39 +578,39 @@ namespace XCCloudService.Api.XCCloud
                         }
                         #endregion
 
-                        #region 初始化运营参数
+                        //#region 初始化运营参数
 
-                        //初始化门店运营参数配置
-                        var dbContext = DbContextFactory.CreateByModelNamespace(typeof(Data_Parameters).Namespace);
-                        var data_Parameter = dbContext.Set<Data_Parameters>().AsQueryable();
-                        if (base_StoreInfo.StoreTag == (int)MerchTag.Game)
-                        {
-                            data_Parameter = data_Parameter.Where(p => p.StoreID.Equals(MerchTag.Game.ToString()));
-                        }
-                        else
-                        {
-                            data_Parameter = data_Parameter.Where(p => p.StoreID.Equals(MerchTag.Lottery.ToString()));
-                        }
+                        ////初始化门店运营参数配置
+                        //var dbContext = DbContextFactory.CreateByModelNamespace(typeof(Data_Parameters).Namespace);
+                        //var data_Parameter = dbContext.Set<Data_Parameters>().AsQueryable();
+                        //if (base_StoreInfo.StoreTag == (int)MerchTag.Game)
+                        //{
+                        //    data_Parameter = data_Parameter.Where(p => p.StoreID.Equals(MerchTag.Game.ToString()));
+                        //}
+                        //else
+                        //{
+                        //    data_Parameter = data_Parameter.Where(p => p.StoreID.Equals(MerchTag.Lottery.ToString()));
+                        //}
 
-                        foreach (var model in data_Parameter.ToList())
-                        {
-                            var data_ParameterModel = new Data_Parameters();
-                            data_ParameterModel.StoreID = storeId;
-                            data_ParameterModel.ParameterName = model.ParameterName;
-                            data_ParameterModel.ParameterValue = model.ParameterValue;
-                            data_ParameterModel.System = model.System;
-                            data_ParameterModel.IsAllow = model.IsAllow;
-                            data_ParameterModel.Note = model.Note;
-                            dbContext.Entry(data_ParameterModel).State = EntityState.Added;
-                        }
+                        //foreach (var model in data_Parameter.ToList())
+                        //{
+                        //    var data_ParameterModel = new Data_Parameters();
+                        //    data_ParameterModel.StoreID = storeId;
+                        //    data_ParameterModel.ParameterName = model.ParameterName;
+                        //    data_ParameterModel.ParameterValue = model.ParameterValue;
+                        //    data_ParameterModel.System = model.System;
+                        //    data_ParameterModel.IsAllow = model.IsAllow;
+                        //    data_ParameterModel.Note = model.Note;
+                        //    dbContext.Entry(data_ParameterModel).State = EntityState.Added;
+                        //}
 
-                        if (dbContext.SaveChanges() < 0)
-                        {
-                            errMsg = "初始化门店运营参数失败";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }                        
+                        //if (dbContext.SaveChanges() < 0)
+                        //{
+                        //    errMsg = "初始化门店运营参数失败";
+                        //    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        //}                        
 
-                        #endregion
+                        //#endregion
 
                         ts.Complete();
 
@@ -750,47 +750,47 @@ namespace XCCloudService.Api.XCCloud
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
-                #region 初始化运营参数
+                //#region 初始化运营参数
 
-                //初始化门店运营参数配置
-                var dbContext = DbContextFactory.CreateByModelNamespace(typeof(Data_Parameters).Namespace);
-                var data_Parameter = dbContext.Set<Data_Parameters>().AsQueryable();
-                if (isStoreTagEdit)
-                {
-                    foreach (var model in data_Parameter.Where(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)))
-                    {
-                        dbContext.Entry(model).State = EntityState.Deleted;
-                    }
-                }
+                ////初始化门店运营参数配置
+                //var dbContext = DbContextFactory.CreateByModelNamespace(typeof(Data_Parameters).Namespace);
+                //var data_Parameter = dbContext.Set<Data_Parameters>().AsQueryable();
+                //if (isStoreTagEdit)
+                //{
+                //    foreach (var model in data_Parameter.Where(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)))
+                //    {
+                //        dbContext.Entry(model).State = EntityState.Deleted;
+                //    }
+                //}
                 
-                if (base_StoreInfo.StoreTag == (int)MerchTag.Game)
-                {
-                    data_Parameter = data_Parameter.Where(p => p.StoreID.Equals(MerchTag.Game.ToString()));
-                }
-                else
-                {
-                    data_Parameter = data_Parameter.Where(p => p.StoreID.Equals(MerchTag.Lottery.ToString()));
-                }
+                //if (base_StoreInfo.StoreTag == (int)MerchTag.Game)
+                //{
+                //    data_Parameter = data_Parameter.Where(p => p.StoreID.Equals(MerchTag.Game.ToString()));
+                //}
+                //else
+                //{
+                //    data_Parameter = data_Parameter.Where(p => p.StoreID.Equals(MerchTag.Lottery.ToString()));
+                //}
                 
-                foreach (var model in data_Parameter.ToList())
-                {
-                    var data_ParameterModel = new Data_Parameters();
-                    data_ParameterModel.StoreID = storeId;
-                    data_ParameterModel.ParameterName = model.ParameterName;
-                    data_ParameterModel.ParameterValue = model.ParameterValue;
-                    data_ParameterModel.System = model.System;
-                    data_ParameterModel.IsAllow = model.IsAllow;
-                    data_ParameterModel.Note = model.Note;
-                    dbContext.Entry(data_ParameterModel).State = EntityState.Added;
-                }
+                //foreach (var model in data_Parameter.ToList())
+                //{
+                //    var data_ParameterModel = new Data_Parameters();
+                //    data_ParameterModel.StoreID = storeId;
+                //    data_ParameterModel.ParameterName = model.ParameterName;
+                //    data_ParameterModel.ParameterValue = model.ParameterValue;
+                //    data_ParameterModel.System = model.System;
+                //    data_ParameterModel.IsAllow = model.IsAllow;
+                //    data_ParameterModel.Note = model.Note;
+                //    dbContext.Entry(data_ParameterModel).State = EntityState.Added;
+                //}
 
-                if (dbContext.SaveChanges() < 0)
-                {
-                    errMsg = "初始化门店运营参数失败";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
+                //if (dbContext.SaveChanges() < 0)
+                //{
+                //    errMsg = "初始化门店运营参数失败";
+                //    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                //}
 
-                #endregion
+                //#endregion
 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
             }

@@ -122,7 +122,7 @@ namespace XXCloudService.Api.XCCloud
                               select new
                               {
                                   name = a.Key,
-                                  value = a.Value,
+                                  value = a.Value ?? (b != null ? b.DictValue : null),
                                   comment = b != null ? b.Comment : string.Empty
                               }).ToList();
 

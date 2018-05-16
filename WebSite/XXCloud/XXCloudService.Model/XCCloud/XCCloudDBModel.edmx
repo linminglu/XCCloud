@@ -690,14 +690,6 @@
           <Property Name="UpdateLevelID" Type="int" />
           <Property Name="PriorityLevel" Type="int" />
         </EntityType>
-        <!--生成过程中发现错误:
-警告 6013: 表/视图“XCCloud.dbo.Data_Food_Record”未定义主键，并且无法推断有效的主键。已排除了此表/视图。若要使用实体，将需要检查您的架构、添加正确的键并取消对实体的注释。
-        <EntityType Name="Data_Food_Record">
-          <Property Name="FoodLevelID" Type="int" />
-          <Property Name="RecordDate" Type="datetime" />
-          <Property Name="day_sale_count" Type="int" />
-          <Property Name="member_day_sale_count" Type="int" />
-        </EntityType>-->
         <EntityType Name="Data_Food_Sale">
           <Key>
             <PropertyRef Name="ID" />
@@ -755,6 +747,7 @@
           </Key>
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="MerchID" Type="varchar" MaxLength="15" />
+          <Property Name="StoreID" Type="varchar" MaxLength="15" />
           <Property Name="BalanceIndex" Type="int" />
           <Property Name="OnceSigleMax" Type="int" />
           <Property Name="OnceWarningValue" Type="int" />
@@ -1362,6 +1355,8 @@
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MerchID" Type="varchar" MaxLength="15" />
+          <Property Name="StoreID" Type="varchar" MaxLength="15" />
           <Property Name="TicketName" Type="varchar" MaxLength="100" />
           <Property Name="TicketType" Type="int" />
           <Property Name="DivideType" Type="int" />
@@ -1524,6 +1519,7 @@
           </Key>
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="MerchID" Type="varchar" MaxLength="15" />
+          <Property Name="StoreID" Type="varchar" MaxLength="15" />
           <Property Name="BalanceIndex" Type="int" />
           <Property Name="CoinCount" Type="int" />
           <Property Name="CashPrice" Type="numeric" Precision="10" Scale="2" />
@@ -1619,9 +1615,11 @@
           <Property Name="MerchID" Type="varchar" MaxLength="15" />
           <Property Name="TypeID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="TypeName" Type="varchar" MaxLength="50" />
-          <Property Name="HKType" Type="int" />
-          <Property Name="Note" Type="varchar" MaxLength="200" />
+          <Property Name="MappingType" Type="int" />
           <Property Name="State" Type="int" />
+          <Property Name="DecimalNumber" Type="int" />
+          <Property Name="AddingType" Type="int" />
+          <Property Name="Note" Type="varchar" MaxLength="200" />
         </EntityType>
         <EntityType Name="Dict_FunctionMenu">
           <Key>
@@ -2367,14 +2365,6 @@
           <Property Name="OutFromPrint" Type="int" />
           <Property Name="OutFromReal" Type="int" />
         </EntityType>
-        <!--生成过程中发现错误:
-警告 6013: 表/视图“XCCloud.dbo.t_MPOrder”未定义主键，并且无法推断有效的主键。已排除了此表/视图。若要使用实体，将需要检查您的架构、添加正确的键并取消对实体的注释。
-        <EntityType Name="t_MPOrder">
-          <Property Name="OrderNumber" Type="varchar" MaxLength="200" />
-          <Property Name="StoreId" Type="varchar" MaxLength="200" />
-          <Property Name="CreateTime" Type="varchar" MaxLength="50" />
-          <Property Name="MerchID" Type="varchar" MaxLength="20" />
-        </EntityType>-->
         <EntityType Name="XC_WorkInfo">
           <Key>
             <PropertyRef Name="WorkID" />
@@ -2937,9 +2927,7 @@
           <EntitySet Name="Flw_Order_Detail" EntityType="XCCloudDBModel.Flw_Order_Detail" />
           <EntitySet Name="Base_DepotInfo" EntityType="XCCloudDBModel.Base_DepotInfo" />
           <EntitySet Name="Data_CouponList" EntityType="XCCloudDBModel.Data_CouponList" />
-          <EntitySet Name="Dict_BalanceType" EntityType="XCCloudDBModel.Dict_BalanceType" />
           <EntitySet Name="Data_Food_Level" EntityType="XCCloudDBModel.Data_Food_Level" />
-          <EntitySet Name="Data_FreeCoinRule" EntityType="XCCloudDBModel.Data_FreeCoinRule" />
           <EntitySet Name="Data_GameAPP_Rule" EntityType="XCCloudDBModel.Data_GameAPP_Rule" />
           <EntitySet Name="Data_GameInfo" EntityType="XCCloudDBModel.Data_GameInfo" />
           <EntitySet Name="Data_GoodExit_Detail" EntityType="XCCloudDBModel.Data_GoodExit_Detail" />
@@ -2953,7 +2941,6 @@
           <EntitySet Name="Data_PushRule_MemberLevelList" EntityType="XCCloudDBModel.Data_PushRule_MemberLevelList" />
           <EntitySet Name="Data_RuleOverlying_Group" EntityType="XCCloudDBModel.Data_RuleOverlying_Group" />
           <EntitySet Name="Data_RuleOverlying_List" EntityType="XCCloudDBModel.Data_RuleOverlying_List" />
-          <EntitySet Name="Data_StandardCoinPrice" EntityType="XCCloudDBModel.Data_StandardCoinPrice" />
           <EntitySet Name="Divide_ProjectInfo" EntityType="XCCloudDBModel.Divide_ProjectInfo" />
           <EntitySet Name="Flw_Food_Sale" EntityType="XCCloudDBModel.Flw_Food_Sale" />
           <EntitySet Name="Flw_Project_PlayTime" EntityType="XCCloudDBModel.Flw_Project_PlayTime" />
@@ -2966,8 +2953,11 @@
           <EntitySet Name="Flw_ProjectTicket_Entry" EntityType="XCCloudDBModel.Flw_ProjectTicket_Entry" />
           <EntitySet Name="Base_GoodsInfo" EntityType="XCCloudDBModel.Base_GoodsInfo" />
           <EntitySet Name="Data_FoodInfo" EntityType="XCCloudDBModel.Data_FoodInfo" />
-          <EntitySet Name="Data_ProjectTicket" EntityType="XCCloudDBModel.Data_ProjectTicket" />
           <EntitySet Name="Flw_Food_Sale_Pay" EntityType="XCCloudDBModel.Flw_Food_Sale_Pay" />
+          <EntitySet Name="Data_FreeCoinRule" EntityType="XCCloudDBModel.Data_FreeCoinRule" />
+          <EntitySet Name="Data_StandardCoinPrice" EntityType="XCCloudDBModel.Data_StandardCoinPrice" />
+          <EntitySet Name="Data_ProjectTicket" EntityType="XCCloudDBModel.Data_ProjectTicket" />
+          <EntitySet Name="Dict_BalanceType" EntityType="XCCloudDBModel.Dict_BalanceType" />
         </EntityContainer>
         <EntityType Name="Base_ChainRule">
           <Key>
@@ -4724,18 +4714,6 @@
           <Property Name="State" Type="Int32" />
           <Property Name="IsLock" Type="Int32" />
         </EntityType>
-        <EntityType Name="Dict_BalanceType">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" />
-          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="TypeID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="TypeName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="HKType" Type="Int32" />
-          <Property Name="Note" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
-          <Property Name="State" Type="Int32" />
-        </EntityType>
         <EntityType Name="Data_Food_Level">
           <Key>
             <PropertyRef Name="ID" />
@@ -4757,18 +4735,6 @@
           <Property Name="MemberCount" Type="Int32" />
           <Property Name="UpdateLevelID" Type="Int32" />
           <Property Name="PriorityLevel" Type="Int32" />
-        </EntityType>
-        <EntityType Name="Data_FreeCoinRule">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="BalanceIndex" Type="Int32" />
-          <Property Name="OnceSigleMax" Type="Int32" />
-          <Property Name="OnceWarningValue" Type="Int32" />
-          <Property Name="DayMax" Type="Int32" />
-          <Property Name="DayWarningValue" Type="Int32" />
         </EntityType>
         <EntityType Name="Data_GameAPP_Rule">
           <Key>
@@ -5001,16 +4967,6 @@
           <Property Name="GroupID" Type="Int32" />
           <Property Name="RuleType" Type="Int32" />
           <Property Name="RuleID" Type="Int32" />
-        </EntityType>
-        <EntityType Name="Data_StandardCoinPrice">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="BalanceIndex" Type="Int32" />
-          <Property Name="CoinCount" Type="Int32" />
-          <Property Name="CashPrice" Type="Decimal" Precision="10" Scale="2" />
         </EntityType>
         <EntityType Name="Divide_ProjectInfo">
           <Key>
@@ -5251,11 +5207,47 @@
           <Property Name="Tax" Type="Decimal" Precision="10" Scale="6" />
           <Property Name="RenewDays" Type="Int32" />
         </EntityType>
+        <EntityType Name="Flw_Food_Sale_Pay">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="FlwFoodID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="BalanceIndex" Type="Int32" />
+          <Property Name="PayCount" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="Balance" Type="Decimal" Precision="18" Scale="2" />
+        </EntityType>
+        <EntityType Name="Data_FreeCoinRule">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="BalanceIndex" Type="Int32" />
+          <Property Name="OnceSigleMax" Type="Int32" />
+          <Property Name="OnceWarningValue" Type="Int32" />
+          <Property Name="DayMax" Type="Int32" />
+          <Property Name="DayWarningValue" Type="Int32" />
+        </EntityType>
+        <EntityType Name="Data_StandardCoinPrice">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="BalanceIndex" Type="Int32" />
+          <Property Name="CoinCount" Type="Int32" />
+          <Property Name="CashPrice" Type="Decimal" Precision="10" Scale="2" />
+        </EntityType>
         <EntityType Name="Data_ProjectTicket">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
           <Property Name="TicketName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="TicketType" Type="Int32" />
           <Property Name="DivideType" Type="Int32" />
@@ -5295,15 +5287,19 @@
           <Property Name="RestrictPreiodValue" Type="Int32" />
           <Property Name="RestrctCount" Type="Int32" />
         </EntityType>
-        <EntityType Name="Flw_Food_Sale_Pay">
+        <EntityType Name="Dict_BalanceType">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="false" />
-          <Property Name="FlwFoodID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
-          <Property Name="BalanceIndex" Type="Int32" />
-          <Property Name="PayCount" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="Balance" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="TypeID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TypeName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="MappingType" Type="Int32" />
+          <Property Name="State" Type="Int32" />
+          <Property Name="DecimalNumber" Type="Int32" />
+          <Property Name="AddingType" Type="Int32" />
+          <Property Name="Note" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
         </EntityType>
         </Schema>
     </edmx:ConceptualModels>
@@ -7189,19 +7185,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Dict_BalanceType">
-            <EntityTypeMapping TypeName="XCCloudDBModel.Dict_BalanceType">
-              <MappingFragment StoreEntitySet="Dict_BalanceType">
-                <ScalarProperty Name="State" ColumnName="State" />
-                <ScalarProperty Name="Note" ColumnName="Note" />
-                <ScalarProperty Name="HKType" ColumnName="HKType" />
-                <ScalarProperty Name="TypeName" ColumnName="TypeName" />
-                <ScalarProperty Name="TypeID" ColumnName="TypeID" />
-                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Data_Food_Level">
             <EntityTypeMapping TypeName="XCCloudDBModel.Data_Food_Level">
               <MappingFragment StoreEntitySet="Data_Food_Level">
@@ -7221,19 +7204,6 @@
                 <ScalarProperty Name="TimeType" ColumnName="TimeType" />
                 <ScalarProperty Name="MemberLevelID" ColumnName="MemberLevelID" />
                 <ScalarProperty Name="FoodID" ColumnName="FoodID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Data_FreeCoinRule">
-            <EntityTypeMapping TypeName="XCCloudDBModel.Data_FreeCoinRule">
-              <MappingFragment StoreEntitySet="Data_FreeCoinRule">
-                <ScalarProperty Name="DayWarningValue" ColumnName="DayWarningValue" />
-                <ScalarProperty Name="DayMax" ColumnName="DayMax" />
-                <ScalarProperty Name="OnceWarningValue" ColumnName="OnceWarningValue" />
-                <ScalarProperty Name="OnceSigleMax" ColumnName="OnceSigleMax" />
-                <ScalarProperty Name="BalanceIndex" ColumnName="BalanceIndex" />
-                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -7478,17 +7448,6 @@
                 <ScalarProperty Name="RuleID" ColumnName="RuleID" />
                 <ScalarProperty Name="RuleType" ColumnName="RuleType" />
                 <ScalarProperty Name="GroupID" ColumnName="GroupID" />
-                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Data_StandardCoinPrice">
-            <EntityTypeMapping TypeName="XCCloudDBModel.Data_StandardCoinPrice">
-              <MappingFragment StoreEntitySet="Data_StandardCoinPrice">
-                <ScalarProperty Name="CashPrice" ColumnName="CashPrice" />
-                <ScalarProperty Name="CoinCount" ColumnName="CoinCount" />
-                <ScalarProperty Name="BalanceIndex" ColumnName="BalanceIndex" />
                 <ScalarProperty Name="MerchID" ColumnName="MerchID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
@@ -7745,6 +7704,43 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="Flw_Food_Sale_Pay">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Flw_Food_Sale_Pay">
+              <MappingFragment StoreEntitySet="Flw_Food_Sale_Pay">
+                <ScalarProperty Name="Balance" ColumnName="Balance" />
+                <ScalarProperty Name="PayCount" ColumnName="PayCount" />
+                <ScalarProperty Name="BalanceIndex" ColumnName="BalanceIndex" />
+                <ScalarProperty Name="FlwFoodID" ColumnName="FlwFoodID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Data_FreeCoinRule">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Data_FreeCoinRule">
+              <MappingFragment StoreEntitySet="Data_FreeCoinRule">
+                <ScalarProperty Name="DayWarningValue" ColumnName="DayWarningValue" />
+                <ScalarProperty Name="DayMax" ColumnName="DayMax" />
+                <ScalarProperty Name="OnceWarningValue" ColumnName="OnceWarningValue" />
+                <ScalarProperty Name="OnceSigleMax" ColumnName="OnceSigleMax" />
+                <ScalarProperty Name="BalanceIndex" ColumnName="BalanceIndex" />
+                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
+                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Data_StandardCoinPrice">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Data_StandardCoinPrice">
+              <MappingFragment StoreEntitySet="Data_StandardCoinPrice">
+                <ScalarProperty Name="CashPrice" ColumnName="CashPrice" />
+                <ScalarProperty Name="CoinCount" ColumnName="CoinCount" />
+                <ScalarProperty Name="BalanceIndex" ColumnName="BalanceIndex" />
+                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
+                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Data_ProjectTicket">
             <EntityTypeMapping TypeName="XCCloudDBModel.Data_ProjectTicket">
               <MappingFragment StoreEntitySet="Data_ProjectTicket">
@@ -7786,17 +7782,23 @@
                 <ScalarProperty Name="DivideType" ColumnName="DivideType" />
                 <ScalarProperty Name="TicketType" ColumnName="TicketType" />
                 <ScalarProperty Name="TicketName" ColumnName="TicketName" />
+                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
+                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Flw_Food_Sale_Pay">
-            <EntityTypeMapping TypeName="XCCloudDBModel.Flw_Food_Sale_Pay">
-              <MappingFragment StoreEntitySet="Flw_Food_Sale_Pay">
-                <ScalarProperty Name="Balance" ColumnName="Balance" />
-                <ScalarProperty Name="PayCount" ColumnName="PayCount" />
-                <ScalarProperty Name="BalanceIndex" ColumnName="BalanceIndex" />
-                <ScalarProperty Name="FlwFoodID" ColumnName="FlwFoodID" />
+          <EntitySetMapping Name="Dict_BalanceType">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Dict_BalanceType">
+              <MappingFragment StoreEntitySet="Dict_BalanceType">
+                <ScalarProperty Name="Note" ColumnName="Note" />
+                <ScalarProperty Name="AddingType" ColumnName="AddingType" />
+                <ScalarProperty Name="DecimalNumber" ColumnName="DecimalNumber" />
+                <ScalarProperty Name="State" ColumnName="State" />
+                <ScalarProperty Name="MappingType" ColumnName="MappingType" />
+                <ScalarProperty Name="TypeName" ColumnName="TypeName" />
+                <ScalarProperty Name="TypeID" ColumnName="TypeID" />
+                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>

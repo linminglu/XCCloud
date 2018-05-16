@@ -372,9 +372,6 @@
                                   <div class="layui-input-inline" style="width: 60px">
                                       <input type="text" class="layui-input" id="expireDays">
                                   </div>
-                                  <div class="layui-input-inline" style="width: 60px">
-                                      <button type="button" class="layui-btn layui-btn-normal" id="addFreeRule">添加</button>
-                                  </div>
                               </div>
                           </div>
 
@@ -387,14 +384,78 @@
                               </button>
                           </div>
                       </div>
-                      <!--<div style="text-align:right;">-->
-
-                      <!--</div>-->
-                      <!--<table class="layui-hide" id="sendCoinTable" lay-filter="sendCoinTable"></table>-->
+                  </div>
+              </div>
+              <div class="layui-colla-item">
+                  <h2 class="layui-colla-title">会员余额互转规则</h2>
+                  <div class="layui-colla-content">
+                      <div class="layui-form-item">
+                          <div class="layui-inline">
+                              <label class="layui-form-label">原类型</label>
+                              <div class="layui-input-inline">
+                                  <select name="" id=""></select>
+                              </div>
+                          </div>
+                          <div class="layui-inline">
+                              <label class="layui-form-label">原数量</label>
+                              <div class="layui-input-inline">
+                                  <input type="text" class="layui-input">
+                              </div>
+                          </div>
+                          <div class="layui-inline">
+                              <label class="layui-form-label">兑换类型</label>
+                              <div class="layui-input-inline">
+                                  <select name="" id=""></select>
+                              </div>
+                          </div>
+                          <div class="layui-inline">
+                              <label class="layui-form-label">兑换数量</label>
+                              <div class="layui-input-inline">
+                                  <input type="text" class="layui-input">
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              <div class="layui-colla-item">
+                  <h2 class="layui-colla-title">其他规则</h2>
+                  <div class="layui-colla-content">
+                      <div class="layui-form-item">
+                          <div class="layui-inline">
+                              <label class="layui-form-label">允许退卡</label>
+                              <div class="layui-input-inline">
+                                  <input type="text">
+                              </div>
+                          </div>
+                          <div class="layui-inline">
+                              <label class="layui-form-label">允许退款</label>
+                              <div class="layui-input-inline"><input type="text"></div>
+                          </div>
+                          <div class="layui-inline"><label for="" class="layui-form-label">投币后拔卡锁机头</label>
+                              <div class="layui-input-inline"><input type="text"></div>
+                          </div>
+                          <div class="layui-inline"><label for="" class="layui-form-label">允许下分</label>
+                              <div class="layui-input-inline"><input type="text"></div>
+                          </div>
+                          <div class="layui-inline"><label for="" class="layui-form-label">允许充值</label>
+                              <div class="layui-input-inline"><input type="text"></div>
+                          </div>
+                          <div class="layui-inline"><label for="" class="layui-form-label">允许碎票</label>
+                              <div class="layui-input-inline"><input type="text"></div>
+                          </div>
+                          <div class="layui-inline"><label for="" class="layui-form-label">允许存币</label>
+                              <div class="layui-input-inline"><input type="text"></div>
+                          </div>
+                          <div class="layui-inline"><label for="" class="layui-form-label">允许提币</label>
+                              <div class="layui-input-inline"><input type="text"></div>
+                          </div>
+                          <div class="layui-inline"><label for="" class="layui-form-label">允许余额过户给他人</label>
+                              <div class="layui-input-inline"><input type="text"></div>
+                          </div>
+                      </div>
                   </div>
               </div>
           </div>
-
           <div style="text-align: right;padding-right: 80px;margin: 15px 0">
               <button type="button" class="layui-btn layui-btn-normal cancleBtn"><i class="layui-icon">&#xe603;</i>取消</button>
               <button type="reset" class="layui-btn layui-btn-danger" id="resetBtn"><i class="layui-icon">&#x1002;</i>重置</button>
@@ -460,7 +521,7 @@
     layui.use(['form','layer','table','element','upload'],()=> {
         let layer=layui.layer,
             table=layui.table,
-            form=layui.form,
+             form=layui.form,
             element=layui.element;
           let  upload=layui.upload;
 
@@ -483,7 +544,7 @@
             xc.setSelect('生日送币方式','birthdayFree');
             xc.setSelect('送币频率','freeRate');
             xc.setSelect('送币方式','freeType');
-            xc.getBalanceTypeDic(token,layer,form,'freeBalanceType');
+            xc.getBalanceTypeDic('',token,layer,form,'freeBalanceType');
             layer.open({
                 type:1,
                 area:'1030px',
@@ -922,7 +983,7 @@
                 , page: {page: true, limits: [5,10, 15, 20]}
                 , limit: 5
                 ,done:function () {
-                    xc.getBalanceTypeDic(token,layer,form,'freeBalanceType');
+                    xc.getBalanceTypeDic('',token,layer,form,'freeBalanceType');
                     $('.freeLast').find('input').val('')
                 }
             });

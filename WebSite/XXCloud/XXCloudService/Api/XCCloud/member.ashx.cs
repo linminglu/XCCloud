@@ -710,38 +710,11 @@ namespace XCCloudService.Api.XCCloud
                 string errMsg = string.Empty;
                 string memberLevelID = dicParas.ContainsKey("memberLevelID") ? (dicParas["memberLevelID"] + "") : string.Empty;
                 string memberLevelName = dicParas.ContainsKey("memberLevelName") ? (dicParas["memberLevelName"] + "") : string.Empty;
-                string coverUrl = dicParas.ContainsKey("coverUrl") ? (dicParas["coverUrl"] + "") : string.Empty;
-                string openFee = dicParas.ContainsKey("openFee") ? (dicParas["openFee"] + "") : string.Empty;
-                string deposit = dicParas.ContainsKey("deposit") ? (dicParas["deposit"] + "") : string.Empty;
-                string clearPointDays = dicParas.ContainsKey("clearPointDays") ? (dicParas["clearPointDays"] + "") : string.Empty;
-                string priceOff = dicParas.ContainsKey("priceOff") ? (dicParas["priceOff"] + "") : string.Empty;
-                string validday = dicParas.ContainsKey("validday") ? (dicParas["validday"] + "") : string.Empty;
-                string needAuthor = dicParas.ContainsKey("needAuthor") ? (dicParas["needAuthor"] + "") : string.Empty;
-                string mustPhone = dicParas.ContainsKey("mustPhone") ? (dicParas["mustPhone"] + "") : string.Empty;
-                string mustIDCard = dicParas.ContainsKey("mustIDCard") ? (dicParas["mustIDCard"] + "") : string.Empty;
-                string useReadID = dicParas.ContainsKey("useReadID") ? (dicParas["useReadID"] + "") : string.Empty;
-                string readFace = dicParas.ContainsKey("readFace") ? (dicParas["readFace"] + "") : string.Empty;
-                string readPlam = dicParas.ContainsKey("readPlam") ? (dicParas["readPlam"] + "") : string.Empty;
-                string changeFee = dicParas.ContainsKey("changeFee") ? (dicParas["changeFee"] + "") : string.Empty;
-                string continueFee = dicParas.ContainsKey("continueFee") ? (dicParas["continueFee"] + "") : string.Empty;
-                string continueUsePoint = dicParas.ContainsKey("continueUsePoint") ? (dicParas["continueUsePoint"] + "") : string.Empty;
-                string consumeTotle = dicParas.ContainsKey("consumeTotle") ? (dicParas["consumeTotle"] + "") : string.Empty;
-                string nonActiveDays = dicParas.ContainsKey("nonActiveDays") ? (dicParas["nonActiveDays"] + "") : string.Empty;
-                string updateUsePoint = dicParas.ContainsKey("updateUsePoint") ? (dicParas["updateUsePoint"] + "") : string.Empty;
-                string freeRate = dicParas.ContainsKey("freeRate") ? (dicParas["freeRate"] + "") : string.Empty;
-                string freeCoin = dicParas.ContainsKey("freeCoin") ? (dicParas["freeCoin"] + "") : string.Empty;
-                string freeType = dicParas.ContainsKey("freeType") ? (dicParas["freeType"] + "") : string.Empty;
-                string freeNeedWin = dicParas.ContainsKey("freeNeedWin") ? (dicParas["freeNeedWin"] + "") : string.Empty;
-                string birthdayFree = dicParas.ContainsKey("birthdayFree") ? (dicParas["birthdayFree"] + "") : string.Empty;
-                string birthdayFreeCoin = dicParas.ContainsKey("birthdayFreeCoin") ? (dicParas["birthdayFreeCoin"] + "") : string.Empty;
-                string minCoin = dicParas.ContainsKey("minCoin") ? (dicParas["minCoin"] + "") : string.Empty;
-                string maxCoin = dicParas.ContainsKey("maxCoin") ? (dicParas["maxCoin"] + "") : string.Empty;
-                string allowExitCard = dicParas.ContainsKey("allowExitCard") ? (dicParas["allowExitCard"] + "") : string.Empty;
-                string allowExitMoney = dicParas.ContainsKey("allowExitMoney") ? (dicParas["allowExitMoney"] + "") : string.Empty;
-                string allowExitCoinToCard = dicParas.ContainsKey("allowExitCoinToCard") ? (dicParas["allowExitCoinToCard"] + "") : string.Empty;
-                string lockHead = dicParas.ContainsKey("lockHead") ? (dicParas["lockHead"] + "") : string.Empty;
+                string coverUrl = dicParas.ContainsKey("coverUrl") ? (dicParas["coverUrl"] + "") : string.Empty;                
                 object[] memberLevelFoods = dicParas.ContainsKey("memberLevelFoods") ? (object[])dicParas["memberLevelFoods"] : null;
                 object[] memberLevelFrees = dicParas.ContainsKey("memberLevelFrees") ? (object[])dicParas["memberLevelFrees"] : null;
+                object[] memberLevelBalanceCharge = dicParas.ContainsKey("memberLevelBalanceCharge") ? (object[])dicParas["memberLevelBalanceCharge"] : null;
+                object[] memberLevelBalance = dicParas.ContainsKey("memberLevelBalance") ? (object[])dicParas["memberLevelBalance"] : null;
 
                 if (string.IsNullOrEmpty(memberLevelName))
                 {
@@ -772,39 +745,7 @@ namespace XCCloudService.Api.XCCloud
                         }
 
                         var data_MemberLevel = data_MemberLevelService.GetModels(p => p.MemberLevelID == iMemberLevelID).FirstOrDefault() ?? new Data_MemberLevel();
-                        data_MemberLevel.MemberLevelID = iMemberLevelID;
-                        data_MemberLevel.MemberLevelName = memberLevelName;
-                        data_MemberLevel.CoverURL = coverUrl;
-                        data_MemberLevel.OpenFee = ObjectExt.Todecimal(openFee);
-                        data_MemberLevel.Deposit = ObjectExt.Todecimal(deposit);
-                        data_MemberLevel.ClearPointDays = ObjectExt.Toint(clearPointDays);
-                        //data_MemberLevel.PriceOFF = ObjectExt.Todecimal(priceOff);
-                        data_MemberLevel.Validday = ObjectExt.Toint(validday);
-                        data_MemberLevel.NeedAuthor = ObjectExt.Toint(needAuthor);
-                        data_MemberLevel.MustPhone = ObjectExt.Toint(mustPhone);
-                        data_MemberLevel.MustIDCard = ObjectExt.Toint(mustIDCard);
-                        data_MemberLevel.UseReadID = ObjectExt.Toint(useReadID);
-                        data_MemberLevel.ReadFace = ObjectExt.Toint(readFace);
-                        data_MemberLevel.ReadPlam = ObjectExt.Toint(readPlam);
-                        data_MemberLevel.ChangeFee = ObjectExt.Todecimal(changeFee);
-                        data_MemberLevel.ContinueFee = ObjectExt.Todecimal(continueFee);
-                        data_MemberLevel.ContinueUsePoint = ObjectExt.Toint(continueUsePoint);
-                        data_MemberLevel.ConsumeTotle = ObjectExt.Todecimal(consumeTotle);
-                        data_MemberLevel.NonActiveDays = ObjectExt.Toint(nonActiveDays);
-                        data_MemberLevel.UpdateUsePoint = ObjectExt.Toint(updateUsePoint);
-                        data_MemberLevel.FreeRate = ObjectExt.Toint(freeRate);
-                        data_MemberLevel.FreeCoin = ObjectExt.Toint(freeCoin);
-                        data_MemberLevel.FreeType = ObjectExt.Toint(freeType);
-                        data_MemberLevel.FreeNeedWin = ObjectExt.Toint(freeNeedWin);
-                        data_MemberLevel.BirthdayFree = ObjectExt.Toint(birthdayFree);
-                        //data_MemberLevel.BirthdayFreeCoin = ObjectExt.Toint(birthdayFreeCoin);
-                        data_MemberLevel.MinCoin = ObjectExt.Toint(minCoin);
-                        data_MemberLevel.MaxCoin = ObjectExt.Toint(maxCoin);
-                        data_MemberLevel.AllowExitCard = ObjectExt.Toint(allowExitCard);
-                        data_MemberLevel.AllowExitMoney = ObjectExt.Toint(allowExitMoney);
-                        data_MemberLevel.AllowExitCoinToCard = ObjectExt.Toint(allowExitCoinToCard);
-                        data_MemberLevel.LockHead = ObjectExt.Toint(lockHead);
-
+                        Utils.GetModel(dicParas, ref data_MemberLevel);
                         if (data_MemberLevel.MemberLevelID == 0)
                         {
                             //新增
@@ -916,6 +857,108 @@ namespace XCCloudService.Api.XCCloud
                             }
                         }
 
+                        //保存会员余额兑换规则
+                        if (memberLevelBalanceCharge != null && memberLevelBalanceCharge.Count() >= 0)
+                        {
+                            //先删除，后添加
+                            foreach (var model in Data_MemberLevel_BalanceChargeService.I.GetModels(p => p.MemberLevelID == iMemberLevelID))
+                            {
+                                Data_MemberLevel_BalanceChargeService.I.DeleteModel(model);
+                            }
+
+                            var chargeRuleList = new List<Data_MemberLevel_BalanceCharge>();
+                            foreach (IDictionary<string, object> el in memberLevelBalanceCharge)
+                            {
+                                if (el != null)
+                                {
+                                    var dicPara = new Dictionary<string, object>(el, StringComparer.OrdinalIgnoreCase);
+                                    var sourceBalanceIndex = dicPara.Get("sourceBalanceIndex").Toint();
+                                    var sourceCount = dicPara.Get("sourceCount").Toint();
+                                    var targetBalanceIndex = dicPara.Get("targetBalanceIndex").Toint();
+                                    var targetCount = dicPara.Get("targetCount").Toint();
+
+                                    var data_MemberLevel_BalanceCharge = new Data_MemberLevel_BalanceCharge();
+                                    data_MemberLevel_BalanceCharge.MemberLevelID = iMemberLevelID;
+                                    data_MemberLevel_BalanceCharge.MerchID = merchId;
+                                    data_MemberLevel_BalanceCharge.SourceBalanceIndex = sourceBalanceIndex;
+                                    data_MemberLevel_BalanceCharge.SourceCount = sourceCount;
+                                    data_MemberLevel_BalanceCharge.TargetBalanceIndex = targetBalanceIndex;
+                                    data_MemberLevel_BalanceCharge.TargetCount = targetCount;
+                                    chargeRuleList.Add(data_MemberLevel_BalanceCharge);
+                                    Data_MemberLevel_BalanceChargeService.I.AddModel(data_MemberLevel_BalanceCharge);                                    
+                                }
+                                else
+                                {
+                                    errMsg = "提交数据包含空对象";
+                                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                }
+                            }
+
+                            //同一类型的兑换规则必须唯一 
+                            if (chargeRuleList.GroupBy(g => new { g.SourceBalanceIndex, g.TargetBalanceIndex }).Select(o => new { Count = o.Count() }).Any(p => p.Count > 1))
+                            {
+                                errMsg = "同一类型的兑换规则必须唯一";
+                                return false;
+                            }
+
+                            if (!Data_MemberLevel_BalanceChargeService.I.SaveChanges())
+                            {
+                                errMsg = "保存会员余额兑换规则信息失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+                        }
+
+                        //保存商品兑换折扣规则
+                        if (memberLevelBalance != null && memberLevelBalance.Count() >= 0)
+                        {
+                            //先删除，后添加
+                            foreach (var model in Data_MemberLevel_BalanceService.I.GetModels(p => p.MemberLevelID == iMemberLevelID))
+                            {
+                                Data_MemberLevel_BalanceService.I.DeleteModel(model);
+                            }
+
+                            var memberLevelBalanceList = new List<Data_MemberLevel_Balance>();
+                            foreach (IDictionary<string, object> el in memberLevelBalance)
+                            {
+                                if (el != null)
+                                {
+                                    var dicPara = new Dictionary<string, object>(el, StringComparer.OrdinalIgnoreCase);
+                                    var balanceIndex = dicPara.Get("balanceIndex").Toint();
+                                    var chargeOff = dicPara.Get("chargeOff").Toint();
+                                    var maxSaveCount = dicPara.Get("maxSaveCount").Toint();
+                                    var maxUplife = dicPara.Get("maxUplife").Toint();
+
+                                    var data_MemberLevel_Balance = new Data_MemberLevel_Balance();
+                                    data_MemberLevel_Balance.MemberLevelID = iMemberLevelID;
+                                    data_MemberLevel_Balance.MerchID = merchId;
+                                    data_MemberLevel_Balance.BalanceIndex = balanceIndex;
+                                    data_MemberLevel_Balance.ChargeOFF = chargeOff;
+                                    data_MemberLevel_Balance.MaxSaveCount = maxSaveCount;
+                                    data_MemberLevel_Balance.MaxUplife = maxUplife;
+                                    memberLevelBalanceList.Add(data_MemberLevel_Balance);
+                                    Data_MemberLevel_BalanceService.I.AddModel(data_MemberLevel_Balance);
+                                }
+                                else
+                                {
+                                    errMsg = "提交数据包含空对象";
+                                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                }
+                            }
+
+                            //同一类型的兑换折扣规则必须唯一 
+                            if (memberLevelBalanceList.GroupBy(g => g.BalanceIndex).Select(o => new { Count = o.Count() }).Any(p => p.Count > 1))
+                            {
+                                errMsg = "同一类型的兑换折扣规则必须唯一";
+                                return false;
+                            }
+
+                            if (!Data_MemberLevel_BalanceService.I.SaveChanges())
+                            {
+                                errMsg = "保存商品兑换折扣规则信息失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+                        }
+
                         ts.Complete();
                     }
                     catch (DbEntityValidationException e)
@@ -1006,6 +1049,11 @@ namespace XCCloudService.Api.XCCloud
             }
         }
 
+        /// <summary>
+        /// 获取预赠币规则
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
         [Authorize(Roles = "MerchUser")]
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object GetMemberLevelFreeList(Dictionary<string, object> dicParas)
@@ -1032,6 +1080,91 @@ namespace XCCloudService.Api.XCCloud
             }
         }
 
+        /// <summary>
+        /// 获取兑换币规则
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
+        [Authorize(Roles = "MerchUser")]
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object GetMemberLevelBalanceCharge(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                string errMsg = string.Empty;
+                string memberLevelID = dicParas.ContainsKey("memberLevelID") ? dicParas["memberLevelID"].ToString() : string.Empty;
+
+                if (string.IsNullOrEmpty(memberLevelID))
+                {
+                    errMsg = "会员级别ID不能为空";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
+                int iMemberLevelID = Convert.ToInt32(memberLevelID);
+                var linq = from a in Data_MemberLevel_BalanceChargeService.N.GetModels(p => p.MemberLevelID == iMemberLevelID)
+                           join b in Dict_BalanceTypeService.N.GetModels(p => p.State == 1) on a.SourceBalanceIndex equals b.ID into b1
+                           from b in b1.DefaultIfEmpty()
+                           join c in Dict_BalanceTypeService.N.GetModels(p => p.State == 1) on a.TargetBalanceIndex equals c.ID into c1
+                           from c in c1.DefaultIfEmpty()
+                           select new
+                           {
+                               SourceBalanceIndex = a.SourceBalanceIndex,
+                               SourceBalanceStr = b != null ? b.TypeName : string.Empty,
+                               SourceCount = a.SourceCount,
+                               TargetBalanceIndex = a.TargetBalanceIndex,
+                               TargetBalanceStr = c != null ? c.TypeName : string.Empty,
+                               TargetCount = a.TargetCount
+                           };
+
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, linq);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        /// <summary>
+        /// 获取兑换折扣规则
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
+        [Authorize(Roles = "MerchUser")]
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object GetMemberLevelBalance(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                string errMsg = string.Empty;
+                string memberLevelID = dicParas.ContainsKey("memberLevelID") ? dicParas["memberLevelID"].ToString() : string.Empty;
+
+                if (string.IsNullOrEmpty(memberLevelID))
+                {
+                    errMsg = "会员级别ID不能为空";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
+                int iMemberLevelID = Convert.ToInt32(memberLevelID);
+                var linq = from a in Data_MemberLevel_BalanceService.N.GetModels(p => p.MemberLevelID == iMemberLevelID)
+                           join b in Dict_BalanceTypeService.N.GetModels(p => p.State == 1) on a.BalanceIndex equals b.ID into b1
+                           from b in b1.DefaultIfEmpty()                           
+                           select new
+                           {
+                               BalanceIndex = a.BalanceIndex,
+                               BalanceStr = b != null ? b.TypeName : string.Empty,
+                               ChargeOFF = a.ChargeOFF,
+                               MaxSaveCount = a.MaxSaveCount,
+                               MaxUplife = a.MaxUplife
+                           };
+
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, linq);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
         [Authorize(Roles = "MerchUser")]
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object UploadCardCover(Dictionary<string, object> dicParas)
@@ -1042,7 +1175,7 @@ namespace XCCloudService.Api.XCCloud
                 Dictionary<string, string> imageInfo = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
                 List<string> imageUrls = null;
-                if (!Utils.UploadImageFile("/XCCloud/GameInfo/Photo/", out imageUrls, out errMsg))
+                if (!Utils.UploadImageFile("/XCCloud/MemberLevel/", out imageUrls, out errMsg))
                 {
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }

@@ -236,10 +236,23 @@ namespace XXCloudService.Api.XCCloud
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
-                IData_ParametersService data_ParameterService = BLLContainer.Resolve<IData_ParametersService>();
-                var data_Parameter = data_ParameterService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)).ToList();
+                var storeTag = Base_StoreInfoService.I.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)).Select(o => o.StoreTag).FirstOrDefault() ?? 0;
+                var paramId = Dict_SystemService.I.GetModels(p => p.DictKey.Equals("运营参数设定", StringComparison.OrdinalIgnoreCase) && p.PID == 0).FirstOrDefault().ID;
+                var data_Parameter = from a in Dict_SystemService.N.GetModels(p => p.PID == paramId && p.MerchID == (storeTag + ""))
+                                     join b in Data_ParametersService.N.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)) on a.DictKey equals b.System into b1
+                                     from b in b1.DefaultIfEmpty()
+                                     select new 
+                                     {
+                                         ID = b != null ? b.ID : 0,
+                                         StoreID = b != null ? b.StoreID : string.Empty,
+                                         System = a.DictKey,
+                                         ParameterName = a.Comment,
+                                         IsAllow = b != null ? b.IsAllow : a.Enabled,
+                                         ParameterValue = b != null ? b.ParameterValue : a.DictValue,
+                                         Note = b != null ? b.Note : string.Empty,
+                                     };
                
-                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, data_Parameter);
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, data_Parameter);
             }
             catch (Exception e)
             {
@@ -271,33 +284,43 @@ namespace XXCloudService.Api.XCCloud
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
-                IData_ParametersService data_ParameterService = BLLContainer.Resolve<IData_ParametersService>();
-                var data_Parameter = data_ParameterService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase) && p.System.Equals(system, StringComparison.OrdinalIgnoreCase)).ToList();
-                
+                var data_Parameter = Data_ParametersService.I.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase) && p.System.Equals(system, StringComparison.OrdinalIgnoreCase)).ToList();                
                 int count = data_Parameter.Count;
-                if (count == 0)
-                {
-                    errMsg = "参数" + system + "数据库不存在";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
-
                 if (count > 1)
                 {
                     errMsg = "参数" + system + "数据库存在多个";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
-                var data_ParameterModel = data_Parameter.FirstOrDefault();
-                data_ParameterModel.IsAllow = !string.IsNullOrEmpty(isAllow) ? Convert.ToInt32(isAllow) : (int?)null;
-                data_ParameterModel.ParameterValue = pValue;
-                data_ParameterModel.Note = note;
-                
-                if (!data_ParameterService.Update(data_ParameterModel))
+                if (count == 0)
                 {
-                    errMsg = "设置参数失败";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    //errMsg = "参数" + system + "数据库不存在";
+                    //return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    var data_ParameterModel = new Data_Parameters();
+                    data_ParameterModel.StoreID = storeId;
+                    data_ParameterModel.System = system;
+                    data_ParameterModel.IsAllow = !string.IsNullOrEmpty(isAllow) ? Convert.ToInt32(isAllow) : (int?)null;
+                    data_ParameterModel.ParameterValue = pValue;
+                    data_ParameterModel.Note = note;
+                    if (!Data_ParametersService.I.Add(data_ParameterModel))
+                    {
+                        errMsg = "设置参数失败";
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
                 }
-
+                else
+                {
+                    var data_ParameterModel = data_Parameter.FirstOrDefault();
+                    data_ParameterModel.IsAllow = !string.IsNullOrEmpty(isAllow) ? Convert.ToInt32(isAllow) : (int?)null;
+                    data_ParameterModel.ParameterValue = pValue;
+                    data_ParameterModel.Note = note;
+                    if (!Data_ParametersService.I.Update(data_ParameterModel))
+                    {
+                        errMsg = "设置参数失败";
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
+                }
+                                
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
             }
             catch (Exception e)
@@ -529,32 +552,26 @@ namespace XXCloudService.Api.XCCloud
             {
                 return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
             }
-        }
+        }                
 
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
-        public object GetChargeRules(Dictionary<string, object> dicParas)
+        public object GetStandardCoinPrice(Dictionary<string, object> dicParas)
         {
             try
             {
                 string errMsg = string.Empty;
                 string storeId = dicParas.ContainsKey("storeId") ? dicParas["storeId"].ToString() : string.Empty;
 
-                IData_BalanceChargeRuleService data_BalanceChargeRuleService = BLLContainer.Resolve<IData_BalanceChargeRuleService>(resolveNew: true);
-                IDict_BalanceTypeService dict_BalanceTypeService = BLLContainer.Resolve<IDict_BalanceTypeService>(resolveNew: true);
-                var linq = from a in data_BalanceChargeRuleService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase))
-                           join b in dict_BalanceTypeService.GetModels(p=>p.State == 1) on a.SourceType equals b.ID into b1
+                var linq = from a in Data_StandardCoinPriceService.N.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase))
+                           join b in Dict_BalanceTypeService.N.GetModels(p => p.State == 1) on a.BalanceIndex equals b.ID into b1
                            from b in b1.DefaultIfEmpty()
-                           join c in dict_BalanceTypeService.GetModels(p => p.State == 1) on a.ChargeType equals c.ID into c1
-                           from c in c1.DefaultIfEmpty()
-                           select new 
+                           select new
                            {
-                               SourceType = a.SourceType,
-                               SourceTypeStr = b != null ? b.TypeName : string.Empty,
-                               SourceCount = a.SourceCount,
-                               ChargeType = a.ChargeType,
-                               ChargeTypeStr = c != null ? c.TypeName : string.Empty,
-                               ChargeCount = a.ChargeCount,
-                               AlertValue = a.AlertValue
+                               ID = a.ID,
+                               BalanceIndex = a.BalanceIndex,
+                               BalanceIndexStr = b != null ? b.TypeName : string.Empty,
+                               CoinCount = a.CoinCount,
+                               CashPrice = a.CashPrice
                            };
 
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, linq);
@@ -566,104 +583,58 @@ namespace XXCloudService.Api.XCCloud
         }
 
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
-        public object AddChargeRules(Dictionary<string, object> dicParas)
+        public object SaveStandardCoinPrice(Dictionary<string, object> dicParas)
         {
             try
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
+                string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;                
 
                 string errMsg = string.Empty;
-                string storeId = dicParas.ContainsKey("storeId") ? dicParas["storeId"].ToString() : string.Empty;
-                object[] chargeRules = dicParas.ContainsKey("chargeRules") ? (object[])dicParas["chargeRules"] : null;
-
-                #region 验证参数
-                if (string.IsNullOrEmpty(storeId))
-                {
-                    errMsg = "门店ID参数不能为空";
+                if (!dicParas.Get("storeId").Nonempty("门店ID", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }                
-                #endregion                              
 
+                var storeId = dicParas.Get("storeId");
+                var standardCoinPrice = dicParas.GetArray("standardCoinPrice");
+                
                 //开启EF事务
                 using (TransactionScope ts = new TransactionScope())
                 {
                     try
                     {
-                        if (chargeRules != null && chargeRules.Count() >= 0)
+                        if (standardCoinPrice != null && standardCoinPrice.Count() >= 0)
                         {
                             //先删除，后添加
-                            IData_BalanceChargeRuleService data_BalanceChargeRuleService = BLLContainer.Resolve<IData_BalanceChargeRuleService>();                            
-                            foreach (var model in data_BalanceChargeRuleService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)))
+                            foreach (var model in Data_StandardCoinPriceService.I.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)))
                             {
-                                data_BalanceChargeRuleService.DeleteModel(model);
+                                Data_StandardCoinPriceService.I.DeleteModel(model);
                             }
 
-                            var chargeRuleList = new List<Data_BalanceChargeRule>();
-                            foreach (IDictionary<string, object> el in chargeRules)
+                            var data_StandardCoinPriceList = new List<Data_StandardCoinPrice>();
+                            foreach (IDictionary<string, object> el in standardCoinPrice)
                             {
                                 if (el != null)
                                 {
                                     var dicPara = new Dictionary<string, object>(el, StringComparer.OrdinalIgnoreCase);
-                                    string sourceType = dicPara.ContainsKey("sourceType") ? (dicPara["sourceType"] + "") : string.Empty;
-                                    string sourceCount = dicPara.ContainsKey("sourceCount") ? (dicPara["sourceCount"] + "") : string.Empty;
-                                    string chargeType = dicPara.ContainsKey("chargeType") ? (dicPara["chargeType"] + "") : string.Empty;
-                                    string chargeCount = dicPara.ContainsKey("chargeCount") ? (dicPara["chargeCount"] + "") : string.Empty;
-                                    string alertValue = dicPara.ContainsKey("alertValue") ? (dicPara["alertValue"] + "") : string.Empty;
+                                    if (!dicPara.Get("balanceIndex").Validintnozero("余额类别ID", out errMsg))
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    if (!dicPara.Get("coinCount").Validintnozero("数量", out errMsg))
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    if (!dicPara.Get("cashPrice").Validdecimalnozero("现金价值", out errMsg))
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-                                    #region 验证参数
-                                    if (string.IsNullOrEmpty(sourceType))
-                                    {
-                                        errMsg = "原类型不能为空";
-                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                                    }
-                                    if (string.IsNullOrEmpty(sourceCount))
-                                    {
-                                        errMsg = "原数量不能为空";
-                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                                    }
-                                    if (!Utils.IsDecimal(sourceCount) || Convert.ToDecimal(sourceCount) < 0)
-                                    {
-                                        errMsg = "原数量格式不正确，须为非负数";
-                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                                    }
-                                    if (string.IsNullOrEmpty(chargeType))
-                                    {
-                                        errMsg = "兑换类型不能为空";
-                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                                    }
-                                    if (string.IsNullOrEmpty(chargeCount))
-                                    {
-                                        errMsg = "兑换数量不能为空";
-                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                                    }
-                                    if (!Utils.IsDecimal(chargeCount) || Convert.ToDecimal(chargeCount) < 0)
-                                    {
-                                        errMsg = "兑换数量格式不正确，须为非负数";
-                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                                    }
-                                    if (string.IsNullOrEmpty(alertValue))
-                                    {
-                                        errMsg = "警戒值不能为空";
-                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                                    }
-                                    if (!Utils.IsDecimal(alertValue) || Convert.ToDecimal(alertValue) < 0)
-                                    {
-                                        errMsg = "警戒值格式不正确，须为非负数";
-                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                                    }
-                                    #endregion
+                                    var balanceIndex = dicPara.Get("balanceIndex").Toint();
+                                    var coinCount = dicPara.Get("coinCount").Toint();
+                                    var cashPrice = dicPara.Get("cashPrice").Todecimal();
 
-                                    var data_BalanceChargeRule = new Data_BalanceChargeRule();
-                                    data_BalanceChargeRule.MerchID = merchId;
-                                    data_BalanceChargeRule.StoreID = storeId;
-                                    data_BalanceChargeRule.SourceType = ObjectExt.Toint(sourceType);
-                                    data_BalanceChargeRule.SourceCount = ObjectExt.Todecimal(sourceCount);
-                                    data_BalanceChargeRule.ChargeType = ObjectExt.Toint(chargeType);
-                                    data_BalanceChargeRule.ChargeCount = ObjectExt.Todecimal(chargeCount);
-                                    data_BalanceChargeRule.AlertValue = ObjectExt.Todecimal(alertValue);
-                                    chargeRuleList.Add(data_BalanceChargeRule);
-                                    data_BalanceChargeRuleService.AddModel(data_BalanceChargeRule);
+                                    var data_StandardCoinPrice = new Data_StandardCoinPrice();
+                                    data_StandardCoinPrice.MerchID = merchId;
+                                    data_StandardCoinPrice.StoreID = storeId;
+                                    data_StandardCoinPrice.BalanceIndex = balanceIndex;
+                                    data_StandardCoinPrice.CoinCount = coinCount;
+                                    data_StandardCoinPrice.CashPrice = cashPrice;
+                                    data_StandardCoinPriceList.Add(data_StandardCoinPrice);
+                                    Data_StandardCoinPriceService.I.AddModel(data_StandardCoinPrice);
                                 }
                                 else
                                 {
@@ -672,16 +643,144 @@ namespace XXCloudService.Api.XCCloud
                                 }
                             }
 
-                            //同一类型的兑换规则必须唯一 
-                            if (chargeRuleList.GroupBy(g => new { g.SourceType, g.SourceCount, g.ChargeType }).Select(o => new { Count = o.Count() }).Any(p => p.Count > 1))
+                            if (data_StandardCoinPriceList.GroupBy(g => g.BalanceIndex).Select(o => new { Count = o.Count() }).Any(p => p.Count > 1))
                             {
-                                errMsg = "同一类型的兑换规则必须唯一";
+                                errMsg = "同一余额类别的正价币规则必须唯一";
                                 return false;
                             }
 
-                            if (!data_BalanceChargeRuleService.SaveChanges())
+                            if (!Data_StandardCoinPriceService.I.SaveChanges())
                             {
-                                errMsg = "保存兑换规则信息失败";
+                                errMsg = "保存正价币规则信息失败";
+                                return false;
+                            }
+                        }
+
+                        ts.Complete();
+                    }
+                    catch (Exception ex)
+                    {
+                        errMsg = ex.Message;
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
+                }
+
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object GetFreeCoinRule(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                string errMsg = string.Empty;
+                string storeId = dicParas.ContainsKey("storeId") ? dicParas["storeId"].ToString() : string.Empty;
+
+                var linq = from a in Data_FreeCoinRuleService.N.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase))
+                           join b in Dict_BalanceTypeService.N.GetModels(p => p.State == 1) on a.BalanceIndex equals b.ID into b1
+                           from b in b1.DefaultIfEmpty()
+                           select new
+                           {
+                               ID = a.ID,
+                               BalanceIndex = a.BalanceIndex,
+                               BalanceIndexStr = b != null ? b.TypeName : string.Empty,
+                               OnceSigleMax = a.OnceSigleMax,
+                               OnceWarningValue = a.OnceWarningValue,
+                               DayMax = a.DayMax,
+                               DayWaringValue = a.DayWarningValue
+                           };
+
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, linq);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object SaveFreeCoinRule(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
+
+                string errMsg = string.Empty;
+                if (!dicParas.Get("storeId").Nonempty("门店ID", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                var storeId = dicParas.Get("storeId");
+                var freeCoinRule = dicParas.GetArray("freeCoinRule");
+
+                //开启EF事务
+                using (TransactionScope ts = new TransactionScope())
+                {
+                    try
+                    {
+                        if (freeCoinRule != null && freeCoinRule.Count() >= 0)
+                        {
+                            //先删除，后添加
+                            foreach (var model in Data_FreeCoinRuleService.I.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)))
+                            {
+                                Data_FreeCoinRuleService.I.DeleteModel(model);
+                            }
+
+                            var data_FreeCoinRuleList = new List<Data_FreeCoinRule>();
+                            foreach (IDictionary<string, object> el in freeCoinRule)
+                            {
+                                if (el != null)
+                                {
+                                    var dicPara = new Dictionary<string, object>(el, StringComparer.OrdinalIgnoreCase);
+                                    if (!dicPara.Get("balanceIndex").Validintnozero("余额类别ID", out errMsg))
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    if (!dicPara.Get("onceSigleMax").Validintnozero("单次最大额度", out errMsg))
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    if (!dicPara.Get("onceWarningValue").Validintnozero("单次警戒值", out errMsg))
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    if (!dicPara.Get("dayMax").Validintnozero("每天最大额度", out errMsg))
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    if (!dicPara.Get("dayWarningValue").Validintnozero("每天警戒值", out errMsg))
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                                    var balanceIndex = dicPara.Get("balanceIndex").Toint();
+                                    var onceSigleMax = dicPara.Get("onceSigleMax").Toint();
+                                    var onceWarningValue = dicPara.Get("onceWarningValue").Toint();
+                                    var dayMax = dicPara.Get("dayMax").Toint();
+                                    var dayWarningValue = dicPara.Get("dayWarningValue").Toint();
+
+                                    var data_FreeCoinRule = new Data_FreeCoinRule();
+                                    data_FreeCoinRule.MerchID = merchId;
+                                    data_FreeCoinRule.StoreID = storeId;
+                                    data_FreeCoinRule.BalanceIndex = balanceIndex;
+                                    data_FreeCoinRule.OnceSigleMax = onceSigleMax;
+                                    data_FreeCoinRule.OnceWarningValue = onceWarningValue;
+                                    data_FreeCoinRule.DayMax = dayMax;
+                                    data_FreeCoinRule.DayWarningValue = dayWarningValue;
+                                    data_FreeCoinRuleList.Add(data_FreeCoinRule);
+                                    Data_FreeCoinRuleService.I.AddModel(data_FreeCoinRule);
+                                }
+                                else
+                                {
+                                    errMsg = "提交数据包含空对象";
+                                    return false;
+                                }
+                            }
+
+                            if (data_FreeCoinRuleList.GroupBy(g => g.BalanceIndex).Select(o => new { Count = o.Count() }).Any(p => p.Count > 1))
+                            {
+                                errMsg = "同一余额类别的招待币补币规则必须唯一";
+                                return false;
+                            }
+
+                            if (!Data_FreeCoinRuleService.I.SaveChanges())
+                            {
+                                errMsg = "保存招待币补币规则信息失败";
                                 return false;
                             }
                         }

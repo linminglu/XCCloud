@@ -16,6 +16,7 @@ namespace XCCloudService.Model.XCCloud
     {
         public int ID { get; set; }
         public string MerchID { get; set; }
+        public string StoreID { get; set; }
         public Nullable<int> BalanceIndex { get; set; }
         public Nullable<int> OnceSigleMax { get; set; }
         public Nullable<int> OnceWarningValue { get; set; }

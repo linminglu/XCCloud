@@ -33,7 +33,7 @@ namespace XXCloudService.Api.XCCloud
 
                 var linq = from d in
                                (from a in Dict_BalanceTypeService.N.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.State == 1)
-                                join d in Dict_SystemService.N.GetModels() on (a.HKType + "") equals d.DictValue into d1
+                                join d in Dict_SystemService.N.GetModels() on (a.MappingType + "") equals d.DictValue into d1
                                 from d in d1.DefaultIfEmpty()
                                 join e in Dict_SystemService.N.GetModels() on d.PID equals e.ID
                                 where e.DictKey == "关联类别"
@@ -53,6 +53,9 @@ namespace XXCloudService.Api.XCCloud
                                //TypeID = g.FirstOrDefault().a.TypeID,
                                TypeName = g.FirstOrDefault().a.TypeName,
                                Note = g.FirstOrDefault().a.Note,
+                               AddingType = g.FirstOrDefault().a.AddingType,
+                               AddingTypeStr = ((AddingType?)g.FirstOrDefault().a.AddingType).GetDescription(),
+                               DecimalNumber = g.FirstOrDefault().a.DecimalNumber,
                                HkTypeStr = g.FirstOrDefault().HkTypeStr,
                                StoreNames = string.Join("|", g.OrderBy(o => o.StoreName).Select(o => o.StoreName))
                            };
@@ -74,11 +77,12 @@ namespace XXCloudService.Api.XCCloud
                 string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
                 string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
                 string errMsg = string.Empty;
+                var hkType = dicParas.Get("hkType").Toint();
 
                 var linq = from a in Dict_BalanceTypeService.N.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.State == 1)
                            join b in Data_BalanceType_StoreListService.N.GetModels() on a.ID equals b.BalanceIndex into b1
                            from b in b1.DefaultIfEmpty()
-                           where (b.StroeID ?? "") == storeId
+                           where (b.StroeID ?? "") == storeId && (hkType != null && a.MappingType == hkType)                           
                            orderby a.TypeID
                            select new 
                            {
@@ -132,11 +136,13 @@ namespace XXCloudService.Api.XCCloud
                                //TypeID = g.FirstOrDefault().a.TypeID,
                                TypeName = g.FirstOrDefault().a.TypeName,
                                Note = g.FirstOrDefault().a.Note,
-                               HKType = g.FirstOrDefault().a.HKType,
+                               AddingType = g.FirstOrDefault().a.AddingType,
+                               AddingTypeStr = (g.FirstOrDefault().a.AddingType).GetDescription(),
+                               HKType = g.FirstOrDefault().a.MappingType,
                                StoreIDs = string.Join("|", g.Select(o => o.StoreID))
                            };
 
-                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, linq);                
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, linq.FirstOrDefault());                
             }
             catch (Exception e)
             {
@@ -159,13 +165,19 @@ namespace XXCloudService.Api.XCCloud
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 if (!dicParas.Get("hkType").Validint("关联类别", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (!dicParas.Get("addingType").Validint("小数位舍弃方式", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (!dicParas.Get("decimalNumber").Validint("小数位", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 
                 int id = dicParas.Get("id").Toint(0);
                 //var typeId = dicParas.Get("typeId").Toint();
                 var typeName = dicParas.Get("typeName");
                 var hkType = dicParas.Get("hkType").Toint();
                 var note = dicParas.Get("note");
-                var storeIds = dicParas.Get("storeIds");                
+                var storeIds = dicParas.Get("storeIds");
+                var addingType = dicParas.Get("addingType").Toint();
+                var decimalNumber = dicParas.Get("decimalNumber").Toint();
                 
                 //开启EF事务
                 using (TransactionScope ts = new TransactionScope())
@@ -187,9 +199,11 @@ namespace XXCloudService.Api.XCCloud
                         dict_BalanceType.ID = id;
                         //dict_BalanceType.TypeID = typeId;
                         dict_BalanceType.TypeName = typeName;
+                        dict_BalanceType.AddingType = addingType;
+                        dict_BalanceType.DecimalNumber = decimalNumber;
                         dict_BalanceType.Note = note;
                         dict_BalanceType.MerchID = merchId;
-                        dict_BalanceType.HKType = hkType;
+                        dict_BalanceType.MappingType = hkType;
                         if (id == 0)
                         {
                             //新增
@@ -266,9 +280,6 @@ namespace XXCloudService.Api.XCCloud
         {
             try
             {
-                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
-
                 string errMsg = string.Empty;
                 int id = dicParas.Get("id").Toint(0);
 

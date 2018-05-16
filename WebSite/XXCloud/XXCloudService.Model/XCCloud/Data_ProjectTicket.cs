@@ -15,6 +15,8 @@ namespace XCCloudService.Model.XCCloud
     public partial class Data_ProjectTicket
     {
         public int ID { get; set; }
+        public string MerchID { get; set; }
+        public string StoreID { get; set; }
         public string TicketName { get; set; }
         public Nullable<int> TicketType { get; set; }
         public Nullable<int> DivideType { get; set; }

@@ -1532,8 +1532,8 @@ xcActionSystem.prototype= {
         });
     },
     //获取会员余额类别字典
-    getBalanceTypeDic:function (token,layer,form,id,selected) {
-        let _obj={'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+    getBalanceTypeDic:function (hkType,token,layer,form,id,selected) {
+        let _obj={'hkType':hkType,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
         let parseJson = JSON.stringify(_obj);
         $.ajax({
             type:'post',

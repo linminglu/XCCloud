@@ -15,50 +15,46 @@
     .layui-form-switch{width: 169px!important;}
 </style>
 <body>
-<div class="goodIsAll" style="padding: 5px; ">
-    <form action="" class="layui-form layui-form-pane">
+<div class="goodIsAll" style="padding: 5px; height: 550px;overflow-y: auto">
+    <form action="" class="layui-form layui-form-pane" lay-filter="storeParm">
         <div class="layui-collapse">
-            <div class="layui-colla-item lci1">
+            <div class="layui-colla-item">
                 <h2 class="layui-colla-title">运营参数设定</h2>
                 <div class="layui-colla-content layui-show">
                     <div class="layui-form-item ">
                         <div class="layui-inline">
                             <label class="layui-form-label">小票是否打印二维码</label>
                             <div class="layui-input-inline">
-                                <input type="checkbox" name="zzz" lay-skin="switch" lay-text="启用|禁用" id="chkPrintBarcode" lay-filter="chkPBcode">
+                                <input type="checkbox" name="chkPrintBarcode" lay-skin="switch" lay-text="启用|禁用" id="chkPrintBarcode" lay-filter="chkPBcode">
                             </div>
                         </div>
                         <div class="layui-inline">
                             <label class="layui-form-label">吧台送币时是否授权</label>
                             <div class="layui-input-inline">
-                                <input type="checkbox" name="zzz" lay-skin="switch" lay-text="启用|禁用" id="chkBarSendCoinAuthorize" lay-filter="chkBSCAuth">
+                                <input type="checkbox" name="chkBarSendCoinAuthorize" lay-skin="switch" lay-text="启用|禁用" id="chkBarSendCoinAuthorize" lay-filter="chkBSCAuth">
                             </div>
                         </div>
                         <div class="layui-inline">
                             <label class="layui-form-label">每次售币最小币数</label>
                             <div class="layui-input-inline">
-                                <input type="text" class="layui-input">
+                                <input type="text" class="layui-input" name="txtOnceSellCoinMin">
                             </div>
                         </div>
-                    </div>
-                    <hr class="layui-bg-blue">
-                    <div class="layui-form-item  show_block_short">
                         <div class="layui-inline">
                             <label class="layui-form-label">营业日期内班次个数</label>
-                            <div class="layui-input-inline" style="width: 100px;">
-                                <select  id="txtBusinessClass"lay-filter="txtBusinessClass">
+                            <div class="layui-input-inline">
+                                <select  id="txtBusinessClass"lay-filter="txtBusinessClass" name="txtBusinessClass">
                                     <option>-请选择-</option>
                                     <option value="0">A班</option>
                                     <option value="1">AB班</option>
                                     <option value="2">ABC班</option>
                                 </select>
                             </div>
-                            <div class="layui-form-mid"><span>(设定后下个营业日期内生效)</span></div>
                         </div>
                         <div class="layui-inline">
                             <label class="layui-form-label">授权通道</label>
-                            <div class="layui-input-inline" style="width: 100px;">
-                                <select  id="AuthorityWay"lay-filter="AuthorityWay">
+                            <div class="layui-input-inline">
+                                <select  id="AuthorityWay" lay-filter="AuthorityWay">
                                     <option>-请选择-</option>
                                     <option value="0">授权卡</option>
                                     <option value="1">公众号通知</option>
@@ -68,15 +64,19 @@
                         </div>
                         <div class="layui-inline">
                             <label class="layui-form-label" style="white-space: normal;padding: 0;">换班时需要输入实点数</label>
-                            <div class="layui-input-inline" style="width: 100px;">
-                                <input type="checkbox" name="zzz" lay-skin="switch" lay-text="启用|禁用" id="chkShift" lay-filter="ckbShift">
+                            <div class="layui-input-inline">
+                                <input type="checkbox" name="chkShift" lay-skin="switch" lay-text="启用|禁用" id="chkShift" lay-filter="ckbShift">
                             </div>
-
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label" style="padding: 8px 0;">销售方式</label>
+                            <div class="layui-input-inline">
+                                <input type="checkbox" lay-skin="switch" lay-text="含税|不含税" id="chkTaxInSale " lay-filter="chkTaxInSale ">
+                            </div>
                         </div>
                     </div>
-                    <hr class="layui-bg-blue">
-                    <div class="layui-form-item">
-                        <div class="layui-inline">
+                    <div class="layui-form-item priceCoinBox">
+                        <div class="layui-inline priceCoin">
                             <div class="layui-input-inline">
                                 <input type="text" class="layui-input">
                             </div>
@@ -85,25 +85,24 @@
                                 <input type="text" class="layui-input">
                             </div>
                             <div class="layui-input-inline">
-                                <select>
-                                    <option value="0">代币</option>
-                                    <option value="1">A币</option>
+                                <select lay-ignore style="height: 36px;width: 105px" name="limitType" id="limitType">
+
                                 </select>
                             </div>
                         </div>
                         <div class="layui-inline">
                             <div class="layui-input-inline">
                                     <div class="layui-btn-group">
-                                        <button type="button" class="layui-btn"> <i class="layui-icon">&#xe654;</i></button>
-                                        <button type="button" class="layui-btn"><i class="layui-icon layui-icon-close"></i></button>
+                                        <button type="button" class="layui-btn" id="addPrice"> <i class="layui-icon">&#xe654;</i></button>
+                                        <button type="button" class="layui-btn" id="delPrice"><i class="layui-icon layui-icon-close"></i></button>
                                     </div>
                             </div>
                         </div>
-                        <blockquote>例如：设置1元=1代币时，套餐为100元150币，则会员赠送代币为50币。若需要退款时，仅按照非赠送（100币）值退款，赠送代币不能退。</blockquote>
                     </div>
+                    <blockquote>例如：设置1元=1代币时，套餐为100元150币，则会员赠送代币为50币。若需要退款时，仅按照非赠送（100币）值退款，赠送代币不能退。</blockquote>
                 </div>
             </div>
-            <div class="layui-colla-item lci2">
+            <div class="layui-colla-item lci3">
                 <h2 class="layui-colla-title">博彩专用设定</h2>
                 <div class="layui-colla-content layui-show">
                     <div class="layui-form-item ">
@@ -195,8 +194,16 @@
                         <div class="layui-inline">
                             <label class="layui-form-label">会员生日提醒</label>
                             <div class="layui-input-inline">
-                                <select name="interest" lay-filter="birthdayTips" id="cmbBirthdaySendSms">
-
+                                <select name="cmbBirthdaySendSms" lay-filter="cmbBirthdaySendSms" id="cmbBirthdaySendSms">
+                                    <option value="0">不提醒</option>
+                                    <option value="1">当天提醒</option>
+                                    <option value="2">提前1天提醒</option>
+                                    <option value="3">提前2天提醒</option>
+                                    <option value="4">提前3天提醒</option>
+                                    <option value="5">提前4天提醒</option>
+                                    <option value="6">提前5天提醒</option>
+                                    <option value="7">提前6天提醒</option>
+                                    <option value="8">提前7天提醒</option>
                                 </select>
                             </div>
                         </div>
@@ -205,21 +212,21 @@
                         <div class="layui-inline">
                             <label class="layui-form-label" style="white-space: normal;padding: 0;">会员入会时必须抓拍照片</label>
                             <div class="layui-input-inline">
-                                <input type="checkbox" lay-filter="chkPhotograph" lay-skin="switch" lay-text="启用|禁用" id="chkPhotograph">
+                                <input type="checkbox" name="chkPhotograph" lay-filter="chkPhotograph" lay-skin="switch" lay-text="启用|禁用" id="chkPhotograph">
                             </div>
                         </div>
 
                         <div class="layui-inline">
                             <label class="layui-form-label" style="white-space: normal;padding: 0;">吧台退卡时必须抓拍照片</label>
                             <div class="layui-input-inline">
-                                <input type="checkbox" lay-filter="chkExitCardCatch" lay-skin="switch" lay-text="启用|禁用" id="chkExitCardCatch">
+                                <input type="checkbox" name="chkExitCardCatch" lay-filter="chkExitCardCatch" lay-skin="switch" lay-text="启用|禁用" id="chkExitCardCatch">
                             </div>
                         </div>
 
                         <div class="layui-inline">
                             <label class="layui-form-label">退餐时必须抓拍相片</label>
                             <div class="layui-input-inline">
-                                <input type="checkbox" lay-filter="chkExitFoodCatch" lay-skin="switch" lay-text="启用|禁用" id="chkExitFoodCatch">
+                                <input type="checkbox" name="chkExitFoodCatch" lay-filter="chkExitFoodCatch" lay-skin="switch" lay-text="启用|禁用" id="chkExitFoodCatch">
                             </div>
                         </div>
                     </div>
@@ -258,63 +265,67 @@
                     </div>
                 </div>
             </div>
-            <div class="layui-colla-item lci4">
+            <div class="layui-colla-item">
                 <h2 class="layui-colla-title">游乐项目规则设定</h2>
                 <div class="layui-colla-content layui-show">
                    <div class="layui-form-item">
                        <div class="layui-inline">
-                           <div class="layui-input-inline">
-                               <input type="checkbox" title="陪同票是否必须与主票一同出闸">
+                           <div class="layui-input-inline" style="width: 300px">
+                               <input type="checkbox" name="chkAccompanyOutWithMain" lay-filter="chkAccompanyOutWithMain" title="陪同票是否必须与主票一同出闸" lay-skin="primary">
                            </div>
                        </div>
                        <div class="layui-inline">
-                           <div class="layui-input-inline">
-                               <input type="checkbox" title="离场时间是否进行累计">
+                           <div class="layui-input-inline"  style="width: 300px">
+                               <input type="checkbox"name="chkAddLeaveTime" lay-filter="chkAddLeaveTime" title="离场时间是否进行累计" lay-skin="primary">
                            </div>
                        </div>
                    </div>
+                    <br>
                     <div class="layui-form-item">
                         <div class="layui-inline">
                             <div class="layui-form-mid">散客领取卡进行计时项目游玩时,自动入会</div>
                             <div class="layui-input-inline">
-                                <select name="" id=""></select>
+                                <select name="cmbAutoJoinMemberLevel" lay-filter="cmbAutoJoinMemberLevel">
+
+                                </select>
                             </div>
                             <div class="layui-form-mid">级别</div>
                         </div>
-                        <div class="layui-inline">
-                            <div class="layui-form-mid">散客打印门票时需要强制填写如下信息</div>
-                            <div class="layui-input-inline">
-                                <input type="checkbox" title="姓名">
-                                <input type="checkbox" title="手机">
-                                <input type="checkbox" title="性别">
-                                <input type="checkbox" title="身份证">
-                                <input type="checkbox" title="生日">
-                            </div>
+
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-form-mid">散客打印门票时需要强制填写如下信息</div>
+                        <div class="layui-input-block">
+                            <input type="checkbox" title="姓名" lay-skin="primary" >
+                            <input type="checkbox" title="手机" lay-skin="primary">
+                            <input type="checkbox" title="性别" lay-skin="primary">
+                            <input type="checkbox" title="身份证" lay-skin="primary">
+                            <input type="checkbox" title="生日" lay-skin="primary">
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="layui-colla-item lci4">
+            <div class="layui-colla-item">
                 <h2 class="layui-colla-title">兑换规则</h2>
                 <div class="layui-colla-content layui-show">
                     <div class="layui-form-item">
                         <div class="layui-inline" >
-                            <label class="layui-form-label" style="width: 70px">每日额度</label>
-                            <div class="layui-input-inline" style="width: 100px">
-                                <input type="text" class="layui-input">
+                            <label class="layui-form-label">每日额度</label>
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input" name="txtCreditEveryday">
                             </div>
                         </div>
                         <div class="layui-inline" >
-                            <label class="layui-form-label" style="width: 70px">最大发卡张数</label>
-                            <div class="layui-input-inline" style="width: 100px">
-                                <input type="text" class="layui-input">
+                            <label class="layui-form-label">最大发卡张数</label>
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input" name="txtMaxSendCard">
                             </div>
                         </div>
                     </div>
 
                 </div>
             </div>
-            <div class="layui-colla-item lci4">
+            <div class="layui-colla-item">
                 <h2 class="layui-colla-title">招待币/补币规则</h2>
                 <div class="layui-colla-content layui-show">
                     <div class="layui-form-item">
@@ -375,7 +386,7 @@
         </div>
     </form>
     <div class="addReturnSetting" style="display: none">
-        <form action="" class="layui-form layui-form-pane">
+        <form action="" class="layui-form layui-form-pane" >
             <div class="layui-form-item item_two">
                 <div class="layui-inline">
                     <label class="layui-form-label">会员级别</label>
@@ -459,13 +470,15 @@
 <script src="js/jquery-1.8.3-min.js"></script>
 <script src="layui/layui.js"></script>
 <script src="js/manchartSystem.js"></script>
+<script src="js/storeSystem.js"></script>
 <script>
     let token=getStorage('token');
-    let _merchTag=getStorage('merchTag');
-
-    let sourceType;let sourceTypeStr;
-    let chargeType;let chargeTypeStr;
-    let arrRule=[];
+    let xc=xcActionSystem.prototype;
+    let _merchTag=JSON.parse(getStorage('logMsg')).merchTag;
+    //
+    // let sourceType;let sourceTypeStr;
+    // let chargeType;let chargeTypeStr;
+    // let arrRule=[];
     //判断是否博彩
     if(_merchTag==0){
         $('.lci3').addClass('layui-hide');
@@ -473,19 +486,21 @@
         $('.lci3').removeClass('layui-hide');
     }
     let _storeId=getStorage('storeId_merch');
-    //新增或者修改
-    let setStatus='';      let dataTable=[];
-    //定义参数设置变量
-    let  PrintBarcode=0;let BarSendCoinAuthorize=0;let MemberBalance='';let Shift=0;
-    //定义会员设置变量
-    let BirthdaySendSms='';let Photograph=0;let ExitCardCatch=0;let ExitFoodCatch=0;
-    let ExitMoneyCatch=0; let AllowMemberSmsCode=0;let ShowPhone=0;let AllowFirstMemberSmsCode=0;
-    let Giveback=0;
-    //定义返还规则变量
-    let GiveBackAllowSmsCode=0;
-    let memberLvlId=0;let backType=1;let allowToday=1;let allowBackPrincipal=1;
-    function ifNeedSet(storeId) {
+    // //新增或者修改
+    // let setStatus='';      let dataTable=[];
+    // //定义参数设置变量
+    // let  PrintBarcode=0;let BarSendCoinAuthorize=0;let MemberBalance='';let Shift=0;
+    // //定义会员设置变量
+    // let BirthdaySendSms='';let Photograph=0;let ExitCardCatch=0;let ExitFoodCatch=0;
+    // let ExitMoneyCatch=0; let AllowMemberSmsCode=0;let ShowPhone=0;let AllowFirstMemberSmsCode=0;
+    // let Giveback=0;
+    // //定义返还规则变量
+    // let GiveBackAllowSmsCode=0;
+    // let memberLvlId=0;let backType=1;let allowToday=1;let allowBackPrincipal=1;
+    function ifNeedSet(storeId,form,layer) {
         let obj={'storeId':storeId,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+        xc.getBalanceTypeDic(1,token,layer,form,'limitType');
+        //设置基本参数
         $.ajax({
             type: "post",
             url: '/XCCloud/Parameter?action=GetParamList',
@@ -495,59 +510,73 @@
                 data = JSON.parse(data);
                 console.log(data);
                 if(data.result_code==1){
-                    if(data.result_data.length>0){
-                        let paramArr=data.result_data;
-                        setStatus='modify';
-                        PrintBarcode=paramArr[3].ParameterValue;
-                        BarSendCoinAuthorize=paramArr[4].ParameterValue;
-                        Shift=paramArr[7].ParameterValue;
-                        //定义会员设置变量
-                         Photograph=paramArr[17].ParameterValue;
-                         ExitCardCatch=paramArr[18].ParameterValue;
-                         ExitFoodCatch=paramArr[19].ParameterValue;
-                         ExitMoneyCatch=paramArr[20].ParameterValue;
-                         AllowMemberSmsCode=paramArr[21].ParameterValue;
-                         ShowPhone=paramArr[22].ParameterValue;
-                         AllowFirstMemberSmsCode=paramArr[23].ParameterValue;
-                         Giveback=paramArr[24].ParameterValue;
-                        //定义返还规则变量
-                        let GiveBackAllowSmsCode=paramArr[27].ParameterValue;
-                        for(var i in paramArr){
-                            if((paramArr[i].System).substring(0,3)=='chk'){
-                                paramArr[i].IsAllow==1 ? $('#'+paramArr[i].System).attr({'checked':true}) : $('#'+paramArr[i].System).attr({'checked':false})
-                            }
-                            else if((paramArr[i].System).substring(0,3)=='cmb'){
+                    let arr=data.result_data;
+                    form.val("storeParm", {
+                        "chkPrintBarcode": arr[3].ParameterValue
+                        ,"chkBarSendCoinAuthorize": arr[4].ParameterValue
+                        ,"txtBusinessClass": arr[5].ParameterValue||''
+                        ,"chkShift":  arr[6].ParameterValue
+                        ,"cmbBirthdaySendSms": arr[10].ParameterValue
+                        ,"chkPhotograph": arr[11].ParameterValue
+                        ,"chkExitCardCatch": arr[12].ParameterValue
+                        ,"chkExitFoodCatch": arr[13].ParameterValue
+                        ,"chkAccompanyOutWithMain": arr[14].ParameterValue
+                        ,"chkAddLeaveTime": arr[15].ParameterValue
+                        ,"cmbAutoJoinMemberLevel": arr[16].ParameterValue==true?arr[16].ParameterValue:''
+                        ,"txtCreditEveryday": arr[18].ParameterValue||''
+                        ,"txtMaxSendCard": arr[19].ParameterValue||''
+                    })
+                }
+            }
+        });
+        //设置正价币
+        $.ajax({
+            type: "post",
+            url: '/XCCloud/Parameter?action=GetStandardCoinPrice',
+            contentType: "application/json; charset=utf-8",
+            data: {parasJson: JSON.stringify(obj)},
+            success: function (data) {
+                data = JSON.parse(data);
+                if(data.result_code==1){
+                    let arr=data.result_data;
+                    if(arr.length>0){
 
-                            }
-                            else {
-                                $('#'+paramArr[i].System).val(paramArr[i].ParameterValue)
-                            }
-
-                        }
-                        console.log(paramArr[5]); console.log(paramArr[15])
-                        setSelect('退款方式','cmbMemberBalance',paramArr[5].ParameterValue)
-                        MemberBalance=paramArr[5].ParameterValue;
-                        setSelect("会员生日提醒","cmbBirthdaySendSms",paramArr[15].ParameterValue);
-                        BirthdaySendSms=paramArr[15].ParameterValue;
-
-                            layui.use('form',function () {
-                                layui.form.render();
-                            })
-                    }else {
-                        setStatus='add';
                     }
+                }
+            }
+        });
+        //设置招待币/补币
+        $.ajax({
+            type: "post",
+            url: '/XCCloud/Parameter?action=GetFreeCoinRule',
+            contentType: "application/json; charset=utf-8",
+            data: {parasJson: JSON.stringify(obj)},
+            success: function (data) {
+                data = JSON.parse(data);
+                if(data.result_code==1){
+                    let arr=data.result_data;
+
                 }
             }
         })
     }
-    ifNeedSet(_storeId);
+
     layui.use(['element','form','layer','table'], function(){
         let element = layui.element;
         let form=layui.form;
         let layer=layui.layer;
         let table=layui.table;
+        ifNeedSet(_storeId,form,layer);
         //
-
+        $('#addPrice').on('click',function () {
+            $('.priceCoinBox').append($('body').find($('.priceCoin')).eq(0).clone())
+        });
+        $('#delPrice').click(function () {
+            if($('.priceCoinBox').find($('.priceCoin')).length>1){
+                $('.priceCoinBox').find($('.priceCoin')).last().remove();
+            }else {
+            }
+        });
         form.on('select(sourceType)',function (data) {
             sourceType=data.value;
             sourceTypeStr=data.elem[data.elem.selectedIndex].text;
@@ -632,11 +661,9 @@
         form.on('switch(Giveback)',(data)=>{
             data.elem.checked==true ?Giveback=1 :Giveback=0
         });
-
         form.on('switch(GiveBackAllowSmsCode)',(data)=>{
             data.elem.checked==true ?GiveBackAllowSmsCode=1 :GiveBackAllowSmsCode=0
         });
-
         //返还规则监听
         form.on('select(memberLvlId)',(data)=>{
             memberLvlId=data.value;
@@ -652,7 +679,6 @@
             data.elem.checked==true ?allowBackPrincipal=1 :allowBackPrincipal=0
         });
         getBackRule(_storeId);
-
     function getBackRule(storeId) {
         let obj={"storeId":storeId,"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
         let url = "/XCCloud/Parameter?action=GetGivebackRules";
@@ -702,9 +728,7 @@
     $('.checkBox>span').click(function () {
             $(this).addClass("layui-hide").siblings().removeClass("layui-hide");
         });
-
     function setParamList(storeIds,layer) {
-
         // var txtCoinPrice=$('#txtCoinPrice').val();//兑币单价
         // var coinChargeScale=$('#coinChargeScale').val();//彩票兑换比例
         var txtGivePoint=$('#txtGivePoint').val();//赠送售币积分

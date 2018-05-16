@@ -751,7 +751,7 @@
           BalanceType='';//余额类别
           BalanceTypeStr='';
          xc.setSelect('套餐类别','FoodType');
-         xc.getBalanceTypeDic(token,layer,form,'BalanceType');
+         xc.getBalanceTypeDic('',token,layer,form,'BalanceType');
          newTable(table,FoodSale,layer,form);
          newFoodDetialsTable(table,FoodDetial,layer,form);
          newFoodLevelTable(table,FoodLevel,layer,form);
@@ -783,7 +783,7 @@
                  newTable(table,FoodSale,layer,form);
                  $('#UseCount').val('');
                  // xc.setSelect('余额类别','BalanceType');
-                 xc.getBalanceTypeDic(token,layer,form,'BalanceType')
+                 xc.getBalanceTypeDic('',token,layer,form,'BalanceType')
                  BalanceType='';BalanceTypeStr='';
              }else {
                  layer.msg('请选择其他的余额类别或者删除该类别重新设置！')
@@ -796,7 +796,7 @@
         //会员币种
         $('#vipCoinBtn').on('click',()=>{
             // xc.setSelect('余额类别','vipCoinType');
-            xc.getBalanceTypeDic(token,layer,form,'vipCoinType')
+            xc.getBalanceTypeDic('',token,layer,form,'vipCoinType')
             vipCoinType=''; vipCoinTypeStr=''
             index= layer.open({
                 title:'新增套餐',
@@ -1016,7 +1016,7 @@
                             $('#FoodName').val(arr.FoodName||'');
                             FoodType=arr.FoodType;
                             xc.setSelect('套餐类别','FoodType',arr.FoodType);
-                            xc.getBalanceTypeDic(token,layer,form,'BalanceType');
+                            xc.getBalanceTypeDic('',token,layer,form,'BalanceType');
                             BalanceType='';//余额类别
                             BalanceTypeStr='';
                             $('#StartTime').val(arr.StartTime||'');
@@ -1225,9 +1225,6 @@
                 ,{fixed: 'right',title:'操作', width:230, align:'center', toolbar: '#barDemo2'}]]
             , page: {page: true, limits: [5,10, 15, 20]}
             , limit: 5
-            // ,done:function () {
-            //     xc.getBalanceTypeDic(token,layer,form,'freeBalanceType');
-            // }
         });
     }
     function newFoodDetialsTable(table,arr,layer,form) {

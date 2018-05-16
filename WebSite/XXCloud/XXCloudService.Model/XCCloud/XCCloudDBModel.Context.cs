@@ -150,9 +150,7 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Flw_Order_Detail> Flw_Order_Detail { get; set; }
         public virtual DbSet<Base_DepotInfo> Base_DepotInfo { get; set; }
         public virtual DbSet<Data_CouponList> Data_CouponList { get; set; }
-        public virtual DbSet<Dict_BalanceType> Dict_BalanceType { get; set; }
         public virtual DbSet<Data_Food_Level> Data_Food_Level { get; set; }
-        public virtual DbSet<Data_FreeCoinRule> Data_FreeCoinRule { get; set; }
         public virtual DbSet<Data_GameAPP_Rule> Data_GameAPP_Rule { get; set; }
         public virtual DbSet<Data_GameInfo> Data_GameInfo { get; set; }
         public virtual DbSet<Data_GoodExit_Detail> Data_GoodExit_Detail { get; set; }
@@ -166,7 +164,6 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Data_PushRule_MemberLevelList> Data_PushRule_MemberLevelList { get; set; }
         public virtual DbSet<Data_RuleOverlying_Group> Data_RuleOverlying_Group { get; set; }
         public virtual DbSet<Data_RuleOverlying_List> Data_RuleOverlying_List { get; set; }
-        public virtual DbSet<Data_StandardCoinPrice> Data_StandardCoinPrice { get; set; }
         public virtual DbSet<Divide_ProjectInfo> Divide_ProjectInfo { get; set; }
         public virtual DbSet<Flw_Food_Sale> Flw_Food_Sale { get; set; }
         public virtual DbSet<Flw_Project_PlayTime> Flw_Project_PlayTime { get; set; }
@@ -179,7 +176,10 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Flw_ProjectTicket_Entry> Flw_ProjectTicket_Entry { get; set; }
         public virtual DbSet<Base_GoodsInfo> Base_GoodsInfo { get; set; }
         public virtual DbSet<Data_FoodInfo> Data_FoodInfo { get; set; }
-        public virtual DbSet<Data_ProjectTicket> Data_ProjectTicket { get; set; }
         public virtual DbSet<Flw_Food_Sale_Pay> Flw_Food_Sale_Pay { get; set; }
+        public virtual DbSet<Data_FreeCoinRule> Data_FreeCoinRule { get; set; }
+        public virtual DbSet<Data_StandardCoinPrice> Data_StandardCoinPrice { get; set; }
+        public virtual DbSet<Data_ProjectTicket> Data_ProjectTicket { get; set; }
+        public virtual DbSet<Dict_BalanceType> Dict_BalanceType { get; set; }
     }
 }

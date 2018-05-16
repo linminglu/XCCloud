@@ -592,12 +592,32 @@ namespace XCCloudService.Common.Enum
         储值金 = 3
     }
 
+    /// <summary>
+    /// 余额类别映射类型
+    /// </summary>
     public enum HKType
     {
+        [Description("不绑定")]
         NoBound = 0, //不绑定
+        [Description("代币")]
         Coin = 1, //代币
+        [Description("彩票")]
         Lottery = 2, //彩票
+        [Description("积分")]
         Points = 3 //积分
+    }
+
+    /// <summary>
+    /// 小数位舍弃方式
+    /// </summary>
+    public enum AddingType
+    {
+        [Description("全部舍弃")]
+        AllOmit = 0, //全部舍弃 只取整数部分
+        [Description("全部保留")]
+        AllAdd = 1, //全部保留 有任何小数都进位
+        [Description("四舍五入")]
+        Round = 2 //四舍五入
     }
 
     /// <summary>

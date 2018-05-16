@@ -124,9 +124,30 @@
 <script src="layui/layui.js"></script>
 <script src="js/storeSystem.js"></script>
 <script type="text/html" id="barDemo">
-    <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="edit"><i class="layui-icon">&#xe642;</i>修改</a>
-    <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="check"><i class="layui-icon">&#xe640;</i>审核</a>
-    <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="handle"><i class="layui-icon">&#xe640;</i>处理</a>
+    {{# if(JSON.stringify(d.PermittedTriggers).indexOf('1')!=-1){ }}
+    <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="Request">调拨申请</a>
+    {{#  } }}
+    {{# if(JSON.stringify(d.PermittedTriggers).indexOf('2')!=-1){ }}
+    <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="RequestVerify">调拨申请审核</a>
+    {{#  } }}
+    {{# if(JSON.stringify(d.PermittedTriggers).indexOf('3')!=-1){ }}
+    <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="SendDeal">调拨出库</a>
+    {{#  } }}
+    {{# if(JSON.stringify(d.PermittedTriggers).indexOf('4')!=-1){ }}
+    <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="SendDealVerify">调拨出库审核</a>
+    {{#  } }}
+    {{# if(JSON.stringify(d.PermittedTriggers).indexOf('5')!=-1){ }}
+    <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="RequestDeal">调拨入库</a>
+    {{#  } }}
+    {{# if(JSON.stringify(d.PermittedTriggers).indexOf('6')!=-1){ }}
+    <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="RequestDealVerify">调拨入库审核</a>
+    {{#  } }}
+    {{# if(JSON.stringify(d.PermittedTriggers).indexOf('7')!=-1){ }}
+    <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="Cancel">撤销</a>
+    {{#  } }}
+    {{# if(JSON.stringify(d.PermittedTriggers).indexOf('8')!=-1){ }}
+    <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="Close">调拨流程关闭</a>
+    {{#  } }}
 </script>
 <script>
     let xc=xcActionSystem.prototype;
@@ -156,7 +177,7 @@
     let checkListGoods=[];
     let notGoodId=[];//不查询的商品id集合
     let requestId;//调拨单号
-
+JSON.stringify()
     let checkState;
    let RequstType;
     //出库仓库
@@ -289,7 +310,6 @@
                 }
             });
         });
-        //
         $('#saveGoodsBtn').on('click',function () {
             if(RequstType==2){
                 initSendTable(table,checkListGoods);
@@ -463,16 +483,5 @@
             ]]
         });
     }
-</script>
-<script type="text/html" id="reqState">
-    {{# if(d.State==0){ }}
-    申请
-    {{# }else if(d.State==1){ }}
-    审核通过
-    {{# }else if(d.State==2){ }}
-    审核拒绝
-    {{# }else if(d.State==3){ }}
-    处理
-    {{#  } }}
 </script>
 </html>

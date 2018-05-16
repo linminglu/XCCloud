@@ -329,7 +329,7 @@
                 $('#Status').attr('disabled',true);
                 form.render();
                 xc.setSelect('商品类别','GoodType');
-                xc.getBalanceTypeDic(token,layer,form,'balanceType');
+                xc.getBalanceTypeDic('',token,layer,form,'balanceType');
                 layer.open({
                     title:'新增商品',
                     area:'1030px',
@@ -422,7 +422,7 @@
                     //初始化输入框
                     balanceType='';
                     balanceTypeStr='';
-                    xc.getBalanceTypeDic(token,layer,form,'balanceType');
+                    xc.getBalanceTypeDic('',token,layer,form,'balanceType');
                     $('#salePrice').val('');
                     $('#backPrice').val('');
                 }
@@ -448,7 +448,7 @@
                     //初始化输入框
                     balanceType='';
                     balanceTypeStr='';
-                    xc.getBalanceTypeDic(token,layer,form,'balanceType');
+                    xc.getBalanceTypeDic('',token,layer,form,'balanceType');
                     $('#salePrice').val('');
                     $('#backPrice').val('');
                 }

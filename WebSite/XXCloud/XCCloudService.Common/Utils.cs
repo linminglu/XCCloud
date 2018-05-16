@@ -2281,8 +2281,10 @@ namespace XCCloudService.Common
             return System.Enum.GetName(enumValue.GetType(), enumValue);
         }
 
-        public static string GetDescription(this System.Enum value)
+        public static string GetDescription(this object value)
         {
+            if (value == null) return null;
+
             FieldInfo field = value.GetType().GetField(value.ToString());
 
             DescriptionAttribute attribute

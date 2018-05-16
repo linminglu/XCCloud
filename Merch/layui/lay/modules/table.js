@@ -324,24 +324,24 @@ layui.define(["laytpl", "laypage", "layer", "form"], function(e)
                     }, 50),
                     c.haveInit = !0,
                     void l.close(c.tipsIndex));
-                if(s.total){
-                    var totalTd = [];
-                    c.eachCols(function(e, n) {
-                        var r = n.field || e;
-                        var td = '<td>';
-                        if(e==0)td = '<td style="text-align: center;">合计';
-                        if(typeof(total[r])!='undefined') td += '<div class="layui-table-cell laytable-cell-1-sales_num"><b><font color="red">' + eval(total[r]+'') + '</font></b></div>'
-                        td += '</td>';
-                        totalTd.push(td);
-                    });
-                    var totalTr = c.layMain.find(".totalTr");
-                    if(totalTr.length == 0){
-                        totalTr = t('<tr class="totalTr">' + totalTd.join("") + '</tr>');
-                        c.layMain.find("tbody").append(totalTr);
-                        c.layFixLeft.find("tbody").html(totalTr);
-                        c.layFixRight.find("tbody").html(totalTr);
-                    }
-                }
+                // if(s.total){
+                //     var totalTd = [];
+                //     c.eachCols(function(e, n) {
+                //         var r = n.field || e;
+                //         var td = '<td>';
+                //         if(e==0)td = '<td style="text-align: center;">合计';
+                //         if(typeof(total[r])!='undefined') td += '<div class="layui-table-cell laytable-cell-1-sales_num"><b><font color="red">' + eval(total[r]+'') + '</font></b></div>'
+                //         td += '</td>';
+                //         totalTd.push(td);
+                //     });
+                //     var totalTr = c.layMain.find(".totalTr");
+                //     if(totalTr.length == 0){
+                //         totalTr = t('<tr class="totalTr">' + totalTd.join("") + '</tr>');
+                //         c.layMain.find("tbody").append(totalTr);
+                //         c.layFixLeft.find("tbody").html(totalTr);
+                //         c.layFixRight.find("tbody").html(totalTr);
+                //     }
+                // }
             };
             return c.key = s.id || s.index,
                 d.cache[c.key] = u,
