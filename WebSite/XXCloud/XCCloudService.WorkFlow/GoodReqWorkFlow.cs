@@ -222,6 +222,10 @@ namespace XCCloudService.WorkFlow
         {
             _state = (State)(Data_WorkFlow_EntryService.I.GetModels(p => p.EventID == _eventId && p.WorkID == _workId && p.EventType == (int)WorkflowEventType.GoodRequest).OrderByDescending(or => or.CreateTime)
                 .Select(o => o.State).FirstOrDefault() ?? 0);
+            var data_GoodRequest = Data_GoodRequestService.I.GetModels(p => p.ID == _eventId).FirstOrDefault() ?? new Data_GoodRequest();
+            _targetMerchId = data_GoodRequest.MerchID ?? "";
+            _inStoreId = data_GoodRequest.RequestInStoreID ?? "";
+            _outStoreId = data_GoodRequest.RequestOutStoreID ?? "";
         }
 
         /// <summary>
@@ -255,10 +259,9 @@ namespace XCCloudService.WorkFlow
                    (
                     (_requestType == (int)RequestType.RequestStore && (_userType == (int)UserType.Store || _userType == (int)UserType.StoreBoss)) || 
                     (_requestType == (int)RequestType.MerchRequest && (_userType == (int)UserType.Normal||_userType == (int)UserType.Heavy))      || 
-                    (_requestType == (int)RequestType.RequestMerch && (_userType == (int)UserType.Store || _userType == (int)UserType.StoreBoss)
-                   ) 
-                   && (_merchId == _targetMerchId && _storeId == _inStoreId)), "门店或总店申请")
-                .PermitIf(Trigger.Request, State.SendDealed, () => 
+                    (_requestType == (int)RequestType.RequestMerch && (_userType == (int)UserType.Store || _userType == (int)UserType.StoreBoss))
+                   ) && (_merchId == _targetMerchId && _storeId == _inStoreId), "门店或总店申请")
+                .PermitIf(Trigger.SendDeal, State.SendDealed, () => 
                     _requestType == (int)RequestType.MerchSend && (_userType == (int)UserType.Normal || _userType == (int)UserType.Heavy) 
                     && (_merchId == _targetMerchId && _storeId == _outStoreId), "总店配送");
 
@@ -267,8 +270,7 @@ namespace XCCloudService.WorkFlow
                     (
                      (_requestType == (int)RequestType.RequestStore && (_userType == (int)UserType.Normal || _userType == (int)UserType.Heavy)) ||
                      (_requestType == (int)RequestType.RequestMerch && (_userType == (int)UserType.Normal || _userType == (int)UserType.Heavy))
-                    ) 
-                    && (_merchId == _targetMerchId && _storeId == "") && s == 1 ? State.RequestVerifiedPass : State.RequestVerifiedRefuse)
+                    ) && (_merchId == _targetMerchId && _storeId == "") && s == 1 ? State.RequestVerifiedPass : State.RequestVerifiedRefuse)
                 .PermitIf(Trigger.SendDeal, State.SendDealed, () => 
                     _requestType == (int)RequestType.MerchRequest && (_userType == (int)UserType.Store || _userType == (int)UserType.StoreBoss)
                     && (_merchId == _targetMerchId && _storeId == _outStoreId));
@@ -295,8 +297,7 @@ namespace XCCloudService.WorkFlow
                      (_requestType == (int)RequestType.MerchRequest && (_userType == (int)UserType.Normal || _userType == (int)UserType.Heavy)) ||
                      (_requestType == (int)RequestType.MerchSend && (_userType == (int)UserType.Store || _userType == (int)UserType.StoreBoss)) ||
                      (_requestType == (int)RequestType.RequestMerch && (_userType == (int)UserType.Store || _userType == (int)UserType.StoreBoss))
-                    ) 
-                    && (_merchId == _targetMerchId && _storeId == _inStoreId));
+                    ) && (_merchId == _targetMerchId && _storeId == _inStoreId));
 
             _machine.Configure(State.SendDealVerifiedPass)
                 .PermitIf(Trigger.Cancel, State.SendDealed, () => (_userType == (int)UserType.Normal || _userType == (int)UserType.Heavy) && (_merchId == _targetMerchId && _storeId == ""))
@@ -315,8 +316,7 @@ namespace XCCloudService.WorkFlow
                      (_requestType == (int)RequestType.MerchRequest && (_userType == (int)UserType.Normal || _userType == (int)UserType.Heavy)) || 
                      (_requestType == (int)RequestType.MerchSend && (_userType == (int)UserType.Store || _userType == (int)UserType.StoreBoss)) || 
                      (_requestType == (int)RequestType.RequestMerch && (_userType == (int)UserType.Store || _userType == (int)UserType.StoreBoss))
-                    ) 
-                    && (_merchId == _targetMerchId && _storeId == _inStoreId), "撤销调拨入库，返回上一步")
+                    ) && (_merchId == _targetMerchId && _storeId == _inStoreId), "撤销调拨入库，返回上一步")
                 .PermitDynamic(_setRequestDealVerifyTrigger, s =>
                     _requestType == (int)RequestType.RequestStore && (_userType == (int)UserType.Normal || _userType == (int)UserType.Heavy) && (_merchId == _targetMerchId && _storeId == "")
                     && s == 1 ? State.RequestDealVerifiedPass : State.RequestDealVerifiedRefuse)               
@@ -331,8 +331,7 @@ namespace XCCloudService.WorkFlow
                      (_requestType == (int)RequestType.MerchRequest && (_userType == (int)UserType.Store || _userType == (int)UserType.StoreBoss)) ||
                      (_requestType == (int)RequestType.MerchSend && (_userType == (int)UserType.Normal || _userType == (int)UserType.Heavy))       ||
                      (_requestType == (int)RequestType.RequestMerch && (_userType == (int)UserType.Normal || _userType == (int)UserType.Heavy))
-                    ) 
-                    && (_merchId == _targetMerchId && _storeId == _outStoreId));
+                    ) && (_merchId == _targetMerchId && _storeId == _outStoreId));
 
             _machine.Configure(State.RequestDealVerifiedPass)
                 .PermitIf(Trigger.Cancel, State.RequestDealed, () => (_userType == (int)UserType.Normal || _userType == (int)UserType.Heavy) && (_merchId == _targetMerchId && _storeId == ""))

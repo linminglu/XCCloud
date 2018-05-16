@@ -33,6 +33,7 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<System.DateTime> ForbidEnd { get; set; }
         public Nullable<decimal> ClientPrice { get; set; }
         public Nullable<decimal> MemberPrice { get; set; }
+        public Nullable<decimal> Tax { get; set; }
         public Nullable<int> RenewDays { get; set; }
     }
 }

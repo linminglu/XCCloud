@@ -136,21 +136,25 @@
         'elem':'#giftAllocationTB',
         'cols':[
              {field:'ID', title:'调拨单ID', align: 'center', sort: true}
-            ,{field:'RequestTime',title: '申请时间', align: 'center'}
-            ,{field:'RequestStore',title: '申请门店', align: 'center'}
-            ,{field:'Requester', title: '申请人', align: 'center'}
-            ,{field:'RequestDepot', title: '申请仓库', align: 'center'}
-            ,{field:'RequstType', title: '调拨方式', align: 'center',templet:'#reqType'}
-            ,{field:'State', title: '调拨状态', align: 'center',templet:'#reqState'}
-            ,{field:'SendStore', title: '调拨门店', align: 'center'}
-            ,{field:'OutDepot', title: '调拨仓库', align: 'center'}
-            ,{field:'DealTime', title: '调拨时间', align: 'center'}
-            ,{field:'RequestReason', title: '调拨说明', align: 'center'}
+            ,{field:'RequestCode',title: '调拨单号', align: 'center'}
+            ,{field:'CreateTime',title: '申请时间', align: 'center'}
+            ,{field:'CreateStore',title: '申请门店', align: 'center'}
+            ,{field:'CreateUser', title: '申请人', align: 'center'}
+            ,{field:'RequstTypeStr', title: '调拨方式', align: 'center'}
+            ,{field:'OutStoreName', title: '调拨出库门店', align: 'center'}
+            ,{field:'OutDepotName', title: '调拨出库仓库', align: 'center',templet:'#reqState'}
+            ,{field:'OutDepotTime', title: '出库时间', align: 'center'}
+            ,{field:'InStoreName', title: '调拨入库门店', align: 'center'}
+            ,{field:'InDepotName', title: '调拨入库仓库', align: 'center'}
+            ,{field:'InDepotTime', title: '入库时间', align: 'center'}
+            ,{field:'StateStr', title: '调拨状态', align: 'center'}
+            ,{field:'Note', title: '调拨说明', align: 'center'}
             ,{fixed: 'right', title: '操作', width:260, align:'center', toolbar: '#barDemo'}]
     };
     xc.getInitData(parm);
     let indexer;
     let checkListGoods=[];
+    let notGoodId=[];//不查询的商品id集合
     let requestId;//调拨单号
 
     let checkState;
@@ -181,7 +185,22 @@
                 xc.getDepotDic('','',token,layer,form,'InDepotId');
                 xc.GetStoreList(token,layer,form,'OutStoreId');
             }
-            OutDepotId='';InStoreId=''; InDepotId='';OutStoreId='';
+            OutDepotId='';InStoreId=''; InDepotId='';OutStoreId='';checkListGoods=[];notGoodId=[];
+            table.render({
+                elem: '#giftsList'
+                , data: []
+                , height:'220px'
+                , size:'sm'
+                , cellMinWidth: 90 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+                , cols: [[
+                    {field: 'GoodID', title: '商品ID', align: 'center',width:100}
+                    , {field: 'GoodName', title: '商品名称', align: 'center',width:100}
+                    , {field: 'RequestCount', title: '申请数量', align: 'center',width:100,edit:true}
+                    , {field: 'RemainCount', title: '库存', align: 'center',width:100}
+                    , {field: 'AvailableCount', title: '可调拨数', align: 'center',width:100}
+
+                ]]
+            });
         });//调拨方式
         form.on('select(OutDepotId)',function (data) {
             OutDepotId=data.value;
@@ -218,9 +237,10 @@
                         checkListGoods.push({
                             'GoodID':obj.data.GoodID,
                             'GoodName':obj.data.GoodName,
-                            'requestCount':'',
-                            'tax':'',
-                            'costPrice':'',
+                            'RequestCount':'',
+                            'Tax':'',
+                            'CostPrice':'',
+                            'SendCount':'',
                             'RemainCount':obj.data.RemainCount,
                             'AvailableCount':obj.data.AvailableCount
                         });
@@ -254,7 +274,6 @@
             let key=obj.field; //当前编辑的字段名
             let index=obj.data.LAY_TABLE_INDEX; //所在行的所有相关数据
             checkListGoods[index][key]=value;
-            console.log(checkListGoods)
         });
         //弹出层
         $('#applyBtn').on('click',function () {
@@ -264,35 +283,43 @@
                 title:'申请记录',
                 type:1,
                 area:'1000px',
-                content:$('#openModel')
+                content:$('#openModel'),
+                cancel:function () {
+                    location.reload();
+                }
             });
         });
         //
         $('#saveGoodsBtn').on('click',function () {
-            initSendTable(table,checkListGoods);
+            if(RequstType==2){
+                initSendTable(table,checkListGoods);
+            }else if(RequstType==3){
+                initApplyTable(table,checkListGoods)
+            }
+            notGoodId =[];
+            for(let i in checkListGoods){
+                notGoodId.push(checkListGoods[i].GoodID);
+            }
+
             layer.close(indexer)
         });
         $('#searchGoodBtn').on('click',function () {
             if(RequstType==2){
-                initGoodsTb('',OutDepotId,'',table);
+                initGoodsTb(notGoodId.length==0?'':notGoodId.join('|'),OutDepotId,'',table);
             }else if(RequstType==3){
-                initGoodsTb('',InDepotId,'',table);
+                initGoodsTb(notGoodId.length==0?'':notGoodId.join('|'),InDepotId,'',table);
             }else {
                 layer.msg('请先选择调拨方式！')
             }
         });
         //save apply
        $('#submitApply').on('click',function () {
-           let _outStore;let _outDepot; let _inDepot;
-
-
-            if(RequstType==2){_outStore=InStoreId; _outDepot=OutDepotId;  _inDepot='';
-            }else if(RequstType==3){_outStore=OutStoreId; _outDepot='';  _inDepot=InDepotId;}
            let _obj={
                'requstType':RequstType,
-               'outStoreId':_outStore,
-               'outDepotId':_outDepot,
-               'inDepotId':_inDepot,
+               'outStoreId':OutStoreId,
+               'inStoreId':InStoreId,
+               'outDepotId':OutDepotId,
+               'inDepotId':InDepotId,
                'requestReason':$('#RequestReason').val(),
                'goodRequestDetails':checkListGoods,
                'userToken':token,
@@ -409,27 +436,33 @@
                  {field: 'GoodID', title: '商品ID', align: 'center',width:100}
                 , {field: 'GoodName', title: '商品名称', align: 'center',width:100}
                 , {field: 'RemainCount', title: '库存', align: 'center',width:100}
-                , {field: 'requestCount', title: '申请数量', align: 'center',width:100,edit:true}
-                , {field: 'nocostPrice', title: '不含税单价', align: 'center',width:100,edit:true}
-                , {field: 'tax', title: '税率%', align: 'center',width:100,edit:true}
-                , {field: 'costPrice', title: '含税代价', align: 'center',width:100,edit:true}
+                , {field: 'SendCount', title: '调拨数量', align: 'center',width:100,edit:true}
+                , {field: 'NoCostPrice', title: '不含税单价', align: 'center',width:100,edit:true}
+                , {field: 'Tax', title: '税率%', align: 'center',width:100,edit:true}
+                , {field: 'CostPrice', title: '含税代价', align: 'center',width:100,edit:true}
                 , {field: 'RemainCount', title: '库存', align: 'center',width:100}
                 , {field: 'AvailableCount', title: '可调拨数', align: 'center',width:100}
 
             ]]
-            // , page: {page: true, limits: [5,10, 15, 20, 30, 50]}
-            // , limit: 5
         });
     }
-</script>
-<script type="text/html" id="reqType">
-    {{# if(d.RequstType==0){ }}
-    门店申请
-    {{# }else if(d.RequstType==1){ }}
-    总部配货
-    {{# }else if(d.RequstType==2){ }}
-    总部申请
-    {{#  } }}
+    function initApplyTable(table,checkListGood) {
+        table.render({
+            elem: '#giftsList'
+            , data: checkListGood
+            , height:'220px'
+            , size:'sm'
+            , cellMinWidth: 90 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+            , cols: [[
+                  {field: 'GoodID', title: '商品ID', align: 'center',width:100}
+                , {field: 'GoodName', title: '商品名称', align: 'center',width:100}
+                , {field: 'RequestCount', title: '申请数量', align: 'center',width:100,edit:true}
+                , {field: 'RemainCount', title: '库存', align: 'center',width:100}
+                , {field: 'AvailableCount', title: '可调拨数', align: 'center',width:100}
+
+            ]]
+        });
+    }
 </script>
 <script type="text/html" id="reqState">
     {{# if(d.State==0){ }}

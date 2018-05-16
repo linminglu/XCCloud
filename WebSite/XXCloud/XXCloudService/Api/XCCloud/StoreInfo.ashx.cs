@@ -168,10 +168,10 @@ namespace XCCloudService.Api.XCCloud
                     " left join (select b.* from Dict_System a inner join Dict_System b on a.ID=b.PID where a.DictKey='门店状态' and a.PID=0) c on convert(varchar, a.StoreState)=c.DictValue " +
                     " where a.MerchID=@merchId ";
                 sql = sql + sqlWhere;
-                var dbContext = DbContextFactory.CreateByModelNamespace(typeof(Base_StoreInfo).Namespace);
-                var base_StoreInfo = dbContext.Database.SqlQuery<Base_StoreInfoListModel>(sql, parameters).ToList();                
 
-                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, base_StoreInfo);
+                var list = Base_StoreInfoService.I.SqlQuery<Base_StoreInfoListModel>(sql, parameters).ToList();
+                
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, list);
             }
             catch (Exception e)
             {
@@ -583,13 +583,13 @@ namespace XCCloudService.Api.XCCloud
                         //初始化门店运营参数配置
                         var dbContext = DbContextFactory.CreateByModelNamespace(typeof(Data_Parameters).Namespace);
                         var data_Parameter = dbContext.Set<Data_Parameters>().AsQueryable();
-                        if (base_MerchantInfo.MerchTag == (int)MerchTag.Lottery)
+                        if (base_StoreInfo.StoreTag == (int)MerchTag.Game)
                         {
-                            data_Parameter = data_Parameter.Where(p => p.StoreID.Equals(MerchTag.Lottery.ToString()));
+                            data_Parameter = data_Parameter.Where(p => p.StoreID.Equals(MerchTag.Game.ToString()));
                         }
                         else
                         {
-                            data_Parameter = data_Parameter.Where(p => p.StoreID.Equals(MerchTag.Game.ToString()));
+                            data_Parameter = data_Parameter.Where(p => p.StoreID.Equals(MerchTag.Lottery.ToString()));
                         }
 
                         foreach (var model in data_Parameter.ToList())
@@ -730,9 +730,11 @@ namespace XCCloudService.Api.XCCloud
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
+                bool isStoreTagEdit = false;
                 base_StoreInfo.ParentID = parentId;
                 base_StoreInfo.MerchID = merchId;
                 base_StoreInfo.StoreName = storeName;
+                isStoreTagEdit = ObjectExt.Toint(storeTag) != base_StoreInfo.StoreTag;
                 base_StoreInfo.StoreTag = ObjectExt.Toint(storeTag);
                 base_StoreInfo.Password = password;
                 base_StoreInfo.AuthorExpireDate = ObjectExt.Todatetime(authorExpireDate);
@@ -747,6 +749,48 @@ namespace XCCloudService.Api.XCCloud
                     errMsg = "修改门店信息失败";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
+
+                #region 初始化运营参数
+
+                //初始化门店运营参数配置
+                var dbContext = DbContextFactory.CreateByModelNamespace(typeof(Data_Parameters).Namespace);
+                var data_Parameter = dbContext.Set<Data_Parameters>().AsQueryable();
+                if (isStoreTagEdit)
+                {
+                    foreach (var model in data_Parameter.Where(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)))
+                    {
+                        dbContext.Entry(model).State = EntityState.Deleted;
+                    }
+                }
+                
+                if (base_StoreInfo.StoreTag == (int)MerchTag.Game)
+                {
+                    data_Parameter = data_Parameter.Where(p => p.StoreID.Equals(MerchTag.Game.ToString()));
+                }
+                else
+                {
+                    data_Parameter = data_Parameter.Where(p => p.StoreID.Equals(MerchTag.Lottery.ToString()));
+                }
+                
+                foreach (var model in data_Parameter.ToList())
+                {
+                    var data_ParameterModel = new Data_Parameters();
+                    data_ParameterModel.StoreID = storeId;
+                    data_ParameterModel.ParameterName = model.ParameterName;
+                    data_ParameterModel.ParameterValue = model.ParameterValue;
+                    data_ParameterModel.System = model.System;
+                    data_ParameterModel.IsAllow = model.IsAllow;
+                    data_ParameterModel.Note = model.Note;
+                    dbContext.Entry(data_ParameterModel).State = EntityState.Added;
+                }
+
+                if (dbContext.SaveChanges() < 0)
+                {
+                    errMsg = "初始化门店运营参数失败";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
+                #endregion
 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
             }

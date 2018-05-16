@@ -95,6 +95,7 @@
           <Property Name="GoodType" Type="int" />
           <Property Name="AllowStorage" Type="int" />
           <Property Name="Price" Type="numeric" Precision="10" Scale="2" />
+          <Property Name="Tax" Type="numeric" Precision="10" Scale="6" />
           <Property Name="ReturnFlag" Type="int" />
           <Property Name="AllowCreatePoint" Type="int" />
           <Property Name="ReturnTime" Type="int" />
@@ -689,6 +690,14 @@
           <Property Name="UpdateLevelID" Type="int" />
           <Property Name="PriorityLevel" Type="int" />
         </EntityType>
+        <!--生成过程中发现错误:
+警告 6013: 表/视图“XCCloud.dbo.Data_Food_Record”未定义主键，并且无法推断有效的主键。已排除了此表/视图。若要使用实体，将需要检查您的架构、添加正确的键并取消对实体的注释。
+        <EntityType Name="Data_Food_Record">
+          <Property Name="FoodLevelID" Type="int" />
+          <Property Name="RecordDate" Type="datetime" />
+          <Property Name="day_sale_count" Type="int" />
+          <Property Name="member_day_sale_count" Type="int" />
+        </EntityType>-->
         <EntityType Name="Data_Food_Sale">
           <Key>
             <PropertyRef Name="ID" />
@@ -737,6 +746,7 @@
           <Property Name="ForbidEnd" Type="date" />
           <Property Name="ClientPrice" Type="decimal" Precision="18" Scale="2" />
           <Property Name="MemberPrice" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="Tax" Type="numeric" Precision="10" Scale="6" />
           <Property Name="RenewDays" Type="int" />
         </EntityType>
         <EntityType Name="Data_FreeCoinRule">
@@ -1358,6 +1368,7 @@
           <Property Name="BusinessType" Type="int" />
           <Property Name="AllowExitTimes" Type="int" />
           <Property Name="Price" Type="numeric" Precision="10" Scale="2" />
+          <Property Name="Tax" Type="numeric" Precision="10" Scale="6" />
           <Property Name="GroupStartupCount" Type="int" />
           <Property Name="ReadFace" Type="int" />
           <Property Name="AllowCreatePoint" Type="int" />
@@ -1823,6 +1834,16 @@
           <Property Name="TotalMoney" Type="numeric" Precision="5" Scale="2" />
           <Property Name="Note" Type="varchar" MaxLength="200" />
           <Property Name="BuyFoodType" Type="int" />
+        </EntityType>
+        <EntityType Name="Flw_Food_Sale_Pay">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="varchar" MaxLength="32" Nullable="false" />
+          <Property Name="FlwFoodID" Type="varchar" MaxLength="32" />
+          <Property Name="BalanceIndex" Type="int" />
+          <Property Name="PayCount" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="Balance" Type="decimal" Precision="18" Scale="2" />
         </EntityType>
         <EntityType Name="Flw_Food_SaleDetail">
           <Key>
@@ -2346,6 +2367,14 @@
           <Property Name="OutFromPrint" Type="int" />
           <Property Name="OutFromReal" Type="int" />
         </EntityType>
+        <!--生成过程中发现错误:
+警告 6013: 表/视图“XCCloud.dbo.t_MPOrder”未定义主键，并且无法推断有效的主键。已排除了此表/视图。若要使用实体，将需要检查您的架构、添加正确的键并取消对实体的注释。
+        <EntityType Name="t_MPOrder">
+          <Property Name="OrderNumber" Type="varchar" MaxLength="200" />
+          <Property Name="StoreId" Type="varchar" MaxLength="200" />
+          <Property Name="CreateTime" Type="varchar" MaxLength="50" />
+          <Property Name="MerchID" Type="varchar" MaxLength="20" />
+        </EntityType>-->
         <EntityType Name="XC_WorkInfo">
           <Key>
             <PropertyRef Name="WorkID" />
@@ -2479,6 +2508,7 @@
           <EntitySet Name="Flw_Food_Exit" EntityType="Self.Flw_Food_Exit" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Flw_Food_ExitDetail" EntityType="Self.Flw_Food_ExitDetail" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Flw_Food_Sale" EntityType="Self.Flw_Food_Sale" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Flw_Food_Sale_Pay" EntityType="Self.Flw_Food_Sale_Pay" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Flw_Food_SaleDetail" EntityType="Self.Flw_Food_SaleDetail" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Flw_Game_Watch" EntityType="Self.Flw_Game_Watch" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Flw_Game_WinPrize" EntityType="Self.Flw_Game_WinPrize" Schema="dbo" store:Type="Tables" />
@@ -2889,7 +2919,6 @@
           <EntitySet Name="Data_Discount_MemberLevel" EntityType="XCCloudDBModel.Data_Discount_MemberLevel" />
           <EntitySet Name="Data_GoodStorage_Detail" EntityType="XCCloudDBModel.Data_GoodStorage_Detail" />
           <EntitySet Name="Base_Goodinfo_Price" EntityType="XCCloudDBModel.Base_Goodinfo_Price" />
-          <EntitySet Name="Base_GoodsInfo" EntityType="XCCloudDBModel.Base_GoodsInfo" />
           <EntitySet Name="Data_GoodsStock" EntityType="XCCloudDBModel.Data_GoodsStock" />
           <EntitySet Name="Data_WorkFlow_Entry" EntityType="XCCloudDBModel.Data_WorkFlow_Entry" />
           <EntitySet Name="Data_WorkFlow_Node" EntityType="XCCloudDBModel.Data_WorkFlow_Node" />
@@ -2910,7 +2939,6 @@
           <EntitySet Name="Data_CouponList" EntityType="XCCloudDBModel.Data_CouponList" />
           <EntitySet Name="Dict_BalanceType" EntityType="XCCloudDBModel.Dict_BalanceType" />
           <EntitySet Name="Data_Food_Level" EntityType="XCCloudDBModel.Data_Food_Level" />
-          <EntitySet Name="Data_FoodInfo" EntityType="XCCloudDBModel.Data_FoodInfo" />
           <EntitySet Name="Data_FreeCoinRule" EntityType="XCCloudDBModel.Data_FreeCoinRule" />
           <EntitySet Name="Data_GameAPP_Rule" EntityType="XCCloudDBModel.Data_GameAPP_Rule" />
           <EntitySet Name="Data_GameInfo" EntityType="XCCloudDBModel.Data_GameInfo" />
@@ -2919,7 +2947,6 @@
           <EntitySet Name="Data_MemberLevel" EntityType="XCCloudDBModel.Data_MemberLevel" />
           <EntitySet Name="Data_MemberLevel_Balance" EntityType="XCCloudDBModel.Data_MemberLevel_Balance" />
           <EntitySet Name="Data_MemberLevel_BalanceCharge" EntityType="XCCloudDBModel.Data_MemberLevel_BalanceCharge" />
-          <EntitySet Name="Data_ProjectTicket" EntityType="XCCloudDBModel.Data_ProjectTicket" />
           <EntitySet Name="Data_ProjectTicket_Bind" EntityType="XCCloudDBModel.Data_ProjectTicket_Bind" />
           <EntitySet Name="Data_PushRule" EntityType="XCCloudDBModel.Data_PushRule" />
           <EntitySet Name="Data_PushRule_GameList" EntityType="XCCloudDBModel.Data_PushRule_GameList" />
@@ -2937,6 +2964,10 @@
           <EntitySet Name="Flw_Project_TicketInfo" EntityType="XCCloudDBModel.Flw_Project_TicketInfo" />
           <EntitySet Name="Flw_ProjectTicket_Bind" EntityType="XCCloudDBModel.Flw_ProjectTicket_Bind" />
           <EntitySet Name="Flw_ProjectTicket_Entry" EntityType="XCCloudDBModel.Flw_ProjectTicket_Entry" />
+          <EntitySet Name="Base_GoodsInfo" EntityType="XCCloudDBModel.Base_GoodsInfo" />
+          <EntitySet Name="Data_FoodInfo" EntityType="XCCloudDBModel.Data_FoodInfo" />
+          <EntitySet Name="Data_ProjectTicket" EntityType="XCCloudDBModel.Data_ProjectTicket" />
+          <EntitySet Name="Flw_Food_Sale_Pay" EntityType="XCCloudDBModel.Flw_Food_Sale_Pay" />
         </EntityContainer>
         <EntityType Name="Base_ChainRule">
           <Key>
@@ -4390,28 +4421,6 @@
           <Property Name="BalanceIndex" Type="Int32" />
           <Property Name="Count" Type="Decimal" Precision="10" Scale="2" />
         </EntityType>
-        <EntityType Name="Base_GoodsInfo">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="Barcode" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="GoodName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="GoodPhoteURL" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
-          <Property Name="GoodType" Type="Int32" />
-          <Property Name="AllowStorage" Type="Int32" />
-          <Property Name="Price" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="ReturnFlag" Type="Int32" />
-          <Property Name="AllowCreatePoint" Type="Int32" />
-          <Property Name="ReturnTime" Type="Int32" />
-          <Property Name="TimeType" Type="Int32" />
-          <Property Name="ReturnFee" Type="Decimal" Precision="10" Scale="6" />
-          <Property Name="FeeType" Type="Int32" />
-          <Property Name="Status" Type="Int32" />
-          <Property Name="Note" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
-        </EntityType>
         <EntityType Name="Data_GoodsStock">
           <Key>
             <PropertyRef Name="ID" />
@@ -4749,31 +4758,6 @@
           <Property Name="UpdateLevelID" Type="Int32" />
           <Property Name="PriorityLevel" Type="Int32" />
         </EntityType>
-        <EntityType Name="Data_FoodInfo">
-          <Key>
-            <PropertyRef Name="FoodID" />
-          </Key>
-          <Property Name="FoodID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="FoodName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="Note" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
-          <Property Name="ImageURL" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
-          <Property Name="FoodType" Type="Int32" />
-          <Property Name="AllowInternet" Type="Int32" />
-          <Property Name="MeituanID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
-          <Property Name="DianpinID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
-          <Property Name="KoubeiID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
-          <Property Name="AllowPrint" Type="Int32" />
-          <Property Name="FoodState" Type="Int32" />
-          <Property Name="ForeAuthorize" Type="Int32" />
-          <Property Name="StartTime" Type="DateTime" Precision="3" />
-          <Property Name="EndTime" Type="DateTime" Precision="3" />
-          <Property Name="ForbidStart" Type="DateTime" Precision="0" />
-          <Property Name="ForbidEnd" Type="DateTime" Precision="0" />
-          <Property Name="ClientPrice" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="MemberPrice" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="RenewDays" Type="Int32" />
-        </EntityType>
         <EntityType Name="Data_FreeCoinRule">
           <Key>
             <PropertyRef Name="ID" />
@@ -4948,49 +4932,6 @@
           <Property Name="SourceCount" Type="Int32" />
           <Property Name="TargetBalanceIndex" Type="Int32" />
           <Property Name="TargetCount" Type="Int32" />
-        </EntityType>
-        <EntityType Name="Data_ProjectTicket">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="TicketName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="TicketType" Type="Int32" />
-          <Property Name="DivideType" Type="Int32" />
-          <Property Name="BusinessType" Type="Int32" />
-          <Property Name="AllowExitTimes" Type="Int32" />
-          <Property Name="Price" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="GroupStartupCount" Type="Int32" />
-          <Property Name="ReadFace" Type="Int32" />
-          <Property Name="AllowCreatePoint" Type="Int32" />
-          <Property Name="ActiveBar" Type="Int32" />
-          <Property Name="SaleAuthor" Type="Int32" />
-          <Property Name="EffactType" Type="Int32" />
-          <Property Name="EffactPeriodType" Type="Int32" />
-          <Property Name="EffactPeriodValue" Type="Int32" />
-          <Property Name="VaildPeriodType" Type="Int32" />
-          <Property Name="VaildPeriodValue" Type="Int32" />
-          <Property Name="VaildStartDate" Type="DateTime" Precision="0" />
-          <Property Name="VaildEndDate" Type="DateTime" Precision="0" />
-          <Property Name="WeekType" Type="Int32" />
-          <Property Name="Week" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="StartTime" Type="Time" Precision="7" />
-          <Property Name="EndTime" Type="Time" Precision="7" />
-          <Property Name="NoStartDate" Type="DateTime" Precision="0" />
-          <Property Name="NoEndDate" Type="DateTime" Precision="0" />
-          <Property Name="AccompanyCash" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="BalanceIndex" Type="Int32" />
-          <Property Name="BalanceValue" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="AllowExitTicket" Type="Int32" />
-          <Property Name="ExitPeriodType" Type="Int32" />
-          <Property Name="ExitPeriodValue" Type="Int32" />
-          <Property Name="ExitTicketType" Type="Int32" />
-          <Property Name="ExitTicketValue" Type="Decimal" Precision="10" Scale="6" />
-          <Property Name="AllowRestrict" Type="Int32" />
-          <Property Name="RestrictShareCount" Type="Int32" />
-          <Property Name="RestrictPeriodType" Type="Int32" />
-          <Property Name="RestrictPreiodValue" Type="Int32" />
-          <Property Name="RestrctCount" Type="Int32" />
         </EntityType>
         <EntityType Name="Data_ProjectTicket_Bind">
           <Key>
@@ -5260,6 +5201,109 @@
           <Property Name="RestrictPeriodType" Type="Int32" />
           <Property Name="RestrictPreiodValue" Type="Int32" />
           <Property Name="RestrctCount" Type="Int32" />
+        </EntityType>
+        <EntityType Name="Base_GoodsInfo">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="Barcode" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="GoodName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="GoodPhoteURL" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="GoodType" Type="Int32" />
+          <Property Name="AllowStorage" Type="Int32" />
+          <Property Name="Price" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="Tax" Type="Decimal" Precision="10" Scale="6" />
+          <Property Name="ReturnFlag" Type="Int32" />
+          <Property Name="AllowCreatePoint" Type="Int32" />
+          <Property Name="ReturnTime" Type="Int32" />
+          <Property Name="TimeType" Type="Int32" />
+          <Property Name="ReturnFee" Type="Decimal" Precision="10" Scale="6" />
+          <Property Name="FeeType" Type="Int32" />
+          <Property Name="Status" Type="Int32" />
+          <Property Name="Note" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Data_FoodInfo">
+          <Key>
+            <PropertyRef Name="FoodID" />
+          </Key>
+          <Property Name="FoodID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FoodName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="Note" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="ImageURL" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="FoodType" Type="Int32" />
+          <Property Name="AllowInternet" Type="Int32" />
+          <Property Name="MeituanID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="DianpinID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="KoubeiID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="AllowPrint" Type="Int32" />
+          <Property Name="FoodState" Type="Int32" />
+          <Property Name="ForeAuthorize" Type="Int32" />
+          <Property Name="StartTime" Type="DateTime" Precision="3" />
+          <Property Name="EndTime" Type="DateTime" Precision="3" />
+          <Property Name="ForbidStart" Type="DateTime" Precision="0" />
+          <Property Name="ForbidEnd" Type="DateTime" Precision="0" />
+          <Property Name="ClientPrice" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="MemberPrice" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="Tax" Type="Decimal" Precision="10" Scale="6" />
+          <Property Name="RenewDays" Type="Int32" />
+        </EntityType>
+        <EntityType Name="Data_ProjectTicket">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TicketName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="TicketType" Type="Int32" />
+          <Property Name="DivideType" Type="Int32" />
+          <Property Name="BusinessType" Type="Int32" />
+          <Property Name="AllowExitTimes" Type="Int32" />
+          <Property Name="Price" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="Tax" Type="Decimal" Precision="10" Scale="6" />
+          <Property Name="GroupStartupCount" Type="Int32" />
+          <Property Name="ReadFace" Type="Int32" />
+          <Property Name="AllowCreatePoint" Type="Int32" />
+          <Property Name="ActiveBar" Type="Int32" />
+          <Property Name="SaleAuthor" Type="Int32" />
+          <Property Name="EffactType" Type="Int32" />
+          <Property Name="EffactPeriodType" Type="Int32" />
+          <Property Name="EffactPeriodValue" Type="Int32" />
+          <Property Name="VaildPeriodType" Type="Int32" />
+          <Property Name="VaildPeriodValue" Type="Int32" />
+          <Property Name="VaildStartDate" Type="DateTime" Precision="0" />
+          <Property Name="VaildEndDate" Type="DateTime" Precision="0" />
+          <Property Name="WeekType" Type="Int32" />
+          <Property Name="Week" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="StartTime" Type="Time" Precision="7" />
+          <Property Name="EndTime" Type="Time" Precision="7" />
+          <Property Name="NoStartDate" Type="DateTime" Precision="0" />
+          <Property Name="NoEndDate" Type="DateTime" Precision="0" />
+          <Property Name="AccompanyCash" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="BalanceIndex" Type="Int32" />
+          <Property Name="BalanceValue" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="AllowExitTicket" Type="Int32" />
+          <Property Name="ExitPeriodType" Type="Int32" />
+          <Property Name="ExitPeriodValue" Type="Int32" />
+          <Property Name="ExitTicketType" Type="Int32" />
+          <Property Name="ExitTicketValue" Type="Decimal" Precision="10" Scale="6" />
+          <Property Name="AllowRestrict" Type="Int32" />
+          <Property Name="RestrictShareCount" Type="Int32" />
+          <Property Name="RestrictPeriodType" Type="Int32" />
+          <Property Name="RestrictPreiodValue" Type="Int32" />
+          <Property Name="RestrctCount" Type="Int32" />
+        </EntityType>
+        <EntityType Name="Flw_Food_Sale_Pay">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="FlwFoodID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="BalanceIndex" Type="Int32" />
+          <Property Name="PayCount" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="Balance" Type="Decimal" Precision="18" Scale="2" />
         </EntityType>
         </Schema>
     </edmx:ConceptualModels>
@@ -6824,29 +6868,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Base_GoodsInfo">
-            <EntityTypeMapping TypeName="XCCloudDBModel.Base_GoodsInfo">
-              <MappingFragment StoreEntitySet="Base_GoodsInfo">
-                <ScalarProperty Name="Note" ColumnName="Note" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="FeeType" ColumnName="FeeType" />
-                <ScalarProperty Name="ReturnFee" ColumnName="ReturnFee" />
-                <ScalarProperty Name="TimeType" ColumnName="TimeType" />
-                <ScalarProperty Name="ReturnTime" ColumnName="ReturnTime" />
-                <ScalarProperty Name="AllowCreatePoint" ColumnName="AllowCreatePoint" />
-                <ScalarProperty Name="ReturnFlag" ColumnName="ReturnFlag" />
-                <ScalarProperty Name="Price" ColumnName="Price" />
-                <ScalarProperty Name="AllowStorage" ColumnName="AllowStorage" />
-                <ScalarProperty Name="GoodType" ColumnName="GoodType" />
-                <ScalarProperty Name="GoodPhoteURL" ColumnName="GoodPhoteURL" />
-                <ScalarProperty Name="GoodName" ColumnName="GoodName" />
-                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
-                <ScalarProperty Name="Barcode" ColumnName="Barcode" />
-                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Data_GoodsStock">
             <EntityTypeMapping TypeName="XCCloudDBModel.Data_GoodsStock">
               <MappingFragment StoreEntitySet="Data_GoodsStock">
@@ -7204,32 +7225,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Data_FoodInfo">
-            <EntityTypeMapping TypeName="XCCloudDBModel.Data_FoodInfo">
-              <MappingFragment StoreEntitySet="Data_FoodInfo">
-                <ScalarProperty Name="RenewDays" ColumnName="RenewDays" />
-                <ScalarProperty Name="MemberPrice" ColumnName="MemberPrice" />
-                <ScalarProperty Name="ClientPrice" ColumnName="ClientPrice" />
-                <ScalarProperty Name="ForbidEnd" ColumnName="ForbidEnd" />
-                <ScalarProperty Name="ForbidStart" ColumnName="ForbidStart" />
-                <ScalarProperty Name="EndTime" ColumnName="EndTime" />
-                <ScalarProperty Name="StartTime" ColumnName="StartTime" />
-                <ScalarProperty Name="ForeAuthorize" ColumnName="ForeAuthorize" />
-                <ScalarProperty Name="FoodState" ColumnName="FoodState" />
-                <ScalarProperty Name="AllowPrint" ColumnName="AllowPrint" />
-                <ScalarProperty Name="KoubeiID" ColumnName="KoubeiID" />
-                <ScalarProperty Name="DianpinID" ColumnName="DianpinID" />
-                <ScalarProperty Name="MeituanID" ColumnName="MeituanID" />
-                <ScalarProperty Name="AllowInternet" ColumnName="AllowInternet" />
-                <ScalarProperty Name="FoodType" ColumnName="FoodType" />
-                <ScalarProperty Name="ImageURL" ColumnName="ImageURL" />
-                <ScalarProperty Name="Note" ColumnName="Note" />
-                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
-                <ScalarProperty Name="FoodName" ColumnName="FoodName" />
-                <ScalarProperty Name="FoodID" ColumnName="FoodID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Data_FreeCoinRule">
             <EntityTypeMapping TypeName="XCCloudDBModel.Data_FreeCoinRule">
               <MappingFragment StoreEntitySet="Data_FreeCoinRule">
@@ -7409,50 +7404,6 @@
                 <ScalarProperty Name="SourceBalanceIndex" ColumnName="SourceBalanceIndex" />
                 <ScalarProperty Name="MemberLevelID" ColumnName="MemberLevelID" />
                 <ScalarProperty Name="MerchID" ColumnName="MerchID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Data_ProjectTicket">
-            <EntityTypeMapping TypeName="XCCloudDBModel.Data_ProjectTicket">
-              <MappingFragment StoreEntitySet="Data_ProjectTicket">
-                <ScalarProperty Name="RestrctCount" ColumnName="RestrctCount" />
-                <ScalarProperty Name="RestrictPreiodValue" ColumnName="RestrictPreiodValue" />
-                <ScalarProperty Name="RestrictPeriodType" ColumnName="RestrictPeriodType" />
-                <ScalarProperty Name="RestrictShareCount" ColumnName="RestrictShareCount" />
-                <ScalarProperty Name="AllowRestrict" ColumnName="AllowRestrict" />
-                <ScalarProperty Name="ExitTicketValue" ColumnName="ExitTicketValue" />
-                <ScalarProperty Name="ExitTicketType" ColumnName="ExitTicketType" />
-                <ScalarProperty Name="ExitPeriodValue" ColumnName="ExitPeriodValue" />
-                <ScalarProperty Name="ExitPeriodType" ColumnName="ExitPeriodType" />
-                <ScalarProperty Name="AllowExitTicket" ColumnName="AllowExitTicket" />
-                <ScalarProperty Name="BalanceValue" ColumnName="BalanceValue" />
-                <ScalarProperty Name="BalanceIndex" ColumnName="BalanceIndex" />
-                <ScalarProperty Name="AccompanyCash" ColumnName="AccompanyCash" />
-                <ScalarProperty Name="NoEndDate" ColumnName="NoEndDate" />
-                <ScalarProperty Name="NoStartDate" ColumnName="NoStartDate" />
-                <ScalarProperty Name="EndTime" ColumnName="EndTime" />
-                <ScalarProperty Name="StartTime" ColumnName="StartTime" />
-                <ScalarProperty Name="Week" ColumnName="Week" />
-                <ScalarProperty Name="WeekType" ColumnName="WeekType" />
-                <ScalarProperty Name="VaildEndDate" ColumnName="VaildEndDate" />
-                <ScalarProperty Name="VaildStartDate" ColumnName="VaildStartDate" />
-                <ScalarProperty Name="VaildPeriodValue" ColumnName="VaildPeriodValue" />
-                <ScalarProperty Name="VaildPeriodType" ColumnName="VaildPeriodType" />
-                <ScalarProperty Name="EffactPeriodValue" ColumnName="EffactPeriodValue" />
-                <ScalarProperty Name="EffactPeriodType" ColumnName="EffactPeriodType" />
-                <ScalarProperty Name="EffactType" ColumnName="EffactType" />
-                <ScalarProperty Name="SaleAuthor" ColumnName="SaleAuthor" />
-                <ScalarProperty Name="ActiveBar" ColumnName="ActiveBar" />
-                <ScalarProperty Name="AllowCreatePoint" ColumnName="AllowCreatePoint" />
-                <ScalarProperty Name="ReadFace" ColumnName="ReadFace" />
-                <ScalarProperty Name="GroupStartupCount" ColumnName="GroupStartupCount" />
-                <ScalarProperty Name="Price" ColumnName="Price" />
-                <ScalarProperty Name="AllowExitTimes" ColumnName="AllowExitTimes" />
-                <ScalarProperty Name="BusinessType" ColumnName="BusinessType" />
-                <ScalarProperty Name="DivideType" ColumnName="DivideType" />
-                <ScalarProperty Name="TicketType" ColumnName="TicketType" />
-                <ScalarProperty Name="TicketName" ColumnName="TicketName" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -7740,6 +7691,113 @@
                 <ScalarProperty Name="TicketName" ColumnName="TicketName" />
                 <ScalarProperty Name="ProjectTicketID" ColumnName="ProjectTicketID" />
                 <ScalarProperty Name="ProjectCode" ColumnName="ProjectCode" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Base_GoodsInfo">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Base_GoodsInfo">
+              <MappingFragment StoreEntitySet="Base_GoodsInfo">
+                <ScalarProperty Name="Note" ColumnName="Note" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="FeeType" ColumnName="FeeType" />
+                <ScalarProperty Name="ReturnFee" ColumnName="ReturnFee" />
+                <ScalarProperty Name="TimeType" ColumnName="TimeType" />
+                <ScalarProperty Name="ReturnTime" ColumnName="ReturnTime" />
+                <ScalarProperty Name="AllowCreatePoint" ColumnName="AllowCreatePoint" />
+                <ScalarProperty Name="ReturnFlag" ColumnName="ReturnFlag" />
+                <ScalarProperty Name="Tax" ColumnName="Tax" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="AllowStorage" ColumnName="AllowStorage" />
+                <ScalarProperty Name="GoodType" ColumnName="GoodType" />
+                <ScalarProperty Name="GoodPhoteURL" ColumnName="GoodPhoteURL" />
+                <ScalarProperty Name="GoodName" ColumnName="GoodName" />
+                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
+                <ScalarProperty Name="Barcode" ColumnName="Barcode" />
+                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Data_FoodInfo">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Data_FoodInfo">
+              <MappingFragment StoreEntitySet="Data_FoodInfo">
+                <ScalarProperty Name="RenewDays" ColumnName="RenewDays" />
+                <ScalarProperty Name="Tax" ColumnName="Tax" />
+                <ScalarProperty Name="MemberPrice" ColumnName="MemberPrice" />
+                <ScalarProperty Name="ClientPrice" ColumnName="ClientPrice" />
+                <ScalarProperty Name="ForbidEnd" ColumnName="ForbidEnd" />
+                <ScalarProperty Name="ForbidStart" ColumnName="ForbidStart" />
+                <ScalarProperty Name="EndTime" ColumnName="EndTime" />
+                <ScalarProperty Name="StartTime" ColumnName="StartTime" />
+                <ScalarProperty Name="ForeAuthorize" ColumnName="ForeAuthorize" />
+                <ScalarProperty Name="FoodState" ColumnName="FoodState" />
+                <ScalarProperty Name="AllowPrint" ColumnName="AllowPrint" />
+                <ScalarProperty Name="KoubeiID" ColumnName="KoubeiID" />
+                <ScalarProperty Name="DianpinID" ColumnName="DianpinID" />
+                <ScalarProperty Name="MeituanID" ColumnName="MeituanID" />
+                <ScalarProperty Name="AllowInternet" ColumnName="AllowInternet" />
+                <ScalarProperty Name="FoodType" ColumnName="FoodType" />
+                <ScalarProperty Name="ImageURL" ColumnName="ImageURL" />
+                <ScalarProperty Name="Note" ColumnName="Note" />
+                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
+                <ScalarProperty Name="FoodName" ColumnName="FoodName" />
+                <ScalarProperty Name="FoodID" ColumnName="FoodID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Data_ProjectTicket">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Data_ProjectTicket">
+              <MappingFragment StoreEntitySet="Data_ProjectTicket">
+                <ScalarProperty Name="RestrctCount" ColumnName="RestrctCount" />
+                <ScalarProperty Name="RestrictPreiodValue" ColumnName="RestrictPreiodValue" />
+                <ScalarProperty Name="RestrictPeriodType" ColumnName="RestrictPeriodType" />
+                <ScalarProperty Name="RestrictShareCount" ColumnName="RestrictShareCount" />
+                <ScalarProperty Name="AllowRestrict" ColumnName="AllowRestrict" />
+                <ScalarProperty Name="ExitTicketValue" ColumnName="ExitTicketValue" />
+                <ScalarProperty Name="ExitTicketType" ColumnName="ExitTicketType" />
+                <ScalarProperty Name="ExitPeriodValue" ColumnName="ExitPeriodValue" />
+                <ScalarProperty Name="ExitPeriodType" ColumnName="ExitPeriodType" />
+                <ScalarProperty Name="AllowExitTicket" ColumnName="AllowExitTicket" />
+                <ScalarProperty Name="BalanceValue" ColumnName="BalanceValue" />
+                <ScalarProperty Name="BalanceIndex" ColumnName="BalanceIndex" />
+                <ScalarProperty Name="AccompanyCash" ColumnName="AccompanyCash" />
+                <ScalarProperty Name="NoEndDate" ColumnName="NoEndDate" />
+                <ScalarProperty Name="NoStartDate" ColumnName="NoStartDate" />
+                <ScalarProperty Name="EndTime" ColumnName="EndTime" />
+                <ScalarProperty Name="StartTime" ColumnName="StartTime" />
+                <ScalarProperty Name="Week" ColumnName="Week" />
+                <ScalarProperty Name="WeekType" ColumnName="WeekType" />
+                <ScalarProperty Name="VaildEndDate" ColumnName="VaildEndDate" />
+                <ScalarProperty Name="VaildStartDate" ColumnName="VaildStartDate" />
+                <ScalarProperty Name="VaildPeriodValue" ColumnName="VaildPeriodValue" />
+                <ScalarProperty Name="VaildPeriodType" ColumnName="VaildPeriodType" />
+                <ScalarProperty Name="EffactPeriodValue" ColumnName="EffactPeriodValue" />
+                <ScalarProperty Name="EffactPeriodType" ColumnName="EffactPeriodType" />
+                <ScalarProperty Name="EffactType" ColumnName="EffactType" />
+                <ScalarProperty Name="SaleAuthor" ColumnName="SaleAuthor" />
+                <ScalarProperty Name="ActiveBar" ColumnName="ActiveBar" />
+                <ScalarProperty Name="AllowCreatePoint" ColumnName="AllowCreatePoint" />
+                <ScalarProperty Name="ReadFace" ColumnName="ReadFace" />
+                <ScalarProperty Name="GroupStartupCount" ColumnName="GroupStartupCount" />
+                <ScalarProperty Name="Tax" ColumnName="Tax" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="AllowExitTimes" ColumnName="AllowExitTimes" />
+                <ScalarProperty Name="BusinessType" ColumnName="BusinessType" />
+                <ScalarProperty Name="DivideType" ColumnName="DivideType" />
+                <ScalarProperty Name="TicketType" ColumnName="TicketType" />
+                <ScalarProperty Name="TicketName" ColumnName="TicketName" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Flw_Food_Sale_Pay">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Flw_Food_Sale_Pay">
+              <MappingFragment StoreEntitySet="Flw_Food_Sale_Pay">
+                <ScalarProperty Name="Balance" ColumnName="Balance" />
+                <ScalarProperty Name="PayCount" ColumnName="PayCount" />
+                <ScalarProperty Name="BalanceIndex" ColumnName="BalanceIndex" />
+                <ScalarProperty Name="FlwFoodID" ColumnName="FlwFoodID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

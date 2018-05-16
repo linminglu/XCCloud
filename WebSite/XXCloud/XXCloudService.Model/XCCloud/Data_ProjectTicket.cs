@@ -21,6 +21,7 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> BusinessType { get; set; }
         public Nullable<int> AllowExitTimes { get; set; }
         public Nullable<decimal> Price { get; set; }
+        public Nullable<decimal> Tax { get; set; }
         public Nullable<int> GroupStartupCount { get; set; }
         public Nullable<int> ReadFace { get; set; }
         public Nullable<int> AllowCreatePoint { get; set; }

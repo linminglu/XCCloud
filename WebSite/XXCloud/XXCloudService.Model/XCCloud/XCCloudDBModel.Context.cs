@@ -132,7 +132,6 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Data_Discount_MemberLevel> Data_Discount_MemberLevel { get; set; }
         public virtual DbSet<Data_GoodStorage_Detail> Data_GoodStorage_Detail { get; set; }
         public virtual DbSet<Base_Goodinfo_Price> Base_Goodinfo_Price { get; set; }
-        public virtual DbSet<Base_GoodsInfo> Base_GoodsInfo { get; set; }
         public virtual DbSet<Data_GoodsStock> Data_GoodsStock { get; set; }
         public virtual DbSet<Data_WorkFlow_Entry> Data_WorkFlow_Entry { get; set; }
         public virtual DbSet<Data_WorkFlow_Node> Data_WorkFlow_Node { get; set; }
@@ -153,7 +152,6 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Data_CouponList> Data_CouponList { get; set; }
         public virtual DbSet<Dict_BalanceType> Dict_BalanceType { get; set; }
         public virtual DbSet<Data_Food_Level> Data_Food_Level { get; set; }
-        public virtual DbSet<Data_FoodInfo> Data_FoodInfo { get; set; }
         public virtual DbSet<Data_FreeCoinRule> Data_FreeCoinRule { get; set; }
         public virtual DbSet<Data_GameAPP_Rule> Data_GameAPP_Rule { get; set; }
         public virtual DbSet<Data_GameInfo> Data_GameInfo { get; set; }
@@ -162,7 +160,6 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Data_MemberLevel> Data_MemberLevel { get; set; }
         public virtual DbSet<Data_MemberLevel_Balance> Data_MemberLevel_Balance { get; set; }
         public virtual DbSet<Data_MemberLevel_BalanceCharge> Data_MemberLevel_BalanceCharge { get; set; }
-        public virtual DbSet<Data_ProjectTicket> Data_ProjectTicket { get; set; }
         public virtual DbSet<Data_ProjectTicket_Bind> Data_ProjectTicket_Bind { get; set; }
         public virtual DbSet<Data_PushRule> Data_PushRule { get; set; }
         public virtual DbSet<Data_PushRule_GameList> Data_PushRule_GameList { get; set; }
@@ -180,5 +177,9 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Flw_Project_TicketInfo> Flw_Project_TicketInfo { get; set; }
         public virtual DbSet<Flw_ProjectTicket_Bind> Flw_ProjectTicket_Bind { get; set; }
         public virtual DbSet<Flw_ProjectTicket_Entry> Flw_ProjectTicket_Entry { get; set; }
+        public virtual DbSet<Base_GoodsInfo> Base_GoodsInfo { get; set; }
+        public virtual DbSet<Data_FoodInfo> Data_FoodInfo { get; set; }
+        public virtual DbSet<Data_ProjectTicket> Data_ProjectTicket { get; set; }
+        public virtual DbSet<Flw_Food_Sale_Pay> Flw_Food_Sale_Pay { get; set; }
     }
 }

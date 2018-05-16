@@ -633,6 +633,9 @@
     <Compile Include="XCCloud\Flw_Food_SaleDetail.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
+    <Compile Include="XCCloud\Flw_Food_Sale_Pay.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
     <Compile Include="XCCloud\Flw_Game_Free.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>

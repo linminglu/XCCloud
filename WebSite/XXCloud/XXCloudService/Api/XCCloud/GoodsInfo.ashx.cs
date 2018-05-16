@@ -521,13 +521,13 @@ namespace XXCloudService.Api.XCCloud
                                 	a.RequstType,
                                     /*调拨出库门店*/
                                     requestoutstore.StoreID AS OutStoreID,
-                                    requestoutstore.StoreName AS OutStoreName,
+                                    (case when ISNULL(requestoutstore.StoreName,'')='' then '总店' else requestoutstore.StoreName end) AS OutStoreName,
                                     /*调拨出库仓库*/
                                     requestoutdepot.ID AS OutDepotID,
                                 	requestoutdepot.DepotName AS OutDepotName,                                    
                                 	/*调拨入库门店*/
                                     requestinstore.StoreID AS InStoreID,
-                                	requestinstore.StoreName AS InStoreName,
+                                	(case when ISNULL(requestinstore.StoreName,'')='' then '总店' else requestinstore.StoreName end) AS InStoreName,
                                 	/*调拨入库仓库*/
                                     requestindepot.ID AS InDepotID,
                                 	requestindepot.DepotName AS InDepotName,
@@ -1202,9 +1202,17 @@ namespace XXCloudService.Api.XCCloud
 
                         //工作流更新
                         var wf = new GoodReqWorkFlow(requestId, userId);
-                        if (!wf.Request(out errMsg))
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-
+                        if (requstType == 2)
+                        {
+                            if (!wf.SendDeal(out errMsg))
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+                        else
+                        {
+                            if (!wf.Request(out errMsg))
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+                        
                         ts.Complete();
                     }
                     catch (DbEntityValidationException e)
