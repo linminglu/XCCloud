@@ -1395,6 +1395,7 @@
           <Property Name="RestrictPeriodType" Type="int" />
           <Property Name="RestrictPreiodValue" Type="int" />
           <Property Name="RestrctCount" Type="int" />
+          <Property Name="Note" Type="varchar" MaxLength="500" />
         </EntityType>
         <EntityType Name="Data_ProjectTicket_Bind">
           <Key>
@@ -1611,9 +1612,9 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="MerchID" Type="varchar" MaxLength="15" />
-          <Property Name="TypeID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TypeID" Type="int" Nullable="false" />
           <Property Name="TypeName" Type="varchar" MaxLength="50" />
           <Property Name="MappingType" Type="int" />
           <Property Name="State" Type="int" />
@@ -5286,14 +5287,15 @@
           <Property Name="RestrictPeriodType" Type="Int32" />
           <Property Name="RestrictPreiodValue" Type="Int32" />
           <Property Name="RestrctCount" Type="Int32" />
+          <Property Name="Note" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="Dict_BalanceType">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="TypeID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TypeID" Type="Int32" Nullable="false" />
           <Property Name="TypeName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="MappingType" Type="Int32" />
           <Property Name="State" Type="Int32" />
@@ -7744,6 +7746,7 @@
           <EntitySetMapping Name="Data_ProjectTicket">
             <EntityTypeMapping TypeName="XCCloudDBModel.Data_ProjectTicket">
               <MappingFragment StoreEntitySet="Data_ProjectTicket">
+                <ScalarProperty Name="Note" ColumnName="Note" />
                 <ScalarProperty Name="RestrctCount" ColumnName="RestrctCount" />
                 <ScalarProperty Name="RestrictPreiodValue" ColumnName="RestrictPreiodValue" />
                 <ScalarProperty Name="RestrictPeriodType" ColumnName="RestrictPeriodType" />

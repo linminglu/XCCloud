@@ -37,7 +37,7 @@
                         <div class="layui-inline">
                             <label class="layui-form-label">每次售币最小币数</label>
                             <div class="layui-input-inline">
-                                <input type="text" class="layui-input" name="txtOnceSellCoinMin">
+                                <input type="text" class="layui-input" name="txtOnceSellCoinMin" id="txtOnceSellCoinMin">
                             </div>
                         </div>
                         <div class="layui-inline">
@@ -54,7 +54,7 @@
                         <div class="layui-inline">
                             <label class="layui-form-label">授权通道</label>
                             <div class="layui-input-inline">
-                                <select  id="AuthorityWay" lay-filter="AuthorityWay">
+                                <select  id="cmbAuthChannel" name="cmbAuthChannel" lay-filter="cmbAuthChannel">
                                     <option>-请选择-</option>
                                     <option value="0">授权卡</option>
                                     <option value="1">公众号通知</option>
@@ -71,7 +71,7 @@
                         <div class="layui-inline">
                             <label class="layui-form-label" style="padding: 8px 0;">销售方式</label>
                             <div class="layui-input-inline">
-                                <input type="checkbox" lay-skin="switch" lay-text="含税|不含税" id="chkTaxInSale " lay-filter="chkTaxInSale ">
+                                <input type="checkbox" name="chkTaxInSale" lay-skin="switch" lay-text="含税|不含税" id="chkTaxInSale " lay-filter="chkTaxInSale ">
                             </div>
                         </div>
                     </div>
@@ -109,7 +109,7 @@
                         <div class="layui-inline">
                             <label class="layui-form-label">每天免授权赢币上限</label>
                             <div class="layui-input-inline">
-                                <input type="text" id="txtOnceSellCoinMin" name="title" lay-verify="title" autocomplete="off" placeholder="请输入标题" class="layui-input">
+                                <input type="text" id="txtOnceSellCoinMin1" name="title" lay-verify="title" autocomplete="off" placeholder="请输入标题" class="layui-input">
                             </div>
                         </div>
 
@@ -178,20 +178,6 @@
                 <div class="layui-colla-content layui-show">
                     <div class="layui-form-item ">
                         <div class="layui-inline">
-                            <label class="layui-form-label">每天免授权退币上限</label>
-                            <div class="layui-input-inline">
-                                <input type="text" id="txtDayWithoutRightRefundMax" name="title" lay-verify="title" autocomplete="off" placeholder="请输入标题" class="layui-input">
-                            </div>
-                        </div>
-
-                        <div class="layui-inline">
-                            <label class="layui-form-label">单个会员余额上限</label>
-                            <div class="layui-input-inline">
-                                <input type="text" id="txtPerMemberCoinMax" name="title" lay-verify="title" autocomplete="off" placeholder="请输入标题" class="layui-input">
-                            </div>
-                        </div>
-
-                        <div class="layui-inline">
                             <label class="layui-form-label">会员生日提醒</label>
                             <div class="layui-input-inline">
                                 <select name="cmbBirthdaySendSms" lay-filter="cmbBirthdaySendSms" id="cmbBirthdaySendSms">
@@ -207,8 +193,6 @@
                                 </select>
                             </div>
                         </div>
-                    </div>
-                    <div class="layui-form-item ">
                         <div class="layui-inline">
                             <label class="layui-form-label" style="white-space: normal;padding: 0;">会员入会时必须抓拍照片</label>
                             <div class="layui-input-inline">
@@ -222,7 +206,6 @@
                                 <input type="checkbox" name="chkExitCardCatch" lay-filter="chkExitCardCatch" lay-skin="switch" lay-text="启用|禁用" id="chkExitCardCatch">
                             </div>
                         </div>
-
                         <div class="layui-inline">
                             <label class="layui-form-label">退餐时必须抓拍相片</label>
                             <div class="layui-input-inline">
@@ -487,16 +470,14 @@
     }
     let _storeId=getStorage('storeId_merch');
     // //新增或者修改
-    // let setStatus='';      let dataTable=[];
-    // //定义参数设置变量
-    // let  PrintBarcode=0;let BarSendCoinAuthorize=0;let MemberBalance='';let Shift=0;
-    // //定义会员设置变量
-    // let BirthdaySendSms='';let Photograph=0;let ExitCardCatch=0;let ExitFoodCatch=0;
-    // let ExitMoneyCatch=0; let AllowMemberSmsCode=0;let ShowPhone=0;let AllowFirstMemberSmsCode=0;
-    // let Giveback=0;
-    // //定义返还规则变量
-    // let GiveBackAllowSmsCode=0;
-    // let memberLvlId=0;let backType=1;let allowToday=1;let allowBackPrincipal=1;
+    // //运营参数设定
+    let  chkPrintBarcode=0;let chkBarSendCoinAuthorize=0;let txtBusinessClass;
+    let cmbAuthChannel ;let chkShift=0;let chkTaxInSale=0;
+    //会员设定
+    let cmbBirthdaySendSms;let chkPhotograph=0;let chkExitCardCatch=0;
+    let chkExitFoodCatch=0;
+    //游乐项目规则设定
+    let chkAccompanyOutWithMain=0; let chkAddLeaveTime=0; let cmbAutoJoinMemberLevel;
     function ifNeedSet(storeId,form,layer) {
         let obj={'storeId':storeId,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
         xc.getBalanceTypeDic(1,token,layer,form,'limitType');
@@ -522,10 +503,27 @@
                         ,"chkExitFoodCatch": arr[13].ParameterValue
                         ,"chkAccompanyOutWithMain": arr[14].ParameterValue
                         ,"chkAddLeaveTime": arr[15].ParameterValue
-                        ,"cmbAutoJoinMemberLevel": arr[16].ParameterValue==true?arr[16].ParameterValue:''
+                        ,"cmbAutoJoinMemberLevel": arr[16].ParameterValue||''
                         ,"txtCreditEveryday": arr[18].ParameterValue||''
                         ,"txtMaxSendCard": arr[19].ParameterValue||''
-                    })
+                        ,"cmbAuthChannel": arr[21].ParameterValue||''
+                        ,"chkTaxInSale": arr[22].ParameterValue||''
+                    });
+                    chkPrintBarcode=arr[3].ParameterValue;
+                    chkBarSendCoinAuthorize=arr[4].ParameterValue;
+                    txtBusinessClass=arr[5].ParameterValue||'';
+                    cmbAuthChannel=arr[21].ParameterValue||'';
+                    chkShift=arr[6].ParameterValue;
+                    chkTaxInSale=arr[22].ParameterValue||'';
+                    //会员设定
+                    cmbBirthdaySendSms=arr[10].ParameterValue;
+                    chkPhotograph=arr[11].ParameterValue;
+                    chkExitCardCatch=arr[12].ParameterValue;
+                    chkExitFoodCatch=arr[13].ParameterValue;
+                    //游乐项目规则设定
+                   chkAccompanyOutWithMain=arr[14].ParameterValue;
+                   chkAddLeaveTime=arr[15].ParameterValue;
+                   cmbAutoJoinMemberLevel=arr[16].ParameterValue;
                 }
             }
         });
@@ -577,13 +575,48 @@
             }else {
             }
         });
-        form.on('select(sourceType)',function (data) {
-            sourceType=data.value;
-            sourceTypeStr=data.elem[data.elem.selectedIndex].text;
+        //运营参数设定
+        form.on('switch(chkPrintBarcode)',(data)=>{
+            data.elem.checked==true ?chkPrintBarcode=1 :chkPrintBarcode=0
         });
-        form.on('select(chargeType)',function (data) {
-            chargeType=data.value;
-            chargeTypeStr=data.elem[data.elem.selectedIndex].text;
+        form.on('switch(chkBarSendCoinAuthorize)',(data)=>{
+            data.elem.checked==true ?chkBarSendCoinAuthorize=1 :chkBarSendCoinAuthorize=0
+        });
+        form.on('select(txtBusinessClass)',function (data) {
+            txtBusinessClass=data.value;
+            // sourceTypeStr=data.elem[data.elem.selectedIndex].text;
+        });
+        form.on('select(cmbAuthChannel)',function (data) {
+            cmbAuthChannel =data.value;
+        });
+        form.on('switch(chkShift)',(data)=>{
+            data.elem.checked==true ?chkShift=1 :chkShift=0
+        });
+        form.on('switch(chkTaxInSale)',(data)=>{
+            data.elem.checked==true ?chkTaxInSale=1 :chkTaxInSale=0
+        });
+        //会员设定
+        form.on('select(cmbBirthdaySendSms)',function (data) {
+            cmbBirthdaySendSms=data.value;
+        });
+        form.on('switch(chkPhotograph)',(data)=>{
+            data.elem.checked==true ?chkPhotograph=1 :chkPhotograph=0
+        });
+        form.on('switch(chkExitCardCatch)',(data)=>{
+            data.elem.checked==true ?chkExitCardCatch=1 :chkExitCardCatch=0
+        });
+        form.on('switch(chkExitFoodCatch)',(data)=>{
+            data.elem.checked==true ?chkExitFoodCatch=1 :chkExitFoodCatch=0
+        });
+        //游乐项目规则设定
+        form.on('switch(chkAccompanyOutWithMain)',(data)=>{
+            data.elem.checked==true ?chkAccompanyOutWithMain=1 :chkAccompanyOutWithMain=0
+        });
+        form.on('switch(chkAddLeaveTime)',(data)=>{
+            data.elem.checked==true ?chkAddLeaveTime=1 :chkAddLeaveTime=0
+        });
+        form.on('select(cmbAutoJoinMemberLevel)',(data)=>{
+            cmbAutoJoinMemberLevel=data.value;
         });
         $('#rulesBtn').on('click',function (){
             arrRule.push({
@@ -620,64 +653,7 @@
 
             }
         });
-        //监听参数设置
-        form.on('select(cmbMemberBalance)',(data)=>{
-            MemberBalance=data.value;
-        });
-        form.on('switch(chkPBcode)',(data)=>{
-         data.elem.checked==true ?PrintBarcode=1 :PrintBarcode=0
-        });
-        form.on('switch(chkBSCAuth)',(data)=>{
-            data.elem.checked==true ?BarSendCoinAuthorize=1 :BarSendCoinAuthorize=0
-        });
-        form.on('switch(ckbShift)',(data)=>{
-            data.elem.checked==true ?Shift=1 :Shift=0
-        });
-        //监听会员设置
-        form.on('select(birthdayTips)',(data)=>{
-            BirthdaySendSms=data.value;
-        });
-        form.on('switch(chkPhotograph)',(data)=>{
-            data.elem.checked==true ?Photograph=1 :Photograph=0
-        });
-        form.on('switch(chkExitCardCatch)',(data)=>{
-            data.elem.checked==true ?ExitCardCatch=1 :ExitCardCatch=0
-        });
-        form.on('switch(chkExitFoodCatch)',(data)=>{
-            data.elem.checked==true ?ExitFoodCatch=1 :ExitFoodCatch=0
-        });
-        form.on('switch(chkExitMoneyCatch)',(data)=>{
-            data.elem.checked==true ?ExitMoneyCatch=1 :ExitMoneyCatch=0
-        });
-        form.on('switch(ams)',(data)=>{
-            data.elem.checked==true ?AllowMemberSmsCode=1 :AllowMemberSmsCode=0
-        });
-        form.on('switch(showPhone)',(data)=>{
-            data.elem.checked==true ?ShowPhone=1 :ShowPhone=0
-        });
-        form.on('switch(afmsc)',(data)=>{
-            data.elem.checked==true ?AllowFirstMemberSmsCode=1 :AllowFirstMemberSmsCode=0
-        });
-        form.on('switch(Giveback)',(data)=>{
-            data.elem.checked==true ?Giveback=1 :Giveback=0
-        });
-        form.on('switch(GiveBackAllowSmsCode)',(data)=>{
-            data.elem.checked==true ?GiveBackAllowSmsCode=1 :GiveBackAllowSmsCode=0
-        });
-        //返还规则监听
-        form.on('select(memberLvlId)',(data)=>{
-            memberLvlId=data.value;
-            console.log(memberLvlId)
-        });
-        form.on('switch(backType)',(data)=>{
-            data.elem.checked==true ?backType=1 :backType=0
-        });
-        form.on('switch(allowToday)',(data)=>{
-            data.elem.checked==true ?allowToday=1 :allowToday=0
-        });
-        form.on('switch(allowBackPrincipal)',(data)=>{
-            data.elem.checked==true ?allowBackPrincipal=1 :allowBackPrincipal=0
-        });
+
         getBackRule(_storeId);
     function getBackRule(storeId) {
         let obj={"storeId":storeId,"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
@@ -729,85 +705,44 @@
             $(this).addClass("layui-hide").siblings().removeClass("layui-hide");
         });
     function setParamList(storeIds,layer) {
-        // var txtCoinPrice=$('#txtCoinPrice').val();//兑币单价
-        // var coinChargeScale=$('#coinChargeScale').val();//彩票兑换比例
-        var txtGivePoint=$('#txtGivePoint').val();//赠送售币积分
-        var chkPrintBarcode=PrintBarcode;//小票是否打印二维码
-        var chkBarSendCoinAuthorize=BarSendCoinAuthorize;//吧台送币是否授权
-        var cmbMemberBalance=MemberBalance;//条码退款方式
-        var txtBusinessClass=$('#txtBusinessClass').val();//营业日期内班次个数
-        var chkShift=Shift;//换班时需要输入实点数
-        var txtOnceSellCoinMin=$('#txtOnceSellCoinMin').val();//每次售币最小币数
-        var txtOnceSellCoinMax=$('#txtOnceSellCoinMax').val();//每次售币最大币数
-        var txtOnceRefundMin=$('#txtOnceRefundMin').val();//每次最小退币数
-        var txtDayWithoutRightWinCoinMax=$('#txtDayWithoutRightWinCoinMax').val();//每天免授权赢币上限
-        var txtWithoutRightWinCoinTimes=$('#txtWithoutRightWinCoinTimes').val();//每天免授权赢币倍数
-        var txtOnceWithoutRightRefundMax=$('#txtOnceWithoutRightRefundMax').val();//每次免授权退币上限
-        var txtDayWithoutRightRefundMax=$('#txtDayWithoutRightRefundMax').val();//每天免授权退币上限
-        var txtPerMemberCoinMax=$('#txtPerMemberCoinMax').val();//单个会员余额上限
-        var cmbBirthdaySendSms=BirthdaySendSms;//会员生日提醒
-        var chkPhotograph=Photograph;//会员入会时必须抓拍照片
-        var chkExitCardCatch=ExitCardCatch;//吧台退卡时必须抓拍照片
-        var chkExitFoodCatch=ExitFoodCatch;//退餐时必须抓拍相片
-        var chkExitMoneyCatch=ExitMoneyCatch;//吧台退款时必须抓拍照片
-        var chkAllowMemberSmsCode=AllowMemberSmsCode;//入会是否验证短信码
-        var chkTempShowPhone=ShowPhone;//临时开卡是否显示手机号输入框
-        var chkTempAllowFirstMemberSmsCode=AllowFirstMemberSmsCode;//临时卡首次入会验证短信码
-        var chkTempGiveback=Giveback;//临时卡是否允许返还
-        var txtGiveBackMax=$('#txtGiveBackMax').val();
-        var txtExitMoneyGiveBackTime=$('#txtExitMoneyGiveBackTime').val();
-        var chkGiveBackAllowSmsCode=GiveBackAllowSmsCode;
-
+        let a,b,c;
         var submitData=[
-            // { "storeId":storeIds, "system":"txtCoinPrice", "isAllow":"1", "pValue":txtCoinPrice, "note":""}, //1
-            // { "storeId":storeIds, "system":"coinChargeScale", "isAllow":"1", "pValue":coinChargeScale, "note":""},//2
-            { "storeId":storeIds, "system":"txtGivePoint", "isAllow":"1", "pValue":txtGivePoint, "note":""},      //3
-            { "storeId":storeIds, "system":"chkPrintBarcode", "isAllow":chkPrintBarcode, "pValue":"0", "note":""},//4
-            { "storeId":storeIds, "system":"chkBarSendCoinAuthorize", "isAllow":chkBarSendCoinAuthorize, "pValue":"0", "note":""},  //5
-            { "storeId":storeIds, "system":"cmbMemberBalance", "isAllow":"1", "pValue":cmbMemberBalance, "note":""},//6
+            { "storeId":storeIds, "system":"chkPrintBarcode", "isAllow":1, "pValue":chkPrintBarcode, "note":""},//4
+            { "storeId":storeIds, "system":"chkBarSendCoinAuthorize", "isAllow":1, "pValue":chkBarSendCoinAuthorize, "note":""},  //5
+            { "storeId":storeIds, "system":"txtOnceSellCoinMin", "isAllow":"1", "pValue":$('#txtOnceSellCoinMin').val(), "note":""},//7
             { "storeId":storeIds, "system":"txtBusinessClass", "isAllow":"1", "pValue":txtBusinessClass, "note":""},//7
-            { "storeId":storeIds, "system":"chkShift", "isAllow":chkShift, "pValue":"0", "note":""},//8
-            { "storeId":storeIds, "system":"txtOnceSellCoinMin", "isAllow":"1", "pValue":txtOnceSellCoinMin, "note":""},//9
-            { "storeId":storeIds, "system":"txtOnceSellCoinMax", "isAllow":"1", "pValue":txtOnceSellCoinMax, "note":""},//10
-            { "storeId":storeIds, "system":"txtOnceRefundMin", "isAllow":"1", "pValue":txtOnceRefundMin, "note":""},//11
-            { "storeId":storeIds, "system":"txtDayWithoutRightWinCoinMax", "isAllow":"1", "pValue":txtDayWithoutRightWinCoinMax, "note":""},//12
-            { "storeId":storeIds, "system":"txtWithoutRightWinCoinTimes", "isAllow":"1", "pValue":txtWithoutRightWinCoinTimes, "note":""},//13
-            { "storeId":storeIds, "system":"txtOnceWithoutRightRefundMax", "isAllow":"1", "pValue":txtOnceWithoutRightRefundMax, "note":""},//14
-            { "storeId":storeIds, "system":"txtDayWithoutRightRefundMax", "isAllow":"1", "pValue":txtDayWithoutRightRefundMax, "note":""},//15
-            { "storeId":storeIds, "system":"txtPerMemberCoinMax", "isAllow":"1", "pValue":txtPerMemberCoinMax, "note":""},//16
+            { "storeId":storeIds, "system":"cmbAuthChannel", "isAllow":1, "pValue":cmbAuthChannel, "note":""},
+            { "storeId":storeIds, "system":"chkShift", "isAllow":1, "pValue":chkShift, "note":""},
+            { "storeId":storeIds, "system":"chkTaxInSale", "isAllow":1, "pValue":chkTaxInSale, "note":""},
             { "storeId":storeIds, "system":"cmbBirthdaySendSms", "isAllow":"1", "pValue":cmbBirthdaySendSms, "note":""},
-            { "storeId":storeIds, "system":"chkPhotograph", "isAllow":chkPhotograph, "pValue":"0", "note":""},
-            { "storeId":storeIds, "system":"chkExitCardCatch", "isAllow":chkExitCardCatch, "pValue":"0", "note":""},
-            { "storeId":storeIds, "system":"chkExitFoodCatch", "isAllow":chkExitFoodCatch, "pValue":"0", "note":""},
-            { "storeId":storeIds, "system":"chkExitMoneyCatch", "isAllow":chkExitMoneyCatch, "pValue":"0", "note":""},
-            { "storeId":storeIds, "system":"chkAllowMemberSmsCode", "isAllow":chkAllowMemberSmsCode, "pValue":"0", "note":""},
-            { "storeId":storeIds, "system":"chkTempShowPhone", "isAllow":chkTempShowPhone, "pValue":"0", "note":""},
-            { "storeId":storeIds, "system":"chkTempAllowFirstMemberSmsCode", "isAllow":chkTempAllowFirstMemberSmsCode, "pValue":"0", "note":""},
-            { "storeId":storeIds, "system":"chkTempGiveback", "isAllow":chkTempGiveback, "pValue":"0", "note":""},
-            { "storeId":storeIds, "system":"txtGiveBackMax", "isAllow":"1", "pValue":txtGiveBackMax, "note":""},
-            { "storeId":storeIds, "system":"txtExitMoneyGiveBackTime", "isAllow":"1", "pValue":txtExitMoneyGiveBackTime, "note":""},
-            { "storeId":storeIds, "system":"chkGiveBackAllowSmsCode", "isAllow":chkGiveBackAllowSmsCode, "pValue":"0", "note":""}
+            { "storeId":storeIds, "system":"chkPhotograph", "isAllow":1, "pValue":chkPhotograph, "note":""},
+            { "storeId":storeIds, "system":"chkExitCardCatch", "isAllow":1, "pValue":chkExitCardCatch, "note":""},
+            { "storeId":storeIds, "system":"chkExitFoodCatch", "isAllow":1, "pValue":chkExitFoodCatch, "note":""},
+            { "storeId":storeIds, "system":"chkAccompanyOutWithMain", "isAllow":1, "pValue":chkAccompanyOutWithMain, "note":""},
+            { "storeId":storeIds, "system":"chkAddLeaveTime", "isAllow":1, "pValue":chkAddLeaveTime, "note":""},
+            { "storeId":storeIds, "system":"cmbAutoJoinMemberLevel", "isAllow":1, "pValue":cmbAutoJoinMemberLevel, "note":""},
+            { "storeId":storeIds, "system":"txtClientBuyTicketInfo", "isAllow":1, "pValue":"", "note":""},
+            { "storeId":storeIds, "system":"txtCreditEveryday", "isAllow":$('input[name="txtCreditEveryday"]').val(), "pValue":"0", "note":""},
+            { "storeId":storeIds, "system":"txtMaxSendCard", "isAllow":"1", "pValue":$('input[name="txtMaxSendCard"]').val(), "note":""},
         ];
         var obj={"submitData":submitData, "userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
-        var url = "/XCCloud/Parameter?action=SetParamList";
         var parasJson = JSON.stringify(obj);
-        console.log(obj);
         $.ajax({
             type: "post",
-            url: url,
+            url: "/XCCloud/Parameter?action=SetParamList",
             contentType: "application/json; charset=utf-8",
             data: { parasJson: parasJson },
             success: function (data) {
                 data=JSON.parse(data);
-                console.log(data);
                 if(data.result_code=="1"){
-                    layer.closeAll();
-                     layer.msg('操作成功！');
+                    a=1;
                 }else {
-                    layer.msg(data.result_msg);
+                   a=0;
                 }
             }
-        })
+        });
+
+
     }
     function showAddReturnRule() {
         layui.use('layer',function () {

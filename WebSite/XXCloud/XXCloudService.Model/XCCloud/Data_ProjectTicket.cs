@@ -55,5 +55,6 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> RestrictPeriodType { get; set; }
         public Nullable<int> RestrictPreiodValue { get; set; }
         public Nullable<int> RestrctCount { get; set; }
+        public string Note { get; set; }
     }
 }

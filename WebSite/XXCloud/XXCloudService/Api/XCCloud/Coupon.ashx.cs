@@ -967,7 +967,7 @@ namespace XXCloudService.Api.XCCloud
 
                 var storeId = dicParas.Get("storeId") ?? (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
                 var isLock = dicParas.Get("isLock").Toint();
-                var id = dicParas.Get("id").Toint(0);
+                var id = dicParas.Get("id").Toint(0); //Data_CouponList表ID
 
                 string storedProcedure = "LockCouponRecord";
                 SqlParameter[] parameters = new SqlParameter[0];

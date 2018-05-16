@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="layui/css/layui.css">
 </head>
 <body>
-<div class="layui-row" style="padding: 15px;background-color: #f1f1f1">
+<div class="layui-row" style="padding: 15px;">
     <blockquote class="layui-elem-quote" style="text-align: right;padding-right: 100px;">
         <button type="button" class="layui-btn layui-btn-normal" id="add">新增</button>
     </blockquote>
@@ -15,10 +15,8 @@
     </div>
 </div>
 <div id="openModel" style="display:none;padding: 0 15px;max-height: 550px;overflow-y: auto">
-    <form class="layui-form ">
+    <form class="layui-form" lay-filter="formTest">
         <div class="layui-col-md7" style="height: 400px;border: 1px dashed #aaa; padding: 15px;">
-            <!--<div class="layui-form-item">-->
-
                 <div class="layui-form-item">
                     <label class="layui-form-label">类别名称</label>
                     <div class="layui-input-block">
@@ -28,7 +26,7 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label">映射类别</label>
                     <div class="layui-input-block">
-                        <select id="HKType" lay-filter="HKType">
+                        <select id="HKType" lay-filter="HKType" name="HKType">
                             <option >-请选择-</option>
                             <option value="0" >不绑定</option>
                             <option value="1">代币</option>
@@ -40,13 +38,13 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label">保留小数位</label>
                     <div class="layui-input-block">
-                        <input type="text" class="layui-input" id="saveFloat" name="unchange">
+                        <input type="text" class="layui-input" id="saveFloat">
                     </div>
                 </div>
                 <div class="layui-form-item">
                     <label class="layui-form-label" style="padding:8px 0;width: 90px">保留小数规则</label>
                     <div class="layui-input-block">
-                        <select id="saveFloatRule" name="unchange">
+                        <select id="saveFloatRule" name="saveFloatRule" lay-filter="saveFloatRule">
                             <option >-请选择-</option>
                             <option value="0">全部舍弃</option>
                             <option value="1">全部保留</option>
@@ -88,15 +86,17 @@
     let storeId=[];
     let Id='';
     let HKType='';
+    let saveFloatRule;
     let parm={'obj':{'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'},
         'url':'/XCCloud/BalanceType?action=GetBalanceTypeList',
         'elem':'#memberBalanceTb',
         'cols':[
             {field:'ID', title:'流水号', align: 'center', sort: true}
-            ,{field:'TypeID',title: '类别编号', align: 'center'}
             ,{field:'TypeName', title: '类别名称', align: 'center'}
             ,{field:'StoreNames', title: '适用门店', align: 'center'}
-            ,{field:'HKTypeStr', title: '关联类别', align: 'center'}
+            ,{field:'HkTypeStr', title: '关联类别', align: 'center'}
+            ,{field:'AddingTypeStr', title: '小数位舍弃方式', align: 'center'}
+            ,{field:'DecimalNumber', title: '小数位', align: 'center'}
             ,{field:'Note', title: '使用说明', align: 'center'}
             ,{fixed: 'right', title: '操作', width:160, align:'center', toolbar: '#barDemo'}]
     };
@@ -108,18 +108,9 @@
         form.on('select(HKType)',function (data) {
             HKType=data.value;
         });
-        // let className;let academy;
-        // form.on('select(className)',function (data) {
-        //     className=data.value;
-        //     if(academy!=""){
-        //         $.post('/user/findClassName',{
-        //
-        //         }),function (data) {
-        //             遍历data,插入第三个select中;
-        //             form.render()
-        //         }
-        //     }
-        // });
+        form.on('select(saveFloatRule)',function (data) {
+            saveFloatRule=data.value;
+        });
         $('#add').on('click',function () {
             setStore(form,token);
             HKType='';
@@ -133,11 +124,12 @@
         //saveBtn
         $('#saveBtn').on('click',function () {
             let obj={'id':Id,
-                'typeId':$('#TypeID').val(),
                 'typeName':$('#TypeName').val(),
                 'hkType':HKType,
                 'storeIds':storeId==''?'':storeId.join('|'),
                 'note':$('#Note').val(),
+                'addingType':saveFloatRule,
+                'decimalNumber':$('#saveFloat').val(),
                 'userToken':token,
                 'signkey':'1f626576304bf5d95b72ece2222e42c3'};
             let parseJson = JSON.stringify(obj);
@@ -149,9 +141,9 @@
                 success: function (data) {
                     data = JSON.parse(data);
                     if (data.result_code == 1) {
-                        layer.msg('保存成功！');
-                        window.location.reload();
-                        layer.closeAll();
+                        layer.msg('保存成功！',{time:1500},function () {
+                            window.location.reload();
+                        });
                     } else {
                         layer.msg(data.result_msg);
                     }
@@ -190,18 +182,22 @@
                     success: function (data) {
                         data = JSON.parse(data);
                         if (data.result_code == 1) {
-                                $('#TypeID').val(data.result_data[0].TypeID);
-                                $('#TypeName').val(data.result_data[0].TypeName);
-                                $('#Note').val(data.result_data[0].Note);
-                                setStore(form,token,data.result_data[0].StoreIDs);
-                                if(data.result_data[0].StoreIDs){
-                                      storeId=data.result_data[0].StoreIDs.split("|");
+                            form.val("formTest", {
+                                "HKType": data.result_data.HKType
+                                ,"saveFloatRule": data.result_data.AddingType
+                            })
+                                $('#TypeID').val(data.result_data.TypeID);
+                                $('#saveFloat').val(data.result_data.DecimalNumber);
+                                $('#TypeName').val(data.result_data.TypeName);
+                                $('#Note').val(data.result_data.Note);
+                                setStore(form,token,data.result_data.StoreIDs);
+                                if(data.result_data.StoreIDs){
+                                      storeId=data.result_data.StoreIDs.split("|");
                                   }else{
                                     storeId=[];
                                   }
-                                HKType=data.result_data[0].HKType;
-                                $('#HKType').find('option[value="'+data.result_data[0].HKType+'"]').attr('selected',true)
-                                    // .siblings().prop('selected',false);
+                                saveFloatRule=data.result_data.AddingType;
+                                HKType=data.result_data.HKType;
                                 form.render();
                                 $('#openModel').find('[name="unchange"]').prop('disabled',true);
                                 layer.open({
@@ -216,7 +212,7 @@
                     }
                 });
             }else if(layEvent === 'del'){
-                layer.confirm('确定锁定该设备吗？', function(index){
+                layer.confirm('确定删除该类别吗？', function(index){
                 let _obj={'id':data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
                 let parseJson = JSON.stringify(_obj);
                 $.ajax({
@@ -227,10 +223,10 @@
                     success: function (data) {
                         data = JSON.parse(data);
                         if (data.result_code == 1) {
-                         layer.msg('删除成功')
+                         layer.msg('删除成功',)
                          xc.getInitData(parm);
                         }else {
-                            layer.msg(data.result_msg);
+                            layer.msg(data.result_msg||data.return_msg);
                         }
                     }
                 });
