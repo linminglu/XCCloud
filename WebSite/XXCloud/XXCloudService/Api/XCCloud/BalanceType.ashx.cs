@@ -121,7 +121,7 @@ namespace XXCloudService.Api.XCCloud
                 var linq = from t in
                                (from a in Dict_BalanceTypeService.N.GetModels(p => p.ID == id)
                                 join b in Data_BalanceType_StoreListService.N.GetModels() on a.ID equals b.BalanceIndex into b1
-                                from b in b1.DefaultIfEmpty()                                
+                                from b in b1.DefaultIfEmpty()                        
                                 select new
                                 {
                                     a = a,
@@ -135,7 +135,7 @@ namespace XXCloudService.Api.XCCloud
                                TypeName = g.FirstOrDefault().a.TypeName,
                                Note = g.FirstOrDefault().a.Note,
                                AddingType = g.FirstOrDefault().a.AddingType,
-                               AddingTypeStr = (g.FirstOrDefault().a.AddingType).GetDescription(),
+                               AddingTypeStr = ((AddingType?)g.FirstOrDefault().a.AddingType).GetDescription(),
                                HKType = g.FirstOrDefault().a.MappingType,
                                StoreIDs = string.Join("|", g.Select(o => o.StoreID))
                            };

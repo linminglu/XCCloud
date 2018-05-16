@@ -2284,9 +2284,9 @@ namespace XCCloudService.Common
         public static string GetDescription(this object value)
         {
             if (value == null) return null;
-
             FieldInfo field = value.GetType().GetField(value.ToString());
 
+            if (field == null) return null;
             DescriptionAttribute attribute
                     = Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute))
                         as DescriptionAttribute;
