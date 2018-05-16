@@ -121,13 +121,11 @@ namespace XXCloudService.Api.XCCloud
                 var linq = from t in
                                (from a in Dict_BalanceTypeService.N.GetModels(p => p.ID == id)
                                 join b in Data_BalanceType_StoreListService.N.GetModels() on a.ID equals b.BalanceIndex into b1
-                                from b in b1.DefaultIfEmpty()
-                                join c in Base_StoreInfoService.N.GetModels() on b.StroeID equals c.StoreID into c1
-                                from c in c1.DefaultIfEmpty()                                
+                                from b in b1.DefaultIfEmpty()                                
                                 select new
                                 {
                                     a = a,
-                                    StoreID = c != null ? c.StoreID : string.Empty
+                                    StoreID = b != null ? b.StroeID : string.Empty
                                 }).AsEnumerable()
                            group t by t.a.ID into g
                            select new
