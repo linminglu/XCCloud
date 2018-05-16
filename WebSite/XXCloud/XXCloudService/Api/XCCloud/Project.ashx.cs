@@ -399,11 +399,11 @@ namespace XXCloudService.Api.XCCloud
                                 data_Project_StoreListService.DeleteModel(model);
                             }
 
-                            var data_Project_DeviceService = Data_Project_DeviceService.I;
-                            foreach (var model in data_Project_DeviceService.GetModels(p => p.ProjectID == iProjectId))
-                            {
-                                data_Project_DeviceService.DeleteModel(model);
-                            }
+                            //var data_Project_DeviceService = Data_Project_DeviceService.I;
+                            //foreach (var model in data_Project_DeviceService.GetModels(p => p.ProjectID == iProjectId))
+                            //{
+                            //    data_Project_DeviceService.DeleteModel(model);
+                            //}
                         }
 
                         if (!data_ProjectInfoService.SaveChanges())

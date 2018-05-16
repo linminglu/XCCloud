@@ -166,8 +166,8 @@ namespace XXCloudService.Api.XCCloud
                             data_Food_LevelModel.EndTime = end;
                             data_Food_LevelModel.ClientPrice = client;
                             data_Food_LevelModel.VIPPrice = vip;
-                            data_Food_LevelModel.day_sale_count = day_sale_count;
-                            data_Food_LevelModel.member_day_sale_count = member_day_sale_count;
+                            //data_Food_LevelModel.day_sale_count = day_sale_count;
+                            //data_Food_LevelModel.member_day_sale_count = member_day_sale_count;
                             data_Food_LevelModel.UpdateLevelID = updateLevelId;
                             foodLevelList.Add(data_Food_LevelModel);
                             Data_Food_LevelService.I.AddModel(data_Food_LevelModel);
@@ -433,8 +433,8 @@ namespace XXCloudService.Api.XCCloud
                                      Time = getTimeName(g.FirstOrDefault().a.StartTime, g.FirstOrDefault().a.EndTime),
                                      ClientPrice = g.FirstOrDefault().a.ClientPrice,
                                      VIPPrice = g.FirstOrDefault().a.VIPPrice,
-                                     day_sale_count = g.FirstOrDefault().a.day_sale_count,
-                                     member_day_sale_count = g.FirstOrDefault().a.member_day_sale_count,
+                                     //day_sale_count = g.FirstOrDefault().a.day_sale_count,
+                                     //member_day_sale_count = g.FirstOrDefault().a.member_day_sale_count,
                                      UpdateLevelID = g.FirstOrDefault().a.UpdateLevelID
                                  };                                 
 

@@ -17,6 +17,7 @@ namespace XCCloudService.Model.XCCloud
         public string ID { get; set; }
         public string StoreID { get; set; }
         public Nullable<int> FlowType { get; set; }
+        public Nullable<int> SingleType { get; set; }
         public Nullable<int> FoodID { get; set; }
         public Nullable<int> SaleCount { get; set; }
         public Nullable<int> Point { get; set; }

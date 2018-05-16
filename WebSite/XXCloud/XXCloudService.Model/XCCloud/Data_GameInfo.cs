@@ -17,9 +17,12 @@ namespace XCCloudService.Model.XCCloud
         public int ID { get; set; }
         public string GameID { get; set; }
         public string StoreID { get; set; }
+        public string MerchID { get; set; }
+        public Nullable<int> AreaID { get; set; }
         public string GameName { get; set; }
         public string GameType { get; set; }
         public string State { get; set; }
+        public Nullable<int> BalanceType { get; set; }
         public Nullable<int> ReturnCheck { get; set; }
         public Nullable<int> OutsideAlertCheck { get; set; }
         public Nullable<int> ICTicketOperation { get; set; }

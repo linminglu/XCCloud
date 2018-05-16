@@ -33,9 +33,17 @@ namespace XXCloudService.Api.XCCloud
                 parameters[0] = new SqlParameter("@MerchId", userTokenDataModel.MerchId);
                 System.Data.DataSet ds = XCCloudBLL.GetStoredProcedureSentence(sql, parameters);
 
-                List<Base_FoodType> foodTypeList = Utils.GetModelList<Base_FoodType>(ds.Tables[0]);
+                List<Base_FoodType> foodTypeMainList = Utils.GetModelList<Base_FoodType>(ds.Tables[0]);
+                List<Base_FoodType> foodTypeGoodList = Utils.GetModelList<Base_FoodType>(ds.Tables[1]);
+                List<Base_FoodType> foodTypeTicketList = Utils.GetModelList<Base_FoodType>(ds.Tables[2]);
 
-                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, foodTypeList);
+                var obj = new {
+                    foodTypeMainList = foodTypeMainList,
+                    foodTypeGoodList = foodTypeGoodList,
+                    foodTypeTicketList = foodTypeTicketList
+                };
+
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, obj);
             }
             catch(Exception e)
             {

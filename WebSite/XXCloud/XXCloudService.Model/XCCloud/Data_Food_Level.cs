@@ -25,8 +25,11 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<decimal> ClientPrice { get; set; }
         public Nullable<System.DateTime> StartDate { get; set; }
         public Nullable<System.DateTime> EndDate { get; set; }
-        public Nullable<int> day_sale_count { get; set; }
-        public Nullable<int> member_day_sale_count { get; set; }
+        public Nullable<int> AllFreqType { get; set; }
+        public Nullable<int> AllCount { get; set; }
+        public Nullable<int> MemberFreqType { get; set; }
+        public Nullable<int> MemberCount { get; set; }
         public Nullable<int> UpdateLevelID { get; set; }
+        public Nullable<int> PriorityLevel { get; set; }
     }
 }

@@ -43,7 +43,6 @@
         <EntityTypeShape EntityType="XCCloudDBModel.Data_JackpotInfo" Width="1.5" PointX="20.75" PointY="19.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_Message" Width="1.5" PointX="22.75" PointY="0.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_Parameters" Width="1.5" PointX="2.75" PointY="22.75" />
-        <EntityTypeShape EntityType="XCCloudDBModel.Data_Push_Rule" Width="1.5" PointX="10.75" PointY="22.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_Reload" Width="1.5" PointX="22.75" PointY="15.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_Storage_Record" Width="1.5" PointX="16.75" PointY="22.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_Workstation" Width="1.5" PointX="22.75" PointY="19.75" />
@@ -65,7 +64,6 @@
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_Jackpot" Width="1.5" PointX="26.75" PointY="19.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_Lottery" Width="1.5" PointX="26.75" PointY="23.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_Order_SerialNumber" Width="1.5" PointX="4.75" PointY="27.75" />
-        <EntityTypeShape EntityType="XCCloudDBModel.Flw_Project_Play_Time" Width="1.5" PointX="18.75" PointY="27.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_Schedule" Width="1.5" PointX="20.75" PointY="27.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_Ticket_Exit" Width="1.5" PointX="28.75" PointY="0.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Log_Operation" Width="1.5" PointX="28.75" PointY="6.75" />
@@ -81,28 +79,23 @@
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_Coin_Sale" Width="1.5" PointX="2.75" PointY="30.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_Game_Free" Width="1.5" PointX="30.75" PointY="4.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_Giveback" Width="1.5" PointX="30.75" PointY="8.75" />
-        <EntityTypeShape EntityType="XCCloudDBModel.Flw_Project_BuyDetail" Width="1.5" PointX="8.75" PointY="30.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_Transfer" Width="1.5" PointX="10.75" PointY="30.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Store_CheckDate" Width="1.5" PointX="30.75" PointY="15.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_SupplierList" Width="1.5" PointX="15.375" PointY="31.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Log_GameAlarm" Width="1.5" PointX="17.375" PointY="31.75" />
-        <EntityTypeShape EntityType="XCCloudDBModel.Data_Food_Level" Width="1.5" PointX="3.375" PointY="17.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_Food_Sale" Width="1.5" PointX="15.375" PointY="16.75" />
-        <EntityTypeShape EntityType="XCCloudDBModel.Data_FoodInfo" Width="1.5" PointX="29.375" PointY="30.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Base_DeviceInfo" Width="1.5" PointX="5.375" PointY="31.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_Project_StoreList" Width="1.5" PointX="21.75" PointY="9.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_ProjectTime_BandPrice" Width="1.5" PointX="31.75" PointY="25.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_ProjectTime_StoreList" Width="1.5" PointX="31.375" PointY="29.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_ProjectTimeInfo" Width="1.5" PointX="19.375" PointY="32.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_BalanceChargeRule" Width="1.5" PointX="31.375" PointY="32.75" />
-        <EntityTypeShape EntityType="XCCloudDBModel.Data_Project_Device" Width="1.5" PointX="0.75" PointY="6.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_ProjectInfo" Width="1.5" PointX="31.375" PointY="21.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_GoodStorage" Width="1.5" PointX="33.375" PointY="7.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_GroupVerity" Width="1.5" PointX="33.375" PointY="15.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_MerchAlipay_Shop" Width="1.5" PointX="9.375" PointY="17.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Base_MerchAlipay" Width="1.5" PointX="19.375" PointY="23.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_MemberLevel_Food" Width="1.5" PointX="33.375" PointY="20.75" />
-        <EntityTypeShape EntityType="XCCloudDBModel.Data_MemberLevel" Width="1.5" PointX="33.375" PointY="29.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_MemberLevelFree" Width="1.5" PointX="33.375" PointY="0.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Base_StoreInfo" Width="1.5" PointX="25.375" PointY="33.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Dict_FunctionMenu" Width="1.5" PointX="7.375" PointY="24.75" />
@@ -111,7 +104,6 @@
         <EntityTypeShape EntityType="XCCloudDBModel.Data_GivebackRule" Width="1.5" PointX="17.375" PointY="18.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Base_StoreHKConfig" Width="1.5" PointX="35.375" PointY="0.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_DigitCoinFood" Width="1.5" PointX="35.375" PointY="4.75" />
-        <EntityTypeShape EntityType="XCCloudDBModel.Data_GameInfo" Width="1.5" PointX="7.375" PointY="35.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_CouponCondition" Width="1.5" PointX="11.375" PointY="14.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_Discount_Detail" Width="1.5" PointX="15.375" PointY="13.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_Discount_StoreList" Width="1.5" PointX="9.375" PointY="35.75" />
@@ -134,13 +126,40 @@
         <EntityTypeShape EntityType="XCCloudDBModel.Data_DiscountMember_Record" Width="1.5" PointX="0.75" PointY="26.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_Member_Card" Width="1.5" PointX="15.75" PointY="36.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_Member_Card_Store" Width="1.5" PointX="5.75" PointY="21.75" />
-        <EntityTypeShape EntityType="XCCloudDBModel.Flw_Food_Sale" Width="1.5" PointX="35.75" PointY="31.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_Food_SaleDetail" Width="1.5" PointX="35.75" PointY="13.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_Order" Width="1.5" PointX="17.75" PointY="36.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_Order_Detail" Width="1.5" PointX="7.75" PointY="21.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Base_DepotInfo" Width="1.5" PointX="37.375" PointY="4.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_CouponList" Width="1.5" PointX="35.375" PointY="8.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Dict_BalanceType" Width="1.5" PointX="37.375" PointY="7.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.Data_Food_Level" Width="1.5" PointX="27.75" PointY="30.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.Data_FoodInfo" Width="1.5" PointX="37.75" PointY="17.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.Data_FreeCoinRule" Width="1.5" PointX="3.75" PointY="17.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.Data_GameAPP_Rule" Width="1.5" PointX="0.75" PointY="6.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.Data_GameInfo" Width="1.5" PointX="3.75" PointY="38.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.Data_GoodExit_Detail" Width="1.5" PointX="7.75" PointY="31.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.Data_GroupArea" Width="1.5" PointX="33.75" PointY="31.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.Data_MemberLevel" Width="1.5" PointX="5.75" PointY="38.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.Data_MemberLevel_Balance" Width="1.5" PointX="35.75" PointY="31.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.Data_MemberLevel_BalanceCharge" Width="1.5" PointX="37.75" PointY="27.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.Data_ProjectTicket" Width="1.5" PointX="7.75" PointY="38.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.Data_ProjectTicket_Bind" Width="1.5" PointX="37.75" PointY="31.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.Data_PushRule" Width="1.5" PointX="38.75" PointY="11.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.Data_PushRule_GameList" Width="1.5" PointX="38.75" PointY="34.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.Data_PushRule_MemberLevelList" Width="1.5" PointX="38.75" PointY="37.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.Data_RuleOverlying_Group" Width="1.5" PointX="0.75" PointY="39.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.Data_RuleOverlying_List" Width="1.5" PointX="39.75" PointY="4.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.Data_StandardCoinPrice" Width="1.5" PointX="39.75" PointY="7.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.Divide_ProjectInfo" Width="1.5" PointX="39.75" PointY="16.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.Flw_Food_Sale" Width="1.5" PointX="39.75" PointY="19.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.Flw_Project_PlayTime" Width="1.5" PointX="39.75" PointY="24.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.Flw_Project_TicketUse" Width="1.5" PointX="40.75" PointY="0.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.Data_GoodExitInfo" Width="1.5" PointX="9.75" PointY="40.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.Data_GoodOutOrder" Width="1.5" PointX="40.75" PointY="10.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.Data_GoodOutOrder_Detail" Width="1.5" PointX="11.75" PointY="40.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.Flw_Project_TicketInfo" Width="1.5" PointX="23.75" PointY="40.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.Flw_ProjectTicket_Bind" Width="1.5" PointX="39.75" PointY="31.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.Flw_ProjectTicket_Entry" Width="1.5" PointX="25.75" PointY="40.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

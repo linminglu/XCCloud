@@ -778,7 +778,7 @@ namespace XCCloudService.Api.XCCloud
                         data_MemberLevel.OpenFee = ObjectExt.Todecimal(openFee);
                         data_MemberLevel.Deposit = ObjectExt.Todecimal(deposit);
                         data_MemberLevel.ClearPointDays = ObjectExt.Toint(clearPointDays);
-                        data_MemberLevel.PriceOFF = ObjectExt.Todecimal(priceOff);
+                        //data_MemberLevel.PriceOFF = ObjectExt.Todecimal(priceOff);
                         data_MemberLevel.Validday = ObjectExt.Toint(validday);
                         data_MemberLevel.NeedAuthor = ObjectExt.Toint(needAuthor);
                         data_MemberLevel.MustPhone = ObjectExt.Toint(mustPhone);
@@ -797,7 +797,7 @@ namespace XCCloudService.Api.XCCloud
                         data_MemberLevel.FreeType = ObjectExt.Toint(freeType);
                         data_MemberLevel.FreeNeedWin = ObjectExt.Toint(freeNeedWin);
                         data_MemberLevel.BirthdayFree = ObjectExt.Toint(birthdayFree);
-                        data_MemberLevel.BirthdayFreeCoin = ObjectExt.Toint(birthdayFreeCoin);
+                        //data_MemberLevel.BirthdayFreeCoin = ObjectExt.Toint(birthdayFreeCoin);
                         data_MemberLevel.MinCoin = ObjectExt.Toint(minCoin);
                         data_MemberLevel.MaxCoin = ObjectExt.Toint(maxCoin);
                         data_MemberLevel.AllowExitCard = ObjectExt.Toint(allowExitCard);

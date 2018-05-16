@@ -167,4 +167,14 @@ namespace XCCloudService.Model.CustomModel.XCCloud
 
         public SelttleType PayType { get; set; }
     }
+
+    public class OrderModel2
+    { 
+        
+    }
+
+    public class OrderDetailModel2
+    {
+
+    }
 }

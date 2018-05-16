@@ -249,6 +249,13 @@
 
             }
         });
+        table.on('edit(giftsList)', function(obj){ //注：edit是固定事件名，test是table原始容器的属性 lay-filter="对应的值"
+           let value= obj.value; //得到修改后的值
+            let key=obj.field; //当前编辑的字段名
+            let index=obj.data.LAY_TABLE_INDEX; //所在行的所有相关数据
+            checkListGoods[index][key]=value;
+            console.log(checkListGoods)
+        });
         //弹出层
         $('#applyBtn').on('click',function () {
             xc.getDepotDic('','',token,layer,form,'OutDepotId');
@@ -264,7 +271,7 @@
         $('#saveGoodsBtn').on('click',function () {
             initSendTable(table,checkListGoods);
             layer.close(indexer)
-        })
+        });
         $('#searchGoodBtn').on('click',function () {
             if(RequstType==2){
                 initGoodsTb('',OutDepotId,'',table);
@@ -279,18 +286,18 @@
            let _outStore;let _outDepot; let _inDepot;
 
 
-            if(RequstType==2){_outStore=SendStoreId; _outDepot=outDepotId;  _inDepot='';
-            }else if(RequstType==3){_outStore=SendStoreId; _outDepot=outDepotId;  _inDepot='';}
+            if(RequstType==2){_outStore=InStoreId; _outDepot=OutDepotId;  _inDepot='';
+            }else if(RequstType==3){_outStore=OutStoreId; _outDepot='';  _inDepot=InDepotId;}
            let _obj={
                'requstType':RequstType,
                'outStoreId':_outStore,
                'outDepotId':_outDepot,
                'inDepotId':_inDepot,
                'requestReason':$('#RequestReason').val(),
-               'goodRequests':GoodRequests,
+               'goodRequestDetails':checkListGoods,
                'userToken':token,
                'signkey':'1f626576304bf5d95b72ece2222e42c3'};
-           let url='/XCCloud/GoodsInfo?action=SaveGoodsInfo';
+           let url='/XCCloud/GoodsInfo?action=GoodRequest';
            let parasJson = JSON.stringify(_obj);
            $.ajax({
                type: "post",
@@ -402,16 +409,16 @@
                  {field: 'GoodID', title: '商品ID', align: 'center',width:100}
                 , {field: 'GoodName', title: '商品名称', align: 'center',width:100}
                 , {field: 'RemainCount', title: '库存', align: 'center',width:100}
-                , {field: 'requestCount', title: '申请数量', align: 'center',width:100}
-                , {field: 'costPrice', title: '不含税单价', align: 'center',width:100}
-                , {field: 'tax', title: '税率', align: 'center',width:100}
-                , {field: 'costPrice', title: '含税代价', align: 'center',width:100}
+                , {field: 'requestCount', title: '申请数量', align: 'center',width:100,edit:true}
+                , {field: 'nocostPrice', title: '不含税单价', align: 'center',width:100,edit:true}
+                , {field: 'tax', title: '税率%', align: 'center',width:100,edit:true}
+                , {field: 'costPrice', title: '含税代价', align: 'center',width:100,edit:true}
                 , {field: 'RemainCount', title: '库存', align: 'center',width:100}
                 , {field: 'AvailableCount', title: '可调拨数', align: 'center',width:100}
 
             ]]
-            , page: {page: true, limits: [5,10, 15, 20, 30, 50]}
-            , limit: 5
+            // , page: {page: true, limits: [5,10, 15, 20, 30, 50]}
+            // , limit: 5
         });
     }
 </script>

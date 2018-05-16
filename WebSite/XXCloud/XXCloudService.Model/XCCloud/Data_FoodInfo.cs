@@ -29,6 +29,8 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> ForeAuthorize { get; set; }
         public Nullable<System.DateTime> StartTime { get; set; }
         public Nullable<System.DateTime> EndTime { get; set; }
+        public Nullable<System.DateTime> ForbidStart { get; set; }
+        public Nullable<System.DateTime> ForbidEnd { get; set; }
         public Nullable<decimal> ClientPrice { get; set; }
         public Nullable<decimal> MemberPrice { get; set; }
         public Nullable<int> RenewDays { get; set; }

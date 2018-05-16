@@ -10,10 +10,10 @@ namespace XCCloudService.Model.CustomModel.XCCloud
     [DataContract]
     public class Base_FoodType
     {
-        [DataMember(Name = "foodId", Order = 1)]
-        public string FoodId { set; get; }
+        [DataMember(Name = "foodTypeId", Order = 1)]
+        public string FoodTypeId { set; get; }
 
-         [DataMember(Name = "foodName", Order = 2)]
-        public string FoodName { set; get; }
+        [DataMember(Name = "foodTypeName", Order = 2)]
+        public string FoodTypeName { set; get; }
     }
 }

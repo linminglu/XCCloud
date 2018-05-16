@@ -229,6 +229,37 @@ namespace XXCloudService.Api.XCCloud
         }
 
 
+        [Authorize(Roles = "XcUser,XcAdmin")]
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object getOrderByFlwId(Dictionary<string, object> dicParas)
+        {
+            XCCloudUserTokenModel userTokenModel = (XCCloudUserTokenModel)(dicParas[Constant.XCCloudUserTokenModel]);
+            StoreIDDataModel userTokenDataModel = (StoreIDDataModel)(userTokenModel.DataModel);
+
+            string orderFlwId = dicParas.ContainsKey("orderFlwId") ? dicParas["orderFlwId"].ToString() : string.Empty;
+            string storedProcedure = "GetOrderContainById";
+            SqlParameter[] sqlParameter = new SqlParameter[2];
+            sqlParameter[0] = new SqlParameter("@StoreID", SqlDbType.VarChar);
+            sqlParameter[0].Value = userTokenDataModel.StoreId;
+            sqlParameter[1] = new SqlParameter("@FlwOrderId", SqlDbType.VarChar);
+            sqlParameter[1].Value = orderFlwId;
+
+            System.Data.DataSet ds = XCCloudBLL.GetStoredProcedureSentence(storedProcedure, sqlParameter);
+            if (ds != null && ds.Tables.Count == 2 && ds.Tables[0].Rows.Count > 0)
+            {
+                //OrderMainModel main = Utils.GetModelList<OrderMainModel>(ds.Tables[0]).ToList()[0];
+                //List<OrderDetailModel> detail = Utils.GetModelList<OrderDetailModel>(ds.Tables[1]).ToList();
+                //OrderInfoModel model = new OrderInfoModel(main, detail);
+                //return ResponseModelFactory.CreateSuccessModel<OrderInfoModel>(isSignKeyReturn, model);
+                return null;
+            }
+            else
+            {
+                return new ResponseModel(Return_Code.T, "", Result_Code.F, "订单信息不存在");
+            }
+        }
+
+
         /// <summary>
         /// 
         /// </summary>
