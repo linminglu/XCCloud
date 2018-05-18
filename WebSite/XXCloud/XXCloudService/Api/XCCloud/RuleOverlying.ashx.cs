@@ -119,13 +119,13 @@ namespace XXCloudService.Api.XCCloud
                 var ruleType = dicParas.Get("ruleType").Toint();
                 var ruleId = dicParas.Get("ruleId").Toint();
 
-                var ruleOverlying = (from a in Data_RuleOverlying_ListService.N.GetModels(p => p.RuleType == ruleType && p.RuleID == ruleId && p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase))
-                                     join b in Data_RuleOverlying_GroupService.N.GetModels() on a.GroupID equals b.ID
-                                     join c in Data_RuleOverlying_ListService.N.GetModels() on b.ID equals c.GroupID
+                var ruleOverlying = (from a in Data_RuleOverlying_ListService.N.GetModels(p => p.RuleType == ruleType && p.RuleID == ruleId && p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase))                                     
+                                     join b in Data_RuleOverlying_ListService.N.GetModels(p => p.RuleType != ruleType && p.RuleID != ruleId && p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)) on a.GroupID equals b.GroupID
+                                     where a.GroupID != null
                                      select new
                                      {
-                                         RuleType = c.RuleType,
-                                         RuleID = c.RuleID
+                                         RuleType = b.RuleType,
+                                         RuleID = b.RuleID
                                      }).Distinct();
 
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, ruleOverlying);
@@ -165,6 +165,10 @@ namespace XXCloudService.Api.XCCloud
                             {
                                 foreach (var model in Data_RuleOverlying_ListService.I.GetModels(p => p.RuleID == ruleId && p.RuleType == ruleType && p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)))
                                 {
+                                    var groupId = model.GroupID;
+                                    var groupModel = Data_RuleOverlying_GroupService.I.GetModels(p => p.ID == groupId).FirstOrDefault();
+                                    if (groupModel != null)
+                                        Data_RuleOverlying_GroupService.I.DeleteModel(groupModel);
                                     Data_RuleOverlying_ListService.I.DeleteModel(model);
                                 }
 
@@ -175,29 +179,7 @@ namespace XXCloudService.Api.XCCloud
                                 }
                             }
                             else
-                            {
-                                var ruleModel = Data_RuleOverlying_ListService.I.GetModels(p => p.RuleID == ruleId && p.RuleType == ruleType && p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault() ?? new Data_RuleOverlying_List();
-                                if (ruleModel == null)
-                                {
-                                    var groupModel = new Data_RuleOverlying_Group();
-                                    groupModel.MerchID = merchId;
-                                    if (!Data_RuleOverlying_GroupService.I.Add(groupModel))
-                                    {
-                                        errMsg = "添加分组信息失败";
-                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                                    }
-
-                                    ruleModel.MerchID = merchId;
-                                    ruleModel.RuleType = ruleType;
-                                    ruleModel.RuleID = ruleId;
-                                    ruleModel.GroupID = groupModel.ID;
-                                    if (!Data_RuleOverlying_ListService.I.Add(ruleModel))
-                                    {
-                                        errMsg = "添加优惠叠加规则失败";
-                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                                    }
-                                }
-
+                            {                                
                                 foreach (IDictionary<string, object> el in ruleOverlyings)
                                 {
                                     if (el != null)
@@ -205,40 +187,55 @@ namespace XXCloudService.Api.XCCloud
                                         var dicPara = new Dictionary<string, object>(el, StringComparer.OrdinalIgnoreCase);
                                         if (!dicPara.Get("ruleId").Validintnozero("规则ID", out errMsg))
                                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                                        if (!dicPara.Get("ruleType").Validintnozero("规则类别", out errMsg))
+                                        if (!dicPara.Get("ruleType").Validint("规则类别", out errMsg))
                                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
                                         var gRuleId = dicPara.Get("ruleId").Toint();
                                         var gRuleType = dicPara.Get("ruleType").Toint();
-
-                                        //目标规则与当前规则是否已分组
-                                        bool grouped = (from a in Data_RuleOverlying_ListService.N.GetModels(p => p.RuleID == ruleId && p.RuleType == ruleType && p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase))
-                                                        join b in Data_RuleOverlying_ListService.N.GetModels(p => p.RuleID == gRuleId && p.RuleType == gRuleType && p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase))
-                                                        on a.GroupID equals b.GroupID
-                                                        where a.GroupID != null
-                                                        select 1).Any();
-                                        if (!grouped)
+                                        if (ruleId != gRuleId && ruleType != gRuleType)
                                         {
-                                            var model = new Data_RuleOverlying_List();
-                                            model.GroupID = ruleModel.GroupID;
-                                            model.MerchID = merchId;
-                                            model.RuleID = ruleId;
-                                            model.RuleType = ruleType;
-                                            Data_RuleOverlying_ListService.I.AddModel(model);
-                                        }
+                                            //目标规则与当前规则是否已分组
+                                            bool grouped = (from a in Data_RuleOverlying_ListService.N.GetModels(p => p.RuleID == ruleId && p.RuleType == ruleType && p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase))
+                                                            join b in Data_RuleOverlying_ListService.N.GetModels(p => p.RuleID == gRuleId && p.RuleType == gRuleType && p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase))
+                                                            on a.GroupID equals b.GroupID
+                                                            where a.GroupID != null
+                                                            select 1).Any();
+                                            if (!grouped)
+                                            {
+                                                var groupModel = new Data_RuleOverlying_Group();
+                                                groupModel.MerchID = merchId;
+                                                if (!Data_RuleOverlying_GroupService.I.Add(groupModel))
+                                                {
+                                                    errMsg = "添加分组失败";
+                                                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                                }
+
+                                                var model = new Data_RuleOverlying_List();
+                                                model.GroupID = groupModel.ID;
+                                                model.MerchID = merchId;
+                                                model.RuleID = ruleId;
+                                                model.RuleType = ruleType;
+                                                Data_RuleOverlying_ListService.I.AddModel(model);
+                                                model = new Data_RuleOverlying_List();
+                                                model.GroupID = groupModel.ID;
+                                                model.MerchID = merchId;
+                                                model.RuleID = gRuleId;
+                                                model.RuleType = gRuleType;
+                                                Data_RuleOverlying_ListService.I.AddModel(model);
+                                                if (!Data_RuleOverlying_ListService.I.SaveChanges())
+                                                {
+                                                    errMsg = "添加优惠券叠加规则失败";
+                                                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                                }
+                                            }
+                                        }                                        
                                     }
                                     else
                                     {
                                         errMsg = "提交数据包含空对象";
                                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                                     }
-                                }
-
-                                if (!Data_RuleOverlying_ListService.I.SaveChanges())
-                                {
-                                    errMsg = "保存优惠叠加规则失败";
-                                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                                }
+                                }                                
                             }
                         }                                              
 
