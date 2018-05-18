@@ -106,7 +106,6 @@ namespace XXCloudService.Api.XCCloud
                     Data_Food_LevelService.I.DeleteModel(model);
                 }
 
-                var foodLevelList = new List<Data_Food_Level>();
                 foreach (IDictionary<string, object> el in foodLevels)
                 {
                     if (el != null)
@@ -119,9 +118,12 @@ namespace XXCloudService.Api.XCCloud
                         var end = dicPara.Get("endTime").Totimespan();
                         var client = dicPara.Get("clientPrice").Todecimal();
                         var vip = dicPara.Get("vipPrice").Todecimal();
-                        var day_sale_count = dicPara.Get("day_sale_count").Toint();
-                        var member_day_sale_count = dicPara.Get("member_day_sale_count").Toint();
+                        var allFreqType = dicPara.Get("allFreqType").Toint();
+                        var allCount = dicPara.Get("allCount").Toint();
+                        var memberFreqType = dicPara.Get("memberFreqType").Toint();
+                        var memberCount = dicPara.Get("memberCount").Toint();
                         var updateLevelId = dicPara.Get("updateLevelId").Toint();
+                        var priorityLevel = dicPara.Get("priorityLevel").Toint();
 
                         //参数验证
                         if (!start.Nonempty("优惠时段", out errMsg) || !end.Nonempty("优惠时段", out errMsg))
@@ -135,9 +137,15 @@ namespace XXCloudService.Api.XCCloud
 
                         if (!memberLevelIDs.Nonempty("会员级别", out errMsg))
                             return false;
-                        if (!day_sale_count.Validint("每天限购数", out errMsg))
+                        if (!allFreqType.Validint("整场限购频率", out errMsg))
                             return false;
-                        if (!member_day_sale_count.Validint("每个会员限购数", out errMsg))
+                        if (!allCount.Validint("整场限购数量", out errMsg))
+                            return false;
+                        if (!memberFreqType.Validint("会员限购频率", out errMsg))
+                            return false;
+                        if (!memberCount.Validint("会员限购数量", out errMsg))
+                            return false;
+                        if (!priorityLevel.Validint("优先级", out errMsg))
                             return false;
                         if (!client.Validdecimal("散客优惠价", out errMsg))
                             return false;
@@ -166,10 +174,12 @@ namespace XXCloudService.Api.XCCloud
                             data_Food_LevelModel.EndTime = end;
                             data_Food_LevelModel.ClientPrice = client;
                             data_Food_LevelModel.VIPPrice = vip;
-                            //data_Food_LevelModel.day_sale_count = day_sale_count;
-                            //data_Food_LevelModel.member_day_sale_count = member_day_sale_count;
-                            data_Food_LevelModel.UpdateLevelID = updateLevelId;
-                            foodLevelList.Add(data_Food_LevelModel);
+                            data_Food_LevelModel.AllFreqType = allFreqType;
+                            data_Food_LevelModel.AllCount = allCount;
+                            data_Food_LevelModel.MemberFreqType = memberFreqType;
+                            data_Food_LevelModel.MemberCount = memberCount;
+                            data_Food_LevelModel.PriorityLevel = priorityLevel;                            
+                            data_Food_LevelModel.UpdateLevelID = updateLevelId;                            
                             Data_Food_LevelService.I.AddModel(data_Food_LevelModel);
                         }                        
                     }
@@ -191,51 +201,51 @@ namespace XXCloudService.Api.XCCloud
                 //        return false;
                 //    }
                 //}
-                var query = from a in foodLevelList.Where(w => w.TimeType == (int)TimeType.Custom)
-                            join b in foodLevelList.Where(w => w.TimeType != (int)TimeType.Custom) 
-                            on a.MemberLevelID equals b.MemberLevelID
-                            select a;
-                if (query.Any())
-                {
-                    var memberLevelId = query.First().MemberLevelID;
-                    string memberLevelName = (from b in Data_MemberLevelService.I.GetModels(p => p.MemberLevelID == memberLevelId) select b.MemberLevelName).FirstOrDefault();
-                    errMsg = string.Format("同一会员级别，自定义模式与其它模式不能混合定义 会员级别:{0}", memberLevelName);
-                    return false;
-                }
+                //var query = from a in foodLevelList.Where(w => w.TimeType == (int)TimeType.Custom)
+                //            join b in foodLevelList.Where(w => w.TimeType != (int)TimeType.Custom) 
+                //            on a.MemberLevelID equals b.MemberLevelID
+                //            select a;
+                //if (query.Any())
+                //{
+                //    var memberLevelId = query.First().MemberLevelID;
+                //    string memberLevelName = (from b in Data_MemberLevelService.I.GetModels(p => p.MemberLevelID == memberLevelId) select b.MemberLevelName).FirstOrDefault();
+                //    errMsg = string.Format("同一会员级别，自定义模式与其它模式不能混合定义 会员级别:{0}", memberLevelName);
+                //    return false;
+                //}
                 
-                //同一会员级别，同一个时段类型（如果是自定义模式，即同一天），同一时段只能有一个优惠策略
-                foreach (var data_Food_LevelModel in foodLevelList)
-                {
-                    int memberLevelId = (int)data_Food_LevelModel.MemberLevelID;                                        
-                    if (data_Food_LevelModel.TimeType == (int)TimeType.Custom)
-                    {
-                        var weeks = data_Food_LevelModel.Week.Split('|').ToList();
-                        foreach (var day in weeks)
-                        {
-                            if (foodLevelList.Where(w => w.MemberLevelID.Equals(data_Food_LevelModel.MemberLevelID) && w.Week.Contains(day) &&
-                                 ((TimeSpan.Compare((TimeSpan)data_Food_LevelModel.StartTime, (TimeSpan)w.StartTime) >= 0 && TimeSpan.Compare((TimeSpan)data_Food_LevelModel.StartTime, (TimeSpan)w.EndTime) < 0) ||
-                                 (TimeSpan.Compare((TimeSpan)data_Food_LevelModel.EndTime, (TimeSpan)w.StartTime) > 0 && TimeSpan.Compare((TimeSpan)data_Food_LevelModel.EndTime, (TimeSpan)w.EndTime) <= 0))).Count() > 1)
-                            {
-                                string memberLevelName = (from b in Data_MemberLevelService.I.GetModels(p => p.MemberLevelID == memberLevelId) select b.MemberLevelName).FirstOrDefault();
-                                string timeSpan = Utils.TimeSpanToStr(data_Food_LevelModel.StartTime.Value) + "~" + Utils.TimeSpanToStr(data_Food_LevelModel.EndTime.Value);
-                                errMsg = string.Format("同一会员级别，同一时段只能有一个优惠策略 会员级别:{0} 自定义模式:{1} 优惠时段:{2}", memberLevelName, getWeekName(day), timeSpan);
-                                return false;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (foodLevelList.Where(w => w.MemberLevelID.Equals(data_Food_LevelModel.MemberLevelID) && w.TimeType.Equals(data_Food_LevelModel.TimeType) &&
-                                 ((TimeSpan.Compare((TimeSpan)data_Food_LevelModel.StartTime, (TimeSpan)w.StartTime) >= 0 && TimeSpan.Compare((TimeSpan)data_Food_LevelModel.StartTime, (TimeSpan)w.EndTime) < 0) ||
-                                 (TimeSpan.Compare((TimeSpan)data_Food_LevelModel.EndTime, (TimeSpan)w.StartTime) > 0 && TimeSpan.Compare((TimeSpan)data_Food_LevelModel.EndTime, (TimeSpan)w.EndTime) <= 0))).Count() > 1)
-                        {
-                            string memberLevelName = (from b in Data_MemberLevelService.I.GetModels(p => p.MemberLevelID == memberLevelId) select b.MemberLevelName).FirstOrDefault();
-                            string timeSpan = Utils.TimeSpanToStr(data_Food_LevelModel.StartTime.Value) + "~" + Utils.TimeSpanToStr(data_Food_LevelModel.EndTime.Value);
-                            errMsg = string.Format("同一会员级别，同一时段只能有一个优惠策略 会员级别:{0} 其它模式:{1} 优惠时段:{2}", memberLevelName, getPeriodTypeName((TimeType)data_Food_LevelModel.TimeType), timeSpan);
-                            return false;
-                        }
-                    }
-                }
+                ////同一会员级别，同一个时段类型（如果是自定义模式，即同一天），同一时段只能有一个优惠策略
+                //foreach (var data_Food_LevelModel in foodLevelList)
+                //{
+                //    int memberLevelId = (int)data_Food_LevelModel.MemberLevelID;                                        
+                //    if (data_Food_LevelModel.TimeType == (int)TimeType.Custom)
+                //    {
+                //        var weeks = data_Food_LevelModel.Week.Split('|').ToList();
+                //        foreach (var day in weeks)
+                //        {
+                //            if (foodLevelList.Where(w => w.MemberLevelID.Equals(data_Food_LevelModel.MemberLevelID) && w.Week.Contains(day) &&
+                //                 ((TimeSpan.Compare((TimeSpan)data_Food_LevelModel.StartTime, (TimeSpan)w.StartTime) >= 0 && TimeSpan.Compare((TimeSpan)data_Food_LevelModel.StartTime, (TimeSpan)w.EndTime) < 0) ||
+                //                 (TimeSpan.Compare((TimeSpan)data_Food_LevelModel.EndTime, (TimeSpan)w.StartTime) > 0 && TimeSpan.Compare((TimeSpan)data_Food_LevelModel.EndTime, (TimeSpan)w.EndTime) <= 0))).Count() > 1)
+                //            {
+                //                string memberLevelName = (from b in Data_MemberLevelService.I.GetModels(p => p.MemberLevelID == memberLevelId) select b.MemberLevelName).FirstOrDefault();
+                //                string timeSpan = Utils.TimeSpanToStr(data_Food_LevelModel.StartTime.Value) + "~" + Utils.TimeSpanToStr(data_Food_LevelModel.EndTime.Value);
+                //                errMsg = string.Format("同一会员级别，同一时段只能有一个优惠策略 会员级别:{0} 自定义模式:{1} 优惠时段:{2}", memberLevelName, getWeekName(day), timeSpan);
+                //                return false;
+                //            }
+                //        }
+                //    }
+                //    else
+                //    {
+                //        if (foodLevelList.Where(w => w.MemberLevelID.Equals(data_Food_LevelModel.MemberLevelID) && w.TimeType.Equals(data_Food_LevelModel.TimeType) &&
+                //                 ((TimeSpan.Compare((TimeSpan)data_Food_LevelModel.StartTime, (TimeSpan)w.StartTime) >= 0 && TimeSpan.Compare((TimeSpan)data_Food_LevelModel.StartTime, (TimeSpan)w.EndTime) < 0) ||
+                //                 (TimeSpan.Compare((TimeSpan)data_Food_LevelModel.EndTime, (TimeSpan)w.StartTime) > 0 && TimeSpan.Compare((TimeSpan)data_Food_LevelModel.EndTime, (TimeSpan)w.EndTime) <= 0))).Count() > 1)
+                //        {
+                //            string memberLevelName = (from b in Data_MemberLevelService.I.GetModels(p => p.MemberLevelID == memberLevelId) select b.MemberLevelName).FirstOrDefault();
+                //            string timeSpan = Utils.TimeSpanToStr(data_Food_LevelModel.StartTime.Value) + "~" + Utils.TimeSpanToStr(data_Food_LevelModel.EndTime.Value);
+                //            errMsg = string.Format("同一会员级别，同一时段只能有一个优惠策略 会员级别:{0} 其它模式:{1} 优惠时段:{2}", memberLevelName, getPeriodTypeName((TimeType)data_Food_LevelModel.TimeType), timeSpan);
+                //            return false;
+                //        }
+                //    }
+                //}
                 
                 if (!Data_Food_LevelService.I.SaveChanges())
                 {
@@ -299,7 +309,7 @@ namespace XXCloudService.Api.XCCloud
                         data_Food_DetialModel.BalanceType = balanceType;
                         data_Food_DetialModel.ContainCount = containCount;
                         data_Food_DetialModel.ContainID = containId;
-                        data_Food_DetialModel.WeightType = (int)WeightType.Money;
+                        //data_Food_DetialModel.WeightType = (int)WeightType.Money;
                         data_Food_DetialModel.WeightValue = weightValue;
                         //data_Food_DetialModel.Days = days;
                         data_Food_DetialModel.OperateType = operateType;
@@ -433,8 +443,11 @@ namespace XXCloudService.Api.XCCloud
                                      Time = getTimeName(g.FirstOrDefault().a.StartTime, g.FirstOrDefault().a.EndTime),
                                      ClientPrice = g.FirstOrDefault().a.ClientPrice,
                                      VIPPrice = g.FirstOrDefault().a.VIPPrice,
-                                     //day_sale_count = g.FirstOrDefault().a.day_sale_count,
-                                     //member_day_sale_count = g.FirstOrDefault().a.member_day_sale_count,
+                                     AllFreqType = g.FirstOrDefault().a.AllFreqType,
+                                     AllCount = g.FirstOrDefault().a.AllCount,
+                                     MemberFreqType = g.FirstOrDefault().a.MemberFreqType,
+                                     MemberCount = g.FirstOrDefault().a.MemberCount,
+                                     PriorityLevel = g.FirstOrDefault().a.PriorityLevel,
                                      UpdateLevelID = g.FirstOrDefault().a.UpdateLevelID
                                  };                                 
 
@@ -486,6 +499,9 @@ namespace XXCloudService.Api.XCCloud
                     FoodType = FoodInfo.FoodType,
                     StartTime = string.Format("{0:yyyy-MM-dd}", FoodInfo.StartTime),
                     EndTime = string.Format("{0:yyyy-MM-dd}", FoodInfo.EndTime),
+                    ForbidStart = string.Format("{0:yyyy-MM-dd}", FoodInfo.ForbidStart),
+                    ForbidEnd = string.Format("{0:yyyy-MM-dd}", FoodInfo.ForbidEnd),
+                    Tax = FoodInfo.Tax,
                     ImageURL = FoodInfo.ImageURL,
                     AllowInternet = FoodInfo.AllowInternet,
                     MeituanID = FoodInfo.MeituanID,
@@ -522,7 +538,10 @@ namespace XXCloudService.Api.XCCloud
                 var foodName = dicParas.Get("foodName");
                 var foodType = dicParas.Get("foodType").Toint();
                 var startTime = dicParas.Get("startTime").Todatetime();                
-                var endTime = dicParas.Get("endTime").Todatetime();                
+                var endTime = dicParas.Get("endTime").Todatetime();
+                var forbidStart = dicParas.Get("forbidStart").Todatetime();
+                var forbidEnd = dicParas.Get("forbidEnd").Todatetime();
+                var tax = dicParas.Get("tax").Todecimal();               
                 var allowInternet = dicParas.Get("allowInternet").Toint();
                 var meituanID = dicParas.Get("meituanID");
                 var dianpinID = dicParas.Get("dianpinID");
@@ -548,6 +567,14 @@ namespace XXCloudService.Api.XCCloud
                     errMsg = "开始时间不能晚于结束时间";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
+                if (!forbidStart.IsNull() && !forbidEnd.IsNull())
+                {
+                    if (forbidStart > forbidEnd)
+                    {
+                        errMsg = "不可用开始日期不能晚于结束日期";
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
+                }                
                 if (!clientPrice.Validdecimal("散客售价", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 if (!memberPrice.Validdecimal("会员售价", out errMsg))
@@ -559,12 +586,15 @@ namespace XXCloudService.Api.XCCloud
                 {
                     try
                     {
-                        var data_FoodInfo = new Data_FoodInfo();
+                        var data_FoodInfo = Data_FoodInfoService.I.GetModels(p=>p.FoodID == foodId).FirstOrDefault() ?? new Data_FoodInfo();
                         data_FoodInfo.FoodID = foodId;
                         data_FoodInfo.FoodName = foodName;
                         data_FoodInfo.FoodType = foodType;
                         data_FoodInfo.StartTime = startTime;
                         data_FoodInfo.EndTime = endTime;
+                        data_FoodInfo.ForbidStart = forbidStart;
+                        data_FoodInfo.ForbidEnd = forbidEnd;
+                        data_FoodInfo.Tax = tax;                        
                         data_FoodInfo.AllowPrint = allowPrint;
                         data_FoodInfo.AllowInternet = allowInternet;
                         data_FoodInfo.MeituanID = meituanID;

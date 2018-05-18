@@ -263,7 +263,7 @@ xcActionSystem.prototype= {
                                     table.render({
                                             elem: parm.elem
                                             , data: tableData
-                                            , height:'full-125'
+                                            // , height:'full-125'
                                             , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
                                             , cols: [parm.cols]
                                             , page: {page: true, limits: [10, 15, 20, 30, 50, 100]}
@@ -875,10 +875,10 @@ xcActionSystem.prototype= {
 
     },
 
-    setSelect: function (objVal,id,m){
+    setSelect: function (objVal,id,m,pid){
         var xc=xcActionSystem.prototype;
         var token=xc.getStorage('token');
-        var  obj={"dictKey":objVal,"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
+        var  obj={"dictKey":objVal,"userToken":token,"pid":pid? pid:'',"signkey":"1f626576304bf5d95b72ece2222e42c3"};
         var url="/XCCloud/Dictionary?action=GetNodes";
         var parasJson = JSON.stringify(obj);
         $.ajax({
@@ -891,22 +891,18 @@ xcActionSystem.prototype= {
                 if(data.result_code=="1"){
                     var arr=data.result_data;
                     $('#'+id).html('<option value="">-请选择-</option>');
-
                         for(i in arr){
-                            if(m){
+                            if(m!=undefined){
                                 if(arr[i].dictValue==m){
                                     $('#'+id).append("<option  selected value='"+arr[i].dictValue+"' name='"+arr[i].name+"'title='"+arr[i].name+"'>"+arr[i].name+"</option>");
                                 }else {
                                     $('#'+id).append("<option value='"+arr[i].dictValue+"' name='"+arr[i].name+"'title='"+arr[i].name+"'>"+arr[i].name+"</option>");
                                 }
                             }else {
-                                $('#'+id).append("<option value='"+arr[i].dictValue+"' name='"+arr[i].name+"'title='"+arr[i].name+"'>"+arr[i].name+"</option>");
+                                $('#'+id).append("<option value='"+arr[i].dictValue+"'name='"+arr[i].name+"'title='"+arr[i].name+"'>"+arr[i].name+"</option>");
                             }
 
                         }
-                    // var _text= $('#'+id).find('option[value='+m+']').text();
-                    // $('#'+id).find('option[value='+m+']').remove();
-                    // $('#'+id).append("<option value='"+m+"' selected>"+_text+"</option>");
                     layui.use(['form'], function() {
                         var form = layui.form;
                         form.render('select');
@@ -1514,7 +1510,7 @@ xcActionSystem.prototype= {
                     $('#'+id).html('<option>-请选择-</option>');
                     for(let i in arr){
                         // $('#'+id).append('<option value="'+arr[i].ID+'" title="'+arr[i].ExpireDays+'">'+arr[i].ProjectName+'</option>')
-                        if(selected){
+                        if(selected!=undefined){
                             if(arr[i].ID==selected){
                                 $('#'+id).append('<option value="'+arr[i].ID+'" selected title="'+arr[i].ExpireDays+'">'+arr[i].ProjectName+'</option>')
                             }else {
@@ -1547,7 +1543,7 @@ xcActionSystem.prototype= {
                     let arr=data.result_data;
                     $('#'+id).html('<option>-请选择-</option>');
                     for(let i in arr){
-                        if(selected){
+                        if(selected!=undefined){
                             if(arr[i].ID==selected){
                                 $('#'+id).append('<option value="'+arr[i].ID+'" selected>'+arr[i].TypeName+'</option>')
                             }else {
@@ -1555,6 +1551,38 @@ xcActionSystem.prototype= {
                             }
                         }else {
                             $('#'+id).append('<option value="'+arr[i].ID+'">'+arr[i].TypeName+'</option>')
+                        }
+                    }
+                    form.render('select');
+                } else {
+                    layer.msg(data.result_msg);
+                }
+            }
+        });
+    },
+    getBalanceTypeDicStore:function (storeId,hkType,token,layer,form,name,selected) {
+        let _obj={'storeId':storeId,'hkType':hkType,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+        let parseJson = JSON.stringify(_obj);
+        $.ajax({
+            type:'post',
+            url:'/XCCloud/BalanceType?action=GetBalanceTypeDic',
+            contentType: "application/json; charset=utf-8",
+            data:{parasJson: parseJson},
+            success: function (data) {
+                data = JSON.parse(data);
+                console.log(data);
+                if (data.result_code == 1) {
+                    let arr=data.result_data;
+                    $('select[name="'+name+'"]').html('<option>-请选择-</option>');
+                    for(let i in arr){
+                        if(selected!=undefined){
+                            if(arr[i].ID==selected){
+                                $('select[name="'+name+'"]').append('<option value="'+arr[i].ID+'" selected>'+arr[i].TypeName+'</option>')
+                            }else {
+                                $('select[name="'+name+'"]').append('<option value="'+arr[i].ID+'">'+arr[i].TypeName+'</option>')
+                            }
+                        }else {
+                            $('select[name="'+name+'"]').append('<option value="'+arr[i].ID+'">'+arr[i].TypeName+'</option>')
                         }
                     }
                     form.render('select');
@@ -1579,7 +1607,7 @@ xcActionSystem.prototype= {
                     let arr=data.result_data;
                     $('#'+id).html('<option>-请选择-</option>');
                     for(let i in arr){
-                        if(selected){
+                        if(selected!=undefined){
                             if(arr[i].MemberLevelID==selected){
                                 $('#'+id).append('<option value="'+arr[i].MemberLevelID+'" selected>'+arr[i].MemberLevelName+'</option>')
                             }else {
@@ -1611,7 +1639,7 @@ xcActionSystem.prototype= {
                     let arr=data.result_data;
                     $('#'+id).html('<option>-请选择-</option>');
                     for(let i in arr){
-                        if(selected){
+                        if(selected!=undefined){
                             if(arr[i].ID==selected){
                                 $('#'+id).append('<option value="'+arr[i].ID+'" selected>'+arr[i].FoodName+'</option>')
                             }else {
@@ -1643,7 +1671,7 @@ xcActionSystem.prototype= {
                     let arr=data.result_data;
                     $('#'+id).html('<option>-请选择-</option>');
                     for(let i in arr){
-                        if(selected){
+                        if(selected!=undefined){
                             if(arr[i].ID==selected){
                                 $('#'+id).append('<option value="'+arr[i].ID+'" selected   title="'+arr[i].EndTime+'">'+arr[i].CouponName+'</option>')
                             }else {
@@ -1791,6 +1819,38 @@ xcActionSystem.prototype= {
                             }
                         }else {
                             $('#'+id).append('<option value="'+arr[i].ID+'">'+arr[i].DepotName+'</option>')
+                        }
+                    }
+                    form.render('select');
+                } else {
+                    layer.msg(data.result_msg||data.return_msg);
+                }
+            }
+        });
+    },
+    //获取区域字典
+    getGroupAreaDic:function (token,layer,form,id,selected) {
+        let _obj={'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+        let parseJson = JSON.stringify(_obj);
+        $.ajax({
+            type:'post',
+            url:'/XCCloud/GroupArea?action=QueryGroupArea',
+            contentType: "application/json; charset=utf-8",
+            data:{parasJson: parseJson},
+            success: function (data) {
+                data = JSON.parse(data);
+                if (data.result_code == 1) {
+                    let arr=data.result_data;
+                    $('#'+id).html('<option>-请选择-</option><option value="0">全部</option>');
+                    for(let i in arr){
+                        if(selected!=undefined){
+                            if(arr[i].id==selected){
+                                $('#'+id).append('<option value="'+arr[i].id+'" selected>'+arr[i].areaName+'</option>')
+                            }else {
+                                $('#'+id).append('<option value="'+arr[i].id+'">'+arr[i].areaName+'</option>')
+                            }
+                        }else {
+                            $('#'+id).append('<option value="'+arr[i].id+'">'+arr[i].areaName+'</option>')
                         }
                     }
                     form.render('select');

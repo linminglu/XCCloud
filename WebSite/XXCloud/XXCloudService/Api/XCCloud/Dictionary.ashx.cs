@@ -86,16 +86,18 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 string errMsg = string.Empty;
-                string merchId = dicParas.ContainsKey("merchId") ? dicParas["merchId"].ToString() : string.Empty;
-                string dictKey = dicParas.ContainsKey("dictKey") ? dicParas["dictKey"].ToString() : string.Empty;
-                string enabled = dicParas.ContainsKey("enabled") ? dicParas["enabled"].ToString() : string.Empty;
+                string merchId = dicParas.Get("merchId");
+                string dictKey = dicParas.Get("dictKey");
+                string enabled = dicParas.Get("enabled");
+                var pid = dicParas.Get("pid").Toint(0);
                 
-                string sql = " exec  SP_DictionaryNodes @MerchID,@DictKey,@RootID output ";
-                SqlParameter[] parameters = new SqlParameter[3];
+                string sql = " exec  SP_DictionaryNodes @MerchID,@DictKey,@PID,@RootID output ";
+                SqlParameter[] parameters = new SqlParameter[4];
                 parameters[0] = new SqlParameter("@MerchID", merchId);
                 parameters[1] = new SqlParameter("@DictKey", dictKey);
-                parameters[2] = new SqlParameter("@RootID", 0);
-                parameters[2].Direction = System.Data.ParameterDirection.Output;
+                parameters[2] = new SqlParameter("@PID", pid);
+                parameters[3] = new SqlParameter("@RootID", 0);
+                parameters[3].Direction = System.Data.ParameterDirection.Output;
                 System.Data.DataSet ds = XCCloudBLL.ExecuteQuerySentence(sql, parameters);
                 if (ds.Tables.Count == 0)
                 {
@@ -109,7 +111,7 @@ namespace XXCloudService.Api.XCCloud
                 }
 
                 int rootId = 0;
-                int.TryParse(parameters[2].Value.ToString(), out rootId);                
+                int.TryParse(parameters[3].Value.ToString(), out rootId);                
 
                 //实例化一个根节点
                 DictionaryResponseModel rootRoot = new DictionaryResponseModel();

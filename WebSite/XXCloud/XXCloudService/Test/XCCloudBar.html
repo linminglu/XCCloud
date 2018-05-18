@@ -126,7 +126,7 @@
 
         function do_GetFoodDetail() {
             var txtUserToken = $("#txtUserToken").val();
-            var parasObj = { "sysId": "0", "versionNo": "0.0.0.1", "userToken": $("#txtUserToken").val(), "foodId": $("#txt_do_GetFoodDetail").val() };
+            var parasObj = { "sysId": "0", "versionNo": "0.0.0.1", "userToken": $("#txtUserToken").val(), "category": $("#sel_CustomerType_do_GetFoodDetail").val(), "foodId": $("#txt_do_GetFoodDetail").val() };
             var url = "/XCCloud/Foods?action=getFoodDetail";
             var parasJson = JSON.stringify(parasObj);
             common(url, parasJson);
@@ -151,16 +151,23 @@
             //insert into @FoodDetailType(FoodId,FoodCount,PayType,PayNum) values(6,1,98306,100)
             //insert into @FoodDetailType(FoodId,FoodCount,PayType,PayNum) values(4,1,98307,100)
 
-            var buyDetail1 = { foodId: "1", foodCount: "1", payType: "0", payNum: 0.5}
-            var buyDetail2 = { foodId: "3", foodCount: "2", payType: "0", payNum: 5.0 }
-            var buyDetail3 = { foodId: "6", foodCount: "1", payType: "98306", payNum: 100 }
-            var buyDetail4 = { foodId: "4", foodCount: "1", payType: "98307", payNum: 100 }
+            //insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(1,1,1,0,20)
+            //insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(4,2,1,0,30)
+
+            var buyDetail1 = { foodId: "1", category: 0, foodCount: "1", payType: "0", payNum: 0.5}
+            var buyDetail2 = { foodId: "3", category: 0, foodCount: "2", payType: "0", payNum: 5.0 }
+            var buyDetail3 = { foodId: "6", category: 0, foodCount: "1", payType: "98306", payNum: 100 }
+            var buyDetail4 = { foodId: "4", category: 0, foodCount: "1", payType: "98307", payNum: 100 }
+            var buyDetail5 = { foodId: "1", category: 1, foodCount: "1", payType: "0", payNum: 20 }
+            var buyDetail6 = { foodId: "4", category: 2, foodCount: "1", payType: "0", payNum: 30 }
 
             var buyDetails = new Array();
             buyDetails.push(buyDetail1);
             buyDetails.push(buyDetail2);
             buyDetails.push(buyDetail3);
             buyDetails.push(buyDetail4);
+            buyDetails.push(buyDetail5);
+            buyDetails.push(buyDetail6);
 
             var parasObj = {
                 buyDetails: JSON.stringify(buyDetails),
@@ -260,7 +267,7 @@
         
         function getOrderContain() {
             var parasObj = {
-                "userToken": userToken, "orderFlwId": $("#txtOrderId").val()
+                "userToken": userToken, "orderFlwId": $("#txt_FlwOrderId_do_getOrderContain").val()
             };
             var url = "/XCCloud/order?action=getOrderContain";
             var parasJson = JSON.stringify(parasObj);
@@ -388,9 +395,10 @@
 
     <div title="Food" style="font-size:14px;color:#F00;border:1px solid #ccc;">
         <input id="Button_Food_1" type="button" value="getFoodType(获取套餐类别)" onclick="getFoodType()" />
-        &nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp; 
         套餐类型：<input id="txtFoodListFoodTypeStr" type="text" value="0,1,2,3,4,5,6" /><input id="Button_Food_2" type="button" value="do_getFoodList(获取套餐列表)" onclick="do_getFoodList()" />
         &nbsp;&nbsp;&nbsp;&nbsp;
+        客户类型:<select id="sel_CustomerType_do_GetFoodDetail"><option value="0">套餐</option><option value="1">门票</option><option value="2">商品</option></select>
         套餐Id：<input id="txt_do_GetFoodDetail" type="text" value="1" /><input id="Button_Food_3" type="button" value="do_GetFoodDetail(获取套餐明细)" onclick="do_GetFoodDetail()" />
     </div>
     <br />
@@ -413,9 +421,9 @@
     </div>
     <br />
 
-    <div title="Order" style="font-size:14px;color:#F00;border:1px solid #ccc;">
+    <!--<div title="Order" style="font-size:14px;color:#F00;border:1px solid #ccc;">
         <input id="Button_Order_1" type="button" value="do_GetOrder(获取订单流水号)" onclick="do_GetOrder()" />
-    </div>
+    </div>-->
 
     <div title="order" style="font-size:14px;color:#F00;border:1px solid #ccc;">
         客户类型:<select id="sel_CustomerType_addOrder"><option value="0">散客</option><option value="1">入会</option><option value="2">会员</option></select>
@@ -428,10 +436,12 @@
         <input id="btn_do_addOrder" type="button" value="do_addOrder(添加订单)" onclick="do_addOrder()" />
         &nbsp;&nbsp;&nbsp;&nbsp;
         客户类型:<select id="sel_CustomerType_do_addOrderToCache"><option value="0">散客</option><option value="1">入会</option><option value="2">会员</option></select>
-        订单号:<input id="txt_FlwOrderId_do_addOrderToCache" placeholder="请输订单号" style="width:160px" value="0" />
+        订单号:<input id="txt_FlwOrderId_do_addOrderToCache" placeholder="请输订单号" style="width:250px" value="0" />
         会员卡号:<input id="txt_MemberCardId_do_addOrderToCache" placeholder="请输入会员卡号" style="width:80px" value="10004143" />
         <input id="btn_do_addOrderToCache" type="button" value="do_addOrderToCache(添加订单)" onclick="do_addOrderToCache()" />
-        <!--<input id="Buttonorder_payOrder" type="button" value="payOrder(完成订单支付)" onclick="payOrder()" />-->
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        订单号:<input id="txt_FlwOrderId_do_getOrderContain" placeholder="获取订单内容" style="width:250px" value="0" />
+        <input id="Buttonorder_getOrderContain" type="button" value="getOrderContain(获取订单内容)" onclick="getOrderContain()" />
     </div>
 
     <div title="discount" style="font-size:14px;color:#F00;border:1px solid #ccc;">
@@ -464,7 +474,7 @@
         <input id="Buttonorder_122221111" type="button" value="checkCanRegister(注册会员)" onclick="checkCanRegister()" />
     </div>
     <div title="checkCanRegister" style="font-size:14px;color:#F00;border:1px solid #ccc;">
-        <input id="Buttonorder_getOrderContain" type="button" value="getOrderContain(获取订单内容)" onclick="getOrderContain()" />
+        
     </div>
 
 

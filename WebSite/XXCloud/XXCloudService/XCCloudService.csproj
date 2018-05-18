@@ -136,6 +136,7 @@
     <Content Include="Api\HaoKu\insertCoin.aspx" />
     <Content Include="Api\HaoKu\ping.aspx" />
     <Content Include="Api\HaoKu\ShopList.xml" />
+    <Content Include="Api\HHZ\getMemberInfo.aspx" />
     <Content Include="Api\XCCloud\UserInfo.ashx" />
     <Content Include="assets\css\admin.css" />
     <Content Include="assets\css\amazeui.min.css" />
@@ -386,6 +387,9 @@
     <Content Include="Api\XCCloud\Discount.ashx" />
     <Content Include="HolidayConfig.json" />
     <Content Include="GoodRequestTemplate.xlsx" />
+    <Content Include="Api\XCCloud\GroupArea.ashx" />
+    <Content Include="Api\XCCloud\RuleOverlying.ashx" />
+    <Content Include="Api\XCCloud\FreeGiveRule.ashx" />
     <None Include="Properties\PublishProfiles\111.pubxml" />
     <None Include="Properties\PublishProfiles\qqq.pubxml" />
     <None Include="Properties\PublishProfiles\rrr.pubxml" />
@@ -1139,8 +1143,22 @@
     <Compile Include="Api\HaoKu\ping.aspx.designer.cs">
       <DependentUpon>ping.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Api\HHZ\Com\HHZAPI.cs" />
+    <Compile Include="Api\HHZ\getMemberInfo.aspx.cs">
+      <DependentUpon>getMemberInfo.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Api\HHZ\getMemberInfo.aspx.designer.cs">
+      <DependentUpon>getMemberInfo.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Api\Payment.ashx.cs">
       <DependentUpon>Payment.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="Api\XCCloud\FreeGiveRule.ashx.cs">
+      <DependentUpon>FreeGiveRule.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="Api\XCCloud\RuleOverlying.ashx.cs">
+      <DependentUpon>RuleOverlying.ashx</DependentUpon>
     </Compile>
     <Compile Include="Api\Service\CacheService.ashx.cs">
       <DependentUpon>CacheService.ashx</DependentUpon>
@@ -1179,6 +1197,9 @@
     </Compile>
     <Compile Include="Api\XCCloud\GameWatch.ashx.cs">
       <DependentUpon>GameWatch.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="Api\XCCloud\GroupArea.ashx.cs">
+      <DependentUpon>GroupArea.ashx</DependentUpon>
     </Compile>
     <Compile Include="Api\XCCloud\GroupVerify.ashx.cs">
       <DependentUpon>GroupVerify.ashx</DependentUpon>

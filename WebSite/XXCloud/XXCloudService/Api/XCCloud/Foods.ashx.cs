@@ -132,12 +132,15 @@ namespace XXCloudService.Api.XCCloud
             parameters[3] = new SqlParameter("@FoodTypeStr", foodTypeStr);
             System.Data.DataSet ds = XCCloudBLL.ExecuteQuerySentence(sql, parameters);
             DataTable dtFoodInfo = ds.Tables[0];
-            DataTable dtFoodDetailInfo = ds.Tables[1];
+
+            List<FoodInfoModel> listFoodInfo = Utils.GetModelList<FoodInfoModel>(ds.Tables[0]).ToList();
+            List<GoodModel> listGoodInfo = Utils.GetModelList<GoodModel>(ds.Tables[1]).ToList();
+            List<TicketModel> listTicketInfo = Utils.GetModelList<TicketModel>(ds.Tables[2]).ToList();
+            List<FoodDetailInfoModel> listFoodDetailInfo = Utils.GetModelList<FoodDetailInfoModel>(ds.Tables[3]).ToList();
+            FoodSetModel foodSetModel = new FoodSetModel();
 
             if (dtFoodInfo.Rows.Count > 0)
             {
-                List<FoodInfoModel> listFoodInfo = Utils.GetModelList<FoodInfoModel>(dtFoodInfo).ToList();
-                List<FoodDetailInfoModel> listFoodDetailInfo = Utils.GetModelList<FoodDetailInfoModel>(dtFoodDetailInfo).ToList();
                 for (int i = 0; i < listFoodInfo.Count; i++)
                 {
                     if (listFoodInfo[i].FoodType == 1)
@@ -151,10 +154,13 @@ namespace XXCloudService.Api.XCCloud
                         listFoodInfo[i].DetailsCount = listFoodInfo[i].DetailInfoList.Count();
                     }
                 }
-                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, listFoodInfo);
             }
 
-            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "无数据");
+            foodSetModel.ListFoodInfo = listFoodInfo;
+            foodSetModel.ListGoodModel = listGoodInfo;
+            foodSetModel.ListTicketModel = listTicketInfo;
+
+            return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, foodSetModel);
         }
 
         /// <summary>
@@ -168,6 +174,7 @@ namespace XXCloudService.Api.XCCloud
             XCCloudUserTokenModel userTokenModel = (XCCloudUserTokenModel)(dicParas[Constant.XCCloudUserTokenModel]);
             StoreIDDataModel userTokenDataModel = (StoreIDDataModel)(userTokenModel.DataModel);
 
+            string category = dicParas.ContainsKey("category") ? dicParas["category"].ToString() : string.Empty;
             string foodId = dicParas.ContainsKey("foodId") ? dicParas["foodId"].ToString() : string.Empty;
 
             if (string.IsNullOrEmpty(foodId))
@@ -175,17 +182,41 @@ namespace XXCloudService.Api.XCCloud
                 return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "套餐名不能为空");
             }
 
-            string sql = "exec GetFoodDetail @StoreId,@FoodId ";
-            SqlParameter[] parameters = new SqlParameter[2];
+            string sql = "exec GetFoodDetail @StoreId,@Category,@FoodId ";
+            SqlParameter[] parameters = new SqlParameter[3];
             parameters[0] = new SqlParameter("@StoreId", userTokenDataModel.StoreId);
-            parameters[1] = new SqlParameter("@FoodId", foodId);
+            parameters[1] = new SqlParameter("@Category", category);
+            parameters[2] = new SqlParameter("@FoodId", foodId);
             System.Data.DataSet ds = XCCloudBLL.ExecuteQuerySentence(sql, parameters);
-            DataTable dt = ds.Tables[0];
-
-            if (dt.Rows.Count > 0)
+            
+            if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
             {
-                List<FoodDetailModel> list1 = Utils.GetModelList<FoodDetailModel>(ds.Tables[0]).ToList();
-                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, list1);
+                if (category == "0")
+                {
+                    List<FoodDetailModel> list1 = Utils.GetModelList<FoodDetailModel>(ds.Tables[0]).ToList();
+                    return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, list1);                    
+                }
+                else if (category == "1")
+                {
+                    string note = ds.Tables[0].Rows[0][0].ToString();
+                    var obj = new {
+                        note = note
+                    };
+                    return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, obj); 
+                }
+                else if (category == "2")
+                {
+                    string note = ds.Tables[0].Rows[0][0].ToString();
+                    var obj = new
+                    {
+                        note = note
+                    };
+                    return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, obj); 
+                }
+                else
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "商品分类不正确");
+                }
             }
             else
             { 

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="layui/css/layui.css">
+    <link rel="stylesheet" href="layui/css/layui_font.css">
+</head>
+<body>
+<div class="layui-row" style="padding: 15px;">
+   <div class="layui-card">
+       <div class="layui-card-header">优惠叠加规则设定</div>
+       <div class="layui-card-body">
+           <div class="layui-col-lg3 layui-col-md4 ">
+               <ul id="tree"></ul>
+           </div>
+           <div class="layui-col-lg9 layui-col-md8 ">
+               <table class="layui-hide" id="ruleTreeTable" lay-filter="ruleTreeTable"></table>
+           </div>
+       </div>
+   </div>
+</div>
+
+</body>
+<script src="js/jquery-1.8.3-min.js"></script>
+<script src="layui/layui.js"></script>
+<script src="js/storeSystem.js"></script>
+<script>
+    $(function () {
+        let xc=xcActionSystem.prototype;
+        let token=xc.getStorage('token');
+        let tableData=[];
+        layui.use(['form','layer','tree','table'],function () {
+            let form=layui.form;
+            let layer=layui.layer;
+            let tree=layui.tree;
+            let table=layui.table;
+            showRule(token,layer,layui);
+            table.render({
+                elem:'#ruleTreeTable'
+                , height:'220px'
+                ,size:'sm'
+                , data: tableData
+                , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+                , cols: [[
+                    {field:'BalanceTypeStr', title: '余额类型', align: 'center'}
+                    ,{field:'UseCount', title: '消耗数量', align: 'center'}
+                    ,{field:'CashValue', title: '现金', align: 'center'}
+                    ,{fixed: 'right',title:'操作', align:'center', toolbar: '#barDemo'}]]
+                , page: {page: true, limits: [5,10, 15, 20]}
+                , limit: 5
+            });
+        });
+      let  showRule=function(token,layer,layui) {
+          let _obj={'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+          let parseJson = JSON.stringify(_obj);
+          $.ajax({
+              type:'post',
+              url:'/XCCloud/RuleOverlying?action=QueryRuleOverlying',
+              contentType: "application/json; charset=utf-8",
+              data:{parasJson: parseJson},
+              success: function (data) {
+                  data = JSON.parse(data);
+                  if (data.result_code == 1) {
+                    console.log(data);
+                    let treeData=data.result_data.TreeNodes;
+                     tableData=data.result_data.List;
+                    layui.tree({
+                        elem:'#tree',
+                        nodes:treeData,
+                        click:function (node) {
+                            console.log(node)
+                        }
+                    })
+
+                  } else {
+                      layer.msg(data.result_msg);
+                  }
+              }
+          })
+        }
+    })
+</script>
+</html>

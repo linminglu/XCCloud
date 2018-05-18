@@ -559,7 +559,8 @@ namespace XXCloudService.Api.HaoKu
                 bindData.machineName = AES.AESEncrypt(game.GameName);
                 bindData.deviceType = AES.AESEncrypt("4"); //默认 游乐设备
                 bindData.dopCode = AES.AESEncrypt(device.MCUID);
-                bindData.cost = AES.AESEncrypt(game.PushReduceFromCard.ToString());
+                //bindData.cost = AES.AESEncrypt(game.PushReduceFromCard.ToString());
+                bindData.cost = AES.AESEncrypt(game.PushCoin1.ToString());
                 bindData.point = AES.AESEncrypt(ds.DictKey);
 
                 HaokuAPI api = new HaokuAPI();

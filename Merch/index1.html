@@ -190,7 +190,7 @@
                         data = JSON.parse(data);
                         console.log(data);
                         if(data.result_code==1){
-                            logMsg.MerchTag=data.result_data.MerchTag;
+                            logMsg.MerchTag=data.result_data.Tag;
                             logMsg.logType=2;
                             xc.setStorage('logMsg',JSON.stringify(logMsg));
                             window.location.href='/merch/index1.html';
@@ -241,7 +241,7 @@
                             data = JSON.parse(data);
                             console.log(data);
                             if(data.result_code==1){
-                                logMsg.MerchTag=data.result_data.MerchTag;
+                                logMsg.MerchTag=data.result_data.Tag;
                                 logMsg.logType=3;
                                 xc.setStorage('logMsg',JSON.stringify(logMsg));
                                 window.location.href='/merch/index1.html';
@@ -268,7 +268,7 @@
                             data = JSON.parse(data);
                             console.log(data);
                             if(data.result_code==1){
-                                logMsg.MerchTag=data.result_data.MerchTag;
+                                logMsg.MerchTag=data.result_data.Tag;
                                 logMsg.logType=4;
                                 xc.setStorage('logMsg',JSON.stringify(logMsg));
                                 window.location.href='/merch/index1.html';

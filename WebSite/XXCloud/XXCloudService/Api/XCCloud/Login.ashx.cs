@@ -63,7 +63,7 @@ namespace XXCloudService.Api.XCCloud
                 }
                 var base_StoreInfoModel = base_StoreInfoService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
                 userLogResponseModel.Token = XCCloudUserTokenBusiness.SetUserToken(userId.ToString(), logType, dataModel);
-                userLogResponseModel.MerchTag = base_StoreInfoModel.StoreTag;
+                userLogResponseModel.Tag = base_StoreInfoModel.StoreTag;
                 userLogResponseModel.MerchID = merchId;
                 userLogResponseModel.StoreID = storeId;
                 userLogResponseModel.IsSingle = XCCloudStoreBusiness.IsSingleStore(merchId) ? 1 : 0;
@@ -87,7 +87,7 @@ namespace XXCloudService.Api.XCCloud
                 var base_MerchantInfoModel = base_MerchantInfoService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
                 var dataModel = new MerchDataModel { MerchID = merchId, StoreID = string.Empty, MerchType = base_MerchantInfoModel.MerchType, CreateType = base_MerchantInfoModel.CreateType, CreateUserID = base_MerchantInfoModel.CreateUserID };
                 userLogResponseModel.Token = XCCloudUserTokenBusiness.SetUserToken(userId.ToString(), logType, dataModel);
-                userLogResponseModel.MerchTag = base_MerchantInfoModel.MerchTag;
+                userLogResponseModel.Tag = base_MerchantInfoModel.MerchTag;
                 userLogResponseModel.MerchID = merchId;
                 userLogResponseModel.StoreID = storeId;
                 userLogResponseModel.IsSingle = XCCloudStoreBusiness.IsSingleStore(merchId) ? 1 : 0;
@@ -159,7 +159,7 @@ namespace XXCloudService.Api.XCCloud
                 string merchId = dicParas.ContainsKey("merchId") ? Convert.ToString(dicParas["merchId"]) : string.Empty;
                 string storeId = dicParas.ContainsKey("storeId") ? Convert.ToString(dicParas["storeId"]) : string.Empty;
                 string workStationId = dicParas.ContainsKey("workStationId") ? Convert.ToString(dicParas["workStationId"]) : string.Empty;
-                int? merchTag = (int?)null;
+                int? tag = (int?)null;
 
                 if (string.IsNullOrEmpty(logType))
                 {
@@ -181,7 +181,7 @@ namespace XXCloudService.Api.XCCloud
                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                     }
                     var base_MerchantInfoModel = base_MerchantInfoService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
-                    merchTag = base_MerchantInfoModel.MerchTag;
+                    tag = base_MerchantInfoModel.MerchTag;
                     merchDataModel.MerchID = merchId;
                     merchDataModel.StoreID = string.Empty;
                 }
@@ -194,12 +194,12 @@ namespace XXCloudService.Api.XCCloud
                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                     }
                     var base_StoreInfoModel = base_StoreInfoService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
-                    merchTag = base_StoreInfoModel.StoreTag;
+                    tag = base_StoreInfoModel.StoreTag;
                     merchDataModel.MerchID = merchId;
                     merchDataModel.StoreID = storeId;
                 }
 
-                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, new { MerchTag = merchTag });
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, new { Tag = tag });
             }
             catch (Exception e)
             {

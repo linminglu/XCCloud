@@ -608,6 +608,72 @@ namespace XCCloudService.Common.Enum
     }
 
     /// <summary>
+    /// 叠加规则类别
+    /// </summary>
+    public enum RuleType
+    {
+        [Description("满减规则")]
+        Discount = 0, //满减规则
+        [Description("优惠券")]
+        Coupon = 1, //券规则
+    }
+
+    /// <summary>
+    /// 赠送规则间隔类别
+    /// </summary>
+    public enum SpanType
+    {
+        [Description("小时")]
+        Hour = 0,   //小时
+        [Description("天")]
+        Day = 1,    //天
+        [Description("周")]
+        Week = 2,   //周
+        [Description("月")]
+        Month = 3,  //月
+        [Description("季")]
+        Season = 4, //季
+        [Description("年")]
+        Year = 5,   //年
+        [Description("整个有效期（仅限自然周期）")]
+        Whole = 6,  //整个有效期（仅限自然周期）
+    }
+
+    /// <summary>
+    /// 游乐项目绑定设备工作方式
+    /// </summary>
+    public enum ProjectBindDeviceWorkType
+    {
+        [Description("入口")]
+        Entry = 0,   
+        [Description("出口")]
+        Exit = 1,   
+        [Description("自动")]
+        Auto = 2,   
+    }
+
+    public enum ProjectInfoChargeType
+    {
+        [Description("按次")]
+        Count = 0,
+        [Description("计时")]
+        Time = 1 
+    }
+
+    /// <summary>
+    /// 计时项目扣费方式
+    /// </summary>
+    public enum ProjectTimeChargeType
+    {
+        [Description("进闸扣除基础费用")]
+        Base = 0,
+        [Description("进闸扣除封顶费用")]
+        Top = 1,
+        [Description("进闸验证微信票码")]
+        Weixin = 2,   
+    }
+
+    /// <summary>
     /// 小数位舍弃方式
     /// </summary>
     public enum AddingType

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Validation;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
@@ -16,144 +17,74 @@ using XCCloudService.DAL;
 using XCCloudService.DBService.BLL;
 using XCCloudService.Model.CustomModel.XCCloud;
 using XCCloudService.Model.XCCloud;
+using XXCloudService.Api.XCCloud.Common;
 
 namespace XXCloudService.Api.XCCloud
 {
-    [Authorize(Roles = "MerchUser, StoreUser")]
+    [Authorize(Roles = "StoreUser")]
     /// <summary>
     /// Project 的摘要说明
     /// </summary>
     public class Project : ApiBase
     {
-
-        /// <summary>
-        /// 获取适用门店的主体数据
-        /// </summary>
-        /// <param name="storeId"></param>
-        /// <returns></returns>
-        private IQueryable getSutiableList(string storeId)
-        {
-            return from a in Data_Project_StoreListService.N.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase))
-                    join b in Data_ProjectInfoService.N.GetModels() on a.ProjectID equals b.ID
-                    select b;     
-        }
+        #region 游乐项目维护
 
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
-        public object GetProjectInfoList(Dictionary<string, object> dicParas)
-        {            
+        public object QueryProjectInfo(Dictionary<string, object> dicParas)
+        {
             try
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
                 string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
-                string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
-                var query = Data_ProjectInfoService.N.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase));
-                if (userTokenKeyModel.LogType == (int)RoleType.StoreUser)
-                {
-                    query = (IQueryable<Data_ProjectInfo>)getSutiableList(storeId);
-                }
-                
-                var linq = from a in query
-                           join b in Dict_BalanceTypeService.N.GetModels(p=>p.State == 1) on a.BalanceType equals b.ID into b1
-                           from b in b1.DefaultIfEmpty()
-                           select new
-                           {
-                               ID = a.ID,
-                               ProjectName = a.ProjectName,
-                               PlayCount = a.PlayCount,
-                               ExpireDays = a.ExpireDays,
-                               AccompanyFlag = a.AccompanyFlag,
-                               AccompanyFlagStr = a.AccompanyFlag != null ? (a.AccompanyFlag == 1 ? "是" : a.AccompanyFlag == 0 ? "否" : string.Empty) : string.Empty,
-                               AccompanyCash = a.AccompanyCash,
-                               BalanceType = a.BalanceType,
-                               BalanceTypeStr = b != null ? b.TypeName : string.Empty,
-                               BalanceCount = a.BalanceCount,
-                               Note = a.Note
-                           };
 
-                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, linq);
-            }
-            catch (Exception e)
-            {
-                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
-            }
-        }
-
-        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
-        public object GetProjectDic(Dictionary<string, object> dicParas)
-        {
-            try
-            {
-                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
-
-                var linq = from a in Data_ProjectInfoService.I.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase))
-                           select new
-                           {
-                               ID = a.ID,
-                               ProjectName = a.ProjectName,
-                               ExpireDays = a.ExpireDays
-                           };
-
-                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, linq);
-            }
-            catch (Exception e)
-            {
-                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
-            }
-        }
-
-        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
-        public object GetProjectGames(Dictionary<string, object> dicParas)
-        {
-            try
-            {
-                var gameTypeId = Dict_SystemService.I.GetModels(p => p.DictKey.Equals("游戏机类型", StringComparison.OrdinalIgnoreCase) && p.PID == 0).FirstOrDefault().ID;
-                var projectGameId = Dict_SystemService.I.GetModels(p => p.DictKey.Equals("游乐项目", StringComparison.OrdinalIgnoreCase) && p.PID == gameTypeId).FirstOrDefault().ID;
-                var linq = Dict_SystemService.I.GetModels(p => p.PID == projectGameId).Select(o => new {
-                    ID = o.ID,
-                    Name = o.DictKey
-                });
-
-                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, linq);
-            }
-            catch (Exception e)
-            {
-                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
-            }
-        }
-
-        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
-        public object GetProjectBindGames(Dictionary<string, object> dicParas)
-        {
-            try
-            {
                 string errMsg = string.Empty;
-                int id = dicParas.Get("id").Toint(0);
+                object[] conditions = dicParas.ContainsKey("conditions") ? (object[])dicParas["conditions"] : null;
 
-                var linq = Data_Project_BindGameService.I.GetModels(p => p.ProjectID == id).Select(o => new { GameID = o.GameID });
-                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, linq);
+                SqlParameter[] parameters = new SqlParameter[0];
+                string sqlWhere = string.Empty;
+                
+                if (conditions != null && conditions.Length > 0)
+                    if (!QueryBLL.GenDynamicSql(conditions, "a.", ref sqlWhere, ref parameters, out errMsg))
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                #region Sql语句
+                string sql = @"SELECT
+                                    a.*,
+                                    b.AreaName,
+                                    c.DictKey AS ProjectTypeStr
+                                FROM
+                                	Data_ProjectInfo a
+                                LEFT JOIN Data_GroupArea b ON a.AreaType = b.ID  
+                                LEFT JOIN Dict_System c ON a.ProjectType = c.ID                                
+                                WHERE 1=1
+                            ";
+                sql += " AND a.StoreID=" + storeId;
+
+                #endregion
+
+                var list = Data_FreeGiveRuleService.I.SqlQuery<Data_ProjectInfoList>(sql, parameters).ToList();
+
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, list);
             }
             catch (Exception e)
             {
                 return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
             }
-        }
-
+        }        
+        
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object GetProjectInfo(Dictionary<string, object> dicParas)
         {
             try
             {
                 string errMsg = string.Empty;
-                string id = dicParas.ContainsKey("id") ? (dicParas["id"] + "") : string.Empty;
-                if (string.IsNullOrEmpty(id))
-                {
-                    errMsg = "门票ID不能为空";
+                if(!dicParas.Get("id").Validintnozero("项目ID", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
 
-                int iId = Convert.ToInt32(id);
-                var data_ProjectInfo = Data_ProjectInfoService.I.GetModels(p => p.ID == iId).FirstOrDefault();
+                var id = dicParas.Get("id").Toint();
+
+                var data_ProjectInfo = Data_ProjectInfoService.I.GetModels(p => p.ID == id).FirstOrDefault();
                 if (data_ProjectInfo == null)
                 {
                     errMsg = "该项目不存在";
@@ -166,7 +97,32 @@ namespace XXCloudService.Api.XCCloud
             {
                 return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
             }
-        }     
+        }
+
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object GetProjectTimeInfo(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                string errMsg = string.Empty;
+                if (!dicParas.Get("id").Validintnozero("项目ID", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                var id = dicParas.Get("id").Toint();
+
+                var linq = new
+                {
+                    data_ProjectTime = Data_Project_TimeInfoService.I.GetModels(p => p.ProjectTimeID == id).FirstOrDefault(),
+                    ProjectBandPrices = Data_Project_BandPriceService.I.GetModels(p => p.ProjectID == id)
+                };
+
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, linq.AsFlatDictionary());
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }  
 
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object SaveProjectInfo(Dictionary<string, object> dicParas)
@@ -175,169 +131,134 @@ namespace XXCloudService.Api.XCCloud
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
+                string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
 
                 string errMsg = string.Empty;
-                string id = dicParas.ContainsKey("id") ? (dicParas["id"] + "") : string.Empty;
-                string projectName = dicParas.ContainsKey("projectName") ? (dicParas["projectName"] + "") : string.Empty;
-                string playCount = dicParas.ContainsKey("playCount") ? (dicParas["playCount"] + "") : string.Empty;
-                string expireDays = dicParas.ContainsKey("expireDays") ? (dicParas["expireDays"] + "") : string.Empty;
-                string playOnceFlag = dicParas.ContainsKey("playOnceFlag") ? (dicParas["playOnceFlag"] + "") : string.Empty;
-                string accompanyFlag = dicParas.ContainsKey("accompanyFlag") ? (dicParas["accompanyFlag"] + "") : string.Empty;
-                string accompanyCash = dicParas.ContainsKey("accompanyCash") ? (dicParas["accompanyCash"] + "") : string.Empty;
-                string balanceType = dicParas.ContainsKey("balanceType") ? (dicParas["balanceType"] + "") : string.Empty;
-                string balanceCount = dicParas.ContainsKey("balanceCount") ? (dicParas["balanceCount"] + "") : string.Empty;                
-                string note = dicParas.ContainsKey("note") ? (dicParas["note"] + "") : string.Empty;
-                object[] projectGames = dicParas.ContainsKey("projectGames") ? (object[])dicParas["projectGames"] : null;       
-                int iId = 0;
-                int.TryParse(id, out iId);
-
-                #region 验证参数
-
-                if (string.IsNullOrEmpty(projectName))
+                if (!dicParas.Get("state").Validint("项目状态", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (!dicParas.Get("chargeType").Validint("扣费类型", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (!dicParas.Get("projectType").Validintnozero("项目类型", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (dicParas.Get("chargeType").Toint() == (int)ProjectInfoChargeType.Time && dicParas.GetObject("projectTimeInfo").IsNull())
                 {
-                    errMsg = "项目名称不能为空";
+                    errMsg = "计时规则不能为空";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
-                if (string.IsNullOrEmpty(playCount))
-                {
-                    errMsg = "游玩次数不能为空";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
-
-                if (!Utils.isNumber(playCount) || Convert.ToInt32(playCount) < 0)
-                {
-                    errMsg = "游玩次数格式不正确，须为非负整数";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
-
-                if (string.IsNullOrEmpty(expireDays))
-                {
-                    errMsg = "有效天数不能为空";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
-
-                if (!Utils.isNumber(expireDays) || Convert.ToInt32(expireDays) < 0)
-                {
-                    errMsg = "有效天数格式不正确，须为非负整数";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
-
-                if (string.IsNullOrEmpty(playOnceFlag))
-                {
-                    errMsg = "是否扣除次数不能为空";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
-
-                if (!Utils.isNumber(playOnceFlag) || Convert.ToInt32(playOnceFlag) < 0)
-                {
-                    errMsg = "是否扣除次数格式不正确，须为非负整数";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
-
-                if (!string.IsNullOrEmpty(accompanyCash) && (!Utils.isNumber(accompanyCash) || Convert.ToInt32(accompanyCash) < 0))
-                {
-                    errMsg = "陪同票现金格式不正确，须为非负整数";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
-
-                if (!string.IsNullOrEmpty(balanceCount) && (!Utils.isNumber(balanceCount) || Convert.ToInt32(balanceCount) < 0))
-                {
-                    errMsg = "扣除数量格式不正确，须为非负整数";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }                
-
-                #endregion
-
+                var id = dicParas.Get("id").Toint(0);
+                var chargeType = dicParas.Get("chargeType").Toint();                
+                var projectTimeInfo = dicParas.GetObject("projectTimeInfo");
+                      
                 //开启EF事务
                 using (TransactionScope ts = new TransactionScope())
                 {
                     try
                     {
-                        IData_ProjectInfoService data_ProjectInfoService = Data_ProjectInfoService.I;
-                        if (data_ProjectInfoService.Any(a => a.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) &&
-                            a.ProjectName.Equals(projectName, StringComparison.OrdinalIgnoreCase) && a.ID != iId))
+                        var model = Data_ProjectInfoService.I.GetModels(p => p.ID == id).FirstOrDefault() ?? new Data_ProjectInfo();
+                        model.MerchID = merchId;
+                        model.StoreID = storeId;
+                        Utils.GetModel(dicParas, ref model);
+                        if (id == 0)
                         {
-                            errMsg = "该项目名称已存在";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
-
-                        var data_ProjectInfo = new Data_ProjectInfo();
-                        data_ProjectInfo.ID = iId;
-                        data_ProjectInfo.ProjectName = projectName;
-                        data_ProjectInfo.PlayCount = ObjectExt.Toint(playCount);
-                        data_ProjectInfo.ExpireDays = ObjectExt.Toint(expireDays);
-                        data_ProjectInfo.PlayOnceFlag = ObjectExt.Toint(playOnceFlag);
-                        data_ProjectInfo.AccompanyFlag = ObjectExt.Toint(accompanyFlag);
-                        data_ProjectInfo.AccompanyCash = ObjectExt.Toint(accompanyCash);
-                        data_ProjectInfo.BalanceType = ObjectExt.Toint(balanceType);
-                        data_ProjectInfo.BalanceCount = ObjectExt.Toint(balanceCount);
-                        data_ProjectInfo.Note = note;
-                        data_ProjectInfo.MerchID = merchId;
-                        if (!data_ProjectInfoService.Any(a => a.ID == iId))
-                        {
-                            //新增
-                            if (!data_ProjectInfoService.Add(data_ProjectInfo))
+                            if (!Data_ProjectInfoService.I.Add(model))
                             {
-                                errMsg = "添加门票项目信息失败";
+                                errMsg = "保存游乐项目失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                             }
                         }
                         else
                         {
-                            //修改
-                            if (!data_ProjectInfoService.Update(data_ProjectInfo))
+                            if (model.ID == 0)
                             {
-                                errMsg = "修改门票项目信息失败";
+                                errMsg = "该游乐项目不存在";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+
+                            if (!Data_ProjectInfoService.I.Update(model))
+                            {
+                                errMsg = "保存游乐项目失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                             }
                         }
 
-                        iId = data_ProjectInfo.ID;
+                        id = model.ID;
 
-                        //保存绑定游乐项目
-                        if (projectGames != null && projectGames.Count() >= 0)
+                        //保存计时项目
+                        if (!projectTimeInfo.IsNull())
                         {
-                            //先删除，后添加
-                            var data_Project_BindGameService = Data_Project_BindGameService.I;
-                            foreach (var model in data_Project_BindGameService.GetModels(p => p.ProjectID == iId))
+                            var dicPara = new Dictionary<string, object>((projectTimeInfo as IDictionary<string, object>), StringComparer.OrdinalIgnoreCase);
+                            var projectBandPrices = dicPara.GetArray("projectBandPrices");
+                            var projectTimeInfoModel = Data_Project_TimeInfoService.I.GetModels(p => p.ProjectTimeID == id).FirstOrDefault() ?? new Data_Project_TimeInfo();
+                            projectTimeInfoModel.StoreID = storeId;
+                            Utils.GetModel(dicPara, ref projectTimeInfoModel);
+                            if (projectTimeInfoModel.ID == 0)
                             {
-                                data_Project_BindGameService.DeleteModel(model);
-                            }
-
-                            foreach (IDictionary<string, object> el in projectGames)
-                            {
-                                if (el != null)
+                                if (!Data_Project_TimeInfoService.I.Add(projectTimeInfoModel))
                                 {
-                                    var dicPara = new Dictionary<string, object>(el, StringComparer.OrdinalIgnoreCase);
-                                    var gameId = dicPara.ContainsKey("gameId") ? ObjectExt.Toint(dicPara["gameId"], 0) : 0;                                    
-
-                                    if (gameId == 0)
-                                    {
-                                        errMsg = "游乐项目ID不能为空";
-                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                                    }
-
-                                    var data_Project_BindGame = new Data_Project_BindGame();
-                                    data_Project_BindGame.ProjectID = iId;
-                                    data_Project_BindGame.GameID = gameId;
-                                    data_Project_BindGameService.AddModel(data_Project_BindGame);
+                                    errMsg = "保存游乐项目计时规则失败";
+                                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                                 }
-                                else
+                            }
+                            else
+                            {
+                                if (!Data_Project_TimeInfoService.I.Update(projectTimeInfoModel))
                                 {
-                                    errMsg = "提交数据包含空对象";
+                                    errMsg = "保存游乐项目计时规则失败";
                                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                                 }
                             }
 
-                            if (!data_Project_BindGameService.SaveChanges())
+                            //保存计时项目波段设定
+                            if (projectBandPrices != null && projectBandPrices.Count() >= 0)
                             {
-                                errMsg = "绑定游乐项目信息失败";
-                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                //先删除，后添加
+                                foreach (var bandPriceModel in Data_Project_BandPriceService.I.GetModels(p => p.ProjectID == id))
+                                {
+                                    Data_Project_BandPriceService.I.DeleteModel(bandPriceModel);
+                                }
+
+                                foreach (IDictionary<string, object> el in projectBandPrices)
+                                {
+                                    if (el != null)
+                                    {
+                                        var dicPar = new Dictionary<string, object>(el, StringComparer.OrdinalIgnoreCase);
+                                        if (!dicPar.Get("useTimeCount").Validint("总用时时间", out errMsg))
+                                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                        if (!dicPar.Get("cycleTime").Validint("周期时间", out errMsg))
+                                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                        if (!dicPar.Get("count").Validint("扣费数量", out errMsg))
+                                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                                        var bandPriceModel = new Data_Project_BandPrice();
+                                        bandPriceModel.UseTimeCount = dicPar.Get("useTimeCount").Toint();
+                                        bandPriceModel.UseType = dicPar.Get("useType").Toint();
+                                        bandPriceModel.CycleTime = dicPar.Get("cycleTime").Toint();
+                                        bandPriceModel.Count = dicPar.Get("count").Toint();
+                                        bandPriceModel.StoreID = storeId;
+                                        bandPriceModel.ProjectID = id;
+                                        Data_Project_BandPriceService.I.AddModel(bandPriceModel);
+                                    }
+                                    else
+                                    {
+                                        errMsg = "提交数据包含空对象";
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    }
+                                }
+
+                                if (!Data_Project_BandPriceService.I.SaveChanges())
+                                {
+                                    errMsg = "保存计时项目波段设定失败";
+                                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                }
                             }
                         }
 
                         ts.Complete();
+                    }
+                    catch (DbEntityValidationException e)
+                    {
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, e.EntityValidationErrors.ToErrors());
                     }
                     catch (Exception ex)
                     {
@@ -355,60 +276,32 @@ namespace XXCloudService.Api.XCCloud
         }
 
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
-        public object DeleteProjectInfo(Dictionary<string, object> dicParas)
+        public object DelProjectInfo(Dictionary<string, object> dicParas)
         {
             try
             {
                 string errMsg = string.Empty;
-                string projectIds = dicParas.ContainsKey("projectIds") ? (dicParas["projectIds"] + "") : string.Empty;
-
-                if (string.IsNullOrEmpty(projectIds))
-                {
-                    errMsg = "项目ID不能为空";
+                if (!dicParas.Get("id").Validintnozero("项目ID", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
+
+                var id = dicParas.Get("id").Toint();
 
                 //开启EF事务
                 using (TransactionScope ts = new TransactionScope())
                 {
                     try
                     {
-                        List<string> projectIdList = projectIds.Split('|').ToList();
-                        var data_ProjectInfoService = Data_ProjectInfoService.I;
-                        foreach (var projectId in projectIdList)
+                        if (!Data_ProjectInfoService.I.Any(p => p.ID == id))
                         {
-                            if (string.IsNullOrEmpty(projectId))
-                            {
-                                errMsg = "项目ID不能为空";
-                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                            }
-
-                            int iProjectId = Convert.ToInt32(projectId);                            
-                            var data_ProjectInfoModel = data_ProjectInfoService.GetModels(p => p.ID == iProjectId).FirstOrDefault();
-                            if (data_ProjectInfoModel == null)
-                            {
-                                errMsg = "项目ID" + projectId + "不存在";
-                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                            }
-
-                            data_ProjectInfoService.DeleteModel(data_ProjectInfoModel);
-
-                            var data_Project_StoreListService = Data_Project_StoreListService.I;
-                            foreach (var model in data_Project_StoreListService.GetModels(p=>p.ProjectID == iProjectId))
-                            {
-                                data_Project_StoreListService.DeleteModel(model);
-                            }
-
-                            //var data_Project_DeviceService = Data_Project_DeviceService.I;
-                            //foreach (var model in data_Project_DeviceService.GetModels(p => p.ProjectID == iProjectId))
-                            //{
-                            //    data_Project_DeviceService.DeleteModel(model);
-                            //}
+                            errMsg = "该游乐项目不存在";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 
-                        if (!data_ProjectInfoService.SaveChanges())
+                        var model = Data_ProjectInfoService.I.GetModels(p => p.ID == id).FirstOrDefault();
+                        model.State = 0;
+                        if (!Data_ProjectInfoService.I.Update(model))
                         {
-                            errMsg = "删除项目失败";
+                            errMsg = "删除游乐项目失败";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 
@@ -430,15 +323,21 @@ namespace XXCloudService.Api.XCCloud
         }
 
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
-        public object GetProjectStores(Dictionary<string, object> dicParas)
+        public object GetProjectDic(Dictionary<string, object> dicParas)
         {
             try
             {
-                string errMsg = string.Empty;
-                int projectId = dicParas.Get("projectId").Toint(0);
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
 
-                var storeIDs = Data_Project_StoreListService.I.GetModels(p => p.ProjectID == projectId).Select(o => new { StoreID = o.StoreID });
-                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, storeIDs);
+                var linq = from a in Data_ProjectInfoService.I.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase))
+                           select new
+                           {
+                               ID = a.ID,
+                               ProjectName = a.ProjectName
+                           };
+
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, linq);
             }
             catch (Exception e)
             {
@@ -447,53 +346,171 @@ namespace XXCloudService.Api.XCCloud
         }
 
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
-        public object SaveProjectStores(Dictionary<string, object> dicParas)
+        public object GetProjectGames(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                var gameTypeId = Dict_SystemService.I.GetModels(p => p.DictKey.Equals("游戏机类型", StringComparison.OrdinalIgnoreCase) && p.PID == 0).FirstOrDefault().ID;
+                var projectGameId = Dict_SystemService.I.GetModels(p => p.DictKey.Equals("游乐项目", StringComparison.OrdinalIgnoreCase) && p.PID == gameTypeId).FirstOrDefault().ID;
+                var linq = Dict_SystemService.I.GetModels(p => p.PID == projectGameId).Select(o => new
+                {
+                    ID = o.ID,
+                    Name = o.DictKey
+                });
+
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, linq);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        #endregion
+
+        #region 绑定设备维护
+
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object GetUnBindDeviceDic(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
+                string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
+
+                var linq = from a in Base_DeviceInfoService.N.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)
+                               && p.DeviceStatus == 1 && (p.type == (int)DeviceType.卡头 || p.type == (int)DeviceType.闸机))
+                           from b in Data_Project_BindDeviceService.N.GetModels()
+                           where a.ID != b.DeviceID
+                           orderby a.DeviceName
+                           select new
+                           {
+                               ID = a.ID,
+                               DeviceName = a.DeviceName
+                           };
+
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, linq);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object QueryBindDevice(Dictionary<string, object> dicParas)
         {
             try
             {
                 string errMsg = string.Empty;
-                string projectId = dicParas.ContainsKey("projectId") ? (dicParas["projectId"] + "") : string.Empty;
-                string storeIds = dicParas.ContainsKey("storeIds") ? (dicParas["storeIds"] + "") : string.Empty;
+                object[] conditions = dicParas.ContainsKey("conditions") ? (object[])dicParas["conditions"] : null;
 
-                if (string.IsNullOrEmpty(projectId))
-                {
-                    errMsg = "门票ID不能为空";
+                SqlParameter[] parameters = new SqlParameter[0];
+                string sqlWhere = string.Empty;
+                if(!dicParas.Get("projectId").Validintnozero("游乐项目ID", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
+
+                var projectId = dicParas.Get("projectId").Toint();
+
+                if (conditions != null && conditions.Length > 0)
+                    if (!QueryBLL.GenDynamicSql(conditions, "a.", ref sqlWhere, ref parameters, out errMsg))
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                #region Sql语句
+                string sql = @"SELECT
+                                    a.*,
+                                    b.DeviceName,
+                                    c.DictKey AS DeviceTypeStr
+                                FROM
+                                	Data_Project_BindDevice a
+                                LEFT JOIN Base_DeviceInfo b ON a.DeviceID = b.ID  
+                                INNER JOIN Dict_System c ON convert(varchar, b.type)=c.DictValue 
+                                INNER JOIN Dict_System d ON c.PID=d.ID and d.DictKey='设备类型'                             
+                                WHERE 1=1
+                            ";
+                sql += " AND a.ProjectID=" + projectId;
+
+                #endregion
+
+                var list = Data_FreeGiveRuleService.I.SqlQuery<Data_Project_BindDeviceList>(sql, parameters).ToList();
+
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, list);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object GetBindDevice(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                string errMsg = string.Empty;
+                if (!dicParas.Get("id").Validintnozero("绑定流水号", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                var id = dicParas.Get("id").Toint();
+
+                var bindDevice = Data_Project_BindDeviceService.I.GetModels(p => p.ID == id).FirstOrDefault();
+
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, bindDevice);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.MethodToken, SysIdAndVersionNo = false)]
+        public object SaveBindDevice(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                string errMsg = string.Empty;
+                if (!dicParas.Get("projectId").Validintnozero("游乐项目ID", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                var projectId = dicParas.Get("projectId").Toint();
 
                 //开启EF事务
                 using (TransactionScope ts = new TransactionScope())
                 {
                     try
                     {
-                        int iProjectId = Convert.ToInt32(projectId);
-                        var data_Project_StoreListService = Data_Project_StoreListService.I;
-                        foreach (var model in data_Project_StoreListService.GetModels(p => p.ProjectID == iProjectId))
+                        var model = new Data_Project_BindDevice();
+                        Utils.GetModel(dicParas, ref model);
+                        model.ProjectID = projectId;
+                        if (model.ID == 0)
                         {
-                            data_Project_StoreListService.DeleteModel(model);
-                        }
-
-                        if (!string.IsNullOrEmpty(storeIds))
-                        {
-                            foreach (var storeId in storeIds.Split('|'))
+                            if (!Data_Project_BindDeviceService.I.Add(model))
                             {
-                                if(!storeId.Nonempty("门店ID", out errMsg))
-                                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-
-                                var model = new Data_Project_StoreList();
-                                model.ProjectID = iProjectId;
-                                model.StoreID = storeId;
-                                data_Project_StoreListService.AddModel(model);
-                            }                            
+                                errMsg = "添加绑定设备失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
                         }
-
-                        if (!data_Project_StoreListService.SaveChanges())
+                        else
                         {
-                            errMsg = "更新门票适用门店表失败";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
+                            if (!Data_Project_BindDeviceService.I.Any(p => p.ID == model.ID))
+                            {
+                                errMsg = "该绑定流水号不存在";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+
+                            if (!Data_Project_BindDeviceService.I.Update(model))
+                            {
+                                errMsg = "更新绑定设备失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+                        }                       
 
                         ts.Complete();
+                    }
+                    catch (DbEntityValidationException e)
+                    {
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, e.EntityValidationErrors.ToErrors());
                     }
                     catch (Exception ex)
                     {
@@ -509,5 +526,52 @@ namespace XXCloudService.Api.XCCloud
                 return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
             }
         }
+
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object DelBindDevice(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                string errMsg = string.Empty;
+                if (!dicParas.Get("id").Validintnozero("绑定流水号", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                var id = dicParas.Get("id").Toint();
+
+                //开启EF事务
+                using (TransactionScope ts = new TransactionScope())
+                {
+                    try
+                    {
+                        if (!Data_Project_BindDeviceService.I.Any(a => a.ID == id))
+                        {
+                            errMsg = "该绑定流水号不存在";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
+                        var model = Data_Project_BindDeviceService.I.GetModels(p => p.ID == id).FirstOrDefault();
+                        if (!Data_Project_BindDeviceService.I.Delete(model))
+                        {
+                            errMsg = "删除绑定设备失败";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
+                        ts.Complete();
+                    }
+                    catch (Exception ex)
+                    {
+                        return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, ex.Message);
+                    }
+                }
+
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        #endregion
     }
 }

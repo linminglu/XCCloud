@@ -17,8 +17,8 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         [DataMember(Name = "logType", Order = 2)]
         public int LogType { get; set; }
 
-        [DataMember(Name = "merchTag", Order = 3)]
-        public int? MerchTag { get; set; }
+        [DataMember(Name = "tag", Order = 3)]
+        public int? Tag { get; set; }        
 
         [DataMember(Name = "userType", Order = 4)]
         public int? UserType { get; set; }

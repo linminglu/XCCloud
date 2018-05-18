@@ -25,11 +25,6 @@ namespace XXCloudService.Api.XCCloud
     /// </summary>
     public class GameInfo : ApiBase
     {
-        IDict_SystemService dict_SystemService = BLLContainer.Resolve<IDict_SystemService>(resolveNew: true);
-        IData_GameInfoService data_GameInfoService = BLLContainer.Resolve<IData_GameInfoService>(resolveNew: true);
-        IData_GameInfo_ExtService data_GameInfo_ExtService = BLLContainer.Resolve<IData_GameInfo_ExtService>(resolveNew: true);
-        IData_GameInfo_PhotoService data_GameInfo_PhotoService = BLLContainer.Resolve<IData_GameInfo_PhotoService>();
-
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object GetGameInfoList(Dictionary<string, object> dicParas)
         {
@@ -38,10 +33,10 @@ namespace XXCloudService.Api.XCCloud
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
 
-                var data_GameInfo = from a in data_GameInfoService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase))
-                                    join b in dict_SystemService.GetModels() on a.GameType equals (b.ID + "") into b1
+                var data_GameInfo = from a in Data_GameInfoService.N.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase) && p.State == 1)
+                                    join b in Dict_SystemService.N.GetModels() on a.GameType equals (b.ID + "") into b1
                                     from b in b1.DefaultIfEmpty()
-                                    join c in data_GameInfo_ExtService.GetModels(p => p.ValidFlag == 1) on a.ID equals c.GameID into c1
+                                    join c in Data_GameInfo_ExtService.N.GetModels(p => p.ValidFlag == 1) on a.ID equals c.GameID into c1
                                     from c in c1.DefaultIfEmpty()
                                     orderby a.GameID
                                     select new
@@ -55,14 +50,15 @@ namespace XXCloudService.Api.XCCloud
                                         //                        SqlFunctions.DateName("hh", c.ChangeTime) + ":" + SqlFunctions.DateName("n", c.ChangeTime) + ":" + SqlFunctions.DateName("ss", c.ChangeTime) : string.Empty,
                                         ChangeTime = c != null ? c.ChangeTime : (DateTime?)null,
                                         Price = c != null ? c.Price : (int?)null,
-                                        PushReduceFromCard = a.PushReduceFromCard,
+                                        //PushReduceFromCard = a.PushReduceFromCard,
+                                        PushCoin1 = a.PushCoin1,
                                         AllowElecPushStr = a.AllowElecPush != null ? (a.AllowElecPush == 1 ? "启用" : "禁用") : "",
                                         LotteryModeStr = a.LotteryMode != null ? (a.LotteryMode == 1 ? "启用" : "禁用") : "",
                                         ReadCatStr = a.ReadCat != null ? (a.ReadCat == 1 ? "启用" : "禁用") : "",
-                                        StateStr = !string.IsNullOrEmpty(a.State) ? (a.State == "1" ? "启用" : "禁用") : ""
+                                        StateStr = a.State != null ? (a.State == 1 ? "启用" : "禁用") : ""
                                     };
                                     
-                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, data_GameInfo);
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, data_GameInfo);
             }
             catch (Exception e)
             {
@@ -83,7 +79,7 @@ namespace XXCloudService.Api.XCCloud
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
                 
-                Dictionary<int, string> gameInfo = Data_GameInfoService.I.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase) && p.State == "1").Select(o => new
+                Dictionary<int, string> gameInfo = Data_GameInfoService.I.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase) && p.State == 1).Select(o => new
                 {
                     ID = o.ID,
                     GameName = o.GameName
@@ -148,6 +144,19 @@ namespace XXCloudService.Api.XCCloud
 
                 result.Add(new { name = "PhotoURLs", value = (object)PhotoURLs, comment = string.Empty });
 
+                //会员电子存票赠送设置
+                var FreeLotteryRules = from a in Data_GameFreeLotteryRuleService.N.GetModels(p => p.GameIndex == iId)
+                                       join b in Data_MemberLevelService.N.GetModels() on a.MemberLevelID equals b.MemberLevelID into b1
+                                       from b in b1.DefaultIfEmpty()
+                                       select new 
+                                       {
+                                           MemberLevelID = a.MemberLevelID,
+                                           MemberLevelName = b != null ? b.MemberLevelName : string.Empty,
+                                           BaseLottery = a.BaseLottery,
+                                           FreeCount = a.FreeCount
+                                       };
+                result.Add(new { name = "FreeLotteryRules", value = (object)FreeLotteryRules.ToList(), comment = string.Empty });
+
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, result);                            
             }
             catch (Exception e)
@@ -177,6 +186,7 @@ namespace XXCloudService.Api.XCCloud
                 string lowLimit = dicParas.ContainsKey("lowLimit") ? (dicParas["lowLimit"] + "") : string.Empty;
                 string highLimit = dicParas.ContainsKey("highLimit") ? (dicParas["highLimit"] + "") : string.Empty;
                 string[] photoURLs = dicParas.ContainsKey("photoURLs") ? (string[])dicParas["photoURLs"]: null;
+                var freeLotteryRules = dicParas.GetArray("freeLotteryRules");
 
                 if (string.IsNullOrEmpty(gameName))
                 {
@@ -225,6 +235,9 @@ namespace XXCloudService.Api.XCCloud
                 }
 
                 //开启EF事务
+                var data_GameInfoService = Data_GameInfoService.I;
+                var data_GameInfo_ExtService = Data_GameInfo_ExtService.I;
+                var data_GameInfo_PhotoService = Data_GameInfo_PhotoService.I;
                 using (TransactionScope ts = new TransactionScope())
                 {
                     try
@@ -241,7 +254,9 @@ namespace XXCloudService.Api.XCCloud
                         if (iId == 0)
                         {
                             Utils.GetModel(dicParas, ref data_GameInfo);
+                            data_GameInfo.State = 1;
                             data_GameInfo.StoreID = storeId;
+                            data_GameInfo.MerchID = merchId;
                             if (!data_GameInfoService.Add(data_GameInfo))
                             {
                                 errMsg = "新增游戏机信息失败";
@@ -258,7 +273,6 @@ namespace XXCloudService.Api.XCCloud
                             
                             data_GameInfo = data_GameInfoService.GetModels(p => p.ID == iId).FirstOrDefault();
                             Utils.GetModel(dicParas, ref data_GameInfo);
-                            data_GameInfo.StoreID = storeId;
                             if (!data_GameInfoService.Update(data_GameInfo))
                             {
                                 errMsg = "修改游戏机信息失败";
@@ -267,6 +281,51 @@ namespace XXCloudService.Api.XCCloud
                         }
 
                         iId = data_GameInfo.ID;
+
+                        //保存会员电子存票赠送设置
+                        if (freeLotteryRules != null && freeLotteryRules.Count() >= 0)
+                        {
+                            //先删除，后添加
+                            foreach (var model in Data_GameFreeLotteryRuleService.I.GetModels(p => p.GameIndex == iId))
+                            {
+                                Data_GameFreeLotteryRuleService.I.DeleteModel(model);
+                            }
+
+                            foreach (IDictionary<string, object> el in freeLotteryRules)
+                            {
+                                if (el != null)
+                                {
+                                    var dicPara = new Dictionary<string, object>(el, StringComparer.OrdinalIgnoreCase);
+                                    if (!dicPara.Get("memberLevelID").Validintnozero("会员级别ID", out errMsg))
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    if (!dicPara.Get("baseLottery").Validintnozero("彩票赠送基数", out errMsg))
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    if (!dicPara.Get("freeCount").Validintnozero("赠送彩票数", out errMsg))
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                                    var memberLevelID = dicPara.Get("memberLevelID").Toint();
+                                    var baseLottery = dicPara.Get("baseLottery").Toint();
+                                    var freeCount = dicPara.Get("freeCount").Toint();
+
+                                    var data_GameFreeLotteryRule = new Data_GameFreeLotteryRule();
+                                    data_GameFreeLotteryRule.MemberLevelID = memberLevelID;
+                                    data_GameFreeLotteryRule.BaseLottery = baseLottery;
+                                    data_GameFreeLotteryRule.FreeCount = freeCount;
+                                    Data_GameFreeLotteryRuleService.I.AddModel(data_GameFreeLotteryRule);
+                                }
+                                else
+                                {
+                                    errMsg = "提交数据包含空对象";
+                                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                }
+                            }
+
+                            if (!Data_GameFreeLotteryRuleService.I.SaveChanges())
+                            {
+                                errMsg = "保存会员电子存票赠送设置失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+                        }
 
                         //保存游戏机扩展信息
                         foreach(var model in data_GameInfo_ExtService.GetModels(p=>p.GameID == iId))
@@ -361,7 +420,7 @@ namespace XXCloudService.Api.XCCloud
                 }
 
                 var data_GameInfo = data_GameInfoService.GetModels(p => p.ID == iId).FirstOrDefault();
-                data_GameInfo.State = "0";
+                data_GameInfo.State = 0;
                 if (!data_GameInfoService.Update(data_GameInfo))
                 {
                     errMsg = "删除游戏机信息失败";
@@ -393,6 +452,113 @@ namespace XXCloudService.Api.XCCloud
                 imageInfo.Add("ImageURL", imageUrls);
 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, imageInfo);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object GetGameAppRule(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                string errMsg = string.Empty;
+                if (!dicParas.Get("gameId").Validintnozero("游戏机ID", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                
+                var id = dicParas.Get("id").Toint();
+
+                var list = Data_GameAPP_RuleService.I.GetModels(p => p.GameID == id);
+
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, list);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object SaveGameAppRule(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
+                string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
+
+                string errMsg = string.Empty;
+                if (!dicParas.Get("gameId").Validintnozero("游戏机ID", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                
+                var gameId = dicParas.Get("gameId").Toint();
+                var gameAppRules = dicParas.GetArray("gameAppRules");
+                
+                //开启EF事务
+                using (TransactionScope ts = new TransactionScope())
+                {
+                    try
+                    {                        
+                        //保存散客扫码规则
+                        if (gameAppRules != null && gameAppRules.Count() >= 0)
+                        {
+                            //先删除，后添加
+                            foreach (var model in Data_GameAPP_RuleService.I.GetModels(p => p.GameID == gameId))
+                            {
+                                Data_GameAPP_RuleService.I.DeleteModel(model);
+                            }
+
+                            foreach (IDictionary<string, object> el in gameAppRules)
+                            {
+                                if (el != null)
+                                {
+                                    var dicPara = new Dictionary<string, object>(el, StringComparer.OrdinalIgnoreCase);
+                                    if (!dicPara.Get("payCount").Validint("支付金额", out errMsg))
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    if (!dicPara.Get("playCount").Validdecimal("启动局数", out errMsg))
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                                    var payCount = dicPara.Get("payCount").Todecimal();
+                                    var playCount = dicPara.Get("playCount").Toint();
+
+                                    var data_GameAPP_Rule = new Data_GameAPP_Rule();
+                                    data_GameAPP_Rule.MerchID = merchId;
+                                    data_GameAPP_Rule.StoreID = storeId;
+                                    data_GameAPP_Rule.GameID = gameId;
+                                    data_GameAPP_Rule.PayCount = payCount;
+                                    data_GameAPP_Rule.PlayCount = playCount;
+                                    Data_GameAPP_RuleService.I.AddModel(data_GameAPP_Rule);
+                                }
+                                else
+                                {
+                                    errMsg = "提交数据包含空对象";
+                                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                }
+                            }
+
+                            if (!Data_GameAPP_RuleService.I.SaveChanges())
+                            {
+                                errMsg = "保存散客扫码规则失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+                        }                        
+
+                        ts.Complete();
+                    }
+                    catch (DbEntityValidationException e)
+                    {
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, e.EntityValidationErrors.ToErrors());
+                    }
+                    catch (Exception ex)
+                    {
+                        errMsg = ex.Message;
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
+                }
+
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
             }
             catch (Exception e)
             {

@@ -34,6 +34,14 @@ namespace XCCloudService.Common.Extensions
             return (object[])o;
         }
 
+        public static object GetObject(this IDictionary<string, object> dicPara, string key)
+        {
+            if (dicPara == null || string.IsNullOrEmpty(key)) return null;
+            object o = null;
+            dicPara.TryGetValue(key, out o);
+            return o;
+        }
+
         public static void AddRangeOverride<TKey, TValue>(this IDictionary<TKey, TValue> dic, IDictionary<TKey, TValue> dicToAdd)
         {
             dicToAdd.ForEach(x => dic[x.Key] = x.Value);

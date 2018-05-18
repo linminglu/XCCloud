@@ -11,6 +11,9 @@
 	<link href="css/iconfont.css" rel="stylesheet">
 	<link rel="stylesheet" href="css/swiper.min.css">
 	<link href="css/bootstrap-table.css" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="http://unpkg.com/iview/dist/styles/iview.css">
+	<!--<script type="text/javascript" src="http://v1.vuejs.org/js/vue.min.js"></script>-->
+	<!--<script type="text/javascript" src="http://unpkg.com/iview@1.0.1/dist/iview.min.js"></script>-->
 	<style>
 		[v-cloak] {
 			display: none;
@@ -107,10 +110,11 @@
 		.MtcList{width: 100%;height: 10em;margin: 1.5em auto}
 		.MtcList ul .swiper-slide{text-align: center;cursor: pointer;position: relative;margin: 0 1em;font-size: 1.3em;display: -webkit-box;display: -ms-flexbox;display: -webkit-flex;display: flex;-webkit-box-pack: center;-ms-flex-pack: center;-webkit-justify-content: center;flex-direction:row;justify-content: center;-webkit-box-align: center;-ms-flex-align: center;-webkit-align-items: center;align-items: center;}
 		.MtcList ul li .img{width: 8em;height: 6em;}
-		.MtcList ul li .MtcListTxt{width: 5em;height: inherit;margin-top: 2.2em;margin-left: 0.2em;}
+		.MtcList ul li .MtcListTxt{width: 5em;height: inherit;margin-top: 2.2em;margin-left: 0.6em;}
         .MtcList ul li .memberSelected{position: absolute;right: 0;top: 0;width: 50px;height: 45px;}
         .memberSelected img{width: 50px;height: 45px;}
-        .MtcList ul li .MtcListTxt p{margin-top: 1.2em;}
+		.MtcList ul li .MtcListTxt h4{font-size: 1em;text-align: left;}
+        .MtcList ul li .MtcListTxt p{margin-top: 1em;font-size: 1em;font-weight: 400;}
 		.MtcList .swiper-wrapper{padding: 2em auto}
 		.McSty{margin: 0.5em 0;line-height: 2em;padding-right: 0;}
         .McText{margin: 0.5em 0;line-height: 2em;}
@@ -130,8 +134,6 @@
 
 		.onSwitch{background-color: #2e6da4;}
 		.inputNtSty{padding: 0.5em 0;font-size: 1.2em;}
-		.ManualS,.CurrencyS,.SendS,.backCardS,.boxBg{position: fixed;width: 100%;height: 100%;background: rgba(0,0,0,0.6);z-index: 999}
-		.PopupK{width: 35em;min-height: 20em;position: absolute;left: 50%;top: 40%;margin-top: -10em;margin-left: -17.5em;background-color: #fff;padding: 2em;}
 
 		.PopSty{margin: 0.5em 0;height: 1.5em;line-height: 1.5em;font-size: 1.2em;}
 		.PopSty span{display: block;text-align: left;padding: 0;}
@@ -236,8 +238,9 @@
         input.btnSendCode{line-height: 0;}
 		.footer { position:fixed; bottom:0; left:0; width:100%; height:32px;z-index: 9;padding-left: 2em;border-top: 1px solid #999;background-color: #f9f9f9;line-height: 32px;cursor: pointer;}
 		.membershipDetails{height: 20em;overflow-y:auto;overflow-x: hidden;}
-
-
+		.footerList{font-size: 1.1em;line-height: 1em;}
+		.footerList h3{font-size: 1.3em;margin-top:0.8em;line-height:2em;border-bottom: 1px solid #dca7a7;font-weight: 600;}
+		.footerList li{padding: 0.5em 0;padding-left: 3em;border-bottom: 1px dashed #00F7DE;}
 		.member{color: #666;}
 		.member li{font-size: 1em;display: inline;margin-right: 10px;}
 	</style>
@@ -258,7 +261,7 @@
 				<li class="active"><a href="index.html"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;莘宸乐园【同城广场店】</a></li>
 				<li><a href="#"><span class="glyphicon glyphicon-user mag-_r1"></span><i>当前操作员：</i>&nbsp;&nbsp;张三</a></li>
 				<li class="dropdown">
-					<a  type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					<a data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 						未读消息 (0)
 						<span class="caret"></span>
 					</a>
@@ -270,7 +273,7 @@
 					</ul>
 				</li>
 				<li class="dropdown">
-					<a type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					<a data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 						admin
 						<span class="caret"></span>
 					</a>
@@ -295,15 +298,6 @@
 					<p>18000/30000</p>
 				</div>
 				<div class="navT">60%</div>
-				<!--</div>-->
-				<!--<div class="col-md-6 col-sm-6">-->
-				<!--<div class="r_out">-->
-				<!--<div class="r_in">-->
-				<!--<div class="r_c c3"></div>-->
-
-				<!--</div>-->
-				<!--</div>-->
-				<!--</div>-->
 			</div>
 		</div>
 		<!--导航-->
@@ -571,8 +565,12 @@
 					<div class="salesTitle">
 						<div class="swiper-container swiperSalesTitle">
 							<ul class="swiper-wrapper saleTitleBg">
-								<li v-for="(item,index) in saleTitle" class="swiper-slide" :class="{'on':!index}" @click="screening(index)">
-									<a href="javascript:void(0)">{{item.text}}</a>
+								<li class="swiper-slide on" @click="screening('All')">
+									<a href="javascript:void(0)">全部</a>
+								</li>
+								<!--:class="{'on':!index}"-->
+								<li v-for="(item,index) in saleTitle" class="swiper-slide" @click="screening(index)">
+									<a href="javascript:void(0)">{{item.FoodTypeName}}</a>
 								</li>
 							</ul>
 						</div>
@@ -580,10 +578,24 @@
 						<div class="swiper-button-prev"></div>
 					</div>
 					<ul class="salesCoin">
-						<li v-for="(item,index) in saleData" class="salesLi" @click="deletePerson(index)">
+						<li v-for="(item,index) in saleData" class="salesLi" @click="deletePerson(index,'0')">
 							<img :src="item.imageUrl"/>
 							<div class="saleText">
-								<a tabindex="0" class="btn btn-group-sm btn-info" role="button" data-toggle="popover" @click.stop="details(index)">详情</a>
+								<a tabindex="0" class="btn btn-group-sm btn-info" role="button" data-toggle="popover" @click.stop="details(index,'0')">详情</a>
+								<h3>{{item.foodName}}</h3>
+							</div>
+						</li>
+						<li v-for="(item,index) in saleGood" class="salesLi" @click="deletePerson(index,'1')">
+							<img :src="item.imageUrl"/>
+							<div class="saleText">
+								<a tabindex="0" class="btn btn-group-sm btn-info" role="button" data-toggle="popover" @click.stop="details(index,'1')">详情</a>
+								<h3>{{item.foodName}}</h3>
+							</div>
+						</li>
+						<li v-for="(item,index) in saleTicket" class="salesLi" @click="deletePerson(index,'2')">
+							<img :src="item.imageUrl"/>
+							<div class="saleText">
+								<a tabindex="0" class="btn btn-group-sm btn-info" role="button" data-toggle="popover" @click.stop="details(index,'2')">详情</a>
 								<h3>{{item.foodName}}</h3>
 							</div>
 						</li>
@@ -773,7 +785,6 @@
 					</div>
 				</div>
 				<!--会员入会-->
-				<!---->
 				<div class="enrollment" v-if="memberShow">
 					<div class="MemberMain">
 						<h3>选择入会等级</h3>
@@ -781,7 +792,7 @@
 							<ul class="swiper-wrapper">
 								<li class="swiper-slide" v-for="(item,index) in memberLevel" @click="membershipFood(index)">
 									<img class="memberCard" :src="item.coverURL">
-									<div class="memberSelected" v-if="item.selected">
+									<div class="memberSelected" v-show="item.selected">
 										<img src="images/selected.png">
 									</div>
 									<div class="memberText">
@@ -797,7 +808,7 @@
 							<ul class="swiper-wrapper">
 								<li class="swiper-slide" v-for="(item,index) in memberFood"  @click="foodSelected(index)">
 									<img class="img" :src="item.imageUrl">
-									<div class="memberSelected" v-if="item.selected">
+									<div class="memberSelected" v-show="item.selected">
 										<img src="images/selected.png">
 									</div>
 									<div class="MtcListTxt">
@@ -884,6 +895,7 @@
 	</div>
 	<!--sale详情的默认模板-->
 	<div class="detailHide">
+		<p>{{detailNote}}</p>
 		<table class="table table-bordered">
 			<tr v-for="(items,index) in detailData">
 				<td>{{items.detailFoodTypeName}}</td>
@@ -901,9 +913,11 @@
 			<li><span>会员等级：</span></li>
 			<li><span>彩票：</span></li>
 		</ul>
-		<ul v-for="(item,index) in footerData" :key="index">
+		<ul v-for="(item,index) in footerData" :key="index" class="footerList">
 			<h3>{{item.couponTypeName}}</h3>
-			<li v-for="(items,index) in (item.MemberCouponDetail)">{{items.couponName}}</li>
+			<li v-for="(items,index) in (item.MemberCouponDetail)" @click.stop="couponDetail">
+				<a href="javaScript:void (0);">{{items.couponName}}</a>
+			</li>
 		</ul>
 	</div>
 </div>
@@ -929,6 +943,8 @@
             storeId:'',
             memberLevelId:21,
 			saleData:[],
+			saleGood:[],
+			saleTicket:[],
             detailData :[],
             shopping :[],
             memberLevel :[],
@@ -961,7 +977,7 @@
             saleShow:false,
             memberShow:false,
             returnShow:false,
-			saleTitle:[{text:"全部"},{text:"充值"},{text:"数字币"},{text:"礼品"},{text:"门票"},{text:"餐饮"},{text:"礼包"}],
+			saleTitle:[],
             popoverTitle:"",
 			saleData5:[],
             fastMoney:"1",
@@ -974,6 +990,7 @@
             footerShow:false,
             inputCashFocus:false,
             payCount:0,
+			detailNote:"",
             icCardId:"10004143",
             footerData:[]
         },
@@ -1124,7 +1141,7 @@
             },
 //			回车提交事件
             inputMoneySubmit:function () {
-                alert(111);
+                
 //                document.getElementById('fastAmountFocus ').focus();
             },
 //			结账按钮
@@ -1219,43 +1236,45 @@
             },
 //			会员入会（获取会员等级）
             membership:function () {
-				this.operationShow = false;
-				this.cardLossShow = false;
-				this.saleShow = false;
-				this.memberShow = true;
-				this.returnShow = false;
-				var that = this;
-                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken};
-                axios.post('/XCCloud/Member?action=getMemberLevel', obj).then(function (res) {	//获取会员等级
-                    console.log(res.data);
-                    that.msgPrompt(res.data);
-                    if (res.data.result_code === '1') {
-                        var memberLevel_ = [];
-                        for(var i =0;i<res.data.result_data.length;i++){
-                            memberLevel_.push({
-                                coverURL:res.data.result_data[i].coverURL,
-                                deposit: res.data.result_data[i].deposit,
-                                memberLevelId: res.data.result_data[i].memberLevelId,
-                                memberLevelName: res.data.result_data[i].memberLevelName,
-                                openFee: res.data.result_data[i].openFee,
-                                selected: false
-                            });
-						}
-                        that.memberLevel = memberLevel_;
-                        setTimeout(function () {
-                            var  mySwiper = new Swiper('.memberList', {
-                                autoplay: false,//可选选项，自动滑动
-                                slidesPerView: 5,
-                                centeredSlides: false,
-                                paginationClickable: true,
-                                spaceBetween: 30
-                            });
-                        }, 50);
-                    }
-                }).catch(function (err) {
-                    console.log(err);
-                });
-                that.replacement()
+                var that = this;
+                if(!this.memberShow){
+                    var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken};
+                    axios.post('/XCCloud/Member?action=getMemberLevel', obj).then(function (res) {	//获取会员等级
+                        console.log(res.data);
+                        that.msgPrompt(res.data);
+                        if (res.data.result_code === '1') {
+                            var memberLevel_ = [];
+                            for(var i =0;i<res.data.result_data.length;i++){
+                                memberLevel_.push({
+                                    coverURL:res.data.result_data[i].coverURL,
+                                    deposit: res.data.result_data[i].deposit,
+                                    memberLevelId: res.data.result_data[i].memberLevelId,
+                                    memberLevelName: res.data.result_data[i].memberLevelName,
+                                    openFee: res.data.result_data[i].openFee,
+                                    selected: false
+                                });
+                            }
+                            that.memberLevel = memberLevel_;
+                            that.operationShow = false;
+                            that.cardLossShow = false;
+                            that.saleShow = false;
+                            that.memberShow = true;
+                            that.returnShow = false;
+                            setTimeout(function () {
+                                var  mySwiper = new Swiper('.memberList', {
+                                    autoplay: false,//可选选项，自动滑动
+                                    slidesPerView: 5,
+                                    centeredSlides: false,
+                                    paginationClickable: true,
+                                    spaceBetween: 20
+                                });
+                            }, 100);
+                        }
+                    }).catch(function (err) {
+                        console.log(err);
+                    });
+                    that.replacement()
+				}
             },
 //			会员操作
             operationFnc:function () {
@@ -1283,18 +1302,36 @@
                     this.saleShow = true;
                     this.memberShow = false;
                     this.returnShow = false;
-                    that.getMeal(0,"0,1,2,3,4,5,6");
-                    setTimeout(function () {
-                        var swiper = new Swiper('.swiperSalesTitle', {
-                            /*pagination: '.swiper-pagination',*/
-                            nextButton: '.swiper-button-next',
-                            prevButton: '.swiper-button-prev',
-                            slidesPerView: 6,
-                            centeredSlides: false,
-                            paginationClickable: true,
-                            spaceBetween: 30
-                        });
-                    }, 50);
+                    var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken};
+                    axios.post('/XCCloud/Foods?action=getFoodType', obj).then(function (res) {	//套餐类别
+                        console.log(res.data);
+                        that.msgPrompt(res.data);
+                        if (res.data.result_code === '1') {
+                            that.saleTitle = res.data.result_data.foodTypeMainList;
+							that.$nextTick(function () {
+                                var swiper = new Swiper('.swiperSalesTitle', {
+                                    /*pagination: '.swiper-pagination',*/
+                                    nextButton: '.swiper-button-next',
+                                    prevButton: '.swiper-button-prev',
+                                    slidesPerView: 6,
+                                    centeredSlides: false,
+                                    paginationClickable: true,
+                                    spaceBetween: 30
+                                });
+							});
+                            that.$nextTick(function () {
+                                var foodTypeAll = "-1";
+                                console.log(that.saleTitle.length);
+                                for(var i = 0;i<that.saleTitle.length;i++){
+                                    foodTypeAll = foodTypeAll+","+i;
+								}
+								console.log(foodTypeAll);
+                                that.getMeal(that.customerType,foodTypeAll);
+                            })
+                        }
+                    }).catch(function (err) {
+                        console.log(err);
+                    });
 				}
 				that.replacement()
             },
@@ -1393,7 +1430,9 @@
                     console.log(res.data);
                     that.msgPrompt(res.data);
                     if (res.data.result_code === '1') {
-                        that.saleData =res.data.result_data;
+                        that.saleData =res.data.result_data.food;
+						that.saleGood =res.data.result_data.good;
+						that.saleTicket =res.data.result_data.ticket;
                     }
                 }).catch(function (err) {
                     that.$dialog.loading.close();
@@ -1401,22 +1440,36 @@
                 });
     		},
 //			产品添加到购物车
-            deletePerson: function(index) {
+            deletePerson: function(index,category) {
                 var that = this;
-                console.log("点击的索引值" + index);
+                console.log(category + "/" +index);
+				switch (category) {
+                      case "0":
+                        var saleData_ = that.saleData;
+                        break;
+                      case "1":
+					  	var saleData_ = that.saleGood;
+                        break;
+                      case "2":
+					 	var saleData_ = that.saleTicket;
+                        break;
+                      default:
+                        break;
+                }
+				console.log(saleData_);
                 if ( that.shopData.length === 0) {
                     that.shopData.push({
-                        allowInternet:that.saleData[index].allowInternet,
-                        allowPrint:  that.saleData[index].allowPrint,
-                        detailInfoList:  that.saleData[index].detailInfoList,
-                        detailsCount:  that.saleData[index].detailsCount,
-                        foodId:  that.saleData[index].foodId,
-                        foodName:  that.saleData[index].foodName,
-                        foodType:  that.saleData[index].foodType,
-                        foreAuthorize:  that.saleData[index].foreAuthorize,
+                        allowInternet:saleData_[index].allowInternet,
+                        allowPrint:  saleData_[index].allowPrint,
+                        detailInfoList:  saleData_[index].detailInfoList,
+                        detailsCount:  saleData_[index].detailsCount,
+                        foodId:  saleData_[index].foodId,
+                        foodName:  saleData_[index].foodName,
+                        foodType:  saleData_[index].foodType,
+                        foreAuthorize:  saleData_[index].foreAuthorize,
                         amount: 1,
-                        selected: 0
-//                        that.saleData[index].detailInfoList[0].balanceType
+                        selected: 0,
+						category:category
                     });
                     setTimeout(function () {
                         $("#shopTable tr:last").addClass('tableTag').siblings().removeClass('tableTag');
@@ -1424,10 +1477,10 @@
                     console.log(that.shopData)
                 } else {
                     for (var i = 0; i <that.shopData.length; i++) {
-                        console.log( that.saleData[index].foodId ===  that.shopData[i].foodId);
-                        console.log(that.saleData[index].foodId);
+                        console.log( saleData_[index].foodId ===  that.shopData[i].foodId);
+                        console.log(saleData_[index].foodId);
                         console.log(that.shopData[i].foodId);
-                        if (that.shopData[i].foodId == that.saleData[index].foodId) {
+                        if (that.shopData[i].foodId == saleData_[index].foodId && that.shopData[i].category == category) {
                             var indexId = i;
                             console.log("遍历的i" + i);
                             break;
@@ -1437,17 +1490,17 @@
                     }
                     if (indexId === "") {
                         that.shopData.push({
-                            allowInternet:that.saleData[index].allowInternet,
-                            allowPrint:  that.saleData[index].allowPrint,
-                            detailInfoList:  that.saleData[index].detailInfoList,
-                            detailsCount:  that.saleData[index].detailsCount,
-                            foodId:  that.saleData[index].foodId,
-                            foodName:  that.saleData[index].foodName,
-                            foodType:  that.saleData[index].foodType,
-                            foreAuthorize:  that.saleData[index].foreAuthorize,
+                            allowInternet:saleData_[index].allowInternet,
+                            allowPrint:  saleData_[index].allowPrint,
+                            detailInfoList:  saleData_[index].detailInfoList,
+                            detailsCount:  saleData_[index].detailsCount,
+                            foodId:  saleData_[index].foodId,
+                            foodName:  saleData_[index].foodName,
+                            foodType:  saleData_[index].foodType,
+                            foreAuthorize:  saleData_[index].foreAuthorize,
                             amount: 1,
-                            selected : 0
-//                            selected: that.saleData[index].detailInfoList[0].balanceType
+                            selected : 0,
+							category:category
                         });
                         setTimeout(function () {
                             $("#shopTable tr:last").addClass('tableTag').siblings().removeClass('tableTag');
@@ -1460,16 +1513,39 @@
                 }
             },
 //			产品详情
-            details:function(index){
+            details:function(index,category){
                 var that = this;
+				switch (category) {
+                      case "0":
+                        var saleData_ = that.saleData;
+						var index_ =0+index
+                        break;
+                      case "1":
+					  	var saleData_ = that.saleGood;
+						var index_ =0+index+that.saleData.length
+                        break;
+                      case "2":
+					 	var saleData_ = that.saleTicket;
+						 var index_ =0+index+that.saleData.length+that.saleGood.length
+                        break;
+                      default:
+                        break;
+                }
                 console.log(that.saleData[index]);
-              	var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken ,foodId:that.saleData[index].foodId};
+              	var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken ,foodId:saleData_[index].foodId,category:category};
               	axios.post('/XCCloud/Foods?action=getFoodDetail', obj).then(function (res) {
 				  console.log(res.data);
 				  that.msgPrompt(res.data);
 				  if (res.data.result_code === '1') {
-					 that.detailData = res.data.result_data;
-                      setTimeout("detailTime("+index+")",10);
+					if (typeof(res.data.result_data.note) === "undefined"){ 
+						that.detailData = res.data.result_data;
+						that.detailNote = "";
+					}else{
+						that.detailData =[];
+						that.detailNote = res.data.result_data.note
+					}
+					 
+                      setTimeout("detailTime("+index_+")",10);
 				  }
 			  }).catch(function (err) {
 				  console.log(err);
@@ -1478,8 +1554,22 @@
 //			产品标题筛选
             screening:function (index) {		//saleTitle(标题函数)
 				console.log(index);
+				var that = this;
+				var foodTypeAll = "-1";
+				if(index == "All"){
+					index = 0
+					for(var i = 0;i<that.saleTitle.length;i++){
+                        foodTypeAll = foodTypeAll+","+i;
+					}
+					console.log(foodTypeAll);
+				}else{
+					foodTypeAll = that.saleTitle[index].FoodTypeId;
+					console.log(that.saleTitle[index].FoodTypeId)
+					index++
+				}
+				console.log(foodTypeAll);
 				$(".saleTitleBg").find("li").eq(index).addClass("on").siblings().removeClass("on");
-                this.getMeal(0,index);
+                that.getMeal(that.customerType,foodTypeAll);
             },
 //			购物车+
             addCount:function(){	//+号的购物车管理
@@ -1497,7 +1587,6 @@
                     that.shopData[tagIndex].amount--
 				}else {
                     that.shopData.splice(tagIndex,1);
-                    alert(tagIndex);
                     if(tagIndex ==0){
                         $("#shopTable tbody").find("tr").eq(tagIndex).addClass('tableTag').siblings().removeClass('tableTag')
 					}else {
@@ -1598,6 +1687,9 @@
                         console.log(err);
                     });
 				}
+            },
+//			点击优惠券查看优惠券详情
+            couponDetail:function () {
             },
 //			通用消息提示
             msgPrompt:function (res) {

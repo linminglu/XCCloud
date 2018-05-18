@@ -130,17 +130,13 @@
                                 </div>
                             </div>
                         </div>
-
                     </div>
                     <div class="layui-col-md12">
                         <div class="layui-form-item">
                             <div class="layui-inline">
-                                <div class="layui-input-inline"style="width: 130px">
-                                    <input type="checkbox"  title="不可用日期" lay-skin="primary" id="isUseful" lay-filter="isUseful">
-                                </div>
-                                <div class="layui-input-inline" style="width: 150px">
+                                <label for="" class="layui-form-label">不可用日期</label>
+                                <div class="layui-input-inline" style="width: 110px">
                                     <select id="noTimeType" lay-filter="noUsePried">
-
                                         <option value="0">当天</option>
                                         <option value="1">当周</option>
                                         <option value="2">当月</option>
@@ -149,18 +145,21 @@
                                         <option value="5">自定义</option>
                                     </select>
                                 </div>
-                                <div class="layui-input-inline" style="width: 150px">
+                                <div class="layui-input-inline" style="width: 110px">
                                     <input type="text" class="layui-input" id="NoStartTime" disabled>
                                 </div>
                                 <div class="layui-form-mid">至</div>
-                                <div class="layui-input-inline" style="width: 150px">
+                                <div class="layui-input-inline" style="width: 110px">
                                     <input type="text" class="layui-input" id="NoEndTime" disabled>
                                 </div>
-                                <div class="layui-form-mid">会员卡续费日期</div>
-                                <div class="layui-input-inline" style="width: 150px">
-                                    <input type="text" class="layui-input" id="timeLong" >
+                                <!--<div class="layui-form-mid">会员卡续费日期</div>-->
+                                <!--<div class="layui-input-inline" style="width: 110px">-->
+                                    <!--<input type="text" class="layui-input" id="timeLong" >-->
+                                <!--</div>-->
+                                <div class="layui-form-mid">天。税率</div>
+                                <div class="layui-input-inline" style="width: 110px">
+                                    <input type="text" class="layui-input" id="tax" >
                                 </div>
-                                <div class="layui-form-mid">天，0为不处理</div>
                             </div>
 
                         </div>
@@ -218,6 +217,10 @@
                                 <label class="layui-form-label">消耗价值</label>
                                 <div class="layui-input-inline" style="width: 120px">
                                     <input type="text" class="layui-input" id="UseCount">
+                                </div>
+                                <div class="layui-form-mid">现金</div>
+                                <div class="layui-input-inline" style="width: 120px">
+                                    <input type="text" class="layui-input" id="CashValue">
                                 </div>
                                 <div class="layui-input-inline" style="width: 50px">
                                     <button type="button" class="layui-btn" id="addFoodSaleBtn">+</button>
@@ -379,7 +382,7 @@
        <form id="timeSettingBox" class="layui-form layui-form-pane" style="border:  1px dashed #aaa;">
            <div class="layui-col-md2">
                <div class="layui-form-item">
-                   <div class="layui-input-block" style="margin-left: 0px;height: 190px;overflow-y: scroll;border: 1px dashed #dedede;width: 160px" id="memberBox">
+                   <div class="layui-input-block" style="margin-left: 0px;height: 270px;overflow-y: scroll;border: 1px dashed #dedede;width: 160px" id="memberBox">
 
                    </div>
                </div>
@@ -428,22 +431,51 @@
                        </div>
 
                    </div>
+               </div>
+               <div class="layui-form-item">
                    <div class="layui-inline">
-                       <label class="layui-form-label">每天限购</label>
+                       <div class="layui-form-mid">每</div>
                        <div class="layui-input-inline">
-                           <input type="text" name="price_min" id="day_sale_count" class="layui-input">
+                           <select id="allFreq" lay-ignore style="height: 36px;" >
+                               <option value="0">天</option>
+                               <option value="1">周</option>
+                               <option value="2">月</option>
+                               <option value="3">季</option>
+                               <option value="4">年</option>
+                           </select>
                        </div>
-                   </div>
-                   <div class="layui-inline">
-                       <label class="layui-form-label">每天会员限购</label>
+                       <div class="layui-form-mid">整场限购</div>
                        <div class="layui-input-inline">
-                           <input type="text" name="price_min" id="member_day_sale_count" class="layui-input">
+                           <input type="text" class="layui-input" id="allFreqCount">
                        </div>
                    </div>
                    <div class="layui-inline">
                        <label class="layui-form-label" style="padding: 8px 0;">调整会员级别</label>
+                       <div class="layui-input-inline" style="width: 190px">
+                           <select id="changeVip" lay-ignore style="height: 36px;width: 190px;"></select>
+                       </div>
+                   </div>
+                   <br>
+                   <div class="layui-inline">
+                       <div class="layui-form-mid">每</div>
                        <div class="layui-input-inline">
-                           <select id="changeVip"></select>
+                           <select id="memFreq" lay-ignore style="height: 36px;">
+                               <option value="0">天</option>
+                               <option value="1">周</option>
+                               <option value="2">月</option>
+                               <option value="3">季</option>
+                               <option value="4">年</option>
+                           </select>
+                       </div>
+                       <div class="layui-form-mid">每个会员限购</div>
+                       <div class="layui-input-inline">
+                           <input type="text" class="layui-input" id="memFreqCount">
+                       </div>
+                   </div>
+                   <div class="layui-inline">
+                       <label class="layui-form-label" style="padding: 8px 0;">优先级</label>
+                       <div class="layui-input-inline" style="width: 190px">
+                           <input type="text" class="layui-input" placeholder="优先级1到10" id="proLevel">
                        </div>
                    </div>
                </div>
@@ -666,7 +698,6 @@
                 layer.msg('<p style="color: red">请自己设置有效期限</p>')
             }
         });
-
         //监听不可用期限选择
         form.on('select(noUsePried)',function (data) {
             if(data.value==0){
@@ -724,7 +755,6 @@
                         'ProjectName':obj.data.GoodName,
                         'WeightValue':0,
                         'ContainCount':1
-                        // 'Days':$('#GiftDays').val()
                     }]
                 }else {
                     giftList=[];
@@ -767,7 +797,7 @@
      $('#addFoodSaleBtn').on('click',()=>{
          let flag=false;
          //当2个参数都填满后，点击向表里面加一条数据，初始化输入框
-         if(BalanceType!=''&&$('#UseCount').val()!=''){
+         if(BalanceType!=''&&$('#UseCount').val()!=''&&$('#CashValue').val()!=''){
              if(FoodSale.length>0){
                  for(let i in FoodSale){
                      if(FoodSale[i].BalanceType==BalanceType){
@@ -777,13 +807,15 @@
              }
              if(flag==false){
                  FoodSale.push({
-                     'BalanceType':BalanceType, 'BalanceTypeStr':BalanceTypeStr,
-                     'UseCount':$('#UseCount').val()
+                     'BalanceType':BalanceType,
+                     'BalanceTypeStr':BalanceTypeStr,
+                     'UseCount':$('#UseCount').val(),
+                     'CashValue':$('#CashValue').val()
                  });
                  newTable(table,FoodSale,layer,form);
                  $('#UseCount').val('');
-                 // xc.setSelect('余额类别','BalanceType');
-                 xc.getBalanceTypeDic('',token,layer,form,'BalanceType')
+                 $('#CashValue').val('')
+                 xc.getBalanceTypeDic('',token,layer,form,'BalanceType');
                  BalanceType='';BalanceTypeStr='';
              }else {
                  layer.msg('请选择其他的余额类别或者删除该类别重新设置！')
@@ -795,7 +827,6 @@
          });
         //会员币种
         $('#vipCoinBtn').on('click',()=>{
-            // xc.setSelect('余额类别','vipCoinType');
             xc.getBalanceTypeDic('',token,layer,form,'vipCoinType')
             vipCoinType=''; vipCoinTypeStr=''
             index= layer.open({
@@ -870,14 +901,9 @@
             newFoodDetialsTable(table,FoodDetial,layer,form)
         });
         $('#openGiftBtn').on('click',()=>{
-            // if(giftList[0].Days=''){
-            //     layer.msg('请填写有效期')
-            // }else {
-            //     giftList[0].Days=$('#GiftDays').val();
                 FoodDetial=FoodDetial.concat(giftList);
                 layer.close(index);
                 newFoodDetialsTable(table,FoodDetial,layer,form)
-            // }
         });
         $('#openTicketBtn').on('click',()=>{
             FoodDetial.push({ 'FoodDetailType':2,
@@ -969,6 +995,7 @@
             xc.AddWeeks('weekBox');
             $('#weekSetBox').css({'display':'inline-block'});
              week=[];weekStr=[]; memberLevelID=[];MemberLevel=[];timeType='0';Time='';
+             xc.getMemberTypeDic(token,layer,form,'changeVip');
             index=layer.open({
                 title:'添加新优惠时段',
                 shade:0.6,
@@ -988,9 +1015,12 @@
             'Time':$('#StartDate').val()+'~'+$('#EndDate').val(),
             'ClientPrice':$('#custorPrice').val(),
             'VIPPrice':$('#VipPrice').val(),
-            'day_sale_count':$('#day_sale_count').val(),
-            'member_day_sale_count':$('#member_day_sale_count').val(),
-            'UpdateLevelID':'0'});
+                'allFreqType':$('#allFreq option:selected').val(),
+                'allCount':$('#allFreqCount').val(),
+                'memberFreqType':$('#memFreq option:selected').val(),
+                'memberCount':$('#memFreqCount').val(),
+                'priorityLevel':$('#proLevel').val(),
+            'UpdateLevelID':$('#changeVip option:selected').val()});
             newFoodLevelTable(table,FoodLevel,layer,form);
             layer.close(index);
         });
@@ -1022,6 +1052,9 @@
                             $('#StartTime').val(arr.StartTime||'');
                             $('#EndTime').val(arr.EndTime||'');
                             $('#RenewDays').val(arr.RenewDays||'');
+                            $('#NoStartTime').val(arr.ForbidStart);
+                            $('#NoEndTime').val(arr.ForbidEnd);
+                            $('#tax').val(arr.Tax||'');
                             AllowInternet=arr.AllowInternet;
                             if(arr.AllowInternet==1){
                                 $('#AllowInternet').attr('checked',true);
@@ -1054,7 +1087,8 @@
                             FoodLevel=arr.FoodLevels;
                             newFoodLevelTable(table,arr.FoodLevels,layer,form);
                             if(arr.ImageURL!=""){
-                                $('#demo2') .append('<div style="display: inline-block;position: relative" class="imgBox">' +
+                                $('#demo2').html('');
+                                $('#demo2').append('<div style="display: inline-block;position: relative" class="imgBox">' +
                                     '<button type="button" ><i class="layui-icon"><i class="layui-icon">&#xe640</i></i></button>' +
                                     '<img src="'+ arr.ImageURL +'" class="layui-upload-img_md" ' +
                                     'style="display: block;width: 300px;height: 170px"></div>');
@@ -1184,6 +1218,9 @@
                 'foodSales':FoodSale.length>0?FoodSale:null,
                 'foodDetials':FoodDetial.length>0?FoodDetial:null,
                 'foodLevels':FoodLevel.length>0?FoodLevel:null,
+                'forbidStart':$('#NoStartTime').val(),
+                'forbidEnd':$('#NoEndTime').val(),
+                'tax':$('#tax').val(),
                 'userToken':token,
                 'signkey':'1f626576304bf5d95b72ece2222e42c3'};
             let url='/XCCloud/Promotion?action=SaveFoodInfo';
@@ -1201,7 +1238,7 @@
                             location.href='discountPackageSet.html'
                         })
                     }else {
-                        layer.msg('操作失败')
+                        layer.msg(data.result_msg||data.return_msg)
                     }
                 }
 
@@ -1220,9 +1257,10 @@
             , data: arr
             , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
             , cols: [[
-                 {field:'BalanceTypeStr', title: '余额类型', align: 'center',width:400}
-                ,{field:'UseCount', title: '消耗数量', align: 'center',width:400}
-                ,{fixed: 'right',title:'操作', width:230, align:'center', toolbar: '#barDemo2'}]]
+                 {field:'BalanceTypeStr', title: '余额类型', align: 'center',width:270}
+                ,{field:'UseCount', title: '消耗数量', align: 'center',width:270}
+                ,{field:'CashValue', title: '现金', align: 'center',width:270}
+                ,{fixed: 'right',title:'操作', width:220, align:'center', toolbar: '#barDemo2'}]]
             , page: {page: true, limits: [5,10, 15, 20]}
             , limit: 5
         });
@@ -1236,12 +1274,10 @@
             , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
             , cols: [[
                  {field:'FoodDetailTypeStr', title: '套餐种类类别', align: 'center'}
-                // ,{field:'BalanceType', title: '余额类别', align: 'center'}
                 ,{field:'OperateType', title: '操作类型', align: 'center',templet:'#operateType1'}
                 ,{field:'ProjectName', title: '套餐名字', align: 'center'}
                 ,{field:'ContainCount', title: '套餐内容数量', align: 'center'}
                 ,{field:'WeightValue', title: '权重值', align: 'center'}
-                // ,{field:'Days', title: '有效期', align: 'center'}
                 ,{fixed: 'right',title:'操作', width:140, align:'center', toolbar: '#barDemo1'}]]
             , page: {page: true, limits: [5,10, 15, 20]}
             , limit: 5
@@ -1263,9 +1299,9 @@
                 ,{field:'EndTime', title: '结束时段', align: 'center'}
                 ,{field:'ClientPrice', title: '游客优惠价', align: 'center'}
                 ,{field:'VIPPrice', title: '会员优惠价', align: 'center'}
-                ,{field:'day_sale_count', title: '每天限额', align: 'center'}
-                ,{field:'member_day_sale_count', title: '会员每天限额', align: 'center'}
-                ,{field:'UpdateLevelID', title: '下一级', align: 'center'}
+                ,{field:'AllCount', title: '每天限额', align: 'center'}
+                ,{field:'MemberCount', title: '会员每天限额', align: 'center'}
+                ,{field:'UpdateLevelID', title: '会员升级', align: 'center'}
                 ,{fixed: 'right',title:'操作', width:140, align:'center', toolbar: '#barDemo1'}]]
             , page: {page: true, limits: [5,10, 15, 20]}
             , limit: 5

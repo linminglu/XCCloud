@@ -170,6 +170,7 @@
     
             var data = obj.data; //获得当前行数据
             var layEvent = obj.event;
+            let DecimalNumber_=data.DecimalNumber;
             if(layEvent === 'edit'){ //查看
                 Id=data.ID;
                 let _obj={'id':data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
@@ -186,8 +187,7 @@
                                 "HKType": data.result_data.HKType
                                 ,"saveFloatRule": data.result_data.AddingType
                             })
-                                $('#TypeID').val(data.result_data.TypeID);
-                                $('#saveFloat').val(data.result_data.DecimalNumber);
+                                $('#saveFloat').val(DecimalNumber_);
                                 $('#TypeName').val(data.result_data.TypeName);
                                 $('#Note').val(data.result_data.Note);
                                 setStore(form,token,data.result_data.StoreIDs);
@@ -223,8 +223,10 @@
                     success: function (data) {
                         data = JSON.parse(data);
                         if (data.result_code == 1) {
-                         layer.msg('删除成功',)
-                         xc.getInitData(parm);
+                         layer.msg('删除成功',{time:1500},function () {
+                             xc.getInitData(parm);
+                         })
+
                         }else {
                             layer.msg(data.result_msg||data.return_msg);
                         }

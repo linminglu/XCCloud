@@ -18,6 +18,7 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> GoodID { get; set; }
         public Nullable<int> OperateTypei { get; set; }
         public Nullable<int> BalanceIndex { get; set; }
+        public Nullable<decimal> CashValue { get; set; }
         public Nullable<decimal> Count { get; set; }
     }
 }

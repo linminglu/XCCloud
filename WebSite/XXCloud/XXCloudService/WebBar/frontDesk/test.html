@@ -1,47 +1,88 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<!DOCTYPE html>
+<html>
 <head>
-	<title>鼠标拖动改变div高度</title>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<script type="text/javascript" src="js/jquery-2.1.3.min.js"></script>
-	<!--<script type="text/javascript">-->
-        <!--!window.jQuery && document.write('<script src=http://lib.sinaapp.com/js/jquery/1.7.2/jquery.min.js><\/script>');-->
-	<!--</script>-->
-	<style type="text/css">
-		html, body{ height: 100%; margin: 0; padding: 0; }
-		#footer { position:fixed; bottom:0; left:0; width:100%; height:30px; background-color:#B8D0FA;}
-		#expander{ width:100%; height:6px; background-color:#999;}
-		#expander:hover{ cursor:n-resize;}
-	</style>
-	<script>
-        $(function(){
-            var src_posi_Y = 0, dest_posi_Y = 0, move_Y = 0, is_mouse_down = false, destHeight = 30;
-            $("#expander")
-                .mousedown(function(e){
-                    src_posi_Y = e.pageY;
-                    is_mouse_down = true;
-                });
-            $(document).bind("click mouseup",function(e){
-                if(is_mouse_down){
-                    is_mouse_down = false;
-                }
-            })
-                .mousemove(function(e){
-                    dest_posi_Y = e.pageY;
-                    move_Y = src_posi_Y - dest_posi_Y;
-                    src_posi_Y = dest_posi_Y;
-                    destHeight = $("#footer").height() + move_Y;
-                    if(is_mouse_down){
-                        $("#footer").css("height", destHeight > 30 ? destHeight : 30);
-                    }
-                });
-        });
-	</script>
+	<meta charset="utf-8">
+	<title>iview example</title>
+	<link rel="stylesheet" type="text/css" href="http://unpkg.com/iview/dist/styles/iview.css">
+	<script type="text/javascript" src="http://v1.vuejs.org/js/vue.min.js"></script>
+	<script type="text/javascript" src="http://unpkg.com/iview@1.0.1/dist/iview.min.js"></script>
 </head>
 <body>
-<div style="width:100%; height:1000px; background-color:#F2F2F2;"></div>
-<div id="footer"><div id="expander"></div><span id="info">这里是内容区</span></div>
-<!--狂战，念皇,鬼泣，弹药，乌鸡，剑魔，女大枪，斗罗，剑宗-->
-<!---->
+<div id="app">
+	<Tree :data="data1" @on-select-change="show"></Tree>
+	<!--<Row>-->
+		<!--<i-col span="12">col-12</i-col>-->
+		<!--<i-col span="12">col-12</i-col>-->
+	<!--</Row>-->
+	<!--<br>-->
+	<!--<Row>-->
+		<!--<i-col span="8">col-8</i-col>-->
+		<!--<i-col span="8">col-8</i-col>-->
+		<!--<i-col span="8">col-8</i-col>-->
+	<!--</Row>-->
+	<!--<Poptip placement="top" width="400">-->
+		<!--<a type="ghost" style="width: 1000px;">mmpmppmpmppmpmpmpmpmpmpmpmpmpmpmpmpmpmpppmpppmmp</a>-->
+		<!--<div class="api" slot="content">-->
+			<!--<p style="text-align: center">{{contentText1}}</p>-->
+		<!--</div>-->
+	<!--</Poptip>-->
+	<!--<Poptip placement="top" width="400">-->
+		<!--<i-button type="ghost">Click</i-button>-->
+		<!--<div class="api" slot="content">-->
+			<!--<p>{{contentText2}}</p>-->
+		<!--</div>-->
+	<!--</Poptip>-->
+</div>
+<!--既然讨厌现在的生活，为什么不试着去改变它-->
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            contentText1:"545456156456563455",
+            contentText2:"ajhahsjkshkhskjs",
+            data1: [
+                {
+                    title: '全部',
+                    expand: true,
+                    children: [
+                        {
+                            id:"ticket",
+                            title: '门票',
+                            expand: true,
+                            children: [
+                                {
+                                    title: 'leaf 1-1-1'
+                                },
+                                {
+                                    title: 'leaf 1-1-2'
+                                }
+                            ]
+                        },
+                        {
+                            id:"good",
+                            title: '商品',
+                            expand: true,
+                            children: [
+                                {
+                                    id:1,
+                                    title: 'leaf 1-2-1'
+                                },
+                                {
+                                    id:2,
+                                    title: 'leaf 1-2-1'
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        methods: {
+            show: function (arr) {
+                console.log(arr);
+            }
+        }
+    })
+</script>
 </body>
 </html>

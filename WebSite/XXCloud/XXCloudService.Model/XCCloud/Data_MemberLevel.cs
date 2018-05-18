@@ -39,7 +39,8 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> UpdateLevelID { get; set; }
         public Nullable<int> NonActiveDays { get; set; }
         public Nullable<int> ReduceLevelID { get; set; }
-        public Nullable<int> FreeRate { get; set; }
+        public Nullable<int> FreeBalanceIndex { get; set; }
+        public Nullable<int> WinBalanceIndex { get; set; }
         public Nullable<int> FreeCoin { get; set; }
         public Nullable<int> FreeType { get; set; }
         public Nullable<int> FreeNeedWin { get; set; }

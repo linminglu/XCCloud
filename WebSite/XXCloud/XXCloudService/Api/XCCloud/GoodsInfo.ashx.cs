@@ -1127,7 +1127,7 @@ namespace XXCloudService.Api.XCCloud
                         data_GoodRequest.CreateUserID = userTokenKeyModel.LogId.Toint();
                         data_GoodRequest.CreateTime = DateTime.Now;
                         data_GoodRequest.RequstType = requstType;
-                        data_GoodRequest.RequestCode = RedisCacheHelper.CreateSerialNo(storeId.IsNull() ? merchId.ToExtStoreID() : storeId);
+                        data_GoodRequest.RequestCode = RedisCacheHelper.CreateCloudSerialNo(storeId.IsNull() ? merchId.ToExtStoreID() : storeId);
                         data_GoodRequest.RequestReason = requestReason;
                         data_GoodRequest.RequestInStoreID = inStoreId;
                         data_GoodRequest.RequestInDepotID = inDepotId;

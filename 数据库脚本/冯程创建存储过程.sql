@@ -73,7 +73,7 @@ as
 GO
 
 
-Create Proc [dbo].[SP_DictionaryNodes](@MerchID nvarchar(15), @DictKey nvarchar(50), @RootID int output)
+Create Proc [dbo].[SP_DictionaryNodes](@MerchID nvarchar(15), @DictKey nvarchar(50), @PID int, @RootID int output)
 as
  begin
 	--declare @sql nvarchar(max)
@@ -92,10 +92,9 @@ as
 	----exec (@sql)
 	--SET @sql = @sql + ' order by OrderID'
 	--exec sp_executesql @sql, N'@MerchID nvarchar(15), @DictKey nvarchar(50), @RootID int', @MerchID, @DictKey, @RootID
-	SET @RootID = 0	
 	if(IsNull(@DictKey, '') <> '')
 	begin	
-		select @RootID=ID from (select top 1 ID from Dict_System where DictKey=@DictKey 
+		select @RootID=ID from (select top 1 ID from Dict_System where DictKey=@DictKey and PID=@PID
 		and IsNull(MerchID, '')=IsNull(@MerchID, '')) m
 		if not exists (select 0 from Dict_System where PID=@RootID)
 			return		

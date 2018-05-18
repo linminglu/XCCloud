@@ -17,15 +17,74 @@ namespace XCCloudService.CacheService
         const string SerialNoKey = "SerialNoKey";
         private static LoadedLuaScript luaScript { get; set; }
 
-        public static string CreateSerialNo(string storeId)
+        #region 云端流水号
+        /// <summary>
+        /// 云端流水号
+        /// </summary>
+        /// <param name="storeId"></param>
+        /// <returns></returns>
+        public static string CreateCloudSerialNo(string storeId)
+        {
+            try
+            {
+                string currNo = CreateSerialIndex();
+                if (string.IsNullOrEmpty(currNo))
+                {
+                    return "";
+                }
+
+                int currIndex = Convert.ToInt32(currNo);
+                currIndex += 500000;
+                string date = DateTime.Now.ToString("yyyyMMdd");
+
+                string serialNo = storeId + date + currIndex.ToString().PadLeft(6, '0');
+                return serialNo;
+            }
+            catch
+            {
+                return "";
+            }
+        } 
+        #endregion
+
+        #region 门店本地流水号
+        /// <summary>
+        /// 门店本地流水号
+        /// </summary>
+        /// <param name="storeId"></param>
+        /// <returns></returns>
+        public static string CreateStoreSerialNo(string storeId)
+        {
+            try
+            {
+                string currNo = CreateSerialIndex();
+                if (string.IsNullOrEmpty(currNo))
+                {
+                    return "";
+                }
+
+                string date = DateTime.Now.ToString("yyyyMMdd");
+                string serialNo = storeId + date + currNo.PadLeft(6, '0');
+                return serialNo;
+            }
+            catch
+            {
+                return "";
+            }
+        }  
+        #endregion
+        #endregion
+
+        #region 获取种子
+        private static string CreateSerialIndex()
         {
             try
             {
                 RedisHelper redisHelper = new RedisHelper();
 
-                string date = DateTime.Now.ToString("yyyyMMdd");
                 IServer server = redisHelper.GetRedisServer();
                 IDatabase db = redisHelper.GetDatabase();
+                string date = DateTime.Now.ToString("yyyyMMdd");
 
                 string strLuaScript =
                     " local currDate = tostring(@currDate) " +
@@ -58,9 +117,7 @@ namespace XCCloudService.CacheService
                 {
                     return "";
                 }
-
-                serialNo = storeId + date + ret.ToString().PadLeft(6, '0');
-                return serialNo;
+                return ret.ToString();
             }
             catch
             {

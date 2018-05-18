@@ -76,15 +76,27 @@ namespace XXCloudService.Api.XCCloud
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
                 string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
+
                 string errMsg = string.Empty;
                 var hkType = dicParas.Get("hkType").Toint();
+                if (!dicParas.Get("storeId").IsNull())
+                {
+                    storeId = dicParas.Get("storeId");
+                }
 
-                var linq = from a in Dict_BalanceTypeService.N.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.State == 1)
-                           join b in Data_BalanceType_StoreListService.N.GetModels() on a.ID equals b.BalanceIndex into b1
-                           from b in b1.DefaultIfEmpty()
-                           where (b.StroeID ?? "") == storeId && (hkType != null && a.MappingType == hkType)                           
+                var query = Dict_BalanceTypeService.N.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.State == 1);
+                if (hkType != null)
+                    query = query.Where(w => w.MappingType == hkType);
+                if (!storeId.IsNull())
+                    query = from a in query
+                            join b in Data_BalanceType_StoreListService.N.GetModels() on a.ID equals b.BalanceIndex into b1
+                            from b in b1.DefaultIfEmpty()
+                            where b.StroeID == storeId
+                            select a;
+
+                var linq = from a in query
                            orderby a.TypeID
-                           select new 
+                           select new
                            {
                                ID = a.ID,
                                TypeName = a.TypeName

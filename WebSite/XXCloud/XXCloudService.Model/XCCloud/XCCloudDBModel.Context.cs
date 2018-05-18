@@ -103,14 +103,8 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Store_CheckDate> Store_CheckDate { get; set; }
         public virtual DbSet<Data_SupplierList> Data_SupplierList { get; set; }
         public virtual DbSet<Log_GameAlarm> Log_GameAlarm { get; set; }
-        public virtual DbSet<Data_Food_Sale> Data_Food_Sale { get; set; }
         public virtual DbSet<Base_DeviceInfo> Base_DeviceInfo { get; set; }
-        public virtual DbSet<Data_Project_StoreList> Data_Project_StoreList { get; set; }
-        public virtual DbSet<Data_ProjectTime_BandPrice> Data_ProjectTime_BandPrice { get; set; }
-        public virtual DbSet<Data_ProjectTime_StoreList> Data_ProjectTime_StoreList { get; set; }
-        public virtual DbSet<Data_ProjectTimeInfo> Data_ProjectTimeInfo { get; set; }
         public virtual DbSet<Data_BalanceChargeRule> Data_BalanceChargeRule { get; set; }
-        public virtual DbSet<Data_ProjectInfo> Data_ProjectInfo { get; set; }
         public virtual DbSet<Data_GoodStorage> Data_GoodStorage { get; set; }
         public virtual DbSet<Flw_GroupVerity> Flw_GroupVerity { get; set; }
         public virtual DbSet<Data_MerchAlipay_Shop> Data_MerchAlipay_Shop { get; set; }
@@ -120,7 +114,6 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Base_StoreInfo> Base_StoreInfo { get; set; }
         public virtual DbSet<Dict_FunctionMenu> Dict_FunctionMenu { get; set; }
         public virtual DbSet<Data_GameInfo_Ext> Data_GameInfo_Ext { get; set; }
-        public virtual DbSet<Data_Project_BindGame> Data_Project_BindGame { get; set; }
         public virtual DbSet<Data_GivebackRule> Data_GivebackRule { get; set; }
         public virtual DbSet<Base_StoreHKConfig> Base_StoreHKConfig { get; set; }
         public virtual DbSet<Data_DigitCoinFood> Data_DigitCoinFood { get; set; }
@@ -131,12 +124,10 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Data_DiscountRule> Data_DiscountRule { get; set; }
         public virtual DbSet<Data_Discount_MemberLevel> Data_Discount_MemberLevel { get; set; }
         public virtual DbSet<Data_GoodStorage_Detail> Data_GoodStorage_Detail { get; set; }
-        public virtual DbSet<Base_Goodinfo_Price> Base_Goodinfo_Price { get; set; }
         public virtual DbSet<Data_GoodsStock> Data_GoodsStock { get; set; }
         public virtual DbSet<Data_WorkFlow_Entry> Data_WorkFlow_Entry { get; set; }
         public virtual DbSet<Data_WorkFlow_Node> Data_WorkFlow_Node { get; set; }
         public virtual DbSet<Data_WorkFlowConfig> Data_WorkFlowConfig { get; set; }
-        public virtual DbSet<Data_Food_Detial> Data_Food_Detial { get; set; }
         public virtual DbSet<Data_CouponInfo> Data_CouponInfo { get; set; }
         public virtual DbSet<Data_GoodRequest> Data_GoodRequest { get; set; }
         public virtual DbSet<Data_GoodRequest_List> Data_GoodRequest_List { get; set; }
@@ -152,10 +143,8 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Data_CouponList> Data_CouponList { get; set; }
         public virtual DbSet<Data_Food_Level> Data_Food_Level { get; set; }
         public virtual DbSet<Data_GameAPP_Rule> Data_GameAPP_Rule { get; set; }
-        public virtual DbSet<Data_GameInfo> Data_GameInfo { get; set; }
         public virtual DbSet<Data_GoodExit_Detail> Data_GoodExit_Detail { get; set; }
         public virtual DbSet<Data_GroupArea> Data_GroupArea { get; set; }
-        public virtual DbSet<Data_MemberLevel> Data_MemberLevel { get; set; }
         public virtual DbSet<Data_MemberLevel_Balance> Data_MemberLevel_Balance { get; set; }
         public virtual DbSet<Data_MemberLevel_BalanceCharge> Data_MemberLevel_BalanceCharge { get; set; }
         public virtual DbSet<Data_ProjectTicket_Bind> Data_ProjectTicket_Bind { get; set; }
@@ -181,5 +170,18 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Data_StandardCoinPrice> Data_StandardCoinPrice { get; set; }
         public virtual DbSet<Data_ProjectTicket> Data_ProjectTicket { get; set; }
         public virtual DbSet<Dict_BalanceType> Dict_BalanceType { get; set; }
+        public virtual DbSet<Data_ProjectInfo> Data_ProjectInfo { get; set; }
+        public virtual DbSet<Data_Project_BandPrice> Data_Project_BandPrice { get; set; }
+        public virtual DbSet<Data_Project_BindDevice> Data_Project_BindDevice { get; set; }
+        public virtual DbSet<Data_Project_TimeInfo> Data_Project_TimeInfo { get; set; }
+        public virtual DbSet<Data_GameFreeLotteryRule> Data_GameFreeLotteryRule { get; set; }
+        public virtual DbSet<Data_Food_Sale> Data_Food_Sale { get; set; }
+        public virtual DbSet<Data_GameInfo> Data_GameInfo { get; set; }
+        public virtual DbSet<Base_Goodinfo_Price> Base_Goodinfo_Price { get; set; }
+        public virtual DbSet<Data_Card_BalanceCharge> Data_Card_BalanceCharge { get; set; }
+        public virtual DbSet<Data_FreeGiveRule_Memberlevel> Data_FreeGiveRule_Memberlevel { get; set; }
+        public virtual DbSet<Data_MemberLevel> Data_MemberLevel { get; set; }
+        public virtual DbSet<Data_Food_Detial> Data_Food_Detial { get; set; }
+        public virtual DbSet<Data_FreeGiveRule> Data_FreeGiveRule { get; set; }
     }
 }

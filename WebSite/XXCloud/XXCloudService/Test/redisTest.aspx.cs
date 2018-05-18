@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using XCCloudService.CacheService;
+using XCCloudService.OrderPayCallback.Common;
 
 namespace XXCloudService.Test
 {
@@ -25,13 +26,19 @@ namespace XXCloudService.Test
         {
             try
             {
-                string serialNo = RedisCacheHelper.CreateSerialNo("100016360103001");
+                string serialNo = RedisCacheHelper.CreateCloudSerialNo("100016360103001");
                 Response.Write(serialNo);
             }
             catch
             { 
             }
             
+        }
+
+        protected void Button2_Click(object sender, EventArgs e)
+        {
+            string conn = Config.EncryptDES("Data Source=192.168.1.119;Initial Catalog=XinchenPay;User Id=sa;Password=xinchen;Connection Timeout=10;", "Xinchen1");
+            Response.Write(conn);
         }
     }
 }

@@ -145,6 +145,9 @@
     <Compile Include="IDAL\IData_BillInfoDAL.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
+    <Compile Include="IDAL\IData_Card_BalanceChargeDAL.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
     <Compile Include="IDAL\IData_Card_BalanceDAL.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
@@ -226,7 +229,16 @@
     <Compile Include="IDAL\IData_FreeCoinRuleDAL.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
+    <Compile Include="IDAL\IData_FreeGiveRuleDAL.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\IData_FreeGiveRule_MemberlevelDAL.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
     <Compile Include="IDAL\IData_GameAPP_RuleDAL.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\IData_GameFreeLotteryRuleDAL.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="IDAL\IData_GameFreeRuleDAL.cs">
@@ -340,19 +352,13 @@
     <Compile Include="IDAL\IData_ProjectTicket_BindDAL.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
-    <Compile Include="IDAL\IData_ProjectTimeInfoDAL.cs">
+    <Compile Include="IDAL\IData_Project_BandPriceDAL.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
-    <Compile Include="IDAL\IData_ProjectTime_BandPriceDAL.cs">
+    <Compile Include="IDAL\IData_Project_BindDeviceDAL.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
-    <Compile Include="IDAL\IData_ProjectTime_StoreListDAL.cs">
-      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
-    </Compile>
-    <Compile Include="IDAL\IData_Project_BindGameDAL.cs">
-      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
-    </Compile>
-    <Compile Include="IDAL\IData_Project_StoreListDAL.cs">
+    <Compile Include="IDAL\IData_Project_TimeInfoDAL.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="IDAL\IData_PushRuleDAL.cs">
@@ -681,6 +687,9 @@
     <Compile Include="XCCloud\Data_BillInfoDAL.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
+    <Compile Include="XCCloud\Data_Card_BalanceChargeDAL.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
     <Compile Include="XCCloud\Data_Card_BalanceDAL.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
@@ -762,7 +771,16 @@
     <Compile Include="XCCloud\Data_FreeCoinRuleDAL.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
+    <Compile Include="XCCloud\Data_FreeGiveRuleDAL.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_FreeGiveRule_MemberlevelDAL.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
     <Compile Include="XCCloud\Data_GameAPP_RuleDAL.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_GameFreeLotteryRuleDAL.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_GameFreeRuleDAL.cs">
@@ -876,19 +894,13 @@
     <Compile Include="XCCloud\Data_ProjectTicket_BindDAL.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
-    <Compile Include="XCCloud\Data_ProjectTimeInfoDAL.cs">
+    <Compile Include="XCCloud\Data_Project_BandPriceDAL.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
-    <Compile Include="XCCloud\Data_ProjectTime_BandPriceDAL.cs">
+    <Compile Include="XCCloud\Data_Project_BindDeviceDAL.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
-    <Compile Include="XCCloud\Data_ProjectTime_StoreListDAL.cs">
-      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
-    </Compile>
-    <Compile Include="XCCloud\Data_Project_BindGameDAL.cs">
-      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
-    </Compile>
-    <Compile Include="XCCloud\Data_Project_StoreListDAL.cs">
+    <Compile Include="XCCloud\Data_Project_TimeInfoDAL.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_PushRuleDAL.cs">

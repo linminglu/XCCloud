@@ -18,11 +18,16 @@ namespace XCCloudService.Model.XCCloud
         public string GameID { get; set; }
         public string StoreID { get; set; }
         public string MerchID { get; set; }
+        public Nullable<int> DepotID { get; set; }
         public Nullable<int> AreaID { get; set; }
         public string GameName { get; set; }
         public string GameType { get; set; }
-        public string State { get; set; }
-        public Nullable<int> BalanceType { get; set; }
+        public Nullable<int> State { get; set; }
+        public Nullable<int> PushBalanceIndex1 { get; set; }
+        public Nullable<int> PushCoin1 { get; set; }
+        public Nullable<int> PushBalanceIndex2 { get; set; }
+        public Nullable<int> PushCoin2 { get; set; }
+        public Nullable<int> OutBalanceIndex { get; set; }
         public Nullable<int> ReturnCheck { get; set; }
         public Nullable<int> OutsideAlertCheck { get; set; }
         public Nullable<int> ICTicketOperation { get; set; }
@@ -31,7 +36,6 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> OnlyExitLottery { get; set; }
         public Nullable<int> chkCheckGift { get; set; }
         public Nullable<int> AllowElecPush { get; set; }
-        public Nullable<int> AllowDecuplePush { get; set; }
         public Nullable<int> GuardConvertCard { get; set; }
         public Nullable<int> ReadCat { get; set; }
         public Nullable<int> AllowRealPush { get; set; }
@@ -44,14 +48,12 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> BOPulse { get; set; }
         public Nullable<int> AllowRealOut { get; set; }
         public Nullable<int> BOKeep { get; set; }
-        public Nullable<int> PushReduceFromCard { get; set; }
         public Nullable<int> PushAddToGame { get; set; }
         public Nullable<int> PushSpeed { get; set; }
         public Nullable<int> PushPulse { get; set; }
         public Nullable<int> PushLevel { get; set; }
         public Nullable<int> PushStartInterval { get; set; }
         public Nullable<int> UseSecondPush { get; set; }
-        public Nullable<int> SecondReduceFromCard { get; set; }
         public Nullable<int> SecondAddToGame { get; set; }
         public Nullable<int> SecondSpeed { get; set; }
         public Nullable<int> SecondPulse { get; set; }
@@ -69,6 +71,5 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> ExceptOutTest { get; set; }
         public Nullable<int> ExceptOutSpeed { get; set; }
         public Nullable<int> Frequency { get; set; }
-        public Nullable<int> DepotID { get; set; }
     }
 }

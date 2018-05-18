@@ -26,7 +26,7 @@ namespace XXCloudService.Api.HaoKu.Com
             string signStr = "";
             foreach (string key in queryParams.Keys)
             {
-                if (!string.IsNullOrEmpty(queryParams[key]))
+                if (!string.IsNullOrEmpty(queryParams[key]) && queryParams[key] != "sign")
                 {
                     signStr += key + "=" + queryParams[key] + "&";
                 }
@@ -150,9 +150,9 @@ namespace XXCloudService.Api.HaoKu.Com
         } 
         #endregion
 
-        #region 获取好酷GET过来的请求消息，并以“参数名=参数值”的形式组成数组
+        #region 获取好酷GET过来的请求消息，并以“参数名=参数值”的形式添加到字典序
         /// <summary>
-        /// 获取好酷GET过来的请求消息，并以“参数名=参数值”的形式组成数组
+        /// 获取好酷GET过来的请求消息，并以“参数名=参数值”的形式添加到字典序
         /// </summary>
         /// <param name="ctx"></param>
         /// <returns></returns>

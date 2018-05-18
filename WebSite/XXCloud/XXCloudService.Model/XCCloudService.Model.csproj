@@ -69,9 +69,11 @@
     <Compile Include="CustomModel\XCCloudRS232\FoodsModel.cs" />
     <Compile Include="CustomModel\XCCloudRS232\MerchModel.cs" />
     <Compile Include="CustomModel\XCCloud\BaiduMapModel.cs" />
+    <Compile Include="CustomModel\XCCloud\BaseGoodModel.cs" />
     <Compile Include="CustomModel\XCCloud\BaseMemberModel.cs" />
     <Compile Include="CustomModel\XCCloud\Base_FoodType.cs" />
     <Compile Include="CustomModel\XCCloud\Data_DistinctInfoModel.cs" />
+    <Compile Include="CustomModel\XCCloud\Data_FreeGiveRuleModel.cs" />
     <Compile Include="CustomModel\XCCloud\Data_GoodRequestModel.cs" />
     <Compile Include="CustomModel\XCCloud\Base_GoodsInfoModel.cs" />
     <Compile Include="CustomModel\XCCloud\Base_StoreInfoModel.cs" />
@@ -83,6 +85,8 @@
     <Compile Include="CustomModel\XCCloud\Data_GoodInventoryModel.cs" />
     <Compile Include="CustomModel\XCCloud\Data_GoodStorageModel.cs" />
     <Compile Include="CustomModel\XCCloud\Data_MemberLevelModel.cs" />
+    <Compile Include="CustomModel\XCCloud\Data_ProjectInfoModel.cs" />
+    <Compile Include="CustomModel\XCCloud\Data_Project_BindDeviceModel.cs" />
     <Compile Include="CustomModel\XCCloud\Data_Push_RuleModel.cs" />
     <Compile Include="CustomModel\XCCloud\Data_ReloadModel.cs" />
     <Compile Include="CustomModel\XCCloud\DictionaryResponseModel.cs" />
@@ -91,11 +95,14 @@
     <Compile Include="CustomModel\XCCloud\MemberBalancesModel.cs" />
     <Compile Include="CustomModel\XCCloud\MemberCouponModel.cs" />
     <Compile Include="CustomModel\XCCloud\Member\MemberRegisterResponseModel.cs" />
+    <Compile Include="CustomModel\XCCloud\GroupAreaModel.cs" />
     <Compile Include="CustomModel\XCCloud\MenuInfoModel.cs" />
     <Compile Include="CustomModel\XCCloud\Order\OrderMainModel.cs" />
     <Compile Include="CustomModel\XCCloud\Order\OrderDetailModel.cs" />
     <Compile Include="CustomModel\XCCloud\Order\OrderModel.cs" />
     <Compile Include="CustomModel\XCCloud\PaymentModel.cs" />
+    <Compile Include="CustomModel\XCCloud\RuleOverlyingModel.cs" />
+    <Compile Include="CustomModel\XCCloud\TicketModel.cs" />
     <Compile Include="CustomModel\XCCloud\UploadFileResultModel.cs" />
     <Compile Include="CustomModel\XCCloud\UserLogResponseModel.cs" />
     <Compile Include="CustomModel\XCCloud\UserInfoRegisterResponseModel.cs" />
@@ -336,6 +343,9 @@
     <Compile Include="XCCloud\Data_Card_Balance.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
+    <Compile Include="XCCloud\Data_Card_BalanceCharge.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
     <Compile Include="XCCloud\Data_Card_Balance_StoreList.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
@@ -414,7 +424,16 @@
     <Compile Include="XCCloud\Data_FreeCoinRule.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
+    <Compile Include="XCCloud\Data_FreeGiveRule.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_FreeGiveRule_Memberlevel.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
     <Compile Include="XCCloud\Data_GameAPP_Rule.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_GameFreeLotteryRule.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_GameFreeRule.cs">
@@ -528,19 +547,13 @@
     <Compile Include="XCCloud\Data_ProjectTicket_Bind.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
-    <Compile Include="XCCloud\Data_ProjectTimeInfo.cs">
+    <Compile Include="XCCloud\Data_Project_BandPrice.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
-    <Compile Include="XCCloud\Data_ProjectTime_BandPrice.cs">
+    <Compile Include="XCCloud\Data_Project_BindDevice.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
-    <Compile Include="XCCloud\Data_ProjectTime_StoreList.cs">
-      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
-    </Compile>
-    <Compile Include="XCCloud\Data_Project_BindGame.cs">
-      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
-    </Compile>
-    <Compile Include="XCCloud\Data_Project_StoreList.cs">
+    <Compile Include="XCCloud\Data_Project_TimeInfo.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_PushRule.cs">

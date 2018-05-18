@@ -148,4 +148,17 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         [DataMember(Name = "containName", Order = 5)]
         public string ContainName { get; set; }
     }
+
+    [DataContract]
+    public class FoodSetModel
+    {
+        [DataMember(Name = "food", Order = 1)]
+        public List<FoodInfoModel> ListFoodInfo { set; get; }
+
+        [DataMember(Name = "good", Order = 2)]
+        public List<GoodModel> ListGoodModel { set; get; }
+
+        [DataMember(Name = "ticket", Order = 3)]
+        public List<TicketModel> ListTicketModel { set; get; }
+    }
 }

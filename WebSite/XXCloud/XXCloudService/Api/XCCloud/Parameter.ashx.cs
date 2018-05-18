@@ -26,11 +26,11 @@ namespace XXCloudService.Api.XCCloud
         private bool checkParams(Dictionary<string, object> dicParas, out string errMsg)
         {
             errMsg = string.Empty;
-            string storeId = dicParas.ContainsKey("storeId") ? dicParas["storeId"].ToString() : string.Empty;
-            string system = dicParas.ContainsKey("system") ? dicParas["system"].ToString() : string.Empty;
-            string pValue = dicParas.ContainsKey("pValue") ? dicParas["pValue"].ToString() : string.Empty;
-            string note = dicParas.ContainsKey("note") ? dicParas["note"].ToString() : string.Empty;
-            string isAllow = dicParas.ContainsKey("isAllow") ? dicParas["isAllow"].ToString() : string.Empty;
+            string storeId = dicParas.Get("storeId");
+            string system = dicParas.Get("system");
+            string pValue = dicParas.Get("pValue");
+            string note = dicParas.Get("note");
+            string isAllow = dicParas.Get("isAllow");
 
             if (string.IsNullOrEmpty(storeId))
             {
@@ -250,6 +250,7 @@ namespace XXCloudService.Api.XCCloud
                                          IsAllow = b != null ? b.IsAllow : a.Enabled,
                                          ParameterValue = b != null ? b.ParameterValue : a.DictValue,
                                          Note = b != null ? b.Note : string.Empty,
+                                         Tag = a.MerchID
                                      };
                
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, data_Parameter);
@@ -266,11 +267,11 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 string errMsg = string.Empty;
-                string storeId = dicParas.ContainsKey("storeId") ? dicParas["storeId"].ToString() : string.Empty;
-                string system = dicParas.ContainsKey("system") ? dicParas["system"].ToString() : string.Empty;
-                string isAllow = dicParas.ContainsKey("isAllow") ? dicParas["isAllow"].ToString() : string.Empty;
-                string pValue = dicParas.ContainsKey("pValue") ? dicParas["pValue"].ToString() : string.Empty;
-                string note = dicParas.ContainsKey("note") ? dicParas["note"].ToString() : string.Empty;
+                string storeId = dicParas.Get("storeId");
+                string system = dicParas.Get("system");
+                string isAllow = dicParas.Get("isAllow");
+                string pValue = dicParas.Get("pValue");
+                string note = dicParas.Get("note");
 
                 //验证参数信息
                 if (!checkParams(dicParas, out errMsg))
@@ -294,8 +295,6 @@ namespace XXCloudService.Api.XCCloud
 
                 if (count == 0)
                 {
-                    //errMsg = "参数" + system + "数据库不存在";
-                    //return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                     var data_ParameterModel = new Data_Parameters();
                     data_ParameterModel.StoreID = storeId;
                     data_ParameterModel.System = system;

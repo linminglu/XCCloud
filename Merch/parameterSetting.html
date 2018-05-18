@@ -25,13 +25,13 @@
                         <div class="layui-inline">
                             <label class="layui-form-label">小票是否打印二维码</label>
                             <div class="layui-input-inline">
-                                <input type="checkbox" name="chkPrintBarcode" lay-skin="switch" lay-text="启用|禁用" id="chkPrintBarcode" lay-filter="chkPBcode">
+                                <input type="checkbox" name="chkPrintBarcode" lay-skin="switch" lay-text="启用|禁用" id="chkPrintBarcode" lay-filter="chkPrintBarcode">
                             </div>
                         </div>
                         <div class="layui-inline">
                             <label class="layui-form-label">吧台送币时是否授权</label>
                             <div class="layui-input-inline">
-                                <input type="checkbox" name="chkBarSendCoinAuthorize" lay-skin="switch" lay-text="启用|禁用" id="chkBarSendCoinAuthorize" lay-filter="chkBSCAuth">
+                                <input type="checkbox" name="chkBarSendCoinAuthorize" lay-skin="switch" lay-text="启用|禁用" id="chkBarSendCoinAuthorize" lay-filter="chkBarSendCoinAuthorize">
                             </div>
                         </div>
                         <div class="layui-inline">
@@ -65,7 +65,7 @@
                         <div class="layui-inline">
                             <label class="layui-form-label" style="white-space: normal;padding: 0;">换班时需要输入实点数</label>
                             <div class="layui-input-inline">
-                                <input type="checkbox" name="chkShift" lay-skin="switch" lay-text="启用|禁用" id="chkShift" lay-filter="ckbShift">
+                                <input type="checkbox" name="chkShift" lay-skin="switch" lay-text="启用|禁用" id="chkShift" lay-filter="chkShift">
                             </div>
                         </div>
                         <div class="layui-inline">
@@ -78,14 +78,14 @@
                     <div class="layui-form-item priceCoinBox">
                         <div class="layui-inline priceCoin">
                             <div class="layui-input-inline">
-                                <input type="text" class="layui-input">
+                                <input type="text" class="layui-input" name="CashPrice">
                             </div>
                             <div class="layui-form-mid">元=</div>
                             <div class="layui-input-inline">
-                                <input type="text" class="layui-input">
+                                <input type="text" class="layui-input" name="CoinCount">
                             </div>
                             <div class="layui-input-inline">
-                                <select lay-ignore style="height: 36px;width: 105px" name="limitType" id="limitType">
+                                <select lay-ignore style="height: 36px;width: 105px" name="limitType">
 
                                 </select>
                             </div>
@@ -102,7 +102,7 @@
                     <blockquote>例如：设置1元=1代币时，套餐为100元150币，则会员赠送代币为50币。若需要退款时，仅按照非赠送（100币）值退款，赠送代币不能退。</blockquote>
                 </div>
             </div>
-            <div class="layui-colla-item lci3">
+            <div class="layui-colla-item lci3 layui-hide">
                 <h2 class="layui-colla-title">博彩专用设定</h2>
                 <div class="layui-colla-content layui-show">
                     <div class="layui-form-item ">
@@ -215,7 +215,7 @@
                     </div>
                 </div>
             </div>
-            <div class="layui-colla-item lci3">
+            <div class="layui-colla-item lci3 layui-hide">
                 <h2 class="layui-colla-title">返还设定</h2>
                 <div class="layui-colla-content layui-show">
                     <div class="layui-form-item ">
@@ -268,7 +268,7 @@
                         <div class="layui-inline">
                             <div class="layui-form-mid">散客领取卡进行计时项目游玩时,自动入会</div>
                             <div class="layui-input-inline">
-                                <select name="cmbAutoJoinMemberLevel" lay-filter="cmbAutoJoinMemberLevel">
+                                <select name="cmbAutoJoinMemberLevel" id="cmbAutoJoinMemberLevel" lay-filter="cmbAutoJoinMemberLevel">
 
                                 </select>
                             </div>
@@ -278,12 +278,12 @@
                     </div>
                     <div class="layui-form-item">
                         <div class="layui-form-mid">散客打印门票时需要强制填写如下信息</div>
-                        <div class="layui-input-block">
-                            <input type="checkbox" title="姓名" lay-skin="primary" >
-                            <input type="checkbox" title="手机" lay-skin="primary">
-                            <input type="checkbox" title="性别" lay-skin="primary">
-                            <input type="checkbox" title="身份证" lay-skin="primary">
-                            <input type="checkbox" title="生日" lay-skin="primary">
+                        <div class="layui-input-block" id="cusmor">
+                            <input type="checkbox" value="0" title="姓名" lay-skin="primary" lay-filter="cusmor">
+                            <input type="checkbox" value="1" title="手机" lay-skin="primary" lay-filter="cusmor">
+                            <input type="checkbox" value="2" title="性别" lay-skin="primary" lay-filter="cusmor">
+                            <input type="checkbox" value="3" title="身份证" lay-skin="primary" lay-filter="cusmor">
+                            <input type="checkbox" value="4" title="生日" lay-skin="primary" lay-filter="cusmor">
                         </div>
                     </div>
                 </div>
@@ -311,54 +311,41 @@
             <div class="layui-colla-item">
                 <h2 class="layui-colla-title">招待币/补币规则</h2>
                 <div class="layui-colla-content layui-show">
-                    <div class="layui-form-item">
-                        <div class="layui-inline" >
-                            <label class="layui-form-label" style="width: 70px">原类型</label>
+                    <div class="layui-form-item specilCoinBox ">
+                        <div class="layui-inline specilCoin" >
+                            <label class="layui-form-label" style="width: 100px">余额类别</label>
                             <div class="layui-input-inline" style="width: 100px">
-                                <select id="sourceType" lay-filter="sourceType">
-                                    <option value="0">一级</option>
-                                    <option value="1">er级</option>
-                                    <option value="2">三级</option>
-                                    <option value="3">四级</option>
+                                <select name="BalanceIndex" lay-ignore style="height: 36px;width: 105px">
+
                                 </select>
                             </div>
-                        </div>
-                        <div class="layui-inline" >
-                            <label class="layui-form-label" style="width: 70px">原数量</label>
+                            <div class="layui-form-mid" style="width: 90px">单次最大额度</div>
                             <div class="layui-input-inline" style="width: 70px">
-                                <input type="text" class="layui-input" id="sourceCount">
+                                <input type="text" class="layui-input" name="OnceSigleMax">
                             </div>
-                        </div>
-                        <div class="layui-inline" >
-                            <label class="layui-form-label" style="width: 70px">兑币类型</label>
-                            <div class="layui-input-inline" style="width: 100px">
-                                <select id="chargeType" lay-filter="chargeType">
-                                    <option value="0">一级</option>
-                                    <option value="1">er级</option>
-                                    <option value="2">三级</option>
-                                    <option value="3">四级</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="layui-inline" >
-                            <label class="layui-form-label" style="width: 70px">兑币数量</label>
+                            <div class="layui-form-mid">单次警戒</div>
                             <div class="layui-input-inline" style="width: 70px">
-                                <input type="text" class="layui-input" id="chargeCount">
+                                <input type="text" class="layui-input" name="OnceWarningValue">
                             </div>
-                        </div>
-                        <div class="layui-inline">
-                            <label class="layui-form-label" style="width: 70px">警戒值</label>
+                            <div class="layui-form-mid">每天最大额度</div>
                             <div class="layui-input-inline" style="width: 70px">
-                                <input type="text" class="layui-input" id="alertValue">
+                                <input type="text" class="layui-input" name="DayMax">
+                            </div>
+                            <div class="layui-form-mid">每天警戒</div>
+                            <div class="layui-input-inline" style="width: 70px">
+                                <input type="text" class="layui-input" name="DayWaringValue">
                             </div>
                         </div >
-                        <div class="layui-inline">
-                            <div class="layui-input-inline" style="width: 70px">
-                                <button type="button" class="layui-btn layui-btn-normal" id="rulesBtn">新增</button>
+                        <div class="layui-inline" style="width: 140px;">
+                            <div class="layui-input-inline">
+                                <div class="layui-btn-group">
+                                    <button type="button" class="layui-btn" id="addCoin"> <i class="layui-icon">&#xe654;</i></button>
+                                    <button type="button" class="layui-btn" id="delCoin"><i class="layui-icon layui-icon-close"></i></button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <table class="layui-hide" lay-filter="chargeRules" id="chargeRules"></table>
+
                 </div>
             </div>
         </div>
@@ -457,17 +444,6 @@
 <script>
     let token=getStorage('token');
     let xc=xcActionSystem.prototype;
-    let _merchTag=JSON.parse(getStorage('logMsg')).merchTag;
-    //
-    // let sourceType;let sourceTypeStr;
-    // let chargeType;let chargeTypeStr;
-    // let arrRule=[];
-    //判断是否博彩
-    if(_merchTag==0){
-        $('.lci3').addClass('layui-hide');
-    }else {
-        $('.lci3').removeClass('layui-hide');
-    }
     let _storeId=getStorage('storeId_merch');
     // //新增或者修改
     // //运营参数设定
@@ -477,10 +453,13 @@
     let cmbBirthdaySendSms;let chkPhotograph=0;let chkExitCardCatch=0;
     let chkExitFoodCatch=0;
     //游乐项目规则设定
-    let chkAccompanyOutWithMain=0; let chkAddLeaveTime=0; let cmbAutoJoinMemberLevel;
+    let txtClientBuyTicketInfo;
+    let chkAccompanyOutWithMain=0; let chkAddLeaveTime=0; let cmbAutoJoinMemberLevel;let cmbAutoJoinMemberLevels=[];
     function ifNeedSet(storeId,form,layer) {
         let obj={'storeId':storeId,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
-        xc.getBalanceTypeDic(1,token,layer,form,'limitType');
+        xc.getBalanceTypeDicStore(storeId,1,token,layer,form,'limitType');
+        xc.getBalanceTypeDicStore(storeId,1,token,layer,form,'BalanceIndex');
+
         //设置基本参数
         $.ajax({
             type: "post",
@@ -492,23 +471,29 @@
                 console.log(data);
                 if(data.result_code==1){
                     let arr=data.result_data;
+                    if(arr[0].Tag==0){
+                        $('.lci3').addClass('layui-hide');
+                    }else  if(arr[0].Tag==1){
+                        getBackRule(_storeId);
+                        $('.lci3').removeClass('layui-hide');
+                    }
                     form.val("storeParm", {
-                        "chkPrintBarcode": arr[3].ParameterValue
-                        ,"chkBarSendCoinAuthorize": arr[4].ParameterValue
-                        ,"txtBusinessClass": arr[5].ParameterValue||''
-                        ,"chkShift":  arr[6].ParameterValue
+                        "chkPrintBarcode": arr[3].ParameterValue==1?true:false
+                        ,"chkBarSendCoinAuthorize": arr[4].ParameterValue==1?true:false
+                        ,'cmbAutoJoinMemberLevel':arr[16].ParameterValue
+                        ,"txtOnceSellCoinMin": arr[7].ParameterValue
+                        ,"txtBusinessClass": arr[5].ParameterValue
+                        ,"chkShift":  arr[6].ParameterValue==1?true:false
                         ,"cmbBirthdaySendSms": arr[10].ParameterValue
-                        ,"chkPhotograph": arr[11].ParameterValue
-                        ,"chkExitCardCatch": arr[12].ParameterValue
-                        ,"chkExitFoodCatch": arr[13].ParameterValue
-                        ,"chkAccompanyOutWithMain": arr[14].ParameterValue
-                        ,"chkAddLeaveTime": arr[15].ParameterValue
-                        ,"cmbAutoJoinMemberLevel": arr[16].ParameterValue||''
-                        ,"txtCreditEveryday": arr[18].ParameterValue||''
-                        ,"txtMaxSendCard": arr[19].ParameterValue||''
-                        ,"cmbAuthChannel": arr[21].ParameterValue||''
-                        ,"chkTaxInSale": arr[22].ParameterValue||''
+                        ,"chkPhotograph": arr[11].ParameterValue==1?true:false
+                        ,"chkExitCardCatch": arr[12].ParameterValue==1?true:false
+                        ,"chkExitFoodCatch": arr[13].ParameterValue==1?true:false
+                        ,"txtCreditEveryday": arr[18].ParameterValue
+                        ,"txtMaxSendCard": arr[19].ParameterValue
+                        ,"cmbAuthChannel": arr[21].ParameterValue
+                        ,"chkTaxInSale": arr[22].ParameterValue
                     });
+                    xc.getMemberTypeDic(token,layer,form,'cmbAutoJoinMemberLevel',arr[16].ParameterValue)
                     chkPrintBarcode=arr[3].ParameterValue;
                     chkBarSendCoinAuthorize=arr[4].ParameterValue;
                     txtBusinessClass=arr[5].ParameterValue||'';
@@ -522,8 +507,26 @@
                     chkExitFoodCatch=arr[13].ParameterValue;
                     //游乐项目规则设定
                    chkAccompanyOutWithMain=arr[14].ParameterValue;
+                   if(chkAccompanyOutWithMain==1){
+                       $('input[name="chkAccompanyOutWithMain"]').attr({'checked':true})
+                   }else {
+                       $('input[name="chkAccompanyOutWithMain"]').attr({'checked':false})
+                   }
+
                    chkAddLeaveTime=arr[15].ParameterValue;
-                   cmbAutoJoinMemberLevel=arr[16].ParameterValue;
+                    if(chkAddLeaveTime==1){
+                        $('input[name="chkAddLeaveTime"]').attr({'checked':true})
+                    }else {
+                        $('input[name="chkAddLeaveTime"]').attr({'checked':false})
+                    }
+                    txtClientBuyTicketInfo=arr[17].ParameterValue;
+                    if(txtClientBuyTicketInfo!=''){
+                        cmbAutoJoinMemberLevels=txtClientBuyTicketInfo.split('|');
+                        for(let i in cmbAutoJoinMemberLevels){
+                            $('#cusmor').find('input').eq(i).attr({'checked':true})
+                        }
+                    }
+                    form.render();
                 }
             }
         });
@@ -537,8 +540,19 @@
                 data = JSON.parse(data);
                 if(data.result_code==1){
                     let arr=data.result_data;
-                    if(arr.length>0){
-
+                    if(arr.length==1){
+                        $('.priceCoin input[name="CashPrice"]').val(arr[0].CashPrice);
+                        $('.priceCoin input[name="CoinCount"]').val(arr[0].CoinCount);
+                        $('.priceCoin select[name="limitType"]').val(arr[0].BalanceIndex);
+                    }else if(arr.length>1){
+                        for(let i=1;i<arr.length;i++){
+                            $('.priceCoinBox').append($('body').find($('.priceCoin')).eq(0).clone())
+                        }
+                        for(let i=0;i<arr.length;i++){
+                            $('.priceCoinBox').find($('.priceCoin')).eq(i).find('input[name="CashPrice"]').val(arr[i].CashPrice);
+                            $('.priceCoinBox').find($('.priceCoin')).eq(i).find('input[name="CoinCount"]').val(arr[i].CoinCount);
+                            $('.priceCoinBox').find($('.priceCoin')).eq(i).find('select[name="limitType"]').val(arr[i].BalanceIndex);
+                        }
                     }
                 }
             }
@@ -553,7 +567,25 @@
                 data = JSON.parse(data);
                 if(data.result_code==1){
                     let arr=data.result_data;
-
+                    console.log(arr)
+                    if(arr.length==1){
+                        $('.specilCoin select[name="BalanceIndex"]').val(arr[0].BalanceIndex);
+                        $('.specilCoin input[name="OnceSigleMax"]').val(arr[0].OnceSigleMax);
+                        $('.specilCoin input[name="OnceWarningValue"]').val(arr[0].OnceWarningValue);
+                        $('.specilCoin input[name="DayMax"]').val(arr[0].DayMax);
+                        $('.specilCoin input[name="DayWaringValue"]').val(arr[0].DayWaringValue);
+                    }else if(arr.length>1){
+                        for(let i=1;i<arr.length;i++){
+                            $('.specilCoinBox').append($('body').find($('.specilCoin')).eq(0).clone())
+                        }
+                        for(let i=0;i<arr.length;i++){
+                            $('.specilCoinBox').find($('.specilCoin')).eq(i).find('select[name="BalanceIndex"]').val(arr[i].BalanceIndex);
+                            $('.specilCoinBox').find($('.specilCoin')).eq(i).find('input[name="OnceSigleMax"]').val(arr[i].OnceSigleMax);
+                            $('.specilCoinBox').find($('.specilCoin')).eq(i).find('input[name="OnceWarningValue"]').val(arr[i].OnceWarningValue);
+                            $('.specilCoinBox').find($('.specilCoin')).eq(i).find('input[name="DayMax"]').val(arr[i].DayMax);
+                            $('.specilCoinBox').find($('.specilCoin')).eq(i).find('input[name="DayWaringValue"]').val(arr[i].DayWaringValue);
+                        }
+                    }
                 }
             }
         })
@@ -565,13 +597,27 @@
         let layer=layui.layer;
         let table=layui.table;
         ifNeedSet(_storeId,form,layer);
-        //
+        //正价币增加 或者减少一条
         $('#addPrice').on('click',function () {
-            $('.priceCoinBox').append($('body').find($('.priceCoin')).eq(0).clone())
+           if($('.priceCoinBox').find($('.priceCoin')).length<$('body').find('select[name="limitType"]').eq(0).find('option').length-1) {
+               $('.priceCoinBox').append($('body').find($('.priceCoin')).eq(0).clone())
+           }
         });
         $('#delPrice').click(function () {
             if($('.priceCoinBox').find($('.priceCoin')).length>1){
                 $('.priceCoinBox').find($('.priceCoin')).last().remove();
+            }else {
+            }
+        });
+        //补币增加 或者减少一条
+        $('#addCoin').on('click',function () {
+            // if($('.priceCoinBox').find($('.priceCoin')).length<$('body').find('select[name="limitType"]').eq(0).find('option').length-1) {
+                $('.specilCoinBox').append($('body').find($('.specilCoin')).eq(0).clone())
+            // }
+        });
+        $('#delCoin').click(function () {
+            if($('.specilCoinBox').find($('.specilCoin')).length>1){
+                $('.specilCoinBox').find($('.specilCoin')).last().remove();
             }else {
             }
         });
@@ -609,10 +655,10 @@
             data.elem.checked==true ?chkExitFoodCatch=1 :chkExitFoodCatch=0
         });
         //游乐项目规则设定
-        form.on('switch(chkAccompanyOutWithMain)',(data)=>{
+        form.on('checkbox(chkAccompanyOutWithMain)',(data)=>{
             data.elem.checked==true ?chkAccompanyOutWithMain=1 :chkAccompanyOutWithMain=0
         });
-        form.on('switch(chkAddLeaveTime)',(data)=>{
+        form.on('checkbox(chkAddLeaveTime)',(data)=>{
             data.elem.checked==true ?chkAddLeaveTime=1 :chkAddLeaveTime=0
         });
         form.on('select(cmbAutoJoinMemberLevel)',(data)=>{
@@ -646,6 +692,14 @@
                 ,limit:10
             });
         });
+        form.on('checkbox(cusmor)',function (data) {
+            if(data.elem.checked){
+                cmbAutoJoinMemberLevels.push(data.elem.value)
+            }else {
+                cmbAutoJoinMemberLevels.split(i,1);
+            }
+            console.log(cmbAutoJoinMemberLevels)
+        })
         table.on('tool(chargeRules)',function (obj) {
             let data=obj.data;
             let enevt=obj.event;
@@ -653,8 +707,6 @@
 
             }
         });
-
-        getBackRule(_storeId);
     function getBackRule(storeId) {
         let obj={"storeId":storeId,"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
         let url = "/XCCloud/Parameter?action=GetGivebackRules";
@@ -706,7 +758,7 @@
         });
     function setParamList(storeIds,layer) {
         let a,b,c;
-        var submitData=[
+        let submitData=[
             { "storeId":storeIds, "system":"chkPrintBarcode", "isAllow":1, "pValue":chkPrintBarcode, "note":""},//4
             { "storeId":storeIds, "system":"chkBarSendCoinAuthorize", "isAllow":1, "pValue":chkBarSendCoinAuthorize, "note":""},  //5
             { "storeId":storeIds, "system":"txtOnceSellCoinMin", "isAllow":"1", "pValue":$('#txtOnceSellCoinMin').val(), "note":""},//7
@@ -721,17 +773,18 @@
             { "storeId":storeIds, "system":"chkAccompanyOutWithMain", "isAllow":1, "pValue":chkAccompanyOutWithMain, "note":""},
             { "storeId":storeIds, "system":"chkAddLeaveTime", "isAllow":1, "pValue":chkAddLeaveTime, "note":""},
             { "storeId":storeIds, "system":"cmbAutoJoinMemberLevel", "isAllow":1, "pValue":cmbAutoJoinMemberLevel, "note":""},
-            { "storeId":storeIds, "system":"txtClientBuyTicketInfo", "isAllow":1, "pValue":"", "note":""},
-            { "storeId":storeIds, "system":"txtCreditEveryday", "isAllow":$('input[name="txtCreditEveryday"]').val(), "pValue":"0", "note":""},
+            { "storeId":storeIds, "system":"txtClientBuyTicketInfo", "isAllow":1, "pValue":cmbAutoJoinMemberLevels.length>0?cmbAutoJoinMemberLevels.join('|'):'', "note":""},
+            { "storeId":storeIds, "system":"txtCreditEveryday", "isAllow":1, "pValue":$('input[name="txtCreditEveryday"]').val(), "note":""},
             { "storeId":storeIds, "system":"txtMaxSendCard", "isAllow":"1", "pValue":$('input[name="txtMaxSendCard"]').val(), "note":""},
         ];
-        var obj={"submitData":submitData, "userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
-        var parasJson = JSON.stringify(obj);
+        let obj={"submitData":submitData, "userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
+        let parasJson = JSON.stringify(obj);
         $.ajax({
             type: "post",
             url: "/XCCloud/Parameter?action=SetParamList",
             contentType: "application/json; charset=utf-8",
             data: { parasJson: parasJson },
+            async: false,
             success: function (data) {
                 data=JSON.parse(data);
                 if(data.result_code=="1"){
@@ -741,8 +794,84 @@
                 }
             }
         });
+        //保存正价币
+        let StandardCoinPrice=[];
+        $('.priceCoinBox .priceCoin').each(function () {
+            if($(this).find('select[name="limitType"] option:selected').val()&&$(this).find('input[name="CoinCount"]').val()!=''&&
+                $(this).find('input[name="CashPrice"]').val()!=''
+            ) {
+                StandardCoinPrice.push({
+                    'balanceIndex': $(this).find('select[name="limitType"] option:selected').val(),
+                    'coinCount': $(this).find('input[name="CoinCount"]').val(),
+                    'cashPrice': $(this).find('input[name="CashPrice"]').val()
+                })
+            }
+        });
+        let obj1={"storeId":storeIds,
+            'standardCoinPrice': StandardCoinPrice.length>0?StandardCoinPrice:'',
+            "userToken":token,
+            "signkey":"1f626576304bf5d95b72ece2222e42c3"};
+        $.ajax({
+            type: "post",
+            url: "/XCCloud/Parameter?action=SaveStandardCoinPrice",
+            contentType: "application/json; charset=utf-8",
+            data: { parasJson: JSON.stringify(obj1) },
+            async: false,
+            success: function (data) {
+                data=JSON.parse(data);
+                if(data.result_code=="1"){
+                    b=1;
+                }else {
+                    b=0;
+                }
+            }
+        });
+        //保存补币F
+        let FreeCoinRule=[];
+        $('.specilCoinBox .specilCoin').each(function () {
+            if($(this).find('select[name="BalanceIndex"] option:selected').val()
+                &&$(this).find('input[name="OnceSigleMax"]').val()!=''&&
+                $(this).find('input[name="OnceWarningValue"]').val()!=''
+                &&$(this).find('input[name="DayMax"]').val()!=''&&
+                $(this).find('input[name="DayWaringValue"]').val()!=''){
+                FreeCoinRule.push({'balanceIndex':$(this).find('select[name="BalanceIndex"] option:selected').val(),
+                    'onceSigleMax':$(this).find('input[name="OnceSigleMax"]').val(),
+                    'onceWarningValue':$(this).find('input[name="OnceWarningValue"]').val(),
+                    'dayMax':$(this).find('input[name="DayMax"]').val(),
+                    'dayWarningValue':$(this).find('input[name="DayWaringValue"]').val()})
+            }
+        });
+        let obj2={"storeId":storeIds,
+            'freeCoinRule': FreeCoinRule.length>0?FreeCoinRule:'',
+            "userToken":token,
+            "signkey":"1f626576304bf5d95b72ece2222e42c3"};
+        $.ajax({
+            type: "post",
+            url: "/XCCloud/Parameter?action=SaveFreeCoinRule",
+            contentType: "application/json; charset=utf-8",
+            data: { parasJson: JSON.stringify(obj2) },
+            async: false,
+            success: function (data) {
+                data=JSON.parse(data);
+                if(data.result_code=="1"){
+                    c=1;
+                }else {
+                    c=0;
+                }
+                if(a&&b&&c){
+                    layer.msg('参数设置成功',{time:1500},function () {
+                        parent.location.reload()
+                    })
+                }else if(a==0){
+                    layer.msg('请检查基本参数设置是否正确')
+                } else if(b==0){
+                    layer.msg('请检查正价币规则是否重复')
+                }else if(c==0){
+                    layer.msg('请检查补币规则是否正确')
+                }
 
-
+            }
+        });
     }
     function showAddReturnRule() {
         layui.use('layer',function () {
