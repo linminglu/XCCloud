@@ -146,7 +146,7 @@ namespace XXCloudService.Api.XCCloud
                 string sqlWhere = string.Empty;
                 if (userTokenKeyModel.LogType == (int)RoleType.MerchUser)
                 {
-                    var merchIdDataModel = userTokenKeyModel.DataModel as MerchDataModel;
+                    var merchIdDataModel = userTokenKeyModel.DataModel as TokenDataModel;
                     Array.Resize(ref parameters, parameters.Length + 1);                    
                     if (merchIdDataModel.MerchType == (int)MerchType.Agent)
                     {
@@ -355,7 +355,7 @@ namespace XXCloudService.Api.XCCloud
                         base_MerchantInfo.AllowCreateSub = ObjectExt.Toint(allowCreateSub);
                         base_MerchantInfo.AllowCreateCount = ObjectExt.Toint(allowCreateCount);
                         base_MerchantInfo.CreateUserID = (logType == (int)RoleType.XcUser || logType == (int)RoleType.XcAdmin) ? createUserId : 
-                                                            logType == (int)RoleType.MerchUser ? (userTokenKeyModel.DataModel as MerchDataModel).MerchID : string.Empty;
+                                                            logType == (int)RoleType.MerchUser ? (userTokenKeyModel.DataModel as TokenDataModel).MerchID : string.Empty;
                         base_MerchantInfo.CreateType = (logType == (int)RoleType.XcUser || logType == (int)RoleType.XcAdmin) ? (int)CreateType.Xc : 
                                                             logType == (int)RoleType.MerchUser ? (int)CreateType.Agent : 0;
                         base_MerchantInfo.Comment = comment;
@@ -684,7 +684,7 @@ namespace XXCloudService.Api.XCCloud
                         base_MerchantInfo.AllowCreateSub = ObjectExt.Toint(allowCreateSub);
                         base_MerchantInfo.AllowCreateCount = ObjectExt.Toint(allowCreateCount);
                         base_MerchantInfo.CreateUserID = (logType == (int)RoleType.XcUser || logType == (int)RoleType.XcAdmin) ? createUserId :
-                                                            logType == (int)RoleType.MerchUser ? (userTokenKeyModel.DataModel as MerchDataModel).MerchID : string.Empty;
+                                                            logType == (int)RoleType.MerchUser ? (userTokenKeyModel.DataModel as TokenDataModel).MerchID : string.Empty;
                         base_MerchantInfo.CreateType = (logType == (int)RoleType.XcUser || logType == (int)RoleType.XcAdmin) ? (int)CreateType.Xc :
                                                             logType == (int)RoleType.MerchUser ? (int)CreateType.Agent : 0;
                         base_MerchantInfo.Comment = comment;
@@ -840,7 +840,7 @@ namespace XXCloudService.Api.XCCloud
                 if (string.IsNullOrEmpty(merchId))
                 {
                     
-                    parameters[0] = new SqlParameter("@MerchID", (userTokenKeyModel.DataModel as MerchDataModel).MerchID);
+                    parameters[0] = new SqlParameter("@MerchID", (userTokenKeyModel.DataModel as TokenDataModel).MerchID);
                 }
                 else
                 {
@@ -860,7 +860,7 @@ namespace XXCloudService.Api.XCCloud
                 parameters = new SqlParameter[1];
                 if (string.IsNullOrEmpty(merchId))
                 {
-                    parameters[0] = new SqlParameter("@MerchID", (userTokenKeyModel.DataModel as MerchDataModel).MerchID);
+                    parameters[0] = new SqlParameter("@MerchID", (userTokenKeyModel.DataModel as TokenDataModel).MerchID);
                 }
                 else
                 {
@@ -936,7 +936,7 @@ namespace XXCloudService.Api.XCCloud
                 string merchId = dicParas.ContainsKey("merchId") ? dicParas["merchId"].ToString() : string.Empty;
                 if (userTokenKeyModel.LogType == (int)RoleType.MerchUser)
                 {
-                    merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
+                    merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
                 }
                 else
                 {
@@ -986,7 +986,7 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
 
                 string errMsg = string.Empty;
                 string appId = dicParas.ContainsKey("appId") ? Convert.ToString(dicParas["appId"]) : string.Empty;                

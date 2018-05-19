@@ -35,8 +35,8 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
-                string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
 
                 string errMsg = string.Empty;
                 object[] conditions = dicParas.ContainsKey("conditions") ? (object[])dicParas["conditions"] : null;
@@ -63,7 +63,7 @@ namespace XXCloudService.Api.XCCloud
 
                 #endregion
 
-                var list = Data_FreeGiveRuleService.I.SqlQuery<Data_ProjectInfoList>(sql, parameters).ToList();
+                var list = Data_ProjectInfoService.I.SqlQuery<Data_ProjectInfoList>(sql, parameters).ToList();
 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, list);
             }
@@ -130,8 +130,8 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
-                string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
 
                 string errMsg = string.Empty;
                 if (!dicParas.Get("state").Validint("项目状态", out errMsg))
@@ -144,7 +144,7 @@ namespace XXCloudService.Api.XCCloud
                 {
                     errMsg = "计时规则不能为空";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
+                }                
 
                 var id = dicParas.Get("id").Toint(0);
                 var chargeType = dicParas.Get("chargeType").Toint();                
@@ -188,6 +188,12 @@ namespace XXCloudService.Api.XCCloud
                         if (!projectTimeInfo.IsNull())
                         {
                             var dicPara = new Dictionary<string, object>((projectTimeInfo as IDictionary<string, object>), StringComparer.OrdinalIgnoreCase);
+                            if (dicPara.Get("chargeType").Toint() == (int)ProjectTimeChargeType.Weixin && dicParas.GetObject("cycleType").Toint() != (int)CycleType.Out)
+                            {
+                                errMsg = "微信票码验证进闸时, 计费方式须为出闸一次性扣费";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+
                             var projectBandPrices = dicPara.GetArray("projectBandPrices");
                             var projectTimeInfoModel = Data_Project_TimeInfoService.I.GetModels(p => p.ProjectTimeID == id).FirstOrDefault() ?? new Data_Project_TimeInfo();
                             projectTimeInfoModel.StoreID = storeId;
@@ -328,7 +334,7 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
 
                 var linq = from a in Data_ProjectInfoService.I.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase))
                            select new
@@ -376,8 +382,8 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
-                string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
 
                 var linq = from a in Base_DeviceInfoService.N.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)
                                && p.DeviceStatus == 1 && (p.type == (int)DeviceType.卡头 || p.type == (int)DeviceType.闸机))

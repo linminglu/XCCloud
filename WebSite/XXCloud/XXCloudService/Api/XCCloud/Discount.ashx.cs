@@ -28,7 +28,7 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 XCCloudUserTokenModel userTokenModel = (XCCloudUserTokenModel)(dicParas[Constant.XCCloudUserTokenModel]);
-                StoreIDDataModel userTokenDataModel = (StoreIDDataModel)(userTokenModel.DataModel);
+                TokenDataModel userTokenDataModel = (TokenDataModel)(userTokenModel.DataModel);
 
                 int customerType = 0;
                 int icCardId = 0;
@@ -69,8 +69,8 @@ namespace XXCloudService.Api.XCCloud
 
                 string sql = "GetDiscountForAPI";
                 SqlParameter[] parameters = new SqlParameter[10];
-                parameters[0] = new SqlParameter("@MerchId", userTokenDataModel.MerchId);
-                parameters[1] = new SqlParameter("@StoreId", userTokenDataModel.StoreId);
+                parameters[0] = new SqlParameter("@MerchId", userTokenDataModel.MerchID);
+                parameters[1] = new SqlParameter("@StoreId", userTokenDataModel.StoreID);
                 parameters[2] = new SqlParameter("@CustomerType", customerType);
                 parameters[3] = new SqlParameter("@ICCardId", icCardId);
                 parameters[4] = new SqlParameter("@FoodPrice", foodPrice);
@@ -112,12 +112,12 @@ namespace XXCloudService.Api.XCCloud
         public object getDiscountRuleList(Dictionary<string, object> dicParas)
         {
             XCCloudUserTokenModel userTokenModel = (XCCloudUserTokenModel)(dicParas[Constant.XCCloudUserTokenModel]);
-            StoreIDDataModel userTokenDataModel = (StoreIDDataModel)(userTokenModel.DataModel);
+            TokenDataModel userTokenDataModel = (TokenDataModel)(userTokenModel.DataModel);
 
             string sql = "GetDiscountRuleList";
             SqlParameter[] parameters = new SqlParameter[2];
-            parameters[0] = new SqlParameter("@MerchId", userTokenDataModel.MerchId);
-            parameters[1] = new SqlParameter("@StoreId", userTokenDataModel.StoreId);
+            parameters[0] = new SqlParameter("@MerchId", userTokenDataModel.MerchID);
+            parameters[1] = new SqlParameter("@StoreId", userTokenDataModel.StoreID);
 
             System.Data.DataSet ds = XCCloudBLL.GetStoredProcedureSentence(sql, parameters);
             if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
@@ -139,7 +139,7 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
 
                 string errMsg = string.Empty;
                 object[] conditions = dicParas.ContainsKey("conditions") ? (object[])dicParas["conditions"] : null;
@@ -240,7 +240,7 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
 
                 string errMsg = string.Empty;
                 if (!dicParas.Get("ruleName").Nonempty("规则名称", out errMsg))
@@ -614,7 +614,7 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
 
                 string errMsg = string.Empty;
                 int discountRuleId = dicParas.Get("discountRuleId").Toint(0);

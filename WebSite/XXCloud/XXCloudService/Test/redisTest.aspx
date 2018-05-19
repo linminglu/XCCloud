@@ -14,6 +14,12 @@
 
         <asp:Button ID="Button2" runat="server" Text="生成加密连接字符串" OnClick="Button2_Click" />
     </div>
+    <hr />
+    <div>
+        <asp:TextBox ID="txtToken" runat="server"></asp:TextBox>
+
+        <asp:Button ID="Button3" runat="server" Text="读取令牌" OnClick="Button3_Click"  />
+    </div>
     </form>
 </body>
 </html>

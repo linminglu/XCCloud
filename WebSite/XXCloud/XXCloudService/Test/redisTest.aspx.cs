@@ -4,7 +4,9 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using XCCloudService.Business.XCGameMana;
 using XCCloudService.CacheService;
+using XCCloudService.Model.CustomModel.XCCloud;
 using XCCloudService.OrderPayCallback.Common;
 
 namespace XXCloudService.Test
@@ -39,6 +41,13 @@ namespace XXCloudService.Test
         {
             string conn = Config.EncryptDES("Data Source=192.168.1.119;Initial Catalog=XinchenPay;User Id=sa;Password=xinchen;Connection Timeout=10;", "Xinchen1");
             Response.Write(conn);
+        }
+
+        protected void Button3_Click(object sender, EventArgs e)
+        {
+            string token = txtToken.Text.Trim();
+
+            XCCloudUserTokenModel model = XCCloudUserTokenBusiness.GetUserTokenModel(token);
         }
     }
 }

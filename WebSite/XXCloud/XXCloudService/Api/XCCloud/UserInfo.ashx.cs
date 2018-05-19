@@ -242,9 +242,9 @@ namespace XCCloudService.Api.XCCloud
                     var base_StoreInfoModel = base_StoreInfoService.GetModels(p => p.StoreID.Equals(userModel.StoreID, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
 
                     //设置用户token
-                    StoreIDDataModel storeIDDataModel = new StoreIDDataModel(userModel.MerchID,userModel.StoreID, password, workStation);
+                    TokenDataModel TokenDataModel = new TokenDataModel(userModel.MerchID,userModel.StoreID, password, workStation);
                     XCCloudUserTokenBusiness.RemoveStoreUserTokenByWorkStaion(userModel.UserID.ToString(), (int)RoleType.StoreUser, workStation);
-                    string userToken = XCCloudUserTokenBusiness.SetUserToken(userModel.UserID.ToString(), (int)RoleType.StoreUser, storeIDDataModel);
+                    string userToken = XCCloudUserTokenBusiness.SetUserToken(userModel.UserID.ToString(), (int)RoleType.StoreUser, TokenDataModel);
 
                     var dataObj = new {
                         userToken = userToken,
@@ -643,7 +643,7 @@ namespace XCCloudService.Api.XCCloud
                     string errMsg = string.Empty;
                     string merchId = string.Empty;
                     XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                    merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
+                    merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
                     int userId = Convert.ToInt32(userTokenKeyModel.LogId);
 
                     IBase_StoreInfoService base_StoreInfoService = BLLContainer.Resolve<IBase_StoreInfoService>();

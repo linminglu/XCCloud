@@ -20,12 +20,13 @@
         <p>
             &nbsp;</p>
         <p>
-            支付渠道订单号：<asp:TextBox ID="TextBox1" runat="server"></asp:TextBox>
-    
+            支付渠道订单号：<asp:TextBox ID="TextBox1" runat="server"></asp:TextBox>    
         </p>
         <p>
-            商户订单号：<asp:TextBox ID="TextBox2" runat="server"></asp:TextBox>
-    
+            商户订单号：<asp:TextBox ID="TextBox2" runat="server"></asp:TextBox>    
+        </p>
+        <p>
+            退款金额：<asp:TextBox ID="TextBox3" runat="server"></asp:TextBox>    
         </p>
         <asp:Button ID="Button3" runat="server" Text="退款" OnClick="Button3_Click" />
     

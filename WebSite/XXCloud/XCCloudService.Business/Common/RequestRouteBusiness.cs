@@ -69,7 +69,7 @@ namespace XCCloudService.Common
                         rewriteUrl = string.Format("/ServicePage/TransPage.aspx?action=m&deviceNo={0}",paramsArr[0]);
                     }
                 }
-                else if (haokuPath.Any(t => t.Contains(hostUrl + uri.LocalPath)))
+                else if (uri.LocalPath.Length > 1 && haokuPath.Any(t => t.Contains(hostUrl + uri.LocalPath)))
                 {
                     url = url.ToLower().Replace(string.Format("{0}/", hostUrl), string.Format("{0}/{1}/", hostUrl, "api/haoku"));
                     url = url.Insert(url.LastIndexOf("?"), ".aspx");

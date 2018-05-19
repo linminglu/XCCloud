@@ -32,7 +32,7 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
 
                 var discountList = from b in
                                        (from a in Data_DiscountRuleService.I.GetModels(p => p.State == 1 && p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase))
@@ -40,7 +40,6 @@ namespace XXCloudService.Api.XCCloud
                                    select new RuleOverlyingModel
                                    {
                                        ID = b.ID,
-                                       PID = (int)RuleType.Discount,
                                        RuleName = b.RuleName,
                                        RuleType = (int)RuleType.Discount,
                                        TypeName = RuleType.Discount.GetDescription()
@@ -51,50 +50,18 @@ namespace XXCloudService.Api.XCCloud
                                  select new RuleOverlyingModel
                                  {
                                      ID = b.ID,
-                                     PID = b.CouponType.Toint(),
+                                     CouponType = b.CouponType.Toint(),
                                      RuleName = b.CouponName,
                                      RuleType = (int)RuleType.Coupon,
                                      TypeName = ((CouponType?)b.CouponType).GetDescription()
                                  };
-                var list = new List<RuleOverlyingModel>();
-                foreach (RuleType item in Enum.GetValues(typeof(RuleType)))
-                {
-                    if (item == RuleType.Discount)
-                    {
-                        list.Add(new RuleOverlyingModel { ID = (int)item, PID = -1, RuleName = item.GetDescription(), TypeName = string.Empty });
-                        list.AddRange(discountList);
-                        
-                    }
-                    else if (item == RuleType.Coupon)
-                    {
-                        list.Add(new RuleOverlyingModel { ID = (int)item, PID = -1, RuleName = item.GetDescription(), TypeName = string.Empty });
-                        foreach (CouponType item1 in Enum.GetValues(typeof(CouponType)))
-                        {
-                            list.Add(new RuleOverlyingModel { ID = (int)item1, PID = (int)item, RuleName = item1.GetDescription(), TypeName = item.GetDescription() });
-                            list.AddRange(couponList.Where(w=>w.PID == (int)item1));
-                        }
-                    }
-                }
 
-                //实例化一个根节点
-                RuleOverlyingModel rootRoot = new RuleOverlyingModel();
-                rootRoot.ID = -1;
-                rootRoot.RuleName = "全部";
-                rootRoot.TypeName = string.Empty;
-                TreeHelper.LoopToAppendChildren(list, rootRoot);
-
-                //生成右侧列表
-                list = new List<RuleOverlyingModel>();
+                var list = new List<RuleOverlyingModel>();                
                 list.AddRange(discountList);
                 list.AddRange(couponList);
+                list = list.OrderBy(or => or.TypeName).ToList();
 
-                var query = new QueryRuleOverlyingData
-                {
-                    TreeNodes = rootRoot.Children,                    //左侧树节点
-                    List = list.OrderBy(or => or.TypeName).ToList()   //右侧列表
-                };
-
-                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, query);
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, list);
             }
             catch (Exception e)
             {
@@ -108,18 +75,18 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
 
                 string errMsg = string.Empty;
                 if (!dicParas.Get("ruleType").Validint("规则类别", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                if(!dicParas.Get("ruleId").Validintnozero("规则ID", out errMsg))
+                if (!dicParas.Get("ruleId").Validintnozero("规则ID", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
                 var ruleType = dicParas.Get("ruleType").Toint();
                 var ruleId = dicParas.Get("ruleId").Toint();
 
-                var ruleOverlying = (from a in Data_RuleOverlying_ListService.N.GetModels(p => p.RuleType == ruleType && p.RuleID == ruleId && p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase))                                     
+                var ruleOverlying = (from a in Data_RuleOverlying_ListService.N.GetModels(p => p.RuleType == ruleType && p.RuleID == ruleId && p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase))
                                      join b in Data_RuleOverlying_ListService.N.GetModels(p => p.RuleType != ruleType && p.RuleID != ruleId && p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)) on a.GroupID equals b.GroupID
                                      where a.GroupID != null
                                      select new
@@ -142,7 +109,7 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
 
                 string errMsg = string.Empty;
                 if (!dicParas.Get("ruleId").Validintnozero("目标规则ID", out errMsg))
@@ -153,7 +120,7 @@ namespace XXCloudService.Api.XCCloud
                 var ruleId = dicParas.Get("ruleId").Toint();
                 var ruleType = dicParas.Get("ruleType").Toint();
                 var ruleOverlyings = dicParas.GetArray("ruleOverlyings");
-                
+
                 //开启EF事务
                 using (TransactionScope ts = new TransactionScope())
                 {
@@ -179,7 +146,7 @@ namespace XXCloudService.Api.XCCloud
                                 }
                             }
                             else
-                            {                                
+                            {
                                 foreach (IDictionary<string, object> el in ruleOverlyings)
                                 {
                                     if (el != null)
@@ -228,16 +195,16 @@ namespace XXCloudService.Api.XCCloud
                                                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                                                 }
                                             }
-                                        }                                        
+                                        }
                                     }
                                     else
                                     {
                                         errMsg = "提交数据包含空对象";
                                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                                     }
-                                }                                
+                                }
                             }
-                        }                                              
+                        }
 
                         ts.Complete();
                     }

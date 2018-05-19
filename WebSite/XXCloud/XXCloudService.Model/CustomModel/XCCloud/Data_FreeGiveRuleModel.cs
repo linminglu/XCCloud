@@ -73,7 +73,8 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         /// <summary>
         /// 间隔类别ID
         /// </summary>
-        public string SpanTypeStr { get { return ((SpanType?)SpanType).GetDescription(); } set { } }        
+        public string SpanTypeStr { get { return ((SpanType?)SpanType).GetDescription(); } set { } }
+        public int? GetTimes { get; set; }
         /// <summary>
         /// 状态
         /// </summary>

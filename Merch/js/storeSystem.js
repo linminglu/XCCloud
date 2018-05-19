@@ -1624,6 +1624,44 @@ xcActionSystem.prototype= {
             }
         });
     },
+    //获取所有会员级别
+    getMemberTypeAll:function (token,layer,form,id,checked){
+        let _obj={'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+        let parseJson = JSON.stringify(_obj);
+        $.ajax({
+            type:'post',
+            url:'/XCCloud/Member?action=QueryMemberLevel',
+            contentType: "application/json; charset=utf-8",
+            data:{parasJson: parseJson},
+            success: function (data) {
+                data = JSON.parse(data);
+                if (data.result_code == 1) {
+                    let arr=data.result_data;
+                    $('#'+id).html('');
+                    for(let i in arr){
+                        if(checked){
+                            let flag=false;
+                            for(let j in checked){
+                                arr[i].MemberLevelID==checked[j];
+                                flag=true;
+                                break;
+                            }
+                            if(flag){
+                                $('#'+id).append('<input type="checkbox" lay-skin="primary" checked lay-filter="ml" value="'+arr[i].MemberLevelID+'"title="'+arr[i].MemberLevelName+'">');
+                            }else {
+                                $('#'+id).append('<input type="checkbox" lay-skin="primary" lay-filter="ml" value="'+arr[i].MemberLevelID+'"title="'+arr[i].MemberLevelName+'">');
+                            }
+                        }else {
+                            $('#'+id).append('<input type="checkbox" lay-skin="primary" lay-filter="ml" value="'+arr[i].MemberLevelID+'"title="'+arr[i].MemberLevelName+'">');
+                        }
+                    }
+                    form.render();
+                } else {
+                    layer.msg(data.result_msg||data.return_msg);
+                }
+            }
+        });
+    },
     //获取数字币级别字典
     getDigitFoodDic:function (token,layer,form,id,selected) {
         let _obj={'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};

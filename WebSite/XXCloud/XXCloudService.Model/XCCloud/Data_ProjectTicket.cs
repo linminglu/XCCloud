@@ -29,6 +29,7 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> AllowCreatePoint { get; set; }
         public Nullable<int> ActiveBar { get; set; }
         public Nullable<int> SaleAuthor { get; set; }
+        public Nullable<int> WriteOffDays { get; set; }
         public Nullable<int> EffactType { get; set; }
         public Nullable<int> EffactPeriodType { get; set; }
         public Nullable<int> EffactPeriodValue { get; set; }

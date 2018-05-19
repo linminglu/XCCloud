@@ -31,7 +31,7 @@ namespace XXCloudService.Api.XCCloud
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 int userId = Convert.ToInt32(userTokenKeyModel.LogId);
-                string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
 
                 string errMsg = string.Empty;
                 if (!dicParas.Get("storageCount").Validint("入库数量", out errMsg))
@@ -66,7 +66,7 @@ namespace XXCloudService.Api.XCCloud
             try
             {                
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
 
                 string errMsg = string.Empty;
                 if(!dicParas.Get("destroyTime").Validdate("入库时间", out errMsg))
@@ -110,7 +110,7 @@ namespace XXCloudService.Api.XCCloud
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 int userId = Convert.ToInt32(userTokenKeyModel.LogId);
-                string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
 
                 string errMsg = string.Empty;
                 if (!dicParas.Get("storageCount").Validint("销毁数量", out errMsg))
@@ -145,7 +145,7 @@ namespace XXCloudService.Api.XCCloud
             try
             {                
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
 
                 string errMsg = string.Empty;
                 if (!dicParas.Get("destroyTime").Validdate("销毁时间", out errMsg))
@@ -188,7 +188,7 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
 
                 string errMsg = string.Empty;
                 if(!dicParas.Get("digitLevelID").Validint("数字币级别编号", out errMsg))
@@ -237,7 +237,7 @@ namespace XXCloudService.Api.XCCloud
             {
                 string errMsg = string.Empty;
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
 
                 var data_DigitCoin = Data_DigitCoinService.I.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase) && p.Status != (int)DigitStatus.Cancel)
                     .OrderBy(or => or.ICardID).Select(o => o.ICardID).ToList();
@@ -256,7 +256,7 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
                 int userId = Convert.ToInt32(userTokenKeyModel.LogId);
 
                 string errMsg = string.Empty;
@@ -322,7 +322,7 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
 
                 string errMsg = string.Empty;
                 if (!dicParas.Get("destroyTime").Validdate("销毁时间", out errMsg))

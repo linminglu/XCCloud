@@ -41,8 +41,8 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
-                string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
                 string errMsg = string.Empty;
                 object[] conditions = dicParas.ContainsKey("conditions") ? (object[])dicParas["conditions"] : null;
 
@@ -123,7 +123,7 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
 
                 var linq = from a in Base_GoodsInfoService.I.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.Status == 1)
                            select new
@@ -197,8 +197,8 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
-                string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
 
                 var barcode = "";
                 do
@@ -228,8 +228,8 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                var storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
-                var merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
+                var storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+                var merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
 
                 var errMsg = string.Empty;
                 if (!dicParas.Get("goodType").Validint("商品类别", out errMsg))
@@ -379,8 +379,8 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                var storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
-                var merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
+                var storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+                var merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
 
                 var errMsg = string.Empty;
                 if (!dicParas.Get("id").Validint("商品ID", out errMsg))
@@ -421,8 +421,8 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 var userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                var storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
-                var merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
+                var storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+                var merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
 
                 var errMsg = string.Empty;
                 if (!dicParas.Get("id").Validint("商品ID", out errMsg))
@@ -491,8 +491,8 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
-                string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
                 var userId = userTokenKeyModel.LogId.Toint(0);
                 string errMsg = string.Empty;
                 object[] conditions = dicParas.ContainsKey("conditions") ? (object[])dicParas["conditions"] : null;
@@ -664,8 +664,8 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
-                string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
 
                 string errMsg = string.Empty;
                 
@@ -828,8 +828,8 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
-                string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
 
                 string errMsg = string.Empty;
 
@@ -950,8 +950,8 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
-                string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
 
                 string errMsg = string.Empty;
 
@@ -1080,8 +1080,8 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                var storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
-                var merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
+                var storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+                var merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
                 var userId = userTokenKeyModel.LogId.Toint(0);
 
                 var errMsg = string.Empty;
@@ -1245,8 +1245,8 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                var storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
-                var merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
+                var storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+                var merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
                 var userId = userTokenKeyModel.LogId.Toint(0);
 
                 var errMsg = string.Empty;
@@ -1310,8 +1310,8 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                var storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
-                var merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
+                var storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+                var merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
                 var userId = userTokenKeyModel.LogId.Toint(0);
 
                 var errMsg = string.Empty;
@@ -1375,8 +1375,8 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                var storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
-                var merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
+                var storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+                var merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
                 var userId = userTokenKeyModel.LogId.Toint(0);
 
                 var errMsg = string.Empty;
@@ -1440,8 +1440,8 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                var storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
-                var merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
+                var storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+                var merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
                 var userId = userTokenKeyModel.LogId.Toint(0);
 
                 var errMsg = string.Empty;
@@ -1621,8 +1621,8 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                var storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
-                var merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
+                var storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+                var merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
                 var userId = userTokenKeyModel.LogId.Toint(0);
 
                 var errMsg = string.Empty;
@@ -1748,8 +1748,8 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
-                string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
 
                 string errMsg = string.Empty;
                 object[] conditions = dicParas.ContainsKey("conditions") ? (object[])dicParas["conditions"] : null;
@@ -1862,7 +1862,7 @@ namespace XXCloudService.Api.XCCloud
         //    try
         //    {
         //        XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-        //        string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
+        //        string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
         //        string logId = userTokenKeyModel.LogId;
 
         //        string errMsg = string.Empty;
@@ -1955,7 +1955,7 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
                 string logId = userTokenKeyModel.LogId;
 
                 string errMsg = string.Empty;
@@ -2052,8 +2052,8 @@ namespace XXCloudService.Api.XCCloud
         //    try
         //    {
         //        XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-        //        string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
-        //        string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
+        //        string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+        //        string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
 
         //        string errMsg = string.Empty;                
         //        int GoodTypeId = dict_SystemService.GetModels(p => p.DictKey.Equals("商品类别") && p.PID == 0).FirstOrDefault().ID;
@@ -2141,7 +2141,7 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
                 string logId = userTokenKeyModel.LogId;
 
                 string errMsg = string.Empty;

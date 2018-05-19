@@ -48,7 +48,7 @@ namespace XCCloudService.Model.CustomModel.XCCloud.Order
     public class OrderInfo1Model
     {
         [DataMember(Name = "customerType", Order = 1)]
-        public string CustomerType {set;get;}
+        public int CustomerType {set;get;}
 
         [DataMember(Name = "icCardId", Order = 2)]
         public int ICCardId {set;get;}
@@ -90,7 +90,7 @@ namespace XCCloudService.Model.CustomModel.XCCloud.Order
         public decimal ErrMsg {set;get;}
 
         [DataMember(Name = "errMsg", Order = 15)]
-        List<OrderBuyDetail1Model> OrderBuyDetail { set; get; }
+        public List<OrderBuyDetail1Model> Detail { set; get; }
     }
 
     [DataContract]

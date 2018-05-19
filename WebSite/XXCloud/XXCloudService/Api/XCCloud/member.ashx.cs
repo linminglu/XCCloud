@@ -110,10 +110,10 @@ namespace XCCloudService.Api.XCCloud
             public object checkOpenCard(Dictionary<string, object> dicParas)
             {
                 XCCloudUserTokenModel userTokenModel = (XCCloudUserTokenModel)(dicParas[Constant.XCCloudUserTokenModel]);
-                StoreIDDataModel userTokenDataModel = (StoreIDDataModel)(userTokenModel.DataModel);
+                TokenDataModel userTokenDataModel = (TokenDataModel)(userTokenModel.DataModel);
                 string storeId = dicParas.ContainsKey("storeId") ? dicParas["storeId"].ToString() : string.Empty;
                 string mobile = dicParas.ContainsKey("mobile") ? dicParas["mobile"].ToString() : string.Empty;
-                if (!userTokenDataModel.StoreId.Equals(storeId))
+                if (!userTokenDataModel.StoreID.Equals(storeId))
                 {
                     ResponseModel responseModel = new ResponseModel(Return_Code.T, "", Result_Code.F, "门店信息不正确");
                     return responseModel;
@@ -151,7 +151,7 @@ namespace XCCloudService.Api.XCCloud
         public object register(Dictionary<string, object> dicParas)
         {
             XCCloudUserTokenModel userTokenModel = (XCCloudUserTokenModel)(dicParas[Constant.XCCloudUserTokenModel]);
-            StoreIDDataModel userTokenDataModel = (StoreIDDataModel)(userTokenModel.DataModel);
+            TokenDataModel userTokenDataModel = (TokenDataModel)(userTokenModel.DataModel);
             string errMsg = string.Empty;
             string storeId = dicParas.ContainsKey("storeId") ? dicParas["storeId"].ToString() : string.Empty;
             string mobile = dicParas.ContainsKey("mobile") ? dicParas["mobile"].ToString() : string.Empty;
@@ -465,11 +465,11 @@ namespace XCCloudService.Api.XCCloud
         public object getMemberLevel(Dictionary<string, object> dicParas)
         {
             XCCloudUserTokenModel userTokenModel = (XCCloudUserTokenModel)(dicParas[Constant.XCCloudUserTokenModel]);
-            StoreIDDataModel userTokenDataModel = (StoreIDDataModel)(userTokenModel.DataModel);
+            TokenDataModel userTokenDataModel = (TokenDataModel)(userTokenModel.DataModel);
 
             string storedProcedure = "GetMemberLevel";
             SqlParameter[] parameters = new SqlParameter[1];
-            parameters[0] = new SqlParameter("@StoreId", userTokenDataModel.StoreId);
+            parameters[0] = new SqlParameter("@StoreId", userTokenDataModel.StoreID);
             System.Data.DataSet ds = XCCloudBLL.GetStoredProcedureSentence(storedProcedure, parameters);
             List<Data_MemberLevelModel> list = Utils.GetModelList<Data_MemberLevelModel>(ds.Tables[0]);
 
@@ -563,7 +563,7 @@ namespace XCCloudService.Api.XCCloud
         public object getMember(Dictionary<string, object> dicParas)
         {
             XCCloudUserTokenModel userTokenModel = (XCCloudUserTokenModel)(dicParas[Constant.XCCloudUserTokenModel]);
-            StoreIDDataModel userTokenDataModel = (StoreIDDataModel)(userTokenModel.DataModel);
+            TokenDataModel userTokenDataModel = (TokenDataModel)(userTokenModel.DataModel);
 
             string icCardId = dicParas.ContainsKey("icCardId") ? dicParas["icCardId"].ToString() : string.Empty;
 
@@ -575,7 +575,7 @@ namespace XCCloudService.Api.XCCloud
             string storedProcedure = "GetMember";
             SqlParameter[] parameters = new SqlParameter[4];
             parameters[0] = new SqlParameter("@ICCardID", icCardId);
-            parameters[1] = new SqlParameter("@StoreID", userTokenDataModel.StoreId);
+            parameters[1] = new SqlParameter("@StoreID", userTokenDataModel.StoreID);
             parameters[2] = new SqlParameter("@Result",SqlDbType.Int);
             parameters[2].Direction = System.Data.ParameterDirection.Output;
             parameters[3] = new SqlParameter("@ErrMsg", SqlDbType.VarChar,200);
@@ -599,7 +599,7 @@ namespace XCCloudService.Api.XCCloud
             {
                 string errMsg = string.Empty;
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
 
                 Dictionary<int, string> memberLevel = Data_MemberLevelService.I.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.State == 1).Select(o => new
                 {
@@ -622,7 +622,7 @@ namespace XCCloudService.Api.XCCloud
             try
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
 
                 var linq = from a in Base_StoreInfoService.N.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && (p.StoreState == (int)StoreState.Open || p.StoreState == (int)StoreState.Valid))
                            join b in Data_Member_Card_StoreService.N.GetModels() on a.StoreID equals b.StoreID
@@ -652,7 +652,7 @@ namespace XCCloudService.Api.XCCloud
                 string memberLevelID = dicParas.ContainsKey("memberLevelID") ? dicParas["memberLevelID"].ToString() : string.Empty;
                 string memberLevelName = dicParas.ContainsKey("memberLevelName") ? dicParas["memberLevelName"].ToString() : string.Empty;
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
 
 
                 IData_MemberLevelService data_MemberLevelService = Data_MemberLevelService.I;
@@ -705,7 +705,7 @@ namespace XCCloudService.Api.XCCloud
             try
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
 
                 string errMsg = string.Empty;
                 string memberLevelID = dicParas.ContainsKey("memberLevelID") ? (dicParas["memberLevelID"] + "") : string.Empty;

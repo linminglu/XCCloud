@@ -18,6 +18,7 @@ using XCCloudService.Model.CustomModel.XCCloud;
 using XCCloudService.Model.XCCloud;
 using XXCloudService.Api.XCCloud.Common;
 using XCCloudService.Common.Extensions;
+using System.Data;
 
 namespace XXCloudService.Api.XCCloud
 {
@@ -96,7 +97,7 @@ namespace XXCloudService.Api.XCCloud
                 parameters[0] = new SqlParameter("@MerchID", merchId);
                 parameters[1] = new SqlParameter("@DictKey", dictKey);
                 parameters[2] = new SqlParameter("@PID", pid);
-                parameters[3] = new SqlParameter("@RootID", 0);
+                parameters[3] = new SqlParameter("@RootID", SqlDbType.Int);
                 parameters[3].Direction = System.Data.ParameterDirection.Output;
                 System.Data.DataSet ds = XCCloudBLL.ExecuteQuerySentence(sql, parameters);
                 if (ds.Tables.Count == 0)
@@ -182,7 +183,7 @@ namespace XXCloudService.Api.XCCloud
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 if (userTokenKeyModel.LogType == (int)RoleType.MerchUser)
                 {
-                    merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
+                    merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
                 }
 
                 //验证参数信息
@@ -258,7 +259,7 @@ namespace XXCloudService.Api.XCCloud
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 if (userTokenKeyModel.LogType == (int)RoleType.MerchUser)
                 {
-                    merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
+                    merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
                 }
 
                 if (string.IsNullOrWhiteSpace(id))
@@ -347,7 +348,7 @@ namespace XXCloudService.Api.XCCloud
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 if (userTokenKeyModel.LogType == (int)RoleType.MerchUser)
                 {
-                    merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
+                    merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
                 }
 
                 if (string.IsNullOrWhiteSpace(id))

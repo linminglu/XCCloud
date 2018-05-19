@@ -26,11 +26,11 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 XCCloudUserTokenModel userTokenModel = (XCCloudUserTokenModel)(dicParas[Constant.XCCloudUserTokenModel]);
-                StoreIDDataModel userTokenDataModel = (StoreIDDataModel)(userTokenModel.DataModel);
+                TokenDataModel userTokenDataModel = (TokenDataModel)(userTokenModel.DataModel);
 
                 string sql = "GetFoodType";
                 SqlParameter[] parameters = new SqlParameter[1];
-                parameters[0] = new SqlParameter("@MerchId", userTokenDataModel.MerchId);
+                parameters[0] = new SqlParameter("@MerchId", userTokenDataModel.MerchID);
                 System.Data.DataSet ds = XCCloudBLL.GetStoredProcedureSentence(sql, parameters);
 
                 List<Base_FoodType> foodTypeMainList = Utils.GetModelList<Base_FoodType>(ds.Tables[0]);
@@ -63,7 +63,7 @@ namespace XXCloudService.Api.XCCloud
         {
             string errMsg = string.Empty;
             XCCloudUserTokenModel userTokenModel = (XCCloudUserTokenModel)(dicParas[Constant.XCCloudUserTokenModel]);
-            StoreIDDataModel userTokenDataModel = (StoreIDDataModel)(userTokenModel.DataModel);
+            TokenDataModel userTokenDataModel = (TokenDataModel)(userTokenModel.DataModel);
 
             string memberLevelId = dicParas.ContainsKey("memberLevelId") ? dicParas["memberLevelId"].ToString() : string.Empty;
 
@@ -74,7 +74,7 @@ namespace XXCloudService.Api.XCCloud
 
             string sql = "GetMemberOpenCardFoodInfo";
             SqlParameter[] parameters = new SqlParameter[4];
-            parameters[0] = new SqlParameter("@StoreId", userTokenDataModel.StoreId);
+            parameters[0] = new SqlParameter("@StoreId", userTokenDataModel.StoreID);
             parameters[1] = new SqlParameter("@MemberLevelId", memberLevelId);
             parameters[2] = new SqlParameter("@Result", SqlDbType.Int);
             parameters[2].Direction = System.Data.ParameterDirection.Output;
@@ -113,7 +113,7 @@ namespace XXCloudService.Api.XCCloud
         public object getFoodList(Dictionary<string, object> dicParas)
         {
             XCCloudUserTokenModel userTokenModel = (XCCloudUserTokenModel)(dicParas[Constant.XCCloudUserTokenModel]);
-            StoreIDDataModel userTokenDataModel = (StoreIDDataModel)(userTokenModel.DataModel);
+            TokenDataModel userTokenDataModel = (TokenDataModel)(userTokenModel.DataModel);
 
             string customerType = dicParas.ContainsKey("customerType") ? dicParas["customerType"].ToString() : string.Empty;
             string memberLevelId = dicParas.ContainsKey("memberLevelId") ? dicParas["memberLevelId"].ToString() : string.Empty;
@@ -126,7 +126,7 @@ namespace XXCloudService.Api.XCCloud
 
             string sql = "exec GetFoodListInfo @StoreId,@CustomerType,@MemberLevelId,@FoodTypeStr ";
             SqlParameter[] parameters = new SqlParameter[4];
-            parameters[0] = new SqlParameter("@StoreId", userTokenDataModel.StoreId);
+            parameters[0] = new SqlParameter("@StoreId", userTokenDataModel.StoreID);
             parameters[1] = new SqlParameter("@CustomerType", customerType);
             parameters[2] = new SqlParameter("@MemberLevelId", memberLevelId);
             parameters[3] = new SqlParameter("@FoodTypeStr", foodTypeStr);
@@ -172,7 +172,7 @@ namespace XXCloudService.Api.XCCloud
         public object getFoodDetail(Dictionary<string, object> dicParas)
         {
             XCCloudUserTokenModel userTokenModel = (XCCloudUserTokenModel)(dicParas[Constant.XCCloudUserTokenModel]);
-            StoreIDDataModel userTokenDataModel = (StoreIDDataModel)(userTokenModel.DataModel);
+            TokenDataModel userTokenDataModel = (TokenDataModel)(userTokenModel.DataModel);
 
             string category = dicParas.ContainsKey("category") ? dicParas["category"].ToString() : string.Empty;
             string foodId = dicParas.ContainsKey("foodId") ? dicParas["foodId"].ToString() : string.Empty;
@@ -184,7 +184,7 @@ namespace XXCloudService.Api.XCCloud
 
             string sql = "exec GetFoodDetail @StoreId,@Category,@FoodId ";
             SqlParameter[] parameters = new SqlParameter[3];
-            parameters[0] = new SqlParameter("@StoreId", userTokenDataModel.StoreId);
+            parameters[0] = new SqlParameter("@StoreId", userTokenDataModel.StoreID);
             parameters[1] = new SqlParameter("@Category", category);
             parameters[2] = new SqlParameter("@FoodId", foodId);
             System.Data.DataSet ds = XCCloudBLL.ExecuteQuerySentence(sql, parameters);

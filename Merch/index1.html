@@ -123,6 +123,9 @@
 <script src="js/storeSystem.js"></script>
 <script src="js/manchartSystem.js"></script>
 <script>
+   $(function () {
+
+
     let logMsg=JSON.parse(getStorage('logMsg'));
     let token=logMsg.token;
     let xc=xcActionSystem.prototype;
@@ -137,11 +140,67 @@
         $('#myPlace').text('商户后台/商户ID:'+logMsg.merchId)
     }
     //判断是否添加角色切换模块
-    function exchangeSystem() {
-        let logMsg=JSON.parse(getStorage('logMsg'));
-        setLeftList("xcLeftMenu",logMsg.logType);
+    // function exchangeSystem() {
+    //     let logMsg=JSON.parse(getStorage('logMsg'));
+
+    // }
+    // exchangeSystem();
+
+    layui.use(['element','form','layer'],function () {
+        let element=layui.element;
+        let layer=layui.layer;
+        let form=layui.form;
+        let _date=new Date();
+
+        setLeftList("xcLeftMenu");
         xc.initLeftMenu('xcLeftMenu');
-        xc.createTopMenu('aMenu');
+        // xc.createTopMenu('aMenu');
+        //.find('a[class="aMenu"]')
+        $('.xcLeftMenu').on('click','a[class="aMenu"]',function () {
+            var _text = $(this).text();
+            var _id = $(this).attr('id');
+            if (_text == '数字币入库') {
+                layer.open({
+                    type: 2,
+                    content: ['digitStorage.html', 'no'],
+                    closeBtn: true,
+                    shade: true,
+                    shadeClose: true,
+                    area: ['800px', '500px']
+                });
+            } else {
+                var flag = false;
+                var _length = $("#xcTabMenu").find("li").length;
+                for (var i = 0; i < _length; i++) {
+                    if ($("#xcTabMenu").find("li").eq(i).attr('lay-id') == _id) {
+                        flag = true;
+                    }
+                }
+                if (flag == true) {
+                    element.tabChange('demo', _id);
+                } else {
+                    if (_length == 10) {
+                        var thisId = $("#xcTabMenu").find("li").eq(1).attr('lay-id');
+                        element.tabDelete('demo', thisId);
+                        element.tabAdd('demo', {
+                            title: _text
+                            , content: '<iframe src="' + _id + '" style="width: 100%;height: 100%"></iframe>'	 //支持传入html
+                            , id: _id
+                        });
+                    } else {
+                        element.tabAdd('demo', {
+                            title: _text
+                            , content: '<iframe src="' + _id + '" style="width: 100%;height: 100%"></iframe>'	 //支持传入html
+                            , id: _id
+                        });
+                        element.tabChange('demo', _id);
+                    }
+
+                }
+            }
+
+
+        });
         $('#_userName').text(getStorage('usernames'));
         if(logMsg.switchMerch==0&&logMsg.swicthStore==0&&logMsg.switchWorkstation==0){
             $('#sysExchange').addClass('layui-hide');
@@ -157,13 +216,6 @@
                 $('#barSys').removeClass('layui-hide')
             }
         }
-    }
-    exchangeSystem();
-
-    layui.use(['element','layer'],function () {
-        let element=layui.element;
-        let layer=layui.layer;
-        let _date=new Date();
         //set language change cook
         $('#languageBox').on('click','dd a',function () {
             if($(this).text()=='简体中文'){
@@ -364,5 +416,7 @@
             window.close();
         }
     }
+
+   })
 </script>
 </html>

@@ -37,11 +37,11 @@
             Load:function () {
                 var that =this;
                 var isReg = getQueryString("isReg");
-                alert(isReg);
+//                alert(isReg);
                 if (/MicroMessenger/.test(window.navigator.userAgent)) {
                     var openId = getQueryString("openId");
                     that.userThirdId =openId;
-                    alert(openId);
+//                    alert(openId);
                     setStorage("openId",openId);
                     if(isReg == 0){
                         window.location.href = "login.html"
@@ -51,7 +51,7 @@
                 } else if (/AlipayClient/.test(window.navigator.userAgent)) {
                     var userid = getQueryString("userId");
                     that.userThirdId =userid;
-                    alert(userid);
+//                    alert(userid);
                     setStorage("userId",userid);
                     if(isReg == 0){
                         window.location.href = "login.html"

@@ -53,7 +53,7 @@ namespace XXCloudService.Test
             //pay.tradeNo = "2018042020014810002700000004";
             pay.orderNo = TextBox1.Text.Trim();
             pay.tradeNo = TextBox2.Text.Trim();
-            pay.txnAmt = "";
+            pay.txnAmt = TextBox3.Text.Trim();
             PPosPayApi ppos = new PPosPayApi();
             PPosPayData.RefundACK result = ppos.RefundPay(pay, out error);
             Response.Write(error);

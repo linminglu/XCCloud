@@ -65,16 +65,6 @@ namespace XXCloudService.Api.XCCloud.Common
             }
         }
 
-        public static void LoopToAppendChildren(List<RuleOverlyingModel> treeNodes, RuleOverlyingModel curItem)
-        {
-            var subItems = treeNodes.Where(ee => ee.PID.Value == curItem.ID).ToList();
-            curItem.Children = new List<RuleOverlyingModel>();
-            curItem.Children.AddRange(subItems);
-            foreach (var subItem in subItems)
-            {
-                LoopToAppendChildren(treeNodes, subItem);
-            }
-        }
         #endregion
     }
 }

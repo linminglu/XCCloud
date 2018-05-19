@@ -6,6 +6,19 @@ select dbo.F_GetDiscountRecordByMember('100025','100025420106001',9,'2018-05-01'
 -----------------------------------------------------------------------------------------------------------------------------------------
 
 -----------------------------------------------------------------------------------------------------------------------------------------
+declare @MerchId varchar(15) = '100025'
+declare @StoreId varchar(15) = '100025420106001'
+declare @CustomerType int = 0
+declare @ICCardId int = 0
+declare @FoodPrice decimal(18,2) = 500
+declare @CanUseDiscountRuleID int = 0
+declare @SubPrice decimal(18,2) = 0
+exec [dbo].[GetDiscountRuleList] @MerchId,@StoreId,@CustomerType,@ICCardId,@FoodPrice,@CanUseDiscountRuleID output,@SubPrice output
+print @CanUseDiscountRuleID
+print @SubPrice
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------------------------------------------------------------------
 --获取会员卡等级
 exec GetMemberLevel '100025420106001'
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -16,6 +29,7 @@ exec GetMemberOpenCardFood '100025420106001',22
 -----------------------------------------------------------------------------------------------------------------------------------------
 
 -----------------------------------------------------------------------------------------------------------------------------------------
+
 declare @StoreId varchar(15)
 declare @OrderFlwId varchar(32)
 declare @CustomerType int
@@ -31,9 +45,15 @@ declare @OpenFee decimal(18,2)
 declare @Deposit decimal(18,2)
 declare @RenewFee decimal(18,2)
 declare @ChangeFee decimal(18,2)
-exec [GetOrderContainById] '100025420106001','10002542010600120180514000120001',@CustomerType output,@ICCardId output,@PayCount output,@RealPay output,@FreePay output,
-@FoodCount output,@DetailsGoodsCount output,@MemberLevelId output,@MemberLevelName output,@OpenFee output,@Deposit output,@RenewFee output,@ChangeFee output
+declare @ErrMsg varchar(200)
+declare @Result int
+exec [GetOrderContainById] '100025420106001','10002542010600120180517000010001',@CustomerType output,@ICCardId output,@PayCount output,@RealPay output,@FreePay output,
+@FoodCount output,@DetailsGoodsCount output,@MemberLevelId output,@MemberLevelName output,@OpenFee output,@Deposit output,@RenewFee output,@ChangeFee output,@ErrMsg output,
+@Result output
 print @MemberLevelName
+print @MemberLevelId
+
+
 -----------------------------------------------------------------------------------------------------------------------------------------
 
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -237,7 +257,7 @@ declare @CustomerType int = 2
 declare @MemberLevelId int = 21
 declare @Mobile varchar(11) = '15618920033'
 declare @ICCardId int = 10004143
-declare @PayCount decimal(18,2) = 5.5 + 50
+declare @PayCount decimal(18,2) = 50 + 5.5
 declare @Deposit decimal(18,2) = 0
 declare @OpenFee decimal(18,2) = 0
 declare @UserID decimal = 3
@@ -267,6 +287,18 @@ exec @Return = CreateOrder @FoodSaleDetailList,@StoreId,@CustomerType,@Mobile,@M
 print @Return 
 print @ErrMsg
 print @OrderFlwId
+
+select * from Flw_Order
+select * from Flw_Order_Detail
+select * from Flw_Food_Sale
+select * from Flw_Food_SaleDetail
+select * from flw_Food_Sale_Pay
+
+delete from Flw_Order
+delete from Flw_Order_Detail
+delete from Flw_Food_Sale
+delete from Flw_Food_SaleDetail
+delete from flw_Food_Sale_Pay
 
 ----------------------------------------------------------------------------------------------------
 declare @StoreId varchar(15) = '100025420106001'

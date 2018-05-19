@@ -11,9 +11,6 @@
 	<link href="css/iconfont.css" rel="stylesheet">
 	<link rel="stylesheet" href="css/swiper.min.css">
 	<link href="css/bootstrap-table.css" rel="stylesheet">
-	<link rel="stylesheet" type="text/css" href="http://unpkg.com/iview/dist/styles/iview.css">
-	<!--<script type="text/javascript" src="http://v1.vuejs.org/js/vue.min.js"></script>-->
-	<!--<script type="text/javascript" src="http://unpkg.com/iview@1.0.1/dist/iview.min.js"></script>-->
 	<style>
 		[v-cloak] {
 			display: none;
@@ -171,8 +168,6 @@
 		.searchList .on{background-color: #d9f6f6;border-color: #666666;}
 		.searchList li:hover{background-color: #d9f6f6;border-color: #666666;}
 		#searchK{color: #999999;font-weight: normal;}
-
-
 		/*弹出层取消按钮*/
 		.layerCancel{position: absolute;z-index:999;top: 13px;right: 5px;font-size: 32px!important;color: #ff3030; -webkit-transform:scale(0.6);  -moz-transform:scale(0.6);  -o-transform:scale(0.6);}
 		.layerCancel:hover{color: #ff3030; -webkit-transform:scale(1);  -moz-transform:scale(1);  -o-transform:scale(1);}
@@ -184,10 +179,8 @@
 		/*select属性设置*/
 		.selectSty{padding: 0!important;}
 		.selectSty select{display:block;width: 100%;height: 100%; color: #555;padding: 8px;border: none;line-height: 1.4em;}
+		.tableTag .selectSty select{background-color: #00F7DE;}
 		@media (min-width: 1024px) and (max-width: 1300px) {
-
-		}
-		@media (min-width: 768px) and (max-width: 1024px) {
 
 		}
 		@media (max-width: 768px) {
@@ -210,8 +203,7 @@
 		.saleTitleBg li:nth-child(7n+5) a{background-color: #c5d2dc;}
 		.saleTitleBg li:nth-child(7n+6) a{background-color: #e96e72;}
 		.tableTag{background-color: #00F7DE;}
-		.tableTag .selectSty select{background-color: #00F7DE;}
-		.selectSty select{width: auto!important;}
+
 		.detailHide{display: none;}
 		/*弹出层修改*/
 		.modal-dialog{margin-top: 13em;}
@@ -243,6 +235,21 @@
 		.footerList li{padding: 0.5em 0;padding-left: 3em;border-bottom: 1px dashed #00F7DE;}
 		.member{color: #666;}
 		.member li{font-size: 1em;display: inline;margin-right: 10px;}
+		.saleContent{display: flex;flex-direction: row;}
+		/*.salesCoin{float: right;float: left;}*/
+		/*树形结构*/
+		.tree{min-height:20px;margin:1em 0;background-color:#fbfbfb;min-width: 300px;display: inline-block;height: inherit;}
+		.tree ul{padding-left: 35px;}
+		.tree li{list-style-type:none;margin:0;padding:10px 5px 0 5px!important;position:relative}
+		.tree li::before, .tree li::after{content:'';left:-20px;position:absolute;right:auto}
+		.tree li::before{border-left:1px solid #999;bottom:50px;height:100%;top:0;width:1px}
+		.tree li::after{border-top:1px solid #999;height:20px;top:25px;width:25px}
+		.tree li span{-moz-border-radius:5px;-webkit-border-radius:5px;border:1px solid #999;border-radius:5px;display:inline-block;padding:3px 8px;text-decoration:none}
+		.tree li.parent_li>span{cursor:pointer}
+		.tree>ul>li::before, .tree>ul>li::after{border:0}
+		.tree li:last-child::before{height:30px}
+		.tree li.parent_li>span:hover, .tree li.parent_li>span:hover+ul li span{background:#eee;border:1px solid #94a0b4;color:#000}
+
 	</style>
 </head>
 <body>
@@ -577,29 +584,56 @@
 						<div class="swiper-button-next"></div>
 						<div class="swiper-button-prev"></div>
 					</div>
-					<ul class="salesCoin">
-						<li v-for="(item,index) in saleData" class="salesLi" @click="deletePerson(index,'0')">
-							<img :src="item.imageUrl"/>
-							<div class="saleText">
-								<a tabindex="0" class="btn btn-group-sm btn-info" role="button" data-toggle="popover" @click.stop="details(index,'0')">详情</a>
-								<h3>{{item.foodName}}</h3>
-							</div>
-						</li>
-						<li v-for="(item,index) in saleGood" class="salesLi" @click="deletePerson(index,'1')">
-							<img :src="item.imageUrl"/>
-							<div class="saleText">
-								<a tabindex="0" class="btn btn-group-sm btn-info" role="button" data-toggle="popover" @click.stop="details(index,'1')">详情</a>
-								<h3>{{item.foodName}}</h3>
-							</div>
-						</li>
-						<li v-for="(item,index) in saleTicket" class="salesLi" @click="deletePerson(index,'2')">
-							<img :src="item.imageUrl"/>
-							<div class="saleText">
-								<a tabindex="0" class="btn btn-group-sm btn-info" role="button" data-toggle="popover" @click.stop="details(index,'2')">详情</a>
-								<h3>{{item.foodName}}</h3>
-							</div>
-						</li>
-					</ul>
+					<div class="saleContent">
+						<div class="tree" v-if="treeShow">
+							<ul>
+								<li>
+									<span><i class="glyphicon glyphicon-move"></i></span> <a href="javascript:void(0)" @click="singletonScreening('-1','all')">单品全部</a>
+									<ul>
+										<li>
+											<span><i class="glyphicon glyphicon-minus"></i></span> <a href="javascript:void(0)" @click="singletonScreening('-1','ticket')">门票</a>
+											<ul><!-- @click="screening(index)"-->
+												<li v-for="(item,index) in foodTypeTicketList" @click="singletonScreening(index,'ticket')">
+													<span><i class="glyphicon glyphicon-resize-horizontal"></i></span> <a href="javascript:void(0)">{{item.FoodTypeName}}</a>
+												</li>
+											</ul>
+										</li>
+										<li>
+											<span><i class="glyphicon glyphicon-minus"></i></span> <a href="javascript:void(0)" @click="singletonScreening('-1','good')">商品</a>
+											<ul>
+												<li v-for="(item,index) in foodTypeGoodList" @click="singletonScreening(index,'good')">
+													<span><i class="glyphicon glyphicon-resize-horizontal"></i></span> <a href="javascript:void(0)">{{item.FoodTypeName}}</a>
+												</li>
+											</ul>
+										</li>
+									</ul>
+								</li>
+							</ul>
+						</div>
+						<ul class="salesCoin">
+							<li v-for="(item,index) in saleData" class="salesLi" @click="deletePerson(index,'0')">
+								<img :src="item.imageUrl"/>
+								<div class="saleText">
+									<a tabindex="0" class="btn btn-group-sm btn-info" role="button" data-toggle="popover" @click.stop="details(index,'0')">详情</a>
+									<h3>{{item.foodName}}</h3>
+								</div>
+							</li>
+							<li v-for="(item,index) in saleGood" class="salesLi" @click="deletePerson(index,'1')">
+								<img :src="item.imageUrl"/>
+								<div class="saleText">
+									<a tabindex="0" class="btn btn-group-sm btn-info" role="button" data-toggle="popover" @click.stop="details(index,'1')">详情</a>
+									<h3>{{item.foodName}}</h3>
+								</div>
+							</li>
+							<li v-for="(item,index) in saleTicket" class="salesLi" @click="deletePerson(index,'2')">
+								<img :src="item.imageUrl"/>
+								<div class="saleText">
+									<a tabindex="0" class="btn btn-group-sm btn-info" role="button" data-toggle="popover" @click.stop="details(index,'2')">详情</a>
+									<h3>{{item.foodName}}</h3>
+								</div>
+							</li>
+						</ul>
+					</div>
 				</div>
 				<!--会员卡挂失-->
 				<div class="cardLoss" v-if="cardLossShow">
@@ -921,7 +955,6 @@
 		</ul>
 	</div>
 </div>
-
 <script src="js/jquery-2.1.3.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
 <script src="js/swiper.min.js"></script>
@@ -978,6 +1011,9 @@
             memberShow:false,
             returnShow:false,
 			saleTitle:[],
+            foodTypeGoodList:[],
+    		foodTypeTicketList:[],
+    		saleAll:[],
             popoverTitle:"",
 			saleData5:[],
             fastMoney:"1",
@@ -992,7 +1028,8 @@
             payCount:0,
 			detailNote:"",
             icCardId:"10004143",
-            footerData:[]
+            footerData:[],
+            treeShow:false
         },
         mounted: function () {
             this.Initialize()
@@ -1141,8 +1178,7 @@
             },
 //			回车提交事件
             inputMoneySubmit:function () {
-                
-//                document.getElementById('fastAmountFocus ').focus();
+//          	document.getElementById('fastAmountFocus ').focus();
             },
 //			结账按钮
             closeAccounts:function () {
@@ -1307,7 +1343,10 @@
                         console.log(res.data);
                         that.msgPrompt(res.data);
                         if (res.data.result_code === '1') {
+
                             that.saleTitle = res.data.result_data.foodTypeMainList;
+                            that.foodTypeGoodList = res.data.result_data.foodTypeGoodList;
+                            that.foodTypeTicketList = res.data.result_data.foodTypeTicketList;
 							that.$nextTick(function () {
                                 var swiper = new Swiper('.swiperSalesTitle', {
                                     /*pagination: '.swiper-pagination',*/
@@ -1430,6 +1469,7 @@
                     console.log(res.data);
                     that.msgPrompt(res.data);
                     if (res.data.result_code === '1') {
+                        that.saleAll = res.data.result_data;
                         that.saleData =res.data.result_data.food;
 						that.saleGood =res.data.result_data.good;
 						that.saleTicket =res.data.result_data.ticket;
@@ -1555,21 +1595,105 @@
             screening:function (index) {		//saleTitle(标题函数)
 				console.log(index);
 				var that = this;
+				that.treeShow = false;
 				var foodTypeAll = "-1";
-				if(index == "All"){
-					index = 0
-					for(var i = 0;i<that.saleTitle.length;i++){
-                        foodTypeAll = foodTypeAll+","+i;
-					}
-					console.log(foodTypeAll);
-				}else{
-					foodTypeAll = that.saleTitle[index].FoodTypeId;
-					console.log(that.saleTitle[index].FoodTypeId)
-					index++
-				}
+                switch(index){
+                    case 'All':
+                        index = 0;
+                        for(var i = 0;i<that.saleTitle.length;i++){
+                            foodTypeAll = foodTypeAll+","+i;
+                        }
+                        break;
+                    case 0:
+                        that.treeShow = true;
+                        index++;
+                        that.$nextTick(function () {
+                            $('.tree li:has(ul)').addClass('parent_li').find(' > span').attr('title', 'Collapse this branch');
+                            $('.tree li.parent_li > span').on('click', function (e) {
+                                var children = $(this).parent('li.parent_li').find(' > ul > li');
+                                if (children.is(":visible")) {
+                                    children.hide('fast');
+                                    $(this).attr('title', 'Expand this branch').find(' > i').addClass('glyphicon-plus').removeClass('glyphicon-minus');
+                                } else {
+                                    children.show('fast');
+                                    $(this).attr('title', 'Collapse this branch').find(' > i').addClass('glyphicon-minus').removeClass('glyphicon-plus');
+                                }
+                                e.stopPropagation();
+                            });
+                        });
+                        break;
+                    default:
+                        foodTypeAll = that.saleTitle[index].FoodTypeId;
+                        console.log(that.saleTitle[index].FoodTypeId);
+                        index++;
+                        break;
+                }
+
 				console.log(foodTypeAll);
 				$(".saleTitleBg").find("li").eq(index).addClass("on").siblings().removeClass("on");
                 that.getMeal(that.customerType,foodTypeAll);
+            },
+//          单品标题筛选
+            singletonScreening:function(index,foodType){
+                var that =this;
+                console.log(that.saleAll);
+                switch(foodType){
+                    case "all":
+                        that.saleData =[];
+                        that.saleGood =that.saleAll.good;
+                        that.saleTicket =that.saleAll.ticket;
+                        break;
+                    case "good":
+                        that.saleData =[];
+                        that.saleTicket =[];
+                        if(index == -1){
+                            that.saleGood =that.saleAll.good;
+                        }else {
+                            var foodType = that.foodTypeGoodList[index].FoodTypeId;
+                            console.log(foodType);
+                            var typeArr = [];
+                            for(var i = 0;i<that.saleAll.good.length;i++){
+                                if(foodType == that.saleAll.good[i].foodType){
+                                    typeArr.push({
+                                        foodId : that.saleAll.good[i].foodId,
+                                        foodName : that.saleAll.good[i].foodName,
+                                        foodPrice : that.saleAll.good[i].foodPrice,
+                                        foodType : that.saleAll.good[i].foodType,
+                                        imageUrl : that.saleAll.good[i].imageUrl
+                                    })
+                                }
+                            }
+                            console.log(typeArr);
+                            that.saleGood =typeArr;
+                        }
+                        break;
+                    case "ticket":
+                        that.saleData =[];
+                        that.saleGood =[];
+                        if(index == -1){
+                            that.saleTicket =that.saleAll.ticket;
+                        }else {
+                            var foodType = that.foodTypeTicketList[index].FoodTypeId;
+                            console.log(foodType);
+                            var typeArr = [];
+                            for(var i = 0;i<that.saleAll.ticket.length;i++){
+                                if(foodType == that.saleAll.ticket[i].foodType){
+                                    typeArr.push({
+                                        foodId : that.saleAll.ticket[i].foodId,
+                                        foodName : that.saleAll.ticket[i].foodName,
+                                        foodPrice : that.saleAll.ticket[i].foodPrice,
+                                        foodType : that.saleAll.ticket[i].foodType,
+                                        imageUrl : that.saleAll.ticket[i].imageUrl
+                                    })
+                                }
+                            }
+                            console.log(typeArr);
+                            that.saleTicket =typeArr;
+                        }
+                        break;
+                    default:
+                        break;
+                }
             },
 //			购物车+
             addCount:function(){	//+号的购物车管理
@@ -1690,6 +1814,7 @@
             },
 //			点击优惠券查看优惠券详情
             couponDetail:function () {
+			    alert("怎么显示？")
             },
 //			通用消息提示
             msgPrompt:function (res) {
@@ -1714,6 +1839,7 @@
         $("#shopTable tbody").on("click","tr",function () {
             $(this).addClass('tableTag').siblings().removeClass('tableTag');
         });
+
     });
 //	详情
     function detailTime(index) {

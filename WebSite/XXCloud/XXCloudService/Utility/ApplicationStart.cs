@@ -51,7 +51,7 @@ namespace XCCloudService.Utility
 
         public static void TestInit()
         {
-            //StoreIDDataModel tokenDataModel = new StoreIDDataModel("S0100022", "778852013145", "lijunjie");
+            //TokenDataModel tokenDataModel = new TokenDataModel("S0100022", "778852013145", "lijunjie");
             //XCCloudUserTokenBusiness.SetUserToken("3", (int)RoleType.StoreUser, tokenDataModel);
         }
 

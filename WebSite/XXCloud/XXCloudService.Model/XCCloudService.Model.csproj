@@ -85,6 +85,7 @@
     <Compile Include="CustomModel\XCCloud\Data_GoodInventoryModel.cs" />
     <Compile Include="CustomModel\XCCloud\Data_GoodStorageModel.cs" />
     <Compile Include="CustomModel\XCCloud\Data_MemberLevelModel.cs" />
+    <Compile Include="CustomModel\XCCloud\Data_ProjectTicketModel.cs" />
     <Compile Include="CustomModel\XCCloud\Data_ProjectInfoModel.cs" />
     <Compile Include="CustomModel\XCCloud\Data_Project_BindDeviceModel.cs" />
     <Compile Include="CustomModel\XCCloud\Data_Push_RuleModel.cs" />

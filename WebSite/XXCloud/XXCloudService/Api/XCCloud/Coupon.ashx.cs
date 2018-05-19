@@ -48,7 +48,7 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
 
                 string errMsg = string.Empty;
                 object[] conditions = dicParas.ContainsKey("conditions") ? (object[])dicParas["conditions"] : null;
@@ -99,7 +99,7 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
 
                 var linq = from a in Data_CouponInfoService.I.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase))
                            select new
@@ -151,7 +151,7 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
                 int userId = Convert.ToInt32(userTokenKeyModel.LogId);
 
                 string errMsg = string.Empty;
@@ -671,7 +671,7 @@ namespace XXCloudService.Api.XCCloud
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
-                var storeId = dicParas.Get("storeId") ?? (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
+                var storeId = dicParas.Get("storeId") ?? (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
 
                 var query = Data_CouponListService.N.GetModels(p => p.State == (int)CouponState.NotActivated && p.CouponID == couponId);
                 if (!string.IsNullOrEmpty(storeId))
@@ -861,7 +861,7 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
 
                 string errMsg = string.Empty;
                 int couponId = dicParas.Get("couponId").Toint(0);
@@ -965,7 +965,7 @@ namespace XXCloudService.Api.XCCloud
                 if(!dicParas.Get("isLock").Validint("锁定状态", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-                var storeId = dicParas.Get("storeId") ?? (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
+                var storeId = dicParas.Get("storeId") ?? (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
                 var isLock = dicParas.Get("isLock").Toint();
                 var id = dicParas.Get("id").Toint(0); //Data_CouponList表ID
 
@@ -1278,7 +1278,7 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;                
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;                
 
                 int couponType = Dict_SystemService.N.GetModels(p => p.DictKey.Equals("优惠券类别") && p.PID == 0).FirstOrDefault().ID;
                 var linq = from c in
@@ -1323,7 +1323,7 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
 
                 string errMsg = string.Empty;
                 int couponId = dicParas.Get("couponId").Toint(0);
@@ -1427,7 +1427,7 @@ namespace XXCloudService.Api.XCCloud
         public object getMemberCouponList(Dictionary<string, object> dicParas)
         {
             XCCloudUserTokenModel userTokenModel = (XCCloudUserTokenModel)(dicParas[Constant.XCCloudUserTokenModel]);
-            StoreIDDataModel userTokenDataModel = (StoreIDDataModel)(userTokenModel.DataModel);
+            TokenDataModel userTokenDataModel = (TokenDataModel)(userTokenModel.DataModel);
 
             string icCardId = dicParas.ContainsKey("icCardId") ? dicParas["icCardId"].ToString() : string.Empty;
             if (string.IsNullOrEmpty(icCardId))
@@ -1438,7 +1438,7 @@ namespace XXCloudService.Api.XCCloud
             string sql = "GetMemberCouponList";
 
             SqlParameter[] parameters = new SqlParameter[2];
-            parameters[0] = new SqlParameter("@StoreId", userTokenDataModel.StoreId);
+            parameters[0] = new SqlParameter("@StoreId", userTokenDataModel.StoreID);
             parameters[1] = new SqlParameter("@ICCardId", icCardId);
 
             System.Data.DataSet ds = XCCloudBLL.GetStoredProcedureSentence(sql, parameters);

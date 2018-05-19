@@ -54,7 +54,7 @@ namespace XXCloudService.Api.XCCloud
                 logType = (int)RoleType.StoreUser;
                 storeId = base_UserInfoModel.StoreID;
                 merchId = base_UserInfoModel.MerchID;
-                var dataModel = new MerchDataModel { StoreID = storeId, MerchID = merchId };
+                var dataModel = new TokenDataModel { StoreID = storeId, MerchID = merchId };
                 IBase_StoreInfoService base_StoreInfoService = BLLContainer.Resolve<IBase_StoreInfoService>();
                 if (!base_StoreInfoService.Any(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)))
                 {
@@ -85,7 +85,7 @@ namespace XXCloudService.Api.XCCloud
                     return false;
                 }
                 var base_MerchantInfoModel = base_MerchantInfoService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
-                var dataModel = new MerchDataModel { MerchID = merchId, StoreID = string.Empty, MerchType = base_MerchantInfoModel.MerchType, CreateType = base_MerchantInfoModel.CreateType, CreateUserID = base_MerchantInfoModel.CreateUserID };
+                var dataModel = new TokenDataModel { MerchID = merchId, StoreID = string.Empty, MerchType = base_MerchantInfoModel.MerchType, CreateType = base_MerchantInfoModel.CreateType, CreateUserID = base_MerchantInfoModel.CreateUserID };
                 userLogResponseModel.Token = XCCloudUserTokenBusiness.SetUserToken(userId.ToString(), logType, dataModel);
                 userLogResponseModel.Tag = base_MerchantInfoModel.MerchTag;
                 userLogResponseModel.MerchID = merchId;
@@ -168,8 +168,8 @@ namespace XXCloudService.Api.XCCloud
                 }
 
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];                
-                var merchDataModel = (userTokenKeyModel.DataModel as MerchDataModel);
-                merchDataModel.WorkStationID = workStationId.Toint();
+                var TokenDataModel = (userTokenKeyModel.DataModel as TokenDataModel);
+                TokenDataModel.WorkStationID = workStationId.Toint();
 
                 userTokenKeyModel.LogType = Convert.ToInt32(logType);
                 if (userTokenKeyModel.LogType == (int)RoleType.MerchUser)
@@ -182,8 +182,8 @@ namespace XXCloudService.Api.XCCloud
                     }
                     var base_MerchantInfoModel = base_MerchantInfoService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
                     tag = base_MerchantInfoModel.MerchTag;
-                    merchDataModel.MerchID = merchId;
-                    merchDataModel.StoreID = string.Empty;
+                    TokenDataModel.MerchID = merchId;
+                    TokenDataModel.StoreID = string.Empty;
                 }
                 else if (userTokenKeyModel.LogType == (int)RoleType.StoreUser)
                 {
@@ -195,8 +195,8 @@ namespace XXCloudService.Api.XCCloud
                     }
                     var base_StoreInfoModel = base_StoreInfoService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
                     tag = base_StoreInfoModel.StoreTag;
-                    merchDataModel.MerchID = merchId;
-                    merchDataModel.StoreID = storeId;
+                    TokenDataModel.MerchID = merchId;
+                    TokenDataModel.StoreID = storeId;
                 }
 
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, new { Tag = tag });

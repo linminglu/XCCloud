@@ -388,8 +388,9 @@
     <Content Include="HolidayConfig.json" />
     <Content Include="GoodRequestTemplate.xlsx" />
     <Content Include="Api\XCCloud\GroupArea.ashx" />
-    <Content Include="Api\XCCloud\RuleOverlying.ashx" />
     <Content Include="Api\XCCloud\FreeGiveRule.ashx" />
+    <Content Include="Api\XCCloud\RuleOverlying.ashx" />
+    <Content Include="Api\XCCloud\ProjectTicket.ashx" />
     <None Include="Properties\PublishProfiles\111.pubxml" />
     <None Include="Properties\PublishProfiles\qqq.pubxml" />
     <None Include="Properties\PublishProfiles\rrr.pubxml" />
@@ -1157,9 +1158,6 @@
     <Compile Include="Api\XCCloud\FreeGiveRule.ashx.cs">
       <DependentUpon>FreeGiveRule.ashx</DependentUpon>
     </Compile>
-    <Compile Include="Api\XCCloud\RuleOverlying.ashx.cs">
-      <DependentUpon>RuleOverlying.ashx</DependentUpon>
-    </Compile>
     <Compile Include="Api\Service\CacheService.ashx.cs">
       <DependentUpon>CacheService.ashx</DependentUpon>
     </Compile>
@@ -1203,6 +1201,12 @@
     </Compile>
     <Compile Include="Api\XCCloud\GroupVerify.ashx.cs">
       <DependentUpon>GroupVerify.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="Api\XCCloud\ProjectTicket.ashx.cs">
+      <DependentUpon>ProjectTicket.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="Api\XCCloud\RuleOverlying.ashx.cs">
+      <DependentUpon>RuleOverlying.ashx</DependentUpon>
     </Compile>
     <Compile Include="Api\XCCloud\Supplier.ashx.cs">
       <DependentUpon>Supplier.ashx</DependentUpon>

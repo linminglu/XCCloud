@@ -557,7 +557,7 @@ namespace XCCloudService.Base
                 XCCloudUserTokenModel userTokenKeyModel = XCCloudUserTokenBusiness.GetUserTokenModel(token);
                 if (userTokenKeyModel == null)
                 {
-                    errMsg = "token无效";
+                    errMsg = "系统访问正忙, 请稍后再试...";
                     return false;
                 }
                 else
@@ -662,14 +662,14 @@ namespace XCCloudService.Base
 
                             if (!string.IsNullOrEmpty(authorizeAttribute.Merches))
                             {
-                                var merchDataModel = userTokenKeyModel.DataModel as MerchDataModel;
-                                if (merchDataModel == null)
+                                var TokenDataModel = userTokenKeyModel.DataModel as TokenDataModel;
+                                if (TokenDataModel == null)
                                 {
                                     errMsg = "当前用户无权访问";
                                     return false;
                                 }
 
-                                string merchType = Enum.GetName(typeof(MerchType), merchDataModel.MerchType);
+                                string merchType = Enum.GetName(typeof(MerchType), TokenDataModel.MerchType);
                                 if (!authorizeAttribute.Merches.Contains(merchType))
                                 {
                                     errMsg = "当前用户无权访问";

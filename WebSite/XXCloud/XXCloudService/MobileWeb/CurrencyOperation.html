@@ -520,7 +520,7 @@
             },
             rechargeBtn :function (index) {
                 var that =this;
-                alert(index);
+//                alert(index);
                 console.log(that.list[index]);
                 if (/MicroMessenger/.test(window.navigator.userAgent)) {
                     var openId =getStorage("openId")||"";
@@ -538,7 +538,7 @@
                         coins:that.list[index].coinQuantity,
                         deviceToken:''
                     };
-                    alert(JSON.stringify(obj));
+//                    alert(JSON.stringify(obj));
                     that.$dialog.loading.open();
                     axios.post("/Payment?action=getPposWxPay", obj).then(function (res) {
                         that.$dialog.loading.close();
@@ -587,7 +587,7 @@
                         coins:that.list[index].coinQuantity,
                         deviceToken:''
                     };
-                    alert(JSON.stringify(obj));
+//                    alert(JSON.stringify(obj));
                     that.$dialog.loading.open();
                     axios.post("/Payment?action=createAlipayOrder", obj).then(function (res) {
                         that.$dialog.loading.close();

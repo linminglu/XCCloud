@@ -15,10 +15,6 @@
         .top_main{background: #F0F8FF;height: 1.3rem;color: #666;display:flex;flex-direction: row;justify-content: space-between;}
         .top_mc{display:flex;flex-direction: column;font-size: 0.32rem;margin-left: 0.4rem;padding-top: 0.2rem;text-align: center;line-height: 0.5rem;}
         .yd-list-img{display: none;}
-
-        .section__input{width: 160rpx;display: inline-block;border-bottom: 1px solid #666;padding-left: 10rpx;font-size: 24rpx;font-weight: normal;margin: 0 5rpx;}
-        .section button{width: 160rpx;font-size: 22rpx;font-weight: normal;height: 60rpx;line-height: 60rpx;margin: 0 10rpx}
-
         .section_c1{display: flex;flex-direction: row;font-size: 0.32rem;padding: 0.1rem;color: #015581;border-bottom: 1px dashed #eee;}
         .section_c3{display: flex;flex-direction: row-reverse;font-size: 0.24rem;}
         .section_T{width: 35%;font-size: 0.26rem;}
@@ -49,13 +45,13 @@
             <yd-button class="closeIcon" type="warning" style="margin: 30px;" @click.native="show4 = false"><yd-icon color="#FF685D" name="error-outline"></yd-icon></yd-button>
             <yd-cell-item>
                 <span slot="left">金额：</span>
-                <input slot="right" type="number" placeholder="最低金额" class='section__input' oninput="if(value.length>9)value=value.slice(0,9)" v-model="dateInput0">
-                <input slot="right" type="number" placeholder="最高金额" class='section__input' oninput="if(value.length>9)value=value.slice(0,9)"  v-model="dateInput1">
+                <input slot="right" type="number" placeholder="最低金额" oninput="if(value.length>9)value=value.slice(0,9)" v-model="dateInput0">
+                <input slot="right" type="number" placeholder="最高金额" oninput="if(value.length>9)value=value.slice(0,9)"  v-model="dateInput1">
             </yd-cell-item>
             <yd-cell-item>
                 <span slot="left">币数：</span>
-                <input slot="right" type="number" placeholder="最低币数" class='section__input' oninput="if(value.length>9)value=value.slice(0,9)"  v-model="dateInput2">
-                <input slot="right" type="number" placeholder="最高币数" class='section__input' oninput="if(value.length>9)value=value.slice(0,9)"  v-model="dateInput3">
+                <input slot="right" type="number" placeholder="最低币数" oninput="if(value.length>9)value=value.slice(0,9)"  v-model="dateInput2">
+                <input slot="right" type="number" placeholder="最高币数" oninput="if(value.length>9)value=value.slice(0,9)"  v-model="dateInput3">
             </yd-cell-item>
             <yd-cell-item>
                 <span slot="left">查询日期：</span>

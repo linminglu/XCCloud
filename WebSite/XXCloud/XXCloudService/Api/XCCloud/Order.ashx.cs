@@ -104,7 +104,7 @@ namespace XXCloudService.Api.XCCloud
         {
             string errMsg = string.Empty;
             XCCloudUserTokenModel userTokenModel = (XCCloudUserTokenModel)(dicParas[Constant.XCCloudUserTokenModel]);
-            StoreIDDataModel userTokenDataModel = (StoreIDDataModel)(userTokenModel.DataModel);
+            TokenDataModel userTokenDataModel = (TokenDataModel)(userTokenModel.DataModel);
             if (!CheckAddOrderParams(dicParas, out errMsg))
             {
                 return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
@@ -138,7 +138,7 @@ namespace XXCloudService.Api.XCCloud
                     new SqlMetaData("payNum", SqlDbType.Decimal,18,2)
             };
 
-            string flwSendId = RedisCacheHelper.CreateCloudSerialNo(userTokenDataModel.StoreId);
+            string flwSendId = RedisCacheHelper.CreateCloudSerialNo(userTokenDataModel.StoreID);
 
             for (int i = 0; i < buyDetailList.Count; i++)
             {
@@ -161,7 +161,7 @@ namespace XXCloudService.Api.XCCloud
             sqlParameter[0].Value = listSqlDataRecord;
 
             sqlParameter[1] = new SqlParameter("@StoreID", SqlDbType.VarChar);
-            sqlParameter[1].Value = userTokenDataModel.StoreId;
+            sqlParameter[1].Value = userTokenDataModel.StoreID;
 
             sqlParameter[2] = new SqlParameter("@ICCardID", SqlDbType.Int);
             sqlParameter[2].Value = icCardId;
@@ -234,13 +234,13 @@ namespace XXCloudService.Api.XCCloud
         public object getOrderByFlwId(Dictionary<string, object> dicParas)
         {
             XCCloudUserTokenModel userTokenModel = (XCCloudUserTokenModel)(dicParas[Constant.XCCloudUserTokenModel]);
-            StoreIDDataModel userTokenDataModel = (StoreIDDataModel)(userTokenModel.DataModel);
+            TokenDataModel userTokenDataModel = (TokenDataModel)(userTokenModel.DataModel);
 
             string orderFlwId = dicParas.ContainsKey("orderFlwId") ? dicParas["orderFlwId"].ToString() : string.Empty;
             string storedProcedure = "GetOrderContainById";
             SqlParameter[] sqlParameter = new SqlParameter[2];
             sqlParameter[0] = new SqlParameter("@StoreID", SqlDbType.VarChar);
-            sqlParameter[0].Value = userTokenDataModel.StoreId;
+            sqlParameter[0].Value = userTokenDataModel.StoreID;
             sqlParameter[1] = new SqlParameter("@FlwOrderId", SqlDbType.VarChar);
             sqlParameter[1].Value = orderFlwId;
 
@@ -273,7 +273,7 @@ namespace XXCloudService.Api.XCCloud
             string icCardId = dicParas.ContainsKey("icCardId") ? dicParas["icCardId"].ToString() : string.Empty;
 
             XCCloudUserTokenModel userTokenModel = (XCCloudUserTokenModel)(dicParas[Constant.XCCloudUserTokenModel]);
-            StoreIDDataModel userTokenDataModel = (StoreIDDataModel)(userTokenModel.DataModel);
+            TokenDataModel userTokenDataModel = (TokenDataModel)(userTokenModel.DataModel);
 
             if (string.IsNullOrEmpty(orderFlwId))
             {
@@ -293,7 +293,7 @@ namespace XXCloudService.Api.XCCloud
             string storedProcedure = "CheckCacheOrder";
             SqlParameter[] sqlParameter = new SqlParameter[6];
             sqlParameter[0] = new SqlParameter("@StoreID", SqlDbType.VarChar);
-            sqlParameter[0].Value = userTokenDataModel.StoreId;
+            sqlParameter[0].Value = userTokenDataModel.StoreID;
             sqlParameter[1] = new SqlParameter("@FlwOrderId", SqlDbType.VarChar);
             sqlParameter[1].Value = orderFlwId;
             sqlParameter[2] = new SqlParameter("@CustomerType", SqlDbType.Int);
@@ -314,7 +314,7 @@ namespace XXCloudService.Api.XCCloud
                 }
                 else
                 {
-                    FoodOrderCacheModel orderModel = new FoodOrderCacheModel(userTokenDataModel.MerchId, userTokenDataModel.StoreId, orderFlwId, int.Parse(customerType), int.Parse(icCardId), userTokenDataModel.WorkStation);
+                    FoodOrderCacheModel orderModel = new FoodOrderCacheModel(userTokenDataModel.MerchID, userTokenDataModel.StoreID, orderFlwId, int.Parse(customerType), int.Parse(icCardId), userTokenDataModel.WorkStation);
                     FlwFoodOrderBusiness.Add(orderModel);
                     return new ResponseModel(Return_Code.T, "", Result_Code.T, "");                    
                 }
@@ -333,9 +333,9 @@ namespace XXCloudService.Api.XCCloud
         {
             string errMsg = string.Empty;
             XCCloudUserTokenModel userTokenModel = (XCCloudUserTokenModel)(dicParas[Constant.XCCloudUserTokenModel]);
-            StoreIDDataModel userTokenDataModel = (StoreIDDataModel)(userTokenModel.DataModel);
+            TokenDataModel userTokenDataModel = (TokenDataModel)(userTokenModel.DataModel);
 
-            List<FoodOrderCacheModel> list = FlwFoodOrderBusiness.GetOrderListByWorkStation(userTokenDataModel.StoreId, userTokenDataModel.WorkStation);
+            List<FoodOrderCacheModel> list = FlwFoodOrderBusiness.GetOrderListByWorkStation(userTokenDataModel.StoreID, userTokenDataModel.WorkStation);
 
             List<object> listObj = new List<object>();
             for (int i = 0; i < list.Count; i++)
@@ -362,7 +362,7 @@ namespace XXCloudService.Api.XCCloud
             string errMsg = string.Empty;
             string orderFlwId = dicParas.ContainsKey("orderFlwId") ? dicParas["orderFlwId"].ToString() : string.Empty;
             XCCloudUserTokenModel userTokenModel = (XCCloudUserTokenModel)(dicParas[Constant.XCCloudUserTokenModel]);
-            StoreIDDataModel userTokenDataModel = (StoreIDDataModel)(userTokenModel.DataModel);
+            TokenDataModel userTokenDataModel = (TokenDataModel)(userTokenModel.DataModel);
 
             if (string.IsNullOrEmpty(orderFlwId))
             {
@@ -372,7 +372,7 @@ namespace XXCloudService.Api.XCCloud
             string storedProcedure = "GetOrderContainById";
             SqlParameter[] sqlParameter = new SqlParameter[17];
             sqlParameter[0] = new SqlParameter("@StoreId", SqlDbType.VarChar,15);
-            sqlParameter[0].Value = userTokenDataModel.StoreId;
+            sqlParameter[0].Value = userTokenDataModel.StoreID;
             sqlParameter[1] = new SqlParameter("@OrderFlwId", SqlDbType.VarChar,32);
             sqlParameter[1].Value = orderFlwId;
             sqlParameter[2] = new SqlParameter("@CustomerType", SqlDbType.Int);
@@ -409,10 +409,22 @@ namespace XXCloudService.Api.XCCloud
             System.Data.DataSet ds = XCCloudBLL.GetStoredProcedureSentence(storedProcedure, sqlParameter);
             if (sqlParameter[16].Value.ToString() == "1")
             {
-                OrderInfo1Model model = Utils.GetModelList<OrderInfo1Model>(ds.Tables[0])[0];
-                List<OrderBuyDetail1Model> detail = Utils.GetModelList<OrderBuyDetail1Model>(ds.Tables[1]).ToList();
-                return null;
-                //return ResponseModelFactory.CreateSuccessModel<OrderInfoModel>(isSignKeyReturn, model);
+                OrderInfo1Model model = new OrderInfo1Model();
+                model.CustomerType = Convert.ToInt32(sqlParameter[2].Value);
+                model.ICCardId = Convert.ToInt32(sqlParameter[3].Value);
+                model.PayCount = Convert.ToInt32(sqlParameter[4].Value);
+                model.RealPay = Convert.ToDecimal(sqlParameter[5].Value);
+                model.FreePay = Convert.ToDecimal(sqlParameter[6].Value);
+                model.FoodCount = Convert.ToInt32(sqlParameter[7].Value);
+                model.DetailsGoodsCount = Convert.ToInt32(sqlParameter[8].Value);
+                model.MemberLevelId = Convert.ToInt32(sqlParameter[9].Value);
+                model.MemberLevelName = sqlParameter[10].Value.ToString();
+                model.OpenFee = Convert.ToDecimal(sqlParameter[11].Value);
+                model.Deposit = Convert.ToDecimal(sqlParameter[12].Value);
+                model.RenewFee = Convert.ToDecimal(sqlParameter[13].Value);
+                model.ChangeFee = Convert.ToDecimal(sqlParameter[14].Value);
+                model.Detail = Utils.GetModelList<OrderBuyDetail1Model>(ds.Tables[0]).ToList();
+                return ResponseModelFactory.CreateSuccessModel<OrderInfo1Model>(isSignKeyReturn, model);
             }
             else
             {
@@ -437,7 +449,7 @@ namespace XXCloudService.Api.XCCloud
             string realPay = dicParas.ContainsKey("realPay") ? dicParas["realPay"].ToString() : string.Empty;
 
             XCCloudUserTokenModel userTokenModel = (XCCloudUserTokenModel)(dicParas[Constant.XCCloudUserTokenModel]);
-            StoreIDDataModel userTokenDataModel = (StoreIDDataModel)(userTokenModel.DataModel);
+            TokenDataModel userTokenDataModel = (TokenDataModel)(userTokenModel.DataModel);
 
             if (string.IsNullOrEmpty(orderFlwId))
             {
@@ -467,7 +479,7 @@ namespace XXCloudService.Api.XCCloud
             string storedProcedure = "FinishOrderPayment";
             SqlParameter[] sqlParameter = new SqlParameter[9];
             sqlParameter[0] = new SqlParameter("@StoreID", SqlDbType.VarChar);
-            sqlParameter[0].Value = userTokenDataModel.StoreId;
+            sqlParameter[0].Value = userTokenDataModel.StoreID;
 
             sqlParameter[1] = new SqlParameter("@OrderFlwId", SqlDbType.Int);
             sqlParameter[1].Value = orderFlwId;
@@ -585,7 +597,7 @@ namespace XXCloudService.Api.XCCloud
                 string errMsg = string.Empty;
                 object[] conditions = dicParas.ContainsKey("conditions") ? (object[])dicParas["conditions"] : null;
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
 
                 SqlParameter[] parameters = new SqlParameter[1];
                 parameters[0] = new SqlParameter("@merchId", merchId);
@@ -666,7 +678,7 @@ namespace XXCloudService.Api.XCCloud
             {
                 string errMsg = string.Empty;
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
 
                 DateTime now = DateTime.Now;
                 DateTime start = new DateTime(now.Year, now.Month, 1);
@@ -704,7 +716,7 @@ namespace XXCloudService.Api.XCCloud
                 string errMsg = string.Empty;
                 string checkDate = dicParas.ContainsKey("checkDate") ? dicParas["checkDate"].ToString() : string.Empty;
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
 
                 string sql = " exec  GetOrdersCheck @CheckDate,@MerchId ";
                 var parameters = new SqlParameter[2];
@@ -731,7 +743,7 @@ namespace XXCloudService.Api.XCCloud
                 string checkDate = dicParas.ContainsKey("checkDate") ? dicParas["checkDate"].ToString() : string.Empty;
                 string merchId = string.Empty;
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
+                merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
 
                 if (string.IsNullOrEmpty(checkDate))
                 {

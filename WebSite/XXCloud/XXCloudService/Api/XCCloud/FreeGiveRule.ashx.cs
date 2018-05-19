@@ -34,7 +34,7 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
 
                 string errMsg = string.Empty;
                 object[] conditions = dicParas.ContainsKey("conditions") ? (object[])dicParas["conditions"] : null;
@@ -54,9 +54,9 @@ namespace XXCloudService.Api.XCCloud
                                     /*规则名称*/
                                 	a.RuleName,
                                 	/*开始时间*/
-                                	(case when ISNULL(a.StartTime,'')='' then '' else convert(varchar,a.StartTime,20) end) AS StartTime,
+                                	(case when ISNULL(a.StartTime,'')='' then '' else convert(varchar,a.StartTime,23) end) AS StartTime,
                                     /*结束时间*/
-                                	(case when ISNULL(a.EndTime,'')='' then '' else convert(varchar,a.EndTime,20) end) AS EndTime,
+                                	(case when ISNULL(a.EndTime,'')='' then '' else convert(varchar,a.EndTime,23) end) AS EndTime,
                                 	/*赠送类别*/
                                 	a.FreeBalanceIndex AS FreeBalanceIndex,
                                     /*赠送类别*/
@@ -76,8 +76,8 @@ namespace XXCloudService.Api.XCCloud
                                     /*领取次数*/
                                     a.GetTimes, 
                                 	/*优先级别*/
-                                    a.RuleLevel
-
+                                    a.RuleLevel,
+                                    a.State
                                 FROM
                                 	Data_FreeGiveRule a
                                 LEFT JOIN Dict_BalanceType b ON a.FreeBalanceIndex = b.ID                                
@@ -103,7 +103,7 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
 
                 string errMsg = string.Empty;
                 if (!dicParas.Get("id").Validintnozero("规则ID", out errMsg))
@@ -137,7 +137,7 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
 
                 string errMsg = string.Empty;
                 if(!dicParas.Get("state").Validint("状态", out errMsg))
@@ -259,6 +259,111 @@ namespace XXCloudService.Api.XCCloud
                     catch (Exception ex)
                     {
                         return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, ex.Message);
+                    }
+                }
+
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        /// <summary>
+        /// 升降优先级
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object UpdateRuleLevel(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+
+                string errMsg = string.Empty;
+                if(!dicParas.Get("id").Validintnozero("规则ID", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (!dicParas.Get("updateState").Nonempty("升降级状态", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (dicParas.Get("updateState").Toint() != 1 && dicParas.Get("updateState").Toint() != -1)
+                {
+                    errMsg = "升降级状态参数值不正确";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
+                var id = dicParas.Get("id").Toint();
+                var updateState = dicParas.Get("updateState").Toint(0);
+                                                
+                //开启EF事务
+                using (TransactionScope ts = new TransactionScope())
+                {
+                    try
+                    {
+                        if (!Data_FreeGiveRuleService.I.Any(a => a.ID == id))
+                        {
+                            errMsg = "该赠送规则不存在";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
+                        //设置当前优惠券级别，默认为1,且不超过最大优先级
+                        var freeGiveRule = Data_FreeGiveRuleService.I.GetModels(p => p.ID == id).FirstOrDefault();
+                        var oldLevel = freeGiveRule.RuleLevel;
+                        freeGiveRule.RuleLevel = (freeGiveRule.RuleLevel ?? 0) + updateState;
+                        if (freeGiveRule.RuleLevel < 1)
+                        {
+                            freeGiveRule.RuleLevel = 1;
+                        }
+
+                        var max = Data_FreeGiveRuleService.I.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)).Max(m => m.RuleLevel);
+                        if (freeGiveRule.RuleLevel > max)
+                        {
+                            freeGiveRule.RuleLevel = max;
+                        }
+
+                        Data_FreeGiveRuleService.I.UpdateModel(freeGiveRule);
+
+                        var newLevel = freeGiveRule.RuleLevel;
+                        if (oldLevel != newLevel || oldLevel == null)
+                        {
+                            if (oldLevel == null)
+                            {
+                                //后续优惠券降一级
+                                var linq = Data_FreeGiveRuleService.I.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.ID != id
+                                                               && p.RuleLevel >= newLevel);
+                                foreach (var model in linq)
+                                {
+                                    model.RuleLevel = model.RuleLevel + 1;
+                                    Data_FreeGiveRuleService.I.UpdateModel(model);
+                                }
+                            }
+                            else
+                            {
+                                //与下一个优惠券交换优先级
+                                var nextModel = Data_FreeGiveRuleService.I.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.ID != id
+                                                               && p.RuleLevel == newLevel).FirstOrDefault();
+                                if (nextModel != null)
+                                {
+                                    nextModel.RuleLevel = nextModel.RuleLevel - updateState;
+                                    Data_FreeGiveRuleService.I.UpdateModel(nextModel);
+                                }
+                            }
+                        }
+
+                        if (!Data_FreeGiveRuleService.I.SaveChanges())
+                        {
+                            errMsg = "更新优惠券优先级失败";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
+                        ts.Complete();
+                    }
+                    catch (Exception e)
+                    {
+                        errMsg = e.Message;
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                     }
                 }
 

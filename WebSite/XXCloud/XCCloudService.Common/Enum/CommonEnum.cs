@@ -674,6 +674,17 @@ namespace XCCloudService.Common.Enum
     }
 
     /// <summary>
+    /// 游乐计时项目计费方式
+    /// </summary>
+    public enum CycleType
+    {
+        [Description("按周期扣除")]
+        Cycle = 0,
+        [Description("出闸时扣除")]
+        Out = 1 
+    }
+
+    /// <summary>
     /// 小数位舍弃方式
     /// </summary>
     public enum AddingType
@@ -684,6 +695,54 @@ namespace XCCloudService.Common.Enum
         AllAdd = 1, //全部保留 有任何小数都进位
         [Description("四舍五入")]
         Round = 2 //四舍五入
+    }
+
+    /// <summary>
+    /// 门票类别
+    /// </summary>
+    public enum TicketType
+    {
+        [Description("计次票")]
+        Count = 0,
+        [Description("期限票")]
+        Period = 1,
+        [Description("团体票")]
+        Group = 2 
+    }
+
+    /// <summary>
+    /// 业务类型
+    /// </summary>
+    public enum BusinessType
+    {
+        [Description("门票")]
+        Ticket = 0,
+        [Description("限时任玩")]
+        TimePlay = 1,
+        [Description("机台打包")]
+        StationPack = 2
+    }
+
+    /// <summary>
+    /// 生效方式
+    /// </summary>
+    public enum EffactType
+    {
+        [Description("按时长")]
+        Period = 0,
+        [Description("按日期")]
+        Date = 1
+    }
+
+    /// <summary>
+    /// 退票方式
+    /// </summary>
+    public enum ExitTicketType
+    {
+        [Description("按金额")]
+        Money = 0,  
+        [Description("按比例")]
+        Percent = 1        
     }
 
     /// <summary>

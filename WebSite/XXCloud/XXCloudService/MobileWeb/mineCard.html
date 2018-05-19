@@ -77,6 +77,17 @@
             </div>
         </div>
     </div>
+    <yd-tabbar fixed=true active-color="#000000">
+        <yd-tabbar-item title="首页" @click.native="register1">
+            <yd-icon name="home" slot="icon" size="0.54rem"></yd-icon>
+        </yd-tabbar-item>
+        <yd-tabbar-item title="我的订单" @click.native="register2">
+            <yd-icon name="shopcart" slot="icon" size="0.54rem"></yd-icon>
+        </yd-tabbar-item>
+        <yd-tabbar-item title="个人中心" @click.native="register3">
+            <yd-icon name="ucenter-outline" slot="icon" size="0.54rem"></yd-icon>
+        </yd-tabbar-item>
+    </yd-tabbar>
 </div>
 
 <!-- 引入 Vue -->
@@ -179,6 +190,15 @@
                 var memberTokens = {storeId: that.memberCard[index].storeId, memberToken: that.memberCard[index].memberToken};
                 setStorage("memberTokens",memberTokens);
                 window.location.href = "mall.html"
+            },
+            register1:function () {
+                window.location.href = "home.html"
+            },
+            register3:function () {
+                window.location.href = "mine.html"
+            },
+            register2:function () {
+                window.location.href = "MyOrder.html"
             },
             msgPrompt:function (res) {
                 if(res.return_code == 0){

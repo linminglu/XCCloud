@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>免费赠送规则</title>
+    <link rel="stylesheet" href="layui/css/layui.css">
+    <link rel="stylesheet" href="layui/css/layui_font.css">
+</head>
+<body>
+<div class="layui-row" style="padding: 15px;">
+    <blockquote class="layui-elem-quote" style="text-align:right;padding-right: 50px;">
+        <button type="button" class="layui-btn">查询</button>
+        <button type="button" class="layui-btn" id="add">新增</button>
+    </blockquote>
+    <table class="layui-hide" id="freeGiveRuleTable" lay-filter="freeGiveRuleTable"></table>
+</div>
+
+<!--新增规则-->
+<div id="openModel" style="padding: 15px;display: none" class="goodIsAll">
+    <form action="" class="layui-form layui-form-pane" lay-filter="formtest">
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label  class="layui-form-label">规则名称</label>
+                <div class="layui-input-inline" style="width: 300px">
+                    <input type="text" class="layui-input" name="RuleName">
+                </div>
+            </div>
+           <div class="layui-inline">
+               <div class="layui-input-inline">
+                   <input type="checkbox" lay-text="启用|禁用" checked lay-skin="switch" name="State" lay-filter="State">
+               </div>
+           </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">开始时间</label>
+                <div class="layui-input-inline">
+                    <select name="startType" lay-filter="startType">
+                        <option value="0">当天</option>
+                        <option value="1">当周</option>
+                        <option value="2">当月</option>
+                        <option value="3">当季</option>
+                        <option value="4">本年</option>
+                    </select>
+                </div>
+                <div class="layui-input-inline">
+                    <input type="text" id="StartTime" class="layui-input" name="StartTime">
+                </div>
+                <div class="layui-form-mid">至</div>
+                <div class="layui-input-inline">
+                    <input type="text" id="EndTime" class="layui-input" name="EndTime" >
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label  class="layui-form-label">赠送类别</label>
+                <div class="layui-input-inline">
+                    <select name="FreeBalanceIndex" id="FreeBalanceIndex" lay-filter="FreeBalanceIndex"></select>
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label  class="layui-form-label">赠送数量</label>
+                <div class="layui-input-inline">
+                    <input type="text"class="layui-input" name="FreeCount" lay-filter="FreeCount">
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <div class="layui-input-inline">
+                    <input type="checkbox" title="适用于散客" lay-skin="primary" name="AllowGuest" lay-filter="AllowGuest">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label for="" class="layui-form-label">身份确定方式</label>
+                <div class="layui-input-inline">
+                    <select name="IDReadType" id="IDReadType" lay-filter="IDReadType">
+                        <option >-请选择-</option>
+                        <option value="0">手工录入</option>
+                        <option value="1">机器扫描</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label for="" class="layui-form-label">适用级别</label>
+                <div class="layui-input-block" id="memberBox">
+
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label for="" class="layui-form-label">赠送周期</label>
+                <div class="layui-input-inline" style="width: 140px">
+                    <select name="PeriodType" id="PeriodType" lay-filter="PeriodType">
+                        <option >-请选择-</option>
+                        <option value="0">固定周期</option>
+                        <option value="1">自然周期</option>
+                    </select>
+                </div>
+                <div class="layui-form-mid">每个人每间隔</div>
+                <div class="layui-input-inline" style="width: 70px">
+                    <input type="text" class="layui-input" name="SpanCount">
+                </div>
+                <div class="layui-input-inline" style="width: 120px">
+                    <select name="SpanType" id="SpanType" lay-filter="SpanType">
+                        <option >-请选择-</option>
+                        <option value="0">小时</option>
+                        <option value="1">日</option>
+                        <option value="2">周</option>
+                        <option value="3">月</option>
+                        <option value="4">季</option>
+                        <option value="5">年</option>
+                    </select>
+                </div>
+                <div class="layui-form-mid">可领取</div>
+                <div class="layui-input-inline" style="width: 70px">
+                    <input type="text" class="layui-input" name="GetTimes">
+                </div>
+                <div class="layui-form-mid">次</div>
+            </div>
+        </div>
+    </form>
+    <div class="layui-col-md12" style="text-align:center;">
+        <button type="button" class="layui-btn" id="save">确定</button>
+    </div>
+</div>
+</body>
+<script src="js/jquery-1.8.3-min.js"></script>
+<script src="layui/layui.js"></script>
+<script src="js/storeSystem.js"></script>
+<script>
+    var xc=xcActionSystem.prototype;
+    var token=xc.getStorage('token');
+    let parm={'obj':{'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'},
+        'url':'/XCCloud/FreeGiveRule?action=QueryFreeGiveRule',
+        'elem':'#freeGiveRuleTable',
+        'cols':[
+            {field:'ID', title:'ID', align: 'center', sort: true}
+            ,{field:'MerchID',title: '商户编号', align: 'center'} //width 支持：数字、百分比和不填写。
+            ,{field:'RuleName', title: '规则名称', align: 'center'}
+            ,{field:'StartTime', title: '开始时间', align: 'center'}
+            ,{field:'EndTime', title: '结束时间', align: 'center'}
+            ,{field:'FreeBalanceStr', title: '赠送余额类别', align: 'center',templet:'#internet'}
+            ,{field:'FreeCount', title: '赠送数量', align: 'center',templet:'#print'}
+            ,{field:'AllowGuest', title: '是否允许散客', align: 'center',templet:'#authorize'}
+            ,{field:'PeriodTypeStr', title: '赠送周期类别', align: 'center'}
+            ,{field:'SpanCount', title: '间隔数量', align: 'center'}
+            ,{field:'SpanTypeStr', title: '间隔类型', align: 'center'}
+            ,{field:'GetTimes', title: '领取次数', align: 'center'}
+            ,{field:'RuleLevel', title: '优先级别', align: 'center'}
+            ,{fixed: 'right', title: '操作', width:260, align:'center', toolbar: '#barDemo'}
+        ]
+    };
+    xc.getInitData(parm);
+
+    let State=1;
+    let FreeBalanceIndex='';let AllowGuest=0;
+    let IDReadType='';let PeriodType='';let SpanType='';
+    let memArr=[];
+    layui.use(['table','form','layer','laydate'],function () {
+        let table=layui.table;let form=layui.form;let layer=layui.layer;let laydate=layui.laydate;
+        form.on('switch(State)',function (data) {
+            if(data.elem.checked==true){
+                State=1
+            }else {
+                State=0;
+            }
+        })
+        form.on('select(startType)',function (data) {
+            if(data.value==0){
+                $('#StartTime').val(getDayStartDate()).prop('disabled',true);
+                $('#EndTime').val(getDayStartDate()).prop('disabled',true);
+            }else if(data.value==1){
+                $('#StartTime').val(getWeekStartDate()).prop('disabled',true);
+                $('#EndTime').val(getWeekEndDate()).prop('disabled',true);
+            }else if(data.value==2){
+                $('#StartTime').val(getMonthStartDate()).prop('disabled',true);
+                $('#EndTime').val(getMonthEndDate()).prop('disabled',true);
+            }else if(data.value==4){
+                $('#StartTime').val(getYearStartDate()).prop('disabled',true);
+                $('#EndTime').val(getYearEndDate()).prop('disabled',true);
+            }else if(data.value==3){
+                $('#StartTime').val(getQuarterStartDate()).prop('disabled',true);
+                $('#EndTime').val(getQuarterEndDate()).prop('disabled',true);
+            }else if(data.value==5){
+                $('#StartTime').prop('disabled',false);
+                $('#EndTime').prop('disabled',false);
+                layer.msg('<p style="color: red">请自己设置有效期限</p>')
+            }
+        });
+        form.on('select(FreeBalanceIndex)',function (data) {
+            FreeBalanceIndex=data.value;
+        });
+        form.on('checkbox(AllowGuest)',function (data) {
+            if(data.elem.checked==true){
+                AllowGuest=1
+            }else {
+                AllowGuest=0;
+            }
+        })
+        form.on('select(FreeBalanceIndex)',function (data) {
+            FreeBalanceIndex=data.value;
+        });
+        form.on('select(IDReadType)',function (data) {
+            IDReadType=data.value;
+        });
+        form.on('select(PeriodType)',function (data) {
+            PeriodType=data.value;
+        });
+        form.on('select(SpanType)',function (data) {
+            SpanType=data.value;
+        });
+
+        form.on('checkbox(ml)',function () {
+            if(data.elem.checked==true){
+                memArr.push(data.elem.value)
+            }else {
+                for(let i in memArr){
+                    if(memArr[i]==data.elem.value){
+                        memArr.splice(i,1)
+                    }
+                }
+            }
+        })
+        laydate.render({
+            elem: '#StartTime',type: 'date',value:new Date()
+        });
+        laydate.render({
+            elem: '#EndTime',type: 'date',value:new Date()
+        });
+        $('#add').click(function () {
+             State=1;
+             FreeBalanceIndex=''; AllowGuest=0;
+             IDReadType=''; PeriodType=''; SpanType='';
+            xc.getBalanceTypeDic ('',token,layer,form,'FreeBalanceIndex')
+           xc.getMemberTypeAll(token,layer,form,'memberBox');
+            layer.open({
+                title:'新增',
+                type:1,
+                area:'800px',
+                content:$('#openModel'),
+                cancel:function () {
+                    location.reload()
+                }
+            })
+        });
+        //save
+        $('#save').click(function () {
+            let _obj={'RuleName':$('input[name="RuleName"]').val(),
+                'State':State,
+                'StartTime':$('input[name="StartTime"]').val(),
+                'EndTime':$('input[name="EndTime"]').val(),
+                'FreeBalanceIndex':FreeBalanceIndex,
+                'FreeCount':$('input[name="FreeCount"]').val(),
+                'AllowGuest':AllowGuest,
+                'IDReadType':IDReadType,
+                'PeriodType':PeriodType,
+                'SpanCount':$('input[name="SpanCount"]').val(),
+                'GetTimes':$('input[name="GetTimes"]').val(),
+                'SpanType':SpanType,
+                'MemberLevelIDs':memArr.length>0?memArr.join('|'):'',
+                'userToken':token,
+                'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+            let parseJson = JSON.stringify(_obj);
+            $.ajax({
+                type:'post',
+                url:'/XCCloud/FreeGiveRule?action=SaveFreeGiveRule',
+                contentType: "application/json; charset=utf-8",
+                data:{parasJson: parseJson},
+                success: function (data) {
+                    data = JSON.parse(data);
+                    if (data.result_code == 1) {
+                        layer.msg('保存成功',{time:'1500px'},function () {
+                            location.reload();
+                        })
+                    }else {
+                        layer.msg(data.result_msg||data.return_msg)
+                    }
+                }
+            })
+        })
+    })
+</script>
+</html>

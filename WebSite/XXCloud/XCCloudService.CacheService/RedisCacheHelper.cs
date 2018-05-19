@@ -166,7 +166,7 @@ namespace XCCloudService.CacheService
         /// <param name="key">就的redis key</param>
         /// <param name="newKey">新的redis key</param>
         /// <returns></returns>
-        public bool KeyRename(string key, string newKey)
+        public static bool KeyRename(string key, string newKey)
         {
             RedisHelper redisHelper = new RedisHelper();
             return redisHelper.KeyRename(key, newKey);
@@ -178,7 +178,7 @@ namespace XCCloudService.CacheService
         /// <param name="key">redis key</param>
         /// <param name="expiry"></param>
         /// <returns></returns>
-        public bool KeyExpire(string key, TimeSpan? expiry = default(TimeSpan?))
+        public static bool KeyExpire(string key, TimeSpan? expiry = default(TimeSpan?))
         {
             RedisHelper redisHelper = new RedisHelper();
             return redisHelper.KeyExpire(key, expiry);

@@ -9,13 +9,16 @@ namespace XCCloudService.Model.CustomModel.XCCloud
 
     public class XCCloudUserTokenModel
     {
-        public XCCloudUserTokenModel(string logId, long endTime, int logType, TokenDataModel dataModel = null)
+        public XCCloudUserTokenModel(string token, string logId, long endTime, int logType, TokenDataModel dataModel = null)
         {
+            this.Token = token;
             this.LogId = logId;
             this.EndTime = endTime;
             this.LogType = logType;
             this.DataModel = dataModel;
         }
+
+        public string Token { get; set; }
         
         public string LogId { set; get; }
         
@@ -27,11 +30,6 @@ namespace XCCloudService.Model.CustomModel.XCCloud
     }
 
     public class TokenDataModel
-    {        
- 
-    }
-
-    public class MerchDataModel : TokenDataModel
     {
         public string MerchID { get; set; }
 
@@ -44,25 +42,55 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         public Nullable<int> CreateType { get; set; }
 
         public string CreateUserID { get; set; }
-    }
-
-    public class StoreIDDataModel:TokenDataModel
-    {
-        public string MerchId { set; get; }
-
-        public string StoreId { set; get; }
 
         public string StorePassword { set; get; }
 
         public string WorkStation { set; get; }
 
-        public StoreIDDataModel(string merchId,string storeId, string password, string workStation)
+        public TokenDataModel()
+        { }
+
+        public TokenDataModel(string merchId, string storeId, string password, string workStation)
         {
-            this.MerchId = merchId;
-            this.StoreId = storeId;
+            this.MerchID = merchId;
+            this.StoreID = storeId;
             this.StorePassword = password;
             this.WorkStation = workStation;
         }
     }
+
+    //public class TokenDataModel : TokenDataModel
+    //{
+    //    public string MerchID { get; set; }
+
+    //    public string StoreID { get; set; }
+
+    //    public Nullable<int> WorkStationID { get; set; }
+
+    //    public Nullable<int> MerchType { get; set; }
+
+    //    public Nullable<int> CreateType { get; set; }
+
+    //    public string CreateUserID { get; set; }
+    //}
+
+    //public class TokenDataModel : TokenDataModel
+    //{
+    //    public string MerchId { set; get; }
+
+    //    public string StoreId { set; get; }
+
+    //    public string StorePassword { set; get; }
+
+    //    public string WorkStation { set; get; }
+
+    //    public TokenDataModel(string merchId,string storeId, string password, string workStation)
+    //    {
+    //        this.MerchId = merchId;
+    //        this.StoreId = storeId;
+    //        this.StorePassword = password;
+    //        this.WorkStation = workStation;
+    //    }
+    //}
 
 }

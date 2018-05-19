@@ -110,8 +110,8 @@
 //            try
 //            {
 //                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-//                string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
-//                string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
+//                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+//                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
 //                var query = Data_ProjectTimeInfoService.N.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase));
 //                if (userTokenKeyModel.LogType == (int)RoleType.StoreUser)
 //                {
@@ -147,7 +147,7 @@
 //            try
 //            {
 //                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-//                string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
+//                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
 
 //                var linq = from a in Data_ProjectTimeInfoService.I.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase))
 //                           select new
@@ -255,7 +255,7 @@
 //            try
 //            {
 //                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-//                string merchId = (userTokenKeyModel.DataModel as MerchDataModel).MerchID;
+//                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
 
 //                string errMsg = string.Empty;
 //                string id = dicParas.Get("id");
@@ -392,7 +392,7 @@
 //            try
 //            {
 //                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-//                string storeId = (userTokenKeyModel.DataModel as MerchDataModel).StoreID;
+//                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
 
 //                string errMsg = string.Empty;
 //                string projectIds = dicParas.ContainsKey("projectIds") ? (dicParas["projectIds"] + "") : string.Empty;

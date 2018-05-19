@@ -13,20 +13,17 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         [DataMember(Name = "ruleId", Order = 1)]
         public int ID { get; set; }
 
-        [DataMember(Name = "pId", Order = 2)]
-        public Nullable<int> PID { get; set; }
-
-        [DataMember(Name = "name", Order = 3)]
+        [DataMember(Name = "name", Order = 2)]
         public string RuleName { get; set; }
 
-        [DataMember(Name = "ruleType", Order = 4)]
+        [DataMember(Name = "ruleType", Order = 3)]
         public int RuleType { get; set; }
 
-        [DataMember(Name = "typeName", Order = 5)]
+        [DataMember(Name = "typeName", Order = 4)]
         public string TypeName { get; set; }
 
-        [DataMember(Name = "children", Order = 6)]
-        public List<RuleOverlyingModel> Children { get; set; }
+        [DataMember(Name = "couponType", Order = 5)]
+        public int? CouponType { get; set; }
     }
 
     [DataContract]

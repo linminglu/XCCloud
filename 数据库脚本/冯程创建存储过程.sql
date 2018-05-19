@@ -99,6 +99,8 @@ as
 		if not exists (select 0 from Dict_System where PID=@RootID)
 			return		
 	end
+
+	set @RootID = ISNULL(@RootID, 0)
 	
 	;WITH 
 	LOCS(ID,PID,DictKey,DictValue,Comment,OrderID,[Enabled],MerchID,DictLevel)
