@@ -57,7 +57,7 @@ namespace XXCloudService.Api.XCCloud
                                 	Data_ProjectInfo a
                                 LEFT JOIN Data_GroupArea b ON a.AreaType = b.ID  
                                 LEFT JOIN Dict_System c ON a.ProjectType = c.ID                                
-                                WHERE 1=1
+                                WHERE State=1
                             ";
                 sql += " AND a.StoreID=" + storeId;
 
@@ -134,8 +134,6 @@ namespace XXCloudService.Api.XCCloud
                 string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
 
                 string errMsg = string.Empty;
-                if (!dicParas.Get("state").Validint("项目状态", out errMsg))
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 if (!dicParas.Get("chargeType").Validint("扣费类型", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 if (!dicParas.Get("projectType").Validintnozero("项目类型", out errMsg))
@@ -161,6 +159,7 @@ namespace XXCloudService.Api.XCCloud
                         Utils.GetModel(dicParas, ref model);
                         if (id == 0)
                         {
+                            model.State = 1;
                             if (!Data_ProjectInfoService.I.Add(model))
                             {
                                 errMsg = "保存游乐项目失败";

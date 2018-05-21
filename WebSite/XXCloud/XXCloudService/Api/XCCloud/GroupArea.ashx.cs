@@ -34,7 +34,7 @@ namespace XXCloudService.Api.XCCloud
                 string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
                 string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
 
-                var list = from a in Data_GroupAreaService.N.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)
+                var linq = from a in Data_GroupAreaService.N.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)
                                && p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase))
                            join b in Data_ProjectInfoService.N.GetModels(p => p.State == 1) on a.ID equals b.AreaType into b1
                            from b in b1.DefaultIfEmpty()
@@ -47,7 +47,7 @@ namespace XXCloudService.Api.XCCloud
                                ProjectCount = g.Count()
                            };
 
-                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, list);
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, linq.ToList());
             }
             catch (Exception e)
             {
