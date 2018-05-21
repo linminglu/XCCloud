@@ -567,11 +567,11 @@ namespace XXCloudService.Api.XCCloud
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
-                if (string.IsNullOrWhiteSpace(merchName))
-                {
-                    errMsg = "负责人名称不能为空";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
+                //if (string.IsNullOrWhiteSpace(merchName))
+                //{
+                //    errMsg = "负责人名称不能为空";
+                //    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                //}
 
                 if (merchName.Length > 50)
                 {
@@ -609,14 +609,14 @@ namespace XXCloudService.Api.XCCloud
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
-                //获取用户基本信息
-                if (string.IsNullOrEmpty(unionId))
-                {
-                    if (!TokenMana.GetUnionId(openId, out unionId, out errMsg))
-                    {
-                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                    }
-                }
+                ////获取用户基本信息
+                //if (string.IsNullOrEmpty(unionId))
+                //{
+                //    if (!TokenMana.GetUnionId(openId, out unionId, out errMsg))
+                //    {
+                //        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                //    }
+                //}
                                 
                 #endregion
 

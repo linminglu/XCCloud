@@ -373,6 +373,46 @@ namespace XXCloudService.Api.XCCloud
         }
 
         /// <summary>
+        /// 获取公共礼包字典列表
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object GetFoodInfoDic(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                
+                var foodIdForPrivateGood = from a in Data_Food_DetialService.N.GetModels(p => p.FoodType == (int)FoodDetailType.Good)
+                              join b in Base_GoodsInfoService.N.GetModels(p => (p.StoreID ?? "") != "") on a.ContainID equals b.ID
+                              join c in Data_FoodInfoService.N.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.FoodState == (int)FoodState.Valid) on a.FoodID equals c.FoodID
+                              select a.FoodID;
+
+                var foodIdContainedTicket = from a in Data_Food_DetialService.N.GetModels(p => p.FoodType == (int)FoodDetailType.Ticket)
+                                            join b in Data_FoodInfoService.N.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.FoodState == (int)FoodState.Valid) on a.FoodID equals b.FoodID
+                                            select a.FoodID;
+
+                //排除包含私有属性的套餐
+                var linq = from a in Data_FoodInfoService.I.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.FoodState == (int)FoodState.Valid)
+                           where !foodIdForPrivateGood.Contains(a.FoodID) && !foodIdContainedTicket.Contains(a.FoodID)
+                           orderby a.FoodName
+                           select new
+                           {
+                               FoodID = a.FoodID,
+                               FoodName = a.FoodName
+                           };
+
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, linq);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        /// <summary>
         /// 获取入会套餐
         /// </summary>
         /// <param name="dicParas"></param>

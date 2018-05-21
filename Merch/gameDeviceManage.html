@@ -294,59 +294,60 @@ let index;
                         }
                     }
                 });
-            }else if(layEvent==='bindTime'){
-                bindType=1;
-                let _obj={'id':data.ID,'joinType':1,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
-                let parseJson = JSON.stringify(_obj);
-                $.ajax({
-                    type:'post',
-                    url:'/XCCloud/DeviceInfo?action=GetBindProject',
-                    contentType: "application/json; charset=utf-8",
-                    data:{parasJson: parseJson},
-                    success: function (data) {
-                        data = JSON.parse(data);
-                        if (data.result_code == 1) {
-                            arrBindTable=data.result_data,
-                                table.render({
-                                    elem:'#bindTable',
-                                    data:arrBindTable,
-                                    size:'sm',
-                                    cols:[[
-                                        {field:'ProjectID', title:'门票ID', align: 'center', sort: true,width:120}
-                                        ,{field:'ProjectName',title: '门票名称', align: 'center',width:120} //width 支持：数字、百分比和不填写。
-                                        ,{field:'SignType', title: '验证类型', align: 'center',width:120,templet:'#SignType'}
-                                        ,{field:'LockMember', title: '入场锁定', align: 'center',width:120,templet:'#LockMember'}
-                                        ,{fixed: 'right', title: '操作', width:140, align:'center', toolbar: '#barDemo1'}
-                                    ]]
-                                    , page: {page: true, limits: [10, 15, 20]}
-                                    , limit: 5
-                                });
-                            layer.open({
-                                title:'计时绑定',
-                                type:1,
-                                area:'650px',
-                                anim: 5, //0-6的选择，指定弹出图片动画类型，默认随机（请注意，3.0之前的版本用shift参数）
-                                content:$('#bindTableBox')
-                            });
-                        } else {
-                            layer.msg(data.result_msg);
-                        }
-                    }
-                });
             }
+            // else if(layEvent==='bindTime'){
+            //     bindType=1;
+            //     let _obj={'id':data.ID,'joinType':1,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+            //     let parseJson = JSON.stringify(_obj);
+            //     $.ajax({
+            //         type:'post',
+            //         url:'/XCCloud/DeviceInfo?action=GetBindProject',
+            //         contentType: "application/json; charset=utf-8",
+            //         data:{parasJson: parseJson},
+            //         success: function (data) {
+            //             data = JSON.parse(data);
+            //             if (data.result_code == 1) {
+            //                 arrBindTable=data.result_data,
+            //                     table.render({
+            //                         elem:'#bindTable',
+            //                         data:arrBindTable,
+            //                         size:'sm',
+            //                         cols:[[
+            //                             {field:'ProjectID', title:'门票ID', align: 'center', sort: true,width:120}
+            //                             ,{field:'ProjectName',title: '门票名称', align: 'center',width:120} //width 支持：数字、百分比和不填写。
+            //                             ,{field:'SignType', title: '验证类型', align: 'center',width:120,templet:'#SignType'}
+            //                             ,{field:'LockMember', title: '入场锁定', align: 'center',width:120,templet:'#LockMember'}
+            //                             ,{fixed: 'right', title: '操作', width:140, align:'center', toolbar: '#barDemo1'}
+            //                         ]]
+            //                         , page: {page: true, limits: [10, 15, 20]}
+            //                         , limit: 5
+            //                     });
+            //                 layer.open({
+            //                     title:'计时绑定',
+            //                     type:1,
+            //                     area:'650px',
+            //                     anim: 5, //0-6的选择，指定弹出图片动画类型，默认随机（请注意，3.0之前的版本用shift参数）
+            //                     content:$('#bindTableBox')
+            //                 });
+            //             } else {
+            //                 layer.msg(data.result_msg);
+            //             }
+            //         }
+            //     });
+            // }
         });
         $('#saveBtn').on('click',function () {
             xc.BindDeviceInfo(_id,token,layer,_state)
         });
-        $('#addBind').on('click',function () {
-            xc.GetTicketProjectDic(token,layer,form,'ProjectID');
-            index= layer.open({
-               title:bindType==0? '门票绑定':'计时绑定',
-               type:1,
-               area:'380px',
-               content:$('#joinWay')
-           })
-        });
+        // $('#addBind').on('click',function () {
+        //     xc.GetTicketProjectDic(token,layer,form,'ProjectID');
+        //     index= layer.open({
+        //        title:bindType==0? '门票绑定':'计时绑定',
+        //        type:1,
+        //        area:'380px',
+        //        content:$('#joinWay')
+        //    })
+        // });
         $('#cancel').on('click',function () {
            layer.closeAll();
              _state;
@@ -447,8 +448,8 @@ let index;
     {{#  } }}
     <a class="layui-btn layui-btn-xs" lay-event="clockCook">报警日志</a>
     <a class="layui-btn layui-btn-xs" lay-event="code">二维码</a>
-    <a class="layui-btn layui-btn-xs" lay-event="bindTicket">门票绑定</a>
-    <a class="layui-btn layui-btn-xs" lay-event="bindTime">计时绑定</a>
+    <!--<a class="layui-btn layui-btn-xs" lay-event="bindTicket">门票绑定</a>-->
+    <!--<a class="layui-btn layui-btn-xs" lay-event="bindTime">计时绑定</a>-->
     {{#  } }}
 </script>
 <script type="text/html" id="barDemo1">

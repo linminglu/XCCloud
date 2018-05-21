@@ -872,6 +872,20 @@ namespace XCCloudService.Api.XCCloud
                                 if (el != null)
                                 {
                                     var dicPara = new Dictionary<string, object>(el, StringComparer.OrdinalIgnoreCase);
+                                    if (!dicPara.Get("sourceBalanceIndex").Validint("原类型", out errMsg))
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    if (!dicPara.Get("sourceCount").Validintnozero("原数量", out errMsg))
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    if (!dicPara.Get("targetBalanceIndex").Validint("兑换类型", out errMsg))
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    if (!dicPara.Get("targetCount").Validintnozero("兑换数量", out errMsg))
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    if (dicPara.Get("sourceBalanceIndex").Toint() == dicPara.Get("targetBalanceIndex").Toint())
+                                    {
+                                        errMsg = "原类型不能与兑换类型相同";
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    }
+
                                     var sourceBalanceIndex = dicPara.Get("sourceBalanceIndex").Toint();
                                     var sourceCount = dicPara.Get("sourceCount").Toint();
                                     var targetBalanceIndex = dicPara.Get("targetBalanceIndex").Toint();

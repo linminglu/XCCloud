@@ -68,7 +68,7 @@
 
               </div>
               <div class="layui-colla-item goodIsAll ">
-                  <h2 class="layui-colla-title layui-col-md12">开卡</h2>
+                  <h2 class="layui-colla-title">开卡</h2>
                   <div class="layui-colla-content  layui-colla-content1 " >
                      <div class="layui-form-item">
                          <div class="layui-inline">
@@ -123,11 +123,11 @@
                              </div>
                          </div>
                          <div class="layui-inline goodIsAll">
-                             <div class="layui-input-inline">
-                                 <input type="checkbox" title="一张身份证只能办一张卡"  checked   id="cardOnly" lay-filter="cardOnly">
+                             <div class="layui-input-inline" style="width: 400px">
+                                 <input type="checkbox" title="一张身份证只能办一张卡"  checked  lay-skin="primary"  id="cardOnly" lay-filter="cardOnly">
                              </div>
-                             <div class="layui-input-inline">
-                                 <input type="checkbox"  title="一张手机号只能办一张卡"   checked   id="phoneOnly" lay-filter="phoneOnly">
+                             <div class="layui-input-inline" style="width: 400px">
+                                 <input type="checkbox"  title="一张手机号只能办一张卡"   checked  lay-skin="primary"  id="phoneOnly" lay-filter="phoneOnly">
                              </div>
                          </div>
                          <br>
@@ -203,7 +203,7 @@
                           </div>
                           <div class="layui-inline"><label class="layui-form-label" style="padding: 8px 0!important;">升级到</label>
                               <div class="layui-input-inline">
-                                  <select>
+                                  <select id="upML" lay-filter="upML">
                                       <option value="0">不升级</option>
                                   </select>
                               </div>
@@ -213,7 +213,7 @@
                           </div>
                           <div class="layui-inline"><label class="layui-form-label" style="padding: 8px 0!important;">降级到</label>
                               <div class="layui-input-inline">
-                                  <select>
+                                  <select id="downML" lay-filter="downML">
                                       <option value="0">不降级</option>
                                   </select>
                               </div>
@@ -269,45 +269,41 @@
                   <h2 class="layui-colla-title">商品兑换折扣率</h2>
                   <div class="layui-colla-content ">
                       <div class="layui-form-item goodConvert">
-                          <div class="goodRules">
-                              <div class="layui-inline" style="margin-right: 0;">
-                                  <label class="layui-form-label" style="width: 80px;">余额类别</label>
-                                  <div class="layui-input-inline" style="width: 100px;">
-                                      <select name="" lay-filter="freeRate"></select>
-                                  </div>
+
+                          <div class="layui-inline goodRules" style="margin-right: 0">
+                              <label class="layui-form-label" style="width: 80px;">余额类别</label>
+                              <div class="layui-input-inline" style="width: 100px;">
+                                  <select name="" lay-filter="freeRate"></select>
                               </div>
-                              <div class="layui-inline" style="margin-right: 0;">
-                                  <label  class="layui-form-label" style="width: 80px;">兑换折扣</label>
-                                  <div class="layui-input-inline" style="width: 60px;">
-                                      <input type="text" class="layui-input">
-                                  </div>
-                                  <div class="layui-form-mid">%</div>
+                              <label  class="layui-form-mid">兑换折扣</label>
+                              <div class="layui-input-inline" style="width: 60px;">
+                                  <input type="text" class="layui-input">
                               </div>
-                              <div class="layui-inline" style="margin-right: 0;">
-                                  <div class="layui-input-inline" style="width: 110px;">
-                                      <input type="checkbox"   title="需要授权" lay-skin="primary">
-                                  </div>
+                              <div class="layui-form-mid">%</div>
+                              <div class="layui-input-inline" style="width: 110px;">
+                                  <input type="checkbox"   title="需要授权" lay-skin="primary">
                               </div>
-                              <div class="layui-inline" style="margin-right: 0;">
-                                  <label  class="layui-form-label" style="width: 100px;">最大存储余额</label>
-                                  <div class="layui-input-inline" style="width: 90px;">
-                                      <input type="text" class="layui-input" >
-                                  </div>
-                                  <div  class="layui-form-mid" style="width: 100px;">单词最大增加数</div>
-                                  <div class="layui-input-inline" style="width: 88px;">
-                                      <input type="text" class="layui-input">
-                                  </div>
+                              <label  class="layui-form-mid" style="width: 100px;">最大存储余额</label>
+                              <div class="layui-input-inline" style="width: 90px;">
+                                  <input type="text" class="layui-input" >
+                              </div>
+                              <div  class="layui-form-mid" style="width: 100px;">单词最大增加数</div>
+                              <div class="layui-input-inline" style="width: 88px;">
+                                  <input type="text" class="layui-input">
                               </div>
                           </div>
 
-                          <div class="layui-btn-group">
-                              <button class="layui-btn layui-btn-sm" type="button" id="addMore">
-                                  <i class="layui-icon">&#xe654;</i>
-                              </button>
-                              <button class="layui-btn layui-btn-sm" type="button" id="reduceBtn">
-                                  <i class="layui-icon">&#x1006;</i>
-                              </button>
-                          </div>
+                        <div class="layui-inline" style="width: 80px">
+                            <div class="layui-btn-group">
+                                <button class="layui-btn layui-btn-sm" type="button" id="addMore">
+                                    <i class="layui-icon">&#xe654;</i>
+                                </button>
+                                <button class="layui-btn layui-btn-sm" type="button" id="reduceBtn">
+                                    <i class="layui-icon">&#x1006;</i>
+                                </button>
+                            </div>
+                        </div>
+
                       </div>
                   </div>
               </div>
@@ -342,47 +338,48 @@
                       </div>
                   </div>
               </div>
-              <div class="layui-colla-item">
+              <div class="layui-colla-item" >
                   <h2 class="layui-colla-title">预赠币</h2>
-                  <div class="layui-colla-content ">
+                  <div class="layui-colla-content " style="padding: 10px 0">
                       <div class="layui-form-item freeLast">
-                          <div class="sendBox">
-                              <div class="layui-inline reduceBox">
+
+                            <div class="layui-inline reduceBox" style="margin-right: 0">
                                   <label  class="layui-form-label" style="width: 90px">充值满</label>
                                   <div class="layui-input-inline" style="width: 60px">
                                       <input type="text" class="layui-input" id="chargeTotal">
                                   </div>
                                   <div class="layui-form-mid">元，预赠方式</div>
-                                  <div class="layui-input-inline" style="width: 130px">
+                                  <div class="layui-input-inline" style="width: 100px">
                                       <select name="" id="freeBalanceType" lay-filter="freeBalanceType"></select>
                                   </div>
                                   <div class="layui-form-mid">元，预赠币</div>
-                                  <div class="layui-input-inline" style="width: 60px">
+                                  <div class="layui-input-inline" style="width: 55px">
                                       <input type="text" class="layui-input" id="freeCount">
                                   </div>
                                   <div class="layui-form-mid">最小间隔</div>
-                                  <div class="layui-input-inline" style="width: 60px" >
+                                  <div class="layui-input-inline" style="width: 55px" >
                                       <input type="text" class="layui-input" id="minSpaceDays">
                                   </div>
                                   <div class="layui-form-mid">天,可领</div>
-                                  <div class="layui-input-inline" style="width: 60px">
+                                  <div class="layui-input-inline" style="width: 55px">
                                       <input type="text" class="layui-input" id="onceFreeCount">
                                   </div>
                                   <div class="layui-form-mid">币,有效天数</div>
-                                  <div class="layui-input-inline" style="width: 60px">
+                                  <div class="layui-input-inline" style="width: 55px">
                                       <input type="text" class="layui-input" id="expireDays">
                                   </div>
                               </div>
-                          </div>
+                            <div class="layui-inline" style="width: 80px">
+                                <div class="layui-btn-group">
+                                    <button class="layui-btn layui-btn-sm" type="button" id="addMore1">
+                                        <i class="layui-icon">&#xe654;</i>
+                                    </button>
+                                    <button class="layui-btn layui-btn-sm" type="button" id="reduceBtn1">
+                                        <i class="layui-icon">&#x1006;</i>
+                                    </button>
+                                </div>
+                            </div>
 
-                          <div class="layui-btn-group">
-                              <button class="layui-btn layui-btn-sm" type="button" id="addMore1">
-                                  <i class="layui-icon">&#xe654;</i>
-                              </button>
-                              <button class="layui-btn layui-btn-sm" type="button" id="reduceBtn1">
-                                  <i class="layui-icon">&#x1006;</i>
-                              </button>
-                          </div>
                       </div>
                   </div>
               </div>
@@ -420,37 +417,37 @@
               <div class="layui-colla-item">
                   <h2 class="layui-colla-title">其他规则</h2>
                   <div class="layui-colla-content">
-                      <div class="layui-form-item">
+                      <div class="layui-form-item goodIsAll">
                           <div class="layui-inline">
                               <label class="layui-form-label">允许退卡</label>
                               <div class="layui-input-inline">
-                                  <input type="text">
+                                  <input type="checkbox" lay-skin="switch" lay-filter="" lay-text="启用|禁用">
                               </div>
                           </div>
                           <div class="layui-inline">
                               <label class="layui-form-label">允许退款</label>
-                              <div class="layui-input-inline"><input type="text"></div>
+                              <div class="layui-input-inline"><input type="checkbox" lay-skin="switch" lay-filter="" lay-text="启用|禁用"></div>
                           </div>
                           <div class="layui-inline"><label for="" class="layui-form-label">投币后拔卡锁机头</label>
-                              <div class="layui-input-inline"><input type="text"></div>
+                              <div class="layui-input-inline"><input type="checkbox" lay-skin="switch" lay-filter="" lay-text="启用|禁用"></div>
                           </div>
                           <div class="layui-inline"><label for="" class="layui-form-label">允许下分</label>
-                              <div class="layui-input-inline"><input type="text"></div>
+                              <div class="layui-input-inline"><input type="checkbox" lay-skin="switch" lay-filter="" lay-text="启用|禁用"></div>
                           </div>
                           <div class="layui-inline"><label for="" class="layui-form-label">允许充值</label>
-                              <div class="layui-input-inline"><input type="text"></div>
+                              <div class="layui-input-inline"><input type="checkbox" lay-skin="switch" lay-filter="" lay-text="启用|禁用"></div>
                           </div>
                           <div class="layui-inline"><label for="" class="layui-form-label">允许碎票</label>
-                              <div class="layui-input-inline"><input type="text"></div>
+                              <div class="layui-input-inline"><input type="checkbox" lay-skin="switch" lay-filter="" lay-text="启用|禁用"></div>
                           </div>
                           <div class="layui-inline"><label for="" class="layui-form-label">允许存币</label>
-                              <div class="layui-input-inline"><input type="text"></div>
+                              <div class="layui-input-inline"><input type="checkbox" lay-skin="switch" lay-filter="" lay-text="启用|禁用"></div>
                           </div>
                           <div class="layui-inline"><label for="" class="layui-form-label">允许提币</label>
-                              <div class="layui-input-inline"><input type="text"></div>
+                              <div class="layui-input-inline"><input type="checkbox" lay-skin="switch" lay-filter="" lay-text="启用|禁用"></div>
                           </div>
                           <div class="layui-inline"><label for="" class="layui-form-label">允许余额过户给他人</label>
-                              <div class="layui-input-inline"><input type="text"></div>
+                              <div class="layui-input-inline"><input type="checkbox" lay-skin="switch" lay-filter="" lay-text="启用|禁用"></div>
                           </div>
                       </div>
                   </div>
