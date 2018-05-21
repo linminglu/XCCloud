@@ -88,6 +88,7 @@
     <Compile Include="CustomModel\XCCloud\Data_ProjectTicketModel.cs" />
     <Compile Include="CustomModel\XCCloud\Data_ProjectInfoModel.cs" />
     <Compile Include="CustomModel\XCCloud\Data_Project_BindDeviceModel.cs" />
+    <Compile Include="CustomModel\XCCloud\Data_GameEncourageModel.cs" />
     <Compile Include="CustomModel\XCCloud\Data_Push_RuleModel.cs" />
     <Compile Include="CustomModel\XCCloud\Data_ReloadModel.cs" />
     <Compile Include="CustomModel\XCCloud\DictionaryResponseModel.cs" />
@@ -432,6 +433,12 @@
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_GameAPP_Rule.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_GameEncourage.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_GameEncourage_List.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_GameFreeLotteryRule.cs">

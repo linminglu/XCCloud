@@ -20,7 +20,7 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> Allow_Out { get; set; }
         public Nullable<int> Allow_In { get; set; }
         public Nullable<int> WeekType { get; set; }
-        public Nullable<int> Week { get; set; }
+        public string Week { get; set; }
         public Nullable<int> PushBalanceIndex1 { get; set; }
         public Nullable<int> PushCoin1 { get; set; }
         public Nullable<int> PushBalanceIndex2 { get; set; }

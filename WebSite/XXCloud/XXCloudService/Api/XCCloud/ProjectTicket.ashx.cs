@@ -72,9 +72,7 @@ namespace XXCloudService.Api.XCCloud
                 #endregion
 
                 var list = Data_ProjectTicketService.I.SqlQuery<Data_ProjectTicketList>(sql, parameters).ToList();
-
                 
-
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, list);
             }
             catch (Exception e)

@@ -138,15 +138,14 @@ namespace XXCloudService.Api.XCCloud
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 if (!dicParas.Get("projectType").Validintnozero("项目类型", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                if (dicParas.Get("chargeType").Toint() == (int)ProjectInfoChargeType.Time && dicParas.GetObject("projectTimeInfo").IsNull())
-                {
-                    errMsg = "计时规则不能为空";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }                
+                if (dicParas.Get("chargeType").Toint() == (int)ProjectInfoChargeType.Time && 
+                    !dicParas.GetArray("projectTimeInfo").Validarray("计时规则信息", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);              
 
                 var id = dicParas.Get("id").Toint(0);
                 var chargeType = dicParas.Get("chargeType").Toint();                
-                var projectTimeInfo = dicParas.GetObject("projectTimeInfo");
+                var projectTimeInfo = dicParas.GetArray("projectTimeInfo");
+                var projectBandPrices = dicParas.GetArray("projectBandPrices");
                       
                 //开启EF事务
                 using (TransactionScope ts = new TransactionScope())
@@ -184,16 +183,15 @@ namespace XXCloudService.Api.XCCloud
                         id = model.ID;
 
                         //保存计时项目
-                        if (!projectTimeInfo.IsNull())
+                        if (projectTimeInfo != null && projectTimeInfo.Count() > 0)
                         {
-                            var dicPara = new Dictionary<string, object>((projectTimeInfo as IDictionary<string, object>), StringComparer.OrdinalIgnoreCase);
+                            var dicPara = new Dictionary<string, object>((projectTimeInfo[0] as IDictionary<string, object>), StringComparer.OrdinalIgnoreCase);
                             if (dicPara.Get("chargeType").Toint() == (int)ProjectTimeChargeType.Weixin && dicParas.GetObject("cycleType").Toint() != (int)CycleType.Out)
                             {
                                 errMsg = "微信票码验证进闸时, 计费方式须为出闸一次性扣费";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                             }
-
-                            var projectBandPrices = dicPara.GetArray("projectBandPrices");
+                            
                             var projectTimeInfoModel = Data_Project_TimeInfoService.I.GetModels(p => p.ProjectTimeID == id).FirstOrDefault() ?? new Data_Project_TimeInfo();
                             projectTimeInfoModel.StoreID = storeId;
                             Utils.GetModel(dicPara, ref projectTimeInfoModel);
@@ -384,10 +382,10 @@ namespace XXCloudService.Api.XCCloud
                 string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
                 string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
 
-                var linq = from a in Base_DeviceInfoService.N.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)
-                               && p.DeviceStatus == 1 && (p.type == (int)DeviceType.卡头 || p.type == (int)DeviceType.闸机))
-                           from b in Data_Project_BindDeviceService.N.GetModels()
-                           where a.ID != b.DeviceID
+                var bindDeviceIds = Data_Project_BindDeviceService.I.GetModels().Select(o => o.DeviceID);
+                var linq = from a in Base_DeviceInfoService.I.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)
+                               && p.DeviceStatus == 1 && (p.type == (int)DeviceType.卡头 || p.type == (int)DeviceType.闸机)).ToList()
+                           where !bindDeviceIds.Contains(a.ID)
                            orderby a.DeviceName
                            select new
                            {
@@ -477,18 +475,19 @@ namespace XXCloudService.Api.XCCloud
                 string errMsg = string.Empty;
                 if (!dicParas.Get("projectId").Validintnozero("游乐项目ID", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (!dicParas.Get("deviceId").Validintnozero("设备ID", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-                var projectId = dicParas.Get("projectId").Toint();
+                var id = dicParas.Get("id").Toint(0);
 
                 //开启EF事务
                 using (TransactionScope ts = new TransactionScope())
                 {
                     try
                     {
-                        var model = new Data_Project_BindDevice();
+                        var model = Data_Project_BindDeviceService.I.GetModels(p => p.ID == id).FirstOrDefault() ?? new Data_Project_BindDevice();
                         Utils.GetModel(dicParas, ref model);
-                        model.ProjectID = projectId;
-                        if (model.ID == 0)
+                        if (id == 0)
                         {
                             if (!Data_Project_BindDeviceService.I.Add(model))
                             {
@@ -498,7 +497,7 @@ namespace XXCloudService.Api.XCCloud
                         }
                         else
                         {
-                            if (!Data_Project_BindDeviceService.I.Any(p => p.ID == model.ID))
+                            if (model.ID == 0)
                             {
                                 errMsg = "该绑定流水号不存在";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -509,7 +508,7 @@ namespace XXCloudService.Api.XCCloud
                                 errMsg = "更新绑定设备失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                             }
-                        }                       
+                        }
 
                         ts.Complete();
                     }

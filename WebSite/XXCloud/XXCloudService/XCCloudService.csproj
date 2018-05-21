@@ -391,6 +391,7 @@
     <Content Include="Api\XCCloud\FreeGiveRule.ashx" />
     <Content Include="Api\XCCloud\RuleOverlying.ashx" />
     <Content Include="Api\XCCloud\ProjectTicket.ashx" />
+    <Content Include="Api\XCCloud\GameEncourage.ashx" />
     <None Include="Properties\PublishProfiles\111.pubxml" />
     <None Include="Properties\PublishProfiles\qqq.pubxml" />
     <None Include="Properties\PublishProfiles\rrr.pubxml" />
@@ -1192,6 +1193,9 @@
     </Compile>
     <Compile Include="Api\XCCloud\Discount.ashx.cs">
       <DependentUpon>Discount.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="Api\XCCloud\GameEncourage.ashx.cs">
+      <DependentUpon>GameEncourage.ashx</DependentUpon>
     </Compile>
     <Compile Include="Api\XCCloud\GameWatch.ashx.cs">
       <DependentUpon>GameWatch.ashx</DependentUpon>

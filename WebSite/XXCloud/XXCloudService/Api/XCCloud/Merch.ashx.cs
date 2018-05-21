@@ -198,6 +198,7 @@ namespace XXCloudService.Api.XCCloud
                 string merchAccount = dicParas.ContainsKey("merchAccount") ? dicParas["merchAccount"].ToString() : string.Empty;
                 string merchName = dicParas.ContainsKey("merchName") ? dicParas["merchName"].ToString() : string.Empty;
                 string openId = dicParas.ContainsKey("openId") ? dicParas["openId"].ToString() : string.Empty;
+                string unionId = dicParas.ContainsKey("unionId") ? dicParas["unionId"].ToString() : string.Empty;
                 string mobil = dicParas.ContainsKey("mobil") ? dicParas["mobil"].ToString() : string.Empty;
                 string allowCreateSub = dicParas.ContainsKey("allowCreateSub") ? dicParas["allowCreateSub"].ToString() : string.Empty;
                 string allowCreateCount = dicParas.ContainsKey("allowCreateCount") ? dicParas["allowCreateCount"].ToString() : string.Empty;
@@ -263,9 +264,15 @@ namespace XXCloudService.Api.XCCloud
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
+                if (string.IsNullOrWhiteSpace(openId))
+                {
+                    errMsg = "请选择微信昵称";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
                 if (string.IsNullOrWhiteSpace(merchName))
                 {
-                    errMsg = "负责人不能为空";
+                    errMsg = "负责人名称不能为空";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
@@ -273,13 +280,7 @@ namespace XXCloudService.Api.XCCloud
                 {
                     errMsg = "负责人名称不能超过50个字符";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
-
-                if (string.IsNullOrWhiteSpace(openId))
-                {
-                    errMsg = "请选择微信昵称";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
+                }                
 
                 if (string.IsNullOrWhiteSpace(mobil))
                 {
@@ -312,11 +313,13 @@ namespace XXCloudService.Api.XCCloud
                 }
                 
                 //获取用户基本信息
-                string unionId = string.Empty;
-                if (!TokenMana.GetUnionId(openId, out unionId, out errMsg))
+                if (string.IsNullOrEmpty(unionId))
                 {
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
+                    if (!TokenMana.GetUnionId(openId, out unionId, out errMsg))
+                    {
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
+                }                
 
                 //生成商户编号
                 if (!genNo(out merchId, out errMsg))
@@ -379,6 +382,7 @@ namespace XXCloudService.Api.XCCloud
                         base_UserInfo.RealName = merchName;
                         base_UserInfo.MerchID = merchId;
                         base_UserInfo.OpenID = openId;
+                        base_UserInfo.UnionID = unionId;
                         base_UserInfo.LogPassword = merchPassword;
                         base_UserInfo.UserType = Convert.ToInt32(merchType);
                         base_UserInfo.SwitchMerch = 1;
@@ -489,8 +493,9 @@ namespace XXCloudService.Api.XCCloud
                 string merchTag = dicParas.ContainsKey("merchTag") ? dicParas["merchTag"].ToString() : string.Empty; 
                 string merchStatus = dicParas.ContainsKey("merchStatus") ? dicParas["merchStatus"].ToString() : string.Empty;
                 string merchAccount = dicParas.ContainsKey("merchAccount") ? dicParas["merchAccount"].ToString() : string.Empty;
-                //string merchName = dicParas.ContainsKey("merchName") ? dicParas["merchName"].ToString() : string.Empty;
-                //string openId = dicParas.ContainsKey("openId") ? dicParas["openId"].ToString() : string.Empty;
+                string merchName = dicParas.ContainsKey("merchName") ? dicParas["merchName"].ToString() : string.Empty;
+                string openId = dicParas.ContainsKey("openId") ? dicParas["openId"].ToString() : string.Empty;
+                string unionId = dicParas.ContainsKey("unionId") ? dicParas["unionId"].ToString() : string.Empty;
                 string mobil = dicParas.ContainsKey("mobil") ? dicParas["mobil"].ToString() : string.Empty;
                 string allowCreateSub = dicParas.ContainsKey("allowCreateSub") ? dicParas["allowCreateSub"].ToString() : string.Empty;
                 string allowCreateCount = dicParas.ContainsKey("allowCreateCount") ? dicParas["allowCreateCount"].ToString() : string.Empty;
@@ -554,25 +559,25 @@ namespace XXCloudService.Api.XCCloud
                 {
                     errMsg = "商户账号不能超过100个字符";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }                
+
+                if (string.IsNullOrWhiteSpace(openId))
+                {
+                    errMsg = "请选择微信昵称";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
-                //if (string.IsNullOrWhiteSpace(merchName))
-                //{
-                //    errMsg = "负责人不能为空";
-                //    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                //}
+                if (string.IsNullOrWhiteSpace(merchName))
+                {
+                    errMsg = "负责人名称不能为空";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
 
-                //if (merchName.Length > 50)
-                //{
-                //    errMsg = "负责人名称不能超过50个字符";
-                //    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                //}
-
-                //if (string.IsNullOrWhiteSpace(openId))
-                //{
-                //    errMsg = "请选择微信昵称";
-                //    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                //}
+                if (merchName.Length > 50)
+                {
+                    errMsg = "负责人名称不能超过50个字符";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
 
                 if (string.IsNullOrWhiteSpace(mobil))
                 {
@@ -603,14 +608,16 @@ namespace XXCloudService.Api.XCCloud
                     errMsg = "备注不能超过500个字符";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
-                
-                ////获取用户基本信息
-                //string unionId = string.Empty;
-                //if (!TokenMana.GetUnionId(openId, out unionId, out errMsg))
-                //{
-                //    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                //}
-                
+
+                //获取用户基本信息
+                if (string.IsNullOrEmpty(unionId))
+                {
+                    if (!TokenMana.GetUnionId(openId, out unionId, out errMsg))
+                    {
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
+                }
+                                
                 #endregion
 
                 //开启EF事务
@@ -627,12 +634,7 @@ namespace XXCloudService.Api.XCCloud
 
                         var base_MerchantInfo = base_MerchantInfoService.GetModels(p => p.MerchID.Equals(merchId)).FirstOrDefault();
                         var merchAccount_old = base_MerchantInfo.MerchAccount;
-                        IBase_UserInfoService base_UserInfoService = BLLContainer.Resolve<IBase_UserInfoService>();
-                        //if (!base_UserInfoService.Any(p => p.LogName.Equals(merchAccount_old, StringComparison.OrdinalIgnoreCase)))
-                        //{
-                        //    errMsg = "找不到该商户负责人信息";
-                        //    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        //}                        
+                        IBase_UserInfoService base_UserInfoService = BLLContainer.Resolve<IBase_UserInfoService>();                       
                         if (base_UserInfoService.Any(p => p.LogName.Equals(merchAccount_old, StringComparison.OrdinalIgnoreCase)))
                         {
                             if (base_UserInfoService.Any(p => !p.LogName.Equals(merchAccount_old, StringComparison.OrdinalIgnoreCase) && p.LogName.Equals(merchAccount, StringComparison.OrdinalIgnoreCase)))
@@ -659,9 +661,10 @@ namespace XXCloudService.Api.XCCloud
 
                             var base_UserInfo = new Base_UserInfo();
                             base_UserInfo.LogName = merchAccount;
-                            //base_UserInfo.RealName = merchName;
+                            base_UserInfo.RealName = merchName;
                             base_UserInfo.MerchID = merchId;
-                            //base_UserInfo.OpenID = openId;
+                            base_UserInfo.OpenID = openId;
+                            base_UserInfo.UnionID = unionId;
                             base_UserInfo.LogPassword = base_MerchantInfo.MerchPassword;
                             base_UserInfo.UserType = Convert.ToInt32(merchType);
                             base_UserInfo.SwitchMerch = 1;
@@ -677,10 +680,10 @@ namespace XXCloudService.Api.XCCloud
                         base_MerchantInfo.MerchType = Convert.ToInt32(merchType);
                         base_MerchantInfo.MerchStatus = Convert.ToInt32(merchStatus);
                         base_MerchantInfo.MerchAccount = merchAccount;
-                        //base_MerchantInfo.MerchName = merchName;
+                        base_MerchantInfo.MerchName = merchName;
                         base_MerchantInfo.Mobil = mobil;
-                        //base_MerchantInfo.WxOpenID = openId;
-                        //base_MerchantInfo.WxUnionID = unionId;
+                        base_MerchantInfo.WxOpenID = openId;
+                        base_MerchantInfo.WxUnionID = unionId;
                         base_MerchantInfo.AllowCreateSub = ObjectExt.Toint(allowCreateSub);
                         base_MerchantInfo.AllowCreateCount = ObjectExt.Toint(allowCreateCount);
                         base_MerchantInfo.CreateUserID = (logType == (int)RoleType.XcUser || logType == (int)RoleType.XcAdmin) ? createUserId :

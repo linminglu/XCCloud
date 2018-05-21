@@ -137,7 +137,6 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Data_Member_Card> Data_Member_Card { get; set; }
         public virtual DbSet<Data_Member_Card_Store> Data_Member_Card_Store { get; set; }
         public virtual DbSet<Flw_Food_SaleDetail> Flw_Food_SaleDetail { get; set; }
-        public virtual DbSet<Flw_Order> Flw_Order { get; set; }
         public virtual DbSet<Flw_Order_Detail> Flw_Order_Detail { get; set; }
         public virtual DbSet<Base_DepotInfo> Base_DepotInfo { get; set; }
         public virtual DbSet<Data_CouponList> Data_CouponList { get; set; }
@@ -148,7 +147,6 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Data_MemberLevel_Balance> Data_MemberLevel_Balance { get; set; }
         public virtual DbSet<Data_MemberLevel_BalanceCharge> Data_MemberLevel_BalanceCharge { get; set; }
         public virtual DbSet<Data_ProjectTicket_Bind> Data_ProjectTicket_Bind { get; set; }
-        public virtual DbSet<Data_PushRule> Data_PushRule { get; set; }
         public virtual DbSet<Data_PushRule_GameList> Data_PushRule_GameList { get; set; }
         public virtual DbSet<Data_PushRule_MemberLevelList> Data_PushRule_MemberLevelList { get; set; }
         public virtual DbSet<Data_RuleOverlying_Group> Data_RuleOverlying_Group { get; set; }
@@ -183,5 +181,9 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Data_Food_Detial> Data_Food_Detial { get; set; }
         public virtual DbSet<Data_FreeGiveRule> Data_FreeGiveRule { get; set; }
         public virtual DbSet<Data_ProjectTicket> Data_ProjectTicket { get; set; }
+        public virtual DbSet<Data_PushRule> Data_PushRule { get; set; }
+        public virtual DbSet<Flw_Order> Flw_Order { get; set; }
+        public virtual DbSet<Data_GameEncourage> Data_GameEncourage { get; set; }
+        public virtual DbSet<Data_GameEncourage_List> Data_GameEncourage_List { get; set; }
     }
 }

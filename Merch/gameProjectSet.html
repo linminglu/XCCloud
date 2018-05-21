@@ -9,6 +9,10 @@
     .boxDiv{height: 460px;border: 1px solid #aaaaaa;border-radius: 5px;padding: 3px;margin-bottom: 15px;}
     .boxDiv .deviceCheckList{height: 355px;margin: 10px;padding:5px 15px;border: 1px dashed #e2e2e2;overflow-y: scroll}
     .layui-col-md1 .lbt{height: 80px!important;}
+    #chargeModel .layui-form-item{margin-bottom: 0;}
+    #chargeModel .layui-input-inline{width: 152px}
+    .layui-card{
+        margin-bottom: 0;}
 </style>
 <body>
   <div class="layui-row" style="padding:15px">
@@ -47,9 +51,12 @@
                     <div class="layui-input-inline" style="height: 36px;border: 1px solid rgb(230,230,230)">
                         <select name="chargeType" id="chargeType" lay-filter="chargeType">
                             <option>-请选择-</option>
-                            <option value="0">按此收费</option>
+                            <option value="0">按次收费</option>
                             <option value="1">计时收费</option>
                         </select>
+                    </div>
+                    <div class="layui-input-inline">
+                        <button class="layui-btn layui-hide" type="button" id="setRuleBtn">请设置计时规则</button>
                     </div>
                     <div class="layui-form-mid" style="color: red">友情提醒：网络支付功能请到集团后台中的《套餐设定》进行添加套餐。</div>
                 </div>
@@ -65,6 +72,209 @@
             </div>
 
     </form>
+</div>
+  <!--计时规则-->
+  <div id="chargeModel" class="goodIsAll" style="padding: 15px;display: none;max-height: 550px;overflow-y: auto">
+      <form class="layui-form layui-form-pane">
+          <div class="layui-card">
+              <div class="layui-card-body">
+                  <div class="layui-form-item">
+                      <div class="layui-inline">
+                          <label class="layui-form-label">扣费方式</label>
+                          <div class="layui-input-inline">
+                              <select name="" id="feeType" lay-filter="feeType">
+                                  <option>-请选择-</option>
+                                  <option value="0">进闸扣除基础费用</option>
+                                  <option value="1">进闸扣除封顶费用</option>
+                                  <option value="2">进闸验证微信票码</option>
+                              </select>
+                          </div>
+                          <div class="layui-form-mid">后悔时间</div>
+                          <div class="layui-input-inline">
+                              <input type="text" id="FreeMinute" class="layui-input" placeholder="分钟">
+                          </div>
+                          <div class="layui-form-mid">扣除余额</div>
+                          <div class="layui-input-inline">
+                              <select name="" id="feeBalance" lay-filter="feeBalance">
+
+                              </select>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <div class="layui-card">
+              <div class="layui-card-header">陪同票</div>
+              <div class="layui-card-body">
+                  <div class="layui-form-item">
+                      <div class="layui-inline">
+                          <label class="layui-form-label">现金</label>
+                          <div class="layui-input-inline">
+                              <input type="text" class="layui-input" id="AccompanyCash">
+                          </div>
+                          <div class="layui-form-mid">扣除种类</div>
+                          <div class="layui-input-inline">
+                              <select name="" id="feekinds" lay-filter="feekinds">
+
+                              </select>
+                          </div>
+                          <div class="layui-form-mid">扣除数量</div>
+                          <div class="layui-input-inline">
+                              <input type="text"  id="Coins" class="layui-input">
+                          </div>
+                      </div>
+
+                  </div>
+              </div>
+          </div>
+          <div class="layui-card">
+              <div class="layui-card-header">定价</div>
+              <div class="layui-card-body">
+                  <div class="layui-form-item">
+                      <div class="layui-inline">
+                          <label class="layui-form-label">基础价格</label>
+                          <div class="layui-input-inline">
+                              <input type="text" class="layui-input" id="BasePrice">
+                          </div>
+                          <div class="layui-form-mid">计费周期</div>
+                          <div class="layui-input-inline">
+                              <input type="text" id="CycleTimes" class="layui-input" placeholder="分钟">
+                          </div>
+                          <div class="layui-form-mid">封顶价格</div>
+                          <div class="layui-input-inline">
+                              <input type="text" id="TopPrice" class="layui-input">
+                          </div>
+                      </div>
+                      <div class="layui-inline">
+                          <label class="layui-form-label">计费方式</label>
+                          <div class="layui-input-inline">
+                              <select name="" id="feeWays" lay-filter="feeWays">
+                                  <option>-请选择-</option>
+                                  <option value="0">按周期扣除</option>
+                                  <option value="1">出闸时扣除</option>
+                              </select>
+                          </div>
+                      </div>
+                      <div class="layui-inline">
+                          <label class="layui-form-label">入场锁定</label>
+                          <div class="layui-input-inline">
+                              <input type="checkbox" lay-skin="switch" lay-text="启用|禁用" id="lock" lay-filter="lock">
+                          </div>
+                      </div>
+                  </div>
+                  <div class="layui-form-item reduceBox-item ">
+                       <div class="layui-inline reduceBox ">
+                              <label class="layui-form-label">超出部分</label>
+                              <div class="layui-input-inline" style="width: 75px">
+                                  <input type="text" class="layui-input" name="limitCount">
+                              </div>
+                                <div class="layui-form-mid">分钟</div>
+                              <div class="layui-input-inline" style="width: 105px">
+                                  <select lay-ignore style="height: 36px;width: 105px" name="limitType">
+                                      <option value="0">以内</option>
+                                      <option value="1">以上</option>
+                                  </select>
+                              </div>
+                              <div class="layui-form-mid">每</div>
+                              <div class="layui-input-inline" style="width: 75px">
+                                  <input type="text" class="layui-input" name="consumeCount">
+                              </div>
+                              <div class="layui-form-mid">分钟收费</div>
+                              <div class="layui-input-inline" style="width: 75px">
+                                  <input type="text" class="layui-input" name="discountCount">
+                              </div>
+                              <div class="layui-form-mid">元</div>
+                          </div>
+                       <div class="layui-inline">
+                          <div class="layui-btn-group">
+                              <button class="layui-btn layui-btn-sm" type="button" id="addMore">
+                                  <i class="layui-icon">&#xe654;</i>
+                              </button>
+                              <button class="layui-btn layui-btn-sm" type="button" id="reduceBtn">
+                                  <i class="layui-icon">&#x1006;</i>
+                              </button>
+                          </div>
+                      </div>
+
+                  </div>
+              </div>
+          </div>
+      </form>
+      <blockquote class="layui-elem-quote">
+          注意:使用微信票码不扣除基础费用，直到出闸时一次性结算,通过以上规则自动显示收费描述！
+      </blockquote>
+      <div style="text-align:center;">
+          <button type="button" class="layui-btn" id="saveFee">确定</button>
+      </div>
+  </div>
+<!--绑定设备列表-->
+<div id="bindModel" style="padding: 15px;display: none">
+    <blockquote class="layui-elem-quote">
+        <button type="button" class="layui-btn" id="addDevice">添加设备</button>
+    </blockquote>
+    <table class="layui-hide" id="bindTable" lay-filter="bindTable"></table>
+</div>
+<!--选择绑定设备-->
+<div id="deviceModel" style="padding: 15px;display:none;" class="goodIsAll">
+    <form action="" class="layui-form layui-form-pane">
+        <div class="layui-form-item">
+            <label class="layui-form-label">设备列表</label>
+            <div class="layui-input-block">
+                <select id="deviceList" lay-filter="deviceList"></select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">工作方式</label>
+                <div class="layui-input-inline">
+                    <select id="workType" lay-filter="workType">
+                        <option>-请选择-</option>
+                        <option value="0">入口</option>
+                        <option value="1">出口</option>
+                        <option value="2">自动</option>
+
+                    </select>
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">校验顺序</label>
+                <div class="layui-input-inline">
+                    <input type="checkbox" id="AdjOrder" lay-filter="AdjOrder" lay-skin="switch" lay-text="开启|关闭">
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">人脸识别</label>
+                <div class="layui-input-inline">
+                        <input type="checkbox" id="ReadFace" lay-filter="ReadFace" lay-skin="switch" lay-text="开启|关闭">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">刷卡校验</label>
+                <div class="layui-input-inline">
+                    <input type="checkbox" id="ReadCard" lay-filter="ReadCard" lay-skin="switch" lay-text="开启|关闭">
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">阅票</label>
+                <div class="layui-input-inline">
+                    <input type="checkbox"  id="ReadQRCode" lay-filter="ReadQRCode" lay-skin="switch" lay-text="开启|关闭">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">现金</label>
+                <div class="layui-input-inline">
+                    <input type="checkbox" id="AllowCrah" lay-filter="AllowCrah" lay-skin="switch" lay-text="开启|关闭">
+                </div>
+            </div>
+        </div>
+    </form>
+    <div style="text-align:center;margin-bottom: 15px">
+        <button type="button" class="layui-btn" id="saveDevice">确定</button>
+    </div>
 </div>
 </body>
 <script src="js/jquery-1.8.3-min.js"></script>
@@ -86,11 +296,17 @@
             , {field: 'ChargeType', title: '扣费类型', align: 'center',templet:'#charge'}
             // , {field: 'State', title: '状态', align: 'center',templet:'#state'}
             , {field: 'Note', title: '备注', align: 'center'}
-            ,{fixed: 'right',title: '操作', width:150, align:'center', toolbar: '#barDemo'}]
+            ,{fixed: 'right',title: '操作', width:240, align:'center', toolbar: '#barDemo'}]
     };
     xc.getInitData(parm);
-let id='';
+   let id='';
+   let DeviceList=[];let feeRule=[]; let projectBandPrice=[];
+   let index1;let index2;
    let projectType='';let Area='';let chargeType='';
+
+   let DeviceID='',WorkType='',AdjOrder=0;ReadFace=0,ReadCard=0,ReadQRCode=0,AllowCrah=0;
+    //计时规则
+    let feeType='';let feeBalance='';let feekinds='';let feeWays='';let Lock=0;
     layui.use(['form','layer','table'],()=>{
         const form=layui.form;
         const layer=layui.layer;
@@ -113,6 +329,12 @@ let id='';
         });
         form.on('select(chargeType)',function (data) {
             chargeType=data.value;
+            if(data.value==1){
+                $('#setRuleBtn').removeClass('layui-hide');
+                feeRule=[];
+            }else {
+                $('#setRuleBtn').addClass('layui-hide')
+            }
         });
         //save
         $('#save').click(function () {
@@ -122,6 +344,8 @@ let id='';
                 'projectType':projectType,
                 'chargeType':chargeType,
                 'note':$('#Note').val(),
+                'projectTimeInfo':feeRule,
+                'projectBandPrices':projectBandPrice,
                 'userToken':token,
                 'signkey':'1f626576304bf5d95b72ece2222e42c3'};
             let parasJson = JSON.stringify(obj);
@@ -143,6 +367,16 @@ let id='';
                 }
             })
         });
+        $('#addDevice').on('click',()=>{  //弹窗
+            xc.getUnBindDeviceDic(token,layer,form,'deviceList');
+             DeviceID='';WorkType='';AdjOrder=0;ReadFace=0;ReadCard=0;ReadQRCode=0;AllowCrah=0;
+            index2=   layer.open({
+                title:'新增',
+                type:1,
+                area:'800px',
+                content:$('#deviceModel')
+            })
+        });
         //页面table 删除、修改事件监听
         table.on('tool(ProjectList)', function(obj){
             var data = obj.data;
@@ -151,7 +385,63 @@ let id='';
             if(layEvent === 'del'){ //删除
                 layer.confirm('真的删除行么', function(index){
                    var _obj={'projectIds':id,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
-                   var url='/XCCloud/Project?action=DeleteProjectInfo';
+                var url='/XCCloud/Project?action=DeleteProjectInfo';
+                let parseJson = JSON.stringify(_obj);
+                $.ajax({
+                    type: "post",
+                    url: url,
+                    contentType: "application/json; charset=utf-8",
+                    data: {parasJson: parseJson},
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        console.log(data);
+                        if (data.result_code == 1) {
+                            layer.msg('删除成功！',{time:1500},function () {
+                                obj.del();
+                            });
+                        } else {
+                            layer.msg(data.result_msg||data.return_msg);
+                        }
+                    }
+                })
+            });
+            } else if(layEvent === 'edit'){ //编辑
+
+            }else if(layEvent === 'bind'){ //设备绑定
+                let _obj={'projectId':id,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                let url='/XCCloud/Project?action=QueryBindDevice';
+                let parseJson = JSON.stringify(_obj);
+                $.ajax({
+                    type: "post",
+                    url: url,
+                    contentType: "application/json; charset=utf-8",
+                    data: {parasJson: parseJson},
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        console.log(data);
+                        if (data.result_code == 1) {
+                            setDeviceTable(table,data.result_data);
+                            index1=   layer.open({
+                                title:'新增',
+                                type:1,
+                                area:'900px',
+                                content:$('#bindModel')
+                            })
+                        } else {
+                            layer.msg(data.result_msg||data.return_msg);
+                        }
+                    }
+                })
+
+            }
+        });
+        table.on('tool(bindTable)', function(obj){
+            var data = obj.data;
+            var layEvent = obj.event;
+            if(layEvent === 'del'){ //删除
+                layer.confirm('真的删除行么', function(index){
+                    var _obj={'id':data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                    var url='/XCCloud/Project?action=DelBindDevice';
                     let parseJson = JSON.stringify(_obj);
                     $.ajax({
                         type: "post",
@@ -162,17 +452,179 @@ let id='';
                             data = JSON.parse(data);
                             console.log(data);
                             if (data.result_code == 1) {
-                                layer.msg('删除成功！');
+                                layer.msg('删除成功！',{time:1500},function () {
+                                    obj.del();
+                                });
                             } else {
                                 layer.msg(data.result_msg||data.return_msg);
                             }
                         }
                     })
                 });
-            } else if(layEvent === 'edit'){ //编辑
-
             }
         });
+        form.on('select(deviceList)',function (data) {
+            DeviceID=data.value;
+        });
+        form.on('select(workType)',function (data) {
+            WorkType=data.value;
+        });
+        form.on('switch(AdjOrder)',function (data) {
+            if(data.elem.checked==true){
+                AdjOrder=1
+            }else {
+                AdjOrder=0
+            }
+        });
+        form.on('switch(ReadFace)',function (data) {
+            if(data.elem.checked==true){
+                ReadFace=1
+            }else {
+                ReadFace=0
+            }
+        });
+        form.on('switch(ReadCard)',function (data) {
+            if(data.elem.checked==true){
+                ReadCard=1
+            }else {
+                ReadCard=0
+            }
+        });
+        form.on('switch(ReadQRCode)',function (data) {
+            if(data.elem.checked==true){
+                ReadQRCode=1
+            }else {
+                ReadQRCode=0
+            }
+        });
+        form.on('switch(AllowCrah)',function (data) {
+            if(data.elem.checked==true){
+                AllowCrah=1
+            }else {
+                AllowCrah=0
+            }
+        });
+        //保存选定的设备
+        $('#saveDevice').on('click',function () {
+            let canBind=false;
+            if(DeviceList.length>0){
+                let flag=false;
+                for(let i in DeviceList){
+                    if(DeviceList[i].DeviceID==DeviceID){
+                        flag==true
+                    }
+                }
+                if(flag){
+                    layer.msg('当前设备已选中，请重新选择设备');
+                }else {
+                    canBind=true;
+                }
+            }else {
+                canBind=true;
+            }
+          if(canBind){
+              let obj={'projectid':id,
+                  'DeviceID':DeviceID,
+                  'WorkType':WorkType,
+                  'AdjOrder':AdjOrder,
+                  'ReadFace':ReadFace,
+                  'ReadCard':ReadCard,
+                  'ReadQRCode':ReadQRCode,
+                  'AllowCash':AllowCrah,
+                  'DeviceList':DeviceList,
+                  'userToken':token,
+                  'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+              let parasJson = JSON.stringify(obj);
+              $.ajax({
+                  type: "post",
+                  url: '/XCCloud/Project?action=SaveBindDevice',
+                  contentType: "application/json; charset=utf-8",
+                  data: { parasJson: parasJson },
+                  success: function (data) {
+                      data=JSON.parse(data);
+                      if(data.result_code==1){
+                          layer.msg('保存成功',{time:1500},function () {
+                              setDeviceTable(table,DeviceList);
+                              layer.close(index2);
+                          })
+                      }else {
+                          layer.msg(data.result_msg||data.return_msg);
+                          return false;
+                      }
+                  }
+              })
+          }
+
+        });
+        form.on('select(feeType)',function (data) {
+            feeType=data.value;
+        });
+        form.on('select(feeBalance)',function (data) {
+            feeBalance=data.value;
+        });
+        form.on('select(feekinds)',function (data) {
+            feekinds=data.value;
+        });
+        form.on('select(feeWays)',function (data) {
+            feeWays=data.value;
+        });
+        form.on('switch(Lock)',function (data) {
+            if(data.elem.checked==true){
+                Lock=1
+            }else {
+                Lock=0
+            }
+        });
+        $('#addMore').click(function () {
+            $('.reduceBox-item').append($('body').find($('.reduceBox')).eq(0).clone())
+        });
+        $('#reduceBtn').click(function () {
+            if($('.reduceBox-item').find($('.reduceBox')).length>1){
+                $('.reduceBox-item').find($('.reduceBox')).last().remove();
+            }else {
+            }
+        });
+        //设置计时规则
+        $('#setRuleBtn').on('click',function () {
+            xc.getBalanceTypeDic('',token,layer,form,'feeBalance');
+            xc.getBalanceTypeDic('',token,layer,form,'feekinds');
+             index1= layer.open({
+                title:'新增',
+                type:1,
+                area:'840px',
+                content:$('#chargeModel')
+            })
+        });
+        //保存计时规则
+        $('#saveFee').on('click',function (){
+            $('.reduceBox-item .reduceBox').each(function () {
+                if($(this).find('input[name="limitCount"]').val()!=''&&
+                    $(this).find('select[name="limitType"] option:selected').val()!=''&&
+                    $(this).find('input[name="consumeCount"]').val()!=''&&
+                    $(this).find('input[name="discountCount"]').val()!=''
+                ){
+                    projectBandPrice.push({
+                        'UseTimeCount': $(this).find('input[name="limitCount"]').val(),
+                        'UseType': $(this).find('select[name="limitType"] option:selected').val(),
+                        'CycleTime': $(this).find('input[name="consumeCount"]').val(),
+                        'Count': $(this).find('input[name="discountCount"]').val()
+                    });
+                }
+            })
+            feeRule=[{'ChargeType':feeType,
+                'FreeMinute':$('#FreeMinute').val(),
+                'ChargeBalanceIndex':feeBalance,
+                'AccompanyCash':$('#AccompanyCash').val(),
+                'BalanceIndex':feekinds,
+                'Coins':$('#Coins').val(),
+                'BasePrice':$('#BasePrice').val(),
+                'CycleTimes':$('#CycleTimes').val(),
+                'TopPrice':$('#TopPrice').val(),
+                'CycleType':feeWays,
+                'LockMember':Lock
+            }];
+            layer.close(index1);
+        })
     });
     var setPlayMenu=function (form,objVal,id,m) {
         var  obj={"dictKey":objVal,'enabled':1,'pDicKey':'517',"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
@@ -187,19 +639,42 @@ let id='';
                 data = JSON.parse(data);
                 console.log(data);
                 if (data.result_code == "1") {
-                    var arr = data.result_data;
+                    var arr1 = data.result_data;
+                    let arr=arr1[0].children;
                     $('#' + id).html('<option>-请选择-</option>');
                     if (m == undefined) {
-                             for(let i in arr[0].children){
-                                 $('#'+id).append('<option value="'+arr[0].children[i].id+'">'+arr[0].children[i].name+'</option>')
-                             }
-                    } else {
-                        for(let i in arr[0].children){
-                            if(arr[0].children[i].id==m){
-                                $('#'+id).append('<option value="'+arr[0].children[i].id+'" selected>'+arr[0].children[i].name+'</option>')
+                        for(let i=0; i< arr.length;i++){
+                            if(arr[i].children.length>0){
+                                $('#'+id).append("<optgroup  label='"+arr[i].name+"'>");
+                                for(let j in arr[i].children){
+                                    $('#'+id).append('<option value="'+arr[i].children[j].id+'">'+arr[i].children[j].name+'</option>')
+                                }
+                                $('#'+id).append("</optgroup >");
                             }else {
-                                $('#'+id).append('<option value="'+arr[0].children[i].id+'">'+arr[0].children[i].name+'</option>')
+                                $('#'+id).append('<option value="'+arr[i].id+'">'+arr[i].name+'</option>')
                             }
+
+                        }
+                    } else {
+                        for(let i=0; i< arr.length;i++){
+                            if(arr[i].children.length>0){
+                                $('#'+id).append("<optgroup  label='"+arr[i].name+"'>");
+                                for(let j in arr[i].children){
+                                    if(arr[i].children[j].id==m){
+                                        $('#'+id).append('<option value="'+arr[i].children[j].id+'" selected>'+arr[i].children[j].name+'</option>')
+                                    }else {
+                                        $('#'+id).append('<option value="'+arr[i].children[j].id+'">'+arr[i].children[j].name+'</option>')
+                                    }
+                                }
+                                $('#'+id).append("</optgroup >");
+                            }else {
+                                if(arr[i].id==m){
+                                    $('#'+id).append('<option value="'+arr[i].id+'" selected>'+arr[i].name+'</option>')
+                                }else {
+                                    $('#'+id).append('<option value="'+arr[i].id+'">'+arr[i].name+'</option>')
+                                }
+                            }
+
                         }
 
                     }
@@ -213,10 +688,31 @@ let id='';
         })
 
     };
+    var setDeviceTable=function (table,datas) {
+        table.render({
+            elem: '#bindTable'
+            , height:'250px'
+            , size:"sm"
+            , data: datas
+            , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+            , cols: [[
+                {field:'DeviceID', title:'设备编号', align: 'center',width:200}
+                // ,{field:'FoodTypeStr',title: '设备类别', align: 'center',width:205} //width 支持：数字、百分比和不填写。
+                ,{field:'WorkType', title: '工作方式', align: 'center',width:100}
+                ,{field:'AdjOrder', title: '校验顺序', align: 'center'}
+                ,{field:'ReadFace', title: '人脸', align: 'center'}
+                ,{field:'ReadCard', title: '刷卡', align: 'center'}
+                ,{field:'ReadQRCode', title: '阅票', align: 'center'}
+                ,{field:'AllowCash', title: '现金', align: 'center'}
+                ,{fixed: 'right',title:'操作', width:140, align:'center', toolbar: '#barDemo1'}]]
+            , page: {page: true, limits: [10, 15, 20, 30, 50, 100]}
+            , limit: 10
+        });
+    }
 </script>
 <script type="text/html" id="barDemo">
     <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del"><i class="layui-icon">&#xe640;</i>删除</a>
-    <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="edit"><i class="layui-icon">&#xe642;</i>编辑</a>
+    <!--<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="edit"><i class="layui-icon">&#xe642;</i>编辑</a>-->
     <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="bind"><i class="layui-icon">&#xe642;</i>设备绑定</a>
 </script>
 <script type="text/html" id="barDemo1">

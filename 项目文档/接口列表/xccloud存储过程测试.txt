@@ -1,5 +1,29 @@
 ********************************************************************»áÔ±*****************************************************************
 -----------------------------------------------------------------------------------------------------------------------------------------
+ declare @FoodSaleDetailList1 [FoodSaleDetailListType]
+ insert into @FoodSaleDetailList1(FoodId,Category,FoodCount,PayType,PayNum) values(1,0,1,0,1/2.0)
+ insert into @FoodSaleDetailList1(FoodId,Category,FoodCount,PayType,PayNum) values(3,0,2,0,10/2.0)
+--insert into @FoodDetailType(FoodId,Category,FoodCount,PayType,PayNum) values(101,1,0,20/2.0)--¿ª¿¨Ì×²Í
+--insert into @FoodDetailType(FoodId,Category,FoodCount,PayType,PayNum) values(3,1,98305,100)-----------
+ insert into @FoodSaleDetailList1(FoodId,Category,FoodCount,PayType,PayNum) values(6,0,1,98306,100)
+ insert into @FoodSaleDetailList1(FoodId,Category,FoodCount,PayType,PayNum) values(4,0,1,98307,100)
+ insert into @FoodSaleDetailList1(FoodId,Category,FoodCount,PayType,PayNum) values(1,1,1,0,20)
+ insert into @FoodSaleDetailList1(FoodId,Category,FoodCount,PayType,PayNum) values(4,2,1,0,30)
+ 
+ declare @FoodSaleDetailList2 [FoodSaleDetailListType]
+ insert into @FoodSaleDetailList2(FoodId,Category,FoodCount,PayType,PayNum) values(1,0,1,0,1/2.0)
+ insert into @FoodSaleDetailList2(FoodId,Category,FoodCount,PayType,PayNum) values(3,0,2,0,10/2.0)
+--insert into @FoodDetailType(FoodId,Category,FoodCount,PayType,PayNum) values(101,1,0,20/2.0)--¿ª¿¨Ì×²Í
+--insert into @FoodDetailType(FoodId,Category,FoodCount,PayType,PayNum) values(3,1,98305,100)-----------
+ insert into @FoodSaleDetailList2(FoodId,Category,FoodCount,PayType,PayNum) values(6,0,1,98306,100)
+ insert into @FoodSaleDetailList2(FoodId,Category,FoodCount,PayType,PayNum) values(4,0,1,98307,100)
+ insert into @FoodSaleDetailList2(FoodId,Category,FoodCount,PayType,PayNum) values(1,1,1,0,20)
+ insert into @FoodSaleDetailList2(FoodId,Category,FoodCount,PayType,PayNum) values(4,2,1,0,30)
+ 
+ declare @ErrMsg varchar(200)
+ select dbo.F_CheckFoodDetail(@FoodSaleDetailList1,@FoodSaleDetailList2)
+-----------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------------------
 select dbo.F_GetDiscountRecordByMerchId('100025',9,'2018-05-01','2018-05-31')
 select dbo.F_GetDiscountRecordByStoreId('100025','100025420106001',9,'2018-05-01','2018-05-31')
 select dbo.F_GetDiscountRecordByMember('100025','100025420106001',9,'2018-05-01','2018-05-31')
@@ -47,7 +71,7 @@ declare @RenewFee decimal(18,2)
 declare @ChangeFee decimal(18,2)
 declare @ErrMsg varchar(200)
 declare @Result int
-exec [GetOrderContainById] '100025420106001','10002542010600120180517000010001',@CustomerType output,@ICCardId output,@PayCount output,@RealPay output,@FreePay output,
+exec [GetOrderContainById] '100025420106001','10002542010600120180517000010001',0,@CustomerType output,@ICCardId output,@PayCount output,@RealPay output,@FreePay output,
 @FoodCount output,@DetailsGoodsCount output,@MemberLevelId output,@MemberLevelName output,@OpenFee output,@Deposit output,@RenewFee output,@ChangeFee output,@ErrMsg output,
 @Result output
 print @MemberLevelName
@@ -139,6 +163,28 @@ print @DiscountRuleID
 
 
 -----------------------------------------------------------------------------------------------------------------------------------------
+ declare @FoodSaleDetailList1 [FoodSaleDetailListType]
+ insert into @FoodSaleDetailList1(FoodId,Category,FoodCount,PayType,PayNum) values(1,0,1,0,1/2.0)
+ insert into @FoodSaleDetailList1(FoodId,Category,FoodCount,PayType,PayNum) values(3,0,2,0,10/2.0)
+--insert into @FoodDetailType(FoodId,Category,FoodCount,PayType,PayNum) values(101,1,0,20/2.0)--¿ª¿¨Ì×²Í
+--insert into @FoodDetailType(FoodId,Category,FoodCount,PayType,PayNum) values(3,1,98305,100)-----------
+ insert into @FoodSaleDetailList1(FoodId,Category,FoodCount,PayType,PayNum) values(6,0,1,98306,100)
+ insert into @FoodSaleDetailList1(FoodId,Category,FoodCount,PayType,PayNum) values(4,0,1,98307,100)
+ insert into @FoodSaleDetailList1(FoodId,Category,FoodCount,PayType,PayNum) values(1,1,1,0,20)
+ insert into @FoodSaleDetailList1(FoodId,Category,FoodCount,PayType,PayNum) values(4,2,1,0,30)
+ 
+ declare @FoodSaleDetailList2 [FoodSaleDetailListType]
+ insert into @FoodSaleDetailList2(FoodId,Category,FoodCount,PayType,PayNum) values(1,0,1,0,1/2.0)
+ insert into @FoodSaleDetailList2(FoodId,Category,FoodCount,PayType,PayNum) values(3,0,2,0,10/2.0)
+--insert into @FoodDetailType(FoodId,Category,FoodCount,PayType,PayNum) values(101,1,0,20/2.0)--¿ª¿¨Ì×²Í
+--insert into @FoodDetailType(FoodId,Category,FoodCount,PayType,PayNum) values(3,1,98305,100)-----------
+ insert into @FoodSaleDetailList2(FoodId,Category,FoodCount,PayType,PayNum) values(6,0,1,98306,100)
+ insert into @FoodSaleDetailList2(FoodId,Category,FoodCount,PayType,PayNum) values(4,0,1,98307,100)
+ insert into @FoodSaleDetailList2(FoodId,Category,FoodCount,PayType,PayNum) values(1,1,1,0,20)
+ insert into @FoodSaleDetailList2(FoodId,Category,FoodCount,PayType,PayNum) values(4,2,1,0,30)
+ 
+ declare @ErrMsg varchar(200)
+ select dbo.F_CheckFoodDetail(@FoodSaleDetailList1,@FoodSaleDetailList2)
 -----------------------------------------------------------------------------------------------------------------------------------------
 
 -----------------------------------------------------------------------------------------------------------------------------------------

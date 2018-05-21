@@ -9,42 +9,13 @@
 </head>
 <body>
 <div id="app">
-    <!-- 5 路由入口 指定跳转到只定入口 -->
-    <router-link to="/home">首页</router-link>
-    <router-link to="/login">登录</router-link>
 
-    <!-- 7 路由出口：用来展示匹配路由视图内容 -->
-    <router-view></router-view>
 </div>
-
+<!---->
 <!-- 1 导入 vue.js -->
 <script src="js/vue.js"></script>
 <!-- 2 导入 路由文件 -->
 <script src="js/vue-router.js"></script>
-<script>
-    // 3 创建两个组件
-    const Home = Vue.component('home', {
-        template: '<h1>这是 Home 组件</h1>'
-    })
-    const Login = Vue.component('login', {
-        template: '<h1>这是 Login 组件</h1>'
-    })
 
-    // 4 创建路由对象
-    const router = new VueRouter({
-        routes: [
-            // 路径和组件一一对应
-            { path: '/home', component: Home },
-            { path: '/login', component: Login }
-        ]
-    });
-//    //  将path 重定向到 redirect
-//    { path: '/', redirect: '/home' }
-    var vm = new Vue({
-        el: '#app',
-        // 6 将路由实例挂载到vue实例
-        router
-    })
-</script>
 </body>
 </html>
