@@ -84,7 +84,7 @@
             , {field: 'ProjectTypeStr', title: '项目类型', align: 'center'}
             , {field: 'AreaName', title: '区域', align: 'center'}
             , {field: 'ChargeType', title: '扣费类型', align: 'center',templet:'#charge'}
-            , {field: 'State', title: '状态', align: 'center',templet:'#state'}
+            // , {field: 'State', title: '状态', align: 'center',templet:'#state'}
             , {field: 'Note', title: '备注', align: 'center'}
             ,{fixed: 'right',title: '操作', width:150, align:'center', toolbar: '#barDemo'}]
     };
@@ -96,7 +96,7 @@ let id='';
         const layer=layui.layer;
         const table=layui.table;
       $('.add').on('click',()=>{  //弹窗
-          xc.getGroupAreaDic(token,layer,form,'Area');
+          xc.getGroupAreaDic(0,token,layer,form,'Area');
           setPlayMenu(form,'游戏机类型','projectType');
           layer.open({
               title:'新增',
@@ -227,13 +227,6 @@ let id='';
         按次收费
     {{# }else{ }}
         计时收费
-    {{#  } }}
-</script>
-<script type="text/html" id="state">
-    {{# if(d.State==0){ }}
-    有效
-    {{# }else{ }}
-    无效
     {{#  } }}
 </script>
 </html>

@@ -1867,7 +1867,7 @@ xcActionSystem.prototype= {
         });
     },
     //获取区域字典
-    getGroupAreaDic:function (token,layer,form,id,selected) {
+    getGroupAreaDic:function (tree,token,layer,form,id,selected) {
         let _obj={'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
         let parseJson = JSON.stringify(_obj);
         $.ajax({
@@ -1879,7 +1879,12 @@ xcActionSystem.prototype= {
                 data = JSON.parse(data);
                 if (data.result_code == 1) {
                     let arr=data.result_data;
-                    $('#'+id).html('<option>-请选择-</option><option value="0">全部</option>');
+                    if(tree==1){
+                        $('#'+id).html('<option>-请选择-</option><option value="0">全部</option>');
+                    }else {
+                        $('#'+id).html('<option>-请选择-</option>');
+                    }
+
                     for(let i in arr){
                         if(selected!=undefined){
                             if(arr[i].id==selected){

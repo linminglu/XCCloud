@@ -140,20 +140,19 @@ namespace XXCloudService.Api.XCCloud
                 string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
 
                 string errMsg = string.Empty;
-                if(!dicParas.Get("state").Validint("状态", out errMsg))
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);  
 
                 var memberLevelIds = dicParas.Get("memberLevelIds");
+                var id = dicParas.Get("id").Toint(0);
 
                 //开启EF事务
                 using (TransactionScope ts = new TransactionScope())
                 {
                     try
                     {
-                        var model = new Data_FreeGiveRule();
+                        var model = Data_FreeGiveRuleService.I.GetModels(p => p.ID == id).FirstOrDefault() ?? new Data_FreeGiveRule();
                         Utils.GetModel(dicParas, ref model);
                         model.MerchID = merchId;
-                        if (model.ID == 0)
+                        if (id == 0)
                         {
                             if (!Data_FreeGiveRuleService.I.Add(model))
                             {
@@ -163,7 +162,7 @@ namespace XXCloudService.Api.XCCloud
                         }
                         else
                         {
-                            if (!Data_FreeGiveRuleService.I.Any(p => p.ID == model.ID))
+                            if (model.ID == 0)
                             {
                                 errMsg = "该免费赠送规则不存在";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);  
@@ -176,10 +175,10 @@ namespace XXCloudService.Api.XCCloud
                             }
                         }
 
-                        var ruleId = model.ID;
+                        id = model.ID;
 
                         //先删除，添加适用级别
-                        foreach (var memberLevel in Data_FreeGiveRule_MemberlevelService.I.GetModels(p => p.RuleID == ruleId))
+                        foreach (var memberLevel in Data_FreeGiveRule_MemberlevelService.I.GetModels(p => p.RuleID == id))
                         {
                             Data_FreeGiveRule_MemberlevelService.I.DeleteModel(memberLevel);
                         }
@@ -192,7 +191,7 @@ namespace XXCloudService.Api.XCCloud
                                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                                 var memberLevel = new Data_FreeGiveRule_Memberlevel();
                                 memberLevel.MerchID = merchId;
-                                memberLevel.RuleID = ruleId;
+                                memberLevel.RuleID = id;
                                 Data_FreeGiveRule_MemberlevelService.I.AddModel(memberLevel);
                             }
                         }

@@ -937,8 +937,8 @@
       xc.getBalanceTypeDic('',token,layer,form,'PushBalanceIndex11');
       xc.getBalanceTypeDic('',token,layer,form,'PushBalanceIndex2');
       xc.getBalanceTypeDic('',token,layer,form,'OutBalanceIndex');
-      xc.getGroupAreaDic(token,layer,form,'AreaID');
-      xc.getGroupAreaDic(token,layer,form,'AreaID1');
+      xc.getGroupAreaDic('1',token,layer,form,'AreaID');
+      xc.getGroupAreaDic('1',token,layer,form,'AreaID1');
 
       //正价币增加 或者减少一条
       $('#addCoin').on('click',function () {
@@ -1388,7 +1388,6 @@
 
                         }
                     }
-                    // $('#'+id).find('<optgroup[label="游乐项目"]>').remove();
                     form.render('select');
                 }else {
                         layer.msg(data.result_msg||data.return_msg);
@@ -1398,10 +1397,6 @@
         })
     };
   xcActionSystem.prototype.openEasy=(layer)=>{
-
-      // eAreaID;ePushBalanceIndex1;eGameType;
-      //     ePushLevel=0;LotteryModeLow=0;eOnlyExitLottery=0;
-      //     eReadCat=0;echkCheckGift=0;StateLow=1;
       layer.closeAll();
       let index1=layer.open({
           type:1,
