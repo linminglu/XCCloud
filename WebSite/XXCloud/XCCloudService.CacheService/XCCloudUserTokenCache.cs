@@ -72,7 +72,7 @@ namespace XCCloudService.CacheService
             XCCloudUserTokenModel model = UserTokenList.FirstOrDefault(t => t.Token == key);
             if (model != null)
             {
-                _userTokenList.Remove(model);
+                UserTokenList.Remove(model);
             }
         }
     }

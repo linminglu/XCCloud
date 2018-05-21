@@ -185,7 +185,7 @@
         let layer=layui.layer;
         let table=layui.table;
         //新增门票设定
-        xc.getBalanceTypeDic (token,layer,form,'BalanceType');
+        xc.getBalanceTypeDic ('',token,layer,form,'BalanceType');
 
         $('#add').on('click',function () {
              _AccompanyFlag=0;  _PlayOnceFlag=0;
@@ -260,7 +260,6 @@
                     }
                 }
             }
-            console.log(_storeId);
         });
         table.on('tool(ticketSettingTable)',function (obj) {
             let data=obj.data;

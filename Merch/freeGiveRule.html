@@ -140,13 +140,13 @@
         'elem':'#freeGiveRuleTable',
         'cols':[
             {field:'ID', title:'ID', align: 'center', sort: true}
-            ,{field:'MerchID',title: '商户编号', align: 'center'} //width 支持：数字、百分比和不填写。
+            // ,{field:'MerchID',title: '商户编号', align: 'center'} //width 支持：数字、百分比和不填写。
             ,{field:'RuleName', title: '规则名称', align: 'center'}
             ,{field:'StartTime', title: '开始时间', align: 'center'}
             ,{field:'EndTime', title: '结束时间', align: 'center'}
-            ,{field:'FreeBalanceStr', title: '赠送余额类别', align: 'center',templet:'#internet'}
+            ,{field:'FreeBalanceStr', title: '赠送余额类别', align: 'center'}
             ,{field:'FreeCount', title: '赠送数量', align: 'center',templet:'#print'}
-            ,{field:'AllowGuest', title: '是否允许散客', align: 'center',templet:'#authorize'}
+            ,{field:'AllowGuest', title: '是否允许散客', align: 'center',templet:'#allow'}
             ,{field:'PeriodTypeStr', title: '赠送周期类别', align: 'center'}
             ,{field:'SpanCount', title: '间隔数量', align: 'center'}
             ,{field:'SpanTypeStr', title: '间隔类型', align: 'center'}
@@ -169,7 +169,7 @@
             }else {
                 State=0;
             }
-        })
+        });
         form.on('select(startType)',function (data) {
             if(data.value==0){
                 $('#StartTime').val(getDayStartDate()).prop('disabled',true);
@@ -201,7 +201,7 @@
             }else {
                 AllowGuest=0;
             }
-        })
+        });
         form.on('select(FreeBalanceIndex)',function (data) {
             FreeBalanceIndex=data.value;
         });
@@ -225,7 +225,7 @@
                     }
                 }
             }
-        })
+        });
         laydate.render({
             elem: '#StartTime',type: 'date',value:new Date()
         });
@@ -282,7 +282,88 @@
                     }
                 }
             })
+        });
+        table.on('tool(freeGiveRuleTable)',function (obj) {
+            let data=obj.data;
+            let layevent=obj.event;
+            couponId=data.ID
+            if(layevent==='up'){ //升级
+                layer.confirm('确定升级该免费规则吗', function(index){
+                    let _obj={'id':data.ID,'updateState':'-1','userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                    let parseJson = JSON.stringify(_obj);
+                    $.ajax({
+                        type:'post',
+                        url:'/XCCloud/FreeGiveRule?action=UpdateRuleLevel',
+                        contentType: "application/json; charset=utf-8",
+                        data:{parasJson: parseJson},
+                        success: function (data) {
+                            data = JSON.parse(data);
+                            if (data.result_code == 1) {
+                                layer.msg('升级成功',{time:1500},function () {
+                                    location.reload();
+                                });
+                            } else {
+                                layer.msg(data.result_msg||return_msg);
+                            }
+                        }
+                    })
+                })
+            }else if(layevent==='down'){ //降级
+                layer.confirm('确定降级该优免费规则吗', function(index){
+                    let _obj={'id':data.ID,'updateState':'1','userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                    let parseJson = JSON.stringify(_obj);
+                    $.ajax({
+                        type:'post',
+                        url:'/XCCloud/FreeGiveRule?action=UpdateRuleLevel',
+                        contentType: "application/json; charset=utf-8",
+                        data:{parasJson: parseJson},
+                        success: function (data) {
+                            data = JSON.parse(data);
+                            if (data.result_code == 1) {
+                                layer.msg('降级成功',{time:1500},function () {
+                                    location.reload();
+                                });
+                            } else {
+                                layer.msg(data.result_msg||return_msg);
+                            }
+                        }
+                    })
+                });
+            }else if(layevent==='del'){ //降级
+                layer.confirm('确定删除该免费规则吗', function(index){
+                    let _obj={'id':data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                    let parseJson = JSON.stringify(_obj);
+                    $.ajax({
+                        type:'post',
+                        url:'/XCCloud/FreeGiveRule?action=DelFreeGiveRule',
+                        contentType: "application/json; charset=utf-8",
+                        data:{parasJson: parseJson},
+                        success: function (data) {
+                            data = JSON.parse(data);
+                            if (data.result_code == 1) {
+                                layer.msg('删除成功',{time:1500},function () {
+                                   obj.del();
+                                });
+                            } else {
+                                layer.msg(data.result_msg||return_msg);
+                            }
+                        }
+                    })
+                });
+            }
         })
     })
+</script>
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="up">升级优先级</a>
+    <a class="layui-btn layui-btn-xs" lay-event="down">降级优先级</a>
+    <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del">删除</a>
+</script>
+<script type="text/html" id="allow">
+    {{# if(d.AllowGuest==1){ }}
+    <input type="checkbox" checked name="switch" lay-skin="switch" lay-text="允许|禁止" class="tb_check" lay-filter="test" disabled>
+    {{# }else{ }}
+    <input type="checkbox" name="switch" lay-skin="switch" lay-text="允许|禁止" class="tb_check" lay-filter="test" disabled>
+    {{#  } }}
 </script>
 </html>

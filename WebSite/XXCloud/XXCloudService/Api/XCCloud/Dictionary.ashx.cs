@@ -90,13 +90,13 @@ namespace XXCloudService.Api.XCCloud
                 string merchId = dicParas.Get("merchId");
                 string dictKey = dicParas.Get("dictKey");
                 string enabled = dicParas.Get("enabled");
-                var pid = dicParas.Get("pid").Toint(0);
-                
-                string sql = " exec  SP_DictionaryNodes @MerchID,@DictKey,@PID,@RootID output ";
+                var pDictKey = dicParas.Get("pDictKey");
+
+                string sql = " exec  SP_DictionaryNodes @MerchID,@DictKey,@PDictKey,@RootID output ";
                 SqlParameter[] parameters = new SqlParameter[4];
                 parameters[0] = new SqlParameter("@MerchID", merchId);
                 parameters[1] = new SqlParameter("@DictKey", dictKey);
-                parameters[2] = new SqlParameter("@PID", pid);
+                parameters[2] = new SqlParameter("@PDictKey", pDictKey);
                 parameters[3] = new SqlParameter("@RootID", SqlDbType.Int);
                 parameters[3].Direction = System.Data.ParameterDirection.Output;
                 System.Data.DataSet ds = XCCloudBLL.ExecuteQuerySentence(sql, parameters);

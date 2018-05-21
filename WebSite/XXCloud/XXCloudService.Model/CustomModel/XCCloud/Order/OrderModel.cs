@@ -54,7 +54,7 @@ namespace XCCloudService.Model.CustomModel.XCCloud.Order
         public int ICCardId {set;get;}
 
         [DataMember(Name = "payCount", Order = 3)]
-        public int PayCount {set;get;}
+        public decimal PayCount { set; get; }
 
         [DataMember(Name = "realPay", Order = 4)]
         public decimal RealPay {set;get;}
@@ -89,21 +89,24 @@ namespace XCCloudService.Model.CustomModel.XCCloud.Order
         [DataMember(Name = "errMsg", Order = 14)]
         public decimal ErrMsg {set;get;}
 
-        [DataMember(Name = "errMsg", Order = 15)]
+        [DataMember(Name = "createTime", Order = 15)]
+        public DateTime CreateTime { set; get; }
+
+        [DataMember(Name = "detail", Order = 16)]
         public List<OrderBuyDetail1Model> Detail { set; get; }
     }
 
     [DataContract]
     public class OrderBuyDetail1Model
-    { 
-        [DataMember(Name = "customerType", Order = 1)]
-        public string Category { set; get; }
+    {
+        [DataMember(Name = "category", Order = 1)]
+        public int Category { set; get; }
 
         [DataMember(Name = "foodId", Order = 2)]
         public int FoodId { set; get; }
 
         [DataMember(Name = "foodName", Order = 3)]
-        public int FoodName { set; get; }
+        public string FoodName { set; get; }
 
         [DataMember(Name = "foodCount", Order = 4)]
         public int FoodCount { set; get; }

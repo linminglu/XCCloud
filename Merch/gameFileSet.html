@@ -1338,7 +1338,7 @@
       })
   });
   xcActionSystem.prototype.getGameType=function (form,objVal,id,m) {
-        var  obj={"dictKey":objVal,'enabled':1,"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
+        var  obj={"dictKey":objVal,'enabled':1,'pDicKey':'',"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
         var url="/XCCloud/Dictionary?action=GetNodes";
         var parasJson = JSON.stringify(obj);
         $.ajax({
@@ -1348,6 +1348,7 @@
             data: { parasJson: parasJson },
             success: function (data) {
                 data=JSON.parse(data);
+                console.log(data);
                 if(data.result_code=="1"){
                     var arr=data.result_data;
                     $('#'+id).html('<option value="">-请选择-</option>');
@@ -1567,13 +1568,13 @@
                               BOPulse=arr[31].value;
                               AllowRealOut=arr[32].value;
                               BOKeep=arr[33].value;
-                              // PushAddToGame=arr[34].value;
+                             
                               PushSpeed=arr[35].value;
                               PushPulse=arr[36].value;
                               PushLevel=arr[37].value;
                               PushStartInterval=arr[38].value;
                               UseSecondPush=arr[39].value;
-                              // SecondAddToGame=arr[40].value;
+                            
                               SecondSpeed=arr[41].value;
                               SecondPulse=arr[42].value;
                               SecondLevel=arr[43].value;
@@ -1582,11 +1583,7 @@
                               OutPulse=arr[46].value;
                               CountLevel=arr[47].value;
                               OutLevel=arr[48].value;
-                              // OutReduceFromGame=arr[49].value;
-                              // OutAddToCard=arr[50].value;
-                              // OnceOutLimit=arr[51].value;
-                              // OncePureOutLimit=arr[52].value;
-
+                              
                               ExceptOutTest=arr[54].value;
                               ExceptOutSpeed=arr[55].value;
                           xc.getGameType(form,'游戏机类型','GameType',arr[7].value);
