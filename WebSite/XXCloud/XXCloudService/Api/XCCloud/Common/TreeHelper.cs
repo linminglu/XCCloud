@@ -54,17 +54,6 @@ namespace XXCloudService.Api.XCCloud.Common
             }
         }
 
-        public static void LoopToAppendChildren(List<GroupAreaModel> treeNodes, GroupAreaModel curItem)
-        {
-            var subItems = treeNodes.Where(ee => ee.PID.Value == curItem.ID).ToList();
-            curItem.Children = new List<GroupAreaModel>();
-            curItem.Children.AddRange(subItems);
-            foreach (var subItem in subItems)
-            {
-                LoopToAppendChildren(treeNodes, subItem);
-            }
-        }
-
         #endregion
     }
 }

@@ -43,19 +43,11 @@ namespace XXCloudService.Api.XCCloud
                            select new GroupAreaModel
                            {
                                ID = g.Key,
-                               PID = 0,
                                AreaName = g.FirstOrDefault().AreaName,
                                ProjectCount = g.Count()
                            };
 
-                //实例化一个根节点
-                GroupAreaModel rootRoot = new GroupAreaModel();
-                rootRoot.ID = 0;
-                rootRoot.AreaName = "全部";
-                rootRoot.ProjectCount = list.Sum(s => s.ProjectCount); 
-                TreeHelper.LoopToAppendChildren(list.ToList(), rootRoot);
-
-                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, rootRoot.Children);
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, list);
             }
             catch (Exception e)
             {

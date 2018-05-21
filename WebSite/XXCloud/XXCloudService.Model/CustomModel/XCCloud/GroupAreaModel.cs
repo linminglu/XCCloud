@@ -13,16 +13,10 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         [DataMember(Name = "id", Order = 1)]
         public int ID { get; set; }
 
-        [IgnoreDataMember]
-        public Nullable<int> PID { get; set; }
-
-        [DataMember(Name = "areaName", Order = 3)]
+        [DataMember(Name = "areaName", Order = 2)]
         public string AreaName { get; set; }
 
-        [DataMember(Name = "projectCount", Order = 4)]
-        public Nullable<int> ProjectCount { get; set; }        
-
-        [DataMember(Name = "children", Order = 5)]
-        public List<GroupAreaModel> Children { get; set; }        
+        [DataMember(Name = "projectCount", Order = 3)]
+        public Nullable<int> ProjectCount { get; set; }          
     }    
 }

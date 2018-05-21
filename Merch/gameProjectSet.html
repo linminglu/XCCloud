@@ -89,7 +89,7 @@
             ,{fixed: 'right', width:150, align:'center', toolbar: '#barDemo'}]
     };
     xc.getInitData(parm);
-
+let id='';
    let projectType='';let Area='';let chargeType='';
     layui.use(['form','layer','table'],()=>{
         const form=layui.form;
@@ -97,7 +97,7 @@
         const table=layui.table;
       $('.add').on('click',()=>{  //弹窗
           xc.getGroupAreaDic(token,layer,form,'Area');
-          xc.setSelect('项乐类型类型','projectType')
+          setPlayMenu(form,'游戏机类型','projectType');
           layer.open({
               title:'新增',
               type:1,
@@ -174,6 +174,45 @@
             }
         });
     });
+    var setPlayMenu=function (form,objVal,id,m) {
+        var  obj={"dictKey":objVal,'enabled':1,'pDicKey':'517',"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
+        var url="/XCCloud/Dictionary?action=GetNodes";
+        var parasJson = JSON.stringify(obj);
+        $.ajax({
+            type: "post",
+            url: url,
+            contentType: "application/json; charset=utf-8",
+            data: {parasJson: parasJson},
+            success: function (data) {
+                data = JSON.parse(data);
+                console.log(data);
+                if (data.result_code == "1") {
+                    var arr = data.result_data;
+                    $('#' + id).html('<option>-请选择-</option>');
+                    if (m == undefined) {
+                             for(let i in arr[0].children){
+                                 $('#'+id).append('<option value="'+arr[0].children[i].id+'">'+arr[0].children[i].name+'</option>')
+                             }
+                    } else {
+                        for(let i in arr[0].children){
+                            if(arr[0].children[i].id==m){
+                                $('#'+id).append('<option value="'+arr[0].children[i].id+'" selected>'+arr[0].children[i].name+'</option>')
+                            }else {
+                                $('#'+id).append('<option value="'+arr[0].children[i].id+'">'+arr[0].children[i].name+'</option>')
+                            }
+                        }
+
+                    }
+
+                    form.render('select');
+                } else {
+                    layer.msg(data.result_msg || data.return_msg);
+                }
+            }
+
+        })
+
+    };
 </script>
 <script type="text/html" id="barDemo">
     <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del"><i class="layui-icon">&#xe640;</i>删除</a>
