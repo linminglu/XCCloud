@@ -939,6 +939,7 @@ namespace XCCloudService.Api.XCCloud
                                     var dicPara = new Dictionary<string, object>(el, StringComparer.OrdinalIgnoreCase);
                                     var balanceIndex = dicPara.Get("balanceIndex").Toint();
                                     var chargeOff = dicPara.Get("chargeOff").Toint();
+                                    var needAuthor = dicPara.Get("needAuthor").Toint();
                                     var maxSaveCount = dicPara.Get("maxSaveCount").Toint();
                                     var maxUplife = dicPara.Get("maxUplife").Toint();
 
@@ -946,6 +947,7 @@ namespace XCCloudService.Api.XCCloud
                                     data_MemberLevel_Balance.MemberLevelID = iMemberLevelID;
                                     data_MemberLevel_Balance.MerchID = merchId;
                                     data_MemberLevel_Balance.BalanceIndex = balanceIndex;
+                                    data_MemberLevel_Balance.NeedAuthor = needAuthor;
                                     data_MemberLevel_Balance.ChargeOFF = chargeOff;
                                     data_MemberLevel_Balance.MaxSaveCount = maxSaveCount;
                                     data_MemberLevel_Balance.MaxUplife = maxUplife;

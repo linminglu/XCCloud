@@ -1335,6 +1335,7 @@
           <Property Name="MerchID" Type="varchar" MaxLength="15" />
           <Property Name="MemberLevelID" Type="int" />
           <Property Name="BalanceIndex" Type="int" />
+          <Property Name="NeedAuthor" Type="int" />
           <Property Name="ChargeOFF" Type="int" />
           <Property Name="MaxSaveCount" Type="int" />
           <Property Name="MaxUplife" Type="int" />
@@ -3022,7 +3023,6 @@
           <EntitySet Name="Data_GameAPP_Rule" EntityType="XCCloudDBModel.Data_GameAPP_Rule" />
           <EntitySet Name="Data_GoodExit_Detail" EntityType="XCCloudDBModel.Data_GoodExit_Detail" />
           <EntitySet Name="Data_GroupArea" EntityType="XCCloudDBModel.Data_GroupArea" />
-          <EntitySet Name="Data_MemberLevel_Balance" EntityType="XCCloudDBModel.Data_MemberLevel_Balance" />
           <EntitySet Name="Data_MemberLevel_BalanceCharge" EntityType="XCCloudDBModel.Data_MemberLevel_BalanceCharge" />
           <EntitySet Name="Data_ProjectTicket_Bind" EntityType="XCCloudDBModel.Data_ProjectTicket_Bind" />
           <EntitySet Name="Data_PushRule_GameList" EntityType="XCCloudDBModel.Data_PushRule_GameList" />
@@ -3063,6 +3063,7 @@
           <EntitySet Name="Flw_Order" EntityType="XCCloudDBModel.Flw_Order" />
           <EntitySet Name="Data_GameEncourage" EntityType="XCCloudDBModel.Data_GameEncourage" />
           <EntitySet Name="Data_GameEncourage_List" EntityType="XCCloudDBModel.Data_GameEncourage_List" />
+          <EntitySet Name="Data_MemberLevel_Balance" EntityType="XCCloudDBModel.Data_MemberLevel_Balance" />
         </EntityContainer>
         <EntityType Name="Base_ChainRule">
           <Key>
@@ -4743,18 +4744,6 @@
           <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
           <Property Name="AreaName" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
         </EntityType>
-        <EntityType Name="Data_MemberLevel_Balance">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="MemberLevelID" Type="Int32" />
-          <Property Name="BalanceIndex" Type="Int32" />
-          <Property Name="ChargeOFF" Type="Int32" />
-          <Property Name="MaxSaveCount" Type="Int32" />
-          <Property Name="MaxUplife" Type="Int32" />
-        </EntityType>
         <EntityType Name="Data_MemberLevel_BalanceCharge">
           <Key>
             <PropertyRef Name="ID" />
@@ -5490,6 +5479,19 @@
           <Property Name="EncourageID" Type="Int32" />
           <Property Name="GameTims" Type="Int32" />
           <Property Name="EncouragePrice" Type="Decimal" Precision="10" Scale="2" />
+        </EntityType>
+        <EntityType Name="Data_MemberLevel_Balance">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="MemberLevelID" Type="Int32" />
+          <Property Name="BalanceIndex" Type="Int32" />
+          <Property Name="NeedAuthor" Type="Int32" />
+          <Property Name="ChargeOFF" Type="Int32" />
+          <Property Name="MaxSaveCount" Type="Int32" />
+          <Property Name="MaxUplife" Type="Int32" />
         </EntityType>
         </Schema>
     </edmx:ConceptualModels>
@@ -7293,19 +7295,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Data_MemberLevel_Balance">
-            <EntityTypeMapping TypeName="XCCloudDBModel.Data_MemberLevel_Balance">
-              <MappingFragment StoreEntitySet="Data_MemberLevel_Balance">
-                <ScalarProperty Name="MaxUplife" ColumnName="MaxUplife" />
-                <ScalarProperty Name="MaxSaveCount" ColumnName="MaxSaveCount" />
-                <ScalarProperty Name="ChargeOFF" ColumnName="ChargeOFF" />
-                <ScalarProperty Name="BalanceIndex" ColumnName="BalanceIndex" />
-                <ScalarProperty Name="MemberLevelID" ColumnName="MemberLevelID" />
-                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Data_MemberLevel_BalanceCharge">
             <EntityTypeMapping TypeName="XCCloudDBModel.Data_MemberLevel_BalanceCharge">
               <MappingFragment StoreEntitySet="Data_MemberLevel_BalanceCharge">
@@ -8077,6 +8066,20 @@
                 <ScalarProperty Name="GameTims" ColumnName="GameTims" />
                 <ScalarProperty Name="EncourageID" ColumnName="EncourageID" />
                 <ScalarProperty Name="StoreID" ColumnName="StoreID" />
+                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Data_MemberLevel_Balance">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Data_MemberLevel_Balance">
+              <MappingFragment StoreEntitySet="Data_MemberLevel_Balance">
+                <ScalarProperty Name="MaxUplife" ColumnName="MaxUplife" />
+                <ScalarProperty Name="MaxSaveCount" ColumnName="MaxSaveCount" />
+                <ScalarProperty Name="ChargeOFF" ColumnName="ChargeOFF" />
+                <ScalarProperty Name="NeedAuthor" ColumnName="NeedAuthor" />
+                <ScalarProperty Name="BalanceIndex" ColumnName="BalanceIndex" />
+                <ScalarProperty Name="MemberLevelID" ColumnName="MemberLevelID" />
                 <ScalarProperty Name="MerchID" ColumnName="MerchID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>

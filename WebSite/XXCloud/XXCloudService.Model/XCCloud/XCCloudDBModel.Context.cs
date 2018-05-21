@@ -144,7 +144,6 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Data_GameAPP_Rule> Data_GameAPP_Rule { get; set; }
         public virtual DbSet<Data_GoodExit_Detail> Data_GoodExit_Detail { get; set; }
         public virtual DbSet<Data_GroupArea> Data_GroupArea { get; set; }
-        public virtual DbSet<Data_MemberLevel_Balance> Data_MemberLevel_Balance { get; set; }
         public virtual DbSet<Data_MemberLevel_BalanceCharge> Data_MemberLevel_BalanceCharge { get; set; }
         public virtual DbSet<Data_ProjectTicket_Bind> Data_ProjectTicket_Bind { get; set; }
         public virtual DbSet<Data_PushRule_GameList> Data_PushRule_GameList { get; set; }
@@ -185,5 +184,6 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Flw_Order> Flw_Order { get; set; }
         public virtual DbSet<Data_GameEncourage> Data_GameEncourage { get; set; }
         public virtual DbSet<Data_GameEncourage_List> Data_GameEncourage_List { get; set; }
+        public virtual DbSet<Data_MemberLevel_Balance> Data_MemberLevel_Balance { get; set; }
     }
 }

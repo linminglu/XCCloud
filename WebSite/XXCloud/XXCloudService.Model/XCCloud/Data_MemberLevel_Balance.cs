@@ -18,6 +18,7 @@ namespace XCCloudService.Model.XCCloud
         public string MerchID { get; set; }
         public Nullable<int> MemberLevelID { get; set; }
         public Nullable<int> BalanceIndex { get; set; }
+        public Nullable<int> NeedAuthor { get; set; }
         public Nullable<int> ChargeOFF { get; set; }
         public Nullable<int> MaxSaveCount { get; set; }
         public Nullable<int> MaxUplife { get; set; }
