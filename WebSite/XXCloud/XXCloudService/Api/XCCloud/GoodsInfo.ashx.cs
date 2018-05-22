@@ -2089,7 +2089,172 @@ namespace XXCloudService.Api.XCCloud
             {
                 return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
             }
-        }        
+        }
+
+        [Authorize(Grants = "商品入库")]
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object SaveGoodExit(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+                var logId = userTokenKeyModel.LogId.Toint();
+
+                string errMsg = string.Empty;
+                if (!dicParas.Get("storageOrderIndex").Validintnozero("入库单ID", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (!dicParas.Get("exitCount").Validintnozero("退货总数", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (!dicParas.Get("exitCost").Validdecimal("退货杂费", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (!dicParas.Get("exitTotal").Validdecimalnozero("实退总额", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (!dicParas.GetArray("exitDetails").Validarray("退货明细", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                var storageOrderIndex = dicParas.Get("storageOrderIndex").Toint();
+                var exitCount = dicParas.Get("exitCount").Toint();
+                var exitCost = dicParas.Get("exitCost").Todecimal();
+                var exitTotal = dicParas.Get("exitTotal").Todecimal();
+                var exitDetails = dicParas.GetArray("exitDetails");
+                var note = dicParas.Get("note");
+                var id = 0;
+
+                //开启EF事务
+                using (TransactionScope ts = new TransactionScope())
+                {
+                    try
+                    {
+                        if (!Data_GoodStorageService.I.Any(a => a.ID == storageOrderIndex))
+                        {
+                            errMsg = "该入库单不存在";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
+                        var model = Data_GoodStorageService.I.GetModels(p => p.ID == storageOrderIndex).FirstOrDefault();
+                        if (model.AuthorFlag != 1)
+                        {
+                            errMsg = "该入库单未审核通过不能退货";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
+                        var exitModel = new Data_GoodExitInfo();
+                        exitModel.DepotID = model.DepotID;
+                        exitModel.ExitCost = exitCost;
+                        exitModel.ExitCount = exitCount;
+                        exitModel.ExitOrderID = RedisCacheHelper.CreateStoreSerialNo(storeId);
+                        exitModel.ExitTotal = exitTotal;
+                        exitModel.Note = note;
+                        if (!Data_GoodExitInfoService.I.Add(exitModel))
+                        {
+                            errMsg = "保存退货信息失败";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
+                        id = exitModel.ID;
+                        
+                        //保存退货明细信息
+                        if (exitDetails != null && exitDetails.Count() >= 0)
+                        {
+                            foreach (IDictionary<string, object> el in exitDetails)
+                            {
+                                if (el != null)
+                                {
+                                    var dicPara = new Dictionary<string, object>(el, StringComparer.OrdinalIgnoreCase);
+                                    if (!dicPara.Get("goodId").Validintnozero("商品ID", out errMsg))
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    if (!dicPara.Get("exitCount").Validintnozero("退货数量", out errMsg))
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    if (!dicPara.Get("exitPrice").Validdecimalnozero("退货单价", out errMsg))
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                                    var detailModel = new Data_GoodExit_Detail();
+                                    detailModel.ExitCount = dicPara.Get("exitCount").Toint();
+                                    detailModel.ExitOrderIndex = id;
+                                    detailModel.ExitPrice = dicPara.Get("exitPrice").Todecimal();
+                                    detailModel.GoodID = dicPara.Get("goodId").Toint();
+                                    Data_GoodExit_DetailService.I.AddModel(detailModel);
+                                }
+                                else
+                                {
+                                    errMsg = "提交数据包含空对象";
+                                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                }
+                            }
+
+                            if (!Data_GoodExit_DetailService.I.SaveChanges())
+                            {
+                                errMsg = "保存退货明细信息失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+                        }
+
+                        //创建出库单
+                        var outModel = new Data_GoodOutOrder();
+                        outModel.MerchID = merchId;
+                        outModel.StoreID = storeId;
+                        outModel.OrderID = RedisCacheHelper.CreateStoreSerialNo(storeId);
+                        outModel.OrderType = (int)GoodOutOrderType.Exit;
+                        outModel.DepotID = model.DepotID;
+                        outModel.CreateTime = DateTime.Now;
+                        outModel.OPUserID = logId;
+                        outModel.State = (int)GoodOutOrderState.Pending;
+                        if (!Data_GoodOutOrderService.I.Add(outModel))
+                        {
+                            errMsg = "创建出货单失败";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
+                        //保存出货明细信息
+                        foreach (IDictionary<string, object> el in exitDetails)
+                        {
+                            if (el != null)
+                            {
+                                var dicPara = new Dictionary<string, object>(el, StringComparer.OrdinalIgnoreCase);
+                                
+                                var outDetailModel = new Data_GoodOutOrder_Detail();
+                                outDetailModel.OutCount = dicPara.Get("exitCount").Toint();
+                                outDetailModel.GoodID = dicPara.Get("goodId").Toint();
+                                outDetailModel.OrderID = outModel.ID;
+                                outDetailModel.MerchID = merchId;
+                                outDetailModel.StoreID = storeId;
+                                Data_GoodOutOrder_DetailService.I.AddModel(outDetailModel);
+                            }
+                            else
+                            {
+                                errMsg = "提交数据包含空对象";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+                        }
+
+                        if (!Data_GoodOutOrder_DetailService.I.SaveChanges())
+                        {
+                            errMsg = "保存出货明细信息失败";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
+                        ts.Complete();
+                    }
+                    catch (DbEntityValidationException e)
+                    {
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, e.EntityValidationErrors.ToErrors());
+                    }
+                    catch (Exception e)
+                    {
+                        errMsg = e.Message;
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
+                }
+
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
 
         #endregion        
 

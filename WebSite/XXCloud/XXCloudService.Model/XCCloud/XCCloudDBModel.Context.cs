@@ -141,7 +141,6 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Data_CouponList> Data_CouponList { get; set; }
         public virtual DbSet<Data_Food_Level> Data_Food_Level { get; set; }
         public virtual DbSet<Data_GameAPP_Rule> Data_GameAPP_Rule { get; set; }
-        public virtual DbSet<Data_GoodExit_Detail> Data_GoodExit_Detail { get; set; }
         public virtual DbSet<Data_GroupArea> Data_GroupArea { get; set; }
         public virtual DbSet<Data_MemberLevel_BalanceCharge> Data_MemberLevel_BalanceCharge { get; set; }
         public virtual DbSet<Data_ProjectTicket_Bind> Data_ProjectTicket_Bind { get; set; }
@@ -185,5 +184,6 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Data_MemberLevel_Balance> Data_MemberLevel_Balance { get; set; }
         public virtual DbSet<Data_GoodStorage> Data_GoodStorage { get; set; }
         public virtual DbSet<Data_GoodExitInfo> Data_GoodExitInfo { get; set; }
+        public virtual DbSet<Data_GoodExit_Detail> Data_GoodExit_Detail { get; set; }
     }
 }

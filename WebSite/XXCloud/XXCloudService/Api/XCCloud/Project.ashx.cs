@@ -40,6 +40,7 @@ namespace XXCloudService.Api.XCCloud
 
                 string errMsg = string.Empty;
                 object[] conditions = dicParas.ContainsKey("conditions") ? (object[])dicParas["conditions"] : null;
+                var notProjectIds = dicParas.Get("notProjectIds");
 
                 SqlParameter[] parameters = new SqlParameter[0];
                 string sqlWhere = string.Empty;
@@ -57,13 +58,15 @@ namespace XXCloudService.Api.XCCloud
                                 	Data_ProjectInfo a
                                 LEFT JOIN Data_GroupArea b ON a.AreaType = b.ID  
                                 LEFT JOIN Dict_System c ON a.ProjectType = c.ID                                
-                                WHERE State=1
+                                WHERE a.State=1
                             ";
                 sql += " AND a.StoreID=" + storeId;
 
                 #endregion
 
                 var list = Data_ProjectInfoService.I.SqlQuery<Data_ProjectInfoList>(sql, parameters).ToList();
+                if (!notProjectIds.IsNull())
+                    list = list.Where(p => !notProjectIds.Contains(p.ID.ToString())).ToList();
 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, list);
             }

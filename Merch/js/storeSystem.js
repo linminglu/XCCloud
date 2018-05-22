@@ -1967,4 +1967,64 @@ xcActionSystem.prototype= {
             }
         });
     },
+
+
+       getGameType:function (token,layer,form,objVal,id,m) {
+    var  obj={"dictKey":objVal,'enabled':1,'pDicKey':'',"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
+    var url="/XCCloud/Dictionary?action=GetNodes";
+    var parasJson = JSON.stringify(obj);
+    $.ajax({
+        type: "post",
+        url: url,
+        contentType: "application/json; charset=utf-8",
+        data: { parasJson: parasJson },
+        success: function (data) {
+            data=JSON.parse(data);
+            console.log(data);
+            if(data.result_code=="1"){
+                var arr=data.result_data;
+                $('#'+id).html('<option value="">-请选择-</option>');
+                if(m){
+                    for(let i=1; i< arr.length;i++){
+                        if(arr[i].children.length>0){
+                            $('#'+id).append("<optgroup  label='"+arr[i].name+"'>");
+                            for(let j in arr[i].children){
+                                if(arr[i].children[j].id==m){
+                                    $('#'+id).append('<option value="'+arr[i].children[j].id+'" selected>'+arr[i].children[j].name+'</option>')
+                                }else {
+                                    $('#'+id).append('<option value="'+arr[i].children[j].id+'">'+arr[i].children[j].name+'</option>')
+                                }
+                            }
+                            $('#'+id).append("</optgroup >");
+                        }else {
+                            if(arr[i].id==m){
+                                $('#'+id).append('<option value="'+arr[i].id+'" selected>'+arr[i].name+'</option>')
+                            }else {
+                                $('#'+id).append('<option value="'+arr[i].id+'">'+arr[i].name+'</option>')
+                            }
+                        }
+
+                    }
+                }else {
+                    for(let i=1; i< arr.length;i++){
+                        if(arr[i].children.length>0){
+                            $('#'+id).append("<optgroup  label='"+arr[i].name+"'>");
+                            for(let j in arr[i].children){
+                                $('#'+id).append('<option value="'+arr[i].children[j].id+'">'+arr[i].children[j].name+'</option>')
+                            }
+                            $('#'+id).append("</optgroup >");
+                        }else {
+                            $('#'+id).append('<option value="'+arr[i].id+'">'+arr[i].name+'</option>')
+                        }
+
+                    }
+                }
+                form.render('select');
+            }else {
+                layer.msg(data.result_msg||data.return_msg);
+
+            }
+        }
+    })
+}
 };

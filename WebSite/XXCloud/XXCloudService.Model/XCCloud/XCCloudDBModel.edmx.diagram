@@ -121,7 +121,6 @@
         <EntityTypeShape EntityType="XCCloudDBModel.Data_CouponList" Width="1.5" PointX="35.375" PointY="8.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_Food_Level" Width="1.5" PointX="27.75" PointY="30.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_GameAPP_Rule" Width="1.5" PointX="0.75" PointY="6.75" />
-        <EntityTypeShape EntityType="XCCloudDBModel.Data_GoodExit_Detail" Width="1.5" PointX="7.75" PointY="31.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_GroupArea" Width="1.5" PointX="33.75" PointY="31.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_MemberLevel_BalanceCharge" Width="1.5" PointX="37.75" PointY="27.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_ProjectTicket_Bind" Width="1.5" PointX="37.75" PointY="31.75" />
@@ -165,6 +164,7 @@
         <EntityTypeShape EntityType="XCCloudDBModel.Data_MemberLevel_Balance" Width="1.5" PointX="16.375" PointY="42.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_GoodStorage" Width="1.5" PointX="8.375" PointY="38.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_GoodExitInfo" Width="1.5" PointX="18.375" PointY="42.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.Data_GoodExit_Detail" Width="1.5" PointX="7.375" PointY="31.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

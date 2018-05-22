@@ -12,7 +12,7 @@
 </head>
 <body>
 <div class="layui-row">
-    <div class="goodIsAll" style="padding: 15px;max-height: 550px;overflow-y: auto" id="openModel"  >
+    <div class="goodIsAll" style="padding: 15px;max-height: 550px;overflow-y: auto" id=""  >
         <form class="layui-form layui-form-pane" lay-filter="formtest">
             <div class="layui-card">
                 <div class="layui-card-header">基本信息</div>
@@ -279,11 +279,8 @@
                 </div>
             </div>
             <div class="layui-card">
-                <div class="layui-card-header">绑定项目</div>
+                <div class="layui-card-header">绑定项目<button type="button" class="layui-btn" id="addPro">添加项目</button></div>
                 <div class="layui-card-body">
-                    <div style="text-align:right;">
-                        <button type="button" class="layui-btn" id="addPro">添加项目</button>
-                    </div>
                     <table class="layui-hide" id="proTable" lay-filter="proTable"></table>
                 </div>
             </div>
@@ -294,6 +291,19 @@
         </form>
     </div>
 </div>
+<div id="openModel" style="padding: 15px;display: none">
+    <form action="" class="layui-form layui-form-pane">
+        <div class="layui-form-item">
+            <label for="" class="layui-form-label">游乐项目</label>
+            <div class="layui-input-block" >
+                <select name="proList" id="proList" lay-filter="proList"></select>
+            </div>
+        </div>
+    </form>
+    <div style="text-align:center;" >
+        <button type="button" class="layui-btn" id="savePro">确定</button>
+    </div>
+</div>
 </body>
 <script src="js/jquery-1.8.3-min.js"></script>
 <script src="layui/layui.js"></script>
@@ -302,10 +312,11 @@
     let xc=xcActionSystem.prototype;
     let token=xc.getStorage('token');
     let  ticketSet=JSON.parse(xc.getStorage('ticketSet'));
-    console.log(ticketSet);
     if(ticketSet.name=='times'){
         $('input[name="BusinessType"]').val('门票');
     }
+
+    let   proListArr=[];let proList='';
 
     let DivideType=''; let ReadFace=0;let ActiveBar=0;let AllowCreatePoint=0;let SaleAuthor=0;
     let EffactType=0; let EffactPeriodType=0; let VaildPeriodType=0;let WeekType=0;let week=[];
@@ -436,7 +447,61 @@
         laydate.render({
             elem: '#NoEndDate',type: 'date',value:new Date()
         });
+        //绑定项目
+        bindPro(table,[],'proTable');
+        $('#addPro').on('click',function () {
+            xc.getGameType (token,layer,form,'游戏机类型','proList');
+            layer.open({
+                type:1,
+                area:'600px',
+                content:$('#openModel')
+            })
+        });
+        form.on('select(proList)',(data)=>{
+            proList=data.value;
 
+        });
+        $('#savePro').on('click',function () {
+            if(proList!=''){
+                if(ticketSet.way=='add'){
+                    proListArr.push({'ProjectTicketID':''
+                        ,'ProjectID':proList
+                        ,'UseCount':''
+                        ,'AllowShareCount':''
+                        ,'WeightValue':''});
+                    bindPro(table,proListArr,'proTable');
+                    layer.closeAll()
+                }else if(ticketSet.way=='modify'){
+                    if(proListArr.length>0){
+                        let flag=false;
+                        for(let i in proListArr){
+                            if(proListArr.ProjectID==proList){
+                                flag=true;
+                            }
+                        }
+                        if(flag){
+                            layer.msg('该项目已绑定，请选择其他项目')
+                        }else {
+                            proListArr.push({'ProjectTicketID':''
+                                ,'ProjectID':proList
+                                ,'UseCount':''
+                                ,'AllowShareCount':''
+                                ,'WeightValue':''});
+                            bindPro(table,proListArr,'proTable');
+                        }
+                    }else {
+                        proListArr.push({'ProjectTicketID':''
+                            ,'ProjectID':proList
+                            ,'UseCount':''
+                            ,'AllowShareCount':''
+                            ,'WeightValue':''});
+                        bindPro(table,proListArr,'proTable');
+                    }
+                    layer.closeAll()
+                }
+            }
+
+        })
         $('#save').on('click',function () {
             saveTicketSet(ticketSet,layer);
         })
@@ -503,6 +568,27 @@
                 }
             })
         }
-    }
+    };
+   function bindPro(table,datas,id) {
+       table.render({
+           elem: '#'+id
+           , height:'250px'
+           , size:"sm"
+           , data: datas
+           , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+           , cols: [[
+               {field:'ProjectID', title:'项目名称', align: 'center',width:240}
+               // ,{field:'FoodTypeStr',title: '类别', align: 'center',width:205} //width 支持：数字、百分比和不填写。
+               ,{field:'UseCount', title: '游玩次数', align: 'center',width:240,edit:true}
+               // ,{field:'AllowShareCount', title: '游玩次数', align: 'center',width:100,edit:true}
+               ,{field:'WeightValue', title: '权重值', align: 'center',width:240,edit:true}
+               ,{fixed: 'right',title:'操作', width:240, align:'center', toolbar: '#barDemo2'}]]
+           , page: {page: true, limits: [10, 15, 20, 30, 50, 100]}
+           , limit: 10
+       });
+   }
+</script>
+<script type="text/html"   id="barDemo2">
+    <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del"><i class="layui-icon">&#xe640;</i>删除</a>
 </script>
 </html>

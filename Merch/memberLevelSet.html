@@ -159,9 +159,6 @@
                          <div class="layui-inline">
                              <label  class="layui-form-label" style="padding: 8px 0;">开卡套餐内容</label>
                              <div class="layui-input-inline">
-                                <button type="button" class="layui-btn layui-btn-normal" id="lookGoods">查看开卡套餐内容</button>
-                             </div>
-                             <div class="layui-input-inline">
                                  <button type="button" class="layui-btn layui-btn-normal" id="setGoods">点击绑定开卡套餐内容</button>
                              </div>
                          </div>
@@ -287,8 +284,7 @@
                               </div>
                               <div class="layui-form-mid">%</div>
                               <div class="layui-input-inline" style="width: 110px;">
-                                  <input type="checkbox" name="needAuth" lay-ignore >
-                                  需要授权
+                                  <input type="checkbox" name="needAuth" lay-ignore > 需要授权
                               </div>
                               <label  class="layui-form-mid" style="width: 100px;">最大存储余额</label>
                               <div class="layui-input-inline" style="width: 90px;">
@@ -366,7 +362,7 @@
                           <div class="layui-inline memBalance">
                               <label class="layui-form-label">原类型</label>
                               <div class="layui-input-inline" style="width: 120px">
-                                  <select name="sourceBalanceType" id="sourceBalanceType"></select>
+                                  <select name="sourceBalanceType" lay-ignore style="height: 36px;width: 120px" id="sourceBalanceType"></select>
                               </div>
                               <label class="layui-form-mid">原数量</label>
                               <div class="layui-input-inline" style="width: 80px">
@@ -374,7 +370,7 @@
                               </div>
                               <label class="layui-form-mid">兑换类型</label>
                               <div class="layui-input-inline" style="width: 120px">
-                                  <select name="targetBalanceIndex" id="targetBalanceIndex"></select>
+                                  <select name="targetBalanceIndex" lay-ignore style="height: 36px;width: 120px" id="targetBalanceIndex"></select>
                               </div>
                               <label class="layui-form-mid">兑换数量</label>
                               <div class="layui-input-inline" style="width: 80px">
@@ -485,8 +481,8 @@
     let xc=xcActionSystem.prototype;
     let token=xc.getStorage('token');
     let merchId=JSON.parse(xc.getStorage('logMsg')).merchId;
-    let memberLevelID;
-
+    let memberLevelID='';
+    let memberLevelFood=[];let id='';
     let index;//layer;
     let parm={'obj':{'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'},
         'url':'/XCCloud/Member?action=QueryMemberLevel',
@@ -564,7 +560,7 @@
         });
         //新增按钮
         $('#add').on('click',()=>{
-            $('#resetBtn').trigger('click')
+            $('#resetBtn').trigger('click');
              PhoneOnly=1; IDCardOnly=1;  needAuthor=1; mustPhone=0; mustIDCard=0; useReadID=1; readFace=0; readPlam=0;
 
              BirthdayFree=''; freeType=''; freeRate=''; upML=''; downML='';
@@ -591,7 +587,28 @@
         });
         //绑定开卡套餐
         $('#setGoods').on('click',function () {
-            getFoodList(token,form,layer);
+            if(memberLevelID==''){
+                memberLevelFood=[];
+                getFoodList(token,form,layer);
+            }else {
+                let _obj={'memberLevelID':memberLevelID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                let parseJson = JSON.stringify(_obj);
+                $.ajax({
+                    type: "post",
+                    url: '/XCCloud/Member?action=GetMemberLevelFoodList',
+                    contentType: "application/json; charset=utf-8",
+                    data: { parasJson: parseJson },
+                    success: function (data) {
+                        data=JSON.parse(data);
+                        console.log(data);
+                        if(data.result_code==1){
+                            let arr=data.result_data;
+                            getFoodList(token,form,layer,arr)
+                        }else {layer.msg(data.result_msg||data.return_msg)}
+                    }
+                });
+            }
+
             index= layer.open({
                 type:1,
                 area:'400px',
@@ -781,6 +798,7 @@
                     data: { parasJson: parseJson },
                     success: function (data) {
                         data=JSON.parse(data);
+
                         if(data.result_code==1){
                             let arr=data.result_data;
                             if(arr.length==1){
@@ -792,7 +810,7 @@
                                 $('.reduceBox input[name="expireDays"]').val(arr[0].ExpireDays);
                             }else if(arr.length>1){
                                 for(let i=1;i<arr.length;i++){
-                                    $('.reduceBox').append($('body').find($('.code')).eq(0).clone())
+                                    $('.freeLast').append($('body').find($('.reduceBox')).eq(0).clone())
                                 }
                                 for(let i=0;i<arr.length;i++){
                                     $('.freeLast').find($('.reduceBox')).eq(i).find('input[name="chargeTotal"]').val(arr[i].ChargeTotal);
@@ -813,6 +831,7 @@
                     data: { parasJson: parseJson },
                     success: function (data) {
                         data=JSON.parse(data);
+                        console.log(data);
                         if(data.result_code==1){
                             let arr=data.result_data;
                             if(arr.length==1){
@@ -823,7 +842,7 @@
                                 $('.goodRules input[name="maxUplife"]').val(arr[0].MaxUplife);
                             }else if(arr.length>1){
                                 for(let i=1;i<arr.length;i++){
-                                    $('.reduceBox').append($('body').find($('.code')).eq(0).clone())
+                                    $('.goodConvert').append($('body').find($('.goodRules')).eq(0).clone())
                                 }
                                 for(let i=0;i<arr.length;i++){
 
@@ -855,7 +874,7 @@
 
                             }else if(arr.length>1){
                                 for(let i=1;i<arr.length;i++){
-                                    $('.reduceBox').append($('body').find($('.code')).eq(0).clone())
+                                    $('.memBalanceBox').append($('body').find($('.memBalance')).eq(0).clone())
                                 }
                                 for(let i=0;i<arr.length;i++){
                                     $('.memBalanceBox').find($('.memBalance')).eq(i).find('select[name="sourceBalanceType"]').val(arr[i].SourceBalanceIndex);
@@ -1028,13 +1047,13 @@
             if($(this).find('input[name="chargeOff"]').val()!=''&&
                 $(this).find('select[name="freeRates"] option:selected').val()!=''&&
                 $(this).find('input[name="maxSaveCount"]').val()!=''&&
-                $(this).find('input[name="needAuth"]').val()!=''&&
+                // $(this).find('input[name="needAuth"]').val()!=''&&
                 $(this).find('input[name="maxUplife"]').val()!=''
             ){
                 _memberLevelBalance.push({
                     'BalanceIndex': $(this).find('select[name="freeRates"] option:selected').val(),
                     'ChargeOff': $(this).find('input[name="chargeOff"]').val(),
-                    'NeedAuthor': $(this).find('input[name="needAuth"]').val(),
+                    'NeedAuthor': $(this).find('input[name="needAuth"]').is(':checked')?1:0,
                     'MaxSaveCount': $(this).find('input[name="maxSaveCount"]').val(),
                     'MaxUplife': $(this).find('input[name="maxUplife"]').val()
                 });
@@ -1066,7 +1085,7 @@
                 $(this).find('input[name="targetCount"]').val()!=''
             ){
                 _memberLevelBalanceCharge.push({
-                    'sourceBalanceType': $(this).find('select[name="sourceBalanceIndex"] option:selected').val(),
+                    'sourceBalanceIndex': $(this).find('select[name="sourceBalanceType"] option:selected').val(),
                     'sourceCount': $(this).find('input[name="sourceCount"]').val(),
                     'targetBalanceIndex': $(this).find('select[name="targetBalanceIndex"] option:selected').val(),
                     'targetCount': $(this).find('input[name="targetCount"]').val(),
@@ -1124,7 +1143,7 @@
             'allowGetCoin':allowGetCoin,
             'allowTransfer':allowTransfer,
 
-            'memberLevelFoods':_memberLevelFood,
+            'memberLevelFoods':memberLevelFood,
             'memberLevelFrees':_memberLevelFrees,
             'memberLevelBalance':_memberLevelBalance,
             'memberLevelBalanceCharge':_memberLevelBalanceCharge,
@@ -1195,7 +1214,7 @@
 
     }
     //获取会员预赠币规则
-    function getFoodList(token,form,layer) {
+    function getFoodList(token,form,layer,checked) {
         let _obj={'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
         let parseJson = JSON.stringify(_obj);
         $.ajax({
@@ -1209,7 +1228,21 @@
                     let arr=data.result_data;
                     $('#foodListBox').html('');
                     for(let i in arr){
-                        $('#foodListBox').append('<input type="checkbox" lay-filter="foodList" value="'+arr[i].FoodID+'" title="'+arr[i].FoodName+'"> ')
+                        if(checked){
+                            let flag=false;
+                            for(let j in checked){
+                                if(arr[i].FoodID==checked[j].FoodID){
+                                    flag=true;
+                                }
+                            }
+                            if(flag){
+                                $('#foodListBox').append('<input type="checkbox" checked lay-filter="foodList" value="'+arr[i].FoodID+'" title="'+arr[i].FoodName+'"> ')
+                            }else {
+                                $('#foodListBox').append('<input type="checkbox" lay-filter="foodList" value="'+arr[i].FoodID+'" title="'+arr[i].FoodName+'"> ')
+                            }
+                        }else {
+                            $('#foodListBox').append('<input type="checkbox" lay-filter="foodList" value="'+arr[i].FoodID+'" title="'+arr[i].FoodName+'"> ')
+                        }
                     }
                     form.render('checkbox');
                 } else {

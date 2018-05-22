@@ -845,7 +845,9 @@ namespace XCCloudService.Common.Enum
         Time = 1 //计时
     }
     
-    //优惠券类别
+    /// <summary>
+    /// 优惠券类别
+    /// </summary>
     public enum CouponType
     {
         [Description("代金券")]
@@ -856,7 +858,9 @@ namespace XCCloudService.Common.Enum
         Charge = 2//兑换
     }
 
-    //兑换方式
+    /// <summary>
+    /// 兑换方式
+    /// </summary>
     public enum ChargeType
     {
         [Description("礼品")]
@@ -867,7 +871,9 @@ namespace XCCloudService.Common.Enum
         Coin = 2//代币
     }
 
-    //派发方式
+    /// <summary>
+    /// 派发方式
+    /// </summary>
     public enum SendType
     {
         [Description("消费赠券")]
@@ -880,7 +886,9 @@ namespace XCCloudService.Common.Enum
         Delivery = 3     //街边派送
     }
 
-    //实物券标记
+    /// <summary>
+    /// 实物券标记
+    /// </summary>
     public enum CouponFlag
     {
         [Description("电子优惠券")]
@@ -889,7 +897,9 @@ namespace XCCloudService.Common.Enum
         Entry = 1 //实物优惠券
     }
 
-    //券状态
+    /// <summary>
+    /// 券状态
+    /// </summary>
     public enum CouponState
     {
         [Description("未分配")]
@@ -902,7 +912,9 @@ namespace XCCloudService.Common.Enum
         Applied = 3       //已使用 用户核销       
     }
 
-    //优惠时段，时段类型
+    /// <summary>
+    /// 优惠时段，时段类型
+    /// </summary>
     public enum TimeType
     {
         [Description("自定义")]
@@ -917,7 +929,9 @@ namespace XCCloudService.Common.Enum
     }
 
     
-    //派发周期
+    /// <summary>
+    /// 派发周期
+    /// </summary>
     public enum SendCycle
     {
         [Description("每天")]
@@ -930,7 +944,9 @@ namespace XCCloudService.Common.Enum
         EveryYear = 3    //每年
     }
 
-    //满减优惠频率
+    /// <summary>
+    /// 满减优惠频率
+    /// </summary>
     public enum FreqType
     {
         [Description("天")]
@@ -945,7 +961,9 @@ namespace XCCloudService.Common.Enum
         Year = 4    //每年
     }
 
-    //条件类型
+    /// <summary>
+    /// 条件类型
+    /// </summary>
     public enum ConditionType
     {
         Manual = 0,        //手动派发
@@ -953,7 +971,9 @@ namespace XCCloudService.Common.Enum
     }
 
 
-    //条件ID
+    /// <summary>
+    /// 条件ID
+    /// </summary>
     public enum ConditionID
     {
         Activability = 0,    //活跃能力
@@ -964,7 +984,9 @@ namespace XCCloudService.Common.Enum
         MemberBalance = 5    //会员余额
     }
 
-    //礼品调拨类型
+    /// <summary>
+    /// 礼品调拨类型
+    /// </summary>
     public enum RequestType
     {
         [Description("门店间申请")]
@@ -977,13 +999,35 @@ namespace XCCloudService.Common.Enum
         MerchRequest = 3    //总部申请
     }
 
-    //数据异动类别
+    /// <summary>
+    /// 数据异动类别
+    /// </summary>
     public enum SourceType
     {
         GoodStorage = 0,    //入库单
         GoodRequest = 1,    //调拨单
         GoodReload = 2,     //安装记录
         GoodOut = 3,        //出库单
+    }
+
+    /// <summary>
+    /// 出库类别
+    /// </summary>
+    public enum GoodOutOrderType
+    {
+        Discard = 0,        //废品出库
+        Transfer = 1,       //转仓出库
+        Exit = 2,           //入库退货
+    }
+
+    /// <summary>
+    /// 出库状态
+    /// </summary>
+    public enum GoodOutOrderState
+    {
+        Pending = 0,        //未审核
+        Done = 1,           //已完成
+        Cancel = 2,         //已撤销
     }
 
     //出入库标志
