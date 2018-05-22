@@ -16,7 +16,7 @@ namespace XCCloudService.Model.XCCloud
     {
         public int ID { get; set; }
         public string ExitOrderID { get; set; }
-        public string StorageOrderID { get; set; }
+        public Nullable<int> StorageOrderIndex { get; set; }
         public Nullable<int> DepotID { get; set; }
         public Nullable<int> ExitCount { get; set; }
         public Nullable<decimal> ExitCost { get; set; }

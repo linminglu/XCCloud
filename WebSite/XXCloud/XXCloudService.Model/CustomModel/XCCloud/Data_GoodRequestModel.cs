@@ -104,7 +104,9 @@ namespace XCCloudService.Model.CustomModel.XCCloud
     public class Data_GoodsStockList
     {
         public int? GoodID { get; set; }
+        public string Barcode { get; set; }
         public string GoodName { get; set; }
+        public string GoodTypeStr { get; set; }
         public int? RemainCount { get; set; }
         public int? AvailableCount { get; set; }
     }

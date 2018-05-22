@@ -66,8 +66,8 @@ as
 	--inner join Base_StoreInfo c on a.MerchID=c.MerchID 
 	--inner join Base_UserInfo b on c.StoreID=b.StoreID
 	left join Base_UserGrant d on a.ID=d.GrantID and d.UserID=@UserID	
-	where a.Enabled=1 and b.DictKey='权限列表' and a.MerchID='1'
-	order by OrderID,PID	
+	where a.Enabled=1 and b.DictKey='权限列表' and a.MerchID='0'
+	order by OrderID
  end
 
 GO
@@ -258,8 +258,8 @@ as
 	from Dict_System a 
 	left join Dict_System b on a.PID=b.ID
 	left join Base_UserGrant c on a.ID=c.GrantID and c.UserID=@UserID
-	where a.Enabled=1 and b.DictKey='权限列表' and (a.MerchID is null or a.MerchID='') 
-	order by OrderID,PID
+	where a.Enabled=1 and b.DictKey='权限列表' and IsNull(a.MerchID,'')=''
+	order by OrderID
  end
 
 GO

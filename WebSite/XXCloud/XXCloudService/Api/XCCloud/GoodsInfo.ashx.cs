@@ -92,8 +92,8 @@ namespace XXCloudService.Api.XCCloud
                                 	INNER JOIN Dict_System b ON a.ID = b.PID
                                 	WHERE
                                 		a.DictKey = '商品类别'
-                                	AND a.PID = 0
-                                ) c ON CONVERT (VARCHAR, a.GoodType) = c.DictValue
+                                	AND a.PID = 0 AND b.MerchID='" + merchId + "'" +
+                                @") c ON a.GoodType = c.ID
                                 WHERE
                                 	a.Status = 1";
                 sql += " AND a.MerchID='" + merchId + "'";
@@ -614,13 +614,18 @@ namespace XXCloudService.Api.XCCloud
                 var inOrOutDepotId = dicParas.Get("inOrOutDepotId").Toint();
                 var notGoodIds = dicParas.Get("notGoodIds");
                 var goodId = dicParas.Get("goodId").Toint();
+                var goodNameOrBarCode = dicParas.Get("goodNameOrBarCode");
 
                 #region Sql语句
                 string sql = @"SELECT
                                     /*商品ID*/
-                                	a.GoodID,
+                                	a.GoodID,    
+                                    /*商品条码*/
+                                	c.Barcode,                               
                                     /*商品名称*/
                                 	c.GoodName,
+                                    /*商品类别*/
+                                	d.DictKey AS GoodTypeStr,
                                 	/*库存*/
                                 	ISNULL(b.RemainCount,0) AS RemainCount,
                                     /*可调拨数*/
@@ -631,12 +636,15 @@ namespace XXCloudService.Api.XCCloud
                                 	SELECT
                                 		*, ROW_NUMBER() over(partition by DepotID,GoodID order by InitialTime desc) as RowNum
                                 	FROM
-                                		Data_GoodsStock                                                                                         	
+                                		Data_GoodsStock
                                 ) b ON a.ID = b.ID and b.RowNum <= 1 
-                                INNER JOIN Base_GoodsInfo c ON b.GoodID = c.ID 
+                                INNER JOIN Base_GoodsInfo c ON b.GoodID = c.ID
+                                INNER JOIN Dict_System d ON c.GoodType = d.ID 
                                 WHERE c.AllowStorage = 1 AND c.Status = 1 AND a.DepotID = " + inOrOutDepotId;
                 if (!goodId.IsNull())
                     sql += sql + " AND a.GoodID=" + goodId;
+                if(!goodNameOrBarCode.IsNull())
+                    sql += sql + " AND (c.GoodName like '%" + goodNameOrBarCode + "%' OR c.Barcode like '%" + goodNameOrBarCode + "%')";
                 #endregion
 
                 var list = Data_GoodsStockService.I.SqlQuery<Data_GoodsStockList>(sql).ToList();
@@ -725,10 +733,10 @@ namespace XXCloudService.Api.XCCloud
                                 	SELECT
                                 		*, ROW_NUMBER() over(partition by DepotID,GoodID order by InitialTime desc) as RowNum
                                 	FROM
-                                		Data_GoodsStock                                                                                         	
+                                		Data_GoodsStock
                                 ) b ON a."
                                 + (requstType == (int)RequestType.MerchSend ? "OutDepotID" : "InDeportID")
-                                + @" = b.DepotID AND a.GoodID = b.GoodID and b.RowNum <= 1                                
+                                + @" = b.DepotID AND a.GoodID = b.GoodID and b.RowNum <= 1
                                 INNER JOIN Base_GoodsInfo c ON b.GoodID = c.ID 
                                 INNER JOIN (
                                 	SELECT
@@ -738,8 +746,8 @@ namespace XXCloudService.Api.XCCloud
                                 	INNER JOIN Dict_System b ON a.ID = b.PID
                                 	WHERE
                                 		a.DictKey = '商品类别'
-                                	AND a.PID = 0
-                                ) d ON CONVERT (VARCHAR, c.GoodType) = d.DictValue
+                                	AND a.PID = 0 AND b.MerchID='" + merchId + "'" +
+                                @") d ON CONVERT c.GoodType = d.ID
                                 LEFT JOIN (
                                 	SELECT
                                 		b.*
@@ -877,8 +885,8 @@ namespace XXCloudService.Api.XCCloud
                                 	INNER JOIN Dict_System b ON a.ID = b.PID
                                 	WHERE
                                 		a.DictKey = '商品类别'
-                                	AND a.PID = 0
-                                ) c ON CONVERT (VARCHAR, b.GoodType) = c.DictValue                                
+                                	AND a.PID = 0 AND b.MerchID = '" + merchId + "'" +
+                                @") c ON b.GoodType = c.ID                                
                                 WHERE b.Status = 1
                             ";
                 sql += " AND a.RequestID=" + requestId;
@@ -1006,8 +1014,8 @@ namespace XXCloudService.Api.XCCloud
                                 	INNER JOIN Dict_System b ON a.ID = b.PID
                                 	WHERE
                                 		a.DictKey = '商品类别'
-                                	AND a.PID = 0
-                                ) c ON CONVERT (VARCHAR, b.GoodType) = c.DictValue                                
+                                	AND a.PID = 0 AND b.MerchID = '" + merchId + "'" +
+                                @") c ON b.GoodType = c.ID                                
                                 WHERE b.Status = 1
                                 ORDER BY a.SendTime
                             ";
@@ -1740,7 +1748,35 @@ namespace XXCloudService.Api.XCCloud
 
         #endregion
 
-        #region 商品入库管理
+        #region 商品入库管理   
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object GetGoodSupplierDic(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+
+                var linq = from a in Data_SupplierListService.I.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase))
+                           select new
+                           {
+                               MerchID = a.MerchID,
+                               StoreID = a.StoreID,
+                               Supplier = a.Supplier
+                           };
+                if (!storeId.IsNull())
+                    linq = linq.Where(w => w.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase));
+
+                var Suppliers = linq.Select(o => new { Supplier = o.Supplier }).Distinct().OrderBy(or => or.Supplier);
+
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, Suppliers);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
 
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object QueryGoodStorage(Dictionary<string, object> dicParas)
@@ -1765,25 +1801,46 @@ namespace XXCloudService.Api.XCCloud
                     }
                 }
 
-                string sql = @"select a.ID, d.Barcode, e.DictKey as GoodTypeStr, d.GoodName, g.StoreName, a.RealTime, a.Supplier, c.StorageCount, c.Price, c.TotalPrice, b.LogName, f.DepotName from Data_GoodStorage a " +
-                    " left join Base_UserInfo b on a.UserID=b.UserID " +
-                    " left join Data_GoodStorage_Detail c on a.ID=c.StorageID " +
-                    " left join Base_GoodsInfo d on c.GoodID=d.ID " +
-                    " left join (select b.* from Dict_System a inner join Dict_System b on a.ID=b.PID where a.DictKey='商品类别' and a.PID=0) e on convert(varchar, d.GoodType)=e.DictValue " +
-                    " left join Base_DepotInfo f on a.DepotID=f.ID " +
-                    " left join Base_StoreInfo g on a.StoreID=g.StoreID " +
-                    " where 1=1 ";
-                if (userTokenKeyModel.LogType == (int)RoleType.MerchUser)
+                string sql = @"SELECT
+                                	a.ID,
+                                    a.StorageOrderID,
+                                	/*入库门店*/
+                                	(case when IsNull(b.StoreName,'')='' then '总店' else b.StoreName end) AS StoreName,
+                                	/*入库时间*/
+                                    (case when IsNull(a.RealTime,'')='' then '' else convert(varchar,a.RealTime,20) end) AS RealTime,
+                                	/*采购渠道*/
+                                	a.Supplier,
+                                	/*入库数量*/
+                                	c.StorageCount,
+                                	/*采购单价*/
+                                	c.TaxPrice,
+                                	/*入库金额*/
+                                	c.TotalPrice,
+                                	/*入库人*/
+                                	u.LogName,
+                                	/*入库仓库*/
+                                	d.DepotName,
+                                	/*状态*/
+                                	a.AuthorFlag
+                                FROM
+                                	Base_GoodsInfo a
+                                LEFT JOIN Base_StoreInfo b ON a.StoreID = b.StoreID
+                                LEFT JOIN (
+                                	SELECT
+                                		*, ROW_NUMBER() over(partition by StorageID,GoodID order by ID) as RowNum
+                                	FROM
+                                		Data_GoodStorage_Detail                                                                                         	
+                                ) c ON a.ID = c.StorageID and c.RowNum <= 1
+                                LEFT JOIN Base_UserInfo u ON a.UserID = u.UserID
+                                LEFT JOIN Base_DepotInfo d ON a.DepotID = d.ID                                
+                                WHERE 1 = 1";
+                sql = sql + " AND a.merchId='" + merchId;
+                if (!storeId.IsNull())
                 {
-                    sql = sql + " and a.storeId='" + storeId + "'";
+                    sql = sql + " AND a.storeId='" + storeId;
                 }
-                else
-                {
-                    sql = sql + " and a.merchId='" + merchId + "'";
-                }
-                sql = sql + sqlWhere;
-                IData_GoodStorageService data_GoodStorageService = BLLContainer.Resolve<IData_GoodStorageService>();
-                var data_GoodStorage = data_GoodStorageService.SqlQuery<Data_GoodStorageList>(sql, parameters).ToList();
+
+                var data_GoodStorage = Data_GoodStorageService.I.SqlQuery<Data_GoodStorageList>(sql, parameters).ToList();
 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, data_GoodStorage);
             }
@@ -1793,248 +1850,240 @@ namespace XXCloudService.Api.XCCloud
             }
         }
 
-        //[ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
-        //public object GetGoodStorage(Dictionary<string, object> dicParas)
-        //{
-        //    try
-        //    {
-        //        string errMsg = string.Empty;
-        //        string id = dicParas.ContainsKey("id") ? (dicParas["id"] + "") : string.Empty;
-        //        if (string.IsNullOrEmpty(id))
-        //        {
-        //            errMsg = "入库流水号不能为空";
-        //            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-        //        }
+        [Authorize(Grants = "商品入库")]
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object GetGoodStorage(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
 
-        //        int iId = Convert.ToInt32(id);
-        //        IData_GoodStorageService data_GoodStorageService = BLLContainer.Resolve<IData_GoodStorageService>(resolveNew: true);
-        //        if (!data_GoodStorageService.Any(a => a.ID == iId))
-        //        {
-        //            errMsg = "该入库信息不存在";
-        //            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-        //        }
-                
-        //        IDict_SystemService dict_SystemService = BLLContainer.Resolve<IDict_SystemService>(resolveNew:true);                
-        //        IData_GoodStorage_DetailService data_GoodStorage_DetailService = BLLContainer.Resolve<IData_GoodStorage_DetailService>(resolveNew:true);
-        //        IBase_GoodsInfoService base_GoodsInfoService = BLLContainer.Resolve<IBase_GoodsInfoService>(resolveNew:true);
-        //        IData_GoodsStockService data_GoodsStockService = BLLContainer.Resolve<IData_GoodsStockService>(resolveNew:true);
-        //        IBase_DepotInfoService base_DepotInfoService = BLLContainer.Resolve<IBase_DepotInfoService>(resolveNew:true);
+                string errMsg = string.Empty;
+                if(!dicParas.Get("id").Validintnozero("入库单ID", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-        //        int goodTypeId = dict_SystemService.GetModels(p => p.DictKey.Equals("商品类别") && p.PID == 0).FirstOrDefault().ID;
-        //        var GoodStorageDetails = from a in data_GoodStorage_DetailService.GetModels(p => p.StorageID == iId)
-        //                                 join b in base_GoodsInfoService.GetModels() on a.GoodID equals b.ID
-        //                                 join c in dict_SystemService.GetModels() on (b.GoodType + "") equals c.DictValue into c1
-        //                                 from c in c1.DefaultIfEmpty()
-        //                                 join d in data_GoodStorageService.GetModels() on a.StorageID equals d.ID
-        //                                 join e in data_GoodsStockService.GetModels() on new { a.GoodID, d.DepotID } equals new { e.GoodID, e.DepotID }
-        //                                 select new
-        //                                 {
-        //                                     Barcode = b.Barcode,
-        //                                     GoodName = b.GoodName,
-        //                                     GoodTypeStr = c != null ? c.DictKey : string.Empty,
-        //                                     RemainCount = e.RemainCount,
-        //                                     Price = a.Price,
-        //                                     StorageCount = a.StorageCount
-        //                                 };
+                var id = dicParas.Get("id").Toint();
 
-        //        var result = (from a in data_GoodStorageService.GetModels(p => p.ID == iId)
-        //                      //join b in base_DepotInfoService.GetModels() on a.DepotID equals b.ID
-        //                      select new
-        //                      {
-        //                          DepotID = a.DepotID,
-        //                          //DepotName = b.DepotName,
-        //                          Supplier = a.Supplier,
-        //                          Note = a.Note,
-        //                          GoodStorageDetails = GoodStorageDetails
-        //                      }).FirstOrDefault();
-                            
-        //        return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, result);
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
-        //    }
-        //}
+                var GoodStorageDetail = from a in Data_GoodStorage_DetailService.N.GetModels(p => p.StorageID == id)
+                                        join b in Base_GoodsInfoService.N.GetModels() on a.GoodID equals b.ID
+                                        join c in Dict_SystemService.N.GetModels() on b.GoodType equals c.ID
+                                        join d in Data_GoodStorageService.N.GetModels() on a.StorageID equals d.ID
+                                        join e in Data_GoodsStockService.N.GetModels() on new { d.DepotID, a.GoodID } equals new { e.DepotID, e.GoodID }
+                                        select new
+                                        {
+                                            BarCode = b.Barcode,
+                                            GoodName = b.GoodName,
+                                            GoodTypeStr = c.DictKey,
+                                            RemainCount = e.RemainCount ?? 0,
+                                            StorageCount = a.StorageCount,
+                                            Price = a.Price,
+                                            Tax = a.Tax,
+                                            TaxPrice = a.TaxPrice
+                                        };
 
-        //[ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
-        //public object AddGoodStorage(Dictionary<string, object> dicParas)
-        //{
-        //    try
-        //    {
-        //        XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-        //        string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
-        //        string logId = userTokenKeyModel.LogId;
+                var linq = new
+                {
+                    data_GoodStorage = Data_GoodStorageService.I.GetModels(p => p.ID == id).FirstOrDefault(),
+                    GoodStorageDetail = GoodStorageDetail
+                }.AsFlatDictionary();
 
-        //        string errMsg = string.Empty;
-        //        string depotId = dicParas.ContainsKey("depotId") ? (dicParas["depotId"] + "") : string.Empty;
-        //        string supplier = dicParas.ContainsKey("supplier") ? (dicParas["supplier"] + "") : string.Empty;
-        //        string payable = dicParas.ContainsKey("payable") ? (dicParas["payable"] + "") : string.Empty;
-        //        string payment = dicParas.ContainsKey("payment") ? (dicParas["payment"] + "") : string.Empty;
-        //        string discount = dicParas.ContainsKey("discount") ? (dicParas["discount"] + "") : string.Empty;
-        //        string note = dicParas.ContainsKey("note") ? (dicParas["note"] + "") : string.Empty;
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, linq);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }       
 
-        //        #region 参数验证
+        [Authorize(Grants = "商品入库")]
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object SaveGoodStorage(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+                var logId = userTokenKeyModel.LogId.Toint();
 
-        //        if (string.IsNullOrEmpty(barCode))
-        //        {
-        //            errMsg = "商品条码barCode不能为空";
-        //            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-        //        }
+                string errMsg = string.Empty;
+                if(!dicParas.GetArray("goodStorageDetail").Validarray("入库明细", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-        //        if (string.IsNullOrEmpty(price))
-        //        {
-        //            errMsg = "入库单价price不能为空";
-        //            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-        //        }
+                var id = dicParas.Get("id").Toint(0);
+                var goodStorageDetail = dicParas.GetArray("goodStorageDetail");
 
-        //        if (string.IsNullOrEmpty(storageCount))
-        //        {
-        //            errMsg = "入库数量storageCount不能为空";
-        //            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-        //        }
+                //开启EF事务
+                using (TransactionScope ts = new TransactionScope())
+                {
+                    try
+                    {
+                        var model = Data_GoodStorageService.I.GetModels(p => p.ID == id).FirstOrDefault() ?? new Data_GoodStorage();
+                        Utils.GetModel(dicParas, ref model);
+                        model.MerchID = merchId;
+                        model.StoreID = storeId;
+                        model.UserID = logId;
+                        model.RealTime = DateTime.Now;
+                        if (id == 0)
+                        {
+                            model.StorageOrderID = RedisCacheHelper.CreateStoreSerialNo(storeId);
+                            if (!Data_GoodStorageService.I.Add(model))
+                            {
+                                errMsg = "保存商品入库信息失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+                        }
+                        else
+                        {
+                            if (model.ID == 0)
+                            {
+                                errMsg = "该入库单不存在";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
 
-        //        if (string.IsNullOrEmpty(totalPrice))
-        //        {
-        //            errMsg = "入库总额totalPrice不能为空";
-        //            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-        //        }
+                            if (!Data_GoodStorageService.I.Update(model))
+                            {
+                                errMsg = "保存商品入库信息失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+                        }
 
-        //        if (!Utils.isNumber(storageCount))
-        //        {
-        //            errMsg = "入库数量storageCount格式不正确";
-        //            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-        //        }
+                        id = model.ID;
+                        
+                        //添加入库明细
+                        if (goodStorageDetail != null && goodStorageDetail.Count() >= 0)
+                        {
+                            foreach (IDictionary<string, object> el in goodStorageDetail)
+                            {
+                                if (el != null)
+                                {
+                                    var dicPara = new Dictionary<string, object>(el, StringComparer.OrdinalIgnoreCase);
+                                    if(!dicPara.Get("goodId").Validintnozero("商品ID", out errMsg))
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    if (!dicPara.Get("storageCount").Validintnozero("入库数量", out errMsg))
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-        //        if (!Utils.IsDecimal(price))
-        //        {
-        //            errMsg = "入库单价price格式不正确";
-        //            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-        //        }
+                                    var detailModel = new Data_GoodStorage_Detail();
+                                    Utils.GetModel(dicPara, ref detailModel);
+                                    detailModel.StorageID = id;
+                                    Data_GoodStorage_DetailService.I.AddModel(detailModel);
+                                }
+                                else
+                                {
+                                    errMsg = "提交数据包含空对象";
+                                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                }
+                            }
 
-        //        if (!Utils.IsDecimal(totalPrice))
-        //        {
-        //            errMsg = "入库总额totalPrice格式不正确";
-        //            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-        //        }
+                            if (!Data_GoodStorage_DetailService.I.SaveChanges())
+                            {
+                                errMsg = "保存商品入库明细信息失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+                        }
 
-        //        if (!string.IsNullOrEmpty(discount) && !Utils.IsDecimal(discount))
-        //        {
-        //            errMsg = "优惠金额discount格式不正确";
-        //            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-        //        }
+                        ts.Complete();
+                    }
+                    catch (DbEntityValidationException e)
+                    {
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, e.EntityValidationErrors.ToErrors());
+                    }
+                    catch (Exception e)
+                    {
+                        errMsg = e.Message;
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
+                }
 
-        //        #endregion
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
 
-        //        IData_GoodStorageService data_GoodStorageService = BLLContainer.Resolve<IData_GoodStorageService>();
-        //        var data_GoodStorage = new Data_GoodStorage();
-        //        Utils.GetModel(dicParas, ref data_GoodStorage);
-        //        data_GoodStorage.StoreID = storeId;
-        //        data_GoodStorage.RealTime = DateTime.Now;
-        //        data_GoodStorage.UserID = Convert.ToInt32(logId);
-        //        if (!data_GoodStorageService.Add(data_GoodStorage))
-        //        {
-        //            errMsg = "添加商品入库信息失败";
-        //            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-        //        }
-
-        //        return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
-        //    }
-        //    catch (DbEntityValidationException e)
-        //    {
-        //        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, e.EntityValidationErrors.ToErrors());
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
-        //    }
-        //}
-
+        [Authorize(Grants = "商品入库")]
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object CheckGoodStorage(Dictionary<string, object> dicParas)
         {
             try
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
                 string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
-                string logId = userTokenKeyModel.LogId;
+                var logId = userTokenKeyModel.LogId.Toint();
 
                 string errMsg = string.Empty;
-                string barCode = dicParas.ContainsKey("barCode") ? (dicParas["barCode"] + "") : string.Empty;
-                string price = dicParas.ContainsKey("price") ? (dicParas["price"] + "") : string.Empty;
-                string storageCount = dicParas.ContainsKey("storageCount") ? (dicParas["storageCount"] + "") : string.Empty;
-                string totalPrice = dicParas.ContainsKey("totalPrice") ? (dicParas["totalPrice"] + "") : string.Empty;
-                string discount = dicParas.ContainsKey("discount") ? (dicParas["discount"] + "") : string.Empty;
-                string note = dicParas.ContainsKey("note") ? (dicParas["note"] + "") : string.Empty;
-
-                #region 参数验证
-
-                if (string.IsNullOrEmpty(barCode))
-                {
-                    errMsg = "商品条码barCode不能为空";
+                if (!dicParas.Get("id").Validintnozero("入库单ID", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
-
-                if (string.IsNullOrEmpty(price))
-                {
-                    errMsg = "入库单价price不能为空";
+                if (!dicParas.Get("state").Validintnozero("审核状态", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
 
-                if (string.IsNullOrEmpty(storageCount))
+                var id = dicParas.Get("id").Toint();
+                var state = dicParas.Get("state").Toint();
+
+                //开启EF事务
+                using (TransactionScope ts = new TransactionScope())
                 {
-                    errMsg = "入库数量storageCount不能为空";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
+                    try
+                    {
+                        if (!Data_GoodStorageService.I.Any(p => p.ID == id))
+                        {
+                            errMsg = "该入库单不存在";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
 
-                if (string.IsNullOrEmpty(totalPrice))
-                {
-                    errMsg = "入库总额totalPrice不能为空";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
+                        var model = Data_GoodStorageService.I.GetModels(p => p.ID == id).FirstOrDefault();
+                        model.AuthorFlag = state;
+                        model.AuthorID = logId;
 
-                if (!Utils.isNumber(storageCount))
-                {
-                    errMsg = "入库数量storageCount格式不正确";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
+                        if (!Data_GoodStorageService.I.Update(model))
+                        {
+                            errMsg = "审核商品入库信息失败";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
 
-                if (!Utils.IsDecimal(price))
-                {
-                    errMsg = "入库单价price格式不正确";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
+                        //审核通过入库存记录
+                        if (state == 1)
+                        {
+                            foreach (var detailModel in Data_GoodStorage_DetailService.I.GetModels(p => p.StorageID == id))
+                            {
+                                //添加入库存异动信息
+                                var data_GoodStock_Record = new Data_GoodStock_Record();
+                                data_GoodStock_Record.DepotID = model.DepotID;
+                                data_GoodStock_Record.GoodID = detailModel.GoodID;
+                                data_GoodStock_Record.SourceType = (int)SourceType.GoodStorage;
+                                data_GoodStock_Record.SourceID = id;
+                                data_GoodStock_Record.StockFlag = (int)StockFlag.In;
+                                data_GoodStock_Record.StockCount = detailModel.StorageCount;
+                                data_GoodStock_Record.CreateTime = DateTime.Now;
+                                Data_GoodStock_RecordService.I.AddModel(data_GoodStock_Record);
+                            }
 
-                if (!Utils.IsDecimal(totalPrice))
-                {
-                    errMsg = "入库总额totalPrice格式不正确";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
-
-                if (!string.IsNullOrEmpty(discount) && !Utils.IsDecimal(discount))
-                {
-                    errMsg = "优惠金额discount格式不正确";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
-
-                #endregion
-
-                IData_GoodStorageService data_GoodStorageService = BLLContainer.Resolve<IData_GoodStorageService>();
-                var data_GoodStorage = new Data_GoodStorage();
-                Utils.GetModel(dicParas, ref data_GoodStorage);
-                data_GoodStorage.StoreID = storeId;
-                data_GoodStorage.RealTime = DateTime.Now;
-                data_GoodStorage.UserID = Convert.ToInt32(logId);
-                if (!data_GoodStorageService.Add(data_GoodStorage))
-                {
-                    errMsg = "添加商品入库信息失败";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            if (!Data_GoodStock_RecordService.I.SaveChanges())
+                            {
+                                errMsg = "添加入库存异动信息失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+                        }
+                        
+                        ts.Complete();
+                    }
+                    catch (DbEntityValidationException e)
+                    {
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, e.EntityValidationErrors.ToErrors());
+                    }
+                    catch (Exception e)
+                    {
+                        errMsg = e.Message;
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
                 }
 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
-            }
-            catch (DbEntityValidationException e)
-            {
-                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, e.EntityValidationErrors.ToErrors());
             }
             catch (Exception e)
             {

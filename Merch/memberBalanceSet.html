@@ -32,6 +32,7 @@
                             <option value="1">代币</option>
                             <option value="2">彩票</option>
                             <option value="3">积分</option>
+                            <option value="4">储值金</option>
                         </select>
                     </div>
                 </div>
@@ -72,6 +73,7 @@
         </div>
         <div class="layui-col-md12" style="margin: 15px 0;padding-right: 60px;text-align:right;">
             <button type="button" class="layui-btn layui-btn-normal" id="cancelBtn">取消</button>
+            <button type="reset" class="layui-btn layui-btn-normal layui-hide" id="reset">取消</button>
             <button type="button" class="layui-btn layui-btn-normal" id="saveBtn">保存</button>
         </div>
     </form>
@@ -113,7 +115,11 @@
         });
         $('#add').on('click',function () {
             setStore(form,token);
-            HKType='';
+            $('#reset').trigger('click');
+             storeId=[];
+             Id='';
+             HKType='';
+             saveFloatRule='';
             layer.open({
                 title:'会员余额类别设定',
                 type:1,
@@ -199,7 +205,7 @@
                                 saveFloatRule=data.result_data.AddingType;
                                 HKType=data.result_data.HKType;
                                 form.render();
-                                $('#openModel').find('[name="unchange"]').prop('disabled',true);
+                                // $('#openModel').find('[name="unchange"]').prop('disabled',true);
                                 layer.open({
                                     title:'修改会员余额类别',
                                     type:1,

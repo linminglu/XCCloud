@@ -18,8 +18,8 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         public int? EffactPeriodValue { get; set; }
         public int? VaildPeriodType { get; set; }
         public int? VaildPeriodValue { get; set; }
-        public string VaildStartDate { get; set; }
-        public string VaildEndDate { get; set; }
+        public DateTime? VaildStartDate { get; set; }
+        public DateTime? VaildEndDate { get; set; }
         public string ValidDate
         {
             get
@@ -28,7 +28,7 @@ namespace XCCloudService.Model.CustomModel.XCCloud
                     return "销售后" + EffactPeriodValue + ((XCCloudService.Common.Enum.FreqType?)EffactPeriodType).GetDescription()
                         + "生效，有效期" + VaildPeriodValue + ((XCCloudService.Common.Enum.FreqType?)VaildPeriodType).GetDescription();
                 else if (EffactType == (int)XCCloudService.Common.Enum.EffactType.Date)
-                    return VaildStartDate + "~" + VaildEndDate;
+                    return Utils.ConvertFromDatetime(VaildStartDate, "yyyy-MM-dd") + "~" + Utils.ConvertFromDatetime(VaildEndDate, "yyyy-MM-dd");
                 else
                     return string.Empty;
             }
@@ -59,13 +59,13 @@ namespace XCCloudService.Model.CustomModel.XCCloud
             }
             set { }
         }
-        public string NoStartDate { get; set; }
-        public string NoEndDate { get; set; }
+        public DateTime? NoStartDate { get; set; }
+        public DateTime? NoEndDate { get; set; }
         public string NoDate
         {
             get
             {
-                return NoStartDate + "~" + NoEndDate;
+                return Utils.ConvertFromDatetime(NoStartDate, "yyyy-MM-dd") + "~" + Utils.ConvertFromDatetime(NoEndDate, "yyyy-MM-dd");
             }
             set { }
         }

@@ -982,7 +982,8 @@ namespace XCCloudService.Common.Enum
     {
         GoodStorage = 0,    //入库单
         GoodRequest = 1,    //调拨单
-        GoodReload = 2      //安装记录
+        GoodReload = 2,     //安装记录
+        GoodOut = 3,        //出库单
     }
 
     //出入库标志

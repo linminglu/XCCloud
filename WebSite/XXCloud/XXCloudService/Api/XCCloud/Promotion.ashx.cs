@@ -395,7 +395,7 @@ namespace XXCloudService.Api.XCCloud
                                             select a.FoodID;
 
                 //排除包含私有属性的套餐
-                var linq = from a in Data_FoodInfoService.I.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.FoodState == (int)FoodState.Valid)
+                var linq = from a in Data_FoodInfoService.N.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.FoodState == (int)FoodState.Valid)
                            where !foodIdForPrivateGood.Contains(a.FoodID) && !foodIdContainedTicket.Contains(a.FoodID)
                            orderby a.FoodName
                            select new
@@ -764,7 +764,7 @@ namespace XXCloudService.Api.XCCloud
                 }
 
                 var linq = from a in query
-                           join b in Dict_SystemService.N.GetModels(p => p.PID == goodTypeId) on (a.GoodType + "") equals b.DictValue into b1
+                           join b in Dict_SystemService.N.GetModels(p => p.PID == goodTypeId && p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)) on a.GoodType equals b.ID into b1
                            from b in b1.DefaultIfEmpty()
                            select new
                            {

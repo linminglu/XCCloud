@@ -16,6 +16,9 @@ using XCCloudService.Common.Enum;
 using XCCloudService.Model.CustomModel.XCCloud;
 using XCCloudService.BLL.XCCloud;
 using XCCloudService.Business.XCGameMana;
+using XCCloudService.Common.Extensions;
+using System.Data.SqlClient;
+using XCCloudService.BLL.CommonBLL;
 
 namespace XCCloudService.Base
 {
@@ -284,6 +287,7 @@ namespace XCCloudService.Base
                 authorizeAttribute.Roles = authorizeAttr.Roles;
                 authorizeAttribute.Users = authorizeAttr.Users;
                 authorizeAttribute.Merches = authorizeAttr.Merches;
+                authorizeAttribute.Grants = authorizeAttr.Grants;
             }
 
             //方法授权验证
@@ -293,7 +297,8 @@ namespace XCCloudService.Base
                 AuthorizeAttribute authorizeAttr = (AuthorizeAttribute)attribute;
                 authorizeAttribute.Roles = (authorizeAttribute.Roles + "," + authorizeAttr.Roles).Trim(',');
                 authorizeAttribute.Users = (authorizeAttribute.Users + "," + authorizeAttr.Users).Trim(',');
-                authorizeAttribute.Merches = (authorizeAttribute.Merches + "," + authorizeAttr.Merches).Trim(','); 
+                authorizeAttribute.Merches = (authorizeAttribute.Merches + "," + authorizeAttr.Merches).Trim(',');
+                authorizeAttribute.Grants = (authorizeAttribute.Grants + "," + authorizeAttr.Grants).Trim(','); 
             }
 
             //匿名授权验证
@@ -303,6 +308,7 @@ namespace XCCloudService.Base
                 authorizeAttribute.Roles = string.Empty;
                 authorizeAttribute.Users = string.Empty;
                 authorizeAttribute.Merches = string.Empty;
+                authorizeAttribute.Grants = string.Empty;
             }
         }        
 
@@ -673,6 +679,28 @@ namespace XCCloudService.Base
                                 if (!authorizeAttribute.Merches.Contains(merchType))
                                 {
                                     errMsg = "当前用户无权访问";
+                                    return false;
+                                }
+                            }
+
+                            if (!string.IsNullOrEmpty(authorizeAttribute.Grants))
+                            {
+                                var userId = userTokenKeyModel.LogId.Toint();
+
+                                string sql = " exec SelectUserGrant @UserID";
+                                SqlParameter[] parameters = new SqlParameter[1];
+                                parameters[0] = new SqlParameter("@UserID", userId);
+                                System.Data.DataSet ds = XCCloudBLL.ExecuteQuerySentence(sql, parameters);
+                                if (ds.Tables[0].Rows.Count <= 0)
+                                {
+                                    errMsg = "当前用户无权操作";
+                                    return false;
+                                }
+
+                                var list = Utils.GetModelList<UserGrantModel>(ds.Tables[0]);
+                                if (!list.Any(a => a.GrantEN == 1 && authorizeAttribute.Grants.Contains(a.DictKey)))
+                                {
+                                    errMsg = "当前用户无权操作";
                                     return false;
                                 }
                             }

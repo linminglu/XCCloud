@@ -105,7 +105,6 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Log_GameAlarm> Log_GameAlarm { get; set; }
         public virtual DbSet<Base_DeviceInfo> Base_DeviceInfo { get; set; }
         public virtual DbSet<Data_BalanceChargeRule> Data_BalanceChargeRule { get; set; }
-        public virtual DbSet<Data_GoodStorage> Data_GoodStorage { get; set; }
         public virtual DbSet<Flw_GroupVerity> Flw_GroupVerity { get; set; }
         public virtual DbSet<Data_MerchAlipay_Shop> Data_MerchAlipay_Shop { get; set; }
         public virtual DbSet<Base_MerchAlipay> Base_MerchAlipay { get; set; }
@@ -154,7 +153,6 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Flw_Food_Sale> Flw_Food_Sale { get; set; }
         public virtual DbSet<Flw_Project_PlayTime> Flw_Project_PlayTime { get; set; }
         public virtual DbSet<Flw_Project_TicketUse> Flw_Project_TicketUse { get; set; }
-        public virtual DbSet<Data_GoodExitInfo> Data_GoodExitInfo { get; set; }
         public virtual DbSet<Data_GoodOutOrder> Data_GoodOutOrder { get; set; }
         public virtual DbSet<Data_GoodOutOrder_Detail> Data_GoodOutOrder_Detail { get; set; }
         public virtual DbSet<Flw_Project_TicketInfo> Flw_Project_TicketInfo { get; set; }
@@ -185,5 +183,7 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Data_GameEncourage> Data_GameEncourage { get; set; }
         public virtual DbSet<Data_GameEncourage_List> Data_GameEncourage_List { get; set; }
         public virtual DbSet<Data_MemberLevel_Balance> Data_MemberLevel_Balance { get; set; }
+        public virtual DbSet<Data_GoodStorage> Data_GoodStorage { get; set; }
+        public virtual DbSet<Data_GoodExitInfo> Data_GoodExitInfo { get; set; }
     }
 }

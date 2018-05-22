@@ -810,6 +810,59 @@ namespace XCCloudService.Api.XCCloud
                             }
                         }
 
+                        //保存商品兑换折扣规则
+                        if (memberLevelBalance != null && memberLevelBalance.Count() >= 0)
+                        {
+                            //先删除，后添加
+                            foreach (var model in Data_MemberLevel_BalanceService.I.GetModels(p => p.MemberLevelID == iMemberLevelID))
+                            {
+                                Data_MemberLevel_BalanceService.I.DeleteModel(model);
+                            }
+
+                            var memberLevelBalanceList = new List<Data_MemberLevel_Balance>();
+                            foreach (IDictionary<string, object> el in memberLevelBalance)
+                            {
+                                if (el != null)
+                                {
+                                    var dicPara = new Dictionary<string, object>(el, StringComparer.OrdinalIgnoreCase);
+                                    var balanceIndex = dicPara.Get("balanceIndex").Toint();
+                                    var chargeOff = dicPara.Get("chargeOff").Toint();
+                                    var needAuthor = dicPara.Get("needAuthor").Toint();
+                                    var maxSaveCount = dicPara.Get("maxSaveCount").Toint();
+                                    var maxUplife = dicPara.Get("maxUplife").Toint();
+
+                                    var data_MemberLevel_Balance = new Data_MemberLevel_Balance();
+                                    data_MemberLevel_Balance.MemberLevelID = iMemberLevelID;
+                                    data_MemberLevel_Balance.MerchID = merchId;
+                                    data_MemberLevel_Balance.BalanceIndex = balanceIndex;
+                                    data_MemberLevel_Balance.NeedAuthor = needAuthor;
+                                    data_MemberLevel_Balance.ChargeOFF = chargeOff;
+                                    data_MemberLevel_Balance.MaxSaveCount = maxSaveCount;
+                                    data_MemberLevel_Balance.MaxUplife = maxUplife;
+                                    memberLevelBalanceList.Add(data_MemberLevel_Balance);
+                                    Data_MemberLevel_BalanceService.I.AddModel(data_MemberLevel_Balance);
+                                }
+                                else
+                                {
+                                    errMsg = "提交数据包含空对象";
+                                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                }
+                            }
+
+                            //同一类型的兑换折扣规则必须唯一 
+                            if (memberLevelBalanceList.GroupBy(g => g.BalanceIndex).Select(o => new { Count = o.Count() }).Any(p => p.Count > 1))
+                            {
+                                errMsg = "同一类型的兑换折扣规则必须唯一";
+                                return false;
+                            }
+
+                            if (!Data_MemberLevel_BalanceService.I.SaveChanges())
+                            {
+                                errMsg = "保存商品兑换折扣规则信息失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+                        }
+
                         //保存预赠币规则
                         if (memberLevelFrees != null && memberLevelFrees.Count() >= 0)
                         {
@@ -857,7 +910,7 @@ namespace XCCloudService.Api.XCCloud
                             }
                         }
 
-                        //保存会员余额兑换规则
+                        //保存会员余额互换规则
                         if (memberLevelBalanceCharge != null && memberLevelBalanceCharge.Count() >= 0)
                         {
                             //先删除，后添加
@@ -920,60 +973,7 @@ namespace XCCloudService.Api.XCCloud
                                 errMsg = "保存会员余额兑换规则信息失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                             }
-                        }
-
-                        //保存商品兑换折扣规则
-                        if (memberLevelBalance != null && memberLevelBalance.Count() >= 0)
-                        {
-                            //先删除，后添加
-                            foreach (var model in Data_MemberLevel_BalanceService.I.GetModels(p => p.MemberLevelID == iMemberLevelID))
-                            {
-                                Data_MemberLevel_BalanceService.I.DeleteModel(model);
-                            }
-
-                            var memberLevelBalanceList = new List<Data_MemberLevel_Balance>();
-                            foreach (IDictionary<string, object> el in memberLevelBalance)
-                            {
-                                if (el != null)
-                                {
-                                    var dicPara = new Dictionary<string, object>(el, StringComparer.OrdinalIgnoreCase);
-                                    var balanceIndex = dicPara.Get("balanceIndex").Toint();
-                                    var chargeOff = dicPara.Get("chargeOff").Toint();
-                                    var needAuthor = dicPara.Get("needAuthor").Toint();
-                                    var maxSaveCount = dicPara.Get("maxSaveCount").Toint();
-                                    var maxUplife = dicPara.Get("maxUplife").Toint();
-
-                                    var data_MemberLevel_Balance = new Data_MemberLevel_Balance();
-                                    data_MemberLevel_Balance.MemberLevelID = iMemberLevelID;
-                                    data_MemberLevel_Balance.MerchID = merchId;
-                                    data_MemberLevel_Balance.BalanceIndex = balanceIndex;
-                                    data_MemberLevel_Balance.NeedAuthor = needAuthor;
-                                    data_MemberLevel_Balance.ChargeOFF = chargeOff;
-                                    data_MemberLevel_Balance.MaxSaveCount = maxSaveCount;
-                                    data_MemberLevel_Balance.MaxUplife = maxUplife;
-                                    memberLevelBalanceList.Add(data_MemberLevel_Balance);
-                                    Data_MemberLevel_BalanceService.I.AddModel(data_MemberLevel_Balance);
-                                }
-                                else
-                                {
-                                    errMsg = "提交数据包含空对象";
-                                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                                }
-                            }
-
-                            //同一类型的兑换折扣规则必须唯一 
-                            if (memberLevelBalanceList.GroupBy(g => g.BalanceIndex).Select(o => new { Count = o.Count() }).Any(p => p.Count > 1))
-                            {
-                                errMsg = "同一类型的兑换折扣规则必须唯一";
-                                return false;
-                            }
-
-                            if (!Data_MemberLevel_BalanceService.I.SaveChanges())
-                            {
-                                errMsg = "保存商品兑换折扣规则信息失败";
-                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                            }
-                        }
+                        }                        
 
                         ts.Complete();
                     }

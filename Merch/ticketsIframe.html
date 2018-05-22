@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="layui/css/layui.css">
+    <link rel="stylesheet" href="layui/css/layui_font.css">
+    <title>Title</title>
+    <style>
+        .layui-form-item{
+            margin-bottom: 0;}
+    </style>
+</head>
+<body>
+<div class="layui-row">
+    <div class="goodIsAll" style="padding: 15px;max-height: 550px;overflow-y: auto" id="openModel"  >
+        <form class="layui-form layui-form-pane" lay-filter="formtest">
+            <div class="layui-card">
+                <div class="layui-card-header">基本信息</div>
+                <div class="layui-card-body">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">门票名称</label>
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input" id="TicketName" name="TicketName">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">业务类别</label>
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input" id="BusinessType" name="BusinessType">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">允许离场时间</label>
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input" id="AllowExitTimes" name="AllowExitTimes">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">核销期</label>
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input" id="WriteOffDays" name="WriteOffDays">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">售价</label>
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input" id="Price" name="Price">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">税率</label>
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input" id="Tax" name="Tax">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">分摊类别</label>
+                            <div class="layui-input-inline">
+                                <select name="DivideType" id="DivideType" lay-filter="DivideType">
+                                    <option>-请选择-</option>
+                                    <option value="0">一次性分摊</option>
+                                    <option value="1">按次分摊</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <div class="layui-input-inline">
+                                <input type="checkbox" title="是否开启人脸识别" lay-skin="primary" name="ReadFace" lay-filter="ReadFace">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <div class="layui-input-inline">
+                                <input type="checkbox" title="是否需要吧台激活" lay-skin="primary" name="ActiveBar" lay-filter="ActiveBar">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <div class="layui-input-inline">
+                                <input type="checkbox" title="销售产生积分" lay-skin="primary" name="AllowCreatePoint" lay-filter="AllowCreatePoint">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <div class="layui-input-inline" style="width: 200px">
+                                <input type="checkbox" title="是否需要授权才能销售" lay-skin="primary" name="SaleAuthor" lay-filter="SaleAuthor">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-card">
+                <div class="layui-card-header">有效期设置</div>
+                <div class="layui-card-body">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">可用时段</label>
+                            <div class="layui-input-inline">
+                                <select name="EffactType" id="EffactType" lay-filter="timesType">//EffactType
+                                    <option value="0" selected>有效时长</option>
+                                    <option value="1">有效期限</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-inline time1">
+                            <label class="layui-form-label">销售后</label>
+                            <div class="layui-input-inline" style="width: 100px">
+                                <input type="text" class="layui-input" name="EffactPeriodValue">
+                            </div>
+                            <div class="layui-input-inline" style="width: 100px">
+                                <select name="EffactPeriodType" id="EffactPeriodType" lay-filter="EffactPeriodType">
+                                    <option value="0" selected>天</option>
+                                    <option value="1">周</option>
+                                    <option value="2">月</option>
+                                    <option value="3">季</option>
+                                    <option value="4">年</option>
+                                </select>
+                            </div>
+                            <div class="layui-form-mid">生效,有效期</div>
+                            <div class="layui-input-inline" style="width: 100px">
+                                <input type="text" class="layui-input" name="VaildPeriodValue">
+                            </div>
+                            <div class="layui-input-inline" style="width: 100px">
+                                <select name="VaildPeriodType" id="VaildPeriodType" lay-filter="VaildPeriodType">
+                                    <option value="0" selected>天</option>
+                                    <option value="1">周</option>
+                                    <option value="2">月</option>
+                                    <option value="3">季</option>
+                                    <option value="4">年</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-inline time2 layui-hide">
+                            <label class="layui-form-label">时间范围</label>
+                            <div class="layui-input-inline" style="width: 150px">
+                                <select lay-filter="usePried">
+                                    <option value="0">自定义</option>
+                                    <option value="1">当天</option>
+                                    <option value="2">本周</option>
+                                    <option value="3">本月</option>
+                                    <option value="4">本季</option>
+                                    <option value="5">本年</option>
+                                </select>
+                            </div>
+                            <div class="layui-input-inline" style="width: 150px">
+                                <input type="text" class="layui-input" name="VaildStartDate" id="VaildStartDate">
+                            </div>
+                            <div class="layui-form-mid">
+                                至
+                            </div>
+                            <div class="layui-input-inline" style="width: 150px">
+                                <input type="text" class="layui-input" name="VaildEndDate" id="VaildEndDate">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">时段类型</label>
+                            <div class="layui-input-inline">
+                                <select id="poriedType" lay-filter="timeType">
+                                    <option value="0" selected>自定义</option>
+                                    <option value="1" >工作日</option>
+                                    <option value="2" >周末</option>
+                                    <option value="3" >法定节假日</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-inline" id="weekSetBox">
+                            <label class="layui-form-label">优惠周天</label>
+                            <div class="layui-input-block" id="weekBox" style="width: 700px">
+
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">生效时段</label>
+                            <div class="layui-input-inline" style="margin-right: 5px">
+                                <input type="text" name="StartTime" id="StartTime" class="layui-input">
+                            </div>
+                            <div class="layui-form-mid" style="margin-right: 5px">至</div>
+                            <div class="layui-input-inline" >
+                                <input type="text" name="EndTime" id="EndTime" class="layui-input">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">不可用日期</label>
+                            <div class="layui-input-inline">
+                                <select name="noUsePried" id="noUsePried" lay-filter="noUsePried">
+                                    <option value="0">自定义</option>
+                                    <option value="1">当天</option>
+                                    <option value="2">本周</option>
+                                    <option value="3">本月</option>
+                                    <option value="4">本季</option>
+                                    <option value="5">本年</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">不可用期限</label>
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input" name="NoStartDate" id="NoStartDate">
+                            </div>
+                            <div class="layui-form-mid">
+                                至
+                            </div>
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input" name="NoEndDate" id="NoEndDate">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-card">
+                <div class="layui-card-header">陪同票</div>
+                <div class="layui-card-body">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label for="" class="layui-form-label">现金</label>
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input" name="AccompanyCash">
+                            </div>
+                        </div>
+
+                        <div class="layui-inline">
+                            <label for="" class="layui-form-label">扣除种类</label>
+                            <div class="layui-input-inline">
+                                <select name="BalanceIndex" id="BalanceIndex" lay-filter="BalanceIndex"></select>
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label for="" class="layui-form-label">扣除数量</label>
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input" name="BalanceValue">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-card">
+                <div class="layui-card-header">退货信息</div>
+                <div class="layui-card-body">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <div class="layui-input-inline" style="width: 120px">
+                                <input type="checkbox" title="允许退票" lay-skin="primary" name="AllowExitTicket" lay-filter="AllowExitTicket">
+                            </div>
+
+                            <div class="layui-form-mid">销售</div>
+                            <div class="layui-input-inline" style="width: 100px">
+                                <input type="text" class="layui-input" name="ExitPeriodValue">
+                            </div>
+                            <div class="layui-input-inline" style="width: 100px">
+                                <select name="ExitPeriodType" id="ExitPeriodType" lay-filter="ExitPeriodType">
+                                    <option value="0">小时</option>
+                                    <option value="1">天</option>
+                                </select>
+                            </div>
+                            <div class="layui-form-mid">后不可退票</div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label for="" class="layui-form-label">退票方式</label>
+                        <div class="layui-input-inline" style="width: 200px">
+                            <input type="radio" name="ExitTicketType" title="按金额" value="0" lay-skin="primary" checked lay-filter="ExitTicketType">
+                            <input type="radio" name="ExitTicketType" title="按比例" value="1" lay-skin="primary" lay-filter="ExitTicketType">
+                        </div>
+                        <div class="layui-input-inline" style="width: 100px">
+                            <input type="text" class="layui-input" name="ExitTicketVal1">
+                        </div>
+                        <div class="layui-input-inline" style="width: 100px">
+                            <input type="text" class="layui-input" name="ExitTicketVal2">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-card">
+                <div class="layui-card-header">绑定项目</div>
+                <div class="layui-card-body">
+                    <div style="text-align:right;">
+                        <button type="button" class="layui-btn" id="addPro">添加项目</button>
+                    </div>
+                    <table class="layui-hide" id="proTable" lay-filter="proTable"></table>
+                </div>
+            </div>
+            <div style="text-align: center;margin-bottom: 15px">
+                <button type="button" class="tosecond layui-btn-normal layui-btn" id="save">确定</button>
+            </div>
+
+        </form>
+    </div>
+</div>
+</body>
+<script src="js/jquery-1.8.3-min.js"></script>
+<script src="layui/layui.js"></script>
+<script src="js/storeSystem.js"></script>
+<script>
+    let xc=xcActionSystem.prototype;
+    let token=xc.getStorage('token');
+    let  ticketSet=JSON.parse(xc.getStorage('ticketSet'));
+    console.log(ticketSet);
+    if(ticketSet.name=='times'){
+        $('input[name="BusinessType"]').val('门票');
+    }
+
+    let DivideType=''; let ReadFace=0;let ActiveBar=0;let AllowCreatePoint=0;let SaleAuthor=0;
+    let EffactType=0; let EffactPeriodType=0; let VaildPeriodType=0;let WeekType=0;let week=[];
+    let BalanceIndex='';
+    let AllowExitTicket=0;let ExitPeriodType=0;let ExitTicketType=0;//按金额
+    layui.use(['table','form','layer','laydate'],function () {
+        let table=layui.table;let form=layui.form;let layer=layui.layer;let laydate=layui.laydate;
+
+        form.on('select(DivideType)',function (data){DivideType=data.value;});
+        form.on('checkbox(ReadFace)',function (data){data.elem.checked==true? ReadFace=1: ReadFace=0});
+        form.on('checkbox(ActiveBar)',function (data){data.elem.checked==true? ActiveBar=1: ActiveBar=0});
+        form.on('checkbox(AllowCreatePoint)',function (data){data.elem.checked==true? AllowCreatePoint=1: AllowCreatePoint=0});
+        form.on('checkbox(SaleAuthor)',function (data){data.elem.checked==true? SaleAuthor=1: SaleAuthor=0});
+        //可用时段类型
+        form.on('select(timesType)',function (data) {
+            EffactType=data.value;
+            if(data.value==0){
+                $('.time1').removeClass('layui-hide');
+                $('.time2').addClass('layui-hide')
+            }else {
+                $('.time2').removeClass('layui-hide');
+                $('.time1').addClass('layui-hide')
+            }
+        });
+        form.on('select(EffactPeriodType)',function (data){EffactPeriodType=data.value;});
+        form.on('select(VaildPeriodType)',function (data){VaildPeriodType=data.value;});
+        xc.AddWeeks('weekBox');
+        xc. getBalanceTypeDic('',token,layer,form,'BalanceIndex');
+        form.on('select(timeType)',(data)=>{
+            WeekType=data.value;
+            if(WeekType==0){
+                $('#weekSetBox').css({'display':'inline-block'});
+                form.render();
+                xc.AddWeeks('weekBox');
+            }else {
+                $('#weekSetBox').css({'display':'none'});
+                $('#weekBox').html('');
+                week=[];
+            }
+        });
+        form.on('select(BalanceIndex)',function (data){BalanceIndex=data.value;});
+        form.on('checkbox(AllowExitTicket)',function (data){data.elem.checked==true? AllowExitTicket=1: AllowExitTicket=0});
+        form.on('select(ExitPeriodType)',function (data){ExitPeriodType=data.value;});
+        form.on('radio(ExitTicketType)', function(data){
+            ExitTicketType=data.value
+        });
+
+
+        //监听有效期间选择
+        form.on('select(usePried)',function (data) {
+            if(data.value==1){
+                $('#VaildStartDate').val(getDayStartDate()).prop('disabled',true);
+                $('#VaildEndDate').val(getDayStartDate()).prop('disabled',true);
+            }else if(data.value==2){
+                $('#VaildStartDate').val(getWeekStartDate()).prop('disabled',true);
+                $('#VaildEndDate').val(getWeekEndDate()).prop('disabled',true);
+            }else if(data.value==3){
+                $('#VaildStartDate').val(getMonthStartDate()).prop('disabled',true);
+                $('#VaildEndDate').val(getMonthEndDate()).prop('disabled',true);
+            }else if(data.value==5){
+                $('#VaildStartDate').val(getYearStartDate()).prop('disabled',true);
+                $('#VaildEndDate').val(getYearEndDate()).prop('disabled',true);
+            }else if(data.value==4){
+                $('#VaildStartDate').val(getQuarterStartDate()).prop('disabled',true);
+                $('#VaildEndDate').val(getQuarterEndDate()).prop('disabled',true);
+            }else if(data.value==0){
+                $('#VaildStartDate').prop('disabled',false);
+                $('#VaildEndDate').prop('disabled',false);
+                layer.msg('<p style="color: red">请自己设置有效期限</p>')
+            }
+        });
+        //监听不可用期限选择
+        form.on('select(noUsePried)',function (data) {
+            if(data.value==0){
+                $('#NoStartTime').val(getDayStartDate()).prop('disabled',true);
+                $('#NoEndTime').val(getDayStartDate()).prop('disabled',true);
+            }else if(data.value==1){
+                $('#NoStartTime').val(getWeekStartDate()).prop('disabled',true);
+                $('#NoEndTime').val(getWeekEndDate()).prop('disabled',true);
+            }else if(data.value==2){
+                $('#NoStartTime').val(getMonthStartDate()).prop('disabled',true);
+                $('#NoEndTime').val(getMonthEndDate()).prop('disabled',true);
+            }else if(data.value==4){
+                $('#NoStartTime').val(getYearStartDate()).prop('disabled',true);
+                $('#NoEndTime').val(getYearEndDate()).prop('disabled',true);
+            }else if(data.value==3){
+                $('#NoStartTime').val(getQuarterStartDate()).prop('disabled',true);
+                $('#NoEndTime').val(getQuarterEndDate()).prop('disabled',true);
+            }else if(data.value==5){
+                $('#NoStartTime').prop('disabled',false);
+                $('#NoEndTime').prop('disabled',false);
+                layer.msg('<p style="color: red">请自己设置不可用期限</p>')
+            }else {
+                $('#NoStartDate').val('').prop('disabled',true);
+                $('#NoEndTime').val('').prop('disabled',true);
+            }
+        });
+        form.on('checkbox(weeks)', function(data){
+            if (data.elem.checked==true){
+                week.push(data.value);
+                // weekStr.push(data.elem.title)
+            }else if(data.elem.checked==false){
+                for (var i=0;i<week.length;i++){
+                    if(week[i]==data.value){
+                        week.splice(i,1);
+                        // weekStr.splice(i,1);
+                    }
+                }
+            }
+        });
+
+        //渲染时间StartTime
+        laydate.render({
+            elem: '#StartTime',type: 'time',value:'00:00:00'
+        });
+        laydate.render({
+            elem: '#EndTime',type: 'time',value:'23:59:59'
+        });
+        laydate.render({
+            elem: '#VaildStartDate',type: 'date',value:new Date()
+        });
+        laydate.render({
+            elem: '#VaildEndDate',type: 'date',value:new Date()
+        });
+        laydate.render({
+            elem: '#NoStartDate',type: 'date',value:new Date()
+        });
+        laydate.render({
+            elem: '#NoEndDate',type: 'date',value:new Date()
+        });
+
+        $('#save').on('click',function () {
+            saveTicketSet(ticketSet,layer);
+        })
+    });
+   let saveTicketSet= function (ticketSet,layer) {
+        if(ticketSet.name=='times'){
+            let _obj={
+                'id':ticketSet.id,
+                'MerchID':JSON.parse(xc.getStorage('logMsg')).merchId,
+                'StoreID':JSON.parse(xc.getStorage('logMsg')).storeId,
+                'TicketName':$('input[name="TicketName"]').val(),
+                'TicketType':0,
+                'BusinessType':0,
+                'AllowExitTimes':$('input[name="AllowExitTimes"]').val(),
+                'WriteOffDays':$('input[name="WriteOffDays"]').val(),
+                'Price':$('input[name="Price"]').val(),
+                'Tax':$('input[name="Tax"]').val(),
+                'DivideType':DivideType,
+                'ReadFace':ReadFace,
+                'ActiveBar':ActiveBar,
+                'AllowCreatePoint':AllowCreatePoint,
+                'SaleAuthor':SaleAuthor,
+
+                'EffactType':EffactType,
+                'EffactPeriodValue':EffactType==0?$('input[name="EffactPeriodValue"]').val():'',
+                'EffactPeriodType':EffactType==0?EffactPeriodType:'',
+                'VaildPeriodValue':EffactType==0?$('input[name="VaildPeriodValue"]').val():'',
+                'VaildPeriodType':EffactType==0?VaildPeriodType:'',
+                'VaildStartDate':EffactType==1?$('input[name="VaildStartDate"]').val():'',
+                'VaildEndDate':EffactType==1?$('input[name="VaildEndDate"]').val():'',
+                'WeekType':WeekType,
+                'Week':week.length>0?week.join('|'):'',
+                'StartTime':$('input[name="StartTime"]').val(),
+                'EndTime':$('input[name="EndTime"]').val(),
+                'NoStartDate':$('input[name="NoStartDate"]').val(),
+                'NoEndDate':$('input[name="NoEndDate"]').val(),
+
+                'AccompanyCash':$('input[name="AccompanyCash"]').val(),
+                'BalanceIndex':BalanceIndex,
+                'BalanceValue':$('input[name="BalanceValue"]').val(),
+
+                'AllowExitTicket':AllowExitTicket,
+                'ExitPeriodValue':$('input[name="ExitPeriodValue"]').val(),
+                'ExitPeriodType':ExitPeriodType,
+                'ExitTicketType':ExitTicketType,
+                'ExitTicketVal':ExitTicketType==0?$('input[name="ExitTicketVal1"]').val():$('input[name="ExitTicketVal2"]').val(),
+                'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+            let parseJson = JSON.stringify(_obj);
+            $.ajax({
+                type:'post',
+                url:'/XCCloud/ProjectTicket?action=SaveProjectTicket',
+                contentType: "application/json; charset=utf-8",
+                data:{parasJson: parseJson},
+                success: function (data) {
+                    data = JSON.parse(data);
+                    if (data.result_code == 1) {
+                        layer.msg('次票设置成功',{time:1500},function () {
+                            layer.closeAll();
+                            parent.location.reload()
+                        })
+                    } else {
+                        layer.msg(data.result_msg||data.return_msg);
+                    }
+                }
+            })
+        }
+    }
+</script>
+</html>

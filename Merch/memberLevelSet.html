@@ -31,7 +31,7 @@
 
   <!--//弹出层-->
   <div id="openModel" style="display: none;height: 550px;overflow-y: auto;">
-      <form action="" class="layui-form layui-form-pane">
+      <form action="" class="layui-form layui-form-pane" lay-filter="formtest">
           <div class="layui-collapse" > <!--//lay-accordion-->
               <div class="layui-colla-item">
                   <!--<h2 class="layui-colla-title">封面</h2>-->
@@ -67,6 +67,7 @@
                   </div>
 
               </div>
+              <!--开卡-->
               <div class="layui-colla-item goodIsAll ">
                   <h2 class="layui-colla-title">开卡</h2>
                   <div class="layui-colla-content  layui-colla-content1 " >
@@ -124,10 +125,10 @@
                          </div>
                          <div class="layui-inline goodIsAll">
                              <div class="layui-input-inline" style="width: 400px">
-                                 <input type="checkbox" title="一张身份证只能办一张卡"  checked  lay-skin="primary"  id="cardOnly" lay-filter="cardOnly">
+                                 <input type="checkbox" title="一张身份证只能办一张卡"  checked  lay-skin="primary"  id="IDCardOnly" lay-filter="IDCardOnly">
                              </div>
                              <div class="layui-input-inline" style="width: 400px">
-                                 <input type="checkbox"  title="一张手机号只能办一张卡"   checked  lay-skin="primary"  id="phoneOnly" lay-filter="phoneOnly">
+                                 <input type="checkbox"  title="一张手机号只能办一张卡"   checked  lay-skin="primary"  id="PhoneOnly" lay-filter="PhoneOnly">
                              </div>
                          </div>
                          <br>
@@ -167,6 +168,7 @@
                      </div>
                   </div>
               </div>
+              <!--变更-->
               <div class="layui-colla-item">
                   <h2 class="layui-colla-title">变更</h2>
                   <div class="layui-colla-content ">
@@ -190,7 +192,8 @@
                               </div>
                           </div>
                           <div class="layui-inline"><label  class="layui-form-label">续期扣积分</label>
-                              <div class="layui-input-inline"><input type="text" class="layui-input" id="continueUsePoint"></div>
+                              <div class="layui-input-inline">
+                                  <input type="text" class="layui-input" id="continueUsePoint"></div>
                           </div>
                       </div>
                       <div class="layui-form-item">
@@ -203,8 +206,8 @@
                           </div>
                           <div class="layui-inline"><label class="layui-form-label" style="padding: 8px 0!important;">升级到</label>
                               <div class="layui-input-inline">
-                                  <select id="upML" lay-filter="upML">
-                                      <option value="0">不升级</option>
+                                  <select id="upML" lay-filter="upML" name="upML">
+
                                   </select>
                               </div>
                           </div>
@@ -213,31 +216,21 @@
                           </div>
                           <div class="layui-inline"><label class="layui-form-label" style="padding: 8px 0!important;">降级到</label>
                               <div class="layui-input-inline">
-                                  <select id="downML" lay-filter="downML">
-                                      <option value="0">不降级</option>
+                                  <select id="downML" lay-filter="downML" name="downML">
+
                                   </select>
                               </div>
                           </div>
                       </div>
                   </div>
               </div>
-
+                <!--//送币规则-->
               <div class="layui-colla-item">
                   <h2 class="layui-colla-title">送币规则</h2>
                   <div class="layui-colla-content ">
                       <div class="layui-form-item">
-                          <div class="layui-inline">
-                              <label class="layui-form-label">送币频率</label>
-                              <div class="layui-input-inline">
-                                  <select name="" id="freeRate" lay-filter="freeRate"></select>
-                              </div>
-                          </div>
-                          <div class="layui-inline">
-                              <label  class="layui-form-label">送币数</label>
-                              <div class="layui-input-inline">
-                                  <input type="text" class="layui-input" id="freeCoin">
-                              </div>
-                          </div>
+
+
                           <div class="layui-inline">
                               <label  class="layui-form-label">送币方式</label>
                               <div class="layui-input-inline">
@@ -251,20 +244,33 @@
                               </div>
                           </div>
                           <div class="layui-inline">
+                              <label class="layui-form-label">赠送类别</label>
+                              <div class="layui-input-inline">
+                                  <select name="freeBalanceIndex" id="freeBalanceIndex" lay-filter="freeBalanceIndex"></select>
+                              </div>
+                          </div>
+                          <div class="layui-inline">
+                              <label  class="layui-form-label">送币数</label>
+                              <div class="layui-input-inline">
+                                  <input type="text" class="layui-input" id="freeCoin">
+                              </div>
+                          </div>
+                          <div class="layui-inline">
                               <label  class="layui-form-label" style="padding: 8px 0!important;">生日送币方式</label>
                               <div class="layui-input-inline">
                                   <select name="" id="birthdayFree" lay-filter="birthdayFree"></select>
                               </div>
                           </div>
                           <div class="layui-inline">
-                              <label  class="layui-form-label">生日送币数</label>
+                              <label  class="layui-form-label">选择礼包</label>
                               <div class="layui-input-inline">
-                                  <input type="text" class="layui-input" id="birthdayFreeCoin">
+                                  <select id="FoodID" lay-filter="FoodID" name="FoodID"></select>
                               </div>
                           </div>
                       </div>
                   </div>
               </div>
+              <!--商品兑换折扣率-->
               <div class="layui-colla-item">
                   <h2 class="layui-colla-title">商品兑换折扣率</h2>
                   <div class="layui-colla-content ">
@@ -273,32 +279,33 @@
                           <div class="layui-inline goodRules" style="margin-right: 0">
                               <label class="layui-form-label" style="width: 80px;">余额类别</label>
                               <div class="layui-input-inline" style="width: 100px;">
-                                  <select name="" lay-filter="freeRate"></select>
+                                  <select name="freeRates" lay-ignore style="height: 36px;width: 80px" lay-filter="freeRates" id="freeRates"></select>
                               </div>
                               <label  class="layui-form-mid">兑换折扣</label>
                               <div class="layui-input-inline" style="width: 60px;">
-                                  <input type="text" class="layui-input">
+                                  <input type="text" class="layui-input" name="chargeOff">
                               </div>
                               <div class="layui-form-mid">%</div>
                               <div class="layui-input-inline" style="width: 110px;">
-                                  <input type="checkbox"   title="需要授权" lay-skin="primary">
+                                  <input type="checkbox" name="needAuth" lay-ignore >
+                                  需要授权
                               </div>
                               <label  class="layui-form-mid" style="width: 100px;">最大存储余额</label>
                               <div class="layui-input-inline" style="width: 90px;">
-                                  <input type="text" class="layui-input" >
+                                  <input type="text" class="layui-input" name="maxSaveCount">
                               </div>
                               <div  class="layui-form-mid" style="width: 100px;">单词最大增加数</div>
                               <div class="layui-input-inline" style="width: 88px;">
-                                  <input type="text" class="layui-input">
+                                  <input type="text" class="layui-input" name="maxUplife">
                               </div>
                           </div>
 
                         <div class="layui-inline" style="width: 80px">
                             <div class="layui-btn-group">
-                                <button class="layui-btn layui-btn-sm" type="button" id="addMore">
+                                <button class="layui-btn layui-btn-sm" type="button" id="addGoods">
                                     <i class="layui-icon">&#xe654;</i>
                                 </button>
-                                <button class="layui-btn layui-btn-sm" type="button" id="reduceBtn">
+                                <button class="layui-btn layui-btn-sm" type="button" id="reduceGoods">
                                     <i class="layui-icon">&#x1006;</i>
                                 </button>
                             </div>
@@ -307,37 +314,7 @@
                       </div>
                   </div>
               </div>
-              <div class="layui-colla-item">
-                  <h2 class="layui-colla-title">兑换方式</h2>
-                  <div class="layui-colla-content ">
-                      <div class="layui-form-item">
-                          <div class="layui-inline goodIsAll">
-                              <label  class="layui-form-label ">允许退卡</label>
-                              <div class="layui-input-inline">
-                                  <input type="checkbox" name="zzz" lay-skin="switch" lay-text="启用|禁用" id="allowExitCard" lay-filter="allowExitCard">
-                              </div>
-                          </div>
-                          <div class="layui-inline goodIsAll">
-                              <label  class="layui-form-label">允许退款</label>
-                              <div class="layui-input-inline">
-                                  <input type="checkbox" name="zzz" lay-skin="switch" lay-text="启用|禁用" id="allowExitMoney" lay-filter="allowExitMoney">
-                              </div>
-                          </div>
-                          <div class="layui-inline goodIsAll">
-                              <label  class="layui-form-label" style="padding: 8px 0!important;">投币后拔卡锁机头</label>
-                              <div class="layui-input-inline">
-                                  <input type="checkbox" name="zzz" lay-skin="switch" lay-text="启用|禁用" id="lockHead" lay-filter="lockHead">
-                              </div>
-                          </div>
-                          <div class="layui-inline goodIsAll">
-                              <label  class="layui-form-label">允许下分</label>
-                              <div class="layui-input-inline">
-                                  <input type="checkbox" name="zzz" lay-skin="switch" lay-text="启用|禁用" id="allowExitCoinToCar" lay-filter="allowExitCoinToCar">
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-              </div>
+
               <div class="layui-colla-item" >
                   <h2 class="layui-colla-title">预赠币</h2>
                   <div class="layui-colla-content " style="padding: 10px 0">
@@ -346,27 +323,27 @@
                             <div class="layui-inline reduceBox" style="margin-right: 0">
                                   <label  class="layui-form-label" style="width: 90px">充值满</label>
                                   <div class="layui-input-inline" style="width: 60px">
-                                      <input type="text" class="layui-input" id="chargeTotal">
+                                      <input type="text" class="layui-input" id="chargeTotal" name="chargeTotal">
                                   </div>
                                   <div class="layui-form-mid">元，预赠方式</div>
                                   <div class="layui-input-inline" style="width: 100px">
-                                      <select name="" id="freeBalanceType" lay-filter="freeBalanceType"></select>
+                                      <select name="freeBalanceType"  lay-ignore style="height: 36px;width: 100px" id="freeBalanceType" lay-filter="freeBalanceType"></select>
                                   </div>
                                   <div class="layui-form-mid">元，预赠币</div>
                                   <div class="layui-input-inline" style="width: 55px">
-                                      <input type="text" class="layui-input" id="freeCount">
+                                      <input type="text" class="layui-input" id="freeCount" name="freeCount">
                                   </div>
                                   <div class="layui-form-mid">最小间隔</div>
                                   <div class="layui-input-inline" style="width: 55px" >
-                                      <input type="text" class="layui-input" id="minSpaceDays">
+                                      <input type="text" class="layui-input" id="minSpaceDays" name="minSpaceDays">
                                   </div>
                                   <div class="layui-form-mid">天,可领</div>
                                   <div class="layui-input-inline" style="width: 55px">
-                                      <input type="text" class="layui-input" id="onceFreeCount">
+                                      <input type="text" class="layui-input" id="onceFreeCount" name="onceFreeCount">
                                   </div>
                                   <div class="layui-form-mid">币,有效天数</div>
                                   <div class="layui-input-inline" style="width: 55px">
-                                      <input type="text" class="layui-input" id="expireDays">
+                                      <input type="text" class="layui-input" id="expireDays" name="expireDays">
                                   </div>
                               </div>
                             <div class="layui-inline" style="width: 80px">
@@ -379,36 +356,39 @@
                                     </button>
                                 </div>
                             </div>
-
                       </div>
                   </div>
               </div>
               <div class="layui-colla-item">
                   <h2 class="layui-colla-title">会员余额互转规则</h2>
                   <div class="layui-colla-content">
-                      <div class="layui-form-item">
-                          <div class="layui-inline">
+                      <div class="layui-form-item memBalanceBox">
+                          <div class="layui-inline memBalance">
                               <label class="layui-form-label">原类型</label>
-                              <div class="layui-input-inline">
-                                  <select name="" id=""></select>
+                              <div class="layui-input-inline" style="width: 120px">
+                                  <select name="sourceBalanceType" id="sourceBalanceType"></select>
+                              </div>
+                              <label class="layui-form-mid">原数量</label>
+                              <div class="layui-input-inline" style="width: 80px">
+                                  <input type="text" class="layui-input" name="sourceCount">
+                              </div>
+                              <label class="layui-form-mid">兑换类型</label>
+                              <div class="layui-input-inline" style="width: 120px">
+                                  <select name="targetBalanceIndex" id="targetBalanceIndex"></select>
+                              </div>
+                              <label class="layui-form-mid">兑换数量</label>
+                              <div class="layui-input-inline" style="width: 80px">
+                                  <input type="text" class="layui-input" name="targetCount">
                               </div>
                           </div>
-                          <div class="layui-inline">
-                              <label class="layui-form-label">原数量</label>
-                              <div class="layui-input-inline">
-                                  <input type="text" class="layui-input">
-                              </div>
-                          </div>
-                          <div class="layui-inline">
-                              <label class="layui-form-label">兑换类型</label>
-                              <div class="layui-input-inline">
-                                  <select name="" id=""></select>
-                              </div>
-                          </div>
-                          <div class="layui-inline">
-                              <label class="layui-form-label">兑换数量</label>
-                              <div class="layui-input-inline">
-                                  <input type="text" class="layui-input">
+                          <div class="layui-inline" style="width: 80px">
+                              <div class="layui-btn-group">
+                                  <button class="layui-btn layui-btn-sm" type="button" id="addmb">
+                                      <i class="layui-icon">&#xe654;</i>
+                                  </button>
+                                  <button class="layui-btn layui-btn-sm" type="button" id="reducemb">
+                                      <i class="layui-icon">&#x1006;</i>
+                                  </button>
                               </div>
                           </div>
                       </div>
@@ -418,36 +398,58 @@
                   <h2 class="layui-colla-title">其他规则</h2>
                   <div class="layui-colla-content">
                       <div class="layui-form-item goodIsAll">
-                          <div class="layui-inline">
-                              <label class="layui-form-label">允许退卡</label>
+                          <div class="layui-inline goodIsAll">
+                          <label  class="layui-form-label ">允许退卡</label>
+                          <div class="layui-input-inline">
+                          <input type="checkbox" name="zzz" lay-skin="switch" lay-text="启用|禁用" id="allowExitCard" lay-filter="allowExitCard">
+                          </div>
+                          </div>
+                          <div class="layui-inline goodIsAll">
+                          <label  class="layui-form-label">允许退款</label>
+                          <div class="layui-input-inline">
+                          <input type="checkbox" name="zzz" lay-skin="switch" lay-text="启用|禁用" id="allowExitMoney" lay-filter="allowExitMoney">
+                          </div>
+                          </div>
+                          <div class="layui-inline goodIsAll">
+                          <label  class="layui-form-label" style="padding: 8px 0!important;">投币后拔卡锁机头</label>
+                          <div class="layui-input-inline">
+                          <input type="checkbox" name="zzz" lay-skin="switch" lay-text="启用|禁用" id="lockHead" lay-filter="lockHead">
+                          </div>
+                          </div>
+                          <div class="layui-inline goodIsAll">
+                          <label  class="layui-form-label">允许下分</label>
+                          <div class="layui-input-inline">
+                            <input type="checkbox" name="zzz" lay-skin="switch" lay-text="启用|禁用" id="allowExitCoinToCar" lay-filter="allowExitCoinToCar">
+                          </div>
+                          </div>
+
+
+
+
+                          <div class="layui-inline"><label for="" class="layui-form-label">允许充值</label>
                               <div class="layui-input-inline">
-                                  <input type="checkbox" lay-skin="switch" lay-filter="" lay-text="启用|禁用">
+                                  <input type="checkbox" name="allowCharge" lay-skin="switch" id="allowCharge" lay-filter="allowCharge" lay-text="启用|禁用">
                               </div>
                           </div>
-                          <div class="layui-inline">
-                              <label class="layui-form-label">允许退款</label>
-                              <div class="layui-input-inline"><input type="checkbox" lay-skin="switch" lay-filter="" lay-text="启用|禁用"></div>
-                          </div>
-                          <div class="layui-inline"><label for="" class="layui-form-label">投币后拔卡锁机头</label>
-                              <div class="layui-input-inline"><input type="checkbox" lay-skin="switch" lay-filter="" lay-text="启用|禁用"></div>
-                          </div>
-                          <div class="layui-inline"><label for="" class="layui-form-label">允许下分</label>
-                              <div class="layui-input-inline"><input type="checkbox" lay-skin="switch" lay-filter="" lay-text="启用|禁用"></div>
-                          </div>
-                          <div class="layui-inline"><label for="" class="layui-form-label">允许充值</label>
-                              <div class="layui-input-inline"><input type="checkbox" lay-skin="switch" lay-filter="" lay-text="启用|禁用"></div>
-                          </div>
                           <div class="layui-inline"><label for="" class="layui-form-label">允许碎票</label>
-                              <div class="layui-input-inline"><input type="checkbox" lay-skin="switch" lay-filter="" lay-text="启用|禁用"></div>
+                              <div class="layui-input-inline">
+                                  <input type="checkbox" name="allowSaveLottery" lay-skin="switch" id="allowSaveLottery" lay-filter="allowSaveLottery" lay-text="启用|禁用">
+                              </div>
                           </div>
                           <div class="layui-inline"><label for="" class="layui-form-label">允许存币</label>
-                              <div class="layui-input-inline"><input type="checkbox" lay-skin="switch" lay-filter="" lay-text="启用|禁用"></div>
+                              <div class="layui-input-inline">
+                                  <input type="checkbox" name="allowSaveCoin" lay-skin="switch" id="allowSaveCoin" lay-filter="allowSaveCoin" lay-text="启用|禁用">
+                              </div>
                           </div>
                           <div class="layui-inline"><label for="" class="layui-form-label">允许提币</label>
-                              <div class="layui-input-inline"><input type="checkbox" lay-skin="switch" lay-filter="" lay-text="启用|禁用"></div>
+                              <div class="layui-input-inline">
+                                  <input type="checkbox" name="allowGetCoin" lay-skin="switch" id="allowGetCoin" lay-filter="allowGetCoin" lay-text="启用|禁用">
+                              </div>
                           </div>
                           <div class="layui-inline"><label for="" class="layui-form-label">允许余额过户给他人</label>
-                              <div class="layui-input-inline"><input type="checkbox" lay-skin="switch" lay-filter="" lay-text="启用|禁用"></div>
+                              <div class="layui-input-inline">
+                                  <input type="checkbox" name="allowTransfer" lay-skin="switch" id="allowTransfer" lay-filter="allowTransfer" lay-text="启用|禁用">
+                              </div>
                           </div>
                       </div>
                   </div>
@@ -484,8 +486,6 @@
     let token=xc.getStorage('token');
     let merchId=JSON.parse(xc.getStorage('logMsg')).merchId;
     let memberLevelID;
-    let arrSendCoinTable=[];
-    let memberLevelFood=[];
 
     let index;//layer;
     let parm={'obj':{'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'},
@@ -508,40 +508,73 @@
     };
     xc.getInitData(parm);
 
-   let needAuthor=1;let mustPhone=0;let mustIDCard=0;let useReadID=1;let readFace=0;let readPlam=0;
+  let PhoneOnly=1;let IDCardOnly=1;  let needAuthor=1;let mustPhone=0;let mustIDCard=0;let useReadID=1;let readFace=0;let readPlam=0;
 
-   let BirthdayFree='';let freeType='';let freeRate='';
+   let BirthdayFree='';let freeType='';let freeRate='';let upML='';let downML='';
 
-   let freeBalanceType='';
+   let freeBalanceType='';let freeBalanceIndex='';let FoodID='';
 
    let  AllowExitCard=0,AllowExitMoney=0,AllowExitCoinToCar=0,LockHead=0,States=0;
+   let allowCharge=0,allowSaveLottery=0,allowSaveCoin=0,allowGetCoin=0,allowTransfer=0;
     layui.use(['form','layer','table','element','upload'],()=> {
         let layer=layui.layer,
             table=layui.table,
              form=layui.form,
             element=layui.element;
           let  upload=layui.upload;
-
-        $('#addMore').click(function () {
+        xc.getBalanceTypeDic('',token,layer,form,'freeRates');
+        xc.getBalanceTypeDic('',token,layer,form,'freeBalanceType');
+        xc.getBalanceTypeDic('',token,layer,form,'sourceBalanceType');
+        xc.getBalanceTypeDic('',token,layer,form,'targetBalanceIndex');
+        xc.setSelect('生日送币方式','birthdayFree');
+        xc.setSelect('送币方式','freeType');
+        xc.getBalanceTypeDic('',token,layer,form,'freeBalanceIndex');
+        xc.getFoodInfoDic(token,layer,form,'FoodID');
+        getUpDownLevel(token,form,layer,'upML');
+        getUpDownLevel(token,form,layer,'downML');
+        $('#addGoods').click(function () {
             $('.goodConvert').append($('body').find($('.goodRules')).eq(0).clone())
         });
-        $('#reduceBtn').click(function () {
+        $('#reduceGoods').click(function () {
             if($('.goodConvert').find($('.goodRules')).length>1){
                 $('.goodConvert').find($('.goodRules')).last().remove();
             }else {
             }
         });
+
+
+        $('#addMore1').click(function () {
+            $('.freeLast').append($('body').find($('.reduceBox')).eq(0).clone())
+        });
+        $('#reduceBtn1').click(function () {
+            if($('.freeLast').find($('.reduceBox')).length>1){
+                $('.freeLast').find($('.reduceBox')).last().remove();
+            }else {
+            }
+        });
+
+        $('#addmb').click(function () {
+            $('.memBalanceBox').append($('body').find($('.memBalance')).eq(0).clone())
+        });
+        $('#reducemb').click(function () {
+            if($('.memBalanceBox').find($('.memBalance')).length>1){
+                $('.memBalanceBox').find($('.memBalance')).last().remove();
+            }else {
+            }
+        });
         //新增按钮
         $('#add').on('click',()=>{
-             needAuthor=1; mustPhone=0; mustIDCard=0; useReadID=1; readFace=0; readPlam=0;
-             BirthdayFree=''; freeType=''; freeRate='';
-             freeBalanceType='';
+            $('#resetBtn').trigger('click')
+             PhoneOnly=1; IDCardOnly=1;  needAuthor=1; mustPhone=0; mustIDCard=0; useReadID=1; readFace=0; readPlam=0;
+
+             BirthdayFree=''; freeType=''; freeRate=''; upML=''; downML='';
+
+             freeBalanceType=''; freeBalanceIndex=''; FoodID='';
+
               AllowExitCard=0;AllowExitMoney=0;AllowExitCoinToCar=0;LockHead=0;States=0;
-            newTable(table,arrSendCoinTable,layer,form);
-            xc.setSelect('生日送币方式','birthdayFree');
-            xc.setSelect('送币频率','freeRate');
-            xc.setSelect('送币方式','freeType');
-            xc.getBalanceTypeDic('',token,layer,form,'freeBalanceType');
+             allowCharge=0;allowSaveLottery=0;allowSaveCoin=0;allowGetCoin=0;allowTransfer=0;
+            // newTable(table,arrSendCoinTable,layer,form);
+
             layer.open({
                 type:1,
                 area:'1030px',
@@ -629,7 +662,6 @@
             memberLevelID=data.MemberLevelID;
             if(layEvent === 'edit'){ //修改按钮
                 $('#resetBtn').trigger('click');
-                // xc.setStorage('MemberLevelID',memberLevelID);
                 let _obj={'memberLevelID':memberLevelID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
                 let url='/XCCloud/Member?action=GetMemberLevelInfo';
                 let parseJson=JSON.stringify(_obj);
@@ -671,6 +703,7 @@
                                 if(arr.ReadPlam==1){$('#readPlam').attr('checked',true)
                                 }else { $('#readPlam').attr('checked',false)}
                                 $('#changeFee').val(arr.ChangeFee);
+                            $('#rechangeFeechangeFee').val(arr.ReChangeFee);
                                 $('#consumeTotal').val(arr.ConsumeTotle);
                                 $('#continueFee').val(arr.ContinueFee);
                                 $('#continueUsePoint').val(arr.ContinueUsePoint);
@@ -679,7 +712,7 @@
                                 $('#priceOff').val(arr.PriceOFF);
                                 $('#clearPointDays').val(arr.ClearPointDays);
                                 freeType=arr.FreeType;
-
+                                xc.setSelect('送币方式','freeType',arr.FreeType);
                                 freeRate=arr.FreeRate;
                                 $('#freeCoin').val(arr.FreeCoin);
                                 $('#freeNeedWin').val(arr.FreeNeedWin);
@@ -702,8 +735,26 @@
                                 }else { $('#lockHead').attr('checked',false)}
 
                             xc.setSelect('生日送币方式','birthdayFree',arr.BirthdayFree);
-                            xc.setSelect('送币频率','freeRate',arr.FreeRate);
-                            xc.setSelect('送币方式','freeType',arr.FreeType);
+                            // xc.setSelect('送币频率','freeRate',arr.FreeRate);
+                            // xc.setSelect('送币方式','freeType',arr.FreeType);
+                            form.val('formtest',{
+                                'upML':arr.UpdateLevelID,
+                                'downML':arr.ReduceLevelID,
+                                'freeBalanceIndex':arr.FreeBalanceIndex,
+                                'FoodID':arr.FoodID,
+                                'allowCharge':arr.AllowCharge,
+                                'allowSaveLottery':arr.AllowSaveLottery,
+                                'allowSaveCoin':arr.AllowSaveCoin,
+                                'allowGetCoin':arr.AllowGetCoin,
+                                'allowTransfer':arr.AllowTransfer,
+                            });
+                                upML=arr.UpdateLevelID;
+                                downML=arr.ReduceLevelID;
+                                allowCharge=arr.AllowCharge;
+                                allowSaveLottery=arr.AllowSaveLottery;
+                                allowSaveCoin=arr.AllowSaveCoin;
+                                allowGetCoin=arr.AllowGetCoin;
+                                allowTransfer=arr.AllowTransfer;
 
 
                             $('#demo2') .append('<div style="display: inline-block;position: relative" class="imgBox">' +
@@ -714,16 +765,108 @@
                                 $(this).parent('div').remove();
                             });
 
-                            // newTable(table,arrSendCoinTable,layer,form);
                             layer.open({
                                 type:1,
-                                area:'1000px',
+                                area:'1030px',
                                 shade:0.6,
                                 content:$('#openModel')
                             });
                         }
                     }
-                })
+                });
+                $.ajax({
+                    type: "post",
+                    url: '/XCCloud/Member?action=GetMemberLevelFreeList',
+                    contentType: "application/json; charset=utf-8",
+                    data: { parasJson: parseJson },
+                    success: function (data) {
+                        data=JSON.parse(data);
+                        if(data.result_code==1){
+                            let arr=data.result_data;
+                            if(arr.length==1){
+                                $('.reduceBox input[name="chargeTotal"]').val(arr[0].ChargeTotal);
+                                $('.reduceBox select[name="freeBalanceType"]').val(arr[0].FreeBalanceType);
+                                $('.reduceBox input[name="freeCount"]').val(arr[0].FreeCount);
+                                $('.reduceBox input[name="minSpaceDays"]').val(arr[0].MinSpaceDays);
+                                $('.reduceBox input[name="onceFreeCount"]').val(arr[0].OnceFreeCount);
+                                $('.reduceBox input[name="expireDays"]').val(arr[0].ExpireDays);
+                            }else if(arr.length>1){
+                                for(let i=1;i<arr.length;i++){
+                                    $('.reduceBox').append($('body').find($('.code')).eq(0).clone())
+                                }
+                                for(let i=0;i<arr.length;i++){
+                                    $('.freeLast').find($('.reduceBox')).eq(i).find('input[name="chargeTotal"]').val(arr[i].ChargeTotal);
+                                    $('.freeLast').find($('.reduceBox')).eq(i).find('select[name="freeBalanceType"]').val(arr[i].FreeBalanceType);
+                                    $('.freeLast').find($('.reduceBox')).eq(i).find('input[name="freeCount"]').val(arr[i].FreeCount);
+                                    $('.freeLast').find($('.reduceBox')).eq(i).find('input[name="minSpaceDays"]').val(arr[i].MinSpaceDays);
+                                    $('.freeLast').find($('.reduceBox')).eq(i).find('input[name="onceFreeCount"]').val(arr[i].OnceFreeCount);
+                                    $('.freeLast').find($('.reduceBox')).eq(i).find('input[name="expireDays"]').val(arr[i].ExpireDays);
+                                }
+                            }
+                        }else {layer.msg(data.result_msg||data.return_msg)}
+                    }
+                });
+                $.ajax({
+                    type: "post",
+                    url: '/XCCloud/Member?action=GetMemberLevelBalance',
+                    contentType: "application/json; charset=utf-8",
+                    data: { parasJson: parseJson },
+                    success: function (data) {
+                        data=JSON.parse(data);
+                        if(data.result_code==1){
+                            let arr=data.result_data;
+                            if(arr.length==1){
+                                $('.goodRules select[name="freeRates"]').val(arr[0].BalanceIndex);
+                                $('.goodRules input[name="chargeOff"]').val(arr[0].ChargeOFF);
+                                $('.goodRules input[name="needAuth"]').val(arr[0].MinSpaceDays);
+                                $('.goodRules input[name="maxSaveCount"]').val(arr[0].MaxSaveCount);
+                                $('.goodRules input[name="maxUplife"]').val(arr[0].MaxUplife);
+                            }else if(arr.length>1){
+                                for(let i=1;i<arr.length;i++){
+                                    $('.reduceBox').append($('body').find($('.code')).eq(0).clone())
+                                }
+                                for(let i=0;i<arr.length;i++){
+
+                                    $('.goodConvert').find($('.goodRules')).eq(i).find('select[name="freeRates"]').val(arr[i].BalanceIndex);
+                                    $('.goodConvert').find($('.goodRules')).eq(i).find('input[name="chargeOff"]').val(arr[i].ChargeOFF);
+                                    $('.goodConvert').find($('.goodRules')).eq(i).find('input[name="needAuth"]').val(arr[i].MinSpaceDays);
+                                    $('.goodConvert').find($('.goodRules')).eq(i).find('input[name="maxSaveCount"]').val(arr[i].MaxSaveCount);
+                                    $('.goodConvert').find($('.goodRules')).eq(i).find('input[name="maxUplife"]').val(arr[i].MaxUplife);
+                                }
+                            }
+                        }else {layer.msg(data.result_msg||data.return_msg)}
+                    }
+                });
+                $.ajax({
+                    type: "post",
+                    url: '/XCCloud/Member?action=GetMemberLevelBalanceCharge',
+                    contentType: "application/json; charset=utf-8",
+                    data: { parasJson: parseJson },
+                    success: function (data) {
+                        data=JSON.parse(data);
+                        console.log(data)
+                        if(data.result_code==1){
+                            let arr=data.result_data;
+                            if(arr.length==1){
+                                $('.memBalance select[name="sourceBalanceType"]').val(arr[0].SourceBalanceIndex);
+                                $('.memBalance input[name="sourceCount"]').val(arr[0].SourceCount);
+                                $('.memBalance select[name="targetBalanceIndex"]').val(arr[0].TargetBalanceIndex);
+                                $('.memBalance input[name="targetCount"]').val(arr[0].TargetCount);
+
+                            }else if(arr.length>1){
+                                for(let i=1;i<arr.length;i++){
+                                    $('.reduceBox').append($('body').find($('.code')).eq(0).clone())
+                                }
+                                for(let i=0;i<arr.length;i++){
+                                    $('.memBalanceBox').find($('.memBalance')).eq(i).find('select[name="sourceBalanceType"]').val(arr[i].SourceBalanceIndex);
+                                    $('.memBalanceBox').find($('.memBalance')).eq(i).find('input[name="sourceCount"]').val(arr[i].SourceCount);
+                                    $('.memBalanceBox').find($('.memBalance')).eq(i).find('select[name="targetBalanceIndex"]').val(arr[i].TargetBalanceIndex);
+                                    $('.memBalanceBox').find($('.memBalance')).eq(i).find('input[name="targetCount"]').val(arr[i].TargetCount);
+                                }
+                            }
+                        }else {layer.msg(data.result_msg||data.return_msg)}
+                    }
+                });
             }else if(layEvent === 'del'){
                 layer.confirm('真的删除行么', function(index){
                     Id=data.ID;
@@ -750,43 +893,6 @@
             }
         });
 
-        $('#addFreeRule').on('click',function () {
-            if($('#chargeTotal').val()==''||freeBalanceType==''||$('#freeCount').val()==''||$('#minSpaceDays').val()==''||
-                $('#onceFreeCount').val()==''||$('#expireDays').val()==''){
-                layer.msg('请检查是否有未填信息')
-            }else {
-                arrSendCoinTable.push({
-                    'ChargeTotal':$('#chargeTotal').val(),
-                    'FreeBalanceType':freeBalanceType,
-                    'FreeCount':$('#freeCount').val(),
-                    'MinSpaceDays':$('#minSpaceDays').val(),
-                    'OnceFreeCount':$('#onceFreeCount').val(),
-                    'ExpireDays':$('#expireDays').val(),
-                });
-                newTable(table,arrSendCoinTable,layer,form)
-
-            }
-        });
-        //删除预赠币规则
-        table.on('tool(sendCoinTable)', (obj)=>{
-            let data = obj.data; //获得当前行数据
-            let layEvent = obj.event;
-             if(layEvent === 'del'){
-                 for(let i in arrSendCoinTable){
-                     if(arrSendCoinTable[i].ChargeTotal==data.ChargeTotal&&
-                         arrSendCoinTable[i].FreeBalanceType==data.FreeBalanceType&&
-                         arrSendCoinTable[i].FreeCount==data.FreeCount&&
-                         arrSendCoinTable[i].MinSpaceDays==data.MinSpaceDays&&
-                         arrSendCoinTable[i].OnceFreeCount==data.OnceFreeCount&&
-                         arrSendCoinTable[i].ExpireDays==data.ExpireDays
-                         ){
-                         arrSendCoinTable.splice(i,1);
-                         obj.del()
-                     }
-                 }
-
-            }
-        });
         var demoListViewStore=$('#demo2'),uploadListInsStore=upload.render({
             elem: '#imgBtn'
             ,url: '/XCCloud/Member?action=UploadCardCover'
@@ -854,6 +960,12 @@
         form.on('switch(mustIDCard)', function(data){
             data.elem.checked==true ? mustIDCard=1:mustIDCard=0;
         });
+        form.on('checkbox(PhoneOnly)', function(data){
+            data.elem.checked==true ? PhoneOnly=1:PhoneOnly=0;
+        });
+        form.on('checkbox(IDCardOnly)', function(data){
+            data.elem.checked==true ? IDCardOnly=1:IDCardOnly=0;
+        });
         form.on('switch(readFace)', function(data){
             data.elem.checked==true ? readFace=1:readFace=0;
         });
@@ -875,41 +987,129 @@
         form.on('switch(State)', function(data){
             data.elem.checked==true ? States=1:States=0;
         });
+
+        form.on('switch(allowCharge)', function(data){
+            data.elem.checked==true ? allowCharge=1:allowCharge=0;
+        });
+        form.on('switch(allowSaveLottery)', function(data){
+            data.elem.checked==true ? allowSaveLottery=1:allowSaveLottery=0;
+        });
+        form.on('switch(allowSaveCoin)', function(data){
+            data.elem.checked==true ? allowSaveCoin=1:allowSaveCoin=0;
+        });
+        form.on('switch(allowGetCoin)', function(data){
+            data.elem.checked==true ? allowGetCoin=1:allowGetCoin=0;
+        });
+        form.on('switch(allowTransfer)', function(data){
+            data.elem.checked==true ? allowTransfer=1:allowTransfer=0;
+        });
+
+
         form.on('select(freeBalanceType)', function(data){
             freeBalanceType=data.value;
         });
+        form.on('select(upML)', function(data){
+            upML=data.value;
+        });
+        form.on('select(downML)', function(data){
+            downML=data.value;
+        });
+        form.on('select(freeBalanceIndex)', function(data){
+            freeBalanceIndex=data.value;
+        });
+        form.on('select(FoodID)', function(data){
+            FoodID=data.value;
+        });
     });
     var saveML=(layer,token)=>{
+        let _memberLevelBalance=[];let _memberLevelFrees=[];let _memberLevelFood=[];
+        let _memberLevelBalanceCharge=[];
+        $('.goodConvert .goodRules').each(function () {
+            if($(this).find('input[name="chargeOff"]').val()!=''&&
+                $(this).find('select[name="freeRates"] option:selected').val()!=''&&
+                $(this).find('input[name="maxSaveCount"]').val()!=''&&
+                $(this).find('input[name="needAuth"]').val()!=''&&
+                $(this).find('input[name="maxUplife"]').val()!=''
+            ){
+                _memberLevelBalance.push({
+                    'BalanceIndex': $(this).find('select[name="freeRates"] option:selected').val(),
+                    'ChargeOff': $(this).find('input[name="chargeOff"]').val(),
+                    'NeedAuthor': $(this).find('input[name="needAuth"]').val(),
+                    'MaxSaveCount': $(this).find('input[name="maxSaveCount"]').val(),
+                    'MaxUplife': $(this).find('input[name="maxUplife"]').val()
+                });
+            }
+        });
+        $('.freeLast .reduceBox').each(function () {
+            if($(this).find('input[name="chargeTotal"]').val()!=''&&
+                $(this).find('select[name="freeBalanceType"] option:selected').val()!=''&&
+                $(this).find('input[name="freeCount"]').val()!=''&&
+                $(this).find('input[name="minSpaceDays"]').val()!=''&&
+                $(this).find('input[name="onceFreeCount"]').val()!=''&&
+                $(this).find('input[name="expireDays"]').val()!=''
+            ){
+                _memberLevelFrees.push({
+                    'ChargeTotal': $(this).find('input[name="chargeTotal"]').val(),
+                    'FreeBalanceType': $(this).find('select[name="freeBalanceType"] option:selected').val(),
+                    'FreeCount': $(this).find('input[name="freeCount"]').val(),
+                    'MinSpaceDays': $(this).find('input[name="minSpaceDays"]').val(),
+                    'OnceFreeCount': $(this).find('input[name="onceFreeCount"]').val(),
+                    'ExpireDays': $(this).find('input[name="expireDays"]').val()
+                });
+            }
+        });
+        $('.memBalanceBox .memBalance').each(function () {
+            if(
+                $(this).find('select[name="sourceBalanceType"] option:selected').val()!=''&&
+                $(this).find('input[name="sourceCount"]').val()!=''&&
+                $(this).find('select[name="targetBalanceIndex"] option:selected').val()!=''&&
+                $(this).find('input[name="targetCount"]').val()!=''
+            ){
+                _memberLevelBalanceCharge.push({
+                    'sourceBalanceType': $(this).find('select[name="sourceBalanceIndex"] option:selected').val(),
+                    'sourceCount': $(this).find('input[name="sourceCount"]').val(),
+                    'targetBalanceIndex': $(this).find('select[name="targetBalanceIndex"] option:selected').val(),
+                    'targetCount': $(this).find('input[name="targetCount"]').val(),
 
+                });
+            }
+        });
         let obj={
             'MemberLevelID':memberLevelID||'',
             'MerchID':merchId,
             'MemberLevelName':$('#MemberLevelName').val(),
             'coverURL':$('.layui-upload-img_md').attr('src'),
+
             'openFee':$('#openFee').val(),
             'Deposit':$('#deposit').val(),
             'Validday':$('#validday').val(),
             'needAuthor':needAuthor,//开卡需要授权
             'mustPhone':mustPhone,//手机必填
+            'PhoneOnly':PhoneOnly,
             'mustIDCard':mustIDCard,//身份证必填
             'useReadID':useReadID,//身份证读卡
+            'IDCardOnly':IDCardOnly,
             'readFace':readFace,//脸部识别
             'readPlam':readPlam,//读取掌纹
             'changeFee':$('#changeFee').val(),
+            'RechargeFee':$('#rechangeFee').val(),
             'consumeTotle':$('#consumeTotal').val(),
             'continueFee':$('#continueFee').val(),
             'continueUsePoint':$('#continueUsePoint').val(),
             'nonActiveDays':$('#nonActiveDays').val(),
             'updateUsePoint':$('#updateUsePoint').val(),
-            'priceOff':$('#priceOff').val(),
+            'updateLevelID':upML,
+            'ReduceLevelID':downML,
             'clearPointDays':$('#clearPointDays').val(),
+
             'FreeType':freeType,
-            'FreeRate':freeRate,
+            'FreeNeedWin':$('#freeNeedWin').val(),
+            'freeBalanceIndex':freeBalanceIndex,
             'FreeCoin':$('#freeCoin').val(),
 
-            'FreeNeedWin':$('#freeNeedWin').val(),
             'BirthdayFree':BirthdayFree,
-            'BirthdayFreeCoin':$('#birthdayFreeCoin').val(),
+            'FoodID':FoodID,//????????????????????
+
             'minCoin':$('#minCoin').val(),
             'maxCoin':$('#maxCoin').val(),
 
@@ -918,13 +1118,21 @@
             'AllowExitCoinToCard':AllowExitCoinToCar,
             'LockHead':LockHead,
             'State':States,
-            'memberLevelFoods':memberLevelFood.length>0?memberLevelFood:null,
-            'memberLevelFrees':arrSendCoinTable,
+            'allowCharge':allowCharge,
+            'allowSaveLottery':allowSaveLottery,
+            'allowSaveCoin':allowSaveCoin,
+            'allowGetCoin':allowGetCoin,
+            'allowTransfer':allowTransfer,
+
+            'memberLevelFoods':_memberLevelFood,
+            'memberLevelFrees':_memberLevelFrees,
+            'memberLevelBalance':_memberLevelBalance,
+            'memberLevelBalanceCharge':_memberLevelBalanceCharge,
+            // memberLevelBalanceCharge
             'userToken':token,
             'signkey':'1f626576304bf5d95b72ece2222e42c3'};
         let url='/XCCloud/Member?action=SaveMemberLevel';
         let  parseJson=JSON.stringify(obj);
-        console.log(parseJson);
         $.ajax({
             type:'post',
             url:url,
@@ -1009,6 +1217,38 @@
                 }
             }
         })
+    }
+    //获取会员升降级别
+    function getUpDownLevel(token,form,layer,id,selected) {
+        let _obj={'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+        let parseJson = JSON.stringify(_obj);
+        $.ajax({
+            type:'post',
+            url:'/XCCloud/Member?action=QueryMemberLevel',
+            contentType: "application/json; charset=utf-8",
+            data:{parasJson: parseJson},
+            success: function (data) {
+                data = JSON.parse(data);
+                if (data.result_code == 1) {
+                    let arr=data.result_data;
+                    $('#'+id).html('<option>-请选择-</option><option value="0">等级不变</option>');
+                    for(let i in arr){
+                        if(selected!=undefined){
+                            if(arr[i].MemberLevelID==selected){
+                                $('#'+id).append('<option value="'+arr[i].MemberLevelID+'" selected>'+arr[i].MemberLevelName+'</option>')
+                            }else {
+                                $('#'+id).append('<option value="'+arr[i].MemberLevelID+'">'+arr[i].MemberLevelName+'</option>')
+                            }
+                        }else {
+                            $('#'+id).append('<option value="'+arr[i].MemberLevelID+'">'+arr[i].MemberLevelName+'</option>')
+                        }
+                    }
+                    form.render('select');
+                } else {
+                    layer.msg(data.result_msg);
+                }
+            }
+        });
     }
 </script>
 

@@ -13,6 +13,7 @@ namespace XCCloudService.Base
             this.Roles = string.Empty;
             this.Users = string.Empty;
             this.Merches = string.Empty;
+            this.Grants = string.Empty;
         }
 
         /// <summary>
@@ -29,6 +30,11 @@ namespace XCCloudService.Base
         /// 商户
         /// </summary>
         public string Merches { set; get; }
+
+        /// <summary>
+        /// 操作权限
+        /// </summary>
+        public string Grants { set; get; }
 
     }
 
