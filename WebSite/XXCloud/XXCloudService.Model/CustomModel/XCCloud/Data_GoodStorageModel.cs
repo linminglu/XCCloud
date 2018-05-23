@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using XCCloudService.Common.Enum;
+using XCCloudService.Common;
 
 namespace XCCloudService.Model.CustomModel.XCCloud
 {
@@ -19,6 +21,6 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         public string LogName { get; set; }
         public string DepotName { get; set; }
         public int? AuthorFlag { get; set; }
-        public string AuthorFlagStr { get { return AuthorFlag == 0 ? "未审核" : AuthorFlag == 1 ? "已审核" : AuthorFlag == 2 ? "已拒绝" : string.Empty; } set { } }        
+        public string AuthorFlagStr { get { return ((GoodOutInState?)AuthorFlag).GetDescription(); } set { } }        
     }
 }

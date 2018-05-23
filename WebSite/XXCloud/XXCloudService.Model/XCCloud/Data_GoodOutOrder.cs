@@ -27,6 +27,7 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> CancelUserID { get; set; }
         public Nullable<System.DateTime> CancelTime { get; set; }
         public string WorkStation { get; set; }
+        public Nullable<System.DateTime> CheckDate { get; set; }
         public Nullable<int> State { get; set; }
     }
 }

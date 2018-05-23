@@ -15,7 +15,7 @@ namespace XCCloudService.Model.XCCloud
     public partial class Data_Member_Card_Store
     {
         public string ID { get; set; }
-        public Nullable<int> CardID { get; set; }
+        public string CardID { get; set; }
         public string StoreID { get; set; }
     }
 }

@@ -102,7 +102,20 @@ namespace XXCloudService.Api.XCCloud
                 var data_ProjectTicket = (new
                 {
                     model = model,
-                    ProjectTicketBinds = Data_ProjectTicket_BindService.I.GetModels(p => p.ProjcetTicketID == id)
+                    ProjectTicketBinds = from a in Data_ProjectTicket_BindService.N.GetModels(p => p.ProjcetTicketID == id)
+                                         join b in Data_ProjectInfoService.N.GetModels() on a.ProjcetID equals b.ID
+                                         join c in Dict_SystemService.N.GetModels() on b.ProjectType equals c.ID into c1
+                                         from c in c1.DefaultIfEmpty()
+                                         select new 
+                                         {
+                                             ID = a.ID,
+                                             ProjcetTicketID = a.ProjcetTicketID,
+                                             ProjcetID = a.ProjcetID,
+                                             UseCount = a.UseCount,
+                                             AllowShareCount = a.AllowShareCount,
+                                             WeightValue = a.WeightValue,
+                                             ProjcetTypeStr = c != null ? c.DictKey : string.Empty
+                                         }
                 }).AsFlatDictionary();
 
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, data_ProjectTicket);

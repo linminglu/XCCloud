@@ -1,5 +1,33 @@
 ********************************************************************ª·‘±*****************************************************************
 -----------------------------------------------------------------------------------------------------------------------------------------
+declare @NewFlwSaleId varchar(29) = '100025420106001' + '20180521' + '000018'
+declare @RegisterMember dbo.RegisterMemberType
+insert @RegisterMember(Mobile,WeChat,QQ,IMME,CardShape,
+MemberName,MemberPassword,Birthday,Gender,IdentityCard,
+EMail,LeftHandCode,RightHandCode,Photo,RepeatCode,
+ICCardId,Deposit,ICCardUID,Note)
+values('15618920033','','','','0',
+'≤‚ ‘','123456789','2018-05-23','1','1',
+'','','','',132,
+'1111000',10,1111991111,'')
+exec AddMemberCard @NewFlwSaleId,@RegisterMember,'100025420106001',21,'lijunjie',3,100
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+declare @NewFlwSaleId varchar(29) = '100025420106001' + '20180521' + '000018'
+declare @RegisterMember dbo.RegisterMemberType
+insert @RegisterMember(Mobile,WeChat,QQ,IMME,CardShape,
+MemberName,MemberPassword,Birthday,Gender,IdentityCard,
+EMail,LeftHandCode,RightHandCode,Photo,RepeatCode,
+ICCardId,Deposit,ICCardUID,Note)
+values('15618920033','','','','0',
+'≤‚ ‘','123456789','2018-05-23','1','1',
+'','','','',132,
+'1111000',10,1111991111,'')
+exec AddMemberCard @NewFlwSaleId,@RegisterMember,'100025420106001',21,'lijunjie',3,100
+------------------------------------------------------------------------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------------------------------------------------------------------
 declare @CouponId int
 declare @CouponCount int
 declare @FoodPrice decimal(18,2) = 300
@@ -402,10 +430,29 @@ delete from flw_Food_Sale_Pay
 ----------------------------------------------------------------------------------------------------
 
 ----------------------------------------------------------------------------------------------------
+declare @AuthorFlag int
+declare @FreePrice decimal(18,2) = 0.1
+declare @ErrMsg varchar(200)
+declare @Rs int
+
+declare @CouponList [CouponListType]
+insert @CouponList(CouponCode) values('d79847caf5304d4188df251bd8c8d63d')
+insert @CouponList(CouponCode) values('e867895b7da8482d8e46fe449ce163dc')
+insert @CouponList(CouponCode) values('1ca3360a25ca4ef3874e1e9891745117')
+
+declare @Str varchar(500)
+exec @Rs = CheckCoupon @CouponList,'100025420106001',0,500,@AuthorFlag output,@FreePrice output,@ErrMsg output
+print '@Rs:' + cast(@Rs as varchar)
+print '@FreePrice:' + cast(@FreePrice as varchar)
+print '@ErrMsg:' + @ErrMsg
+
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
 
 declare @Return int
 declare @NewFlwOrderId varchar(32) = ''
-declare @FlwOrderId varchar(32) = '10002542010600120180517000010001'
+declare @FlwOrderId varchar(32) = '10002542010600120180521000012001'
 declare @StoreId varchar(15) = '100025420106001'
 declare @NewFlwSaleId varchar(29) = '100025420106001' + '20180521' + '000010'
 declare @Mobile varchar(11) = '15618920033'
@@ -434,9 +481,11 @@ insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values
 insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(4,2,1,0,30)
 
 declare @CouponList [CouponListType]
-insert @CouponList(CouponCode) values('980be011b25449aab5753ab0fd57c1f5')
-insert @CouponList(CouponCode) values('cd6bb819e5f9453c87013d64689945a7')
-insert @CouponList(CouponCode) values('76d1f7c43571429b89ad5f516ca762fa')
+insert @CouponList(CouponCode) values('d79847caf5304d4188df251bd8c8d63d')
+insert @CouponList(CouponCode) values('e867895b7da8482d8e46fe449ce163dc')
+insert @CouponList(CouponCode) values('1ca3360a25ca4ef3874e1e9891745117')
+
+select * from @CouponList
 
 exec @Return = UpdateOrder @FoodSaleDetailList,@CouponList,@StoreId,@FlwOrderId,
 @NewFlwSaleId,@Mobile,@ICCardId,@DisticntRuleID,
@@ -444,9 +493,8 @@ exec @Return = UpdateOrder @FoodSaleDetailList,@CouponList,@StoreId,@FlwOrderId,
 @WorkStation,@Note,@OrderSource,@AuthorID,
 @SaleCoinType,@NewFlwOrderId output,@ErrMsg output
 
-print '@Return:' + cast(@Return as varchar)
-print '@NewFlwOrderId:' + cast(@NewFlwOrderId as varchar)
-print '@ErrMsg:' + @ErrMsg
+print @Return
+print @ErrMsg
 
 ----------------------------------------------------------------------------------------------------
 
@@ -528,23 +576,18 @@ print @errMsg
 exec GetMemberLevel '100025420106001'
 
 -------------------------------------------------------------------------------------------------------
-declare @AuthorFlag int
-declare @FreePrice decimal(18,2) = 0.1
-declare @ErrMsg varchar(200)
+declare @CouponId int
+declare @CouponCount int
 declare @Rs int
+declare @ErrMsg varchar(8000)
 declare @CouponListType [CouponListType]
---≤Â»Î”≈ª›»Ø
---insert @CouponListType(CouponCode) values('5ca8ac12733a4b7791168cc10bd89624')
---insert @CouponListType(CouponCode) values('4fb06d7d70b1409fa9bc56224145b65d')
---≤Â»Î’€ø€»Ø
-insert @CouponListType(CouponCode) values('980be011b25449aab5753ab0fd57c1f5')
-insert @CouponListType(CouponCode) values('cd6bb819e5f9453c87013d64689945a7')
-insert @CouponListType(CouponCode) values('76d1f7c43571429b89ad5f516ca762fa')
-
-declare @Str varchar(500)
-exec @Rs = CheckCoupon @CouponListType,'100025420106001',100,@AuthorFlag output,@FreePrice output,@ErrMsg output
-print '@Rs:' + cast(@Rs as varchar)
-print '@FreePrice:' + cast(@FreePrice as varchar)
+declare @CouponList [CouponListType]
+insert @CouponList(CouponCode) values('d79847caf5304d4188df251bd8c8d63d')
+insert @CouponList(CouponCode) values('e867895b7da8482d8e46fe449ce163dc')
+insert @CouponList(CouponCode) values('1ca3360a25ca4ef3874e1e9891745117')
+exec @Rs = CheckCouponInvalid '100025420106001',0,300,@CouponList,@CouponId output,@CouponCount output,@ErrMsg output
+print '@Rs' + cast(@Rs as varchar)
+print '@CouponCount:' + cast(@CouponCount as varchar)
 print '@ErrMsg:' + @ErrMsg
 
 -------------------------------------------------------------------------------------------------------

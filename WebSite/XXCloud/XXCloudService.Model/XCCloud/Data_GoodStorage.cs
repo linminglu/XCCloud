@@ -27,6 +27,7 @@ namespace XCCloudService.Model.XCCloud
         public string Supplier { get; set; }
         public Nullable<int> UserID { get; set; }
         public Nullable<System.DateTime> RealTime { get; set; }
+        public Nullable<System.DateTime> CheckDate { get; set; }
         public string Note { get; set; }
     }
 }

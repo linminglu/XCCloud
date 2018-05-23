@@ -295,10 +295,20 @@ namespace XCCloudService.Base
             if (attribute != null)
             {                
                 AuthorizeAttribute authorizeAttr = (AuthorizeAttribute)attribute;
-                authorizeAttribute.Roles = (authorizeAttribute.Roles + "," + authorizeAttr.Roles).Trim(',');
-                authorizeAttribute.Users = (authorizeAttribute.Users + "," + authorizeAttr.Users).Trim(',');
-                authorizeAttribute.Merches = (authorizeAttribute.Merches + "," + authorizeAttr.Merches).Trim(',');
-                authorizeAttribute.Grants = (authorizeAttribute.Grants + "," + authorizeAttr.Grants).Trim(','); 
+                if (authorizeAttr.Inherit)
+                {
+                    authorizeAttribute.Roles = (authorizeAttribute.Roles + "," + authorizeAttr.Roles).Trim(',');
+                    authorizeAttribute.Users = (authorizeAttribute.Users + "," + authorizeAttr.Users).Trim(',');
+                    authorizeAttribute.Merches = (authorizeAttribute.Merches + "," + authorizeAttr.Merches).Trim(',');
+                    authorizeAttribute.Grants = (authorizeAttribute.Grants + "," + authorizeAttr.Grants).Trim(','); 
+                }
+                else
+                {
+                    authorizeAttribute.Roles = authorizeAttr.Roles;
+                    authorizeAttribute.Users = authorizeAttr.Users;
+                    authorizeAttribute.Merches = authorizeAttr.Merches;
+                    authorizeAttribute.Grants = authorizeAttr.Grants; 
+                }                
             }
 
             //匿名授权验证

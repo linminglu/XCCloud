@@ -628,6 +628,7 @@
 	let xc=xcActionSystem.prototype;
         var token=getStorage('token'),logType=getStorage('logType'),bankTypes='',selttleTypes='',storeStatusModify='',settleTypeModify='';
         let StoreTag=0;
+        let arrList=[];
         layui.use('form', function() {
             var form = layui.form;
 
@@ -900,7 +901,7 @@
 
             $('#shBtn').on('click',function () {
                 let arr=[]; let arrList=[];
-                arr.splice(0,arr.length);arrList.splice(0,arrList.length);
+                // arr.splice(0,arr.length);arrList.splice(0,arrList.length);
                 $('#searchListUp').html("");
                 $('#searchbox').html("");
                 var url='/Query?action=init',
@@ -966,7 +967,7 @@
                         $('#searchListUp').on('click','a i',function (e) {
                             e.stopPropagation();
                             var text=$(this).parent().children('span').text();
-                            $('#searchListDown').append(' <input type="checkbox" name="like" value="'+text+'" title="'+text+'" lay-filter="aaaaa">');
+                            $('#searchListDown').append(' <input type="checkbox" lay-skin="primary" value="'+text+'" title="'+text+'" lay-filter="aaaaa">');
                             arr.push({'field':$(this).parent().attr('name'),'id':$(this).attr('data-id'),'iscloune':1,
                                 'issearch':1,'title':text,'type':$(this).attr('name'),'width':$(this).parent().children('span').attr('name')});
                             form.render();

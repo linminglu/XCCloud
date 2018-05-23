@@ -14,6 +14,7 @@ namespace XCCloudService.Base
             this.Users = string.Empty;
             this.Merches = string.Empty;
             this.Grants = string.Empty;
+            this.Inherit = true;
         }
 
         /// <summary>
@@ -35,6 +36,11 @@ namespace XCCloudService.Base
         /// 操作权限
         /// </summary>
         public string Grants { set; get; }
+
+        /// <summary>
+        /// 是否继承
+        /// </summary>
+        public bool Inherit { set; get; }
 
     }
 

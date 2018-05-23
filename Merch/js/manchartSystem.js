@@ -1321,11 +1321,11 @@ function renderDiv(arr) {
 }
 function addCheckbox(id,arr) {
     layui.use(['form','jquery'],function () {
-        var form=layui.form;var $=layui.jquery;
+        var form=layui.form;
         $('#'+id).html("");
         for(var i=0;i<arr.length;i++){
             if(arr[i].issearch==1){
-                $('#'+id).append(' <input type="checkbox" name="like" value="'+arr[i].title+'" title="'+arr[i].title+'" lay-filter="aaaaa">');
+                $('#'+id).append(' <input type="checkbox" lay-skin="primary" value="'+arr[i].title+'" title="'+arr[i].title+'" lay-filter="aaaaa">');
             }
         }
         form.render();

@@ -1004,9 +1004,13 @@ namespace XCCloudService.Common.Enum
     /// </summary>
     public enum SourceType
     {
+        [Description("入库单")]
         GoodStorage = 0,    //入库单
+        [Description("调拨单")]
         GoodRequest = 1,    //调拨单
+        [Description("安装记录")]
         GoodReload = 2,     //安装记录
+        [Description("出库单")]
         GoodOut = 3,        //出库单
     }
 
@@ -1015,26 +1019,34 @@ namespace XCCloudService.Common.Enum
     /// </summary>
     public enum GoodOutOrderType
     {
+        [Description("废品出库")]
         Discard = 0,        //废品出库
+        [Description("转仓出库")]
         Transfer = 1,       //转仓出库
+        [Description("入库退货")]
         Exit = 2,           //入库退货
     }
 
     /// <summary>
-    /// 出库状态
+    /// 出入库状态
     /// </summary>
-    public enum GoodOutOrderState
+    public enum GoodOutInState
     {
+        [Description("未审核")]
         Pending = 0,        //未审核
+        [Description("已完成")]
         Done = 1,           //已完成
+        [Description("已撤销")]
         Cancel = 2,         //已撤销
     }
 
     //出入库标志
     public enum StockFlag
     {
-        In = 0,//入库
-        Out = 1//出库
+        [Description("入库")]
+        In = 0,             //入库
+        [Description("出库")]
+        Out = 1             //出库
     }
 
 

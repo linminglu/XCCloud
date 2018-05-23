@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>团体票设置</title>
+    <title>月票日票设置</title>
     <link rel="stylesheet" href="layui/css/layui.css">
 </head>
 <body>
@@ -11,7 +11,58 @@
         <button type="button" class="layui-btn layui-btn-normal" i18n-content="查询模板">查询模板</button>
         <button type="button" class="layui-btn layui-btn-normal add" i18n-content="新增">新增</button>
     </blockquote>
-    <table class="layui-hide" id="groupTickets" lay-filter="groupTickets"></table>
+    <table class="layui-hide" id="timesTickets" lay-filter="timesTickets"></table>
+</div>
+<!--//弹窗层   -->
+<div class="model goodIsAll" style="padding: 15px;display: none" id="openModel"  >
+    <form class="layui-form layui-form-pane" lay-filter="formtest">
+        <div class="layui-form-item">
+            <label class="layui-form-label">游乐项目</label>
+            <div class="layui-input-block">
+                <input type="text" class="layui-input" id="projectName" name="projectName">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">项目类型</label>
+                <div class="layui-input-inline">
+                    <select name="projectType" id="projectType" lay-filter="projectType"></select>
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">区域</label>
+                <div class="layui-input-inline">
+                    <select name="Area" id="Area" lay-filter="Area"></select>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">扣费类型</label>
+                <div class="layui-input-inline" style="height: 36px;border: 1px solid rgb(230,230,230)">
+                    <select name="chargeType" id="chargeType" lay-filter="chargeType">
+                        <option>-请选择-</option>
+                        <option value="0">按次收费</option>
+                        <option value="1">计时收费</option>
+                    </select>
+                </div>
+                <div class="layui-input-inline">
+                    <button class="layui-btn layui-hide" type="button" id="setRuleBtn">请设置计时规则</button>
+                </div>
+                <div class="layui-form-mid" style="color: red">友情提醒：网络支付功能请到集团后台中的《套餐设定》进行添加套餐。</div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">备注</label>
+            <div class="layui-input-block">
+                <input type="text" class="layui-input" id="Note" name="Note">
+            </div>
+        </div>
+        <div style="text-align: center;margin-bottom: 15px">
+            <button type="button" class="tosecond layui-btn-normal layui-btn" id="save">确定</button>
+        </div>
+
+    </form>
 </div>
 </body>
 <script src="js/jquery-1.8.3-min.js"></script>
@@ -21,9 +72,9 @@
     var xc=xcActionSystem.prototype;
     var token=xc.getStorage('token');
     var parm = {
-        'obj': {'ticketType':2,'businessType':0,'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'},
+        'obj': {'ticketType':1,'businessType':0,'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'},
         'url': '/XCCloud/ProjectTicket?action=QueryProjectTicket',
-        'elem': '#groupTickets',
+        'elem': '#timesTickets',
         'cols': [{field: 'ID', title: '项目ID', align: 'center'}
             , {field: 'TicketName', title: '门票名称', align: 'center'}
             , {field: 'Price', title: '售价', align: 'center'}
@@ -49,10 +100,10 @@
                 area:['1045px','650px'],
                 content:'ticketsIframe.html'
             });
-            xc.setStorage('ticketSet',JSON.stringify({'way':'add','name':'group','id':''}))
+            xc.setStorage('ticketSet',JSON.stringify({'way':'add','name':'month','id':''}))
 
         });
-        table.on('tool(groupTickets)',function (obj) {
+        table.on('tool(timesTickets)',function (obj) {
             let data=obj.data;
             let layEvent=obj.event;
             if(layEvent==='del'){
@@ -84,7 +135,7 @@
                     area:['1045px','650px'],
                     content:'ticketsIframe.html'
                 });
-                xc.setStorage('ticketSet',JSON.stringify({'way':'modify','name':'group','id':data.ID}))
+                xc.setStorage('ticketSet',JSON.stringify({'way':'modify','name':'month','id':data.ID}))
             }
         })
     })

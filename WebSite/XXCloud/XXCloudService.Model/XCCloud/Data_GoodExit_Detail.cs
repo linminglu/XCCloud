@@ -15,6 +15,7 @@ namespace XCCloudService.Model.XCCloud
     public partial class Data_GoodExit_Detail
     {
         public int ID { get; set; }
+        public string MerchID { get; set; }
         public Nullable<int> ExitOrderIndex { get; set; }
         public Nullable<int> GoodID { get; set; }
         public Nullable<int> ExitCount { get; set; }

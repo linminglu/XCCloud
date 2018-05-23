@@ -27,7 +27,11 @@
                         <div class="layui-inline">
                             <label class="layui-form-label">业务类别</label>
                             <div class="layui-input-inline">
-                                <input type="text" class="layui-input" id="BusinessType" name="BusinessType">
+                                <select name="BusinessType" id="BusinessType" lay-filter="BusinessType">
+                                    <option value="0">门票</option>
+                                    <option value="1">包段优惠</option>
+                                </select>
+                                <!--<input type="text" class="layui-input" id="BusinessType" name="BusinessType">-->
                             </div>
                         </div>
                         <div class="layui-inline">
@@ -66,6 +70,12 @@
                                     <option value="0">一次性分摊</option>
                                     <option value="1">按次分摊</option>
                                 </select>
+                            </div>
+                        </div>
+                        <div class="layui-inline layui-hide" id="groupStart">
+                            <label class="layui-form-label">起购人数</label>
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input" id="GroupStartupCount" name="GroupStartupCount">
                             </div>
                         </div>
                     </div>
@@ -161,7 +171,7 @@
                         <div class="layui-inline">
                             <label class="layui-form-label">时段类型</label>
                             <div class="layui-input-inline">
-                                <select id="poriedType" lay-filter="timeType">
+                                <select id="poriedType" lay-filter="timeType" name="poriedType">
                                     <option value="0" selected>自定义</option>
                                     <option value="1" >工作日</option>
                                     <option value="2" >周末</option>
@@ -278,16 +288,31 @@
                     </div>
                 </div>
             </div>
+            <div class="layui-card layui-hide" id="useReason">
+                <div class="layui-card-header">使用限制</div>
+                <div class="layui-card-body">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">限制条件</label>
+                        <div class="layui-input-block">
+                            <select name="RestrictPeriodType" id="RestrictPeriodType" lay-filter="RestrictPeriodType">
+                                <option>-请选择-</option>
+                                <option value="0">不限次数</option>
+                                <option value="1">限定游玩次数</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="layui-card">
                 <div class="layui-card-header">绑定项目<button type="button" class="layui-btn" id="addPro">添加项目</button></div>
                 <div class="layui-card-body">
                     <table class="layui-hide" id="proTable" lay-filter="proTable"></table>
                 </div>
+
             </div>
             <div style="text-align: center;margin-bottom: 15px">
                 <button type="button" class="tosecond layui-btn-normal layui-btn" id="save">确定</button>
             </div>
-
         </form>
     </div>
 </div>
@@ -296,7 +321,23 @@
         <div class="layui-form-item">
             <label for="" class="layui-form-label">游乐项目</label>
             <div class="layui-input-block" >
-                <select name="proList" id="proList" lay-filter="proList"></select>
+                <select name="proList" id="proList" lay-filter="proList">
+
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <div class="layui-input-inline">
+                    <input type="checkbox" title="次数共享" lay-filter="isShare" id="isShare" lay-skin="primary">
+                </div>
+            </div>
+            <div class="layui-inline">
+
+                <div class="layui-input-inline">
+                    <input type="text" class="layui-input" id="shareTimes">
+                </div>
+                <div class="layui-form-mid">次</div>
             </div>
         </div>
     </form>
@@ -313,15 +354,22 @@
     let token=xc.getStorage('token');
     let  ticketSet=JSON.parse(xc.getStorage('ticketSet'));
     if(ticketSet.name=='times'){
-        $('input[name="BusinessType"]').val('门票');
+        $('select[name="BusinessType"]').val('门票');
+    }else if(ticketSet.name=='month'){
+        $('#useReason').removeClass('layui-hide');
+        $('select[name="BusinessType"]').val('门票');
+    }else if(ticketSet.name=='group'){
+        $('#groupStart').removeClass('layui-hide');
+        $('select[name="BusinessType"]').val('门票');
     }
 
-    let   proListArr=[];let proList='';
+    let   proListArr=[];let proList='';let ProjcetStr='';let isShare=0;
 
     let DivideType=''; let ReadFace=0;let ActiveBar=0;let AllowCreatePoint=0;let SaleAuthor=0;
     let EffactType=0; let EffactPeriodType=0; let VaildPeriodType=0;let WeekType=0;let week=[];
     let BalanceIndex='';
     let AllowExitTicket=0;let ExitPeriodType=0;let ExitTicketType=0;//按金额
+    let RestrictPeriodType='';
     layui.use(['table','form','layer','laydate'],function () {
         let table=layui.table;let form=layui.form;let layer=layui.layer;let laydate=layui.laydate;
 
@@ -363,7 +411,7 @@
         form.on('radio(ExitTicketType)', function(data){
             ExitTicketType=data.value
         });
-
+        form.on('select(RestrictPeriodType)',function (data){RestrictPeriodType=data.value;});//限制类型
 
         //监听有效期间选择
         form.on('select(usePried)',function (data) {
@@ -449,8 +497,12 @@
         });
         //绑定项目
         bindPro(table,[],'proTable');
-        $('#addPro').on('click',function () {
-            xc.getGameType (token,layer,form,'游戏机类型','proList');
+        $('#addPro').on('click',function (){
+            xc.getProjectInfoDic(token,layer,form,'proList');
+             proList=''; ProjcetTypeStr=''; isShare=0;
+             $('#isShare').attr('checked',false);
+             form.render()
+            $('#shareTimes').val('');
             layer.open({
                 type:1,
                 area:'600px',
@@ -459,15 +511,23 @@
         });
         form.on('select(proList)',(data)=>{
             proList=data.value;
-
+            ProjcetTypeStr=data.elem[data.elem.selectedIndex].title;
+        });
+        form.on('checkbox(isShare)',(data)=>{
+            if(data.elem.checked==true){
+                isShare=1;
+            }else {
+                isShare=0;
+            }
         });
         $('#savePro').on('click',function () {
-            if(proList!=''){
+            if(proList!=''&&$('#shareTimes').val()!=''){
                 if(ticketSet.way=='add'){
                     proListArr.push({'ProjectTicketID':''
-                        ,'ProjectID':proList
-                        ,'UseCount':''
-                        ,'AllowShareCount':''
+                        ,'ProjcetID':proList
+                        ,'ProjcetTypeStr':ProjcetTypeStr
+                        ,'UseCount':$('#shareTimes').val()
+                        ,'AllowShareCount':isShare
                         ,'WeightValue':''});
                     bindPro(table,proListArr,'proTable');
                     layer.closeAll()
@@ -475,40 +535,154 @@
                     if(proListArr.length>0){
                         let flag=false;
                         for(let i in proListArr){
-                            if(proListArr.ProjectID==proList){
+                            if(proListArr[i].ProjcetID==proList){
                                 flag=true;
                             }
                         }
                         if(flag){
                             layer.msg('该项目已绑定，请选择其他项目')
                         }else {
-                            proListArr.push({'ProjectTicketID':''
-                                ,'ProjectID':proList
-                                ,'UseCount':''
-                                ,'AllowShareCount':''
+                            proListArr.push({'ProjectTicketID':ticketSet.id
+                                ,'ProjcetID':proList
+                                ,'ProjcetTypeStr':ProjcetTypeStr
+                                ,'UseCount':$('#shareTimes').val()
+                                ,'AllowShareCount':isShare
                                 ,'WeightValue':''});
                             bindPro(table,proListArr,'proTable');
                         }
                     }else {
-                        proListArr.push({'ProjectTicketID':''
-                            ,'ProjectID':proList
-                            ,'UseCount':''
-                            ,'AllowShareCount':''
+                        proListArr.push({'ProjectTicketID':ticketSet.id
+                            ,'ProjcetID':proList
+                            ,'ProjcetTypeStr':ProjcetTypeStr
+                            ,'UseCount':$('#shareTimes').val()
+                            ,'AllowShareCount':isShare
                             ,'WeightValue':''});
                         bindPro(table,proListArr,'proTable');
+                        layer.closeAll()
                     }
-                    layer.closeAll()
+
                 }
             }
 
-        })
+        });
         $('#save').on('click',function () {
             saveTicketSet(ticketSet,layer);
-        })
+        });
+
+        //如果是修改
+        if(ticketSet.way=='modify'){
+
+                let _obj={'id':ticketSet.id,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                let parseJson = JSON.stringify(_obj);
+                $.ajax({
+                    type:'post',
+                    url:'/XCCloud/ProjectTicket?action=GetProjectTicket',
+                    contentType: "application/json; charset=utf-8",
+                    data:{parasJson: parseJson},
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        console.log(data);
+                        if (data.result_code == 1) {
+                            let arr=data.result_data;
+                            form.val('formtest',{
+                                'TicketName':arr.TicketName,
+                                'BusinessType':arr.BusinessType,
+                                'AllowExitTimes':arr.AllowExitTimes,
+                                'WriteOffDays':arr.WriteOffDays,
+                                'Price':arr.Price,
+                                'Tax':arr.Tax,
+                                'DivideType':arr.DivideType,
+                                'ReadFace':arr.ReadFace==1?true:false,
+                                'ActiveBar':arr.ActiveBar==1?true:false,
+                                'AllowCreatePoint':arr.AllowCreatePoint==1?true:false,
+                                'SaleAuthor':arr.SaleAuthor==1?true:false,
+                                'EffactType':arr.EffactType,
+                                'EffactPeriodValue':arr.EffactPeriodValue,
+                                'EffactPeriodType':arr.EffactPeriodType,
+                                'VaildPeriodValue':arr.VaildPeriodValue,
+                                'VaildPeriodType':arr.VaildPeriodType,
+                                'VaildStartDate':arr.VaildStartDate.substring(0, 10),
+                                'VaildEndDate':arr.VaildEndDate.substring(0, 10),
+                                'poriedType':arr.WeekType,
+
+                                'NoStartDate':arr.NoStartDate.substring(0, 10),
+                                'NoEndDate':arr.NoEndDate.substring(0, 10),
+                                'AccompanyCash':arr.AccompanyCash,
+                                'BalanceIndex':arr.BalanceIndex,
+                                'BalanceValue':arr.BalanceValue,
+                                'AllowExitTicket':arr.AllowExitTicket==1?true:false,
+                                'ExitPeriodValue':arr.ExitPeriodValue,
+                                'ExitPeriodType':arr.ExitPeriodType,
+                                'ExitTicketVal1':arr.ExitTicketType==0?arr.ExitTicketVal:'',
+                                'ExitTicketVal2':arr.ExitTicketType==1?arr.ExitTicketVal:'',
+                            });
+
+                            $('#StartTime').val(generatelD(arr.StartTime.Hours) +':'+generatelD(arr.StartTime.Minutes) +':'+generatelD(arr.StartTime.Seconds));
+                            $('#EndTime').val(generatelD(arr.EndTime.Hours) +':'+generatelD(arr.EndTime.Minutes) +':'+generatelD(arr.EndTime.Seconds));
+                            if(arr.EffactType==0){
+                                $('.time1').removeClass('layui-hide');
+                                $('.time2').addClass('layui-hide')
+                            }else if(arr.EffactType==1){
+                                $('.time2').removeClass('layui-hide');
+                                $('.time1').addClass('layui-hide')
+                            }
+                            if(arr.Week!=''){
+                                   let arrWeek= arr.Week.split('|');
+                                   for(let i in arrWeek){
+                                       $('#weekBox').find('input[value="'+arrWeek[i]+'"]').attr('checked',true);
+                                   }
+                            }
+
+                            bindPro(table,arr.ProjectTicketBinds,'proTable');
+                            proListArr=arr.ProjectTicketBinds;
+
+                             DivideType=arr.DivideType;  ReadFace=arr.DivideType;
+                             ActiveBar=arr.ActiveBar; AllowCreatePoint=arr.AllowCreatePoint; SaleAuthor=arr.SaleAuthor;
+                             EffactType=arr.EffactType;  EffactPeriodType=arr.EffactPeriodType;
+                             VaildPeriodType=arr.VaildPeriodType;
+                             WeekType=arr.WeekType; week=arr.Week!=''?arr.Week.split('|'):[];
+                             BalanceIndex=arr.BalanceIndex;
+                             AllowExitTicket=arr.AllowExitTicket; ExitPeriodType=arr.ExitPeriodType; ExitTicketType=arr.ExitTicketType;//按金额
+
+                            if(ticketSet.name=='times'){}else if(ticketSet.name=='month'){
+                                $('#RestrictPeriodType').find('option[value="'+arr.RestrictPeriodType+'"]').attr('selected',true);
+                                RestrictPeriodType=arr.RestrictPeriodType;
+                            }
+                            form.render();
+                        } else {
+                            layer.msg(data.result_msg||data.return_msg);
+                        }
+                    }
+                })
+
+        }
+        table.on('tool(proTable)',function (obj) {
+            let data=obj.data;
+            let layevent=obj.event;
+            if(layevent==='del'){
+                for(let i in proListArr){
+                    if(proListArr[i].ProjectID==data.ProjectID){
+                        proListArr.splice(i,1)
+                        obj.del()
+                    }
+                }
+            }
+        });
+        table.on('edit(proTable)', function(obj){ //注：edit是固定事件名，test是table原始容器的属性 lay-filter="对应的值"
+            let val=obj.value;
+
+            for(let i in proListArr){
+                if(proListArr[i].ProjectID==obj.data.ProjectID){
+                    proListArr[i][obj.field]=obj.value
+                }
+            }
+           console.log(proListArr)
+        });
     });
    let saveTicketSet= function (ticketSet,layer) {
+       let _obj;
         if(ticketSet.name=='times'){
-            let _obj={
+             _obj={
                 'id':ticketSet.id,
                 'MerchID':JSON.parse(xc.getStorage('logMsg')).merchId,
                 'StoreID':JSON.parse(xc.getStorage('logMsg')).storeId,
@@ -548,26 +722,116 @@
                 'ExitPeriodType':ExitPeriodType,
                 'ExitTicketType':ExitTicketType,
                 'ExitTicketVal':ExitTicketType==0?$('input[name="ExitTicketVal1"]').val():$('input[name="ExitTicketVal2"]').val(),
+                'ProjectTicketBinds':proListArr,
                 'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
-            let parseJson = JSON.stringify(_obj);
-            $.ajax({
-                type:'post',
-                url:'/XCCloud/ProjectTicket?action=SaveProjectTicket',
-                contentType: "application/json; charset=utf-8",
-                data:{parasJson: parseJson},
-                success: function (data) {
-                    data = JSON.parse(data);
-                    if (data.result_code == 1) {
-                        layer.msg('次票设置成功',{time:1500},function () {
-                            layer.closeAll();
-                            parent.location.reload()
-                        })
-                    } else {
-                        layer.msg(data.result_msg||data.return_msg);
-                    }
-                }
-            })
+        }else if(ticketSet.name=='month'){
+            _obj={
+                'id':ticketSet.id,
+                'MerchID':JSON.parse(xc.getStorage('logMsg')).merchId,
+                'StoreID':JSON.parse(xc.getStorage('logMsg')).storeId,
+                'TicketName':$('input[name="TicketName"]').val(),
+                'TicketType':1,
+                'BusinessType':0,
+                'AllowExitTimes':$('input[name="AllowExitTimes"]').val(),
+                'WriteOffDays':$('input[name="WriteOffDays"]').val(),
+                'Price':$('input[name="Price"]').val(),
+                'Tax':$('input[name="Tax"]').val(),
+                'DivideType':DivideType,
+                'ReadFace':ReadFace,
+                'ActiveBar':ActiveBar,
+                'AllowCreatePoint':AllowCreatePoint,
+                'SaleAuthor':SaleAuthor,
+
+                'EffactType':EffactType,
+                'EffactPeriodValue':EffactType==0?$('input[name="EffactPeriodValue"]').val():'',
+                'EffactPeriodType':EffactType==0?EffactPeriodType:'',
+                'VaildPeriodValue':EffactType==0?$('input[name="VaildPeriodValue"]').val():'',
+                'VaildPeriodType':EffactType==0?VaildPeriodType:'',
+                'VaildStartDate':EffactType==1?$('input[name="VaildStartDate"]').val():'',
+                'VaildEndDate':EffactType==1?$('input[name="VaildEndDate"]').val():'',
+                'WeekType':WeekType,
+                'Week':week.length>0?week.join('|'):'',
+                'StartTime':$('input[name="StartTime"]').val(),
+                'EndTime':$('input[name="EndTime"]').val(),
+                'NoStartDate':$('input[name="NoStartDate"]').val(),
+                'NoEndDate':$('input[name="NoEndDate"]').val(),
+
+                'AccompanyCash':$('input[name="AccompanyCash"]').val(),
+                'BalanceIndex':BalanceIndex,
+                'BalanceValue':$('input[name="BalanceValue"]').val(),
+
+                'AllowExitTicket':AllowExitTicket,
+                'ExitPeriodValue':$('input[name="ExitPeriodValue"]').val(),
+                'ExitPeriodType':ExitPeriodType,
+                'ExitTicketType':ExitTicketType,
+                'ExitTicketVal':ExitTicketType==0?$('input[name="ExitTicketVal1"]').val():$('input[name="ExitTicketVal2"]').val(),
+                'ProjectTicketBinds':proListArr,
+                'RestrictPeriodType':RestrictPeriodType,
+                'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+        }else if(ticketSet.name=='group'){
+            _obj={
+                'id':ticketSet.id,
+                'MerchID':JSON.parse(xc.getStorage('logMsg')).merchId,
+                'StoreID':JSON.parse(xc.getStorage('logMsg')).storeId,
+                'TicketName':$('input[name="TicketName"]').val(),
+                'TicketType':2,
+                'BusinessType':0,
+                'AllowExitTimes':$('input[name="AllowExitTimes"]').val(),
+                'WriteOffDays':$('input[name="WriteOffDays"]').val(),
+                'Price':$('input[name="Price"]').val(),
+                'Tax':$('input[name="Tax"]').val(),
+                'DivideType':DivideType,
+                'ReadFace':ReadFace,
+                'ActiveBar':ActiveBar,
+                'AllowCreatePoint':AllowCreatePoint,
+                'SaleAuthor':SaleAuthor,
+
+                'EffactType':EffactType,
+                'EffactPeriodValue':EffactType==0?$('input[name="EffactPeriodValue"]').val():'',
+                'EffactPeriodType':EffactType==0?EffactPeriodType:'',
+                'VaildPeriodValue':EffactType==0?$('input[name="VaildPeriodValue"]').val():'',
+                'VaildPeriodType':EffactType==0?VaildPeriodType:'',
+                'VaildStartDate':EffactType==1?$('input[name="VaildStartDate"]').val():'',
+                'VaildEndDate':EffactType==1?$('input[name="VaildEndDate"]').val():'',
+                'WeekType':WeekType,
+                'Week':week.length>0?week.join('|'):'',
+                'StartTime':$('input[name="StartTime"]').val(),
+                'EndTime':$('input[name="EndTime"]').val(),
+                'NoStartDate':$('input[name="NoStartDate"]').val(),
+                'NoEndDate':$('input[name="NoEndDate"]').val(),
+
+                'AccompanyCash':$('input[name="AccompanyCash"]').val(),
+                'BalanceIndex':BalanceIndex,
+                'BalanceValue':$('input[name="BalanceValue"]').val(),
+
+                'AllowExitTicket':AllowExitTicket,
+                'ExitPeriodValue':$('input[name="ExitPeriodValue"]').val(),
+                'ExitPeriodType':ExitPeriodType,
+                'ExitTicketType':ExitTicketType,
+                'ExitTicketVal':ExitTicketType==0?$('input[name="ExitTicketVal1"]').val():$('input[name="ExitTicketVal2"]').val(),
+                'ProjectTicketBinds':proListArr,
+
+                'GroupStartupCount':$('input[name="GroupStartupCount"]').val(),
+                'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
         }
+       let parseJson = JSON.stringify(_obj);
+       $.ajax({
+           type:'post',
+           url:'/XCCloud/ProjectTicket?action=SaveProjectTicket',
+           contentType: "application/json; charset=utf-8",
+           data:{parasJson: parseJson},
+           success: function (data) {
+               data = JSON.parse(data);
+               if (data.result_code == 1) {
+                   layer.msg('设置成功',{time:1500},function () {
+                       layer.closeAll();
+                       parent.location.reload()
+                   })
+               } else {
+                   layer.msg(data.result_msg||data.return_msg);
+               }
+           }
+       })
     };
    function bindPro(table,datas,id) {
        table.render({
@@ -577,15 +841,19 @@
            , data: datas
            , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
            , cols: [[
-               {field:'ProjectID', title:'项目名称', align: 'center',width:240}
-               // ,{field:'FoodTypeStr',title: '类别', align: 'center',width:205} //width 支持：数字、百分比和不填写。
-               ,{field:'UseCount', title: '游玩次数', align: 'center',width:240,edit:true}
-               // ,{field:'AllowShareCount', title: '游玩次数', align: 'center',width:100,edit:true}
-               ,{field:'WeightValue', title: '权重值', align: 'center',width:240,edit:true}
+               {field:'ProjcetID', title:'项目名称', align: 'center',width:140}
+               ,{field:'ProjcetTypeStr',title: '类别', align: 'center',width:160} //width 支持：数字、百分比和不填写。
+               ,{field:'UseCount', title: '游玩次数', align: 'center',width:140}
+               ,{field:'AllowShareCount', title: '次数共享', align: 'center',width:100}
+               ,{field:'WeightValue', title: '权重值', align: 'center',width:220,edit:true}
                ,{fixed: 'right',title:'操作', width:240, align:'center', toolbar: '#barDemo2'}]]
            , page: {page: true, limits: [10, 15, 20, 30, 50, 100]}
            , limit: 10
        });
+   }
+   function generatelD(str) {
+       var pad='00';
+       return pad.substring(0,2-str.length)+str
    }
 </script>
 <script type="text/html"   id="barDemo2">

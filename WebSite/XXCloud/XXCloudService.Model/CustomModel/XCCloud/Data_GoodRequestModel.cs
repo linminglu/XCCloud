@@ -109,6 +109,7 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         public string GoodTypeStr { get; set; }
         public int? RemainCount { get; set; }
         public int? AvailableCount { get; set; }
+        public decimal? InitialAvgValue { get; set; }
     }
 
     public class Data_GoodRequest_ListList

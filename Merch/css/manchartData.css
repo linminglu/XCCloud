@@ -29,7 +29,7 @@ body{min-height: 800px;}
 .footer{position: absolute;left: 200px;bottom: 0;right: 0;height: 60px;opacity: 0.7;}
 
 /*查询模块*/
-#searchModel .layui-form-pane .layui-form-checkbox {width: 300px;}
+#searchModel .layui-form-pane .layui-form-checkbox {width: 160px;}
 #searchMod .layui-form-pane .layui-form-checkbox span{width:240px;}
 #searchMod #searchbox{max-height: 320px;overflow-y: scroll;margin-left: 110px}
 

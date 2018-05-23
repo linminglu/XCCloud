@@ -20,6 +20,8 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> OrderID { get; set; }
         public Nullable<int> GoodID { get; set; }
         public Nullable<int> OutCount { get; set; }
-        public string WorkStation { get; set; }
+        public Nullable<decimal> OutPrice { get; set; }
+        public Nullable<decimal> OutTotal { get; set; }
+        public string Note { get; set; }
     }
 }
