@@ -130,6 +130,7 @@ namespace XCCloudService.DAL.Base
 
             if (exists)
             {
+                //清除缓存里的对象
                 objContext.Detach(foundEntity);
 
                 //第二次从数据库获取
@@ -137,6 +138,7 @@ namespace XCCloudService.DAL.Base
 
                 if (exists)
                 {
+                    //再次清理缓存对象
                     objContext.Detach(foundEntity);
                 }
             }

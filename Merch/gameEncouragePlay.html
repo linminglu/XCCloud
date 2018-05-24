@@ -90,12 +90,12 @@
             </div>
             <div class="layui-form-item goodConvert">
 
-                <div class="layui-inline goodRules" style="margin-right: 0">
-                    <label class="layui-form-label" style="width: 80px;">余额类别</label>
-                    <div class="layui-input-inline" style="width: 60px;">
+                <div class="layui-inline goodRules" >
+                    <label class="layui-form-label">余额类别</label>
+                    <div class="layui-input-inline" >
                         <input type="text" class="layui-input" name="chargeOff">
                     </div>
-                    <div class="layui-input-inline" style="width: 90px;">
+                    <div class="layui-input-inline">
                         <input type="text" class="layui-input" name="maxSaveCount">
                     </div>
                 </div>
@@ -143,6 +143,16 @@
     let Allow_In=0;let Allow_Out=0;
     let GameList=[];let MemberLevelList=[];
     var xtree3;
+
+    $('#addGoods').click(function () {
+        $('.goodConvert').append($('body').find($('.goodRules')).eq(0).clone())
+    });
+    $('#reduceGoods').click(function () {
+        if($('.goodConvert').find($('.goodRules')).length>1){
+            $('.goodConvert').find($('.goodRules')).last().remove();
+        }else {
+        }
+    });
     layui.use(['table','form','layer','laydate'],function () {
         let table=layui.table;let form=layui.form;let layer=layui.layer;let laydate=layui.laydate;
         var  obj={"dictKey":'游戏机类型','enabled':1,'pDicKey':'',"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
@@ -170,8 +180,6 @@
                 }
             }
         });
-
-
         laydate.render({
             elem: '#StartDate',type: 'date',value:new Date()
         });
@@ -282,7 +290,7 @@
             layer.open({
                 title:'新增',
                 type:1,
-                area:['1045px','650px'],
+                area:'1045px',
                 content:$('#openModel')
             });
 
@@ -429,7 +437,7 @@
                             layer.open({
                                 title:'修改设置',
                                 type:1,
-                                area:['1045px','650px'],
+                                area:'1045px',
                                 content:$('#openModel')
                             });
                         } else {

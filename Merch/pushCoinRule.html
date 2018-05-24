@@ -369,7 +369,7 @@
                     data = JSON.parse(data);
                     if (data.result_code == 1) {
                         layer.msg('设置成功',{time:1500},function () {
-                            parent.location.reload()
+                            location.reload()
                         })
                     } else {
                         layer.msg(data.result_msg||data.return_msg);
@@ -460,14 +460,15 @@
                                 }
                             });
                             xc.getMemberTypeAll(token,layer,form,'memBox',arr.MemberLevelList);
-                            if(arr.Week!=''){
+                            if(arr.Week){
                                 let arrWeek= arr.Week.split('|');
                                 for(let i in arrWeek){
                                     $('#weekBox').find('input[value="'+arrWeek[i]+'"]').attr('checked',true);
                                 }
+                                week=arr.Week!=''?arr.Week.split('|'):[];
                             }
                             form.render();
-                            week=arr.Week!=''?arr.Week.split('|'):[];
+
                             WeekType=arr.WeekType; Level=arr.Level;
                             PushBalanceIndex1=arr.PushBalanceIndex1; PushBalanceIndex2=arr.PushBalanceIndex2;
                             Allow_In=arr.Allow_In; Allow_Out=arr.Allow_Out;
