@@ -99,8 +99,8 @@ layuiXtree.prototype.Rendering = function () {
         xtree_icons[i].style.color = _this._color;
         xtree_icons[i].style.cursor = "pointer";
 
+        //打开和关闭子树
         xtree_icons[i].onclick = function () {
-            console.log(this);
             var xtree_chi = this.parentNode.childNodes;
             if (this.getAttribute('data-xtree') == 1) {
                 for (var j = 0; j < xtree_chi.length; j++) {
@@ -127,15 +127,47 @@ layuiXtree.prototype.Rendering = function () {
         xtree_nullicons[i].style.color = _this._color;
     }
 
-    _this._form.on('checkbox(xtreeck)', function (da) {
-        //获取当前点击复选框的容器下面的所有子级容器
-        var xtree_chis = da.elem.parentNode.getElementsByClassName('layui-xtree-item');
-        //遍历它们，选中状态与它们的父级一致（类似全选功能）
-        for (var i = 0; i < xtree_chis.length; i++) {
-            xtree_chis[i].getElementsByClassName('layui-xtree-checkbox')[0].checked = da.elem.checked;
-            if (da.elem.checked) xtree_chis[i].getElementsByClassName('layui-xtree-checkbox')[0].nextSibling.classList.add('layui-form-checked');
-            else xtree_chis[i].getElementsByClassName('layui-xtree-checkbox')[0].nextSibling.classList.remove('layui-form-checked');
+    _this._form.on('checkbox(xtreeck)', function (da,single) {
+        if(single){
+            var xtree_chis = da.elem.parentNode.getElementsByClassName('layui-xtree-item');
+            if(xtree_chis.length){
+            da.othis[0].classList.remove('layui-form-checked');
+            da.elem.checked=false;
+            }
+
+            console.log(xtree_chis);
+            //遍历它们，选中状态与它们的父级一致（类似全选功能）
+            for (var i = 0; i < xtree_chis.length; i++) {
+                xtree_chis[i].getElementsByClassName('layui-xtree-checkbox')[0].checked = da.elem.checked;
+                if (da.elem.checked) xtree_chis[i].getElementsByClassName('layui-xtree-checkbox')[0].nextSibling.classList.add('layui-form-checked');
+                else xtree_chis[i].getElementsByClassName('layui-xtree-checkbox')[0].nextSibling.classList.remove('layui-form-checked');
+            }
+        }else {
+            console.log(da)
+            var  xtree_chis = da.elem.parentNode.getElementsByClassName('layui-xtree-item');
+            if(xtree_chis.length){
+                da.othis[0].classList.remove('layui-form-checked');
+                da.elem.checked=false;
+            }else {
+                var xtree_sib=[];
+
+                    for(var i = 0; i < xtree_items.length;i++){
+                        if (xtree_items[i] !=da.elem.parentNode){
+                            xtree_sib.push(xtree_items[i])
+                        }
+                    }
+                console.log(xtree_sib)
+            }
+            console.log(xtree_chis);
+            //遍历它们，选中状态与它们的父级一致（类似全选功能）
+            for (var i = 0; i < xtree_chis.length; i++) {
+                xtree_chis[i].getElementsByClassName('layui-xtree-checkbox')[0].checked = da.elem.checked;
+                if (da.elem.checked) xtree_chis[i].getElementsByClassName('layui-xtree-checkbox')[0].nextSibling.classList.add('layui-form-checked');
+                else xtree_chis[i].getElementsByClassName('layui-xtree-checkbox')[0].nextSibling.classList.remove('layui-form-checked');
+            }
         }
+        //获取当前点击复选框的容器下面的所有子级容器
+
         _this.ParendCheck(da.elem);
     });
 }

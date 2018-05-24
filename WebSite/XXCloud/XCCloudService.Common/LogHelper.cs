@@ -12,8 +12,8 @@ namespace XCCloudService.Common
     {
         public static void SaveLog(string strMsg)
         {
-            string s = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "\n";
-            SaveLogFile(s + strMsg + "\n");
+            string s = DateTime.Now.ToString("[yyyy-MM-dd HH:mm:ss]");
+            SaveLogFile(s + strMsg);
         }
 
         protected static void SaveLogFile(string strErrMsg)

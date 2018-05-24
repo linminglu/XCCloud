@@ -118,8 +118,7 @@ namespace XCCloudService.DAL.Base
             dbContext = DbContextFactory.CreateByContainerName(containerName);
         }
 
-        //用于监测Context中的Entity是否存在，如果存在，将其Detach，防止出现问题。
-        private object RemoveHoldingEntityInContext(T entity)
+        private object GetEntityInDatabase(T entity)
         {
             var objContext = ((IObjectContextAdapter)dbContext).ObjectContext;
             var objSet = objContext.CreateObjectSet<T>();
@@ -135,16 +134,30 @@ namespace XCCloudService.DAL.Base
                 objContext.Detach(foundEntity);
 
                 //第二次从数据库获取
-                exists = objContext.TryGetObjectByKey(entityKey, out foundEntity);
-
-                if (exists)
-                {
-                    //再次清理缓存对象
-                    objContext.Detach(foundEntity);
-                }
+                exists = objContext.TryGetObjectByKey(entityKey, out foundEntity);                
             }
 
             return foundEntity;
+        }
+
+        //用于监测Context中的Entity是否存在，如果存在，将其Detach，防止出现问题。
+        private bool RemoveHoldingEntityInContext(T entity)
+        {
+            var objContext = ((IObjectContextAdapter)dbContext).ObjectContext;
+            var objSet = objContext.CreateObjectSet<T>();
+            var entityKey = objContext.CreateEntityKey(objSet.EntitySet.Name, entity);
+
+            //第一次从缓存获取
+            Object foundEntity = null;
+            var exists = objContext.TryGetObjectByKey(entityKey, out foundEntity);
+
+            if (exists)
+            {
+                //清除缓存里的对象
+                objContext.Detach(foundEntity);                
+            }
+
+            return exists;
         }
 
         public void AddModel(T t, bool identity = true)
@@ -164,8 +177,8 @@ namespace XCCloudService.DAL.Base
 
         public bool Update(T t, bool identity = true)
         {
-            CheckVerifiction(EntityState.Modified, identity, ref t, RemoveHoldingEntityInContext(t));
-
+            CheckVerifiction(EntityState.Modified, identity, ref t, GetEntityInDatabase(t));
+            RemoveHoldingEntityInContext(t);
             dbContext.Set<T>().Attach(t);
             dbContext.Entry<T>(t).State = EntityState.Modified;
             bool result = dbContext.SaveChanges() > 0;
@@ -174,8 +187,8 @@ namespace XCCloudService.DAL.Base
 
         public void UpdateModel(T t, bool identity = true)
         {
-            CheckVerifiction(EntityState.Modified, identity, ref t, RemoveHoldingEntityInContext(t));
-
+            CheckVerifiction(EntityState.Modified, identity, ref t, GetEntityInDatabase(t));
+            RemoveHoldingEntityInContext(t);
             dbContext.Set<T>().Attach(t);
             dbContext.Entry<T>(t).State = EntityState.Modified;
         }
@@ -184,7 +197,6 @@ namespace XCCloudService.DAL.Base
         public bool Delete(T t)
         {
             RemoveHoldingEntityInContext(t);
-
             dbContext.Set<T>().Attach(t);
             dbContext.Entry<T>(t).State = EntityState.Deleted;
             return dbContext.SaveChanges() > 0;
@@ -193,7 +205,6 @@ namespace XCCloudService.DAL.Base
         public void DeleteModel(T t)
         {
             RemoveHoldingEntityInContext(t);
-
             dbContext.Set<T>().Attach(t);
             dbContext.Entry<T>(t).State = EntityState.Deleted;
         }
