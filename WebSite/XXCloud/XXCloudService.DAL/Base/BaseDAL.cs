@@ -142,7 +142,7 @@ namespace XCCloudService.DAL.Base
                     objContext.Detach(foundEntity);
                 }
             }
-            
+
             return foundEntity;
         }
 

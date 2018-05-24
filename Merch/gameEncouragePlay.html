@@ -77,7 +77,7 @@
                 <div class="layui-inline">
                     <label class="layui-form-label">最大续玩时间间隔</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="ContinueTimes">
+                        <input type="text" name="ContinueTimes" class="layui-input">
                     </div>
                     <div class="layui-form-mid">分钟</div>
                 </div>
@@ -89,15 +89,16 @@
                 </div>
             </div>
             <div class="layui-form-item goodConvert">
-
                 <div class="layui-inline goodRules" >
                     <label class="layui-form-label">余额类别</label>
-                    <div class="layui-input-inline" >
-                        <input type="text" class="layui-input" name="chargeOff">
+                    <div class="layui-input-inline" style="width: 130px">
+                        <input type="text" class="layui-input" name="GameTims">
                     </div>
-                    <div class="layui-input-inline">
-                        <input type="text" class="layui-input" name="maxSaveCount">
+                    <div class="layui-form-mid">局以内,每局减免</div>
+                    <div class="layui-input-inline"  style="width: 130px">
+                        <input type="text" class="layui-input" name="EncouragePrice">
                     </div>
+                    <div class="layui-form-mid">币</div>
                 </div>
                 <div class="layui-inline" style="width: 80px">
                     <div class="layui-btn-group">
@@ -114,7 +115,7 @@
         </div>
 
     </form>
-    <div style="text-align:center;">
+    <div style="text-align:center;" class="layui-col-md12">
         <button type="button" id="save" class="layui-btn">确定</button>
     </div>
 </div>
@@ -138,10 +139,8 @@
     };
     xc.getInitData(parm);
     let id='';let gameArr=[];let checkedArr=[];
-    let week=[];let WeekType=0;let Level='';
-    let PushBalanceIndex1='0';let PushBalanceIndex2='';
-    let Allow_In=0;let Allow_Out=0;
-    let GameList=[];let MemberLevelList=[];
+    let week=[];let WeekType=0;
+    let GameList=[];
     var xtree3;
 
     $('#addGoods').click(function () {
@@ -216,7 +215,6 @@
             }
         });
         xc.AddWeeks('weekBox');
-        // xc. getBalanceTypeDic('',token,layer,form,'BalanceIndex');
         form.on('select(timeType)',(data)=>{
             WeekType=data.value;
             if(WeekType==0){
@@ -240,98 +238,60 @@
                 }
             }
         });
-        form.on('select(PushBalanceIndex1)',(data)=>{
-            PushBalanceIndex1=data.value;
-        });
-        form.on('select(PushBalanceIndex2)',(data)=>{
-            if(PushBalanceIndex1==data.value){
-                layer.msg('该选项已选，请选择其他选项')
-            }else {
-                PushBalanceIndex2=data.value;
-            }
-
-        });
-        form.on('switch(Allow_In)',(data)=>{
-            if(data.elem.checked){
-                Allow_In=1
-            }else {
-                Allow_In=0;
-            }
-        });
-        form.on('switch(Allow_Out)',(data)=>{
-            if(data.elem.checked){
-                Allow_Out=1
-            }else {
-                Allow_Out=0;
-            }
-        });
-        form.on('select(Level)',(data)=>{
-            Level=data.value;
-        });
-        form.on('checkbox(ml)', function(data){
-            if (data.elem.checked==true){
-                MemberLevelList.push({'MemberLevelID':data.value});
-            }else if(data.elem.checked==false){
-                for (var i=0;i<MemberLevelList.length;i++){
-                    if(MemberLevelList[i].MemberLevelID==data.value){
-                        MemberLevelList.splice(i,1);
-                    }
-                }
-            }
-        });
         //新增，存入一个cook
         $('.add').on('click',function (){
-            id=''; week=[]; WeekType=0; Level='';
-            PushBalanceIndex1='0'; PushBalanceIndex2='';
-            Allow_In=0; Allow_Out=0;
-            GameList=[]; MemberLevelList=[];
-
-            xc.getMemberTypeAll(token,layer,form,'memBox');
+            id=''; week=[]; WeekType=0;
+            GameList=[];
             layer.open({
                 title:'新增',
                 type:1,
                 area:'1045px',
                 content:$('#openModel')
             });
-
         });
         $('#save').on('click',function () {
             var oCks = xtree3.GetChecked(); //获取全部选中的末级节点checkbox对象，返回的为Array
             for (var i = 0; i < oCks.length; i++) {
                 GameList.push({'GameID':oCks[i].value})
             }
+            let _EncourageList=[];
+            $('.goodConvert .goodRules').each(function () {
+                if($(this).find('input[name="GameTims"]').val()!=''&&
+                    $(this).find('input[name="EncouragePrice"]').val()!=''
+                ){
+                    _EncourageList.push({
+                        'GameTims': $(this).find('input[name="GameTims"]').val(),
+                        'EncouragePrice': $(this).find('input[name="EncouragePrice"]').val()
+                    });
+                }
+            });
             let obj={'id':id,
                 'MerchID':JSON.parse(xc.getStorage('logMsg')).merchId,
                 'StoreID':JSON.parse(xc.getStorage('logMsg')).storeId,
-                'Allow_In':Allow_In,
-                'Allow_out':Allow_Out,
                 'WeekType':WeekType,
                 'week':week.length>0?week.sort().join('|'):'',
-                'PushBalanceIndex1':PushBalanceIndex1,
-                'PushCoin1':$('input[name="PushCoin1"]').val(),
-                'PushBalanceIndex2':PushBalanceIndex2,
-                'PushCoin2':$('input[name="PushCoin2"]').val(),
-                'Level':Level,
                 'StartTime':$('input[name="StartTime"]').val(),
                 'EndTime':$('input[name="EndTime"]').val(),
                 'StartDate':$('input[name="StartDate"]').val(),
                 'EndDate':$('input[name="EndDate"]').val(),
+                'ContinueTimes':$('input[name="ContinueTimes"]').val(),
+                'Note':$('input[name="Note"]').val(),
                 'GameList':GameList,
-                'MemberLevelList':MemberLevelList,
+                'EncourageList':_EncourageList,
                 'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'
             };
 
             let parseJson = JSON.stringify(obj);
             $.ajax({
                 type:'post',
-                url:'/XCCloud/PushRule?action=SavePushRule',
+                url:'/XCCloud/GameEncourage?action=SaveGameEncourage',
                 contentType: "application/json; charset=utf-8",
                 data:{parasJson: parseJson},
                 success: function (data) {
                     data = JSON.parse(data);
                     if (data.result_code == 1) {
                         layer.msg('设置成功',{time:1500},function () {
-                            parent.location.reload()
+                            location.reload()
                         })
                     } else {
                         layer.msg(data.result_msg||data.return_msg);
@@ -340,7 +300,7 @@
             })
         });
 
-        table.on('tool(pushCoinRule)',function (obj) {
+        table.on('tool(encouragePlay)',function (obj) {
             let data=obj.data;
             let layEvent=obj.event;
             id=data.ID;
@@ -350,7 +310,7 @@
                     let parseJson = JSON.stringify(_obj);
                     $.ajax({
                         type:'post',
-                        url:'/XCCloud/PushRule?action=DelPushRule',
+                        url:'/XCCloud/GameEncourage?action=DelGameEncourage',
                         contentType: "application/json; charset=utf-8",
                         data:{parasJson: parseJson},
                         success: function (data) {
@@ -371,7 +331,7 @@
                 let parseJson = JSON.stringify(_obj);
                 $.ajax({
                     type:'post',
-                    url:'/XCCloud/PushRule?action=GetPushRule',
+                    url:'/XCCloud/GameEncourage?action=GetGameEncourage',
                     contentType: "application/json; charset=utf-8",
                     async:false,
                     data:{parasJson: parseJson},
@@ -383,13 +343,8 @@
                                 'StartDate':arr.StartDate.substring(0, 10),
                                 'EndDate':arr.EndDate.substring(0, 10),
                                 'poriedType':arr.WeekType,
-                                'PushBalanceIndex1':arr.PushBalanceIndex1,
-                                'PushCoin1':arr.PushCoin1,
-                                'PushBalanceIndex2':arr.PushBalanceIndex2,
-                                'PushCoin2':arr.PushCoin2,
-                                'Allow_In':arr.Allow_In==1?true:false,
-                                'Allow_Out':arr.Allow_Out==1?true:false,
-                                'Level':arr.Level
+                                'ContinueTimes':arr.ContinueTimes,
+                                'Note':arr.Note
                             });
                             $('#StartTime').val(generatelD(arr.StartTime.Hours) +':'+generatelD(arr.StartTime.Minutes) +':'+generatelD(arr.StartTime.Seconds));
                             $('#EndTime').val(generatelD(arr.EndTime.Hours) +':'+generatelD(arr.EndTime.Minutes) +':'+generatelD(arr.EndTime.Seconds));
@@ -431,9 +386,6 @@
                             form.render();
                             week=arr.Week!=''?arr.Week.split('|'):[];
                             WeekType=arr.WeekType; Level=arr.Level;
-                            PushBalanceIndex1=arr.PushBalanceIndex1; PushBalanceIndex2=arr.PushBalanceIndex2;
-                            Allow_In=arr.Allow_In; Allow_Out=arr.Allow_Out;
-                            MemberLevelList=arr.MemberLevelList;
                             layer.open({
                                 title:'修改设置',
                                 type:1,
