@@ -36,8 +36,8 @@ namespace XCCloudService.DAL.Base
                 {
                     if (Nullable.GetUnderlyingType(pi.PropertyType) == typeof(Decimal))
                     {
-                        var valueStr = Convert.ToString(value).TrimEnd('0');//去除尾部0
-                        value = Convert.ChangeType(valueStr, typeof(Decimal));
+                        var str = value.ToString().TrimEnd('0');//去除尾部0
+                        value = Convert.ChangeType(str, typeof(Decimal));
                     }
 
                     fields.Add(pi.Name, value.ToString());
