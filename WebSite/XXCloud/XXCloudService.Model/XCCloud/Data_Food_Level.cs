@@ -15,6 +15,7 @@ namespace XCCloudService.Model.XCCloud
     public partial class Data_Food_Level
     {
         public int ID { get; set; }
+        public string MerchID { get; set; }
         public Nullable<int> FoodID { get; set; }
         public Nullable<int> MemberLevelID { get; set; }
         public Nullable<int> TimeType { get; set; }
@@ -31,5 +32,6 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> MemberCount { get; set; }
         public Nullable<int> UpdateLevelID { get; set; }
         public Nullable<int> PriorityLevel { get; set; }
+        public string Verifiction { get; set; }
     }
 }

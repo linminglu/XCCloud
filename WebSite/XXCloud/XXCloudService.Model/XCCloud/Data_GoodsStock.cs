@@ -15,6 +15,8 @@ namespace XCCloudService.Model.XCCloud
     public partial class Data_GoodsStock
     {
         public int ID { get; set; }
+        public string MerchID { get; set; }
+        public string StoreID { get; set; }
         public Nullable<int> DepotID { get; set; }
         public Nullable<int> GoodID { get; set; }
         public Nullable<int> MinValue { get; set; }

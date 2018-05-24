@@ -15,6 +15,7 @@ namespace XCCloudService.Model.XCCloud
     public partial class Data_GameFreeRule
     {
         public int ID { get; set; }
+        public string MerchID { get; set; }
         public Nullable<int> RuleType { get; set; }
         public Nullable<int> MemberLevelID { get; set; }
         public Nullable<System.DateTime> StartTime { get; set; }
@@ -24,5 +25,6 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> ExitCoin { get; set; }
         public Nullable<int> State { get; set; }
         public Nullable<System.DateTime> CreateTime { get; set; }
+        public string Verifiction { get; set; }
     }
 }

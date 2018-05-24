@@ -15,9 +15,11 @@ namespace XCCloudService.Model.XCCloud
     public partial class Data_Jackpot_Matrix
     {
         public int ID { get; set; }
+        public string MerchID { get; set; }
         public Nullable<int> OrderID { get; set; }
         public Nullable<int> ActiveID { get; set; }
         public string GoodID { get; set; }
         public Nullable<int> ActiveFlag { get; set; }
+        public string Verifiction { get; set; }
     }
 }

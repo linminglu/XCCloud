@@ -25,5 +25,6 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> Backtype { get; set; }
         public Nullable<int> TotalDays { get; set; }
         public Nullable<int> AllowContainToday { get; set; }
+        public string Verifiction { get; set; }
     }
 }

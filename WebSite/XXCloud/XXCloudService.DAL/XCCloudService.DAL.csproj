@@ -106,9 +106,6 @@
     <Compile Include="IDAL\IBase_SettlePPOSDAL.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
-    <Compile Include="IDAL\IBase_StorageInfoDAL.cs">
-      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
-    </Compile>
     <Compile Include="IDAL\IBase_StoreDogListDAL.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
@@ -136,6 +133,12 @@
     <Compile Include="IDAL\IBase_UserInfoDAL.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
+    <Compile Include="IDAL\IBase_WechatFunctionDAL.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\IBUF_UserAnalysisDAL.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
     <Compile Include="IDAL\IData_BalanceChargeRuleDAL.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
@@ -149,6 +152,9 @@
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="IDAL\IData_Card_BalanceDAL.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\IData_Card_Balance_FreeDAL.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="IDAL\IData_Card_Balance_StoreListDAL.cs">
@@ -190,19 +196,19 @@
     <Compile Include="IDAL\IData_DigitCoinFoodDAL.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
-    <Compile Include="IDAL\IData_DiscountMember_RecordDAL.cs">
-      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
-    </Compile>
     <Compile Include="IDAL\IData_DiscountRuleDAL.cs">
-      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
-    </Compile>
-    <Compile Include="IDAL\IData_DiscountStore_RecordDAL.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="IDAL\IData_Discount_DetailDAL.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="IDAL\IData_Discount_MemberLevelDAL.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\IData_Discount_RecordMemberDAL.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\IData_Discount_RecordStoreDAL.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="IDAL\IData_Discount_StoreListDAL.cs">
@@ -343,7 +349,16 @@
     <Compile Include="IDAL\IData_MerchAlipay_ShopDAL.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
+    <Compile Include="IDAL\IData_MerchWechatConfigDAL.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\IData_MerchWechatMenuDAL.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
     <Compile Include="IDAL\IData_MessageDAL.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\IData_MessageInfoDAL.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="IDAL\IData_ParametersDAL.cs">
@@ -388,9 +403,6 @@
     <Compile Include="IDAL\IData_StandardCoinPriceDAL.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
-    <Compile Include="IDAL\IData_Storage_RecordDAL.cs">
-      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
-    </Compile>
     <Compile Include="IDAL\IData_SupplierListDAL.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
@@ -430,9 +442,6 @@
     <Compile Include="IDAL\IFlw_CheckDateDAL.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
-    <Compile Include="IDAL\IFlw_Coin_ExitDAL.cs">
-      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
-    </Compile>
     <Compile Include="IDAL\IFlw_Coin_SaleDAL.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
@@ -443,6 +452,9 @@
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="IDAL\IFlw_Digite_Coin_DetailDAL.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="IDAL\IFlw_DiscountRuleDAL.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="IDAL\IFlw_Food_ExitDAL.cs">
@@ -654,9 +666,6 @@
     <Compile Include="XCCloud\Base_SettlePPOSDAL.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
-    <Compile Include="XCCloud\Base_StorageInfoDAL.cs">
-      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
-    </Compile>
     <Compile Include="XCCloud\Base_StoreDogListDAL.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
@@ -684,6 +693,12 @@
     <Compile Include="XCCloud\Base_UserInfoDAL.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
+    <Compile Include="XCCloud\Base_WechatFunctionDAL.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\BUF_UserAnalysisDAL.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
     <Compile Include="XCCloud\Data_BalanceChargeRuleDAL.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
@@ -697,6 +712,9 @@
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_Card_BalanceDAL.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_Card_Balance_FreeDAL.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_Card_Balance_StoreListDAL.cs">
@@ -738,19 +756,19 @@
     <Compile Include="XCCloud\Data_DigitCoinFoodDAL.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
-    <Compile Include="XCCloud\Data_DiscountMember_RecordDAL.cs">
-      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
-    </Compile>
     <Compile Include="XCCloud\Data_DiscountRuleDAL.cs">
-      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
-    </Compile>
-    <Compile Include="XCCloud\Data_DiscountStore_RecordDAL.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_Discount_DetailDAL.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_Discount_MemberLevelDAL.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_Discount_RecordMemberDAL.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_Discount_RecordStoreDAL.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_Discount_StoreListDAL.cs">
@@ -891,7 +909,16 @@
     <Compile Include="XCCloud\Data_MerchAlipay_ShopDAL.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
+    <Compile Include="XCCloud\Data_MerchWechatConfigDAL.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_MerchWechatMenuDAL.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
     <Compile Include="XCCloud\Data_MessageDAL.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_MessageInfoDAL.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_ParametersDAL.cs">
@@ -936,9 +963,6 @@
     <Compile Include="XCCloud\Data_StandardCoinPriceDAL.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
-    <Compile Include="XCCloud\Data_Storage_RecordDAL.cs">
-      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
-    </Compile>
     <Compile Include="XCCloud\Data_SupplierListDAL.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
@@ -978,9 +1002,6 @@
     <Compile Include="XCCloud\Flw_CheckDateDAL.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
-    <Compile Include="XCCloud\Flw_Coin_ExitDAL.cs">
-      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
-    </Compile>
     <Compile Include="XCCloud\Flw_Coin_SaleDAL.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
@@ -991,6 +1012,9 @@
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Flw_Digite_Coin_DetailDAL.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Flw_DiscountRuleDAL.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Flw_Food_ExitDAL.cs">
@@ -1144,6 +1168,10 @@
     <Compile Include="XCGame\ScheduleDAL.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\XCCloudService.Common\XCCloudService.Common.csproj">
+      <Project>{adce73d3-04ff-4d98-846f-c8026a3b6396}</Project>
+      <Name>XCCloudService.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\XXCloudService.Model\XCCloudService.Model.csproj">
       <Project>{1e38ec5a-0a89-4d9e-9cdf-6f79c580b6a1}</Project>
       <Name>XCCloudService.Model</Name>

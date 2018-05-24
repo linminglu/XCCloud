@@ -15,6 +15,7 @@ namespace XCCloudService.Model.XCCloud
     public partial class Data_DigitCoin
     {
         public int ID { get; set; }
+        public string MerchID { get; set; }
         public string StoreID { get; set; }
         public string ICardID { get; set; }
         public Nullable<int> UID { get; set; }
@@ -24,5 +25,6 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> Balance { get; set; }
         public Nullable<System.DateTime> EndDate { get; set; }
         public Nullable<System.DateTime> SaleDate { get; set; }
+        public string Verifiction { get; set; }
     }
 }

@@ -32,5 +32,6 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> FeeType { get; set; }
         public Nullable<int> Status { get; set; }
         public string Note { get; set; }
+        public string Verifiction { get; set; }
     }
 }

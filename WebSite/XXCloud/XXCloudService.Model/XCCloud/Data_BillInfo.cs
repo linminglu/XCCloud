@@ -26,5 +26,6 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> State { get; set; }
         public Nullable<int> PublishType { get; set; }
         public Nullable<int> PromotionType { get; set; }
+        public string Verifiction { get; set; }
     }
 }

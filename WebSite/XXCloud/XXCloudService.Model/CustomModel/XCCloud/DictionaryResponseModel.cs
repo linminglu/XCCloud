@@ -37,6 +37,9 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         [DataMember(Name = "merchId", Order = 6)]
         public string MerchID { get; set; }
 
+        [DataMember(Name = "checked", Order = 7)]
+        public bool Checked { get { return false; } set { } }
+
         [IgnoreDataMember]
         public Nullable<int> DictLevel { get; set; }
     }

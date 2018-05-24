@@ -28,5 +28,6 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> WorkStationID { get; set; }
         public Nullable<int> State { get; set; }
         public Nullable<int> IsLock { get; set; }
+        public string Verifiction { get; set; }
     }
 }

@@ -20,5 +20,6 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> EncourageID { get; set; }
         public Nullable<int> GameTims { get; set; }
         public Nullable<decimal> EncouragePrice { get; set; }
+        public string Verifiction { get; set; }
     }
 }

@@ -18,5 +18,6 @@ namespace XCCloudService.Model.XCCloud
         public string MerchID { get; set; }
         public Nullable<int> RuleID { get; set; }
         public Nullable<int> MemberLevelID { get; set; }
+        public string Verifiction { get; set; }
     }
 }

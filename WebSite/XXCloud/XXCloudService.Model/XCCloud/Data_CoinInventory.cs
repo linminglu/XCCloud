@@ -15,11 +15,13 @@ namespace XCCloudService.Model.XCCloud
     public partial class Data_CoinInventory
     {
         public int ID { get; set; }
+        public string MerchID { get; set; }
         public string StoreID { get; set; }
         public Nullable<int> PredictCount { get; set; }
         public Nullable<int> InventoryCount { get; set; }
         public Nullable<System.DateTime> InventoryTime { get; set; }
         public Nullable<int> UserID { get; set; }
         public string Note { get; set; }
+        public string Verifiction { get; set; }
     }
 }

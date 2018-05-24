@@ -15,13 +15,14 @@ namespace XCCloudService.Model.XCCloud
     public partial class Flw_Food_Exit
     {
         public int ExitID { get; set; }
-        public string OrderID { get; set; }
+        public string MerchID { get; set; }
         public string StoreID { get; set; }
+        public string OrderID { get; set; }
+        public string FoodID { get; set; }
         public Nullable<int> CardID { get; set; }
-        public Nullable<int> Point { get; set; }
-        public Nullable<int> CoinBalance { get; set; }
-        public Nullable<int> PointBalance { get; set; }
-        public Nullable<int> LotteryBalance { get; set; }
+        public Nullable<decimal> ExitFee { get; set; }
+        public Nullable<decimal> Tax { get; set; }
+        public Nullable<decimal> TaxFee { get; set; }
         public Nullable<decimal> TotalMoney { get; set; }
         public string Note { get; set; }
         public Nullable<int> UserID { get; set; }
@@ -29,5 +30,7 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> AuthorID { get; set; }
         public Nullable<System.DateTime> RealTime { get; set; }
         public string WorkStation { get; set; }
+        public Nullable<System.DateTime> CheckDate { get; set; }
+        public string Verifiction { get; set; }
     }
 }

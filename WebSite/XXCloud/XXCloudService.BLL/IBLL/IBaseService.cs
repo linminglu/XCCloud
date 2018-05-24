@@ -9,12 +9,12 @@ namespace XCCloudService.BLL.IBLL
 {
     public partial interface IBaseService<T> where T : class ,new()
     {
-        void AddModel(T t);
-        void UpdateModel(T t);
+        void AddModel(T t, bool identity = true);
+        void UpdateModel(T t, bool identity = true);
         void DeleteModel(T t);
-        bool Add(T t);
-        bool Delete(T t);
-        bool Update(T t);
+        bool Add(T t, bool identity = true);
+        bool Update(T t, bool identity = true);
+        bool Delete(T t);       
         bool SaveChanges();
         int GetCount(Expression<Func<T, bool>> whereLambda);
         bool Any(Expression<Func<T, bool>> whereLambda);

@@ -15,6 +15,8 @@ namespace XCCloudService.Model.XCCloud
     public partial class Data_GoodStock_Record
     {
         public int ID { get; set; }
+        public string MerchID { get; set; }
+        public string StoreID { get; set; }
         public Nullable<int> SourceType { get; set; }
         public Nullable<int> SourceID { get; set; }
         public Nullable<int> GoodID { get; set; }
@@ -23,5 +25,6 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> StockCount { get; set; }
         public Nullable<System.DateTime> CreateTime { get; set; }
         public string Note { get; set; }
+        public string Verifiction { get; set; }
     }
 }

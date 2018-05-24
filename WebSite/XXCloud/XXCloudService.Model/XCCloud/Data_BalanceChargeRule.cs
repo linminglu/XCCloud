@@ -22,5 +22,6 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> ChargeType { get; set; }
         public Nullable<decimal> ChargeCount { get; set; }
         public Nullable<decimal> AlertValue { get; set; }
+        public string Verifiction { get; set; }
     }
 }

@@ -20,5 +20,6 @@ namespace XCCloudService.Model.XCCloud
         public string PrivateKey { get; set; }
         public string PublicKey { get; set; }
         public Nullable<decimal> Fee { get; set; }
+        public string Verifiction { get; set; }
     }
 }

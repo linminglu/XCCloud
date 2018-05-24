@@ -15,11 +15,13 @@ namespace XCCloudService.Model.XCCloud
     public partial class Data_Project_BandPrice
     {
         public int ID { get; set; }
+        public string MerchID { get; set; }
         public Nullable<int> ProjectID { get; set; }
         public string StoreID { get; set; }
         public Nullable<int> UseTimeCount { get; set; }
         public Nullable<int> UseType { get; set; }
         public Nullable<int> CycleTime { get; set; }
         public Nullable<int> Count { get; set; }
+        public string Verifiction { get; set; }
     }
 }

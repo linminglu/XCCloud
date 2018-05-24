@@ -15,6 +15,7 @@ namespace XCCloudService.Model.XCCloud
     public partial class Data_GoodRequest_List
     {
         public int ID { get; set; }
+        public string MerchID { get; set; }
         public Nullable<int> RequestID { get; set; }
         public Nullable<int> GoodID { get; set; }
         public Nullable<int> RequestCount { get; set; }
@@ -29,5 +30,6 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<System.DateTime> SendTime { get; set; }
         public Nullable<int> LogistType { get; set; }
         public string LogistOrderID { get; set; }
+        public string Verifiction { get; set; }
     }
 }

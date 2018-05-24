@@ -35,5 +35,6 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<decimal> MemberPrice { get; set; }
         public Nullable<decimal> Tax { get; set; }
         public Nullable<int> RenewDays { get; set; }
+        public string Verifiction { get; set; }
     }
 }

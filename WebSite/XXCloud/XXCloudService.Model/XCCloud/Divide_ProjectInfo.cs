@@ -15,10 +15,12 @@ namespace XCCloudService.Model.XCCloud
     public partial class Divide_ProjectInfo
     {
         public int ID { get; set; }
+        public string MerchID { get; set; }
         public string ProjectCode { get; set; }
         public Nullable<System.DateTime> CheckDate { get; set; }
         public Nullable<int> DivideType { get; set; }
         public Nullable<decimal> DividePrice { get; set; }
         public Nullable<decimal> TicketPrice { get; set; }
+        public string Verifiction { get; set; }
     }
 }

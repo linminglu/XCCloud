@@ -14,12 +14,14 @@ namespace XCCloudService.Model.XCCloud
     
     public partial class Flw_CouponUse
     {
-        public int ID { get; set; }
+        public string ID { get; set; }
         public string StoreID { get; set; }
-        public Nullable<int> OrderFlwID { get; set; }
+        public string OrderFlwID { get; set; }
+        public Nullable<int> DeviceID { get; set; }
         public Nullable<int> CouponID { get; set; }
-        public Nullable<int> CouponCode { get; set; }
+        public string CouponCode { get; set; }
         public Nullable<decimal> FreeMoney { get; set; }
         public Nullable<int> Coins { get; set; }
+        public Nullable<System.DateTime> UseTime { get; set; }
     }
 }

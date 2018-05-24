@@ -15,10 +15,12 @@ namespace XCCloudService.Model.XCCloud
     public partial class Data_Jackpot_Level
     {
         public int ID { get; set; }
+        public string MerchID { get; set; }
         public Nullable<int> ActiveID { get; set; }
         public string LevelName { get; set; }
         public Nullable<int> GoodID { get; set; }
         public Nullable<int> GoodCount { get; set; }
         public Nullable<decimal> Probability { get; set; }
+        public string Verifiction { get; set; }
     }
 }

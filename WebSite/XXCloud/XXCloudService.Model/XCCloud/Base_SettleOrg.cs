@@ -15,6 +15,7 @@ namespace XCCloudService.Model.XCCloud
     public partial class Base_SettleOrg
     {
         public int ID { get; set; }
+        public string MerchID { get; set; }
         public string WXPayOpenID { get; set; }
         public string WXName { get; set; }
         public string AliPay { get; set; }
@@ -22,5 +23,6 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<decimal> SettleFee { get; set; }
         public Nullable<int> SettleCycle { get; set; }
         public Nullable<int> SettleCount { get; set; }
+        public string Verifiction { get; set; }
     }
 }

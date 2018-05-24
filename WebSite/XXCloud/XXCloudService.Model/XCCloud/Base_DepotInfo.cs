@@ -19,5 +19,6 @@ namespace XCCloudService.Model.XCCloud
         public string StoreID { get; set; }
         public string DepotName { get; set; }
         public Nullable<int> MinusEN { get; set; }
+        public string Verifiction { get; set; }
     }
 }

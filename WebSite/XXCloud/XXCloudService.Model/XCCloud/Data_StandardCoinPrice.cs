@@ -20,5 +20,6 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> BalanceIndex { get; set; }
         public Nullable<int> CoinCount { get; set; }
         public Nullable<decimal> CashPrice { get; set; }
+        public string Verifiction { get; set; }
     }
 }

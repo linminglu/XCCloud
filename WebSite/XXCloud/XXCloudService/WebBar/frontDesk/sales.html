@@ -129,12 +129,9 @@
 		.col-marL_2{margin-left: 2.43%;}
 		.margin_5{margin-right: -5px;}
 
-		.onSwitch{background-color: #2e6da4;}
+		.onSwitch{background-color: #349ffd;}
 		.inputNtSty{padding: 0.5em 0;font-size: 1.2em;}
 
-		.PopSty{margin: 0.5em 0;height: 1.5em;line-height: 1.5em;font-size: 1.2em;}
-		.PopSty span{display: block;text-align: left;padding: 0;}
-		.Poptarea{height: 3em;}
 		/*快速售币弹出层*/
 		.FastSellSty{margin: 1em 0;height: 2.5em;line-height: 2em;font-size: 1.2em;}
 		.formNum{margin-top: 2em;}
@@ -158,9 +155,10 @@
 
 		/*卡片挂失*/
 		.cardL{ border-top:1px solid #555555; border-bottom:1px solid #555555;font-size: 1.8em;height: 2.4em;line-height: 2.4em;color: #666666;}
-		.btn-primary{width: 100%;font-size: 1em;padding: 1em 0;}
-
-
+		.btn-primary{width: 100%;font-size: 1em;background-color: #349ffd;border-color:#349ffd}
+		.btn-primary.active, .btn-primary:active, .open>.dropdown-toggle.btn-primary{background-color: #349ffd;border-color:#349ffd}
+		.btn-primary:hover{background-color: #349ffd;border-color:#349ffd}
+		.btn-primary.focus, .btn-primary:focus{background-color: #349ffd;border-color:#349ffd}
 		.searchList li{border: 1px solid #ffff00;margin-top: 0.3em;font-size: 1em;height: 8em;padding: 1em;}
 		.searchList li h4{font-weight: 100;line-height: 2em;}
 		.searchList li h5{line-height: 2em;}
@@ -249,7 +247,17 @@
 		.tree>ul>li::before, .tree>ul>li::after{border:0}
 		.tree li:last-child::before{height:30px}
 		.tree li.parent_li>span:hover, .tree li.parent_li>span:hover+ul li span{background:#eee;border:1px solid #94a0b4;color:#000}
-
+		/*会员操作*/
+		.Operation{padding: 1em;}
+		.tab-text{margin: 1em 0;}
+		.tab-style{margin-top: 1em;padding-left: 0;padding-right: 0;line-height: 2em;}
+		.switchZdy {border-radius: 4px;}
+		.mcImg img{width: 10em;height: 13em;margin-top: 1em;}
+		.inquire{text-align: right;margin-right: 2em;margin-bottom: 1em;}
+		.tab-btn{text-align: right;padding-right: 2em;margin-bottom: 1em;}
+		.modal-h4{line-height: 2em;border-bottom: 1px solid sandybrown;}
+		.modal-p{padding-left: 2em;color: #FF0000;line-height: 2em;}
+		.modal-btn{display: flex; flex-direction: row;justify-content: space-between;margin-top: 1em;padding: 0 2em;}
 	</style>
 </head>
 <body>
@@ -422,12 +430,35 @@
 					<h4 class="modal-title">温馨提示</h4>
 				</div>
 				<div class="modal-body row">
-					<div class="col-md-12 col-xs-12 PopSty"><span class="col-md-8 col-xs-8">会员卡号：</span><em class="col-md-4 col-xs-4">姓名：</em></div>
-					<div class="col-md-12 col-xs-12 PopSty"><span class="col-md-8 col-xs-8">代币：</span></div>
-					<div class="col-md-12 col-xs-12 PopSty"><span class="col-md-8 col-xs-8">积分：</span></div>
-					<div class="col-md-12 col-xs-12 PopSty"><span class="col-md-6 col-xs-6">彩票：</span><span class="col-md-3 col-xs-3">存币数：</span><input class="col-md-3 col-xs-3" type="text"></div>
-					<div class="col-md-12 col-xs-12 PopSty Poptarea"><span class="col-md-3 col-xs-3">备注：</span><label class="col-md-9 col-xs-9"><textarea  class="form-control"></textarea></label></div>
-					<div class="col-md-12 text-right PopSty"><button type="button" class="btn btn-info">手工存币</button></div>
+					<div class="col-md-6 col-xs-6 tab-style">
+						<span class="col-md-6 col-xs-6">补币币种：</span>
+						<div class="col-md-6 col-xs-6">
+							<select class="form-control">
+								<option value="男">代币</option>
+								<option value="女">积分</option>
+								<option value="女">彩票</option>
+								<option value="女">储值金</option>
+							</select>
+						</div>
+					</div>
+					<div class="col-md-6 col-xs-6 tab-style">
+						<span class="col-md-6 col-xs-6">存币数量：</span>
+						<label class="col-md-6 col-xs-6"><input class="form-control" type="text"></label>
+					</div>
+					<div class="col-md-12 col-xs-12 tab-style">
+						<span class="col-md-3 col-xs-3">补币方式：</span>
+						<div class="col-md-9 col-xs-9">
+							<select class="form-control">
+								<option value="男">实物币</option>
+								<option value="女">存入卡中</option>
+							</select>
+						</div>
+					</div>
+					<div class="col-md-12 col-xs-12 tab-style">
+						<span class="col-md-3 col-xs-3">备注：</span>
+						<label class="col-md-9 col-xs-9"><textarea  class="form-control"></textarea></label>
+					</div>
+					<div class="col-md-12 tab-btn tab-style"><button type="button" class="btn btn-info">补币</button></div>
 				</div>
 			</div>
 		</div>
@@ -441,13 +472,70 @@
 					<h4 class="modal-title">温馨提示</h4>
 				</div>
 				<div class="modal-body row">
-					<div class="col-md-12 col-xs-12 PopSty"><span class="col-md-8 col-xs-8">会员卡号：</span><em class="col-md-4 col-xs-4">姓名：</em></div>
-					<div class="col-md-12 col-xs-12 PopSty"><span class="col-md-8 col-xs-8">代币：</span></div>
-					<div class="col-md-12 col-xs-12 PopSty"><span class="col-md-6 col-xs-6">积分：</span><span class="col-md-3 col-xs-3">提币数：</span><input class="col-md-3 col-xs-3" type="text"></div>
-					<div class="col-md-12 col-xs-12 PopSty"><span class="col-md-6 col-xs-6">彩票：</span><span class="col-md-3 col-xs-3">密码：</span><input class="col-md-3 col-xs-3" type="text"></div>
+					<ul class="nav nav-tabs" role="tablist">
+						<li role="presentation" class="active"><a href="#cardOperation" aria-controls="cardOperation" role="tab" data-toggle="tab">卡操作</a></li>
+						<li role="presentation"><a href="#WeChat" aria-controls="WeChat" role="tab" data-toggle="tab">微信</a></li>
+						<li role="presentation"><a href="#mobileVerification" aria-controls="mobileVerification" role="tab" data-toggle="tab">手机验证</a></li>
+					</ul>
+					<div class="tab-content tab-style">
+						<div role="tabpanel" class="tab-pane active" id="cardOperation">
+							<div class="col-md-6 col-xs-6 tab-style">
+								<span class="col-md-6 col-xs-6">提币数：</span>
+								<label class="col-md-6 col-xs-6"><input class="form-control" type="text"></label>
+							</div>
+							<div class="col-md-6 col-xs-6 tab-style">
+								<span class="col-md-6 col-xs-6">密码：</span>
+								<label class="col-md-6 col-xs-6"><input class="form-control" type="text"></label>
+							</div>
 
-					<div class="col-md-12 col-xs-12 PopSty Poptarea"><span class="col-md-3 col-xs-3">备注：</span><label class="col-md-9 col-xs-9"><textarea  class="form-control"></textarea></label></div>
-					<div class="col-md-12 text-right PopSty"><button type="button" class="btn btn-info">提币</button></div>
+						</div>
+						<div role="tabpanel" class="tab-pane" id="WeChat">
+							<div class="col-md-12 col-xs-12 tab-style">
+								<span class="col-md-3 col-xs-3">微信提币码：</span>
+								<label class="col-md-9 col-xs-9"><input class="form-control" type="text"></label>
+							</div>
+
+						</div>
+						<div role="tabpanel" class="tab-pane" id="mobileVerification">
+							<div class="col-md-6 col-xs-6 tab-style">
+								<span class="col-md-6 col-xs-6">手机号码：</span>
+								<label class="col-md-6 col-xs-6"><input class="form-control" type="text"></label>
+							</div>
+							<div class="col-md-6 col-xs-6 tab-style">
+								<span class="col-md-6 col-xs-6">消费密码：</span>
+								<label class="col-md-6 col-xs-6"><input class="form-control" type="text"></label>
+							</div>
+						</div>
+
+					</div>
+					<div class="col-md-12 col-xs-12 tab-style">
+						<span class="col-md-3 col-xs-3">余额种类：</span>
+						<div class="col-md-9 col-xs-9">
+							<select class="form-control">
+								<option value="男">代币</option>
+								<option value="女">积分</option>
+								<option value="女">彩票</option>
+								<option value="女">储值金</option>
+							</select>
+						</div>
+					</div>
+					<div class="col-md-6 col-xs-6 tab-style">
+						<span class="col-md-6 col-xs-6">余额：</span>
+						<label class="col-md-6 col-xs-6"><input class="form-control" type="text"></label>
+					</div>
+					<div class="col-md-6 col-xs-6 tab-style" ><span  class="col-md-5 col-xs-5">提币方式：</span>
+						<div class="col-md-7 col-xs-7">
+							<div class="switchZdy col-md-12 col-xs-12">
+								<div class="col-md-6 col-xs-6 onSwitch">售币机</div>
+								<div class="col-md-6 col-xs-6">失效</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-12 col-xs-12 tab-style">
+						<span class="col-md-3 col-xs-3">备注：</span>
+						<label class="col-md-9 col-xs-9"><textarea  class="form-control"></textarea></label>
+					</div>
+					<div class="col-md-12 tab-btn"><button type="button" class="btn btn-info">提币</button></div>
 				</div>
 			</div>
 		</div>
@@ -455,25 +543,61 @@
 	<!--送币弹出层-->
 	<div class="modal fade bs-example-modal-lg" id="SendSModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 		<div class="modal-dialog modal-lg" role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-					<h4 class="modal-title">温馨提示</h4>
+			<div class="modal-content row">
+				<div class="memberList swiper-container">
+					<!--<ul class="swiper-wrapper">-->
+					<!--<li class="swiper-slide" v-for="(item,index) in memberLevel" @click="membershipFood(index)">-->
+					<!--<img class="memberCard" :src="item.coverURL">-->
+					<!--<div class="memberSelected" v-show="item.selected">-->
+					<!--<img src="images/selected.png">-->
+					<!--</div>-->
+					<!--<div class="memberText">-->
+					<!--<h4>开卡费：￥{{item.openFee}}</h4>-->
+					<!--<p>押金：￥{{item.deposit}}</p>-->
+					<!--</div>-->
+					<!--</li>-->
+					<!--</ul>-->
 				</div>
-				<div class="modal-body row">
-					<div class="col-md-12 col-xs-12 PopSty"><span class="col-md-8 col-xs-8">会员卡号：</span><em class="col-md-4 col-xs-4">姓名：</em></div>
-					<div class="col-md-12 col-xs-12 PopSty"><span class="col-md-8 col-xs-8">代币：</span></div>
-					<div class="col-md-12 col-xs-12 PopSty"><span class="col-md-6 col-xs-6">积分：</span><span class="col-md-3 col-xs-3">可送币：</span><input class="col-md-3 col-xs-3" type="text"></div>
-					<div class="col-md-12 col-xs-12 PopSty"><span class="col-md-4 col-xs-4">彩票：</span><span class="col-md-3 col-xs-3">送币方式：</span>
-						<div class="col-md-5 col-xs-5 switchZdy">
-							<div class="col-md-6 col-xs-6 onSwitch">允许</div>
-							<div class="col-md-6 col-xs-6">不允许</div>
+				<div class="col-md-12">
+					<div class="col-md-6">
+						<h4 class="modal-h4">送币规则详情</h4>
+						<ul class="tab-style">
+							<li>预赠币信息</li>
+							<li>100元送50币间隔1天分5次领30天有效</li>
+							<li>剩余可领币数：40币</li>
+							<li>剩余可领次数：4次</li>
+							<li>到期日期：2018-05-23</li>
+						</ul>
+					</div>
+					<div class="col-md-6">
+						<h4 class="modal-h4">可领明细</h4>
+						<div class="col-md-12 col-sm-12 tab-style">
+							<table class="table table-bordered">
+								<thead style="background: #f5f5f5">
+								<tr>
+									<th>类别</th>
+									<th>数量</th>
+									<th>操作</th>
+								</tr>
+								</thead>
+								<tbody>
+								<tr v-for="item in canGet">
+									<td>{{item.balanceType}}</td>
+									<td>{{item.balance}}</td>
+									<td>
+										<select  name="select" class="form-control">
+											<option value="男">实物</option>
+											<option value="女">存入卡</option>
+										</select>
+									</td>
+								</tr>
+								</tbody>
+							</table>
 						</div>
 					</div>
-
-					<div class="col-md-12 col-xs-12 PopSty Poptarea"><span class="col-md-3 col-xs-3">备注：</span><label class="col-md-9 col-xs-9"><textarea  class="form-control"></textarea></label></div>
-					<div class="col-md-12 text-right PopSty"><button type="button" class="btn btn-info">送币</button></div>
 				</div>
+				<div class="col-md-12 tab-btn"><button type="button" class="btn btn-info">送币</button></div>
+
 			</div>
 		</div>
 	</div>
@@ -486,13 +610,163 @@
 					<h4 class="modal-title">温馨提示</h4>
 				</div>
 				<div class="modal-body row">
-					<div class="col-md-12 col-xs-12 PopSty"><span class="col-md-8 col-xs-8">会员卡号：</span><em class="col-md-4 col-xs-4">姓名：</em></div>
-					<div class="col-md-12 col-xs-12 PopSty"><span class="col-md-6 col-xs-6">代币：</span><span class="col-md-3 col-xs-3">代币价值：</span><input class="col-md-3 col-xs-3" type="text"></div>
-					<div class="col-md-12 col-xs-12 PopSty"><span class="col-md-6 col-xs-6">积分：</span><span class="col-md-3 col-xs-3">卡内押金：</span><input class="col-md-3 col-xs-3" type="text"></div>
-					<div class="col-md-12 col-xs-12 PopSty"><span class="col-md-6 col-xs-6">彩票：</span><span class="col-md-3 col-xs-3">合计金额：</span><input class="col-md-3 col-xs-3" type="text"></div>
+					<div class="col-md-12 col-sm-12">
+						<table class="table table-bordered">
+							<thead style="background: #f5f5f5">
+							<tr>
+								<th>余额类别</th>
+								<th>余额数量</th>
+								<th>正价余额</th>
+								<th>赠送余额</th>
+								<th>可兑数量</th>
+								<th>兑换数量</th>
+								<th>兑换价值</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr v-for="items in refundData">
+								<td>{{items.balanceType}}</td>
+								<td>{{items.balance}}</td>
+								<td>{{items.balance1}}</td>
+								<td>{{items.balance2}}</td>
+								<td>{{items.balance3}}</td>
+								<td>{{items.balance4}}</td>
+								<td>{{items.balance5}}</td>
+							</tr>
+							</tbody>
+						</table>
+					</div>
+					<p class="modal-p">备注：只有在会员级别中设定余额类别与储值金项目有对应关系才可以退款</p>
+					<div class="col-md-12 col-xs-12 tab-style"><span class="col-md-3 col-xs-3">备注：</span><label class="col-md-9 col-xs-9"><textarea  class="form-control"></textarea></label></div>
+					<div class="col-md-12 col-xs-12 modal-btn"><button type="button" class="btn btn-info">退款又退卡</button><button type="button" class="btn btn-info">仅退款</button></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--挖掘账单详情-->
+	<div class="modal fade bs-example-modal-lg" id="billingDetails" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title">温馨提示</h4>
+				</div>
+				<div class="modal-body row">
+					<div class="col-md-12 col-xs-12">
+						<div class="col-md-4 col-xs-4 PopSty">
+							<span class="col-md-6 col-xs-6">订单号：</span>
+							<label class="col-md-6 col-xs-6"><input class="form-control" type="text"></label>
+						</div>
+						<div class="col-md-4 col-xs-4 PopSty">
+							<span class="col-md-6 col-xs-6">销售时间：</span>
+							<label class="col-md-6 col-xs-6"><input class="form-control" type="text"></label>
+						</div>
+						<div class="col-md-4 col-xs-4 PopSty">
+							<span class="col-md-6 col-xs-6">产生积分：</span>
+							<label class="col-md-6 col-xs-6"><input class="form-control" type="text"></label>
+						</div>
+						<div class="col-md-12 col-sm-12">
+							<table class="table table-bordered">
+								<thead style="background: #f5f5f5">
+								<tr>
+									<th>商品名称</th>
+									<th>商品类别</th>
+									<th>购买数量</th>
+									<th>单价</th>
+									<th>小计</th>
+									<th>税率（%）</th>
+									<th>税费</th>
+								</tr>
+								</thead>
+								<tbody>
+								<!--<tr v-for="items in balanceData">-->
+								<!--<td>{{items.balanceType}}</td>-->
+								<!--<td>{{items.balance}}</td>-->
+								<!--</tr>-->
+								<tr>
+									<td>合计</td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+								</tr>
+								</tbody>
+							</table>
+						</div>
+						<div class="col-md-8 col-sm-8">
+							<table class="table table-bordered">
+								<thead style="background: #f5f5f5">
+								<tr>
+									<th>支付渠道</th>
+									<th>支付类别</th>
+									<th>支付</th>
+									<th>优惠</th>
+									<th>流水号</th>
+								</tr>
+								</thead>
+								<tbody>
+								<!--<tr v-for="items in balanceData">-->
+								<!--<td>{{items.balanceType}}</td>-->
+								<!--<td>{{items.balance}}</td>-->
+								<!--</tr>-->
+								<tr>
+									<td>合计</td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+								</tr>
+								</tbody>
+							</table>
+						</div>
+						<div class="col-md-4 col-xs-4">
+							<p>关于支付类别：将支付和已触发、已使用的满减规则或优惠券分别归类。</p>
+							<p>0 支付</p>
+							<p>1 满减规则（可挖掘）</p>
+							<p>2 优惠券（可挖掘）</p>
+						</div>
+					</div>
 
-					<div class="col-md-12 col-xs-12 PopSty Poptarea"><span class="col-md-3 col-xs-3">备注：</span><label class="col-md-9 col-xs-9"><textarea  class="form-control"></textarea></label></div>
-					<div class="col-md-12 text-right PopSty"><button type="button" class="btn btn-info">退卡</button></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--挖掘对应余额流水记录-->
+	<div class="modal fade bs-example-modal-lg" id="billingRecord" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title">温馨提示</h4>
+				</div>
+				<div class="modal-body row">
+					<div class="inquire"><button type="button" class="btn btn-warning">查询</button></div>
+					<div class="col-md-12 col-xs-12">
+						<table class="table table-bordered">
+							<thead style="background: #f5f5f5">
+								<tr>
+									<th>变更时间</th>
+									<th>变更类别</th>
+									<th>变更前</th>
+									<th>变更值</th>
+									<th>变更后</th>
+									<th>变更渠道</th>
+									<th>变更终端</th>
+									<th>营业日期</th>
+									<th>备注</th>
+								</tr>
+							</thead>
+							<tbody>
+								<!--<tr v-for="items in balanceData">-->
+								<!--<td>{{items.balanceType}}</td>-->
+								<!--<td>{{items.balance}}</td>-->
+								<!--</tr>-->
+							</tbody>
+						</table>
+					</div>
+
 				</div>
 			</div>
 		</div>
@@ -728,95 +1002,144 @@
 				</div>
 				<!--会员操作-->
 				<div class="Operation" v-if="operationShow">
-					<div class="container-fluid">
-						<div class="row">
-							<h3 class="hStyle titleSty">用户信息</h3>
-							<div class="McText col-md-12 col-xs-12">
-								<span class="col-md-1 col-xs-2">会员姓名：</span><label class="col-md-2 col-xs-2"><input type="text" class="form-control"/></label>
-								<span class="col-md-1 col-xs-2">生日：</span><label class="col-md-2 col-xs-2"><input type="text" class="form-control"/></label>
-								<span class="col-md-1 col-xs-2">性别：</span>
-								<div class="col-md-1 col-xs-2">
-									<select class="form-control">
-										<option value="男">男</option>
-										<option value="女">女</option>
-									</select>
-								</div>
-								<span class="col-md-1 col-xs-2">手机号码：</span><label class="col-md-2 col-xs-2"><input type="text" class="form-control" /></label>
-							</div>
-							<div class="McText col-md-12 col-xs-12">
-								<span class="col-md-1 col-xs-1">证件号码：</span><label class="col-md-5 col-xs-5"><input type="text" class="form-control"/></label>
-								<span class="col-md-1 col-xs-1">微信：</span><label class="col-md-4 col-xs-5"><input type="text" class="form-control" /></label>
-							</div>
-							<div class="col-md-4 col-xs-6 McSty" ><span  class="col-md-3 col-xs-3">允许投退币：</span>
-								<div class="col-md-8 col-xs-8 pd_5">
-									<div class="switchZdy col-md-12 col-xs-12" @click="switchFnc('0')">
-										<div class="col-md-6 col-xs-6" :class="{'onSwitch':onSwitch0}" ref="aaa">允许</div>
-										<div class="col-md-6 col-xs-6" :class="{'onSwitch':!onSwitch0}" ref="bbb">不允许</div>
+						<div class="container-fluid">
+							<ul class="nav nav-tabs" role="tablist">
+								<li role="presentation" class="active"><a href="#TheInformation" aria-controls="TheInformation" role="tab" data-toggle="tab">会员信息</a></li>
+								<li role="presentation"><a href="#salesRecord" aria-controls="salesRecord" role="tab" data-toggle="tab">销售记录</a></li>
+								<li role="presentation"><a href="#playRecording" aria-controls="playRecording" role="tab" data-toggle="tab">游玩记录</a></li>
+								<li role="presentation"><a href="#forRecord" aria-controls="forRecord" role="tab" data-toggle="tab">兑换记录</a></li>
+								<li role="presentation"><a href="#ticketInformation" aria-controls="ticketInformation" role="tab" data-toggle="tab">门票信息</a></li>
+							</ul>
+							<div class="tab-content">
+								<div role="tabpanel" class="tab-pane active container-fluid" id="TheInformation">
+									<div class="row">
+										<div class="tab-text col-md-9 col-xs-9 pad_0">
+											<div class="tab-style col-md-4 col-xs-4">
+												<span class="col-md-4 col-xs-4">会员姓名：</span>
+												<label class="col-md-8 col-xs-8"><input type="text" class="form-control"/>
+												</label></div>
+											<div class="tab-style col-md-3 col-xs-6">
+												<span class="col-md-4 col-xs-4">生日：</span>
+												<label class="col-md-8 col-xs-8"><input type="text" class="form-control" readonly/></label>
+											</div>
+											<div class="tab-style col-md-2 col-xs-6 pad_0"><span class="col-md-6 col-xs-6 pad_0">性别：</span>
+												<div class="col-md-6 col-xs-6 text-left pad_0">
+													<select  name="select" class="form-control">
+														<option value="男">男</option>
+														<option value="女">女</option>
+													</select>
+												</div>
+											</div>
+											<div class="tab-style col-md-3 col-xs-3">
+												<span class="col-md-5 col-xs-5">手机号码：</span>
+												<label class="col-md-7 col-xs-7"><input type="text" class="form-control" readonly/></label>
+											</div>
+											<div class="tab-style col-md-8 col-xs-12">
+												<span class="col-md-2 col-xs-2">证件号码：</span>
+												<label class="col-md-7 col-xs-7"><input type="text" class="form-control" readonly/></label>
+												<label class="col-md-2 col-xs-2"><button type="button" class="btn btn-primary">读取</button></label>
+											</div>
+											<div class="tab-style col-md-4 col-xs-12"><span class="col-md-4 col-xs-">微信：</span><label class="col-md-8 col-xs-8"><input type="text" class="form-control" /></label></div>
+											<div class="tab-style col-md-4 col-xs-4" ><span  class="col-md-4 col-xs-4">卡状态：</span>
+												<div class="col-md-8 col-xs-8 pd_5">
+													<div class="switchZdy col-md-12 col-xs-12">
+														<div class="col-md-6 col-xs-6 onSwitch">有效</div>
+														<div class="col-md-6 col-xs-6">失效</div>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="mcImg col-md-3">
+											<img src="images/ticketBg.png" alt="会员头像">
+										</div>
+									</div>
+									<div class="row" style="margin-top: 1em;">
+										<div class="col-md-3 col-sm-4">
+											<table class="table table-bordered">
+												<thead style="background: #f5f5f5">
+												<tr>
+													<th>余额种类</th>
+													<th>余额</th>
+												</tr>
+												</thead>
+												<tbody>
+												<tr v-for="(items,index) in balanceData" :key="index">
+													<td>{{items.balanceType}}</td>
+													<td @click="billingRecord(index)">{{items.balance}}</td>
+												</tr>
+												</tbody>
+											</table>
+										</div>
+										<div class="col-md-3 col-sm-3">
+											<h4>主卡信息</h4>
+											<p>卡号：123456</p>
+											<p>等级：普通卡</p>
+											<p>押金：10元</p>
+											<p>期限：2020-04-26</p>
+										</div>
+										<div class="col-md-5 col-sm-5">
+											<div>
+												<ul class="nav nav-tabs" role="tablist">
+													<li role="presentation" class="active"><a href="#ViceCard1" aria-controls="ViceCard1" role="tab" data-toggle="tab">副卡1</a></li>
+													<li role="presentation"><a href="#ViceCard2" aria-controls="ViceCard2" role="tab" data-toggle="tab">副卡2</a></li>
+												</ul>
+												<div class="tab-content">
+													<div role="tabpanel" class="tab-pane active" id="ViceCard1">
+														<div>
+															<h4>主卡信息</h4>
+															<p>卡号：123456</p>
+															<p>等级：普通卡</p>
+															<p>押金：10元</p>
+															<p>期限：2020-04-26</p>
+														</div>
+													</div>
+													<div role="tabpanel" class="tab-pane" id="ViceCard2">
+														<div>
+															<h4>卡信息</h4>
+															<p>卡号：123456</p>
+															<p>等级：普通卡</p>
+															<p>押金：10元</p>
+															<p>期限：2020-04-26</p>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
 									</div>
 								</div>
-							</div>
-							<div class="col-md-4 col-xs-6 McSty" ><span  class="col-md-3 col-xs-3">允许兑币：</span>
-								<div class="col-md-8 col-xs-8 pd_5">
-									<div class="switchZdy col-md-12 col-xs-12" @click="switchFnc('1')">
-										<div class="col-md-6 col-xs-6" :class="{onSwitch:onSwitch1}">允许</div>
-										<div class="col-md-6 col-xs-6" :class="{onSwitch:!onSwitch1}">不允许</div>
+								<div role="tabpanel" class="tab-pane" id="salesRecord">
+									<div class="title">查询</div>
+									<div class="col-md-12 col-xs-12">
+										<table id="memberTable1"></table>
 									</div>
 								</div>
-							</div>
-							<div class="col-md-4 col-xs-6 McSty" ><span  class="col-md-3 col-xs-3">允许购买实物币：</span>
-								<div class="col-md-8 col-xs-8 pd_5">
-									<div class="switchZdy col-md-12 col-xs-12" @click="switchFnc('2')">
-										<div class="col-md-6 col-xs-6" :class="{onSwitch:onSwitch2}">允许</div>
-										<div class="col-md-6 col-xs-6" :class="{onSwitch:!onSwitch2}">不允许</div>
+								<div role="tabpanel" class="tab-pane" id="playRecording">
+									<div class="title">查询</div>
+									<div class="col-md-12 col-xs-12">
+										<table id="memberTable2"></table>
 									</div>
 								</div>
-							</div>
-							<div class="col-md-4 col-xs-6 McSty" ><span  class="col-md-3 col-xs-3">允许手工存币：</span>
-								<div class="col-md-8 col-xs-8 pd_5">
-									<div class="switchZdy col-md-12 col-xs-12" @click="switchFnc('3')">
-										<div class="col-md-6 col-xs-6" :class="{onSwitch:onSwitch3}">允许</div>
-										<div class="col-md-6 col-xs-6" :class="{onSwitch:!onSwitch3}">不允许</div>
+								<div role="tabpanel" class="tab-pane" id="forRecord"><div class="title">查询</div>
+									<div class="col-md-12 col-xs-12">
+										<table id="memberTable3"></table>
 									</div>
 								</div>
-							</div>
-							<div class="col-md-4 col-xs-6 McSty" ><span  class="col-md-3 col-xs-3">允许手工送币：</span>
-								<div class="col-md-8 col-xs-8 pd_5">
-									<div class="switchZdy col-md-12 col-xs-12" @click="switchFnc('4')">
-										<div class="col-md-6 col-xs-6" :class="{onSwitch:onSwitch4}">允许</div>
-										<div class="col-md-6 col-xs-6" :class="{onSwitch:!onSwitch4}">不允许</div>
+								<div role="tabpanel" class="tab-pane" id="ticketInformation"><div class="title">查询</div>
+									<div class="col-md-12 col-xs-12">
+										<table id="memberTable4"></table>
 									</div>
 								</div>
-							</div>
-							<div class="col-md-4 col-xs-6 McSty" ><span  class="col-md-3 col-xs-3">卡状态：</span>
-								<div class="col-md-8 col-xs-8 pd_5">
-									<div class="switchZdy col-md-12 col-xs-12" @click="switchFnc('5')">
-										<div class="col-md-6 col-xs-6" :class="{onSwitch:onSwitch5}">有效</div>
-										<div class="col-md-6 col-xs-6" :class="{onSwitch:!onSwitch5}">无效</div>
-									</div>
-								</div>
-							</div>
-							<div class="Tab col-md-12 col-xs-12">
-								<ul>
-									<li class="col-md-2 col-xs-2">会员代币流水</li>
-									<li class="col-md-2 col-xs-2">代币近期汇总</li>
-									<li class="col-md-2 col-xs-2">门票信息</li>
-									<li class="col-md-2 col-xs-2">门票消费</li>
-									<li class="col-md-2 col-xs-2">积分流水</li>
-									<li class="col-md-2 col-xs-2">彩票流水</li>
-								</ul>
-							</div>
-							<div  class="col-md-12 col-xs-12">
-								<table id="memberTable" style="height: 25em"></table>
 							</div>
 						</div>
-						<div class="row text-center">
-							<div class="col-md-4"></div>
-							<div class="col-md-2 col-xs-3"><button @click="saveManual" type="button" class="btn btn-info">手工存币</button></div>
-							<div class="col-md-2 col-xs-3"><button @click="currency" type="button" class="btn btn-info">提币</button></div>
-							<div class="col-md-2 col-xs-3"><button @click="sendCoin" type="button" class="btn btn-info">送币</button></div>
-							<div class="col-md-2 col-xs-3"><button @click="backCard" type="button" class="btn btn-info">退卡</button></div>
+						<div class="container-fluid">
+							<div class="row text-center">
+								<div class="col-md-4"></div>
+								<div class="col-md-2 col-xs-3"><button @click="saveManual" type="button" class="btn btn-info">手工补币</button></div>
+								<div class="col-md-2 col-xs-3"><button @click="currency" type="button" class="btn btn-info">提币</button></div>
+								<div class="col-md-2 col-xs-3"><button @click="sendCoin" type="button" class="btn btn-info">送币</button></div>
+								<div class="col-md-2 col-xs-3"><button @click="backCard" type="button" class="btn btn-info">退卡</button></div>
+							</div>
 						</div>
-					</div>
 				</div>
 				<!--会员入会-->
 				<div class="enrollment" v-if="memberShow">
@@ -967,6 +1290,10 @@
 <script>
     var sysId = 0; //调用方应用Id
     var versionNo= "0.01"; //版本号
+    var destroy =[
+        {"no":1,"name":"2017-09-04 12:44:30","name1":108,"name2":108,"name3":108,"name4":108,"name5":108,"name6":108,"name7":108,"name8":108,"name9":108,"name10":108},
+        {"no":1,"name":"2017-09-04 12:44:30","name1":107,"name2":108,"name3":108,"name4":108,"name5":108,"name6":108,"name7":108,"name8":108,"name9":108,"name10":108}
+    ];
     var htmlFnc = new Vue({
         el: '#app',
         data:{
@@ -1029,7 +1356,52 @@
 			detailNote:"",
             icCardId:"10004143",
             footerData:[],
-            treeShow:false
+            treeShow:false,
+            balanceData:[{
+                balanceType:"No.1",
+                balance:"555454"
+            },{
+                balanceType:"No.2",
+                balance:"555454"
+            },{
+                balanceType:"No.3",
+                balance:"555454"
+            },{
+                balanceType:"No.4",
+                balance:"555454"
+            }],
+            canGet:[{
+                balanceType:"代币",
+                balance:"10"
+            },{
+                balanceType:"现金",
+                balance:"555454"
+            }],
+            refundData:[{
+                balanceType:"代币",
+                balance:"2000",
+                balance1:"1600",
+                balance2:"400",
+                balance3:"1600",
+                balance4:"1000",
+                balance5:"500"
+            },{
+                balanceType:"积分",
+                balance:"200000",
+                balance1:"200000",
+                balance2:"0",
+                balance3:"0",
+                balance4:"0",
+                balance5:"0"
+            },{
+                balanceType:"合计",
+                balance:"",
+                balance1:"",
+                balance2:"",
+                balance3:"",
+                balance4:"1000",
+                balance5:"500"
+            }]
         },
         mounted: function () {
             this.Initialize()
@@ -1320,14 +1692,69 @@
                 this.saleShow = false;
                 this.memberShow = false;
                 this.returnShow = false;
-                var columns=[
-                    {field:'no',title:'编号',width:150},
-                    {field:'name',title:'名称',width:260},
-                    {field:'addr',title:'地址',width:200}];
+                var columns1=[
+                    {field:'no',title:'门票名称'},
+                    {field:'name',title:'类别'},
+                    {field:'name1',title:'购买时间'},
+                    {field:'name2',title:'过期日期'},
+                    {field:'name3',title:'核销期'},
+                    {field:'name4',title:'购买数量'},
+                    {field:'name5',title:'剩余数量'},
+                    {field:'name6',title:'状态'},
+                    {field:'name7',title:'备注'}];
                 setTimeout(function () {
-                    createTable("#memberTable","destroy.json",columns);
+                    createTable("#memberTable1",destroy,columns1);
                 }, 50);
-                that.replacement()
+
+                var columns2=[
+                    {field:'no',title:'游玩时间'},
+                    {field:'name',title:'游乐项目'},
+                    {field:'name1',title:'项目类别'},
+                    {field:'name2',title:'消费数量'},
+                    {field:'name3',title:'消费类别'},
+                    {field:'name4',title:'备注'}];
+                setTimeout(function () {
+                    createTable("#memberTable2",destroy,columns2);
+                }, 50);
+                var columns3=[
+                    {field:'no',title:'兑换日期'},
+                    {field:'name',title:'订单号'},
+                    {field:'name1',title:'兑换名称'},
+                    {field:'name2',title:'兑换类别'},
+                    {field:'name3',title:'兑换数量'},
+                    {field:'name4',title:'原价'},
+                    {field:'name5',title:'折扣(%)'},
+                    {field:'name6',title:'消耗数量'},
+                    {field:'name7',title:'消耗类别'},
+                    {field:'name8',title:'操作门店'},
+                    {field:'name9',title:'营业日期'},
+                    {field:'name10',title:'班次'},
+                    {field:'name11',title:'操作终端'},
+                    {field:'name12',title:'操作员'},
+                    {field:'name13',title:'备注'}];
+                setTimeout(function () {
+                    createTable("#memberTable3",destroy,columns3);
+                }, 50);
+
+                var columns4=[
+                    {field:'no',title:'门票名称'},
+                    {field:'name',title:'类别'},
+                    {field:'name1',title:'购买时间'},
+                    {field:'name2',title:'过期日期'},
+                    {field:'name3',title:'兑换数量'},
+                    {field:'name4',title:'核销期'},
+                    {field:'name5',title:'购买数量'},
+                    {field:'name6',title:'消耗数量'},
+                    {field:'name7',title:'剩余数量'},
+                    {field:'name8',title:'状态'},
+                    {field:'name9',title:'备注'}];
+                setTimeout(function () {
+                    createTable("#memberTable4",destroy,columns4);
+                }, 50);
+            },
+//			挖掘对应余额流水记录
+            billingRecord:function (index) {
+                $('#billingRecord').modal('show');
             },
 //			销售列表
             salesAll:function () {
@@ -1339,6 +1766,7 @@
                     this.memberShow = false;
                     this.returnShow = false;
                     var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken};
+
                     axios.post('/XCCloud/Foods?action=getFoodType', obj).then(function (res) {	//套餐类别
                         console.log(res.data);
                         that.msgPrompt(res.data);
@@ -1854,22 +2282,20 @@
         $(".salesCoin").find("li").eq(index).find(".saleText a").popover("show");
         $(".salesCoin").find("li").eq(index).siblings().find(".saleText a").popover("hide");
     }
-	//    表格
-    function createTable(id,url,columns){       //表格
+    //    表格
+    function createTable(id,tableData,columns){       //表格
         $(id).bootstrapTable({ // 对应table标签的id
-            url: url, // 获取表格数据的url
-            method: 'get',                      //请求方式（*）
+            data:tableData,
             toolbar: '.toolbar',                //工具按钮用哪个容器
             striped: true,                      //是否显示行间隔色
             cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
-            pagination: true,                   //是否显示分页（*）
-
+            pagination: false,                   //是否显示分页（*）
             sortable: false,                     //是否启用排序
-//        sortOrder: "asc",                   //排序方式
+//        	sortOrder: "asc",                   //排序方式
 //        queryParams: oTableInit.queryParams,//传递参数（*）
             sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
             pageNumber:1,                       //初始化加载第一页，默认第一页
-            pageSize: 5,                       //每页的记录行数（*）
+            pageSize: 8,                       //每页的记录行数（*）
 //            pageList: [5,10, 25, 50, 100],        //可供选择的每页的行数（*）
             search: false,                       //是否显示表格搜索，此搜索是客户端搜索，不会进服务端，所以，个人感觉意义不大
             strictSearch: true,
@@ -1880,18 +2306,18 @@
 //            height:500,
 //             height: $(window.top).height()-200,                        //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
             uniqueId: "ID",                     //每一行的唯一标识，一般为主键列
-            showToggle:true,
-            showFooter:true,                 //是否显示详细视图和列表视图的切换按钮
+            showToggle:false,
+            showFooter:false,                 //是否显示详细视图和列表视图的切换按钮
             cardView: false,                    //是否显示详细视图
             detailView: false,
-            queryParams: function (params) { // 请求服务器数据时发送的参数，可以在这里添加额外的查询参数，返回false则终止请求
-                return {
-                    pageSize: 10, // 每页要显示的数据条数
-                    offset: params.offset, // 每页显示数据的开始行号
-                    sort: params.sort, // 要排序的字段
-                    sortOrder: params.order, // 排序规则
-                    dataId: $("#dataId").val() // 额外添加的参数
+            onClickCell:function (field, value, row, $element) {
+                if(field == "name" && id == "#memberTable3"){
+                    $('#billingDetails').modal('show');
                 }
+                console.log(field);
+                console.log(value);
+                console.log(row);
+                console.log($element);
             },
             sortName: 'id', // 要排序的字段
             sortOrder: 'desc', // 排序规则

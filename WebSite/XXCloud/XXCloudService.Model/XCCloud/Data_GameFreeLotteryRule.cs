@@ -21,5 +21,6 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> MemberLevelID { get; set; }
         public Nullable<int> BaseLottery { get; set; }
         public Nullable<int> FreeCount { get; set; }
+        public string Verifiction { get; set; }
     }
 }

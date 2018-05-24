@@ -58,5 +58,6 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> AllowGetCoin { get; set; }
         public Nullable<int> AllowTransfer { get; set; }
         public Nullable<int> State { get; set; }
+        public string Verifiction { get; set; }
     }
 }

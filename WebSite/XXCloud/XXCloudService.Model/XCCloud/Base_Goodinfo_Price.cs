@@ -15,10 +15,12 @@ namespace XCCloudService.Model.XCCloud
     public partial class Base_Goodinfo_Price
     {
         public int ID { get; set; }
+        public string MerchID { get; set; }
         public Nullable<int> GoodID { get; set; }
         public Nullable<int> OperateTypei { get; set; }
         public Nullable<int> BalanceIndex { get; set; }
         public Nullable<decimal> CashValue { get; set; }
         public Nullable<decimal> Count { get; set; }
+        public string Verifiction { get; set; }
     }
 }

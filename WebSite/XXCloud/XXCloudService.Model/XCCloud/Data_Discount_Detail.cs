@@ -15,10 +15,12 @@ namespace XCCloudService.Model.XCCloud
     public partial class Data_Discount_Detail
     {
         public int ID { get; set; }
+        public string MerchID { get; set; }
         public Nullable<int> DiscountRuleID { get; set; }
         public Nullable<decimal> LimitCount { get; set; }
         public Nullable<int> LimitType { get; set; }
         public Nullable<decimal> ConsumeCount { get; set; }
         public Nullable<decimal> DiscountCount { get; set; }
+        public string Verifiction { get; set; }
     }
 }

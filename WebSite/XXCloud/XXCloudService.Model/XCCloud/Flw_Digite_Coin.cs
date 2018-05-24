@@ -15,6 +15,8 @@ namespace XCCloudService.Model.XCCloud
     public partial class Flw_Digite_Coin
     {
         public int ID { get; set; }
+        public string MerchID { get; set; }
+        public string StoreID { get; set; }
         public Nullable<int> FoodID { get; set; }
         public Nullable<decimal> CreditFee { get; set; }
         public Nullable<int> CoinQuantity { get; set; }

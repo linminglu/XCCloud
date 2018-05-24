@@ -51,5 +51,6 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<System.DateTime> CreateTime { get; set; }
         public Nullable<int> OpUserID { get; set; }
         public string Context { get; set; }
+        public string Verifiction { get; set; }
     }
 }

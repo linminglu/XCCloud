@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>团体票设置</title>
+    <link rel="stylesheet" href="layui/css/layui.css">
+</head>
+<body>
+<div class="layui-row" style="padding:15px">
+    <blockquote class="layui-elem-quote" style="text-align: right">
+        <button type="button" class="layui-btn layui-btn-normal" i18n-content="查询模板">查询模板</button>
+        <button type="button" class="layui-btn layui-btn-normal add" i18n-content="新增">新增</button>
+    </blockquote>
+    <table class="layui-hide" id="groupTickets" lay-filter="groupTickets"></table>
+</div>
+</body>
+<script src="js/jquery-1.8.3-min.js"></script>
+<script src="layui/layui.js"></script>
+<script src="js/storeSystem.js"></script>
+<script>
+    let xc=xcActionSystem.prototype;
+    let token=xc.getStorage('token');
+    let parm = {
+        'obj': {'ticketType':1,'businessType':1,'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'},
+        'url': '/XCCloud/ProjectTicket?action=QueryProjectTicket',
+        'elem': '#groupTickets',
+        'cols': [{field: 'ID', title: '项目ID', align: 'center'}
+            , {field: 'TicketName', title: '门票名称', align: 'center'}
+            , {field: 'Price', title: '售价', align: 'center'}
+            , {field: 'ValidDate', title: '有效期', align: 'center'}
+            , {field: 'WriteOffDays', title: '核销期', align: 'center'}
+            , {field: 'WeekTypeStr', title: '限定游玩期限', align: 'center'}
+            , {field: 'PeriodLimit', title: '限定时段', align: 'center',templet:'#charge'}
+            , {field: 'NoDate', title: '不可用日期', align: 'center',templet:'#state'}
+            , {field: 'ExitLimit', title: '退票信息', align: 'center'}
+            , {field: 'BindProjects', title: '项目信息', align: 'center'}
+            , {field: 'AllowExitTimes', title: '离场时间', align: 'center'}
+            ,{fixed: 'right',title: '操作', width:240, align:'center', toolbar: '#barDemo'}]
+    };
+    xc.getInitData(parm);
+    let id='';
+    layui.use(['table','form','layer'],function () {
+        let table=layui.table;let form=layui.form;let layer=layui.layer;
+        //新增，存入一个cook
+        $('.add').on('click',function (){
+            layer.open({
+                title:'新增',
+                type:2,
+                area:['1045px','650px'],
+                content:'ticketsIframe.html'
+            });
+            xc.setStorage('ticketSet',JSON.stringify({'way':'add','name':'timeLimit','id':''}))
+
+        });
+        table.on('tool(groupTickets)',function (obj) {
+            let data=obj.data;
+            let layEvent=obj.event;
+            if(layEvent==='del'){
+                layer.confirm('确定停用此设置吗？', function(index){
+                    let _obj={'id':data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                    let parseJson = JSON.stringify(_obj);
+                    $.ajax({
+                        type:'post',
+                        url:'/XCCloud/ProjectTicket?action=DelProjectTicket',
+                        contentType: "application/json; charset=utf-8",
+                        data:{parasJson: parseJson},
+                        success: function (data) {
+                            data = JSON.parse(data);
+                            if (data.result_code == 1) {
+                                layer.msg('本套餐停用成功',{time:1500},function () {
+                                    layer.close(index);
+                                    location.reload()
+                                })
+                            } else {
+                                layer.msg(data.result_msg);
+                            }
+                        }
+                    })
+                });
+            }else if(layEvent==='modify'){
+                layer.open({
+                    title:'修改设置',
+                    type:2,
+                    area:['1045px','650px'],
+                    content:'ticketsIframe.html'
+                });
+                xc.setStorage('ticketSet',JSON.stringify({'way':'modify','name':'timeLimit','id':data.ID}))
+            }
+        })
+    })
+</script>
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del"><i class="layui-icon">&#xe640;</i>删除</a>
+    <!--<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="edit"><i class="layui-icon">&#xe642;</i>编辑</a>-->
+    <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="modify"><i class="layui-icon">&#xe642;</i>修改</a>
+</script>
+</html>

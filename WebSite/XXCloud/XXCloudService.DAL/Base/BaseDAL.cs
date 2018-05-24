@@ -6,8 +6,12 @@ using System.Data.Entity.Core.Objects;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using XCCloudService.Common;
+using XCCloudService.Common.Extensions;
+using XCCloudService.Model.XCCloud;
 
 namespace XCCloudService.DAL.Base
 {
@@ -16,6 +20,92 @@ namespace XCCloudService.DAL.Base
 
         protected string dbContextName;
         private DbContext dbContext;
+
+        private string GetClearText(bool identity, T t, string merchSecret)
+        {
+            SortedDictionary<string, string> fields = new SortedDictionary<string, string>();
+            Type type = t.GetType();
+            foreach (PropertyInfo pi in type.GetProperties())
+            {
+                if (pi.Name.Equals("Verifiction", StringComparison.OrdinalIgnoreCase))
+                    continue;
+                if (identity && pi.Name.Equals("ID", StringComparison.OrdinalIgnoreCase))
+                    continue;
+                var value = t.GetPropertyValue(pi.Name);
+                if (!value.IsNull())
+                {
+                    if (Nullable.GetUnderlyingType(pi.PropertyType) == typeof(Decimal))
+                    {
+                        var valueStr = Convert.ToString(value).TrimEnd('0');//去除尾部0
+                        value = Convert.ChangeType(valueStr, typeof(Decimal));
+                    }
+
+                    fields.Add(pi.Name, value.ToString());
+                }
+            }
+
+            var result = string.Join("", fields.Values) + merchSecret;
+            return result;
+        }
+
+        private void CheckVerifiction(EntityState state, bool identity, ref T t, object foundEntity = null)
+        {
+            var errMsg = string.Empty;
+
+            try
+            {
+                //检查该实体是否需要校验
+                if (t.ContainProperty("Verifiction"))
+                {
+                    //获取校验码
+                    var verifiction = Convert.ToString(t.GetPropertyValue("Verifiction"));
+
+                    //获取校验密钥
+                    var merchSecret = string.Empty;
+                    if (t.ContainProperty("MerchID"))
+                    {
+                        var merchId = Convert.ToString(t.GetPropertyValue("MerchID"));
+                        if (!merchId.IsNull())
+                        {
+                            merchSecret = dbContext.Set<Base_MerchantInfo>().Where(w => w.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase))
+                                .Select(o => o.MerchSecret).FirstOrDefault() ?? string.Empty;
+                        }
+                    }
+
+                    //先校验                    
+                    var str = string.Empty;
+                    var md5 = string.Empty;
+                    if (state == EntityState.Modified)
+                    {
+                        //获取原对象
+                        if(foundEntity == null)
+                        {
+                            errMsg = "获取当前数据失败";
+                            throw new Exception(errMsg);
+                        }
+
+                        var oldT = (T)foundEntity;
+                        str = GetClearText(identity, oldT, merchSecret);
+                        md5 = Utils.MD5(str);
+                        if (!verifiction.Equals(md5, StringComparison.OrdinalIgnoreCase))
+                        {
+                            errMsg = "数据校验失败";
+                            throw new Exception(errMsg);
+                        }
+                    }
+
+                    //更新校验码                    
+                    str = GetClearText(identity, t, merchSecret);
+                    md5 = Utils.MD5(str);
+                    t.GetType().GetProperty("Verifiction").SetValue(t, md5, null);
+                }
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
         public BaseDAL()
         {
             dbContext = DbContextFactory.CreateByModelNamespace(typeof(T).Namespace);
@@ -28,64 +118,83 @@ namespace XCCloudService.DAL.Base
         }
 
         //用于监测Context中的Entity是否存在，如果存在，将其Detach，防止出现问题。
-        private Boolean RemoveHoldingEntityInContext(T entity)
+        private object RemoveHoldingEntityInContext(T entity)
         {
             var objContext = ((IObjectContextAdapter)dbContext).ObjectContext;
             var objSet = objContext.CreateObjectSet<T>();
             var entityKey = objContext.CreateEntityKey(objSet.EntitySet.Name, entity);
 
-            Object foundEntity;
+            //第一次从缓存获取
+            Object foundEntity = null;
             var exists = objContext.TryGetObjectByKey(entityKey, out foundEntity);
 
             if (exists)
             {
                 objContext.Detach(foundEntity);
-            }
 
-            return (exists);
+                //第二次从数据库获取
+                exists = objContext.TryGetObjectByKey(entityKey, out foundEntity);
+
+                if (exists)
+                {
+                    objContext.Detach(foundEntity);
+                }
+            }
+            
+            return foundEntity;
         }
 
-        public void AddModel(T t)
+        public void AddModel(T t, bool identity = true)
         {
+            CheckVerifiction(EntityState.Added, identity, ref t);
+
             dbContext.Set<T>().Add(t);
         }
-
-        public void UpdateModel(T t)
+        
+        public bool Add(T t, bool identity = true)
         {
-            RemoveHoldingEntityInContext(t);
-            dbContext.Set<T>().Attach(t);
-            dbContext.Entry<T>(t).State = EntityState.Modified;
-        }
+            CheckVerifiction(EntityState.Added, identity, ref t);
 
-        public void DeleteModel(T t)
-        {
-            RemoveHoldingEntityInContext(t);
-            dbContext.Set<T>().Attach(t);
-            dbContext.Entry<T>(t).State = EntityState.Deleted;
-        }
-
-        public bool Add(T t)
-        {
             dbContext.Set<T>().Add(t);
             return dbContext.SaveChanges() > 0;
         }
 
-        public bool Update(T t)
+        public bool Update(T t, bool identity = true)
         {
-            RemoveHoldingEntityInContext(t);
+            CheckVerifiction(EntityState.Modified, identity, ref t, RemoveHoldingEntityInContext(t));
+
             dbContext.Set<T>().Attach(t);
             dbContext.Entry<T>(t).State = EntityState.Modified;
             bool result = dbContext.SaveChanges() > 0;
             return result;
         }
 
+        public void UpdateModel(T t, bool identity = true)
+        {
+            CheckVerifiction(EntityState.Modified, identity, ref t, RemoveHoldingEntityInContext(t));
+
+            dbContext.Set<T>().Attach(t);
+            dbContext.Entry<T>(t).State = EntityState.Modified;
+        }
+
+
         public bool Delete(T t)
         {
             RemoveHoldingEntityInContext(t);
+
             dbContext.Set<T>().Attach(t);
             dbContext.Entry<T>(t).State = EntityState.Deleted;
             return dbContext.SaveChanges() > 0;
         }
+
+        public void DeleteModel(T t)
+        {
+            RemoveHoldingEntityInContext(t);
+
+            dbContext.Set<T>().Attach(t);
+            dbContext.Entry<T>(t).State = EntityState.Deleted;
+        }
+
 
         public int GetCount(Expression<Func<T, bool>> whereLambda)
         {

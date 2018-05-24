@@ -20,5 +20,6 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> GoodID { get; set; }
         public Nullable<int> ExitCount { get; set; }
         public Nullable<decimal> ExitPrice { get; set; }
+        public string Verifiction { get; set; }
     }
 }

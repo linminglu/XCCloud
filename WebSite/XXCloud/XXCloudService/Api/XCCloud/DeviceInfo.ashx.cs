@@ -553,148 +553,148 @@ namespace XXCloudService.Api.XCCloud
             }
         }
 
-        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
-        public object ReloadDevice(Dictionary<string, object> dicParas)
-        {
-            try
-            {
-                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
-                string userId = userTokenKeyModel.LogId;
-                int iUserId = 0;
-                int.TryParse(userId, out iUserId);
+        //[ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        //public object ReloadDevice(Dictionary<string, object> dicParas)
+        //{
+        //    try
+        //    {
+        //        XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+        //        string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+        //        string userId = userTokenKeyModel.LogId;
+        //        int iUserId = 0;
+        //        int.TryParse(userId, out iUserId);
 
-                string errMsg = string.Empty;
-                string goodId = dicParas.ContainsKey("goodId") ? Convert.ToString(dicParas["goodId"]) : string.Empty;
-                string deviceId = dicParas.ContainsKey("deviceId") ? Convert.ToString(dicParas["deviceId"]) : string.Empty;
-                string deviceType = dicParas.ContainsKey("deviceType") ? Convert.ToString(dicParas["deviceType"]) : string.Empty;
-                string reloadType = dicParas.ContainsKey("reloadType") ? Convert.ToString(dicParas["reloadType"]) : string.Empty;
-                string reloadCount = dicParas.ContainsKey("reloadCount") ? Convert.ToString(dicParas["reloadCount"]) : string.Empty;
-                string note = dicParas.ContainsKey("note") ? Convert.ToString(dicParas["note"]) : string.Empty;
-                int iDeviceId = 0, iGoodId = 0;
-                int.TryParse(deviceId, out iDeviceId);
-                int.TryParse(goodId, out iGoodId);
+        //        string errMsg = string.Empty;
+        //        string goodId = dicParas.ContainsKey("goodId") ? Convert.ToString(dicParas["goodId"]) : string.Empty;
+        //        string deviceId = dicParas.ContainsKey("deviceId") ? Convert.ToString(dicParas["deviceId"]) : string.Empty;
+        //        string deviceType = dicParas.ContainsKey("deviceType") ? Convert.ToString(dicParas["deviceType"]) : string.Empty;
+        //        string reloadType = dicParas.ContainsKey("reloadType") ? Convert.ToString(dicParas["reloadType"]) : string.Empty;
+        //        string reloadCount = dicParas.ContainsKey("reloadCount") ? Convert.ToString(dicParas["reloadCount"]) : string.Empty;
+        //        string note = dicParas.ContainsKey("note") ? Convert.ToString(dicParas["note"]) : string.Empty;
+        //        int iDeviceId = 0, iGoodId = 0;
+        //        int.TryParse(deviceId, out iDeviceId);
+        //        int.TryParse(goodId, out iGoodId);
 
-                #region 参数验证
+        //        #region 参数验证
 
-                if (string.IsNullOrEmpty(goodId))
-                {
-                    errMsg = "商品索引goodId不能为空";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
+        //        if (string.IsNullOrEmpty(goodId))
+        //        {
+        //            errMsg = "商品索引goodId不能为空";
+        //            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+        //        }
 
-                //if (string.IsNullOrEmpty(deviceId))
-                //{
-                //    errMsg = "设备索引deviceId不能为空";
-                //    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                //}
+        //        //if (string.IsNullOrEmpty(deviceId))
+        //        //{
+        //        //    errMsg = "设备索引deviceId不能为空";
+        //        //    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+        //        //}
 
-                if (string.IsNullOrEmpty(deviceType))
-                {
-                    errMsg = "设备类型deviceType不能为空";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
+        //        if (string.IsNullOrEmpty(deviceType))
+        //        {
+        //            errMsg = "设备类型deviceType不能为空";
+        //            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+        //        }
 
-                if (string.IsNullOrEmpty(reloadType))
-                {
-                    errMsg = "安装类别reloadType不能为空";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
+        //        if (string.IsNullOrEmpty(reloadType))
+        //        {
+        //            errMsg = "安装类别reloadType不能为空";
+        //            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+        //        }
 
-                if (string.IsNullOrEmpty(reloadCount))
-                {
-                    errMsg = "安装数量reloadCount不能为空";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
+        //        if (string.IsNullOrEmpty(reloadCount))
+        //        {
+        //            errMsg = "安装数量reloadCount不能为空";
+        //            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+        //        }
 
-                if (!Utils.isNumber(reloadCount))
-                {
-                    errMsg = "安装数量reloadCount格式不正确";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
+        //        if (!Utils.isNumber(reloadCount))
+        //        {
+        //            errMsg = "安装数量reloadCount格式不正确";
+        //            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+        //        }
 
-                int iReloadCount = Convert.ToInt32(reloadCount);
-                if (iReloadCount < 0)
-                {
-                    errMsg = "安装数量reloadCount不能为负数";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }                
+        //        int iReloadCount = Convert.ToInt32(reloadCount);
+        //        if (iReloadCount < 0)
+        //        {
+        //            errMsg = "安装数量reloadCount不能为负数";
+        //            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+        //        }                
 
-                #endregion
+        //        #endregion
 
-                IBase_StorageInfoService base_StorageInfoService = BLLContainer.Resolve<IBase_StorageInfoService>();
-                IData_Storage_RecordService data_Storage_RecordService = BLLContainer.Resolve<IData_Storage_RecordService>();
-                IData_ReloadService data_ReloadService = BLLContainer.Resolve<IData_ReloadService>();
-                IBase_DeviceInfoService base_DeviceInfoService = BLLContainer.Resolve<IBase_DeviceInfoService>(resolveNew: true);
-                IData_GameInfoService data_GameInfoService = BLLContainer.Resolve<IData_GameInfoService>(resolveNew: true);
-                int? iDepotId = (from a in base_DeviceInfoService.GetModels(p => p.ID == iDeviceId)
-                               join b in data_GameInfoService.GetModels() on a.GameIndexID equals b.ID
-                               select b.DepotID).FirstOrDefault();
+        //        IBase_StorageInfoService base_StorageInfoService = BLLContainer.Resolve<IBase_StorageInfoService>();
+        //        IData_Storage_RecordService data_Storage_RecordService = BLLContainer.Resolve<IData_Storage_RecordService>();
+        //        IData_ReloadService data_ReloadService = BLLContainer.Resolve<IData_ReloadService>();
+        //        IBase_DeviceInfoService base_DeviceInfoService = BLLContainer.Resolve<IBase_DeviceInfoService>(resolveNew: true);
+        //        IData_GameInfoService data_GameInfoService = BLLContainer.Resolve<IData_GameInfoService>(resolveNew: true);
+        //        int? iDepotId = (from a in base_DeviceInfoService.GetModels(p => p.ID == iDeviceId)
+        //                       join b in data_GameInfoService.GetModels() on a.GameIndexID equals b.ID
+        //                       select b.DepotID).FirstOrDefault();
 
-                //开启EF事务
-                using (TransactionScope ts = new TransactionScope())
-                {
-                    try
-                    {
-                        var data_Reload = new Data_Reload();
-                        data_Reload.StoreID = storeId;
-                        data_Reload.GoodID = Convert.ToInt32(goodId);
-                        data_Reload.DeviceID = !string.IsNullOrEmpty(deviceId) ? Convert.ToInt32(deviceId) : (int?)null;
-                        data_Reload.DeviceType = Convert.ToInt32(deviceType);
-                        data_Reload.ReloadType = Convert.ToInt32(reloadType);
-                        data_Reload.ReloadCount = iReloadCount;
-                        data_Reload.Note = note;
-                        data_Reload.RealTime = DateTime.Now;
-                        data_Reload.UserID = iUserId;
-                        if (!data_ReloadService.Add(data_Reload))
-                        {
-                            errMsg = "添加设备安装信息失败";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
+        //        //开启EF事务
+        //        using (TransactionScope ts = new TransactionScope())
+        //        {
+        //            try
+        //            {
+        //                var data_Reload = new Data_Reload();
+        //                data_Reload.StoreID = storeId;
+        //                data_Reload.GoodID = Convert.ToInt32(goodId);
+        //                data_Reload.DeviceID = !string.IsNullOrEmpty(deviceId) ? Convert.ToInt32(deviceId) : (int?)null;
+        //                data_Reload.DeviceType = Convert.ToInt32(deviceType);
+        //                data_Reload.ReloadType = Convert.ToInt32(reloadType);
+        //                data_Reload.ReloadCount = iReloadCount;
+        //                data_Reload.Note = note;
+        //                data_Reload.RealTime = DateTime.Now;
+        //                data_Reload.UserID = iUserId;
+        //                if (!data_ReloadService.Add(data_Reload))
+        //                {
+        //                    errMsg = "添加设备安装信息失败";
+        //                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+        //                }
 
-                        //更新库存
-                        if (base_StorageInfoService.Any(a => a.DepotID == iDepotId && a.GoodID == iGoodId))
-                        {
-                            var base_StorageInfo = base_StorageInfoService.GetModels(p => p.DepotID == iDepotId && p.GoodID == iGoodId).FirstOrDefault();
-                            base_StorageInfo.Surplus -= iReloadCount;
-                            if (!base_StorageInfoService.Update(base_StorageInfo))
-                            {
-                                errMsg = "更新库存信息失败";
-                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                            }
+        //                //更新库存
+        //                if (base_StorageInfoService.Any(a => a.DepotID == iDepotId && a.GoodID == iGoodId))
+        //                {
+        //                    var base_StorageInfo = base_StorageInfoService.GetModels(p => p.DepotID == iDepotId && p.GoodID == iGoodId).FirstOrDefault();
+        //                    base_StorageInfo.Surplus -= iReloadCount;
+        //                    if (!base_StorageInfoService.Update(base_StorageInfo))
+        //                    {
+        //                        errMsg = "更新库存信息失败";
+        //                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+        //                    }
 
-                            //添加库存记录
-                            var data_Storage_Record = new Data_Storage_Record();
-                            data_Storage_Record.StorageCount = iReloadCount;
-                            data_Storage_Record.StorageFlag = (int)StockFlag.Out;
-                            data_Storage_Record.StorageID = base_StorageInfo.ID;
-                            data_Storage_Record.CreateTime = DateTime.Now;
-                            if (!data_Storage_RecordService.Add(data_Storage_Record))
-                            {
-                                errMsg = "添加库存记录失败";
-                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                            }
-                        }                                                
+        //                    //添加库存记录
+        //                    var data_Storage_Record = new Data_Storage_Record();
+        //                    data_Storage_Record.StorageCount = iReloadCount;
+        //                    data_Storage_Record.StorageFlag = (int)StockFlag.Out;
+        //                    data_Storage_Record.StorageID = base_StorageInfo.ID;
+        //                    data_Storage_Record.CreateTime = DateTime.Now;
+        //                    if (!data_Storage_RecordService.Add(data_Storage_Record))
+        //                    {
+        //                        errMsg = "添加库存记录失败";
+        //                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+        //                    }
+        //                }                                                
 
-                        ts.Complete();
-                    }
-                    catch (Exception ex)
-                    {
-                        return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, ex.Message);
-                    }
-                }
+        //                ts.Complete();
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, ex.Message);
+        //            }
+        //        }
 
-                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
-            }
-            catch (DbEntityValidationException e)
-            {
-                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, e.EntityValidationErrors.ToErrors());
-            }
-            catch (Exception e)
-            {
-                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
-            }
-        }
+        //        return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
+        //    }
+        //    catch (DbEntityValidationException e)
+        //    {
+        //        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, e.EntityValidationErrors.ToErrors());
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+        //    }
+        //}
 
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object CheckDevice(Dictionary<string, object> dicParas)

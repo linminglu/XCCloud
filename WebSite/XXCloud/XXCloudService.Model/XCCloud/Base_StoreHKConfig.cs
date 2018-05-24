@@ -23,5 +23,6 @@ namespace XCCloudService.Model.XCCloud
         public string HKMerchID { get; set; }
         public string HKAppSecret { get; set; }
         public string HKAppID { get; set; }
+        public string Verifiction { get; set; }
     }
 }

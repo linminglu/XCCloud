@@ -15,6 +15,7 @@ namespace XCCloudService.Model.XCCloud
     public partial class Data_Food_Detial
     {
         public int ID { get; set; }
+        public string MerchID { get; set; }
         public Nullable<int> FoodID { get; set; }
         public Nullable<int> FoodType { get; set; }
         public Nullable<int> BalanceType { get; set; }
@@ -23,5 +24,6 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> ContainID { get; set; }
         public Nullable<int> ContainCount { get; set; }
         public Nullable<int> Status { get; set; }
+        public string Verifiction { get; set; }
     }
 }

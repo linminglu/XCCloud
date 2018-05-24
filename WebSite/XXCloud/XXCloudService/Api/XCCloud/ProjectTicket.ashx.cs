@@ -156,12 +156,12 @@ namespace XXCloudService.Api.XCCloud
                 {
                     try
                     {
-                        var model = Data_ProjectTicketService.I.GetModels(p => p.ID == id).FirstOrDefault() ?? new Data_ProjectTicket();
-                        model.MerchID = merchId;
-                        model.StoreID = storeId;
+                        var model = Data_ProjectTicketService.I.GetModels(p => p.ID == id).FirstOrDefault() ?? new Data_ProjectTicket();                        
                         Utils.GetModel(dicParas, ref model);
                         if (id == 0)
                         {
+                            model.MerchID = merchId;
+                            model.StoreID = storeId;
                             if (!Data_ProjectTicketService.I.Add(model))
                             {
                                 errMsg = "保存门票失败";

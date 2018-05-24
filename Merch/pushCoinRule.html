@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>投币优惠设定</title>
+    <link rel="stylesheet" href="layui/css/layui.css">
+</head>
+<body>
+<div class="layui-row" style="padding:15px">
+    <blockquote class="layui-elem-quote" style="text-align: right">
+        <button type="button" class="layui-btn layui-btn-normal" i18n-content="查询模板">查询模板</button>
+        <button type="button" class="layui-btn layui-btn-normal add" i18n-content="新增">新增</button>
+    </blockquote>
+    <table class="layui-hide" id="pushCoinRule" lay-filter="pushCoinRule"></table>
+</div>
+<!--//弹窗层   -->
+<div id="openModel" style="padding: 15px;display: none;" class="goodIsAll">
+    <form action="" class="layui-form layui-form-pane" lay-filter="formtest">
+        <div class="layui-col-md4">
+            <div id="xtree1" style="width:300px;border:1px solid #e2e2e2;padding: 10px 0 25px 5px;height: 377px;overflow: auto"></div>
+        </div>
+        <div class="layui-col-md8">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">时间范围</label>
+                    <div class="layui-input-inline" style="width: 150px">
+                        <select lay-filter="usePried">
+                            <option value="0">自定义</option>
+                            <option value="1">当天</option>
+                            <option value="2">本周</option>
+                            <option value="3">本月</option>
+                            <option value="4">本季</option>
+                            <option value="5">本年</option>
+                        </select>
+                    </div>
+                    <div class="layui-input-inline" style="width: 150px">
+                        <input type="text" class="layui-input" name="StartDate" id="StartDate">
+                    </div>
+                    <div class="layui-form-mid">
+                        至
+                    </div>
+                    <div class="layui-input-inline" style="width: 150px">
+                        <input type="text" class="layui-input" name="EndDate" id="EndDate">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">时段类型</label>
+                    <div class="layui-input-inline">
+                        <select id="poriedType" lay-filter="timeType" name="poriedType">
+                            <option value="0" selected>自定义</option>
+                            <option value="1" >工作日</option>
+                            <option value="2" >周末</option>
+                            <option value="3" >法定节假日</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-inline" id="weekSetBox">
+                    <label class="layui-form-label">优惠周天</label>
+                    <div class="layui-input-block" id="weekBox" style="width: 700px">
+
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">生效时段</label>
+                    <div class="layui-input-inline" style="margin-right: 5px">
+                        <input type="text" name="StartTime" id="StartTime" class="layui-input">
+                    </div>
+                    <div class="layui-form-mid" style="margin-right: 5px">至</div>
+                    <div class="layui-input-inline" >
+                        <input type="text" name="EndTime" id="EndTime" class="layui-input">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">按键一扣币类别</label>
+                    <div class="layui-input-inline">
+                        <select name="PushBalanceIndex1" id="PushBalanceIndex1" lay-filter="PushBalanceIndex1">
+                            <option selected>-请选择-</option>
+                            <option value="0" selected>代币</option>
+                            <option value="1">金币</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">扣币数</label>
+                    <div class="layui-input-inline">
+                        <input type="text" class="layui-input" name="PushCoin1">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">按键二扣币类别</label>
+                    <div class="layui-input-inline">
+                        <select name="PushBalanceIndex2" id="PushBalanceIndex2" lay-filter="PushBalanceIndex2">
+                            <option selected>-请选择-</option>
+                            <option value="0">代币</option>
+                            <option value="1">金币</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">扣币数</label>
+                    <div class="layui-input-inline">
+                        <input type="text" class="layui-input" name="PushCoin2">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">是否允许投币</label>
+                    <div class="layui-input-inline">
+                        <input type="checkbox" lay-skin="switch" lay-text="允许投币|禁止投币" name="Allow_In" lay-filter="Allow_In">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">是否允许退币</label>
+                    <div class="layui-input-inline">
+                        <input type="checkbox" lay-skin="switch" lay-text="允许退币|禁止退币" name="Allow_Out" lay-filter="Allow_Out">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">优先级别</label>
+                <div class="layui-input-block">
+                    <select name="Level" id="Level" lay-filter="Level">
+                        <option>-请选择-</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-md12">
+            <div class="layui-form-item">
+                <label class="layui-form-label">会员级别</label>
+                <div class="layui-input-block" id="memBox"></div>
+            </div>
+        </div>
+    </form>
+    <div style="text-align:center;">
+        <button type="button" id="save" class="layui-btn">确定</button>
+    </div>
+</div>
+</body>
+<script src="js/jquery-1.8.3-min.js"></script>
+<script src="layui/layui.js"></script>
+<script src="layui/layui-xtree-game.js"></script>
+<script src="js/storeSystem.js"></script>
+<script>
+    var xc=xcActionSystem.prototype;
+    var token=xc.getStorage('token');
+    var parm = {
+        'obj': {'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'},
+        'url': '/XCCloud/PushRule?action=QueryPushRule',
+        'elem': '#pushCoinRule',
+        'cols': [{field: 'ID', title: '流水号', align: 'center'}
+            , {field: 'GameName', title: '游戏机名称', align: 'center'}
+            , {field: 'MemberLevelName', title: '会员级别', align: 'center'}
+            , {field: 'Week', title: '周数', align: 'center'}
+            , {field: 'Allow_In', title: '允许投币', align: 'center'}
+            , {field: 'Allow_Out', title: '允许退币', align: 'center'}
+            , {field: 'Level', title: '优先级', align: 'center',templet:'#charge'}
+            , {field: 'StartDate', title: '开始时间', align: 'center',templet:'#state'}
+            , {field: 'EndDate', title: '结束时间', align: 'center'}
+            , {field: 'StartTime', title: '生效开始时段', align: 'center'}
+            , {field: 'EndTime', title: '生效结束时段', align: 'center'}
+            , {field: 'Period', title: '时段', align: 'center'}
+            ,{fixed: 'right',title: '操作', width:240, align:'center', toolbar: '#barDemo'}]
+    };
+    xc.getInitData(parm);
+    let id='';let gameArr=[];let checkedArr=[];
+    let week=[];let WeekType=0;let Level='';
+    let PushBalanceIndex1='0';let PushBalanceIndex2='';
+    let Allow_In=0;let Allow_Out=0;
+    let GameList=[];let MemberLevelList=[];
+    var xtree3;
+    layui.use(['table','form','layer','laydate'],function () {
+        let table=layui.table;let form=layui.form;let layer=layui.layer;let laydate=layui.laydate;
+        var  obj={"dictKey":'游戏机类型','enabled':1,'pDicKey':'',"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
+        var url="/XCCloud/Dictionary?action=GetNodes";
+        var parasJson = JSON.stringify(obj);
+        $.ajax({
+            type: "post",
+            url: url,
+            contentType: "application/json; charset=utf-8",
+            data: {parasJson: parasJson},
+            success: function (data) {
+                data = JSON.parse(data);
+                if(data.result_code==1){
+                    gameArr=data.result_data;
+                    gameArr.splice(0,1);
+                    xtree3=new layuiXtree({
+                        elem: 'xtree1'                  //必填
+                        , form: form                    //必填
+                        , data: gameArr//必填
+                        , isopen: true  //加载完毕后的展开状态，默认值：true
+                        , ckall: true    //启用全选功能，默认值：false
+                        , ckallback: function () { } //全选框状态改变后执行的回调函数
+                        ,checkedArr:checkedArr
+                    });
+                }
+            }
+        });
+
+
+        laydate.render({
+            elem: '#StartDate',type: 'date',value:new Date()
+        });
+        laydate.render({
+            elem: '#EndDate',type: 'date',value:new Date()
+        });
+        laydate.render({
+            elem: '#StartTime',type: 'time',value:'00:00:00'
+        });
+        laydate.render({
+            elem: '#EndTime',type: 'time',value:'23:59:59'
+        });
+        //监听有效期间选择
+        form.on('select(usePried)',function (data) {
+            if(data.value==1){
+                $('#StartDate').val(getDayStartDate()).prop('disabled',true);
+                $('#EndDate').val(getDayStartDate()).prop('disabled',true);
+            }else if(data.value==2){
+                $('#StartDate').val(getWeekStartDate()).prop('disabled',true);
+                $('#EndDate').val(getWeekEndDate()).prop('disabled',true);
+            }else if(data.value==3){
+                $('#StartDate').val(getMonthStartDate()).prop('disabled',true);
+                $('#EndDate').val(getMonthEndDate()).prop('disabled',true);
+            }else if(data.value==5){
+                $('#StartDate').val(getYearStartDate()).prop('disabled',true);
+                $('#EndDate').val(getYearEndDate()).prop('disabled',true);
+            }else if(data.value==4){
+                $('#StartDate').val(getQuarterStartDate()).prop('disabled',true);
+                $('#EndDate').val(getQuarterEndDate()).prop('disabled',true);
+            }else if(data.value==0){
+                $('#StartDate').prop('disabled',false);
+                $('#EndDate').prop('disabled',false);
+                layer.msg('<p style="color: red">请自己设置有效期限</p>')
+            }
+        });
+        xc.AddWeeks('weekBox');
+        // xc. getBalanceTypeDic('',token,layer,form,'BalanceIndex');
+        form.on('select(timeType)',(data)=>{
+            WeekType=data.value;
+            if(WeekType==0){
+                $('#weekSetBox').css({'display':'inline-block'});
+                form.render();
+                xc.AddWeeks('weekBox');
+            }else {
+                $('#weekSetBox').css({'display':'none'});
+                $('#weekBox').html('');
+                week=[];
+            }
+        });
+        form.on('checkbox(weeks)', function(data){
+            if (data.elem.checked==true){
+                week.push(data.value);
+            }else if(data.elem.checked==false){
+                for (var i=0;i<week.length;i++){
+                    if(week[i]==data.value){
+                        week.splice(i,1);
+                    }
+                }
+            }
+        });
+        form.on('select(PushBalanceIndex1)',(data)=>{
+            PushBalanceIndex1=data.value;
+        });
+        form.on('select(PushBalanceIndex2)',(data)=>{
+            if(PushBalanceIndex1==data.value){
+                layer.msg('该选项已选，请选择其他选项')
+            }else {
+                PushBalanceIndex2=data.value;
+            }
+
+        });
+        form.on('switch(Allow_In)',(data)=>{
+            if(data.elem.checked){
+                Allow_In=1
+            }else {
+                Allow_In=0;
+            }
+        });
+        form.on('switch(Allow_Out)',(data)=>{
+            if(data.elem.checked){
+                Allow_Out=1
+            }else {
+                Allow_Out=0;
+            }
+        });
+        form.on('select(Level)',(data)=>{
+            Level=data.value;
+        });
+        form.on('checkbox(ml)', function(data){
+            if (data.elem.checked==true){
+                MemberLevelList.push({'MemberLevelID':data.value});
+            }else if(data.elem.checked==false){
+                for (var i=0;i<MemberLevelList.length;i++){
+                    if(MemberLevelList[i].MemberLevelID==data.value){
+                        MemberLevelList.splice(i,1);
+                    }
+                }
+            }
+        });
+        //新增，存入一个cook
+        $('.add').on('click',function (){
+             id=''; week=[]; WeekType=0; Level='';
+             PushBalanceIndex1='0'; PushBalanceIndex2='';
+             Allow_In=0; Allow_Out=0;
+             GameList=[]; MemberLevelList=[];
+
+            xc.getMemberTypeAll(token,layer,form,'memBox');
+            layer.open({
+                title:'新增',
+                type:1,
+                area:['1045px','650px'],
+                content:$('#openModel'),
+                cancel:function () {
+                    location.reload();
+                }
+            });
+
+        });
+        $('#save').on('click',function () {
+            var oCks = xtree3.GetChecked(); //获取全部选中的末级节点checkbox对象，返回的为Array
+            for (var i = 0; i < oCks.length; i++) {
+                GameList.push({'GameID':oCks[i].value})
+            }
+            let obj={'id':id,
+                'MerchID':JSON.parse(xc.getStorage('logMsg')).merchId,
+                'StoreID':JSON.parse(xc.getStorage('logMsg')).storeId,
+                'Allow_In':Allow_In,
+                'Allow_out':Allow_Out,
+                'WeekType':WeekType,
+                'week':week.length>0?week.sort().join('|'):'',
+                'PushBalanceIndex1':PushBalanceIndex1,
+                'PushCoin1':$('input[name="PushCoin1"]').val(),
+                'PushBalanceIndex2':PushBalanceIndex2,
+                'PushCoin2':$('input[name="PushCoin2"]').val(),
+                'Level':Level,
+                'StartTime':$('input[name="StartTime"]').val(),
+                'EndTime':$('input[name="EndTime"]').val(),
+                'StartDate':$('input[name="StartDate"]').val(),
+                'EndDate':$('input[name="EndDate"]').val(),
+                'GameList':GameList,
+                'MemberLevelList':MemberLevelList,
+                'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'
+            };
+
+            let parseJson = JSON.stringify(obj);
+            $.ajax({
+                type:'post',
+                url:'/XCCloud/PushRule?action=SavePushRule',
+                contentType: "application/json; charset=utf-8",
+                data:{parasJson: parseJson},
+                success: function (data) {
+                    data = JSON.parse(data);
+                    if (data.result_code == 1) {
+                        layer.msg('设置成功',{time:1500},function () {
+                            parent.location.reload()
+                        })
+                    } else {
+                        layer.msg(data.result_msg||data.return_msg);
+                    }
+                }
+            })
+        });
+
+        table.on('tool(pushCoinRule)',function (obj) {
+            let data=obj.data;
+            let layEvent=obj.event;
+            id=data.ID;
+            if(layEvent==='del'){
+                layer.confirm('确定停用此设置吗？', function(index){
+                    let _obj={'id':data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                    let parseJson = JSON.stringify(_obj);
+                    $.ajax({
+                        type:'post',
+                        url:'/XCCloud/PushRule?action=DelPushRule',
+                        contentType: "application/json; charset=utf-8",
+                        data:{parasJson: parseJson},
+                        success: function (data) {
+                            data = JSON.parse(data);
+                            if (data.result_code == 1) {
+                                layer.msg('本规则停用成功',{time:1500},function () {
+                                    layer.close(index);
+                                    location.reload()
+                                })
+                            } else {
+                                layer.msg(data.result_msg);
+                            }
+                        }
+                    })
+                });
+            }else if(layEvent==='modify'){
+                let _obj={'id':data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                let parseJson = JSON.stringify(_obj);
+                $.ajax({
+                    type:'post',
+                    url:'/XCCloud/PushRule?action=GetPushRule',
+                    contentType: "application/json; charset=utf-8",
+                    async:false,
+                    data:{parasJson: parseJson},
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        if (data.result_code == 1) {
+                           let arr=data.result_data;
+                           form.val('formtest',{
+                               'StartDate':arr.StartDate.substring(0, 10),
+                               'EndDate':arr.EndDate.substring(0, 10),
+                               'poriedType':arr.WeekType,
+                               'PushBalanceIndex1':arr.PushBalanceIndex1,
+                               'PushCoin1':arr.PushCoin1,
+                               'PushBalanceIndex2':arr.PushBalanceIndex2,
+                               'PushCoin2':arr.PushCoin2,
+                               'Allow_In':arr.Allow_In==1?true:false,
+                               'Allow_Out':arr.Allow_Out==1?true:false,
+                               'Level':arr.Level
+                           });
+                            $('#StartTime').val(generatelD(arr.StartTime.Hours) +':'+generatelD(arr.StartTime.Minutes) +':'+generatelD(arr.StartTime.Seconds));
+                            $('#EndTime').val(generatelD(arr.EndTime.Hours) +':'+generatelD(arr.EndTime.Minutes) +':'+generatelD(arr.EndTime.Seconds));
+                            checkedArr=arr.GameList;
+                            // GameList=arr.GameList;
+                            var  obj1={"dictKey":'游戏机类型','enabled':1,'pDicKey':'',"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
+                            var url="/XCCloud/Dictionary?action=GetNodes";
+                            var parasJson = JSON.stringify(obj1);
+                            $.ajax({
+                                type: "post",
+                                url: url,
+                                contentType: "application/json; charset=utf-8",
+                                data: {parasJson: parasJson},
+                                async:false,
+                                success: function (data) {
+                                    data = JSON.parse(data);
+                                    if(data.result_code==1){
+                                        gameArr=data.result_data;
+                                        gameArr.splice(0,1);
+                                        xtree3=new layuiXtree({
+                                            elem: 'xtree1'                  //必填
+                                            , form: form                    //必填
+                                            , data: gameArr//必填
+                                            , isopen: true  //加载完毕后的展开状态，默认值：true
+                                            , ckall: true    //启用全选功能，默认值：false
+                                            , ckallback: function () { } //全选框状态改变后执行的回调函数
+                                            ,checkedArr:checkedArr
+                                        });
+                                    }
+                                }
+                            });
+                            xc.getMemberTypeAll(token,layer,form,'memBox',arr.MemberLevelList);
+                            if(arr.Week!=''){
+                                let arrWeek= arr.Week.split('|');
+                                for(let i in arrWeek){
+                                    $('#weekBox').find('input[value="'+arrWeek[i]+'"]').attr('checked',true);
+                                }
+                            }
+                            form.render();
+                            week=arr.Week!=''?arr.Week.split('|'):[];
+                            WeekType=arr.WeekType; Level=arr.Level;
+                            PushBalanceIndex1=arr.PushBalanceIndex1; PushBalanceIndex2=arr.PushBalanceIndex2;
+                            Allow_In=arr.Allow_In; Allow_Out=arr.Allow_Out;
+                            MemberLevelList=arr.MemberLevelList;
+                            layer.open({
+                                title:'修改设置',
+                                type:1,
+                                area:['1045px','650px'],
+                                content:$('#openModel'),
+                                cancel:function () {
+                                    location.reload();
+                                }
+                            });
+                        } else {
+                            layer.msg(data.result_msg);
+                        }
+                    }
+                })
+
+
+            }
+        });
+    });
+    function generatelD(str) {
+        var pad='00';
+        return pad.substring(0,2-str.length)+str
+    }
+</script>
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del"><i class="layui-icon">&#xe640;</i>删除</a>
+    <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="modify"><i class="layui-icon">&#xe642;</i>修改</a>
+</script>
+</html>

@@ -15,18 +15,20 @@ namespace XCCloudService.Model.XCCloud
     public partial class Flw_485_Coin
     {
         public int ID { get; set; }
+        public string MerchID { get; set; }
         public string StoreID { get; set; }
         public string Segment { get; set; }
         public string HeadAddress { get; set; }
-        public Nullable<int> CardID { get; set; }
-        public Nullable<int> Coins { get; set; }
-        public Nullable<int> CoinType { get; set; }
-        public Nullable<int> Balance { get; set; }
-        public Nullable<System.DateTime> RealTime { get; set; }
         public Nullable<int> DeviceID { get; set; }
         public Nullable<int> GameIndexID { get; set; }
         public string SiteName { get; set; }
         public Nullable<int> MemberID { get; set; }
+        public Nullable<int> CardID { get; set; }
+        public Nullable<int> Coins { get; set; }
+        public Nullable<int> CoinType { get; set; }
         public Nullable<int> BalanceIndex { get; set; }
+        public Nullable<int> Balance { get; set; }
+        public Nullable<System.DateTime> RealTime { get; set; }
+        public string Verifiction { get; set; }
     }
 }

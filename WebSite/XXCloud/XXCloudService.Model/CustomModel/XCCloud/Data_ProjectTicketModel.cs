@@ -73,7 +73,7 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         public int? ExitPeriodType { get; set; }
         public int? ExitPeriodValue { get; set; }
         public int? ExitTicketType { get; set; }
-        public int? ExitTicketValue { get; set; }
+        public decimal? ExitTicketValue { get; set; }
         public string ExitLimit 
         {
             get 

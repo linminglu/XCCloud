@@ -23,5 +23,6 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<decimal> Price { get; set; }
         public Nullable<decimal> Tax { get; set; }
         public Nullable<decimal> TaxPrice { get; set; }
+        public string Verifiction { get; set; }
     }
 }

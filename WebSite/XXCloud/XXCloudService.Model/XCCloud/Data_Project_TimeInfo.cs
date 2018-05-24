@@ -15,6 +15,7 @@ namespace XCCloudService.Model.XCCloud
     public partial class Data_Project_TimeInfo
     {
         public int ID { get; set; }
+        public string MerchID { get; set; }
         public string StoreID { get; set; }
         public Nullable<int> ProjectTimeID { get; set; }
         public Nullable<int> ChargeType { get; set; }
@@ -28,5 +29,6 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<decimal> TopPrice { get; set; }
         public Nullable<int> CycleType { get; set; }
         public Nullable<int> LockMember { get; set; }
+        public string Verifiction { get; set; }
     }
 }

@@ -15,9 +15,11 @@ namespace XCCloudService.Model.XCCloud
     public partial class Data_Food_Sale
     {
         public int ID { get; set; }
+        public string MerchID { get; set; }
         public Nullable<int> FoodID { get; set; }
         public Nullable<int> BalanceType { get; set; }
         public Nullable<decimal> UseCount { get; set; }
         public Nullable<decimal> CashValue { get; set; }
+        public string Verifiction { get; set; }
     }
 }

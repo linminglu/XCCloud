@@ -22,5 +22,6 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> ChargeOFF { get; set; }
         public Nullable<int> MaxSaveCount { get; set; }
         public Nullable<int> MaxUplife { get; set; }
+        public string Verifiction { get; set; }
     }
 }

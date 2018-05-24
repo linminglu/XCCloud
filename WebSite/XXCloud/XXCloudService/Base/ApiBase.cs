@@ -567,6 +567,12 @@ namespace XCCloudService.Base
             }
             else if (signKeyEnum == SignKeyEnum.XCCloudUserCacheToken)
             {
+                if (!dicParas.ContainsKey("userToken"))
+                {
+                    errMsg = "用户令牌参数userToken不能为空";
+                    return false;
+                }
+
                 string token = dicParas["userToken"].ToString();
 
                 //验证token

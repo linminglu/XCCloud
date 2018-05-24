@@ -15,6 +15,7 @@ namespace XCCloudService.Model.XCCloud
     public partial class Data_Member_Card
     {
         public string ID { get; set; }
+        public string MerchID { get; set; }
         public string ICCardID { get; set; }
         public Nullable<int> ParentCard { get; set; }
         public Nullable<int> CardType { get; set; }
@@ -32,5 +33,6 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> RepeatCode { get; set; }
         public Nullable<long> UID { get; set; }
         public Nullable<int> CardStatus { get; set; }
+        public string Verifiction { get; set; }
     }
 }

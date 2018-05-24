@@ -66,7 +66,7 @@ namespace XXCloudService.Api.XCCloud
                 string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
                 
                 IData_JackpotInfoService data_JackpotInfoService = BLLContainer.Resolve<IData_JackpotInfoService>();
-                Dictionary<int, string> pJackpotList = data_JackpotInfoService.GetModels(p=>p.MerchInfo.Equals(merchId, StringComparison.OrdinalIgnoreCase))
+                Dictionary<int, string> pJackpotList = data_JackpotInfoService.GetModels(p=>p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase))
                     .Select(o => new { ID = o.ID, ActiveName = o.ActiveName }).Distinct()
                     .ToDictionary(d => d.ID, d => d.ActiveName);
 
@@ -196,7 +196,7 @@ namespace XXCloudService.Api.XCCloud
                         data_JackpotInfo.Concerned = !string.IsNullOrEmpty(concerned) ? Convert.ToInt32(concerned) : (int?)null;
                         data_JackpotInfo.StartTime = Convert.ToDateTime(startTime);
                         data_JackpotInfo.EndTime = Convert.ToDateTime(endTime);
-                        data_JackpotInfo.MerchInfo = merchId;
+                        data_JackpotInfo.MerchID = merchId;
                         data_JackpotInfo.Threshold = Convert.ToInt32(threshold);
                         if (data_JackpotInfo.ID <= 0)
                         {

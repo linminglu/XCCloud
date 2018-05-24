@@ -24,5 +24,6 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> InitialCount { get; set; }
         public Nullable<int> RemainCount { get; set; }
         public string Note { get; set; }
+        public string Verifiction { get; set; }
     }
 }

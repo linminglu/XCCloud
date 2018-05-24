@@ -15,6 +15,7 @@ namespace XCCloudService.Model.XCCloud
     public partial class Data_GoodInventory
     {
         public int ID { get; set; }
+        public string MerchID { get; set; }
         public string StoreID { get; set; }
         public string Barcode { get; set; }
         public Nullable<int> InventoryType { get; set; }
@@ -25,5 +26,6 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> UserID { get; set; }
         public Nullable<System.DateTime> InventoryTime { get; set; }
         public string Note { get; set; }
+        public string Verifiction { get; set; }
     }
 }

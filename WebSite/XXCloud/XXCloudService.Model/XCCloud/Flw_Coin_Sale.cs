@@ -15,6 +15,8 @@ namespace XCCloudService.Model.XCCloud
     public partial class Flw_Coin_Sale
     {
         public int ID { get; set; }
+        public string MerchID { get; set; }
+        public string StoreID { get; set; }
         public Nullable<int> CardID { get; set; }
         public Nullable<int> Coins { get; set; }
         public Nullable<int> Balance { get; set; }
@@ -25,5 +27,6 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> UserID { get; set; }
         public Nullable<int> AuthorID { get; set; }
         public string WorkStation { get; set; }
+        public string Verifiction { get; set; }
     }
 }

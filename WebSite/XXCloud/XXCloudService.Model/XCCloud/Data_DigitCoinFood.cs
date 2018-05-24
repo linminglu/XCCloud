@@ -16,10 +16,12 @@ namespace XCCloudService.Model.XCCloud
     {
         public int ID { get; set; }
         public string MerchID { get; set; }
+        public string StoreID { get; set; }
         public string FoodName { get; set; }
         public Nullable<int> BalanceIndex { get; set; }
         public Nullable<int> Coins { get; set; }
         public Nullable<int> AuthorFlag { get; set; }
         public string Note { get; set; }
+        public string Verifiction { get; set; }
     }
 }

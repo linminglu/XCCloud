@@ -29,5 +29,6 @@ namespace XCCloudService.Model.XCCloud
         public string WorkStation { get; set; }
         public Nullable<System.DateTime> CheckDate { get; set; }
         public Nullable<int> State { get; set; }
+        public string Verifiction { get; set; }
     }
 }

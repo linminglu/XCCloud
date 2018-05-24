@@ -15,6 +15,7 @@ namespace XCCloudService.Model.XCCloud
     public partial class Base_StoreWeight
     {
         public int ID { get; set; }
+        public string MerchID { get; set; }
         public string StoreID { get; set; }
         public Nullable<int> BossID { get; set; }
         public Nullable<int> WeightValue { get; set; }

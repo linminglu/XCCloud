@@ -19,5 +19,6 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> GroupID { get; set; }
         public Nullable<int> RuleType { get; set; }
         public Nullable<int> RuleID { get; set; }
+        public string Verifiction { get; set; }
     }
 }

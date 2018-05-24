@@ -601,13 +601,13 @@ namespace XCCloudService.Api.XCCloud
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
 
-                Dictionary<int, string> memberLevel = Data_MemberLevelService.I.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.State == 1).Select(o => new
+                var memberLevel = Data_MemberLevelService.I.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.State == 1).Select(o => new
                 {
                     MemberLevelID = o.MemberLevelID,
                     MemberLevelName = o.MemberLevelName
-                }).Distinct().ToDictionary(d => d.MemberLevelID, d => d.MemberLevelName);
+                }).Distinct();
                 
-                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, memberLevel);
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, memberLevel);
             }
             catch (Exception e)
             {

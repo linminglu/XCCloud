@@ -36,5 +36,6 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> SwitchMerch { get; set; }
         public Nullable<int> SwitchStore { get; set; }
         public Nullable<int> SwitchWorkstation { get; set; }
+        public string Verifiction { get; set; }
     }
 }

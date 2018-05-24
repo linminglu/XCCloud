@@ -112,7 +112,7 @@ namespace XXCloudService.Api.XCCloud
                 {
                     model = model,
                     GameList = Data_PushRule_GameListService.I.GetModels(p => p.PushRuleID == id).Select(o => o.GameID),
-                    MemberLevelList = Data_PushRule_MemberLevelListService.I.GetModels(p => p.PushRuleID == id).Select(o => o.MemberLevelID)
+                    MemberLevelList = Data_PushRule_MemberLevelListService.I.GetModels(p => p.PushRuleID == id).Select(o => new { MemberLevelID = o.MemberLevelID })
                 }).AsFlatDictionary();
 
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, data_PushRule);

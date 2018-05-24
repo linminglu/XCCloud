@@ -39,5 +39,6 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> SelttleType { get; set; }
         public Nullable<int> SettleID { get; set; }
         public Nullable<int> StoreState { get; set; }
+        public string Verifiction { get; set; }
     }
 }

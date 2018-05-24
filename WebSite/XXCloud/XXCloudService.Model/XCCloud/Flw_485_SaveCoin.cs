@@ -14,13 +14,19 @@ namespace XCCloudService.Model.XCCloud
     
     public partial class Flw_485_SaveCoin
     {
-        public int ID { get; set; }
+        public byte[] ID { get; set; }
+        public string MerchID { get; set; }
         public string StoreID { get; set; }
+        public Nullable<int> DeviceID { get; set; }
         public string Segment { get; set; }
         public string HeadAddress { get; set; }
-        public Nullable<int> CardID { get; set; }
+        public string MemberID { get; set; }
+        public string CardID { get; set; }
+        public Nullable<int> SaveBalanceIndex { get; set; }
         public Nullable<int> Coins { get; set; }
         public Nullable<int> Balance { get; set; }
         public Nullable<System.DateTime> RealTime { get; set; }
+        public Nullable<System.DateTime> CheckDate { get; set; }
+        public string Verifiction { get; set; }
     }
 }

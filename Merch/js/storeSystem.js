@@ -1629,7 +1629,8 @@ xcActionSystem.prototype= {
         let parseJson = JSON.stringify(_obj);
         $.ajax({
             type:'post',
-            url:'/XCCloud/Member?action=QueryMemberLevel',
+            // url:'/XCCloud/Member?action=QueryMemberLevel',
+            url:'  /XCCloud/Member?action=GetMemberLevelDic',
             contentType: "application/json; charset=utf-8",
             data:{parasJson: parseJson},
             success: function (data) {
@@ -1641,9 +1642,9 @@ xcActionSystem.prototype= {
                         if(checked){
                             let flag=false;
                             for(let j in checked){
-                                arr[i].MemberLevelID==checked[j];
-                                flag=true;
-                                break;
+                                if(arr[i].MemberLevelID==checked[j].MemberLevelID){
+                                    flag=true;
+                                }
                             }
                             if(flag){
                                 $('#'+id).append('<input type="checkbox" lay-skin="primary" checked lay-filter="ml" value="'+arr[i].MemberLevelID+'"title="'+arr[i].MemberLevelName+'">');
@@ -2007,9 +2008,7 @@ xcActionSystem.prototype= {
             }
         });
     },
-
-
-       getGameType:function (token,layer,form,objVal,id,m) {
+    getGameType:function (token,layer,form,objVal,id,m) {
     var  obj={"dictKey":objVal,'enabled':1,'pDicKey':'',"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
     var url="/XCCloud/Dictionary?action=GetNodes";
     var parasJson = JSON.stringify(obj);

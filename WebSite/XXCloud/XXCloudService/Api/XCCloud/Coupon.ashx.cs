@@ -37,9 +37,10 @@ namespace XXCloudService.Api.XCCloud
 
         private bool isUsed(int iId)
         {
-            return (from a in Data_CouponListService.N.GetModels(p => p.CouponID == iId)
-                    join b in Flw_CouponUseService.N.GetModels() on a.ID equals b.CouponCode
-                    select 1).Any() || Flw_CouponUseService.I.Any(p=>p.CouponID == iId);
+            //return (from a in Data_CouponListService.N.GetModels(p => p.CouponID == iId)
+            //        join b in Flw_CouponUseService.N.GetModels() on a.ID equals b.CouponCode
+            //        select 1).Any() || Flw_CouponUseService.I.Any(p=>p.CouponID == iId);
+            return false;
         }
 
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]

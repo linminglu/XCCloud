@@ -15,6 +15,7 @@ namespace XCCloudService.Model.XCCloud
     public partial class Data_Project_BindDevice
     {
         public int ID { get; set; }
+        public string MerchID { get; set; }
         public Nullable<int> ProjectID { get; set; }
         public Nullable<int> DeviceID { get; set; }
         public Nullable<int> WorkType { get; set; }
@@ -23,5 +24,6 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> ReadCard { get; set; }
         public Nullable<int> ReadQRCode { get; set; }
         public Nullable<int> AllowCash { get; set; }
+        public string Verifiction { get; set; }
     }
 }

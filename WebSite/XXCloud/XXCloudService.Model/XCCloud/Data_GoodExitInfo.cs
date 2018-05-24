@@ -19,10 +19,13 @@ namespace XCCloudService.Model.XCCloud
         public string StoreID { get; set; }
         public string ExitOrderID { get; set; }
         public Nullable<int> StorageOrderIndex { get; set; }
+        public Nullable<int> UserID { get; set; }
+        public Nullable<System.DateTime> CheckDate { get; set; }
         public Nullable<int> DepotID { get; set; }
         public Nullable<int> ExitCount { get; set; }
         public Nullable<decimal> ExitCost { get; set; }
         public Nullable<decimal> ExitTotal { get; set; }
         public string Note { get; set; }
+        public string Verifiction { get; set; }
     }
 }

@@ -15,12 +15,13 @@ namespace XCCloudService.Model.XCCloud
     public partial class Data_JackpotInfo
     {
         public int ID { get; set; }
-        public string MerchInfo { get; set; }
+        public string MerchID { get; set; }
         public string ActiveName { get; set; }
         public Nullable<int> Threshold { get; set; }
         public Nullable<int> Concerned { get; set; }
         public Nullable<System.DateTime> StartTime { get; set; }
         public Nullable<System.DateTime> EndTime { get; set; }
         public string Note { get; set; }
+        public string Verifiction { get; set; }
     }
 }

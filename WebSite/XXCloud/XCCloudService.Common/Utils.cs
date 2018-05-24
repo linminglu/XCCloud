@@ -30,7 +30,15 @@ namespace XCCloudService.Common
         #region MD5加密
         public static string MD5(string str)
         {
-            return FormsAuthentication.HashPasswordForStoringInConfigFile(str, "MD5").ToLower();
+            //return FormsAuthentication.HashPasswordForStoringInConfigFile(str, "MD5").ToLower();
+            var md5 = System.Security.Cryptography.MD5.Create();
+            var bs = md5.ComputeHash(Encoding.UTF8.GetBytes(str));
+            var sb = new StringBuilder();
+            foreach (byte b in bs)
+            {
+                sb.Append(b.ToString("x2"));
+            }
+            return sb.ToString();
         }
         #endregion
 
@@ -1583,7 +1591,23 @@ namespace XCCloudService.Common
 
         #region "数据转换"
 
-        public static object GetPropertyValue(object t, string propertyName)
+        /// <summary>
+        /// 利用反射来判断对象是否包含某个属性
+        /// </summary>
+        /// <param name="instance">object</param>
+        /// <param name="propertyName">需要判断的属性</param>
+        /// <returns>是否包含</returns>
+        public static bool ContainProperty(this object instance, string propertyName)
+        {
+            if (instance != null && !string.IsNullOrEmpty(propertyName))
+            {
+                PropertyInfo _findedPropertyInfo = instance.GetType().GetProperty(propertyName);
+                return (_findedPropertyInfo != null);
+            }
+            return false;
+        }
+
+        public static object GetPropertyValue(this object t, string propertyName)
         {
             Type type = t.GetType();
             PropertyInfo property = t.GetType().GetProperty(propertyName);
@@ -1595,7 +1619,7 @@ namespace XCCloudService.Common
                     case "System.Int32": return 0;
                     case "System.Decimal": return 0;
                 }
-            }
+            }            
 
             return property.GetValue(t, null);
         }

@@ -19,6 +19,7 @@ namespace XCCloudService.Model.XCCloud
         public string MerchAccount { get; set; }
         public Nullable<int> MerchStatus { get; set; }
         public string MerchPassword { get; set; }
+        public string MerchSecret { get; set; }
         public Nullable<int> MerchTag { get; set; }
         public string WxOpenID { get; set; }
         public string WxUnionID { get; set; }
@@ -29,5 +30,6 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> CreateType { get; set; }
         public string CreateUserID { get; set; }
         public string Comment { get; set; }
+        public string Verifiction { get; set; }
     }
 }
