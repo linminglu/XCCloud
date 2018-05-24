@@ -145,6 +145,7 @@ layuiXtree.prototype.Rendering = function () {
         }else {
             console.log(da)
             var  xtree_chis = da.elem.parentNode.getElementsByClassName('layui-xtree-item');
+            da.elem.parentNode.children[1].setAttribute('data-xend', '1');
             if(xtree_chis.length){
                 da.othis[0].classList.remove('layui-form-checked');
                 da.elem.checked=false;
@@ -156,7 +157,12 @@ layuiXtree.prototype.Rendering = function () {
                             xtree_sib.push(xtree_items[i])
                         }
                     }
-                console.log(xtree_sib)
+                console.log(xtree_sib);
+                for(i in xtree_sib){
+                    xtree_sib[i].lastChild.classList.remove('layui-form-checked');
+                    xtree_sib[i].children[1].setAttribute('data-xend', '0');
+                    xtree_sib[i].children[0].checked=false;
+                }
             }
             console.log(xtree_chis);
             //遍历它们，选中状态与它们的父级一致（类似全选功能）

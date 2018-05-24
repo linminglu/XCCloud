@@ -579,7 +579,7 @@ namespace XCCloudService.Base
                 XCCloudUserTokenModel userTokenKeyModel = XCCloudUserTokenBusiness.GetUserTokenModel(token);
                 if (userTokenKeyModel == null)
                 {
-                    errMsg = "系统访问正忙, 请稍后再试...";
+                    errMsg = "用户令牌已失效, 请重新登录";
                     return false;
                 }
                 else
