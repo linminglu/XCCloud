@@ -86,9 +86,10 @@ namespace XCCloudService.DAL.Base
 
                         var oldT = (T)foundEntity;
                         str = GetClearText(identity, oldT, merchSecret);
-                        md5 = Utils.MD5(str);
+                        md5 = Utils.MD5(str);                        
                         if (!verifiction.Equals(md5, StringComparison.OrdinalIgnoreCase))
                         {
+                            LogHelper.SaveLog(md5);
                             errMsg = "数据校验失败";
                             throw new Exception(errMsg);
                         }

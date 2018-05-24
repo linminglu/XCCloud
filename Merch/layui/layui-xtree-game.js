@@ -81,7 +81,7 @@ layuiXtree.prototype.Rendering = function () {
 
     var xtree_items = document.getElementsByClassName('layui-xtree-item');
     var xtree_icons = document.getElementsByClassName('layui-xtree-icon');
-    var xtree_nullicons = document.getElementsByClassName('layui-xtree-icon-null');
+    var xtree_nullicons = document.getElementsByClassName('layui-xtree-icon-null');//末端子节点
 
     for (var i = 0; i < xtree_items.length; i++) {
         if (xtree_items[i].parentNode == _this._container)
@@ -100,6 +100,7 @@ layuiXtree.prototype.Rendering = function () {
         xtree_icons[i].style.cursor = "pointer";
 
         xtree_icons[i].onclick = function () {
+            console.log(this);
             var xtree_chi = this.parentNode.childNodes;
             if (this.getAttribute('data-xtree') == 1) {
                 for (var j = 0; j < xtree_chi.length; j++) {
