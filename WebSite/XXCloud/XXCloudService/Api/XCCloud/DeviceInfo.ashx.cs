@@ -18,7 +18,7 @@ using XXCloudService.Api.XCCloud.Common;
 
 namespace XXCloudService.Api.XCCloud
 {
-    [Authorize(Roles = "MerchUser, StoreUser")]
+    [Authorize(Roles = "StoreUser")]
     /// <summary>
     /// Gift 的摘要说明
     /// </summary>
@@ -82,12 +82,8 @@ namespace XXCloudService.Api.XCCloud
                 string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
 
                 int DeviceTypeId = dict_SystemService.GetModels(p => p.DictKey.Equals("设备类型")).FirstOrDefault().ID;
-                var query = base_DeviceInfoService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase));
-                if (userTokenKeyModel.LogType == (int)RoleType.StoreUser)
-                {
-                    query = query.Where(w => w.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase));
-                }
-
+                var query = base_DeviceInfoService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase));
+                
                 var base_DeviceInfo = from a in query
                                       join b in data_GameInfoService.GetModels() on a.GameIndexID equals b.ID into b1
                                       from b in b1.DefaultIfEmpty()
@@ -101,6 +97,7 @@ namespace XXCloudService.Api.XCCloud
                                           DeviceName = a.DeviceName,
                                           DeviceType = a.type,
                                           DeviceTypeStr = c != null ? c.DictKey : string.Empty,
+                                          GameIndexID = b.ID,
                                           GameName = b != null ? b.GameName : string.Empty,
                                           SiteName = a.SiteName,
                                           segment = a.segment,
@@ -138,12 +135,8 @@ namespace XXCloudService.Api.XCCloud
                 string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
                 string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
 
-                var query = base_DeviceInfoService.GetModels(p => p.type == (int)DeviceType.路由器 && p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase));
-                if (!string.IsNullOrEmpty(storeId))
-                {
-                    query = query.Where(w => w.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase));
-                }
-
+                var query = base_DeviceInfoService.GetModels(p => p.type == (int)DeviceType.路由器 && p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase));
+                
                 var routeDevices = from a in query
                                       select new
                                       {
@@ -351,167 +344,7 @@ namespace XXCloudService.Api.XCCloud
             {
                 return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
             }
-        }
-
-        /// <summary>
-        /// 获取绑定门票或计时项目
-        /// </summary>
-        /// <param name="dicParas"></param>
-        /// <returns></returns>
-        //[ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
-        //public object GetBindProject(Dictionary<string, object> dicParas)
-        //{
-        //    try
-        //    {
-        //        string errMsg = string.Empty;
-        //        string id = dicParas.ContainsKey("id") ? Convert.ToString(dicParas["id"]) : string.Empty;
-        //        string joinType = dicParas.ContainsKey("joinType") ? Convert.ToString(dicParas["joinType"]) : string.Empty;
-        //        int iId = 0, iJoinType = 0;
-        //        int.TryParse(id, out iId);
-        //        int.TryParse(joinType, out iJoinType);
-
-        //        if (string.IsNullOrEmpty(id))
-        //        {
-        //            errMsg = "设备流水号不能为空";
-        //            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-        //        }
-        //        if (string.IsNullOrEmpty(joinType))
-        //        {
-        //            errMsg = "关联类型不能为空";
-        //            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-        //        }  
-
-        //        IData_Project_DeviceService data_Project_DeviceService = BLLContainer.Resolve<IData_Project_DeviceService>(resolveNew:true);
-        //        IData_ProjectInfoService data_ProjectInfoService = BLLContainer.Resolve<IData_ProjectInfoService>(resolveNew:true);
-        //        var linq = from a in data_Project_DeviceService.GetModels(p => p.DeviceID == iId && p.JoinType == iJoinType)
-        //                   join b in data_ProjectInfoService.GetModels() on a.ProjectID equals b.ID
-        //                   select new 
-        //                   {
-        //                       ProjectID = a.ProjectID,
-        //                       ProjectName = b.ProjectName,
-        //                       SignType = a.SignType,
-        //                       LockMember = a.LockMember,
-        //                       SignTypeStr = a.SignType == (int)SignType.In ? "签入" : a.SignType == (int)SignType.Out ? "签出" : a.SignType == (int)SignType.Once ? "单次" : string.Empty,
-        //                       LockMemberStr = a.LockMember == 0 ? "禁用" : a.LockMember == 1 ? "启用" : string.Empty
-        //                   };
-
-        //        return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, linq);
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
-        //    }
-        //}
-
-        /// <summary>
-        /// 门票或计时项目绑定
-        /// </summary>
-        /// <param name="dicParas"></param>
-        /// <returns></returns>
-        //[ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
-        //public object BindProject(Dictionary<string, object> dicParas)
-        //{
-        //    try
-        //    {
-        //        string errMsg = string.Empty;
-        //        string id = dicParas.ContainsKey("id") ? Convert.ToString(dicParas["id"]) : string.Empty;
-        //        string joinType = dicParas.ContainsKey("joinType") ? Convert.ToString(dicParas["joinType"]) : string.Empty;
-        //        object[] deviceProjects = dicParas.ContainsKey("deviceProjects") ? (object[])dicParas["deviceProjects"] : null;                
-        //        int iId = 0, iJoinType = 0;
-        //        int.TryParse(id, out iId);
-        //        int.TryParse(joinType, out iJoinType);
-
-        //        #region 参数验证
-        //        if (string.IsNullOrEmpty(id))
-        //        {
-        //            errMsg = "设备ID不能为空";
-        //            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-        //        }
-        //        if (string.IsNullOrEmpty(joinType))
-        //        {
-        //            errMsg = "关联类型不能为空";
-        //            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-        //        }  
-        //        #endregion
-
-        //        if (!base_DeviceInfoService.Any(p => p.ID == iId))
-        //        {
-        //            errMsg = "设备不存在";
-        //            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-        //        }
-
-        //        //开启EF事务
-        //        using (TransactionScope ts = new TransactionScope())
-        //        {
-        //            try
-        //            {
-        //                if (deviceProjects != null && deviceProjects.Count() >= 0)
-        //                {
-        //                    //先删除，后添加
-        //                    IData_Project_DeviceService data_Project_DeviceService = BLLContainer.Resolve<IData_Project_DeviceService>();
-        //                    foreach (var model in data_Project_DeviceService.GetModels(p => p.DeviceID == iId && p.JoinType == iJoinType))
-        //                    {
-        //                        data_Project_DeviceService.DeleteModel(model);
-        //                    }
-
-        //                    foreach (IDictionary<string, object> el in deviceProjects)
-        //                    {
-        //                        if (el != null)
-        //                        {
-        //                            var dicPara = new Dictionary<string, object>(el, StringComparer.OrdinalIgnoreCase);
-        //                            string projectId = dicPara.ContainsKey("projectId") ? (dicPara["projectId"] + "") : string.Empty;
-        //                            string signType = dicPara.ContainsKey("signType") ? (dicPara["signType"] + "") : string.Empty;
-        //                            string lockMember = dicPara.ContainsKey("lockMember") ? (dicPara["lockMember"] + "") : string.Empty;
-
-        //                            if (string.IsNullOrEmpty(projectId))
-        //                            {
-        //                                errMsg = "项目ID不能为空";
-        //                                return false;
-        //                            }
-        //                            if (string.IsNullOrEmpty(signType))
-        //                            {
-        //                                errMsg = "验证方式不能为空";
-        //                                return false;
-        //                            }
-
-        //                            var data_Project_Device = new Data_Project_Device();
-        //                            data_Project_Device.DeviceID = iId;
-        //                            data_Project_Device.ProjectID = projectId.Toint();
-        //                            data_Project_Device.SignType = signType.Toint();
-        //                            data_Project_Device.LockMember = lockMember.Toint();
-        //                            data_Project_Device.JoinType = iJoinType;
-        //                            data_Project_DeviceService.AddModel(data_Project_Device);
-        //                        }
-        //                        else
-        //                        {
-        //                            errMsg = "提交数据包含空对象";
-        //                            return false;
-        //                        }
-        //                    }
-
-        //                    if (!data_Project_DeviceService.SaveChanges())
-        //                    {
-        //                        errMsg = "保存项目绑定信息失败";
-        //                        return false;
-        //                    }
-        //                }
-
-        //                ts.Complete();
-        //            }
-        //            catch (Exception ex)
-        //            {
-        //                errMsg = ex.Message;
-        //                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-        //            }
-        //        }
-
-        //        return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
-        //    }
-        //}
+        }        
 
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object QueryReloadGifts(Dictionary<string, object> dicParas)

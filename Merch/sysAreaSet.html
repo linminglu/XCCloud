@@ -60,8 +60,8 @@
       <div style="height: 100%;">
           <div class="layui-card">
               <div class="layui-card-header">全部 <span class="sumArea"></span></div>
-              <div class="layui-card-body" style="padding-left: 60px;height: 700px">
-                  <div id="areaLise" class="layui-form layui-form-pane">
+              <div class="layui-card-body" style="padding-left: 60px;height: 524px">
+                  <div id="areaLise" class="layui-form layui-form-pane" style="height: 471px">
 
                   </div>
                   <div style="text-align:center;">
@@ -76,9 +76,11 @@
     <div class="layui-col-md9">
         <table class="layui-hide" id="areaSet" lay-filter="areaSet"></table>
     </div>
-
+    <div style="text-align:right;padding-right: 50px;margin-bottom: 15px;" class="layui-col-md12">
+        <button class="layui-btn" id="saveMore">批量修改区域</button>
+    </div>
 </div>
-<button class="layui-btn" id="getCheckedData">获得表格选中行</button>
+
  <div id="openModel" style="padding: 15px;display: none;">
      <form action="" class="layui-form layui-form-pane">
          <div class="layui-form-item">
@@ -105,6 +107,7 @@
     var token=xc.getStorage('token');
     let checkArea='';let _areaName='';
     let _areaList=[];
+    let projectAreaList=[];
     var getAreaList=function (token,id,form,arr) {
         var  obj={"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
         var  parasJson = JSON.stringify(obj);
@@ -168,7 +171,7 @@
                                     _select+='</select>'
                                     return _select;
                                 }}
-                            ,{fixed: 'right',title:'操作', width:140, align:'center', toolbar: '#barDemo'}]]
+                            ]]
                         , page: {page: true, limits: [10, 15, 20, 30, 50, 100]}
                         , limit: 10
                         ,done: function (res, curr, count) {
@@ -189,7 +192,25 @@
         let form=layui.form;
         let table=layui.table;
         let layer=layui.layer;
-        // getAreaList(token,'areaLise',form,_areaList);
+        table.render({
+            elem: '#areaSet'
+            , height:'full-200'
+            , data: []
+            , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+            , cols: [[
+                {field:'ID', title: 'ID', align: 'center'} ,
+                {field:'AreaName', title: '区域', align: 'center'}
+                ,{field:'ProjectName', title:'项目名称', align: 'center'}
+                ,{field:'ProjectTypeParent',title: '项目大类', align: 'center'} //width 支持：数字、百分比和不填写。
+                ,{field:'ProjectTypeName', title: '项目分类', align: 'center'}
+                ,{field:'AreaType',
+                    title: '当前区域',
+                    align: 'center'
+                 }
+              ]]
+            , page: {page: true, limits: [10, 15, 20, 30, 50, 100]}
+            , limit: 10
+        });
         var  obj={"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
         var  parasJson = JSON.stringify(obj);
         $.ajax({
@@ -212,8 +233,9 @@
         });
         form.on('radio(areaList)',function (data) {
            showAreaMsg (data.value,token,table,form,_areaList);
+            projectAreaList=[];
             checkArea=data.value;
-            _areaName=data.title;
+            _areaName=data.elem.title;
         });
         form.on('select(testSelect)', function (data) {
             var elem = $(data.elem);
@@ -221,8 +243,23 @@
             var tableData = table.cache['areaSet'];
             // 更新到表格的缓存数据中，才能在获得选中行等等其他的方法中得到更新之后的值
             tableData[trElem.data('index')][elem.attr('name')] = data.value;
-            console.log(trElem[0].children[0].firstChild.innerHTML);
-            // 其他的操作看需求 TODO
+            if(projectAreaList.length>0){
+                    let flag=false;
+                    let index;
+                for(i in projectAreaList){
+                    if(projectAreaList[i].projectId==trElem[0].children[0].firstChild.innerHTML){
+                        flag=true;
+                        index=i;
+                    }
+                }
+                if(flag){
+                    projectAreaList[index].areaType=data.value
+                }else {
+                    projectAreaList.push({'projectId':trElem[0].children[0].firstChild.innerHTML,'areaType':data.value})
+                }
+            }else {
+                projectAreaList.push({'projectId':trElem[0].children[0].firstChild.innerHTML,'areaType':data.value})
+            }
         });
         $('#getCheckedData').click(function () {
             // 验证一下下拉选择之后有没有作用到表格缓存数据
@@ -231,6 +268,7 @@
         });
         //新增
         $('.add').click(function () {
+            checkArea='';
             $('input[name="areaName"]').val('');
             layer.open({
                 title:'新增',
@@ -280,6 +318,7 @@
                 });
             }
         });
+        //保存
         $('#save').click(function () {
             var  obj={'id':checkArea,'areaName':$('input[name="areaName"]').val(),"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
             var  parasJson = JSON.stringify(obj);
@@ -299,17 +338,29 @@
                     }
                 }
             });
-        })
+        });
+        //批量修改区域
+        $('#saveMore').click(function () {
+            var  obj={'projectAreaList':projectAreaList,"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
+            var  parasJson = JSON.stringify(obj);
+            $.ajax({
+                type: "post",
+                url: '/XCCloud/GroupArea?action=ChangeGroupAreaBatch',
+                contentType: "application/json; charset=utf-8",
+                data: {parasJson: parasJson},
+                success: function (data) {
+                    data = JSON.parse(data);
+                    if(data.result_code==1){
+                        layer.msg('保存成功',{time:1500},function () {
+                            location.reload()
+                        })
+                    }else {
+                        layer.msg(data.result_msg||data.return_msg)
+                    }
+                }
+            });
+        });
     })
 </script>
-<script type="text/html" id="areaType">
 
-     <select name="AreaType" lay-filter="testSelect" lay-verify="required" data-value="' + d.AreaType + '" ><option value=""></option>
-        <option value="18000">北京</option>
-        <option value="20000">上海</option>
-        <option value="20001">广州</option>
-         <option value="20002">深圳</option>
-        <option value="20003">杭州</option>
-        </select>
-</script>
 </html>

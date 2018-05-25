@@ -330,6 +330,9 @@ namespace XXCloudService.Api.XCCloud
                 //生成商户密码
                 string pwd = Utils.GetCheckCode(6);
 
+                //生成商户密钥
+                string merchSecret = Utils.GetCheckCode(6).ToLower();
+
                 #endregion
                                              
                 //开启EF事务
@@ -363,6 +366,7 @@ namespace XXCloudService.Api.XCCloud
                                                             logType == (int)RoleType.MerchUser ? (int)CreateType.Agent : 0;
                         base_MerchantInfo.Comment = comment;
                         base_MerchantInfo.MerchTag = Convert.ToInt32(merchTag);
+                        base_MerchantInfo.MerchSecret = merchSecret;
 
                         if (!base_MerchantInfoService.Add(base_MerchantInfo))
                         {

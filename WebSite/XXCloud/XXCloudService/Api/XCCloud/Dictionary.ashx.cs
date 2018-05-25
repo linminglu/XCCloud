@@ -174,6 +174,7 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 string errMsg = string.Empty;
+                string pDictKey = dicParas.ContainsKey("pDictKey") ? dicParas["pDictKey"].ToString() : string.Empty;
                 string dictKey = dicParas.ContainsKey("dictKey") ? dicParas["dictKey"].ToString() : string.Empty;
                 string dictValue = dicParas.ContainsKey("dictValue") ? dicParas["dictValue"].ToString() : string.Empty;
                 string comment = dicParas.ContainsKey("comment") ? dicParas["comment"].ToString() : string.Empty;
@@ -217,8 +218,20 @@ namespace XXCloudService.Api.XCCloud
                     }
                 }
 
+                var pId = 0;
+                if (!string.IsNullOrEmpty(pDictKey))
+                {
+                    if (!Dict_SystemService.I.Any(a => a.DictKey.Equals(pDictKey) && a.PID == 0))
+                    {
+                        errMsg = "父节点不存在";
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
+
+                    pId = Dict_SystemService.I.GetModels(p => p.DictKey.Equals(pDictKey) && p.PID == 0).FirstOrDefault().ID;
+                }
+
                 Dict_System dict_System = new Dict_System();
-                dict_System.PID = 0;
+                dict_System.PID = pId;
                 dict_System.DictKey = dictKey;
                 dict_System.DictValue = dictValue;
                 dict_System.Comment = comment;
@@ -394,14 +407,14 @@ namespace XXCloudService.Api.XCCloud
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
-                if (!string.IsNullOrWhiteSpace(merchId))
-                {
-                    if (dict_SystemService.Any(p => p.DictKey.Equals(dictKey, StringComparison.OrdinalIgnoreCase) && (p.MerchID == null || p.MerchID.Trim() == string.Empty)))
-                    {
-                        errMsg = "不能与公有节点重名";
-                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                    }
-                }
+                //if (!string.IsNullOrWhiteSpace(merchId))
+                //{
+                //    if (dict_SystemService.Any(p => p.DictKey.Equals(dictKey, StringComparison.OrdinalIgnoreCase) && (p.MerchID == null || p.MerchID.Trim() == string.Empty)))
+                //    {
+                //        errMsg = "不能与公有节点重名";
+                //        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                //    }
+                //}
 
                 dict_System.DictKey = dictKey;
                 dict_System.DictValue = dictValue;
