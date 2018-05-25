@@ -8,6 +8,7 @@ using System.Web;
 using XCCloudService.Base;
 using XCCloudService.BLL.Container;
 using XCCloudService.BLL.IBLL.XCCloud;
+using XCCloudService.BLL.XCCloud;
 using XCCloudService.Common;
 using XCCloudService.Common.Enum;
 using XCCloudService.Common.Extensions;
@@ -82,7 +83,7 @@ namespace XXCloudService.Api.XCCloud
                 string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
 
                 int DeviceTypeId = dict_SystemService.GetModels(p => p.DictKey.Equals("设备类型")).FirstOrDefault().ID;
-                var query = base_DeviceInfoService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase));
+                var query = base_DeviceInfoService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase) && p.GameIndexID != null);
                 
                 var base_DeviceInfo = from a in query
                                       join b in data_GameInfoService.GetModels() on a.GameIndexID equals b.ID into b1
@@ -111,6 +112,63 @@ namespace XXCloudService.Api.XCCloud
                                                         (a.DeviceStatus == 1 ? "正常" :
                                                         a.DeviceStatus == 2 ? "检修" :
                                                         a.DeviceStatus == 0 ? "停用" : string.Empty) : string.Empty
+                                      };
+
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, base_DeviceInfo);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        /// <summary>
+        /// 获取报警日志
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object GetGameAlarm(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+
+                string errMsg = string.Empty;
+                if(!dicParas.Get("id").Validintnozero("设备ID", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                var id = dicParas.Get("id").Toint();
+
+                if(!Base_DeviceInfoService.I.Any(a=>a.ID == id))
+                {
+                    errMsg = "该设备信息不存在";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
+                var base_DeviceInfo = from a in Base_DeviceInfoService.N.GetModels(p=>p.ID == id)
+                                      join b in Log_GameAlarmService.N.GetModels() on a.ID equals b.DeviceID 
+                                      join c in Data_GameInfoService.N.GetModels() on a.GameIndexID equals c.ID
+                                      orderby c.GameName
+                                      select new
+                                      {
+                                          GameName = c.GameName,
+                                          SiteName = a.SiteName,
+                                          DeviceName = a.DeviceName,                                          
+                                          segment = a.segment,
+                                          Address = a.Address,
+                                          AlertType = b.AlertType,
+                                          HappenTime = b.HappenTime,
+                                          ICCardID = b.ICCardID,
+                                          LockGame = b.LockGame,
+                                          LockGameStr = b.LockGame == 1 ? "是" : b.LockGame == 0 ? "否" : string.Empty,
+                                          LockMember = b.LockMember,
+                                          LockMemberStr = b.LockMember == 1 ? "是" : b.LockMember == 0 ? "否" : string.Empty,
+                                          EndTime = b.EndTime,
+                                          State = b.State,
+                                          StateStr = b.State == 0 ? "活动" : b.State == 1 ? "确认" : b.State == 2 ? "解决" : string.Empty
                                       };
 
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, base_DeviceInfo);

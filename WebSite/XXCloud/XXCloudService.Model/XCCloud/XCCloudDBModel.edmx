@@ -2544,6 +2544,7 @@
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="MerchID" Type="varchar" MaxLength="15" />
           <Property Name="StoreID" Type="varchar" MaxLength="15" />
+          <Property Name="DeviceID" Type="int" />
           <Property Name="ICCardID" Type="int" />
           <Property Name="Segment" Type="varchar" MaxLength="4" />
           <Property Name="HeadAddress" Type="varchar" MaxLength="2" />
@@ -3088,6 +3089,7 @@
     [Log_GameAlarm].[ID] AS [ID], 
     [Log_GameAlarm].[MerchID] AS [MerchID], 
     [Log_GameAlarm].[StoreID] AS [StoreID], 
+    [Log_GameAlarm].[DeviceID] AS [DeviceID], 
     [Log_GameAlarm].[ICCardID] AS [ICCardID], 
     [Log_GameAlarm].[Segment] AS [Segment], 
     [Log_GameAlarm].[HeadAddress] AS [HeadAddress], 
@@ -3284,7 +3286,6 @@
           <EntitySet Name="Flw_ProjectTicket_Bind" EntityType="XCCloudDBModel.Flw_ProjectTicket_Bind" />
           <EntitySet Name="Flw_ProjectTicket_Entry" EntityType="XCCloudDBModel.Flw_ProjectTicket_Entry" />
           <EntitySet Name="Flw_Transfer" EntityType="XCCloudDBModel.Flw_Transfer" />
-          <EntitySet Name="Log_GameAlarm" EntityType="XCCloudDBModel.Log_GameAlarm" />
           <EntitySet Name="Store_CheckDate" EntityType="XCCloudDBModel.Store_CheckDate" />
           <EntitySet Name="Flw_CouponUse" EntityType="XCCloudDBModel.Flw_CouponUse" />
           <EntitySet Name="Data_GoodStock_Record" EntityType="XCCloudDBModel.Data_GoodStock_Record" />
@@ -3293,6 +3294,7 @@
           <EntitySet Name="Data_Card_Balance_Free" EntityType="XCCloudDBModel.Data_Card_Balance_Free" />
           <EntitySet Name="Data_Workstation" EntityType="XCCloudDBModel.Data_Workstation" />
           <EntitySet Name="Data_WorkStation_GoodList" EntityType="XCCloudDBModel.Data_WorkStation_GoodList" />
+          <EntitySet Name="Log_GameAlarm" EntityType="XCCloudDBModel.Log_GameAlarm" />
         </EntityContainer>
         <EntityType Name="Base_ChainRule">
           <Key>
@@ -5787,24 +5789,6 @@
           <Property Name="WorkStation" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="ScheduleID" Type="Int32" />
         </EntityType>
-        <EntityType Name="Log_GameAlarm">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="ICCardID" Type="Int32" />
-          <Property Name="Segment" Type="String" MaxLength="4" FixedLength="false" Unicode="false" />
-          <Property Name="HeadAddress" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
-          <Property Name="AlertType" Type="Int32" />
-          <Property Name="HappenTime" Type="DateTime" Precision="3" />
-          <Property Name="EndTime" Type="DateTime" Precision="3" />
-          <Property Name="State" Type="Int32" />
-          <Property Name="LockGame" Type="Int32" />
-          <Property Name="LockMember" Type="Int32" />
-          <Property Name="AlertContent" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
-        </EntityType>
         <EntityType Name="Store_CheckDate">
           <Key>
             <PropertyRef Name="ID" />
@@ -5916,6 +5900,25 @@
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="GoodID" Type="Int32" />
           <Property Name="WorkStationID" Type="Int32" />
+        </EntityType>
+        <EntityType Name="Log_GameAlarm">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="DeviceID" Type="Int32" />
+          <Property Name="ICCardID" Type="Int32" />
+          <Property Name="Segment" Type="String" MaxLength="4" FixedLength="false" Unicode="false" />
+          <Property Name="HeadAddress" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
+          <Property Name="AlertType" Type="Int32" />
+          <Property Name="HappenTime" Type="DateTime" Precision="3" />
+          <Property Name="EndTime" Type="DateTime" Precision="3" />
+          <Property Name="State" Type="Int32" />
+          <Property Name="LockGame" Type="Int32" />
+          <Property Name="LockMember" Type="Int32" />
+          <Property Name="AlertContent" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
         </EntityType>
         </Schema>
     </edmx:ConceptualModels>
@@ -8571,25 +8574,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Log_GameAlarm">
-            <EntityTypeMapping TypeName="XCCloudDBModel.Log_GameAlarm">
-              <MappingFragment StoreEntitySet="Log_GameAlarm">
-                <ScalarProperty Name="AlertContent" ColumnName="AlertContent" />
-                <ScalarProperty Name="LockMember" ColumnName="LockMember" />
-                <ScalarProperty Name="LockGame" ColumnName="LockGame" />
-                <ScalarProperty Name="State" ColumnName="State" />
-                <ScalarProperty Name="EndTime" ColumnName="EndTime" />
-                <ScalarProperty Name="HappenTime" ColumnName="HappenTime" />
-                <ScalarProperty Name="AlertType" ColumnName="AlertType" />
-                <ScalarProperty Name="HeadAddress" ColumnName="HeadAddress" />
-                <ScalarProperty Name="Segment" ColumnName="Segment" />
-                <ScalarProperty Name="ICCardID" ColumnName="ICCardID" />
-                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
-                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Store_CheckDate">
             <EntityTypeMapping TypeName="XCCloudDBModel.Store_CheckDate">
               <MappingFragment StoreEntitySet="Store_CheckDate">
@@ -8706,6 +8690,26 @@
               <MappingFragment StoreEntitySet="Data_WorkStation_GoodList">
                 <ScalarProperty Name="WorkStationID" ColumnName="WorkStationID" />
                 <ScalarProperty Name="GoodID" ColumnName="GoodID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Log_GameAlarm">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Log_GameAlarm">
+              <MappingFragment StoreEntitySet="Log_GameAlarm">
+                <ScalarProperty Name="AlertContent" ColumnName="AlertContent" />
+                <ScalarProperty Name="LockMember" ColumnName="LockMember" />
+                <ScalarProperty Name="LockGame" ColumnName="LockGame" />
+                <ScalarProperty Name="State" ColumnName="State" />
+                <ScalarProperty Name="EndTime" ColumnName="EndTime" />
+                <ScalarProperty Name="HappenTime" ColumnName="HappenTime" />
+                <ScalarProperty Name="AlertType" ColumnName="AlertType" />
+                <ScalarProperty Name="HeadAddress" ColumnName="HeadAddress" />
+                <ScalarProperty Name="Segment" ColumnName="Segment" />
+                <ScalarProperty Name="ICCardID" ColumnName="ICCardID" />
+                <ScalarProperty Name="DeviceID" ColumnName="DeviceID" />
+                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
+                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>

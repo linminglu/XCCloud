@@ -64,7 +64,7 @@ namespace XXCloudService.Api.XCCloud
                                     INNER JOIN
                                         Data_GameInfo b ON a.GameID = b.ID                                                      
                                 	WHERE
-                                		a.StoreID=" + storeId +
+                                		a.StoreID='" + storeId + "'" +
                               @") b ON a.ID = b.PushRuleID and b.RowNum <= 1
                                 LEFT JOIN (
                                 	SELECT
@@ -74,11 +74,11 @@ namespace XXCloudService.Api.XCCloud
                                     INNER JOIN 
                                         Data_MemberLevel b ON a.MemberLevelID = b.MemberLevelID                                                      
                                 	WHERE
-                                		a.StoreID=" + storeId +
+                                		a.StoreID='" + storeId + "'" +
                               @") c ON a.ID = c.PushRuleID and c.RowNum <= 1
                                 WHERE 1=1
                             ";
-                sql += " AND a.StoreID=" + storeId;
+                sql += " AND a.StoreID='" + storeId + "'";
 
                 var list = Data_PushRuleService.I.SqlQuery<Data_Push_RuleList>(sql, parameters).ToList();
 

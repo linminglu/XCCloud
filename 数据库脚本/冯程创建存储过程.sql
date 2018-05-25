@@ -92,11 +92,16 @@ as
 	----exec (@sql)
 	--SET @sql = @sql + ' order by OrderID'
 	--exec sp_executesql @sql, N'@MerchID nvarchar(15), @DictKey nvarchar(50), @RootID int', @MerchID, @DictKey, @RootID	
-	if(IsNull(@DictKey, '') <> '')
+	if(IsNull(@DictKey, '') <> '' OR ISNULL(@PDictKey, '') <> '')
 	begin	
+		if(IsNull(@DictKey, '') <> '')
 		select @RootID=ID from (select top 1 a.ID from Dict_System a left join Dict_System b on a.PID=b.ID
 		 where a.DictKey=@DictKey and IsNull(b.DictKey, '')=ISNULL(@PDictKey, '')
 			and IsNull(a.MerchID, '')=IsNull(@MerchID, '')) m
+		else
+		select @RootID=ID from (select top 1 a.ID from Dict_System a 
+		 where IsNull(a.DictKey, '')=ISNULL(@PDictKey, '')) m
+		
 		if not exists (select 0 from Dict_System where PID=@RootID)
 			return		
 	end
@@ -107,7 +112,7 @@ as
 	LOCS(ID,PID,DictKey,DictValue,Comment,OrderID,[Enabled],MerchID,DictLevel)
 	AS
 	(
-	SELECT ID,PID,DictKey,DictValue,Comment,OrderID,[Enabled],MerchID,DictLevel FROM Dict_System WHERE PID=@RootID
+	SELECT ID,PID,DictKey,DictValue,Comment,OrderID,[Enabled],MerchID,DictLevel FROM Dict_System WHERE PID=@RootID and IsNull(MerchID, '')=IsNull(@MerchID, '')
 	UNION ALL
 	SELECT A.ID,A.PID,A.DictKey,A.DictValue,A.Comment,A.OrderID,A.[Enabled],A.MerchID,A.DictLevel FROM Dict_System A JOIN LOCS B ON 
 	--B.ParentID=A.FunctionID 

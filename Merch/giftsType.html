@@ -7,13 +7,11 @@
 </head>
 <body>
 <div class="layui-row" style="padding: 10px;">
-    <blockquote class="layui-elem-quote" style="text-align: right;padding-right: 100px">
-        <button type="button" class="layui-btn layui-btn-normal" id="fileIn"><i class="layui-icon">&#xe615;</i>导入</button>
-        <button type="button" class="layui-btn layui-btn-normal" id="fileOut"><i class="layui-icon">&#xe615;</i>导出</button>
-        <button type="button" class="layui-btn layui-btn-normal"><i class="layui-icon">&#xe615;</i>查询</button>
-    </blockquote>
     <div class="layui-col-lg12 layui-col-md12 layui-col-sm12 layui-col-xs12">
-        <table class="layui-hide" id="giftsStockTable" lay-filter="giftsStockTable"></table>
+        <div class="layui-col-lg6 layui-col-md6 layui-col-sm6 layui-col-xs12" style="height: 600px;padding: 15px;">
+            <ul id="tree"></ul>
+        </div>
+        <div class="layui-col-lg6 layui-col-md6 layui-col-sm6 layui-col-xs12" style="height: 600px;padding: 15px;"></div>
     </div>
 
 </div>
@@ -22,31 +20,50 @@
 <script src="layui/layui.js"></script>
 <script src="js/storeSystem.js"></script>
 <script>
-
     let xc=xcActionSystem.prototype;
     let token=xc.getStorage('token');
-    let cols=[
-        {field:'ID', title:'入库流水号', align: 'center', sort: true}
-        ,{field:'Barcode', title:'商品条码', align: 'center', sort: true}
-        ,{field:'GoodTypeStr',title: '商品类别', align: 'center', templet: '#changeTime'} //width 支持：数字、百分比和不填写。
-        ,{field:'GoodName', title: '商品名称', align: 'center'}
-        ,{field:'StoreName', title: '入库门店', align: 'center'}
-        ,{field:'RealTime', title: '入库时间', align: 'center'}
-        ,{field:'Supplier', title: '采购渠道', align: 'center'}
-        ,{field:'Supplier', title: '入库数量', align: 'center'}
-        ,{field:'Price', title: '采购单价', align: 'center'}
-        ,{field:'TotalPrice', title: '入库金额', align: 'center'}
-        ,{field:'LogName', title: '入库经办人', align: 'center'}
-        ,{field:'DepotName', title: '入库仓库', align: 'center'}
-        ,{fixed: 'right', title: '操作', width:100, align:'center', toolbar: '#barDemo'}];
-    let parm={'obj':{'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'},
-        'url':'/XCCloud/GoodsInfo?action=QueryGoodStorage',
-        'elem':'#productStorageTable',
-        'cols':cols
-    };
-    xc.getInitData(parm);
-    layui.use('form',function () {
-        let form=layui.form;
+    layui.use(['form','tree','layer'],function () {
+        let form=layui.form;let tree=layui.tree;let layer=layui.layer;
+        setGiftType(token,tree,layer)
     })
+    function setGiftType(token,tree,layer) {
+        let _obj={
+            'merchId':JSON.parse(xc.getStorage('logMsg')).merchId,
+            'pDictKey':'商品类别',
+            'userToken':token,
+            'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+        let url='/XCCloud/Dictionary?action=GetNodes';
+        let parasJson = JSON.stringify(_obj);
+        $.ajax({
+            type: "post",
+            url: url,
+            contentType: "application/json; charset=utf-8",
+            data: { parasJson: parasJson },
+            success: function (data) {
+                data=JSON.parse(data);
+                console.log(data);
+                if(data.result_code==1){
+                    let treeData=data.result_data;
+                    tree({
+                        elem:'#tree',
+                        nodes:treeData,
+                        click:function (node) {
+                            console.log(node)
+                            if(node.id!=undefined&&node.ruleType!=undefined){
+                                getRule(node.ruleType,node.id,table);
+                                _ruleId=node.id;
+                                _ruleType=node.ruleType;
+                            }
+
+                        }
+                    })
+                }else {
+                    layer.msg(data.result_msg||data.return_msg)
+                }
+            }
+
+        })
+
+    }
 </script>
 </html>
