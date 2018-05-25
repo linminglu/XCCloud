@@ -61,6 +61,7 @@ namespace XCCloudService.Base
             AuthorizeAttribute authorizeAttribute = new AuthorizeAttribute();
             MethodInfo requestMethodInfo = null;
             Dictionary<string, object> dicParas = null;
+            XCCloudUserTokenModel userTokenKeyModel = null;
             string requestUrl = string.Empty;
             string action = RequestHelper.GetString("action");
             try
@@ -86,7 +87,7 @@ namespace XCCloudService.Base
                 }
 
                 //验证参数签名
-                if (!CheckSignKey(apiMethodAttribute.SignKeyEnum, dicParas, out signKeyToken, out errMsg))
+                if (!CheckSignKey(apiMethodAttribute.SignKeyEnum, dicParas, out signKeyToken, out userTokenKeyModel, out errMsg))
                 {
                     FailResponseOutput(context, apiMethodAttribute, errMsg, signKeyToken);
                     ar.show(apiType, requestUrl + "?action=" + action, postJson, Return_Code.F, errMsg, sysId);
@@ -94,7 +95,7 @@ namespace XCCloudService.Base
                 }
 
                 //验证访问权限
-                if (!CheckAuthorize(authorizeAttribute, apiMethodAttribute.SignKeyEnum, dicParas, out errMsg))
+                if (!CheckAuthorize(authorizeAttribute, apiMethodAttribute.SignKeyEnum, dicParas, userTokenKeyModel, out errMsg))
                 {
                     FailResponseOutput(context, apiMethodAttribute, errMsg, signKeyToken);
                     ar.show(apiType, requestUrl + "?action=" + action, postJson, Return_Code.F, errMsg, sysId);
@@ -429,10 +430,11 @@ namespace XCCloudService.Base
         }
 
         //验证签名
-        private bool CheckSignKey(SignKeyEnum signKeyEnum, Dictionary<string, object> dicParas, out string signkeyToken, out string errMsg)
+        private bool CheckSignKey(SignKeyEnum signKeyEnum, Dictionary<string, object> dicParas, out string signkeyToken, out XCCloudUserTokenModel userTokenKeyModel, out string errMsg)
         {
             errMsg = string.Empty;
             signkeyToken = string.Empty;
+            userTokenKeyModel = null;
             if (signKeyEnum == SignKeyEnum.MobileToken)
             {
                 string mobile = string.Empty;
@@ -576,7 +578,7 @@ namespace XCCloudService.Base
                 string token = dicParas["userToken"].ToString();
 
                 //验证token
-                XCCloudUserTokenModel userTokenKeyModel = XCCloudUserTokenBusiness.GetUserTokenModel(token);
+                userTokenKeyModel = XCCloudUserTokenBusiness.GetUserTokenModel(token);
                 if (userTokenKeyModel == null)
                 {
                     errMsg = "用户令牌已失效, 请重新登录";
@@ -649,7 +651,7 @@ namespace XCCloudService.Base
         /// <param name="context">上下文信息</param>
         /// <param name="errMsg">错误信息</param>
         /// <returns></returns>
-        private bool CheckAuthorize(AuthorizeAttribute authorizeAttribute, SignKeyEnum signKeyEnum, Dictionary<string, object> dicParas, out string errMsg)
+        private bool CheckAuthorize(AuthorizeAttribute authorizeAttribute, SignKeyEnum signKeyEnum, Dictionary<string, object> dicParas, XCCloudUserTokenModel userTokenKeyModel, out string errMsg)
         {
             errMsg = string.Empty;
 
@@ -661,60 +663,54 @@ namespace XCCloudService.Base
                 case SignKeyEnum.XCGameUserCacheToken: break;
                 case SignKeyEnum.XCCloudUserCacheToken:
                     {
-                        string token = dicParas["userToken"].ToString();
-
-                        //验证token
-                        XCCloudUserTokenModel userTokenKeyModel = XCCloudUserTokenBusiness.GetUserTokenModel(token);
                         if (userTokenKeyModel == null)
                         {
-                            errMsg = "token无效";
+                            errMsg = "用户令牌已失效, 请重新登录";
                             return false;
                         }
-                        else
+
+                        bool accessible = true;
+                        if (!string.IsNullOrEmpty(authorizeAttribute.Roles))
                         {
-                            bool accessible = true;
-                            if (!string.IsNullOrEmpty(authorizeAttribute.Roles))
-                            {
-                                string roleName = Enum.GetName(typeof(RoleType), userTokenKeyModel.LogType);
-                                accessible = authorizeAttribute.Roles.Contains(roleName);
-                            }
+                            string roleName = Enum.GetName(typeof(RoleType), userTokenKeyModel.LogType);
+                            accessible = authorizeAttribute.Roles.Contains(roleName);
+                        }
 
-                            if (!string.IsNullOrEmpty(authorizeAttribute.Merches))
+                        if (!accessible && !string.IsNullOrEmpty(authorizeAttribute.Merches))
+                        {
+                            var TokenDataModel = userTokenKeyModel.DataModel as TokenDataModel;
+                            if (TokenDataModel != null && TokenDataModel.MerchType != null)
                             {
-                                var TokenDataModel = userTokenKeyModel.DataModel as TokenDataModel;
-                                if (TokenDataModel != null)
-                                {
-                                    string merchType = Enum.GetName(typeof(MerchType), TokenDataModel.MerchType);
-                                    accessible = authorizeAttribute.Merches.Contains(merchType);
-                                }                                
+                                string merchType = Enum.GetName(typeof(MerchType), TokenDataModel.MerchType);
+                                accessible = authorizeAttribute.Merches.Contains(merchType);
                             }
+                        }
 
-                            if (!accessible)
+                        if (!accessible)
+                        {
+                            errMsg = "当前用户无权访问";
+                            return false;
+                        }
+
+                        if (!string.IsNullOrEmpty(authorizeAttribute.Grants))
+                        {
+                            var userId = userTokenKeyModel.LogId.Toint();
+
+                            string sql = " exec SelectUserGrant @UserID";
+                            SqlParameter[] parameters = new SqlParameter[1];
+                            parameters[0] = new SqlParameter("@UserID", userId);
+                            System.Data.DataSet ds = XCCloudBLL.ExecuteQuerySentence(sql, parameters);
+                            if (ds.Tables[0].Rows.Count <= 0)
                             {
-                                errMsg = "当前用户无权访问";
+                                errMsg = "当前用户无权操作";
                                 return false;
                             }
 
-                            if (!string.IsNullOrEmpty(authorizeAttribute.Grants))
+                            var list = Utils.GetModelList<UserGrantModel>(ds.Tables[0]);
+                            if (!list.Any(a => a.GrantEN == 1 && authorizeAttribute.Grants.Contains(a.DictKey)))
                             {
-                                var userId = userTokenKeyModel.LogId.Toint();
-
-                                string sql = " exec SelectUserGrant @UserID";
-                                SqlParameter[] parameters = new SqlParameter[1];
-                                parameters[0] = new SqlParameter("@UserID", userId);
-                                System.Data.DataSet ds = XCCloudBLL.ExecuteQuerySentence(sql, parameters);
-                                if (ds.Tables[0].Rows.Count <= 0)
-                                {
-                                    errMsg = "当前用户无权操作";
-                                    return false;
-                                }
-
-                                var list = Utils.GetModelList<UserGrantModel>(ds.Tables[0]);
-                                if (!list.Any(a => a.GrantEN == 1 && authorizeAttribute.Grants.Contains(a.DictKey)))
-                                {
-                                    errMsg = "当前用户无权操作";
-                                    return false;
-                                }
+                                errMsg = "当前用户无权操作";
+                                return false;
                             }
                         }
 

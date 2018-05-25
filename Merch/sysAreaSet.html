@@ -38,7 +38,7 @@
     var xc=xcActionSystem.prototype;
     var token=xc.getStorage('token');
 
-        var getAreaList=function (token,id) {
+    var getAreaList=function (token,id,from) {
         var  obj={"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
         var  parasJson = JSON.stringify(obj);
         $.ajax({
@@ -48,16 +48,63 @@
             data: {parasJson: parasJson},
             success: function (data) {
                 data = JSON.parse(data);
+                console.log(data)
                 if(data.result_code==1){
                     $('#'+id).html('');
                     let arr=data.result_data;
                     for(i in arr){
-                        $('#'+id).append('<li id="'+arr[i].ID+'"><span class="areaName-span">'+arr[i].AreaName+'</span><span class="projectCount-span">'+arr[i].ProjectCount+'</span></li>')
+                        // $('#'+id).append('<li id="'+arr[i].id+'"><span class="areaName-span">'+arr[i].areaName+'</span><span class="projectCount-span">'+arr[i].projectCount+'</span></li>')
+                        $('#'+id).append('<input type="checkbox" value="'+arr[i].id+'" lay-filter="areaList" title="'+arr[i].areaName+'"><span class="projectCount-span">'+arr[i].projectCount+'</span><br>')
                     }
+                    form.render();
                 }
             }
         });
-    }
-    getAreaList(token,'areaLise');
+    };
+    var showAreaMsg=function (id,token,table) {
+        var  obj={'id':id,"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
+        var  parasJson = JSON.stringify(obj);
+        $.ajax({
+            type: "post",
+            url: '/XCCloud/GroupArea?action=GetGroupArea',
+            contentType: "application/json; charset=utf-8",
+            data: {parasJson: parasJson},
+            success: function (data) {
+                data = JSON.parse(data);
+                console.log(data)
+                if(data.result_code==1){
+                    let arr=data.result_data;
+                    table.render({
+                        elem: '#areaSet'
+                        , height:'full-200'
+                        , data: arr
+                        , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+                        , cols: [[
+                            // {field:'ID', title:'项目名称', align: 'center',width:200}
+                            {field:'AreaName', title: '区域', align: 'center'}
+                            ,{field:'ProjectName', title:'项目名称', align: 'center',width:200}
+                            ,{field:'ProjectTypeParent',title: '项目大类', align: 'center',width:205} //width 支持：数字、百分比和不填写。
+                            ,{field:'ProjectTypeName', title: '项目分类', align: 'center',width:100}
+                            ,{field:'AreaType', title: '当前区域', align: 'center'}
+                            ,{fixed: 'right',title:'操作', width:140, align:'center', toolbar: '#barDemo'}]]
+                        , page: {page: true, limits: [10, 15, 20, 30, 50, 100]}
+                        , limit: 10
+                    });
+                }
+            }
+        });
+    };
+    layui.use(['form','table','layer'],function () {
+        let form=layui.form;
+        let table=layui.table;
+        let layer=layui.layer;
+        getAreaList(token,'areaLise',form);
+        $('#areaLise').on('click','li',function () {
+            var _id=$(this).attr('id');
+            $(this).css({'color':'red'})
+            showAreaMsg (_id,token,table)
+        })
+    })
+
 </script>
 </html>
