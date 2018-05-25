@@ -8,12 +8,68 @@
 <body>
 <div class="layui-row" style="padding: 10px;">
     <div class="layui-col-lg12 layui-col-md12 layui-col-sm12 layui-col-xs12">
-        <div class="layui-col-lg6 layui-col-md6 layui-col-sm6 layui-col-xs12" style="height: 600px;padding: 15px;">
-            <ul id="tree"></ul>
+        <div class="layui-col-lg3 layui-col-md3 layui-col-sm4 layui-col-xs12" style="height: 600px;padding: 15px;">
+            <div class="layui-card">
+                <div class="layui-card-header">类别列表</div>
+                <div class="layui-card-body">
+                    <ul id="tree" style="height: 500px"></ul>
+                    <div class="layui-btn-group">
+                        <button class="layui-btn add" type="button">创建父类</button>
+                        <button class="layui-btn modify" type="button">创建自雷</button>
+                        <button class="layui-btn del" type="button">删除</button>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="layui-col-lg6 layui-col-md6 layui-col-sm6 layui-col-xs12" style="height: 600px;padding: 15px;"></div>
+        <div class="layui-col-lg6 layui-col-md6 layui-col-sm6 layui-col-xs12" style="height: 600px;padding: 15px;">
+            <form class="layui-form layui-form-pane">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">选中节点</label>
+                    <div class="layui-input-block">
+                        <input type="text" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">选中节点ID</label>
+                    <div class="layui-input-block">
+                        <input type="text" class="layui-input">
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
 
+</div>
+<div id="openModel" style="padding: 15px;display: none">
+    <form class="layui-form layui-form-pane">
+        <div class="layui-form-item">
+            <label class="layui-form-label">父节点名称</label>
+            <div class="layui-input-block">
+                <input type="text" class="layui-input" id="pNode">
+            </div>
+        </div>
+        <div class="layui-form-item layui-hide">
+            <label class="layui-form-label">父节点ID</label>
+            <div class="layui-input-block">
+                <input type="text" class="layui-input" id="pNodeId">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">类别名称</label>
+            <div class="layui-input-block">
+                <input type="text" class="layui-input" id="Node">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">类别说明</label>
+            <div class="layui-input-block">
+                <input type="text" class="layui-input" id="note">
+            </div>
+        </div>
+        <div class="layui-form-item" style="text-align:center;">
+            <button type="button" class="layui-btn" id="saveNode">确定</button>
+        </div>
+    </form>
 </div>
 </body>
 <script src="js/jquery-1.8.3-min.js"></script>
@@ -22,11 +78,57 @@
 <script>
     let xc=xcActionSystem.prototype;
     let token=xc.getStorage('token');
+    let nodeStatus;let rootId='';
     layui.use(['form','tree','layer'],function () {
         let form=layui.form;let tree=layui.tree;let layer=layui.layer;
-        setGiftType(token,tree,layer)
-    })
-    function setGiftType(token,tree,layer) {
+        setGiftType(token,tree,layer,rootId);
+        $('.add').click(function () {
+            nodeStatus='addParent';
+            layer.open({
+                title:'添加主节点',
+                area:'800px',
+                type:1,
+                content:$('#openModel')
+            })
+        });
+        //保存
+        $('#saveNode').click(function () {
+            let obj;
+            if(nodeStatus=='addParent'){
+                let _obj={
+                    'merchId':JSON.parse(xc.getStorage('logMsg')).merchId,
+                    'pDictKey':5,
+                    'dictKey':$('#Node').val(),
+                    'dictValue':'',
+                    'comment':$('#note').val(),
+                    'enabled':1,
+                    'userToken':token,
+                    'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                let url='/XCCloud/Dictionary?action=AddRoot';
+                let parasJson = JSON.stringify(_obj);
+                $.ajax({
+                    type: "post",
+                    url: url,
+                    contentType: "application/json; charset=utf-8",
+                    data: { parasJson: parasJson },
+                    success: function (data) {
+                        data=JSON.parse(data);
+                        console.log(data);
+                        if(data.result_code==1){
+                                layer.msg('添加成功',{time:1500},function () {
+                                    location.reload()
+                                })
+                        }else {
+                            layer.msg(data.result_msg||data.return_msg)
+                        }
+                    }
+
+                })
+
+            }
+        })
+    });
+    function setGiftType(token,tree,layer,root) {
         let _obj={
             'merchId':JSON.parse(xc.getStorage('logMsg')).merchId,
             'pDictKey':'商品类别',
@@ -43,12 +145,11 @@
                 data=JSON.parse(data);
                 console.log(data);
                 if(data.result_code==1){
-                    let treeData=data.result_data;
+                    let treeData=data.result_data.children;
                     tree({
                         elem:'#tree',
-                        nodes:treeData,
+                        nodes:treeData.length>0?treeData:[{name:'商品类别',spread: true,children:[]}],
                         click:function (node) {
-                            console.log(node)
                             if(node.id!=undefined&&node.ruleType!=undefined){
                                 getRule(node.ruleType,node.id,table);
                                 _ruleId=node.id;
@@ -57,6 +158,8 @@
 
                         }
                     })
+                    root=data.result_data.id
+                    return  root
                 }else {
                     layer.msg(data.result_msg||data.return_msg)
                 }

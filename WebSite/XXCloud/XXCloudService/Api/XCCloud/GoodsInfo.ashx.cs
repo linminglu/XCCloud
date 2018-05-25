@@ -1935,7 +1935,7 @@ namespace XXCloudService.Api.XCCloud
                         Utils.GetModel(dicParas, ref model);                        
                         if (id == 0)
                         {
-                            model.StorageOrderID = RedisCacheHelper.CreateStoreSerialNo(storeId);
+                            model.StorageOrderID = RedisCacheHelper.CreateCloudSerialNo(storeId);
                             model.MerchID = merchId;
                             model.StoreID = storeId;
                             model.UserID = logId;
@@ -2307,7 +2307,7 @@ namespace XXCloudService.Api.XCCloud
                         exitModel.DepotID = model.DepotID;
                         exitModel.ExitCost = exitCost;
                         exitModel.ExitCount = exitCount;
-                        exitModel.ExitOrderID = RedisCacheHelper.CreateStoreSerialNo(storeId);
+                        exitModel.ExitOrderID = RedisCacheHelper.CreateCloudSerialNo(storeId);
                         exitModel.ExitTotal = exitTotal;
                         exitModel.Note = note;
                         exitModel.MerchID = merchId;
@@ -2363,7 +2363,7 @@ namespace XXCloudService.Api.XCCloud
                         var outModel = new Data_GoodOutOrder();
                         outModel.MerchID = merchId;
                         outModel.StoreID = storeId;
-                        outModel.OrderID = RedisCacheHelper.CreateStoreSerialNo(storeId);
+                        outModel.OrderID = RedisCacheHelper.CreateCloudSerialNo(storeId);
                         outModel.OrderType = (int)GoodOutOrderType.Exit;
                         outModel.DepotID = model.DepotID;
                         outModel.CreateTime = DateTime.Now;
@@ -2575,7 +2575,7 @@ namespace XXCloudService.Api.XCCloud
                         Utils.GetModel(dicParas, ref model);
                         if (id == 0)
                         {
-                            model.OrderID = RedisCacheHelper.CreateStoreSerialNo(storeId);
+                            model.OrderID = RedisCacheHelper.CreateCloudSerialNo(storeId);
                             model.MerchID = merchId;
                             model.StoreID = storeId;
                             model.OPUserID = logId;

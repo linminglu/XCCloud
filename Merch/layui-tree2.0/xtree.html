@@ -123,7 +123,7 @@
 //                    data=  data.replace(eval("/Data/g"),"children").replace(eval("/DictKey/g"),"name");
                     data=JSON.parse(data);
                     console.log(data)
-                    data1 = data.result_data || [];
+                    data1 = data.result_data.children || [];
                     layui.use(['tree', 'layer'], function () {
                         layui.tree({
                             elem: '#demo2' //指定元素

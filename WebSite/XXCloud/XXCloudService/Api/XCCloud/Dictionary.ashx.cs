@@ -119,7 +119,7 @@ namespace XXCloudService.Api.XCCloud
                 rootRoot.ID = rootId;
                 TreeHelper.LoopToAppendChildren(dictionaryResponse, rootRoot);
 
-                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, rootRoot.Children);
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, rootRoot);
             }
             catch (Exception e)
             {
@@ -174,7 +174,7 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 string errMsg = string.Empty;
-                string pDictKey = dicParas.ContainsKey("pDictKey") ? dicParas["pDictKey"].ToString() : string.Empty;
+                int pId = dicParas.ContainsKey("pId") ? dicParas["pId"].Toint(0) : 0;
                 string dictKey = dicParas.ContainsKey("dictKey") ? dicParas["dictKey"].ToString() : string.Empty;
                 string dictValue = dicParas.ContainsKey("dictValue") ? dicParas["dictValue"].ToString() : string.Empty;
                 string comment = dicParas.ContainsKey("comment") ? dicParas["comment"].ToString() : string.Empty;
@@ -216,18 +216,6 @@ namespace XXCloudService.Api.XCCloud
                         errMsg = "存在重名的主节点";
                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                     }
-                }
-
-                var pId = 0;
-                if (!string.IsNullOrEmpty(pDictKey))
-                {
-                    if (!Dict_SystemService.I.Any(a => a.DictKey.Equals(pDictKey) && a.PID == 0))
-                    {
-                        errMsg = "父节点不存在";
-                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                    }
-
-                    pId = Dict_SystemService.I.GetModels(p => p.DictKey.Equals(pDictKey) && p.PID == 0).FirstOrDefault().ID;
                 }
 
                 Dict_System dict_System = new Dict_System();
