@@ -169,7 +169,6 @@
 		/*弹出层取消按钮*/
 		.layerCancel{position: absolute;z-index:999;top: 13px;right: 5px;font-size: 32px!important;color: #ff3030; -webkit-transform:scale(0.6);  -moz-transform:scale(0.6);  -o-transform:scale(0.6);}
 		.layerCancel:hover{color: #ff3030; -webkit-transform:scale(1);  -moz-transform:scale(1);  -o-transform:scale(1);}
-
 		/*弹出消息*/
 		.conF{position: fixed;top: 50%;left: 50%;width: 400px;height: 100px; margin-top:-50px;margin-left: -200px;text-align: center;background: rgba(0,0,0,0.6);z-index: 999;display: none;}
 		.conF span{display: inline-block;*display: inline;*zoom: 1;padding: 10px;font-size: 1.3em;margin-top: 30px;color: red;}
@@ -179,13 +178,10 @@
 		.selectSty select{display:block;width: 100%;height: 100%; color: #555;padding: 8px;border: none;line-height: 1.4em;}
 		.tableTag .selectSty select{background-color: #00F7DE;}
 		@media (min-width: 1024px) and (max-width: 1300px) {
-
 		}
 		@media (max-width: 768px) {
-
 		}
 		@media (min-width: 1024px) and (max-width: 1280px) {
-
 		}
 		/*销售列表样式修改*/
 		.salesLi{width: 16em;height: 7em;display: inline-flex;flex-direction: row;justify-content: space-between;margin: 0.2em;padding: 0.5em 0.2em;border: 1px solid #00F7DE;}
@@ -201,7 +197,6 @@
 		.saleTitleBg li:nth-child(7n+5) a{background-color: #c5d2dc;}
 		.saleTitleBg li:nth-child(7n+6) a{background-color: #e96e72;}
 		.tableTag{background-color: #00F7DE;}
-
 		.detailHide{display: none;}
 		/*弹出层修改*/
 		.modal-dialog{margin-top: 13em;}
@@ -253,11 +248,18 @@
 		.tab-style{margin-top: 1em;padding-left: 0;padding-right: 0;line-height: 2em;}
 		.switchZdy {border-radius: 4px;}
 		.mcImg img{width: 10em;height: 13em;margin-top: 1em;}
-		.inquire{text-align: right;margin-right: 2em;margin-bottom: 1em;}
+		.inquire{text-align: right;margin-right: 2em;margin-bottom: 1em;margin-top: 1em;}
 		.tab-btn{text-align: right;padding-right: 2em;margin-bottom: 1em;}
 		.modal-h4{line-height: 2em;border-bottom: 1px solid sandybrown;}
 		.modal-p{padding-left: 2em;color: #FF0000;line-height: 2em;}
 		.modal-btn{display: flex; flex-direction: row;justify-content: space-between;margin-top: 1em;padding: 0 2em;}
+		.card-Img{background: url("images/member.png") no-repeat left center;width: 250px;height: 130px;background-size: 100% 100%;border-radius: 10px;margin-top:2em;position: relative;}
+		.card-text1{position: absolute;right: 10px;bottom: 10px;font-size: 0.82em;color: gold;}
+		.card-text2{position: absolute;left: 30px;bottom: 3px;font-size: 0.7em;color: #000;}
+		.card-text4{position: absolute;right: 10px;bottom: 30px;font-size: 0.7em;color: #666;}
+		.card-text3{position: absolute;right: 10px;bottom: 50px;font-size: 0.7em;color: salmon;}
+		.btn-margin{margin-top: 3em;}
+		.givingList{height: 6em;}
 	</style>
 </head>
 <body>
@@ -542,21 +544,19 @@
 	</div>
 	<!--送币弹出层-->
 	<div class="modal fade bs-example-modal-lg" id="SendSModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-		<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-dialog modal-lg" role="document" v-if="givingShow">
 			<div class="modal-content row">
-				<div class="memberList swiper-container">
-					<!--<ul class="swiper-wrapper">-->
-					<!--<li class="swiper-slide" v-for="(item,index) in memberLevel" @click="membershipFood(index)">-->
-					<!--<img class="memberCard" :src="item.coverURL">-->
-					<!--<div class="memberSelected" v-show="item.selected">-->
-					<!--<img src="images/selected.png">-->
-					<!--</div>-->
-					<!--<div class="memberText">-->
-					<!--<h4>开卡费：￥{{item.openFee}}</h4>-->
-					<!--<p>押金：￥{{item.deposit}}</p>-->
-					<!--</div>-->
-					<!--</li>-->
-					<!--</ul>-->
+				<div class="givingList swiper-container">
+					<ul class="swiper-wrapper">
+						<li class="swiper-slide" v-for="(item,index) in givingData" @click="givingFnc(index)">
+							<div class="memberSelected" v-show="item.selected">
+								<img src="images/selected.png">
+							</div>
+							<div class="memberText">
+								<h4>{{item.txt}}</h4>
+							</div>
+						</li>
+					</ul>
 				</div>
 				<div class="col-md-12">
 					<div class="col-md-6">
@@ -597,7 +597,6 @@
 					</div>
 				</div>
 				<div class="col-md-12 tab-btn"><button type="button" class="btn btn-info">送币</button></div>
-
 			</div>
 		</div>
 	</div>
@@ -1072,10 +1071,12 @@
 										</div>
 										<div class="col-md-3 col-sm-3">
 											<h4>主卡信息</h4>
-											<p>卡号：123456</p>
-											<p>等级：普通卡</p>
-											<p>押金：10元</p>
-											<p>期限：2020-04-26</p>
+											<div class="card-Img">
+												<p class="card-text1">卡号：123456</p>
+												<p class="card-text2">等级：普通卡</p>
+												<p class="card-text3">押金：10元</p>
+												<p class="card-text4">期限：2020-04-26</p>
+											</div>
 										</div>
 										<div class="col-md-5 col-sm-5">
 											<div>
@@ -1085,7 +1086,7 @@
 												</ul>
 												<div class="tab-content">
 													<div role="tabpanel" class="tab-pane active" id="ViceCard1">
-														<div>
+														<div class="tab-style">
 															<h4>主卡信息</h4>
 															<p>卡号：123456</p>
 															<p>等级：普通卡</p>
@@ -1094,7 +1095,7 @@
 														</div>
 													</div>
 													<div role="tabpanel" class="tab-pane" id="ViceCard2">
-														<div>
+														<div class="tab-style">
 															<h4>卡信息</h4>
 															<p>卡号：123456</p>
 															<p>等级：普通卡</p>
@@ -1108,30 +1109,32 @@
 									</div>
 								</div>
 								<div role="tabpanel" class="tab-pane" id="salesRecord">
-									<div class="title">查询</div>
+									<div class="inquire"><button type="button" class="btn btn-warning">查询</button></div>
 									<div class="col-md-12 col-xs-12">
 										<table id="memberTable1"></table>
 									</div>
 								</div>
 								<div role="tabpanel" class="tab-pane" id="playRecording">
-									<div class="title">查询</div>
+									<div class="inquire"><button type="button" class="btn btn-warning">查询</button></div>
 									<div class="col-md-12 col-xs-12">
 										<table id="memberTable2"></table>
 									</div>
 								</div>
-								<div role="tabpanel" class="tab-pane" id="forRecord"><div class="title">查询</div>
+								<div role="tabpanel" class="tab-pane" id="forRecord">
+									<div class="inquire"><button type="button" class="btn btn-warning">查询</button></div>
 									<div class="col-md-12 col-xs-12">
 										<table id="memberTable3"></table>
 									</div>
 								</div>
-								<div role="tabpanel" class="tab-pane" id="ticketInformation"><div class="title">查询</div>
+								<div role="tabpanel" class="tab-pane" id="ticketInformation">
+									<div class="inquire"><button type="button" class="btn btn-warning">查询</button></div>
 									<div class="col-md-12 col-xs-12">
 										<table id="memberTable4"></table>
 									</div>
 								</div>
 							</div>
 						</div>
-						<div class="container-fluid">
+						<div class="btn-margin container-fluid">
 							<div class="row text-center">
 								<div class="col-md-4"></div>
 								<div class="col-md-2 col-xs-3"><button @click="saveManual" type="button" class="btn btn-info">手工补币</button></div>
@@ -1294,7 +1297,7 @@
         {"no":1,"name":"2017-09-04 12:44:30","name1":108,"name2":108,"name3":108,"name4":108,"name5":108,"name6":108,"name7":108,"name8":108,"name9":108,"name10":108},
         {"no":1,"name":"2017-09-04 12:44:30","name1":107,"name2":108,"name3":108,"name4":108,"name5":108,"name6":108,"name7":108,"name8":108,"name9":108,"name10":108}
     ];
-    var htmlFnc = new Vue({
+    var vm = new Vue({
         el: '#app',
         data:{
             salesIS: true,
@@ -1357,6 +1360,7 @@
             icCardId:"10004143",
             footerData:[],
             treeShow:false,
+            givingShow:false,
             balanceData:[{
                 balanceType:"No.1",
                 balance:"555454"
@@ -1401,7 +1405,12 @@
                 balance3:"",
                 balance4:"1000",
                 balance5:"500"
-            }]
+            }],
+			givingData:[
+			    {txt:"预赠币",selected:false},
+			    {txt:"生日送币",selected:false},
+			    {txt:"输赢送币",selected:false}
+			    ]
         },
         mounted: function () {
             this.Initialize()
@@ -1676,7 +1685,7 @@
                                     paginationClickable: true,
                                     spaceBetween: 20
                                 });
-                            }, 100);
+                            }, 200);
                         }
                     }).catch(function (err) {
                         console.log(err);
@@ -1775,7 +1784,7 @@
                             that.saleTitle = res.data.result_data.foodTypeMainList;
                             that.foodTypeGoodList = res.data.result_data.foodTypeGoodList;
                             that.foodTypeTicketList = res.data.result_data.foodTypeTicketList;
-							that.$nextTick(function () {
+                            setTimeout(function () {
                                 var swiper = new Swiper('.swiperSalesTitle', {
                                     /*pagination: '.swiper-pagination',*/
                                     nextButton: '.swiper-button-next',
@@ -1785,7 +1794,7 @@
                                     paginationClickable: true,
                                     spaceBetween: 30
                                 });
-							});
+                            }, 200);
                             that.$nextTick(function () {
                                 var foodTypeAll = "-1";
                                 console.log(that.saleTitle.length);
@@ -1868,7 +1877,7 @@
                                     paginationClickable: true,
                                     spaceBetween: 30
                                 });
-                            }, 50);
+                            }, 200);
                         }
                     }).catch(function (err) {
                         console.log(err);
@@ -2176,6 +2185,10 @@
                 }
 //                this.onSwitch1 = !this.onSwitch1;
             },
+//			会员操作送币
+            givingFnc:function(index){
+                alert(index)
+			},
 //			会员操作表格显示
             replacement:function () {
 				this.memberLevel = [];
@@ -2214,7 +2227,18 @@
             },
 //			送币
 			sendCoin:function () {
+                this.givingShow = false;
                 $('#SendSModal').modal('show');
+                this.givingShow = true;
+                setTimeout(function () {
+                    var  mySwiper = new Swiper('.givingList', {
+                        autoplay: false,//可选选项，自动滑动
+                        slidesPerView: 5,
+                        centeredSlides: false,
+                        paginationClickable: true,
+                        spaceBetween: 20
+                    });
+                }, 200);
             },
 //			退卡
 			backCard:function(){

@@ -672,31 +672,27 @@ namespace XCCloudService.Base
                         }
                         else
                         {
+                            bool accessible = true;
                             if (!string.IsNullOrEmpty(authorizeAttribute.Roles))
                             {
                                 string roleName = Enum.GetName(typeof(RoleType), userTokenKeyModel.LogType);
-                                if (!authorizeAttribute.Roles.Contains(roleName))
-                                {
-                                    errMsg = "当前用户无权访问";
-                                    return false;
-                                }
+                                accessible = authorizeAttribute.Roles.Contains(roleName);
                             }
 
                             if (!string.IsNullOrEmpty(authorizeAttribute.Merches))
                             {
                                 var TokenDataModel = userTokenKeyModel.DataModel as TokenDataModel;
-                                if (TokenDataModel == null)
+                                if (TokenDataModel != null)
                                 {
-                                    errMsg = "当前用户无权访问";
-                                    return false;
-                                }
+                                    string merchType = Enum.GetName(typeof(MerchType), TokenDataModel.MerchType);
+                                    accessible = authorizeAttribute.Merches.Contains(merchType);
+                                }                                
+                            }
 
-                                string merchType = Enum.GetName(typeof(MerchType), TokenDataModel.MerchType);
-                                if (!authorizeAttribute.Merches.Contains(merchType))
-                                {
-                                    errMsg = "当前用户无权访问";
-                                    return false;
-                                }
+                            if (!accessible)
+                            {
+                                errMsg = "当前用户无权访问";
+                                return false;
                             }
 
                             if (!string.IsNullOrEmpty(authorizeAttribute.Grants))

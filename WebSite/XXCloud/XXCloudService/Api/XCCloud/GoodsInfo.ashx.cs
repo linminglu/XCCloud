@@ -1514,14 +1514,12 @@ namespace XXCloudService.Api.XCCloud
                                     var costPrice = dicPara.Get("costPrice").Todecimal();
                                     var tax = dicPara.Get("tax").Todecimal();
 
-                                    var id = 0;
                                     bool isAdd = false;
                                     if (Data_GoodRequest_ListService.I.GetCount(p => p.RequestID == requestId && p.GoodID == goodId) == 1)
                                     {
                                         var data_GoodRequest_List = Data_GoodRequest_ListService.I.GetModels(p => p.RequestID == requestId && p.GoodID == goodId).FirstOrDefault();
                                         if (data_GoodRequest_List.SendCount == 0)
                                         {
-                                            id = data_GoodRequest_List.ID;
                                             data_GoodRequest_List.RequestID = requestId;
                                             data_GoodRequest_List.GoodID = goodId;
                                             data_GoodRequest_List.OutDepotID = outDepotId;
@@ -1564,8 +1562,6 @@ namespace XXCloudService.Api.XCCloud
                                             errMsg = "更新调拨明细信息失败";
                                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                                         }
-
-                                        id = data_GoodRequest_List.ID;
                                     }
                                     
                                     var data_GoodRequest = Data_GoodRequestService.I.GetModels(p => p.ID == requestId).FirstOrDefault();
@@ -1581,7 +1577,8 @@ namespace XXCloudService.Api.XCCloud
                                     data_GoodStock_Record.DepotID = outDepotId;
                                     data_GoodStock_Record.GoodID = goodId;
                                     data_GoodStock_Record.SourceType = (int)SourceType.GoodRequest;
-                                    data_GoodStock_Record.SourceID = id;
+                                    data_GoodStock_Record.SourceID = requestId;
+                                    data_GoodStock_Record.GoodCost = costPrice;
                                     data_GoodStock_Record.StockFlag = (int)StockFlag.Out;
                                     data_GoodStock_Record.StockCount = sendCount;
                                     data_GoodStock_Record.CreateTime = DateTime.Now;
@@ -1692,7 +1689,8 @@ namespace XXCloudService.Api.XCCloud
                                     data_GoodStock_Record.DepotID = inDepotId;
                                     data_GoodStock_Record.GoodID = data_GoodRequest_List.GoodID;
                                     data_GoodStock_Record.SourceType = (int)SourceType.GoodRequest;
-                                    data_GoodStock_Record.SourceID = id;
+                                    data_GoodStock_Record.SourceID = requestId;
+                                    data_GoodStock_Record.GoodCost = data_GoodRequest_List.CostPrice;
                                     data_GoodStock_Record.StockFlag = (int)StockFlag.In;
                                     data_GoodStock_Record.StockCount = storageCount;
                                     data_GoodStock_Record.CreateTime = DateTime.Now;
@@ -2140,6 +2138,7 @@ namespace XXCloudService.Api.XCCloud
                             var data_GoodStock_Record = new Data_GoodStock_Record();
                             data_GoodStock_Record.DepotID = model.DepotID;
                             data_GoodStock_Record.GoodID = detailModel.GoodID;
+                            data_GoodStock_Record.GoodCost = detailModel.TaxPrice;
                             data_GoodStock_Record.SourceType = (int)SourceType.GoodStorage;
                             data_GoodStock_Record.SourceID = id;
                             data_GoodStock_Record.StockFlag = (int)StockFlag.In;
@@ -2313,6 +2312,8 @@ namespace XXCloudService.Api.XCCloud
                         exitModel.Note = note;
                         exitModel.MerchID = merchId;
                         exitModel.StoreID = storeId;
+                        exitModel.CheckDate = DateTime.Now;
+                        exitModel.UserID = logId;
                         if (!Data_GoodExitInfoService.I.Add(exitModel))
                         {
                             errMsg = "保存退货信息失败";
@@ -2778,6 +2779,7 @@ namespace XXCloudService.Api.XCCloud
                             data_GoodStock_Record.GoodID = detailModel.GoodID;
                             data_GoodStock_Record.SourceType = (int)SourceType.GoodOut;
                             data_GoodStock_Record.SourceID = id;
+                            data_GoodStock_Record.GoodCost = detailModel.OutPrice;
                             data_GoodStock_Record.StockFlag = (int)StockFlag.Out;
                             data_GoodStock_Record.StockCount = detailModel.OutCount;
                             data_GoodStock_Record.CreateTime = DateTime.Now;

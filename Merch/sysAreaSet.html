@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>区域设置</title>
+    <link rel="stylesheet" href="layui/css/layui.css">
+</head>
+<body>
+<div class="layui-row" style="padding:15px">
+    <!--<blockquote class="layui-elem-quote" style="text-align: right">-->
+        <!--<button type="button" class="layui-btn layui-btn-normal" i18n-content="查询模板">查询模板</button>-->
+        <!--<button type="button" class="layui-btn layui-btn-normal add" i18n-content="新增">新增</button>-->
+    <!--</blockquote>-->
+
+    <div class="layui-col-md3">
+      <div style="height: 100%;">
+          <div class="layui-card">
+              <div class="layui-card-header">全部 <span class="sumArea"></span></div>
+              <div class="layui-card-body" style="padding-left: 60px;">
+                  <ul id="areaLise">
+
+                  </ul>
+              </div>
+          </div>
+      </div>
+    </div>
+    <div class="layui-col-md9">
+        <table class="layui-hide" id="areaSet" lay-filter="areaSet"></table>
+    </div>
+
+</div>
+</body>
+<script src="js/jquery-1.8.3-min.js"></script>
+<script src="layui/layui.js"></script>
+<script src="layui/layui-xtree-game.js"></script>
+<script src="js/storeSystem.js"></script>
+<script>
+    var xc=xcActionSystem.prototype;
+    var token=xc.getStorage('token');
+
+        var getAreaList=function (token,id) {
+        var  obj={"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
+        var  parasJson = JSON.stringify(obj);
+        $.ajax({
+            type: "post",
+            url: '/XCCloud/GroupArea?action=QueryGroupArea',
+            contentType: "application/json; charset=utf-8",
+            data: {parasJson: parasJson},
+            success: function (data) {
+                data = JSON.parse(data);
+                if(data.result_code==1){
+                    $('#'+id).html('');
+                    let arr=data.result_data;
+                    for(i in arr){
+                        $('#'+id).append('<li id="'+arr[i].ID+'"><span class="areaName-span">'+arr[i].AreaName+'</span><span class="projectCount-span">'+arr[i].ProjectCount+'</span></li>')
+                    }
+                }
+            }
+        });
+    }
+    getAreaList(token,'areaLise');
+</script>
+</html>

@@ -14,10 +14,10 @@ namespace XCCloudService.Model.XCCloud
     
     public partial class Flw_DiscountRule
     {
-        public int ID { get; set; }
+        public string ID { get; set; }
         public string MerchID { get; set; }
         public string StoreID { get; set; }
-        public Nullable<int> OrderFlwID { get; set; }
+        public string OrderFlwID { get; set; }
         public Nullable<int> DeviceID { get; set; }
         public Nullable<int> DiscountID { get; set; }
         public Nullable<decimal> FreeMoney { get; set; }

@@ -140,7 +140,7 @@
     xc.getInitData(parm);
     let id='';let gameArr=[];let checkedArr=[];
     let week=[];let WeekType=0;
-    let GameList=[];
+    let GameList='';
     var xtree3;
 
     $('#addGoods').click(function () {
@@ -175,6 +175,7 @@
                         , ckall: true    //启用全选功能，默认值：false
                         , ckallback: function () { } //全选框状态改变后执行的回调函数
                         ,checkedArr:checkedArr
+                        ,single:true
                     });
                 }
             }
@@ -241,7 +242,7 @@
         //新增，存入一个cook
         $('.add').on('click',function (){
             id=''; week=[]; WeekType=0;
-            GameList=[];
+            GameList='';
             layer.open({
                 title:'新增',
                 type:1,
@@ -252,7 +253,7 @@
         $('#save').on('click',function () {
             var oCks = xtree3.GetChecked(); //获取全部选中的末级节点checkbox对象，返回的为Array
             for (var i = 0; i < oCks.length; i++) {
-                GameList.push({'GameID':oCks[i].value})
+                GameList=oCks[0].value;
             }
             let _EncourageList=[];
             $('.goodConvert .goodRules').each(function () {
@@ -276,7 +277,7 @@
                 'EndDate':$('input[name="EndDate"]').val(),
                 'ContinueTimes':$('input[name="ContinueTimes"]').val(),
                 'Note':$('input[name="Note"]').val(),
-                'GameList':GameList,
+                'gameIndex':GameList,
                 'EncourageList':_EncourageList,
                 'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'
             };
@@ -348,7 +349,7 @@
                             });
                             $('#StartTime').val(generatelD(arr.StartTime.Hours) +':'+generatelD(arr.StartTime.Minutes) +':'+generatelD(arr.StartTime.Seconds));
                             $('#EndTime').val(generatelD(arr.EndTime.Hours) +':'+generatelD(arr.EndTime.Minutes) +':'+generatelD(arr.EndTime.Seconds));
-                            checkedArr=arr.GameList;
+                            checkedArr=[arr.GameIndex];
                             // GameList=arr.GameList;
                             var  obj1={"dictKey":'游戏机类型','enabled':1,'pDicKey':'',"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
                             var url="/XCCloud/Dictionary?action=GetNodes";
@@ -372,11 +373,11 @@
                                             , ckall: true    //启用全选功能，默认值：false
                                             , ckallback: function () { } //全选框状态改变后执行的回调函数
                                             ,checkedArr:checkedArr
+                                            ,single:true
                                         });
                                     }
                                 }
                             });
-                            xc.getMemberTypeAll(token,layer,form,'memBox',arr.MemberLevelList);
                             if(arr.Week!=''){
                                 let arrWeek= arr.Week.split('|');
                                 for(let i in arrWeek){
@@ -385,7 +386,20 @@
                             }
                             form.render();
                             week=arr.Week!=''?arr.Week.split('|'):[];
-                            WeekType=arr.WeekType; Level=arr.Level;
+                            WeekType=arr.WeekType;
+
+                            if(arr.EncourageList.length==1){
+                                $('.goodRules input[name="GameTims"]').val(arr.EncourageList[0].GameTims);
+                                $('.goodRules input[name="EncouragePrice"]').val(arr.EncourageList[0].EncouragePrice);
+                            }else if(arr.length>1){
+                                for(let i=1;i<arr.EncourageList.length;i++){
+                                    $('.goodConvert').append($('body').find($('.goodRules')).eq(0).clone())
+                                }
+                                for(let i=0;i<arr.EncourageList.length;i++){
+                                    $('.goodConvert').find($('.goodRules')).eq(i).find('input[name="GameTims"]').val(arr.EncourageList[i].GameTims);
+                                    $('.goodConvert').find($('.goodRules')).eq(i).find('input[name="EncouragePrice"]').val(arr.EncourageList[i].EncouragePrice);
+                                }
+                            }
                             layer.open({
                                 title:'修改设置',
                                 type:1,

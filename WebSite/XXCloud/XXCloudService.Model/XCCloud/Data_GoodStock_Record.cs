@@ -23,6 +23,7 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> DepotID { get; set; }
         public Nullable<int> StockFlag { get; set; }
         public Nullable<int> StockCount { get; set; }
+        public Nullable<decimal> GoodCost { get; set; }
         public Nullable<System.DateTime> CreateTime { get; set; }
         public string Note { get; set; }
         public string Verifiction { get; set; }

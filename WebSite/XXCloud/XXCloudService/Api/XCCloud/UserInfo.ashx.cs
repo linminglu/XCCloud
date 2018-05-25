@@ -22,6 +22,7 @@ using XCCloudService.Model.WeiXin.Message;
 using XCCloudService.Model.XCCloud;
 using XCCloudService.ResponseModels;
 using XCCloudService.WeiXin.Message;
+using XCCloudService.Common.Extensions;
 
 namespace XCCloudService.Api.XCCloud
 {    
@@ -634,7 +635,7 @@ namespace XCCloudService.Api.XCCloud
 
         #region "门店用户管理"
 
-            [Authorize(Merches = "Normal,Heavy")]
+            [Authorize(Merches = "Normal,Heavy", Roles = "StoreUser")]
             [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
             public object GetStoreUserList(Dictionary<string, object> dicParas)
             {
@@ -642,8 +643,10 @@ namespace XCCloudService.Api.XCCloud
                 {
                     string errMsg = string.Empty;
                     string merchId = string.Empty;
+                    string storeId = string.Empty;
                     XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                     merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                    storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
                     int userId = Convert.ToInt32(userTokenKeyModel.LogId);
 
                     IBase_StoreInfoService base_StoreInfoService = BLLContainer.Resolve<IBase_StoreInfoService>();
@@ -666,12 +669,17 @@ namespace XCCloudService.Api.XCCloud
                                     LogName = a.LogName,
                                     Mobile = a.Mobile,
                                     IsAdminStr = a.IsAdmin == 1 ? "是" : "否",
+                                    StoreID = a.StoreID,
                                     StoreName = b != null ? b.StoreName : "总店",
                                     UserGroupName = c != null ? c.GroupName : string.Empty,
                                     UserStatusStr = d != null ? d.DictKey : string.Empty
                                 };
+                    if (!storeId.IsNull())
+                    {
+                        linq = linq.Where(w => w.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase));
+                    }
 
-                    return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, linq.ToList());
+                    return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, linq);
                 }
                 catch (Exception e)
                 {
@@ -679,7 +687,7 @@ namespace XCCloudService.Api.XCCloud
                 }
             }
 
-            [Authorize(Merches = "Normal,Heavy")]
+            [Authorize(Merches = "Normal,Heavy", Roles = "StoreUser")]
             [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
             public object GetStoreUserInfo(Dictionary<string, object> dicParas)
             {
@@ -746,7 +754,7 @@ namespace XCCloudService.Api.XCCloud
                 }
             }
 
-            [Authorize(Merches = "Normal,Heavy")]
+            [Authorize(Merches = "Normal,Heavy", Roles = "StoreUser")]
             [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
             public object SaveStoreUserInfo(Dictionary<string, object> dicParas)
             {
@@ -858,8 +866,8 @@ namespace XCCloudService.Api.XCCloud
                         base_UserInfo.LogName = logName;
                         base_UserInfo.Mobile = mobile;
                         base_UserInfo.SwitchMerch = Convert.ToInt32(switchmerch);
-                    base_UserInfo.SwitchStore = Convert.ToInt32(switchstore);
-                    base_UserInfo.SwitchWorkstation = Convert.ToInt32(switchworkstation);
+                        base_UserInfo.SwitchStore = Convert.ToInt32(switchstore);
+                        base_UserInfo.SwitchWorkstation = Convert.ToInt32(switchworkstation);
 
                     string storeId = base_UserInfo.StoreID;
                         if (base_UserInfo.IsAdmin == 1 && userInfoService.Any(a => a.UserID != iUserId && a.IsAdmin == 1 && a.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)))
@@ -1140,7 +1148,7 @@ namespace XCCloudService.Api.XCCloud
                 }
             }
 
-            [Authorize(Merches = "Normal,Heavy")]
+            [Authorize(Merches = "Normal,Heavy", Roles = "StoreUser")]
             [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
             public object GetStoreUserGroup(Dictionary<string, object> dicParas)
             {
@@ -1189,7 +1197,7 @@ namespace XCCloudService.Api.XCCloud
                 }
             }
 
-            [Authorize(Merches = "Normal,Heavy")]
+            [Authorize(Merches = "Normal,Heavy", Roles = "StoreUser")]
             [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
             public object GetStoreUserGrant(Dictionary<string, object> dicParas)
             {

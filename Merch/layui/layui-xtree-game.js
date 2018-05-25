@@ -17,8 +17,9 @@ function layuiXtree(options) {
     this._iconClose = options.icon.close != null ? options.icon.close : "&#xe623;"; //关闭图标
     this._iconEnd = options.icon.end != null ? options.icon.end : "&#xe65f;"; //末级图标
 
+    this._single = options.single!= null ? options.single:false; //树节点是否单选
     this.dataBind(this._dataJson);
-    this.Rendering();
+    this.Rendering( this._single);
 
 }
 
@@ -74,7 +75,7 @@ layuiXtree.prototype.dataBind = function (d) {
 }
 
 //渲染呈现
-layuiXtree.prototype.Rendering = function () {
+layuiXtree.prototype.Rendering = function (single) {
     var _this = this;
     _this._container.innerHTML = _this._domStr;
     _this._form.render('checkbox');
@@ -127,12 +128,23 @@ layuiXtree.prototype.Rendering = function () {
         xtree_nullicons[i].style.color = _this._color;
     }
 
-    _this._form.on('checkbox(xtreeck)', function (da,single) {
+    _this._form.on('checkbox(xtreeck)', function (da) {
         if(single){
             var xtree_chis = da.elem.parentNode.getElementsByClassName('layui-xtree-item');
             if(xtree_chis.length){
-            da.othis[0].classList.remove('layui-form-checked');
-            da.elem.checked=false;
+                da.othis[0].classList.remove('layui-form-checked');
+                da.elem.checked=false;
+            }else {
+                var xtree_sib=[];
+                for(var i = 0; i < xtree_items.length;i++){
+                    if (xtree_items[i] !=da.elem.parentNode){
+                        xtree_sib.push(xtree_items[i])
+                    }
+                }
+                for(i in xtree_sib){
+                    xtree_sib[i].lastChild.classList.remove('layui-form-checked');
+                    xtree_sib[i].children[1].checked=false;
+                }
             }
 
             console.log(xtree_chis);
@@ -145,25 +157,7 @@ layuiXtree.prototype.Rendering = function () {
         }else {
             console.log(da)
             var  xtree_chis = da.elem.parentNode.getElementsByClassName('layui-xtree-item');
-            da.elem.parentNode.children[1].setAttribute('data-xend', '1');
-            if(xtree_chis.length){
-                da.othis[0].classList.remove('layui-form-checked');
-                da.elem.checked=false;
-            }else {
-                var xtree_sib=[];
 
-                    for(var i = 0; i < xtree_items.length;i++){
-                        if (xtree_items[i] !=da.elem.parentNode){
-                            xtree_sib.push(xtree_items[i])
-                        }
-                    }
-                console.log(xtree_sib);
-                for(i in xtree_sib){
-                    xtree_sib[i].lastChild.classList.remove('layui-form-checked');
-                    xtree_sib[i].children[1].setAttribute('data-xend', '0');
-                    xtree_sib[i].children[0].checked=false;
-                }
-            }
             console.log(xtree_chis);
             //遍历它们，选中状态与它们的父级一致（类似全选功能）
             for (var i = 0; i < xtree_chis.length; i++) {
