@@ -224,6 +224,7 @@
           </Key>
           <Property Name="ID" Type="int" Nullable="false" />
           <Property Name="MerchID" Type="varchar" MaxLength="15" />
+          <Property Name="StoreID" Type="varchar" MaxLength="15" />
           <Property Name="DogID" Type="varchar" MaxLength="128" />
           <Property Name="Status" Type="int" />
         </EntityType>
@@ -431,7 +432,7 @@
           </Key>
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="MerchID" Type="varchar" MaxLength="15" />
-          <Property Name="MemberID" Type="int" />
+          <Property Name="MemberID" Type="varchar" MaxLength="32" />
           <Property Name="BalanceIndex" Type="int" />
           <Property Name="Balance" Type="decimal" Precision="10" Scale="2" />
           <Property Name="UpdateTime" Type="datetime" />
@@ -1848,15 +1849,21 @@
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MerchID" Type="varchar" MaxLength="15" />
           <Property Name="StoreID" Type="varchar" MaxLength="15" />
           <Property Name="WorkStation" Type="varchar" MaxLength="50" />
+          <Property Name="DepotID" Type="int" />
           <Property Name="MacAddress" Type="varchar" MaxLength="50" />
           <Property Name="DiskID" Type="varchar" MaxLength="50" />
           <Property Name="State" Type="int" />
-          <Property Name="UserID" Type="int" />
-          <Property Name="UserOnlineState" Type="int" />
-          <Property Name="ScheduleSender" Type="int" />
-          <Property Name="DogID" Type="varchar" MaxLength="32" />
+        </EntityType>
+        <EntityType Name="Data_WorkStation_GoodList">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="GoodID" Type="int" />
+          <Property Name="WorkStationID" Type="int" />
         </EntityType>
         <EntityType Name="Dict_Area">
           <Key>
@@ -2766,6 +2773,7 @@
           <EntitySet Name="Data_WorkFlow_Node" EntityType="Self.Data_WorkFlow_Node" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Data_WorkFlowConfig" EntityType="Self.Data_WorkFlowConfig" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Data_Workstation" EntityType="Self.Data_Workstation" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Data_WorkStation_GoodList" EntityType="Self.Data_WorkStation_GoodList" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Dict_Area" EntityType="Self.Dict_Area" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Dict_BalanceType" EntityType="Self.Dict_BalanceType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Dict_FunctionMenu" EntityType="Self.Dict_FunctionMenu" Schema="dbo" store:Type="Tables" />
@@ -3134,7 +3142,6 @@
           <EntitySet Name="Base_SettleLCPay" EntityType="XCCloudDBModel.Base_SettleLCPay" />
           <EntitySet Name="Base_SettleOrg" EntityType="XCCloudDBModel.Base_SettleOrg" />
           <EntitySet Name="Base_SettlePPOS" EntityType="XCCloudDBModel.Base_SettlePPOS" />
-          <EntitySet Name="Base_StoreDogList" EntityType="XCCloudDBModel.Base_StoreDogList" />
           <EntitySet Name="Base_StoreHKConfig" EntityType="XCCloudDBModel.Base_StoreHKConfig" />
           <EntitySet Name="Base_StoreInfo" EntityType="XCCloudDBModel.Base_StoreInfo" />
           <EntitySet Name="Base_StoreWeight" EntityType="XCCloudDBModel.Base_StoreWeight" />
@@ -3149,7 +3156,6 @@
           <EntitySet Name="Data_BalanceType_StoreList" EntityType="XCCloudDBModel.Data_BalanceType_StoreList" />
           <EntitySet Name="Data_BillInfo" EntityType="XCCloudDBModel.Data_BillInfo" />
           <EntitySet Name="Data_Card_Balance" EntityType="XCCloudDBModel.Data_Card_Balance" />
-          <EntitySet Name="Data_Card_Balance_Free" EntityType="XCCloudDBModel.Data_Card_Balance_Free" />
           <EntitySet Name="Data_Card_Balance_StoreList" EntityType="XCCloudDBModel.Data_Card_Balance_StoreList" />
           <EntitySet Name="Data_Card_BalanceCharge" EntityType="XCCloudDBModel.Data_Card_BalanceCharge" />
           <EntitySet Name="Data_Card_Right" EntityType="XCCloudDBModel.Data_Card_Right" />
@@ -3229,7 +3235,6 @@
           <EntitySet Name="Data_WorkFlow_Entry" EntityType="XCCloudDBModel.Data_WorkFlow_Entry" />
           <EntitySet Name="Data_WorkFlow_Node" EntityType="XCCloudDBModel.Data_WorkFlow_Node" />
           <EntitySet Name="Data_WorkFlowConfig" EntityType="XCCloudDBModel.Data_WorkFlowConfig" />
-          <EntitySet Name="Data_Workstation" EntityType="XCCloudDBModel.Data_Workstation" />
           <EntitySet Name="Dict_Area" EntityType="XCCloudDBModel.Dict_Area" />
           <EntitySet Name="Dict_BalanceType" EntityType="XCCloudDBModel.Dict_BalanceType" />
           <EntitySet Name="Dict_FunctionMenu" EntityType="XCCloudDBModel.Dict_FunctionMenu" />
@@ -3284,6 +3289,10 @@
           <EntitySet Name="Flw_CouponUse" EntityType="XCCloudDBModel.Flw_CouponUse" />
           <EntitySet Name="Data_GoodStock_Record" EntityType="XCCloudDBModel.Data_GoodStock_Record" />
           <EntitySet Name="Flw_DiscountRule" EntityType="XCCloudDBModel.Flw_DiscountRule" />
+          <EntitySet Name="Base_StoreDogList" EntityType="XCCloudDBModel.Base_StoreDogList" />
+          <EntitySet Name="Data_Card_Balance_Free" EntityType="XCCloudDBModel.Data_Card_Balance_Free" />
+          <EntitySet Name="Data_Workstation" EntityType="XCCloudDBModel.Data_Workstation" />
+          <EntitySet Name="Data_WorkStation_GoodList" EntityType="XCCloudDBModel.Data_WorkStation_GoodList" />
         </EntityContainer>
         <EntityType Name="Base_ChainRule">
           <Key>
@@ -3498,15 +3507,6 @@
           <Property Name="InstNo" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="SettleFee" Type="Decimal" Precision="18" Scale="6" />
         </EntityType>
-        <EntityType Name="Base_StoreDogList">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" />
-          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="DogID" Type="String" MaxLength="128" FixedLength="false" Unicode="false" />
-          <Property Name="Status" Type="Int32" />
-        </EntityType>
         <EntityType Name="Base_StoreHKConfig">
           <Key>
             <PropertyRef Name="ID" />
@@ -3700,18 +3700,6 @@
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
           <Property Name="MemberID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
-          <Property Name="BalanceIndex" Type="Int32" />
-          <Property Name="Balance" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="UpdateTime" Type="DateTime" Precision="3" />
-          <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
-        </EntityType>
-        <EntityType Name="Data_Card_Balance_Free">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="MemberID" Type="Int32" />
           <Property Name="BalanceIndex" Type="Int32" />
           <Property Name="Balance" Type="Decimal" Precision="10" Scale="2" />
           <Property Name="UpdateTime" Type="DateTime" Precision="3" />
@@ -4972,21 +4960,6 @@
           <Property Name="State" Type="Int32" />
           <Property Name="Note" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
         </EntityType>
-        <EntityType Name="Data_Workstation">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="WorkStation" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="MacAddress" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="DiskID" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="State" Type="Int32" />
-          <Property Name="UserID" Type="Int32" />
-          <Property Name="UserOnlineState" Type="Int32" />
-          <Property Name="ScheduleSender" Type="Int32" />
-          <Property Name="DogID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
-        </EntityType>
         <EntityType Name="Dict_Area">
           <Key>
             <PropertyRef Name="ID" />
@@ -5901,6 +5874,49 @@
           <Property Name="UseTime" Type="DateTime" Precision="3" />
           <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
         </EntityType>
+        <EntityType Name="Base_StoreDogList">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="DogID" Type="String" MaxLength="128" FixedLength="false" Unicode="false" />
+          <Property Name="Status" Type="Int32" />
+        </EntityType>
+        <EntityType Name="Data_Card_Balance_Free">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="MemberID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="BalanceIndex" Type="Int32" />
+          <Property Name="Balance" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="UpdateTime" Type="DateTime" Precision="3" />
+          <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Data_Workstation">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="WorkStation" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="DepotID" Type="Int32" />
+          <Property Name="MacAddress" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="DiskID" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="State" Type="Int32" />
+        </EntityType>
+        <EntityType Name="Data_WorkStation_GoodList">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="GoodID" Type="Int32" />
+          <Property Name="WorkStationID" Type="Int32" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -6133,16 +6149,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Base_StoreDogList">
-            <EntityTypeMapping TypeName="XCCloudDBModel.Base_StoreDogList">
-              <MappingFragment StoreEntitySet="Base_StoreDogList">
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="DogID" ColumnName="DogID" />
-                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Base_StoreHKConfig">
             <EntityTypeMapping TypeName="XCCloudDBModel.Base_StoreHKConfig">
               <MappingFragment StoreEntitySet="Base_StoreHKConfig">
@@ -6345,19 +6351,6 @@
           <EntitySetMapping Name="Data_Card_Balance">
             <EntityTypeMapping TypeName="XCCloudDBModel.Data_Card_Balance">
               <MappingFragment StoreEntitySet="Data_Card_Balance">
-                <ScalarProperty Name="Verifiction" ColumnName="Verifiction" />
-                <ScalarProperty Name="UpdateTime" ColumnName="UpdateTime" />
-                <ScalarProperty Name="Balance" ColumnName="Balance" />
-                <ScalarProperty Name="BalanceIndex" ColumnName="BalanceIndex" />
-                <ScalarProperty Name="MemberID" ColumnName="MemberID" />
-                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Data_Card_Balance_Free">
-            <EntityTypeMapping TypeName="XCCloudDBModel.Data_Card_Balance_Free">
-              <MappingFragment StoreEntitySet="Data_Card_Balance_Free">
                 <ScalarProperty Name="Verifiction" ColumnName="Verifiction" />
                 <ScalarProperty Name="UpdateTime" ColumnName="UpdateTime" />
                 <ScalarProperty Name="Balance" ColumnName="Balance" />
@@ -7702,22 +7695,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Data_Workstation">
-            <EntityTypeMapping TypeName="XCCloudDBModel.Data_Workstation">
-              <MappingFragment StoreEntitySet="Data_Workstation">
-                <ScalarProperty Name="DogID" ColumnName="DogID" />
-                <ScalarProperty Name="ScheduleSender" ColumnName="ScheduleSender" />
-                <ScalarProperty Name="UserOnlineState" ColumnName="UserOnlineState" />
-                <ScalarProperty Name="UserID" ColumnName="UserID" />
-                <ScalarProperty Name="State" ColumnName="State" />
-                <ScalarProperty Name="DiskID" ColumnName="DiskID" />
-                <ScalarProperty Name="MacAddress" ColumnName="MacAddress" />
-                <ScalarProperty Name="WorkStation" ColumnName="WorkStation" />
-                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Dict_Area">
             <EntityTypeMapping TypeName="XCCloudDBModel.Dict_Area">
               <MappingFragment StoreEntitySet="Dict_Area">
@@ -8682,6 +8659,53 @@
                 <ScalarProperty Name="OrderFlwID" ColumnName="OrderFlwID" />
                 <ScalarProperty Name="StoreID" ColumnName="StoreID" />
                 <ScalarProperty Name="MerchID" ColumnName="MerchID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Base_StoreDogList">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Base_StoreDogList">
+              <MappingFragment StoreEntitySet="Base_StoreDogList">
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="DogID" ColumnName="DogID" />
+                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
+                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Data_Card_Balance_Free">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Data_Card_Balance_Free">
+              <MappingFragment StoreEntitySet="Data_Card_Balance_Free">
+                <ScalarProperty Name="Verifiction" ColumnName="Verifiction" />
+                <ScalarProperty Name="UpdateTime" ColumnName="UpdateTime" />
+                <ScalarProperty Name="Balance" ColumnName="Balance" />
+                <ScalarProperty Name="BalanceIndex" ColumnName="BalanceIndex" />
+                <ScalarProperty Name="MemberID" ColumnName="MemberID" />
+                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Data_Workstation">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Data_Workstation">
+              <MappingFragment StoreEntitySet="Data_Workstation">
+                <ScalarProperty Name="State" ColumnName="State" />
+                <ScalarProperty Name="DiskID" ColumnName="DiskID" />
+                <ScalarProperty Name="MacAddress" ColumnName="MacAddress" />
+                <ScalarProperty Name="DepotID" ColumnName="DepotID" />
+                <ScalarProperty Name="WorkStation" ColumnName="WorkStation" />
+                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
+                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Data_WorkStation_GoodList">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Data_WorkStation_GoodList">
+              <MappingFragment StoreEntitySet="Data_WorkStation_GoodList">
+                <ScalarProperty Name="WorkStationID" ColumnName="WorkStationID" />
+                <ScalarProperty Name="GoodID" ColumnName="GoodID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>

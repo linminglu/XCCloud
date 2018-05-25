@@ -89,6 +89,7 @@
     <Compile Include="CustomModel\XCCloud\Data_ProjectInfoModel.cs" />
     <Compile Include="CustomModel\XCCloud\Data_Project_BindDeviceModel.cs" />
     <Compile Include="CustomModel\XCCloud\Data_GameEncourageModel.cs" />
+    <Compile Include="CustomModel\XCCloud\Data_WorkstationModel.cs" />
     <Compile Include="CustomModel\XCCloud\Data_Push_RuleModel.cs" />
     <Compile Include="CustomModel\XCCloud\Data_ReloadModel.cs" />
     <Compile Include="CustomModel\XCCloud\DictionaryResponseModel.cs" />
@@ -613,6 +614,9 @@
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_Workstation.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_WorkStation_GoodList.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Dict_Area.cs">

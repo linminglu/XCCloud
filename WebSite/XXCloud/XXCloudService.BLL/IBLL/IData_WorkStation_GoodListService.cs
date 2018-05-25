@@ -7,17 +7,13 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace XCCloudService.Model.XCCloud
+namespace XCCloudService.BLL.IBLL.XCCloud
 {
-    using System;
-    using System.Collections.Generic;
     
-    public partial class Base_StoreDogList
+    using XCCloudService.Model.XCCloud;
+    
+    public interface IData_WorkStation_GoodListService : IBaseService<Data_WorkStation_GoodList>
     {
-        public int ID { get; set; }
-        public string MerchID { get; set; }
-        public string StoreID { get; set; }
-        public string DogID { get; set; }
-        public Nullable<int> Status { get; set; }
+    		
     }
 }

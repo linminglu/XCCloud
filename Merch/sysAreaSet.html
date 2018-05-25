@@ -5,6 +5,50 @@
     <title>区域设置</title>
     <link rel="stylesheet" href="layui/css/layui.css">
 </head>
+<style>
+    .layui-table-view .layui-table[lay-size="sm"] .layui-select-title .layui-input {
+        height: 28px;
+        margin-top: -8px;
+    }
+
+    .layui-table-view .layui-table[lay-size="sm"] .layui-form-select dl dt, .layui-table-view .layui-form-select dl dd {
+        line-height: 28px;
+    }
+
+    .layui-table-view .layui-table[lay-size="sm"] .layui-form-select dl {
+        top: 28px;
+    }
+
+    .layui-table-view .layui-table .layui-select-title .layui-input {
+        height: 32px;
+        margin-top: -3px;
+    }
+
+    .layui-table-view .layui-table .layui-form-select dl dt, .layui-table-view .layui-form-select dl dd {
+        line-height: 32px;
+    }
+
+    .layui-table-view .layui-table .layui-form-select dl {
+        top: 32px;
+    }
+
+    .layui-table-view .layui-table[lay-size="lg"] .layui-select-title .layui-input {
+        height: 38px;
+        margin-top: 0;
+    }
+
+    .layui-table-view .layui-table[lay-size="lg"] .layui-form-select dl dt, .layui-table-view .layui-form-select dl dd {
+        line-height: 38px;
+    }
+
+    .layui-table-view .layui-table[lay-size="lg"] .layui-form-select dl {
+        top: 38px;
+    }
+
+    /*.tableWithoutHead .layui-table-header {*/
+    /*display: none;*/
+    /*}*/
+</style>
 <body>
 <div class="layui-row" style="padding:15px">
     <!--<blockquote class="layui-elem-quote" style="text-align: right">-->
@@ -34,6 +78,7 @@
     </div>
 
 </div>
+<button class="layui-btn" id="getCheckedData">获得表格选中行</button>
  <div id="openModel" style="padding: 15px;display: none;">
      <form action="" class="layui-form layui-form-pane">
          <div class="layui-form-item">
@@ -74,9 +119,8 @@
                 if(data.result_code==1){
                     $('#'+id).html('');
                      arr=data.result_data;
-                    // _areaList=data.result_data;
+                     console.log(arr)
                     for(i in arr){
-                        // $('#'+id).append('<li id="'+arr[i].id+'"><span class="areaName-span">'+arr[i].areaName+'</span><span class="projectCount-span">'+arr[i].projectCount+'</span></li>')
                         $('#'+id).append('<input type="radio" name="aa" value="'+arr[i].id+'" lay-filter="areaList" title="'+arr[i].areaName+'"><span class="projectCount-span">'+arr[i].projectCount+'</span><br>')
                     }
                     form.render();
@@ -84,7 +128,7 @@
             }
         });
     };
-    var showAreaMsg=function (id,token,table) {
+    var showAreaMsg=function (id,token,table,form,_areaList) {
         var  obj={'id':id,"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
         var  parasJson = JSON.stringify(obj);
         $.ajax({
@@ -103,15 +147,39 @@
                         , data: arr
                         , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
                         , cols: [[
-                            // {field:'ID', title:'项目名称', align: 'center',width:200}
+                            {field:'ID', title: 'ID', align: 'center'} ,
                             {field:'AreaName', title: '区域', align: 'center'}
-                            ,{field:'ProjectName', title:'项目名称', align: 'center',width:200}
-                            ,{field:'ProjectTypeParent',title: '项目大类', align: 'center',width:205} //width 支持：数字、百分比和不填写。
-                            ,{field:'ProjectTypeName', title: '项目分类', align: 'center',width:100}
-                            ,{field:'AreaType', title: '当前区域', align: 'center'}
+                            ,{field:'ProjectName', title:'项目名称', align: 'center'}
+                            ,{field:'ProjectTypeParent',title: '项目大类', align: 'center'} //width 支持：数字、百分比和不填写。
+                            ,{field:'ProjectTypeName', title: '项目分类', align: 'center'}
+                            ,{field:'AreaType',
+                                title: '当前区域',
+                                align: 'center',
+                                templet:function (d) {
+                                let _select='<select name="AreaType" lay-filter="testSelect" lay-verify="required" data-value="' + d.AreaType + '" ><option value=""></option>'
+                                for(i in _areaList){
+                                    if(d.AreaType==_areaList[i].id){
+                                        _select+='<option value="'+_areaList[i].id+'" selected>'+_areaList[i].areaName+'</option>'
+                                    }else {
+                                        _select+='<option value="'+_areaList[i].id+'">'+_areaList[i].areaName+'</option>'
+                                    }
+
+                                }
+                                    _select+='</select>'
+                                    return _select;
+                                }}
                             ,{fixed: 'right',title:'操作', width:140, align:'center', toolbar: '#barDemo'}]]
                         , page: {page: true, limits: [10, 15, 20, 30, 50, 100]}
                         , limit: 10
+                        ,done: function (res, curr, count) {
+                            var tableElem = this.elem.next('.layui-table-view');
+                            count || tableElem.find('.layui-table-header').css('overflow', 'auto');
+                            layui.each(tableElem.find('select'), function (index, item) {
+                                var elem = $(item);
+                                elem.val(elem.data('value')).parents('div.layui-table-cell').css('overflow', 'visible');
+                            });
+                            form.render();
+                        }
                     });
                 }
             }
@@ -121,14 +189,46 @@
         let form=layui.form;
         let table=layui.table;
         let layer=layui.layer;
-        getAreaList(token,'areaLise',form,_areaList);
-
+        // getAreaList(token,'areaLise',form,_areaList);
+        var  obj={"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
+        var  parasJson = JSON.stringify(obj);
+        $.ajax({
+            type: "post",
+            url: '/XCCloud/GroupArea?action=QueryGroupArea',
+            contentType: "application/json; charset=utf-8",
+            data: {parasJson: parasJson},
+            success: function (data) {
+                data = JSON.parse(data);
+                console.log(data)
+                if(data.result_code==1){
+                    $('#areaLise').html('');
+                    _areaList=data.result_data;
+                    for(i in _areaList){
+                        $('#areaLise').append('<input type="radio" name="aa" value="'+_areaList[i].id+'" lay-filter="areaList" title="'+_areaList[i].areaName+'"><span class="projectCount-span">'+_areaList[i].projectCount+'</span><br>')
+                    }
+                    form.render();
+                }
+            }
+        });
         form.on('radio(areaList)',function (data) {
-           showAreaMsg (data.value,token,table);
+           showAreaMsg (data.value,token,table,form,_areaList);
             checkArea=data.value;
             _areaName=data.title;
         });
-
+        form.on('select(testSelect)', function (data) {
+            var elem = $(data.elem);
+            var trElem = elem.parents('tr');
+            var tableData = table.cache['areaSet'];
+            // 更新到表格的缓存数据中，才能在获得选中行等等其他的方法中得到更新之后的值
+            tableData[trElem.data('index')][elem.attr('name')] = data.value;
+            console.log(trElem[0].children[0].firstChild.innerHTML);
+            // 其他的操作看需求 TODO
+        });
+        $('#getCheckedData').click(function () {
+            // 验证一下下拉选择之后有没有作用到表格缓存数据
+            var checkStatus = table.checkStatus('areaSet'); //test即为基础参数id对应的值
+            layer.alert(JSON.stringify(checkStatus));
+        });
         //新增
         $('.add').click(function () {
             $('input[name="areaName"]').val('');
@@ -201,6 +301,15 @@
             });
         })
     })
+</script>
+<script type="text/html" id="areaType">
 
+     <select name="AreaType" lay-filter="testSelect" lay-verify="required" data-value="' + d.AreaType + '" ><option value=""></option>
+        <option value="18000">北京</option>
+        <option value="20000">上海</option>
+        <option value="20001">广州</option>
+         <option value="20002">深圳</option>
+        <option value="20003">杭州</option>
+        </select>
 </script>
 </html>

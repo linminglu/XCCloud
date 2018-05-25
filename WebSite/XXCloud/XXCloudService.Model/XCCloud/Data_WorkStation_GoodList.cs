@@ -12,15 +12,10 @@ namespace XCCloudService.Model.XCCloud
     using System;
     using System.Collections.Generic;
     
-    public partial class Data_Workstation
+    public partial class Data_WorkStation_GoodList
     {
         public int ID { get; set; }
-        public string MerchID { get; set; }
-        public string StoreID { get; set; }
-        public string WorkStation { get; set; }
-        public Nullable<int> DepotID { get; set; }
-        public string MacAddress { get; set; }
-        public string DiskID { get; set; }
-        public Nullable<int> State { get; set; }
+        public Nullable<int> GoodID { get; set; }
+        public Nullable<int> WorkStationID { get; set; }
     }
 }

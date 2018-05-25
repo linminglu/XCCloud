@@ -6,13 +6,18 @@ using System.Web;
 using XCCloudService.Base;
 using XCCloudService.BLL.Container;
 using XCCloudService.BLL.IBLL.XCCloud;
+using XCCloudService.BLL.XCCloud;
 using XCCloudService.Common;
 using XCCloudService.DBService.BLL;
 using XCCloudService.Model.CustomModel.XCCloud;
+using XCCloudService.Common.Extensions;
+using System.Transactions;
+using System.Data.Entity.Validation;
+using XXCloudService.Api.XCCloud.Common;
 
 namespace XXCloudService.Api.XCCloud
 {
-    [Authorize(Roles = "StoreUser,MerchUser")]
+    [Authorize(Roles = "StoreUser")]
     /// <summary>
     /// Workstation 的摘要说明
     /// </summary>
@@ -41,12 +46,21 @@ namespace XXCloudService.Api.XCCloud
                     }
                 }
 
-                string sql = @"select a.* from Data_Workstation a where a.StoreID='" + storeId + "'";
-                sql = sql + sqlWhere;
-                IData_WorkstationService data_WorkstationService = BLLContainer.Resolve<IData_WorkstationService>();
-                var data_Workstation = data_WorkstationService.SqlQuery(sql, parameters).ToList();
+                string sql = @"SELECT
+                                    a.ID,
+                                    a.DepotID, 
+                                    b.DepotName,
+                                    a.State
+                                FROM
+                                	Data_Workstation a
+                                LEFT JOIN Base_DepotInfo b ON a.DepotID = b.ID                                
+                                WHERE 1=1
+                            ";
+                sql += " AND a.StoreID=" + storeId;
 
-                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, data_Workstation);
+                var list = Data_WorkstationService.I.SqlQuery<Data_WorkstationList>(sql, parameters).ToList();
+
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, list);
             }
             catch (Exception e)
             {
@@ -68,12 +82,211 @@ namespace XXCloudService.Api.XCCloud
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
-                IData_WorkstationService data_WorkstationService = BLLContainer.Resolve<IData_WorkstationService>();
-                var workstationList = data_WorkstationService.GetModels(p=>p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase))
-                    .Select(o => new { ID = o.ID, WorkStation = o.WorkStation }).Distinct()
-                    .ToDictionary(d => d.ID, d => d.WorkStation);
+                var workstationList = Data_WorkstationService.I.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase))
+                    .Distinct()
+                    .OrderBy(or => or.WorkStation)
+                    .Select(o => new
+                    {
+                        ID = o.ID,
+                        WorkStation = o.WorkStation
+                    });
 
-                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, workstationList);
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, workstationList);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        /// <summary>
+        /// 获取售卖信息
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object GetWorkstation(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                var errMsg = string.Empty;
+                if (!dicParas.Get("id").Validintnozero("工作站ID", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                var id = dicParas.Get("id").Toint();
+
+                if (!Data_WorkstationService.I.Any(p => p.ID == id))
+                {
+                    errMsg = "该工作站不存在";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
+                var list = (from a in Data_WorkstationService.N.GetModels(p => p.ID == id)
+                            join b in Data_WorkStation_GoodListService.N.GetModels() on a.ID equals b.WorkStationID
+                            join c in Base_GoodsInfoService.N.GetModels() on b.GoodID equals c.ID
+                            join d in Dict_SystemService.N.GetModels() on c.GoodType equals d.ID into d1
+                            from d in d1.DefaultIfEmpty()
+                            select new
+                            {
+                                SaleName = c.GoodName,
+                                SaleType = d != null ? d.DictKey : string.Empty,
+                                Source = "单品"
+                            }).Union
+                           (from a in Data_WorkstationService.N.GetModels(p => p.ID == id)
+                            join b in Data_Food_WorkStationService.N.GetModels() on a.ID equals b.WorkStationID
+                            join c in Data_FoodInfoService.N.GetModels() on b.FoodID equals c.FoodID
+                            join d in Dict_SystemService.N.GetModels() on (c.FoodType + "") equals d.DictValue into d1
+                            from d in d1.DefaultIfEmpty()
+                            join e in Dict_SystemService.N.GetModels(p => p.DictKey == "套餐类别" && p.PID == 0) on d.PID equals e.ID
+                            select new
+                            {
+                                SaleName = c.FoodName,
+                                SaleType = d != null ? d.DictKey : string.Empty,
+                                Source = "套餐"
+                            }
+                           ).OrderBy(or => or.SaleName);
+
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, list);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object SaveWorkstation(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+
+                string errMsg = string.Empty;
+                if (!dicParas.Get("id").Validintnozero("工作站ID", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (!dicParas.Get("state").Validint("工作站状态", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                var id = dicParas.Get("id").Toint();
+                var state = dicParas.Get("state").Toint();
+
+                //开启EF事务
+                using (TransactionScope ts = new TransactionScope())
+                {
+                    try
+                    {
+                        if (!Data_WorkstationService.I.Any(p => p.ID == id))
+                        {
+                            errMsg = "该工作站不存在";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
+                        var model = Data_WorkstationService.I.GetModels(p => p.ID == id).FirstOrDefault();
+                        model.State = state;
+                        if (!Data_WorkstationService.I.Update(model))
+                        {
+                            errMsg = "修改工作站失败";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
+                        ts.Complete();
+                    }
+                    catch (Exception ex)
+                    {
+                        errMsg = ex.Message;
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
+                }
+
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        /// <summary>
+        /// 批量绑定仓库
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object BindDepotBatch(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                string errMsg = string.Empty;
+                if (!dicParas.GetArray("depotWorkstationList").Validarray("仓库工作站列表", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                var depotWorkstationList = dicParas.GetArray("depotWorkstationList");
+
+                //开启EF事务
+                using (TransactionScope ts = new TransactionScope())
+                {
+                    try
+                    {
+                        if (depotWorkstationList != null && depotWorkstationList.Count() > 0)
+                        {
+                            foreach (IDictionary<string, object> el in depotWorkstationList)
+                            {
+                                if (el != null)
+                                {
+                                    var dicPara = new Dictionary<string, object>(el, StringComparer.OrdinalIgnoreCase);
+                                    if (!dicPara.Get("depotId").Validintnozero("仓库ID", out errMsg))
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    if (!dicPara.Get("workStationId").Validintnozero("工作站ID", out errMsg))
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                                    var depotId = dicPara.Get("depotId").Toint();
+                                    var workStationId = dicPara.Get("workStationId").Toint();
+                                    if (!Data_WorkstationService.I.Any(p => p.ID == workStationId))
+                                    {
+                                        errMsg = "该工作站不存在";
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    }
+
+                                    if (!Base_DepotInfoService.I.Any(p => p.ID == depotId))
+                                    {
+                                        errMsg = "该仓库不存在";
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    }
+
+                                    var workStation = Data_WorkstationService.I.GetModels(p => p.ID == workStationId).FirstOrDefault();
+                                    workStation.DepotID = depotId;
+                                    Data_WorkstationService.I.UpdateModel(workStation);
+                                }
+                                else
+                                {
+                                    errMsg = "提交数据包含空对象";
+                                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                }
+                            }
+
+                            if (!Data_WorkstationService.I.SaveChanges())
+                            {
+                                errMsg = "批量绑定仓库失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+                        }
+
+                        ts.Complete();
+                    }
+                    catch (DbEntityValidationException e)
+                    {
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, e.EntityValidationErrors.ToErrors());
+                    }
+                    catch (Exception ex)
+                    {
+                        errMsg = ex.Message;
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
+                }
+
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
             }
             catch (Exception e)
             {

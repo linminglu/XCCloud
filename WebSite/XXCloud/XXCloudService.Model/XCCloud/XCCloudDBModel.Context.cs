@@ -39,7 +39,6 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Base_SettleLCPay> Base_SettleLCPay { get; set; }
         public virtual DbSet<Base_SettleOrg> Base_SettleOrg { get; set; }
         public virtual DbSet<Base_SettlePPOS> Base_SettlePPOS { get; set; }
-        public virtual DbSet<Base_StoreDogList> Base_StoreDogList { get; set; }
         public virtual DbSet<Base_StoreHKConfig> Base_StoreHKConfig { get; set; }
         public virtual DbSet<Base_StoreInfo> Base_StoreInfo { get; set; }
         public virtual DbSet<Base_StoreWeight> Base_StoreWeight { get; set; }
@@ -54,7 +53,6 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Data_BalanceType_StoreList> Data_BalanceType_StoreList { get; set; }
         public virtual DbSet<Data_BillInfo> Data_BillInfo { get; set; }
         public virtual DbSet<Data_Card_Balance> Data_Card_Balance { get; set; }
-        public virtual DbSet<Data_Card_Balance_Free> Data_Card_Balance_Free { get; set; }
         public virtual DbSet<Data_Card_Balance_StoreList> Data_Card_Balance_StoreList { get; set; }
         public virtual DbSet<Data_Card_BalanceCharge> Data_Card_BalanceCharge { get; set; }
         public virtual DbSet<Data_Card_Right> Data_Card_Right { get; set; }
@@ -134,7 +132,6 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Data_WorkFlow_Entry> Data_WorkFlow_Entry { get; set; }
         public virtual DbSet<Data_WorkFlow_Node> Data_WorkFlow_Node { get; set; }
         public virtual DbSet<Data_WorkFlowConfig> Data_WorkFlowConfig { get; set; }
-        public virtual DbSet<Data_Workstation> Data_Workstation { get; set; }
         public virtual DbSet<Dict_Area> Dict_Area { get; set; }
         public virtual DbSet<Dict_BalanceType> Dict_BalanceType { get; set; }
         public virtual DbSet<Dict_FunctionMenu> Dict_FunctionMenu { get; set; }
@@ -189,5 +186,9 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Flw_CouponUse> Flw_CouponUse { get; set; }
         public virtual DbSet<Data_GoodStock_Record> Data_GoodStock_Record { get; set; }
         public virtual DbSet<Flw_DiscountRule> Flw_DiscountRule { get; set; }
+        public virtual DbSet<Base_StoreDogList> Base_StoreDogList { get; set; }
+        public virtual DbSet<Data_Card_Balance_Free> Data_Card_Balance_Free { get; set; }
+        public virtual DbSet<Data_Workstation> Data_Workstation { get; set; }
+        public virtual DbSet<Data_WorkStation_GoodList> Data_WorkStation_GoodList { get; set; }
     }
 }
