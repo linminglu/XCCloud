@@ -16,10 +16,15 @@
       <div style="height: 100%;">
           <div class="layui-card">
               <div class="layui-card-header">全部 <span class="sumArea"></span></div>
-              <div class="layui-card-body" style="padding-left: 60px;">
-                  <ul id="areaLise">
+              <div class="layui-card-body" style="padding-left: 60px;height: 700px">
+                  <div id="areaLise" class="layui-form layui-form-pane">
 
-                  </ul>
+                  </div>
+                  <div style="text-align:center;">
+                      <button type="button" class="layui-btn add">新增</button>
+                      <button type="button" class="layui-btn del">删除</button>
+                      <button type="button" class="layui-btn modify">修改</button>
+                  </div>
               </div>
           </div>
       </div>
@@ -29,6 +34,22 @@
     </div>
 
 </div>
+ <div id="openModel" style="padding: 15px;display: none;">
+     <form action="" class="layui-form layui-form-pane">
+         <div class="layui-form-item">
+             <label for="" class="layui-form-label">区域名称</label>
+             <div class="layui-input-block">
+                 <input type="text" class="layui-input" name="areaName">
+             </div>
+         </div>
+
+         <div class="layui-form-item">
+             <div class="layui-input-block">
+                <button type="button" class="layui-btn" id="save">确定</button>
+             </div>
+         </div>
+     </form>
+ </div>
 </body>
 <script src="js/jquery-1.8.3-min.js"></script>
 <script src="layui/layui.js"></script>
@@ -37,8 +58,9 @@
 <script>
     var xc=xcActionSystem.prototype;
     var token=xc.getStorage('token');
-
-    var getAreaList=function (token,id,from) {
+    let checkArea='';let _areaName='';
+    let _areaList=[];
+    var getAreaList=function (token,id,form,arr) {
         var  obj={"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
         var  parasJson = JSON.stringify(obj);
         $.ajax({
@@ -51,10 +73,11 @@
                 console.log(data)
                 if(data.result_code==1){
                     $('#'+id).html('');
-                    let arr=data.result_data;
+                     arr=data.result_data;
+                    // _areaList=data.result_data;
                     for(i in arr){
                         // $('#'+id).append('<li id="'+arr[i].id+'"><span class="areaName-span">'+arr[i].areaName+'</span><span class="projectCount-span">'+arr[i].projectCount+'</span></li>')
-                        $('#'+id).append('<input type="checkbox" value="'+arr[i].id+'" lay-filter="areaList" title="'+arr[i].areaName+'"><span class="projectCount-span">'+arr[i].projectCount+'</span><br>')
+                        $('#'+id).append('<input type="radio" name="aa" value="'+arr[i].id+'" lay-filter="areaList" title="'+arr[i].areaName+'"><span class="projectCount-span">'+arr[i].projectCount+'</span><br>')
                     }
                     form.render();
                 }
@@ -98,11 +121,84 @@
         let form=layui.form;
         let table=layui.table;
         let layer=layui.layer;
-        getAreaList(token,'areaLise',form);
-        $('#areaLise').on('click','li',function () {
-            var _id=$(this).attr('id');
-            $(this).css({'color':'red'})
-            showAreaMsg (_id,token,table)
+        getAreaList(token,'areaLise',form,_areaList);
+
+        form.on('radio(areaList)',function (data) {
+           showAreaMsg (data.value,token,table);
+            checkArea=data.value;
+            _areaName=data.title;
+        });
+
+        //新增
+        $('.add').click(function () {
+            $('input[name="areaName"]').val('');
+            layer.open({
+                title:'新增',
+                type:1,
+                area:'600px',
+                content:$('#openModel')
+            })
+        });
+        //修改
+        $('.modify').click(function () {
+            if(checkArea==''){
+                layer.msg('请选则一条区域数据')
+            }else {
+                $('input[name="areaName"]').val(_areaName);
+                layer.open({
+                    title:'修改',
+                    type:1,
+                    area:'600px',
+                    content:$('#openModel')
+                })
+            }
+        });
+        //删除
+        $('.del').click(function () {
+            if(checkArea==''){
+                layer.msg('请选则一条区域数据')
+            }else {
+                layer.confirm('确定删除此条数据吗？', function(index){
+                    let _obj={'id':checkArea,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                    let parseJson = JSON.stringify(_obj);
+                    $.ajax({
+                        type:'post',
+                        url:'/XCCloud/GroupArea?action=DelGroupArea',
+                        contentType: "application/json; charset=utf-8",
+                        data:{parasJson: parseJson},
+                        success: function (data) {
+                            data = JSON.parse(data);
+                            if (data.result_code == 1) {
+                                layer.msg('删除成功',{time:1500},function () {
+                                    location.reload()
+                                })
+                            } else {
+                                layer.msg(data.result_msg);
+                            }
+                        }
+                    })
+                });
+            }
+        });
+        $('#save').click(function () {
+            var  obj={'id':checkArea,'areaName':$('input[name="areaName"]').val(),"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
+            var  parasJson = JSON.stringify(obj);
+            $.ajax({
+                type: "post",
+                url: '/XCCloud/GroupArea?action=SaveGroupArea',
+                contentType: "application/json; charset=utf-8",
+                data: {parasJson: parasJson},
+                success: function (data) {
+                    data = JSON.parse(data);
+                    if(data.result_code==1){
+                        layer.msg('保存成功',{time:1500},function () {
+                            location.reload()
+                        })
+                    }else {
+                        layer.msg(data.result_msg||data.return_msg)
+                    }
+                }
+            });
         })
     })
 

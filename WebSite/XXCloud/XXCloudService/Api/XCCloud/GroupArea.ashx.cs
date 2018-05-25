@@ -237,41 +237,58 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 string errMsg = string.Empty;
-                if (!dicParas.Get("id").Validintnozero("区域ID", out errMsg))
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                if (!dicParas.Get("newId").Validintnozero("新区域ID", out errMsg))
+                if (!dicParas.GetArray("projectAreaList").Validarray("项目区域列表", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-                var id = dicParas.Get("id").Toint();
-                var newId = dicParas.Get("newId").Toint();
+                var projectAreaList = dicParas.GetArray("projectAreaList");
 
                 //开启EF事务
                 using (TransactionScope ts = new TransactionScope())
                 {
                     try
                     {
-                        if (!Data_GroupAreaService.I.Any(p => p.ID == id))
+                        if (projectAreaList != null && projectAreaList.Count() > 0)
                         {
-                            errMsg = "该区域不存在";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
+                            foreach (IDictionary<string, object> el in projectAreaList)
+                            {
+                                if (el != null)
+                                {
+                                    var dicPara = new Dictionary<string, object>(el, StringComparer.OrdinalIgnoreCase);
+                                    if (!dicPara.Get("projectId").Validintnozero("游乐项目ID", out errMsg))
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    if (!dicPara.Get("areaType").Validintnozero("区域ID", out errMsg))
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-                        if (!Data_GroupAreaService.I.Any(p => p.ID == newId))
-                        {
-                            errMsg = "新区域不存在";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
+                                    var projectId = dicPara.Get("projectId").Toint();
+                                    var areaType = dicPara.Get("areaType").Toint();
+                                    if (!Data_ProjectInfoService.I.Any(p => p.ID == projectId))
+                                    {
+                                        errMsg = "该游乐项目不存在";
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    }
 
-                        foreach (var model in Data_ProjectInfoService.I.GetModels(p => p.AreaType == id && p.State == 1))
-                        {
-                            model.AreaType = newId;
-                            Data_ProjectInfoService.I.UpdateModel(model);
-                        }
+                                    if (!Data_GroupAreaService.I.Any(p => p.ID == areaType))
+                                    {
+                                        errMsg = "该区域不存在";
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    }
 
-                        if (!Data_ProjectInfoService.I.SaveChanges())
-                        {
-                            errMsg = "批量修改区域失败";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    var projectInfo = Data_ProjectInfoService.I.GetModels(p => p.ID == projectId).FirstOrDefault();
+                                    projectInfo.AreaType = areaType;
+                                    Data_ProjectInfoService.I.UpdateModel(projectInfo);
+                                }
+                                else
+                                {
+                                    errMsg = "提交数据包含空对象";
+                                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                }
+                            }
+
+                            if (!Data_ProjectInfoService.I.SaveChanges())
+                            {
+                                errMsg = "批量修改区域失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
                         }
 
                         ts.Complete();
