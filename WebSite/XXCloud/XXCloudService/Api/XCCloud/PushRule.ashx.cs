@@ -16,6 +16,8 @@ using XCCloudService.Model.CustomModel.XCCloud;
 using XCCloudService.Model.XCCloud;
 using XXCloudService.Api.XCCloud.Common;
 using XCCloudService.Common.Extensions;
+using System.Data;
+using XCCloudService.BLL.CommonBLL;
 
 namespace XXCloudService.Api.XCCloud
 {
@@ -331,6 +333,6 @@ namespace XXCloudService.Api.XCCloud
             {
                 return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
             }
-        }
+        }        
     }
 }

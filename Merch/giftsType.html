@@ -15,27 +15,39 @@
                     <ul id="tree" style="height: 500px"></ul>
                     <div class="layui-btn-group">
                         <button class="layui-btn add" type="button">创建父类</button>
-                        <button class="layui-btn modify" type="button">创建自雷</button>
+                        <button class="layui-btn modify" type="button">创建子类</button>
                         <button class="layui-btn del" type="button">删除</button>
                     </div>
                 </div>
             </div>
         </div>
         <div class="layui-col-lg6 layui-col-md6 layui-col-sm6 layui-col-xs12" style="height: 600px;padding: 15px;">
-            <form class="layui-form layui-form-pane">
-                <div class="layui-form-item">
-                    <label class="layui-form-label">选中节点</label>
-                    <div class="layui-input-block">
-                        <input type="text" class="layui-input">
-                    </div>
+            <div class="layui-card">
+                <div class="layui-card-header">选中节点信息</div>
+                <div class="layui-card-body">
+                    <form class="layui-form layui-form-pane">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">选中节点</label>
+                            <div class="layui-input-block">
+                                <input type="text" class="layui-input" readonly id="checkNodeName" value="商品类别">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">选中节点ID</label>
+                            <div class="layui-input-block">
+                                <input type="text" class="layui-input" readonly id="checkNode" value="5">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">选中节点说明</label>
+                            <div class="layui-input-block">
+                                <input type="text" class="layui-input" readonly id="checkNote" value="该模块是为了给商品类别添加子类">
+                            </div>
+                        </div>
+                    </form>
                 </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">选中节点ID</label>
-                    <div class="layui-input-block">
-                        <input type="text" class="layui-input">
-                    </div>
-                </div>
-            </form>
+            </div>
+
         </div>
     </div>
 
@@ -58,6 +70,12 @@
             <label class="layui-form-label">类别名称</label>
             <div class="layui-input-block">
                 <input type="text" class="layui-input" id="Node">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">序号</label>
+            <div class="layui-input-block">
+                <input type="text" class="layui-input" id="orderId">
             </div>
         </div>
         <div class="layui-form-item">
@@ -84,6 +102,7 @@
         setGiftType(token,tree,layer,rootId);
         $('.add').click(function () {
             nodeStatus='addParent';
+            $('#pNode').val($('#checkNodeName').val())
             layer.open({
                 title:'添加主节点',
                 area:'800px',
@@ -91,41 +110,98 @@
                 content:$('#openModel')
             })
         });
+        $('.modify').click(function () {
+            if( $('#checkNode').val()!=''){
+                $('#openModel').find('input').val('');
+                $('#pNode').val($('#checkNodeName').val());
+                nodeStatus='addChild';
+
+                layer.open({
+                    title:'添加子节点',
+                    area:'800px',
+                    type:1,
+                    content:$('#openModel')
+                })
+            }else {
+                layer.msg('请先选中一个节点作为父节点！')
+            }
+
+        });
+        $('.del').click(function () {
+            if( $('#checkNode').val()!=''){
+                layer.confirm('确定停用此设置吗？', function(index){
+                    let _obj={'id':$('#checkNode').val(),'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                    let parseJson = JSON.stringify(_obj);
+                    $.ajax({
+                        type:'post',
+                        url:'/XCCloud/Dictionary?action=DeleteRoot',
+                        contentType: "application/json; charset=utf-8",
+                        data:{parasJson: parseJson},
+                        success: function (data) {
+                            data = JSON.parse(data);
+                            if (data.result_code == 1) {
+                                layer.msg('本节点删除成功',{time:2000},function () {
+                                    location.reload();
+                                })
+                            } else {
+                                layer.msg(data.result_msg);
+                            }
+                        }
+                    })
+                });
+            }else {
+                layer.msg('请先选中一个节点！')
+            }
+
+        })
         //保存
         $('#saveNode').click(function () {
-            let obj;
+            let _obj;let url;
             if(nodeStatus=='addParent'){
-                let _obj={
+
+                 _obj={
                     'merchId':JSON.parse(xc.getStorage('logMsg')).merchId,
-                    'pDictKey':5,
+                    'pId':5,
                     'dictKey':$('#Node').val(),
                     'dictValue':'',
                     'comment':$('#note').val(),
                     'enabled':1,
                     'userToken':token,
                     'signkey':'1f626576304bf5d95b72ece2222e42c3'};
-                let url='/XCCloud/Dictionary?action=AddRoot';
-                let parasJson = JSON.stringify(_obj);
-                $.ajax({
-                    type: "post",
-                    url: url,
-                    contentType: "application/json; charset=utf-8",
-                    data: { parasJson: parasJson },
-                    success: function (data) {
-                        data=JSON.parse(data);
-                        console.log(data);
-                        if(data.result_code==1){
-                                layer.msg('添加成功',{time:1500},function () {
-                                    location.reload()
-                                })
-                        }else {
-                            layer.msg(data.result_msg||data.return_msg)
-                        }
-                    }
+                 url='/XCCloud/Dictionary?action=AddRoot';
 
-                })
-
+            }else if(nodeStatus=='addChild'){
+                    _obj={
+                        'merchId':JSON.parse(xc.getStorage('logMsg')).merchId,
+                        'Id':$('#checkNode').val(),
+                        'dictKey':$('#Node').val(),
+                        'dictValue':'',
+                        'comment':$('#note').val(),
+                        'orderId':$('#orderId').val(),
+                        'enabled':1,
+                        'userToken':token,
+                        'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                    url='/XCCloud/Dictionary?action=AddSub';
             }
+            let parasJson = JSON.stringify(_obj);
+            $.ajax({
+                type: "post",
+                url: url,
+                contentType: "application/json; charset=utf-8",
+                data: { parasJson: parasJson },
+                success: function (data) {
+                    data=JSON.parse(data);
+                    console.log(data);
+                    if(data.result_code==1){
+                        layer.msg('添加成功',{time:1500},function () {
+                            location.reload()
+                        })
+                    }else {
+                        layer.msg(data.result_msg||data.return_msg)
+                    }
+                }
+
+            })
         })
     });
     function setGiftType(token,tree,layer,root) {
@@ -150,12 +226,10 @@
                         elem:'#tree',
                         nodes:treeData.length>0?treeData:[{name:'商品类别',spread: true,children:[]}],
                         click:function (node) {
-                            if(node.id!=undefined&&node.ruleType!=undefined){
-                                getRule(node.ruleType,node.id,table);
-                                _ruleId=node.id;
-                                _ruleType=node.ruleType;
-                            }
-
+                          console.log(node)
+                            $('#checkNodeName').val(node.name)
+                            $('#checkNode').val(node.id)
+                            $('#checkNote').val(node.comment)
                         }
                     })
                     root=data.result_data.id

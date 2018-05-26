@@ -21,7 +21,7 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> DepotID { get; set; }
         public Nullable<int> AreaID { get; set; }
         public string GameName { get; set; }
-        public string GameType { get; set; }
+        public Nullable<int> GameType { get; set; }
         public Nullable<int> State { get; set; }
         public Nullable<int> PushBalanceIndex1 { get; set; }
         public Nullable<int> PushCoin1 { get; set; }

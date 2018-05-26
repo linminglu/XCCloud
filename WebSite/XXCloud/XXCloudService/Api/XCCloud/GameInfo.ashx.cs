@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Entity.SqlServer;
 using System.Data.Entity.Validation;
+using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Transactions;
 using System.Web;
 using XCCloudService.Base;
+using XCCloudService.BLL.CommonBLL;
 using XCCloudService.BLL.Container;
 using XCCloudService.BLL.IBLL.XCCloud;
 using XCCloudService.BLL.XCCloud;
@@ -34,7 +37,7 @@ namespace XXCloudService.Api.XCCloud
                 string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
 
                 var data_GameInfo = from a in Data_GameInfoService.N.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase) && p.State == 1)
-                                    join b in Dict_SystemService.N.GetModels() on a.GameType equals (b.ID + "") into b1
+                                    join b in Dict_SystemService.N.GetModels() on a.GameType equals b.ID into b1
                                     from b in b1.DefaultIfEmpty()
                                     join c in Data_GameInfo_ExtService.N.GetModels(p => p.ValidFlag == 1) on a.ID equals c.GameID into c1
                                     from c in c1.DefaultIfEmpty()
@@ -163,7 +166,54 @@ namespace XXCloudService.Api.XCCloud
             {
                 return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
             }
-        }       
+        }
+
+        /// <summary>
+        /// 获取游戏机类型复合列表
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object GetGameTypeGameList(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+
+                string errMsg = string.Empty;
+
+                string sql = " exec  SP_DictionaryNodes @MerchID,@DictKey,@PDictKey,@RootID output ";
+                SqlParameter[] parameters = new SqlParameter[4];
+                parameters[0] = new SqlParameter("@MerchID", merchId);
+                parameters[1] = new SqlParameter("@DictKey", "游戏机类型");
+                parameters[2] = new SqlParameter("@PDictKey", "");
+                parameters[3] = new SqlParameter("@RootID", SqlDbType.Int);
+                parameters[3].Direction = System.Data.ParameterDirection.Output;
+                System.Data.DataSet ds = XCCloudBLL.ExecuteQuerySentence(sql, parameters);
+                if (ds.Tables.Count == 0)
+                {
+                    errMsg = "没有找到节点信息";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+                var dictionaryResponse = Utils.GetModelList<GameListModel>(ds.Tables[0]).Where(w => w.Enabled == 1).ToList();
+
+                int rootId = 0;
+                int.TryParse(parameters[3].Value.ToString(), out rootId);
+
+                //实例化一个根节点
+                GameListModel rootRoot = new GameListModel();
+                rootRoot.ID = rootId;
+                TreeHelper.LoopToAppendChildren(dictionaryResponse, rootRoot, storeId);
+
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, rootRoot);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
 
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object SaveGameInfo(Dictionary<string, object> dicParas)

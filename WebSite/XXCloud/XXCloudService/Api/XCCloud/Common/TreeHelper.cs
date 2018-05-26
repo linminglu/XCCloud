@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using XCCloudService.BLL.XCCloud;
 using XCCloudService.Model.CustomModel.XCCloud;
 
 namespace XXCloudService.Api.XCCloud.Common
@@ -19,7 +20,7 @@ namespace XXCloudService.Api.XCCloud.Common
             {
                 LoopToAppendChildren(base_MerchFunction, subItem);
             }
-        }
+        }        
 
         public static void LoopToAppendChildren(List<DictionaryResponseModel> dict_System, DictionaryResponseModel curItem)
         {
@@ -29,6 +30,20 @@ namespace XXCloudService.Api.XCCloud.Common
             foreach (var subItem in subItems)
             {
                 LoopToAppendChildren(dict_System, subItem);
+            }
+        }
+
+        public static void LoopToAppendChildren(List<GameListModel> dict_System, GameListModel curItem, string storeId)
+        {
+            var subItems = dict_System.Where(ee => ee.PID.Value == curItem.ID).ToList();
+            curItem.Children = new List<GameListModel>();
+            curItem.Children.AddRange(subItems);
+            foreach (var subItem in subItems)
+            {
+                var gameType = subItem.ID;
+                subItem.GameList = Data_GameInfoService.I.GetModels(p => p.GameType == gameType && p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase))
+                    .Select(o => new GameInfoModel { ID = o.ID, GameName = o.GameName }).ToList();
+                LoopToAppendChildren(dict_System, subItem, storeId);
             }
         }
 

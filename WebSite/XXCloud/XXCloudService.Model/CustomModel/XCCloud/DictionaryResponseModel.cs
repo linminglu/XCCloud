@@ -38,9 +38,32 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         public string MerchID { get; set; }
 
         [DataMember(Name = "checked", Order = 7)]
-        public bool Checked { get { return false; } set { } }
-
+        public bool Checked { get { return false; } set { } }        
+        
         [IgnoreDataMember]
         public Nullable<int> DictLevel { get; set; }
     }
+
+    [DataContract]
+    public class GameListModel : DictionaryResponseModel
+    {
+        [DataMember(Name = "gameList", Order = 1)]
+        public List<GameInfoModel> GameList { set; get; }
+
+        [DataMember(Name = "children", Order = 2)]
+        public List<GameListModel> Children { get; set; }
+    } 
+
+    [DataContract]
+    public class GameInfoModel
+    {
+        [DataMember(Name = "id", Order = 1)]
+        public int ID { set; get; }
+
+        [DataMember(Name = "name", Order = 2)]
+        public string GameName { set; get; }
+
+        [DataMember(Name = "checked", Order = 3)]
+        public bool Checked { get { return false; } set { } }
+    } 
 }
