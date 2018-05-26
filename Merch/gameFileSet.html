@@ -761,6 +761,7 @@
             ,{field:'GameName',title: '游戏机名', align: 'center'} //width 支持：数字、百分比和不填写。
             ,{field:'GameTypeStr', title: '游戏机类型', align: 'center'}
             ,{field:'Area', title: '占地面积', align: 'center'}
+            ,{field:'AreaName', title: '区域名称', align: 'center'}
             ,{field:'ChangeTime', title: '采购时间', align: 'center'}
             ,{field:'Price', title: '采购价格', align: 'center'}
             ,{field:'PushCoin1', title: '单局币数', align: 'center'}
@@ -768,7 +769,7 @@
             ,{field:'LotteryModeStr', title: '彩票模式', align: 'center'}
             ,{field:'ReadCatStr', title: '刷卡即扣', align: 'center'}
             ,{field:'StateStr', title: '状态', align: 'center'}
-            ,{fixed: 'right', title: '操作', width:170, align:'center', toolbar: '#barDemo'}
+            ,{fixed: 'right', title: '操作', width:300, align:'center', toolbar: '#barDemo'}
         ]
     };
     xc.getInitData(parm);
@@ -1556,6 +1557,7 @@
     })
 </script>
 <script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="GameHead">卡头信息</a>
     <a class="layui-btn layui-btn-xs" lay-event="detail">扫码优惠规则</a>
     <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
