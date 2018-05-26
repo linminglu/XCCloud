@@ -54,8 +54,8 @@ namespace XXCloudService.Api.XCCloud
                                     a.ID, a.Week, a.PushCoin1, a.PushCoin2, a.Allow_In, a.Allow_Out, a.Level, a.StartTime, a.EndTime,
                                     (case when ISNULL(a.StartDate,'')='' then '' else convert(varchar,a.StartDate,23) end) AS StartDate,
                                     (case when ISNULL(a.EndDate,'')='' then '' else convert(varchar,a.EndDate,23) end) AS EndDate,
-                                    b.GameName + '等多个',
-                                    c.MemberLevelName + '等多个'
+                                    (b.GameName + '等多个') AS GameName,
+                                    (c.MemberLevelName + '等多个') AS MemberLevelName
                                 FROM
                                 	Data_PushRule a
                                 LEFT JOIN (

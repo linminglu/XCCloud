@@ -189,7 +189,7 @@
     layui.use(['table','form','layer','laydate'],function () {
         let table=layui.table;let form=layui.form;let layer=layui.layer;let laydate=layui.laydate;
         var  obj={"dictKey":'游戏机类型','enabled':1,'pDicKey':'',"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
-        var url="/XCCloud/Dictionary?action=GetNodes";
+        var url="/XCCloud/GameInfo?action=GetGameTypeGameList";
         var parasJson = JSON.stringify(obj);
         $.ajax({
             type: "post",
@@ -434,7 +434,7 @@
                             checkedArr=arr.GameList;
                             // GameList=arr.GameList;
                             var  obj1={"dictKey":'游戏机类型','enabled':1,'pDicKey':'',"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
-                            var url="/XCCloud/Dictionary?action=GetNodes";
+                            var url="/XCCloud/GameInfo?action=GetGameTypeGameList";
                             var parasJson = JSON.stringify(obj1);
                             $.ajax({
                                 type: "post",

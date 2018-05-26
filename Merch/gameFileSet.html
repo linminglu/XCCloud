@@ -712,9 +712,9 @@
             <button type="button" class="layui-btn layui-btn-normal saveBox" id="highSaveBtn">保存</button>
         </div>
     </form>
-    <div style="text-align: center;margin-bottom: 15px;">
-        <button type="button" class="layui-btn" id="saveCodeBtn">确定</button>
-    </div>
+    <!--<div style="text-align: center;margin-bottom: 15px;">-->
+        <!--<button type="button" class="layui-btn" id="saveCodeBtn">确定</button>-->
+    <!--</div>-->
 </div>
 
 <!--扫码规则-->
@@ -989,7 +989,7 @@
                   data=JSON.parse(data);
                   if(data.result_code==1){
                                 layer.msg('保存成功',{time:1500},function () {
-                                    layer.closeAll();
+                                   location.reload();
                                 })
                   }else {layer.msg(data.result_msg||data.return_msg)}
               }
