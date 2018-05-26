@@ -896,6 +896,22 @@
           <Property Name="Note" Type="varchar" MaxLength="200" />
           <Property Name="Verifiction" Type="varchar" MaxLength="32" />
         </EntityType>
+        <EntityType Name="Data_GameAPP_MemberRule">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MerchID" Type="varchar" MaxLength="15" />
+          <Property Name="StoreID" Type="varchar" MaxLength="15" />
+          <Property Name="GameID" Type="int" />
+          <Property Name="MemberLevelID" Type="int" />
+          <Property Name="PushBalanceIndex1" Type="int" />
+          <Property Name="PushCoin1" Type="numeric" Precision="10" Scale="2" />
+          <Property Name="PushBalanceIndex2" Type="int" />
+          <Property Name="PushCoin2" Type="numeric" Precision="10" Scale="2" />
+          <Property Name="PlayCount" Type="int" />
+          <Property Name="Verifiction" Type="varchar" MaxLength="32" />
+        </EntityType>
         <EntityType Name="Data_GameAPP_Rule">
           <Key>
             <PropertyRef Name="ID" />
@@ -2722,6 +2738,7 @@
           <EntitySet Name="Data_FreeGiveRule" EntityType="Self.Data_FreeGiveRule" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Data_FreeGiveRule_Memberlevel" EntityType="Self.Data_FreeGiveRule_Memberlevel" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Data_Game_StockInfo" EntityType="Self.Data_Game_StockInfo" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Data_GameAPP_MemberRule" EntityType="Self.Data_GameAPP_MemberRule" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Data_GameAPP_Rule" EntityType="Self.Data_GameAPP_Rule" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Data_GameEncourage" EntityType="Self.Data_GameEncourage" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Data_GameEncourage_List" EntityType="Self.Data_GameEncourage_List" Schema="dbo" store:Type="Tables" />
@@ -3294,6 +3311,7 @@
           <EntitySet Name="Log_GameAlarm" EntityType="XCCloudDBModel.Log_GameAlarm" />
           <EntitySet Name="Data_GameInfo" EntityType="XCCloudDBModel.Data_GameInfo" />
           <EntitySet Name="Base_DeviceInfo" EntityType="XCCloudDBModel.Base_DeviceInfo" />
+          <EntitySet Name="Data_GameAPP_MemberRule" EntityType="XCCloudDBModel.Data_GameAPP_MemberRule" />
         </EntityContainer>
         <EntityType Name="Base_ChainRule">
           <Key>
@@ -5917,6 +5935,22 @@
           <Property Name="note" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="AllowPrint" Type="Int32" />
           <Property Name="BarCode" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Data_GameAPP_MemberRule">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="GameID" Type="Int32" />
+          <Property Name="MemberLevelID" Type="Int32" />
+          <Property Name="PushBalanceIndex1" Type="Int32" />
+          <Property Name="PushCoin1" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="PushBalanceIndex2" Type="Int32" />
+          <Property Name="PushCoin2" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="PlayCount" Type="Int32" />
+          <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
         </EntityType>
         </Schema>
     </edmx:ConceptualModels>
@@ -8705,6 +8739,23 @@
                 <ScalarProperty Name="type" ColumnName="type" />
                 <ScalarProperty Name="SiteName" ColumnName="SiteName" />
                 <ScalarProperty Name="DeviceName" ColumnName="DeviceName" />
+                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
+                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Data_GameAPP_MemberRule">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Data_GameAPP_MemberRule">
+              <MappingFragment StoreEntitySet="Data_GameAPP_MemberRule">
+                <ScalarProperty Name="Verifiction" ColumnName="Verifiction" />
+                <ScalarProperty Name="PlayCount" ColumnName="PlayCount" />
+                <ScalarProperty Name="PushCoin2" ColumnName="PushCoin2" />
+                <ScalarProperty Name="PushBalanceIndex2" ColumnName="PushBalanceIndex2" />
+                <ScalarProperty Name="PushCoin1" ColumnName="PushCoin1" />
+                <ScalarProperty Name="PushBalanceIndex1" ColumnName="PushBalanceIndex1" />
+                <ScalarProperty Name="MemberLevelID" ColumnName="MemberLevelID" />
+                <ScalarProperty Name="GameID" ColumnName="GameID" />
                 <ScalarProperty Name="StoreID" ColumnName="StoreID" />
                 <ScalarProperty Name="MerchID" ColumnName="MerchID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />

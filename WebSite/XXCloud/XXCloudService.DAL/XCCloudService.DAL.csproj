@@ -241,6 +241,9 @@
     <Compile Include="IDAL\IData_FreeGiveRule_MemberlevelDAL.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
+    <Compile Include="IDAL\IData_GameAPP_MemberRuleDAL.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
     <Compile Include="IDAL\IData_GameAPP_RuleDAL.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
@@ -802,6 +805,9 @@
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_FreeGiveRule_MemberlevelDAL.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Data_GameAPP_MemberRuleDAL.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Data_GameAPP_RuleDAL.cs">

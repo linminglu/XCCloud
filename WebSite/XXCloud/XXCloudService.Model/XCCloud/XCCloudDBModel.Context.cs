@@ -190,5 +190,6 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Log_GameAlarm> Log_GameAlarm { get; set; }
         public virtual DbSet<Data_GameInfo> Data_GameInfo { get; set; }
         public virtual DbSet<Base_DeviceInfo> Base_DeviceInfo { get; set; }
+        public virtual DbSet<Data_GameAPP_MemberRule> Data_GameAPP_MemberRule { get; set; }
     }
 }

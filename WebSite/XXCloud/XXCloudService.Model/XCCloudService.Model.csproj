@@ -439,6 +439,9 @@
     <Compile Include="XCCloud\Data_FreeGiveRule_Memberlevel.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
+    <Compile Include="XCCloud\Data_GameAPP_MemberRule.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
     <Compile Include="XCCloud\Data_GameAPP_Rule.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
