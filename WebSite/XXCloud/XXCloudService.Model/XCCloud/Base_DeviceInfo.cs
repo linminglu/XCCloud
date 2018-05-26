@@ -33,7 +33,6 @@ namespace XCCloudService.Model.XCCloud
         public string IPAddress { get; set; }
         public string WorkStation { get; set; }
         public Nullable<int> DeviceStatus { get; set; }
-        public Nullable<int> DeviceLock { get; set; }
         public Nullable<System.DateTime> create_time { get; set; }
         public Nullable<System.DateTime> update_time { get; set; }
         public string note { get; set; }

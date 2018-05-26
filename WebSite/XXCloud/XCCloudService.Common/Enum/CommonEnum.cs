@@ -811,16 +811,9 @@ namespace XCCloudService.Common.Enum
     {
         停用 = 0,
         正常 = 1,
-        检修 = 2
+        锁定 = 2
     }
-    /// <summary>
-    /// 设备锁定状态
-    /// </summary>
-    public enum DeviceLock
-    {
-        解锁 = 0,
-        锁定 = 1
-    }
+    
     /// <summary>
     /// 设备通讯方式
     /// </summary>

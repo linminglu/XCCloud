@@ -144,17 +144,7 @@
 
         function do_addOrder() {
 
-            //insert into @FoodDetailType(FoodId,FoodCount,PayType,PayNum) values(1,1,0,1/2.0)
-            //insert into @FoodDetailType(FoodId,FoodCount,PayType,PayNum) values(3,2,0,10/2.0)
-            //--insert into @FoodDetailType(FoodId,FoodCount,PayType,PayNum) values(101,1,0,20/2.0)--开卡套餐
-            //--insert into @FoodDetailType(FoodId,FoodCount,PayType,PayNum) values(3,1,98305,100)
-            //insert into @FoodDetailType(FoodId,FoodCount,PayType,PayNum) values(6,1,98306,100)
-            //insert into @FoodDetailType(FoodId,FoodCount,PayType,PayNum) values(4,1,98307,100)
-
-            //insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(1,1,1,0,20)
-            //insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(4,2,1,0,30)
-
-            var buyDetail1 = { foodId: "1", category: 0, foodCount: "1", payType: "0", payNum: 0.5}
+            var buyDetail1 = { foodId: "1", category: 0, foodCount: "1", payType: "0", payNum: 0.5 }
             var buyDetail2 = { foodId: "3", category: 0, foodCount: "2", payType: "0", payNum: 5.0 }
             var buyDetail3 = { foodId: "6", category: 0, foodCount: "1", payType: "98306", payNum: 100 }
             var buyDetail4 = { foodId: "4", category: 0, foodCount: "1", payType: "98307", payNum: 100 }
@@ -324,17 +314,16 @@
         }
 
         function do_getDiscountForAPI() {
-            var mercheId = $("#txtDiscount_mercheId_GetDiscountForAPI").val();
-            var storeId = $("#txtDiscount_storeId_GetDiscountForAPI").val();
+            //var mercheId = $("#txtDiscount_mercheId_GetDiscountForAPI").val();
+            //var storeId = $("#txtDiscount_storeId_GetDiscountForAPI").val();
             var customerType = $("#sel_CustomerType_do_getDiscountForAPI").val();
             var icCardId = $("#txtDiscount_icCardID_GetDiscountForAPI").val();
             var foodPrice = $("#txtDiscount_foodSale_GetDiscountForAPI").val();
             var parasObj = {
-                "sysId": "0", "versionNo": "0.0.0.1", "userToken": userToken,
-                "mercheId": mercheId, "storeId": storeId, "customerType": customerType,
+                "sysId": "0", "versionNo": "0.0.0.1", "userToken": userToken, "customerType": customerType,
                 "icCardId": icCardId, "foodPrice": foodPrice
             };
-            var url = "/XCCloud/Discount?action=getDiscountForAPI";
+            var url = "/XCCloud/Discount?action=getDiscountRuleList";
             var parasJson = JSON.stringify(parasObj);
             common(url, parasJson);
         }
@@ -363,6 +352,25 @@
         function do_GetDiscountRuleList() {
             var parasObj = { "sysId": "0", "versionNo": "0.0.0.1", "userToken": userToken };
             var url = "/XCCloud/Discount?action=getDiscountRuleList";
+            var parasJson = JSON.stringify(parasObj);
+            common(url, parasJson);
+        }
+
+        function do_GetCouponPrice() {
+
+            var buyDetail1 = { couponId: 12, couponCode: "d79847caf5304d4188df251bd8c8d63d" };
+            var buyDetail2 = { couponId: 13, couponCode: "e867895b7da8482d8e46fe449ce163dc" };
+
+            var buyDetails = new Array();
+            buyDetails.push(buyDetail1);
+            buyDetails.push(buyDetail2);
+
+            var foodPrice = $("#txtCoupon_do_GetCouponPrice").val();
+            var parasObj = {
+                "sysId": "0", "versionNo": "0.0.0.1", "userToken": userToken,
+                "foodPrice": foodPrice, "authorFlag": "0", "couponDetails": JSON.stringify(buyDetails)
+            };
+            var url = "/XCCloud/Discount?action=getCouponPrice";
             var parasJson = JSON.stringify(parasObj);
             common(url, parasJson);
         }
@@ -416,8 +424,12 @@
     <br />
 
     <div title="Coupon" style="font-size:14px;color:#F00;border:1px solid #ccc;">
-        会员ICCardID：<input id="txtCoupon_icCardID_GetMemberCouponList" type="text" value="10004143" />
+        会员ICCardID：<input id="txtCoupon_icCardID_GetMemberCouponList" type="text" value="10004143" style="width:80px" />
         <input id="btn_GetMemberCouponList" type="button" onclick="do_GetMemberCouponList()" value="获取会员优惠券" />
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        金额：<input id="txtCoupon_do_GetCouponPrice" type="text" value="500" style="width:80px" />
+        授权标记：<input id="txtCoupon_do_AuthorFlag" type="text" value="0" style="width:80px" />
+        <input id="btn_do_GetCouponPrice" type="button" onclick="do_GetCouponPrice()" value="获取优惠券金额" />
     </div>
     <br />
 
@@ -441,7 +453,7 @@
         <input id="btn_do_addOrderToCache" type="button" value="do_addOrderToCache(添加订单)" onclick="do_addOrderToCache()" />
         &nbsp;&nbsp;&nbsp;&nbsp;
         订单号:<input id="txt_FlwOrderId_do_getOrderContain" placeholder="获取订单内容" style="width:250px" value="0" />
-        <input id="Buttonorder_getOrderContain" type="button" value="getOrderContain(获取订单内容)" onclick="getOrderContain()" />
+        <input id="Buttonorder_getOrderContain" type="button" value="getOrderContain(获取订单内容)" onclick="getOrderContain()"/>
     </div>
 
     <div title="discount" style="font-size:14px;color:#F00;border:1px solid #ccc;">
@@ -450,7 +462,7 @@
 
     <div title="do_getOrderAuditQR" style="font-size:14px;color:#F00;border:1px solid #ccc;">
         审核订单类型:<select id="selAuditOrderType"><option value="0">销售订单</option></select>
-        审核订单号:<input id="txtAuditOrderId" placeholder="审核订单号" />
+        审核订单号:<input id="txtAuditOrderId" placeholder="审核订单号" value="" style="width:250px" />
         <input id="Buttonorder_do_getOrderAuditQR" type="button" value="do_getOrderAuditQR(添加订单)" onclick="do_getOrderAuditQR()" />
         <img id="imgOrderAuditQR" />
     </div>

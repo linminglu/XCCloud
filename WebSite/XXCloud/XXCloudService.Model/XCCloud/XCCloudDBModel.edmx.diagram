@@ -8,7 +8,6 @@
         <EntityTypeShape EntityType="XCCloudDBModel.Base_ChainRule" Width="1.5" PointX="0.75" PointY="0.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Base_ChainRule_Store" Width="1.5" PointX="2.75" PointY="0.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Base_DepotInfo" Width="1.5" PointX="0.75" PointY="3.75" />
-        <EntityTypeShape EntityType="XCCloudDBModel.Base_DeviceInfo" Width="1.5" PointX="2.75" PointY="3.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Base_EnumParams" Width="1.5" PointX="4.75" PointY="0.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Base_Goodinfo_Price" Width="1.5" PointX="4.75" PointY="3.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Base_GoodsInfo" Width="1.5" PointX="6.75" PointY="0.75" />
@@ -170,6 +169,7 @@
         <EntityTypeShape EntityType="XCCloudDBModel.Data_WorkStation_GoodList" Width="1.5" PointX="11.375" PointY="40.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Log_GameAlarm" Width="1.5" PointX="39.375" PointY="33.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_GameInfo" Width="1.5" PointX="41.375" PointY="0.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.Base_DeviceInfo" Width="1.5" PointX="7.375" PointY="26.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

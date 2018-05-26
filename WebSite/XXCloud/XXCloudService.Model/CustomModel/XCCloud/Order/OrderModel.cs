@@ -31,16 +31,19 @@ namespace XCCloudService.Model.CustomModel.XCCloud.Order
     [DataContract]
     public class OrderBuyDetailModel
     {
-        [DataMember(Name = "foodId", Order = 1)]
+        [DataMember(Name = "category", Order = 1)]
+        public int Category { set; get; }
+
+        [DataMember(Name = "foodId", Order = 2)]
         public int FoodId {set;get;}
 
-        [DataMember(Name = "foodCount", Order = 2)]
+        [DataMember(Name = "foodCount", Order = 3)]
         public int FoodCount {set;get;}
 
-        [DataMember(Name = "payType", Order = 3)]
+        [DataMember(Name = "payType", Order = 4)]
         public int PayType {set;get;}
 
-        [DataMember(Name = "payNum", Order = 4)]
+        [DataMember(Name = "payNum", Order = 5)]
         public decimal PayNum { set; get; }
     }
 

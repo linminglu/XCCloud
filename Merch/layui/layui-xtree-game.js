@@ -140,11 +140,11 @@ layuiXtree.prototype.Rendering = function (single) {
     }
 
     _this._form.on('checkbox(xtreeck)', function (da) {
-        var xtree_checkedBox=[];xtree_checkedBox=_this._container.getElementsByClassName('layui-form-checked');
-        console.log(xtree_checkedBox)
-        console.log(xtree_checkedBox[0])
-        console.log(xtree_checkedBox[1])
-        console.log(xtree_checkedBox[3])
+        // var xtree_checkedBox=[];xtree_checkedBox=_this._container.getElementsByClassName('layui-form-checked');
+        // console.log(xtree_checkedBox)
+        // console.log(xtree_checkedBox[0])
+        // console.log(xtree_checkedBox[1])
+        // console.log(xtree_checkedBox[3])
         // if(xtree_checkedBox.length>0){
         //     for(let i in xtree_checkedBox){
         //         console.log(xtree_checkedBox[i]);
@@ -159,9 +159,9 @@ layuiXtree.prototype.Rendering = function (single) {
         //         }
         //     }
         // }
-        console.log(da.othis[0])
-        console.log(da.othis[0].parentNode)
-        console.log(da.othis[0].parentNode.parentNode)
+        // console.log(da.othis[0])
+        // console.log(da.othis[0].parentNode)
+        // console.log(da.othis[0].parentNode.parentNode)
         if(single){
             var xtree_chis = da.elem.parentNode.getElementsByClassName('layui-xtree-item');
             if(xtree_chis.length){
@@ -179,10 +179,10 @@ layuiXtree.prototype.Rendering = function (single) {
                     xtree_sib[i].children[1].checked=false;
                 }
             }
-           console.log(xtree_checkedBox)
-
-
-            console.log(xtree_chis);
+           // console.log(xtree_checkedBox)
+           //
+           //
+           //  console.log(xtree_chis);
             //遍历它们，选中状态与它们的父级一致（类似全选功能）
             // for (var i = 0; i < xtree_chis.length; i++) {
             //     xtree_chis[i].getElementsByClassName('layui-xtree-checkbox')[0].checked = da.elem.checked;

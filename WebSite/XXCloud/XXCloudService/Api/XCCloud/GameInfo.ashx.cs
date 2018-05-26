@@ -41,6 +41,8 @@ namespace XXCloudService.Api.XCCloud
                                     from b in b1.DefaultIfEmpty()
                                     join c in Data_GameInfo_ExtService.N.GetModels(p => p.ValidFlag == 1) on a.ID equals c.GameID into c1
                                     from c in c1.DefaultIfEmpty()
+                                    join d in Data_GroupAreaService.N.GetModels() on a.AreaID equals d.ID into d1
+                                    from d in d1.DefaultIfEmpty()
                                     orderby a.GameID
                                     select new
                                     {
@@ -48,6 +50,7 @@ namespace XXCloudService.Api.XCCloud
                                         GameID = a.GameID,
                                         GameName = a.GameName,
                                         GameTypeStr = b != null ? b.DictKey : string.Empty,
+                                        AreaName = d != null ? d.AreaName : string.Empty,
                                         Area = c != null ? c.Area : (decimal?)null,
                                         //ChangeTime = c != null ? SqlFunctions.DateName("yyyy", c.ChangeTime) + "-" + SqlFunctions.DateName("mm", c.ChangeTime) + "-" + SqlFunctions.DateName("dd", c.ChangeTime) + " " + 
                                         //                        SqlFunctions.DateName("hh", c.ChangeTime) + ":" + SqlFunctions.DateName("n", c.ChangeTime) + ":" + SqlFunctions.DateName("ss", c.ChangeTime) : string.Empty,

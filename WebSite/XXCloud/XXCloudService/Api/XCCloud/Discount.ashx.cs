@@ -14,6 +14,8 @@ using XCCloudService.BLL.XCCloud;
 using XCCloudService.Common.Enum;
 using System.Transactions;
 using XCCloudService.Model.XCCloud;
+using Microsoft.SqlServer.Server;
+using XCCloudService.CacheService;
 
 namespace XXCloudService.Api.XCCloud
 {
@@ -22,8 +24,94 @@ namespace XXCloudService.Api.XCCloud
     /// </summary>
     public class Discount : ApiBase
     {
+        //[ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        //public object getDiscountForAPI(Dictionary<string, object> dicParas)
+        //{
+        //    try
+        //    {
+        //        XCCloudUserTokenModel userTokenModel = (XCCloudUserTokenModel)(dicParas[Constant.XCCloudUserTokenModel]);
+        //        TokenDataModel userTokenDataModel = (TokenDataModel)(userTokenModel.DataModel);
+
+        //        int customerType = 0;
+        //        int icCardId = 0;
+        //        decimal foodPrice = 0;
+        //        string customerTypeStr = dicParas.ContainsKey("customerType") ? dicParas["customerType"].ToString() : string.Empty;
+        //        string icCardIdStr = dicParas.ContainsKey("icCardId") ? dicParas["icCardId"].ToString() : string.Empty;
+        //        string foodPriceStr = dicParas.ContainsKey("foodPrice") ? dicParas["foodPrice"].ToString() : string.Empty;
+
+        //        if (string.IsNullOrEmpty(customerTypeStr))
+        //        {
+        //            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员级别参数不能为空");
+        //        }
+
+        //        if (string.IsNullOrEmpty(icCardIdStr))
+        //        {
+        //            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员卡号参数不能为空");
+        //        }
+
+        //        if (string.IsNullOrEmpty(foodPriceStr))
+        //        {
+        //            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "套餐价格参数不能为空");
+        //        }
+
+        //        if (!int.TryParse(customerTypeStr, out customerType))
+        //        {
+        //            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员级别数据类型不正确");
+        //        }
+
+        //        if (!int.TryParse(icCardIdStr, out icCardId))
+        //        {
+        //            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员卡号数据类型不正确");
+        //        }
+
+        //        if (!decimal.TryParse(foodPriceStr, out foodPrice))
+        //        {
+        //            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "套餐价格数据类型不正确");
+        //        }
+
+        //        string sql = "GetDiscountForAPI";
+        //        SqlParameter[] parameters = new SqlParameter[10];
+        //        parameters[0] = new SqlParameter("@MerchId", userTokenDataModel.MerchID);
+        //        parameters[1] = new SqlParameter("@StoreId", userTokenDataModel.StoreID);
+        //        parameters[2] = new SqlParameter("@CustomerType", customerType);
+        //        parameters[3] = new SqlParameter("@ICCardId", icCardId);
+        //        parameters[4] = new SqlParameter("@FoodPrice", foodPrice);
+        //        parameters[5] = new SqlParameter("@SubPrice", SqlDbType.Decimal);
+        //        parameters[5].Direction = ParameterDirection.Output;
+        //        parameters[6] = new SqlParameter("@DiscountRuleID", SqlDbType.Int);
+        //        parameters[6].Direction = ParameterDirection.Output;
+        //        parameters[7] = new SqlParameter("@DiscountRuleName", SqlDbType.VarChar,200);
+        //        parameters[7].Direction = ParameterDirection.Output;
+        //        parameters[8] = new SqlParameter("@ErrMsg", SqlDbType.VarChar, 200);
+        //        parameters[8].Direction = ParameterDirection.Output;
+        //        parameters[9] = new SqlParameter("@RS", SqlDbType.Int);
+        //        parameters[9].Direction = ParameterDirection.ReturnValue;
+
+        //        System.Data.DataSet ds = XCCloudBLL.GetStoredProcedureSentence(sql, parameters);
+        //        if (parameters[9].Value.ToString() == "1")
+        //        {
+        //            decimal subPrice = decimal.Parse(parameters[5].Value.ToString());
+        //            var obj = new
+        //            {
+        //                discountRuleId = int.Parse(parameters[6].Value.ToString()),
+        //                discountRuleName = parameters[7].Value.ToString(),
+        //                subPrice = Convert.ToDecimal(parameters[5].Value).ToString("0.00")
+        //            };
+        //            return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, obj);
+        //        }
+        //        else
+        //        {
+        //            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, parameters[8].Value.ToString());
+        //        }
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        throw e;
+        //    }
+        //}
+
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
-        public object getDiscountForAPI(Dictionary<string, object> dicParas)
+        public object getDiscountRuleList(Dictionary<string, object> dicParas)
         {
             try
             {
@@ -67,7 +155,7 @@ namespace XXCloudService.Api.XCCloud
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "套餐价格数据类型不正确");
                 }
 
-                string sql = "GetDiscountForAPI";
+                string sql = "GetDiscountRuleList";
                 SqlParameter[] parameters = new SqlParameter[10];
                 parameters[0] = new SqlParameter("@MerchId", userTokenDataModel.MerchID);
                 parameters[1] = new SqlParameter("@StoreId", userTokenDataModel.StoreID);
@@ -76,26 +164,24 @@ namespace XXCloudService.Api.XCCloud
                 parameters[4] = new SqlParameter("@FoodPrice", foodPrice);
                 parameters[5] = new SqlParameter("@SubPrice", SqlDbType.Decimal);
                 parameters[5].Direction = ParameterDirection.Output;
-                parameters[6] = new SqlParameter("@DiscountRuleID", SqlDbType.Int);
+                parameters[6] = new SqlParameter("@CanUseDiscountRuleID", SqlDbType.Int);
                 parameters[6].Direction = ParameterDirection.Output;
-                parameters[7] = new SqlParameter("@DiscountRuleName", SqlDbType.VarChar,200);
-                parameters[7].Direction = ParameterDirection.Output;
+                parameters[7] = new SqlParameter("@QueryType", SqlDbType.Int);
+                parameters[7].Value = 0;
                 parameters[8] = new SqlParameter("@ErrMsg", SqlDbType.VarChar, 200);
                 parameters[8].Direction = ParameterDirection.Output;
-                parameters[9] = new SqlParameter("@RS", SqlDbType.Int);
-                parameters[9].Direction = ParameterDirection.ReturnValue;
+                parameters[9] = new SqlParameter("@Result", SqlDbType.Int);
+                parameters[9].Direction = ParameterDirection.Output;
 
                 System.Data.DataSet ds = XCCloudBLL.GetStoredProcedureSentence(sql, parameters);
                 if (parameters[9].Value.ToString() == "1")
                 {
-                    decimal subPrice = decimal.Parse(parameters[5].Value.ToString());
-                    var obj = new
-                    {
-                        discountRuleId = int.Parse(parameters[6].Value.ToString()),
-                        discountRuleName = parameters[7].Value.ToString(),
-                        subPrice = Convert.ToDecimal(parameters[5].Value).ToString("0.00")
-                    };
-                    return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, obj);
+                    Data_DistinctModel model = new Data_DistinctModel();
+                    List<Data_DistinctDetailModel> detailList = Utils.GetModelList<Data_DistinctDetailModel>(ds.Tables[0]);
+                    model.SubPrice = decimal.Parse(parameters[5].Value.ToString());
+                    model.DiscountRuleId = int.Parse(parameters[6].Value.ToString());
+                    model.DetailList = detailList;
+                    return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, model);
                 }
                 else
                 {
@@ -109,26 +195,100 @@ namespace XXCloudService.Api.XCCloud
         }
 
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
-        public object getDiscountRuleList(Dictionary<string, object> dicParas)
+        public object getCouponPrice(Dictionary<string, object> dicParas)
         {
-            XCCloudUserTokenModel userTokenModel = (XCCloudUserTokenModel)(dicParas[Constant.XCCloudUserTokenModel]);
-            TokenDataModel userTokenDataModel = (TokenDataModel)(userTokenModel.DataModel);
-
-            string sql = "GetDiscountRuleList";
-            SqlParameter[] parameters = new SqlParameter[2];
-            parameters[0] = new SqlParameter("@MerchId", userTokenDataModel.MerchID);
-            parameters[1] = new SqlParameter("@StoreId", userTokenDataModel.StoreID);
-
-            System.Data.DataSet ds = XCCloudBLL.GetStoredProcedureSentence(sql, parameters);
-            if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+            try
             {
-                List<Data_DistinctInfoModel> list = Utils.GetModelList<Data_DistinctInfoModel>(ds.Tables[0]);
-                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, list);
+                XCCloudUserTokenModel userTokenModel = (XCCloudUserTokenModel)(dicParas[Constant.XCCloudUserTokenModel]);
+                TokenDataModel userTokenDataModel = (TokenDataModel)(userTokenModel.DataModel);
+
+                decimal foodPrice = 0;
+                int authorFlag = 0;
+                string foodPriceStr = dicParas.ContainsKey("foodPrice") ? dicParas["foodPrice"].ToString() : string.Empty;
+                string authorFlagStr = dicParas.ContainsKey("authorFlag") ? dicParas["authorFlag"].ToString() : string.Empty;
+                string couponDetailsJson = dicParas.ContainsKey("couponDetails") ? dicParas["couponDetails"].ToString() : string.Empty;
+
+                if (string.IsNullOrEmpty(authorFlagStr))
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员级别参数不能为空");
+                }
+
+                if (!int.TryParse(authorFlagStr, out authorFlag))
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "验证标志");
+                }
+
+                if (string.IsNullOrEmpty(foodPriceStr))
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "套餐价格参数不能为空");
+                }
+
+                if (!decimal.TryParse(foodPriceStr, out foodPrice))
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "套餐价格数据类型不正确");
+                }
+
+                List<Data_CouponParamModel> buyDetailList = Utils.DataContractJsonDeserializer<List<Data_CouponParamModel>>(couponDetailsJson);
+
+                string sql = "CheckCoupon";
+
+                String[] Ary = new String[] { "数据0", "数据1" };
+                List<SqlDataRecord> listSqlDataRecord = new List<SqlDataRecord>();
+                SqlMetaData[] MetaDataArr = new SqlMetaData[] { 
+                    new SqlMetaData("couponId", SqlDbType.Int), 
+                    new SqlMetaData("couponCode", SqlDbType.VarChar,50)
+                };
+
+                string flwSendId = RedisCacheHelper.CreateCloudSerialNo(userTokenDataModel.StoreID);
+
+                for (int i = 0; i < buyDetailList.Count; i++)
+                {
+                    List<object> listParas = new List<object>();
+                    listParas.Add(buyDetailList[i].CouponId);
+                    listParas.Add(buyDetailList[i].CouponCode);
+
+                    var record = new SqlDataRecord(MetaDataArr);
+                    for (int j = 0; j < Ary.Length; j++)
+                    {
+                        record.SetValue(j, listParas[j]);
+                    }
+                    listSqlDataRecord.Add(record);
+                }
+
+                SqlParameter[] parameters = new SqlParameter[8];
+                parameters[0] = new SqlParameter("@CouponsList", SqlDbType.Structured);
+                parameters[0].Value = listSqlDataRecord;
+                parameters[1] = new SqlParameter("@StoreId", userTokenDataModel.StoreID);
+                parameters[1].Value = userTokenDataModel.StoreID;
+                parameters[2] = new SqlParameter("@QueryType", SqlDbType.Int);
+                parameters[2].Value = 0;
+                parameters[3] = new SqlParameter("@FoodPrice", SqlDbType.Decimal);
+                parameters[3].Value = foodPrice;
+                parameters[4] = new SqlParameter("@AuthorFlag", SqlDbType.Int);
+                parameters[4].Value = 0;
+                parameters[5] = new SqlParameter("@FeePrice", SqlDbType.Decimal);
+                parameters[5].Direction = ParameterDirection.Output;
+                parameters[6] = new SqlParameter("@ErrMsg", SqlDbType.VarChar, 200);
+                parameters[6].Direction = ParameterDirection.Output;
+                parameters[7] = new SqlParameter("@Return", SqlDbType.Int);
+                parameters[7].Direction = ParameterDirection.ReturnValue;
+
+                System.Data.DataSet ds = XCCloudBLL.GetStoredProcedureSentence(sql, parameters);
+                if (parameters[7].Value.ToString() == "1")
+                {
+                    List<Data_CouponParamModel> detailList = Utils.GetModelList<Data_CouponParamModel>(ds.Tables[0]);
+                    return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, detailList);
+                }
+                else
+                {
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, parameters[6].Value.ToString());
+                }
             }
-            else
+            catch (Exception e)
             {
-                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, parameters[8].Value.ToString());
+                throw e;
             }
+
         }
 
 

@@ -82,14 +82,21 @@ namespace XXCloudService.Api.XCCloud
                 string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
                 string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
 
-                //int DeviceTypeId = dict_SystemService.GetModels(p => p.DictKey.Equals("设备类型")).FirstOrDefault().ID;
+                var gameId = dicParas.Get("gameId").Toint();
+
                 var query = base_DeviceInfoService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase));
+                if (gameId != null)
+                {
+                    query = query.Where(w => w.GameIndexID == gameId);
+                }
                 
                 var base_DeviceInfo = from a in query
                                       join b in data_GameInfoService.GetModels() on a.GameIndexID equals b.ID into b1
                                       from b in b1.DefaultIfEmpty()
                                       join c in dict_SystemService.GetModels() on b.GameType equals c.ID into c1
                                       from c in c1.DefaultIfEmpty()
+                                      join d in Data_GroupAreaService.N.GetModels() on b.AreaID equals d.ID into d1
+                                      from d in d1.DefaultIfEmpty()
                                       orderby a.MCUID
                                       select new
                                       {
@@ -99,17 +106,15 @@ namespace XXCloudService.Api.XCCloud
                                           GameType = b != null ? b.GameType : (int?)null,
                                           GameTypeStr = c != null ? c.DictKey : string.Empty,
                                           GameName = b != null ? b.GameName : string.Empty,
+                                          AreaName = d != null ? d.AreaName : string.Empty,
                                           SiteName = a.SiteName,
                                           segment = a.segment,
                                           Address = a.Address,
-                                          DeviceLock = a.DeviceLock,
-                                          DeviceLockStr = a.DeviceLock != null ?
-                                                        (a.DeviceLock == 1 ? "锁定" :
-                                                        a.DeviceLock == 0 ? "解锁" : string.Empty) : string.Empty,
+                                          DeviceRunning = string.Empty,
                                           DeviceStatus = a.DeviceStatus,
                                           DeviceStatusStr = a.DeviceStatus != null ?
                                                         (a.DeviceStatus == 1 ? "正常" :
-                                                        a.DeviceStatus == 2 ? "检修" :
+                                                        a.DeviceStatus == 2 ? "锁定" :
                                                         a.DeviceStatus == 0 ? "停用" : string.Empty) : string.Empty
                                       };
 
@@ -357,7 +362,7 @@ namespace XXCloudService.Api.XCCloud
                 }
 
                 var data_DeviceInfo = base_DeviceInfoService.GetModels(p => p.ID == iId).FirstOrDefault();
-                data_DeviceInfo.DeviceLock = iState;
+                data_DeviceInfo.DeviceStatus = iState == 1 ? (int)DeviceStatus.锁定 : (int)DeviceStatus.正常;
                 if (!base_DeviceInfoService.Update(data_DeviceInfo))
                 {
                     errMsg = "操作失败";

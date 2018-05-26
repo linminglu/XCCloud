@@ -29,11 +29,7 @@
     </Device>
   </PalmPrints>
   <Printer>
-    <Device Model="Send To OneNote 2016" Name="Send To OneNote 2016" Selected="0">
-    </Device>
-    <Device Model="KP58 Printer" Name="KP58 Printer" Selected="0">
-    </Device>
-    <Device Model="Foxit Reader PDF Printer" Name="Foxit Reader PDF Printer" Selected="0">
+    <Device Model="POS58 Printer" Name="POS58 Printer" Selected="0">
     </Device>
   </Printer>
   <PrinterFilter>

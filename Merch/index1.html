@@ -253,28 +253,30 @@
             })
         }
         $('#storeSys').on('click',function () {
-        let obj={'userToken':token,'merchId':logMsg.merchId,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
-        let parasJson = JSON.stringify(obj);
-        $.ajax({
-            type: "post",
-            url: '/XCCloud/StoreInfo?action=GetStoreList',
-            contentType: "application/json; charset=utf-8",
-            data: {parasJson: parasJson},
-            success: function (data) {
-                data = JSON.parse(data);
-                console.log(data);
-                if(data.result_code==1){
-                    let arr=data.result_data;
-                    if(arr.length>0){
-                        $('#storeListToGo').html('');
-                        for(let index in arr){
-                           $('#storeListToGo').append('<li id="'+arr[index].StoreID+'">'+arr[index].StoreName+'</li>')
+            if(logMsg.userType==2||logMsg.userType==1){
+                let obj={'userToken':token,'merchId':logMsg.merchId,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                let parasJson = JSON.stringify(obj);
+                $.ajax({
+                    type: "post",
+                    url: '/XCCloud/StoreInfo?action=GetStoreList',
+                    contentType: "application/json; charset=utf-8",
+                    data: {parasJson: parasJson},
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        console.log(data);
+                        if(data.result_code==1){
+                            let arr=data.result_data;
+                            if(arr.length>0){
+                                $('#storeListToGo').html('');
+                                for(let index in arr){
+                                    $('#storeListToGo').append('<li id="'+arr[index].StoreID+'">'+arr[index].StoreName+'</li>')
+                                }
+                                $('#storeListToGo').css({'display':'block'})
+                            }
                         }
-                        $('#storeListToGo').css({'display':'block'})
                     }
-                }
+                });
             }
-        });
         }).siblings().on('click',function () {
             $('#storeListToGo').css({'display':'none'})
         });

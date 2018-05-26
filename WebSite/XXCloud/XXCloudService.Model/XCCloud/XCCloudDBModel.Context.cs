@@ -28,7 +28,6 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Base_ChainRule> Base_ChainRule { get; set; }
         public virtual DbSet<Base_ChainRule_Store> Base_ChainRule_Store { get; set; }
         public virtual DbSet<Base_DepotInfo> Base_DepotInfo { get; set; }
-        public virtual DbSet<Base_DeviceInfo> Base_DeviceInfo { get; set; }
         public virtual DbSet<Base_EnumParams> Base_EnumParams { get; set; }
         public virtual DbSet<Base_Goodinfo_Price> Base_Goodinfo_Price { get; set; }
         public virtual DbSet<Base_GoodsInfo> Base_GoodsInfo { get; set; }
@@ -190,5 +189,6 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Data_WorkStation_GoodList> Data_WorkStation_GoodList { get; set; }
         public virtual DbSet<Log_GameAlarm> Log_GameAlarm { get; set; }
         public virtual DbSet<Data_GameInfo> Data_GameInfo { get; set; }
+        public virtual DbSet<Base_DeviceInfo> Base_DeviceInfo { get; set; }
     }
 }

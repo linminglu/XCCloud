@@ -109,13 +109,13 @@ let index;
             {field:'ID', title:'设备流水号', align: 'center', sort: true,width:80}
             ,{field:'MCUID',title: '设备序列号', align: 'center'}
             ,{field:'DeviceName', title: '设备别名', align: 'center'}
-            ,{field:'DeviceTypeStr', title: '设备类型', align: 'center'}
+            ,{field:'GameTypeStr', title: '游戏机类型', align: 'center'}
             ,{field:'GameName', title: '游戏机名', align: 'center'}
             ,{field:'SiteName', title: 'P位编号', align: 'center'}
             ,{field:'Segment', title: '网络段号', align: 'center'}
             ,{field:'Address', title: '机头地址', align: 'center'}
-            ,{field:'DeviceLock',fixed: 'right', title: '锁定状态', align: 'center',templet:'#changeLock',width:90}
-            ,{field:'DeviceStatusStr',fixed: 'right', title: '在线状态', align: 'center',width:90}
+            ,{field:'DeviceStatus',fixed: 'right', title: '工作状态', align: 'center',templet:'#changeLock',width:90}
+            ,{field:'DeviceRunning',fixed: 'right', title: '运行状态', align: 'center',width:90}
             ,{fixed: 'right', title: '操作', width:500, align:'center', toolbar: '#barDemo'}]
     };
     xc.getInitData(parm);
@@ -177,15 +177,24 @@ let index;
                     content:$('#deviceBindOpen')
                 });
             } else if(layEvent === 'unBindMachine'){ //机台解绑
-                xc.getGameInfoDic(token,layer,form,'gameIndexId');
-                xc.getRouteDevice(token,layer,form,'bindDeviceId');
-                _state=0;
-                $('#siteName').html('');
-                layer.open({
-                    title:'解绑游戏机和路由器',
-                    type:1,
-                    area:'400px',
-                    content:$('#deviceBindOpen')
+                layer.confirm('确定解绑该设备吗？', function(index){
+                    Id=data.ID;
+                    let _obj={'id':data.ID,'state':0,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                    let parseJson = JSON.stringify(_obj);
+                    $.ajax({
+                        type:'post',
+                        url:'/XCCloud/DeviceInfo?action=BindDeviceInfo',
+                        contentType: "application/json; charset=utf-8",
+                        data:{parasJson: parseJson},
+                        success: function (data) {
+                            data = JSON.parse(data);
+                            if (data.result_code == 1) {
+                               location.reload();
+                            } else {
+                                layer.msg(data.result_msg);
+                            }
+                        }
+                    })
                 });
             } else if(layEvent === 'lock'){ //锁定
                 layer.confirm('确定锁定该设备吗？', function(index){
@@ -200,8 +209,7 @@ let index;
                         success: function (data) {
                             data = JSON.parse(data);
                             if (data.result_code == 1) {
-                                layer.close(index);
-                                xc.getInitData(parm);
+                                location.reload();
                             } else {
                                 layer.msg(data.result_msg);
                             }
@@ -221,8 +229,7 @@ let index;
                         success: function (data) {
                             data = JSON.parse(data);
                             if (data.result_code == 1) {
-                                layer.close(index);
-                                xc.getInitData(parm);
+                                location.reload();
                             } else {
                                 layer.msg(data.result_msg);
                             }
@@ -388,9 +395,9 @@ let index;
                 success: function (data) {
                     data = JSON.parse(data);
                     if (data.result_code == 1) {
-                         layer.closeAll();
-                         layer.msg('绑定成功！');
-                         location.href='gameDeviceManage.html';
+                         layer.msg('绑定成功！',{time:1500},function () {
+                             location.reload();
+                         });
                     } else {
                         layer.msg(data.result_msg);
                     }
@@ -433,9 +440,9 @@ let index;
     {{# if(d.DeviceType==8){ }}
     <a class="layui-btn layui-btn-xs" lay-event="code">二维码</a>
     {{# }else{ }}
-    {{# if(d.DeviceLock==1){ }}
+    {{# if(d.DeviceStatus==2){ }}
     <a class="layui-btn layui-btn-xs" lay-event="unLock">解锁</a>
-    {{# }else{ }}
+    {{# }else if(d.DeviceStatus==1){ }}
     <a class="layui-btn layui-btn-xs" lay-event="lock">锁定</a>
     {{#  } }}
     {{# if(d.GameName==''){ }}
@@ -451,10 +458,10 @@ let index;
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
 </script>
 <script type="text/html" id="changeLock">
-    {{# if(d.DeviceLock==1){ }}
-    <input type="checkbox" checked name="switch" lay-skin="switch" lay-text="ON|OFF" class="tb_check" lay-filter="test" disabled>
-    {{# }else{ }}
-    <input type="checkbox" name="switch" lay-skin="switch" lay-text="ON|OFF" class="tb_check" lay-filter="test" disabled>
+    {{# if(d.DeviceStatus==2){ }}
+    <input type="checkbox" checked name="switch" lay-skin="switch" lay-text="锁定|正常" class="tb_check" lay-filter="test" disabled>
+    {{# }else if(d.DeviceStatus==1){ }}
+    <input type="checkbox" name="switch" lay-skin="switch" lay-text="锁定|正常" class="tb_check" lay-filter="test" disabled>
     {{#  } }}
 </script>
 <script type="text/html" id="LockMember">

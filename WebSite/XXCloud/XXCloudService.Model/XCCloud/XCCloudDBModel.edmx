@@ -59,7 +59,6 @@
           <Property Name="IPAddress" Type="varchar" MaxLength="15" />
           <Property Name="WorkStation" Type="varchar" MaxLength="100" />
           <Property Name="DeviceStatus" Type="int" />
-          <Property Name="DeviceLock" Type="int" />
           <Property Name="create_time" Type="datetime" />
           <Property Name="update_time" Type="datetime" />
           <Property Name="note" Type="varchar" MaxLength="255" />
@@ -3133,7 +3132,6 @@
           <EntitySet Name="Base_ChainRule" EntityType="XCCloudDBModel.Base_ChainRule" />
           <EntitySet Name="Base_ChainRule_Store" EntityType="XCCloudDBModel.Base_ChainRule_Store" />
           <EntitySet Name="Base_DepotInfo" EntityType="XCCloudDBModel.Base_DepotInfo" />
-          <EntitySet Name="Base_DeviceInfo" EntityType="XCCloudDBModel.Base_DeviceInfo" />
           <EntitySet Name="Base_EnumParams" EntityType="XCCloudDBModel.Base_EnumParams" />
           <EntitySet Name="Base_Goodinfo_Price" EntityType="XCCloudDBModel.Base_Goodinfo_Price" />
           <EntitySet Name="Base_GoodsInfo" EntityType="XCCloudDBModel.Base_GoodsInfo" />
@@ -3295,6 +3293,7 @@
           <EntitySet Name="Data_WorkStation_GoodList" EntityType="XCCloudDBModel.Data_WorkStation_GoodList" />
           <EntitySet Name="Log_GameAlarm" EntityType="XCCloudDBModel.Log_GameAlarm" />
           <EntitySet Name="Data_GameInfo" EntityType="XCCloudDBModel.Data_GameInfo" />
+          <EntitySet Name="Base_DeviceInfo" EntityType="XCCloudDBModel.Base_DeviceInfo" />
         </EntityContainer>
         <EntityType Name="Base_ChainRule">
           <Key>
@@ -3326,36 +3325,6 @@
           <Property Name="DepotName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="MinusEN" Type="Int32" />
           <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
-        </EntityType>
-        <EntityType Name="Base_DeviceInfo">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="DeviceName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="SiteName" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="type" Type="Int32" />
-          <Property Name="Token" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
-          <Property Name="GameIndexID" Type="Int32" />
-          <Property Name="BindDeviceID" Type="Int32" />
-          <Property Name="CmdType" Type="Int32" />
-          <Property Name="segment" Type="String" MaxLength="4" FixedLength="false" Unicode="false" />
-          <Property Name="Address" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
-          <Property Name="MCUID" Type="String" MaxLength="64" FixedLength="false" Unicode="false" />
-          <Property Name="port_name" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
-          <Property Name="baute_rate" Type="Int32" />
-          <Property Name="parity" Type="Int32" />
-          <Property Name="IPAddress" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="WorkStation" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="DeviceStatus" Type="Int32" />
-          <Property Name="DeviceLock" Type="Int32" />
-          <Property Name="create_time" Type="DateTime" Precision="3" />
-          <Property Name="update_time" Type="DateTime" Precision="3" />
-          <Property Name="note" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="AllowPrint" Type="Int32" />
-          <Property Name="BarCode" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="Base_EnumParams">
           <Key>
@@ -5920,6 +5889,35 @@
           <Property Name="Frequency" Type="Int32" />
           <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
         </EntityType>
+        <EntityType Name="Base_DeviceInfo">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="DeviceName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="SiteName" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="type" Type="Int32" />
+          <Property Name="Token" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="GameIndexID" Type="Int32" />
+          <Property Name="BindDeviceID" Type="Int32" />
+          <Property Name="CmdType" Type="Int32" />
+          <Property Name="segment" Type="String" MaxLength="4" FixedLength="false" Unicode="false" />
+          <Property Name="Address" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
+          <Property Name="MCUID" Type="String" MaxLength="64" FixedLength="false" Unicode="false" />
+          <Property Name="port_name" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="baute_rate" Type="Int32" />
+          <Property Name="parity" Type="Int32" />
+          <Property Name="IPAddress" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="WorkStation" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="DeviceStatus" Type="Int32" />
+          <Property Name="create_time" Type="DateTime" Precision="3" />
+          <Property Name="update_time" Type="DateTime" Precision="3" />
+          <Property Name="note" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="AllowPrint" Type="Int32" />
+          <Property Name="BarCode" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -5954,37 +5952,6 @@
                 <ScalarProperty Name="Verifiction" ColumnName="Verifiction" />
                 <ScalarProperty Name="MinusEN" ColumnName="MinusEN" />
                 <ScalarProperty Name="DepotName" ColumnName="DepotName" />
-                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
-                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Base_DeviceInfo">
-            <EntityTypeMapping TypeName="XCCloudDBModel.Base_DeviceInfo">
-              <MappingFragment StoreEntitySet="Base_DeviceInfo">
-                <ScalarProperty Name="BarCode" ColumnName="BarCode" />
-                <ScalarProperty Name="AllowPrint" ColumnName="AllowPrint" />
-                <ScalarProperty Name="note" ColumnName="note" />
-                <ScalarProperty Name="update_time" ColumnName="update_time" />
-                <ScalarProperty Name="create_time" ColumnName="create_time" />
-                <ScalarProperty Name="DeviceLock" ColumnName="DeviceLock" />
-                <ScalarProperty Name="DeviceStatus" ColumnName="DeviceStatus" />
-                <ScalarProperty Name="WorkStation" ColumnName="WorkStation" />
-                <ScalarProperty Name="IPAddress" ColumnName="IPAddress" />
-                <ScalarProperty Name="parity" ColumnName="parity" />
-                <ScalarProperty Name="baute_rate" ColumnName="baute_rate" />
-                <ScalarProperty Name="port_name" ColumnName="port_name" />
-                <ScalarProperty Name="MCUID" ColumnName="MCUID" />
-                <ScalarProperty Name="Address" ColumnName="Address" />
-                <ScalarProperty Name="segment" ColumnName="segment" />
-                <ScalarProperty Name="CmdType" ColumnName="CmdType" />
-                <ScalarProperty Name="BindDeviceID" ColumnName="BindDeviceID" />
-                <ScalarProperty Name="GameIndexID" ColumnName="GameIndexID" />
-                <ScalarProperty Name="Token" ColumnName="Token" />
-                <ScalarProperty Name="type" ColumnName="type" />
-                <ScalarProperty Name="SiteName" ColumnName="SiteName" />
-                <ScalarProperty Name="DeviceName" ColumnName="DeviceName" />
                 <ScalarProperty Name="StoreID" ColumnName="StoreID" />
                 <ScalarProperty Name="MerchID" ColumnName="MerchID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
@@ -8710,6 +8677,36 @@
                 <ScalarProperty Name="MerchID" ColumnName="MerchID" />
                 <ScalarProperty Name="StoreID" ColumnName="StoreID" />
                 <ScalarProperty Name="GameID" ColumnName="GameID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Base_DeviceInfo">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Base_DeviceInfo">
+              <MappingFragment StoreEntitySet="Base_DeviceInfo">
+                <ScalarProperty Name="BarCode" ColumnName="BarCode" />
+                <ScalarProperty Name="AllowPrint" ColumnName="AllowPrint" />
+                <ScalarProperty Name="note" ColumnName="note" />
+                <ScalarProperty Name="update_time" ColumnName="update_time" />
+                <ScalarProperty Name="create_time" ColumnName="create_time" />
+                <ScalarProperty Name="DeviceStatus" ColumnName="DeviceStatus" />
+                <ScalarProperty Name="WorkStation" ColumnName="WorkStation" />
+                <ScalarProperty Name="IPAddress" ColumnName="IPAddress" />
+                <ScalarProperty Name="parity" ColumnName="parity" />
+                <ScalarProperty Name="baute_rate" ColumnName="baute_rate" />
+                <ScalarProperty Name="port_name" ColumnName="port_name" />
+                <ScalarProperty Name="MCUID" ColumnName="MCUID" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="segment" ColumnName="segment" />
+                <ScalarProperty Name="CmdType" ColumnName="CmdType" />
+                <ScalarProperty Name="BindDeviceID" ColumnName="BindDeviceID" />
+                <ScalarProperty Name="GameIndexID" ColumnName="GameIndexID" />
+                <ScalarProperty Name="Token" ColumnName="Token" />
+                <ScalarProperty Name="type" ColumnName="type" />
+                <ScalarProperty Name="SiteName" ColumnName="SiteName" />
+                <ScalarProperty Name="DeviceName" ColumnName="DeviceName" />
+                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
+                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>

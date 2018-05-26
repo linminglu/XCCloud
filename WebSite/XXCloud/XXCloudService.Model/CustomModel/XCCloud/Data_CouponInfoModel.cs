@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -51,5 +52,27 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         public string EndDate { get; set; }
         public string CreateTime { get; set; }     
         public string Context { get; set; }
+    }
+
+    [DataContract]
+    public class Data_CouponParamModel
+    {
+        [DataMember(Name = "couponId", Order = 1)]
+        public int CouponId { set; get; }
+
+        [DataMember(Name = "couponCode", Order = 2)]
+        public string CouponCode { set; get; }
+
+        [DataMember(Name = "couponFee", Order = 3)]
+        public decimal CouponFee { set; get; }
+
+        [DataMember(Name = "couponType", Order = 4)]
+        public int CouponType { set; get; }
+
+        [DataMember(Name = "couponTypeName", Order = 5)]
+        public string CouponTypeName { set; get; }
+
+        [DataMember(Name = "couponNote", Order = 6)]
+        public string CouponNote { set; get; }
     }
 }

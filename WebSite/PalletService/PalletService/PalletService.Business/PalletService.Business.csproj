@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="Device\DeviceBusiness.cs" />
     <Compile Include="Member\MemberBusiness.cs" />
+    <Compile Include="security\WorkstationBusiness.cs" />
     <Compile Include="Store\StoreBusiness.cs" />
     <Compile Include="SysConfig\SysConfigBusiness.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace XCCloudService.Model.CustomModel.XCCloud
 {
     [DataContract]
-    public class Data_DistinctInfoModel
+    public class Data_DistinctDetailModel
     {
         [DataMember(Name = "id", Order = 1)]
         public int ID { set; get; }
@@ -24,5 +24,18 @@ namespace XCCloudService.Model.CustomModel.XCCloud
 
         [DataMember(Name = "memberCount", Order = 5)]
         public int MemberCount { set; get; }
+    }
+
+    [DataContract]
+    public class Data_DistinctModel
+    {
+        [DataMember(Name = "discountRuleId", Order = 1)]
+        public int DiscountRuleId {set;get;}
+
+        [DataMember(Name = "subPrice", Order = 2)]
+        public decimal SubPrice {set;get;}
+
+        [DataMember(Name = "detailList", Order = 3)]
+        public List<Data_DistinctDetailModel> DetailList { set; get; }
     }
 }

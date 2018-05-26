@@ -105,7 +105,6 @@ namespace PalletService.Business.Device
             xd.Save(xmlFilePath);
         }
 
-
         public static List<DeviceModel> GetDevice(string deviceType)
         {
             List<DeviceModel> deviceList = new List<DeviceModel>();
@@ -136,7 +135,6 @@ namespace PalletService.Business.Device
                 return deviceList;
             }     
         }
-
 
         private static string GetPath(string devieType)
         {

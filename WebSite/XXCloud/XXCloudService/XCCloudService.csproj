@@ -141,7 +141,13 @@
     <Content Include="assets\css\admin.css" />
     <Content Include="assets\css\amazeui.min.css" />
     <Content Include="assets\css\app.css" />
+    <Content Include="assets\css\iconfont.css" />
+    <Content Include="assets\css\layui.css" />
+    <Content Include="assets\css\style.css" />
     <Content Include="assets\img\ajax-loader.gif" />
+    <Content Include="assets\img\bgImg.png" />
+    <Content Include="assets\img\browse.svg" />
+    <Content Include="assets\img\code.png" />
     <Content Include="assets\img\logo.png" />
     <Content Include="assets\i\examples\admin-chrome.png" />
     <Content Include="assets\i\examples\admin-firefox.png" />
@@ -282,6 +288,7 @@
     <Content Include="Excel.xlsx" />
     <Content Include="Imgs\masterEmv.jpg" />
     <Content Include="index.html" />
+    <Content Include="login.html" />
     <Content Include="MobileWeb\accredit.html" />
     <Content Include="MobileWeb\billList.html" />
     <Content Include="MobileWeb\css\ydui.rem.css" />
