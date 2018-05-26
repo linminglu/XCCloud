@@ -23,9 +23,23 @@ namespace XCCloudService.Business.XCGameMana
             //    XCCloudUserTokenCache.Remove(token);
             //}
 
-            RemoveUserToken(logId, logType);
+            RemoveUserToken(logId);
 
             XCCloudUserTokenModel tokenModel = new XCCloudUserTokenModel(newToken, logId, Utils.ConvertDateTimeToLong(DateTime.Now), logType, dataModel);
+            XCCloudUserTokenCache.AddToken(newToken, tokenModel);
+
+            return newToken;
+        }
+
+        public static string SetUserToken(XCCloudUserTokenModel tokenModel)
+        {
+            //设置用户token      
+            string newToken = System.Guid.NewGuid().ToString("N");
+
+            RemoveUserToken(tokenModel.LogId);
+
+            tokenModel.Token = newToken;
+            tokenModel.EndTime = Utils.ConvertDateTimeToLong(DateTime.Now);
             XCCloudUserTokenCache.AddToken(newToken, tokenModel);
 
             return newToken;
@@ -47,11 +61,11 @@ namespace XCCloudService.Business.XCGameMana
             return userTokenModel;
         }
 
-        public static void RemoveUserToken(string logId, int logType)
+        public static void RemoveUserToken(string logId)
         {
             lock (syncRoot)
             {
-                var query = XCCloudUserTokenCache.UserTokenList.Where(t => t.LogId.Equals(logId) && t.LogType == logType).Select(o=>o.Token).ToArray();
+                var query = XCCloudUserTokenCache.UserTokenList.Where(t => t.LogId.Equals(logId)).Select(o=>o.Token).ToArray();
                 foreach (var item in query)
                 {
                     XCCloudUserTokenCache.Remove(item);
@@ -59,12 +73,12 @@ namespace XCCloudService.Business.XCGameMana
             }
         }
 
-        public static bool GetUserTokenModel(string logId, int logType, out string token)
+        public static bool GetUserTokenModel(string logId, out string token)
         {
             token = string.Empty;
             lock (syncRoot)
             {
-                var query = XCCloudUserTokenCache.UserTokenList.FirstOrDefault(t => t.LogId.Equals(logId) && t.LogType == logType);
+                var query = XCCloudUserTokenCache.UserTokenList.FirstOrDefault(t => t.LogId.Equals(logId));
                 if (query == null)
                 {
                     return false;
@@ -82,9 +96,9 @@ namespace XCCloudService.Business.XCGameMana
         /// </summary>
         /// <param name="logId"></param>
         /// <param name="logType"></param>
-        public static void RemoveStoreUserTokenByWorkStaion(string logId, int logType, string workStation)
+        public static void RemoveStoreUserTokenByWorkStaion(string logId, string workStation)
         {
-            var query = XCCloudUserTokenCache.UserTokenList.Where(t => t.LogId.Equals(logId) && t.LogType == logType && t.DataModel.WorkStation.Equals(workStation)).Select(t => t.Token).ToArray();
+            var query = XCCloudUserTokenCache.UserTokenList.Where(t => t.LogId.Equals(logId) && t.DataModel.WorkStation.Equals(workStation)).Select(t => t.Token).ToArray();
             foreach (var item in query)
             {
                 XCCloudUserTokenCache.Remove(item);

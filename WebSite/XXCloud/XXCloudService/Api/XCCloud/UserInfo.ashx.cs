@@ -244,7 +244,7 @@ namespace XCCloudService.Api.XCCloud
 
                     //设置用户token
                     TokenDataModel TokenDataModel = new TokenDataModel(userModel.MerchID,userModel.StoreID, password, workStation);
-                    XCCloudUserTokenBusiness.RemoveStoreUserTokenByWorkStaion(userModel.UserID.ToString(), (int)RoleType.StoreUser, workStation);
+                    XCCloudUserTokenBusiness.RemoveStoreUserTokenByWorkStaion(userModel.UserID.ToString(), workStation);
                     string userToken = XCCloudUserTokenBusiness.SetUserToken(userModel.UserID.ToString(), (int)RoleType.StoreUser, TokenDataModel);
 
                     var dataObj = new {

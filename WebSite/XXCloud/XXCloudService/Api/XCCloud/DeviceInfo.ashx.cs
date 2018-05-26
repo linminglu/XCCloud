@@ -82,13 +82,13 @@ namespace XXCloudService.Api.XCCloud
                 string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
                 string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
 
-                int DeviceTypeId = dict_SystemService.GetModels(p => p.DictKey.Equals("设备类型")).FirstOrDefault().ID;
-                var query = base_DeviceInfoService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase) && p.GameIndexID != null);
+                //int DeviceTypeId = dict_SystemService.GetModels(p => p.DictKey.Equals("设备类型")).FirstOrDefault().ID;
+                var query = base_DeviceInfoService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase));
                 
                 var base_DeviceInfo = from a in query
                                       join b in data_GameInfoService.GetModels() on a.GameIndexID equals b.ID into b1
                                       from b in b1.DefaultIfEmpty()
-                                      join c in dict_SystemService.GetModels(p => p.PID == DeviceTypeId) on (a.type + "") equals c.DictValue into c1
+                                      join c in dict_SystemService.GetModels() on b.GameType equals c.ID into c1
                                       from c in c1.DefaultIfEmpty()
                                       orderby a.MCUID
                                       select new
@@ -96,9 +96,8 @@ namespace XXCloudService.Api.XCCloud
                                           ID = a.ID,
                                           MCUID = a.MCUID,
                                           DeviceName = a.DeviceName,
-                                          DeviceType = a.type,
-                                          DeviceTypeStr = c != null ? c.DictKey : string.Empty,
-                                          GameIndexID = b.ID,
+                                          GameType = b != null ? b.GameType : (int?)null,
+                                          GameTypeStr = c != null ? c.DictKey : string.Empty,
                                           GameName = b != null ? b.GameName : string.Empty,
                                           SiteName = a.SiteName,
                                           segment = a.segment,
@@ -260,6 +259,11 @@ namespace XXCloudService.Api.XCCloud
                         errMsg = "P位编号不能为空";
                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                     }
+                    if (siteName.Length > 20)
+                    {
+                        errMsg = "P位编号长度不能超过20个字符";
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
                 }
                 #endregion
 
@@ -267,18 +271,18 @@ namespace XXCloudService.Api.XCCloud
                 {
                     errMsg = "设备不存在";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
-
-                if (base_DeviceInfoService.Any(p => p.GameIndexID == iGameIndexId && p.ID != iId && p.SiteName.Equals(siteName, StringComparison.OrdinalIgnoreCase)))
-                {
-                    errMsg = "游戏机P位被占用";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
+                }                
 
                 var data_DeviceInfo = base_DeviceInfoService.GetModels(p => p.ID == iId).FirstOrDefault();
                 //绑定
                 if (iState == 1)
                 {
+                    if (base_DeviceInfoService.Any(p => p.GameIndexID == iGameIndexId && p.ID != iId && p.SiteName.Equals(siteName, StringComparison.OrdinalIgnoreCase)))
+                    {
+                        errMsg = "游戏机P位被占用";
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
+
                     data_DeviceInfo.GameIndexID = iGameIndexId;
                     data_DeviceInfo.BindDeviceID = iBindDeviceId;
                     data_DeviceInfo.SiteName = siteName;

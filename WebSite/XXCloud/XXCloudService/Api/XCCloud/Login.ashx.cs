@@ -199,7 +199,9 @@ namespace XXCloudService.Api.XCCloud
                     TokenDataModel.StoreID = storeId;
                 }
 
-                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, new { Tag = tag });
+                var token = XCCloudUserTokenBusiness.SetUserToken(userTokenKeyModel);
+
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, new { Tag = tag, Token = token });
             }
             catch (Exception e)
             {

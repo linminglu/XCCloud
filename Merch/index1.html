@@ -151,11 +151,10 @@
         let layer=layui.layer;
         let form=layui.form;
         let _date=new Date();
-
+        //动态加载左侧菜单
         setLeftList("xcLeftMenu");
         xc.initLeftMenu('xcLeftMenu');
-        // xc.createTopMenu('aMenu');
-        //.find('a[class="aMenu"]')
+        //点击菜单，主窗口生成页面
         $('.xcLeftMenu').on('click','a[class="aMenu"]',function () {
             var _text = $(this).text();
             var _id = $(this).attr('id');
@@ -243,8 +242,10 @@
                         console.log(data);
                         if(data.result_code==1){
                             logMsg.MerchTag=data.result_data.Tag;
+                            logMsg.token=data.result_data.Token;
                             logMsg.logType=2;
                             xc.setStorage('logMsg',JSON.stringify(logMsg));
+                            xc.setStorage('token',data.result_data.Token);
                             window.location.href='/merch/index1.html';
                         }
                     }
@@ -295,7 +296,9 @@
                             if(data.result_code==1){
                                 logMsg.MerchTag=data.result_data.Tag;
                                 logMsg.logType=3;
+                                logMsg.token=data.result_data.Token;
                                 xc.setStorage('logMsg',JSON.stringify(logMsg));
+                                xc.setStorage('token',data.result_data.Token);
                                 window.location.href='/merch/index1.html';
                             }
                         }
@@ -322,7 +325,9 @@
                             if(data.result_code==1){
                                 logMsg.MerchTag=data.result_data.Tag;
                                 logMsg.logType=4;
+                                logMsg.token=data.result_data.Token;
                                 xc.setStorage('logMsg',JSON.stringify(logMsg));
+                                xc.setStorage('token',data.result_data.Token);
                                 window.location.href='/merch/index1.html';
                             }
                         }
