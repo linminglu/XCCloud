@@ -166,7 +166,7 @@
                 data = JSON.parse(data);
                 console.log(data);
                 if(data.result_code==1){
-                    gameArr=data.result_data;
+                    gameArr=data.result_data.children;
                     gameArr.splice(0,1);
                     xtree3=new layuiXtree({
                         elem: 'xtree1'                  //必填
@@ -364,7 +364,7 @@
                                 success: function (data) {
                                     data = JSON.parse(data);
                                     if(data.result_code==1){
-                                        gameArr=data.result_data;
+                                        gameArr=data.result_data.children;
                                         gameArr.splice(0,1);
                                         xtree3=new layuiXtree({
                                             elem: 'xtree1'                  //必填

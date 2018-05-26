@@ -11,7 +11,7 @@ function layuiXtree(options) {
     this._form = options.form; //layui from对象
     this._domStr = "";  //结构字符串
     this._isopen = options.isopen != null ? options.isopen : true;
-    this._color = options.color != null ? options.color : "#2F4056"; //图标颜色
+    this._color = options.color != null ? options.color : "#12c7c8"; //图标颜色
     if (options.icon == null) options.icon = {};
     this._iconOpen = options.icon.open != null ? options.icon.open : "&#xe625;"; //打开图标
     this._iconClose = options.icon.close != null ? options.icon.close : "&#xe623;"; //关闭图标

@@ -80,20 +80,7 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         [IgnoreDataMember]
         public Nullable<int> DictLevel { get; set; }
 
-        [DataMember(Name = "gameList", Order = 8)]
-        public List<GameInfoModel> GameList { set; get; }
-    } 
-
-    [DataContract]
-    public class GameInfoModel
-    {
-        [DataMember(Name = "id", Order = 1)]
-        public int ID { set; get; }
-
-        [DataMember(Name = "name", Order = 2)]
-        public string GameName { set; get; }
-
-        [DataMember(Name = "checked", Order = 3)]
-        public bool Checked { get { return false; } set { } }
-    } 
+        [DataMember(Name = "isTypeNode", Order = 8)]
+        public bool IsTypeNode { get; set; }       
+    }     
 }

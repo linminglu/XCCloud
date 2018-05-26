@@ -38,11 +38,13 @@ namespace XXCloudService.Api.XCCloud.Common
             var subItems = dict_System.Where(ee => ee.PID.Value == curItem.ID).ToList();
             curItem.Children = new List<GameListModel>();
             curItem.Children.AddRange(subItems);
+            curItem.IsTypeNode = true;
+            var gameType = curItem.ID;
+            curItem.Children.AddRange(Data_GameInfoService.I.GetModels(p => p.GameType == gameType && p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase))
+                .Select(o => new GameListModel { ID = o.ID, DictKey = o.GameName, IsTypeNode = false }).ToList());
+
             foreach (var subItem in subItems)
-            {
-                var gameType = subItem.ID;
-                subItem.GameList = Data_GameInfoService.I.GetModels(p => p.GameType == gameType && p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase))
-                    .Select(o => new GameInfoModel { ID = o.ID, GameName = o.GameName }).ToList();
+            {                
                 LoopToAppendChildren(dict_System, subItem, storeId);
             }
         }
