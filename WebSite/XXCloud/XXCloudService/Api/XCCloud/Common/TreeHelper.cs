@@ -40,8 +40,8 @@ namespace XXCloudService.Api.XCCloud.Common
             curItem.Children.AddRange(subItems);
             curItem.IsTypeNode = true;
             var gameType = curItem.ID;
-            curItem.Children.AddRange(Data_GameInfoService.I.GetModels(p => p.GameType == gameType && p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase))
-                .Select(o => new GameListModel { ID = o.ID, DictKey = o.GameName, IsTypeNode = false }).ToList());
+            curItem.Children.AddRange(Data_GameInfoService.I.GetModels(p => p.GameType == gameType && p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)).AsEnumerable()
+                .Select(o => new GameListModel { ID = o.ID, DictKey = o.GameName, IsTypeNode = false, Children = new List<GameListModel>() }).ToList());
 
             foreach (var subItem in subItems)
             {                
