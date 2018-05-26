@@ -75,7 +75,7 @@
             </div>
             <div class="layui-form-item">
                 <div class="layui-inline">
-                    <label class="layui-form-label">最大续玩时间间隔</label>
+                    <label class="layui-form-label" style="width: 130px">最大续玩时间间隔</label>
                     <div class="layui-input-inline">
                         <input type="text" name="ContinueTimes" class="layui-input">
                     </div>
@@ -154,8 +154,8 @@
     });
     layui.use(['table','form','layer','laydate'],function () {
         let table=layui.table;let form=layui.form;let layer=layui.layer;let laydate=layui.laydate;
-        var  obj={"dictKey":'游戏机类型','enabled':1,'pDicKey':'',"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
-        var url="/XCCloud/Dictionary?action=GetNodes";
+        var  obj={"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
+        var url="/XCCloud/GameInfo?action=GetGameTypeGameList";
         var parasJson = JSON.stringify(obj);
         $.ajax({
             type: "post",
@@ -164,6 +164,7 @@
             data: {parasJson: parasJson},
             success: function (data) {
                 data = JSON.parse(data);
+                console.log(data);
                 if(data.result_code==1){
                     gameArr=data.result_data;
                     gameArr.splice(0,1);

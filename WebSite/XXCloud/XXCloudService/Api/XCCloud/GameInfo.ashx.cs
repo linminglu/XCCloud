@@ -179,14 +179,13 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
                 string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
 
                 string errMsg = string.Empty;
 
                 string sql = " exec  SP_DictionaryNodes @MerchID,@DictKey,@PDictKey,@RootID output ";
                 SqlParameter[] parameters = new SqlParameter[4];
-                parameters[0] = new SqlParameter("@MerchID", merchId);
+                parameters[0] = new SqlParameter("@MerchID", "");
                 parameters[1] = new SqlParameter("@DictKey", "游戏机类型");
                 parameters[2] = new SqlParameter("@PDictKey", "");
                 parameters[3] = new SqlParameter("@RootID", SqlDbType.Int);
@@ -207,7 +206,7 @@ namespace XXCloudService.Api.XCCloud
                 rootRoot.ID = rootId;
                 TreeHelper.LoopToAppendChildren(dictionaryResponse, rootRoot, storeId);
 
-                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, rootRoot);
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, rootRoot);
             }
             catch (Exception e)
             {
