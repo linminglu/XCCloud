@@ -80,7 +80,7 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         [IgnoreDataMember]
         public Nullable<int> DictLevel { get; set; }
 
-        [DataMember(Name = "isTypeNode", Order = 8)]
-        public bool IsTypeNode { get; set; }       
+        [DataMember(Name = "disabled", Order = 8)]
+        public bool Disabled { get; set; }       
     }     
 }

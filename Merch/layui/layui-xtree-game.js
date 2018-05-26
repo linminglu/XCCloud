@@ -64,9 +64,9 @@ layuiXtree.prototype.dataBind = function (d) {
                 }
             }
             if(flag){
-                _this._domStr += '<input type="checkbox" class="layui-xtree-checkbox" checked data-xend="1" value="' + d[i].id + '" title="' + d[i].name + '" lay-skin="primary" lay-filter="xtreeck">';
+                _this._domStr += '<input type="checkbox" class="layui-xtree-checkbox" checked data-xend="1" '+d[i].disabled?"disabled":""+' value="' + d[i].id + '" title="' + d[i].name + '" lay-skin="primary" lay-filter="xtreeck">';
             }else {
-                _this._domStr += '<input type="checkbox" class="layui-xtree-checkbox" ' + xtree_isend + ' value="' + d[i].id + '" title="' + d[i].name + '" lay-skin="primary" lay-filter="xtreeck">';
+                _this._domStr += '<input type="checkbox" class="layui-xtree-checkbox" ' + xtree_isend + '  '+d[i].disabled ? "disabled" :""+' value="' + d[i].id + '" title="' + d[i].name + '" lay-skin="primary" lay-filter="xtreeck">';
             }
             _this.dataBind(d[i].children);
             _this._domStr += '</div>';

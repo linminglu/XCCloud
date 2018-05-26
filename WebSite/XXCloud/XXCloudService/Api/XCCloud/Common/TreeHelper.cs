@@ -38,10 +38,10 @@ namespace XXCloudService.Api.XCCloud.Common
             var subItems = dict_System.Where(ee => ee.PID.Value == curItem.ID).ToList();
             curItem.Children = new List<GameListModel>();
             curItem.Children.AddRange(subItems);
-            curItem.IsTypeNode = true;
+            curItem.Disabled = true;
             var gameType = curItem.ID;
             curItem.Children.AddRange(Data_GameInfoService.I.GetModels(p => p.GameType == gameType && p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)).AsEnumerable()
-                .Select(o => new GameListModel { ID = o.ID, DictKey = o.GameName, IsTypeNode = false, Children = new List<GameListModel>() }).ToList());
+                .Select(o => new GameListModel { ID = o.ID, DictKey = o.GameName, Disabled = false, Children = new List<GameListModel>() }).ToList());
 
             foreach (var subItem in subItems)
             {                
