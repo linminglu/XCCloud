@@ -1282,7 +1282,7 @@
               let parasJson = JSON.stringify(_obj);
               $.ajax({
                   type: "post",
-                  url: 'XCCloud/GameInfo?action=GetGameAppRule',
+                  url: '/XCCloud/GameInfo?action=GetGameAppRule',
                   contentType: "application/json; charset=utf-8",
                   data: { parasJson: parasJson },
                   success: function (data) {

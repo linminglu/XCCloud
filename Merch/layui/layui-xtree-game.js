@@ -64,9 +64,19 @@ layuiXtree.prototype.dataBind = function (d) {
                 }
             }
             if(flag){
-                _this._domStr += '<input type="checkbox" class="layui-xtree-checkbox" checked data-xend="1" '+d[i].disabled?"disabled":""+' value="' + d[i].id + '" title="' + d[i].name + '" lay-skin="primary" lay-filter="xtreeck">';
+                if(d[i].disabled){
+                    _this._domStr += '<input type="checkbox" class="layui-xtree-checkbox" checked data-xend="1"  disabled  value="' + d[i].id + '" title="' + d[i].name + '" lay-skin="primary" lay-filter="xtreeck">';
+                }else {
+                    _this._domStr += '<input type="checkbox" class="layui-xtree-checkbox" checked data-xend="1"   value="' + d[i].id + '" title="' + d[i].name + '" lay-skin="primary" lay-filter="xtreeck">';
+                }
+
             }else {
-                _this._domStr += '<input type="checkbox" class="layui-xtree-checkbox" ' + xtree_isend + '  '+d[i].disabled ? "disabled" :""+' value="' + d[i].id + '" title="' + d[i].name + '" lay-skin="primary" lay-filter="xtreeck">';
+                if(d[i].disabled){
+                    _this._domStr += '<input type="checkbox" class="layui-xtree-checkbox" ' + xtree_isend + '  disabled value="' + d[i].id + '" title="' + d[i].name + '" lay-skin="primary" lay-filter="xtreeck">';
+                }else {
+                    _this._domStr += '<input type="checkbox" class="layui-xtree-checkbox" ' + xtree_isend + '  value="' + d[i].id + '" title="' + d[i].name + '" lay-skin="primary" lay-filter="xtreeck">';
+                }
+
             }
             _this.dataBind(d[i].children);
             _this._domStr += '</div>';
@@ -155,10 +165,7 @@ layuiXtree.prototype.Rendering = function (single) {
                 else xtree_chis[i].getElementsByClassName('layui-xtree-checkbox')[0].nextSibling.classList.remove('layui-form-checked');
             }
         }else {
-            console.log(da)
             var  xtree_chis = da.elem.parentNode.getElementsByClassName('layui-xtree-item');
-
-            console.log(xtree_chis);
             //遍历它们，选中状态与它们的父级一致（类似全选功能）
             for (var i = 0; i < xtree_chis.length; i++) {
                 xtree_chis[i].getElementsByClassName('layui-xtree-checkbox')[0].checked = da.elem.checked;

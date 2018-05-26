@@ -516,10 +516,10 @@ namespace XXCloudService.Api.XCCloud
                 string errMsg = string.Empty;
                 if (!dicParas.Get("gameId").Validintnozero("游戏机ID", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                
-                var id = dicParas.Get("id").Toint();
 
-                var list = Data_GameAPP_RuleService.I.GetModels(p => p.GameID == id);
+                var gameId = dicParas.Get("gameId").Toint();
+
+                var list = Data_GameAPP_RuleService.I.GetModels(p => p.GameID == gameId).ToList();
 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, list);
             }

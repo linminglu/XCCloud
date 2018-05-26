@@ -2021,7 +2021,7 @@ xcActionSystem.prototype= {
             data=JSON.parse(data);
             console.log(data);
             if(data.result_code=="1"){
-                var arr=data.result_data;
+                var arr=data.result_data.children;
                 $('#'+id).html('<option value="">-请选择-</option>');
                 if(m){
                     for(let i=1; i< arr.length;i++){
