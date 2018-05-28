@@ -277,6 +277,7 @@
     let OutStoreId;let InStoreId;
     let GoodRequests;
     //调拨出库
+    let checkStatus;
     let newArr=[];
     let depotList=[];//仓库列表
     let logisticsCompany='';
@@ -456,6 +457,10 @@
             if(layevent==='Request'){//调拨申请
 
             }else if(layevent==='RequestVerify'){//申请审核
+                checkStatus='apply';
+                checkState=0;
+                $('#checkState').attr({'checked':false})
+                form.render()
                 layer.open({
                     title:'调拨申请审核',
                     type:1,
@@ -550,11 +555,29 @@
 
                 });
             }else if(layevent==='SendDealVerify'){//调拨出库审核
-
+                checkStatus='out';
+                checkState=0;
+                $('#checkState').attr({'checked':false})
+                form.render()
+                layer.open({
+                    title:'调拨出库审核',
+                    type:1,
+                    area:'700px',
+                    content:$('#checkModel')
+                })
             }else if(layevent==='RequestDeal'){//调拨入库
 
             }else if(layevent==='RequestDealVerify'){//调拨入库审核
-
+                checkStatus='in';
+                checkState=0;
+                $('#checkState').attr({'checked':false})
+                form.render()
+                layer.open({
+                    title:'调拨入库审核',
+                    type:1,
+                    area:'700px',
+                    content:$('#checkModel')
+                })
             }else if(layevent==='Cancel'){//撤销
 
             }else if(layevent==='Close'){//调拨流程关闭
@@ -637,12 +660,21 @@
        });
        //Handle check
        $('#submitCheck').on('click',function () {
+
            let _obj={ 'requestId':requestId,
                'state':checkState,
                'note':$('#checkNote').val(),
                'userToken':token,
                'signkey':'1f626576304bf5d95b72ece2222e42c3'};
-           let url='/XCCloud/GoodsInfo?action=GoodRequestVerify';
+           let url;
+           if( checkStatus=='apply'){
+               url='/XCCloud/GoodsInfo?action=GoodRequestVerify';
+           }else  if( checkStatus=='out'){
+               url='/XCCloud/GoodsInfo?action=GoodSendDealVerify'
+           }
+           else  if( checkStatus=='in'){
+
+           }
            let parasJson = JSON.stringify(_obj);
            $.ajax({
                type: "post",

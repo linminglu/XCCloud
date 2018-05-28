@@ -163,7 +163,13 @@ namespace XCCloudService.WorkFlow
                 .PermitIf(Trigger.Close, State.Closed, () => (_userType == (int)UserType.Store || _userType == (int)UserType.StoreBoss) && (_merchId == _targetMerchId && _storeId == _inStoreId));
 
             _machine.Configure(State.SendDealed)
-                .PermitReentry(Trigger.SendDeal)
+                .PermitReentryIf(Trigger.SendDeal, () =>
+                    (
+                     (_requestType == (int)RequestType.MerchRequest && (_userType == (int)UserType.Store || _userType == (int)UserType.StoreBoss)) ||
+                     (_requestType == (int)RequestType.MerchSend && (_userType == (int)UserType.Normal || _userType == (int)UserType.Heavy)) ||
+                     (_requestType == (int)RequestType.RequestMerch && (_userType == (int)UserType.Normal || _userType == (int)UserType.Heavy)) ||
+                     (_requestType == (int)RequestType.RequestStore && (_userType == (int)UserType.Store || _userType == (int)UserType.StoreBoss))
+                    ) && (_merchId == _targetMerchId && _storeId == _outStoreId))
                 .PermitIf(Trigger.Cancel, State.RequestVerifiedPass, () =>
                     _requestType == (int)RequestType.RequestStore && (_userType == (int)UserType.Store || _userType == (int)UserType.StoreBoss) && (_merchId == _targetMerchId && _storeId == _outStoreId), "撤销调拨出库，返回上一步")
                 .PermitIf(Trigger.Cancel, State.Requested, () =>
@@ -187,7 +193,13 @@ namespace XCCloudService.WorkFlow
                 .PermitIf(Trigger.Close, State.Closed, () => (_userType == (int)UserType.Store || _userType == (int)UserType.StoreBoss) && (_merchId == _targetMerchId && _storeId == _outStoreId));
 
             _machine.Configure(State.RequestDealed)
-                .PermitReentry(Trigger.RequestDeal)                
+                .PermitReentryIf(Trigger.RequestDeal, () =>
+                    (
+                     (_requestType == (int)RequestType.MerchRequest && (_userType == (int)UserType.Normal || _userType == (int)UserType.Heavy)) ||
+                     (_requestType == (int)RequestType.MerchSend && (_userType == (int)UserType.Store || _userType == (int)UserType.StoreBoss)) ||
+                     (_requestType == (int)RequestType.RequestMerch && (_userType == (int)UserType.Store || _userType == (int)UserType.StoreBoss)) ||
+                     (_requestType == (int)RequestType.RequestStore && (_userType == (int)UserType.Store || _userType == (int)UserType.StoreBoss))
+                    ) && (_merchId == _targetMerchId && _storeId == _inStoreId))
                 .PermitIf(Trigger.Cancel, State.SendDealVerifiedPass, () =>
                     _requestType == (int)RequestType.RequestStore && (_userType == (int)UserType.Store || _userType == (int)UserType.StoreBoss) && (_merchId == _targetMerchId && _storeId == _inStoreId), "撤销调拨入库，返回上一步")
                 .PermitIf(Trigger.Cancel, State.SendDealed, () => 

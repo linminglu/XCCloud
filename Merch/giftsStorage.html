@@ -104,7 +104,6 @@
         ,{field:'StoreName', title: '入库门店', align: 'center'}
         ,{field:'RealTime', title: '入库时间', align: 'center'}
         ,{field:'Supplier', title: '采购渠道', align: 'center'}
-        // ,{field:'Supplier', title: '入库数量', align: 'center'}
         ,{field:'Price', title: '采购单价', align: 'center'}
         ,{field:'TotalPrice', title: '入库金额', align: 'center'}
         ,{field:'LogName', title: '入库经办人', align: 'center'}
@@ -133,7 +132,6 @@ layui.use(['form','layer','table'],function () {
     });
     $('#save').on('click',function () {
         let _obj={'depotName':$('#depotName').val(),
-            // 'minusEn':minusEn,
             'userToken':token,
             'signkey':'1f626576304bf5d95b72ece2222e42c3'};
         let parseJson = JSON.stringify(_obj);

@@ -1734,10 +1734,10 @@ namespace XXCloudService.Api.XCCloud
                                 LEFT JOIN Base_UserInfo u ON a.UserID = u.UserID
                                 LEFT JOIN Base_DepotInfo d ON a.DepotID = d.ID                                
                                 WHERE 1 = 1";
-                sql = sql + " AND a.merchId='" + merchId;
+                sql = sql + " AND a.merchId='" + merchId + "'";
                 if (!storeId.IsNull())
                 {
-                    sql = sql + " AND a.storeId='" + storeId;
+                    sql = sql + " AND a.storeId='" + storeId + "'";
                 }
 
                 var data_GoodStorage = Data_GoodStorageService.I.SqlQuery<Data_GoodStorageList>(sql, parameters).ToList();
@@ -2381,10 +2381,10 @@ namespace XXCloudService.Api.XCCloud
                                 LEFT JOIN Base_UserInfo u ON a.OPUserID = u.UserID
                                 LEFT JOIN Base_DepotInfo c ON a.DepotID = c.ID                                
                                 WHERE 1 = 1";
-                sql = sql + " AND a.merchId='" + merchId;
+                sql = sql + " AND a.merchId='" + merchId + "'";
                 if (!storeId.IsNull())
                 {
-                    sql = sql + " AND a.storeId='" + storeId;
+                    sql = sql + " AND a.storeId='" + storeId + "'";
                 }
 
                 var data_GoodStorage = Data_GoodStorageService.I.SqlQuery<Data_GoodStorageList>(sql, parameters).ToList();
