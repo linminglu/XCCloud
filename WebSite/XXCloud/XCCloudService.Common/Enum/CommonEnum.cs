@@ -1042,9 +1042,77 @@ namespace XCCloudService.Common.Enum
         Out = 1             //出库
     }
 
-
-    //工作流状态
-    public enum WorkflowState
+    /// <summary>
+    /// 工作流节点类别
+    /// </summary>
+    public enum NodeType
+    {
+        /// <summary>
+        /// 开始
+        /// </summary>
+        [Description("开始")]
+        Start = 0,
+        /// <summary>
+        /// 过程
+        /// </summary>
+        [Description("过程")]
+        Process = 1,
+        /// <summary>
+        /// 结束
+        /// </summary>
+        [Description("结束")]
+        End = 2
+    }
+    /// <summary>
+    /// 工作流事件
+    /// </summary>
+    public enum Trigger : int
+    {
+        /// <summary>
+        /// 调拨申请
+        /// </summary>
+        [Description("调拨申请")]
+        Request = 1,
+        /// <summary>
+        /// 调拨申请审核
+        /// </summary>
+        [Description("调拨申请审核")]
+        RequestVerify = 2,
+        /// <summary>
+        /// 调拨出库
+        /// </summary>
+        [Description("调拨出库")]
+        SendDeal = 3,
+        /// <summary>
+        /// 调拨出库审核
+        /// </summary>
+        [Description("调拨出库审核")]
+        SendDealVerify = 4,
+        /// <summary>
+        /// 调拨入库
+        /// </summary>
+        [Description("调拨入库")]
+        RequestDeal = 5,
+        /// <summary>
+        /// 调拨入库审核
+        /// </summary>
+        [Description("调拨入库审核")]
+        RequestDealVerify = 6,
+        /// <summary>
+        /// 撤销
+        /// </summary>
+        [Description("撤销")]
+        Cancel = 7,
+        /// <summary>
+        /// 调拨流程关闭
+        /// </summary>
+        [Description("调拨流程关闭")]
+        Close = 8
+    }
+    /// <summary>
+    /// 工作流状态
+    /// </summary>
+    public enum State
     {
         /// <summary>
         /// 开始
@@ -1054,53 +1122,53 @@ namespace XCCloudService.Common.Enum
         /// <summary>
         /// 申请
         /// </summary>
-        [Description("申请")]
+        [Description("已申请")]
         Requested = 1,
         /// <summary>
-        /// 申请审核通过
+        /// 申请审核已通过
         /// </summary>
-        [Description("申请审核通过")]
+        [Description("申请审核已通过")]
         RequestVerifiedPass = 2,
         /// <summary>
-        /// 申请审核拒绝
+        /// 申请审核已拒绝
         /// </summary>
-        [Description("申请审核拒绝")]
+        [Description("申请审核已拒绝")]
         RequestVerifiedRefuse = 3,
         /// <summary>
-        /// 调拨方处理
+        /// 调拨已出库
         /// </summary>
-        [Description("调拨方处理")]
+        [Description("调拨已出库")]
         SendDealed = 4,
         /// <summary>
-        /// 调拨方处理审核通过
+        /// 调拨出库审核已通过
         /// </summary>
-        [Description("调拨方处理审核通过")]
+        [Description("调拨出库审核已通过")]
         SendDealVerifiedPass = 5,
         /// <summary>
-        /// 调拨方处理审核拒绝
+        /// 调拨出库审核已拒绝
         /// </summary>
-        [Description("调拨方处理审核拒绝")]
+        [Description("调拨出库审核已拒绝")]
         SendDealVerifiedRefuse = 6,
         /// <summary>
-        /// 申请方处理
+        /// 调拨已入库
         /// </summary>
-        [Description("申请方处理")]
+        [Description("调拨已入库")]
         RequestDealed = 7,
         /// <summary>
-        /// 申请方处理审核通过
+        /// 调拨入库审核已通过
         /// </summary>
-        [Description("申请方处理审核通过")]
+        [Description("调拨入库审核已通过")]
         RequestDealVerifiedPass = 8,
         /// <summary>
-        /// 申请方处理审核拒绝
+        /// 调拨入库审核已拒绝
         /// </summary>
-        [Description("申请方处理审核拒绝")]
+        [Description("调拨入库审核已拒绝")]
         RequestDealVerifiedRefuse = 9,
         /// <summary>
         /// 结束
         /// </summary>
         [Description("结束")]
-        End = 10
+        Closed = 10
     }
 
     /// <summary>

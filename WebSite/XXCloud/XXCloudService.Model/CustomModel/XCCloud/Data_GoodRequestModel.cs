@@ -90,7 +90,7 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         /// <summary>
         /// 调拨状态[字符串]
         /// </summary>
-        public string StateStr { get { return State != null ? ((WorkflowState)State).GetDescription() : string.Empty; } set { } }
+        public string StateStr { get { return State != null ? ((State)State).GetDescription() : string.Empty; } set { } }
         /// <summary>
         /// 调拨说明
         /// </summary>
