@@ -629,9 +629,23 @@ namespace XXCloudService.Api.XCCloud
 
                 var gameId = dicParas.Get("gameId").Toint();
 
-                var list = Data_GameAPP_MemberRuleService.I.GetModels(p => p.GameID == gameId).OrderBy(or => or.MemberLevelID).ToList();
+                var list = (from a in Data_GameAPP_MemberRuleService.N.GetModels(p => p.GameID == gameId)
+                            join b in Data_MemberLevelService.N.GetModels() on a.MemberLevelID equals b.MemberLevelID into b1
+                            from b in b1.DefaultIfEmpty()
+                            join c in Dict_BalanceTypeService.N.GetModels() on a.PushBalanceIndex1 equals c.ID into c1
+                            from c in c1.DefaultIfEmpty()
+                            join d in Dict_BalanceTypeService.N.GetModels() on a.PushBalanceIndex2 equals d.ID into d1
+                            from d in d1.DefaultIfEmpty()
+                            select new
+                            {
+                                a = a,
+                                MemberLevelName = b != null ? b.MemberLevelName : string.Empty,
+                                PushBalanceName1 = c != null ? c.TypeName : string.Empty,
+                                PushBalanceName2 = d != null ? d.TypeName : string.Empty
+                            }).AsFlatDictionaryList();
 
-                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, list);
+
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, list);
             }
             catch (Exception e)
             {
@@ -693,6 +707,12 @@ namespace XXCloudService.Api.XCCloud
                                     var pushBalanceIndex2 = dicPara.Get("pushBalanceIndex2").Toint();
                                     var pushCoin2 = dicPara.Get("pushCoin2").Todecimal();
                                     var playCount = dicPara.Get("playCount").Toint();
+
+                                    if (pushBalanceIndex1 == pushBalanceIndex2)
+                                    {
+                                        errMsg = "投币种1、2不能相同";
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    }
 
                                     if (Data_GameAPP_MemberRuleService.I.Any(a => a.GameID == gameId && a.MemberLevelID == memberLevelId && a.PushBalanceIndex1 == pushBalanceIndex1 && a.PushBalanceIndex2 == pushBalanceIndex2))
                                     {

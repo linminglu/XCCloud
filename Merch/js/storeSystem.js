@@ -1597,7 +1597,7 @@ xcActionSystem.prototype= {
         let parseJson = JSON.stringify(_obj);
         $.ajax({
             type:'post',
-            url:'/XCCloud/Member?action=QueryMemberLevel',
+            url:'/XCCloud/Member?action=GetMemberLevelDic',
             contentType: "application/json; charset=utf-8",
             data:{parasJson: parseJson},
             success: function (data) {
