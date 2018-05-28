@@ -253,7 +253,7 @@
             })
         }
         $('#storeSys').on('click',function () {
-            if(logMsg.userType==2||logMsg.userType==1){
+            if(logMsg.userType==4||logMsg.userType==5){
                 let obj={'userToken':token,'merchId':logMsg.merchId,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
                 let parasJson = JSON.stringify(obj);
                 $.ajax({
@@ -284,7 +284,7 @@
             if(JSON.parse(getStorage('logMsg')).switchMerch==1){
                 if (logMsg.logType==3){
                       layer.msg('当前为商户系统，请选择切换其他模式！')
-                }else {
+                }else { if(logMsg.userType==1||logMsg.userType==2){
                     let obj={'userToken':token,'merchId':logMsg.merchId,'storeId':logMsg.storeId,'logType':3,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
                     let parasJson = JSON.stringify(obj);
                     $.ajax({
@@ -305,6 +305,8 @@
                             }
                         }
                     })
+                }
+
                 }
             }
         });

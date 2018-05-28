@@ -90,9 +90,8 @@ namespace XXCloudService.Api.XCCloud
                                 	a.Status = 1";
                 sql += " AND a.MerchID='" + merchId + "'";
                 if (!storeId.IsNull())
-                {
                     sql += " AND a.StoreID='" + storeId + "'";
-                }
+
                 #endregion
 
                 var list = Base_GoodsInfoService.I.SqlQuery<Base_GoodsInfoList>(sql, parameters).ToList();
@@ -571,7 +570,7 @@ namespace XXCloudService.Api.XCCloud
                             ";
                 sql += " AND a.MerchID='" + merchId + "'";
                 if (!storeId.IsNull())
-                    sql += " AND a.CreateStoreID='" + storeId + "' or a.RequestOutStoreID='" + storeId + "' or a.RequestInStoreID='" + storeId + "')";
+                    sql += " AND (a.CreateStoreID='" + storeId + "' or a.RequestOutStoreID='" + storeId + "' or a.RequestInStoreID='" + storeId + "')";
 
                 #endregion
 
@@ -1736,9 +1735,7 @@ namespace XXCloudService.Api.XCCloud
                                 WHERE 1 = 1";
                 sql = sql + " AND a.merchId='" + merchId + "'";
                 if (!storeId.IsNull())
-                {
                     sql = sql + " AND a.storeId='" + storeId + "'";
-                }
 
                 var data_GoodStorage = Data_GoodStorageService.I.SqlQuery<Data_GoodStorageList>(sql, parameters).ToList();
 
@@ -2383,9 +2380,7 @@ namespace XXCloudService.Api.XCCloud
                                 WHERE 1 = 1";
                 sql = sql + " AND a.merchId='" + merchId + "'";
                 if (!storeId.IsNull())
-                {
                     sql = sql + " AND a.storeId='" + storeId + "'";
-                }
 
                 var data_GoodStorage = Data_GoodStorageService.I.SqlQuery<Data_GoodStorageList>(sql, parameters).ToList();
 
@@ -2872,6 +2867,7 @@ namespace XXCloudService.Api.XCCloud
                     sql += sql + " AND a.GoodID=" + goodId;
                 if (!goodNameOrBarCode.IsNull())
                     sql += sql + " AND (b.GoodName like '%" + goodNameOrBarCode + "%' OR b.Barcode like '%" + goodNameOrBarCode + "%')";
+
                 #endregion
 
                 var list = Data_GoodsStockService.I.SqlQuery<Data_GoodsStockList>(sql, parameters).ToList();
@@ -2958,6 +2954,7 @@ namespace XXCloudService.Api.XCCloud
                     sql += sql + " AND a.GoodID=" + goodId;
                 if (!goodNameOrBarCode.IsNull())
                     sql += sql + " AND (b.GoodName like '%" + goodNameOrBarCode + "%' OR b.Barcode like '%" + goodNameOrBarCode + "%')";
+
                 #endregion
 
                 var list = Data_GoodsStockService.I.SqlQuery<Data_GoodsStockList>(sql, parameters).Where(w => w.AvailableCount <= 0).ToList();

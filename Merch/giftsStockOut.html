@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>礼品库存</title>
+    <link rel="stylesheet" href="layui/css/layui.css">
+</head>
+<body>
+<div class="layui-row" style="padding: 10px;">
+    <blockquote class="layui-elem-quote" style="text-align: right;padding-right: 100px">
+        <button type="button" class="layui-btn layui-btn-normal" id="add"><i class="layui-icon">&#xe615;</i>入库</button>
+        <button type="button" class="layui-btn layui-btn-normal"><i class="layui-icon">&#xe615;</i>查询</button>
+    </blockquote>
+    <div class="layui-col-lg12 layui-col-md12 layui-col-sm12 layui-col-xs12">
+        <table class="layui-hide" id="giftsStorage" lay-filter="giftsStorage"></table>
+    </div>
+</div>
+<!--入库弹出层-->
+<div id="openModel" style="display: none;padding: 15px;">
+    <form action="" class="layui-form layui-form-pane">
+        <div class="layui-form-item" style="position: relative">
+            <div class="layui-inline">
+                <label class="layui-form-label">入库仓库</label>
+                <div class="layui-input-inline">
+                    <select name="inDepot" id="inDepot" lay-filter="inDepot"></select>
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">采购渠道</label>
+                <div class="layui-input-inline" style="z-index: 4">
+                    <input type="text" class="layui-input" placeholder="点击左侧输入，右侧选择">
+
+                </div>
+                <div class="layui-input-inline" style="position: absolute;left: 190px;z-index: 3">
+                    <select name="" id="">
+
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <div class="layui-input-inline" style="width: 400px;">
+                    <input type="text" class="layui-input" placeholder="输入商品条码或名称" id="goodsName">
+                </div>
+                <div class="layui-input-inline">
+                    <button type="button" class="layui-btn layui-btn-normal" id="searchGoods"><i class="layui-icon">&#xe615;</i></button>
+                </div>
+            </div>
+        </div>
+        <table class="layui-hide" id="goodsStorage" lay-filter="goodsStorage"></table>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">应付金额</label>
+                <div class="layui-input-inline">
+                    <input type="text" class="layui-input"  id="">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">实付金额</label>
+                <div class="layui-input-inline">
+                    <input type="text" class="layui-input"  id="">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">优惠金额</label>
+                <div class="layui-input-inline">
+                    <input type="text" class="layui-input"  id="">
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label  class="layui-form-label">备注</label>
+            <div class="layui-input-block">
+                <input type="text" class="layui-input" placeholder="..." id="Note">
+            </div>
+        </div>
+        <div style="text-align:center;">
+            <button type="button" class="layui-btn" id="save">确定</button>
+        </div>
+    </form>
+</div>
+<!--礼品列表弹出层-->
+<div id="goodsListBox" style="display: none;padding: 15px">
+    <table class="layui-hide" id="goodsList" lay-filter="goodsList"></table>
+    <div style="text-align:center;margin: 15px 0;">
+        <button type="button" class="layui-btn" id="closeGoodBtn">取消</button>
+        <button type="button" class="layui-btn" id="saveGoodBtn">确定</button>
+    </div>
+</div>
+</body>
+<script src="js/jquery-1.8.3-min.js"></script>
+<script src="layui/layui.js"></script>
+<script src="js/storeSystem.js"></script>
+<script>
+
+    let xc=xcActionSystem.prototype;
+    let token=xc.getStorage('token');
+    let merchId=JSON.parse(xc.getStorage('logMsg')).MerchID;
+    let storeId=JSON.parse(xc.getStorage('logMsg')).StoreID;
+    let cols=[
+        {field:'ID', title:'入库流水号', align: 'center', sort: true}
+        ,{field:'Barcode', title:'商品条码', align: 'center', sort: true}
+        ,{field:'GoodTypeStr',title: '商品类别', align: 'center', templet: '#changeTime'} //width 支持：数字、百分比和不填写。
+        ,{field:'GoodName', title: '商品名称', align: 'center'}
+        ,{field:'StoreName', title: '入库门店', align: 'center'}
+        ,{field:'RealTime', title: '入库时间', align: 'center'}
+        ,{field:'Supplier', title: '采购渠道', align: 'center'}
+        ,{field:'Price', title: '采购单价', align: 'center'}
+        ,{field:'TotalPrice', title: '入库金额', align: 'center'}
+        ,{field:'LogName', title: '入库经办人', align: 'center'}
+        ,{field:'DepotName', title: '入库仓库', align: 'center'}
+        ,{fixed: 'right', title: '操作', width:100, align:'center', toolbar: '#barDemo'}];
+    let parm={'obj':{'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'},
+        'url':'/XCCloud/GoodsInfo?action=QueryGoodStorage',
+        'elem':'#giftsStorage',
+        'cols':cols
+    };
+    xc.getInitData(parm);
+
+    let storageGood=[];let index;
+    layui.use(['form','layer','table'],function () {
+        let form=layui.form;
+        let layer=layui.layer;
+        let table=layui.table;
+        $('#add').on('click',function () {
+            xc.getDepotDic(merchId,storeId,token,layer,form,'inDepot')
+            newFoodLevelTable(table,storageGood,layer,form);
+            layer.open({
+                title:'礼品入库',
+                type:1,
+                area:['1000px','600px'],
+                content:$('#openModel')
+            })
+        });
+        $('#save').on('click',function () {
+            let _obj={'depotName':$('#depotName').val(),
+                'userToken':token,
+                'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+            let parseJson = JSON.stringify(_obj);
+            $.ajax({
+                type:'post',
+                url:'/XCCloud/GoodsInfo?action=AddGoodStorage',
+                contentType: "application/json; charset=utf-8",
+                data:{parasJson: parseJson},
+                success: function (data) {
+                    data = JSON.parse(data);
+                    if (data.result_code == 1) {
+                        layer.msg('操作成功',{time:1500},function () {
+                            location.href='giftsStorage.html'
+                        })
+                    } else {
+                        layer.msg(data.result_msg||data.return_msg);
+                    }
+                }
+            })
+        });
+        $('#searchGoods').on('click',function () {
+            initGoodsTb();
+            index=layer.open({
+                title:'选择奖品',
+                type:1,
+                area:'800px',
+                content:$('#goodsListBox')
+            })
+        });
+        $('#saveGoodBtn').on('click',function () {
+            newFoodLevelTable(table,storageGood,layer,form);
+            layer.close(index);
+        });
+    });
+    function initGoodsTb() {
+        var searchText=$('#goodsName').val();
+        var parm={'obj':{'goodNameOrBarcode':searchText,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'},
+            'url':'/XCCloud/Promotion?action=GetGoodsInfoList',
+            'elem':'#goodsList',
+            'height':'210px',
+            'size':'sm',
+            'cols':[  {type:'checkbox'},
+                {field:'ID', title: '商品ID', align: 'center'}
+                ,{field:'Barcode', title: '商品条码', align: 'center'}
+                ,{field:'GoodName', title: '商品名称', align: 'center'}
+                ,{field:'GoodTypeStr', title: '商品类别', align: 'center'}
+            ]};
+        xc.getInitData(parm);
+    }
+    function newFoodLevelTable(table,arr,layer,form) {
+        table.render({
+            elem: '#goodsStorage'
+            , height:'250px'
+            ,size:'sm'
+            , data: arr
+            , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+            , cols: [[
+                {field:'Barcode', title: '会员级别', align: 'center'}
+                ,{field:'GoodName', title: '时段类型', align: 'center'}
+                ,{field:'GoodTypeStr', title: '有效周', align: 'center'}
+                ,{field:'StartTime', title: '当前库存', align: 'center'}
+                ,{field:'EndTime', title: '采购单价', align: 'center'}
+                ,{field:'ClientPrice', title: '入库数量', align: 'center'}
+                ,{fixed: 'right',title:'操作', width:140, align:'center', toolbar: '#barDemo1'}]]
+            , page: {page: true, limits: [5,10, 15, 20]}
+            , limit: 5
+
+        });
+    }
+</script>
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="detail"> <i class="layui-icon">&#xe642;</i>编辑</a>
+</script>
+</html>
