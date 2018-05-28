@@ -2859,13 +2859,12 @@ namespace XXCloudService.Api.XCCloud
                                 		*, ROW_NUMBER() over(partition by DepotID,GoodID order by InitialTime desc) as RowNum
                                 	FROM
                                 		Data_GoodsStock
-                                    WHERE RowNum <=  1
                                 ) a                                                                
                                 INNER JOIN Base_GoodsInfo b ON a.GoodID = b.ID                                
                                 LEFT JOIN Dict_System c ON b.GoodType = c.ID
                                 LEFT JOIN Base_StoreInfo d ON a.StoreID = d.StoreID
                                 WHERE
-                                	b.AllowStorage = 1 AND b.Status = 1 AND a.DepotID = " + depotId;
+                                	b.AllowStorage = 1 AND b.Status = 1 AND a.RowNum <= 1 AND a.DepotID = " + depotId;
                 sql += " AND a.MerchID='" + merchId + "'";
                 if (!storeId.IsNull())
                     sql += " AND a.StoreID='" + storeId + "'";
@@ -2946,13 +2945,12 @@ namespace XXCloudService.Api.XCCloud
                                 		*, ROW_NUMBER() over(partition by DepotID,GoodID order by InitialTime desc) as RowNum
                                 	FROM
                                 		Data_GoodsStock
-                                    WHERE RowNum <= 1
                                 ) a                                                                
                                 INNER JOIN Base_GoodsInfo b ON a.GoodID = b.ID                                
                                 LEFT JOIN Dict_System c ON b.GoodType = c.ID
                                 LEFT JOIN Base_StoreInfo d ON a.StoreID = d.StoreID
                                 WHERE
-                                	b.AllowStorage = 1 AND b.Status = 1 AND a.DepotID = " + depotId;
+                                	b.AllowStorage = 1 AND b.Status = 1 AND a.RowNum <= 1 AND a.DepotID = " + depotId;
                 sql += " AND a.MerchID='" + merchId + "'";
                 if (!storeId.IsNull())
                     sql += " AND a.StoreID='" + storeId + "'";
@@ -3170,7 +3168,7 @@ namespace XXCloudService.Api.XCCloud
                                     //获取期初平均成本 
                                     var stockModel = Data_GoodsStockService.I.GetModels(p => p.DepotID == depotId && p.GoodID == goodId).OrderByDescending(or => or.InitialTime).FirstOrDefault();
                                     var initialAvgValue = stockModel.InitialAvgValue ?? 0M;
-                                    var remainCount = stockModel.RemainCount ?? 0;
+                                    var initialValue = stockModel.InitialValue ?? 0;
                                     var initialTime = stockModel.InitialTime;
 
                                     //获取入库数量和金额
@@ -3180,10 +3178,10 @@ namespace XXCloudService.Api.XCCloud
                                     var stockInTotal = stockInList.Sum(s => s.StockCount * s.GoodCost) ?? 0M;
 
                                     //计算本期平均成本                                    
-                                    var avgValue = Math.Round((initialAvgValue * remainCount + stockInTotal) / (remainCount + stockInCount), 2, MidpointRounding.AwayFromZero);
+                                    var avgValue = Math.Round((initialAvgValue * initialValue + stockInTotal) / (initialValue + stockInCount), 2, MidpointRounding.AwayFromZero);
                                     stockModel.InitialTime = DateTime.Now;
                                     stockModel.InitialAvgValue = avgValue;
-                                    stockModel.InitialValue = remainCount + stockInCount;
+                                    stockModel.InitialValue = initialValue + stockInCount;
                                     stockModel.RemainCount = stockModel.InitialValue;
                                     Data_GoodsStockService.I.AddModel(stockModel);
 

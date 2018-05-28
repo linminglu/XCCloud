@@ -982,13 +982,13 @@ namespace XCCloudService.Common.Enum
     /// </summary>
     public enum RequestType
     {
-        [Description("门店间申请")]
+        [Description("门店向门店申请")]
         RequestStore = 0,   //门店间申请
         [Description("门店向总部申请")]
         RequestMerch = 1,   //门店向总部申请
-        [Description("总部配货")]
+        [Description("总部向门店派货")]
         MerchSend = 2,      //总部配货
-        [Description("总部申请")]
+        [Description("总部向门店申请")]
         MerchRequest = 3    //总部申请
     }
 
