@@ -2712,6 +2712,11 @@ namespace XXCloudService.Api.XCCloud
             }
         }
         
+        /// <summary>
+        /// 撤销出库
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
         [Authorize(Inherit = false, Roles = "MerchUser")]
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object CanGoodOutOrder(Dictionary<string, object> dicParas)
@@ -2828,17 +2833,17 @@ namespace XXCloudService.Api.XCCloud
                 string sql = @"SELECT
                                 	a.ID,
                                 	/*商品条码*/
-                                	c.Barcode,
+                                	b.Barcode,
                                 	/*商品名称*/
-                                	c.GoodName,                                	
+                                	b.GoodName,                                	
                                 	/*商品类别*/
-                                	c.GoodType AS GoodType,
+                                	b.GoodType AS GoodType,
                                 	/*商品类别[字符串]*/
-                                	d.DictKey AS GoodTypeStr,
+                                	c.DictKey AS GoodTypeStr,
                                 	/*门店ID*/
                                 	a.StoreID,
                                 	/*门店名称*/
-                                	e.StoreName,                                	
+                                	d.StoreName,                                	
                                     a.MinValue,
                                     a.MaxValue,
                                     /*可调拨数*/
@@ -2849,25 +2854,25 @@ namespace XXCloudService.Api.XCCloud
                                     a.RemainCount,
                                     a.Note
                                 FROM
-                                    Data_GoodsStock a                                
-                                INNER JOIN (
+                                    (
                                 	SELECT
                                 		*, ROW_NUMBER() over(partition by DepotID,GoodID order by InitialTime desc) as RowNum
                                 	FROM
                                 		Data_GoodsStock
-                                ) b ON a.ID = b.ID and b.RowNum <= 1 
-                                INNER JOIN Base_GoodsInfo c ON a.GoodID = c.ID                                
-                                LEFT JOIN Dict_System d ON c.GoodType = d.ID
-                                LEFT JOIN Base_StoreInfo e ON a.StoreID = e.StoreID
+                                    WHERE RowNum <=  1
+                                ) a                                                                
+                                INNER JOIN Base_GoodsInfo b ON a.GoodID = b.ID                                
+                                LEFT JOIN Dict_System c ON b.GoodType = c.ID
+                                LEFT JOIN Base_StoreInfo d ON a.StoreID = d.StoreID
                                 WHERE
-                                	c.AllowStorage = 1 AND c.Status = 1 AND a.DepotID = " + depotId;
+                                	b.AllowStorage = 1 AND b.Status = 1 AND a.DepotID = " + depotId;
                 sql += " AND a.MerchID='" + merchId + "'";
                 if (!storeId.IsNull())
                     sql += " AND a.StoreID='" + storeId + "'";
                 if (!goodId.IsNull())
                     sql += sql + " AND a.GoodID=" + goodId;
                 if (!goodNameOrBarCode.IsNull())
-                    sql += sql + " AND (c.GoodName like '%" + goodNameOrBarCode + "%' OR c.Barcode like '%" + goodNameOrBarCode + "%')";
+                    sql += sql + " AND (b.GoodName like '%" + goodNameOrBarCode + "%' OR b.Barcode like '%" + goodNameOrBarCode + "%')";
                 #endregion
 
                 var list = Data_GoodsStockService.I.SqlQuery<Data_GoodsStockList>(sql, parameters).ToList();
@@ -2915,17 +2920,17 @@ namespace XXCloudService.Api.XCCloud
                 string sql = @"SELECT
                                 	a.ID,
                                 	/*商品条码*/
-                                	c.Barcode,
+                                	b.Barcode,
                                 	/*商品名称*/
-                                	c.GoodName,                                	
+                                	b.GoodName,                                	
                                 	/*商品类别*/
-                                	c.GoodType AS GoodType,
+                                	b.GoodType AS GoodType,
                                 	/*商品类别[字符串]*/
-                                	d.DictKey AS GoodTypeStr,
+                                	c.DictKey AS GoodTypeStr,
                                 	/*门店ID*/
                                 	a.StoreID,
                                 	/*门店名称*/
-                                	e.StoreName,                                	
+                                	d.StoreName,                                	
                                     a.MinValue,
                                     a.MaxValue,
                                     /*可调拨数*/
@@ -2936,25 +2941,25 @@ namespace XXCloudService.Api.XCCloud
                                     a.RemainCount,
                                     a.Note
                                 FROM
-                                    Data_GoodsStock a                                
-                                INNER JOIN (
+                                    (
                                 	SELECT
                                 		*, ROW_NUMBER() over(partition by DepotID,GoodID order by InitialTime desc) as RowNum
                                 	FROM
                                 		Data_GoodsStock
-                                ) b ON a.ID = b.ID and b.RowNum <= 1 
-                                INNER JOIN Base_GoodsInfo c ON a.GoodID = c.ID                                
-                                LEFT JOIN Dict_System d ON c.GoodType = d.ID
-                                LEFT JOIN Base_StoreInfo e ON a.StoreID = e.StoreID
+                                    WHERE RowNum <= 1
+                                ) a                                                                
+                                INNER JOIN Base_GoodsInfo b ON a.GoodID = b.ID                                
+                                LEFT JOIN Dict_System c ON b.GoodType = c.ID
+                                LEFT JOIN Base_StoreInfo d ON a.StoreID = d.StoreID
                                 WHERE
-                                	c.AllowStorage = 1 AND c.Status = 1 AND a.DepotID = " + depotId;
+                                	b.AllowStorage = 1 AND b.Status = 1 AND a.DepotID = " + depotId;
                 sql += " AND a.MerchID='" + merchId + "'";
                 if (!storeId.IsNull())
                     sql += " AND a.StoreID='" + storeId + "'";
                 if (!goodId.IsNull())
                     sql += sql + " AND a.GoodID=" + goodId;
                 if (!goodNameOrBarCode.IsNull())
-                    sql += sql + " AND (c.GoodName like '%" + goodNameOrBarCode + "%' OR c.Barcode like '%" + goodNameOrBarCode + "%')";
+                    sql += sql + " AND (b.GoodName like '%" + goodNameOrBarCode + "%' OR b.Barcode like '%" + goodNameOrBarCode + "%')";
                 #endregion
 
                 var list = Data_GoodsStockService.I.SqlQuery<Data_GoodsStockList>(sql, parameters).Where(w => w.AvailableCount <= 0).ToList();
@@ -3027,88 +3032,75 @@ namespace XXCloudService.Api.XCCloud
 
         #region 商品库存盘点
 
-        //[ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
-        //public object QueryGoodInventory(Dictionary<string, object> dicParas)
-        //{
-        //    try
-        //    {
-        //        XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-        //        string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
-        //        string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
-
-        //        string errMsg = string.Empty;                
-        //        int GoodTypeId = dict_SystemService.GetModels(p => p.DictKey.Equals("商品类别") && p.PID == 0).FirstOrDefault().ID;
-        //        var linq = from a in base_DepotInfoService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.MinusEN == 0)
-        //                   join b in
-        //                       (from t in data_GoodsStockService.GetModels()
-        //                        group t by new { DepotID = t.DepotID, GoodID = t.GoodID } into g
-        //                        let topone =
-        //                        (
-        //                          from item in g
-        //                          orderby item.InitialTime descending
-        //                          select new { item.DepotID, item.GoodID, item.InitialValue, item.InitialTime, item.InitialAvgValue, item.RemainCount }
-        //                        ).First()
-        //                        select topone
-        //                        ) on a.ID equals b.DepotID
-        //                   join c in base_GoodsInfoService.GetModels() on b.GoodID equals c.ID
-        //                   join d in dict_SystemService.GetModels(p => p.PID == GoodTypeId) on (c.GoodType + "") equals d.DictValue into d1
-        //                   from d in d1.DefaultIfEmpty()
-        //                   join e in data_GoodInventoryService.GetModels(p => p.InventoryType == 0) on a.ID equals e.InventoryIndex into e1
-        //                   from e in e1.DefaultIfEmpty()
-        //                   join f in base_StoreInfoService.GetModels() on e.StoreID equals f.StoreID into f1
-        //                   from f in f1.DefaultIfEmpty()
-        //                   select new
-        //                   {
-        //                       ID = e != null ? e.ID : (int?)null,  //礼品盘点ID
-        //                       Barcode = c.Barcode,                 //商品条码
-        //                       GoodTypeStr = d != null ? d.DictKey : string.Empty,//商品类别
-        //                       GoodName = c.GoodName,               //商品名称
-        //                       StoreName = f != null ? f.StoreName : string.Empty,//门店名称
-        //                       DepotName = a.DepotName,             //仓库名称
-        //                       InitialTime = b.InitialTime,         //期初时间
-        //                       InitialValue = b.InitialValue,       //期初值
-        //                       RemainCount = b.RemainCount,           //应有库存
-        //                       RemainValue = Math.Round((b.InitialAvgValue ?? 0M) * (decimal)b.RemainCount, 2, MidpointRounding.AwayFromZero),       //应有库存金额
-        //                       InventoryCount = e != null ? e.InventoryCount : (int?)null //实点数
-        //                   };
-
-        //        return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, linq);
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
-        //    }
-        //}
-
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
-        public object GetGoodInventory(Dictionary<string, object> dicParas)
+        public object QueryGoodsInventory(Dictionary<string, object> dicParas)
         {
             try
             {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+
                 string errMsg = string.Empty;
-                string id = dicParas.ContainsKey("id") ? (dicParas["id"] + "") : string.Empty;
-                if (string.IsNullOrEmpty(id))
-                {
-                    errMsg = "盘点流水号不能为空";
+                if (!dicParas.Get("depotId").Validintnozero("库存ID", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
 
-                int iId = Convert.ToInt32(id);
-                IData_GoodInventoryService data_GoodInventoryService = BLLContainer.Resolve<IData_GoodInventoryService>();
-                if (!data_GoodInventoryService.Any(a => a.ID == iId))
-                {
-                    errMsg = "该盘点信息不存在";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
+                var depotId = dicParas.Get("depotId").Toint();               
+                object[] conditions = dicParas.ContainsKey("conditions") ? (object[])dicParas["conditions"] : null;
 
-                var result = from a in data_GoodInventoryService.GetModels(p => p.ID == iId).FirstOrDefault().AsDictionary()
-                             select new
-                             {
-                                 name = a.Key,
-                                 value = a.Value
-                             };
+                SqlParameter[] parameters = new SqlParameter[0];
+                string sqlWhere = string.Empty;
 
-                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, result);
+                if (conditions != null && conditions.Length > 0)
+                    if (!QueryBLL.GenDynamicSql(conditions, "a.", ref sqlWhere, ref parameters, out errMsg))
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+
+                #region Sql语句
+                string sql = @"SELECT
+                                	a.ID,
+                                	/*商品条码*/
+                                	c.Barcode,
+                                	/*商品名称*/
+                                	c.GoodName,                                	
+                                	/*商品类别*/
+                                	c.GoodType AS GoodType,
+                                	/*商品类别[字符串]*/
+                                	d.DictKey AS GoodTypeStr,
+                                	/*添加类别*/
+                                	a.InventoryType,                                	
+                                    b.MinValue,
+                                    b.MaxValue,                                    
+                                    (case when ISNULL(b.InitialTime,'')='' then '' else convert(varchar,b.InitialTime,20) end) AS InitialTime,
+                                    b.InitialAvgValue,
+                                    b.RemainCount,
+                                    u.UserName,
+                                    (case when ISNULL(a.InventoryTime,'')='' then '' else convert(varchar,a.InventoryTime,20) end) AS InventoryTime,
+                                    a.InventoryCount,
+                                    a.PredictCount,
+                                    a.TotalPrice
+                                FROM
+                                    Data_GoodInventory a                                
+                                INNER JOIN (
+                                	SELECT
+                                		*, ROW_NUMBER() over(partition by DepotID,GoodID order by InitialTime desc) as RowNum
+                                	FROM
+                                		Data_GoodsStock
+                                ) b ON a.GoodID = b.GoodID AND a.InventoryIndex = b.DepotID AND b.RowNum <= 1 
+                                INNER JOIN Base_GoodsInfo c ON a.GoodID = c.ID  
+                                INNER JOIN Base_UserInfo u ON a.UserID = u.UserID
+                                LEFT JOIN Dict_System d ON c.GoodType = d.ID
+                                WHERE
+                                	c.AllowStorage = 1 AND c.Status = 1 AND a.InventoryType = 0 AND a.InventoryIndex = " + depotId;
+                sql += " AND a.MerchID='" + merchId + "'";
+                if (!storeId.IsNull())
+                    sql += " AND a.StoreID='" + storeId + "'";
+
+                #endregion
+
+                var list = Data_GoodInventoryService.I.SqlQuery<Data_GoodInventoryList>(sql, parameters).ToList();
+                
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, list);
             }
             catch (Exception e)
             {
@@ -3116,99 +3108,118 @@ namespace XXCloudService.Api.XCCloud
             }
         }
 
+        /// <summary>
+        /// 盘点审核
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
+        [Authorize(Inherit = false, Roles = "MerchUser")]
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
-        public object AddGoodInventory(Dictionary<string, object> dicParas)
+        public object CheckGoodsInventory(Dictionary<string, object> dicParas)
         {
             try
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
-                string logId = userTokenKeyModel.LogId;
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                var logId = userTokenKeyModel.LogId.Toint();
 
                 string errMsg = string.Empty;
-                string barCode = dicParas.ContainsKey("barCode") ? (dicParas["barCode"] + "") : string.Empty;
-                string inventoryType = dicParas.ContainsKey("inventoryType") ? (dicParas["inventoryType"] + "") : string.Empty;
-                string inventoryIndex = dicParas.ContainsKey("inventoryIndex") ? (dicParas["inventoryIndex"] + "") : string.Empty;
-                string predictCount = dicParas.ContainsKey("predictCount") ? (dicParas["predictCount"] + "") : string.Empty;
-                string inventoryCount = dicParas.ContainsKey("inventoryCount") ? (dicParas["inventoryCount"] + "") : string.Empty;
-                string totalPrice = dicParas.ContainsKey("totalPrice") ? (dicParas["totalPrice"] + "") : string.Empty;
-                string note = dicParas.ContainsKey("note") ? (dicParas["note"] + "") : string.Empty;
-
-                #region 参数验证
-
-                if (string.IsNullOrEmpty(barCode))
-                {
-                    errMsg = "商品条码barCode不能为空";
+                if (!dicParas.GetArray("goodsInventoryIDs").Validarray("盘点ID列表", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
 
-                if (string.IsNullOrEmpty(inventoryType))
+                var goodsInventoryIDs = dicParas.GetArray("goodsInventoryIDs");
+
+                //开启EF事务
+                using (TransactionScope ts = new TransactionScope())
                 {
-                    errMsg = "盘点类别inventoryType不能为空";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
+                    try
+                    {
+                        if (goodsInventoryIDs != null && goodsInventoryIDs.Count() >= 0)
+                        {
+                            foreach (IDictionary<string, object> el in goodsInventoryIDs)
+                            {
+                                if (el != null)
+                                {
+                                    var dicPara = new Dictionary<string, object>(el, StringComparer.OrdinalIgnoreCase);
+                                    if (!dicPara.Get("id").Validintnozero("盘点ID", out errMsg))
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-                if (!string.IsNullOrEmpty(inventoryIndex) && !Utils.isNumber(inventoryIndex))
-                {
-                    errMsg = "盘点位置索引inventoryIndex格式不正确";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
+                                    var id = dicPara.Get("id").Toint();
 
-                if (string.IsNullOrEmpty(predictCount))
-                {
-                    errMsg = "预估数量predictCount不能为空";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
+                                    if (!Data_GoodInventoryService.I.Any(p => p.ID == id))
+                                    {
+                                        errMsg = "该盘点ID不存在";
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    }
 
-                if (string.IsNullOrEmpty(inventoryCount))
-                {
-                    errMsg = "盘点数量inventoryCount不能为空";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
+                                    var model = Data_GoodInventoryService.I.GetModels(p => p.ID == id).FirstOrDefault();
+                                    if (model.InventoryType != (int)GoodInventorySource.Depot)
+                                    {
+                                        errMsg = "该盘点信息来源不是仓库";
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    }
+                                    
+                                    var depotId = model.InventoryIndex;
+                                    var goodId = model.GoodID;
+                                    if(!Data_GoodsStockService.I.Any(a => a.DepotID == depotId && a.GoodID == goodId))
+                                    {
+                                        errMsg = "该盘点对象当前库存信息不存在";
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    }
 
-                if (string.IsNullOrEmpty(totalPrice))
-                {
-                    errMsg = "库存金额totalPrice不能为空";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
+                                    //获取期初平均成本 
+                                    var stockModel = Data_GoodsStockService.I.GetModels(p => p.DepotID == depotId && p.GoodID == goodId).OrderByDescending(or => or.InitialTime).FirstOrDefault();
+                                    var initialAvgValue = stockModel.InitialAvgValue ?? 0M;
+                                    var remainCount = stockModel.RemainCount ?? 0;
+                                    var initialTime = stockModel.InitialTime;
 
-                if (!Utils.isNumber(predictCount))
-                {
-                    errMsg = "预估数量predictCount格式不正确";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
+                                    //获取入库数量和金额
+                                    var stockInList = Data_GoodStock_RecordService.I.GetModels(p => p.DepotID == depotId && p.GoodID == goodId && p.StockFlag == (int)StockFlag.In).AsEnumerable()
+                                        .Where(w => w.CreateTime >= initialTime);
+                                    var stockInCount = stockInList.Sum(s => s.StockCount) ?? 0;
+                                    var stockInTotal = stockInList.Sum(s => s.StockCount * s.GoodCost) ?? 0M;
 
-                if (!Utils.isNumber(inventoryCount))
-                {
-                    errMsg = "盘点数量inventoryCount格式不正确";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
+                                    //计算本期平均成本                                    
+                                    var avgValue = Math.Round((initialAvgValue * remainCount + stockInTotal) / (remainCount + stockInCount), 2, MidpointRounding.AwayFromZero);
+                                    stockModel.InitialTime = DateTime.Now;
+                                    stockModel.InitialAvgValue = avgValue;
+                                    stockModel.InitialValue = remainCount + stockInCount;
+                                    stockModel.RemainCount = stockModel.InitialValue;
+                                    Data_GoodsStockService.I.AddModel(stockModel);
 
-                if (!Utils.IsDecimal(totalPrice))
-                {
-                    errMsg = "库存金额totalPrice格式不正确";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
+                                    //更新盘点信息
+                                    model.AuthorID = logId;
+                                    model.AuthorTime = DateTime.Now;
+                                    Data_GoodInventoryService.I.UpdateModel(model);
+                                }
+                                else
+                                {
+                                    errMsg = "提交数据包含空对象";
+                                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                }
+                            }
 
-                #endregion
+                            if (!Data_GoodInventoryService.I.SaveChanges())
+                            {
+                                errMsg = "盘点审核失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+                        }                                                
 
-                IData_GoodInventoryService data_GoodInventoryService = BLLContainer.Resolve<IData_GoodInventoryService>();
-                var data_GoodInventory = new Data_GoodInventory();
-                Utils.GetModel(dicParas, ref data_GoodInventory);
-                data_GoodInventory.StoreID = storeId;
-                data_GoodInventory.InventoryTime = DateTime.Now;
-                data_GoodInventory.UserID = Convert.ToInt32(logId);
-                if (!data_GoodInventoryService.Add(data_GoodInventory))
-                {
-                    errMsg = "添加商品盘点信息失败";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        ts.Complete();
+                    }
+                    catch (DbEntityValidationException e)
+                    {
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, e.EntityValidationErrors.ToErrors());
+                    }
+                    catch (Exception e)
+                    {
+                        errMsg = e.Message;
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
                 }
 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
-            }
-            catch (DbEntityValidationException e)
-            {
-                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, e.EntityValidationErrors.ToErrors());
             }
             catch (Exception e)
             {

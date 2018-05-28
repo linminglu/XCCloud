@@ -1139,7 +1139,7 @@
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="MerchID" Type="varchar" MaxLength="15" />
           <Property Name="StoreID" Type="varchar" MaxLength="15" />
-          <Property Name="Barcode" Type="varchar" MaxLength="20" />
+          <Property Name="GoodID" Type="int" />
           <Property Name="InventoryType" Type="int" />
           <Property Name="InventoryIndex" Type="int" />
           <Property Name="PredictCount" Type="int" />
@@ -1147,6 +1147,8 @@
           <Property Name="TotalPrice" Type="numeric" Precision="11" Scale="2" />
           <Property Name="UserID" Type="int" />
           <Property Name="InventoryTime" Type="datetime" />
+          <Property Name="AuthorID" Type="int" />
+          <Property Name="AuthorTime" Type="datetime" />
           <Property Name="Note" Type="varchar" MaxLength="200" />
           <Property Name="Verifiction" Type="varchar" MaxLength="32" />
         </EntityType>
@@ -3211,7 +3213,6 @@
           <EntitySet Name="Data_GameInfo_Photo" EntityType="XCCloudDBModel.Data_GameInfo_Photo" />
           <EntitySet Name="Data_GivebackRule" EntityType="XCCloudDBModel.Data_GivebackRule" />
           <EntitySet Name="Data_GoodExit_Detail" EntityType="XCCloudDBModel.Data_GoodExit_Detail" />
-          <EntitySet Name="Data_GoodInventory" EntityType="XCCloudDBModel.Data_GoodInventory" />
           <EntitySet Name="Data_GoodRequest" EntityType="XCCloudDBModel.Data_GoodRequest" />
           <EntitySet Name="Data_GoodRequest_List" EntityType="XCCloudDBModel.Data_GoodRequest_List" />
           <EntitySet Name="Data_GoodsStock" EntityType="XCCloudDBModel.Data_GoodsStock" />
@@ -3312,6 +3313,7 @@
           <EntitySet Name="Data_GameInfo" EntityType="XCCloudDBModel.Data_GameInfo" />
           <EntitySet Name="Base_DeviceInfo" EntityType="XCCloudDBModel.Base_DeviceInfo" />
           <EntitySet Name="Data_GameAPP_MemberRule" EntityType="XCCloudDBModel.Data_GameAPP_MemberRule" />
+          <EntitySet Name="Data_GoodInventory" EntityType="XCCloudDBModel.Data_GoodInventory" />
         </EntityContainer>
         <EntityType Name="Base_ChainRule">
           <Key>
@@ -4254,24 +4256,6 @@
           <Property Name="GoodID" Type="Int32" />
           <Property Name="ExitCount" Type="Int32" />
           <Property Name="ExitPrice" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
-        </EntityType>
-        <EntityType Name="Data_GoodInventory">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="Barcode" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="InventoryType" Type="Int32" />
-          <Property Name="InventoryIndex" Type="Int32" />
-          <Property Name="PredictCount" Type="Int32" />
-          <Property Name="InventoryCount" Type="Int32" />
-          <Property Name="TotalPrice" Type="Decimal" Precision="11" Scale="2" />
-          <Property Name="UserID" Type="Int32" />
-          <Property Name="InventoryTime" Type="DateTime" Precision="3" />
-          <Property Name="Note" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
           <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="Data_GoodRequest">
@@ -5952,6 +5936,26 @@
           <Property Name="PlayCount" Type="Int32" />
           <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
         </EntityType>
+        <EntityType Name="Data_GoodInventory">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="GoodID" Type="Int32" />
+          <Property Name="InventoryType" Type="Int32" />
+          <Property Name="InventoryIndex" Type="Int32" />
+          <Property Name="PredictCount" Type="Int32" />
+          <Property Name="InventoryCount" Type="Int32" />
+          <Property Name="TotalPrice" Type="Decimal" Precision="11" Scale="2" />
+          <Property Name="UserID" Type="Int32" />
+          <Property Name="InventoryTime" Type="DateTime" Precision="3" />
+          <Property Name="AuthorID" Type="Int32" />
+          <Property Name="AuthorTime" Type="DateTime" Precision="3" />
+          <Property Name="Note" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -6960,25 +6964,6 @@
                 <ScalarProperty Name="ExitCount" ColumnName="ExitCount" />
                 <ScalarProperty Name="GoodID" ColumnName="GoodID" />
                 <ScalarProperty Name="ExitOrderIndex" ColumnName="ExitOrderIndex" />
-                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Data_GoodInventory">
-            <EntityTypeMapping TypeName="XCCloudDBModel.Data_GoodInventory">
-              <MappingFragment StoreEntitySet="Data_GoodInventory">
-                <ScalarProperty Name="Verifiction" ColumnName="Verifiction" />
-                <ScalarProperty Name="Note" ColumnName="Note" />
-                <ScalarProperty Name="InventoryTime" ColumnName="InventoryTime" />
-                <ScalarProperty Name="UserID" ColumnName="UserID" />
-                <ScalarProperty Name="TotalPrice" ColumnName="TotalPrice" />
-                <ScalarProperty Name="InventoryCount" ColumnName="InventoryCount" />
-                <ScalarProperty Name="PredictCount" ColumnName="PredictCount" />
-                <ScalarProperty Name="InventoryIndex" ColumnName="InventoryIndex" />
-                <ScalarProperty Name="InventoryType" ColumnName="InventoryType" />
-                <ScalarProperty Name="Barcode" ColumnName="Barcode" />
-                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
                 <ScalarProperty Name="MerchID" ColumnName="MerchID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
@@ -8756,6 +8741,27 @@
                 <ScalarProperty Name="PushBalanceIndex1" ColumnName="PushBalanceIndex1" />
                 <ScalarProperty Name="MemberLevelID" ColumnName="MemberLevelID" />
                 <ScalarProperty Name="GameID" ColumnName="GameID" />
+                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
+                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Data_GoodInventory">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Data_GoodInventory">
+              <MappingFragment StoreEntitySet="Data_GoodInventory">
+                <ScalarProperty Name="Verifiction" ColumnName="Verifiction" />
+                <ScalarProperty Name="Note" ColumnName="Note" />
+                <ScalarProperty Name="AuthorTime" ColumnName="AuthorTime" />
+                <ScalarProperty Name="AuthorID" ColumnName="AuthorID" />
+                <ScalarProperty Name="InventoryTime" ColumnName="InventoryTime" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="TotalPrice" ColumnName="TotalPrice" />
+                <ScalarProperty Name="InventoryCount" ColumnName="InventoryCount" />
+                <ScalarProperty Name="PredictCount" ColumnName="PredictCount" />
+                <ScalarProperty Name="InventoryIndex" ColumnName="InventoryIndex" />
+                <ScalarProperty Name="InventoryType" ColumnName="InventoryType" />
+                <ScalarProperty Name="GoodID" ColumnName="GoodID" />
                 <ScalarProperty Name="StoreID" ColumnName="StoreID" />
                 <ScalarProperty Name="MerchID" ColumnName="MerchID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />

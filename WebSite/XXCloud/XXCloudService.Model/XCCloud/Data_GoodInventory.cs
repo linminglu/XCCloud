@@ -17,7 +17,7 @@ namespace XCCloudService.Model.XCCloud
         public int ID { get; set; }
         public string MerchID { get; set; }
         public string StoreID { get; set; }
-        public string Barcode { get; set; }
+        public Nullable<int> GoodID { get; set; }
         public Nullable<int> InventoryType { get; set; }
         public Nullable<int> InventoryIndex { get; set; }
         public Nullable<int> PredictCount { get; set; }
@@ -25,6 +25,8 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<decimal> TotalPrice { get; set; }
         public Nullable<int> UserID { get; set; }
         public Nullable<System.DateTime> InventoryTime { get; set; }
+        public Nullable<int> AuthorID { get; set; }
+        public Nullable<System.DateTime> AuthorTime { get; set; }
         public string Note { get; set; }
         public string Verifiction { get; set; }
     }

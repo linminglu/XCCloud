@@ -70,7 +70,6 @@
         <EntityTypeShape EntityType="XCCloudDBModel.Data_GameInfo_Photo" Width="1.5" PointX="24.75" PointY="0.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_GivebackRule" Width="1.5" PointX="0.75" PointY="24.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_GoodExit_Detail" Width="1.5" PointX="24.75" PointY="3.75" />
-        <EntityTypeShape EntityType="XCCloudDBModel.Data_GoodInventory" Width="1.5" PointX="24.75" PointY="7.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_GoodRequest" Width="1.5" PointX="24.75" PointY="12.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_GoodRequest_List" Width="1.5" PointX="24.75" PointY="17.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_GoodsStock" Width="1.5" PointX="24.75" PointY="23.75" />
@@ -171,6 +170,7 @@
         <EntityTypeShape EntityType="XCCloudDBModel.Data_GameInfo" Width="1.5" PointX="41.375" PointY="0.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Base_DeviceInfo" Width="1.5" PointX="7.375" PointY="26.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_GameAPP_MemberRule" Width="1.5" PointX="0.75" PointY="6.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.Data_GoodInventory" Width="1.5" PointX="0.75" PointY="41.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

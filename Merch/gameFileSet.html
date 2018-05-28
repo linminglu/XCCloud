@@ -1421,9 +1421,9 @@ let memberLevelId='';
                                     {field:'MCUID',title: '设备序列号', align: 'center',width:100}
                                     ,{field:'DeviceName', title: '设备别名', align: 'center',width:100} //width 支持：数字、百分比和不填写。
                                     ,{field:'SiteName', title: 'P位编号', align: 'center',width:100}
-                                    ,{field:'DeviceStatus',fixed: 'right', title: '工作状态', align: 'center',templet:'#changeLock',width:90}
-                                    ,{field:'DeviceRunning',fixed: 'right', title: '运行状态', align: 'center',width:90}
-                                ,{fixed: 'right',title:'操作', width:500, align:'center', toolbar: '#barDemo1'}]]
+                                    ,{field:'DeviceStatus', title: '工作状态', align: 'center',templet:'#changeLock',width:90}
+                                    ,{field:'DeviceRunning', title: '运行状态', align: 'center',width:90}
+                                ,{fixed: 'right',title:'操作', width:400, align:'center', toolbar: '#barDemo1'}]]
                             , page: {page: true, limits: [10, 15, 20, 30, 50, 100]}
                             , limit: 10
                         });
@@ -1907,14 +1907,14 @@ let memberLevelId='';
                       , data: arr
                       , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
                       , cols: [[
-                          {field:'ID', title:'项目名称', align: 'center',width:100}
+                          {field:'ID', title:'ID', align: 'center',width:100}
                           ,{field:'GameID',title: '游戏机编号', align: 'center',width:105} //width 支持：数字、百分比和不填写。
-                          ,{field:'MemberLevelID', title: '会员级别', align: 'center',width:100}
-                          ,{field:'PushBalanceIndex1', title: '投币种1', align: 'center',width:100}
+                          ,{field:'MemberLevelName', title: '会员级别', align: 'center',width:100}
+                          ,{field:'PushBalanceName1', title: '投币种1', align: 'center',width:100}
                           ,{field:'PushCoin1', title: '投币数量1', align: 'center',width:100}
-                          ,{field:'PushBalanceIndex2', title: '投币种2', align: 'center',width:100}
+                          ,{field:'PushBalanceName2', title: '投币种2', align: 'center',width:100}
                           ,{field:'PushCoin2', title: '投币数量2', align: 'center',width:100}
-                          ,{field:'PlayCount', title: '启动局属', align: 'center',width:100}
+                          ,{field:'PlayCount', title: '启动局数', align: 'center',width:100}
                           // ,{fixed: 'right',title:'操作', width:140, align:'center', toolbar: '#barDemo2'}
                           ]]
                       , page: {page: true, limits: [10, 15, 20, 30, 50, 100]}

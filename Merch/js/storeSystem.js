@@ -889,7 +889,7 @@ xcActionSystem.prototype= {
             success: function (data) {
                 data=JSON.parse(data);
                 if(data.result_code=="1"){
-                    var arr=data.result_data;
+                    var arr=data.result_data.children;
                     $('#'+id).html('<option value="">-请选择-</option>');
                         for(i in arr){
                             if(m!=undefined){

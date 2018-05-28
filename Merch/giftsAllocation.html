@@ -5,6 +5,50 @@
     <title>礼品调拨</title>
     <link rel="stylesheet" href="layui/css/layui.css">
 </head>
+<style>
+    .layui-table-view .layui-table[lay-size="sm"] .layui-select-title .layui-input {
+        height: 28px;
+        margin-top: -8px;
+    }
+
+    .layui-table-view .layui-table[lay-size="sm"] .layui-form-select dl dt, .layui-table-view .layui-form-select dl dd {
+        line-height: 28px;
+    }
+
+    .layui-table-view .layui-table[lay-size="sm"] .layui-form-select dl {
+        top: 28px;
+    }
+
+    .layui-table-view .layui-table .layui-select-title .layui-input {
+        height: 32px;
+        margin-top: -3px;
+    }
+
+    .layui-table-view .layui-table .layui-form-select dl dt, .layui-table-view .layui-form-select dl dd {
+        line-height: 32px;
+    }
+
+    .layui-table-view .layui-table .layui-form-select dl {
+        top: 32px;
+    }
+
+    .layui-table-view .layui-table[lay-size="lg"] .layui-select-title .layui-input {
+        height: 38px;
+        margin-top: 0;
+    }
+
+    .layui-table-view .layui-table[lay-size="lg"] .layui-form-select dl dt, .layui-table-view .layui-form-select dl dd {
+        line-height: 38px;
+    }
+
+    .layui-table-view .layui-table[lay-size="lg"] .layui-form-select dl {
+        top: 38px;
+    }
+
+    /*.tableWithoutHead .layui-table-header {*/
+    /*display: none;*/
+    /*}*/
+</style>
 <body>
     <div class="layui-row">
         <blockquote class="layui-elem-quote" style="text-align:right; padding-right: 100px;">
@@ -99,7 +143,7 @@
             <button type="button" class="layui-btn layui-btn-normal" id="saveGoodsBtn">保存</button>
         </div>
     </div>
-<!--审核-->
+<!--调拨申请审核-->
     <div id="checkModel" style="display:none; padding: 15px;">
         <form action="" class="layui-form layui-form-pane">
             <div class="layui-form-item goodIsAll">
@@ -119,6 +163,55 @@
             </div>
         </form>
     </div>
+<!--调拨出库-->
+   <div id="outModel" style="padding: 15px;display:none;">
+       <form action="" class="layui-form layui-form-pane">
+           <div class="layui-form-item">
+               <div class="layui-inline">
+                   <label class="layui-form-label">申请仓库</label>
+                   <div class="layui-input-inline">
+                       <input type="text" class="layui-input" readonly id="applyDepot">
+                   </div>
+               </div>
+               <div class="layui-inline">
+                   <label class="layui-form-label">调拨方式</label>
+                   <div class="layui-input-inline">
+                       <input type="text" class="layui-input" readonly id="applyWay">
+                   </div>
+               </div>
+               <div class="layui-inline">
+                   <label class="layui-form-label">调拨门店</label>
+                   <div class="layui-input-inline">
+                       <input type="text" class="layui-input" readonly id="applyStore">
+                   </div>
+               </div>
+           </div>
+           <div class="layui-form-item">
+               <label class="layui-form-label">调拨原因</label>
+               <div class="layui-input-block">
+                   <input type="text" class="layui-input" readonly id="applyReason">
+               </div>
+           </div>
+           <div class="layui-form-item">
+               <div class="layui-inline">
+                   <label class="layui-form-label">物流公司</label>
+                   <div class="layui-input-inline">
+                       <select name="logisticsCompany" id="logisticsCompany" lay-filter="logisticsCompany"></select>
+                   </div>
+               </div>
+               <div class="layui-inline">
+                   <label class="layui-form-label">物流单号</label>
+                   <div class="layui-input-inline">
+                       <input type="text" class="layui-input" id="logisticsNote">
+                   </div>
+               </div>
+           </div>
+       </form>
+       <table id="SendDealTable" lay-filter="SendDealTable" class="layui-hide"></table>
+       <div style="text-align:center;">
+           <button type="button" class="layui-btn layui-btn-normal" id="saveSendDeal">确定</button>
+       </div>
+   </div>
 </body>
 <script src="js/jquery-1.8.3-min.js"></script>
 <script src="layui/layui.js"></script>
@@ -177,13 +270,35 @@
     let checkListGoods=[];
     let notGoodId=[];//不查询的商品id集合
     let requestId;//调拨单号
-JSON.stringify()
-    let checkState;
-   let RequstType;
+    let checkState=0;
+    let RequstType;
     //出库仓库
-   let OutDepotId; let InDepotId;
+    let OutDepotId; let InDepotId;
     let OutStoreId;let InStoreId;
-   let GoodRequests;
+    let GoodRequests;
+    //调拨出库
+    let newArr=[];
+    let depotList=[];//仓库列表
+    let __obj={'merchId':JSON.parse(xc.getStorage('logMsg')).MerchID,
+        'storeId':JSON.parse(xc.getStorage('logMsg')).StoreID,
+        'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+    let parseJson = JSON.stringify(__obj);
+    $.ajax({
+        type:'post',
+        url:'/XCCloud/DepotInfo?action=GetDepotDic',
+        contentType: "application/json; charset=utf-8",
+        data:{parasJson: parseJson},
+        success: function (data) {
+            data = JSON.parse(data);
+            if (data.result_code == 1) {
+                depotList=data.result_data;
+                console.log(depotList)
+            } else {
+                layer.msg(data.result_msg||data.return_msg);
+            }
+        }
+    });
+
     layui.addcss('layui_font.css');
     layui.use(['form','table','layer'],function () {
         let form=layui.form;
@@ -278,15 +393,166 @@ JSON.stringify()
                 console.log(checkListGoods);
             }
         });
+
+        form.on('select(testSelect)', function (data) {
+            var elem = $(data.elem);
+            var trElem = elem.parents('tr');
+            var tableData = table.cache['SendDealTable'];
+            // 更新到表格的缓存数据中，才能在获得选中行等等其他的方法中得到更新之后的值
+            tableData[trElem.data('index')][elem.attr('name')] = data.value;
+
+            let obj={'depotId':data.value,
+                'goodNameOrBarCode':trElem[0].children[1].firstChild.innerHTML,
+                'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+            let parseJson = JSON.stringify(obj);
+            $.ajax({
+                type:'post',
+                url:'/XCCloud/GoodsInfo?action=QueryGoodsStock',
+                contentType: "application/json; charset=utf-8",
+                data:{parasJson: parseJson},
+                success: function (data) {
+                    data = JSON.parse(data);
+                    if (data.result_code == 1) {
+                    if(data.result_data.length>0){
+                        trElem[0].children[7].firstChild.innerHTML=data.result_data[0].AvailableCount
+                    }else {
+                        trElem[0].children[7].firstChild.innerHTML=0
+                    }
+                    } else {
+                        layer.msg(data.result_msg||data.return_msg);
+                    }
+                }
+            });
+            // if(projectAreaList.length>0){
+            //     let flag=false;
+            //     let index;
+            //     for(i in projectAreaList){
+            //         if(projectAreaList[i].projectId==trElem[0].children[0].firstChild.innerHTML){
+            //             flag=true;
+            //             index=i;
+            //         }
+            //     }
+            //     if(flag){
+            //         projectAreaList[index].areaType=data.value
+            //     }else {
+            //         projectAreaList.push({'projectId':trElem[0].children[0].firstChild.innerHTML,'areaType':data.value})
+            //     }
+            // }else {
+            //     projectAreaList.push({'projectId':trElem[0].children[0].firstChild.innerHTML,'areaType':data.value})
+            // }
+        });
         table.on('tool(giftAllocationTB)', function(obj){
            let _data=obj.data;
            let layevent=obj.event;
             requestId=_data.ID;
-            if(layevent==='edit'){
+            if(layevent==='Request'){//调拨申请
 
-            }else if(layevent==='check'){
+            }else if(layevent==='RequestVerify'){//申请审核
+                layer.open({
+                    title:'调拨申请审核',
+                    type:1,
+                    area:'700px',
+                    content:$('#checkModel')
+                })
+            }else if(layevent==='SendDeal'){//调拨出库
+                let _obj={
+                    'requestId':requestId, 'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                let url='/XCCloud/GoodsInfo?action=GetGoodSendDealInfo';
+                let parasJson = JSON.stringify(_obj);
+                $.ajax({
+                    type: "post",
+                    url: url,
+                    contentType: "application/json; charset=utf-8",
+                    data: { parasJson: parasJson },
+                    success: function (data) {
+                        data=JSON.parse(data);
+                        if(data.result_code==1){
+                           let arr=data.result_data.GoodRequestDetails;
 
-            }else if(layevent==='handle'){
+                           if(arr.length>0){
+                               for(i in arr){
+                                   arr[i].RequestDepot='';
+                                   arr[i].RequestCount='';//可调拨数
+                                   arr[i].SendCount='';//调拨数量
+                                   arr[i].Price='';//不含税单价
+                                   arr[i].Tax='';//税率
+                                   arr[i].CostPrice='';//含税单价
+                                   newArr.push(arr[i])
+                               }
+                           }
+                            table.render({
+                                elem: '#SendDealTable'
+                                , height:'400px'
+                                , size:"sm"
+                                , data: newArr
+                                , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+                                , cols: [[{type:'numbers'}
+                                    ,{field:'Barcode', title:'商品条码', align: 'center',width:200}
+                                    ,{field:'GoodName',title: '商品类别', align: 'center',width:205} //width 支持：数字、百分比和不填写。
+                                    ,{field:'GoodTypeStr', title: '商品类别', align: 'center',width:100}
+                                    ,{field:'RequestCount', title: '申请数量', align: 'center'}
+                                    ,{field:'FinishCount', title: '已调拨数量', align: 'center'}
+                                    ,{field:'RequestDepot', title: '调拨仓库', align: 'center'
+                                        , templet:function (d) {
+                                            let _select='<select name="RequestDepot" lay-filter="testSelect" lay-verify="required" data-value="' + d.RequestDepot + '" ><option value=""></option>'
+                                            for(i in depotList){
+                                                if(d.RequestDepot==depotList[i].ID){
+                                                    _select+='<option value="'+depotList[i].ID+'" selected>'+depotList[i].DepotName+'</option>'
+                                                }else {
+                                                    _select+='<option value="'+depotList[i].ID+'">'+depotList[i].DepotName+'</option>'
+                                                }
+
+                                            }
+                                            _select+='</select>';
+                                            return _select;
+                                        }}
+                                    ,{field:'RequestCount', title: '可调拨数', align: 'center'}
+                                    ,{field:'SendCount', title: '调拨数量', align: 'center',edit:true}
+                                    ,{field:'Price', title: '不含税单价', align: 'center',edit:true}
+                                    ,{field:'Tax', title: '税率', align: 'center',edit:true}
+                                    ,{field:'CostPrice', title: '含税单价', align: 'center',edit:true}
+                                    ,{fixed: 'right',title:'操作', width:140, align:'center', toolbar: '#barDemo2'}]]
+                                , page: {page: true, limits: [10, 15, 20, 30, 50, 100]}
+                                , limit: 10
+                                ,done: function (res, curr, count) {
+                                    var tableElem = this.elem.next('.layui-table-view');
+                                    count || tableElem.find('.layui-table-header').css('overflow', 'auto');
+                                    layui.each(tableElem.find('select'), function (index, item) {
+                                        var elem = $(item);
+                                        elem.val(elem.data('value')).parents('div.layui-table-cell').css('overflow', 'visible');
+                                    });
+                                    form.render();
+                                }
+                            });
+                           // console.log(data);
+                            $('#applyDepot').val(_data.InStoreName);
+                            $('#applyWay').val(_data.RequstTypeStr);
+                            $('#applyStore').val(_data.OutStoreName);
+                            $('#applyReason').val(_data.Note);
+                            xc.setSelect('物流公司','logisticsCompany');
+                            layer.open({
+                                title:'调拨出库',
+                                type:1,
+                                area:'1000px',
+                                content:$('#outModel')
+                            })
+                        }else {
+                            layer.msg(data.result_msg||data.return_msg)
+                        }
+                    }
+
+                });
+
+
+            }else if(layevent==='SendDealVerify'){//调拨出库审核
+
+            }else if(layevent==='RequestDeal'){//调拨入库
+
+            }else if(layevent==='RequestDealVerify'){//调拨入库审核
+
+            }else if(layevent==='Cancel'){//撤销
+
+            }else if(layevent==='Close'){//调拨流程关闭
 
             }
         });
