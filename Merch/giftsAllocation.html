@@ -279,6 +279,7 @@
     //调拨出库
     let newArr=[];
     let depotList=[];//仓库列表
+    let logisticsCompany='';
     let __obj={'merchId':JSON.parse(xc.getStorage('logMsg')).MerchID,
         'storeId':JSON.parse(xc.getStorage('logMsg')).StoreID,
         'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
@@ -394,15 +395,16 @@
             }
         });
 
+        //商品出库申请
         form.on('select(testSelect)', function (data) {
             var elem = $(data.elem);
             var trElem = elem.parents('tr');
             var tableData = table.cache['SendDealTable'];
             // 更新到表格的缓存数据中，才能在获得选中行等等其他的方法中得到更新之后的值
             tableData[trElem.data('index')][elem.attr('name')] = data.value;
-
+            let _outDepotId=data.value
             let obj={'depotId':data.value,
-                'goodNameOrBarCode':trElem[0].children[1].firstChild.innerHTML,
+                'goodNameOrBarCode':trElem[0].children[0].firstChild.innerHTML,
                 'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
             let parseJson = JSON.stringify(obj);
             $.ajax({
@@ -414,33 +416,39 @@
                     data = JSON.parse(data);
                     if (data.result_code == 1) {
                     if(data.result_data.length>0){
-                        trElem[0].children[7].firstChild.innerHTML=data.result_data[0].AvailableCount
+                        trElem[0].children[6].firstChild.innerHTML=data.result_data[0].AvailableCount
+                        for(let i in newArr){
+                            if(newArr[i].Barcode==trElem[0].children[0].firstChild.innerHTML){
+                                newArr[i].outDepotId=_outDepotId;
+                                newArr[i].RequestCount=data.result_data[0].AvailableCount;
+                            }
+                        }
                     }else {
-                        trElem[0].children[7].firstChild.innerHTML=0
+                        trElem[0].children[6].firstChild.innerHTML=0;
+                        for(let i in newArr){
+                            if(newArr[i].Barcode==trElem[0].children[0].firstChild.innerHTML){
+                                newArr[i].outDepotId=_outDepotId;
+                                newArr[i].RequestCount='0';
+                            }
+                        }
                     }
                     } else {
                         layer.msg(data.result_msg||data.return_msg);
                     }
                 }
             });
-            // if(projectAreaList.length>0){
-            //     let flag=false;
-            //     let index;
-            //     for(i in projectAreaList){
-            //         if(projectAreaList[i].projectId==trElem[0].children[0].firstChild.innerHTML){
-            //             flag=true;
-            //             index=i;
-            //         }
-            //     }
-            //     if(flag){
-            //         projectAreaList[index].areaType=data.value
-            //     }else {
-            //         projectAreaList.push({'projectId':trElem[0].children[0].firstChild.innerHTML,'areaType':data.value})
-            //     }
-            // }else {
-            //     projectAreaList.push({'projectId':trElem[0].children[0].firstChild.innerHTML,'areaType':data.value})
-            // }
         });
+        table.on('edit(SendDealTable)', function(obj){ //注：edit是固定事件名，test是table原始容器的属性 lay-filter="对应的值"
+            for(let i in newArr){
+                if(newArr[i].Barcode==obj.data.Barcode){
+                    newArr[i][obj.field]=obj.value
+                }
+            }
+        });
+        form.on('select(logisticsCompany)',function (data){
+            logisticsCompany=data.value;
+        });
+
         table.on('tool(giftAllocationTB)', function(obj){
            let _data=obj.data;
            let layevent=obj.event;
@@ -455,6 +463,7 @@
                     content:$('#checkModel')
                 })
             }else if(layevent==='SendDeal'){//调拨出库
+                newArr=[];
                 let _obj={
                     'requestId':requestId, 'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
                 let url='/XCCloud/GoodsInfo?action=GetGoodSendDealInfo';
@@ -468,10 +477,9 @@
                         data=JSON.parse(data);
                         if(data.result_code==1){
                            let arr=data.result_data.GoodRequestDetails;
-
                            if(arr.length>0){
                                for(i in arr){
-                                   arr[i].RequestDepot='';
+                                   arr[i].outDepotId='';
                                    arr[i].RequestCount='';//可调拨数
                                    arr[i].SendCount='';//调拨数量
                                    arr[i].Price='';//不含税单价
@@ -482,21 +490,21 @@
                            }
                             table.render({
                                 elem: '#SendDealTable'
-                                , height:'400px'
+                                , height:'300px'
                                 , size:"sm"
                                 , data: newArr
                                 , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
-                                , cols: [[{type:'numbers'}
-                                    ,{field:'Barcode', title:'商品条码', align: 'center',width:200}
-                                    ,{field:'GoodName',title: '商品类别', align: 'center',width:205} //width 支持：数字、百分比和不填写。
-                                    ,{field:'GoodTypeStr', title: '商品类别', align: 'center',width:100}
+                                , cols: [[
+                                    {field:'Barcode', title:'商品条码', align: 'center',width:170,fixed: 'left'}
+                                    ,{field:'GoodName',title: '商品类别', align: 'center',width:120,fixed: 'left'} //width 支持：数字、百分比和不填写。
+                                    ,{field:'GoodTypeStr', title: '商品类别', align: 'center',width:100,fixed: 'left'}
                                     ,{field:'RequestCount', title: '申请数量', align: 'center'}
                                     ,{field:'FinishCount', title: '已调拨数量', align: 'center'}
-                                    ,{field:'RequestDepot', title: '调拨仓库', align: 'center'
+                                    ,{field:'outDepotId', title: '调拨仓库', align: 'center'
                                         , templet:function (d) {
-                                            let _select='<select name="RequestDepot" lay-filter="testSelect" lay-verify="required" data-value="' + d.RequestDepot + '" ><option value=""></option>'
+                                            let _select='<select name="outDepotId" lay-filter="testSelect" lay-verify="required" data-value="' + d.outDepotId + '" ><option value=""></option>'
                                             for(i in depotList){
-                                                if(d.RequestDepot==depotList[i].ID){
+                                                if(d.outDepotId==depotList[i].ID){
                                                     _select+='<option value="'+depotList[i].ID+'" selected>'+depotList[i].DepotName+'</option>'
                                                 }else {
                                                     _select+='<option value="'+depotList[i].ID+'">'+depotList[i].DepotName+'</option>'
@@ -524,7 +532,6 @@
                                     form.render();
                                 }
                             });
-                           // console.log(data);
                             $('#applyDepot').val(_data.InStoreName);
                             $('#applyWay').val(_data.RequstTypeStr);
                             $('#applyStore').val(_data.OutStoreName);
@@ -542,8 +549,6 @@
                     }
 
                 });
-
-
             }else if(layevent==='SendDealVerify'){//调拨出库审核
 
             }else if(layevent==='RequestDeal'){//调拨入库
@@ -657,6 +662,34 @@
 
            })
        });
+       //保存调拨出库
+        $('#saveSendDeal').on('click',function () {
+            let _obj={ 'requestId':requestId,
+                'logistType':logisticsCompany,
+                'logistOrderId':$('#logisticsNote').val(),
+                'goodRequestDetails':newArr,
+                'userToken':token,
+                'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+            let url='/XCCloud/GoodsInfo?action=GoodSendDeal';
+            let parasJson = JSON.stringify(_obj);
+            $.ajax({
+                type: "post",
+                url: url,
+                contentType: "application/json; charset=utf-8",
+                data: { parasJson: parasJson },
+                success: function (data) {
+                    data=JSON.parse(data);
+                    if(data.result_code==1){
+                        layer.msg('保存成功',{time:1000},function () {
+                            location.href='giftsAllocation.html'
+                        });
+                    }else {
+                        layer.msg(data.result_msg||data.return_msg)
+                    }
+                }
+
+            })
+        });
     });
     function initGoodsTb(a,b,c,table) {
         if(b!=''){

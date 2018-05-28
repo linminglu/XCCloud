@@ -10,7 +10,8 @@ namespace PalletService
     {
         public static Guid MyGuid = Guid.NewGuid();
         public static string MainVersion = "2.0.0";
-        public static string StoreID = "100010";
+        public static string MerchId = "20180521";
+        public static string StoreID = "100025420106001";
         public static string ServerIP = "192.168.1.145";
         public static string CurDownload = "";
         public static string ProcessName = "莘宸自助机";

@@ -43,8 +43,6 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.btnWhoIs2 = new System.Windows.Forms.Button();
             this.btnWhoIs1 = new System.Windows.Forms.Button();
-            this.axwhois_enroll_ocx1 = new Axwhois_enroll_ocxLib.Axwhois_enroll_ocx();
-            this.axwhois_feature_extract1 = new Axwhois_feature_extractLib.Axwhois_feature_extract();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.button1 = new System.Windows.Forms.Button();
             this.textBox1 = new System.Windows.Forms.TextBox();
@@ -57,14 +55,18 @@
             this.tmrCheck = new System.Windows.Forms.Timer(this.components);
             this.tmrTimeOut = new System.Windows.Forms.Timer(this.components);
             this.tmrUpdate = new System.Windows.Forms.Timer(this.components);
+            this.button2 = new System.Windows.Forms.Button();
+            this.axwhois_enroll_ocx1 = new Axwhois_enroll_ocxLib.Axwhois_enroll_ocx();
+            this.axwhois_feature_extract1 = new Axwhois_feature_extractLib.Axwhois_feature_extract();
+            this.button3 = new System.Windows.Forms.Button();
             contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             contextMenuStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.panel1.SuspendLayout();
+            this.tabPage2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.axwhois_enroll_ocx1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.axwhois_feature_extract1)).BeginInit();
-            this.tabPage2.SuspendLayout();
             this.SuspendLayout();
             // 
             // contextMenuStrip1
@@ -178,26 +180,10 @@
             this.btnWhoIs1.UseVisualStyleBackColor = true;
             this.btnWhoIs1.Click += new System.EventHandler(this.btnWhoIs1_Click);
             // 
-            // axwhois_enroll_ocx1
-            // 
-            this.axwhois_enroll_ocx1.Enabled = true;
-            this.axwhois_enroll_ocx1.Location = new System.Drawing.Point(44, 77);
-            this.axwhois_enroll_ocx1.Name = "axwhois_enroll_ocx1";
-            this.axwhois_enroll_ocx1.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("axwhois_enroll_ocx1.OcxState")));
-            this.axwhois_enroll_ocx1.Size = new System.Drawing.Size(450, 320);
-            this.axwhois_enroll_ocx1.TabIndex = 3;
-            // 
-            // axwhois_feature_extract1
-            // 
-            this.axwhois_feature_extract1.Enabled = true;
-            this.axwhois_feature_extract1.Location = new System.Drawing.Point(551, 77);
-            this.axwhois_feature_extract1.Name = "axwhois_feature_extract1";
-            this.axwhois_feature_extract1.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("axwhois_feature_extract1.OcxState")));
-            this.axwhois_feature_extract1.Size = new System.Drawing.Size(450, 320);
-            this.axwhois_feature_extract1.TabIndex = 4;
-            // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.button3);
+            this.tabPage2.Controls.Add(this.button2);
             this.tabPage2.Controls.Add(this.button1);
             this.tabPage2.Controls.Add(this.textBox1);
             this.tabPage2.Controls.Add(this.label3);
@@ -293,6 +279,44 @@
             this.tmrUpdate.Interval = 1000;
             this.tmrUpdate.Tick += new System.EventHandler(this.tmrUpdate_Tick);
             // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(626, 67);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(75, 23);
+            this.button2.TabIndex = 8;
+            this.button2.Text = "button2";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // axwhois_enroll_ocx1
+            // 
+            this.axwhois_enroll_ocx1.Enabled = true;
+            this.axwhois_enroll_ocx1.Location = new System.Drawing.Point(44, 77);
+            this.axwhois_enroll_ocx1.Name = "axwhois_enroll_ocx1";
+            this.axwhois_enroll_ocx1.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("axwhois_enroll_ocx1.OcxState")));
+            this.axwhois_enroll_ocx1.Size = new System.Drawing.Size(450, 320);
+            this.axwhois_enroll_ocx1.TabIndex = 3;
+            // 
+            // axwhois_feature_extract1
+            // 
+            this.axwhois_feature_extract1.Enabled = true;
+            this.axwhois_feature_extract1.Location = new System.Drawing.Point(551, 77);
+            this.axwhois_feature_extract1.Name = "axwhois_feature_extract1";
+            this.axwhois_feature_extract1.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("axwhois_feature_extract1.OcxState")));
+            this.axwhois_feature_extract1.Size = new System.Drawing.Size(450, 320);
+            this.axwhois_feature_extract1.TabIndex = 4;
+            // 
+            // button3
+            // 
+            this.button3.Location = new System.Drawing.Point(487, 285);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(75, 23);
+            this.button3.TabIndex = 9;
+            this.button3.Text = "button3";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -308,10 +332,10 @@
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.axwhois_enroll_ocx1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.axwhois_feature_extract1)).EndInit();
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.axwhois_enroll_ocx1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.axwhois_feature_extract1)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -344,6 +368,8 @@
         private System.Windows.Forms.Timer tmrCheck;
         private System.Windows.Forms.Timer tmrTimeOut;
         private System.Windows.Forms.Timer tmrUpdate;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button button3;
     }
 }
 

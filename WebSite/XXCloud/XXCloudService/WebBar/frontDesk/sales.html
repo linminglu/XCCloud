@@ -116,7 +116,7 @@
 		.McSty{margin: 0.5em 0;line-height: 2em;padding-right: 0;}
         .McText{margin: 0.5em 0;line-height: 2em;}
 		.McText span,.McSty span{text-align: left;padding: 0;font-size: 1em;}
-		.McText input{height: 2em;width: 100%;line-height:2em;padding-left: 0.5em; }
+		.McText input{height: 2em;width: 100%;line-height:2em;padding-left: 0.5em;}
 		.McText select{height: 2em;width: 100%;line-height:2em; padding: 0 0 0 0.5em;}
 
 		/*#btnSendCode{line-height: 0;}*/
@@ -827,15 +827,16 @@
 			</div>
 			<!--中间菜单-->
 			<ul class="majorMenu fl heightKz">
-				<li @click="addCount"><a class="iconfont icon-jia" href="javascript:void(0)"></a></li>
+				<li @click="addCount"><a class="iconfont icon-icon_jia" href="javascript:void(0)"></a></li>
 				<li @click="reduceCount"><a class="iconfont icon-jian" href="javascript:void(0)"></a></li>
 				<li @click="membership" :class="{cur:memberShow}"><a href="javascript:void(0)">入会办卡</a></li>
 				<li @click="FastSell"><a href="javascript:void(0)">快速售币</a></li>
 				<li @click="salesAll" :class="{cur:saleShow}"><a id="sales" href="javascript:void(0)">产品销售</a></li>
 				<li @click="operationFnc" :class="{cur:operationShow}"><a href="javascript:void(0)">会员操作</a></li>
 				<li :class="{cur:returnShow}"><a href="javascript:void(0)">会员返还</a></li>
-				<li :class="{cur:returnShow}"><a href="javascript:void(0)">退货处理</a></li>
+				<li :class="{cur:returnShow}"><a href="javascript:void(0)">订单查询</a></li>
 				<li :class="{cur:cardLossShow}"><a href="javascript:void(0)">会员卡挂失</a></li>
+				<li><a href="other.html">其他业务</a></li>
 				<li @click="membershipReading" :class="{cur:cardLossShow}"><a href="javascript:void(0)">读卡</a></li>
 			</ul>
 			<!--右边显示内容-->

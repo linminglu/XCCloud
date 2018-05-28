@@ -4,10 +4,14 @@ using DeviceUtility.Utility.MemberCard;
 using DeviceUtility.Utility.Print;
 using ICSharpCode.SharpZipLib.Zip;
 using PalletService.Business.Device;
+using PalletService.Business.Dog;
 using PalletService.Business.SysConfig;
+using PalletService.Business.WorkStation;
 using PalletService.Common;
 using PalletService.DeviceUtility.Common;
+using PalletService.Model;
 using PalletService.Model.Device;
+using PalletService.Model.WorkStation;
 using PalletService.Utility.Dog;
 using PalletService.Utility.MemberCard;
 using PalletService.Utility.PeopleCard;
@@ -46,6 +50,7 @@ namespace PalletService
             this.SysConfigInit();
             this.ContextMenuInit();
             this.UpgradeInit();
+            this.RegisterWorkStation();
         }
 
         private void UpgradeInit()
@@ -638,6 +643,38 @@ namespace PalletService
             }
 
         #endregion 
+
+        private void RegisterWorkStation()
+        {
+
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            string token = string.Empty;
+            WorkStationRegisterModel model = new WorkStationRegisterModel();
+            model.MerchId = Program.MerchId;
+            model.StoreId = Program.StoreID;
+
+            object result_data = new object();
+            if (WorkStationBusiness.Register(model, ref result_data,out token))
+            {
+
+            }
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            string errMsg = string.Empty;
+            string token = string.Empty;
+            DogMD5RequestModel model = new DogMD5RequestModel();
+            model.MerchID = "20180521";
+            model.StoreID = "100025420106001";
+            if (DogBusiness.GetMD5Token(model,out token, out errMsg))
+            { 
+                
+            }
+        }
 
     }
 }

@@ -379,6 +379,15 @@
 
         }
 
+        function do_getMd5TokenByRegWorkStation() {
+            $("#dogId").val();
+            $("#workStation").val();
+            var parasObj = { "sysId": "0", "versionNo": "0.0.0.1", "dogId": "99999999", "workStation": "lijunjie" };
+            var url = "/XCCloud/XCCloudMD5Key?action=getMd5Token";
+            var parasJson = JSON.stringify(parasObj);
+            common(url, parasJson);
+        }
+
     </script>
         
 </head>
@@ -492,7 +501,9 @@
     <div title="checkCanRegister" style="font-size:14px;color:#F00;border:1px solid #ccc;">
         
     </div>
-
+    <div title="WorkStation" style="font-size:14px;color:#F00;border:1px solid #ccc;">
+        <input id="WorkStation_11111" type="button" value="do_getMd5TokenByRegWorkStation(注册会员)" onclick="do_getMd5TokenByRegWorkStation()" />
+    </div>
 
 
    <br />

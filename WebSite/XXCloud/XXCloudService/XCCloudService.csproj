@@ -399,6 +399,7 @@
     <Content Include="Api\XCCloud\RuleOverlying.ashx" />
     <Content Include="Api\XCCloud\ProjectTicket.ashx" />
     <Content Include="Api\XCCloud\GameEncourage.ashx" />
+    <Content Include="Api\XCCloud\XCCloudMD5Key.ashx" />
     <None Include="Properties\PublishProfiles\111.pubxml" />
     <None Include="Properties\PublishProfiles\qqq.pubxml" />
     <None Include="Properties\PublishProfiles\rrr.pubxml" />
@@ -1269,6 +1270,9 @@
     </Compile>
     <Compile Include="Api\XCCloud\Workstation.ashx.cs">
       <DependentUpon>Workstation.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="Api\XCCloud\XCCloudMD5Key.ashx.cs">
+      <DependentUpon>XCCloudMD5Key.ashx</DependentUpon>
     </Compile>
     <Compile Include="Api\XCGameMana\Account.ashx.cs">
       <DependentUpon>Account.ashx</DependentUpon>

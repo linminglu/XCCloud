@@ -3089,7 +3089,7 @@ namespace XXCloudService.Api.XCCloud
                                 INNER JOIN Base_UserInfo u ON a.UserID = u.UserID
                                 LEFT JOIN Dict_System d ON c.GoodType = d.ID
                                 WHERE
-                                	c.AllowStorage = 1 AND c.Status = 1 AND a.InventoryType = 0 AND a.InventoryIndex = " + depotId;
+                                	c.AllowStorage = 1 AND c.Status = 1 AND ISNULL(a.AuthorID,'')='' AND a.InventoryType = 0 AND a.InventoryIndex = " + depotId;
                 sql += " AND a.MerchID='" + merchId + "'";
                 if (!storeId.IsNull())
                     sql += " AND a.StoreID='" + storeId + "'";
