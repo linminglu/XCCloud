@@ -14,6 +14,7 @@ using XCCloudService.Common.Extensions;
 using System.Transactions;
 using System.Data.Entity.Validation;
 using XXCloudService.Api.XCCloud.Common;
+using XCCloudService.Model.XCCloud;
 
 namespace XXCloudService.Api.XCCloud
 {
@@ -23,6 +24,44 @@ namespace XXCloudService.Api.XCCloud
     /// </summary>
     public class Workstation : ApiBase
     {
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object AddWorkStation(Dictionary<string, object> dicParas)
+        {
+            string dogId = dicParas.Get("dogId").ToString();
+            string workStation = dicParas.Get("workStation").ToString();
+
+            XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+            string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+            string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+
+            IBase_StoreDogListService storeDogService = BLLContainer.Resolve<IBase_StoreDogListService>();
+            var storeDogModel = storeDogService.GetModels(p => p.DogID.Equals(dogId)).ToList<Base_StoreDogList>()[0];
+            if (storeDogModel == null)
+            {
+                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, "加密狗不存在");
+            }
+
+            IData_WorkstationService workstationService = BLLContainer.Resolve<IData_WorkstationService>();
+            var wsCount = workstationService.GetModels(p => p.WorkStation.Equals(workStation)).Count();
+            if (wsCount > 0)
+            {
+                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.T, "");
+            }
+            else
+            {
+                Data_Workstation wsModel = new Data_Workstation();
+                wsModel.MerchID = storeDogModel.MerchID;
+                wsModel.StoreID = storeDogModel.StoreID;
+                wsModel.WorkStation = workStation;
+                wsModel.DepotID = 0;
+                wsModel.MacAddress = workStation;
+                wsModel.DiskID = workStation;
+                wsModel.State = 0;
+                workstationService.AddModel(wsModel);
+                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.T, "");
+            }   
+        }
+
 
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object QueryWorkstation(Dictionary<string, object> dicParas)

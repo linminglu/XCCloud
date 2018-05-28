@@ -99,18 +99,7 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         /// 允许的操作
         /// </summary>
         public IEnumerable<int> PermittedTriggers { get; set; }
-    }
-
-    public class Data_GoodsStockList
-    {
-        public int? GoodID { get; set; }
-        public string Barcode { get; set; }
-        public string GoodName { get; set; }
-        public string GoodTypeStr { get; set; }
-        public int? RemainCount { get; set; }
-        public int? AvailableCount { get; set; }
-        public decimal? InitialAvgValue { get; set; }
-    }
+    }    
 
     public class Data_GoodRequest_ListList
     {

@@ -746,6 +746,16 @@
         </div>
     </form>
 </div>
+
+<!--卡头信息-->
+<div id="gameHeadModel" style="padding: 15px;display: none">
+    <table class="layui-hide" id="gameHeadTable" lay-filter="gameHeadTable"></table>
+</div>
+ <!--会员扫码优惠-->
+ <div id="memberCodeModel" style="padding: 15px;display: none">
+     <div style="text-align:right; padding-right:50px;"><button type="button" class="layui-btn" id="saveMemCode">确定</button></div>
+     <table class="layui-hide" id="memberCode" lay-filter="memberCode"></table>
+ </div>
 </body>
 <script src="js/jquery-1.8.3-min.js"></script>
 <script src="layui/layui.js"></script>
@@ -1253,9 +1263,9 @@
       $('.toHighOpen').click(function () {
           xc.openHigh(layer)
       });
-   $('#highSaveBtn').click(function () {
-       saveHigh(form,layer);
-   });
+       $('#highSaveBtn').click(function () {
+           saveHigh(form,layer);
+       });
    $('#addNew').click(function (){
        eAreaID='';ePushBalanceIndex1='';eGameType='';
            ePushLevel=0;LotteryModeLow=0;eOnlyExitLottery=0;
@@ -1280,8 +1290,6 @@
           let tr = obj.tr; //获得当前行 tr 的DOM对象
           id=data.ID;
           if(layEvent === 'detail'){ //查看
-              // xc.getGameInfoByid(data.ID,token,form,layer);
-              // $('.saveBox').css('display','none');
               let _obj={'gameId':data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
               let parasJson = JSON.stringify(_obj);
               $.ajax({
@@ -1338,8 +1346,271 @@
                   })
 
               });
+          }else if(layEvent==='GameHead'){
+              let _obj={'gameId':data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+              let url='/XCCloud/DeviceInfo?action=QueryDeviceInfo';
+              let parasJson = JSON.stringify(_obj);
+              $.ajax({
+                  type: "post",
+                  url: url,
+                  contentType: "application/json; charset=utf-8",
+                  data: { parasJson: parasJson },
+                  success: function (data) {
+                      data=JSON.parse(data);
+                      if(data.result_code==1){
+                     let  arr=data.result_data;
+                            table.render({
+                            elem: '#gameHeadTable'
+                            , height:'250px'
+                            , size:"sm"
+                            , data: arr
+                            , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+                            , cols: [[
+                                 {field:'ProjectName', title:'项目名称', align: 'center',width:200}
+                                ,{field:'FoodTypeStr',title: '类别', align: 'center',width:205} //width 支持：数字、百分比和不填写。
+                                ,{field:'ContainCount', title: '数量', align: 'center',width:100}
+                                ,{field:'Days', title: '有效期限', align: 'center'}
+                                ,{field:'WeightValue', title: '权重值', align: 'center'}
+                                ,{fixed: 'right',title:'操作', width:140, align:'center', toolbar: '#barDemo1'}]]
+                            , page: {page: true, limits: [10, 15, 20, 30, 50, 100]}
+                            , limit: 10
+                        });
+                        layer.open({title:'卡头信息',
+                        type:1,
+                        area:'1000px',
+                        content:$('#gameHeadModel')})
+                      }else {layer.msg(data.result_msg||data.return_msg)}
+                  }
+              })
+          }else if(layEvent==='memberCode'){//会员扫码优惠
+              let _obj={'gameId':data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+              let url='/XCCloud/GameInfo?action=GetGameAppMemberRule';
+              let parasJson = JSON.stringify(_obj);
+              $.ajax({
+                  type: "post",
+                  url: url,
+                  contentType: "application/json; charset=utf-8",
+                  data: { parasJson: parasJson },
+                  success: function (data) {
+                      data=JSON.parse(data);
+                      if(data.result_code==1){
+                          let  arr=data.result_data;
+                          table.render({
+                              elem: '#memberCode'
+                              , height:'350px'
+                              , size:"sm"
+                              , data: arr
+                              , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+                              , cols: [[
+                                  {field:'ID', title:'项目名称', align: 'center',width:200}
+                                  ,{field:'GameID',title: '类别', align: 'center',width:205} //width 支持：数字、百分比和不填写。
+                                  ,{field:'MemberLevelID', title: '数量', align: 'center',width:100}
+                                  ,{field:'PushBalanceIndex1', title: '投币种1', align: 'center'}
+                                  ,{field:'PushCoin1', title: '投币数量1', align: 'center',width:100}
+                                  ,{field:'PushBalanceIndex2', title: '投币种2', align: 'center'}
+                                  ,{field:'PushCoin2', title: '投币数量2', align: 'center',width:100}
+                                  ,{field:'PlayCount', title: '启动局属', align: 'center'}
+                                  ,{fixed: 'right',title:'操作', width:140, align:'center', toolbar: '#barDemo1'}]]
+                              , page: {page: true, limits: [10, 15, 20, 30, 50, 100]}
+                              , limit: 10
+                          });
+                          layer.open({title:'会员扫码优惠',
+                              type:1,
+                              area:'1000px',
+                              content:$('#memberCodeModel')})
+                      }else {layer.msg(data.result_msg||data.return_msg)}
+                  }
+              })
           }
-      })
+      });
+      table.on('tool(gameHeadTable)',function (obj) {
+          var data = obj.data; //获得当前行数据
+          _id=data.ID;
+          var layEvent = obj.event;
+          if(layEvent === 'bindMachine'){ //机台绑定
+              xc.getGameInfoDic(token,layer,form,'gameIndexId');
+              xc.getRouteDevice(token,layer,form,'bindDeviceId');
+              _state=1;
+              $('#siteName').html('');
+              layer.open({
+                  title:'绑定游戏机和路由器',
+                  type:1,
+                  area:'400px',
+                  content:$('#deviceBindOpen')
+              });
+          } else if(layEvent === 'unBindMachine'){ //机台解绑
+              layer.confirm('确定解绑该设备吗？', function(index){
+                  Id=data.ID;
+                  let _obj={'id':data.ID,'state':0,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                  let parseJson = JSON.stringify(_obj);
+                  $.ajax({
+                      type:'post',
+                      url:'/XCCloud/DeviceInfo?action=BindDeviceInfo',
+                      contentType: "application/json; charset=utf-8",
+                      data:{parasJson: parseJson},
+                      success: function (data) {
+                          data = JSON.parse(data);
+                          if (data.result_code == 1) {
+                              location.reload();
+                          } else {
+                              layer.msg(data.result_msg);
+                          }
+                      }
+                  })
+              });
+          } else if(layEvent === 'lock'){ //锁定
+              layer.confirm('确定锁定该设备吗？', function(index){
+                  Id=data.ID;
+                  let _obj={'id':data.ID,'state':1,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                  let parseJson = JSON.stringify(_obj);
+                  $.ajax({
+                      type:'post',
+                      url:'/XCCloud/DeviceInfo?action=LockDeviceInfo',
+                      contentType: "application/json; charset=utf-8",
+                      data:{parasJson: parseJson},
+                      success: function (data) {
+                          data = JSON.parse(data);
+                          if (data.result_code == 1) {
+                              location.reload();
+                          } else {
+                              layer.msg(data.result_msg);
+                          }
+                      }
+                  })
+              });
+          }else if(layEvent === 'unLock'){ //解锁
+              layer.confirm('确定解锁该设备吗？', function(index){
+                  Id=data.ID;
+                  let _obj={'id':data.ID,'state':0,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                  let parseJson = JSON.stringify(_obj);
+                  $.ajax({
+                      type:'post',
+                      url:'/XCCloud/DeviceInfo?action=LockDeviceInfo',
+                      contentType: "application/json; charset=utf-8",
+                      data:{parasJson: parseJson},
+                      success: function (data) {
+                          data = JSON.parse(data);
+                          if (data.result_code == 1) {
+                              location.reload();
+                          } else {
+                              layer.msg(data.result_msg);
+                          }
+                      }
+                  })
+              });
+          }else if(layEvent === 'code'){ //查看二维码
+              Id=data.ID;
+              let _obj={'id':data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+              let parseJson = JSON.stringify(_obj);
+              $.ajax({
+                  type:'post',
+                  url:'/XCCloud/DeviceInfo?action=GetDeviceQr',
+                  contentType: "application/json; charset=utf-8",
+                  data:{parasJson: parseJson},
+                  success: function (data) {
+                      data = JSON.parse(data);
+                      if (data.result_code == 1) {
+                          qrcode.makeCode( data.result_data);
+                          layer.open({
+                              title:'二维码',
+                              type:1,
+                              area:'260px',
+                              anim: 5, //0-6的选择，指定弹出图片动画类型，默认随机（请注意，3.0之前的版本用shift参数）
+                              content:$('#codeBox')
+                          });
+                      } else {
+                          layer.msg(data.result_msg);
+                      }
+                  }
+              })
+          }else if(layEvent==='bindTicket'){
+              bindType=0;
+
+              let _obj={'id':data.ID,'joinType':0,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+              let parseJson = JSON.stringify(_obj);
+              $.ajax({
+                  type:'post',
+                  url:'/XCCloud/DeviceInfo?action=GetBindProject',
+                  contentType: "application/json; charset=utf-8",
+                  data:{parasJson: parseJson},
+                  success: function (data) {
+                      data = JSON.parse(data);
+                      if (data.result_code == 1) {
+                          arrBindTable=data.result_data,
+                              table.render({
+                                  elem:'#bindTable',
+                                  data:arrBindTable,
+                                  size:'sm',
+                                  cols:[[
+                                      {field:'ProjectID', title:'门票ID', align: 'center', sort: true,width:120}
+                                      ,{field:'ProjectName',title: '门票名称', align: 'center',width:120} //width 支持：数字、百分比和不填写。
+                                      ,{field:'SignType', title: '验证类型', align: 'center',width:120,templet:'#SignType'}
+                                      ,{field:'LockMember', title: '入场锁定', align: 'center',width:120,templet:'#LockMember'}
+                                      ,{fixed: 'right', title: '操作', width:140, align:'center', toolbar: '#barDemo1'}
+                                  ]]
+                                  , page: {page: true, limits: [10, 15, 20]}
+                                  , limit: 5
+                              });
+                          layer.open({
+                              title:'门票绑定',
+                              type:1,
+                              area:'650px',
+                              anim: 5, //0-6的选择，指定弹出图片动画类型，默认随机（请注意，3.0之前的版本用shift参数）
+                              content:$('#bindTableBox')
+                          });
+                      } else {
+                          layer.msg(data.result_msg);
+                      }
+                  }
+              });
+          }else if(layEvent==='clockCook'){
+              let _obj={'id':data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+              let parseJson = JSON.stringify(_obj);
+              $.ajax({
+                  type:'post',
+                  url:'/XCCloud/DeviceInfo?action=GetGameAlarm',
+                  contentType: "application/json; charset=utf-8",
+                  data:{parasJson: parseJson},
+                  success: function (data) {
+                      data = JSON.parse(data);
+                      if (data.result_code == 1) {
+                          let arr=data.result_data;
+                          if(arr.length>0){
+                              table.render({
+                                  elem:'#clockNoteTable',
+                                  data:arr,
+                                  size:'sm',
+                                  cols:[[
+                                      {field:'GameName', title:'游戏机名名称', align: 'center', sort: true,width:120}
+                                      ,{field:'SiteName',title: 'P位编号', align: 'center',width:120} //width 支持：数字、百分比和不填写。
+                                      ,{field:'Segment', title: '网络段号', align: 'center',width:120, sort: true}
+                                      ,{field:'Address', title: '机头地址', align: 'center',width:120}
+                                      ,{field:'AlertType', title: '报警类别', align: 'center'}
+                                      ,{field:'HappenTime', title: '触发时间', align: 'center',width:120, sort: true}
+                                      ,{field:'ICCardID', title: '关联卡号', align: 'center',width:120}
+                                      ,{field:'LockGameStr', title: '锁机头', align: 'center',width:120}
+                                      ,{field:'LockMemberStr', title: '锁会员', align: 'center',width:120}
+                                      ,{field:'EndTime', title: '处理时间', align: 'center',width:120}
+                                      ,{field:'StateStr', title: '状态', align: 'center',width:120}
+                                  ]]
+                                  , page: {page: true, limits: [10, 15, 20]}
+                                  , limit: 10
+                              });
+                              layer.open({
+                                  title:'报警日志',
+                                  type:1,
+                                  area:'1000px',
+                                  content:$('#clockNote')
+                              });
+                          }else {layer.msg('当前暂无日志信息')}
+
+                      } else {
+                          layer.msg(data.result_msg);
+                      }
+                  }
+              });
+          }
+      });
   });
 
   xcActionSystem.prototype.openEasy=(layer)=>{
@@ -1558,8 +1829,27 @@
 </script>
 <script type="text/html" id="barDemo">
     <a class="layui-btn layui-btn-xs" lay-event="GameHead">卡头信息</a>
-    <a class="layui-btn layui-btn-xs" lay-event="detail">扫码优惠规则</a>
+    <a class="layui-btn layui-btn-xs" lay-event="detail">散客扫码优惠规则</a>
+    <a class="layui-btn layui-btn-xs" lay-event="memberCode">会员扫码优惠规则</a>
     <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+<script type="text/html" id="barDemo1">
+    {{# if(d.DeviceType==8){ }}
+    <a class="layui-btn layui-btn-xs" lay-event="code">二维码</a>
+    {{# }else{ }}
+    {{# if(d.DeviceStatus==2){ }}
+    <a class="layui-btn layui-btn-xs" lay-event="unLock">解锁</a>
+    {{# }else if(d.DeviceStatus==1){ }}
+    <a class="layui-btn layui-btn-xs" lay-event="lock">锁定</a>
+    {{#  } }}
+    {{# if(d.GameName==''){ }}
+    <a class="layui-btn layui-btn-xs" lay-event="bindMachine">机台绑定</a>
+    {{# }else{ }}
+    <a class="layui-btn layui-btn-xs" lay-event="unBindMachine">机台解绑</a>
+    {{#  } }}
+    <a class="layui-btn layui-btn-xs" lay-event="clockCook">报警日志</a>
+    <a class="layui-btn layui-btn-xs" lay-event="code">二维码</a>
+    {{#  } }}
 </script>
 </html>

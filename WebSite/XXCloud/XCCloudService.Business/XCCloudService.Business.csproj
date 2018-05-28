@@ -101,6 +101,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="XCCloud\WorkFlowBusiness.cs" />
+    <Compile Include="XCCloud\XCCloudMD5KeyBusiness.cs" />
     <Compile Include="XCCloud\XCCloudUnionIDBusiness.cs" />
     <Compile Include="XCGameManaLog\UDPDBBusiness.cs" />
     <Compile Include="XCGameMana\DataOrderQueryBusiness.cs" />

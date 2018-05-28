@@ -2454,9 +2454,8 @@ namespace XCCloudService.Common
          }
 
         #region "导入导出"
-        public static string ExportToExcel(DataTable dt)
+        public static string ExportToExcel(DataTable dt, string fileName = "Excel")
         {
-            string fileName = "Excel";
             string sourceFilePath = HttpContext.Current.Server.MapPath("/" + fileName + ".xlsx");
             string destFilePath = HttpContext.Current.Server.MapPath("/" + fileName + DateTime.Now.ToString("yyyy-MM-dd HHmmss") + ".xlsx");
             //复制文件

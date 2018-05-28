@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Entity.Validation;
 using System.Data.SqlClient;
 using System.Linq;
@@ -84,16 +85,7 @@ namespace XXCloudService.Api.XCCloud
                                 	Base_GoodsInfo a
                                 LEFT JOIN Base_StoreInfo b ON a.StoreID = b.StoreID
                                 LEFT JOIN Base_MerchantInfo m ON a.MerchID = m.MerchID
-                                LEFT JOIN (
-                                	SELECT
-                                		b.*
-                                	FROM
-                                		Dict_System a
-                                	INNER JOIN Dict_System b ON a.ID = b.PID
-                                	WHERE
-                                		a.DictKey = '商品类别'
-                                	AND a.PID = 0 AND b.MerchID='" + merchId + "'" +
-                                @") c ON a.GoodType = c.ID
+                                LEFT JOIN Dict_System c ON a.GoodType = c.ID
                                 WHERE
                                 	a.Status = 1";
                 sql += " AND a.MerchID='" + merchId + "'";
@@ -595,73 +587,7 @@ namespace XXCloudService.Api.XCCloud
             {
                 return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
             }
-        }
-
-        /// <summary>
-        /// 查询商品库存
-        /// </summary>
-        /// <param name="dicParas"></param>
-        /// <returns></returns>
-        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
-        public object QueryGoodsStock(Dictionary<string, object> dicParas)
-        {
-            try
-            {
-                string errMsg = string.Empty;
-                if (!dicParas.Get("inOrOutDepotId").Validint("申请或发货仓库ID", out errMsg))
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-
-                var inOrOutDepotId = dicParas.Get("inOrOutDepotId").Toint();
-                var notGoodIds = dicParas.Get("notGoodIds");
-                var goodId = dicParas.Get("goodId").Toint();
-                var goodNameOrBarCode = dicParas.Get("goodNameOrBarCode");
-
-                #region Sql语句
-                string sql = @"SELECT
-                                    /*商品ID*/
-                                	a.GoodID,    
-                                    /*商品条码*/
-                                	c.Barcode,                               
-                                    /*商品名称*/
-                                	c.GoodName,
-                                    /*商品类别*/
-                                	d.DictKey AS GoodTypeStr,
-                                	/*库存*/
-                                	ISNULL(b.RemainCount,0) AS RemainCount,
-                                    /*库存成本*/
-                                	ISNULL(b.InitialAvgValue,0) AS InitialAvgValue,
-                                    /*可调拨数*/
-                                    (ISNULL(b.RemainCount,0) - ISNULL(b.MinValue,0)) AS AvailableCount
-                                FROM
-                                	Data_GoodsStock a                                
-                                INNER JOIN (
-                                	SELECT
-                                		*, ROW_NUMBER() over(partition by DepotID,GoodID order by InitialTime desc) as RowNum
-                                	FROM
-                                		Data_GoodsStock
-                                ) b ON a.ID = b.ID and b.RowNum <= 1 
-                                INNER JOIN Base_GoodsInfo c ON b.GoodID = c.ID
-                                INNER JOIN Dict_System d ON c.GoodType = d.ID 
-                                WHERE c.AllowStorage = 1 AND c.Status = 1 AND a.DepotID = " + inOrOutDepotId;
-                if (!goodId.IsNull())
-                    sql += sql + " AND a.GoodID=" + goodId;
-                if(!goodNameOrBarCode.IsNull())
-                    sql += sql + " AND (c.GoodName like '%" + goodNameOrBarCode + "%' OR c.Barcode like '%" + goodNameOrBarCode + "%')";
-                #endregion
-
-                var list = Data_GoodsStockService.I.SqlQuery<Data_GoodsStockList>(sql).ToList();
-                if (!notGoodIds.IsNull())
-                {
-                    list = list.Where(p => !notGoodIds.Contains(p.GoodID + "")).ToList();
-                }
-                    
-                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, list);
-            }
-            catch (Exception e)
-            {
-                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
-            }
-        }
+        }        
 
         /// <summary>
         /// 查询调拨详情
@@ -740,16 +666,7 @@ namespace XXCloudService.Api.XCCloud
                                 + (requstType == (int)RequestType.MerchSend ? "OutDepotID" : "InDeportID")
                                 + @" = b.DepotID AND a.GoodID = b.GoodID and b.RowNum <= 1
                                 INNER JOIN Base_GoodsInfo c ON b.GoodID = c.ID 
-                                INNER JOIN (
-                                	SELECT
-                                		b.*
-                                	FROM
-                                		Dict_System a
-                                	INNER JOIN Dict_System b ON a.ID = b.PID
-                                	WHERE
-                                		a.DictKey = '商品类别'
-                                	AND a.PID = 0 AND b.MerchID='" + merchId + "'" +
-                                @") d ON CONVERT c.GoodType = d.ID
+                                INNER JOIN Dict_System d ON c.GoodType = d.ID
                                 LEFT JOIN (
                                 	SELECT
                                 		b.*
@@ -879,16 +796,7 @@ namespace XXCloudService.Api.XCCloud
                                     GROUP BY RequestID, GoodID, RequestCount
                                 ) a                                
                                 INNER JOIN Base_GoodsInfo b ON a.GoodID = b.ID 
-                                INNER JOIN (
-                                	SELECT
-                                		b.*
-                                	FROM
-                                		Dict_System a
-                                	INNER JOIN Dict_System b ON a.ID = b.PID
-                                	WHERE
-                                		a.DictKey = '商品类别'
-                                	AND a.PID = 0 AND b.MerchID = '" + merchId + "'" +
-                                @") c ON b.GoodType = c.ID                                
+                                INNER JOIN Dict_System c ON b.GoodType = c.ID                              
                                 WHERE b.Status = 1
                             ";
                 sql += " AND a.RequestID=" + requestId;
@@ -1008,16 +916,7 @@ namespace XXCloudService.Api.XCCloud
                                     WHERE StorageCount = 0 /*未入库记录*/                                
                                 ) a                                
                                 INNER JOIN Base_GoodsInfo b ON a.GoodID = b.ID
-                                INNER JOIN (
-                                	SELECT
-                                		b.*
-                                	FROM
-                                		Dict_System a
-                                	INNER JOIN Dict_System b ON a.ID = b.PID
-                                	WHERE
-                                		a.DictKey = '商品类别'
-                                	AND a.PID = 0 AND b.MerchID = '" + merchId + "'" +
-                                @") c ON b.GoodType = c.ID                                
+                                INNER JOIN Dict_System c ON b.GoodType = c.ID                              
                                 WHERE b.Status = 1
                                 ORDER BY a.SendTime
                             ";
@@ -2889,6 +2788,241 @@ namespace XXCloudService.Api.XCCloud
             }
         }
 
+        #endregion
+
+        #region 商品库存管理
+
+        /// <summary>
+        /// 商品库存列表
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object QueryGoodsStock(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+
+                string errMsg = string.Empty;
+                if (!dicParas.Get("depotId").Validintnozero("库存ID", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                var depotId = dicParas.Get("depotId").Toint();                
+                var notGoodIds = dicParas.Get("notGoodIds");
+                var goodId = dicParas.Get("goodId").Toint();
+                var goodNameOrBarCode = dicParas.Get("goodNameOrBarCode");
+                object[] conditions = dicParas.ContainsKey("conditions") ? (object[])dicParas["conditions"] : null;
+
+                SqlParameter[] parameters = new SqlParameter[0];
+                string sqlWhere = string.Empty;
+
+                if (conditions != null && conditions.Length > 0)
+                    if (!QueryBLL.GenDynamicSql(conditions, "a.", ref sqlWhere, ref parameters, out errMsg))
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+
+                #region Sql语句
+                string sql = @"SELECT
+                                	a.ID,
+                                	/*商品条码*/
+                                	c.Barcode,
+                                	/*商品名称*/
+                                	c.GoodName,                                	
+                                	/*商品类别*/
+                                	c.GoodType AS GoodType,
+                                	/*商品类别[字符串]*/
+                                	d.DictKey AS GoodTypeStr,
+                                	/*门店ID*/
+                                	a.StoreID,
+                                	/*门店名称*/
+                                	e.StoreName,                                	
+                                    a.MinValue,
+                                    a.MaxValue,
+                                    /*可调拨数*/
+                                    (ISNULL(a.RemainCount,0) - ISNULL(a.MinValue,0)) AS AvailableCount,
+                                    (case when ISNULL(a.InitialTime,'')='' then '' else convert(varchar,a.InitialTime,20) end) AS InitialTime,
+                                    a.InitialValue,
+                                    a.InitialAvgValue,
+                                    a.RemainCount,
+                                    a.Note
+                                FROM
+                                    Data_GoodsStock a                                
+                                INNER JOIN (
+                                	SELECT
+                                		*, ROW_NUMBER() over(partition by DepotID,GoodID order by InitialTime desc) as RowNum
+                                	FROM
+                                		Data_GoodsStock
+                                ) b ON a.ID = b.ID and b.RowNum <= 1 
+                                INNER JOIN Base_GoodsInfo c ON a.GoodID = c.ID                                
+                                LEFT JOIN Dict_System d ON c.GoodType = d.ID
+                                LEFT JOIN Base_StoreInfo e ON a.StoreID = e.StoreID
+                                WHERE
+                                	c.AllowStorage = 1 AND c.Status = 1 AND a.DepotID = " + depotId;
+                sql += " AND a.MerchID='" + merchId + "'";
+                if (!storeId.IsNull())
+                    sql += " AND a.StoreID='" + storeId + "'";
+                if (!goodId.IsNull())
+                    sql += sql + " AND a.GoodID=" + goodId;
+                if (!goodNameOrBarCode.IsNull())
+                    sql += sql + " AND (c.GoodName like '%" + goodNameOrBarCode + "%' OR c.Barcode like '%" + goodNameOrBarCode + "%')";
+                #endregion
+
+                var list = Data_GoodsStockService.I.SqlQuery<Data_GoodsStockList>(sql, parameters).ToList();
+                if (!notGoodIds.IsNull())
+                {
+                    list = list.Where(p => !notGoodIds.Contains(p.GoodID + "")).ToList();
+                }
+
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, list);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object ExportGoodsUnderWarning(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+
+                string errMsg = string.Empty;
+                if (!dicParas.Get("depotId").Validintnozero("库存ID", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                var depotId = dicParas.Get("depotId").Toint();
+                var notGoodIds = dicParas.Get("notGoodIds");
+                var goodId = dicParas.Get("goodId").Toint();
+                var goodNameOrBarCode = dicParas.Get("goodNameOrBarCode");
+                object[] conditions = dicParas.ContainsKey("conditions") ? (object[])dicParas["conditions"] : null;
+
+                SqlParameter[] parameters = new SqlParameter[0];
+                string sqlWhere = string.Empty;
+
+                if (conditions != null && conditions.Length > 0)
+                    if (!QueryBLL.GenDynamicSql(conditions, "a.", ref sqlWhere, ref parameters, out errMsg))
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+
+                #region Sql语句
+                string sql = @"SELECT
+                                	a.ID,
+                                	/*商品条码*/
+                                	c.Barcode,
+                                	/*商品名称*/
+                                	c.GoodName,                                	
+                                	/*商品类别*/
+                                	c.GoodType AS GoodType,
+                                	/*商品类别[字符串]*/
+                                	d.DictKey AS GoodTypeStr,
+                                	/*门店ID*/
+                                	a.StoreID,
+                                	/*门店名称*/
+                                	e.StoreName,                                	
+                                    a.MinValue,
+                                    a.MaxValue,
+                                    /*可调拨数*/
+                                    (ISNULL(a.RemainCount,0) - ISNULL(a.MinValue,0)) AS AvailableCount,
+                                    (case when ISNULL(a.InitialTime,'')='' then '' else convert(varchar,a.InitialTime,20) end) AS InitialTime,
+                                    a.InitialValue,
+                                    a.InitialAvgValue,
+                                    a.RemainCount,
+                                    a.Note
+                                FROM
+                                    Data_GoodsStock a                                
+                                INNER JOIN (
+                                	SELECT
+                                		*, ROW_NUMBER() over(partition by DepotID,GoodID order by InitialTime desc) as RowNum
+                                	FROM
+                                		Data_GoodsStock
+                                ) b ON a.ID = b.ID and b.RowNum <= 1 
+                                INNER JOIN Base_GoodsInfo c ON a.GoodID = c.ID                                
+                                LEFT JOIN Dict_System d ON c.GoodType = d.ID
+                                LEFT JOIN Base_StoreInfo e ON a.StoreID = e.StoreID
+                                WHERE
+                                	c.AllowStorage = 1 AND c.Status = 1 AND a.DepotID = " + depotId;
+                sql += " AND a.MerchID='" + merchId + "'";
+                if (!storeId.IsNull())
+                    sql += " AND a.StoreID='" + storeId + "'";
+                if (!goodId.IsNull())
+                    sql += sql + " AND a.GoodID=" + goodId;
+                if (!goodNameOrBarCode.IsNull())
+                    sql += sql + " AND (c.GoodName like '%" + goodNameOrBarCode + "%' OR c.Barcode like '%" + goodNameOrBarCode + "%')";
+                #endregion
+
+                var list = Data_GoodsStockService.I.SqlQuery<Data_GoodsStockList>(sql, parameters).Where(w => w.AvailableCount <= 0).ToList();
+                if (!notGoodIds.IsNull())
+                {
+                    list = list.Where(p => !notGoodIds.Contains(p.GoodID + "")).ToList();
+                }
+
+                DataTable dt = new DataTable();
+                dt.Columns.Add("序号");
+                dt.Columns.Add("商品条码");
+                dt.Columns.Add("商品类别");
+                dt.Columns.Add("商品名称");
+                dt.Columns.Add("添加来源");
+                dt.Columns.Add("库存下限");
+                dt.Columns.Add("库存上限");
+                dt.Columns.Add("期初时间");
+                dt.Columns.Add("期初库存");
+                dt.Columns.Add("期初平均成本（含税）");
+                dt.Columns.Add("期初库存金额（含税）");
+                dt.Columns.Add("当前库存");
+                dt.Columns.Add("当前库存金额（含税）");
+                foreach (var item in list)
+                {
+                    var dr = dt.NewRow();
+                    dr["序号"] = item.ID;
+                    dr["商品条码"] = item.Barcode;
+                    dr["商品类别"] = item.GoodTypeStr;
+                    dr["商品名称"] = item.GoodName;
+                    dr["添加来源"] = item.Source;
+                    dr["库存下限"] = item.MinValue + "";
+                    dr["库存上限"] = item.MaxValue + "";
+                    dr["期初时间"] = item.InitialTime;
+                    dr["期初库存"] = item.InitialValue + "";
+                    dr["期初平均成本（含税）"] = item.InitialAvgValue + "";
+                    dr["期初库存金额（含税）"] = item.InitialTotal + "";
+                    dr["当前库存"] = item.RemainCount + "";
+                    dr["当前库存金额（含税）"] = item.RemainTotal + "";
+                    dt.Rows.Add(dr);
+                }
+
+                string filePath = Utils.ExportToExcel(dt);
+                string guid = Guid.NewGuid().ToString();
+                CacheHelper.Insert(guid, filePath, 5 * 60, onRemoveCallback);
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, guid);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        /// <summary>
+        /// 过期文件移除
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <param name="reason"></param>
+        private void onRemoveCallback(string key, object value, System.Web.Caching.CacheItemRemovedReason reason)
+        {
+            if (value != null)
+            {
+                string filePath = value.ToString();
+                if (!Utils.DeleteFile(filePath))
+                    LogHelper.SaveLog("错误:过期文件删除失败，文件路径：" + filePath);
+            }
+        }
+     
         #endregion
 
         #region 商品库存盘点
