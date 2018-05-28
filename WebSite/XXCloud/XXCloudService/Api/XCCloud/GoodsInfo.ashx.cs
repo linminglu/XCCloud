@@ -54,7 +54,6 @@ namespace XXCloudService.Api.XCCloud
                     if (!QueryBLL.GenDynamicSql(conditions, "a.", ref sqlWhere, ref parameters, out errMsg))
                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-
                 #region Sql语句
                 string sql = @"SELECT
                                 	a.ID,
