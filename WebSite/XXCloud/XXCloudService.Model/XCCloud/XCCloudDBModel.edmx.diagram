@@ -160,7 +160,6 @@
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_Transfer" Width="1.5" PointX="38.75" PointY="28.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Store_CheckDate" Width="1.5" PointX="38.75" PointY="38.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_CouponUse" Width="1.5" PointX="21.375" PointY="39.75" />
-        <EntityTypeShape EntityType="XCCloudDBModel.Data_GoodStock_Record" Width="1.5" PointX="27.375" PointY="37.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_DiscountRule" Width="1.5" PointX="17.375" PointY="33.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Base_StoreDogList" Width="1.5" PointX="23.375" PointY="39.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_Card_Balance_Free" Width="1.5" PointX="5.375" PointY="40.75" />
@@ -171,6 +170,7 @@
         <EntityTypeShape EntityType="XCCloudDBModel.Base_DeviceInfo" Width="1.5" PointX="7.375" PointY="26.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_GameAPP_MemberRule" Width="1.5" PointX="0.75" PointY="6.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_GoodInventory" Width="1.5" PointX="0.75" PointY="41.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.Data_GoodStock_Record" Width="1.5" PointX="25.375" PointY="38.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

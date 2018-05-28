@@ -180,7 +180,6 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Flw_Transfer> Flw_Transfer { get; set; }
         public virtual DbSet<Store_CheckDate> Store_CheckDate { get; set; }
         public virtual DbSet<Flw_CouponUse> Flw_CouponUse { get; set; }
-        public virtual DbSet<Data_GoodStock_Record> Data_GoodStock_Record { get; set; }
         public virtual DbSet<Flw_DiscountRule> Flw_DiscountRule { get; set; }
         public virtual DbSet<Base_StoreDogList> Base_StoreDogList { get; set; }
         public virtual DbSet<Data_Card_Balance_Free> Data_Card_Balance_Free { get; set; }
@@ -191,5 +190,6 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Base_DeviceInfo> Base_DeviceInfo { get; set; }
         public virtual DbSet<Data_GameAPP_MemberRule> Data_GameAPP_MemberRule { get; set; }
         public virtual DbSet<Data_GoodInventory> Data_GoodInventory { get; set; }
+        public virtual DbSet<Data_GoodStock_Record> Data_GoodStock_Record { get; set; }
     }
 }

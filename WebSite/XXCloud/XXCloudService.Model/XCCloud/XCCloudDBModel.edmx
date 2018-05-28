@@ -1249,8 +1249,6 @@
           <Property Name="InitialAvgValue" Type="numeric" Precision="10" Scale="2" />
           <Property Name="Note" Type="varchar" MaxLength="200" />
         </EntityType>
-        <!--生成过程中发现错误:
-警告 6002: 表/视图“XCCloud.dbo.Data_GoodStock_Record”未定义主键。已推断出该键，并将定义创建为只读的表/视图。-->
         <EntityType Name="Data_GoodStock_Record">
           <Key>
             <PropertyRef Name="ID" />
@@ -2755,6 +2753,7 @@
           <EntitySet Name="Data_GoodRequest" EntityType="Self.Data_GoodRequest" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Data_GoodRequest_List" EntityType="Self.Data_GoodRequest_List" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Data_GoodsStock" EntityType="Self.Data_GoodsStock" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Data_GoodStock_Record" EntityType="Self.Data_GoodStock_Record" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Data_GoodStorage" EntityType="Self.Data_GoodStorage" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Data_GoodStorage_Detail" EntityType="Self.Data_GoodStorage_Detail" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Data_GroupArea" EntityType="Self.Data_GroupArea" Schema="dbo" store:Type="Tables" />
@@ -2908,23 +2907,6 @@
     [Data_GoodOutOrder_Detail].[Note] AS [Note], 
     [Data_GoodOutOrder_Detail].[Verifiction] AS [Verifiction]
     FROM [dbo].[Data_GoodOutOrder_Detail] AS [Data_GoodOutOrder_Detail]</DefiningQuery>
-          </EntitySet>
-          <EntitySet Name="Data_GoodStock_Record" EntityType="Self.Data_GoodStock_Record" store:Type="Tables" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [Data_GoodStock_Record].[ID] AS [ID], 
-    [Data_GoodStock_Record].[MerchID] AS [MerchID], 
-    [Data_GoodStock_Record].[StoreID] AS [StoreID], 
-    [Data_GoodStock_Record].[SourceType] AS [SourceType], 
-    [Data_GoodStock_Record].[SourceID] AS [SourceID], 
-    [Data_GoodStock_Record].[GoodID] AS [GoodID], 
-    [Data_GoodStock_Record].[DepotID] AS [DepotID], 
-    [Data_GoodStock_Record].[StockFlag] AS [StockFlag], 
-    [Data_GoodStock_Record].[StockCount] AS [StockCount], 
-    [Data_GoodStock_Record].[GoodCost] AS [GoodCost], 
-    [Data_GoodStock_Record].[CreateTime] AS [CreateTime], 
-    [Data_GoodStock_Record].[Note] AS [Note], 
-    [Data_GoodStock_Record].[Verifiction] AS [Verifiction]
-    FROM [dbo].[Data_GoodStock_Record] AS [Data_GoodStock_Record]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="Data_LotteryInventory" EntityType="Self.Data_LotteryInventory" store:Type="Tables" store:Schema="dbo">
             <DefiningQuery>SELECT 
@@ -3303,7 +3285,6 @@
           <EntitySet Name="Flw_Transfer" EntityType="XCCloudDBModel.Flw_Transfer" />
           <EntitySet Name="Store_CheckDate" EntityType="XCCloudDBModel.Store_CheckDate" />
           <EntitySet Name="Flw_CouponUse" EntityType="XCCloudDBModel.Flw_CouponUse" />
-          <EntitySet Name="Data_GoodStock_Record" EntityType="XCCloudDBModel.Data_GoodStock_Record" />
           <EntitySet Name="Flw_DiscountRule" EntityType="XCCloudDBModel.Flw_DiscountRule" />
           <EntitySet Name="Base_StoreDogList" EntityType="XCCloudDBModel.Base_StoreDogList" />
           <EntitySet Name="Data_Card_Balance_Free" EntityType="XCCloudDBModel.Data_Card_Balance_Free" />
@@ -3314,6 +3295,7 @@
           <EntitySet Name="Base_DeviceInfo" EntityType="XCCloudDBModel.Base_DeviceInfo" />
           <EntitySet Name="Data_GameAPP_MemberRule" EntityType="XCCloudDBModel.Data_GameAPP_MemberRule" />
           <EntitySet Name="Data_GoodInventory" EntityType="XCCloudDBModel.Data_GoodInventory" />
+          <EntitySet Name="Data_GoodStock_Record" EntityType="XCCloudDBModel.Data_GoodStock_Record" />
         </EntityContainer>
         <EntityType Name="Base_ChainRule">
           <Key>
@@ -5734,24 +5716,6 @@
           <Property Name="Coins" Type="Int32" />
           <Property Name="UseTime" Type="DateTime" Precision="3" />
         </EntityType>
-        <EntityType Name="Data_GoodStock_Record">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="SourceType" Type="Int32" />
-          <Property Name="SourceID" Type="Int32" />
-          <Property Name="GoodID" Type="Int32" />
-          <Property Name="DepotID" Type="Int32" />
-          <Property Name="StockFlag" Type="Int32" />
-          <Property Name="StockCount" Type="Int32" />
-          <Property Name="GoodCost" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="CreateTime" Type="DateTime" Precision="3" />
-          <Property Name="Note" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
-          <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
-        </EntityType>
         <EntityType Name="Flw_DiscountRule">
           <Key>
             <PropertyRef Name="ID" />
@@ -5953,6 +5917,24 @@
           <Property Name="InventoryTime" Type="DateTime" Precision="3" />
           <Property Name="AuthorID" Type="Int32" />
           <Property Name="AuthorTime" Type="DateTime" Precision="3" />
+          <Property Name="Note" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Data_GoodStock_Record">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="SourceType" Type="Int32" />
+          <Property Name="SourceID" Type="Int32" />
+          <Property Name="GoodID" Type="Int32" />
+          <Property Name="DepotID" Type="Int32" />
+          <Property Name="StockFlag" Type="Int32" />
+          <Property Name="StockCount" Type="Int32" />
+          <Property Name="GoodCost" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="CreateTime" Type="DateTime" Precision="3" />
           <Property Name="Note" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
           <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
         </EntityType>
@@ -8535,25 +8517,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Data_GoodStock_Record">
-            <EntityTypeMapping TypeName="XCCloudDBModel.Data_GoodStock_Record">
-              <MappingFragment StoreEntitySet="Data_GoodStock_Record">
-                <ScalarProperty Name="Verifiction" ColumnName="Verifiction" />
-                <ScalarProperty Name="Note" ColumnName="Note" />
-                <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
-                <ScalarProperty Name="GoodCost" ColumnName="GoodCost" />
-                <ScalarProperty Name="StockCount" ColumnName="StockCount" />
-                <ScalarProperty Name="StockFlag" ColumnName="StockFlag" />
-                <ScalarProperty Name="DepotID" ColumnName="DepotID" />
-                <ScalarProperty Name="GoodID" ColumnName="GoodID" />
-                <ScalarProperty Name="SourceID" ColumnName="SourceID" />
-                <ScalarProperty Name="SourceType" ColumnName="SourceType" />
-                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
-                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Flw_DiscountRule">
             <EntityTypeMapping TypeName="XCCloudDBModel.Flw_DiscountRule">
               <MappingFragment StoreEntitySet="Flw_DiscountRule">
@@ -8762,6 +8725,25 @@
                 <ScalarProperty Name="InventoryIndex" ColumnName="InventoryIndex" />
                 <ScalarProperty Name="InventoryType" ColumnName="InventoryType" />
                 <ScalarProperty Name="GoodID" ColumnName="GoodID" />
+                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
+                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Data_GoodStock_Record">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Data_GoodStock_Record">
+              <MappingFragment StoreEntitySet="Data_GoodStock_Record">
+                <ScalarProperty Name="Verifiction" ColumnName="Verifiction" />
+                <ScalarProperty Name="Note" ColumnName="Note" />
+                <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
+                <ScalarProperty Name="GoodCost" ColumnName="GoodCost" />
+                <ScalarProperty Name="StockCount" ColumnName="StockCount" />
+                <ScalarProperty Name="StockFlag" ColumnName="StockFlag" />
+                <ScalarProperty Name="DepotID" ColumnName="DepotID" />
+                <ScalarProperty Name="GoodID" ColumnName="GoodID" />
+                <ScalarProperty Name="SourceID" ColumnName="SourceID" />
+                <ScalarProperty Name="SourceType" ColumnName="SourceType" />
                 <ScalarProperty Name="StoreID" ColumnName="StoreID" />
                 <ScalarProperty Name="MerchID" ColumnName="MerchID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
