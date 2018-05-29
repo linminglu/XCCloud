@@ -260,10 +260,9 @@ namespace XXCloudService.Api.XCCloud
                 var result = from a in query
                              join b in Data_GoodsStockService.N.GetModels(p => p.DepotID == depotId) on a.ID equals b.GoodID into b1
                              from b in b1.DefaultIfEmpty()
-                             join c in Dict_SystemService.N.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)) on a.GoodType equals c.ID into c1
-                             from c in c1.DefaultIfEmpty()
-                             join d in Dict_SystemService.N.GetModels(p => p.DictKey.Equals("商品类别", StringComparison.OrdinalIgnoreCase) && p.PID == 0) on c.PID equals d.ID
-                             orderby a.ID
+                             join c in Dict_SystemService.N.GetModels() on a.GoodType equals c.ID into c1
+                             from c in c1.DefaultIfEmpty()                             
+                             orderby a.StoreID, a.ID
                              select new
                              {
                                  ID = b != null ? b.ID : 0,

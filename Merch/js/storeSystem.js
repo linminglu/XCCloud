@@ -2082,13 +2082,13 @@ xcActionSystem.prototype= {
                     $('#'+id).html('<option>-请选择-</option>');
                     for(let i in arr){
                         if(selected){
-                            if(arr[i].ID==selected){
-                                $('#'+id).append('<option value="'+arr[i].ID+'" selected>'+arr[i].Supplier+'</option>')
+                            if(arr[i].Supplier==selected){
+                                $('#'+id).append('<option value="'+arr[i].Supplier+'" selected>'+arr[i].Supplier+'</option>')
                             }else {
-                                $('#'+id).append('<option value="'+arr[i].ID+'">'+arr[i].Supplier+'</option>')
+                                $('#'+id).append('<option value="'+arr[i].Supplier+'">'+arr[i].Supplier+'</option>')
                             }
                         }else {
-                            $('#'+id).append('<option value="'+arr[i].ID+'">'+arr[i].Supplier+'</option>')
+                            $('#'+id).append('<option value="'+arr[i].Supplier+'">'+arr[i].Supplier+'</option>')
                         }
                     }
                     form.render('select');

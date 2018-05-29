@@ -5,6 +5,9 @@
     <title>礼品库存</title>
     <link rel="stylesheet" href="layui/css/layui.css">
 </head>
+<style>
+  .layui-table-header  tr th[data-field="0"] div div{display: none}
+</style>
 <body>
 <div class="layui-row" style="padding: 10px;">
     <blockquote class="layui-elem-quote" style="text-align: right;padding-right: 100px">
@@ -22,17 +25,17 @@
             <div class="layui-inline">
                 <label class="layui-form-label">入库仓库</label>
                 <div class="layui-input-inline">
-                    <select name="" id=""></select>
+                    <select name="inDepot" id="inDepot" lay-filter="inDepot"></select>
                 </div>
             </div>
             <div class="layui-inline">
                 <label class="layui-form-label">采购渠道</label>
                 <div class="layui-input-inline" style="z-index: 4">
-                    <input type="text" class="layui-input" placeholder="点击左侧输入，右侧选择">
+                    <input type="text" class="layui-input" placeholder="点击左侧输入，右侧选择" id="SupplierVal">
 
                 </div>
                 <div class="layui-input-inline" style="position: absolute;left: 190px;z-index: 3">
-                    <select name="" id="">
+                    <select name="Supplier" id="Supplier" lay-filter="Supplier">
 
                     </select>
                 </div>
@@ -53,19 +56,19 @@
             <div class="layui-inline">
                 <label class="layui-form-label">应付金额</label>
                 <div class="layui-input-inline">
-                    <input type="text" class="layui-input"  id="">
+                    <input type="text" class="layui-input"  id="Payable">
                 </div>
             </div>
             <div class="layui-inline">
                 <label class="layui-form-label">实付金额</label>
                 <div class="layui-input-inline">
-                    <input type="text" class="layui-input"  id="">
+                    <input type="text" class="layui-input"  id="Payment">
                 </div>
             </div>
             <div class="layui-inline">
                 <label class="layui-form-label">优惠金额</label>
                 <div class="layui-input-inline">
-                    <input type="text" class="layui-input"  id="">
+                    <input type="text" class="layui-input"  id="Discount">
                 </div>
             </div>
         </div>
@@ -82,10 +85,45 @@
 </div>
 <!--礼品列表弹出层-->
 <div id="goodsListBox" style="display: none;padding: 15px">
-    <table class="layui-hide" id="goodsList" lay-filter="goodsList"></table>
+    <table class="layui-hide " id="goodsList" lay-filter="goodsList"></table>
     <div style="text-align:center;margin: 15px 0;">
-        <button type="button" class="layui-btn" id="closeGoodBtn">取消</button>
+        <!--<button type="button" class="layui-btn" id="closeGoodBtn">取消</button>-->
         <button type="button" class="layui-btn" id="saveGoodBtn">确定</button>
+    </div>
+</div>
+<!--退货-->
+<div id="backGood" style="display:none; padding: 15px;">
+    <table class="layui-hide" id="backGoodTable" lay-filter="backGoodTable"></table>
+    <form action="" class="layui-form layui-form-pane">
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">应退总额</label>
+                <div class="layui-input-inline">
+                    <input type="text" class="layui-input" readonly id="shouldExit">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">退货杂费</label>
+                <div class="layui-input-inline">
+                    <input type="text" class="layui-input" id="exitCost">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">实际退额</label>
+                <div class="layui-input-inline">
+                    <input type="text" class="layui-input" id="exitTotal">
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">备注</label>
+            <div class="layui-input-block">
+                <input type="text" class="layui-input"  id="exitNote">
+            </div>
+        </div>
+    </form>
+    <div style="text-align:center;">
+        <button type="button" class="layui-btn-normal layui-btn" id="saveExit">确定</button>
     </div>
 </div>
 </body>
@@ -96,19 +134,20 @@
 
     let xc=xcActionSystem.prototype;
     let token=xc.getStorage('token');
+    let merchId=JSON.parse(xc.getStorage('logMsg')).MerchID;
+    let storeId=JSON.parse(xc.getStorage('logMsg')).StoreID;
     let cols=[
         {field:'ID', title:'入库流水号', align: 'center', sort: true}
-        ,{field:'Barcode', title:'商品条码', align: 'center', sort: true}
-        ,{field:'GoodTypeStr',title: '商品类别', align: 'center', templet: '#changeTime'} //width 支持：数字、百分比和不填写。
-        ,{field:'GoodName', title: '商品名称', align: 'center'}
-        ,{field:'StoreName', title: '入库门店', align: 'center'}
-        ,{field:'RealTime', title: '入库时间', align: 'center'}
+        ,{field:'StoreName', title:'入库门店', align: 'center', sort: true}
+        ,{field:'RealTime',title: '入库时间', align: 'center', templet: '#changeTime'} //width 支持：数字、百分比和不填写。
         ,{field:'Supplier', title: '采购渠道', align: 'center'}
-        ,{field:'Price', title: '采购单价', align: 'center'}
+        ,{field:'StorageCount', title: '入库数量', align: 'center'}
+        ,{field:'TaxPrice', title: '采购单价', align: 'center'}
         ,{field:'TotalPrice', title: '入库金额', align: 'center'}
         ,{field:'LogName', title: '入库经办人', align: 'center'}
         ,{field:'DepotName', title: '入库仓库', align: 'center'}
-        ,{fixed: 'right', title: '操作', width:100, align:'center', toolbar: '#barDemo'}];
+        ,{field:'AuthorFlagStr', title: '审核状态', align: 'center'}
+        ,{fixed: 'right', title: '操作', width:300, align:'center', toolbar: '#barDemo'}];
     let parm={'obj':{'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'},
         'url':'/XCCloud/GoodsInfo?action=QueryGoodStorage',
         'elem':'#giftsStorage',
@@ -117,11 +156,22 @@
     xc.getInitData(parm);
 
     let storageGood=[];let index;
-layui.use(['form','layer','table'],function () {
+    let id='';
+    let inDepot='';
+    layui.use(['form','layer','table'],function () {
     let form=layui.form;
     let layer=layui.layer;
     let table=layui.table;
+    form.on('select(inDepot)',function (data) {
+        inDepot=data.value;
+    });
+    form.on('select(Supplier)',function (data) {
+        $('#SupplierVal').val(data.value)
+    });
+    //新增入库记录
     $('#add').on('click',function () {
+     xc.getDepotDic(merchId,storeId,token,layer,form,'inDepot');
+     xc.getGoodSupplierDic(token,layer,form,'Supplier');
         newFoodLevelTable(table,storageGood,layer,form);
         layer.open({
             title:'礼品入库',
@@ -130,14 +180,188 @@ layui.use(['form','layer','table'],function () {
             content:$('#openModel')
         })
     });
+    //选择商品列表
+    $('#searchGoods').on('click',function () {
+        initGoodsTb(inDepot,layer);
+        storageGood=[];
+   });
+        //监听选中商品
+    table.on('checkbox(goodsList)', function(obj){
+        if(obj.checked){
+            storageGood.push({'GoodID':obj.data.ID,
+                'Barcode':obj.data.Barcode,
+                'GoodName':obj.data.GoodName,
+                'GoodTypeStr':obj.data.GoodTypeStr,
+                'RemainCount':obj.data.RemainCount,
+                'StorageCount':'',
+                'Price':'',
+                'Tax':'',
+                'TaxPrice':'',
+               })
+        }else {
+            if(storageGood.length>0){
+                let flag=false;
+                for(let i in storageGood){
+                    if(storageGood[i].Barcode==obj.data.Barcode){
+                        flag=true
+                    }
+                }
+                if(flag){
+                    storageGood.splice(i,1)
+                }
+            }
+        }
+    });
+    table.on('edit(goodsStorage)', function(obj){ //注：edit是固定事件名，test是table原始容器的属性 lay-filter="对应的值"
+        let value= obj.value; //得到修改后的值
+        let key=obj.field; //当前编辑的字段名
+        let index=obj.data.LAY_TABLE_INDEX; //所在行的所有相关数据
+        storageGood[index][key]=value;
+    });
+    //监听主表
+    table.on('tool(giftsStorage)', function(obj){
+        let _data=obj.data;
+        let layevent=obj.event;
+        id=_data.ID;
+        if(layevent==='back'){
+            let _obj={'id':_data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+            let parseJson = JSON.stringify(_obj);
+            $.ajax({
+                type:'post',
+                url:'/XCCloud/GoodsInfo?action=GetGoodStorage',
+                contentType: "application/json; charset=utf-8",
+                data:{parasJson: parseJson},
+                success: function (data) {
+                    data = JSON.parse(data);
+                    console.log(data);
+                    if (data.result_code == 1) {
+
+                    } else {
+                        layer.msg(data.result_msg);
+                    }
+                }
+            })
+            // var parm={'obj':{'depotId':_data.DepotID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'},
+            //     'url':'/XCCloud/GoodsInfo?action=QueryGoodsStock',
+            //     'elem':'#backGoodTable',
+            //     'height':'210px',
+            //     'size':'sm',
+            //     'cols':[  {type:'checkbox'},
+            //         {field:'ID', title: '商品ID', align: 'center'}
+            //         ,{field:'Barcode', title: '商品条码', align: 'center'}
+            //         ,{field:'GoodName', title: '商品名称', align: 'center'}
+            //         ,{field:'GoodTypeStr', title: '商品类别', align: 'center'}
+            //         ,{field:'RemainCount', title: '当前库存', align: 'center'}
+            //         ,{field:'GoodTypeStr', title: '入库数量', align: 'center'}
+            //         ,{field:'GoodTypeStr', title: '入库单价', align: 'center'}
+            //         ,{field:'GoodTypeStr', title: '退货数量', align: 'center',edit:true}
+            //         ,{field:'GoodTypeStr', title: '退货金额', align: 'center'}
+            //     ]};
+            // xc.getInitData(parm);
+            index=layer.open({
+                title:'退货信息',
+                type:1,
+                area:'1000px',
+                content:$('#backGood')
+            })
+        }else if(layevent==='del'){
+            layer.confirm('确定删除此入库信息吗？', function(index){
+                let _obj={'id':_data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                let parseJson = JSON.stringify(_obj);
+                $.ajax({
+                    type:'post',
+                    url:'/XCCloud/GoodsInfo?action=DelGoodStorage',
+                    contentType: "application/json; charset=utf-8",
+                    data:{parasJson: parseJson},
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        if (data.result_code == 1) {
+                            layer.msg('删除成功',{time:1500},function () {
+                                location.reload()
+                            })
+                        } else {
+                            layer.msg(data.result_msg);
+                        }
+                    }
+                })
+            })
+        }else if(layevent==='check'){
+            layer.confirm('确定审核此入库信息吗？', function(index){
+                let _obj={'id':_data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                let parseJson = JSON.stringify(_obj);
+                $.ajax({
+                    type:'post',
+                    url:'/XCCloud/GoodsInfo?action=CheckGoodStorage',
+                    contentType: "application/json; charset=utf-8",
+                    data:{parasJson: parseJson},
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        if (data.result_code == 1) {
+                            layer.msg('审核通过',{time:1500},function () {
+                                location.reload()
+                            })
+                        } else {
+                            layer.msg(data.result_msg);
+                        }
+                    }
+                })
+            })
+        }else if(layevent==='cancel'){
+            layer.confirm('确定撤销此入库信息吗？', function(index){
+                let _obj={'id':_data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                let parseJson = JSON.stringify(_obj);
+                $.ajax({
+                    type:'post',
+                    url:'/XCCloud/GoodsInfo?action=CanGoodStorage',
+                    contentType: "application/json; charset=utf-8",
+                    data:{parasJson: parseJson},
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        if (data.result_code == 1) {
+                            layer.msg('撤销完成',{time:1500},function () {
+                                location.reload()
+                            })
+                        } else {
+                            layer.msg(data.result_msg);
+                        }
+                    }
+                })
+            })
+        }
+    });
+    //监听子表
+        table.on('tool(goodsList)', function(obj){
+            let _data=obj.data;
+            let layevent=obj.event;
+            if(layevent==='del'){
+                for(let i in storageGood){
+                    if(storageGood[i].GoodID==_data.GoodID){
+                        storageGood.splice(i,1);
+                        obj.del();
+                    }
+                }
+            }
+        });
+    $('#saveGoodBtn').on('click',function () {
+        newFoodLevelTable(table,storageGood,layer,form);
+        layer.close(index);
+    });
+    //保存入库记录
     $('#save').on('click',function () {
-        let _obj={'depotName':$('#depotName').val(),
+        let _obj={'id':id,
+            'depotId':inDepot,
+            'Supplier':$('#Supplier').val(),
+            'goodStorageDetail':storageGood,
+          'Payable':$('#Payable').val(),
+            'Payment':$('#Payment').val(),
+            'Discount':$('#Discount').val(),
+            'Note':$('#Note').val(),
             'userToken':token,
             'signkey':'1f626576304bf5d95b72ece2222e42c3'};
         let parseJson = JSON.stringify(_obj);
         $.ajax({
             type:'post',
-            url:'/XCCloud/GoodsInfo?action=AddGoodStorage',
+            url:'/XCCloud/GoodsInfo?action=SaveGoodStorage',
             contentType: "application/json; charset=utf-8",
             data:{parasJson: parseJson},
             success: function (data) {
@@ -152,34 +376,30 @@ layui.use(['form','layer','table'],function () {
             }
         })
     });
-    $('#searchGoods').on('click',function () {
-       initGoodsTb();
-        index=layer.open({
-           title:'选择奖品',
-           type:1,
-           area:'800px',
-           content:$('#goodsListBox')
-       })
-   });
-    $('#saveGoodBtn').on('click',function () {
-        newFoodLevelTable(table,storageGood,layer,form);
-        layer.close(index);
-    });
 });
-    function initGoodsTb() {
+    function initGoodsTb(depotId,layer) {
         var searchText=$('#goodsName').val();
-        var parm={'obj':{'goodNameOrBarcode':searchText,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'},
-            'url':'/XCCloud/Promotion?action=GetGoodsInfoList',
-            'elem':'#goodsList',
-            'height':'210px',
-            'size':'sm',
-            'cols':[  {type:'checkbox'},
-                {field:'ID', title: '商品ID', align: 'center'}
-                ,{field:'Barcode', title: '商品条码', align: 'center'}
-                ,{field:'GoodName', title: '商品名称', align: 'center'}
-                ,{field:'GoodTypeStr', title: '商品类别', align: 'center'}
-            ]};
-        xc.getInitData(parm);
+        if(depotId==''){layer.msg('请选择入库仓库')}else {
+            var parm={'obj':{'depotId':depotId,'goodNameOrBarCode':searchText,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'},
+                'url':'/XCCloud/GoodsInfo?action=QueryGoodsStock',
+                'elem':'#goodsList',
+                'height':'210px',
+                'size':'sm',
+                'cols':[  {type:'checkbox'},
+                    {field:'GoodID', title: '商品ID', align: 'center'}
+                    ,{field:'Barcode', title: '商品条码', align: 'center'}
+                    ,{field:'GoodName', title: '商品名称', align: 'center'}
+                    ,{field:'GoodTypeStr', title: '商品类别', align: 'center'}
+                ]};
+            xc.getInitData(parm);
+            index=layer.open({
+                title:'选择奖品',
+                type:1,
+                area:'800px',
+                content:$('#goodsListBox')
+            })
+        }
+
     }
     function newFoodLevelTable(table,arr,layer,form) {
         table.render({
@@ -189,20 +409,33 @@ layui.use(['form','layer','table'],function () {
             , data: arr
             , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
             , cols: [[
-                {field:'Barcode', title: '会员级别', align: 'center'}
-                ,{field:'GoodName', title: '时段类型', align: 'center'}
-                ,{field:'GoodTypeStr', title: '有效周', align: 'center'}
-                ,{field:'StartTime', title: '当前库存', align: 'center'}
-                ,{field:'EndTime', title: '采购单价', align: 'center'}
-                ,{field:'ClientPrice', title: '入库数量', align: 'center'}
+                {field:'GoodID', title: '商品ID', align: 'center',fixed: 'left'}
+                ,{field:'Barcode', title: '商品条码', align: 'center',fixed: 'left'}
+                ,{field:'GoodName', title: '商品名称', align: 'center',fixed: 'left'}
+                ,{field:'GoodTypeStr', title: '商品类别', align: 'center'}
+                ,{field:'RemainCount', title: '当前库存', align: 'center'}
+                ,{field:'StorageCount', title: '入库数量', align: 'center',edit:true}
+                ,{field:'Price', title: '不含税单价', align: 'center',edit:true}
+                ,{field:'Tax', title: '税率(%)', align: 'center',edit:true}
+                ,{field:'TaxPrice', title: '含税单价', align: 'center',edit:true}
                 ,{fixed: 'right',title:'操作', width:140, align:'center', toolbar: '#barDemo1'}]]
             , page: {page: true, limits: [5,10, 15, 20]}
             , limit: 5
-
         });
     }
+
 </script>
 <script type="text/html" id="barDemo">
-    <a class="layui-btn layui-btn-xs" lay-event="detail"> <i class="layui-icon">&#xe642;</i>编辑</a>
+    <!--{{# if(d.AuthorFlag==0&&JSON.parse(xc.getStorage('logMsg')).LogType==3){ }}-->
+    <a class="layui-btn layui-btn-xs" lay-event="check"> <i class="layui-icon">&#xe642;</i>审核</a>
+    <!--{{#  } else if(d.AuthorFlag==1){ }}-->
+    <a class="layui-btn layui-btn-xs" lay-event="back"> <i class="layui-icon">&#xe642;</i>退货</a>
+    <a class="layui-btn layui-btn-xs" lay-event="cancel"> <i class="layui-icon">&#xe642;</i>撤销</a>
+    <!--{{# } }}-->
+    <a class="layui-btn layui-btn-xs" lay-event="del"> <i class="layui-icon">&#xe642;</i>删除</a>
+
+</script>
+<script type="text/html" id="barDemo1">
+    <a class="layui-btn layui-btn-xs" lay-event="del"> <i class="layui-icon">&#xe642;</i>删除</a>
 </script>
 </html>

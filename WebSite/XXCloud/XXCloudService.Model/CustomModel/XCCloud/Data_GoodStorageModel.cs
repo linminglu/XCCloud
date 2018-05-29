@@ -19,6 +19,7 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         public decimal? TaxPrice { get; set; }
         public decimal? TotalPrice { get; set; }
         public string LogName { get; set; }
+        public int? DepotID { get; set; }
         public string DepotName { get; set; }
         public int? AuthorFlag { get; set; }
         public string AuthorFlagStr { get { return ((GoodOutInState?)AuthorFlag).GetDescription(); } set { } }        

@@ -195,8 +195,6 @@
 <script src="layui/layui.js"></script>
 <script src="js/storeSystem.js"></script>
 <script>
-
-
         let xc=xcActionSystem.prototype;
         let token=xc.getStorage('token');
         let Status=1;let GoodType='';let id='';
@@ -561,6 +559,7 @@
 
                     })
                 }else if(event === 'del'){
+                    layer.confirm('真的删除行么', function(index){
                     let _obj={'id':data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
                     let url='/XCCloud/GoodsInfo?action=DelGoodsInfo';
                     let parasJson = JSON.stringify(_obj);
@@ -572,18 +571,17 @@
                         success: function (data) {
                             data=JSON.parse(data);
                             if(data.result_code==1){
-                                layer.confirm('真的删除行么', function(index){
                                     obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
                                     layer.close(index);
                                     //向服务端发送删除指令
-                                });
                             }else {
                                 layer.msg(data.result_msg)
                             }
                         }
-
-                    })
+                      })
+                    });
                 }else if(event === 'allow'){
+                    layer.confirm('确定修改为可入库吗？', function(index){
                     let _obj={'id':data.ID,'allowStorage':1,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
                     let url='/XCCloud/GoodsInfo?action=AllowGoodsStorage';
                     let parasJson = JSON.stringify(_obj);
@@ -595,17 +593,19 @@
                         success: function (data) {
                             data=JSON.parse(data);
                             if(data.result_code==1){
-                                layer.confirm('确定修改为可入库吗？', function(index){
+
                                     xc.getInitData(parm);
                                     layer.msg('修改状态成功！');
-                                });
+
                             }else {
                                 layer.msg(data.result_msg)
                             }
                         }
 
                     })
+                    });
                 }else if(event === 'forbid'){
+                    layer.confirm('确定修改为可入库吗？', function(index){
                     let _obj={'id':data.ID,'allowStorage':0,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
                     let url='/XCCloud/GoodsInfo?action=AllowGoodsStorage';
                     let parasJson = JSON.stringify(_obj);
@@ -617,16 +617,14 @@
                         success: function (data) {
                             data=JSON.parse(data);
                             if(data.result_code==1){
-                                layer.confirm('确定修改为可入库吗？', function(index){
                                  xc.getInitData(parm);
                                  layer.msg('修改状态成功！');
-                                });
                             }else {
                                 layer.msg(data.result_msg)
                             }
                         }
-
-                    })
+                     })
+                    });
                 }
             });
             //事件监听

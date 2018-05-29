@@ -541,7 +541,7 @@ namespace XXCloudService.Api.XCCloud
                                 LEFT JOIN Base_DepotInfo requestindepot ON a.RequestInDepotID = requestindepot.ID
                                 LEFT JOIN (
                                 	SELECT
-                                		*, ROW_NUMBER() over(partition by EventID order by CreateTime) as RowNum
+                                		*, ROW_NUMBER() over(partition by EventID order by CreateTime desc) as RowNum
                                 	FROM
                                 		Data_WorkFlow_Entry                                                         
                                 	WHERE
@@ -550,7 +550,7 @@ namespace XXCloudService.Api.XCCloud
                                 ) b ON a.ID = b.EventID and b.RowNum <= 1
                                 LEFT JOIN (
                                 	SELECT
-                                		*, ROW_NUMBER() over(partition by EventID order by CreateTime) as RowNum
+                                		*, ROW_NUMBER() over(partition by EventID order by CreateTime desc) as RowNum
                                 	FROM
                                 		Data_WorkFlow_Entry                                                         
                                 	WHERE
@@ -559,12 +559,12 @@ namespace XXCloudService.Api.XCCloud
                                 ) c ON a.ID = c.EventID and c.RowNum <= 1
                                 LEFT JOIN (
                                 	SELECT
-                                		*, ROW_NUMBER() over(partition by EventID order by CreateTime) as RowNum
+                                		*, ROW_NUMBER() over(partition by EventID order by CreateTime desc) as RowNum
                                 	FROM
                                 		Data_WorkFlow_Entry                                                         
                                 	WHERE
                                 		EventType = 0 /*产品调拨对应表格 Data_GoodRequest*/
-                                ) d ON a.ID = d.EventID and b.RowNum <= 1
+                                ) d ON a.ID = d.EventID and d.RowNum <= 1
                                 WHERE 1=1
                             ";
                 sql += " AND a.MerchID='" + merchId + "'";
@@ -1702,6 +1702,7 @@ namespace XXCloudService.Api.XCCloud
                 string sql = @"SELECT
                                 	a.ID,
                                     a.StorageOrderID,
+                                    a.DepotID,
                                 	/*入库门店*/
                                 	(case when IsNull(b.StoreName,'')='' then '总店' else b.StoreName end) AS StoreName,
                                 	/*入库时间*/
@@ -1725,10 +1726,10 @@ namespace XXCloudService.Api.XCCloud
                                 LEFT JOIN Base_StoreInfo b ON a.StoreID = b.StoreID
                                 LEFT JOIN (
                                 	SELECT
-                                		*, ROW_NUMBER() over(partition by StorageID,GoodID order by ID) as RowNum
+                                		*, ROW_NUMBER() over(partition by StorageID order by ID desc) as RowNum
                                 	FROM
-                                		Data_GoodStorage_Detail                                                                                         	
-                                ) c ON a.ID = c.StorageID and c.RowNum <= 1
+                                		Data_GoodStorage_Detail
+                                ) c ON a.ID = c.StorageID AND c.RowNum <= 1
                                 LEFT JOIN Base_UserInfo u ON a.UserID = u.UserID
                                 LEFT JOIN Base_DepotInfo d ON a.DepotID = d.ID                                
                                 WHERE 1 = 1";
@@ -1879,10 +1880,13 @@ namespace XXCloudService.Api.XCCloud
                                     if (!dicPara.Get("tax").Validdecimal("税率", out errMsg))
                                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
+                                    var taxPrice = dicPara.Get("taxPrice").Todecimal(0);
+                                    var storageCount = dicPara.Get("storageCount").Toint(0);
                                     var detailModel = new Data_GoodStorage_Detail();
                                     Utils.GetModel(dicPara, ref detailModel);
                                     detailModel.StorageID = id;
                                     detailModel.MerchID = merchId;
+                                    detailModel.TotalPrice = Math.Round(taxPrice * storageCount, 2, MidpointRounding.AwayFromZero);
                                     Data_GoodStorage_DetailService.I.AddModel(detailModel);
                                 }
                                 else
@@ -2826,6 +2830,7 @@ namespace XXCloudService.Api.XCCloud
                 #region Sql语句
                 string sql = @"SELECT
                                 	a.ID,
+                                    a.GoodID,
                                 	/*商品条码*/
                                 	b.Barcode,
                                 	/*商品名称*/
@@ -2838,14 +2843,14 @@ namespace XXCloudService.Api.XCCloud
                                 	a.StoreID,
                                 	/*门店名称*/
                                 	d.StoreName,                                	
-                                    a.MinValue,
-                                    a.MaxValue,
+                                    ISNULL(a.MinValue,0) AS MinValue,
+                                    ISNULL(a.MaxValue,0) AS MaxValue,
                                     /*可调拨数*/
                                     (ISNULL(a.RemainCount,0) - ISNULL(a.MinValue,0)) AS AvailableCount,
                                     (case when ISNULL(a.InitialTime,'')='' then '' else convert(varchar,a.InitialTime,20) end) AS InitialTime,
-                                    a.InitialValue,
-                                    a.InitialAvgValue,
-                                    a.RemainCount,
+                                    ISNULL(a.InitialValue,0) AS InitialValue,
+                                    ISNULL(a.InitialAvgValue,0) AS InitialAvgValue,
+                                    ISNULL(a.RemainCount,0) AS RemainCount,
                                     a.Note
                                 FROM
                                     (
