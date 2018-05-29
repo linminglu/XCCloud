@@ -47,7 +47,7 @@ namespace XXCloudService.Api.XCCloud
                 IQueryable<Base_DepotInfo> query = null;
                 if (userTokenKeyModel.LogType == (int)RoleType.MerchUser)
                 {
-                    query = base_DepotInfoService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase));
+                    query = base_DepotInfoService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && (p.StoreID ?? "") == "");
                 }
                 else
                 {
@@ -325,6 +325,8 @@ namespace XXCloudService.Api.XCCloud
                                 var data_GoodsStock = Data_GoodsStockService.I.GetModels(p => p.ID == id).FirstOrDefault() ?? new Data_GoodsStock();                                
                                 data_GoodsStock.DepotID = depotId;                                
                                 data_GoodsStock.GoodID = goodId;
+                                data_GoodsStock.MerchID = merchId;
+                                data_GoodsStock.StoreID = storeId;
                                 data_GoodsStock.MinValue = minValue;
                                 data_GoodsStock.MaxValue = maxValue;
                                 if (id == 0)

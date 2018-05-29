@@ -155,9 +155,12 @@
     };
     xc.getInitData(parm);
 
+    //入库申请表单
     let storageGood=[];let index;
     let id='';
     let inDepot='';
+    //退货申请单
+    let arrBack=[];let exitDetails=[];
     layui.use(['form','layer','table'],function () {
     let form=layui.form;
     let layer=layui.layer;
@@ -188,7 +191,7 @@
         //监听选中商品
     table.on('checkbox(goodsList)', function(obj){
         if(obj.checked){
-            storageGood.push({'GoodID':obj.data.ID,
+            storageGood.push({'GoodID':obj.data.GoodID,
                 'Barcode':obj.data.Barcode,
                 'GoodName':obj.data.GoodName,
                 'GoodTypeStr':obj.data.GoodTypeStr,
@@ -218,6 +221,66 @@
         let index=obj.data.LAY_TABLE_INDEX; //所在行的所有相关数据
         storageGood[index][key]=value;
     });
+    //监听退货列表
+    table.on('edit(backGoodTable)', function(obj){ //注：edit是固定事件名，test是table原始容器的属性 lay-filter="对应的值"
+        let value= obj.value; //得到修改后的值
+        let key=obj.field; //当前编辑的字段名
+        let index=obj.data.LAY_TABLE_INDEX; //所在行的所有相关数据
+        arrBack[index][key]=value;
+        arrBack[index].ExitAll=value*arrBack[index].ExitPrice;
+        $('#shouldExit').val(value*arrBack[index].ExitPrice);
+        newBackGoodTable(table,arrBack);
+    });
+    table.on('checkbox(backGoodTable)', function(obj){
+            if(obj.checked){
+                exitDetails.push({'GoodId':obj.data.GoodID,
+                    'ExitCount':obj.data.ExitCount,
+                    'ExitPrice':obj.data.ExitPrice,})
+            }else {
+                if(exitDetails.length>0){
+                    let flag=false;
+                    for(let i in exitDetails){
+                        if(exitDetails[i].GoodID==obj.data.GoodID){
+                            flag=true
+                        }
+                    }
+                    if(flag){
+                        exitDetails.splice(i,1)
+                    }
+                }
+            }
+        });
+    //保存退货
+        $('#saveExit').click(function () {
+            let sumExit='';
+            for(let i in exitDetails){
+                sumExit+=exitDetails[i].ExitCount;
+            }
+            let _obj={'storageOrderIndex':id,
+                'exitCount':sumExit,
+                'exitCost':$('#exitCost').val(),
+                'exitTotal':$('#exitTotal').val(),
+                'exitDetails':exitDetails,
+                'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+            let parseJson = JSON.stringify(_obj);
+            $.ajax({
+                type:'post',
+                url:'/XCCloud/GoodsInfo?action=SaveGoodExit',
+                contentType: "application/json; charset=utf-8",
+                data:{parasJson: parseJson},
+                success: function (data) {
+                    data = JSON.parse(data);
+                    console.log(data);
+                    if (data.result_code == 1) {
+                        layer.msg('保存成功',{time:1500},function () {
+                            location.reload()
+                        })
+                    } else {
+                        layer.msg(data.result_msg);
+                    }
+                }
+            })
+        })
     //监听主表
     table.on('tool(giftsStorage)', function(obj){
         let _data=obj.data;
@@ -235,34 +298,31 @@
                     data = JSON.parse(data);
                     console.log(data);
                     if (data.result_code == 1) {
+                        arrBack=[];exitDetails=[];
+                        let arr=data.result_data.GoodStorageDetail;
 
+                        for(let i in arr){
+                            arrBack.push({'GoodID':arr[i].GoodID,
+                                'BarCode':arr[i].BarCode,
+                                'GoodName':arr[i].GoodName,
+                                'GoodTypeStr':arr[i].GoodTypeStr,
+                                'RemainCount':arr[i].RemainCount,
+                                'StorageCount':arr[i].StorageCount,
+                                'ExitPrice':arr[i].Price,
+                                'ExitCount':'',
+                                'ExitAll':''})
+                        }
+                        newBackGoodTable(table,arrBack);
+                        index=layer.open({
+                            title:'退货信息',
+                            type:1,
+                            area:'1000px',
+                            content:$('#backGood')
+                        })
                     } else {
                         layer.msg(data.result_msg);
                     }
                 }
-            })
-            // var parm={'obj':{'depotId':_data.DepotID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'},
-            //     'url':'/XCCloud/GoodsInfo?action=QueryGoodsStock',
-            //     'elem':'#backGoodTable',
-            //     'height':'210px',
-            //     'size':'sm',
-            //     'cols':[  {type:'checkbox'},
-            //         {field:'ID', title: '商品ID', align: 'center'}
-            //         ,{field:'Barcode', title: '商品条码', align: 'center'}
-            //         ,{field:'GoodName', title: '商品名称', align: 'center'}
-            //         ,{field:'GoodTypeStr', title: '商品类别', align: 'center'}
-            //         ,{field:'RemainCount', title: '当前库存', align: 'center'}
-            //         ,{field:'GoodTypeStr', title: '入库数量', align: 'center'}
-            //         ,{field:'GoodTypeStr', title: '入库单价', align: 'center'}
-            //         ,{field:'GoodTypeStr', title: '退货数量', align: 'center',edit:true}
-            //         ,{field:'GoodTypeStr', title: '退货金额', align: 'center'}
-            //     ]};
-            // xc.getInitData(parm);
-            index=layer.open({
-                title:'退货信息',
-                type:1,
-                area:'1000px',
-                content:$('#backGood')
             })
         }else if(layevent==='del'){
             layer.confirm('确定删除此入库信息吗？', function(index){
@@ -330,7 +390,7 @@
         }
     });
     //监听子表
-        table.on('tool(goodsList)', function(obj){
+    table.on('tool(goodsList)', function(obj){
             let _data=obj.data;
             let layevent=obj.event;
             if(layevent==='del'){
@@ -401,7 +461,7 @@
         }
 
     }
-    function newFoodLevelTable(table,arr,layer,form) {
+    function newFoodLevelTable(table,arr) {
         table.render({
             elem: '#goodsStorage'
             , height:'250px'
@@ -423,15 +483,36 @@
             , limit: 5
         });
     }
-
+    function newBackGoodTable(table,arr) {
+        table.render({
+            elem: '#backGoodTable'
+            , height:'250px'
+            ,size:'sm'
+            , data: arrBack
+            , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+            , cols: [[{type:'checkbox'}
+                ,{field:'GoodID', title: '商品ID', align: 'center',width:70}
+                ,{field:'BarCode', title: '商品条码', align: 'center',width:180}
+                ,{field:'GoodName', title: '商品名称', align: 'center',width:120}
+                ,{field:'GoodTypeStr', title: '商品类别', align: 'center',width:90}
+                ,{field:'RemainCount', title: '当前库存', align: 'center',width:90}
+                ,{field:'StorageCount', title: '入库数量', align: 'center',width:90}
+                ,{field:'ExitPrice', title: '入库单价', align: 'center',width:90}
+                ,{field:'ExitCount', title: '退货数量', align: 'center',edit:true,width:90}
+                ,{field:'ExitAll', title: '退货金额', align: 'center',width:90}
+            ]]
+            , page: {page: true, limits: [5,10, 15, 20]}
+            , limit: 5
+        });
+    }
 </script>
 <script type="text/html" id="barDemo">
-    <!--{{# if(d.AuthorFlag==0&&JSON.parse(xc.getStorage('logMsg')).LogType==3){ }}-->
+    {{# if(d.AuthorFlag==0){ }}
     <a class="layui-btn layui-btn-xs" lay-event="check"> <i class="layui-icon">&#xe642;</i>审核</a>
-    <!--{{#  } else if(d.AuthorFlag==1){ }}-->
+    {{#  } else if(d.AuthorFlag==1){ }}
     <a class="layui-btn layui-btn-xs" lay-event="back"> <i class="layui-icon">&#xe642;</i>退货</a>
     <a class="layui-btn layui-btn-xs" lay-event="cancel"> <i class="layui-icon">&#xe642;</i>撤销</a>
-    <!--{{# } }}-->
+    {{# } }}
     <a class="layui-btn layui-btn-xs" lay-event="del"> <i class="layui-icon">&#xe642;</i>删除</a>
 
 </script>

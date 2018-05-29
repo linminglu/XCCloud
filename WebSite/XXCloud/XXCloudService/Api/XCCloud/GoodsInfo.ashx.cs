@@ -1484,6 +1484,13 @@ namespace XXCloudService.Api.XCCloud
                                         errMsg = "添加调拨出库记录失败";
                                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                                     }
+
+                                    //更新当前库存
+                                    var stockDepotId = data_GoodStock_Record.DepotID;
+                                    var stockGoodId = data_GoodStock_Record.GoodID;
+                                    var stockModel = Data_GoodsStockService.I.GetModels(p => p.DepotID == stockDepotId && p.GoodID == stockGoodId).OrderByDescending(or => or.InitialTime).FirstOrDefault();
+                                    stockModel.RemainCount -= data_GoodStock_Record.StockCount;
+                                    Data_GoodsStockService.I.UpdateModel(stockModel);
                                 }
                                 else
                                 {
@@ -1592,6 +1599,13 @@ namespace XXCloudService.Api.XCCloud
                                     data_GoodStock_Record.StockCount = storageCount;
                                     data_GoodStock_Record.CreateTime = DateTime.Now;
                                     Data_GoodStock_RecordService.I.AddModel(data_GoodStock_Record);
+
+                                    //更新当前库存
+                                    var stockDepotId = data_GoodStock_Record.DepotID;
+                                    var stockGoodId = data_GoodStock_Record.GoodID;
+                                    var stockModel = Data_GoodsStockService.I.GetModels(p => p.DepotID == stockDepotId && p.GoodID == stockGoodId).OrderByDescending(or => or.InitialTime).FirstOrDefault();
+                                    stockModel.RemainCount += data_GoodStock_Record.StockCount;
+                                    Data_GoodsStockService.I.UpdateModel(stockModel);
                                 }
                                 else
                                 {
@@ -1770,6 +1784,7 @@ namespace XXCloudService.Api.XCCloud
                                         join e in Data_GoodsStockService.N.GetModels() on new { d.DepotID, a.GoodID } equals new { e.DepotID, e.GoodID }
                                         select new
                                         {
+                                            GoodID = a.GoodID,
                                             BarCode = b.Barcode,
                                             GoodName = b.GoodName,
                                             GoodTypeStr = c.DictKey,
@@ -1837,7 +1852,7 @@ namespace XXCloudService.Api.XCCloud
                             model.UserID = logId;
                             model.AuthorFlag = (int)GoodOutInState.Pending;
                             model.RealTime = DateTime.Now;
-                            model.CheckDate = DateTime.Now;  //应从服务获取当前营业日期
+                            model.CheckDate = DateTime.Now.Todate();  //应从服务获取当前营业日期
                             if (!Data_GoodStorageService.I.Add(model))
                             {
                                 errMsg = "保存商品入库信息失败";
@@ -2044,8 +2059,15 @@ namespace XXCloudService.Api.XCCloud
                             data_GoodStock_Record.StockCount = detailModel.StorageCount;
                             data_GoodStock_Record.CreateTime = DateTime.Now;
                             Data_GoodStock_RecordService.I.AddModel(data_GoodStock_Record);
-                        }
 
+                            //更新当前库存
+                            var depotId = model.DepotID;
+                            var goodId = detailModel.GoodID;
+                            var stockModel = Data_GoodsStockService.I.GetModels(p => p.DepotID == depotId && p.GoodID == goodId).OrderByDescending(or => or.InitialTime).FirstOrDefault();
+                            stockModel.RemainCount += detailModel.StorageCount;
+                            Data_GoodsStockService.I.UpdateModel(stockModel);
+                        }
+                        
                         if (!Data_GoodStock_RecordService.I.SaveChanges())
                         {
                             errMsg = "添加入库存异动信息失败";
@@ -2124,6 +2146,13 @@ namespace XXCloudService.Api.XCCloud
                             record.StockFlag = (int)StockFlag.Out;
                             record.CreateTime = DateTime.Now;
                             Data_GoodStock_RecordService.I.AddModel(record);
+
+                            //更新当前库存
+                            var depotId = record.DepotID;
+                            var goodId = record.GoodID;
+                            var stockModel = Data_GoodsStockService.I.GetModels(p => p.DepotID == depotId && p.GoodID == goodId).OrderByDescending(or => or.InitialTime).FirstOrDefault();
+                            stockModel.RemainCount -= record.StockCount;
+                            Data_GoodsStockService.I.UpdateModel(stockModel);
                         }
 
                         if (!Data_GoodStock_RecordService.I.SaveChanges())
@@ -2681,6 +2710,13 @@ namespace XXCloudService.Api.XCCloud
                             data_GoodStock_Record.StockCount = detailModel.OutCount;
                             data_GoodStock_Record.CreateTime = DateTime.Now;
                             Data_GoodStock_RecordService.I.AddModel(data_GoodStock_Record);
+
+                            //更新当前库存
+                            var depotId = model.DepotID;
+                            var goodId = detailModel.GoodID;
+                            var stockModel = Data_GoodsStockService.I.GetModels(p => p.DepotID == depotId && p.GoodID == goodId).OrderByDescending(or => or.InitialTime).FirstOrDefault();
+                            stockModel.RemainCount -= detailModel.OutCount;
+                            Data_GoodsStockService.I.UpdateModel(stockModel);
                         }
 
                         if (!Data_GoodStock_RecordService.I.SaveChanges())
@@ -2762,6 +2798,13 @@ namespace XXCloudService.Api.XCCloud
                             record.StockFlag = (int)StockFlag.In;
                             record.CreateTime = DateTime.Now;
                             Data_GoodStock_RecordService.I.AddModel(record);
+
+                            //更新当前库存
+                            var depotId = record.DepotID;
+                            var goodId = record.GoodID;
+                            var stockModel = Data_GoodsStockService.I.GetModels(p => p.DepotID == depotId && p.GoodID == goodId).OrderByDescending(or => or.InitialTime).FirstOrDefault();
+                            stockModel.RemainCount += record.StockCount;
+                            Data_GoodsStockService.I.UpdateModel(stockModel);
                         }
 
                         if (!Data_GoodStock_RecordService.I.SaveChanges())

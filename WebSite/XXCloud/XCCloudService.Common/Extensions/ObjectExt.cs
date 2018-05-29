@@ -127,6 +127,34 @@ namespace XCCloudService.Common.Extensions
                 return date;
             return null;
         }
+        /// <summary>
+        /// 将泛型转换为date型数字（失败返回defaultvalue）
+        /// </summary>
+        /// <typeparam name="T">转换前的类型</typeparam>
+        /// <param name="key">转换前的值</param>
+        /// <param name="defaultvalue">转换失败或无法转换时的默认值</param>
+        /// <returns></returns>
+        public static DateTime Todate<T>(this T key, DateTime defaultvalue)
+        {
+            if (key.IsNull()) return Convert.ToDateTime(defaultvalue.ToShortDateString());
+            if (DateTime.TryParse(key.ToString(), out defaultvalue))
+                return Convert.ToDateTime(defaultvalue.ToShortDateString());
+            return Convert.ToDateTime(defaultvalue.ToShortDateString());
+        }
+        /// <summary>
+        /// 将泛型转换为date型数字（失败返回null）
+        /// </summary>
+        /// <typeparam name="T">转换前的类型</typeparam>
+        /// <param name="key">转换前的值</param>
+        /// <returns></returns>
+        public static DateTime? Todate<T>(this T key)
+        {
+            if (key.IsNull()) return null;
+            var date = new DateTime();
+            if (DateTime.TryParse(key.ToString(), out date))
+                return Convert.ToDateTime(date.ToShortDateString());
+            return null;
+        }
 
         /// <summary>
         /// 将泛型转换为timespan型数字（失败返回defaultvalue）
