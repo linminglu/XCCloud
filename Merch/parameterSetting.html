@@ -212,6 +212,12 @@
                                 <input type="checkbox" name="chkExitFoodCatch" lay-filter="chkExitFoodCatch" lay-skin="switch" lay-text="启用|禁用" id="chkExitFoodCatch">
                             </div>
                         </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label" style="white-space: normal;padding: 0;">会员退卡时余额强制清零</label>
+                            <div class="layui-input-inline">
+                                <input type="checkbox" name="chkForceClearBalanceOnExitCard" lay-filter="chkForceClearBalanceOnExitCard" lay-skin="switch" lay-text="启用|禁用" id="chkForceClearBalanceOnExitCard">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -451,88 +457,18 @@
     let cmbAuthChannel ;let chkShift=0;let chkTaxInSale=0;
     //会员设定
     let cmbBirthdaySendSms;let chkPhotograph=0;let chkExitCardCatch=0;
-    let chkExitFoodCatch=0;
+    let chkExitFoodCatch=0; let chkForceClearBalanceOnExitCard=0;
     //游乐项目规则设定
     let txtClientBuyTicketInfo;
     let chkAccompanyOutWithMain=0; let chkAddLeaveTime=0; let cmbAutoJoinMemberLevel;let cmbAutoJoinMemberLevels=[];
+    xc.getBalanceTypeDicStore(_storeId,1,token,layer,form,'limitType');
+    xc.getBalanceTypeDicStore(_storeId,1,token,layer,form,'BalanceIndex');
     function ifNeedSet(storeId,form,layer) {
         let obj={'storeId':storeId,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
-        xc.getBalanceTypeDicStore(storeId,1,token,layer,form,'limitType');
-        xc.getBalanceTypeDicStore(storeId,1,token,layer,form,'BalanceIndex');
 
-        //设置基本参数
         $.ajax({
             type: "post",
-            url: '/XCCloud/Parameter?action=GetParamList',
-            contentType: "application/json; charset=utf-8",
-            data: {parasJson: JSON.stringify(obj)},
-            success: function (data) {
-                data = JSON.parse(data);
-                console.log(data);
-                if(data.result_code==1){
-                    let arr=data.result_data;
-                    if(arr[0].Tag==0){
-                        $('.lci3').addClass('layui-hide');
-                    }else  if(arr[0].Tag==1){
-                        getBackRule(_storeId);
-                        $('.lci3').removeClass('layui-hide');
-                    }
-                    form.val("storeParm", {
-                        "chkPrintBarcode": arr[3].ParameterValue==1?true:false
-                        ,"chkBarSendCoinAuthorize": arr[4].ParameterValue==1?true:false
-                        ,'cmbAutoJoinMemberLevel':arr[16].ParameterValue
-                        ,"txtOnceSellCoinMin": arr[7].ParameterValue
-                        ,"txtBusinessClass": arr[5].ParameterValue
-                        ,"chkShift":  arr[6].ParameterValue==1?true:false
-                        ,"cmbBirthdaySendSms": arr[10].ParameterValue
-                        ,"chkPhotograph": arr[11].ParameterValue==1?true:false
-                        ,"chkExitCardCatch": arr[12].ParameterValue==1?true:false
-                        ,"chkExitFoodCatch": arr[13].ParameterValue==1?true:false
-                        ,"txtCreditEveryday": arr[18].ParameterValue
-                        ,"txtMaxSendCard": arr[19].ParameterValue
-                        ,"cmbAuthChannel": arr[21].ParameterValue
-                        ,"chkTaxInSale": arr[22].ParameterValue
-                    });
-                    xc.getMemberTypeDic(token,layer,form,'cmbAutoJoinMemberLevel',arr[16].ParameterValue)
-                    chkPrintBarcode=arr[3].ParameterValue;
-                    chkBarSendCoinAuthorize=arr[4].ParameterValue;
-                    txtBusinessClass=arr[5].ParameterValue||'';
-                    cmbAuthChannel=arr[21].ParameterValue||'';
-                    chkShift=arr[6].ParameterValue;
-                    chkTaxInSale=arr[22].ParameterValue||'';
-                    //会员设定
-                    cmbBirthdaySendSms=arr[10].ParameterValue;
-                    chkPhotograph=arr[11].ParameterValue;
-                    chkExitCardCatch=arr[12].ParameterValue;
-                    chkExitFoodCatch=arr[13].ParameterValue;
-                    //游乐项目规则设定
-                   chkAccompanyOutWithMain=arr[14].ParameterValue;
-                   if(chkAccompanyOutWithMain==1){
-                       $('input[name="chkAccompanyOutWithMain"]').attr({'checked':true})
-                   }else {
-                       $('input[name="chkAccompanyOutWithMain"]').attr({'checked':false})
-                   }
-
-                   chkAddLeaveTime=arr[15].ParameterValue;
-                    if(chkAddLeaveTime==1){
-                        $('input[name="chkAddLeaveTime"]').attr({'checked':true})
-                    }else {
-                        $('input[name="chkAddLeaveTime"]').attr({'checked':false})
-                    }
-                    txtClientBuyTicketInfo=arr[17].ParameterValue;
-                    if(txtClientBuyTicketInfo!=''){
-                        cmbAutoJoinMemberLevels=txtClientBuyTicketInfo.split('|');
-                        for(let i in cmbAutoJoinMemberLevels){
-                            $('#cusmor').find('input').eq(i).attr({'checked':true})
-                        }
-                    }
-                    form.render();
-                }
-            }
-        });
-        //设置正价币
-        $.ajax({
-            type: "post",
+            // async:true,
             url: '/XCCloud/Parameter?action=GetStandardCoinPrice',
             contentType: "application/json; charset=utf-8",
             data: {parasJson: JSON.stringify(obj)},
@@ -560,6 +496,7 @@
         //设置招待币/补币
         $.ajax({
             type: "post",
+            // async:true,
             url: '/XCCloud/Parameter?action=GetFreeCoinRule',
             contentType: "application/json; charset=utf-8",
             data: {parasJson: JSON.stringify(obj)},
@@ -567,7 +504,7 @@
                 data = JSON.parse(data);
                 if(data.result_code==1){
                     let arr=data.result_data;
-                    console.log(arr)
+                    // console.log(arr)
                     if(arr.length==1){
                         $('.specilCoin select[name="BalanceIndex"]').val(arr[0].BalanceIndex);
                         $('.specilCoin input[name="OnceSigleMax"]').val(arr[0].OnceSigleMax);
@@ -589,6 +526,81 @@
                 }
             }
         })
+        //设置基本参数
+        $.ajax({
+            type: "post",
+            // async:true,
+            url: '/XCCloud/Parameter?action=GetParamList',
+            contentType: "application/json; charset=utf-8",
+            data: {parasJson: JSON.stringify(obj)},
+            success: function (data) {
+                data = JSON.parse(data);
+                // console.log(data);
+                if(data.result_code==1){
+                    let arr=data.result_data;
+                    if(arr[0].Tag==0){
+                        $('.lci3').addClass('layui-hide');
+                    }else  if(arr[0].Tag==1){
+                        getBackRule(_storeId);
+                        $('.lci3').removeClass('layui-hide');
+                    }
+                    form.val("storeParm", {
+                        "chkPrintBarcode": arr[3].ParameterValue==1?true:false
+                        ,"chkBarSendCoinAuthorize": arr[4].ParameterValue==1?true:false
+                        ,'cmbAutoJoinMemberLevel':arr[16].ParameterValue
+                        ,"txtOnceSellCoinMin": arr[7].ParameterValue
+                        ,"txtBusinessClass": arr[5].ParameterValue
+                        ,"chkShift":  arr[6].ParameterValue==1?true:false
+                        ,"cmbBirthdaySendSms": arr[10].ParameterValue
+                        ,"chkPhotograph": arr[11].ParameterValue==1?true:false
+                        ,"chkExitCardCatch": arr[12].ParameterValue==1?true:false
+                        ,"chkExitFoodCatch": arr[13].ParameterValue==1?true:false
+                        ,"txtCreditEveryday": arr[18].ParameterValue
+                        ,"txtMaxSendCard": arr[19].ParameterValue
+                        ,"cmbAuthChannel": arr[21].ParameterValue
+                        ,"chkTaxInSale": arr[22].ParameterValue
+                        ,"chkForceClearBalanceOnExitCard": arr[23].ParameterValue==1?true:false
+                    });
+                    xc.getMemberTypeDic(token,layer,form,'cmbAutoJoinMemberLevel',arr[16].ParameterValue)
+                    chkPrintBarcode=arr[3].ParameterValue;
+                    chkBarSendCoinAuthorize=arr[4].ParameterValue;
+                    txtBusinessClass=arr[5].ParameterValue||'';
+                    cmbAuthChannel=arr[21].ParameterValue||'';
+                    chkShift=arr[6].ParameterValue;
+                    chkTaxInSale=arr[22].ParameterValue||'';
+                    //会员设定
+                    cmbBirthdaySendSms=arr[10].ParameterValue;
+                    chkPhotograph=arr[11].ParameterValue;
+                    chkExitCardCatch=arr[12].ParameterValue;
+                    chkExitFoodCatch=arr[13].ParameterValue;
+                    //游乐项目规则设定
+                   chkAccompanyOutWithMain=arr[14].ParameterValue;
+                    chkForceClearBalanceOnExitCard=arr[23].ParameterValue;
+                   if(chkAccompanyOutWithMain==1){
+                       $('input[name="chkAccompanyOutWithMain"]').attr({'checked':true})
+                   }else {
+                       $('input[name="chkAccompanyOutWithMain"]').attr({'checked':false})
+                   }
+
+                   chkAddLeaveTime=arr[15].ParameterValue;
+                    if(chkAddLeaveTime==1){
+                        $('input[name="chkAddLeaveTime"]').attr({'checked':true})
+                    }else {
+                        $('input[name="chkAddLeaveTime"]').attr({'checked':false})
+                    }
+                    txtClientBuyTicketInfo=arr[17].ParameterValue;
+                    if(txtClientBuyTicketInfo!=''){
+                        cmbAutoJoinMemberLevels=txtClientBuyTicketInfo.split('|');
+                        for(let i in cmbAutoJoinMemberLevels){
+                            $('#cusmor').find('input').eq(i).attr({'checked':true})
+                        }
+                    }
+                    form.render();
+                }
+            }
+        });
+        //设置正价币
+
     }
 
     layui.use(['element','form','layer','table'], function(){
@@ -653,6 +665,9 @@
         });
         form.on('switch(chkExitFoodCatch)',(data)=>{
             data.elem.checked==true ?chkExitFoodCatch=1 :chkExitFoodCatch=0
+        });
+        form.on('switch(chkForceClearBalanceOnExitCard)',(data)=>{
+            data.elem.checked==true ?chkForceClearBalanceOnExitCard=1 :chkForceClearBalanceOnExitCard=0
         });
         //游乐项目规则设定
         form.on('checkbox(chkAccompanyOutWithMain)',(data)=>{
@@ -771,6 +786,7 @@
             { "storeId":storeIds, "system":"chkExitCardCatch", "isAllow":1, "pValue":chkExitCardCatch, "note":""},
             { "storeId":storeIds, "system":"chkExitFoodCatch", "isAllow":1, "pValue":chkExitFoodCatch, "note":""},
             { "storeId":storeIds, "system":"chkAccompanyOutWithMain", "isAllow":1, "pValue":chkAccompanyOutWithMain, "note":""},
+            { "storeId":storeIds, "system":"chkForceClearBalanceOnExitCard", "isAllow":1, "pValue":chkForceClearBalanceOnExitCard, "note":""},
             { "storeId":storeIds, "system":"chkAddLeaveTime", "isAllow":1, "pValue":chkAddLeaveTime, "note":""},
             { "storeId":storeIds, "system":"cmbAutoJoinMemberLevel", "isAllow":1, "pValue":cmbAutoJoinMemberLevel, "note":""},
             { "storeId":storeIds, "system":"txtClientBuyTicketInfo", "isAllow":1, "pValue":cmbAutoJoinMemberLevels.length>0?cmbAutoJoinMemberLevels.join('|'):'', "note":""},

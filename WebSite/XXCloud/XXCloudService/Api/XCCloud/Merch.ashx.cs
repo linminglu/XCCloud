@@ -331,7 +331,7 @@ namespace XXCloudService.Api.XCCloud
                 string pwd = Utils.GetCheckCode(6);
 
                 //生成商户密钥
-                string merchSecret = Utils.GetCheckCode(6).ToLower();
+                string merchSecret = new Guid().ToString("N").ToLower();
 
                 #endregion
                                              
