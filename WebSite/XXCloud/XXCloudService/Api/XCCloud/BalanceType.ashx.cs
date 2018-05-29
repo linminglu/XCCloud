@@ -199,11 +199,12 @@ namespace XXCloudService.Api.XCCloud
                         //    errMsg = "同一商户下余额类别编号不能重复";
                         //    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         //}
-                        //if (Dict_BalanceTypeService.I.Any(p => p.ID != id && p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.HKType != (int)HKType.NoBound && p.HKType == hkType))
-                        //{
-                        //    errMsg = "同一商户下余额类别的关联类别不能重复";
-                        //    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        //}
+
+                        if (Dict_BalanceTypeService.I.Any(p => p.ID != id && p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.MappingType == (int)HKType.Money && p.MappingType == hkType))
+                        {
+                            errMsg = "同一商户下余额类别的储值金关联类别不能重复";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
 
                         var dict_BalanceType = Dict_BalanceTypeService.I.GetModels(p=>p.ID == id).FirstOrDefault() ?? new Dict_BalanceType();
                         dict_BalanceType.ID = id;

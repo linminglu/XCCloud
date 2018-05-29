@@ -604,7 +604,9 @@ namespace XCCloudService.Common.Enum
         [Description("彩票")]
         Lottery = 2, //彩票
         [Description("积分")]
-        Points = 3 //积分
+        Points = 3, //积分
+        [Description("储值金")]
+        Money = 4, //储值金
     }
 
     /// <summary>

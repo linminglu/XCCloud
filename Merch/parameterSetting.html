@@ -461,14 +461,13 @@
     //游乐项目规则设定
     let txtClientBuyTicketInfo;
     let chkAccompanyOutWithMain=0; let chkAddLeaveTime=0; let cmbAutoJoinMemberLevel;let cmbAutoJoinMemberLevels=[];
-    xc.getBalanceTypeDicStore(_storeId,1,token,layer,form,'limitType');
-    xc.getBalanceTypeDicStore(_storeId,1,token,layer,form,'BalanceIndex');
     function ifNeedSet(storeId,form,layer) {
         let obj={'storeId':storeId,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+        // xc.getBalanceTypeDicStore(storeId,1,token,layer,form,'limitType');
 
         $.ajax({
             type: "post",
-            // async:true,
+            // async:false,
             url: '/XCCloud/Parameter?action=GetStandardCoinPrice',
             contentType: "application/json; charset=utf-8",
             data: {parasJson: JSON.stringify(obj)},
@@ -479,7 +478,8 @@
                     if(arr.length==1){
                         $('.priceCoin input[name="CashPrice"]').val(arr[0].CashPrice);
                         $('.priceCoin input[name="CoinCount"]').val(arr[0].CoinCount);
-                        $('.priceCoin select[name="limitType"]').val(arr[0].BalanceIndex);
+                        // $('.priceCoin select[name="limitType"] option[value="'+arr[0].BalanceIndex+'"]').attr({'selected':true});
+                        xc.getBalanceTypeDicStore(_storeId,1,token,layer,form,'limitType',arr[0].BalanceIndex);
                     }else if(arr.length>1){
                         for(let i=1;i<arr.length;i++){
                             $('.priceCoinBox').append($('body').find($('.priceCoin')).eq(0).clone())
@@ -487,49 +487,19 @@
                         for(let i=0;i<arr.length;i++){
                             $('.priceCoinBox').find($('.priceCoin')).eq(i).find('input[name="CashPrice"]').val(arr[i].CashPrice);
                             $('.priceCoinBox').find($('.priceCoin')).eq(i).find('input[name="CoinCount"]').val(arr[i].CoinCount);
-                            $('.priceCoinBox').find($('.priceCoin')).eq(i).find('select[name="limitType"]').val(arr[i].BalanceIndex);
+                            // $('.priceCoinBox').find($('.priceCoin')).eq(i).find('select[name="limitType"] option[value="'+arr[i].BalanceIndex+'"]').attr({'selected':true});
+                            xc.getBalanceTypeDicStore(_storeId,1,token,layer,form,'limitType',arr[i].BalanceIndex);
                         }
                     }
                 }
             }
         });
         //设置招待币/补币
-        $.ajax({
-            type: "post",
-            // async:true,
-            url: '/XCCloud/Parameter?action=GetFreeCoinRule',
-            contentType: "application/json; charset=utf-8",
-            data: {parasJson: JSON.stringify(obj)},
-            success: function (data) {
-                data = JSON.parse(data);
-                if(data.result_code==1){
-                    let arr=data.result_data;
-                    // console.log(arr)
-                    if(arr.length==1){
-                        $('.specilCoin select[name="BalanceIndex"]').val(arr[0].BalanceIndex);
-                        $('.specilCoin input[name="OnceSigleMax"]').val(arr[0].OnceSigleMax);
-                        $('.specilCoin input[name="OnceWarningValue"]').val(arr[0].OnceWarningValue);
-                        $('.specilCoin input[name="DayMax"]').val(arr[0].DayMax);
-                        $('.specilCoin input[name="DayWaringValue"]').val(arr[0].DayWaringValue);
-                    }else if(arr.length>1){
-                        for(let i=1;i<arr.length;i++){
-                            $('.specilCoinBox').append($('body').find($('.specilCoin')).eq(0).clone())
-                        }
-                        for(let i=0;i<arr.length;i++){
-                            $('.specilCoinBox').find($('.specilCoin')).eq(i).find('select[name="BalanceIndex"]').val(arr[i].BalanceIndex);
-                            $('.specilCoinBox').find($('.specilCoin')).eq(i).find('input[name="OnceSigleMax"]').val(arr[i].OnceSigleMax);
-                            $('.specilCoinBox').find($('.specilCoin')).eq(i).find('input[name="OnceWarningValue"]').val(arr[i].OnceWarningValue);
-                            $('.specilCoinBox').find($('.specilCoin')).eq(i).find('input[name="DayMax"]').val(arr[i].DayMax);
-                            $('.specilCoinBox').find($('.specilCoin')).eq(i).find('input[name="DayWaringValue"]').val(arr[i].DayWaringValue);
-                        }
-                    }
-                }
-            }
-        })
+
         //设置基本参数
         $.ajax({
             type: "post",
-            // async:true,
+            // async:false,
             url: '/XCCloud/Parameter?action=GetParamList',
             contentType: "application/json; charset=utf-8",
             data: {parasJson: JSON.stringify(obj)},
@@ -561,7 +531,7 @@
                         ,"chkTaxInSale": arr[22].ParameterValue
                         ,"chkForceClearBalanceOnExitCard": arr[23].ParameterValue==1?true:false
                     });
-                    xc.getMemberTypeDic(token,layer,form,'cmbAutoJoinMemberLevel',arr[16].ParameterValue)
+                    xc.getMemberTypeDic(token,layer,form,'cmbAutoJoinMemberLevel',arr[16].ParameterValue);
                     chkPrintBarcode=arr[3].ParameterValue;
                     chkBarSendCoinAuthorize=arr[4].ParameterValue;
                     txtBusinessClass=arr[5].ParameterValue||'';
@@ -602,13 +572,57 @@
         //设置正价币
 
     }
-
+    function setBbi(storeId,form,layer) {
+    let obj={'storeId':storeId,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+    // xc.getBalanceTypeDicStore(storeId,1,token,layer,form,'BalanceIndex');
+    $.ajax({
+        type: "post",
+        // async:false,
+        url: '/XCCloud/Parameter?action=GetFreeCoinRule',
+        contentType: "application/json; charset=utf-8",
+        data: {parasJson: JSON.stringify(obj)},
+        success: function (data) {
+            data = JSON.parse(data);
+            if(data.result_code==1){
+                let arr=data.result_data;
+                if(arr.length==1){
+                    // $('select[name="BalanceIndex"]')
+                    xc.getBalanceTypeDicNode(_storeId,1,token,layer,form,$('.specilCoin select[name="BalanceIndex"]'),arr[0].BalanceIndex);
+                    // xc.getBalanceTypeDicStore(_storeId,1,token,layer,form,'BalanceIndex',arr[0].BalanceIndex);
+                    // $('.specilCoin select[name="BalanceIndex"] option[value="'+arr[0].BalanceIndex+'"]').attr({'selected':true});
+                    $('.specilCoin input[name="OnceSigleMax"]').val(arr[0].OnceSigleMax);
+                    $('.specilCoin input[name="OnceWarningValue"]').val(arr[0].OnceWarningValue);
+                    $('.specilCoin input[name="DayMax"]').val(arr[0].DayMax);
+                    $('.specilCoin input[name="DayWaringValue"]').val(arr[0].DayWaringValue);
+                }else if(arr.length>1){
+                    for(let i=1;i<arr.length;i++){
+                        $('.specilCoinBox').append($('body').find($('.specilCoin')).eq(0).clone());
+                    }
+                    for(let i=0;i<arr.length;i++){
+                        // xc.getBalanceTypeDicStore(_storeId,1,token,layer,form,'BalanceIndex',arr[i].BalanceIndex);
+                        xc.getBalanceTypeDicNode(_storeId,1,token,layer,form, $('.specilCoinBox').find($('.specilCoin')).eq(i).find('select[name="BalanceIndex"]'),arr[i].BalanceIndex);
+                        // $('.specilCoinBox').find($('.specilCoin')).eq(i).find('select[name="BalanceIndex"] option[value="'+arr[i].BalanceIndex+'"]').attr({'selected':true});
+                        $('.specilCoinBox').find($('.specilCoin')).eq(i).find('input[name="OnceSigleMax"]').val(arr[i].OnceSigleMax);
+                        $('.specilCoinBox').find($('.specilCoin')).eq(i).find('input[name="OnceWarningValue"]').val(arr[i].OnceWarningValue);
+                        $('.specilCoinBox').find($('.specilCoin')).eq(i).find('input[name="DayMax"]').val(arr[i].DayMax);
+                        $('.specilCoinBox').find($('.specilCoin')).eq(i).find('input[name="DayWaringValue"]').val(arr[i].DayWaringValue);
+                    }
+                }
+            }
+        }
+    })
+}
     layui.use(['element','form','layer','table'], function(){
         let element = layui.element;
         let form=layui.form;
         let layer=layui.layer;
         let table=layui.table;
-        ifNeedSet(_storeId,form,layer);
+        // xc.getBalanceTypeDicStore(_storeId,1,token,layer,form,'BalanceIndex');
+        // xc.getBalanceTypeDicStore(_storeId,1,token,layer,form,'limitType');
+        ifNeedSet(_storeId,form,layer)
+        setTimeout(setBbi(_storeId,form,layer),200);
+
+
         //正价币增加 或者减少一条
         $('#addPrice').on('click',function () {
            if($('.priceCoinBox').find($('.priceCoin')).length<$('body').find('select[name="limitType"]').eq(0).find('option').length-1) {

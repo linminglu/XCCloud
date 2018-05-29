@@ -1569,7 +1569,6 @@ xcActionSystem.prototype= {
             data:{parasJson: parseJson},
             success: function (data) {
                 data = JSON.parse(data);
-                console.log(data);
                 if (data.result_code == 1) {
                     let arr=data.result_data;
                     $('select[name="'+name+'"]').html('<option>-请选择-</option>');
