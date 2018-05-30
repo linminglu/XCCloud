@@ -10,12 +10,15 @@ namespace PalletService.Business.WorkStation
 {
     public class WorkStationBusiness
     {
-        public static bool Register(WorkStationRegisterModel model, ref object result_data,out string token)
+        public static bool Register(string dogId,string workStation, ref object result_data,out string token)
         {
             token = string.Empty;
             string errMsg = string.Empty;
-            string url = SysConfigBusiness.XCCloudHost + "/xccloud/XCCloudMD5Key?action=getMd5Token";
-            string param = Utils.SerializeObject(model);
+            WorkStationRegisterModel model = new WorkStationRegisterModel();
+            model.DogId = Computer.DogId;
+            model.WorkStation = Computer.WorkStation;
+            string url = SysConfigBusiness.XCCloudHost + "/xccloud/Workstation?action=AddWorkStation";
+            string param = Utils.DataContractJsonSerializer(model);
             string resultJson = Utils.HttpPost(url, param);
             if (Utils.CheckApiReturnJson(resultJson, ref result_data, out errMsg))
             {

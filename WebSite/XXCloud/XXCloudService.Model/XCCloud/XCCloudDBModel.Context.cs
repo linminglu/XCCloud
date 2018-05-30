@@ -165,7 +165,6 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Store_HeadTotal> Store_HeadTotal { get; set; }
         public virtual DbSet<XC_WorkInfo> XC_WorkInfo { get; set; }
         public virtual DbSet<Data_DigitCoin> Data_DigitCoin { get; set; }
-        public virtual DbSet<Data_GameFreeLotteryRule> Data_GameFreeLotteryRule { get; set; }
         public virtual DbSet<Data_GoodExitInfo> Data_GoodExitInfo { get; set; }
         public virtual DbSet<Data_GoodOutOrder> Data_GoodOutOrder { get; set; }
         public virtual DbSet<Data_GoodOutOrder_Detail> Data_GoodOutOrder_Detail { get; set; }
@@ -191,5 +190,9 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Data_GameAPP_MemberRule> Data_GameAPP_MemberRule { get; set; }
         public virtual DbSet<Data_GoodInventory> Data_GoodInventory { get; set; }
         public virtual DbSet<Data_GoodStock_Record> Data_GoodStock_Record { get; set; }
+        public virtual DbSet<Flw_MemberCard_BalanceCharge> Flw_MemberCard_BalanceCharge { get; set; }
+        public virtual DbSet<Flw_MemberCard_Exit> Flw_MemberCard_Exit { get; set; }
+        public virtual DbSet<Data_GameFreeLotteryRule> Data_GameFreeLotteryRule { get; set; }
+        public virtual DbSet<Base_DeviceInfo_Ext> Base_DeviceInfo_Ext { get; set; }
     }
 }

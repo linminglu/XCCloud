@@ -36,12 +36,13 @@
                     </select>
                 </div>
             </div>
-             <div class="layui-inline GameCode" >
-                <label class="layui-form-label">出厂编号</label>
+            <div class="layui-inline State goodIsAll">
+                <label class="layui-form-label">设备启用</label>
                 <div class="layui-input-inline">
-                    <input type="text"  class="layui-input" name="GameCode" id="GameCode">
+                    <input type="checkbox" checked lay-filter="StateLow" lay-skin="switch" lay-text="启用|禁用" id="StateLow" name="StateLow">
                 </div>
             </div>
+            <br>
             <div class="layui-inline AreaID" >
                 <label class="layui-form-label">区域</label>
                 <div class="layui-input-inline">
@@ -90,39 +91,47 @@
                     <input type="checkbox" lay-filter="chkCheckGift" name="chkCheckGift" lay-skin="switch" lay-text="启用|禁用" id="chkCheckGift">
                 </div>
             </div>
-            <div class="layui-inline State goodIsAll">
-                <label class="layui-form-label">设备启用</label>
-                <div class="layui-input-inline">
-                    <input type="checkbox" checked lay-filter="StateLow" lay-skin="switch" lay-text="启用|禁用" id="StateLow" name="StateLow">
-                </div>
-            </div>
-
-
-            <div class="layui-inline Area" >
-                <label class="layui-form-label">占地面积(m^2)</label>
-                <div class="layui-input-inline">
-                    <input type="text"  class="layui-input" placeholder="平方米" id="Area" name="Area">
-                </div>
-            </div>
-            <div class="layui-inline ChangeTime" >
-                <label class="layui-form-label">采购时间</label>
-                <div class="layui-input-inline">
-                    <input type="text"  class="layui-input"  id="ChangeTime" name="ChangeTime">
-                </div>
-            </div>
-            <div class="layui-inline Price" >
-                <label class="layui-form-label">采购价格</label>
-                <div class="layui-input-inline">
-                    <input type="text"  class="layui-input" placeholder="元" id="Price" name="Price">
-                </div>
-            </div>
-            <div class="layui-inline Evaluation" >
-                <label class="layui-form-label" style="padding: 8px 0px!improtant">新旧程度(1-10)</label>
-                <div class="layui-input-inline">
-                    <input type="text"  class="layui-input" placeholder="1-10成新" id="Evaluation" name="Evaluation">
+        </div>
+        <div class="layui-collapse">
+            <div class="layui-colla-item">
+                <h2 class="layui-colla-title">附加参数</h2>
+                <div class="layui-colla-content">
+                    <div class="layui-form-item">
+                        <div class="layui-inline Area" >
+                            <label class="layui-form-label">占地面积(m^2)</label>
+                            <div class="layui-input-inline">
+                                <input type="text"  class="layui-input" placeholder="平方米" id="Area" name="Area">
+                            </div>
+                        </div>
+                        <div class="layui-inline ChangeTime" >
+                            <label class="layui-form-label">采购时间</label>
+                            <div class="layui-input-inline">
+                                <input type="text"  class="layui-input"  id="ChangeTime" name="ChangeTime">
+                            </div>
+                        </div>
+                        <div class="layui-inline Price" >
+                            <label class="layui-form-label">采购价格</label>
+                            <div class="layui-input-inline">
+                                <input type="text"  class="layui-input" placeholder="元" id="Price" name="Price">
+                            </div>
+                        </div>
+                        <div class="layui-inline Evaluation" >
+                            <label class="layui-form-label" style="padding: 8px 0px!improtant">新旧程度(1-10)</label>
+                            <div class="layui-input-inline">
+                                <input type="text"  class="layui-input" placeholder="1-10成新" id="Evaluation" name="Evaluation">
+                            </div>
+                        </div>
+                        <div class="layui-inline GameCode" >
+                            <label class="layui-form-label">游戏机编号</label>
+                            <div class="layui-input-inline">
+                                <input type="text"  class="layui-input" name="GameCode" id="GameCode">
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+
         <div class="layui-col-xs12 layui-col-md12 " style="margin-bottom: 15px;text-align:center;">
             <button class="layui-btn layui-btn-normal toHighOpen" type="button">高级设置</button>
             <button class="layui-btn layui-btn-normal saveBox" type="button" id="easySaveBtn">确定</button>
@@ -141,7 +150,7 @@
                 <li>博彩专用设置</li>
             </ul>
             <div class="layui-tab-content">
-                <div class="layui-tab-item layui-show" style="padding-left: 10px">
+                <div class="layui-tab-item layui-show" style="padding-left: 10px;height: 500px;overflow: auto">
                     <div class="layui-card">
                         <div class="layui-card-body">
                             <div class="layui-form-item">
@@ -214,7 +223,7 @@
                                   <div class="layui-inline memberSend">
                                       <label class="layui-form-label">会员级别</label>
                                       <div class="layui-input-inline">
-                                          <select name="BalanceIndex" lay-ignore style="height: 36px;width: 150px" id="memberLevels">
+                                          <select name="BalanceIndex" lay-filter="memberLevels" id="memberLevels">
 
                                           </select>
                                       </div>
@@ -231,13 +240,13 @@
                                   <div class="layui-inline" style="width: 140px;">
                                       <div class="layui-input-inline">
                                           <div class="layui-btn-group">
-                                              <button type="button" class="layui-btn" id="addCoin"> <i class="layui-icon">&#xe654;</i></button>
-                                              <button type="button" class="layui-btn" id="delCoin"><i class="layui-icon layui-icon-close"></i></button>
+                                              <button type="button" class="layui-btn" id="addmemberElec"> <i class="layui-icon">&#xe654;</i></button>
+                                              <!--<button type="button" class="layui-btn" id="delCoin"><i class="layui-icon layui-icon-close"></i></button>-->
                                           </div>
                                       </div>
                                   </div>
                               </div>
-
+                                <table class="layui-hide" id="memberElec" lay-filter="memberElec"></table>
                           </div>
                       </div>
 
@@ -308,7 +317,7 @@
                                         <select name="PushBalanceIndex11" lay-filter="PushBalanceIndex11" id="PushBalanceIndex11"></select>
                                     </div>
                                 </div>
-                                <div class="layui-inline PushCoin1">name
+                                <div class="layui-inline PushCoin1">
                                     <label class="layui-form-label">扣卡里金币数</label>
                                     <div class="layui-input-inline">
                                         <input type="text" class="layui-input" name="PushCoin11">
@@ -317,10 +326,10 @@
                                 <div class="layui-inline PushBalanceIndex2">
                                     <label class="layui-form-label">按钮二投币类别</label>
                                     <div class="layui-input-inline">
-                                        <select name="PushBalanceIndex1" lay-filter="PushBalanceIndex2" id="PushBalanceIndex2"></select>
+                                        <select name="PushBalanceIndex2" lay-filter="PushBalanceIndex2" id="PushBalanceIndex2"></select>
                                     </div>
                                 </div>
-                                <div class="layui-inline PushCoin2">name
+                                <div class="layui-inline PushCoin2">
                                     <label class="layui-form-label">扣卡里金币数</label>
                                     <div class="layui-input-inline">
                                         <input type="text" class="layui-input" name="PushCoin2">
@@ -684,7 +693,7 @@
                                     </div>
                                 </div>
                                 <div class="layui-inline NotGiveBack">
-                                    <label class="layui-form-label">不参与返还</label>
+                                    <label class="layui-form-label">参与返还</label>
                                     <div class="layui-input-inline">
                                         <input type="checkbox"  lay-skin="switch" lay-text="启用|禁用" name="NotGiveBack" lay-filter="NotGiveBack">
                                     </div>
@@ -712,9 +721,6 @@
             <button type="button" class="layui-btn layui-btn-normal saveBox" id="highSaveBtn">保存</button>
         </div>
     </form>
-    <!--<div style="text-align: center;margin-bottom: 15px;">-->
-        <!--<button type="button" class="layui-btn" id="saveCodeBtn">确定</button>-->
-    <!--</div>-->
 </div>
 
 <!--扫码规则-->
@@ -850,8 +856,8 @@
         SecondStartInterval=0,
         OutSpeed=35,
         OutPulse=35,CountLevel=0,OutLevel=0,ExceptOutTest=0,ExceptOutSpeed=45;
-
-let memberLevelId='';
+let FreeLotteryRules=[];
+let memberLevelId='';let memberLevels='';let MemberLevelNames='';
     //简易模式保存
     function saveEasy(form,layer) {
         let url='/XCCloud/GameInfo?action=SaveGameInfo';
@@ -873,7 +879,7 @@ let memberLevelId='';
             'Price':$('#Price').val(),
             'Evaluation':$('#Evaluation').val(),
              'GameCode':$('#GameCode').val(),
-             'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'}
+             'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
         let parasJson = JSON.stringify(_obj);
         $.ajax({
             type: "post",
@@ -895,19 +901,6 @@ let memberLevelId='';
     //高级模式保存
     function saveHigh(form,layer) {
      let url='/XCCloud/GameInfo?action=SaveGameInfo';
-     let FreeLotteryRule=[];
-
-        $('.memberSendBox .memberSend').each(function () {
-            if($(this).find('select[name="BalanceIndex"] option:selected').val()&&$(this).find('input[name="count"]').val()!=''&&
-                $(this).find('input[name="sendcount"]').val()!=''
-            ) {
-                FreeLotteryRule.push({
-                    'MemberLevelID': $(this).find('select[name="BalanceIndex"] option:selected').val(),
-                    'BaseLottery': $(this).find('input[name="count"]').val(),
-                    'FreeCount': $(this).find('input[name="sendcount"]').val()
-                })
-            }
-        });
      let _obj={'ID':id,
          'gameMode':1,
          'GameName':$('#GameName').val(),
@@ -919,7 +912,7 @@ let memberLevelId='';
          'LowLimit':$('input[name="LowLimit"]').val(),
          'HighLimit':$('input[name="HighLimit"]').val(),
         'AreaID':AreaID1,
-         FreeLotteryRules:FreeLotteryRule.length>0?FreeLotteryRule:'',
+         FreeLotteryRules:FreeLotteryRules.length>0?FreeLotteryRules:'',
          'Area':$('input[name="hArea"]').val(),
          'ChangeTime':$('input[name="hChangeTime"]').val(),
          'Price':$('input[name="hPrice"]').val(),
@@ -1309,6 +1302,10 @@ let memberLevelId='';
       form.on('select(PushStartInterval)',(data)=>{
           PushStartInterval=data.value;
       });
+      form.on('select(memberLevels)',(data)=>{
+          memberLevels=data.value;
+          MemberLevelNames=data.elem[data.elem.selectedIndex].text;
+      });
       $('#easySaveBtn').click(function () {
           saveEasy(form,layer);
       });
@@ -1322,22 +1319,9 @@ let memberLevelId='';
            saveHigh(form,layer);
        });
    $('#addNew').click(function (){
-           // eAreaID='';ePushBalanceIndex1='';eGameType='';
-           // ePushLevel=0;LotteryModeLow=0;eOnlyExitLottery=0;
-           // eReadCat=0;echkCheckGift=0;StateLow=1;
-           //
-           // AreaID1='';State=1;PushBalanceIndex11=' ';PushBalanceIndex2='';GameType='';
-           // OutBalanceIndex='';ReturnCheck=0;OutsideAlertCheck=0;
-           // ICTicketOperation=0;NotGiveBack=0;LotteryMode=0;OnlyExitLottery=0;
-           // chkCheckGift1=0;AllowElecPush=0;GuardConvertCard=0;ReadCat=0;
-           // AllowRealPush=0;BanOccupy=0;StrongGuardConvertCard=0;
-           // AllowElecOut=0;NowExit=0;BOLock=0;BOPulse=500;AllowRealOut=0;BOKeep=0;
-           // PushSpeed=35;PushPulse=35;PushLevel=0;PushStartInterval=0;
-           // UseSecondPush=0;SecondSpeed=150;SecondPulse=200;SecondLevel=0;
-           // SecondStartInterval=0;OutSpeed=35;
-           // OutPulse=35;CountLevel=0;OutLevel=0;ExceptOutTest=0;ExceptOutSpeed=45;
+
        $('.saveBox').css('display','inline-block');
-       xc.getGameInfoByid('',token,form,layer);
+       xc.getGameInfoByid('',token,form,layer,table);
 
    });
       //监听表格tool事件
@@ -1385,7 +1369,7 @@ let memberLevelId='';
               })
 
           }else if(layEvent==='edit'){
-              xc.getGameInfoByid(data.ID,token,form,layer);
+              xc.getGameInfoByid(data.ID,token,form,layer,table);
               $('.saveBox').css('display','inline-block');
           }else if(layEvent==='del'){
               layer.confirm('真的删除行么', function(index){
@@ -1635,7 +1619,21 @@ let memberLevelId='';
               });
           }
       });
-        $('#saveMemCode').click(function () {
+      table.on('tool(memberElec)',function (obj) {
+          var data = obj.data; //获得当前行数据
+          var layEvent = obj.event;
+          if(layEvent==='del'){
+              for(let i in FreeLotteryRules){
+                  if(FreeLotteryRules[i].MemberLevelID==data.MemberLevelID&&
+                      FreeLotteryRules[i].BaseLottery==data.BaseLottery&&
+                  FreeLotteryRules[i].FreeCount==data.FreeCount){
+                      FreeLotteryRules.splice(i,1);
+                      obj.del();
+                  }
+              }
+          }
+      });
+      $('#saveMemCode').click(function () {
             xc.getMemberTypeDic(token,layer,form,'memberLevelId');
             xc.getBalanceTypeDic ('',token,layer,form,'BalanceIndex1');
             xc.getBalanceTypeDic('',token,layer,form,'BalanceIndex2');
@@ -1692,6 +1690,19 @@ let memberLevelId='';
               }
           })
       });
+      $('#addmemberElec').click(function () {
+          if(memberLevels!=''&&$('input[name="count"]').val()!=''&&$('input[name="sendcount"]').val()!=''){
+              FreeLotteryRules.push({'MemberLevelID':memberLevels,
+                  'MemberLevelName':MemberLevelNames,
+                  'BaseLottery':$('input[name="count"]').val(),
+                  'FreeCount':$('input[name="sendcount"]').val()})
+          }else {layer.msg('必填项不能为空')}
+          newMemberElec(table,FreeLotteryRules);
+          memberLevels='';
+          $('input[name="count"]').val('')
+          $('input[name="sendcount"]').val('')
+          xc.getMemberTypeDic(token,layer,form,'memberLevels');
+      })
   });
 
   xcActionSystem.prototype.openEasy=(layer)=>{
@@ -1699,7 +1710,7 @@ let memberLevelId='';
       let index1=layer.open({
           type:1,
           title:'游戏机档案设置',
-          area:'675px',
+          area:'700px',
           content:$('#easyType')
       })
   };
@@ -1709,11 +1720,11 @@ let memberLevelId='';
       let index2=layer.open({
           type:1,
           title:'游戏机档案设置',
-          area:'1030px',
+          area:'1060px',
           content:$('#highType')
       })
   };
-  xcActionSystem.prototype.getGameInfoByid=(id,tokens,form,layer)=>{
+  xcActionSystem.prototype.getGameInfoByid=(id,tokens,form,layer,table)=>{
       let _obj={'id':id,'userToken':tokens,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
       let url='/XCCloud/GameInfo?action=GetGameInfo';
       let parasJson = JSON.stringify(_obj);
@@ -1778,9 +1789,9 @@ let memberLevelId='';
                               'AreaID1':arr[5].value,
                               "GameName":arr[6].value,
                               'State': arr[8].value==1?true:false,
-                              'PushBalanceIndex11': arr[9].value==1?true:false,
+                              'PushBalanceIndex11': arr[9].value,
                               'PushCoin11': arr[10].value,
-                              'PushBalanceIndex2': arr[11].value==1?true:false,
+                              'PushBalanceIndex2': arr[11].value,
                               'PushCoin2': arr[12].value,
                               'OutBalanceIndex': arr[13].value,
                               'ReturnCheck': arr[14].value==1?true:false,
@@ -1882,6 +1893,8 @@ let memberLevelId='';
                           GameType=arr[7].value;
                           eGameType=arr[7].value;
                           xc.getGameType(token,layer,form,'游戏机类型','GameType',arr[7].value);
+                          FreeLotteryRules=arr[66].value;
+                          newMemberElec(table,arr[66].value)
                           xc.openEasy(layer);
 
                           form.render();
@@ -1938,7 +1951,23 @@ let memberLevelId='';
               }else {layer.msg(data.result_msg||data.return_msg)}
           }
       })
+  };
+  function newMemberElec(table,arr) {
+      table.render({
+          elem: '#memberElec'
+          , height:'200px'
+          , size:"sm"
+          , data:arr
+          , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+          , cols: [[
+              {field:'MemberLevelName',title: '会员级别', align: 'center',width:230} //width 支持：数字、百分比和不填写。
+              ,{field:'BaseLottery', title: '赠送彩票数', align: 'center',width:230}
+              ,{field:'FreeCount', title: '赠送彩票基数', align: 'center',width:230}
+              ,{fixed: 'right',title:'操作', width:240, align:'center', toolbar: '#barDemo2'}
+          ]]
+      });
   }
+
   $('body').find($('.layui-form-item>div')).on('mouseenter','label',function () {
          let _this=$(this);
          layui.use('layer',function () {
@@ -1957,6 +1986,9 @@ let memberLevelId='';
     <a class="layui-btn layui-btn-xs" lay-event="detail">散客扫码优惠规则</a>
     <a class="layui-btn layui-btn-xs" lay-event="memberCode">会员扫码优惠规则</a>
     <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+<script type="text/html" id="barDemo2">
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
 </script>
 <script type="text/html" id="barDemo1">

@@ -16,6 +16,7 @@ namespace PalletService
         public static string CurDownload = "";
         public static string ProcessName = "莘宸自助机";
 
+
         /// <summary>
         /// 应用程序的主入口点。
         /// </summary>

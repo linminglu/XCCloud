@@ -10,12 +10,16 @@ namespace PalletService.Business.Dog
 {
     public class DogBusiness
     {
-        public static bool GetMD5Token(DogMD5RequestModel model,out string token,out string errMsg)
+        public static bool GetMD5Token(string merchId,string storeId,out string token,out string errMsg)
         {
             token = string.Empty;
+            DogMD5RequestModel requestModel = new DogMD5RequestModel();
+            requestModel.MerchID = merchId;
+            requestModel.StoreID = storeId;
+
             object result_data = new object();
             string url = SysConfigBusiness.XCCloudHost + "/xccloud/XCCloudMD5Key?action=getMd5Token";
-            string param = Utils.SerializeObject(model);
+            string param = Utils.SerializeObject(requestModel);
             string resultJson = Utils.HttpPost(url, param);
 
             if (Utils.CheckApiReturnJson(resultJson, ref result_data, out errMsg))

@@ -47,10 +47,11 @@ namespace PalletService
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            Computer.ComputeInfo();
             this.SysConfigInit();
             this.ContextMenuInit();
             this.UpgradeInit();
-            this.RegisterWorkStation();
+            this.RegisterWorkStation(); 
         }
 
         private void UpgradeInit()
@@ -646,35 +647,14 @@ namespace PalletService
 
         private void RegisterWorkStation()
         {
-
-        }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
             string token = string.Empty;
             WorkStationRegisterModel model = new WorkStationRegisterModel();
-            model.MerchId = Program.MerchId;
-            model.StoreId = Program.StoreID;
-
             object result_data = new object();
-            if (WorkStationBusiness.Register(model, ref result_data,out token))
+
+            if (WorkStationBusiness.Register(Computer.DogId, Computer.WorkStation, ref result_data, out token))
             {
 
             }
         }
-
-        private void button3_Click(object sender, EventArgs e)
-        {
-            string errMsg = string.Empty;
-            string token = string.Empty;
-            DogMD5RequestModel model = new DogMD5RequestModel();
-            model.MerchID = "20180521";
-            model.StoreID = "100025420106001";
-            if (DogBusiness.GetMD5Token(model,out token, out errMsg))
-            { 
-                
-            }
-        }
-
     }
 }

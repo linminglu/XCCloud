@@ -9,10 +9,10 @@ namespace PalletService.Model.WorkStation
     [DataContract]
     public class WorkStationRegisterModel
     {
-        [DataMember(Name = "merchId", Order = 1)]
-        public string MerchId { set; get; }
+        [DataMember(Name = "dogId", Order = 1)]
+        public string DogId { set; get; }
 
-        [DataMember(Name = "storeId", Order = 2)]
-        public string StoreId { set; get; }
+        [DataMember(Name = "workStation", Order = 2)]
+        public string WorkStation { set; get; }
     }
 }

@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>卡头管理</title>
+    <link rel="stylesheet" href="layui/css/layui.css">
+</head>
+<body>
+<div class="layui-row">
+    <blockquote style="text-align: right;padding-right: 150px;" class="layui-col-md12 layui-col-xs12 layui-col-lg12 layui-elem-quote">
+        <!--<button type="button" class="layui-btn layui-btn-normal toEasyOpen" id="addNew"><i class="layui-icon">&#xe654;</i>新增</button>-->
+    </blockquote>
+    <table class="layui-hide" lay-filter="gameDeviceTable" id="gameDeviceTable"></table>
+</div>
+<!--设备绑定、设备解绑-->
+<div id="deviceBindOpen" style="padding: 15px;display: none;" class="goodIsAll">
+    <form action="" class="layui-form-pane layui-form">
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">选择游戏机</label>
+                <div class="layui-input-inline">
+                    <select name="" id="gameIndexId" lay-filter="gameIndexId"></select>
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">选择路由器</label>
+                <div class="layui-input-inline">
+                    <select name="" id="bindDeviceId" lay-filter="bindDeviceId"></select>
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">游戏机P位</label>
+                <div class="layui-input-inline">
+                    <input type="text" class="layui-input" id="siteName">
+                </div>
+            </div>
+        </div>
+    </form>
+    <div style="text-align:right; padding-right: 50px;">
+        <button type="button" class="layui-btn layui-btn-normal" id="cancelBtn">取消</button>
+        <button type="button" class="layui-btn layui-btn-normal" id="saveBtn">确定</button>
+    </div>
+</div>
+<!--二维码展示区-->
+<div id="codeBox" class="layer-photos-demo" style="display: none;padding: 15px;">
+    <div id="qrcode" style="width:180px; height:180px;margin: 10px 25px;"></div>
+</div>
+<!--关联方式/门票/计时-->
+<div id="bindTableBox" style="padding: 15px;display: none;width: 630px">
+    <!--<div style="text-align: right;"><button type="button" class="layui-btn layui-btn-normal" id="addBind">新增</button></div>-->
+    <table id="bindTable" lay-filter="bindTable" class="layui-hide" style="height: 300px;width: 600px;"></table>
+    <div style="text-align:center; margin: 15px;">
+        <button type="button" class="layui-btn layui-btn-normal" id="saveBind">确定</button>
+        <button type="reset" class="layui-btn layui-btn-normal">重置</button>
+    </div>
+</div>
+<div id="joinWay" style="padding: 15px;display: none;" class="goodIsAll">
+    <form action="" class="layui-form layui-form-pane">
+        <div class="layui-form-item" >
+            <label for="" class="layui-form-label">门票类别</label>
+            <div class="layui-input-inline">
+                <select class="layui-input" id="ProjectID" lay-filter="ProjectID"></select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="" class="layui-form-label">验证方式</label>
+            <div class="layui-input-inline">
+                <select class="layui-input" id="SignType" lay-filter="SignType">
+                    <option value="0" selected>签入</option>
+                    <option value="1">签出</option>
+                    <option value="2">单次</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item " id="goodIsAll">
+            <label for="" class="layui-form-label">入场锁定</label>
+            <div class="layui-input-inline">
+                <input type="checkbox" lay-skin="switch" lay-text="启用|禁用" id="LockMember" lay-filter="LockMember">
+            </div>
+        </div>
+    </form>
+    <div style="text-align:center; margin: 15px;">
+        <button type="button" class="layui-btn layui-btn-normal" id="saveAddBind">确定</button>
+        <button type="reset" class="layui-btn layui-btn-normal">重置</button>
+    </div>
+</div>
+<!--报警日志-->
+<div id="clockNote" style="padding: 15px;display: none">
+    <table class="layui-hide" id="clockNoteTable" lay-filter="clockNoteTable"></table>
+</div>
+</body>
+<script src="js/jquery-1.8.3-min.js"></script>
+<script src="layui/layui.js"></script>
+<script src="js/storeSystem.js"></script>
+<script src="js/qrcode.min.js"></script>
+<script>
+    let index;
+    let xc=xcActionSystem.prototype;
+    let token=xc.getStorage('token');
+    let _state;
+    let _id;
+    let gameIndexId='';
+    let bindDeviceId='';
+    let ProjectID='';let ProjectName='';let SignType=0;let LockMember=0; let bindType=0;let arrBindTable=[];
+    let parm={'obj':{'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'},
+        'url':'/XCCloud/DeviceInfo?action=QueryHeadDeviceInfo',
+        'elem':'#gameDeviceTable',
+        'cols':[
+            {field:'ID', title:'设备流水号', align: 'center', sort: true,width:80}
+            ,{field:'MCUID',title: '设备序列号', align: 'center'}
+            ,{field:'DeviceName', title: '设备别名', align: 'center'}
+            ,{field:'GameTypeStr', title: '游戏机类型', align: 'center'}
+            ,{field:'GameName', title: '游戏机名', align: 'center'}
+            ,{field:'SiteName', title: 'P位编号', align: 'center'}
+            ,{field:'segment', title: '网络段号', align: 'center'}
+            ,{field:'Address', title: '机头地址', align: 'center'}
+            ,{field:'AreaName', title: '区域名称', align: 'center'}
+            ,{field:'DeviceStatus',fixed: 'right', title: '工作状态', align: 'center',templet:'#changeLock',width:90}
+            ,{field:'DeviceRunning',fixed: 'right', title: '运行状态', align: 'center',width:90}
+            ,{fixed: 'right', title: '操作', width:350, align:'center', toolbar: '#barDemo'}]
+    };
+    xc.getInitData(parm);
+    var qrcode = new QRCode(document.getElementById("qrcode"), {
+        width : 180,
+        height : 180
+    });
+    layui.use(['form','table','layer'],function () {
+        let form=layui.form;
+        let table=layui.table;
+        let layer=layui.layer;
+        form.on('select(gameIndexId)',function (data) {
+            gameIndexId=data.value;
+        });
+        form.on('select(bindDeviceId)',function (data) {
+            bindDeviceId=data.value;
+        });
+        form.on('select(ProjectID)',function (data) {
+            ProjectID=data.value;
+            ProjectName=data.elem[data.elem.selectedIndex].text;
+        });
+        form.on('select(SignType)',function (data) {
+            SignType=data.value;
+        });
+        form.on('switch(LockMember)',function (data) {
+            if (data.elem.checked==true){
+                LockMember=1;
+            }else {
+                LockMember=0;
+            }
+        });
+        //删除绑定的门票或者计时
+        table.on('tool(bindTable)',function (obj) {
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event;
+            if(layEvent === 'del'){ //机台绑定
+                for (let i in arrBindTable){
+                    if(arrBindTable[i].ProjectID==data.ProjectID){
+                        arrBindTable.splice(i,1);
+                        obj.del();
+                    }
+                }
+            }
+        });
+
+        table.on('tool(gameDeviceTable)',function (obj) {
+            var data = obj.data; //获得当前行数据
+            _id=data.ID;
+            var layEvent = obj.event;
+            if(layEvent === 'bindMachine'){ //机台绑定
+                xc.getGameInfoDic(token,layer,form,'gameIndexId');
+                xc.getRouteDevice(token,layer,form,'bindDeviceId');
+                _state=1;
+                $('#siteName').html('');
+                layer.open({
+                    title:'绑定游戏机和路由器',
+                    type:1,
+                    area:'400px',
+                    content:$('#deviceBindOpen')
+                });
+            } else if(layEvent === 'unBindMachine'){ //机台解绑
+                layer.confirm('确定解绑该设备吗？', function(index){
+                    Id=data.ID;
+                    let _obj={'id':data.ID,'state':0,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                    let parseJson = JSON.stringify(_obj);
+                    $.ajax({
+                        type:'post',
+                        url:'/XCCloud/DeviceInfo?action=BindDeviceInfo',
+                        contentType: "application/json; charset=utf-8",
+                        data:{parasJson: parseJson},
+                        success: function (data) {
+                            data = JSON.parse(data);
+                            if (data.result_code == 1) {
+                                location.reload();
+                            } else {
+                                layer.msg(data.result_msg);
+                            }
+                        }
+                    })
+                });
+            } else if(layEvent === 'lock'){ //锁定
+                layer.confirm('确定锁定该设备吗？', function(index){
+                    Id=data.ID;
+                    let _obj={'id':data.ID,'state':1,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                    let parseJson = JSON.stringify(_obj);
+                    $.ajax({
+                        type:'post',
+                        url:'/XCCloud/DeviceInfo?action=LockDeviceInfo',
+                        contentType: "application/json; charset=utf-8",
+                        data:{parasJson: parseJson},
+                        success: function (data) {
+                            data = JSON.parse(data);
+                            if (data.result_code == 1) {
+                                location.reload();
+                            } else {
+                                layer.msg(data.result_msg);
+                            }
+                        }
+                    })
+                });
+            }else if(layEvent === 'unLock'){ //解锁
+                layer.confirm('确定解锁该设备吗？', function(index){
+                    Id=data.ID;
+                    let _obj={'id':data.ID,'state':0,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                    let parseJson = JSON.stringify(_obj);
+                    $.ajax({
+                        type:'post',
+                        url:'/XCCloud/DeviceInfo?action=LockDeviceInfo',
+                        contentType: "application/json; charset=utf-8",
+                        data:{parasJson: parseJson},
+                        success: function (data) {
+                            data = JSON.parse(data);
+                            if (data.result_code == 1) {
+                                location.reload();
+                            } else {
+                                layer.msg(data.result_msg);
+                            }
+                        }
+                    })
+                });
+            }else if(layEvent === 'code'){ //查看二维码
+                Id=data.ID;
+                let _obj={'id':data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                let parseJson = JSON.stringify(_obj);
+                $.ajax({
+                    type:'post',
+                    url:'/XCCloud/DeviceInfo?action=GetDeviceQr',
+                    contentType: "application/json; charset=utf-8",
+                    data:{parasJson: parseJson},
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        if (data.result_code == 1) {
+                            qrcode.makeCode( data.result_data);
+                            layer.open({
+                                title:'二维码',
+                                type:1,
+                                area:'260px',
+                                anim: 5, //0-6的选择，指定弹出图片动画类型，默认随机（请注意，3.0之前的版本用shift参数）
+                                content:$('#codeBox')
+                            });
+                        } else {
+                            layer.msg(data.result_msg);
+                        }
+                    }
+                })
+            }else if(layEvent==='bindTicket'){
+                bindType=0;
+
+                let _obj={'id':data.ID,'joinType':0,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                let parseJson = JSON.stringify(_obj);
+                $.ajax({
+                    type:'post',
+                    url:'/XCCloud/DeviceInfo?action=GetBindProject',
+                    contentType: "application/json; charset=utf-8",
+                    data:{parasJson: parseJson},
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        if (data.result_code == 1) {
+                            arrBindTable=data.result_data,
+                                table.render({
+                                    elem:'#bindTable',
+                                    data:arrBindTable,
+                                    size:'sm',
+                                    cols:[[
+                                        {field:'ProjectID', title:'门票ID', align: 'center', sort: true,width:120}
+                                        ,{field:'ProjectName',title: '门票名称', align: 'center',width:120} //width 支持：数字、百分比和不填写。
+                                        ,{field:'SignType', title: '验证类型', align: 'center',width:120,templet:'#SignType'}
+                                        ,{field:'LockMember', title: '入场锁定', align: 'center',width:120,templet:'#LockMember'}
+                                        ,{fixed: 'right', title: '操作', width:140, align:'center', toolbar: '#barDemo1'}
+                                    ]]
+                                    , page: {page: true, limits: [10, 15, 20]}
+                                    , limit: 5
+                                });
+                            layer.open({
+                                title:'门票绑定',
+                                type:1,
+                                area:'650px',
+                                anim: 5, //0-6的选择，指定弹出图片动画类型，默认随机（请注意，3.0之前的版本用shift参数）
+                                content:$('#bindTableBox')
+                            });
+                        } else {
+                            layer.msg(data.result_msg);
+                        }
+                    }
+                });
+            }else if(layEvent==='clockCook'){
+                let _obj={'id':data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                let parseJson = JSON.stringify(_obj);
+                $.ajax({
+                    type:'post',
+                    url:'/XCCloud/DeviceInfo?action=GetGameAlarm',
+                    contentType: "application/json; charset=utf-8",
+                    data:{parasJson: parseJson},
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        if (data.result_code == 1) {
+                            let arr=data.result_data;
+                            if(arr.length>0){
+                                table.render({
+                                    elem:'#clockNoteTable',
+                                    data:arr,
+                                    size:'sm',
+                                    cols:[[
+                                        {field:'GameName', title:'游戏机名名称', align: 'center', sort: true,width:120}
+                                        ,{field:'SiteName',title: 'P位编号', align: 'center',width:120} //width 支持：数字、百分比和不填写。
+                                        ,{field:'Segment', title: '网络段号', align: 'center',width:120, sort: true}
+                                        ,{field:'Address', title: '机头地址', align: 'center',width:120}
+                                        ,{field:'AlertType', title: '报警类别', align: 'center'}
+                                        ,{field:'HappenTime', title: '触发时间', align: 'center',width:120, sort: true}
+                                        ,{field:'ICCardID', title: '关联卡号', align: 'center',width:120}
+                                        ,{field:'LockGameStr', title: '锁机头', align: 'center',width:120}
+                                        ,{field:'LockMemberStr', title: '锁会员', align: 'center',width:120}
+                                        ,{field:'EndTime', title: '处理时间', align: 'center',width:120}
+                                        ,{field:'StateStr', title: '状态', align: 'center',width:120}
+                                    ]]
+                                    , page: {page: true, limits: [10, 15, 20]}
+                                    , limit: 10
+                                });
+                                layer.open({
+                                    title:'报警日志',
+                                    type:1,
+                                    area:'1000px',
+                                    content:$('#clockNote')
+                                });
+                            }else {layer.msg('当前暂无日志信息')}
+
+                        } else {
+                            layer.msg(data.result_msg);
+                        }
+                    }
+                });
+            }
+        });
+        $('#saveBtn').on('click',function () {
+            xc.BindDeviceInfo(_id,token,layer,_state)
+        });
+        $('#cancel').on('click',function () {
+            layer.closeAll();
+            _state;
+            _id;
+            gameIndexId='';
+            bindDeviceId='';
+            $('#gameIndexId').html('');
+            $('#bindDeviceId').html('');
+            form.render('select');
+        });
+        $('#saveAddBind').on('click',function () {
+            layer.close(index);
+            arrBindTable.push({'ProjectID':ProjectID,'ProjectName':ProjectName,'SignType':SignType,'LockMember':LockMember});
+            table.render({
+                elem:'#bindTable',
+                data:arrBindTable,
+                size:'sm',
+                cols:[[
+                    {field:'ProjectID', title:'门票ID', align: 'center', sort: true}
+                    ,{field:'ProjectName',title: '门票名称', align: 'center'} //width 支持：数字、百分比和不填写。
+                    ,{field:'SignType', title: '验证类型', align: 'center',templet:'#SignType'}
+                    ,{field:'LockMember', title: '入场锁定', align: 'center',templet:'#LockMember'}
+                    ,{fixed: 'right', title: '操作', width:140, align:'center', toolbar: '#barDemo1'}
+                ]]
+                , page: {page: true, limits: [10, 15, 20]}
+                , limit: 5
+            });
+        });
+        $('#saveBind').on('click',function () {
+            let _obj={'id':_id,
+                'joinType':bindType,
+                'deviceProjects':arrBindTable,
+                'userToken':token,
+                'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+            let parseJson = JSON.stringify(_obj);
+            $.ajax({
+                type:'post',
+                url:'/XCCloud/DeviceInfo?action=BindProject',
+                contentType: "application/json; charset=utf-8",
+                data:{parasJson: parseJson},
+                success: function (data) {
+                    data = JSON.parse(data);
+                    if (data.result_code == 1) {
+                        layer.msg('绑定成功！',{time:1500},function () {
+                            location.reload();
+                        });
+                    } else {
+                        layer.msg(data.result_msg);
+                    }
+                }
+            });
+        });
+    });
+
+    xcActionSystem.prototype.BindDeviceInfo=function (id,token,layer,state) {
+        let _obj={'id':id,
+            'state':state,
+            'gameIndexId':gameIndexId,
+            'bindDeviceId':bindDeviceId,
+            'siteName':$('#siteName').val(),
+            'userToken':token,
+            'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+        let parseJson = JSON.stringify(_obj);
+        $.ajax({
+            type:'post',
+            url:'/XCCloud/DeviceInfo?action=BindDeviceInfo',
+            contentType: "application/json; charset=utf-8",
+            data:{parasJson: parseJson},
+            success: function (data) {
+                data = JSON.parse(data);
+                if (data.result_code == 1) {
+                    if(id==1){
+                        layer.msg('机台绑定成功！')
+                    }else {
+                        layer.msg('机台解绑成功！')
+                    }
+                    xc.getInitData(parm); layer.closeAll();
+                } else {
+                    layer.msg(data.result_msg);
+                }
+            }
+        });
+    }
+</script>
+<script type="text/html" id="barDemo">
+    {{# if(d.DeviceType==8){ }}
+    <a class="layui-btn layui-btn-xs" lay-event="code">二维码</a>
+    {{# }else{ }}
+    {{# if(d.DeviceStatus==2){ }}
+    <a class="layui-btn layui-btn-xs" lay-event="unLock">解锁</a>
+    {{# }else if(d.DeviceStatus==1){ }}
+    <a class="layui-btn layui-btn-xs" lay-event="lock">锁定</a>
+    {{#  } }}
+    {{# if(d.GameName==''){ }}
+    <a class="layui-btn layui-btn-xs" lay-event="bindMachine">机台绑定</a>
+    {{# }else{ }}
+    <a class="layui-btn layui-btn-xs" lay-event="unBindMachine">机台解绑</a>
+    {{#  } }}
+    <a class="layui-btn layui-btn-xs" lay-event="clockCook">报警日志</a>
+    <a class="layui-btn layui-btn-xs" lay-event="code">二维码</a>
+    {{#  } }}
+</script>
+<script type="text/html" id="barDemo1">
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+<script type="text/html" id="changeLock">
+    {{# if(d.DeviceStatus==1){ }}
+    <div style="width: 42px;height: 22px;line-height: 22px;background-color:#5FB878;border-radius: 11px;position: relative;">
+        <em style="left: 5px;position: absolute;width: 25px;color: #fff;font-size: 12px">正常</em>
+        <i style="left: 32px;position: absolute;width: 16px;height: 16px;border-radius: 50%;"></i></div>
+    {{# }else if(d.DeviceStatus==2){ }}
+    <div style="width: 42px;height: 22px;line-height: 22px;background-color:orange;border-radius: 11px;position: relative;">
+        <em style="left: 5px;position: absolute;width: 25px;color: #fff;font-size: 12px">锁定</em>
+        <i style="left: 32px;position: absolute;width: 16px;height: 16px;border-radius: 50%;"></i></div>
+    {{# }else if(d.DeviceStatus==0){ }}
+    <div style="width: 42px;height: 22px;line-height: 22px;background-color:red;border-radius: 11px;position: relative;">
+        <em style="left: 5px;position: absolute;width: 25px;color: #fff;font-size: 12px">停用</em>
+        <i style="left: 32px;position: absolute;width: 16px;height: 16px;border-radius: 50%;"></i></div>
+    {{#  } }}
+</script>
+<script type="text/html" id="LockMember">
+    {{# if(d.LockMember==1){ }}
+    <input type="checkbox" checked name="switch" lay-skin="switch" lay-text="是|否" class="tb_check" lay-filter="test" disabled>
+    {{# }else{ }}
+    <input type="checkbox" name="switch" lay-skin="switch" lay-text="是|否" class="tb_check" lay-filter="test" disabled>
+    {{#  } }}
+</script>
+<script type="text/html" id="SignType">
+
+    {{#  if(d.SignType == 0){ }}
+    签入
+    {{#  } else if(d.SignType == 1){ }}
+    签出
+    {{#  } else if(d.SignType == 2){ }}
+    单次
+    {{#  } }}
+</script>
+</html>

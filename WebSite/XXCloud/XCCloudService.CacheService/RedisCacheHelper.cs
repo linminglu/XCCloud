@@ -21,9 +21,10 @@ namespace XCCloudService.CacheService
         /// <summary>
         /// 云端流水号
         /// </summary>
-        /// <param name="storeId"></param>
+        /// <param name="storeId">门店ID</param>
+        /// <param name="isProc">是否要在存储过程中生成基于此流水号的子流水号。true：返回29位流水号，false：返回32位流水号。默认false</param>
         /// <returns></returns>
-        public static string CreateCloudSerialNo(string storeId)
+        public static string CreateCloudSerialNo(string storeId, bool isProc = false)
         {
             try
             {
@@ -38,11 +39,20 @@ namespace XCCloudService.CacheService
                 string date = DateTime.Now.ToString("yyyyMMdd");
 
                 string serialNo = storeId + date + currIndex.ToString().PadLeft(6, '0');
+                if (!isProc)
+                {
+                    serialNo = serialNo + "000";
+                }
+
                 return serialNo;
             }
-            catch
+            catch (RedisException ex)
             {
-                return "";
+                throw ex;
+            }
+            catch(Exception ex)
+            {
+                throw ex;
             }
         } 
         #endregion
@@ -51,9 +61,10 @@ namespace XCCloudService.CacheService
         /// <summary>
         /// 门店本地流水号
         /// </summary>
-        /// <param name="storeId"></param>
+        /// <param name="storeId">门店ID</param>
+        /// <param name="isProc">是否要在存储过程中生成基于此流水号的子流水号。true：返回29位流水号，false：返回32位流水号。默认false</param>
         /// <returns></returns>
-        public static string CreateStoreSerialNo(string storeId)
+        public static string CreateStoreSerialNo(string storeId, bool isProc = false)
         {
             try
             {
@@ -65,11 +76,20 @@ namespace XCCloudService.CacheService
 
                 string date = DateTime.Now.ToString("yyyyMMdd");
                 string serialNo = storeId + date + currNo.PadLeft(6, '0');
+                if (!isProc)
+                {
+                    serialNo = serialNo + "000";
+                }
+
                 return serialNo;
             }
-            catch
+            catch(RedisException ex)
             {
-                return "";
+                throw ex;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
             }
         }  
         #endregion
@@ -119,9 +139,13 @@ namespace XCCloudService.CacheService
                 }
                 return ret.ToString();
             }
-            catch
+            catch (RedisException ex)
             {
-                return "";
+                throw ex;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
             }
         } 
         #endregion

@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using XCCloudService.BLL.CommonBLL;
 using XCCloudService.BLL.Container;
+using XCCloudService.Common;
+using XCCloudService.Model.CustomModel.XCCloud;
 
 namespace XCCloudService.Business.XCCloud
 {
@@ -29,6 +33,22 @@ namespace XCCloudService.Business.XCCloud
                 memberModel = model;
                 return true;
             }
+        }
+
+        public static List<MemberBalanceExchangeRateModel> GetMemberBalanceAndExchangeRate(string storeId, string ICCardId)
+        {
+            string storedProcedure = "GetMemberBalanceAndExchangeRate";
+            SqlParameter[] parameters = new SqlParameter[2];
+            parameters[0] = new SqlParameter("@ICCardID", ICCardId);
+            parameters[1] = new SqlParameter("@StoreID", storeId);
+            System.Data.DataSet ds = XCCloudBLL.GetStoredProcedureSentence(storedProcedure, parameters);
+
+            List<MemberBalanceExchangeRateModel> memberBalance = null;
+            if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+            {
+                memberBalance = Utils.GetModelList<MemberBalanceExchangeRateModel>(ds.Tables[0]);
+            }
+            return memberBalance;
         }
     }
 }

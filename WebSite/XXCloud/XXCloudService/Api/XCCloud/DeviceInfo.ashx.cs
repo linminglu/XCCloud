@@ -80,38 +80,102 @@ namespace XXCloudService.Api.XCCloud
 
                 var gameId = dicParas.Get("gameId").Toint();
 
-                var query = Base_DeviceInfoService.N.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase));
+                var query = Base_DeviceInfoService.N.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase) && p.type != (int)DeviceType.卡头);
                 if (gameId != null)
                 {
                     query = query.Where(w => w.GameIndexID == gameId);
                 }
-                
-                var base_DeviceInfo = from a in query
-                                      join b in Data_GameInfoService.N.GetModels() on a.GameIndexID equals b.ID into b1
-                                      from b in b1.DefaultIfEmpty()
-                                      join c in Dict_SystemService.N.GetModels() on b.GameType equals c.ID into c1
-                                      from c in c1.DefaultIfEmpty()
-                                      join d in Data_GroupAreaService.N.GetModels() on b.AreaID equals d.ID into d1
-                                      from d in d1.DefaultIfEmpty()
-                                      orderby a.MCUID
+
+                var base_DeviceInfo = from t in
+                                          (from a in query
+                                           join b in Data_GameInfoService.N.GetModels() on a.GameIndexID equals b.ID into b1
+                                           from b in b1.DefaultIfEmpty()
+                                           join c in Dict_SystemService.N.GetModels() on b.GameType equals c.ID into c1
+                                           from c in c1.DefaultIfEmpty()
+                                           join d in Data_GroupAreaService.N.GetModels() on b.AreaID equals d.ID into d1
+                                           from d in d1.DefaultIfEmpty()
+                                           orderby a.MCUID
+                                           select new { a = a, b = b, c = c, d = d }).AsEnumerable()
                                       select new
                                       {
-                                          ID = a.ID,
-                                          MCUID = a.MCUID,
-                                          DeviceName = a.DeviceName,
-                                          GameType = b != null ? b.GameType : (int?)null,
-                                          GameTypeStr = c != null ? c.DictKey : string.Empty,
-                                          GameName = b != null ? b.GameName : string.Empty,
-                                          AreaName = d != null ? d.AreaName : string.Empty,
-                                          SiteName = a.SiteName,
-                                          segment = a.segment,
-                                          Address = a.Address,
+                                          ID = t.a.ID,
+                                          MCUID = t.a.MCUID,
+                                          DeviceName = t.a.DeviceName,
+                                          DeviceType = t.a.type,
+                                          DeviceTypeStr = t.a.type.GetDescription(),
+                                          GameType = t.b != null ? t.b.GameType : (int?)null,
+                                          GameTypeStr = t.c != null ? t.c.DictKey : string.Empty,
+                                          GameName = t.b != null ? t.b.GameName : string.Empty,
+                                          AreaName = t.d != null ? t.d.AreaName : string.Empty,
+                                          SiteName = t.a.SiteName,
+                                          segment = t.a.segment,
+                                          Address = t.a.Address,
                                           DeviceRunning = string.Empty,
-                                          DeviceStatus = a.DeviceStatus,
-                                          DeviceStatusStr = a.DeviceStatus != null ?
-                                                        (a.DeviceStatus == 1 ? "正常" :
-                                                        a.DeviceStatus == 2 ? "锁定" :
-                                                        a.DeviceStatus == 0 ? "停用" : string.Empty) : string.Empty
+                                          DeviceStatus = t.a.DeviceStatus,
+                                          DeviceStatusStr = t.a.DeviceStatus != null ? (t.a.DeviceStatus == 0 ? "停用" :
+                                                        t.a.DeviceStatus == 1 ? "正常" :
+                                                        t.a.DeviceStatus == 2 ? "锁定" : string.Empty) : string.Empty
+                                      };
+
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, base_DeviceInfo);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        /// <summary>
+        /// 卡头列表查询
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object QueryHeadDeviceInfo(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+
+                var gameId = dicParas.Get("gameId").Toint();
+
+                var query = Base_DeviceInfoService.N.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase) && p.type == (int)DeviceType.卡头);
+                if (gameId != null)
+                {
+                    query = query.Where(w => w.GameIndexID == gameId);
+                }
+
+                var base_DeviceInfo = from t in
+                                          (from a in query
+                                           join b in Data_GameInfoService.N.GetModels() on a.GameIndexID equals b.ID into b1
+                                           from b in b1.DefaultIfEmpty()
+                                           join c in Dict_SystemService.N.GetModels() on b.GameType equals c.ID into c1
+                                           from c in c1.DefaultIfEmpty()
+                                           join d in Data_GroupAreaService.N.GetModels() on b.AreaID equals d.ID into d1
+                                           from d in d1.DefaultIfEmpty()
+                                           orderby a.MCUID
+                                           select new { a = a, b = b, c = c, d = d }).AsEnumerable()
+                                      select new
+                                      {
+                                          ID = t.a.ID,
+                                          MCUID = t.a.MCUID,
+                                          DeviceName = t.a.DeviceName,
+                                          DeviceType = t.a.type,
+                                          DeviceTypeStr = t.a.type.GetDescription(),
+                                          GameType = t.b != null ? t.b.GameType : (int?)null,
+                                          GameTypeStr = t.c != null ? t.c.DictKey : string.Empty,
+                                          GameName = t.b != null ? t.b.GameName : string.Empty,
+                                          AreaName = t.d != null ? t.d.AreaName : string.Empty,
+                                          SiteName = t.a.SiteName,
+                                          segment = t.a.segment,
+                                          Address = t.a.Address,
+                                          DeviceRunning = string.Empty,
+                                          DeviceStatus = t.a.DeviceStatus,
+                                          DeviceStatusStr = t.a.DeviceStatus != null ? (t.a.DeviceStatus == 0 ? "停用" :
+                                                        t.a.DeviceStatus == 1 ? "正常" :
+                                                        t.a.DeviceStatus == 2 ? "锁定" : string.Empty) : string.Empty
                                       };
 
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, base_DeviceInfo);
@@ -275,10 +339,27 @@ namespace XXCloudService.Api.XCCloud
                 }                
 
                 var data_DeviceInfo = Base_DeviceInfoService.I.GetModels(p => p.ID == iId).FirstOrDefault();
+                if (data_DeviceInfo.type != (int)DeviceType.卡头)
+                {
+                    errMsg = "机台绑定须为卡头设备";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
 
                 //绑定
                 if (iState == 1)
                 {
+                    if (!Base_DeviceInfoService.I.Any(p => p.ID == iBindDeviceId))
+                    {
+                        errMsg = "路由器设备不存在";
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
+
+                    if (!Data_GameInfoService.I.Any(p => p.ID == iGameIndexId))
+                    {
+                        errMsg = "游戏机信息不存在";
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    } 
+
                     if (Base_DeviceInfoService.I.Any(p => p.GameIndexID == iGameIndexId && p.ID != iId && p.SiteName.Equals(siteName, StringComparison.OrdinalIgnoreCase)))
                     {
                         errMsg = "游戏机P位被占用";
@@ -288,6 +369,21 @@ namespace XXCloudService.Api.XCCloud
                     data_DeviceInfo.GameIndexID = iGameIndexId;
                     data_DeviceInfo.BindDeviceID = iBindDeviceId;
                     data_DeviceInfo.SiteName = siteName;
+
+                    //继承路由器段号
+                    var routInfo = Base_DeviceInfoService.I.GetModels(p => p.ID == iBindDeviceId).FirstOrDefault();
+                    data_DeviceInfo.segment = routInfo.segment;
+
+                    //按顺序生成机头地址(01~9F)十六进制
+                    for (int i = 1; i < 160; i++)
+                    {
+                        var iAddress = Convert.ToString(i, 16).PadLeft(2, '0').ToUpper();
+                        if (!Base_DeviceInfoService.I.Any(p => p.BindDeviceID == iBindDeviceId && p.ID != iBindDeviceId && p.Address.Equals(iAddress, StringComparison.OrdinalIgnoreCase)))
+                        {
+                            data_DeviceInfo.Address = iAddress;
+                            break;
+                        }
+                    }
                 }
                 //解绑
                 else if (iState == 0)
@@ -295,6 +391,8 @@ namespace XXCloudService.Api.XCCloud
                     data_DeviceInfo.GameIndexID = (int?)null;
                     data_DeviceInfo.BindDeviceID = (int?)null;
                     data_DeviceInfo.SiteName = string.Empty;
+                    data_DeviceInfo.segment = string.Empty;
+                    data_DeviceInfo.Address = string.Empty;
                 }
                 else
                 {
@@ -408,7 +506,579 @@ namespace XXCloudService.Api.XCCloud
             {
                 return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
             }
-        }        
+        }
+
+        /// <summary>
+        /// 通讯绑定(解绑)
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object BindRoutineInfo(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                string errMsg = string.Empty;
+                string id = dicParas.ContainsKey("id") ? Convert.ToString(dicParas["id"]) : string.Empty;
+                string state = dicParas.ContainsKey("state") ? Convert.ToString(dicParas["state"]) : string.Empty;               
+                string bindDeviceId = dicParas.ContainsKey("bindDeviceId") ? Convert.ToString(dicParas["bindDeviceId"]) : string.Empty;
+                string address = dicParas.ContainsKey("address") ? Convert.ToString(dicParas["address"]) : string.Empty;
+                int iId = 0, iState = 0, iBindDeviceId = 0;
+                int.TryParse(id, out iId);
+                int.TryParse(state, out iState);
+                int.TryParse(bindDeviceId, out iBindDeviceId);
+
+                #region 参数验证
+                if (string.IsNullOrEmpty(id))
+                {
+                    errMsg = "设备流水号不能为空";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+                if (string.IsNullOrEmpty(state))
+                {
+                    errMsg = "绑定参数state不能为空";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
+                if (iState == 1)
+                {
+                    if (string.IsNullOrEmpty(bindDeviceId))
+                    {
+                        errMsg = "路由器bindDeviceId不能为空";
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
+
+                    if (string.IsNullOrEmpty(address))
+                    {
+                        errMsg = "通讯地址不能为空";
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
+
+                    if (address.Length > 2)
+                    {
+                        errMsg = "通讯地址长度不能超过2个字符";
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
+
+                    bool isValidAddress = false;
+                    for (var i = 0; i < 11; i++)
+                    {
+                        if (address.ToUpper() == ("A" + (i < 10 ? i.ToString() : "A")))
+                        {
+                            isValidAddress = true;
+                            break;
+                        }
+                    }
+                    if(!isValidAddress)
+                    {
+                        errMsg = "通讯地址范围是A0~AA";
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
+                }
+                #endregion
+
+                if (!Base_DeviceInfoService.I.Any(p => p.ID == iId))
+                {
+                    errMsg = "设备不存在";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
+                var data_DeviceInfo = Base_DeviceInfoService.I.GetModels(p => p.ID == iId).FirstOrDefault();
+                if (data_DeviceInfo.type == (int)DeviceType.卡头 || data_DeviceInfo.type == (int)DeviceType.路由器)
+                {
+                    errMsg = "通讯绑定设备类型不能是卡头或路由器";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
+                //绑定
+                if (iState == 1)
+                {
+                    if (Base_DeviceInfoService.I.Any(p => p.ID != iId && p.BindDeviceID == iBindDeviceId && p.Address.Equals(address, StringComparison.OrdinalIgnoreCase)))
+                    {
+                        errMsg = "该地址被占用";
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
+
+                    data_DeviceInfo.BindDeviceID = iBindDeviceId;
+                    data_DeviceInfo.Address = address.ToUpper();
+                }
+                //解绑
+                else if (iState == 0)
+                {
+                    data_DeviceInfo.BindDeviceID = (int?)null;
+                    data_DeviceInfo.Address = string.Empty;
+                }
+                else
+                {
+                    errMsg = "绑定参数state值无效";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
+                if (!Base_DeviceInfoService.I.Update(data_DeviceInfo))
+                {
+                    errMsg = "操作失败";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object SaveCoinSalerInfo(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+
+                string errMsg = string.Empty;
+                if(dicParas.Get("deviceId").Validintnozero("设备ID", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (dicParas.Get("motor1En").Validint("1号马达", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (dicParas.Get("motor2En").Validint("2号马达", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (dicParas.Get("motor1Coin").Validintnozero("马达1出币比例", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (dicParas.Get("motor2Coin").Validintnozero("马达2出币比例", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (dicParas.Get("dubleCheck").Validint("双光眼检测", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (dicParas.Get("digitCoinEn").Validint("数字币销售模式", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                var deviceId = dicParas.Get("deviceId").Toint();
+
+                //开启EF事务
+                var base_DeviceInfoService = Base_DeviceInfoService.I;
+                var base_DeviceInfo_ExtService = Base_DeviceInfo_ExtService.I;
+                using (TransactionScope ts = new TransactionScope())
+                {
+                    try
+                    {
+                        if(!base_DeviceInfoService.Any(a=>a.ID == deviceId))
+                        {
+                            errMsg = "该设备信息不存在";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
+                        var base_DeviceInfo = base_DeviceInfoService.GetModels(p => p.ID == deviceId).FirstOrDefault();
+                        if (base_DeviceInfo.type != (int)DeviceType.售币机)
+                        {
+                            errMsg = "该设备不是售币机类型设备";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
+                        var base_DeviceInfo_Ext = base_DeviceInfo_ExtService.GetModels(p => p.DeviceID == deviceId).FirstOrDefault() ?? new Base_DeviceInfo_Ext();
+                        Utils.GetModel(dicParas, ref base_DeviceInfo_Ext);
+                        if (deviceId == 0)
+                        {
+                            if (!base_DeviceInfo_ExtService.Add(base_DeviceInfo_Ext))
+                            {
+                                errMsg = "售币机参数设置失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+                        }
+                        else
+                        {
+                            if (base_DeviceInfo_Ext.ID == 0)
+                            {
+                                errMsg = "该设置信息不存在";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+
+                            if (!base_DeviceInfo_ExtService.Update(base_DeviceInfo_Ext))
+                            {
+                                errMsg = "售币机参数设置失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+                        }
+                        
+                        ts.Complete();
+                    }
+                    catch (DbEntityValidationException e)
+                    {
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, e.EntityValidationErrors.ToErrors());
+                    }
+                    catch (Exception ex)
+                    {
+                        errMsg = ex.Message;
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
+                }
+
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object SaveCoinFetcherInfo(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+
+                string errMsg = string.Empty;
+                if (dicParas.Get("deviceId").Validintnozero("设备ID", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (dicParas.Get("motor1En").Validint("1号马达", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (dicParas.Get("motor2En").Validint("2号马达", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (dicParas.Get("motor1Coin").Validintnozero("马达1出币比例", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (dicParas.Get("motor2Coin").Validintnozero("马达2出币比例", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (dicParas.Get("balanceIndex").Validintnozero("会员卡存币数", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (dicParas.Get("toCard").Validdecimalnozero("会员卡提币类型", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (dicParas.Get("fromDevice").Validintnozero("提币机出币数", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                var deviceId = dicParas.Get("deviceId").Toint();
+
+                //开启EF事务
+                var base_DeviceInfoService = Base_DeviceInfoService.I;
+                var base_DeviceInfo_ExtService = Base_DeviceInfo_ExtService.I;
+                using (TransactionScope ts = new TransactionScope())
+                {
+                    try
+                    {
+                        if (!base_DeviceInfoService.Any(a => a.ID == deviceId))
+                        {
+                            errMsg = "该设备信息不存在";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
+                        var base_DeviceInfo = base_DeviceInfoService.GetModels(p => p.ID == deviceId).FirstOrDefault();
+                        if (base_DeviceInfo.type != (int)DeviceType.提币机)
+                        {
+                            errMsg = "该设备不是提币机类型设备";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
+                        var base_DeviceInfo_Ext = base_DeviceInfo_ExtService.GetModels(p => p.DeviceID == deviceId).FirstOrDefault() ?? new Base_DeviceInfo_Ext();
+                        Utils.GetModel(dicParas, ref base_DeviceInfo_Ext);
+                        if (deviceId == 0)
+                        {
+                            if (!base_DeviceInfo_ExtService.Add(base_DeviceInfo_Ext))
+                            {
+                                errMsg = "提币机参数设置失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+                        }
+                        else
+                        {
+                            if (base_DeviceInfo_Ext.ID == 0)
+                            {
+                                errMsg = "该设置信息不存在";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+
+                            if (!base_DeviceInfo_ExtService.Update(base_DeviceInfo_Ext))
+                            {
+                                errMsg = "提币机参数设置失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+                        }
+
+                        ts.Complete();
+                    }
+                    catch (DbEntityValidationException e)
+                    {
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, e.EntityValidationErrors.ToErrors());
+                    }
+                    catch (Exception ex)
+                    {
+                        errMsg = ex.Message;
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
+                }
+
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object SaveCoinSaverInfo(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+
+                string errMsg = string.Empty;
+                if (dicParas.Get("deviceId").Validintnozero("设备ID", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (dicParas.Get("motor1En").Validint("1号马达", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (dicParas.Get("motor2En").Validint("2号马达", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);               
+                if (dicParas.Get("balanceIndex").Validintnozero("会员卡存币类型", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (dicParas.Get("toCard").Validdecimalnozero("会员卡存币数", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (dicParas.Get("fromDevice").Validintnozero("会员卡余额增加数", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (dicParas.Get("maxSaveCount").Validintnozero("币箱存储最大值", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                var deviceId = dicParas.Get("deviceId").Toint();
+
+                //开启EF事务
+                var base_DeviceInfoService = Base_DeviceInfoService.I;
+                var base_DeviceInfo_ExtService = Base_DeviceInfo_ExtService.I;
+                using (TransactionScope ts = new TransactionScope())
+                {
+                    try
+                    {
+                        if (!base_DeviceInfoService.Any(a => a.ID == deviceId))
+                        {
+                            errMsg = "该设备信息不存在";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
+                        var base_DeviceInfo = base_DeviceInfoService.GetModels(p => p.ID == deviceId).FirstOrDefault();
+                        if (base_DeviceInfo.type != (int)DeviceType.存币机)
+                        {
+                            errMsg = "该设备不是存币机类型设备";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
+                        var base_DeviceInfo_Ext = base_DeviceInfo_ExtService.GetModels(p => p.DeviceID == deviceId).FirstOrDefault() ?? new Base_DeviceInfo_Ext();
+                        Utils.GetModel(dicParas, ref base_DeviceInfo_Ext);
+                        if (deviceId == 0)
+                        {
+                            if (!base_DeviceInfo_ExtService.Add(base_DeviceInfo_Ext))
+                            {
+                                errMsg = "存币机参数设置失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+                        }
+                        else
+                        {
+                            if (base_DeviceInfo_Ext.ID == 0)
+                            {
+                                errMsg = "该设置信息不存在";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+
+                            if (!base_DeviceInfo_ExtService.Update(base_DeviceInfo_Ext))
+                            {
+                                errMsg = "存币机参数设置失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+                        }
+
+                        ts.Complete();
+                    }
+                    catch (DbEntityValidationException e)
+                    {
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, e.EntityValidationErrors.ToErrors());
+                    }
+                    catch (Exception ex)
+                    {
+                        errMsg = ex.Message;
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
+                }
+
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object SaveCoinPusherInfo(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+
+                string errMsg = string.Empty;
+                if (dicParas.Get("deviceId").Validintnozero("设备ID", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (dicParas.Get("motor1En").Validint("1号马达", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (dicParas.Get("motor2En").Validint("2号马达", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (dicParas.Get("motor1Coin").Validint("允许实物币投币", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (dicParas.Get("motor2Coin").Validint("允许会员卡投币", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (dicParas.Get("balanceIndex").Validintnozero("会员卡扣余额类别", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);               
+
+                var deviceId = dicParas.Get("deviceId").Toint();
+
+                //开启EF事务
+                var base_DeviceInfoService = Base_DeviceInfoService.I;
+                var base_DeviceInfo_ExtService = Base_DeviceInfo_ExtService.I;
+                using (TransactionScope ts = new TransactionScope())
+                {
+                    try
+                    {
+                        if (!base_DeviceInfoService.Any(a => a.ID == deviceId))
+                        {
+                            errMsg = "该设备信息不存在";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
+                        var base_DeviceInfo = base_DeviceInfoService.GetModels(p => p.ID == deviceId).FirstOrDefault();
+                        if (base_DeviceInfo.type != (int)DeviceType.投币机)
+                        {
+                            errMsg = "该设备不是投币机类型设备";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
+                        var base_DeviceInfo_Ext = base_DeviceInfo_ExtService.GetModels(p => p.DeviceID == deviceId).FirstOrDefault() ?? new Base_DeviceInfo_Ext();
+                        Utils.GetModel(dicParas, ref base_DeviceInfo_Ext);
+                        if (deviceId == 0)
+                        {
+                            if (!base_DeviceInfo_ExtService.Add(base_DeviceInfo_Ext))
+                            {
+                                errMsg = "投币机参数设置失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+                        }
+                        else
+                        {
+                            if (base_DeviceInfo_Ext.ID == 0)
+                            {
+                                errMsg = "该设置信息不存在";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+
+                            if (!base_DeviceInfo_ExtService.Update(base_DeviceInfo_Ext))
+                            {
+                                errMsg = "投币机参数设置失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+                        }
+
+                        ts.Complete();
+                    }
+                    catch (DbEntityValidationException e)
+                    {
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, e.EntityValidationErrors.ToErrors());
+                    }
+                    catch (Exception ex)
+                    {
+                        errMsg = ex.Message;
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
+                }
+
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object SaveRoutineInfo(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+
+                string errMsg = string.Empty;
+                if (dicParas.Get("deviceId").Validintnozero("设备ID", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (dicParas.Get("segment").Nonempty("段号", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (dicParas.Get("segment").Length > 4)
+                {
+                    errMsg = "段号长度不能超过4个字符";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
+                var deviceId = dicParas.Get("deviceId").Toint();
+                var segment = dicParas.Get("segment");
+
+                //开启EF事务
+                var base_DeviceInfoService = Base_DeviceInfoService.I;
+                using (TransactionScope ts = new TransactionScope())
+                {
+                    try
+                    {
+                        if (!base_DeviceInfoService.Any(a => a.ID == deviceId))
+                        {
+                            errMsg = "该设备信息不存在";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
+                        var base_DeviceInfo = base_DeviceInfoService.GetModels(p => p.ID == deviceId).FirstOrDefault();
+                        if (base_DeviceInfo.type != (int)DeviceType.路由器)
+                        {
+                            errMsg = "该设备不是路由器类型设备";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
+                        base_DeviceInfo.segment = segment;
+                        base_DeviceInfoService.UpdateModel(base_DeviceInfo);
+
+                        //修改关联绑定设备的段号
+                        var bindDevices = base_DeviceInfoService.GetModels(p => p.BindDeviceID == deviceId && p.ID != deviceId);
+                        foreach (var bindModel in bindDevices)
+                        {
+                            bindModel.segment = segment;
+                            base_DeviceInfoService.UpdateModel(bindModel);
+                        }
+
+                        if (!base_DeviceInfoService.SaveChanges())
+                        {
+                            errMsg = "设置路由器段号失败";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
+                        ts.Complete();
+                    }
+                    catch (DbEntityValidationException e)
+                    {
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, e.EntityValidationErrors.ToErrors());
+                    }
+                    catch (Exception ex)
+                    {
+                        errMsg = ex.Message;
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
+                }
+
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
 
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object QueryReloadGifts(Dictionary<string, object> dicParas)

@@ -111,10 +111,13 @@ namespace XXCloudService.Api.XCCloud
                 int.TryParse(id, out iId);
                 IData_GameInfoService data_GameInfoService = BLLContainer.Resolve<IData_GameInfoService>(resolveNew: true);
                 var data_GameInfo = data_GameInfoService.GetModels(p => p.ID == iId).FirstOrDefault() ?? new Data_GameInfo();
+                if (iId == 0)
+                    data_GameInfo.State = 1;
+
                 IDict_SystemService dict_SystemService = BLLContainer.Resolve<IDict_SystemService>(resolveNew: true);
                 int GameInfoId = dict_SystemService.GetModels(p => p.DictKey.Equals("游戏机档案维护")).FirstOrDefault().ID;
                 var result = (from a in data_GameInfo.AsDictionary()
-                              join b in dict_SystemService.GetModels(p => p.PID == GameInfoId) on a.Key equals b.DictKey into b1
+                              join b in dict_SystemService.GetModels(p => p.PID == GameInfoId && p.Enabled == 1) on a.Key equals b.DictKey into b1
                               from b in b1.DefaultIfEmpty()
                               select new
                               {
@@ -290,12 +293,12 @@ namespace XXCloudService.Api.XCCloud
                 {
                     List<string> gameSimpleParameters = new List<string> { 
                     "PushBalanceIndex1","PushCoin1",
-                    "PushLevel", "LotteryMode", "OnlyExitLottery", "ReadCat", "chkCheckGift"
+                    "PushLevel", "LotteryMode", "OnlyExitLottery", "ReadCat", "ReadDelay", "chkCheckGift"
                     };
 
                     foreach (var parameter in gameSimpleParameters)
                     {
-                        if (!dicParas.Get(parameter).Nonempty(parameter + "参数", out errMsg))
+                        if (!dicParas.Get(parameter).Validint(parameter + "参数", out errMsg))
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                     }
                 }
@@ -303,14 +306,14 @@ namespace XXCloudService.Api.XCCloud
                 {
                     List<string> gameAdvancedParameters = new List<string> { 
                     "PushBalanceIndex1","PushCoin1", 
-                    "ReturnCheck","OutsideAlertCheck","ICTicketOperation","NotGiveBack","LotteryMode","OnlyExitLottery","chkCheckGift","AllowElecPush","AllowDecuplePush","GuardConvertCard","ReadCat","AllowRealPush","BanOccupy","StrongGuardConvertCard","PushControl",
-                    "AllowElecOut","NowExit","BOLock","AllowRealOut","BOKeep","PushReduceFromCard","PushSpeed","PushPulse","PushLevel","PushStartInterval","UseSecondPush","SecondReduceFromCard","SecondAddToGame","SecondSpeed",
+                    "ReturnCheck","OutsideAlertCheck","ICTicketOperation","NotGiveBack","LotteryMode","OnlyExitLottery","chkCheckGift","AllowElecPush","GuardConvertCard","ReadCat","ReadDelay","AllowRealPush","BanOccupy","StrongGuardConvertCard",
+                    "AllowElecOut","NowExit","BOLock","AllowRealOut","BOKeep","PushSpeed","PushPulse","PushLevel","PushStartInterval","UseSecondPush","SecondAddToGame","SecondSpeed","OutBalanceIndex",
                     "SecondPulse","SecondLevel","SecondStartInterval","OutSpeed","OutPulse","CountLevel","OutLevel","OutReduceFromGame","OutAddToCard","OnceOutLimit","OncePureOutLimit","ExceptOutTest","ExceptOutSpeed","Frequency"
                     };
 
                     foreach (var parameter in gameAdvancedParameters)
                     {
-                        if (!dicParas.Get(parameter).Nonempty(parameter + "参数", out errMsg))
+                        if (!dicParas.Get(parameter).Validint(parameter + "参数", out errMsg))
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                     }
                 }
@@ -338,7 +341,7 @@ namespace XXCloudService.Api.XCCloud
                         //获取参数默认值
                         IDict_SystemService dict_SystemService = BLLContainer.Resolve<IDict_SystemService>(resolveNew: true);
                         int GameInfoId = dict_SystemService.GetModels(p => p.DictKey.Equals("游戏机档案维护")).FirstOrDefault().ID;
-                        var result = dict_SystemService.GetModels(p => p.PID == GameInfoId).ToList();
+                        var result = dict_SystemService.GetModels(p => p.PID == GameInfoId && p.Enabled == 1).ToList();
                         foreach (var dict in result)
                         {
                             if (dicParas.ContainsKey(dict.DictKey))
@@ -412,6 +415,7 @@ namespace XXCloudService.Api.XCCloud
                                     data_GameFreeLotteryRule.MemberLevelID = memberLevelID;
                                     data_GameFreeLotteryRule.BaseLottery = baseLottery;
                                     data_GameFreeLotteryRule.FreeCount = freeCount;
+                                    data_GameFreeLotteryRule.GameIndex = iId;
                                     Data_GameFreeLotteryRuleService.I.AddModel(data_GameFreeLotteryRule);
                                 }
                                 else

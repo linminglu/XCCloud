@@ -116,7 +116,9 @@ namespace XCCloudService.Business.XCGameMana
         /// <param name="logType"></param>
         public static void RemoveStoreUserTokenByWorkStaion(string logId, string workStation)
         {
-            var query = XCCloudUserTokenCache.UserTokenList.Where(t => t.LogId.Equals(logId) && t.DataModel.WorkStation.Equals(workStation)).Select(t => t.Token).ToArray();
+            var query = XCCloudUserTokenCache.UserTokenList
+                .Where(t => t.LogId.Equals(logId) && t.DataModel != null && t.DataModel.WorkStation != null && t.DataModel.WorkStation.Equals(workStation))
+                .Select(t => t.Token).ToArray();
             foreach (var item in query)
             {
                 XCCloudUserTokenCache.Remove(item);

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="utf-8">
@@ -38,7 +38,6 @@
         input::-ms-reveal{display:none;}
         img{border:none;}
         .fl{float: left;}.fr{float: right;}
-        /**/
         a:link,a:visited{text-decoration:none;cursor:pointer;outline:none;}
         a:hover,a:active {text-decoration:none;cursor:pointer;}
         /* common style */
@@ -62,11 +61,6 @@
         .hidden{display: none;}
         .show{display: block;}
 
-        .majorMenu{width: 100px; height: inherit;padding-top: 2em;margin-top: 1em;margin-left: 0.5em;margin-right: 0.5em;background: #3c8dbc;min-height: 40em;}
-        .majorMenu li{width: 100%;height: 3.6em;margin: 5px 0;}
-        .majorMenu li a{display: block;width: 100%;height: 100%;line-height: 3em; font-size: 1.1em;text-align: center;color: #fff;padding: 0;font-weight: 500;}
-        .majorMenu li a:hover{background-color: #589dc6;color: #fff;}
-        .majorMenu .cur a{background-color: #589dc6;color: #fff;border-color: #000;}
 
         .navLeftS{width: 240px;height:5.6em;margin-top: 0.4em;background: url("images/navHeader.png") no-repeat left center;background-size: 100% 100%;display: flex;flex-direction: row;}
         .navStyle{margin-top: 1.1em!important;padding: 2px 10px;margin-left: 2.1em; color: #fff;width: 160px;display: inline-block;}
@@ -96,10 +90,11 @@
         .menu li:nth-child(5), .menu li:nth-child(5) .content, .menu li:nth-child(5) .close{background-color: #349ffd;}
         .menu li:nth-child(6), .menu li:nth-child(6) .content, .menu li:nth-child(6) .close{background-color: #696969;}
         .menu li:nth-child(7), .menu li:nth-child(7) .content, .menu li:nth-child(7) .close{background-color: #696969;}
-        .menu li:nth-child(8), .menu li:nth-child(8) .content, .menu li:nth-child(8) .close{background-color: #6A5ACD;}
+        .menu li:nth-child(8), .menu li:nth-child(8) .content, .menu li:nth-child(8) .close{background-color: #696969;}
         .menu li:nth-child(9), .menu li:nth-child(9) .content, .menu li:nth-child(9) .close{background-color: #6A5ACD;}
         .menu li:nth-child(10), .menu li:nth-child(10) .content, .menu li:nth-child(10) .close{background-color: #6A5ACD;}
         .menu li:nth-child(11), .menu li:nth-child(11) .content, .menu li:nth-child(11) .close{background-color: #6A5ACD;}
+        .menu li:nth-child(12), .menu li:nth-child(12) .content, .menu li:nth-child(12) .close{background-color: #6A5ACD;}
         .menu .content{opacity: 0;display: none;overflow:visible;font: 12px Arial, Helvetica;position: fixed;height: 120px;width: 200px; left: 50%;margin-left: -100px;top: 40%;margin-top: -40px; /*-webkit-transition: all .3s ease-out;-moz-transition: all .3s ease-out;-ms-transition: all .3s ease-out;-o-transition: all .3s ease-out;transition: all .3s ease-out;*/}
         .menu .expanded{opacity: .95;display: block;overflow: visible;padding: 40px;height: 300px;width: 540px;transition: all 3s ease-out;}
         .menu li:nth-child(3n) .content{/* 3,6,9*/right: 0;}
@@ -117,6 +112,7 @@
         .menu-style{margin-top: 1em;padding-left: 0;padding-right: 0;line-height: 2em;font-size: 1.1em;}
         .menu-style input{height: 2em;width: 100%;line-height:2em;padding-left: 0.5em;}
         .menu-style button{height: 2em;width: 100%;line-height:2em;padding: 0 10px;}
+        .menu-style select{height: 2em;width: 100%;line-height:2em; padding: 0 0 0 0.5em;}
         .pad_0{padding-left: 0;padding-right: 0;}
         .menu-radio{margin:0 0.5em;}
         .menu-radio input{height: 1.2em;width: 1.2em;}
@@ -136,6 +132,13 @@
         .input-group[class*=col-]{float: left;}
         .table{font-size: 1em;}
         .input-group-addon{border: none;}
+        .cardLoss{ border-top:1px solid #fefefe; border-bottom:1px solid #fefefe;font-size: 1.8em;height: 2.4em;line-height: 2.4em;color: #fefefe;margin-top: 1em;}
+        .sendMessage{line-height: 0!important;}
+        .onSwitch{background-color: #349ffd;border-radius: 5px;text-align: center;}
+        .switchZdy {border-radius: 4px;background-color: #FFFFFF;padding:0;font-size: 1em;}
+        .pad_10{padding-right: 5px;}
+        .cardLoss-btn{margin-top: 2.5em;}
+        .cardLoss-btn button{width: 100%;}
         /*谷歌滚动条样式修改*/
         .scrollbar{  width: 5px;  height: 100px;  margin: 0 auto;  }
         ::-webkit-scrollbar {/*滚动条整体样式*/  width: 5px;  /*高宽分别对应横竖滚动条的尺寸*/  height: 1px;}
@@ -214,7 +217,6 @@
             </div>
         </div>
     </div>
-    <!--主体内容-->
     <div class="container-fluid">
         <div class="row">
             <ul class="menu">
@@ -228,9 +230,9 @@
                     <div class="content"><span class="close">x</span>
                         <div class="menu-main container-fluid">
                             <div class="row">
-                                <div class="col-md-12 col-xs-12">
-                                    <div class="col-md-5 col-xs-5 menu-style">
-                                        <div class=" col-sm-12 menu-style">
+                                <div class="col-md-12 col-sm-12">
+                                    <div class="col-md-5 col-sm-5 menu-style">
+                                        <div class="col-sm-12 menu-style">
                                             <label class="col-sm-5 control-label">扣费项目</label>
                                             <div class="col-sm-7">
                                                 <input type="text" class="form-control" placeholder="扣费项目">
@@ -254,8 +256,8 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-3 col-xs-3 menu-style">
-                                        <div class="radio col-md-12 col-xs-12 menu-style">
+                                    <div class="col-md-3 col-sm-3 menu-style">
+                                        <div class="radio col-md-12 col-sm-12 menu-style">
                                             <label class="menu-radio">
                                                 <input type="radio" name="optionsRadios" value="option1" checked>
                                                 入闸
@@ -265,15 +267,15 @@
                                                 出闸
                                             </label>
                                         </div>
-                                        <div class=" col-md-12 col-xs-12 menu-style">
-                                            <label class=" col-md-7 col-xs-7 control-label">验票次数</label>
-                                            <div class=" col-md-5 col-xs-5">
+                                        <div class=" col-md-12 col-sm-12 menu-style">
+                                            <label class=" col-md-7 col-sm-7 control-label">验票次数</label>
+                                            <div class=" col-md-5 col-sm-5">
                                                 <input type="text" class="form-control" value="1">
                                             </div>
                                         </div>
 
                                     </div>
-                                    <div class="col-md-4 col-xs-5 menu-style">
+                                    <div class="col-md-4 col-sm-5 menu-style">
                                         <label class="col-sm-12 control-label menu-style">使用说明</label>
                                         <div class="col-sm-12 menu-style">
                                             <textarea class="form-control" rows="3"></textarea>
@@ -315,7 +317,7 @@
                     <div class="content"><span class="close">x</span>
                         <div class="menu-main container-fluid">
                             <div class="row">
-                                <div class="col-md-5 col-xs-5 menu-style">
+                                <div class="col-md-5 col-sm-5 menu-style">
                                     <div class="input-group menu-style">
                                         <label class="col-sm-6 control-label">会员卡号</label>
                                         <div class="col-lg-6">
@@ -328,7 +330,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-7 col-xs-7 menu-style">
+                                <div class="col-md-7 col-sm-7 menu-style">
                                     <div class=" menu-style">
                                         <label class="col-sm-5 control-label">门票票码</label>
                                         <div class="col-sm-7">
@@ -362,25 +364,25 @@
                                         </tbody>
                                     </table>
                                 </div>
-                                <div class=" col-md-4 col-xs-4 menu-style">
+                                <div class=" col-md-4 col-sm-4 menu-style">
                                     <label class="col-sm-5 control-label">陪同票单价</label>
                                     <div class="col-sm-7">
                                         <input type="text" class="form-control" placeholder="扣费项目">
                                     </div>
                                 </div>
-                                <div class=" col-md-4 col-xs-4 menu-style">
+                                <div class=" col-md-4 col-sm-4 menu-style">
                                     <label class="col-sm-5 control-label">购买数量</label>
                                     <div class="col-sm-7">
                                         <input type="text" class="form-control" placeholder="扣费项目">
                                     </div>
                                 </div>
-                                <div class=" col-md-4 col-xs-4 menu-style">
+                                <div class=" col-md-4 col-sm-4 menu-style">
                                     <label class="col-sm-5 control-label">购买数量</label>
                                     <div class="col-sm-7">
                                         <input type="text" class="form-control" placeholder="扣费项目">
                                     </div>
                                 </div>
-                                <div class="col-md-12 col-xs-12 menu-r-btn"><button type="button" class="btn btn-primary">购买</button></div>
+                                <div class="col-md-12 col-sm-12 menu-r-btn"><button type="button" class="btn btn-primary">购买</button></div>
                             </div>
                         </div>
                     </div>
@@ -390,50 +392,50 @@
                     <div class="content"><span class="close">x</span>
                         <div class="menu-main container-fluid">
                             <div class="row">
-                                <div class="col-md-3 col-xs-3"></div>
-                                <div class="col-md-6 col-xs-6 menu-style">
-                                    <div class=" col-md-12 col-xs-12 menu-style">
+                                <div class="col-md-3 col-sm-3"></div>
+                                <div class="col-md-6 col-sm-6 menu-style">
+                                    <div class=" col-md-12 col-sm-12 menu-style">
                                         <label class="col-sm-6 control-label">门票票码</label>
                                         <div class="col-sm-6">
                                             <input type="text" class="form-control" placeholder="扣费项目">
                                         </div>
                                     </div>
-                                    <div class=" col-md-12 col-xs-12 menu-style">
+                                    <div class=" col-md-12 col-sm-12 menu-style">
                                         <label class="col-sm-6 control-label">门票名称</label>
                                         <div class="col-sm-6">
                                             <input type="text" class="form-control" placeholder="扣费项目">
                                         </div>
                                     </div>
-                                    <div class=" col-md-12 col-xs-12 menu-style">
+                                    <div class=" col-md-12 col-sm-12 menu-style">
                                         <label class="col-sm-6 control-label">入闸时间</label>
                                         <div class="col-sm-6">
                                             <input type="text" class="form-control" placeholder="扣费项目">
                                         </div>
                                     </div>
-                                    <div class=" col-md-12 col-xs-12 menu-style">
+                                    <div class=" col-md-12 col-sm-12 menu-style">
                                         <label class="col-sm-6 control-label">已缴费</label>
                                         <div class="col-sm-6">
                                             <input type="text" class="form-control" placeholder="扣费项目">
                                         </div>
                                     </div>
-                                    <div class=" col-md-12 col-xs-12 menu-style">
+                                    <div class=" col-md-12 col-sm-12 menu-style">
                                         <label class="col-sm-6 control-label">入闸消费</label>
                                         <div class="col-sm-6">
                                             <input type="text" class="form-control" placeholder="扣费项目">
                                         </div>
                                     </div>
-                                    <div class=" col-md-12 col-xs-12 menu-style">
+                                    <div class=" col-md-12 col-sm-12 menu-style">
                                         <label class="col-sm-6 control-label">出闸缴费</label>
                                         <div class="col-sm-6">
                                             <input type="text" class="form-control" placeholder="扣费项目">
                                         </div>
                                     </div>
-                                    <div class="col-md-12 col-xs-12 menu-btn">
+                                    <div class="col-md-12 col-sm-12 menu-btn">
                                         <button type="button" class="btn btn-primary">退费</button>
                                         <button type="button" class="btn btn-primary">补交</button>
                                     </div>
                                 </div>
-                                <div class="col-md-3 col-xs-3"></div>
+                                <div class="col-md-3 col-sm-3"></div>
                             </div>
                         </div>
                     </div>
@@ -444,8 +446,8 @@
                         <div class="content"><span class="close">x</span>
                             <div class="menu-main container-fluid">
                                 <div class="row">
-                                    <div class="col-md-12 col-xs-12 margin1">
-                                        <div class="col-md-5 col-xs-5 menu-style">
+                                    <div class="col-md-12 col-sm-12 margin1">
+                                        <div class="col-md-5 col-sm-5 menu-style">
                                             <div class="col-sm-12">
                                                 <label class="col-sm-5 control-label">扣费项目</label>
                                                 <div class="col-sm-7">
@@ -453,7 +455,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-4 col-xs-3 menu-style">
+                                        <div class="col-md-4 col-sm-3 menu-style">
                                             <label class="menu-radio margin-02">
                                                 <input type="radio" name="optionsRadios" value="option1" checked>
                                                 今天
@@ -463,7 +465,7 @@
                                                 全部日期
                                             </label>
                                         </div>
-                                        <div class="col-md-3 col-xs-2 menu-style width50">
+                                        <div class="col-md-3 col-sm-2 menu-style width50">
                                             <button type="button" class="btn btn-info">刷新</button>
                                         </div>
                                     </div>
@@ -496,7 +498,7 @@
                                             </tbody>
                                         </table>
                                     </div>
-                                    <div class="col-md-12 col-xs-12 menu-r-btn"><button type="button" class="btn btn-primary">批量清场</button></div>
+                                    <div class="col-md-12 col-sm-12 menu-r-btn"><button type="button" class="btn btn-primary">批量清场</button></div>
                                 </div>
                             </div>
                         </div>
@@ -508,35 +510,35 @@
                         <div class="menu-main container-fluid">
                             <div class="row">
                                 <div class="col-md-12 col-sm-12">
-                                    <div class="col-md-3 col-xs-3 menu-style">
-                                        <div class="col-md-12 col-xs-12 menu-style">
+                                    <div class="col-md-3 col-sm-3 menu-style">
+                                        <div class="col-md-12 col-sm-12 menu-style">
                                             <label class="col-sm-6 control-label">订单号</label>
                                             <div class="col-sm-6">
                                                 <input type="text" class="form-control" placeholder="扣费项目">
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-3 col-xs-3 menu-style">
-                                        <div class="col-md-12 col-xs-12 menu-style">
+                                    <div class="col-md-3 col-sm-3 menu-style">
+                                        <div class="col-md-12 col-sm-12 menu-style">
                                             <label class="col-sm-4 control-label">卡号</label>
                                             <div class="col-sm-8">
                                                 <input type="text" class="form-control" placeholder="扣费项目">
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-4 col-xs-4 menu-style">
-                                        <div class="col-md-12 col-xs-12 menu-style">
+                                    <div class="col-md-4 col-sm-4 menu-style">
+                                        <div class="col-md-12 col-sm-12 menu-style">
                                             <label class="col-sm-5 control-label">销售日期</label>
                                             <div class="col-sm-7">
                                                 <input type="text" class="form-control" placeholder="扣费项目">
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-2 col-xs-2 menu-style">
+                                    <div class="col-md-2 col-sm-2 menu-style">
                                         <button type="button" class="btn btn-primary margin1">查询</button>
                                     </div>
                                 </div>
-                                <div class="col-md-12 col-xs-12 heightOver">
+                                <div class="col-md-12 col-sm-12 heightOver">
                                     <div class="col-md-5 col-sm-5 menu-style">
                                         <table class="table table-bordered">
                                             <thead style="background: #f5f5f5">
@@ -559,50 +561,50 @@
                                             </tbody>
                                         </table>
                                     </div>
-                                    <div class="col-md-7 col-xs-7 order-style">
-                                        <div class="col-md-6 col-xs-6 order-style">
+                                    <div class="col-md-7 col-sm-7 order-style">
+                                        <div class="col-md-6 col-sm-6 order-style">
                                             <label class="col-sm-4 control-label">订单号</label>
                                             <div class="col-sm-8">
                                                 <input type="text" class="form-control" placeholder="扣费项目">
                                             </div>
                                         </div>
-                                        <div class="col-md-6 col-xs-6 order-style">
+                                        <div class="col-md-6 col-sm-6 order-style">
                                             <label class="col-sm-4 control-label">销售日期</label>
                                             <div class="col-sm-8">
                                                 <input type="text" class="form-control" placeholder="扣费项目">
                                             </div>
                                         </div>
-                                        <div class="col-md-6 col-xs-6 order-style">
+                                        <div class="col-md-6 col-sm-6 order-style">
                                             <label class="col-sm-4 control-label">应付金额</label>
                                             <div class="col-sm-8">
                                                 <input type="text" class="form-control" placeholder="扣费项目">
                                             </div>
                                         </div>
-                                        <div class="col-md-6 col-xs-6 order-style">
+                                        <div class="col-md-6 col-sm-6 order-style">
                                             <label class="col-sm-4 control-label">优惠金额</label>
                                             <div class="col-sm-8">
                                                 <input type="text" class="form-control" placeholder="扣费项目">
                                             </div>
                                         </div>
-                                        <div class="col-md-6 col-xs-6 order-style">
+                                        <div class="col-md-6 col-sm-6 order-style">
                                             <label class="col-sm-4 control-label">实付金额</label>
                                             <div class="col-sm-8">
                                                 <input type="text" class="form-control" placeholder="扣费项目">
                                             </div>
                                         </div>
-                                        <div class="col-md-6 col-xs-6 order-style">
+                                        <div class="col-md-6 col-sm-6 order-style">
                                             <label class="col-sm-4 control-label">收银员</label>
                                             <div class="col-sm-8">
                                                 <input type="text" class="form-control" placeholder="扣费项目">
                                             </div>
                                         </div>
-                                        <div class="col-md-12 col-xs-12 order-style">
+                                        <div class="col-md-12 col-sm-12 order-style">
                                             <label class="col-sm-2 control-label">备注</label>
                                             <div class="col-sm-10">
                                                 <textarea class="form-control" rows="3"></textarea>
                                             </div>
                                         </div>
-                                        <div class="col-md-12 col-xs-12 order-style">
+                                        <div class="col-md-12 col-sm-12 order-style">
                                             <table class="table table-bordered">
                                                 <thead style="background: #f5f5f5">
                                                 <tr>
@@ -664,7 +666,7 @@
                                                 </tbody>
                                             </table>
                                         </div>
-                                        <div class="col-md-12 col-xs-12 order-btn">
+                                        <div class="col-md-12 col-sm-12 order-btn">
                                             <button type="button" class="btn btn-primary">退货</button>
                                             <button type="button" class="btn btn-primary">重打小票</button>
                                             <button type="button" class="btn btn-primary">重打门票</button>
@@ -684,13 +686,13 @@
                         <span class="close">x</span>
                         <div class="menu-main container-fluid">
                             <div class="row">
-                                <div class="col-md-12 col-xs-12 margin1">
-                                    <div class="input-group col-md-6 col-xs-6 menu-style">
+                                <div class="col-md-12 col-sm-12 margin1">
+                                    <div class="input-group col-md-6 col-sm-6 menu-style">
                                         <input type="text" class="form-control" placeholder="条码号/商品名称..." aria-describedby="basic-addon2">
                                         <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-search"></span></span>
                                     </div>
-                                    <div class="col-md-2 col-xs-2"></div>
-                                    <div class="input-group col-md-3 col-xs-3 menu-style">
+                                    <div class="col-md-2 col-sm-2"></div>
+                                    <div class="input-group col-md-3 col-sm-3 menu-style">
                                         <input type="text" class="form-control" placeholder="会员卡号" aria-describedby="basic-addon2">
                                         <span class="input-group-btn">
                                             <button class="btn btn-default" type="button">读卡</button>
@@ -721,20 +723,20 @@
                                         </tbody>
                                     </table>
                                 </div>
-                                <div class="col-md-5 col-xs-5 margin1">
-                                    <div class="col-md-12 col-xs-12 menu-style">
+                                <div class="col-md-5 col-sm-5 margin1">
+                                    <div class="col-md-12 col-sm-12 menu-style">
                                         <label class="col-sm-4 control-label">会员姓名</label>
                                         <div class="col-sm-8">
                                             <input type="text" class="form-control" placeholder="扣费项目">
                                         </div>
                                     </div>
-                                    <div class="col-md-12 col-xs-12 menu-style">
+                                    <div class="col-md-12 col-sm-12 menu-style">
                                         <label class="col-sm-4 control-label">会员级别</label>
                                         <div class="col-sm-8">
                                             <input type="text" class="form-control" placeholder="扣费项目">
                                         </div>
                                     </div>
-                                    <div class="col-md-12 col-xs-12 margin1">
+                                    <div class="col-md-12 col-sm-12 margin1">
                                         <table class="table table-bordered">
                                             <thead style="background: #f5f5f5">
                                             <tr>
@@ -752,26 +754,149 @@
                                     </div>
                                 </div>
                                 <div class="col-md-12 col-sm-12 margin1">
-                                    <div class="col-md-4 col-xs-4 menu-style">
+                                    <div class="col-md-4 col-sm-4 menu-style">
                                         <label class="col-sm-4 control-label">兑换种类</label>
                                         <div class="col-sm-8">
                                             <input type="text" class="form-control" placeholder="扣费项目">
                                         </div>
                                     </div>
-                                    <div class="col-md-4 col-xs-4 menu-style">
+                                    <div class="col-md-4 col-sm-4 menu-style">
                                         <label class="col-sm-4 control-label">兑换数量</label>
                                         <div class="col-sm-8">
                                             <input type="text" class="form-control" placeholder="扣费项目">
                                         </div>
                                     </div>
-                                    <div class="col-md-4 col-xs-4 menu-style">
+                                    <div class="col-md-4 col-sm-4 menu-style">
                                         <label class="col-sm-4 control-label">兑换价值</label>
                                         <div class="col-sm-8">
                                             <input type="text" class="form-control" placeholder="扣费项目">
                                         </div>
                                     </div>
-                                    <div class="col-md-12 col-xs-12 menu-r-btn"><button type="button" class="btn btn-primary">兑换</button></div>
+                                    <div class="col-md-12 col-sm-12 menu-r-btn"><button type="button" class="btn btn-primary">兑换</button></div>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li tabindex="1">
+                    <span class="title"><i class="icon iconfont icon-shouye-xinyongqiaguashi"></i>会员卡挂失</span>
+                    <div class="content">
+                        <span class="close">x</span>
+                        <div class="menu-main container-fluid">
+                            <div class="row">
+                                <div class="col-md-12 col-sm-12 margin1">
+                                    <div class="col-md-3 col-sm-3 menu-style">
+                                        <label class="col-sm-5 control-label pad_0">手机号码：</label>
+                                        <div class="col-sm-7 pad_0">
+                                            <input type="text" class="form-control" placeholder="...">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-sm-4 menu-style">
+                                        <label class="col-sm-5 control-label">会员姓名：</label>
+                                        <div class="col-sm-7 pad_0">
+                                            <input type="text" class="form-control" placeholder="...">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 menu-style">
+                                        <label class="col-sm-5 control-label">生日：</label>
+                                        <div class="col-sm-7">
+                                            <input type="text" class="form-control" placeholder="...">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-sm-2 menu-style">
+                                        <label class="col-sm-5 control-label pad_0">性别：</label>
+                                        <div class="col-sm-7 pad_0">
+                                            <select  class="form-control">
+                                                <option value="男">男</option>
+                                                <option value="女">女</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 col-sm-12 margin1">
+                                    <div class="col-md-4 col-sm-4 menu-style">
+                                        <label class="col-sm-3 control-label pad_0">验证码：</label>
+                                        <div class="col-sm-5">
+                                            <input type="text" class="form-control" />
+                                        </div>
+                                        <div class="col-sm-4 pad_0">
+                                            <input class="form-control sendMessage" type="button" value="获取验证码"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8 col-sm-8 menu-style">
+                                        <label class="col-sm-4 control-label">证件号码：</label>
+                                        <div class="col-sm-5">
+                                            <input type="text" class="form-control" />
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <button type="button" class="btn btn-primary">读取</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 col-sm-12 menu-style">
+                                    <label class="col-sm-1 control-label">备注：</label>
+                                    <div class="col-sm-10">
+                                        <textarea class="form-control"></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 cardLoss">
+                                    <strong class="col-md-4 col-sm-6">会员卡号：</strong>
+                                    <span class="col-md-3 col-sm-6">代币：</span>
+                                    <span class="col-md-3 col-sm-6">积分：</span>
+                                    <span class="col-md-2 col-sm-6">彩票：</span>
+                                </div>
+                                <div class="col-md-12 col-sm-12 margin1">
+                                    <div class="col-md-4 col-sm-4 menu-style" >
+                                        <span class="col-md-6 col-sm-6 pad_10">允许投退币：</span>
+                                        <div class="col-md-6 col-sm-6 switchZdy">
+                                            <div class="col-md-6 col-sm-6 onSwitch pad_0">允许</div>
+                                            <div class="col-md-6 col-sm-6 pad_0">不允许</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-sm-4 menu-style" >
+                                        <span class="col-md-6 col-sm-6 pad_10">允许兑币：</span>
+                                        <div class="col-md-6 col-sm-6 switchZdy">
+                                            <div class="col-md-6 col-sm-6 onSwitch pad_0">允许</div>
+                                            <div class="col-md-6 col-sm-6 pad_0">不允许</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-sm-4 menu-style" >
+                                        <span class="col-md-6 col-sm-6 pad_10">允许购买实物币：</span>
+                                        <div class="col-md-6 col-sm-6 switchZdy">
+                                            <div class="col-md-6 col-sm-6 onSwitch pad_0">允许</div>
+                                            <div class="col-md-6 col-sm-6 pad_0">不允许</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 col-sm-12 margin1">
+                                    <div class="col-md-4 col-sm-4 menu-style" >
+                                        <span class="col-md-6 col-sm-6 pad_10">允许手工存币：</span>
+                                        <div class="col-md-6 col-sm-6 switchZdy">
+                                            <div class="col-md-6 col-sm-6 onSwitch pad_0">允许</div>
+                                            <div class="col-md-6 col-sm-6 pad_0">不允许</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-sm-4 menu-style" >
+                                        <span class="col-md-6 col-sm-6 pad_10">允许手工送币：</span>
+                                        <div class="col-md-6 col-sm-6 switchZdy">
+                                            <div class="col-md-6 col-sm-6 onSwitch pad_0">允许</div>
+                                            <div class="col-md-6 col-sm-6 pad_0">不允许</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-sm-4 menu-style" >
+                                        <span class="col-md-6 col-sm-6 pad_10">卡状态：</span>
+                                        <div class="col-md-6 col-sm-6 switchZdy">
+                                            <div class="col-md-6 col-sm-6 onSwitch pad_0">有效</div>
+                                            <div class="col-md-6 col-sm-6 pad_0">无效</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-sm-12 cardLoss-btn">
+                                <div class="col-md-7 col-sm-5" ></div>
+                                <div class="col-md-2 col-sm-3 text-center" ><button type="button" class="btn btn-success">换卡</button></div>
+                                <div class="col-md-2 col-sm-3 text-center" ><button type="button" class="btn btn-success">挂失</button></div>
+                                <div class="col-md-1 col-sm-1" ></div>
                             </div>
                         </div>
                     </div>
@@ -797,8 +922,8 @@
             </ul>
         </div>
     </div>
-
 </div>
+
 <script src="js/jquery-2.1.3.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
 <script src="js/swiper.min.js"></script>
@@ -871,29 +996,25 @@
     (function(){
         $('.menu .content').append('<span class="close">x</span>');
         function showContent(elem){
-//            hideContent();
             elem.find('.content').stop(true,true).animate({"opacity": 1,"width": "840px","height":"500px","margin-left": "-420px","margin-top": "-200px"},800);
-//            elem.find('.content').addClass('expanded');
             elem.addClass('cover');
         }
-        function hideContent(){
 
-        }
         $('.menu li').click(function() {
             console.log($(this).index());
             if($(this).index() == 0){
-                window.location.href='sales.html';
+                window.location.href='theBar.html';
             }else {
                 $(this).find('.content').css("display","block");
                 showContent($(this));
             }
-
         });
         $('.menu li').keypress(function(e) {
             if (e.keyCode == 13) {
                 showContent($(this));
             }
         });
+
         $('.menu .close').click(function(e) {
             e.stopPropagation();
             $(this).parent().stop(true,true).animate({"opacity": 0,"width": "200px","height":"120px","margin-left": "-100px","margin-top": "-40px"});
@@ -902,6 +1023,7 @@
             $('.menu li').removeClass('cover');
         });
     })();
+
     //存储session
     function setStorage(key,value) {
         if(window.localStorage){

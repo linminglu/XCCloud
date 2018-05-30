@@ -8,6 +8,8 @@ namespace PalletService.Common
 {
     public class Computer
     {
+        public static string DogId { set; get; }
+
         public static string CpuID { set; get; }
 
         public static string WorkStation { set; get; }
@@ -26,6 +28,7 @@ namespace PalletService.Common
         public static void ComputeInfo()
         {
             CpuID = GetCpuID();
+            DogId = GetDogId();
             WorkStation = GetComputerName();
             MacAddress = GetMacAddress();
             IPAddress = GetIPAddress();
@@ -57,6 +60,12 @@ namespace PalletService.Common
                 return "unknow";
             }
         }
+
+        public static string GetDogId()
+        {
+            return "99999999";
+        }
+
         /// <summary>
         /// 获取网卡硬件地址 
         /// </summary>
