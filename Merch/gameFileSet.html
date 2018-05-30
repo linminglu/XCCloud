@@ -13,7 +13,7 @@
 <body>
  <div class="layui-row">
      <blockquote style="text-align: right;padding-right: 150px;" class="layui-col-md12 layui-col-xs12 layui-col-lg12 layui-elem-quote">
-         <button type="button" class="layui-btn layui-btn-normal toEasyOpen" id="addNew"><i class="layui-icon">&#xe654;</i>新增</button>
+         <button type="button" class="layui-btn layui-btn-normal" id="addNew"><i class="layui-icon">&#xe654;</i>新增</button>
      </blockquote>
      <table class="layui-hide" lay-filter="gameFileTable" id="gameFileTable"></table>
  </div>
@@ -214,7 +214,7 @@
                                   <div class="layui-inline memberSend">
                                       <label class="layui-form-label">会员级别</label>
                                       <div class="layui-input-inline">
-                                          <select name="BalanceIndex" lay-ignore style="height: 36px;width: 150px">
+                                          <select name="BalanceIndex" lay-ignore style="height: 36px;width: 150px" id="memberLevels">
 
                                           </select>
                                       </div>
@@ -643,13 +643,13 @@
                                 <div class="layui-inline ExceptOutTest">
                                     <label class="layui-form-label">异常出币检测</label>
                                     <div class="layui-input-inline">
-                                        <input type="checkbox"  lay-skin="switch" lay-text="启用|禁用" id="ExceptOutTest" lay-filter="ExceptOutTest">
+                                        <input type="checkbox"  name="ExceptOutTest" lay-skin="switch" lay-text="启用|禁用" id="ExceptOutTest" lay-filter="ExceptOutTest">
                                     </div>
                                 </div>
                                 <div class="layui-inline ExceptOutSpeed">
                                     <label class="layui-form-label">检测时间(s)</label>
                                     <div class="layui-input-inline">
-                                        <select name="" id="ExceptOutSpeed" lay-filter="ExceptOutSpeed">
+                                        <select name="ExceptOutSpeed" id="ExceptOutSpeed" lay-filter="ExceptOutSpeed">
                                             <option value=""></option>
                                             <option value="30">30</option>
                                             <option value="45" selected>45</option>
@@ -661,7 +661,7 @@
                                 <div class="layui-inline Frequency">
                                     <label class="layui-form-label">次数</label>
                                     <div class="layui-input-inline">
-                                        <input type="text" class="layui-input" id="Frequency" value="2">
+                                        <input type="text" class="layui-input" id="Frequency" value="2" name="Frequency">
                                     </div>
                                 </div>
 
@@ -856,6 +856,7 @@ let memberLevelId='';
     function saveEasy(form,layer) {
         let url='/XCCloud/GameInfo?action=SaveGameInfo';
         let _obj={'ID':id,
+            'gameMode':0,
             'GameName':$('input[name="GameName"]').val(),
              'GameType':eGameType,
             'PushCoin1':$('#PushCoin1').val(),
@@ -908,6 +909,7 @@ let memberLevelId='';
             }
         });
      let _obj={'ID':id,
+         'gameMode':1,
          'GameName':$('#GameName').val(),
          'GameType':GameType,
          'State':State,
@@ -1003,6 +1005,7 @@ let memberLevelId='';
       xc.getBalanceTypeDic('',token,layer,form,'PushBalanceIndex11');
       xc.getBalanceTypeDic('',token,layer,form,'PushBalanceIndex2');
       xc.getBalanceTypeDic('',token,layer,form,'OutBalanceIndex');
+      xc.getMemberTypeDic(token,layer,form,'memberLevels');
       xc.getGroupAreaDic('1',token,layer,form,'AreaID');
       xc.getGroupAreaDic('1',token,layer,form,'AreaID1');
 
@@ -1319,21 +1322,23 @@ let memberLevelId='';
            saveHigh(form,layer);
        });
    $('#addNew').click(function (){
-       eAreaID='';ePushBalanceIndex1='';eGameType='';
-           ePushLevel=0;LotteryModeLow=0;eOnlyExitLottery=0;
-           eReadCat=0;echkCheckGift=0;StateLow=1;
-
-       AreaID1='';State=1;PushBalanceIndex11=' ';PushBalanceIndex2='';GameType='';
-           OutBalanceIndex='';ReturnCheck=0;OutsideAlertCheck=0;
-           ICTicketOperation=0;NotGiveBack=0;LotteryMode=0;OnlyExitLottery=0;
-           chkCheckGift1=0;AllowElecPush=0;GuardConvertCard=0;ReadCat=0;
-           AllowRealPush=0;BanOccupy=0;StrongGuardConvertCard=0;
-           AllowElecOut=0;NowExit=0;BOLock=0;BOPulse=500;AllowRealOut=0;BOKeep=0;
-           PushSpeed=35;PushPulse=35;PushLevel=0;PushStartInterval=0;
-           UseSecondPush=0;SecondSpeed=150;SecondPulse=200;SecondLevel=0;
-           SecondStartInterval=0;OutSpeed=35;
-           OutPulse=35;CountLevel=0;OutLevel=0;ExceptOutTest=0;ExceptOutSpeed=45;
+           // eAreaID='';ePushBalanceIndex1='';eGameType='';
+           // ePushLevel=0;LotteryModeLow=0;eOnlyExitLottery=0;
+           // eReadCat=0;echkCheckGift=0;StateLow=1;
+           //
+           // AreaID1='';State=1;PushBalanceIndex11=' ';PushBalanceIndex2='';GameType='';
+           // OutBalanceIndex='';ReturnCheck=0;OutsideAlertCheck=0;
+           // ICTicketOperation=0;NotGiveBack=0;LotteryMode=0;OnlyExitLottery=0;
+           // chkCheckGift1=0;AllowElecPush=0;GuardConvertCard=0;ReadCat=0;
+           // AllowRealPush=0;BanOccupy=0;StrongGuardConvertCard=0;
+           // AllowElecOut=0;NowExit=0;BOLock=0;BOPulse=500;AllowRealOut=0;BOKeep=0;
+           // PushSpeed=35;PushPulse=35;PushLevel=0;PushStartInterval=0;
+           // UseSecondPush=0;SecondSpeed=150;SecondPulse=200;SecondLevel=0;
+           // SecondStartInterval=0;OutSpeed=35;
+           // OutPulse=35;CountLevel=0;OutLevel=0;ExceptOutTest=0;ExceptOutSpeed=45;
        $('.saveBox').css('display','inline-block');
+       xc.getGameInfoByid('',token,form,layer);
+
    });
       //监听表格tool事件
       table.on('tool(gameFileTable)',function (obj) {
@@ -1352,7 +1357,8 @@ let memberLevelId='';
                   success: function (data) {
                       data=JSON.parse(data);
                       if(data.result_code==1){
-                          let arr=data.result_data;
+                          let arr=[];
+                           arr=data.result_data;
                           if(arr.length==1){
                               $('.code input[name="paymoney"]').val(arr[0].PayCount);
                               $('.code input[name="times"]').val(arr[0].PlayCount);
@@ -1369,7 +1375,10 @@ let memberLevelId='';
                               title:'扫码优惠规则',
                               type:1,
                               area:'800px',
-                              content:$('#codeSale')
+                              content:$('#codeSale'),
+                              cancel:function () {
+                                  location.reload()
+                              }
                           })
                       }else {layer.msg(data.result_msg||data.return_msg)}
                   }
@@ -1739,7 +1748,7 @@ let memberLevelId='';
                           }
                           form.val("easyForm",{
                               "GameName":arr[6].value,
-                              'GameCode':arr[57].value,
+                              'GameCode':arr[58].value,
                               'eAreaID':arr[5].value,
                               'ePushBalanceIndex1':arr[9].value,
                               'PushCoin1':arr[10].value,
@@ -1749,10 +1758,10 @@ let memberLevelId='';
                               'ReadCat':arr[23].value==1?true:false,
                               'chkCheckGift':arr[20].value==1?true:false,
                               'StateLow':arr[8].value==1?true:false,
-                              'Area':arr[58].value,
-                              'ChangeTime':arr[59].value,
+                              'Area':arr[59].value,
+                              'ChangeTime':arr[60].value,
                               'Price':arr[61].value,
-                              'Evaluation':arr[60].value,
+                              'Evaluation':arr[61].value,
                           });
                           eAreaID=arr[5].value;
                           ePushBalanceIndex1=arr[9].value;
@@ -1763,7 +1772,7 @@ let memberLevelId='';
                           eReadCat=arr[23].value;
                           echkCheckGift=arr[20].value;
                           StateLow=arr[8].value;
-                          xc.getGameType (form,'游戏机类型','GameTypeLow',arr[7].value);
+                          xc.getGameType (token,layer,form,'游戏机类型','GameTypeLow',arr[7].value);
 
                           form.val("hardForm",{
                               'AreaID1':arr[5].value,
@@ -1818,15 +1827,15 @@ let memberLevelId='';
                               'ExceptOutSpeed':arr[55].value,
                               'Frequency':arr[56].value,
 
-                              'hGameCode':arr[57].value,
-                              'hArea':arr[58].value,
-                              'hChangeTime':arr[59].value,
-                              'hEvaluation':arr[60].value,
-                              'hPrice':arr[61].value,
-                              'LowLimit':arr[62].value,
-                              'HighLimit':arr[63].value,
+                              'hGameCode':arr[58].value,
+                              'hArea':arr[59].value,
+                              'hChangeTime':arr[60].value,
+                              'hEvaluation':arr[61].value,
+                              'hPrice':arr[62].value,
+                              'LowLimit':arr[63].value,
+                              'HighLimit':arr[64].value,
                           });
-                          AreaID1=arr[5].value;
+                              AreaID1=arr[5].value;
                               GameName=arr[6].value;
                               State= arr[8].value;
                               PushBalanceIndex11= arr[9].value;
@@ -1870,7 +1879,9 @@ let memberLevelId='';
                               
                               ExceptOutTest=arr[54].value;
                               ExceptOutSpeed=arr[55].value;
-                          xc.getGameType(form,'游戏机类型','GameType',arr[7].value);
+                          GameType=arr[7].value;
+                          eGameType=arr[7].value;
+                          xc.getGameType(token,layer,form,'游戏机类型','GameType',arr[7].value);
                           xc.openEasy(layer);
 
                           form.render();

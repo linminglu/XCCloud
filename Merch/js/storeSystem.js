@@ -1590,6 +1590,37 @@ xcActionSystem.prototype= {
             }
         });
     },
+    getBalanceTypeDicNode:function (storeId,hkType,token,layer,form,node,selected) {
+        let _obj={'storeId':storeId,'hkType':hkType,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+        let parseJson = JSON.stringify(_obj);
+        $.ajax({
+            type:'post',
+            url:'/XCCloud/BalanceType?action=GetBalanceTypeDic',
+            contentType: "application/json; charset=utf-8",
+            data:{parasJson: parseJson},
+            success: function (data) {
+                data = JSON.parse(data);
+                if (data.result_code == 1) {
+                    let arr=data.result_data;
+                    node.html('<option>-请选择-</option>');
+                    for(let i in arr){
+                        if(selected!=undefined){
+                            if(arr[i].ID==selected){
+                                node.append('<option value="'+arr[i].ID+'" selected>'+arr[i].TypeName+'</option>')
+                            }else {
+                                node.append('<option value="'+arr[i].ID+'">'+arr[i].TypeName+'</option>')
+                            }
+                        }else {
+                            node.append('<option value="'+arr[i].ID+'">'+arr[i].TypeName+'</option>')
+                        }
+                    }
+                    form.render('select');
+                } else {
+                    layer.msg(data.result_msg);
+                }
+            }
+        });
+    },
     //获取会员级别字典
     getMemberTypeDic:function (token,layer,form,id,selected) {
         let _obj={'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};

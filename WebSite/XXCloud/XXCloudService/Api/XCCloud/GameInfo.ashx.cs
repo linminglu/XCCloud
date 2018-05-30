@@ -105,12 +105,7 @@ namespace XXCloudService.Api.XCCloud
             try
             {                
                 string errMsg = string.Empty;
-                string id = dicParas.ContainsKey("id") ? (dicParas["id"] + "") : string.Empty;
-                if (string.IsNullOrEmpty(id))
-                {
-                    errMsg = "游戏机ID参数不能为空";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
+                string id = dicParas.ContainsKey("id") ? (dicParas["id"] + "") : string.Empty;                
 
                 int iId = 0;
                 int.TryParse(id, out iId);
@@ -238,6 +233,7 @@ namespace XXCloudService.Api.XCCloud
                 string lowLimit = dicParas.ContainsKey("lowLimit") ? (dicParas["lowLimit"] + "") : string.Empty;
                 string highLimit = dicParas.ContainsKey("highLimit") ? (dicParas["highLimit"] + "") : string.Empty;
                 string[] photoURLs = dicParas.ContainsKey("photoURLs") ? (string[])dicParas["photoURLs"]: null;
+
                 var freeLotteryRules = dicParas.GetArray("freeLotteryRules");
 
                 if (string.IsNullOrEmpty(gameName))
@@ -286,6 +282,41 @@ namespace XXCloudService.Api.XCCloud
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
+                #region 验证游戏机参数
+                if (!dicParas.Get("gameMode").Nonempty("gameMode参数", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                var gameMode = dicParas.Get("gameMode").Toint(0);
+                if (gameMode == 0)
+                {
+                    List<string> gameSimpleParameters = new List<string> { 
+                    "PushBalanceIndex1","PushCoin1",
+                    "PushLevel", "LotteryMode", "OnlyExitLottery", "ReadCat", "chkCheckGift"
+                    };
+
+                    foreach (var parameter in gameSimpleParameters)
+                    {
+                        if (!dicParas.Get(parameter).Nonempty(parameter + "参数", out errMsg))
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
+                }
+                else
+                {
+                    List<string> gameAdvancedParameters = new List<string> { 
+                    "PushBalanceIndex1","PushCoin1", 
+                    "ReturnCheck","OutsideAlertCheck","ICTicketOperation","NotGiveBack","LotteryMode","OnlyExitLottery","chkCheckGift","AllowElecPush","AllowDecuplePush","GuardConvertCard","ReadCat","AllowRealPush","BanOccupy","StrongGuardConvertCard","PushControl",
+                    "AllowElecOut","NowExit","BOLock","AllowRealOut","BOKeep","PushReduceFromCard","PushSpeed","PushPulse","PushLevel","PushStartInterval","UseSecondPush","SecondReduceFromCard","SecondAddToGame","SecondSpeed",
+                    "SecondPulse","SecondLevel","SecondStartInterval","OutSpeed","OutPulse","CountLevel","OutLevel","OutReduceFromGame","OutAddToCard","OnceOutLimit","OncePureOutLimit","ExceptOutTest","ExceptOutSpeed","Frequency"
+                    };
+
+                    foreach (var parameter in gameAdvancedParameters)
+                    {
+                        if (!dicParas.Get(parameter).Nonempty(parameter + "参数", out errMsg))
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
+                }
+                             
+                #endregion
+
                 //开启EF事务
                 var data_GameInfoService = Data_GameInfoService.I;
                 var data_GameInfo_ExtService = Data_GameInfo_ExtService.I;
@@ -294,21 +325,41 @@ namespace XXCloudService.Api.XCCloud
                 {
                     try
                     {
-                        var data_GameInfo = new Data_GameInfo();
                         int iId = 0;
                         int.TryParse(id, out iId);                        
+
+                        var data_GameInfo = data_GameInfoService.GetModels(p => p.ID == iId).FirstOrDefault() ?? new Data_GameInfo();                                                
                         if (data_GameInfo_ExtService.Any(a => a.GameID != iId && a.GameCode.Equals(gameCode, StringComparison.OrdinalIgnoreCase)))
                         {
                             errMsg = "该游戏机出厂编号已使用";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 
-                        if (iId == 0)
+                        //获取参数默认值
+                        IDict_SystemService dict_SystemService = BLLContainer.Resolve<IDict_SystemService>(resolveNew: true);
+                        int GameInfoId = dict_SystemService.GetModels(p => p.DictKey.Equals("游戏机档案维护")).FirstOrDefault().ID;
+                        var result = dict_SystemService.GetModels(p => p.PID == GameInfoId).ToList();
+                        foreach (var dict in result)
                         {
-                            Utils.GetModel(dicParas, ref data_GameInfo);
-                            data_GameInfo.State = 1;
-                            data_GameInfo.StoreID = storeId;
-                            data_GameInfo.MerchID = merchId;
+                            if (dicParas.ContainsKey(dict.DictKey))
+                            {
+                                dicParas[dict.DictKey] = dicParas[dict.DictKey] ?? dict.DictValue;
+                            }
+                            else
+                            {
+                                dicParas.Add(dict.DictKey, dict.DictValue);
+                            }
+                        }
+
+                        Utils.GetModel(dicParas, ref data_GameInfo);
+                        
+                        data_GameInfo.PushAddToGame = data_GameInfo.PushAddToGame ?? data_GameInfo.PushCoin1; //简易模式下“投币给游戏机脉冲数”与“单局投币数”相同
+                        data_GameInfo.SSRTimeOut = data_GameInfo.SSRTimeOut ?? 0;
+                        data_GameInfo.StoreID = storeId;
+                        data_GameInfo.MerchID = merchId;
+                        if (iId == 0)
+                        {                            
+                            data_GameInfo.State = 1;                            
                             if (!data_GameInfoService.Add(data_GameInfo))
                             {
                                 errMsg = "新增游戏机信息失败";
@@ -317,14 +368,12 @@ namespace XXCloudService.Api.XCCloud
                         }
                         else
                         {
-                            if (!data_GameInfoService.Any(a => a.ID == iId))
+                            if (data_GameInfo.ID == 0)
                             {
                                 errMsg = "该游戏机不存在";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                             }
-                            
-                            data_GameInfo = data_GameInfoService.GetModels(p => p.ID == iId).FirstOrDefault();
-                            Utils.GetModel(dicParas, ref data_GameInfo);
+
                             if (!data_GameInfoService.Update(data_GameInfo))
                             {
                                 errMsg = "修改游戏机信息失败";

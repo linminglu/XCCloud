@@ -1713,7 +1713,7 @@ namespace XCCloudService.Common
                     }
                 }
             }                       
-        }
+        }       
 
         public static List<T1> GetCopyList<T1, T2>(List<T2> objList) where T1 : new()
         {

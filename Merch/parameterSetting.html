@@ -463,8 +463,6 @@
     let chkAccompanyOutWithMain=0; let chkAddLeaveTime=0; let cmbAutoJoinMemberLevel;let cmbAutoJoinMemberLevels=[];
     function ifNeedSet(storeId,form,layer) {
         let obj={'storeId':storeId,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
-        // xc.getBalanceTypeDicStore(storeId,1,token,layer,form,'limitType');
-
         $.ajax({
             type: "post",
             // async:false,
@@ -478,8 +476,7 @@
                     if(arr.length==1){
                         $('.priceCoin input[name="CashPrice"]').val(arr[0].CashPrice);
                         $('.priceCoin input[name="CoinCount"]').val(arr[0].CoinCount);
-                        // $('.priceCoin select[name="limitType"] option[value="'+arr[0].BalanceIndex+'"]').attr({'selected':true});
-                        xc.getBalanceTypeDicStore(_storeId,1,token,layer,form,'limitType',arr[0].BalanceIndex);
+                        xc.getBalanceTypeDicNode(_storeId,1,token,layer,form,$('.priceCoin select[name="limitType"]'),arr[0].BalanceIndex);
                     }else if(arr.length>1){
                         for(let i=1;i<arr.length;i++){
                             $('.priceCoinBox').append($('body').find($('.priceCoin')).eq(0).clone())
@@ -487,8 +484,7 @@
                         for(let i=0;i<arr.length;i++){
                             $('.priceCoinBox').find($('.priceCoin')).eq(i).find('input[name="CashPrice"]').val(arr[i].CashPrice);
                             $('.priceCoinBox').find($('.priceCoin')).eq(i).find('input[name="CoinCount"]').val(arr[i].CoinCount);
-                            // $('.priceCoinBox').find($('.priceCoin')).eq(i).find('select[name="limitType"] option[value="'+arr[i].BalanceIndex+'"]').attr({'selected':true});
-                            xc.getBalanceTypeDicStore(_storeId,1,token,layer,form,'limitType',arr[i].BalanceIndex);
+                            xc.getBalanceTypeDicNode(_storeId,1,token,layer,form, $('.priceCoinBox').find($('.priceCoin')).eq(i).find('select[name="limitType"]'),arr[i].BalanceIndex);
                         }
                     }
                 }
@@ -586,10 +582,7 @@
             if(data.result_code==1){
                 let arr=data.result_data;
                 if(arr.length==1){
-                    // $('select[name="BalanceIndex"]')
                     xc.getBalanceTypeDicNode(_storeId,1,token,layer,form,$('.specilCoin select[name="BalanceIndex"]'),arr[0].BalanceIndex);
-                    // xc.getBalanceTypeDicStore(_storeId,1,token,layer,form,'BalanceIndex',arr[0].BalanceIndex);
-                    // $('.specilCoin select[name="BalanceIndex"] option[value="'+arr[0].BalanceIndex+'"]').attr({'selected':true});
                     $('.specilCoin input[name="OnceSigleMax"]').val(arr[0].OnceSigleMax);
                     $('.specilCoin input[name="OnceWarningValue"]').val(arr[0].OnceWarningValue);
                     $('.specilCoin input[name="DayMax"]').val(arr[0].DayMax);
@@ -599,9 +592,7 @@
                         $('.specilCoinBox').append($('body').find($('.specilCoin')).eq(0).clone());
                     }
                     for(let i=0;i<arr.length;i++){
-                        // xc.getBalanceTypeDicStore(_storeId,1,token,layer,form,'BalanceIndex',arr[i].BalanceIndex);
                         xc.getBalanceTypeDicNode(_storeId,1,token,layer,form, $('.specilCoinBox').find($('.specilCoin')).eq(i).find('select[name="BalanceIndex"]'),arr[i].BalanceIndex);
-                        // $('.specilCoinBox').find($('.specilCoin')).eq(i).find('select[name="BalanceIndex"] option[value="'+arr[i].BalanceIndex+'"]').attr({'selected':true});
                         $('.specilCoinBox').find($('.specilCoin')).eq(i).find('input[name="OnceSigleMax"]').val(arr[i].OnceSigleMax);
                         $('.specilCoinBox').find($('.specilCoin')).eq(i).find('input[name="OnceWarningValue"]').val(arr[i].OnceWarningValue);
                         $('.specilCoinBox').find($('.specilCoin')).eq(i).find('input[name="DayMax"]').val(arr[i].DayMax);

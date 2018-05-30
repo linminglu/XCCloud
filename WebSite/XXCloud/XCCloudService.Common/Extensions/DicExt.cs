@@ -31,7 +31,7 @@ namespace XCCloudService.Common.Extensions
             if (dicPara == null || string.IsNullOrEmpty(key)) return null;
             object o = null;
             dicPara.TryGetValue(key, out o);
-            return (object[])o;
+            return o != null ? (object[])o : null;
         }
 
         public static object GetObject(this IDictionary<string, object> dicPara, string key)

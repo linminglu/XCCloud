@@ -136,6 +136,7 @@
     let token=xc.getStorage('token');
     let merchId=JSON.parse(xc.getStorage('logMsg')).MerchID;
     let storeId=JSON.parse(xc.getStorage('logMsg')).StoreID;
+    let LogType=JSON.parse(xc.getStorage('logMsg')).logType;
     let cols=[
         {field:'ID', title:'入库流水号', align: 'center', sort: true}
         ,{field:'StoreName', title:'入库门店', align: 'center', sort: true}
@@ -507,7 +508,7 @@
     }
 </script>
 <script type="text/html" id="barDemo">
-    {{# if(d.AuthorFlag==0){ }}
+    {{# if(d.AuthorFlag==0&&LogType==3){ }}
     <a class="layui-btn layui-btn-xs" lay-event="check"> <i class="layui-icon">&#xe642;</i>审核</a>
     {{#  } else if(d.AuthorFlag==1){ }}
     <a class="layui-btn layui-btn-xs" lay-event="back"> <i class="layui-icon">&#xe642;</i>退货</a>

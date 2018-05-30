@@ -112,7 +112,7 @@ let index;
             ,{field:'GameTypeStr', title: '游戏机类型', align: 'center'}
             ,{field:'GameName', title: '游戏机名', align: 'center'}
             ,{field:'SiteName', title: 'P位编号', align: 'center'}
-            ,{field:'Segment', title: '网络段号', align: 'center'}
+            ,{field:'segment', title: '网络段号', align: 'center'}
             ,{field:'Address', title: '机头地址', align: 'center'}
             ,{field:'AreaName', title: '区域名称', align: 'center'}
             ,{field:'DeviceStatus',fixed: 'right', title: '工作状态', align: 'center',templet:'#changeLock',width:90}
@@ -459,10 +459,18 @@ let index;
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
 </script>
 <script type="text/html" id="changeLock">
-    {{# if(d.DeviceStatus==2){ }}
-    <input type="checkbox" checked name="switch" lay-skin="switch" lay-text="锁定|正常" class="tb_check" lay-filter="test" disabled>
-    {{# }else if(d.DeviceStatus==1){ }}
-    <input type="checkbox" name="switch" lay-skin="switch" lay-text="锁定|正常" class="tb_check" lay-filter="test" disabled>
+    {{# if(d.DeviceStatus==1){ }}
+    <div style="width: 42px;height: 22px;line-height: 22px;background-color:#5FB878;border-radius: 11px;position: relative;">
+        <em style="left: 5px;position: absolute;width: 25px;color: #fff;font-size: 12px">正常</em>
+        <i style="left: 32px;position: absolute;width: 16px;height: 16px;border-radius: 50%;"></i></div>
+    {{# }else if(d.DeviceStatus==2){ }}
+    <div style="width: 42px;height: 22px;line-height: 22px;background-color:orange;border-radius: 11px;position: relative;">
+        <em style="left: 5px;position: absolute;width: 25px;color: #fff;font-size: 12px">锁定</em>
+        <i style="left: 32px;position: absolute;width: 16px;height: 16px;border-radius: 50%;"></i></div>
+    {{# }else if(d.DeviceStatus==0){ }}
+    <div style="width: 42px;height: 22px;line-height: 22px;background-color:red;border-radius: 11px;position: relative;">
+        <em style="left: 5px;position: absolute;width: 25px;color: #fff;font-size: 12px">停用</em>
+        <i style="left: 32px;position: absolute;width: 16px;height: 16px;border-radius: 50%;"></i></div>
     {{#  } }}
 </script>
 <script type="text/html" id="LockMember">

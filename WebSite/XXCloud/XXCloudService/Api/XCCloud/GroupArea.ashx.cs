@@ -34,17 +34,19 @@ namespace XXCloudService.Api.XCCloud
                 string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
                 string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
 
-                var linq = from a in Data_GroupAreaService.N.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)
-                               && p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase))
-                           join b in Data_ProjectInfoService.N.GetModels(p => p.State == 1) on a.ID equals b.AreaType into b1
-                           from b in b1.DefaultIfEmpty()
-                           group a by a.ID into g
-                           orderby g.FirstOrDefault().AreaName
+                var linq = from t in
+                               (from a in Data_GroupAreaService.N.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)
+                         && p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase))
+                                join b in Data_ProjectInfoService.N.GetModels(p => p.State == 1) on a.ID equals b.AreaType into b1
+                                from b in b1.DefaultIfEmpty()
+                                select new { a = a, ProjectID = b.ID })
+                           group t by t.a.ID into g
+                           orderby g.FirstOrDefault().a.AreaName
                            select new GroupAreaModel
                            {
                                ID = g.Key,
-                               AreaName = g.FirstOrDefault().AreaName,
-                               ProjectCount = g.Count()
+                               AreaName = g.FirstOrDefault().a.AreaName,
+                               ProjectCount = g.Count(c=>c.ProjectID != null)
                            };
 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, linq.ToList());
@@ -119,7 +121,7 @@ namespace XXCloudService.Api.XCCloud
                 {
                     try
                     {
-                        if (Data_GroupAreaService.I.Any(p => p.ID != id && p.AreaName.Equals(areaName, StringComparison.OrdinalIgnoreCase)))
+                        if (Data_GroupAreaService.I.Any(p => p.ID != id && p.AreaName.Equals(areaName, StringComparison.OrdinalIgnoreCase) && p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)))
                         {
                             errMsg = "区域名称不能重复";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);

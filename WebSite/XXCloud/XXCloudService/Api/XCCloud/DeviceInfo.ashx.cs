@@ -275,6 +275,7 @@ namespace XXCloudService.Api.XCCloud
                 }                
 
                 var data_DeviceInfo = Base_DeviceInfoService.I.GetModels(p => p.ID == iId).FirstOrDefault();
+
                 //绑定
                 if (iState == 1)
                 {
