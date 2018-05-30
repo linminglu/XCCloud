@@ -444,20 +444,28 @@ let index;
 <script type="text/html" id="barDemo">
     {{# if(d.DeviceType==8){ }}
     <a class="layui-btn layui-btn-xs" lay-event="code">二维码</a>
-    {{# }else{ }}
-    {{# if(d.DeviceStatus==2){ }}
-    <a class="layui-btn layui-btn-xs" lay-event="unLock">解锁</a>
-    {{# }else if(d.DeviceStatus==1){ }}
-    <a class="layui-btn layui-btn-xs" lay-event="lock">锁定</a>
+    {{# }else if(d.DeviceType==4){ }}
+    <a class="layui-btn layui-btn-xs" lay-event="saleCoin">售币机参数设置</a>
+    {{# }else if(d.DeviceType==3){ }}
+    <a class="layui-btn layui-btn-xs" lay-event="getCoin">提币机参数设置</a>
+    {{# }else if(d.DeviceType==5){ }}
+    <a class="layui-btn layui-btn-xs" lay-event="pushCoin">投币机参数设置</a>
+    {{# }else if(d.DeviceType==2){ }}
+    <a class="layui-btn layui-btn-xs" lay-event="saveCoin">存币机参数设置</a>
     {{#  } }}
-    {{# if(d.GameName==''){ }}
-    <a class="layui-btn layui-btn-xs" lay-event="bindMachine">通讯绑定</a>
-    {{# }else{ }}
-    <a class="layui-btn layui-btn-xs" lay-event="unBindMachine">通讯解绑</a>
-    {{#  } }}
-    <a class="layui-btn layui-btn-xs" lay-event="clockCook">报警日志</a>
-    <a class="layui-btn layui-btn-xs" lay-event="code">二维码</a>
-    {{#  } }}
+    <!--{{# if(d.DeviceStatus==2){ }}-->
+    <!--<a class="layui-btn layui-btn-xs" lay-event="unLock">解锁</a>-->
+    <!--{{# }else if(d.DeviceStatus==1){ }}-->
+    <!--<a class="layui-btn layui-btn-xs" lay-event="lock">锁定</a>-->
+  <!---->
+    <!--{{# if(d.GameName==''){ }}-->
+    <!--<a class="layui-btn layui-btn-xs" lay-event="bindMachine">通讯绑定</a>-->
+    <!--{{# }else{ }}-->
+    <!--<a class="layui-btn layui-btn-xs" lay-event="unBindMachine">通讯解绑</a>-->
+    <!--{{#  } }}-->
+    <!--<a class="layui-btn layui-btn-xs" lay-event="clockCook">报警日志</a>-->
+    <!--<a class="layui-btn layui-btn-xs" lay-event="code">二维码</a>-->
+    <!--{{#  } }}-->
 </script>
 <script type="text/html" id="barDemo1">
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>

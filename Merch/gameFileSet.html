@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -1393,7 +1393,7 @@ let memberLevelId='';let memberLevels='';let MemberLevelNames='';
               });
           }else if(layEvent==='GameHead'){
               let _obj={'gameId':data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
-              let url='/XCCloud/DeviceInfo?action=QueryDeviceInfo';
+              let url='/XCCloud/DeviceInfo?action=QueryHeadDeviceInfo';
               let parasJson = JSON.stringify(_obj);
               $.ajax({
                   type: "post",

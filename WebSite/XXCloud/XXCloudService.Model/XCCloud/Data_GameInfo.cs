@@ -41,7 +41,6 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> AllowRealPush { get; set; }
         public Nullable<int> BanOccupy { get; set; }
         public Nullable<int> StrongGuardConvertCard { get; set; }
-        public Nullable<int> PushControl { get; set; }
         public Nullable<int> AllowElecOut { get; set; }
         public Nullable<int> NowExit { get; set; }
         public Nullable<int> BOLock { get; set; }

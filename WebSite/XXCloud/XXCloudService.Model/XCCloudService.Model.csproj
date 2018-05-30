@@ -72,6 +72,7 @@
     <Compile Include="CustomModel\XCCloud\BaseGoodModel.cs" />
     <Compile Include="CustomModel\XCCloud\BaseMemberModel.cs" />
     <Compile Include="CustomModel\XCCloud\Base_FoodType.cs" />
+    <Compile Include="CustomModel\XCCloud\Base_DeviceInfoModel.cs" />
     <Compile Include="CustomModel\XCCloud\Data_GoodsStockModel.cs" />
     <Compile Include="CustomModel\XCCloud\Data_DistinctInfoModel.cs" />
     <Compile Include="CustomModel\XCCloud\Data_FreeGiveRuleModel.cs" />

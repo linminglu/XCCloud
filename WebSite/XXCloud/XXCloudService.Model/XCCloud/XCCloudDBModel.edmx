@@ -1039,7 +1039,6 @@
           <Property Name="AllowRealPush" Type="int" />
           <Property Name="BanOccupy" Type="int" />
           <Property Name="StrongGuardConvertCard" Type="int" />
-          <Property Name="PushControl" Type="int" />
           <Property Name="AllowElecOut" Type="int" />
           <Property Name="NowExit" Type="int" />
           <Property Name="BOLock" Type="int" />
@@ -3339,7 +3338,6 @@
           <EntitySet Name="Data_Workstation" EntityType="XCCloudDBModel.Data_Workstation" />
           <EntitySet Name="Data_WorkStation_GoodList" EntityType="XCCloudDBModel.Data_WorkStation_GoodList" />
           <EntitySet Name="Log_GameAlarm" EntityType="XCCloudDBModel.Log_GameAlarm" />
-          <EntitySet Name="Data_GameInfo" EntityType="XCCloudDBModel.Data_GameInfo" />
           <EntitySet Name="Base_DeviceInfo" EntityType="XCCloudDBModel.Base_DeviceInfo" />
           <EntitySet Name="Data_GameAPP_MemberRule" EntityType="XCCloudDBModel.Data_GameAPP_MemberRule" />
           <EntitySet Name="Data_GoodInventory" EntityType="XCCloudDBModel.Data_GoodInventory" />
@@ -3348,6 +3346,7 @@
           <EntitySet Name="Flw_MemberCard_Exit" EntityType="XCCloudDBModel.Flw_MemberCard_Exit" />
           <EntitySet Name="Data_GameFreeLotteryRule" EntityType="XCCloudDBModel.Data_GameFreeLotteryRule" />
           <EntitySet Name="Base_DeviceInfo_Ext" EntityType="XCCloudDBModel.Base_DeviceInfo_Ext" />
+          <EntitySet Name="Data_GameInfo" EntityType="XCCloudDBModel.Data_GameInfo" />
         </EntityContainer>
         <EntityType Name="Base_ChainRule">
           <Key>
@@ -5831,69 +5830,6 @@
           <Property Name="LockMember" Type="Int32" />
           <Property Name="AlertContent" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
         </EntityType>
-        <EntityType Name="Data_GameInfo">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="GameID" Type="String" MaxLength="4" FixedLength="false" Unicode="false" />
-          <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="DepotID" Type="Int32" />
-          <Property Name="AreaID" Type="Int32" />
-          <Property Name="GameName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="GameType" Type="Int32" />
-          <Property Name="State" Type="Int32" />
-          <Property Name="PushBalanceIndex1" Type="Int32" />
-          <Property Name="PushCoin1" Type="Int32" />
-          <Property Name="PushBalanceIndex2" Type="Int32" />
-          <Property Name="PushCoin2" Type="Int32" />
-          <Property Name="OutBalanceIndex" Type="Int32" />
-          <Property Name="ReturnCheck" Type="Int32" />
-          <Property Name="OutsideAlertCheck" Type="Int32" />
-          <Property Name="ICTicketOperation" Type="Int32" />
-          <Property Name="NotGiveBack" Type="Int32" />
-          <Property Name="LotteryMode" Type="Int32" />
-          <Property Name="OnlyExitLottery" Type="Int32" />
-          <Property Name="chkCheckGift" Type="Int32" />
-          <Property Name="AllowElecPush" Type="Int32" />
-          <Property Name="GuardConvertCard" Type="Int32" />
-          <Property Name="ReadCat" Type="Int32" />
-          <Property Name="AllowRealPush" Type="Int32" />
-          <Property Name="BanOccupy" Type="Int32" />
-          <Property Name="StrongGuardConvertCard" Type="Int32" />
-          <Property Name="PushControl" Type="Int32" />
-          <Property Name="AllowElecOut" Type="Int32" />
-          <Property Name="NowExit" Type="Int32" />
-          <Property Name="BOLock" Type="Int32" />
-          <Property Name="BOPulse" Type="Int32" />
-          <Property Name="AllowRealOut" Type="Int32" />
-          <Property Name="BOKeep" Type="Int32" />
-          <Property Name="PushAddToGame" Type="Int32" />
-          <Property Name="PushSpeed" Type="Int32" />
-          <Property Name="PushPulse" Type="Int32" />
-          <Property Name="PushLevel" Type="Int32" />
-          <Property Name="PushStartInterval" Type="Int32" />
-          <Property Name="UseSecondPush" Type="Int32" />
-          <Property Name="SecondAddToGame" Type="Int32" />
-          <Property Name="SecondSpeed" Type="Int32" />
-          <Property Name="SecondPulse" Type="Int32" />
-          <Property Name="SecondLevel" Type="Int32" />
-          <Property Name="SecondStartInterval" Type="Int32" />
-          <Property Name="OutSpeed" Type="Int32" />
-          <Property Name="OutPulse" Type="Int32" />
-          <Property Name="CountLevel" Type="Int32" />
-          <Property Name="OutLevel" Type="Int32" />
-          <Property Name="OutReduceFromGame" Type="Int32" />
-          <Property Name="OutAddToCard" Type="Int32" />
-          <Property Name="OnceOutLimit" Type="Int32" />
-          <Property Name="OncePureOutLimit" Type="Int32" />
-          <Property Name="SSRTimeOut" Type="Int32" />
-          <Property Name="ExceptOutTest" Type="Int32" />
-          <Property Name="ExceptOutSpeed" Type="Int32" />
-          <Property Name="Frequency" Type="Int32" />
-          <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
-        </EntityType>
         <EntityType Name="Base_DeviceInfo">
           <Key>
             <PropertyRef Name="ID" />
@@ -6048,6 +5984,68 @@
           <Property Name="ToCard" Type="Decimal" Precision="10" Scale="2" />
           <Property Name="BalanceIndex" Type="Int32" />
           <Property Name="SSRLevel" Type="Int32" />
+        </EntityType>
+        <EntityType Name="Data_GameInfo">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="GameID" Type="String" MaxLength="4" FixedLength="false" Unicode="false" />
+          <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="DepotID" Type="Int32" />
+          <Property Name="AreaID" Type="Int32" />
+          <Property Name="GameName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="GameType" Type="Int32" />
+          <Property Name="State" Type="Int32" />
+          <Property Name="PushBalanceIndex1" Type="Int32" />
+          <Property Name="PushCoin1" Type="Int32" />
+          <Property Name="PushBalanceIndex2" Type="Int32" />
+          <Property Name="PushCoin2" Type="Int32" />
+          <Property Name="OutBalanceIndex" Type="Int32" />
+          <Property Name="ReturnCheck" Type="Int32" />
+          <Property Name="OutsideAlertCheck" Type="Int32" />
+          <Property Name="ICTicketOperation" Type="Int32" />
+          <Property Name="NotGiveBack" Type="Int32" />
+          <Property Name="LotteryMode" Type="Int32" />
+          <Property Name="OnlyExitLottery" Type="Int32" />
+          <Property Name="chkCheckGift" Type="Int32" />
+          <Property Name="AllowElecPush" Type="Int32" />
+          <Property Name="GuardConvertCard" Type="Int32" />
+          <Property Name="ReadCat" Type="Int32" />
+          <Property Name="AllowRealPush" Type="Int32" />
+          <Property Name="BanOccupy" Type="Int32" />
+          <Property Name="StrongGuardConvertCard" Type="Int32" />
+          <Property Name="AllowElecOut" Type="Int32" />
+          <Property Name="NowExit" Type="Int32" />
+          <Property Name="BOLock" Type="Int32" />
+          <Property Name="BOPulse" Type="Int32" />
+          <Property Name="AllowRealOut" Type="Int32" />
+          <Property Name="BOKeep" Type="Int32" />
+          <Property Name="PushAddToGame" Type="Int32" />
+          <Property Name="PushSpeed" Type="Int32" />
+          <Property Name="PushPulse" Type="Int32" />
+          <Property Name="PushLevel" Type="Int32" />
+          <Property Name="PushStartInterval" Type="Int32" />
+          <Property Name="UseSecondPush" Type="Int32" />
+          <Property Name="SecondAddToGame" Type="Int32" />
+          <Property Name="SecondSpeed" Type="Int32" />
+          <Property Name="SecondPulse" Type="Int32" />
+          <Property Name="SecondLevel" Type="Int32" />
+          <Property Name="SecondStartInterval" Type="Int32" />
+          <Property Name="OutSpeed" Type="Int32" />
+          <Property Name="OutPulse" Type="Int32" />
+          <Property Name="CountLevel" Type="Int32" />
+          <Property Name="OutLevel" Type="Int32" />
+          <Property Name="OutReduceFromGame" Type="Int32" />
+          <Property Name="OutAddToCard" Type="Int32" />
+          <Property Name="OnceOutLimit" Type="Int32" />
+          <Property Name="OncePureOutLimit" Type="Int32" />
+          <Property Name="SSRTimeOut" Type="Int32" />
+          <Property Name="ExceptOutTest" Type="Int32" />
+          <Property Name="ExceptOutSpeed" Type="Int32" />
+          <Property Name="Frequency" Type="Int32" />
+          <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
         </EntityType>
         </Schema>
     </edmx:ConceptualModels>
@@ -8696,70 +8694,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Data_GameInfo">
-            <EntityTypeMapping TypeName="XCCloudDBModel.Data_GameInfo">
-              <MappingFragment StoreEntitySet="Data_GameInfo">
-                <ScalarProperty Name="Verifiction" ColumnName="Verifiction" />
-                <ScalarProperty Name="Frequency" ColumnName="Frequency" />
-                <ScalarProperty Name="ExceptOutSpeed" ColumnName="ExceptOutSpeed" />
-                <ScalarProperty Name="ExceptOutTest" ColumnName="ExceptOutTest" />
-                <ScalarProperty Name="SSRTimeOut" ColumnName="SSRTimeOut" />
-                <ScalarProperty Name="OncePureOutLimit" ColumnName="OncePureOutLimit" />
-                <ScalarProperty Name="OnceOutLimit" ColumnName="OnceOutLimit" />
-                <ScalarProperty Name="OutAddToCard" ColumnName="OutAddToCard" />
-                <ScalarProperty Name="OutReduceFromGame" ColumnName="OutReduceFromGame" />
-                <ScalarProperty Name="OutLevel" ColumnName="OutLevel" />
-                <ScalarProperty Name="CountLevel" ColumnName="CountLevel" />
-                <ScalarProperty Name="OutPulse" ColumnName="OutPulse" />
-                <ScalarProperty Name="OutSpeed" ColumnName="OutSpeed" />
-                <ScalarProperty Name="SecondStartInterval" ColumnName="SecondStartInterval" />
-                <ScalarProperty Name="SecondLevel" ColumnName="SecondLevel" />
-                <ScalarProperty Name="SecondPulse" ColumnName="SecondPulse" />
-                <ScalarProperty Name="SecondSpeed" ColumnName="SecondSpeed" />
-                <ScalarProperty Name="SecondAddToGame" ColumnName="SecondAddToGame" />
-                <ScalarProperty Name="UseSecondPush" ColumnName="UseSecondPush" />
-                <ScalarProperty Name="PushStartInterval" ColumnName="PushStartInterval" />
-                <ScalarProperty Name="PushLevel" ColumnName="PushLevel" />
-                <ScalarProperty Name="PushPulse" ColumnName="PushPulse" />
-                <ScalarProperty Name="PushSpeed" ColumnName="PushSpeed" />
-                <ScalarProperty Name="PushAddToGame" ColumnName="PushAddToGame" />
-                <ScalarProperty Name="BOKeep" ColumnName="BOKeep" />
-                <ScalarProperty Name="AllowRealOut" ColumnName="AllowRealOut" />
-                <ScalarProperty Name="BOPulse" ColumnName="BOPulse" />
-                <ScalarProperty Name="BOLock" ColumnName="BOLock" />
-                <ScalarProperty Name="NowExit" ColumnName="NowExit" />
-                <ScalarProperty Name="AllowElecOut" ColumnName="AllowElecOut" />
-                <ScalarProperty Name="PushControl" ColumnName="PushControl" />
-                <ScalarProperty Name="StrongGuardConvertCard" ColumnName="StrongGuardConvertCard" />
-                <ScalarProperty Name="BanOccupy" ColumnName="BanOccupy" />
-                <ScalarProperty Name="AllowRealPush" ColumnName="AllowRealPush" />
-                <ScalarProperty Name="ReadCat" ColumnName="ReadCat" />
-                <ScalarProperty Name="GuardConvertCard" ColumnName="GuardConvertCard" />
-                <ScalarProperty Name="AllowElecPush" ColumnName="AllowElecPush" />
-                <ScalarProperty Name="chkCheckGift" ColumnName="chkCheckGift" />
-                <ScalarProperty Name="OnlyExitLottery" ColumnName="OnlyExitLottery" />
-                <ScalarProperty Name="LotteryMode" ColumnName="LotteryMode" />
-                <ScalarProperty Name="NotGiveBack" ColumnName="NotGiveBack" />
-                <ScalarProperty Name="ICTicketOperation" ColumnName="ICTicketOperation" />
-                <ScalarProperty Name="OutsideAlertCheck" ColumnName="OutsideAlertCheck" />
-                <ScalarProperty Name="ReturnCheck" ColumnName="ReturnCheck" />
-                <ScalarProperty Name="OutBalanceIndex" ColumnName="OutBalanceIndex" />
-                <ScalarProperty Name="PushCoin2" ColumnName="PushCoin2" />
-                <ScalarProperty Name="PushBalanceIndex2" ColumnName="PushBalanceIndex2" />
-                <ScalarProperty Name="PushCoin1" ColumnName="PushCoin1" />
-                <ScalarProperty Name="PushBalanceIndex1" ColumnName="PushBalanceIndex1" />
-                <ScalarProperty Name="State" ColumnName="State" />
-                <ScalarProperty Name="GameType" ColumnName="GameType" />
-                <ScalarProperty Name="GameName" ColumnName="GameName" />
-                <ScalarProperty Name="AreaID" ColumnName="AreaID" />
-                <ScalarProperty Name="DepotID" ColumnName="DepotID" />
-                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
-                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
-                <ScalarProperty Name="GameID" ColumnName="GameID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Base_DeviceInfo">
             <EntityTypeMapping TypeName="XCCloudDBModel.Base_DeviceInfo">
               <MappingFragment StoreEntitySet="Base_DeviceInfo">
@@ -8919,6 +8853,69 @@
                 <ScalarProperty Name="Motor2EN" ColumnName="Motor2EN" />
                 <ScalarProperty Name="Motor1EN" ColumnName="Motor1EN" />
                 <ScalarProperty Name="DeviceID" ColumnName="DeviceID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Data_GameInfo">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Data_GameInfo">
+              <MappingFragment StoreEntitySet="Data_GameInfo">
+                <ScalarProperty Name="Verifiction" ColumnName="Verifiction" />
+                <ScalarProperty Name="Frequency" ColumnName="Frequency" />
+                <ScalarProperty Name="ExceptOutSpeed" ColumnName="ExceptOutSpeed" />
+                <ScalarProperty Name="ExceptOutTest" ColumnName="ExceptOutTest" />
+                <ScalarProperty Name="SSRTimeOut" ColumnName="SSRTimeOut" />
+                <ScalarProperty Name="OncePureOutLimit" ColumnName="OncePureOutLimit" />
+                <ScalarProperty Name="OnceOutLimit" ColumnName="OnceOutLimit" />
+                <ScalarProperty Name="OutAddToCard" ColumnName="OutAddToCard" />
+                <ScalarProperty Name="OutReduceFromGame" ColumnName="OutReduceFromGame" />
+                <ScalarProperty Name="OutLevel" ColumnName="OutLevel" />
+                <ScalarProperty Name="CountLevel" ColumnName="CountLevel" />
+                <ScalarProperty Name="OutPulse" ColumnName="OutPulse" />
+                <ScalarProperty Name="OutSpeed" ColumnName="OutSpeed" />
+                <ScalarProperty Name="SecondStartInterval" ColumnName="SecondStartInterval" />
+                <ScalarProperty Name="SecondLevel" ColumnName="SecondLevel" />
+                <ScalarProperty Name="SecondPulse" ColumnName="SecondPulse" />
+                <ScalarProperty Name="SecondSpeed" ColumnName="SecondSpeed" />
+                <ScalarProperty Name="SecondAddToGame" ColumnName="SecondAddToGame" />
+                <ScalarProperty Name="UseSecondPush" ColumnName="UseSecondPush" />
+                <ScalarProperty Name="PushStartInterval" ColumnName="PushStartInterval" />
+                <ScalarProperty Name="PushLevel" ColumnName="PushLevel" />
+                <ScalarProperty Name="PushPulse" ColumnName="PushPulse" />
+                <ScalarProperty Name="PushSpeed" ColumnName="PushSpeed" />
+                <ScalarProperty Name="PushAddToGame" ColumnName="PushAddToGame" />
+                <ScalarProperty Name="BOKeep" ColumnName="BOKeep" />
+                <ScalarProperty Name="AllowRealOut" ColumnName="AllowRealOut" />
+                <ScalarProperty Name="BOPulse" ColumnName="BOPulse" />
+                <ScalarProperty Name="BOLock" ColumnName="BOLock" />
+                <ScalarProperty Name="NowExit" ColumnName="NowExit" />
+                <ScalarProperty Name="AllowElecOut" ColumnName="AllowElecOut" />
+                <ScalarProperty Name="StrongGuardConvertCard" ColumnName="StrongGuardConvertCard" />
+                <ScalarProperty Name="BanOccupy" ColumnName="BanOccupy" />
+                <ScalarProperty Name="AllowRealPush" ColumnName="AllowRealPush" />
+                <ScalarProperty Name="ReadCat" ColumnName="ReadCat" />
+                <ScalarProperty Name="GuardConvertCard" ColumnName="GuardConvertCard" />
+                <ScalarProperty Name="AllowElecPush" ColumnName="AllowElecPush" />
+                <ScalarProperty Name="chkCheckGift" ColumnName="chkCheckGift" />
+                <ScalarProperty Name="OnlyExitLottery" ColumnName="OnlyExitLottery" />
+                <ScalarProperty Name="LotteryMode" ColumnName="LotteryMode" />
+                <ScalarProperty Name="NotGiveBack" ColumnName="NotGiveBack" />
+                <ScalarProperty Name="ICTicketOperation" ColumnName="ICTicketOperation" />
+                <ScalarProperty Name="OutsideAlertCheck" ColumnName="OutsideAlertCheck" />
+                <ScalarProperty Name="ReturnCheck" ColumnName="ReturnCheck" />
+                <ScalarProperty Name="OutBalanceIndex" ColumnName="OutBalanceIndex" />
+                <ScalarProperty Name="PushCoin2" ColumnName="PushCoin2" />
+                <ScalarProperty Name="PushBalanceIndex2" ColumnName="PushBalanceIndex2" />
+                <ScalarProperty Name="PushCoin1" ColumnName="PushCoin1" />
+                <ScalarProperty Name="PushBalanceIndex1" ColumnName="PushBalanceIndex1" />
+                <ScalarProperty Name="State" ColumnName="State" />
+                <ScalarProperty Name="GameType" ColumnName="GameType" />
+                <ScalarProperty Name="GameName" ColumnName="GameName" />
+                <ScalarProperty Name="AreaID" ColumnName="AreaID" />
+                <ScalarProperty Name="DepotID" ColumnName="DepotID" />
+                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
+                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
+                <ScalarProperty Name="GameID" ColumnName="GameID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>

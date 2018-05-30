@@ -86,8 +86,7 @@ namespace XXCloudService.Api.XCCloud
                     query = query.Where(w => w.GameIndexID == gameId);
                 }
 
-                var base_DeviceInfo = from t in
-                                          (from a in query
+                var base_DeviceInfo = (from a in query
                                            join b in Data_GameInfoService.N.GetModels() on a.GameIndexID equals b.ID into b1
                                            from b in b1.DefaultIfEmpty()
                                            join c in Dict_SystemService.N.GetModels() on b.GameType equals c.ID into c1
@@ -95,29 +94,28 @@ namespace XXCloudService.Api.XCCloud
                                            join d in Data_GroupAreaService.N.GetModels() on b.AreaID equals d.ID into d1
                                            from d in d1.DefaultIfEmpty()
                                            orderby a.MCUID
-                                           select new { a = a, b = b, c = c, d = d }).AsEnumerable()
-                                      select new
+                                           
+                                      select new Base_DeviceInfoList
                                       {
-                                          ID = t.a.ID,
-                                          MCUID = t.a.MCUID,
-                                          DeviceName = t.a.DeviceName,
-                                          DeviceType = t.a.type,
-                                          DeviceTypeStr = t.a.type.GetDescription(),
-                                          GameType = t.b != null ? t.b.GameType : (int?)null,
-                                          GameTypeStr = t.c != null ? t.c.DictKey : string.Empty,
-                                          GameName = t.b != null ? t.b.GameName : string.Empty,
-                                          AreaName = t.d != null ? t.d.AreaName : string.Empty,
-                                          SiteName = t.a.SiteName,
-                                          segment = t.a.segment,
-                                          Address = t.a.Address,
+                                          ID = a.ID,
+                                          MCUID = a.MCUID,
+                                          DeviceName = a.DeviceName,
+                                          DeviceType = a.type,
+                                          GameType = b != null ? b.GameType : (int?)null,
+                                          GameTypeStr = c != null ? c.DictKey : string.Empty,
+                                          GameName = b != null ? b.GameName : string.Empty,
+                                          AreaName = d != null ? d.AreaName : string.Empty,
+                                          SiteName = a.SiteName,
+                                          segment = a.segment,
+                                          Address = a.Address,
                                           DeviceRunning = string.Empty,
-                                          DeviceStatus = t.a.DeviceStatus,
-                                          DeviceStatusStr = t.a.DeviceStatus != null ? (t.a.DeviceStatus == 0 ? "停用" :
-                                                        t.a.DeviceStatus == 1 ? "正常" :
-                                                        t.a.DeviceStatus == 2 ? "锁定" : string.Empty) : string.Empty
-                                      };
+                                          DeviceStatus = a.DeviceStatus,
+                                          DeviceStatusStr = a.DeviceStatus != null ? (a.DeviceStatus == 0 ? "停用" :
+                                                        a.DeviceStatus == 1 ? "正常" :
+                                                        a.DeviceStatus == 2 ? "锁定" : string.Empty) : string.Empty
+                                      }).ToList();
 
-                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, base_DeviceInfo);
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, base_DeviceInfo);
             }
             catch (Exception e)
             {
@@ -147,38 +145,35 @@ namespace XXCloudService.Api.XCCloud
                     query = query.Where(w => w.GameIndexID == gameId);
                 }
 
-                var base_DeviceInfo = from t in
-                                          (from a in query
-                                           join b in Data_GameInfoService.N.GetModels() on a.GameIndexID equals b.ID into b1
-                                           from b in b1.DefaultIfEmpty()
-                                           join c in Dict_SystemService.N.GetModels() on b.GameType equals c.ID into c1
-                                           from c in c1.DefaultIfEmpty()
-                                           join d in Data_GroupAreaService.N.GetModels() on b.AreaID equals d.ID into d1
-                                           from d in d1.DefaultIfEmpty()
-                                           orderby a.MCUID
-                                           select new { a = a, b = b, c = c, d = d }).AsEnumerable()
-                                      select new
+                var base_DeviceInfo = (from a in query
+                                      join b in Data_GameInfoService.N.GetModels() on a.GameIndexID equals b.ID into b1
+                                      from b in b1.DefaultIfEmpty()
+                                      join c in Dict_SystemService.N.GetModels() on b.GameType equals c.ID into c1
+                                      from c in c1.DefaultIfEmpty()
+                                      join d in Data_GroupAreaService.N.GetModels() on b.AreaID equals d.ID into d1
+                                      from d in d1.DefaultIfEmpty()
+                                      orderby a.MCUID
+                                      select new Base_DeviceInfoList
                                       {
-                                          ID = t.a.ID,
-                                          MCUID = t.a.MCUID,
-                                          DeviceName = t.a.DeviceName,
-                                          DeviceType = t.a.type,
-                                          DeviceTypeStr = t.a.type.GetDescription(),
-                                          GameType = t.b != null ? t.b.GameType : (int?)null,
-                                          GameTypeStr = t.c != null ? t.c.DictKey : string.Empty,
-                                          GameName = t.b != null ? t.b.GameName : string.Empty,
-                                          AreaName = t.d != null ? t.d.AreaName : string.Empty,
-                                          SiteName = t.a.SiteName,
-                                          segment = t.a.segment,
-                                          Address = t.a.Address,
+                                          ID = a.ID,
+                                          MCUID = a.MCUID,
+                                          DeviceName = a.DeviceName,
+                                          DeviceType = a.type,
+                                          GameType = b != null ? b.GameType : (int?)null,
+                                          GameTypeStr = c != null ? c.DictKey : string.Empty,
+                                          GameName = b != null ? b.GameName : string.Empty,
+                                          AreaName = d != null ? d.AreaName : string.Empty,
+                                          SiteName = a.SiteName,
+                                          segment = a.segment,
+                                          Address = a.Address,
                                           DeviceRunning = string.Empty,
-                                          DeviceStatus = t.a.DeviceStatus,
-                                          DeviceStatusStr = t.a.DeviceStatus != null ? (t.a.DeviceStatus == 0 ? "停用" :
-                                                        t.a.DeviceStatus == 1 ? "正常" :
-                                                        t.a.DeviceStatus == 2 ? "锁定" : string.Empty) : string.Empty
-                                      };
+                                          DeviceStatus = a.DeviceStatus,
+                                          DeviceStatusStr = a.DeviceStatus != null ? (a.DeviceStatus == 0 ? "停用" :
+                                                        a.DeviceStatus == 1 ? "正常" :
+                                                        a.DeviceStatus == 2 ? "锁定" : string.Empty) : string.Empty
+                                      }).ToList();
 
-                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, base_DeviceInfo);
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, base_DeviceInfo);
             }
             catch (Exception e)
             {
