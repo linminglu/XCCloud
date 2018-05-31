@@ -14,7 +14,7 @@
     .setBox>div>i{display: inline-block;width: 26px;height: 26px}
 </style>
 <body>
- <div class="" style="padding: 15px;">
+ <div class="layui-row" style="padding: 15px">
      <form action="" class="layui-form layui-form-pane">
          <div class="layui-form-item">
              <label  class="layui-form-label">选择门店</label>
@@ -23,10 +23,18 @@
              </div>
 
          </div>
-         <fieldset class="layui-elem-field">
-             <!--<legend>字段集区块 - 默认风格</legend>-->
-             <div class="layui-field-box">
-                 <blockquote class="layui-elem-quote" style="width: 150px">门店权重分配</blockquote>
+         <!--<fieldset class="layui-elem-field">-->
+             <!--&lt;!&ndash;<legend>字段集区块 - 默认风格</legend>&ndash;&gt;-->
+             <!--<div class="layui-field-box">-->
+                 <!--<blockquote class="layui-elem-quote" style="width: 150px">门店权重分配</blockquote>-->
+
+                 <!--<blockquote class="layui-elem-quote" style="width: 150px">会员卡漫游设置</blockquote>-->
+                <!---->
+             <!--</div>-->
+         <!--</fieldset>-->
+         <div class="layui-card layui-col-md12">
+             <div class="layui-card-header">门店权重分配</div>
+             <div class="layui-card-body">
                  <div class="layui-col-md12">
                      <div class="layui-form-item">
                          <div class="layui-inline">
@@ -49,14 +57,18 @@
                          </div>
                          <div class="layui-inline">
                              <button type="button" class="layui-btn layui-btn-normal" id="addWeightKinds">权重类别</button>
-                             <button type="button" class="layui-btn layui-btn-normal" id="save"><i class="layui-icon">&#xe654;</i>添加</button>
+                             <button type="button" class="layui-btn layui-btn-normal" id="save">添加</button>
                          </div>
                      </div>
                      <table class="layui-hide" lay-filter="storeWeightTable" id="storeWeightTable"></table>
                  </div>
-
+             </div>
+         </div>
+         <div class="layui-card layui-col-md12">
+             <div class="layui-card-header">会员卡漫游设置</div>
+             <div class="layui-card-body">
                  <div class="layui-col-md12">
-                     <blockquote class="layui-elem-quote" style="width: 150px">会员卡漫游设置</blockquote>
+
                      <div class="layui-col-md3 ">
                          <blockquote class="layui-elem-quote" style="width: 150px">代币余额通用</blockquote>
                          <div class="vipSet setBox"></div>
@@ -75,7 +87,7 @@
                      </div>
                  </div>
              </div>
-         </fieldset>
+         </div>
      </form>
  </div>
  <!--//弹出层-->
@@ -86,7 +98,7 @@
                 <div class="layui-form-item">
                     <div class="layui-input-inline">
                         <select name="store" id="selectKind" lay-filter="selectKind">
-                            <option value="">-选择权重类别-</option>
+                            <option>-选择权重类别-</option>
                             <option value="0">全场营业</option>
                             <option value="1">按游戏机分组</option>
                         </select>
@@ -178,7 +190,7 @@
                 }
             })
         };
-        xcActionSystem.prototype.getUserList=function(id){
+        xcActionSystem.prototype.getUserList=(id)=>{
             let url='/XCCloud/StoreWeight?action=GetStoreBossList';
             let obj={'storeId':id,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
             let parseJson = JSON.stringify(obj);
@@ -204,7 +216,7 @@
             })
         };
         //添加门店权重信息
-        xcActionSystem.prototype.AddStoreWeight=function(){
+        xcActionSystem.prototype.AddStoreWeight=()=>{
             let url='/XCCloud/StoreWeight?action=AddStoreWeight';
             let weightValues=$('#weightValues').val();
             let logNames=$('#logName').val();
@@ -228,9 +240,13 @@
                     data: {parasJson: parseJson},
                     success: function (data) {
                         data = JSON.parse(data);
-                        console.log(data);
                         if(data.result_code==1){
                             xc.GetStoreWeightList(_storeId);
+                            xc.getUserList(_storeId);
+                            // location.reload();
+                            $('#weightValues').val('');
+                            $('#logName').val('');
+                            _userId='';
                         }else {
                             layui.use('layer',function () {
                                 let layer=layui.layer;
@@ -243,7 +259,7 @@
 
         };
         //获取门店权重列表
-        xcActionSystem.prototype.GetStoreWeightList=function(storeIds){
+        xcActionSystem.prototype.GetStoreWeightList=(storeIds)=>{
             let url='/XCCloud/StoreWeight?action=GetStoreWeightList';
             let obj={'storeId':storeIds,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
             let parseJson = JSON.stringify(obj);
@@ -284,7 +300,7 @@
             })
         };
         //删除门店权重信息
-        xcActionSystem.prototype.DelStoreWeight=function(ids){
+        xcActionSystem.prototype.DelStoreWeight=(ids)=>{
             let url='/XCCloud/StoreWeight?action=DelStoreWeight';
             let obj={'id':ids,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
             let parseJson = JSON.stringify(obj);
@@ -298,7 +314,9 @@
                     if(data.Result_Code==1){
                         layui.use('layer',function () {
                             let layer=layui.form;
-                            layer.msg('删除门店权重信息成功！');
+                            layer.msg('删除门店权重信息成功！',{time:1500},function () {
+                                location.reload();
+                            });
                         })
                     }else {
                         layui.use('layer',function () {
@@ -310,7 +328,7 @@
             })
         };
         //打开弹窗
-        xcActionSystem.prototype.openModel=function(){
+        xcActionSystem.prototype.openModel=()=>{
             layui.use('layer',function () {
                 let layer=layui.layer;
                 layer.open({
@@ -322,7 +340,7 @@
             })
         };
         //获取权重用户列表
-        xcActionSystem.prototype.GetStoreWeightUserList=function(storeIds){
+        xcActionSystem.prototype.GetStoreWeightUserList=(storeIds)=>{
             let url='/XCCloud/StoreWeight?action=GetStoreWeightUserList';
             let obj={'storeId':storeIds,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
             let parseJson = JSON.stringify(obj);
@@ -349,7 +367,7 @@
             })
         };
         //获取门店游戏机列表
-        xcActionSystem.prototype.GetStoreWeightGameList=function(wk){
+        xcActionSystem.prototype.GetStoreWeightGameList=(wk)=>{
             let url='/XCCloud/StoreWeight?action=GetStoreWeightGameList';
             let obj={'storeId':_storeId,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
             let parseJson = JSON.stringify(obj);
@@ -386,7 +404,7 @@
             }
         };
         //获取权重用户游戏机列表
-        xcActionSystem.prototype.GetStoreWeightUserGameList=function(userIds,wk){
+        xcActionSystem.prototype.GetStoreWeightUserGameList=(userIds,wk)=>{
             let url='/XCCloud/StoreWeight?action=GetStoreWeightUserGameList';
             let obj={'storeId':_storeId,'userId':userIds,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
             let parseJson = JSON.stringify(obj);
@@ -423,7 +441,7 @@
 
         };
         //10.获取门店余额通用列表
-        xcActionSystem.prototype.GetChainStoreRuleList=function(){
+        xcActionSystem.prototype.GetChainStoreRuleList=()=>{
             let url='/XCCloud/StoreWeight?action=GetChainStoreRuleList';
             let obj={'storeId':_storeId,'ruleType':'','userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
             let parseJson = JSON.stringify(obj);
@@ -472,18 +490,21 @@
             let form=layui.form;
             let table=layui.table;
             let layer=layui.layer;
-            form.on('select(checkStore)',function(data){
+            form.on('select(checkStore)',(data)=>{
                 _storeId=data.value;
                 xc.getUserList(_storeId);
-                xc.GetStoreWeightUserList(_storeId);
                 xc.GetStoreWeightList(_storeId);
                 xc.GetChainStoreRuleList();
             });
-            form.on('select(selectKind)',function(data){
+            form.on('select(selectKind)',(data)=>{
                 wk=data.value;
+                if(data.value==1){
+                    xc.GetStoreWeightUserList(_storeId);
+                }
                 xc.GetStoreWeightGameList(wk);
+
             });
-            form.on('select(selectUser)',function(data){
+            form.on('select(selectUser)',(data)=>{
                 wUser=data.value;
                 console.log(wUser);
                 if(wk==1){
@@ -491,7 +512,7 @@
                 }else {}
 
             });
-            form.on('select(checkUser)',function(data){
+            form.on('select(checkUser)',(data)=>{
                 _userId=data.value;
                 $('#logName').val(data.elem[data.elem.selectedIndex].title);
                 $('#logName').attr({'name':data.elem[data.elem.selectedIndex].text});
@@ -513,9 +534,10 @@
                             success: function (data) {
                                 data = JSON.parse(data);
                                 if(data.result_code==1){
-                                        obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
-                                        layer.close(index);
-                                        layer.msg('删除门店权重信息成功！');
+                                        layer.msg('删除门店权重信息成功！',{time:1500},function () {
+                                           obj.del();
+                                            xc.getUserList(_storeId);
+                                        });
                                 }else {
                                         layer.msg('删除门店权重信息失败！');
                                 }
@@ -528,12 +550,21 @@
             });
             getCheckBox('gameLists1',arrGame1,form);
             getCheckBox('gameLists2',arrGame2,form);
+            $('#addWeightKinds').on('click',()=>{
+                if(_storeId!=''){
+                    xc.openModel();
+                    wk='';
+                    wUser='';
+                }else {
+                    layer.msg('请先选择门店')
+                }
 
-            form.on('select(balanceModelBox)',function(data){
+            });
+            form.on('select(balanceModelBox)',(data)=>{
                 chainStoreIDs=data.value;
             })
         });
-        let  getCheckBox=function(filter,arr,form){
+        let  getCheckBox=(filter,arr,form)=>{
             form.on('checkbox('+filter+')', function(data){
                 if (data.elem.checked==true){
                     arr.push({'GameID':parseInt(data.value),'GameName':data.elem.title});
@@ -548,12 +579,8 @@
             });
         };
 
-        $('#addWeightKinds').on('click',function(){
-            xc.openModel();
-            wk='';
-            wUser='';
-        });
-        $('#save').on('click',function(){
+
+        $('#save').on('click',()=>{
             xc.AddStoreWeight();
         });
         $('#setBtn').on('click',function () {
@@ -641,9 +668,10 @@
                     if(data.result_code==1){
                         layui.use('layer',function () {
                            let layer=layui.layer;
-                           layer.msg('保存成功');
-                           setTimeout(layer.closeAll(),500);
-                            arrUserGameList.splice(0,arrUserGameList.length);
+                           layer.msg('保存成功',{time:1500},function () {
+                               arrUserGameList.splice(0,arrUserGameList.length);
+                               location.reload()
+                           });
                         })
                     }
                 }

@@ -239,6 +239,7 @@ namespace XXCloudService.Api.XCCloud
 
                 var freeLotteryRules = dicParas.GetArray("freeLotteryRules");
 
+                #region 参数验证
                 if (string.IsNullOrEmpty(gameName))
                 {
                     errMsg = "游戏机名称GameName不能为空";
@@ -284,8 +285,9 @@ namespace XXCloudService.Api.XCCloud
                     errMsg = "中奖概率上限参数highLimit格式不正确";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
+                #endregion
 
-                #region 验证游戏机参数
+                #region 游戏机参数验证
                 if (!dicParas.Get("gameMode").Nonempty("gameMode参数", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 var gameMode = dicParas.Get("gameMode").Toint(0);
@@ -305,11 +307,29 @@ namespace XXCloudService.Api.XCCloud
                 else
                 {
                     List<string> gameAdvancedParameters = new List<string> { 
-                    "PushBalanceIndex1","PushCoin1", 
+                    "PushBalanceIndex1","PushCoin1", "OutMode",
                     "ReturnCheck","OutsideAlertCheck","ICTicketOperation","NotGiveBack","LotteryMode","OnlyExitLottery","chkCheckGift","AllowElecPush","GuardConvertCard","ReadCat","ReadDelay","AllowRealPush","BanOccupy","StrongGuardConvertCard",
-                    "AllowElecOut","NowExit","BOLock","AllowRealOut","BOKeep","PushSpeed","PushPulse","PushLevel","PushStartInterval","UseSecondPush","SecondAddToGame","SecondSpeed","OutBalanceIndex",
+                    "AllowElecOut","NowExit","BOLock","AllowRealOut","BOKeep","PushSpeed","PushPulse","PushLevel","PushStartInterval","UseSecondPush","SecondSpeed","OutBalanceIndex",
                     "SecondPulse","SecondLevel","SecondStartInterval","OutSpeed","OutPulse","CountLevel","OutLevel","OutReduceFromGame","OutAddToCard","OnceOutLimit","OncePureOutLimit","ExceptOutTest","ExceptOutSpeed","Frequency"
                     };
+
+                    //是否启用从游戏机上分线上分
+                    var userSecondPush = dicParas.Get("UseSecondPush").Toint();
+                    if (userSecondPush == 0)
+                    {
+                        gameAdvancedParameters.Add("PushAddToGame1");
+                        gameAdvancedParameters.Add("SecondAddToGame1");
+                    }
+                    else if (userSecondPush == 1)
+                    {
+                        gameAdvancedParameters.Add("PushAddToGame2");
+                        gameAdvancedParameters.Add("SecondAddToGame2");
+                    }
+                    else
+                    {
+                        errMsg = "是否启用从游戏机上分线上分UseSecondPush参数值不正确";
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
 
                     foreach (var parameter in gameAdvancedParameters)
                     {
@@ -355,8 +375,9 @@ namespace XXCloudService.Api.XCCloud
                         }
 
                         Utils.GetModel(dicParas, ref data_GameInfo);
-                        
-                        data_GameInfo.PushAddToGame = data_GameInfo.PushAddToGame ?? data_GameInfo.PushCoin1; //简易模式下“投币给游戏机脉冲数”与“单局投币数”相同
+
+                        data_GameInfo.PushAddToGame1 = data_GameInfo.PushAddToGame1 ?? data_GameInfo.PushCoin1; //简易模式下“投币给游戏机脉冲数”与“单局投币数”相同
+                        data_GameInfo.PushAddToGame2 = data_GameInfo.PushAddToGame2 ?? data_GameInfo.PushCoin1; //简易模式下“投币给游戏机脉冲数”与“单局投币数”相同
                         data_GameInfo.SSRTimeOut = data_GameInfo.SSRTimeOut ?? 0;
                         data_GameInfo.StoreID = storeId;
                         data_GameInfo.MerchID = merchId;

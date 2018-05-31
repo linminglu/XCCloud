@@ -99,7 +99,7 @@
             <div class="layui-inline">
                 <label class="layui-form-label">应退总额</label>
                 <div class="layui-input-inline">
-                    <input type="text" class="layui-input" readonly id="shouldExit">
+                    <input type="text" class="layui-input" readonly id="shouldExit" style="color: red">
                 </div>
             </div>
             <div class="layui-inline">
@@ -111,7 +111,7 @@
             <div class="layui-inline">
                 <label class="layui-form-label">实际退额</label>
                 <div class="layui-input-inline">
-                    <input type="text" class="layui-input" id="exitTotal">
+                    <input type="text" class="layui-input" id="exitTotal" style="color: orange">
                 </div>
             </div>
         </div>
@@ -229,58 +229,85 @@
         let index=obj.data.LAY_TABLE_INDEX; //所在行的所有相关数据
         arrBack[index][key]=value;
         arrBack[index].ExitAll=value*arrBack[index].ExitPrice;
-        $('#shouldExit').val(value*arrBack[index].ExitPrice);
+        //已经勾选了 需要改变值
+        if(exitDetails.length>0){
+            for(let i in exitDetails){
+                if(exitDetails[i].GoodID==obj.data.GoodID){
+                    exitDetails[i].ExitCount=obj.data.ExitCount;
+                    exitDetails[i].ExitPrice=obj.data.ExitPrice
+                }
+            }
+        }
+        let sumExit=0;
+        for(let i in exitDetails){
+            sumExit+=parseInt(exitDetails[i].ExitCount);
+        }
+        $('#shouldExit').val(parseInt(sumExit)*obj.data.ExitPrice);
+        $('#exitTotal').val(parseInt(sumExit)*obj.data.ExitPrice);
         newBackGoodTable(table,arrBack);
     });
     table.on('checkbox(backGoodTable)', function(obj){
             if(obj.checked){
-                exitDetails.push({'GoodId':obj.data.GoodID,
+                exitDetails.push({'GoodID':obj.data.GoodID,
                     'ExitCount':obj.data.ExitCount,
-                    'ExitPrice':obj.data.ExitPrice,})
+                    'ExitPrice':obj.data.ExitPrice})
             }else {
                 if(exitDetails.length>0){
                     let flag=false;
+                    let index;
                     for(let i in exitDetails){
                         if(exitDetails[i].GoodID==obj.data.GoodID){
-                            flag=true
+                            flag=true;
+                            index=i;
                         }
                     }
                     if(flag){
-                        exitDetails.splice(i,1)
+                        exitDetails.splice(index,1)
                     }
                 }
             }
+        let sumExit=0;
+        for(let i in exitDetails){
+            sumExit+=parseInt(exitDetails[i].ExitCount);
+        }
+        $('#shouldExit').val(parseInt(sumExit)*obj.data.ExitPrice||'');
+        $('#exitTotal').val(parseInt(sumExit)*obj.data.ExitPrice||'');
         });
     //保存退货
         $('#saveExit').click(function () {
-            let sumExit='';
-            for(let i in exitDetails){
-                sumExit+=exitDetails[i].ExitCount;
-            }
-            let _obj={'storageOrderIndex':id,
-                'exitCount':sumExit,
-                'exitCost':$('#exitCost').val(),
-                'exitTotal':$('#exitTotal').val(),
-                'exitDetails':exitDetails,
-                'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
-            let parseJson = JSON.stringify(_obj);
-            $.ajax({
-                type:'post',
-                url:'/XCCloud/GoodsInfo?action=SaveGoodExit',
-                contentType: "application/json; charset=utf-8",
-                data:{parasJson: parseJson},
-                success: function (data) {
-                    data = JSON.parse(data);
-                    console.log(data);
-                    if (data.result_code == 1) {
-                        layer.msg('保存成功',{time:1500},function () {
-                            location.reload()
-                        })
-                    } else {
-                        layer.msg(data.result_msg);
-                    }
+            let sumExit=0;
+            if(exitDetails.length==0){
+                layer.msg('请选择需要退掉的商品')
+            }else {
+                for(let i in exitDetails){
+                    sumExit+=parseInt(exitDetails[i].ExitCount);
                 }
-            })
+                let _obj={'storageOrderIndex':id,
+                    'exitCount':sumExit,
+                    'exitCost':$('#exitCost').val(),
+                    'exitTotal':$('#exitTotal').val(),
+                    'exitDetails':exitDetails,
+                    'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                let parseJson = JSON.stringify(_obj);
+                $.ajax({
+                    type:'post',
+                    url:'/XCCloud/GoodsInfo?action=SaveGoodExit',
+                    contentType: "application/json; charset=utf-8",
+                    data:{parasJson: parseJson},
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        console.log(data);
+                        if (data.result_code == 1) {
+                            layer.msg('保存成功',{time:1500},function () {
+                                location.reload()
+                            })
+                        } else {
+                            layer.msg(data.result_msg);
+                        }
+                    }
+                })
+            }
+
         })
     //监听主表
     table.on('tool(giftsStorage)', function(obj){
@@ -301,7 +328,6 @@
                     if (data.result_code == 1) {
                         arrBack=[];exitDetails=[];
                         let arr=data.result_data.GoodStorageDetail;
-
                         for(let i in arr){
                             arrBack.push({'GoodID':arr[i].GoodID,
                                 'BarCode':arr[i].BarCode,
@@ -314,6 +340,7 @@
                                 'ExitAll':''})
                         }
                         newBackGoodTable(table,arrBack);
+                        $('#backGood').find('input').val('')
                         index=layer.open({
                             title:'退货信息',
                             type:1,

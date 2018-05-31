@@ -169,10 +169,10 @@
             , {field: 'GameName', title: '游戏机名称', align: 'center'}
             , {field: 'MemberLevelName', title: '会员级别', align: 'center'}
             , {field: 'Week', title: '周数', align: 'center'}
-            , {field: 'Allow_In', title: '允许投币', align: 'center'}
-            , {field: 'Allow_Out', title: '允许退币', align: 'center'}
-            , {field: 'Level', title: '优先级', align: 'center',templet:'#charge'}
-            , {field: 'StartDate', title: '开始时间', align: 'center',templet:'#state'}
+            , {field: 'Allow_In', title: '允许投币', align: 'center',templet:'#allowIn'}
+            , {field: 'Allow_Out', title: '允许退币', align: 'center',templet:'#allowOut'}
+            , {field: 'Level', title: '优先级', align: 'center'}
+            , {field: 'StartDate', title: '开始时间', align: 'center'}
             , {field: 'EndDate', title: '结束时间', align: 'center'}
             , {field: 'StartTime', title: '生效开始时段', align: 'center'}
             , {field: 'EndTime', title: '生效结束时段', align: 'center'}
@@ -500,5 +500,19 @@
 <script type="text/html" id="barDemo">
     <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del"><i class="layui-icon">&#xe640;</i>删除</a>
     <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="modify"><i class="layui-icon">&#xe642;</i>修改</a>
+</script>
+<script type="text/html" id="allowIn">
+    {{# if(d.Allow_In==1){ }}
+    <input type="checkbox" checked name="switch" lay-skin="switch" lay-text="是|否" class="tb_check" lay-filter="test" disabled>
+    {{# }else { }}
+    <input type="checkbox" name="switch" lay-skin="switch" lay-text="是|否" class="tb_check" lay-filter="test" disabled>
+    {{#  } }}
+</script>
+<script type="text/html" id="allowOut">
+    {{# if(d.Allow_Out==1){ }}
+    <input type="checkbox" checked name="switch" lay-skin="switch" lay-text="是|否" class="tb_check" lay-filter="test" disabled>
+    {{# }else { }}
+    <input type="checkbox" name="switch" lay-skin="switch" lay-text="是|否" class="tb_check" lay-filter="test" disabled>
+    {{#  } }}
 </script>
 </html>

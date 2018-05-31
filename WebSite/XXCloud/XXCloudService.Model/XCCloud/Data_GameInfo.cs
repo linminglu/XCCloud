@@ -25,12 +25,17 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> State { get; set; }
         public Nullable<int> PushBalanceIndex1 { get; set; }
         public Nullable<int> PushCoin1 { get; set; }
+        public Nullable<int> PushAddToGame1 { get; set; }
+        public Nullable<int> SecondAddToGame1 { get; set; }
         public Nullable<int> PushBalanceIndex2 { get; set; }
         public Nullable<int> PushCoin2 { get; set; }
+        public Nullable<int> PushAddToGame2 { get; set; }
+        public Nullable<int> SecondAddToGame2 { get; set; }
         public Nullable<int> OutBalanceIndex { get; set; }
         public Nullable<int> ReturnCheck { get; set; }
         public Nullable<int> OutsideAlertCheck { get; set; }
         public Nullable<int> ICTicketOperation { get; set; }
+        public Nullable<int> OutMode { get; set; }
         public Nullable<int> NotGiveBack { get; set; }
         public Nullable<int> LotteryMode { get; set; }
         public Nullable<int> OnlyExitLottery { get; set; }
@@ -48,13 +53,11 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> BOPulse { get; set; }
         public Nullable<int> AllowRealOut { get; set; }
         public Nullable<int> BOKeep { get; set; }
-        public Nullable<int> PushAddToGame { get; set; }
         public Nullable<int> PushSpeed { get; set; }
         public Nullable<int> PushPulse { get; set; }
         public Nullable<int> PushLevel { get; set; }
         public Nullable<int> PushStartInterval { get; set; }
         public Nullable<int> UseSecondPush { get; set; }
-        public Nullable<int> SecondAddToGame { get; set; }
         public Nullable<int> SecondSpeed { get; set; }
         public Nullable<int> SecondPulse { get; set; }
         public Nullable<int> SecondLevel { get; set; }

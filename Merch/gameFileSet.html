@@ -352,11 +352,30 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="layui-card">
+                        <div class="layui-inline UseSecondPush">
+                            <label class="layui-form-label" style="padding: 0;white-space: normal;">启用从游戏机上分线上分</label>
+                            <div class="layui-input-inline">
+                                <input type="checkbox" lay-skin="switch" lay-text="启用|禁用" name="UseSecondPush" lay-filter="UseSecondPush">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-card cardPush">
                         <div class="layui-card-header">投币通道属性设置</div>
                         <div class="layui-card-body">
                             <div class="layui-form-item">
+                                <div class="layui-inline PushAddToGame1">
+                                    <label class="layui-form-label" style="padding: 0;white-space: normal;">第一按键发脉冲数</label>
+                                    <div class="layui-input-inline">
+                                        <input type="text" class="layui-input" name="PushAddToGame1">
+                                    </div>
+                                </div>
+                                <div class="layui-inline PushAddToGame2">
+                                    <label class="layui-form-label" style="padding: 0;white-space: normal;">第二按键发脉冲数</label>
+                                    <div class="layui-input-inline">
+                                        <input type="text" class="layui-input" name="PushAddToGame2">
+                                    </div>
+                                </div>
                                 <div class="layui-inline PushPulse">
                                     <label class="layui-form-label">投币脉宽</label>
                                     <div class="layui-input-inline">
@@ -374,6 +393,7 @@
                                         </select>
                                     </div>
                                 </div>
+
                                 <div class="layui-inline PushSpeed">
                                     <label class="layui-form-label">投币速度</label>
                                     <div class="layui-input-inline">
@@ -393,12 +413,7 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="layui-inline PushAddToGame">
-                                    <label class="layui-form-label" style="padding: 0;white-space: normal;">投币给游戏机脉冲数 </label>
-                                    <div class="layui-input-inline">
-                                        <input type="text" class="layui-input" name="PushAddToGame">
-                                    </div>
-                                </div>
+
                                 <div class="layui-inline PushLevel">
                                     <label class="layui-form-label">投币信号电平</label>
                                     <div class="layui-input-inline">
@@ -420,38 +435,21 @@
                             </div>
                         </div>
                     </div>
-                    <div class="layui-card">
+
+                    <div class="layui-card cardCore layui-hide">
                         <div class="layui-card-header">上分通道属性设置</div>
                         <div class="layui-card-body">
                             <div class="layui-form-item">
-                                <div class="layui-inline UseSecondPush">
-                                    <label class="layui-form-label" style="padding: 0;white-space: normal;">启用从游戏机上分线上分</label>
+                                <div class="layui-inline SecondAddToGame1">
+                                    <label class="layui-form-label" style="padding: 0;white-space: normal;">第一按键发脉冲数</label>
                                     <div class="layui-input-inline">
-                                        <input type="checkbox" lay-skin="switch" lay-text="启用|禁用" name="UseSecondPush" lay-filter="UseSecondPush">
+                                        <input type="text" class="layui-input" name="SecondAddToGame1" value="1">
                                     </div>
                                 </div>
-                                <div class="layui-inline SecondAddToGame">
-                                    <label class="layui-form-label" style="padding: 0;white-space: normal;">上分给游戏机脉冲数 </label>
+                                <div class="layui-inline SecondAddToGame2">
+                                    <label class="layui-form-label" style="padding: 0;white-space: normal;">第一按键发脉冲数</label>
                                     <div class="layui-input-inline">
-                                        <input type="text" class="layui-input" name="SecondAddToGame" value="1">
-                                    </div>
-                                </div>
-                                <div class="layui-inline SecondLevel">
-                                    <label class="layui-form-label">上分信号电平</label>
-                                    <div class="layui-input-inline">
-                                        <input type="checkbox" name="SecondLevel" lay-skin="switch" lay-text="高电平|低电平" id="SecondLevel" lay-filter="SecondLevel">
-                                    </div>
-                                </div>
-                                <div class="layui-inline SecondStartInterval">
-                                    <label class="layui-form-label">首次上分间隔</label>
-                                    <div class="layui-input-inline">
-                                        <select name="SecondStartInterval" id="SecondStartInterval" lay-filter="SecondStartInterval">
-                                            <option >-请选择-</option>
-                                            <option value="0" selected>0</option>
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                        </select>
+                                        <input type="text" class="layui-input" name="SecondAddToGame2" value="1">
                                     </div>
                                 </div>
                                 <div class="layui-inline SecondPulse">
@@ -487,6 +485,24 @@
                                             <option value="250">250</option>
                                             <option value="500">500</option>
                                             <option value="1000">1000</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="layui-inline SecondLevel">
+                                <label class="layui-form-label">上分信号电平</label>
+                                <div class="layui-input-inline">
+                                    <input type="checkbox" name="SecondLevel" lay-skin="switch" lay-text="高电平|低电平" id="SecondLevel" lay-filter="SecondLevel">
+                                </div>
+                            </div>
+                                <div class="layui-inline SecondStartInterval">
+                                    <label class="layui-form-label">首次上分间隔</label>
+                                    <div class="layui-input-inline">
+                                        <select name="SecondStartInterval" id="SecondStartInterval" lay-filter="SecondStartInterval">
+                                            <option >-请选择-</option>
+                                            <option value="0" selected>0</option>
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
                                         </select>
                                     </div>
                                 </div>
@@ -542,6 +558,16 @@
                                             <option value="500" selected>500</option>
                                             <option value="3000">3000</option>
                                             <option value="5000">5000</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="layui-inline OutMode">
+                                    <label class="layui-form-label">退币方式</label>
+                                    <div class="layui-input-inline">
+                                        <select name="OutMode" id="OutMode" lay-filter="OutMode">
+                                            <option>-请选择-</option>
+                                            <option value="0">脉冲退分</option>
+                                            <option value="1">一键下分</option>
                                         </select>
                                     </div>
                                 </div>
@@ -868,7 +894,7 @@
         PushSpeed=35,PushPulse=35,PushLevel=0,PushStartInterval=0,
         UseSecondPush=0,SecondSpeed=150,SecondPulse=200,SecondLevel=0,
         SecondStartInterval=0,
-        OutSpeed=35,
+        OutSpeed=35,OutMode=0,
         OutPulse=35,CountLevel=0,OutLevel=0,ExceptOutTest=0,ExceptOutSpeed=45;
 let FreeLotteryRules=[];
 let memberLevelId='';let memberLevels='';let MemberLevelNames='';
@@ -945,11 +971,13 @@ let memberLevelId='';let memberLevels='';let MemberLevelNames='';
          'PushCoin2':$('input[name="PushCoin2"]').val(),
          'PushPulse':PushPulse,//35
          'PushSpeed':PushSpeed,//35
-         'PushAddToGame':$('input[name="PushAddToGame"]').val(),
+         'PushAddToGame1':$('input[name="PushAddToGame1"]').val(),
+         'PushAddToGame2':$('input[name="PushAddToGame2"]').val(),
          'PushLevel':PushLevel,
          'PushStartInterval':PushStartInterval,//0
          'UseSecondPush':UseSecondPush,
-         'SecondAddToGame':$('input[name="SecondAddToGame"]').val(),
+         'SecondAddToGame1':$('input[name="SecondAddToGame1"]').val(),
+         'SecondAddToGame2':$('input[name="SecondAddToGame2"]').val(),
          'SecondLevel':SecondLevel,
          'SecondStartInterval':SecondStartInterval,//0
          'SecondPulse':SecondPulse,//200
@@ -964,6 +992,7 @@ let memberLevelId='';let memberLevels='';let MemberLevelNames='';
          'CountLevel':CountLevel,
          'OutSpeed':OutSpeed,//35
          'OutPulse':OutPulse,//35
+         'OutMode':OutMode,
          'OutReduceFromGame':$('input[name="OutReduceFromGame"]').val(),
          'OutAddToCard':$('input[name="OutAddToCard"]').val(),
          'OutBalanceIndex':OutBalanceIndex,
@@ -1184,9 +1213,13 @@ let memberLevelId='';let memberLevels='';let MemberLevelNames='';
       });
       form.on('switch(UseSecondPush)',(data)=>{
           if(data.elem.checked==true){
-              UseSecondPush=1
+              UseSecondPush=1;
+              $('.cardCore').removeClass('layui-hide');
+              $('.cardPush').addClass('layui-hide');
           }else {
-              UseSecondPush=0
+              UseSecondPush=0;
+              $('.cardCore').addClass('layui-hide');
+              $('.cardPush').removeClass('layui-hide');
           }
       });
       form.on('switch(SecondLevel)',(data)=>{
@@ -1260,6 +1293,11 @@ let memberLevelId='';let memberLevels='';let MemberLevelNames='';
       form.on('select(OutSpeed)',(data)=>{
           OutSpeed=data.value;
       });
+
+      form.on('select(OutMode)',(data)=>{
+          OutMode=data.value;
+      });
+
       form.on('select(OutPulse)',(data)=>{
           OutPulse=data.value;
       });
@@ -1338,13 +1376,13 @@ let memberLevelId='';let memberLevels='';let MemberLevelNames='';
       $('.toEasyOpen').click(function (){
           xc.openEasy(layer);
       });
-      $('.toHighOpen').click(function () {
+       $('.toHighOpen').click(function () {
           xc.openHigh(layer)
       });
        $('#highSaveBtn').click(function () {
            saveHigh(form,layer);
        });
-   $('#addNew').click(function (){
+       $('#addNew').click(function (){
 
        $('.saveBox').css('display','inline-block');
        xc.getGameInfoByid('',token,form,layer,table);

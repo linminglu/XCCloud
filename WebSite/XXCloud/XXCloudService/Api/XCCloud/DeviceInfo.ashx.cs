@@ -578,12 +578,20 @@ namespace XXCloudService.Api.XCCloud
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
+                if (!Base_DeviceInfoService.I.Any(p => p.ID == iBindDeviceId))
+                {
+                    errMsg = "该路由器设备不存在";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
                 var data_DeviceInfo = Base_DeviceInfoService.I.GetModels(p => p.ID == iId).FirstOrDefault();
                 if (data_DeviceInfo.type == (int)DeviceType.卡头 || data_DeviceInfo.type == (int)DeviceType.路由器)
                 {
-                    errMsg = "通讯绑定设备类型不能是卡头或路由器";
+                    errMsg = "被绑定设备类型不能是卡头或路由器";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
+
+                var routineInfo = Base_DeviceInfoService.I.GetModels(p => p.ID == iBindDeviceId).FirstOrDefault();
 
                 //绑定
                 if (iState == 1)
@@ -596,12 +604,14 @@ namespace XXCloudService.Api.XCCloud
 
                     data_DeviceInfo.BindDeviceID = iBindDeviceId;
                     data_DeviceInfo.Address = address.ToUpper();
+                    data_DeviceInfo.segment = routineInfo.segment;
                 }
                 //解绑
                 else if (iState == 0)
                 {
                     data_DeviceInfo.BindDeviceID = (int?)null;
                     data_DeviceInfo.Address = string.Empty;
+                    data_DeviceInfo.segment = string.Empty;
                 }
                 else
                 {
@@ -1068,6 +1078,12 @@ namespace XXCloudService.Api.XCCloud
                         if (base_DeviceInfo.type != (int)DeviceType.路由器)
                         {
                             errMsg = "该设备不是路由器类型设备";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
+                        if (base_DeviceInfoService.Any(p => p.ID != deviceId && p.segment.Equals(segment, StringComparison.OrdinalIgnoreCase) && p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)))
+                        {
+                            errMsg = "该网络段号已被占用";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 

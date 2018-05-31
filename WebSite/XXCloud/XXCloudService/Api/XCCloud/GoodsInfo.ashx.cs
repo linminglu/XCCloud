@@ -1979,7 +1979,7 @@ namespace XXCloudService.Api.XCCloud
                         var model = Data_GoodStorageService.I.GetModels(p => p.ID == id).FirstOrDefault();
                         if (model.AuthorFlag != (int)GoodOutInState.Pending)
                         {
-                            errMsg = "已审核的单据不能删除";
+                            errMsg = "已审核的入库信息不能删除";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 
@@ -2296,6 +2296,13 @@ namespace XXCloudService.Api.XCCloud
                                     detailModel.GoodID = dicPara.Get("goodId").Toint();
                                     detailModel.MerchID = merchId;                                    
                                     Data_GoodExit_DetailService.I.AddModel(detailModel);
+
+                                    //更新当前库存
+                                    var depotId = model.DepotID;
+                                    var goodId = dicPara.Get("goodId").Toint();
+                                    var stockModel = Data_GoodsStockService.I.GetModels(p => p.DepotID == depotId && p.GoodID == goodId).OrderByDescending(or => or.InitialTime).FirstOrDefault();
+                                    stockModel.RemainCount = (stockModel.RemainCount ?? 0) - detailModel.ExitCount;
+                                    Data_GoodsStockService.I.UpdateModel(stockModel);
                                 }
                                 else
                                 {
@@ -2309,51 +2316,7 @@ namespace XXCloudService.Api.XCCloud
                                 errMsg = "保存退货明细信息失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                             }
-                        }
-
-                        //创建出库单
-                        var outModel = new Data_GoodOutOrder();
-                        outModel.MerchID = merchId;
-                        outModel.StoreID = storeId;
-                        outModel.OrderID = RedisCacheHelper.CreateCloudSerialNo(storeId);
-                        outModel.OrderType = (int)GoodOutOrderType.Exit;
-                        outModel.DepotID = model.DepotID;
-                        outModel.CreateTime = DateTime.Now;
-                        outModel.OPUserID = logId;
-                        outModel.State = (int)GoodOutInState.Pending;
-                        if (!Data_GoodOutOrderService.I.Add(outModel))
-                        {
-                            errMsg = "创建出货单失败";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
-
-                        //保存出货明细信息
-                        foreach (IDictionary<string, object> el in exitDetails)
-                        {
-                            if (el != null)
-                            {
-                                var dicPara = new Dictionary<string, object>(el, StringComparer.OrdinalIgnoreCase);
-                                
-                                var outDetailModel = new Data_GoodOutOrder_Detail();
-                                outDetailModel.OutCount = dicPara.Get("exitCount").Toint();
-                                outDetailModel.GoodID = dicPara.Get("goodId").Toint();
-                                outDetailModel.OrderID = outModel.ID;
-                                outDetailModel.MerchID = merchId;
-                                outDetailModel.StoreID = storeId;
-                                Data_GoodOutOrder_DetailService.I.AddModel(outDetailModel);
-                            }
-                            else
-                            {
-                                errMsg = "提交数据包含空对象";
-                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                            }
-                        }
-
-                        if (!Data_GoodOutOrder_DetailService.I.SaveChanges())
-                        {
-                            errMsg = "保存出货明细信息失败";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
+                        }                        
 
                         ts.Complete();
                     }
@@ -2438,9 +2401,45 @@ namespace XXCloudService.Api.XCCloud
                 if (!storeId.IsNull())
                     sql = sql + " AND a.storeId='" + storeId + "'";
 
-                var data_GoodStorage = Data_GoodStorageService.I.SqlQuery<Data_GoodStorageList>(sql, parameters).ToList();
+                var data_GoodOutOrder = Data_GoodOutOrderService.I.SqlQuery<Data_GoodOutOrderList>(sql, parameters).ToList();
 
-                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, data_GoodStorage);
+                //查询退货信息
+                sql = @"SELECT
+                                	a.ID,
+                                    /*出库单号*/
+                                    a.OrderID,
+                                    /*出库类别*/
+                                    a.OrderType,                                	
+                                	/*出库时间*/
+                                    (case when IsNull(a.CreateTime,'')='' then '' else convert(varchar,a.CreateTime,20) end) AS CreateTime,
+                                	/*出库数量*/
+                                	b.OutCount,
+                                	/*出库金额*/
+                                	b.OutTotal,                                	
+                                	/*出库人*/
+                                	u.LogName,
+                                	/*出库仓库*/
+                                	c.DepotName,
+                                	/*状态*/
+                                	a.State,
+                                    /*营业日期*/
+                                    (case when IsNull(a.CheckDate,'')='' then '' else convert(varchar,a.CheckDate,23) end) AS CheckDate
+                                FROM
+                                	Data_GoodOutOrder a
+                                LEFT JOIN (
+                                	SELECT
+                                		*, ROW_NUMBER() over(partition by OrderID,GoodID order by ID) as RowNum
+                                	FROM
+                                		Data_GoodOutOrder_Detail                                                                                         	
+                                ) b ON a.ID = b.OrderID and b.RowNum <= 1
+                                LEFT JOIN Base_UserInfo u ON a.OPUserID = u.UserID
+                                LEFT JOIN Base_DepotInfo c ON a.DepotID = c.ID                                
+                                WHERE 1 = 1";
+                sql = sql + " AND a.merchId='" + merchId + "'";
+                if (!storeId.IsNull())
+                    sql = sql + " AND a.storeId='" + storeId + "'";
+
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, data_GoodOutOrder);
             }
             catch (Exception e)
             {
@@ -2644,7 +2643,7 @@ namespace XXCloudService.Api.XCCloud
                         var model = Data_GoodOutOrderService.I.GetModels(p => p.ID == id).FirstOrDefault();
                         if (model.State != (int)GoodOutInState.Pending)
                         {
-                            errMsg = "已审核的单据不能删除";
+                            errMsg = "已审核的出库信息不能删除";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 

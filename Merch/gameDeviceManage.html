@@ -333,18 +333,34 @@
             <div class="layui-inline">
                 <label  class="layui-form-label">允许实物币投币</label>
                 <div class="layui-input-inline">
-                    <input type="checkbox" checked name="motor1Coinpush" lay-filter="motor1Coinpush" lay-skin="switch" lay-text="启用|禁用">
+                    <input type="checkbox" checked name="motor1CoinPush" lay-filter="motor1CoinPush" lay-skin="switch" lay-text="启用|禁用">
                 </div>
             </div>
             <div class="layui-inline">
                 <label  class="layui-form-label">允许会员卡投币</label>
                 <div class="layui-input-inline">
-                    <input type="checkbox" checked name="motor2Coinpush" lay-filter="motor2Coinpush" lay-skin="switch" lay-text="启用|禁用">
+                    <input type="checkbox" checked name="motor2CoinPush" lay-filter="motor2CoinPush" lay-skin="switch" lay-text="启用|禁用">
                 </div>
             </div>
         </div>
         <div style="text-align:center;">
             <button type="button" class="layui-btn layui-btn-normal" id="savePushBtn"> 确定</button>
+        </div>
+    </form>
+</div>
+<!--路由段号设置-->
+<div id="routerModel" style="padding: 15px;display: none">
+    <form lay-filter="pushCoin" class="layui-form layui-form-pane goodIsAll">
+
+        <div class="layui-form-item">
+
+                <label class="layui-form-label">路由器段号</label>
+                <div class="layui-input-block">
+                    <input type="text" class="layui-input" name="router">
+                </div>
+        </div>
+        <div style="text-align:center;">
+            <button type="button" class="layui-btn layui-btn-normal" id="saveRouterBtn"> 确定</button>
         </div>
     </form>
 </div>
@@ -366,7 +382,7 @@ let index;
    //售币机
 let motor1En=1;let motor2En=1; let motor1Coin=1;let motor2Coin=1;let dubleCheck=1;let digitCoinEn=0;
 //提币机
-let motor1En_get=1;let motor2En_get=1;let motor1Coin_get=1;let motor2Coin_get=1;let balanceIndex="";let toCard=0;let fromDevice=0;
+let motor1En_get=1;let motor2En_get=1;let motor1Coin_get=1;let motor2Coin_get=1;let balanceIndex="";let toCard=1;let fromDevice=1;
 //存币机
 let motor1En_save=1;let motor2En_save=1;let balanceIndexSave='';
 //投币机
@@ -386,7 +402,7 @@ let motor1En_push=1;let motor2En_push=1;let balanceIndexPush='';let motor1CoinPu
             ,{field:'AreaName', title: '区域名称', align: 'center'}
             ,{field:'DeviceStatus',fixed: 'right', title: '工作状态', align: 'center',templet:'#changeLock',width:90}
             ,{field:'DeviceRunning',fixed: 'right', title: '运行状态', align: 'center',width:90}
-            ,{fixed: 'right', title: '操作', width:350, align:'center', toolbar: '#barDemo'}]
+            ,{fixed: 'right', title: '操作', width:350, align:'right', toolbar: '#barDemo'}]
     };
     xc.getInitData(parm);
     var qrcode = new QRCode(document.getElementById("qrcode"), {
@@ -559,8 +575,8 @@ let motor1En_push=1;let motor2En_push=1;let balanceIndexPush='';let motor1CoinPu
                 'motor1En':motor1En_save,
                 'motor2En':motor2En_save,
                 'balanceIndex':balanceIndexSave,
-                'toCard':$('input[name="toCard"]').val(),
-                'fromDevice':$('input[name="fromDevice"]').val(),
+                'toCard':$('input[name="toCardsave"]').val(),
+                'fromDevice':$('input[name="formDeviceSave"]').val(),
                 'maxSaveCount':$('input[name="maxSaveCount"]').val(),
                 'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
             let parseJson = JSON.stringify(_obj);
@@ -571,7 +587,7 @@ let motor1En_push=1;let motor2En_push=1;let balanceIndexPush='';let motor1CoinPu
                 data:{parasJson: parseJson},
                 success: function (data) {
                     data = JSON.parse(data);
-                    if (data.result_code == 1) {6
+                    if (data.result_code == 1) {
                         layer.msg('设置成功',{time:1500},function () {
                             location.reload();
                         });
@@ -611,11 +627,12 @@ let motor1En_push=1;let motor2En_push=1;let balanceIndexPush='';let motor1CoinPu
             }
         });
         form.on('select(balanceIndexPush)',function (data) {
-            balanceIndex=data.value;
+            balanceIndexPush=data.value;
         });
 
         $('#savePushBtn').click(function () {
-            let _obj={'deviceId':_id,'motor1En':motor1En_push,
+            let _obj={'deviceId':_id,
+                'motor1En':motor1En_push,
                 'motor2En':motor2En_push,
                 'motor1Coin':motor1CoinPush,
                 'motor2Coin':motor2CoinPush,
@@ -629,7 +646,7 @@ let motor1En_push=1;let motor2En_push=1;let balanceIndexPush='';let motor1CoinPu
                 data:{parasJson: parseJson},
                 success: function (data) {
                     data = JSON.parse(data);
-                    if (data.result_code == 1) {6
+                    if (data.result_code == 1) {
                         layer.msg('设置成功',{time:1500},function () {
                             location.reload();
                         });
@@ -893,7 +910,7 @@ let motor1En_push=1;let motor2En_push=1;let balanceIndexPush='';let motor1CoinPu
                             if(arr.ID==0){
                                  motor1En_get=1; motor2En_get=1; motor1Coin_get=1;
                                  motor2Coin_get=1; balanceIndex=""; toCard=0; fromDevice=0;
-                                xc. getBalanceTypeDic('',token,layer,form,'balanceIndex',);
+                                xc. getBalanceTypeDic('',token,layer,form,'balanceIndex');
                             }else {
                                 form.val("getCoin",{
                                     'motor1En_get':arr.Motor1EN==1 ? true : false ,
@@ -961,7 +978,7 @@ let motor1En_push=1;let motor2En_push=1;let balanceIndexPush='';let motor1CoinPu
                 })
 
             }else if(layEvent==='pushCoin'){
-                 motor1En_push=1; motor2En_push=1; balanceIndexPush=1; motor1CoinPush=1; motor2CoinPush=1;
+                 // motor1En_push=1; motor2En_push=1; balanceIndexPush=1; motor1CoinPush=1; motor2CoinPush=1;
 
                 let _obj={'deviceId':data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
                 let parseJson = JSON.stringify(_obj);
@@ -978,13 +995,14 @@ let motor1En_push=1;let motor2En_push=1;let balanceIndexPush='';let motor1CoinPu
                             if(arr.ID==0){
                                  motor1En_push=1; motor2En_push=1; balanceIndexPush='';
                                  motor1CoinPush=1; motor2CoinPush=1;
+                                xc. getBalanceTypeDic('',token,layer,form,'balanceIndexPush')
                             }else {
                                 form.val("pushCoin",{
-                                    'motor1En_save':arr.Motor1EN==1 ? true : false ,
-                                    'motor2En_save':arr.Motor2EN==1 ? true : false ,
-                                    'maxSaveCount':arr.MaxSaveCount ,
-                                    'toCardsave':arr.ToCard,
-                                    'formDeviceSave':arr.FromDevice
+                                    'motor1En_push':arr.Motor1EN==1 ? true : false ,
+                                    'motor2En_push':arr.Motor2EN==1 ? true : false ,
+
+                                    'motor1CoinPush':arr.Motor1Coin==1 ? true : false,
+                                    'motor2CoinPush':arr.Motor2Coin==1 ? true : false
                                 });
                                 motor1En_push=arr.Motor1EN||0;
                                 motor2En_push=arr.Motor2EN||0;
@@ -1004,8 +1022,35 @@ let motor1En_push=1;let motor2En_push=1;let balanceIndexPush='';let motor1CoinPu
                         }
                     }
                 })
+            }else if(layEvent==='router'){
+                $('input[name="router"]').val(data.segment);
+                layer.open({
+                    title:'路由器段号设置' ,
+                    type:1,
+                    area:'400px',
+                    content:$('#routerModel')
+                })
             }
         });
+          //保存路由器段号
+        $('#saveRouterBtn').click(function () {
+            let _obj={'deviceId':_id,'segment': $('input[name="router"]').val(),'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+            let parseJson = JSON.stringify(_obj);
+            $.ajax({
+                type: 'post',
+                url: '/XCCloud/DeviceInfo?action=SaveRoutineInfo',
+                contentType: "application/json; charset=utf-8",
+                data: {parasJson: parseJson},
+                success: function (data) {
+                    data = JSON.parse(data);
+                    if (data.result_code == 1) {
+                        layer.msg('设置成功',{time:1500},function () {
+                            location.reload();
+                        })
+                    }
+                }
+            })
+        })
         $('#saveBtn').on('click',function () {
             xc.BindDeviceInfo(_id,token,layer,_state)
         });
@@ -1100,6 +1145,7 @@ let motor1En_push=1;let motor2En_push=1;let balanceIndexPush='';let motor1CoinPu
 <script type="text/html" id="barDemo">
     {{# if(d.DeviceType==8){ }}
     <a class="layui-btn layui-btn-xs" lay-event="code">二维码</a>
+    <a class="layui-btn layui-btn-xs" lay-event="router">路由设置</a>
     {{#  }else{ }}
     <a class="layui-btn layui-btn-xs" lay-event="clockCook">报警日志</a>
     <a class="layui-btn layui-btn-xs" lay-event="code">二维码</a>
@@ -1110,16 +1156,16 @@ let motor1En_push=1;let motor2En_push=1;let balanceIndexPush='';let motor1CoinPu
     {{#  } }}
     {{#  } }}
     {{#  if(d.DeviceType==4){ }}
-    <a class="layui-btn layui-btn-xs" lay-event="saleCoin">售币机参数设置</a>
+    <a class="layui-btn layui-btn-xs" lay-event="saleCoin">参数设置</a>
     {{#  } }}
     {{#  if(d.DeviceType==3){ }}
-    <a class="layui-btn layui-btn-xs" lay-event="getCoin">提币机参数设置</a>
+    <a class="layui-btn layui-btn-xs" lay-event="getCoin">参数设置</a>
     {{#  } }}
     {{#  if(d.DeviceType==5){ }}
-    <a class="layui-btn layui-btn-xs" lay-event="pushCoin">投币机参数设置</a>
+    <a class="layui-btn layui-btn-xs" lay-event="pushCoin">参数设置</a>
     {{#  } }}
     {{# if(d.DeviceType==2){ }}
-    <a class="layui-btn layui-btn-xs" lay-event="saveCoin">存币机参数设置</a>
+    <a class="layui-btn layui-btn-xs" lay-event="saveCoin">参数设置</a>
     {{#  } }}
 
 
