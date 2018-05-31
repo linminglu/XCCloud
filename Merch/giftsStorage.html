@@ -240,7 +240,7 @@
         }
         let sumExit=0;
         for(let i in exitDetails){
-            sumExit+=parseInt(exitDetails[i].ExitCount);
+            sumExit=parseInt(sumExit)+parseInt(exitDetails[i].ExitCount);
         }
         $('#shouldExit').val(parseInt(sumExit)*obj.data.ExitPrice);
         $('#exitTotal').val(parseInt(sumExit)*obj.data.ExitPrice);
@@ -433,6 +433,11 @@
     $('#saveGoodBtn').on('click',function () {
         newFoodLevelTable(table,storageGood,layer,form);
         layer.close(index);
+    });
+    $('#exitCost').blur(function () {
+       let a=  parseInt($('#shouldExit').val());
+       let b=parseInt($('#exitCost').val());
+        $('#exitTotal').val(parseInt(a-b));
     });
     //保存入库记录
     $('#save').on('click',function () {
