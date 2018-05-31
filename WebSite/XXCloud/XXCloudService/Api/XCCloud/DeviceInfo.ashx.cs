@@ -708,6 +708,12 @@ namespace XXCloudService.Api.XCCloud
                         Utils.GetModel(dicParas, ref base_DeviceInfo_Ext);
                         if (base_DeviceInfo_Ext.ID == 0)
                         {
+                            if (base_DeviceInfo_ExtService.GetCount(a => a.ID == deviceId) > 0)
+                            {
+                                errMsg = "该售币机参数设置已存在";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+
                             if (!base_DeviceInfo_ExtService.Add(base_DeviceInfo_Ext))
                             {
                                 errMsg = "售币机参数设置失败";
@@ -784,7 +790,7 @@ namespace XXCloudService.Api.XCCloud
                         {
                             errMsg = "该设备信息不存在";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
+                        }                        
 
                         var base_DeviceInfo = base_DeviceInfoService.GetModels(p => p.ID == deviceId).FirstOrDefault();
                         if (base_DeviceInfo.type != (int)DeviceType.提币机)
@@ -795,8 +801,14 @@ namespace XXCloudService.Api.XCCloud
 
                         var base_DeviceInfo_Ext = base_DeviceInfo_ExtService.GetModels(p => p.DeviceID == deviceId).FirstOrDefault() ?? new Base_DeviceInfo_Ext();
                         Utils.GetModel(dicParas, ref base_DeviceInfo_Ext);
-                        if (deviceId == 0)
+                        if (base_DeviceInfo_Ext.ID == 0)
                         {
+                            if (base_DeviceInfo_ExtService.GetCount(a => a.ID == deviceId) > 0)
+                            {
+                                errMsg = "该提币机参数设置已存在";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+
                             if (!base_DeviceInfo_ExtService.Add(base_DeviceInfo_Ext))
                             {
                                 errMsg = "提币机参数设置失败";
@@ -804,13 +816,7 @@ namespace XXCloudService.Api.XCCloud
                             }
                         }
                         else
-                        {
-                            if (base_DeviceInfo_Ext.ID == 0)
-                            {
-                                errMsg = "该设置信息不存在";
-                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                            }
-
+                        {                           
                             if (!base_DeviceInfo_ExtService.Update(base_DeviceInfo_Ext))
                             {
                                 errMsg = "提币机参数设置失败";
@@ -888,8 +894,14 @@ namespace XXCloudService.Api.XCCloud
 
                         var base_DeviceInfo_Ext = base_DeviceInfo_ExtService.GetModels(p => p.DeviceID == deviceId).FirstOrDefault() ?? new Base_DeviceInfo_Ext();
                         Utils.GetModel(dicParas, ref base_DeviceInfo_Ext);
-                        if (deviceId == 0)
+                        if (base_DeviceInfo_Ext.ID == 0)
                         {
+                            if (base_DeviceInfo_ExtService.GetCount(a => a.ID == deviceId) > 0)
+                            {
+                                errMsg = "该存币机参数设置已存在";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+
                             if (!base_DeviceInfo_ExtService.Add(base_DeviceInfo_Ext))
                             {
                                 errMsg = "存币机参数设置失败";
@@ -897,13 +909,7 @@ namespace XXCloudService.Api.XCCloud
                             }
                         }
                         else
-                        {
-                            if (base_DeviceInfo_Ext.ID == 0)
-                            {
-                                errMsg = "该设置信息不存在";
-                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                            }
-
+                        {                            
                             if (!base_DeviceInfo_ExtService.Update(base_DeviceInfo_Ext))
                             {
                                 errMsg = "存币机参数设置失败";
@@ -979,8 +985,14 @@ namespace XXCloudService.Api.XCCloud
 
                         var base_DeviceInfo_Ext = base_DeviceInfo_ExtService.GetModels(p => p.DeviceID == deviceId).FirstOrDefault() ?? new Base_DeviceInfo_Ext();
                         Utils.GetModel(dicParas, ref base_DeviceInfo_Ext);
-                        if (deviceId == 0)
+                        if (base_DeviceInfo_Ext.ID == 0)
                         {
+                            if (base_DeviceInfo_ExtService.GetCount(a => a.ID == deviceId) > 0)
+                            {
+                                errMsg = "该投币机参数设置已存在";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+
                             if (!base_DeviceInfo_ExtService.Add(base_DeviceInfo_Ext))
                             {
                                 errMsg = "投币机参数设置失败";
@@ -989,12 +1001,6 @@ namespace XXCloudService.Api.XCCloud
                         }
                         else
                         {
-                            if (base_DeviceInfo_Ext.ID == 0)
-                            {
-                                errMsg = "该设置信息不存在";
-                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                            }
-
                             if (!base_DeviceInfo_ExtService.Update(base_DeviceInfo_Ext))
                             {
                                 errMsg = "投币机参数设置失败";

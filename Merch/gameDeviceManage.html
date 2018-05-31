@@ -95,13 +95,13 @@
             <div class="layui-inline">
                 <label class="layui-form-label">1号马达</label>
                 <div class="layui-input-inline">
-                    <input type="checkbox"  name="motor1En" lay-filter="motor1En" lay-skin="switch" lay-text="启用|禁用">
+                    <input type="checkbox" checked  name="motor1En" lay-filter="motor1En" lay-skin="switch" lay-text="启用|禁用">
                 </div>
             </div>
             <div class="layui-inline">
                 <label  class="layui-form-label">2号马达</label>
                 <div class="layui-input-inline">
-                    <input type="checkbox"  name="motor2En" lay-filter="motor2En" lay-skin="switch" lay-text="启用|禁用">
+                    <input type="checkbox"  checked name="motor2En" lay-filter="motor2En" lay-skin="switch" lay-text="启用|禁用">
                 </div>
             </div>
         </div>
@@ -111,7 +111,7 @@
                 <div class="layui-input-inline">
                     <select name="motor1Coin" lay-filter="motor1Coin" id="motor1Coin">
                         <option>-请选择-</option>
-                        <option value="1">11</option>
+                        <option value="1" selected>1</option>
                         <option value="2">2</option>
                         <option value="3">3</option>
                         <option value="4">4</option>
@@ -124,7 +124,7 @@
                 <div class="layui-input-inline">
                     <select name="motor2Coin" lay-filter="motor2Coin" id="motor2Coin">
                         <option>-请选择-</option>
-                        <option value="1">1</option>
+                        <option value="1" selected>1</option>
                         <option value="2">2</option>
                         <option value="3">3</option>
                         <option value="4">4</option>
@@ -137,13 +137,13 @@
             <div class="layui-inline">
                 <label  class="layui-form-label">双光眼检测</label>
                 <div class="layui-input-inline">
-                    <input type="checkbox" name="dubleCheck" lay-filter="dubleCheck" lay-skin="switch" lay-text="启用|禁用">
+                    <input type="checkbox" checked name="dubleCheck" lay-filter="dubleCheck" lay-skin="switch" lay-text="启用|禁用">
                 </div>
             </div>
             <div class="layui-inline">
                 <label  class="layui-form-label">数字币销售模式</label>
                 <div class="layui-input-inline">
-                    <input type="checkbox" name="digitCoinEn" lay-filter="digitCoinEn" lay-skin="switch" lay-text="启用|禁用">
+                    <input type="checkbox" checked name="digitCoinEn" lay-filter="digitCoinEn" lay-skin="switch" lay-text="启用|禁用">
                 </div>
             </div>
         </div>
@@ -252,7 +252,7 @@
 </div>
 <!--存币机-->
 <div id="saveCoinModel" style="padding: 15px;display: none">
-    <form action="" class="layui-form layui-form-pane goodIsAll">
+    <form lay-filter="saveCoin" class="layui-form layui-form-pane goodIsAll">
         <div class="layui-form-item">
             <div class="layui-inline">
                 <label  class="layui-form-label">1号马达</label>
@@ -271,7 +271,7 @@
             <div class="layui-inline">
                 <label  class="layui-form-label">存币机存币数</label>
                 <div class="layui-input-inline">
-                    <input type="text" class="layui-input" name="toCard">
+                    <input type="text" class="layui-input" name="toCardsave">
                 </div>
             </div>
             <div class="layui-inline">
@@ -287,7 +287,7 @@
             <div class="layui-inline">
                 <label  class="layui-form-label">会员卡余额增加数</label>
                 <div class="layui-input-inline">
-                    <input type="text" class="layui-input" name="formDevice">
+                    <input type="text" class="layui-input" name="formDeviceSave">
                 </div>
             </div>
             <div class="layui-inline">
@@ -304,7 +304,7 @@
 </div>
 <!--投币机-->
 <div id="pushCoinModel" style="padding: 15px;display: none">
-    <form action="" class="layui-form layui-form-pane goodIsAll">
+    <form lay-filter="pushCoin" class="layui-form layui-form-pane goodIsAll">
         <div class="layui-form-item">
             <div class="layui-inline">
                 <label  class="layui-form-label">1号马达</label>
@@ -366,11 +366,11 @@ let index;
    //售币机
 let motor1En=1;let motor2En=1; let motor1Coin=1;let motor2Coin=1;let dubleCheck=1;let digitCoinEn=0;
 //提币机
-let motor1En_get=1;let motor2En_get=1;let motor1Coin_get=1;let motor2Coin_get=1;let balanceIndex=1;let toCard=0;let fromDevice=0;
+let motor1En_get=1;let motor2En_get=1;let motor1Coin_get=1;let motor2Coin_get=1;let balanceIndex="";let toCard=0;let fromDevice=0;
 //存币机
-let motor1En_save=1;let motor2En_save=1;let balanceIndexSave=1;
+let motor1En_save=1;let motor2En_save=1;let balanceIndexSave='';
 //投币机
-let motor1En_push=1;let motor2En_push=1;let balanceIndexPush=1;let motor1CoinPush=1;let motor2CoinPush=1;
+let motor1En_push=1;let motor2En_push=1;let balanceIndexPush='';let motor1CoinPush=1;let motor2CoinPush=1;
     let parm={'obj':{'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'},
         'url':'/XCCloud/DeviceInfo?action=QueryDeviceInfo',
         'elem':'#gameDeviceTable',
@@ -839,7 +839,7 @@ let motor1En_push=1;let motor2En_push=1;let balanceIndexPush=1;let motor1CoinPus
                         }
                     }
                 });
-            }else if(layEvent==='saleCoin'){
+            }else if(layEvent==='saleCoin'){//售币机
                 let _obj={'deviceId':data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
                 let parseJson = JSON.stringify(_obj);
                 $.ajax({
@@ -852,16 +852,21 @@ let motor1En_push=1;let motor2En_push=1;let balanceIndexPush=1;let motor1CoinPus
                         console.log(data);
                         if (data.result_code == 1) {
                             let arr = data.result_data;
-                            form.val("saleCoin",{
-                               'motor1En':arr.Motor1EN==1 ? true : false ,
-                                'motor2En':arr.Motor2EN==1 ? true : false ,
-                                'motor1Coin':arr.Motor1Coin ,
-                                'motor2Coin':arr.Motor2Coin ,
-                                'dubleCheck':arr.DubleCheck==1?true:false,
-                                'digitCoinEn':arr.DigitCoinEn==1?true:false,
-                            });
-                            motor1En=arr.Motor1EN; motor2En=arr.Motor2EN;  motor1Coin=arr.Motor1Coin;
-                            motor2Coin=arr.Motor2Coin; dubleCheck=arr.DubleCheck||0; digitCoinEn=arr.DigitCoinEn||0;
+                            if(arr.ID==0){
+                                 motor1En=1; motor2En=1;  motor1Coin=1;
+                                 motor2Coin=1; dubleCheck=1; digitCoinEn=0;
+                            }else {
+                                form.val("saleCoin",{
+                                    'motor1En':arr.Motor1EN==1 ? true : false ,
+                                    'motor2En':arr.Motor2EN==1 ? true : false ,
+                                    'motor1Coin':arr.Motor1Coin ,
+                                    'motor2Coin':arr.Motor2Coin ,
+                                    'dubleCheck':arr.DubleCheck==1?true:false,
+                                    'digitCoinEn':arr.DigitCoinEn==1?true:false,
+                                });
+                                motor1En=arr.Motor1EN; motor2En=arr.Motor2EN;  motor1Coin=arr.Motor1Coin;
+                                motor2Coin=arr.Motor2Coin; dubleCheck=arr.DubleCheck||0; digitCoinEn=arr.DigitCoinEn||0;
+                            }
                             layer.open({
                                 title:'售币机参数设置' ,
                                 type:1,
@@ -872,7 +877,7 @@ let motor1En_push=1;let motor2En_push=1;let balanceIndexPush=1;let motor1CoinPus
                     }
                 })
 
-            }else if(layEvent==='getCoin'){
+            }else if(layEvent==='getCoin'){//提币机
                 let _obj={'deviceId':data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
                 let parseJson = JSON.stringify(_obj);
                 $.ajax({
@@ -885,19 +890,28 @@ let motor1En_push=1;let motor2En_push=1;let balanceIndexPush=1;let motor1CoinPus
                         console.log(data);
                         if (data.result_code == 1) {
                             let arr = data.result_data;
-                            form.val("getCoin",{
-                                'motor1En_get':arr.Motor1EN==1 ? true : false ,
-                                'motor2En_get':arr.Motor2EN==1 ? true : false ,
-                                'motor1Coin_get':arr.Motor1Coin ,
-                                'motor2Coin_get':arr.Motor2Coin ,
-                                // 'balanceIndex':arr.DubleCheck==1?true:false,
-                                'toCard':arr.ToCard,
-                                'fromDevice':arr.FromDevice
-                            });
-                            motor1En_get=arr.Motor1EN; motor2En_get=arr.Motor2EN;  motor1Coin_get=arr.Motor1Coin;
-                            motor2Coin_get=arr.Motor2Coin;
-                            balanceIndex=arr.BalanceIndex||''; toCard=arr.ToCard||''; fromDevice=arr.FromDevice||'';
-                           xc. getBalanceTypeDic('',token,layer,form,'balanceIndex',arr.BalanceIndex)
+                            if(arr.ID==0){
+                                 motor1En_get=1; motor2En_get=1; motor1Coin_get=1;
+                                 motor2Coin_get=1; balanceIndex=""; toCard=0; fromDevice=0;
+                                xc. getBalanceTypeDic('',token,layer,form,'balanceIndex',);
+                            }else {
+                                form.val("getCoin",{
+                                    'motor1En_get':arr.Motor1EN==1 ? true : false ,
+                                    'motor2En_get':arr.Motor2EN==1 ? true : false ,
+                                    'motor1Coin_get':arr.Motor1Coin ,
+                                    'motor2Coin_get':arr.Motor2Coin ,
+                                    'toCard':arr.ToCard,
+                                    'fromDevice':arr.FromDevice
+                                });
+                                motor1En_get=arr.Motor1EN||0; motor2En_get=arr.Motor2EN||0;
+                                motor1Coin_get=arr.Motor1Coin||'';
+                                motor2Coin_get=arr.Motor2Coin||'';
+                                balanceIndex=arr.BalanceIndex||'';
+                                toCard=arr.ToCard||'';
+                                fromDevice=arr.FromDevice||'';
+                                xc. getBalanceTypeDic('',token,layer,form,'balanceIndex',arr.BalanceIndex);
+                            }
+
                             layer.open({
                                 title:'提币机参数设置' ,
                                 type:1,
@@ -907,21 +921,88 @@ let motor1En_push=1;let motor2En_push=1;let balanceIndexPush=1;let motor1CoinPus
                         }
                     }
                 })
-            }else if(layEvent==='saveCoin'){
-                 motor1En_save=1; motor2En_save=1; balanceIndexSave=1;
-                layer.open({
-                    title:'存币机参数设置' ,
-                    type:1,
-                    area:'800px',
-                    content:$('#saveCoinModel')
+            }else if(layEvent==='saveCoin'){//存币机
+
+                let _obj={'deviceId':data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                let parseJson = JSON.stringify(_obj);
+                $.ajax({
+                    type: 'post',
+                    url: '/XCCloud/DeviceInfo?action=GetTypeDeviceInfo',
+                    contentType: "application/json; charset=utf-8",
+                    data: {parasJson: parseJson},
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        console.log(data);
+                        if (data.result_code == 1) {
+                            let arr = data.result_data;
+                            if(arr.ID==0){
+                                 motor1En_save=1; motor2En_save=1; balanceIndexSave="";
+                                xc. getBalanceTypeDic('',token,layer,form,'balanceIndexSave')
+                            }else {
+                                form.val("saveCoin",{
+                                    'motor1En_save':arr.Motor1EN==1 ? true : false ,
+                                    'motor2En_save':arr.Motor2EN==1 ? true : false ,
+                                    'maxSaveCount':arr.MaxSaveCount ,
+                                    'toCardsave':arr.ToCard,
+                                    'formDeviceSave':arr.FromDevice
+                                });
+                                motor1En_save=arr.Motor1EN||0; motor2En_save=arr.Motor2EN||0; balanceIndexSave=arr.BalanceIndex||"";
+                                xc. getBalanceTypeDic('',token,layer,form,'balanceIndexSave',arr.BalanceIndex)
+                            }
+
+                            layer.open({
+                                title:'存币机参数设置' ,
+                                type:1,
+                                area:'800px',
+                                content:$('#saveCoinModel')
+                            })
+                        }
+                    }
                 })
+
             }else if(layEvent==='pushCoin'){
                  motor1En_push=1; motor2En_push=1; balanceIndexPush=1; motor1CoinPush=1; motor2CoinPush=1;
-                layer.open({
-                    title:'投币机参数设置' ,
-                    type:1,
-                    area:'800px',
-                    content:$('#pushCoinModel')
+
+                let _obj={'deviceId':data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                let parseJson = JSON.stringify(_obj);
+                $.ajax({
+                    type: 'post',
+                    url: '/XCCloud/DeviceInfo?action=GetTypeDeviceInfo',
+                    contentType: "application/json; charset=utf-8",
+                    data: {parasJson: parseJson},
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        console.log(data);
+                        if (data.result_code == 1) {
+                            let arr = data.result_data;
+                            if(arr.ID==0){
+                                 motor1En_push=1; motor2En_push=1; balanceIndexPush='';
+                                 motor1CoinPush=1; motor2CoinPush=1;
+                            }else {
+                                form.val("pushCoin",{
+                                    'motor1En_save':arr.Motor1EN==1 ? true : false ,
+                                    'motor2En_save':arr.Motor2EN==1 ? true : false ,
+                                    'maxSaveCount':arr.MaxSaveCount ,
+                                    'toCardsave':arr.ToCard,
+                                    'formDeviceSave':arr.FromDevice
+                                });
+                                motor1En_push=arr.Motor1EN||0;
+                                motor2En_push=arr.Motor2EN||0;
+                                balanceIndexPush=arr.BalanceIndex;
+                                motor1CoinPush=arr.Motor1Coin;
+                                motor2CoinPush=arr.Motor2Coin;
+                                xc. getBalanceTypeDic('',token,layer,form,'balanceIndexPush',arr.BalanceIndex)
+                            }
+
+
+                            layer.open({
+                                title:'投币机参数设置' ,
+                                type:1,
+                                area:'800px',
+                                content:$('#pushCoinModel')
+                            })
+                        }
+                    }
                 })
             }
         });

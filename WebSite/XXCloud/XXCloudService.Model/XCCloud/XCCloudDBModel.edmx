@@ -1042,7 +1042,6 @@
           <Property Name="AllowRealPush" Type="int" />
           <Property Name="BanOccupy" Type="int" />
           <Property Name="StrongGuardConvertCard" Type="int" />
-          <Property Name="PushControl" Type="int" />
           <Property Name="AllowElecOut" Type="int" />
           <Property Name="NowExit" Type="int" />
           <Property Name="BOLock" Type="int" />
@@ -3349,8 +3348,8 @@
           <EntitySet Name="Flw_MemberCard_BalanceCharge" EntityType="XCCloudDBModel.Flw_MemberCard_BalanceCharge" />
           <EntitySet Name="Flw_MemberCard_Exit" EntityType="XCCloudDBModel.Flw_MemberCard_Exit" />
           <EntitySet Name="Data_GameFreeLotteryRule" EntityType="XCCloudDBModel.Data_GameFreeLotteryRule" />
-          <EntitySet Name="Data_GameInfo" EntityType="XCCloudDBModel.Data_GameInfo" />
           <EntitySet Name="Base_DeviceInfo_Ext" EntityType="XCCloudDBModel.Base_DeviceInfo_Ext" />
+          <EntitySet Name="Data_GameInfo" EntityType="XCCloudDBModel.Data_GameInfo" />
         </EntityContainer>
         <EntityType Name="Base_ChainRule">
           <Key>
@@ -5973,6 +5972,24 @@
           <Property Name="FreeCount" Type="Int32" />
           <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
         </EntityType>
+        <EntityType Name="Base_DeviceInfo_Ext">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="DeviceID" Type="Int32" />
+          <Property Name="Motor1EN" Type="Int32" />
+          <Property Name="Motor2EN" Type="Int32" />
+          <Property Name="Motor1Coin" Type="Int32" />
+          <Property Name="Motor2Coin" Type="Int32" />
+          <Property Name="MaxSaveCount" Type="Int32" />
+          <Property Name="FromDevice" Type="Int32" />
+          <Property Name="ToCard" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="BalanceIndex" Type="Int32" />
+          <Property Name="SSRLevel" Type="Int32" />
+          <Property Name="DigitCoinEN" Type="Int32" />
+          <Property Name="DubleCheck" Type="Int32" />
+        </EntityType>
         <EntityType Name="Data_GameInfo">
           <Key>
             <PropertyRef Name="ID" />
@@ -6035,25 +6052,6 @@
           <Property Name="ExceptOutSpeed" Type="Int32" />
           <Property Name="Frequency" Type="Int32" />
           <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
-          <Property Name="PushControl" Type="Int32" />
-        </EntityType>
-        <EntityType Name="Base_DeviceInfo_Ext">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="DeviceID" Type="Int32" />
-          <Property Name="Motor1EN" Type="Int32" />
-          <Property Name="Motor2EN" Type="Int32" />
-          <Property Name="Motor1Coin" Type="Int32" />
-          <Property Name="Motor2Coin" Type="Int32" />
-          <Property Name="MaxSaveCount" Type="Int32" />
-          <Property Name="FromDevice" Type="Int32" />
-          <Property Name="ToCard" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="BalanceIndex" Type="Int32" />
-          <Property Name="SSRLevel" Type="Int32" />
-          <Property Name="DigitCoinEN" Type="Int32" />
-          <Property Name="DubleCheck" Type="Int32" />
         </EntityType>
         </Schema>
     </edmx:ConceptualModels>
@@ -8848,10 +8846,28 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="Base_DeviceInfo_Ext">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Base_DeviceInfo_Ext">
+              <MappingFragment StoreEntitySet="Base_DeviceInfo_Ext">
+                <ScalarProperty Name="DubleCheck" ColumnName="DubleCheck" />
+                <ScalarProperty Name="DigitCoinEN" ColumnName="DigitCoinEN" />
+                <ScalarProperty Name="SSRLevel" ColumnName="SSRLevel" />
+                <ScalarProperty Name="BalanceIndex" ColumnName="BalanceIndex" />
+                <ScalarProperty Name="ToCard" ColumnName="ToCard" />
+                <ScalarProperty Name="FromDevice" ColumnName="FromDevice" />
+                <ScalarProperty Name="MaxSaveCount" ColumnName="MaxSaveCount" />
+                <ScalarProperty Name="Motor2Coin" ColumnName="Motor2Coin" />
+                <ScalarProperty Name="Motor1Coin" ColumnName="Motor1Coin" />
+                <ScalarProperty Name="Motor2EN" ColumnName="Motor2EN" />
+                <ScalarProperty Name="Motor1EN" ColumnName="Motor1EN" />
+                <ScalarProperty Name="DeviceID" ColumnName="DeviceID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Data_GameInfo">
             <EntityTypeMapping TypeName="XCCloudDBModel.Data_GameInfo">
               <MappingFragment StoreEntitySet="Data_GameInfo">
-                <ScalarProperty Name="PushControl" ColumnName="PushControl" />
                 <ScalarProperty Name="Verifiction" ColumnName="Verifiction" />
                 <ScalarProperty Name="Frequency" ColumnName="Frequency" />
                 <ScalarProperty Name="ExceptOutSpeed" ColumnName="ExceptOutSpeed" />
@@ -8909,25 +8925,6 @@
                 <ScalarProperty Name="MerchID" ColumnName="MerchID" />
                 <ScalarProperty Name="StoreID" ColumnName="StoreID" />
                 <ScalarProperty Name="GameID" ColumnName="GameID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Base_DeviceInfo_Ext">
-            <EntityTypeMapping TypeName="XCCloudDBModel.Base_DeviceInfo_Ext">
-              <MappingFragment StoreEntitySet="Base_DeviceInfo_Ext">
-                <ScalarProperty Name="DubleCheck" ColumnName="DubleCheck" />
-                <ScalarProperty Name="DigitCoinEN" ColumnName="DigitCoinEN" />
-                <ScalarProperty Name="SSRLevel" ColumnName="SSRLevel" />
-                <ScalarProperty Name="BalanceIndex" ColumnName="BalanceIndex" />
-                <ScalarProperty Name="ToCard" ColumnName="ToCard" />
-                <ScalarProperty Name="FromDevice" ColumnName="FromDevice" />
-                <ScalarProperty Name="MaxSaveCount" ColumnName="MaxSaveCount" />
-                <ScalarProperty Name="Motor2Coin" ColumnName="Motor2Coin" />
-                <ScalarProperty Name="Motor1Coin" ColumnName="Motor1Coin" />
-                <ScalarProperty Name="Motor2EN" ColumnName="Motor2EN" />
-                <ScalarProperty Name="Motor1EN" ColumnName="Motor1EN" />
-                <ScalarProperty Name="DeviceID" ColumnName="DeviceID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
