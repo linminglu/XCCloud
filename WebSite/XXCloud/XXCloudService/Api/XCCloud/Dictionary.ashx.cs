@@ -112,7 +112,7 @@ namespace XXCloudService.Api.XCCloud
                 }
 
                 int rootId = 0;
-                int.TryParse(parameters[3].Value.ToString(), out rootId);                
+                int.TryParse(parameters[3].Value.ToString(), out rootId);
 
                 //实例化一个根节点
                 DictionaryResponseModel rootRoot = new DictionaryResponseModel();

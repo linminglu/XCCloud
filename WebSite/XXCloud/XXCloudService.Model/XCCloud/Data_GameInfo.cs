@@ -38,6 +38,7 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> AllowElecPush { get; set; }
         public Nullable<int> GuardConvertCard { get; set; }
         public Nullable<int> ReadCat { get; set; }
+        public Nullable<int> ReadDelay { get; set; }
         public Nullable<int> AllowRealPush { get; set; }
         public Nullable<int> BanOccupy { get; set; }
         public Nullable<int> StrongGuardConvertCard { get; set; }

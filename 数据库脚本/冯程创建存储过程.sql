@@ -92,15 +92,10 @@ as
 	----exec (@sql)
 	--SET @sql = @sql + ' order by OrderID'
 	--exec sp_executesql @sql, N'@MerchID nvarchar(15), @DictKey nvarchar(50), @RootID int', @MerchID, @DictKey, @RootID	
-	if(IsNull(@DictKey, '') <> '' OR ISNULL(@PDictKey, '') <> '')
+	if(IsNull(@DictKey, '') <> '')
 	begin	
-		if(IsNull(@DictKey, '') <> '')
 		select @RootID=ID from (select top 1 a.ID from Dict_System a left join Dict_System b on a.PID=b.ID
-		 where a.DictKey=@DictKey and IsNull(b.DictKey, '')=ISNULL(@PDictKey, '')
-			and IsNull(a.MerchID, '')=IsNull(@MerchID, '')) m
-		else
-		select @RootID=ID from (select top 1 a.ID from Dict_System a 
-		 where IsNull(a.DictKey, '')=ISNULL(@PDictKey, '')) m
+		 where a.DictKey=@DictKey and IsNull(b.DictKey, '')=ISNULL(@PDictKey, '')) m	
 		
 		if not exists (select 0 from Dict_System where PID=@RootID)
 			return		

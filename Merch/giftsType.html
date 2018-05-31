@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -207,7 +207,7 @@
     function setGiftType(token,tree,layer,root) {
         let _obj={
             'merchId':JSON.parse(xc.getStorage('logMsg')).merchId,
-            'pDictKey':'商品类别',
+            'dictKey':'商品类别',
             'userToken':token,
             'signkey':'1f626576304bf5d95b72ece2222e42c3'};
         let url='/XCCloud/Dictionary?action=GetNodes';

@@ -1036,6 +1036,7 @@
           <Property Name="AllowElecPush" Type="int" />
           <Property Name="GuardConvertCard" Type="int" />
           <Property Name="ReadCat" Type="int" />
+          <Property Name="ReadDelay" Type="int" />
           <Property Name="AllowRealPush" Type="int" />
           <Property Name="BanOccupy" Type="int" />
           <Property Name="StrongGuardConvertCard" Type="int" />
@@ -6013,6 +6014,7 @@
           <Property Name="AllowElecPush" Type="Int32" />
           <Property Name="GuardConvertCard" Type="Int32" />
           <Property Name="ReadCat" Type="Int32" />
+          <Property Name="ReadDelay" Type="Int32" />
           <Property Name="AllowRealPush" Type="Int32" />
           <Property Name="BanOccupy" Type="Int32" />
           <Property Name="StrongGuardConvertCard" Type="Int32" />
@@ -8893,6 +8895,7 @@
                 <ScalarProperty Name="StrongGuardConvertCard" ColumnName="StrongGuardConvertCard" />
                 <ScalarProperty Name="BanOccupy" ColumnName="BanOccupy" />
                 <ScalarProperty Name="AllowRealPush" ColumnName="AllowRealPush" />
+                <ScalarProperty Name="ReadDelay" ColumnName="ReadDelay" />
                 <ScalarProperty Name="ReadCat" ColumnName="ReadCat" />
                 <ScalarProperty Name="GuardConvertCard" ColumnName="GuardConvertCard" />
                 <ScalarProperty Name="AllowElecPush" ColumnName="AllowElecPush" />

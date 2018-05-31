@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -36,6 +36,7 @@
                     </select>
                 </div>
             </div>
+            <br>
             <div class="layui-inline State goodIsAll">
                 <label class="layui-form-label">设备启用</label>
                 <div class="layui-input-inline">
@@ -82,9 +83,16 @@
             <div class="layui-inline ReadCat goodIsAll">
                 <label class="layui-form-label">刷卡即扣</label>
                 <div class="layui-input-inline">
-                    <input type="checkbox" lay-filter="ReadCat" name="ReadCat" lay-skin="switch" lay-text="启用|禁用" id="ReadCat1">
+                    <input type="checkbox" lay-filter="ReadCat1" name="ReadCat" lay-skin="switch" lay-text="启用|禁用" id="ReadCat1">
                 </div>
             </div>
+            <div class="layui-inline ReadCatTime1">
+                <label class="layui-form-label">刷卡即扣延时</label>
+                <div class="layui-input-inline">
+                    <input type="text"  name="ReadDelay1" class="layui-input" id="ReadCatTime1" value="0">
+                </div>
+            </div>
+
             <div class="layui-inline chkCheckGift goodIsAll">
                 <label class="layui-form-label">礼品掉落检测</label>
                 <div class="layui-input-inline">
@@ -303,6 +311,12 @@
                                     <label class="layui-form-label">刷卡即扣</label>
                                     <div class="layui-input-inline">
                                         <input type="checkbox"  lay-skin="switch" lay-text="启用|禁用" name="ReadCat" lay-filter="ReadCat">
+                                    </div>
+                                </div>
+                                <div class="layui-inline ReadCatTime">
+                                    <label class="layui-form-label">刷卡即扣延时</label>
+                                    <div class="layui-input-inline">
+                                        <input type="text"  name="ReadDelay" class="layui-input" id="ReadCatTime" value="0">
                                     </div>
                                 </div>
                                 <div class="layui-inline AllowRealPush">
@@ -872,6 +886,7 @@ let memberLevelId='';let memberLevels='';let MemberLevelNames='';
             'PushBalanceIndex1':ePushBalanceIndex1,
             'OnlyExitLottery':eOnlyExitLottery,
             'ReadCat':eReadCat,
+            'readDelay':$('input[name="ReadDelay1"]').val(),
             'chkCheckGift':echkCheckGift,
             'State':StateLow,
             'Area':$('#Area').val(),
@@ -921,6 +936,7 @@ let memberLevelId='';let memberLevels='';let MemberLevelNames='';
 
          'AllowElecPush':AllowElecPush,
          'ReadCat':ReadCat,
+         'readDelay':$('input[name="ReadDelay"]').val(),
          'AllowRealPush':AllowRealPush,
          'PushBalanceIndex1':PushBalanceIndex11,
          'PushCoin1':$('input[name="PushCoin11"]').val(),
@@ -1077,7 +1093,14 @@ let memberLevelId='';let memberLevels='';let MemberLevelNames='';
       form.on('switch(PushLevel)',(data)=>{if(data.elem.checked==true){ePushLevel=1;}else{ePushLevel=0;}});
       form.on('switch(LotteryModeLow)',(data)=>{if(data.elem.checked==true){LotteryModeLow=1;}else{LotteryModeLow=0;}});
       form.on('switch(OnlyExitLottery)',(data)=>{if(data.elem.checked==true){eOnlyExitLottery=1;}else{eOnlyExitLottery=0;}});
-      form.on('switch(ReadCat)',(data)=>{if(data.elem.checked==true){eReadCat=1;}else{eReadCat=0;}});
+      form.on('switch(ReadCat1)',(data)=>{if(data.elem.checked==true){
+          eReadCat=1;
+          $('.ReadCatTime1').removeClass('layui-hide')
+      }else{eReadCat=0;
+          $('.ReadCatTime1').addClass('layui-hide')
+      }
+          $('input[name="ReadDelay1"]').val('')
+      });
       form.on('switch(chkCheckGift)',(data)=>{if(data.elem.checked==true){echkCheckGift=1;}else{echkCheckGift=0;}});
       form.on('switch(StateLow)',(data)=>{if(data.elem.checked==true){StateLow=1;}else{StateLow=0;}});
 
@@ -1126,9 +1149,12 @@ let memberLevelId='';let memberLevels='';let MemberLevelNames='';
       form.on('switch(ReadCat)',(data)=>{
           if(data.elem.checked==true){
               ReadCat=1
+              $('.ReadCatTime').removeClass('layui-hide')
           }else {
               ReadCat=0
+              $('.ReadCatTime').removeClass('layui-hide')
           }
+          $('input[name="ReadDelay"]').val('')
       });
       form.on('switch(AllowRealPush)',(data)=>{
           if(data.elem.checked==true){
@@ -1710,7 +1736,7 @@ let memberLevelId='';let memberLevels='';let MemberLevelNames='';
       let index1=layer.open({
           type:1,
           title:'游戏机档案设置',
-          area:'700px',
+          area:'1030px',
           content:$('#easyType')
       })
   };
@@ -1767,11 +1793,12 @@ let memberLevelId='';let memberLevels='';let MemberLevelNames='';
                               'LotteryModeLow':arr[18].value==1?true:false,
                               'OnlyExitLottery':arr[19].value==1?true:false,
                               'ReadCat':arr[23].value==1?true:false,
+                              'ReadDelay1':arr[24].value,
                               'chkCheckGift':arr[20].value==1?true:false,
                               'StateLow':arr[8].value==1?true:false,
                               'Area':arr[59].value,
                               'ChangeTime':arr[60].value,
-                              'Price':arr[61].value,
+                              'Price':arr[62].value,
                               'Evaluation':arr[61].value,
                           });
                           eAreaID=arr[5].value;
@@ -1804,9 +1831,10 @@ let memberLevelId='';let memberLevels='';let MemberLevelNames='';
                               'AllowElecPush':arr[21].value==1?true:false,
                               'GuardConvertCard':arr[22].value==1?true:false,
                               'ReadCat':arr[23].value==1?true:false,
-                              'AllowRealPush':arr[24].value==1?true:false,
-                              'BanOccupy':arr[25].value==1?true:false,
-                              'StrongGuardConvertCard':arr[26].value==1?true:false,
+                              'ReadDelay':arr[24].value,
+                              'AllowRealPush':arr[25].value==1?true:false,
+                              'BanOccupy':arr[26].value==1?true:false,
+                              'StrongGuardConvertCard':arr[27].value==1?true:false,
 
                               'AllowElecOut':arr[28].value==1?true:false,
                               'NowExit':arr[29].value==1?true:false,
@@ -1833,7 +1861,7 @@ let memberLevelId='';let memberLevels='';let MemberLevelNames='';
                               'OutAddToCard':arr[50].value,
                               'OnceOutLimit':arr[51].value,
                               'OncePureOutLimit':arr[52].value,
-
+                              'SSRTimeOut':arr[53].value,
                               'ExceptOutTest':arr[54].value==1?true:false,
                               'ExceptOutSpeed':arr[55].value,
                               'Frequency':arr[56].value,
@@ -1862,9 +1890,9 @@ let memberLevelId='';let memberLevels='';let MemberLevelNames='';
                               AllowElecPush=arr[21].value;
                               GuardConvertCard=arr[22].value;
                               ReadCat=arr[23].value;
-                              AllowRealPush=arr[24].value;
-                              BanOccupy=arr[25].value;
-                              StrongGuardConvertCard=arr[26].value;
+                              AllowRealPush=arr[25].value;
+                              BanOccupy=arr[26].value;
+                              StrongGuardConvertCard=arr[27].value;
 
                               AllowElecOut=arr[28].value;
                               NowExit=arr[29].value;

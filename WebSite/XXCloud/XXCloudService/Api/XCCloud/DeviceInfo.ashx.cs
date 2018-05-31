@@ -624,6 +624,40 @@ namespace XXCloudService.Api.XCCloud
         }
 
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object GetTypeDeviceInfo(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+
+                string errMsg = string.Empty;
+                if (!dicParas.Get("deviceId").Validintnozero("设备ID", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                var deviceId = dicParas.Get("deviceId").Toint();
+
+                var base_DeviceInfoService = Base_DeviceInfoService.I;
+                var base_DeviceInfo_ExtService = Base_DeviceInfo_ExtService.I;
+                if (!base_DeviceInfoService.Any(a => a.ID == deviceId))
+                {
+                    errMsg = "该设备信息不存在";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
+                var base_DeviceInfo_Ext = base_DeviceInfo_ExtService.GetModels(p => p.DeviceID == deviceId).FirstOrDefault() ?? new Base_DeviceInfo_Ext();
+                Utils.GetModel(dicParas, ref base_DeviceInfo_Ext);
+
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, base_DeviceInfo_Ext);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object SaveCoinSalerInfo(Dictionary<string, object> dicParas)
         {
             try
@@ -633,19 +667,19 @@ namespace XXCloudService.Api.XCCloud
                 string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
 
                 string errMsg = string.Empty;
-                if(dicParas.Get("deviceId").Validintnozero("设备ID", out errMsg))
+                if(!dicParas.Get("deviceId").Validintnozero("设备ID", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                if (dicParas.Get("motor1En").Validint("1号马达", out errMsg))
+                if (!dicParas.Get("motor1En").Validint("1号马达", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                if (dicParas.Get("motor2En").Validint("2号马达", out errMsg))
+                if (!dicParas.Get("motor2En").Validint("2号马达", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                if (dicParas.Get("motor1Coin").Validintnozero("马达1出币比例", out errMsg))
+                if (!dicParas.Get("motor1Coin").Validintnozero("马达1出币比例", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                if (dicParas.Get("motor2Coin").Validintnozero("马达2出币比例", out errMsg))
+                if (!dicParas.Get("motor2Coin").Validintnozero("马达2出币比例", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                if (dicParas.Get("dubleCheck").Validint("双光眼检测", out errMsg))
+                if (!dicParas.Get("dubleCheck").Validint("双光眼检测", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                if (dicParas.Get("digitCoinEn").Validint("数字币销售模式", out errMsg))
+                if (!dicParas.Get("digitCoinEn").Validint("数字币销售模式", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
                 var deviceId = dicParas.Get("deviceId").Toint();
@@ -672,7 +706,7 @@ namespace XXCloudService.Api.XCCloud
 
                         var base_DeviceInfo_Ext = base_DeviceInfo_ExtService.GetModels(p => p.DeviceID == deviceId).FirstOrDefault() ?? new Base_DeviceInfo_Ext();
                         Utils.GetModel(dicParas, ref base_DeviceInfo_Ext);
-                        if (deviceId == 0)
+                        if (base_DeviceInfo_Ext.ID == 0)
                         {
                             if (!base_DeviceInfo_ExtService.Add(base_DeviceInfo_Ext))
                             {
@@ -681,13 +715,7 @@ namespace XXCloudService.Api.XCCloud
                             }
                         }
                         else
-                        {
-                            if (base_DeviceInfo_Ext.ID == 0)
-                            {
-                                errMsg = "该设置信息不存在";
-                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                            }
-
+                        {                            
                             if (!base_DeviceInfo_ExtService.Update(base_DeviceInfo_Ext))
                             {
                                 errMsg = "售币机参数设置失败";
@@ -714,7 +742,7 @@ namespace XXCloudService.Api.XCCloud
             {
                 return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
             }
-        }
+        }        
 
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object SaveCoinFetcherInfo(Dictionary<string, object> dicParas)
@@ -726,21 +754,21 @@ namespace XXCloudService.Api.XCCloud
                 string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
 
                 string errMsg = string.Empty;
-                if (dicParas.Get("deviceId").Validintnozero("设备ID", out errMsg))
+                if (!dicParas.Get("deviceId").Validintnozero("设备ID", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                if (dicParas.Get("motor1En").Validint("1号马达", out errMsg))
+                if (!dicParas.Get("motor1En").Validint("1号马达", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                if (dicParas.Get("motor2En").Validint("2号马达", out errMsg))
+                if (!dicParas.Get("motor2En").Validint("2号马达", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                if (dicParas.Get("motor1Coin").Validintnozero("马达1出币比例", out errMsg))
+                if (!dicParas.Get("motor1Coin").Validintnozero("马达1出币比例", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                if (dicParas.Get("motor2Coin").Validintnozero("马达2出币比例", out errMsg))
+                if (!dicParas.Get("motor2Coin").Validintnozero("马达2出币比例", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                if (dicParas.Get("balanceIndex").Validintnozero("会员卡存币数", out errMsg))
+                if (!dicParas.Get("balanceIndex").Validintnozero("会员卡存币数", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                if (dicParas.Get("toCard").Validdecimalnozero("会员卡提币类型", out errMsg))
+                if (!dicParas.Get("toCard").Validdecimalnozero("会员卡提币类型", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                if (dicParas.Get("fromDevice").Validintnozero("提币机出币数", out errMsg))
+                if (!dicParas.Get("fromDevice").Validintnozero("提币机出币数", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
                 var deviceId = dicParas.Get("deviceId").Toint();
@@ -821,19 +849,19 @@ namespace XXCloudService.Api.XCCloud
                 string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
 
                 string errMsg = string.Empty;
-                if (dicParas.Get("deviceId").Validintnozero("设备ID", out errMsg))
+                if (!dicParas.Get("deviceId").Validintnozero("设备ID", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                if (dicParas.Get("motor1En").Validint("1号马达", out errMsg))
+                if (!dicParas.Get("motor1En").Validint("1号马达", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                if (dicParas.Get("motor2En").Validint("2号马达", out errMsg))
+                if (!dicParas.Get("motor2En").Validint("2号马达", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);               
-                if (dicParas.Get("balanceIndex").Validintnozero("会员卡存币类型", out errMsg))
+                if (!dicParas.Get("balanceIndex").Validintnozero("会员卡存币类型", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                if (dicParas.Get("toCard").Validdecimalnozero("会员卡存币数", out errMsg))
+                if (!dicParas.Get("toCard").Validdecimalnozero("会员卡存币数", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                if (dicParas.Get("fromDevice").Validintnozero("会员卡余额增加数", out errMsg))
+                if (!dicParas.Get("fromDevice").Validintnozero("会员卡余额增加数", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                if (dicParas.Get("maxSaveCount").Validintnozero("币箱存储最大值", out errMsg))
+                if (!dicParas.Get("maxSaveCount").Validintnozero("币箱存储最大值", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
                 var deviceId = dicParas.Get("deviceId").Toint();
@@ -914,17 +942,17 @@ namespace XXCloudService.Api.XCCloud
                 string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
 
                 string errMsg = string.Empty;
-                if (dicParas.Get("deviceId").Validintnozero("设备ID", out errMsg))
+                if (!dicParas.Get("deviceId").Validintnozero("设备ID", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                if (dicParas.Get("motor1En").Validint("1号马达", out errMsg))
+                if (!dicParas.Get("motor1En").Validint("1号马达", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                if (dicParas.Get("motor2En").Validint("2号马达", out errMsg))
+                if (!dicParas.Get("motor2En").Validint("2号马达", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                if (dicParas.Get("motor1Coin").Validint("允许实物币投币", out errMsg))
+                if (!dicParas.Get("motor1Coin").Validint("允许实物币投币", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                if (dicParas.Get("motor2Coin").Validint("允许会员卡投币", out errMsg))
+                if (!dicParas.Get("motor2Coin").Validint("允许会员卡投币", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                if (dicParas.Get("balanceIndex").Validintnozero("会员卡扣余额类别", out errMsg))
+                if (!dicParas.Get("balanceIndex").Validintnozero("会员卡扣余额类别", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);               
 
                 var deviceId = dicParas.Get("deviceId").Toint();
@@ -1005,9 +1033,9 @@ namespace XXCloudService.Api.XCCloud
                 string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
 
                 string errMsg = string.Empty;
-                if (dicParas.Get("deviceId").Validintnozero("设备ID", out errMsg))
+                if (!dicParas.Get("deviceId").Validintnozero("设备ID", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                if (dicParas.Get("segment").Nonempty("段号", out errMsg))
+                if (!dicParas.Get("segment").Nonempty("段号", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 if (dicParas.Get("segment").Length > 4)
                 {

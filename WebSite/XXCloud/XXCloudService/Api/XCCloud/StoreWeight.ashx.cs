@@ -7,6 +7,7 @@ using System.Web;
 using XCCloudService.Base;
 using XCCloudService.BLL.Container;
 using XCCloudService.BLL.IBLL.XCCloud;
+using XCCloudService.BLL.XCCloud;
 using XCCloudService.Common;
 using XCCloudService.Common.Enum;
 using XCCloudService.DAL;
@@ -20,7 +21,30 @@ namespace XXCloudService.Api.XCCloud
     /// StoreWeight 的摘要说明
     /// </summary>
     public class StoreWeight : ApiBase
-    {        
+    {
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object GetStoreList(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                string errMsg = string.Empty;
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+
+                var list = Base_StoreInfoService.I.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)).Select(o => new 
+                {
+                    StoreID = o.StoreID,
+                    StoreName = o.StoreName
+                });
+
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, list);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object GetStoreBossList(Dictionary<string, object> dicParas)
         {

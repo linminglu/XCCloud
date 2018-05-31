@@ -88,6 +88,70 @@
 <div id="clockNote" style="padding: 15px;display: none">
     <table class="layui-hide" id="clockNoteTable" lay-filter="clockNoteTable"></table>
 </div>
+<!--售币机-->
+<div id="saleCoinModel" style="padding: 15px;display: none">
+    <form action="" class="layui-form layui-form-pane goodIsAll">
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label for="" class="layui-form-label">1号马达</label>
+                <div class="layui-input-inline">
+                    <input type="checkbox" checked name="motor1En" lay-filter="motor1En" lay-skin="switch" lay-text="启用|禁用">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label for="" class="layui-form-label">2号马达</label>
+                <div class="layui-input-inline">
+                    <input type="checkbox" checked name="motor2En" lay-filter="motor2En" lay-skin="switch" lay-text="启用|禁用">
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label for="" class="layui-form-label">马达1出币比例</label>
+                <div class="layui-input-inline">
+                    <select name="motor1Coin" lay-filter="motor1Coin" id="motor1Coin">
+                        <option>-请选择-</option>
+                        <option value="1" selected>1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label for="" class="layui-form-label">马达2出币比例</label>
+                <div class="layui-input-inline">
+                    <select name="motor2Coin" lay-filter="motor2Coin" id="motor2Coin">
+                        <option>-请选择-</option>
+                        <option value="1" selected>1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label for="" class="layui-form-label">双光眼检测</label>
+                <div class="layui-input-inline">
+                    <input type="checkbox" checked name="dubleCheck" lay-filter="dubleCheck" lay-skin="switch" lay-text="启用|禁用">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label for="" class="layui-form-label">数字币销售模式</label>
+                <div class="layui-input-inline">
+                    <input type="checkbox" name="digitCoinEn" lay-filter="digitCoinEn" lay-skin="switch" lay-text="启用|禁用">
+                </div>
+            </div>
+        </div>
+        <div style="text-align:center;">
+            <button type="button" class="layui-btn layui-btn-normal" id="saveSaleBtn"> 确定</button>
+        </div>
+    </form>
+</div>
 </body>
 <script src="js/jquery-1.8.3-min.js"></script>
 <script src="layui/layui.js"></script>
@@ -102,6 +166,9 @@ let index;
     let gameIndexId='';
     let bindDeviceId='';
     let ProjectID='';let ProjectName='';let SignType=0;let LockMember=0; let bindType=0;let arrBindTable=[];
+
+   //售币机
+let motor1En=1;let motor2En=1; let motor1Coin=1;let motor2Coin=1;let dubleCheck=1;let digitCoinEn=0;
     let parm={'obj':{'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'},
         'url':'/XCCloud/DeviceInfo?action=QueryDeviceInfo',
         'elem':'#gameDeviceTable',
@@ -111,7 +178,7 @@ let index;
             ,{field:'DeviceName', title: '设备别名', align: 'center'}
             // ,{field:'GameTypeStr', title: '游戏机类型', align: 'center'}
             // ,{field:'GameName', title: '游戏机名', align: 'center'}
-            // ,{field:'SiteName', title: 'P位编号', align: 'center'}
+            ,{field:'DeviceType', title: '设备类型', align: 'center'}
             ,{field:'segment', title: '网络段号', align: 'center'}
             ,{field:'Address', title: '机头地址', align: 'center'}
             ,{field:'AreaName', title: '区域名称', align: 'center'}
@@ -148,6 +215,67 @@ let index;
                   LockMember=0;
               }
           });
+
+          //监听售币机
+        form.on('switch(motor1En)',function (data) {
+            if (data.elem.checked==true){
+                motor1En=1;
+            }else {
+                motor1En=0;
+            }
+        });
+        form.on('switch(motor2En)',function (data) {
+            if (data.elem.checked==true){
+                motor2En=1;
+            }else {
+                motor2En=0;
+            }
+        });
+        form.on('select(motor1Coin)',function (data) {
+            motor1Coin=data.value;
+        });
+        form.on('select(motor2Coin)',function (data) {
+            motor2Coin=data.value;
+        });
+        form.on('switch(dubleCheck)',function (data) {
+            if (data.elem.checked==true){
+                dubleCheck=1;
+            }else {
+                dubleCheck=0;
+            }
+        });
+        form.on('switch(digitCoinEn)',function (data) {
+            if (data.elem.checked==true){
+                digitCoinEn=1;
+            }else {
+                digitCoinEn=0;
+            }
+        });
+        $('#saveSaleBtn').click(function () {
+            let _obj={'deviceId':_id,'motor1En':motor1En,
+                'motor2En':motor2En,
+                'motor1Coin':motor1Coin,
+                'motor2Coin':motor2Coin,
+                'dubleCheck':dubleCheck,
+                'digitCoinEn':digitCoinEn,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+            let parseJson = JSON.stringify(_obj);
+            $.ajax({
+                type:'post',
+                url:'/XCCloud/DeviceInfo?action=SaveCoinSalerInfo',
+                contentType: "application/json; charset=utf-8",
+                data:{parasJson: parseJson},
+                success: function (data) {
+                    data = JSON.parse(data);
+                    if (data.result_code == 1) {
+                        layer.msg('设置成功',{time:1500},function () {
+                            location.reload();
+                        });
+                    } else {
+                        layer.msg(data.result_msg);
+                    }
+                }
+            });
+        })
           //删除绑定的门票或者计时
           table.on('tool(bindTable)',function (obj) {
               var data = obj.data; //获得当前行数据
@@ -348,6 +476,14 @@ let index;
                         }
                     }
                 });
+            }else if(layEvent==='saleCoin'){
+                 motor1En=1; motor2En=1;  motor1Coin=1; motor2Coin=1; dubleCheck=1; digitCoinEn=0;
+               layer.open({
+                  title:'售币机参数设置' ,
+                   type:1,
+                   area:'800px',
+                   content:$('#saleCoinModel')
+               })
             }
         });
         $('#saveBtn').on('click',function () {
@@ -444,28 +580,30 @@ let index;
 <script type="text/html" id="barDemo">
     {{# if(d.DeviceType==8){ }}
     <a class="layui-btn layui-btn-xs" lay-event="code">二维码</a>
-    {{# }else if(d.DeviceType==4){ }}
+    {{#  }else{ }}
+    <a class="layui-btn layui-btn-xs" lay-event="clockCook">报警日志</a>
+    <a class="layui-btn layui-btn-xs" lay-event="code">二维码</a>
+    {{# if(d.GameName==''){ }}
+    <a class="layui-btn layui-btn-xs" lay-event="bindMachine">通讯绑定</a>
+    {{# }else{ }}
+    <a class="layui-btn layui-btn-xs" lay-event="unBindMachine">通讯解绑</a>
+    {{#  } }}
+    {{#  } }}
+    {{#  if(d.DeviceType==4){ }}
     <a class="layui-btn layui-btn-xs" lay-event="saleCoin">售币机参数设置</a>
-    {{# }else if(d.DeviceType==3){ }}
+    {{#  } }}
+    {{#  if(d.DeviceType==3){ }}
     <a class="layui-btn layui-btn-xs" lay-event="getCoin">提币机参数设置</a>
-    {{# }else if(d.DeviceType==5){ }}
+    {{#  } }}
+    {{#  if(d.DeviceType==5){ }}
     <a class="layui-btn layui-btn-xs" lay-event="pushCoin">投币机参数设置</a>
-    {{# }else if(d.DeviceType==2){ }}
+    {{#  } }}
+    {{# if(d.DeviceType==2){ }}
     <a class="layui-btn layui-btn-xs" lay-event="saveCoin">存币机参数设置</a>
     {{#  } }}
-    <!--{{# if(d.DeviceStatus==2){ }}-->
-    <!--<a class="layui-btn layui-btn-xs" lay-event="unLock">解锁</a>-->
-    <!--{{# }else if(d.DeviceStatus==1){ }}-->
-    <!--<a class="layui-btn layui-btn-xs" lay-event="lock">锁定</a>-->
-  <!---->
-    <!--{{# if(d.GameName==''){ }}-->
-    <!--<a class="layui-btn layui-btn-xs" lay-event="bindMachine">通讯绑定</a>-->
-    <!--{{# }else{ }}-->
-    <!--<a class="layui-btn layui-btn-xs" lay-event="unBindMachine">通讯解绑</a>-->
-    <!--{{#  } }}-->
-    <!--<a class="layui-btn layui-btn-xs" lay-event="clockCook">报警日志</a>-->
-    <!--<a class="layui-btn layui-btn-xs" lay-event="code">二维码</a>-->
-    <!--{{#  } }}-->
+
+
+
 </script>
 <script type="text/html" id="barDemo1">
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
