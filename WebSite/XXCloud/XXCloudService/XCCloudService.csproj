@@ -418,6 +418,7 @@
     <Content Include="ServicePage\ValidateImg.aspx" />
     <Content Include="ServicePage\WebFormTest.aspx" />
     <Content Include="Test\api.aspx" />
+    <Content Include="Test\DeviceInit.aspx" />
     <Content Include="Test\payTest.html" />
     <Content Include="Test\pposTest.aspx" />
     <Content Include="Test\redisTest.aspx" />
@@ -1624,6 +1625,13 @@
     <Compile Include="Test\api.aspx.designer.cs">
       <DependentUpon>api.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Test\DeviceInit.aspx.cs">
+      <DependentUpon>DeviceInit.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Test\DeviceInit.aspx.designer.cs">
+      <DependentUpon>DeviceInit.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Test\pposTest.aspx.cs">
       <DependentUpon>pposTest.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -1705,6 +1713,7 @@
     <Compile Include="Utility\HaokuUtility.cs" />
     <Compile Include="Utility\IConUtiltiy.cs" />
     <Compile Include="Utility\Info\RouterInfo.cs" />
+    <Compile Include="Utility\DeviceRadarServer.cs" />
     <Compile Include="Utility\UDPApiService.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -1916,6 +1925,10 @@
     <ProjectReference Include="..\XCCloudService.Pay\XCCloudService.Pay.csproj">
       <Project>{cc20d914-ca39-497b-b70d-99b6e4efb302}</Project>
       <Name>XCCloudService.Pay</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\XCCloudService.RadarService\XCCloudService.RadarService.csproj">
+      <Project>{f8e854bb-4788-41fd-bc19-f7527a839a6b}</Project>
+      <Name>XCCloudService.RadarService</Name>
     </ProjectReference>
     <ProjectReference Include="..\XCCloudService.Socket\XCCloudService.SocketService.TCP.csproj">
       <Project>{1201063a-0f56-4cfd-abe7-be685df27477}</Project>

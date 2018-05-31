@@ -31,6 +31,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XCCloudService.WorkFlow", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XCCloudService.Business", "XCCloudService.Business\XCCloudService.Business.csproj", "{391EB2F5-B166-4439-B0BD-91F8E3377271}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XCCloudService.RadarService", "XCCloudService.RadarService\XCCloudService.RadarService.csproj", "{F8E854BB-4788-41FD-BC19-F7527A839A6B}"
+EndProject
 Global
 	GlobalSection(SubversionScc) = preSolution
 		Svn-Managed = True
@@ -128,6 +130,12 @@ Global
 		{391EB2F5-B166-4439-B0BD-91F8E3377271}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{391EB2F5-B166-4439-B0BD-91F8E3377271}.Release|Any CPU.Build.0 = Release|Any CPU
 		{391EB2F5-B166-4439-B0BD-91F8E3377271}.Release|x64.ActiveCfg = Release|Any CPU
+		{F8E854BB-4788-41FD-BC19-F7527A839A6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F8E854BB-4788-41FD-BC19-F7527A839A6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F8E854BB-4788-41FD-BC19-F7527A839A6B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{F8E854BB-4788-41FD-BC19-F7527A839A6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F8E854BB-4788-41FD-BC19-F7527A839A6B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F8E854BB-4788-41FD-BC19-F7527A839A6B}.Release|x64.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

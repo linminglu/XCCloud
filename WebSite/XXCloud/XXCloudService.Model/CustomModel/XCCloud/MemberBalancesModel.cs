@@ -21,6 +21,10 @@ namespace XCCloudService.Model.CustomModel.XCCloud
     [DataContract]
     public class MemberBalanceExchangeRateModel
     {
+        public MemberBalanceExchangeRateModel()
+        {
+            this.TargetTypeName = string.Empty;
+        }
         [DataMember(Name = "BalanceIndex", Order = 0)]
         public int BalanceIndex { get; set; }
 

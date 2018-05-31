@@ -388,6 +388,58 @@
             common(url, parasJson);
         }
 
+        function do_updateOrder() {
+            var FoodSaleDetailList1 = { foodId: 1, category: 0, foodCount: 1, payType: 0, payNum: 1 / 2.0 };
+            var FoodSaleDetailList2 = { foodId: 3, category: 0, foodCount: 2, payType: 0, payNum: 10 / 2.0 };
+            var FoodSaleDetailList3 = { foodId: 6, category: 0, foodCount: 1, payType: 98306, payNum: 100 };
+            var FoodSaleDetailList4 = { foodId: 4, category: 0, foodCount: 1, payType: 98307, payNum: 100 };
+            var FoodSaleDetailList5 = { foodId: 1, category: 1, foodCount: 1, payType: 0, payNum: 20 };
+            var FoodSaleDetailList6 = { foodId: 4, category: 2, foodCount: 1, payType: 0, payNum: 30 };
+
+            var foodSaleDetailListArray = new Array();
+            foodSaleDetailListArray.push(FoodSaleDetailList1);
+            foodSaleDetailListArray.push(FoodSaleDetailList2);
+            foodSaleDetailListArray.push(FoodSaleDetailList3);
+            foodSaleDetailListArray.push(FoodSaleDetailList4);
+            foodSaleDetailListArray.push(FoodSaleDetailList5);
+            foodSaleDetailListArray.push(FoodSaleDetailList6);
+
+            var couponsListArray = new Array();
+            var foodSaleDetailList1 = { couponId: 12, couponCode: "d79847caf5304d4188df251bd8c8d63d" };
+            var foodSaleDetailList2 = { couponId: 13, couponCode: "e867895b7da8482d8e46fe449ce163dc" };
+            couponsListArray.push(foodSaleDetailList1);
+            couponsListArray.push(foodSaleDetailList2);
+
+            var parasObj = {
+                "sysId": "0",
+                "versionNo": "0.0.0.1",
+                "userToken": userToken,
+                "foodSaleDetailListJson": JSON.stringify(foodSaleDetailListArray),
+                "couponsListJson": JSON.stringify(couponsListArray),
+                "storeId": "100025420106001",
+                "flwOrderId": '100025420106001' + '20180521' + '000010',
+                "newFlwOrderId": "",
+                "mobile": "15618920033",
+                "icCardId": "10004143",
+                "newFlwOrderId": "",
+                "disticntRuleId": "6",
+                "payCount": 50 + 5.5,
+                "realPay": "0",
+                "userId": "3",
+                "workStation": "lijunjie",
+                "deposit": "0",
+                "openFee": "0",
+                "feePay": "1.0",
+                "realPay": "2.0",
+                "note": "", 
+                "authorId": "3",
+                "saleCoinType": "1"
+            };
+            var url = "/XCCloud/order?action=updateOrder";
+            var parasJson = JSON.stringify(parasObj);
+            common(url, parasJson);
+        }
+
     </script>
         
 </head>
@@ -467,6 +519,10 @@
         &nbsp;&nbsp;&nbsp;&nbsp;
         订单号:<input id="txt_FlwOrderId_do_getOrderContain" placeholder="获取订单内容" style="width:250px" value="0" />
         <input id="Buttonorder_getOrderContain" type="button" value="getOrderContain(获取订单内容)" onclick="getOrderContain()"/>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        订单号:<input id="txt_FlwOrderId_do_getOrderContain" placeholder="获取订单内容" style="width:250px" value="0" />
+        <input id="Buttonorder_updateOrder" type="button" value="do_updateOrder(更新订单)" onclick="do_updateOrder()" />
+    
     </div>
 
     <div title="discount" style="font-size:14px;color:#F00;border:1px solid #ccc;">

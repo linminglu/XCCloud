@@ -1425,7 +1425,6 @@
             inputMoneySubmit:function () {
 //          	document.getElementById('fastAmountFocus ').focus();
             },
-//			
 //			结账按钮
             closeAccounts:function () {
 				var that =this;
@@ -1667,6 +1666,7 @@
             billingRecord:function (index) {
                 $('#billingRecord').modal('show');
             },
+//			
 //			销售列表
             salesAll:function () {
                 var that = this;
@@ -1986,6 +1986,7 @@
                         if(index == -1){
                             that.saleGood =that.saleAll.good;
                         }else {
+                            console.log(that.foodTypeGoodList);
                             var foodType = that.foodTypeGoodList[index].FoodTypeId;
                             console.log(foodType);
                             var typeArr = [];

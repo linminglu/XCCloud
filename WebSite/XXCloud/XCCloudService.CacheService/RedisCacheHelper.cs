@@ -150,6 +150,98 @@ namespace XCCloudService.CacheService
         } 
         #endregion
 
+
+        #region 生成流水号
+        const string DeviceMCUIDNoKey = "DeviceMCUIDNoKey";
+        private static LoadedLuaScript MCUIDLuaScript { get; set; }
+
+        private static string currDate = DateTime.Now.ToString("yyyyMMdd");
+
+        #region 生成设备MCUID
+        /// <summary>
+        /// 生成设备MCUID
+        /// </summary>
+        /// <param name="deviceTypeId">设备类别ID</param>
+        /// <returns></returns>
+        public static string CreateDeviceMCUID(int deviceTypeId)
+        {
+            try
+            {
+                string currNo = CreateMCUID();
+                if (string.IsNullOrEmpty(currNo))
+                {
+                    return "";
+                }
+                string MCUID = currDate + deviceTypeId + currNo.PadLeft(5, '0');
+
+                return MCUID;
+            }
+            catch (RedisException ex)
+            {
+                throw ex;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        #endregion
+        #endregion
+
+        #region 获取MCUID种子
+        private static string CreateMCUID()
+        {
+            try
+            {
+                RedisHelper redisHelper = new RedisHelper();
+
+                IServer server = redisHelper.GetRedisServer();
+                IDatabase db = redisHelper.GetDatabase();
+
+                string strLuaScript =
+                    " local currDate = tostring(@currDate) " +
+                    " if not currDate then " +
+                    "     return 0 " +
+                    " end " +
+                    " local vals = redis.call(\"HMGET\", @DeviceMCUIDNoKey, \"MCUIDNo\", \"RedisDate\"); " +
+                    " local MCUIDNo = tonumber(vals[1]) " +
+                    " local redisDate = vals[2] " +
+                    " if redisDate ~= currDate then " +
+                    "     redis.call(\"HMSET\", @DeviceMCUIDNoKey, \"MCUIDNo\", 1, \"RedisDate\", currDate); " +
+                    "     MCUIDNo = 1; " +
+                    " end " +
+                    " if not MCUIDNo then " +
+                    "     return 0 " +
+                    " end " +
+                    " redis.call(\"HINCRBY\", @DeviceMCUIDNoKey, \"MCUIDNo\", 1) " +
+                    " return MCUIDNo";
+
+                if (MCUIDLuaScript == null || !server.ScriptExists(MCUIDLuaScript.Hash))
+                {
+                    var prepared = LuaScript.Prepare(strLuaScript);
+                    MCUIDLuaScript = prepared.Load(server);
+                }
+
+                RedisResult ret = MCUIDLuaScript.Evaluate(db, new { currDate = currDate, DeviceMCUIDNoKey = DeviceMCUIDNoKey });
+
+                string serialNo = string.Empty;
+                if (ret.IsNull || string.IsNullOrEmpty(ret.ToString()) || ret.ToString() == "0")
+                {
+                    return "";
+                }
+                return ret.ToString();
+            }
+            catch (RedisException ex)
+            {
+                throw ex;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        #endregion
+
         #region key
         /// <summary>
         /// 删除单个key

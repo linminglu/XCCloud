@@ -117,6 +117,7 @@ namespace XXCloudService.Api.XCCloud
             string icCardId = dicParas.ContainsKey("icCardId") ? dicParas["icCardId"].ToString() : string.Empty;
             string payCount = dicParas.ContainsKey("payCount") ? dicParas["payCount"].ToString() : string.Empty;
             string freePay = dicParas.ContainsKey("freePay") ? dicParas["freePay"].ToString() : string.Empty;
+            
             string realPay = dicParas.ContainsKey("realPay") ? dicParas["realPay"].ToString() : string.Empty;
             string deposit = dicParas.ContainsKey("deposit") ? dicParas["deposit"].ToString() : string.Empty;
             string openFee = dicParas.ContainsKey("openFee") ? dicParas["openFee"].ToString() : string.Empty;
@@ -411,173 +412,164 @@ namespace XXCloudService.Api.XCCloud
 
 
 
-        //[ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
-        //public object updateOrder(Dictionary<string, object> dicParas)
-        //{
-        //    string errMsg = string.Empty;
-        //    string foodSaleDetailList = dicParas.ContainsKey("foodSaleDetailList") ? dicParas["foodSaleDetailList"].ToString() : string.Empty;
-        //    string couponsList = dicParas.ContainsKey("couponsList") ? dicParas["couponsList"].ToString() : string.Empty;
-        //    string flwOrderId = dicParas.ContainsKey("flwOrderId") ? dicParas["flwOrderId"].ToString() : string.Empty;
-        //    string newFlwSaleId = dicParas.ContainsKey("newFlwSaleId") ? dicParas["newFlwSaleId"].ToString() : string.Empty;
-        //    string mobile = dicParas.ContainsKey("mobile") ? dicParas["mobile"].ToString() : string.Empty;
-        //    string icCardId = dicParas.ContainsKey("icCardId") ? dicParas["icCardId"].ToString() : string.Empty;
-        //    string distinctRuleId = dicParas.ContainsKey("distinctRuleId") ? dicParas["distinctRuleId"].ToString() : string.Empty;
-        //    string payCount = dicParas.ContainsKey("payCount") ? dicParas["payCount"].ToString() : string.Empty;
-        //    string realPay = dicParas.ContainsKey("realPay") ? dicParas["realPay"].ToString() : string.Empty;
-        //    string feePay = dicParas.ContainsKey("feePay") ? dicParas["feePay"].ToString() : string.Empty;
-        //    string userId = dicParas.ContainsKey("userId") ? dicParas["userId"].ToString() : string.Empty;
-        //    string workStation = dicParas.ContainsKey("workStation") ? dicParas["workStation"].ToString() : string.Empty;
-        //    string note = dicParas.ContainsKey("note") ? dicParas["note"].ToString() : string.Empty;
-        //    string authorId = dicParas.ContainsKey("authorId") ? dicParas["authorId"].ToString() : string.Empty;
-        //    string saleCoinType = dicParas.ContainsKey("saleCoinType") ? dicParas["saleCoinType"].ToString() : string.Empty;
-        //    string newFlwOrderId = dicParas.ContainsKey("newFlwOrderId") ? dicParas["newFlwOrderId"].ToString() : string.Empty;
-            
-        //    XCCloudUserTokenModel userTokenModel = (XCCloudUserTokenModel)(dicParas[Constant.XCCloudUserTokenModel]);
-        //    TokenDataModel userTokenDataModel = (TokenDataModel)(userTokenModel.DataModel);
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object updateOrder(Dictionary<string, object> dicParas)
+        {
+            string errMsg = string.Empty;
+            string foodSaleDetailListJson = dicParas.ContainsKey("foodSaleDetailListJson") ? dicParas["foodSaleDetailListJson"].ToString() : string.Empty;
+            string couponsListJson = dicParas.ContainsKey("couponsListJson") ? dicParas["couponsListJson"].ToString() : string.Empty;
+            string storeId = dicParas.ContainsKey("storeId") ? dicParas["storeId"].ToString() : string.Empty;
+            string flwOrderId = dicParas.ContainsKey("flwOrderId") ? dicParas["flwOrderId"].ToString() : string.Empty;
+            string newFlwOrderId = dicParas.ContainsKey("newFlwOrderId") ? dicParas["newFlwOrderId"].ToString() : string.Empty;
+            string mobile = dicParas.ContainsKey("mobile") ? dicParas["mobile"].ToString() : string.Empty;
+            string icCardId = dicParas.ContainsKey("icCardId") ? dicParas["icCardId"].ToString() : string.Empty;
+            string disticntRuleId = dicParas.ContainsKey("disticntRuleId") ? dicParas["disticntRuleId"].ToString() : string.Empty;
+            string payCount = dicParas.ContainsKey("payCount") ? dicParas["payCount"].ToString() : string.Empty;
+            string realPay = dicParas.ContainsKey("realPay") ? dicParas["realPay"].ToString() : string.Empty;
+            string userId = dicParas.ContainsKey("userId") ? dicParas["userId"].ToString() : string.Empty;
+            string workStation = dicParas.ContainsKey("workStation") ? dicParas["workStation"].ToString() : string.Empty;
+            string deposit = dicParas.ContainsKey("deposit") ? dicParas["deposit"].ToString() : string.Empty;
+            string openFee = dicParas.ContainsKey("openFee") ? dicParas["openFee"].ToString() : string.Empty;
+            string feePay = dicParas.ContainsKey("feePay") ? dicParas["feePay"].ToString() : string.Empty;
+            string note = dicParas.ContainsKey("note") ? dicParas["note"].ToString() : string.Empty;
+            string orderSource = dicParas.ContainsKey("orderSource") ? dicParas["orderSource"].ToString() : string.Empty;
+            string authorId = dicParas.ContainsKey("authorId") ? dicParas["authorId"].ToString() : string.Empty;
+            string saleCoinType = dicParas.ContainsKey("saleCoinType") ? dicParas["saleCoinType"].ToString() : string.Empty;
 
-        //    if (!CheckUpdateOrderParams(dicParas, out errMsg))
-        //    {
-        //        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
-        //    }
+            XCCloudUserTokenModel userTokenModel = (XCCloudUserTokenModel)(dicParas[Constant.XCCloudUserTokenModel]);
+            TokenDataModel userTokenDataModel = (TokenDataModel)(userTokenModel.DataModel);
 
-        //    string storedProcedure = "updateOrder";
-        //    String[] Ary = new String[] { "数据0", "数据1", "数据2", "数据3" };
-        //    List<SqlDataRecord> listSqlDataRecord = new List<SqlDataRecord>();
-        //    SqlMetaData[] MetaDataArr = new SqlMetaData[] { 
-        //            new SqlMetaData("foodId", SqlDbType.Int), 
-        //            new SqlMetaData("foodCount", SqlDbType.Int),
-        //            new SqlMetaData("payType", SqlDbType.Int),
-        //            new SqlMetaData("payNum", SqlDbType.Decimal,18,2)
-        //    };
+            if (!CheckUpdateOrderParams(dicParas, out errMsg))
+            {
+                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
+            }
 
-        //    string flwSendId = RedisCacheHelper.CreateCloudSerialNo(userTokenDataModel.StoreID);
+            string storedProcedure = "updateOrder";
+            SqlParameter[] sqlParameter = new SqlParameter[19];
+            sqlParameter[0] = new SqlParameter("@FoodSaleDetailList", SqlDbType.Structured);
+            sqlParameter[0].Value = FlwFoodOrderBusiness.GetOrderBuyDetailList(storeId, foodSaleDetailListJson);
+            sqlParameter[1] = new SqlParameter("@CouponsList", SqlDbType.Structured);
+            sqlParameter[1].Value = FlwFoodOrderBusiness.GetOrderBuyDetailList(storeId, couponsListJson);
+            sqlParameter[2] = new SqlParameter("@StoreId", SqlDbType.VarChar,15);
+            sqlParameter[2].Value = storeId;
+            sqlParameter[3] = new SqlParameter("@FlwOrderId", SqlDbType.VarChar,32);
+            sqlParameter[3].Value = flwOrderId;
+            sqlParameter[4] = new SqlParameter("@NewFlwOrderId", SqlDbType.VarChar,32);
+            sqlParameter[4].Value = newFlwOrderId;
+            sqlParameter[5] = new SqlParameter("@Mobile", SqlDbType.VarChar,11);
+            sqlParameter[5].Value = mobile;
+            sqlParameter[6] = new SqlParameter("@ICCardId", SqlDbType.Int);
+            sqlParameter[6].Value = icCardId;
+            sqlParameter[7] = new SqlParameter("@DisticntRuleId", SqlDbType.Int);
+            sqlParameter[7].Value = disticntRuleId;
+            sqlParameter[8] = new SqlParameter("@PayCount", SqlDbType.Decimal);
+            sqlParameter[8].Value = payCount;
+            sqlParameter[9] = new SqlParameter("@RealPay", SqlDbType.Decimal);
+            sqlParameter[9].Value = realPay;
+            sqlParameter[10] = new SqlParameter("@FeePay", SqlDbType.Decimal);
+            sqlParameter[10].Value = feePay;
+            sqlParameter[11] = new SqlParameter("@UserId", SqlDbType.Int);
+            sqlParameter[11].Value = userId;
+            sqlParameter[12] = new SqlParameter("@WorkStation", SqlDbType.VarChar,50);
+            sqlParameter[12].Value = workStation;
+            sqlParameter[13] = new SqlParameter("@Note", SqlDbType.VarChar,200);
+            sqlParameter[13].Value = note;
+            sqlParameter[14] = new SqlParameter("@OrderSource", SqlDbType.Int);
+            sqlParameter[14].Value = orderSource;
+            sqlParameter[15] = new SqlParameter("@AuthorId", SqlDbType.Int);
+            sqlParameter[15].Value = authorId;
+            sqlParameter[16] = new SqlParameter("@SaleCoinType", SqlDbType.Int);
+            sqlParameter[16].Value = saleCoinType;
+            sqlParameter[17] = new SqlParameter("@NewFlwOrderId", SqlDbType.VarChar,32);
+            sqlParameter[17].Value = newFlwOrderId;
+            sqlParameter[18] = new SqlParameter("@ErrMsg", SqlDbType.VarChar);
+            sqlParameter[18].Direction = ParameterDirection.Output;
 
-        //    for (int i = 0; i < buyDetailList.Count; i++)
-        //    {
-        //        List<object> listParas = new List<object>();
-        //        listParas.Add(buyDetailList[i].FoodId);
-        //        listParas.Add(buyDetailList[i].FoodCount);
-        //        listParas.Add(buyDetailList[i].PayType);
-        //        listParas.Add(buyDetailList[i].PayNum);
+            XCCloudBLL.ExecuteStoredProcedureSentence(storedProcedure, sqlParameter);
+            if (sqlParameter[18].Value.ToString() == "1")
+            {
+                var obj = new
+                {
+                    orderFlwId = sqlParameter[17].Value.ToString()
+                };
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, obj);
+            }
+            else
+            {
+                return new ResponseModel(Return_Code.T, "", Result_Code.F, sqlParameter[15].Value.ToString());
+            }
 
-        //        var record = new SqlDataRecord(MetaDataArr);
-        //        for (int j = 0; j < Ary.Length; j++)
-        //        {
-        //            record.SetValue(j, listParas[j]);
-        //        }
-        //        listSqlDataRecord.Add(record);
-        //    }
+            if (string.IsNullOrEmpty(flwOrderId))
+            {
+                return new ResponseModel(Return_Code.T, "", Result_Code.F, "订单Id参数无效");
+            }
 
-        //    SqlParameter[] sqlParameter = new SqlParameter[19];
-        //    sqlParameter[0] = new SqlParameter("@FoodDetail", SqlDbType.Structured);
-        //    sqlParameter[0].Value = listSqlDataRecord;
-
-        //    sqlParameter[1] = new SqlParameter("@StoreID", SqlDbType.VarChar);
-        //    sqlParameter[1].Value = userTokenDataModel.StoreID;
-
-        //    sqlParameter[2] = new SqlParameter("@ICCardID", SqlDbType.Int);
-        //    sqlParameter[2].Value = icCardId;
-
-        //    sqlParameter[3] = new SqlParameter("@PayCount", SqlDbType.Decimal);
-        //    sqlParameter[3].Value = payCount;
-
-        //    sqlParameter[4] = new SqlParameter("@Deposit", SqlDbType.Decimal);
-        //    sqlParameter[4].Value = deposit;
-
-        //    sqlParameter[5] = new SqlParameter("@OpenFee", SqlDbType.Decimal);
-        //    sqlParameter[5].Value = openFee;
-
-        //    sqlParameter[6] = new SqlParameter("@UserID", SqlDbType.Int);
-        //    sqlParameter[6].Value = userTokenModel.LogId;
-
-        //    sqlParameter[7] = new SqlParameter("@MemberLevelId", SqlDbType.Int);
-        //    sqlParameter[7].Value = memberLevelId;
-
-        //    sqlParameter[8] = new SqlParameter("@WorkStation", SqlDbType.VarChar);
-        //    sqlParameter[8].Value = workStation;
-
-        //    sqlParameter[9] = new SqlParameter("@AuthorID", SqlDbType.Int);
-        //    sqlParameter[9].Value = authorId;
-
-        //    sqlParameter[10] = new SqlParameter("@Note", SqlDbType.VarChar);
-        //    sqlParameter[10].Value = note;
-
-        //    sqlParameter[11] = new SqlParameter("@OrderSource", SqlDbType.Int);
-        //    sqlParameter[11].Value = orderSource;
-
-        //    sqlParameter[12] = new SqlParameter("@SaleCoinType", SqlDbType.Int);
-        //    sqlParameter[12].Value = saleCoinType;
-
-        //    sqlParameter[13] = new SqlParameter("@CustomerType", SqlDbType.Int);
-        //    sqlParameter[13].Value = customerType;
-
-        //    sqlParameter[14] = new SqlParameter("@Mobile", SqlDbType.VarChar);
-        //    sqlParameter[14].Value = mobile;
-
-        //    sqlParameter[15] = new SqlParameter("@ErrMsg", SqlDbType.VarChar, 200);
-        //    sqlParameter[15].Direction = ParameterDirection.Output;
-
-        //    sqlParameter[16] = new SqlParameter("@FlwSeedId", SqlDbType.VarChar, 32);
-        //    sqlParameter[16].Value = flwSendId;
-
-        //    sqlParameter[17] = new SqlParameter("@OrderFlwID", SqlDbType.VarChar, 32);
-        //    sqlParameter[17].Direction = ParameterDirection.Output;
-
-        //    sqlParameter[18] = new SqlParameter("@Return", SqlDbType.Int);
-        //    sqlParameter[18].Direction = ParameterDirection.ReturnValue;
-
-        //    XCCloudBLL.ExecuteStoredProcedureSentence(storedProcedure, sqlParameter);
-        //    if (sqlParameter[18].Value.ToString() == "1")
-        //    {
-        //        var obj = new
-        //        {
-        //            orderFlwId = sqlParameter[17].Value.ToString()
-        //        };
-        //        return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, obj);
-        //    }
-        //    else
-        //    {
-        //        return new ResponseModel(Return_Code.T, "", Result_Code.F, sqlParameter[15].Value.ToString());
-        //    }
-
-        //    if (string.IsNullOrEmpty(flwOrderId))
-        //    {
-        //        return new ResponseModel(Return_Code.T, "", Result_Code.F, "订单Id参数无效");
-        //    }
-
-        //    return null;
-        //}
+            return null;
+        }
 
         private bool CheckUpdateOrderParams(Dictionary<string, object> dicParas, out string errMsg)
         {
             errMsg = string.Empty;
+            string storeId = dicParas.ContainsKey("storeId") ? dicParas["storeId"].ToString() : string.Empty;
+            string flwOrderId = dicParas.ContainsKey("flwOrderId") ? dicParas["flwOrderId"].ToString() : string.Empty;
+            string newFlwOrderId = dicParas.ContainsKey("newFlwOrderId") ? dicParas["newFlwOrderId"].ToString() : string.Empty;
+            string mobile = dicParas.ContainsKey("mobile") ? dicParas["mobile"].ToString() : string.Empty;
             string icCardId = dicParas.ContainsKey("icCardId") ? dicParas["icCardId"].ToString() : string.Empty;
-            string payCount = dicParas.ContainsKey("payCount") ? dicParas["payCount"].ToString() : string.Empty;
+            string disticntRuleId = dicParas.ContainsKey("disticntRuleId") ? dicParas["disticntRuleId"].ToString() : string.Empty;
+            string realPay = dicParas.ContainsKey("realPay") ? dicParas["realPay"].ToString() : string.Empty;
+            string feePay = dicParas.ContainsKey("feePay") ? dicParas["feePay"].ToString() : string.Empty;
+            string userId = dicParas.ContainsKey("userId") ? dicParas["userId"].ToString() : string.Empty;
             string workStation = dicParas.ContainsKey("workStation") ? dicParas["workStation"].ToString() : string.Empty;
-            string authorId = dicParas.ContainsKey("authorId") ? dicParas["authorId"].ToString() : string.Empty;
+            string deposit = dicParas.ContainsKey("deposit") ? dicParas["deposit"].ToString() : string.Empty;
+            string openFee = dicParas.ContainsKey("openFee") ? dicParas["openFee"].ToString() : string.Empty;
             string note = dicParas.ContainsKey("note") ? dicParas["note"].ToString() : string.Empty;
             string orderSource = dicParas.ContainsKey("orderSource") ? dicParas["orderSource"].ToString() : string.Empty;
+            string authorId = dicParas.ContainsKey("authorId") ? dicParas["authorId"].ToString() : string.Empty;
             string saleCoinType = dicParas.ContainsKey("saleCoinType") ? dicParas["saleCoinType"].ToString() : string.Empty;
 
-            if (!Utils.IsDecimal(payCount))
+            if (!Utils.IsDecimal(storeId))
             {
-                errMsg = "应付金额无效";
+                errMsg = "门店无效";
                 return false;
             }
 
-            if (string.IsNullOrEmpty(workStation))
+            if (string.IsNullOrEmpty(flwOrderId))
             {
-                errMsg = "工作站无效";
+                errMsg = "订单流水号无效";
                 return false;
             }
 
-            if (!Utils.IsNumeric(authorId))
+            if (!Utils.IsNumeric(newFlwOrderId))
             {
-                errMsg = "授权员工Id无效";
+                errMsg = "新的订单流水号无效";
                 return false;
             }
 
-            if (string.IsNullOrEmpty(orderSource))
+            if (string.IsNullOrEmpty(mobile))
+            {
+                errMsg = "手机号码无效";
+                return false;
+            }
+
+            if (string.IsNullOrEmpty(icCardId))
+            {
+                errMsg = "订单来源无效";
+                return false;
+            }
+
+            if (string.IsNullOrEmpty(disticntRuleId))
+            {
+                errMsg = "满减规则无效";
+                return false;
+            }
+
+            if (string.IsNullOrEmpty(realPay) || !Utils.IsDecimal(realPay))
+            {
+                errMsg = "实付金额无效";
+                return false;
+            }
+
+            if (string.IsNullOrEmpty(feePay))
             {
                 errMsg = "订单来源无效";
                 return false;
