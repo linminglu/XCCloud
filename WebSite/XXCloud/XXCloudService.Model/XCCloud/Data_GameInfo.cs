@@ -72,5 +72,6 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> ExceptOutSpeed { get; set; }
         public Nullable<int> Frequency { get; set; }
         public string Verifiction { get; set; }
+        public Nullable<int> PushControl { get; set; }
     }
 }

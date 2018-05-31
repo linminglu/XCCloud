@@ -25,5 +25,7 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<decimal> ToCard { get; set; }
         public Nullable<int> BalanceIndex { get; set; }
         public Nullable<int> SSRLevel { get; set; }
+        public Nullable<int> DigitCoinEN { get; set; }
+        public Nullable<int> DubleCheck { get; set; }
     }
 }

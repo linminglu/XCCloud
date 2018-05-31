@@ -90,16 +90,16 @@
 </div>
 <!--售币机-->
 <div id="saleCoinModel" style="padding: 15px;display: none">
-    <form action="" class="layui-form layui-form-pane goodIsAll">
+    <form lay-filter="saleCoinModel" class="layui-form layui-form-pane goodIsAll">
         <div class="layui-form-item">
             <div class="layui-inline">
-                <label for="" class="layui-form-label">1号马达</label>
+                <label class="layui-form-label">1号马达</label>
                 <div class="layui-input-inline">
                     <input type="checkbox" checked name="motor1En" lay-filter="motor1En" lay-skin="switch" lay-text="启用|禁用">
                 </div>
             </div>
             <div class="layui-inline">
-                <label for="" class="layui-form-label">2号马达</label>
+                <label  class="layui-form-label">2号马达</label>
                 <div class="layui-input-inline">
                     <input type="checkbox" checked name="motor2En" lay-filter="motor2En" lay-skin="switch" lay-text="启用|禁用">
                 </div>
@@ -107,7 +107,7 @@
         </div>
         <div class="layui-form-item">
             <div class="layui-inline">
-                <label for="" class="layui-form-label">马达1出币比例</label>
+                <label  class="layui-form-label">马达1出币比例</label>
                 <div class="layui-input-inline">
                     <select name="motor1Coin" lay-filter="motor1Coin" id="motor1Coin">
                         <option>-请选择-</option>
@@ -120,7 +120,7 @@
                 </div>
             </div>
             <div class="layui-inline">
-                <label for="" class="layui-form-label">马达2出币比例</label>
+                <label  class="layui-form-label">马达2出币比例</label>
                 <div class="layui-input-inline">
                     <select name="motor2Coin" lay-filter="motor2Coin" id="motor2Coin">
                         <option>-请选择-</option>
@@ -135,13 +135,13 @@
         </div>
         <div class="layui-form-item">
             <div class="layui-inline">
-                <label for="" class="layui-form-label">双光眼检测</label>
+                <label  class="layui-form-label">双光眼检测</label>
                 <div class="layui-input-inline">
                     <input type="checkbox" checked name="dubleCheck" lay-filter="dubleCheck" lay-skin="switch" lay-text="启用|禁用">
                 </div>
             </div>
             <div class="layui-inline">
-                <label for="" class="layui-form-label">数字币销售模式</label>
+                <label  class="layui-form-label">数字币销售模式</label>
                 <div class="layui-input-inline">
                     <input type="checkbox" name="digitCoinEn" lay-filter="digitCoinEn" lay-skin="switch" lay-text="启用|禁用">
                 </div>
@@ -149,6 +149,207 @@
         </div>
         <div style="text-align:center;">
             <button type="button" class="layui-btn layui-btn-normal" id="saveSaleBtn"> 确定</button>
+        </div>
+    </form>
+</div>
+<!--提币机-->
+<div id="getCoinModel" style="padding: 15px;display: none">
+    <form action="" class="layui-form layui-form-pane goodIsAll">
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label  class="layui-form-label">1号马达</label>
+                <div class="layui-input-inline">
+                    <input type="checkbox" checked name="motor1En_get" lay-filter="motor1En_get" lay-skin="switch" lay-text="启用|禁用">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label  class="layui-form-label">2号马达</label>
+                <div class="layui-input-inline">
+                    <input type="checkbox" checked name="motor2En_get" lay-filter="motor2En_get" lay-skin="switch" lay-text="启用|禁用">
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label  class="layui-form-label">马达1出币比例</label>
+                <div class="layui-input-inline">
+                    <select name="motor1Coin_get" lay-filter="motor1Coin_get" id="motor1Coin_get">
+                        <option>-请选择-</option>
+                        <option value="1" selected>1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">马达2出币比例</label>
+                <div class="layui-input-inline">
+                    <select name="motor2Coin_get" lay-filter="motor2Coin_get" id="motor2Coin_get">
+                        <option>-请选择-</option>
+                        <option value="1" selected>1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label  class="layui-form-label">会员卡提币类型</label>
+                <div class="layui-input-inline">
+                    <select name="balanceIndex" lay-filter="balanceIndex" id="balanceIndex">
+                        <option>-请选择-</option>
+                        <option value="1" selected>1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">会员卡提币数</label>
+                <div class="layui-input-inline">
+                    <select name="toCard" lay-filter="toCard" id="toCard">
+                        <option>-请选择-</option>
+                        <option value="1" selected>1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label  class="layui-form-label">提币机出币数</label>
+                <div class="layui-input-inline">
+                    <select name="fromDevice" lay-filter="fromDevice" id="fromDevice">
+                        <option>-请选择-</option>
+                        <option value="1" selected>1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div style="text-align:center;">
+            <button type="button" class="layui-btn layui-btn-normal" id="saveGetBtn"> 确定</button>
+        </div>
+    </form>
+</div>
+<!--存币机-->
+<div id="saveCoinModel" style="padding: 15px;display: none">
+    <form action="" class="layui-form layui-form-pane goodIsAll">
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label  class="layui-form-label">1号马达</label>
+                <div class="layui-input-inline">
+                    <input type="checkbox" checked name="motor1En_save" lay-filter="motor1En_save" lay-skin="switch" lay-text="启用|禁用">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label  class="layui-form-label">2号马达</label>
+                <div class="layui-input-inline">
+                    <input type="checkbox" checked name="motor2En_save" lay-filter="motor2En_save" lay-skin="switch" lay-text="启用|禁用">
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label  class="layui-form-label">存币机存币数</label>
+                <div class="layui-input-inline">
+                    <input type="text" class="layui-input" name="toCard">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">会员存币类型</label>
+                <div class="layui-input-inline">
+                    <select name="balanceIndexSave" lay-filter="balanceIndexSave" id="balanceIndexSave">
+
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label  class="layui-form-label">会员卡余额增加数</label>
+                <div class="layui-input-inline">
+                    <input type="text" class="layui-input" name="formDevice">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">币箱存储最大值</label>
+                <div class="layui-input-inline">
+                    <input type="text" class="layui-input" name="maxSaveCount">
+                </div>
+            </div>
+        </div>
+        <div style="text-align:center;">
+            <button type="button" class="layui-btn layui-btn-normal" id="saveSaveBtn"> 确定</button>
+        </div>
+    </form>
+</div>
+<!--投币机-->
+<div id="pushCoinModel" style="padding: 15px;display: none">
+    <form action="" class="layui-form layui-form-pane goodIsAll">
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label  class="layui-form-label">1号马达</label>
+                <div class="layui-input-inline">
+                    <input type="checkbox" checked name="motor1En_push" lay-filter="motor1En_push" lay-skin="switch" lay-text="启用|禁用">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label  class="layui-form-label">2号马达</label>
+                <div class="layui-input-inline">
+                    <input type="checkbox" checked name="motor2En_push" lay-filter="motor2En_push" lay-skin="switch" lay-text="启用|禁用">
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">会员扣余额类型</label>
+                <div class="layui-input-inline">
+                    <select name="balanceIndexPush" lay-filter="balanceIndexPush" id="balanceIndexPush">
+
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label  class="layui-form-label">允许实物币投币</label>
+                <div class="layui-input-inline">
+                    <input type="checkbox" checked name="motor1Coinpush" lay-filter="motor1Coinpush" lay-skin="switch" lay-text="启用|禁用">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label  class="layui-form-label">允许会员卡投币</label>
+                <div class="layui-input-inline">
+                    <input type="checkbox" checked name="motor2Coinpush" lay-filter="motor2Coinpush" lay-skin="switch" lay-text="启用|禁用">
+                </div>
+            </div>
+        </div>
+        <div style="text-align:center;">
+            <button type="button" class="layui-btn layui-btn-normal" id="savePushBtn"> 确定</button>
         </div>
     </form>
 </div>
@@ -169,6 +370,12 @@ let index;
 
    //售币机
 let motor1En=1;let motor2En=1; let motor1Coin=1;let motor2Coin=1;let dubleCheck=1;let digitCoinEn=0;
+//提币机
+let motor1En_get=1;let motor2En_get=1;let motor1Coin_get=1;let motor2Coin_get=1;let balanceIndex=1;let toCard=0;let fromDevice=0;
+//存币机
+let motor1En_save=1;let motor2En_save=1;let balanceIndexSave=1;
+//投币机
+let motor1En_push=1;let motor2En_push=1;let balanceIndexPush=1;let motor1CoinPush=1;let motor2CoinPush=1;
     let parm={'obj':{'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'},
         'url':'/XCCloud/DeviceInfo?action=QueryDeviceInfo',
         'elem':'#gameDeviceTable',
@@ -275,7 +482,168 @@ let motor1En=1;let motor2En=1; let motor1Coin=1;let motor2Coin=1;let dubleCheck=
                     }
                 }
             });
-        })
+        });
+        //监听提币机
+        form.on('switch(motor1En_get)',function (data) {
+            if (data.elem.checked==true){
+                motor1En_get=1;
+            }else {
+                motor1En_get=0;
+            }
+        });
+        form.on('switch(motor2En_get)',function (data) {
+            if (data.elem.checked==true){
+                motor2En_get=1;
+            }else {
+                motor2En_get=0;
+            }
+        });
+        form.on('select(motor1Coin_get)',function (data) {
+            motor1Coin_get=data.value;
+        });
+        form.on('select(motor2Coin_get)',function (data) {
+            motor2Coin_get=data.value;
+        });
+        form.on('select(balanceIndex)',function (data) {
+            balanceIndex=data.value;
+        });
+        form.on('select(toCard)',function (data) {
+            toCard=data.value;
+        });
+        form.on('select(fromDevice)',function (data) {
+            fromDevice=data.value;
+        });
+        $('#saveGetBtn').click(function () {
+            let _obj={'deviceId':_id,'motor1En':motor1En_get,
+                'motor2En':motor2En_get,
+                'motor1Coin':motor1Coin_get,
+                'motor2Coin':motor2Coin_get,
+                'fromDevice':fromDevice,
+                'balanceIndex':balanceIndex,
+                'toCard':toCard,
+                'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+            let parseJson = JSON.stringify(_obj);
+            $.ajax({
+                type:'post',
+                url:'/XCCloud/DeviceInfo?action=SaveCoinFetcherInfo',
+                contentType: "application/json; charset=utf-8",
+                data:{parasJson: parseJson},
+                success: function (data) {
+                    data = JSON.parse(data);
+                    if (data.result_code == 1) {6
+                        layer.msg('设置成功',{time:1500},function () {
+                            location.reload();
+                        });
+                    } else {
+                        layer.msg(data.result_msg);
+                    }
+                }
+            });
+        });
+
+        //监听存币机
+        form.on('switch(motor1En_save)',function (data) {
+            if (data.elem.checked==true){
+                motor1En_save=1;
+            }else {
+                motor1En_save=0;
+            }
+        });
+        form.on('switch(motor2En_save)',function (data) {
+            if (data.elem.checked==true){
+                motor2En_save=1;
+            }else {
+                motor2En_save=0;
+            }
+        });
+        form.on('select(balanceIndexSave)',function (data) {
+            balanceIndexSave=data.value;
+        });
+        $('#saveSaveBtn').click(function () {
+            let _obj={'deviceId':_id,
+                'motor1En':motor1En_save,
+                'motor2En':motor2En_save,
+                'balanceIndex':balanceIndexSave,
+                'toCard':$('input[name="toCard"]').val(),
+                'fromDevice':$('input[name="fromDevice"]').val(),
+                'maxSaveCount':$('input[name="maxSaveCount"]').val(),
+                'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+            let parseJson = JSON.stringify(_obj);
+            $.ajax({
+                type:'post',
+                url:'/XCCloud/DeviceInfo?action=SaveCoinSaverInfo',
+                contentType: "application/json; charset=utf-8",
+                data:{parasJson: parseJson},
+                success: function (data) {
+                    data = JSON.parse(data);
+                    if (data.result_code == 1) {6
+                        layer.msg('设置成功',{time:1500},function () {
+                            location.reload();
+                        });
+                    } else {
+                        layer.msg(data.result_msg);
+                    }
+                }
+            });
+        });
+        //监听投币机
+        form.on('switch(motor1En_push)',function (data) {
+            if (data.elem.checked==true){
+                motor1En_push=1;
+            }else {
+                motor1En_push=0;
+            }
+        });
+        form.on('switch(motor2En_push)',function (data) {
+            if (data.elem.checked==true){
+                motor2En_push=1;
+            }else {
+                motor2En_push=0;
+            }
+        });
+        form.on('switch(motor1CoinPush)',function (data) {
+            if (data.elem.checked==true){
+                motor1CoinPush=1;
+            }else {
+                motor1CoinPush=0;
+            }
+        });
+        form.on('switch(motor2CoinPush)',function (data) {
+            if (data.elem.checked==true){
+                motor2CoinPush=1;
+            }else {
+                motor2CoinPush=0;
+            }
+        });
+        form.on('select(balanceIndexPush)',function (data) {
+            balanceIndex=data.value;
+        });
+
+        $('#savePushBtn').click(function () {
+            let _obj={'deviceId':_id,'motor1En':motor1En_push,
+                'motor2En':motor2En_push,
+                'motor1Coin':motor1CoinPush,
+                'motor2Coin':motor2CoinPush,
+                'balanceIndex':balanceIndexPush,
+                'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+            let parseJson = JSON.stringify(_obj);
+            $.ajax({
+                type:'post',
+                url:'/XCCloud/DeviceInfo?action=SaveCoinPusherInfo',
+                contentType: "application/json; charset=utf-8",
+                data:{parasJson: parseJson},
+                success: function (data) {
+                    data = JSON.parse(data);
+                    if (data.result_code == 1) {6
+                        layer.msg('设置成功',{time:1500},function () {
+                            location.reload();
+                        });
+                    } else {
+                        layer.msg(data.result_msg);
+                    }
+                }
+            });
+        });
           //删除绑定的门票或者计时
           table.on('tool(bindTable)',function (obj) {
               var data = obj.data; //获得当前行数据
@@ -478,12 +846,56 @@ let motor1En=1;let motor2En=1; let motor1Coin=1;let motor2Coin=1;let dubleCheck=
                 });
             }else if(layEvent==='saleCoin'){
                  motor1En=1; motor2En=1;  motor1Coin=1; motor2Coin=1; dubleCheck=1; digitCoinEn=0;
+                let _obj={'deviceId':data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                let parseJson = JSON.stringify(_obj);
+                $.ajax({
+                    type: 'post',
+                    url: '/XCCloud/DeviceInfo?action=GetTypeDeviceInfo',
+                    contentType: "application/json; charset=utf-8",
+                    data: {parasJson: parseJson},
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        console.log(data);
+                        if (data.result_code == 1) {
+                            let arr = data.result_data;
+
+                            form.val('saleCoinModel',{
+
+                            })
+                        }
+                    }
+                })
                layer.open({
                   title:'售币机参数设置' ,
                    type:1,
                    area:'800px',
                    content:$('#saleCoinModel')
                })
+            }else if(layEvent==='getCoin'){
+                 motor1En_get=1; motor2En_get=1; motor1Coin_get=1; motor2Coin_get=1;
+                 balanceIndex=1; toCard=0; fromDevice=0;
+                layer.open({
+                    title:'提币机参数设置' ,
+                    type:1,
+                    area:'800px',
+                    content:$('#saleCoinModel')
+                })
+            }else if(layEvent==='saveCoin'){
+                 motor1En_save=1; motor2En_save=1; balanceIndexSave=1;
+                layer.open({
+                    title:'存币机参数设置' ,
+                    type:1,
+                    area:'800px',
+                    content:$('#saveCoinModel')
+                })
+            }else if(layEvent==='pushCoin'){
+                 motor1En_push=1; motor2En_push=1; balanceIndexPush=1; motor1CoinPush=1; motor2CoinPush=1;
+                layer.open({
+                    title:'投币机参数设置' ,
+                    type:1,
+                    area:'800px',
+                    content:$('#pushCoinModel')
+                })
             }
         });
         $('#saveBtn').on('click',function () {
