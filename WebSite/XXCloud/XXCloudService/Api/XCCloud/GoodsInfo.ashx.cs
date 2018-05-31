@@ -1732,11 +1732,7 @@ namespace XXCloudService.Api.XCCloud
                                 	/*入库时间*/
                                     (case when IsNull(a.RealTime,'')='' then '' else convert(varchar,a.RealTime,20) end) AS RealTime,
                                 	/*采购渠道*/
-                                	a.Supplier,
-                                	/*入库数量*/
-                                	c.StorageCount,
-                                	/*采购单价*/
-                                	c.TaxPrice,
+                                	a.Supplier,                                	
                                 	/*入库金额*/
                                 	c.TotalPrice,
                                 	/*入库人*/
@@ -1750,10 +1746,11 @@ namespace XXCloudService.Api.XCCloud
                                 LEFT JOIN Base_StoreInfo b ON a.StoreID = b.StoreID
                                 LEFT JOIN (
                                 	SELECT
-                                		*, ROW_NUMBER() over(partition by StorageID order by ID desc) as RowNum
+                                		StorageID, SUM(ISNULL(TotalPrice,0)) AS TotalPrice
                                 	FROM
                                 		Data_GoodStorage_Detail
-                                ) c ON a.ID = c.StorageID AND c.RowNum <= 1
+                                    GROUP BY StorageID
+                                ) c ON a.ID = c.StorageID
                                 LEFT JOIN Base_UserInfo u ON a.UserID = u.UserID
                                 LEFT JOIN Base_DepotInfo d ON a.DepotID = d.ID                                
                                 WHERE 1 = 1";
@@ -2264,7 +2261,8 @@ namespace XXCloudService.Api.XCCloud
                         exitModel.Note = note;
                         exitModel.MerchID = merchId;
                         exitModel.StoreID = storeId;
-                        exitModel.CheckDate = DateTime.Now;
+                        exitModel.ExitTime = DateTime.Now;
+                        exitModel.CheckDate = DateTime.Now.Todate();
                         exitModel.UserID = logId;
                         if (!Data_GoodExitInfoService.I.Add(exitModel))
                         {
@@ -2390,10 +2388,11 @@ namespace XXCloudService.Api.XCCloud
                                 	Data_GoodOutOrder a
                                 LEFT JOIN (
                                 	SELECT
-                                		*, ROW_NUMBER() over(partition by OrderID,GoodID order by ID) as RowNum
+                                		OrderID, SUM(ISNULL(OutCount,0)) AS OutCount, SUM(ISNULL(OutTotal,0)) AS OutTotal
                                 	FROM
-                                		Data_GoodOutOrder_Detail                                                                                         	
-                                ) b ON a.ID = b.OrderID and b.RowNum <= 1
+                                		Data_GoodOutOrder_Detail   
+                                    GROUP BY OrderID                                                                         	
+                                ) b ON a.ID = b.OrderID
                                 LEFT JOIN Base_UserInfo u ON a.OPUserID = u.UserID
                                 LEFT JOIN Base_DepotInfo c ON a.DepotID = c.ID                                
                                 WHERE 1 = 1";
@@ -2401,43 +2400,38 @@ namespace XXCloudService.Api.XCCloud
                 if (!storeId.IsNull())
                     sql = sql + " AND a.storeId='" + storeId + "'";
 
-                var data_GoodOutOrder = Data_GoodOutOrderService.I.SqlQuery<Data_GoodOutOrderList>(sql, parameters).ToList();
-
                 //查询退货信息
-                sql = @"SELECT
+                string sql2 = @"SELECT
                                 	a.ID,
-                                    /*出库单号*/
-                                    a.OrderID,
+                                    /*退货单号*/
+                                    a.ExitOrderID AS OrderID,
                                     /*出库类别*/
-                                    a.OrderType,                                	
-                                	/*出库时间*/
-                                    (case when IsNull(a.CreateTime,'')='' then '' else convert(varchar,a.CreateTime,20) end) AS CreateTime,
-                                	/*出库数量*/
-                                	b.OutCount,
-                                	/*出库金额*/
-                                	b.OutTotal,                                	
-                                	/*出库人*/
+                                    3 AS OrderType,
+                                	/*退货时间*/
+                                    (case when IsNull(a.ExitTime,'')='' then '' else convert(varchar,a.ExitTime,20) end) AS CreateTime,
+                                	/*退货数量*/
+                                	a.ExitCount AS OutCount,
+                                	/*实退总额*/
+                                	a.ExitTotal AS OutTotal,                                	
+                                	/*操作人*/
                                 	u.LogName,
                                 	/*出库仓库*/
                                 	c.DepotName,
                                 	/*状态*/
-                                	a.State,
+                                	1 AS State,
                                     /*营业日期*/
                                     (case when IsNull(a.CheckDate,'')='' then '' else convert(varchar,a.CheckDate,23) end) AS CheckDate
                                 FROM
-                                	Data_GoodOutOrder a
-                                LEFT JOIN (
-                                	SELECT
-                                		*, ROW_NUMBER() over(partition by OrderID,GoodID order by ID) as RowNum
-                                	FROM
-                                		Data_GoodOutOrder_Detail                                                                                         	
-                                ) b ON a.ID = b.OrderID and b.RowNum <= 1
-                                LEFT JOIN Base_UserInfo u ON a.OPUserID = u.UserID
+                                	Data_GoodExitInfo a                                
+                                LEFT JOIN Base_UserInfo u ON a.UserID = u.UserID
                                 LEFT JOIN Base_DepotInfo c ON a.DepotID = c.ID                                
                                 WHERE 1 = 1";
-                sql = sql + " AND a.merchId='" + merchId + "'";
+                sql2 = sql2 + " AND a.merchId='" + merchId + "'";
                 if (!storeId.IsNull())
-                    sql = sql + " AND a.storeId='" + storeId + "'";
+                    sql2 = sql2 + " AND a.storeId='" + storeId + "'";
+
+                var data_GoodOutOrder = Data_GoodOutOrderService.I.SqlQuery<Data_GoodOutOrderList>(sql, parameters)
+                    .Union(Data_GoodExitInfoService.I.SqlQuery<Data_GoodOutOrderList>(sql2, parameters)).ToList();
 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, data_GoodOutOrder);
             }

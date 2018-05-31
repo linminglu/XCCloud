@@ -190,9 +190,9 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Flw_MemberCard_Exit> Flw_MemberCard_Exit { get; set; }
         public virtual DbSet<Data_GameFreeLotteryRule> Data_GameFreeLotteryRule { get; set; }
         public virtual DbSet<Base_DeviceInfo_Ext> Base_DeviceInfo_Ext { get; set; }
-        public virtual DbSet<Data_GoodExitInfo> Data_GoodExitInfo { get; set; }
         public virtual DbSet<Data_GoodOutOrder> Data_GoodOutOrder { get; set; }
         public virtual DbSet<Data_GoodOutOrder_Detail> Data_GoodOutOrder_Detail { get; set; }
         public virtual DbSet<Data_GameInfo> Data_GameInfo { get; set; }
+        public virtual DbSet<Data_GoodExitInfo> Data_GoodExitInfo { get; set; }
     }
 }

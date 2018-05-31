@@ -1823,30 +1823,30 @@ let memberLevelId='';let memberLevels='';let MemberLevelNames='';
                           }
                           form.val("easyForm",{
                               "GameName":arr[6].value,
-                              'GameCode':arr[58].value,
+                              'GameCode':arr[61].value,
                               'eAreaID':arr[5].value,
                               'ePushBalanceIndex1':arr[9].value,
                               'PushCoin1':arr[10].value,
-                              'PushLevel':arr[37].value==1?true:false,
-                              'LotteryModeLow':arr[18].value==1?true:false,
-                              'OnlyExitLottery':arr[19].value==1?true:false,
-                              'ReadCat':arr[23].value==1?true:false,
-                              'ReadDelay1':arr[24].value,
-                              'chkCheckGift':arr[20].value==1?true:false,
+                              'PushLevel':arr[41].value==1?true:false,
+                              'LotteryModeLow':arr[23].value==1?true:false,
+                              'OnlyExitLottery':arr[24].value==1?true:false,
+                              'ReadCat':arr[28].value==1?true:false,
+                              'ReadDelay1':arr[29].value,
+                              'chkCheckGift':arr[25].value==1?true:false,
                               'StateLow':arr[8].value==1?true:false,
-                              'Area':arr[59].value,
-                              'ChangeTime':arr[60].value,
-                              'Price':arr[62].value,
-                              'Evaluation':arr[61].value,
+                              'Area':arr[62].value,
+                              'ChangeTime':arr[63].value,
+                              'Price':arr[65].value,
+                              'Evaluation':arr[64].value,
                           });
                           eAreaID=arr[5].value;
                           ePushBalanceIndex1=arr[9].value;
                           ePushCoin1=arr[10].value;
-                          ePushLevel=arr[37].value;
-                          LotteryModeLow=arr[18].value;
-                          eOnlyExitLottery=arr[19].value;
-                          eReadCat=arr[23].value;
-                          echkCheckGift=arr[20].value;
+                          ePushLevel=arr[41].value;
+                          LotteryModeLow=arr[23].value;
+                          eOnlyExitLottery=arr[24].value;
+                          eReadCat=arr[28].value;
+                          echkCheckGift=arr[25].value;
                           StateLow=arr[8].value;
                           xc.getGameType (token,layer,form,'游戏机类型','GameTypeLow',arr[7].value);
 
@@ -1856,111 +1856,124 @@ let memberLevelId='';let memberLevels='';let MemberLevelNames='';
                               'State': arr[8].value==1?true:false,
                               'PushBalanceIndex11': arr[9].value,
                               'PushCoin11': arr[10].value,
-                              'PushBalanceIndex2': arr[11].value,
-                              'PushCoin2': arr[12].value,
-                              'OutBalanceIndex': arr[13].value,
-                              'ReturnCheck': arr[14].value==1?true:false,
-                              'OutsideAlertCheck':arr[15].value==1?true:false,
-                              'ICTicketOperation':arr[16].value==1?true:false,
-                              'NotGiveBack':arr[17].value==1?true:false,
-                              'LotteryMode':arr[18].value==1?true:false,
-                              'OnlyExitLottery':arr[19].value==1?true:false,
-                              'chkCheckGift1':arr[20].value==1?true:false,
-                              'AllowElecPush':arr[21].value==1?true:false,
-                              'GuardConvertCard':arr[22].value==1?true:false,
-                              'ReadCat':arr[23].value==1?true:false,
-                              'ReadDelay':arr[24].value,
-                              'AllowRealPush':arr[25].value==1?true:false,
-                              'BanOccupy':arr[26].value==1?true:false,
-                              'StrongGuardConvertCard':arr[27].value==1?true:false,
+                              'PushAddToGame1': arr[11].value,
+                              "SecondAddToGame1": arr[12].value,
+                              'PushBalanceIndex2': arr[13].value,
+                              'PushCoin2': arr[14].value,
+                              'PushAddToGame2': arr[15].value,
+                              "SecondAddToGame2": arr[16].value,
+                              'OutBalanceIndex': arr[17].value,
+                              'ReturnCheck': arr[18].value==1?true:false,
+                              'OutsideAlertCheck':arr[19].value==1?true:false,
+                              'ICTicketOperation':arr[20].value==1?true:false,
+                              'OutMode':arr[21].value==1?true:false,
+                              'NotGiveBack':arr[22].value==1?true:false,
+                              'LotteryMode':arr[23].value==1?true:false,
+                              'OnlyExitLottery':arr[24].value==1?true:false,
+                              'chkCheckGift1':arr[25].value==1?true:false,
+                              'AllowElecPush':arr[26].value==1?true:false,
+                              'GuardConvertCard':arr[27].value==1?true:false,
+                              'ReadCat':arr[28].value==1?true:false,
+                              'ReadDelay':arr[29].value,
+                              'AllowRealPush':arr[30].value==1?true:false,
+                              'BanOccupy':arr[31].value==1?true:false,
+                              'StrongGuardConvertCard':arr[32].value==1?true:false,
 
-                              'AllowElecOut':arr[28].value==1?true:false,
-                              'NowExit':arr[29].value==1?true:false,
-                              'BOLock':arr[30].value==1?true:false,
-                              'BOPulse':arr[31].value,
-                              'AllowRealOut':arr[32].value==1?true:false,
-                              'BOKeep':arr[33].value==1?true:false,
-                              'PushAddToGame':arr[34].value,
-                              'PushSpeed':arr[35].value,
-                              'PushPulse':arr[36].value,
-                              'PushLevel':arr[37].value==1?true:false,
-                              'PushStartInterval':arr[38].value,
-                              'UseSecondPush':arr[39].value==1?true:false,
-                              'SecondAddToGame':arr[40].value,
-                              'SecondSpeed':arr[41].value,
-                              'SecondPulse':arr[42].value,
-                              'SecondLevel':arr[43].value==1?true:false,
-                              'SecondStartInterval':arr[44].value,
-                              'OutSpeed':arr[45].value,
-                              'OutPulse':arr[46].value,
-                              'CountLevel':arr[47].value==1?true:false,
-                              'OutLevel':arr[48].value==1?true:false,
-                              'OutReduceFromGame':arr[49].value,
-                              'OutAddToCard':arr[50].value,
-                              'OnceOutLimit':arr[51].value,
-                              'OncePureOutLimit':arr[52].value,
-                              'SSRTimeOut':arr[53].value,
-                              'ExceptOutTest':arr[54].value==1?true:false,
-                              'ExceptOutSpeed':arr[55].value,
-                              'Frequency':arr[56].value,
+                              'AllowElecOut':arr[33].value==1?true:false,
+                              'NowExit':arr[34].value==1?true:false,
+                              'BOLock':arr[35].value==1?true:false,
+                              'BOPulse':arr[36].value,
+                              'AllowRealOut':arr[37].value==1?true:false,
+                              'BOKeep':arr[38].value==1?true:false,
+                              // 'PushAddToGame':arr[39].value,
+                              'PushSpeed':arr[39].value,
+                              'PushPulse':arr[40].value,
+                              'PushLevel':arr[41].value==1?true:false,
+                              'PushStartInterval':arr[42].value,
+                              'UseSecondPush':arr[43].value==1?true:false,
+                              // 'SecondAddToGame':arr[45].value,
+                              'SecondSpeed':arr[44].value,
+                              'SecondPulse':arr[45].value,
+                              'SecondLevel':arr[46].value==1?true:false,
+                              'SecondStartInterval':arr[47].value,
+                              'OutSpeed':arr[48].value,
+                              'OutPulse':arr[49].value,
+                              'CountLevel':arr[50].value==1?true:false,
+                              'OutLevel':arr[51].value==1?true:false,
+                              'OutReduceFromGame':arr[52].value,
+                              'OutAddToCard':arr[53].value,
+                              'OnceOutLimit':arr[54].value,
+                              'OncePureOutLimit':arr[55].value,
+                              'SSRTimeOut':arr[56].value,
+                              'ExceptOutTest':arr[57].value==1?true:false,
+                              'ExceptOutSpeed':arr[58].value,
+                              'Frequency':arr[59].value,
 
-                              'hGameCode':arr[58].value,
-                              'hArea':arr[59].value,
-                              'hChangeTime':arr[60].value,
-                              'hEvaluation':arr[61].value,
-                              'hPrice':arr[62].value,
-                              'LowLimit':arr[63].value,
-                              'HighLimit':arr[64].value,
+                              'hGameCode':arr[61].value,
+                              'hArea':arr[62].value,
+                              'hChangeTime':arr[63].value,
+                              'hEvaluation':arr[64].value,
+                              'hPrice':arr[65].value,
+                              'LowLimit':arr[66].value,
+                              'HighLimit':arr[67].value,
                           });
                               AreaID1=arr[5].value;
-                              GameName=arr[6].value;
+
                               State= arr[8].value;
                               PushBalanceIndex11= arr[9].value;
-                              PushBalanceIndex2= arr[11].value;
-                              OutBalanceIndex=arr[13].value;
-                              ReturnCheck= arr[14].value;
-                              OutsideAlertCheck=arr[15].value;
-                              ICTicketOperation=arr[16].value;
-                              NotGiveBack=arr[17].value;
-                              LotteryMode=arr[18].value;
-                              OnlyExitLottery=arr[19].value;
-                              chkCheckGift1=arr[20].value;
-                              AllowElecPush=arr[21].value;
-                              GuardConvertCard=arr[22].value;
-                              ReadCat=arr[23].value;
-                              AllowRealPush=arr[25].value;
-                              BanOccupy=arr[26].value;
-                              StrongGuardConvertCard=arr[27].value;
+                              PushBalanceIndex2= arr[13].value;
+                              OutBalanceIndex=arr[17].value;
+                              ReturnCheck= arr[18].value;
+                              OutsideAlertCheck=arr[19].value;
+                              ICTicketOperation=arr[20].value;
+                              OutMode=arr[21].value;
+                              NotGiveBack=arr[22].value;
+                              LotteryMode=arr[23].value;
+                              OnlyExitLottery=arr[24].value;
+                              chkCheckGift1=arr[25].value;
+                              AllowElecPush=arr[26].value;
+                              GuardConvertCard=arr[27].value;
+                              ReadCat=arr[28].value;
+                              AllowRealPush=arr[30].value;
+                              BanOccupy=arr[31].value;
+                              StrongGuardConvertCard=arr[32].value;
 
-                              AllowElecOut=arr[28].value;
-                              NowExit=arr[29].value;
-                              BOLock=arr[30].value;
-                              BOPulse=arr[31].value;
-                              AllowRealOut=arr[32].value;
-                              BOKeep=arr[33].value;
+                              AllowElecOut=arr[33].value;
+                              NowExit=arr[34].value;
+                              BOLock=arr[35].value;
+                              BOPulse=arr[36].value;
+                              AllowRealOut=arr[37].value;
+                              BOKeep=arr[38].value;
                              
-                              PushSpeed=arr[35].value;
-                              PushPulse=arr[36].value;
-                              PushLevel=arr[37].value;
-                              PushStartInterval=arr[38].value;
-                              UseSecondPush=arr[39].value;
+                              PushSpeed=arr[39].value;
+                              PushPulse=arr[40].value;
+                              PushLevel=arr[41].value;
+                              PushStartInterval=arr[42].value;
+                              UseSecondPush=arr[43].value;
+                              if(arr[43].value==1){
+                                  $('.cardCore').removeClass('layui-hide');
+                                  $('.cardPush').addClass('layui-hide');
+                              }else {
+                                  $('.cardCore').addClass('layui-hide');
+                                  $('.cardPush').removeClass('layui-hide');
+                              }
                             
-                              SecondSpeed=arr[41].value;
-                              SecondPulse=arr[42].value;
-                              SecondLevel=arr[43].value;
-                              SecondStartInterval=arr[44].value;
-                              OutSpeed=arr[45].value;
-                              OutPulse=arr[46].value;
-                              CountLevel=arr[47].value;
-                              OutLevel=arr[48].value;
+                              SecondSpeed=arr[44].value;
+                              SecondPulse=arr[45].value;
+                              SecondLevel=arr[46].value;
+                              SecondStartInterval=arr[47].value;
+                              OutSpeed=arr[48].value;
+                              OutPulse=arr[49].value;
+                              CountLevel=arr[50].value;
+                              OutLevel=arr[51].value;
                               
-                              ExceptOutTest=arr[54].value;
-                              ExceptOutSpeed=arr[55].value;
+                              ExceptOutTest=arr[57].value;
+                              ExceptOutSpeed=arr[58].value;
                           GameType=arr[7].value;
                           eGameType=arr[7].value;
                           xc.getGameType(token,layer,form,'游戏机类型','GameType',arr[7].value);
-                          FreeLotteryRules=arr[66].value;
-                          newMemberElec(table,arr[66].value)
+                          FreeLotteryRules=arr[69].value;
+                          newMemberElec(table,arr[69].value)
                           xc.openEasy(layer);
 
                           form.render();

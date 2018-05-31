@@ -13,6 +13,7 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         public int ID { get; set; }
         public string OrderID { get; set; }
         public int? OrderType { get; set; }
+        public string OrderTypeStr { get { return ((GoodOutOrderType?)OrderType).GetDescription(); } set { } }
         public string CreateTime { get; set; }
         public int? OutCount { get; set; }
         public decimal? OutTotal { get; set; }

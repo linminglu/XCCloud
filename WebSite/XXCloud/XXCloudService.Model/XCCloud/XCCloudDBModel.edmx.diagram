@@ -170,10 +170,10 @@
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_MemberCard_Exit" Width="1.5" PointX="41.375" PointY="13.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_GameFreeLotteryRule" Width="1.5" PointX="41.375" PointY="18.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Base_DeviceInfo_Ext" Width="1.5" PointX="41.375" PointY="22.75" />
-        <EntityTypeShape EntityType="XCCloudDBModel.Data_GoodExitInfo" Width="1.5" PointX="13.375" PointY="39.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_GoodOutOrder" Width="1.5" PointX="15.375" PointY="37.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_GoodOutOrder_Detail" Width="1.5" PointX="17.375" PointY="37.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_GameInfo" Width="1.5" PointX="17.375" PointY="41.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.Data_GoodExitInfo" Width="1.5" PointX="41.375" PointY="0.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

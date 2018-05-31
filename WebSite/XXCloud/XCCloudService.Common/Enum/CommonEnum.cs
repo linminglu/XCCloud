@@ -1020,6 +1020,8 @@ namespace XCCloudService.Common.Enum
         Transfer = 1,       //转仓出库
         [Description("入库退货")]
         Exit = 2,           //入库退货
+        [Description("入库退货单")]
+        ExitOrder = 3            //入库退货单
     }
 
     /// <summary>
