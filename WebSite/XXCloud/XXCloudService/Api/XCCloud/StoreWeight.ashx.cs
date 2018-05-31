@@ -27,10 +27,9 @@ namespace XXCloudService.Api.XCCloud
         {
             try
             {
-                string errMsg = string.Empty;
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
-
+               
                 var list = Base_StoreInfoService.I.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)).Select(o => new 
                 {
                     StoreID = o.StoreID,
@@ -119,6 +118,9 @@ namespace XXCloudService.Api.XCCloud
         {
             try
             {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+
                 string errMsg = string.Empty;
                 string storeId = dicParas.ContainsKey("storeId") ? (dicParas["storeId"] + "") : string.Empty;
                 string userId = dicParas.ContainsKey("userId") ? (dicParas["userId"] + "") : string.Empty;
@@ -171,6 +173,7 @@ namespace XXCloudService.Api.XCCloud
                 base_StoreWeight.StoreID = storeId;
                 base_StoreWeight.WeightType = (int)ChainStoreWeightType.Whole;
                 base_StoreWeight.WeightValue = iWeightValue;
+                base_StoreWeight.MerchID = merchId;
                 if (!base_StoreWeightService.Add(base_StoreWeight))
                 {
                     errMsg = "添加门店权重信息失败";
@@ -358,6 +361,9 @@ namespace XXCloudService.Api.XCCloud
         {
             try
             {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+
                 string errMsg = string.Empty;
                 string storeId = dicParas.ContainsKey("storeId") ? (dicParas["storeId"] + "") : string.Empty;
                 string userId = dicParas.ContainsKey("userId") ? (dicParas["userId"] + "") : string.Empty;
@@ -429,6 +435,7 @@ namespace XXCloudService.Api.XCCloud
                                 var base_StoreWeight_GameModel = new Base_StoreWeight_Game();
                                 base_StoreWeight_GameModel.WeightID = iId;
                                 base_StoreWeight_GameModel.GameID = gId;
+                                base_StoreWeight_GameModel.MerchID = merchId;
                                 dbContext.Entry(base_StoreWeight_GameModel).State = EntityState.Added;                            
                             }
 
@@ -564,11 +571,12 @@ namespace XXCloudService.Api.XCCloud
         {
             try
             {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+
                 string errMsg = string.Empty;
                 string revStoreId = dicParas.ContainsKey("revStoreId") ? (dicParas["revStoreId"] + "") : string.Empty;
                 string ruleType = dicParas.ContainsKey("ruleType") ? (dicParas["ruleType"] + "") : string.Empty;
-                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
 
                 if (string.IsNullOrEmpty(revStoreId))
                 {
@@ -602,6 +610,7 @@ namespace XXCloudService.Api.XCCloud
                 var base_ChainRule_StoreModel = new Base_ChainRule_Store();
                 base_ChainRule_StoreModel.RuleGroupID = ruleGroupId;
                 base_ChainRule_StoreModel.StoreID = revStoreId;
+                base_ChainRule_StoreModel.MerchID = merchId;                
                 if (base_ChainRule_StoreService.Any(a => a.StoreID.Equals(revStoreId, StringComparison.OrdinalIgnoreCase) && a.RuleGroupID == ruleGroupId))
                 {
                     errMsg = "该门店连锁规则已存在";
