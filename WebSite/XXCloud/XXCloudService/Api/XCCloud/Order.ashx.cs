@@ -842,7 +842,7 @@ namespace XXCloudService.Api.XCCloud
                     " inner join Flw_Food_Sale c on b.FoodFlwID=c.ID " +
                     " inner join Data_FoodInfo d on c.FoodID=d.FoodID " +
                     " left join Base_StoreInfo e on d.StoreID=e.StoreID " +
-                    " left join (select b.* from Dict_System a inner join Dict_System b on a.ID=b.PID where a.DictKey='套餐类别' and a.PID=0) f on convert(varchar, d.FoodType)=f.DictValue " +
+                    " left join Dict_System f on d.FoodType=f.ID " +
                     " left join (select b.* from Dict_System a inner join Dict_System b on a.ID=b.PID where a.DictKey='充值方式' and a.PID=0) g on convert(varchar, d.RechargeType)=g.DictValue " +
                     " left join (select b.* from Dict_System a inner join Dict_System b on a.ID=b.PID where a.DictKey='套餐状态' and a.PID=0) h on convert(varchar, d.FoodState)=h.DictValue " +
                     " where a.ID=@id ";

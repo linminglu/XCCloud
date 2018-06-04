@@ -30,7 +30,7 @@
 		<table class="layui-hide" id="merchStoreListTable"  lay-filter="merchStoreList"></table>
 	</div>
 	<!--//查看详情-->
-	<div id="lookStoreDetils" style="display: none;">
+	<div id="lookStoreDetils"  class=" goodIsAll" style="display: none;">
 		<form action="" class="layui-form">
 			<div class="layui-tab">
 				<ul class="layui-tab-title">
@@ -309,7 +309,7 @@
 		</form>
 	</div>
     <!--//新增商户-->
-	<div class="formtMerchant" id="formtMerchant">
+	<div class="formtMerchant goodIsAll" id="formtMerchant">
 		<form class="form layui-form layui-form-pane">
 			<div class="layui-col-md8 layui-col-sm8 layui-col-lg8">
 				<div class="layui-form-item">
@@ -401,7 +401,7 @@
 		</form>
 	</div>
 	<!--//查询板块-->
-	<div id="searchModel" style="display: none">
+	<div id="searchModel" class="goodIsAll" style="display: none">
 		<form action="" class="layui-form" style="padding: 15px">
 			<div class="layui-form-item layui-form-pane">
 				<label class="layui-form-label">查询条件</label>
@@ -479,8 +479,6 @@
                                 ,{fixed: 'right', title: '操作', width:120, align:'center', toolbar: '#barDemoLook'}
                             ]};
                         getInitData(parm);
-                        layui.use('layer', function() {
-                            var layer = layui.layer;
                             layer.open({
                                 type: 1,
                                 title:'<button class="layui-btn">商户:'+data.MerchID+'门店列表<span class="layui-badge-dot layui-bg-orange"></span></button>',
@@ -488,7 +486,7 @@
                                 shadeClose:true,
                                 area: ['1400px','500px']
                             })
-                        });
+
 					}
 
                 } else if (layEvent === 'del') { //删除

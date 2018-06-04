@@ -855,7 +855,7 @@ function setSelect(objVal,id,m) {
         success: function (data) {
             data=JSON.parse(data);
             if(data.result_code=="1"){
-                var arr=data.result_data;
+                var arr=data.result_data.children;
                 $('#'+id).html('<option value="">-请选择-</option>');
                 for(i in arr){
                     $('#'+id).append("<option value='"+arr[i].dictValue+"'>"+arr[i].name+"</option>");

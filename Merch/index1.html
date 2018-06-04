@@ -245,6 +245,7 @@
                             logMsg.MerchTag=data.result_data.Tag;
                             logMsg.token=data.result_data.Token;
                             logMsg.logType=2;
+                            logMsg.userType=4;
                             xc.setStorage('logMsg',JSON.stringify(logMsg));
                             xc.setStorage('token',data.result_data.Token);
                             window.location.href='/merch/index1.html';
@@ -254,7 +255,7 @@
             })
         }
         $('#storeSys').on('click',function () {
-            if(logMsg.userType==4||logMsg.userType==5){
+            if(logMsg.userType==1||logMsg.userType==2){
                 let obj={'userToken':token,'merchId':logMsg.merchId,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
                 let parasJson = JSON.stringify(obj);
                 $.ajax({

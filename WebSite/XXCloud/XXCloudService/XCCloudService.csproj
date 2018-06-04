@@ -400,6 +400,7 @@
     <Content Include="Api\XCCloud\ProjectTicket.ashx" />
     <Content Include="Api\XCCloud\GameEncourage.ashx" />
     <Content Include="Api\XCCloud\XCCloudMD5Key.ashx" />
+    <Content Include="Api\XCCloud\FoodType.ashx" />
     <None Include="Properties\PublishProfiles\111.pubxml" />
     <None Include="Properties\PublishProfiles\qqq.pubxml" />
     <None Include="Properties\PublishProfiles\rrr.pubxml" />
@@ -1164,6 +1165,9 @@
     </Compile>
     <Compile Include="Api\Payment.ashx.cs">
       <DependentUpon>Payment.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="Api\XCCloud\FoodType.ashx.cs">
+      <DependentUpon>FoodType.ashx</DependentUpon>
     </Compile>
     <Compile Include="Api\XCCloud\FreeGiveRule.ashx.cs">
       <DependentUpon>FreeGiveRule.ashx</DependentUpon>

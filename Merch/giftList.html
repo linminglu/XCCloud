@@ -494,6 +494,7 @@
                             if(data.result_code==1){
                                 let arr=data.result_data;
                                 Status=1; GoodType=arr.GoodType; id=arr.ID;
+                                balanceType=''; balanceTypeStr='';
                                 priceArr=arr.goodInfoPrice;
                                 table.render({
                                     elem: '#priceTable'
@@ -533,6 +534,7 @@
                                 $('#createBarcodeBtn').addClass('layui-hide');
                                 // xc.setSelect('商品类别','GoodType',arr.GoodType);
                                 xc.getGoogsTypeDic(merchId,'商品类别','GoodType',form,layer,arr.GoodType);
+                                xc.getBalanceTypeDic('',token,layer,form,'balanceType');
                                 $('#GoodName').val(arr.GoodName);
                                 $('#sold').val(arr.ReturnTime);
                                 $('#Note').val(arr.Note);

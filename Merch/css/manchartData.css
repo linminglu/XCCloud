@@ -85,8 +85,8 @@ background-color: #f2f1f1; padding: 15px;}
 /*商户信息列表*/
 .formtMerchant{ display: none;padding: 15px;}
  .formtMerchant .form{border: 1px solid #999999;height: 450px;padding: 15px;}
-.formtMerchant .form #demo1{width:270px;height:358px; border:1px dashed #999999;  margin:0 20px;overflow-y:scroll;
-    float:left; padding: 15px;}
+.formtMerchant .form #demo1{width:300px;height:358px; border:1px dashed #999999;  margin:0 10px;overflow:auto;
+    float:left; padding: 5px;}
 
 
 /*微信用户列表*/

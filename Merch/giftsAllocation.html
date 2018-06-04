@@ -593,7 +593,7 @@
         //弹出层
         $('#applyBtn').on('click',function () {
             xc.getDepotDic('','',token,layer,form,'OutDepotId');
-            xc.GetStoreList(token,layer,form,'InStoreId');
+            xc.GetUnderStores(token,layer,form,'InStoreId');
             layer.open({
                 title:'申请记录',
                 type:1,

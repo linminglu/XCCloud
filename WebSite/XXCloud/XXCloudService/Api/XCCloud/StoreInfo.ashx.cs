@@ -179,7 +179,7 @@ namespace XCCloudService.Api.XCCloud
             }
         }
 
-        [Authorize(Roles = "MerchUser")]
+        [Authorize(Roles = "MerchUser,StoreUser")]
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object GetUnderStores(Dictionary<string, object> dicParas)
         {

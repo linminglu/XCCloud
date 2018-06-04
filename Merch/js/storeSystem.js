@@ -1413,6 +1413,30 @@ xcActionSystem.prototype= {
             }
         });
     },
+    //获取门店列表
+    GetUnderStores:function (token,layer,form,id) {
+        let _obj={'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+        let parseJson = JSON.stringify(_obj);
+        $.ajax({
+            type:'post',
+            url:'/XCCloud/StoreInfo?action=GetUnderStores',
+            contentType: "application/json; charset=utf-8",
+            data:{parasJson: parseJson},
+            success: function (data) {
+                data = JSON.parse(data);
+                if (data.result_code == 1){
+                    let arr=data.result_data;
+                    $('#'+id).html('<option>-请选择-</option>');
+                    for(let i in arr){
+                        $('#'+id).append('<option value="'+arr[i].Key+'">'+arr[i].Value+'</option>')
+                    }
+                    form.render('select');
+                } else {
+                    layer.msg(data.Result_Msg);
+                }
+            }
+        });
+    },
     //......................................游戏机档案维护
     //获取会员级别列表
     gameMemberLevel: function (token,form,layer) {

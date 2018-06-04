@@ -486,18 +486,7 @@ namespace XCCloudService.Common.Enum
         Leave = 2,//离职
         Lock = 3,//锁定
         Vacation = 4//休假
-    }
-
-    //套餐类别
-    public enum FoodType
-    {
-        Coin = 0,//充值
-        Member = 1,//入会
-        Digit = 2,//数字币
-        Good = 3,//商品
-        Ticket = 4,//门票
-        Beverage = 5//礼包
-    }
+    }    
 
     public enum FoodDetailType
     {
