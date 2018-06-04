@@ -861,7 +861,7 @@ xcActionSystem.prototype= {
                     if (data.result_code == 1) {
                       let  tableData = data.result_data;
                         for (var i in tableData){
-                            $('#'+id).append('<input type="checkbox" name="like[write]" lay-skin="primary" lay-filter="ml" value="'+tableData[i].Key+'" title="'+tableData[i].Value+'"><br>')
+                            $('#'+id).append('<input type="checkbox" name="like[write]" lay-skin="primary" lay-filter="ml" value="'+tableData[i].MemberLevelID+'" title="'+tableData[i].MemberLevelName+'"><br>')
                         }
                         layui.use('form',function () {
                             var form=layui.form;
@@ -2205,6 +2205,38 @@ xcActionSystem.prototype= {
                     form.render('select');
                 } else {
                     layer.msg(data.result_msg||data.return_msg);
+                }
+            }
+        });
+    },
+    //获取套餐类别
+    getFoodTypeDic:function (token,layer,form,id,selected) {
+        let _obj = {'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'};
+        let parseJson = JSON.stringify(_obj);
+        $.ajax({
+            type: 'post',
+            url: '/XCCloud/FoodType?action=GetFoodTypeDic',
+            contentType: "application/json; charset=utf-8",
+            data: {parasJson: parseJson},
+            success: function (data) {
+                data = JSON.parse(data);
+                if (data.result_code == 1) {
+                    let arr = data.result_data;
+                    $('#' + id).html('<option>-请选择-</option>');
+                    for (let i in arr) {
+                        if (selected!=undefined) {
+                            if (arr[i].ID == selected) {
+                                $('#' + id).append('<option value="' + arr[i].ID + '" selected>' + arr[i].DictKey + '</option>')
+                            } else {
+                                $('#' + id).append('<option value="' + arr[i].ID + '">' + arr[i].DictKey + '</option>')
+                            }
+                        } else {
+                            $('#' + id).append('<option value="' + arr[i].ID + '">' + arr[i].DictKey + '</option>')
+                        }
+                    }
+                    form.render('select');
+                } else {
+                    layer.msg(data.result_msg || data.return_msg);
                 }
             }
         });

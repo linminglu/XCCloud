@@ -245,7 +245,7 @@
                             logMsg.MerchTag=data.result_data.Tag;
                             logMsg.token=data.result_data.Token;
                             logMsg.logType=2;
-                            logMsg.userType=4;
+                            // logMsg.userType=4;
                             xc.setStorage('logMsg',JSON.stringify(logMsg));
                             xc.setStorage('token',data.result_data.Token);
                             window.location.href='/merch/index1.html';
@@ -265,7 +265,7 @@
                     data: {parasJson: parasJson},
                     success: function (data) {
                         data = JSON.parse(data);
-                        console.log(data);
+                        // console.log(data);
                         if(data.result_code==1){
                             let arr=data.result_data;
                             if(arr.length>0){

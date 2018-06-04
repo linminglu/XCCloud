@@ -34,7 +34,7 @@ namespace XXCloudService.Api.XCCloud
 
                 string sql = @"select a.ID, a.DictKey, a.Comment, a.OrderID, a.Enabled, (case a.Enabled when 1 then '允许' when 0 then '禁止' else '' end) as EnabledStr " +  
                     " from Dict_System a INNER JOIN Dict_System b on a.PID=b.ID" +
-                    " where a.MerchID=@MerchId AND b.PID=0 AND b.DictKey='商品类别'";
+                    " where a.MerchID=@MerchId AND b.PID=0 AND b.DictKey='套餐类别'";
 
                 var data_FoodType = Dict_SystemService.I.SqlQuery<Data_FoodTypeListModel>(sql, parameters).ToList();
 
@@ -113,7 +113,7 @@ namespace XXCloudService.Api.XCCloud
                 if (!dicParas.Get("enabled").Validint("是否启用状态", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-                var id = dicParas.Get("id").Toint();
+                var id = dicParas.Get("id").Toint(0);
                 var dictKey = dicParas.Get("dictKey");
                 var comment = dicParas.Get("comment");
                 var enabled = dicParas.Get("enabled").Toint();

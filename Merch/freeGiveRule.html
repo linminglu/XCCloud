@@ -286,7 +286,6 @@
         table.on('tool(freeGiveRuleTable)',function (obj) {
             let data=obj.data;
             let layevent=obj.event;
-            couponId=data.ID
             if(layevent==='up'){ //升级
                 layer.confirm('确定升级该免费规则吗', function(index){
                     let _obj={'id':data.ID,'updateState':'-1','userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};

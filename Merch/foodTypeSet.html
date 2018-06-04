@@ -58,7 +58,7 @@
             ,{field:'DictKey', title: '套餐类别名称', align: 'center'}
             ,{field:'Enabled', title: '状态', align: 'center',templet:'#enabled'}
             ,{field:'Comment', title: '说明', align: 'center'}
-            ,{fixed: 'right', title: '操作', width:140, align:'center', toolbar: '#barDemo'}
+            ,{fixed: 'right', title: '操作', width:180, align:'center', toolbar: '#barDemo'}
         ]
     };
     xc.getInitData(parm);
@@ -109,10 +109,81 @@
             })
         });
 
+        table.on('tool(foodTypeTable)',function (obj) {
+            let _data=obj.data;
+            let layevent=obj.event;
+            id=_data.ID;
+            if(layevent==='del'){
+                layer.confirm('确定删除该规则吗', function(index){
+                    let _obj={'id':_data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                    let parseJson = JSON.stringify(_obj);
+                    $.ajax({
+                        type:'post',
+                        url:'/XCCloud/FoodType?action=DelFoodType',
+                        contentType: "application/json; charset=utf-8",
+                        data:{parasJson: parseJson},
+                        success: function (data) {
+                            data = JSON.parse(data);
+                            if (data.result_code == 1) {
+                                layer.msg('删除成功',{time:1500},function () {
+                                    location.reload();
+                                });
+                            } else {
+                                layer.msg(data.result_msg||return_msg);
+                            }
+                        }
+                    })
+                })
+            }else if(layevent==='upLevel'){
+                layer.confirm('确定升级该规则吗', function(index){
+                    let _obj={'id':_data.ID,'orderState':-1,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                    let parseJson = JSON.stringify(_obj);
+                    $.ajax({
+                        type:'post',
+                        url:'/XCCloud/FoodType?action=OrderFoodType',
+                        contentType: "application/json; charset=utf-8",
+                        data:{parasJson: parseJson},
+                        success: function (data) {
+                            data = JSON.parse(data);
+                            if (data.result_code == 1) {
+                                layer.msg('升序成功',{time:1500},function () {
+                                    location.reload();
+                                });
+                            } else {
+                                layer.msg(data.result_msg||return_msg);
+                            }
+                        }
+                    })
+                })
+            }else if(layevent==='downLevel'){
+                layer.confirm('确定降级该规则吗', function(index){
+                    let _obj={'id':_data.ID,'orderState':-1,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                    let parseJson = JSON.stringify(_obj);
+                    $.ajax({
+                        type:'post',
+                        url:'/XCCloud/FoodType?action=OrderFoodType',
+                        contentType: "application/json; charset=utf-8",
+                        data:{parasJson: parseJson},
+                        success: function (data) {
+                            data = JSON.parse(data);
+                            if (data.result_code == 1) {
+                                layer.msg('降序成功',{time:1500},function () {
+                                    location.reload();
+                                });
+                            } else {
+                                layer.msg(data.result_msg||return_msg);
+                            }
+                        }
+                    })
+                })
+            }
+        })
     })
 </script>
 <script type="text/html" id="barDemo">
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="upLevel">升序</a>
+    <a class="layui-btn layui-bg-orange layui-btn-xs" lay-event="downLevel">降序</a>
 </script>
 <script type="text/html" id="enabled">
     {{# if(d.Enabled==1){ }}

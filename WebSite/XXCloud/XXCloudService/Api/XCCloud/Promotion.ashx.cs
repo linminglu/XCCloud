@@ -464,9 +464,11 @@ namespace XXCloudService.Api.XCCloud
                 var FoodLevels = from c in
                                      (from a in Data_Food_LevelService.N.GetModels(p => p.FoodID == foodId)
                                       join b in Data_MemberLevelService.N.GetModels(p => p.State == 1) on a.MemberLevelID equals b.MemberLevelID
+                                      join c in Data_MemberLevelService.N.GetModels(p => p.State == 1) on a.UpdateLevelID equals c.MemberLevelID
                                       select new
                                       {
                                           a = a,
+                                          UpdateLevelName = c.MemberLevelName,
                                           MemberLevelID = b.MemberLevelID,
                                           MemberLevelName = b.MemberLevelName
                                       }).AsEnumerable()
@@ -488,7 +490,8 @@ namespace XXCloudService.Api.XCCloud
                                      MemberFreqType = g.FirstOrDefault().a.MemberFreqType,
                                      MemberCount = g.FirstOrDefault().a.MemberCount,
                                      PriorityLevel = g.FirstOrDefault().a.PriorityLevel,
-                                     UpdateLevelID = g.FirstOrDefault().a.UpdateLevelID
+                                     UpdateLevelID = g.FirstOrDefault().a.UpdateLevelID,
+                                     UpdateLevelName = g.FirstOrDefault().UpdateLevelName
                                  };                                 
 
                 //int FoodDetailId = Dict_SystemService.I.GetModels(p => p.DictKey.Equals("套餐内容") && p.PID == 0).FirstOrDefault().ID;
