@@ -36,6 +36,12 @@
                     </select>
                 </div>
             </div>
+            <div class="layui-inline GameCode" >
+                <label class="layui-form-label">游戏机编号</label>
+                <div class="layui-input-inline">
+                    <input type="text"  class="layui-input" name="GameCode" id="GameCode">
+                </div>
+            </div>
             <br>
             <div class="layui-inline State goodIsAll">
                 <label class="layui-form-label">设备启用</label>
@@ -130,7 +136,7 @@
                             </div>
                         </div>
                         <div class="layui-inline GameCode" >
-                            <label class="layui-form-label">游戏机编号</label>
+                            <label class="layui-form-label">出厂编号</label>
                             <div class="layui-input-inline">
                                 <input type="text"  class="layui-input" name="GameCode" id="GameCode">
                             </div>
@@ -176,14 +182,19 @@
                                         </select>
                                     </div>
                                 </div>
-
-                                <div class="layui-inline State ">
+                                <div class="layui-inline buyTimeEasy" >
+                                    <label class="layui-form-label">游戏机编号</label>
+                                    <div class="layui-input-inline">
+                                        <input type="text"  class="layui-input"  name="hGameCode">
+                                    </div>
+                                </div>
+                                <div class="layui-inline State">
                                     <label class="layui-form-label">设备启用</label>
                                     <div class="layui-input-inline">
                                         <input type="checkbox" checked lay-skin="switch" name="State" lay-text="启用|禁用" id="State"lay-filter="State">
                                     </div>
                                 </div>
-
+                                <br>
                                 <div class="layui-inline LotteryMode ">
                                     <label class="layui-form-label">退彩票到会员卡</label>
                                     <div class="layui-input-inline">

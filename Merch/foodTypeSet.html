@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>套餐类别设定</title>
+    <link rel="stylesheet" href="layui/css/layui.css">
+    <link rel="stylesheet" href="layui/css/layui_font.css">
+</head>
+<body>
+<div class="layui-row" style="padding: 15px;">
+    <blockquote class="layui-elem-quote" style="text-align:right;padding-right: 50px;">
+        <button type="button" class="layui-btn">查询</button>
+        <button type="button" class="layui-btn" id="add">新增</button>
+    </blockquote>
+    <table class="layui-hide" id="foodTypeTable" lay-filter="foodTypeTable"></table>
+</div>
+<!--新增规则-->
+<div id="openModel" style="padding: 15px;display: none" class="goodIsAll">
+    <form action="" class="layui-form layui-form-pane" lay-filter="formtest">
+        <div class="layui-form-item">
+            <label  class="layui-form-label" style="padding: 8px 0">套餐类别名称</label>
+            <div class="layui-input-block" >
+                <input type="text" class="layui-input" name="dictKey">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <!--<label  class="layui-form-label">赠送类别</label>-->
+                <div class="layui-input-inline">
+                    <input type="checkbox" title="是否显示" name="enabled" lay-filter="enabled" lay-skin="primary">
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label  class="layui-form-label">说明</label>
+            <div class="layui-input-block">
+                <input type="text" class="layui-input" name="comment">
+            </div>
+        </div>
+    </form>
+    <div class="layui-col-md12" style="text-align:center;">
+        <button type="button" class="layui-btn" id="save">确定</button>
+    </div>
+</div>
+</body>
+<script src="js/jquery-1.8.3-min.js"></script>
+<script src="layui/layui.js"></script>
+<script src="js/storeSystem.js"></script>
+<script>
+    var xc=xcActionSystem.prototype;
+    var token=xc.getStorage('token');
+    let parm={'obj':{'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'},
+        'url':'/XCCloud/FoodType?action=QueryFoodType',
+        'elem':'#foodTypeTable',
+        'cols':[
+            {field:'ID', title:'ID', align: 'center', sort: true}
+            // ,{field:'OrderID', title: '类别编号', align: 'center'}
+            ,{field:'DictKey', title: '套餐类别名称', align: 'center'}
+            ,{field:'Enabled', title: '状态', align: 'center'}
+            ,{field:'Comment', title: '说明', align: 'center'}
+            ,{fixed: 'right', title: '操作', width:140, align:'center', toolbar: '#barDemo'}
+        ]
+    };
+    xc.getInitData(parm);
+    let id='';let enabled=0;
+    layui.use(['form','table','layer'],function () {
+        let form=layui.form;
+        let table=layui.table;
+        let layer=layui.layer;
+        form.on('checkbox(enabled)',function (data) {
+            if(data.elem.checked){
+                enabled=1;
+            }else {
+                enabled=0;
+            }
+        });
+        $('#add').click(function () {
+            id='';
+            layer.open({
+                title:'新增套餐类型',
+                type:1,
+                area:'800px',
+                content:$('#openModel')
+            })
+        });
+        $('#save').click(function () {
+            let obj={'id':id,
+            'dictKey':$('input[name="dictKey"]').val(),
+            'comment':$('input[name="comment"]').val(),
+            'enabled':enabled,
+            'userToken':token,
+            'signkey':'1f626576304bf5d95b72ece2222e42c3'}
+            let parasJson = JSON.stringify(obj);
+            $.ajax({
+                type: "post",
+                url: '/XCCloud/FoodType?action=SaveFoodType',
+                contentType: "application/json; charset=utf-8",
+                data: {parasJson: parasJson},
+                success: function (data) {
+                    data = JSON.parse(data);
+                    if(data.result_code==1){
+                        layer.msg('保存成功！',{time:1500},function () {
+                            location.reload();
+                        })
+                    }else {
+                        layer.msg(data.result_msg)
+                    }
+                }
+            })
+        });
+
+    })
+</script>
+</html>
