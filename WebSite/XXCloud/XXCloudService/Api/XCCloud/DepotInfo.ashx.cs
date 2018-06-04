@@ -244,7 +244,7 @@ namespace XXCloudService.Api.XCCloud
 
                 var depotId = dicParas.Get("depotId").Toint(0) ;
 
-                var query = Base_GoodsInfoService.N.GetModels(p => p.AllowStorage == 1); //只显示允许入库的同级商品
+                var query = Base_GoodsInfoService.N.GetModels(p => p.AllowStorage == 1 && p.Status == 1); //只显示允许入库的同级商品
                 if (userTokenKeyModel.LogType == (int)RoleType.MerchUser)
                 {
                     //商户仅看到总店的库存商品

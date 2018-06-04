@@ -2,13 +2,16 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>礼品库存</title>
+    <title>出库</title>
     <link rel="stylesheet" href="layui/css/layui.css">
 </head>
+<style>
+    .layui-table-header  tr th[data-field="0"] div div{display: none}
+</style>
 <body>
 <div class="layui-row" style="padding: 10px;">
     <blockquote class="layui-elem-quote" style="text-align: right;padding-right: 100px">
-        <button type="button" class="layui-btn layui-btn-normal" id="add"><i class="layui-icon">&#xe615;</i>入库</button>
+        <button type="button" class="layui-btn layui-btn-normal" id="add"><i class="layui-icon">&#xe615;</i>出库</button>
         <button type="button" class="layui-btn layui-btn-normal"><i class="layui-icon">&#xe615;</i>查询</button>
     </blockquote>
     <div class="layui-col-lg12 layui-col-md12 layui-col-sm12 layui-col-xs12">
@@ -18,23 +21,43 @@
 <!--入库弹出层-->
 <div id="openModel" style="display: none;padding: 15px;">
     <form action="" class="layui-form layui-form-pane">
-        <div class="layui-form-item" style="position: relative">
-            <div class="layui-inline">
-                <label class="layui-form-label">入库仓库</label>
+        <div class="layui-form-item">
+            <div class="layui-inline OrderIDBox">
+                <label class="layui-form-label">出库单号</label>
                 <div class="layui-input-inline">
-                    <select name="inDepot" id="inDepot" lay-filter="inDepot"></select>
+                    <input type="text" name="OrderID" id="OrderID" class="layui-input"></input>
                 </div>
             </div>
             <div class="layui-inline">
-                <label class="layui-form-label">采购渠道</label>
-                <div class="layui-input-inline" style="z-index: 4">
-                    <input type="text" class="layui-input" placeholder="点击左侧输入，右侧选择">
-
-                </div>
-                <div class="layui-input-inline" style="position: absolute;left: 190px;z-index: 3">
-                    <select name="" id="">
-
+                <label class="layui-form-label">出库仓库</label>
+                <div class="layui-input-inline">
+                    <select name="DepotID" id="DepotID" lay-filter="DepotID">
                     </select>
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">出库类别</label>
+                <div class="layui-input-inline">
+                    <select name="OrderType" id="OrderType" lay-filter="OrderType">
+                        <option>-请选择-</option>
+                        <option value="0">废品出库</option>
+                        <option value="1">转仓出库</option>
+                        <option value="2">入库退货</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">出库总数</label>
+                <div class="layui-input-inline">
+                    <input name="OutCount" id="OutCount" class="layui-input" readonly>
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">出库总额</label>
+                <div class="layui-input-inline">
+                    <input name="OutTotal" id="OutTotal" class="layui-input" readonly>
                 </div>
             </div>
         </div>
@@ -49,32 +72,6 @@
             </div>
         </div>
         <table class="layui-hide" id="goodsStorage" lay-filter="goodsStorage"></table>
-        <div class="layui-form-item">
-            <div class="layui-inline">
-                <label class="layui-form-label">应付金额</label>
-                <div class="layui-input-inline">
-                    <input type="text" class="layui-input"  id="">
-                </div>
-            </div>
-            <div class="layui-inline">
-                <label class="layui-form-label">实付金额</label>
-                <div class="layui-input-inline">
-                    <input type="text" class="layui-input"  id="">
-                </div>
-            </div>
-            <div class="layui-inline">
-                <label class="layui-form-label">优惠金额</label>
-                <div class="layui-input-inline">
-                    <input type="text" class="layui-input"  id="">
-                </div>
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <label  class="layui-form-label">备注</label>
-            <div class="layui-input-block">
-                <input type="text" class="layui-input" placeholder="..." id="Note">
-            </div>
-        </div>
         <div style="text-align:center;">
             <button type="button" class="layui-btn" id="save">确定</button>
         </div>
@@ -84,7 +81,7 @@
 <div id="goodsListBox" style="display: none;padding: 15px">
     <table class="layui-hide" id="goodsList" lay-filter="goodsList"></table>
     <div style="text-align:center;margin: 15px 0;">
-        <button type="button" class="layui-btn" id="closeGoodBtn">取消</button>
+        <button type="button" class="layui-btn layui-btn-danger" id="closeGoodBtn">取消</button>
         <button type="button" class="layui-btn" id="saveGoodBtn">确定</button>
     </div>
 </div>
@@ -96,8 +93,9 @@
 
     let xc=xcActionSystem.prototype;
     let token=xc.getStorage('token');
-    let merchId=JSON.parse(xc.getStorage('logMsg')).MerchID;
-    let storeId=JSON.parse(xc.getStorage('logMsg')).StoreID;
+    let merchId=JSON.parse(xc.getStorage('logMsg')).merchId;
+    let storeId=JSON.parse(xc.getStorage('logMsg')).storeId;
+    let id='';
     let cols=[
         {field:'ID', title:'出库流水号', align: 'center', sort: true}
         ,{field:'OrderID', title:'出库单号', align: 'center', sort: true}
@@ -108,7 +106,7 @@
         ,{field:'OPUserName', title: '出库人', align: 'center'}
         ,{field:'StateStr', title: '状态', align: 'center'}
         ,{field:'CheckDate', title: '营业日期', align: 'center'}
-        ,{fixed: 'right', title: '操作', width:100, align:'center', toolbar: '#barDemo'}];
+        ,{fixed: 'right', title: '操作', width:240, align:'center', toolbar: '#barDemo'}];
     let parm={'obj':{'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'},
         'url':'/XCCloud/GoodsInfo?action=QueryGoodOutOrder',
         'elem':'#outDepotTable',
@@ -117,35 +115,175 @@
     xc.getInitData(parm);
 
     let storageGood=[];let index;
+    let DepotID='';let OrderType='';
     layui.use(['form','layer','table'],function () {
         let form=layui.form;
         let layer=layui.layer;
         let table=layui.table;
+        form.on('select(DepotID)',function (data) {
+            DepotID=data.value;
+        });
+        form.on('select(OrderType)',function (data) {
+            OrderType=data.value;
+        });
+        table.on('edit(goodsStorage)', function(obj){ //注：edit是固定事件名，test是table原始容器的属性 lay-filter="对应的值"
+            let value= obj.value; //得到修改后的值
+            let key=obj.field; //当前编辑的字段名
+            let index=obj.data.LAY_TABLE_INDEX; //所在行的所有相关数据
+            storageGood[index][key]=value;
+            if(key=='OutCount'){
+                storageGood[index].OutTotal=value*storageGood[index].OutPrice;
+                let sumExit=0;let sunTotal=0;
+                for(let i in storageGood){
+                    sumExit=parseInt(sumExit)+parseInt(storageGood[i].OutCount);
+                    sunTotal=parseInt(sunTotal)+parseInt(storageGood[i].OutCount)*parseInt(storageGood[i].OutPrice)
+                }
+                $('#OutCount').val(parseInt(sumExit));
+                $('#OutTotal').val(parseInt(sunTotal));
+            }
+            newFoodLevelTable(table,storageGood,layer,form);
+        });
+        //事件删除监听
+        table.on('tool(goodsStorage)',(obj)=> {
+            let data = obj.data;
+            let event = obj.event;
+            if (event === 'del') { //查看
+                for( let  i in storageGood){
+                    if(storageGood[i].GoodID==data.GoodID){
+                        storageGood.splice(i,1);
+                        obj.del();
+                    }
+                }
+            }
+        });
+        table.on('checkbox(goodsList)', function(obj){
+            if(obj.checked){
+                storageGood.push({'GoodID':obj.data.GoodID,
+                    'Barcode':obj.data.Barcode,
+                    'GoodName':obj.data.GoodName,
+                    'GoodTypeStr':obj.data.GoodTypeStr,
+                    'RemainCount':obj.data.RemainCount,
+                    'OutCount':'',
+                    'OutPrice':obj.data.InitialAvgValue,
+                    'OutTotal':'',
+                    'Note':'',
+                })
+            }else {
+                if(storageGood.length>0){
+                    let flag=false;
+                    for(let i in storageGood){
+                        if(storageGood[i].Barcode==obj.data.Barcode){
+                            flag=true
+                        }
+                    }
+                    if(flag){
+                        storageGood.splice(i,1)
+                    }
+                }
+            }
+        });
+        //操作主表
+        table.on('tool(outDepotTable)',function (obj) {
+            let _data=obj.data;
+            let layevent=obj.event;
+            id=_data.ID;
+            if(layevent==='edit'){
+                let _obj={'id':_data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                let parseJson = JSON.stringify(_obj);
+                $.ajax({
+                    type:'post',
+                    url:'/XCCloud/GoodsInfo?action=GetGoodStorage',
+                    contentType: "application/json; charset=utf-8",
+                    data:{parasJson: parseJson},
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        console.log(data);
+                        if (data.result_code == 1) {
+
+                        } else {
+                            layer.msg(data.result_msg);
+                        }
+                    }
+                })
+            }else if(layevent==='del'){      //删除
+                layer.confirm('确定删除此出库信息吗？', function(index){
+                    let _obj={'id':_data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                    let parseJson = JSON.stringify(_obj);
+                    $.ajax({
+                        type:'post',
+                        url:'/XCCloud/GoodsInfo?action=DelGoodOutOrder',
+                        contentType: "application/json; charset=utf-8",
+                        data:{parasJson: parseJson},
+                        success: function (data) {
+                            data = JSON.parse(data);
+                            if (data.result_code == 1) {
+                                layer.msg('删除成功',{time:1500},function () {
+                                    location.reload()
+                                })
+                            } else {
+                                layer.msg(data.result_msg);
+                            }
+                        }
+                    })
+                })
+            }else if(layevent==='check'){//审核
+                layer.confirm('确定删除此出库信息吗？', function(index){
+                    let _obj={'id':_data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                    let parseJson = JSON.stringify(_obj);
+                    $.ajax({
+                        type:'post',
+                        url:'/XCCloud/GoodsInfo?action=CheckGoodOutOrder',
+                        contentType: "application/json; charset=utf-8",
+                        data:{parasJson: parseJson},
+                        success: function (data) {
+                            data = JSON.parse(data);
+                            if (data.result_code == 1) {
+                                layer.msg('删除成功',{time:1500},function () {
+                                    location.reload()
+                                })
+                            } else {
+                                layer.msg(data.result_msg);
+                            }
+                        }
+                    })
+                })
+            }
+        });
         $('#add').on('click',function () {
-            xc.getDepotDic(merchId,storeId,token,layer,form,'inDepot')
+            id='';storageGood=[];DepotID=''; OrderType='';
+            $('.OrderIDBox').addClass('layui-hide').val('');
+            xc.getDepotDic(merchId,storeId,token,layer,form,'DepotID');
             newFoodLevelTable(table,storageGood,layer,form);
             layer.open({
-                title:'礼品入库',
+                title:'商品出库',
                 type:1,
                 area:['1000px','600px'],
                 content:$('#openModel')
             })
         });
+        //保存出库
         $('#save').on('click',function () {
-            let _obj={'depotName':$('#depotName').val(),
+            let _obj={
+                'id':id,
+                'merchId':merchId,
+                'storeId':storeId,
+                'orderID':$('#OrderID').val(),
+                'orderType':OrderType,
+                'depotId':DepotID,
+                'GoodOutOrderDetail':storageGood,
                 'userToken':token,
                 'signkey':'1f626576304bf5d95b72ece2222e42c3'};
             let parseJson = JSON.stringify(_obj);
             $.ajax({
                 type:'post',
-                url:'/XCCloud/GoodsInfo?action=AddGoodStorage',
+                url:'/XCCloud/GoodsInfo?action=SaveGoodOutOrder',
                 contentType: "application/json; charset=utf-8",
                 data:{parasJson: parseJson},
                 success: function (data) {
                     data = JSON.parse(data);
                     if (data.result_code == 1) {
                         layer.msg('操作成功',{time:1500},function () {
-                            location.href='giftsStorage.html'
+                            location.reload();
                         })
                     } else {
                         layer.msg(data.result_msg||data.return_msg);
@@ -154,33 +292,37 @@
             })
         });
         $('#searchGoods').on('click',function () {
-            initGoodsTb();
-            index=layer.open({
-                title:'选择奖品',
-                type:1,
-                area:'800px',
-                content:$('#goodsListBox')
-            })
+            initGoodsTb(layer);
         });
         $('#saveGoodBtn').on('click',function () {
             newFoodLevelTable(table,storageGood,layer,form);
             layer.close(index);
         });
     });
-    function initGoodsTb() {
+    function initGoodsTb(layer) {
         var searchText=$('#goodsName').val();
-        var parm={'obj':{'goodNameOrBarcode':searchText,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'},
-            'url':'/XCCloud/Promotion?action=GetGoodsInfoList',
-            'elem':'#goodsList',
-            'height':'210px',
-            'size':'sm',
-            'cols':[  {type:'checkbox'},
-                {field:'ID', title: '商品ID', align: 'center'}
-                ,{field:'Barcode', title: '商品条码', align: 'center'}
-                ,{field:'GoodName', title: '商品名称', align: 'center'}
-                ,{field:'GoodTypeStr', title: '商品类别', align: 'center'}
-            ]};
-        xc.getInitData(parm);
+        if(DepotID==''){layer.msg('请选择入库仓库')}else {
+            var parm={'obj':{'depotId':DepotID,'goodNameOrBarCode':searchText,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'},
+                'url':'/XCCloud/GoodsInfo?action=QueryGoodsStock',
+                'elem':'#goodsList',
+                'height':'210px',
+                'size':'sm',
+                'cols':[  {type:'checkbox'},
+                    {field:'GoodID', title: '商品ID', align: 'center'}
+                    ,{field:'Barcode', title: '商品条码', align: 'center'}
+                    ,{field:'GoodName', title: '商品名称', align: 'center'}
+                    ,{field:'GoodTypeStr', title: '商品类别', align: 'center'}
+                    ,{field:'InitialAvgValue', title: '库存成本', align: 'center'}
+                ]};
+            xc.getInitData(parm);
+           index= layer.open({
+                title:'选择奖品',
+                type:1,
+                area:'800px',
+                offset:'30px',
+                content:$('#goodsListBox')
+            })
+        }
     }
     function newFoodLevelTable(table,arr,layer,form) {
         table.render({
@@ -190,12 +332,15 @@
             , data: arr
             , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
             , cols: [[
-                {field:'Barcode', title: '会员级别', align: 'center'}
-                ,{field:'GoodName', title: '时段类型', align: 'center'}
-                ,{field:'GoodTypeStr', title: '有效周', align: 'center'}
-                ,{field:'StartTime', title: '当前库存', align: 'center'}
-                ,{field:'EndTime', title: '采购单价', align: 'center'}
-                ,{field:'ClientPrice', title: '入库数量', align: 'center'}
+                 {field:'GoodID', title: '商品ID', align: 'center',width:70}
+                ,{field:'Barcode', title: '商品条码', align: 'center'}
+                ,{field:'GoodName', title: '商品名称', align: 'center'}
+                ,{field:'GoodTypeStr', title: '商品类别', align: 'center'}
+                ,{field:'RemainCount', title: '当前库存', align: 'center'}
+                ,{field:'OutCount', title: '出库数量', align: 'center',edit:true}
+                ,{field:'OutPrice', title: '库存成本', align: 'center'}
+                ,{field:'OutTotal', title: '出库金额', align: 'center'}
+                ,{field:'Note', title: '备注', align: 'center',edit:true}
                 ,{fixed: 'right',title:'操作', width:140, align:'center', toolbar: '#barDemo1'}]]
             , page: {page: true, limits: [5,10, 15, 20]}
             , limit: 5
@@ -204,6 +349,16 @@
     }
 </script>
 <script type="text/html" id="barDemo">
-    <a class="layui-btn layui-btn-xs" lay-event="detail"> <i class="layui-icon">&#xe642;</i>编辑</a>
+    {{# if(d.OrderType!=3){ }}
+    <a class="layui-btn layui-btn-xs" lay-event="edit"> <i class="layui-icon">&#xe642;</i>编辑</a>
+    <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del"> <i class="layui-icon">&#xe642;</i>删除</a>
+    <a class="layui-btn layui-btn-xs layui-bg-orange" lay-event="check"> <i class="layui-icon">&#xe642;</i>审核</a>
+    {{# } }}
+</script>
+<script type="text/html" id="barDemo2">
+    <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del"> <i class="layui-icon">&#xe642;</i>删除</a>
+</script>
+<script type="text/html" id="barDemo1">
+    <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del"> <i class="layui-icon">&#xe642;</i>删除</a>
 </script>
 </html>

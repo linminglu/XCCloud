@@ -46,6 +46,32 @@ namespace XCCloudService.CacheService
             return listSqlDataRecord;
         }
 
+        public static List<SqlDataRecord> GetCouponList(string storeId, string json)
+        {
+            String[] Ary = new String[] { "数据0", "数据1" };
+            List<SqlDataRecord> listSqlDataRecord = new List<SqlDataRecord>();
+            SqlMetaData[] MetaDataArr = new SqlMetaData[] {
+                    new SqlMetaData("couponId", SqlDbType.Int), 
+                    new SqlMetaData("couponCode", SqlDbType.VarChar)  
+            };
+            string flwSendId = RedisCacheHelper.CreateCloudSerialNo(storeId);
+            List<OrderBuyDetailModel> buyDetailList = Utils.DataContractJsonDeserializer<List<OrderBuyDetailModel>>(json);
+
+            for (int i = 0; i < buyDetailList.Count; i++)
+            {
+                List<object> listParas = new List<object>();
+                listParas.Add(buyDetailList[i].FoodId);
+                listParas.Add(buyDetailList[i].Category);
+
+                var record = new SqlDataRecord(MetaDataArr);
+                for (int j = 0; j < Ary.Length; j++)
+                {
+                    record.SetValue(j, listParas[j]);
+                }
+                listSqlDataRecord.Add(record);
+            }
+            return listSqlDataRecord;
+        }
         public static void Add(FoodOrderCacheModel model)
         {
             FlwFoodOrderCache.Add(model);

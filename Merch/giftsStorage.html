@@ -91,7 +91,7 @@
         <button type="button" class="layui-btn" id="saveGoodBtn">确定</button>
     </div>
 </div>
-<!--退货-->
+<!--出库-->
 <div id="backGood" style="display:none; padding: 15px;">
     <table class="layui-hide" id="backGoodTable" lay-filter="backGoodTable"></table>
     <form action="" class="layui-form layui-form-pane">
@@ -142,8 +142,8 @@
         ,{field:'StoreName', title:'入库门店', align: 'center', sort: true}
         ,{field:'RealTime',title: '入库时间', align: 'center', templet: '#changeTime'} //width 支持：数字、百分比和不填写。
         ,{field:'Supplier', title: '采购渠道', align: 'center'}
-        ,{field:'StorageCount', title: '入库数量', align: 'center'}
-        ,{field:'TaxPrice', title: '采购单价', align: 'center'}
+        // ,{field:'StorageCount', title: '入库数量', align: 'center'}
+        // ,{field:'TaxPrice', title: '采购单价', align: 'center'}
         ,{field:'TotalPrice', title: '入库金额', align: 'center'}
         ,{field:'LogName', title: '入库经办人', align: 'center'}
         ,{field:'DepotName', title: '入库仓库', align: 'center'}
@@ -445,7 +445,7 @@
             'depotId':inDepot,
             'Supplier':$('#Supplier').val(),
             'goodStorageDetail':storageGood,
-          'Payable':$('#Payable').val(),
+            'Payable':$('#Payable').val(),
             'Payment':$('#Payment').val(),
             'Discount':$('#Discount').val(),
             'Note':$('#Note').val(),
@@ -533,6 +533,7 @@
                 ,{field:'ExitPrice', title: '入库单价', align: 'center',width:90}
                 ,{field:'ExitCount', title: '退货数量', align: 'center',edit:true,width:90}
                 ,{field:'ExitAll', title: '退货金额', align: 'center',width:90}
+                ,{fixed: 'right',title:'操作', width:140, align:'center', toolbar: '#barDemo2'}
             ]]
             , page: {page: true, limits: [5,10, 15, 20]}
             , limit: 5
@@ -550,6 +551,9 @@
 
 </script>
 <script type="text/html" id="barDemo1">
+    <a class="layui-btn layui-btn-xs" lay-event="del"> <i class="layui-icon">&#xe642;</i>删除</a>
+</script>
+<script type="text/html" id="barDemo2">
     <a class="layui-btn layui-btn-xs" lay-event="del"> <i class="layui-icon">&#xe642;</i>删除</a>
 </script>
 </html>

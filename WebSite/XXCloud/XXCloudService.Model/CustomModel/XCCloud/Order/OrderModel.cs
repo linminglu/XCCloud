@@ -95,7 +95,10 @@ namespace XCCloudService.Model.CustomModel.XCCloud.Order
         [DataMember(Name = "createTime", Order = 15)]
         public DateTime CreateTime { set; get; }
 
-        [DataMember(Name = "detail", Order = 16)]
+        [DataMember(Name = "userId", Order = 16)]
+        public int UserId { set; get; }
+
+        [DataMember(Name = "detail", Order = 17)]
         public List<OrderBuyDetail1Model> Detail { set; get; }
     }
 

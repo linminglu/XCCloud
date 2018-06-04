@@ -36,7 +36,8 @@ namespace XCCloudService.DAL.Base
                 {
                     if (Nullable.GetUnderlyingType(pi.PropertyType) == typeof(Decimal))
                     {
-                        var str = value.ToString().TrimEnd('0');//去除尾部0
+                        var val = value.ToString();
+                        var str = val.Contains('.') ? val.TrimEnd('0') : val;//去除小数点后尾部0
                         value = Convert.ChangeType(str, typeof(Decimal));
                     }
                     //else if (Nullable.GetUnderlyingType(pi.PropertyType) == typeof(DateTime))
@@ -107,8 +108,8 @@ namespace XCCloudService.DAL.Base
                     //更新校验码                    
                     str = GetClearText(identity, t, merchSecret);
                     md5 = Utils.MD5(str);
-                    //LogHelper.SaveLog(str);
-                    //LogHelper.SaveLog(md5);
+                    LogHelper.SaveLog(str);
+                    LogHelper.SaveLog(md5);
                     t.GetType().GetProperty("Verifiction").SetValue(t, md5, null);
                 }
             }

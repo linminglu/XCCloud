@@ -197,9 +197,10 @@
 <script>
         let xc=xcActionSystem.prototype;
         let token=xc.getStorage('token');
+        let merchId=JSON.parse(xc.getStorage('logMsg')).merchId;
         let Status=1;let GoodType='';let id='';
         let priceArr=[];let balanceType='';let balanceTypeStr='';
-        let AllowStorage=0;
+        let AllowStorage=1;
         let ReturnFlag=0;let AllowCreatePoint=0;let time=0;
         let money=0;let present=0;
 
@@ -326,7 +327,8 @@
                 $('#createBarcodeBtn').removeClass('layui-hide');
                 $('#Status').attr('disabled',true);
                 form.render();
-                xc.setSelect('商品类别','GoodType');
+                // xc.setSelect('商品类别','GoodType');
+                xc.getGoogsTypeDic(merchId,'商品类别','GoodType',form,layer)
                 xc.getBalanceTypeDic('',token,layer,form,'balanceType');
                 layer.open({
                     title:'新增商品',
@@ -351,7 +353,7 @@
                     'Status':Status,
                     'GoodType':GoodType,
                     'GoodName':$('#GoodName').val(),
-                    'AllowStorage':0,
+                    // 'AllowStorage':0,
                     'returnFlag':ReturnFlag,
                     'allowCreatePoint':AllowCreatePoint,
                     'returnTime':$('#sold').val(),
@@ -529,7 +531,8 @@
                                 $('#Barcode').val(arr.Barcode);
                                 $('#Prices').val(arr.Price);
                                 $('#createBarcodeBtn').addClass('layui-hide');
-                                xc.setSelect('商品类别','GoodType',arr.GoodType);
+                                // xc.setSelect('商品类别','GoodType',arr.GoodType);
+                                xc.getGoogsTypeDic(merchId,'商品类别','GoodType',form,layer,arr.GoodType);
                                 $('#GoodName').val(arr.GoodName);
                                 $('#sold').val(arr.ReturnTime);
                                 $('#Note').val(arr.Note);

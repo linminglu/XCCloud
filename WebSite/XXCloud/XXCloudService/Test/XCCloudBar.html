@@ -388,6 +388,13 @@
             common(url, parasJson);
         }
 
+        function do_getCacheOrder() {
+            var parasObj = { "sysId": "0", "versionNo": "0.0.0.1", "userToken" : userToken };
+            var url = "/XCCloud/order?action=getCacheOrder";
+            var parasJson = JSON.stringify(parasObj);
+            common(url, parasJson);
+        }
+
         function do_updateOrder() {
             var FoodSaleDetailList1 = { foodId: 1, category: 0, foodCount: 1, payType: 0, payNum: 1 / 2.0 };
             var FoodSaleDetailList2 = { foodId: 3, category: 0, foodCount: 2, payType: 0, payNum: 10 / 2.0 };
@@ -433,7 +440,8 @@
                 "realPay": "2.0",
                 "note": "", 
                 "authorId": "3",
-                "saleCoinType": "1"
+                "saleCoinType": "1",
+                "orderSource": 0
             };
             var url = "/XCCloud/order?action=updateOrder";
             var parasJson = JSON.stringify(parasObj);
@@ -517,12 +525,14 @@
         会员卡号:<input id="txt_MemberCardId_do_addOrderToCache" placeholder="请输入会员卡号" style="width:80px" value="10004143" />
         <input id="btn_do_addOrderToCache" type="button" value="do_addOrderToCache(添加订单)" onclick="do_addOrderToCache()" />
         &nbsp;&nbsp;&nbsp;&nbsp;
+        <input id="btn_do_getCacheOrder" type="button" value="do_getCacheOrder(获取缓存订单信息)" onclick="do_getCacheOrder()" />
+        &nbsp;&nbsp;&nbsp;&nbsp;
         订单号:<input id="txt_FlwOrderId_do_getOrderContain" placeholder="获取订单内容" style="width:250px" value="0" />
         <input id="Buttonorder_getOrderContain" type="button" value="getOrderContain(获取订单内容)" onclick="getOrderContain()"/>
         &nbsp;&nbsp;&nbsp;&nbsp;
         订单号:<input id="txt_FlwOrderId_do_getOrderContain" placeholder="获取订单内容" style="width:250px" value="0" />
         <input id="Buttonorder_updateOrder" type="button" value="do_updateOrder(更新订单)" onclick="do_updateOrder()" />
-    
+
     </div>
 
     <div title="discount" style="font-size:14px;color:#F00;border:1px solid #ccc;">

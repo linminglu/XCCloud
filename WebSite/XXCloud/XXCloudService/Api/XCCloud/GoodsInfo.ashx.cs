@@ -1479,6 +1479,8 @@ namespace XXCloudService.Api.XCCloud
                                     data_GoodStock_Record.StockFlag = (int)StockFlag.Out;
                                     data_GoodStock_Record.StockCount = sendCount;
                                     data_GoodStock_Record.CreateTime = DateTime.Now;
+                                    data_GoodStock_Record.MerchID = merchId;
+                                    data_GoodStock_Record.StoreID = storeId;
                                     if (!Data_GoodStock_RecordService.I.Add(data_GoodStock_Record))
                                     {
                                         errMsg = "添加调拨出库记录失败";
@@ -1602,6 +1604,8 @@ namespace XXCloudService.Api.XCCloud
                                     data_GoodStock_Record.StockFlag = (int)StockFlag.In;
                                     data_GoodStock_Record.StockCount = storageCount;
                                     data_GoodStock_Record.CreateTime = DateTime.Now;
+                                    data_GoodStock_Record.MerchID = merchId;
+                                    data_GoodStock_Record.StoreID = storeId;
                                     Data_GoodStock_RecordService.I.AddModel(data_GoodStock_Record);
 
                                     //更新当前库存
@@ -2066,6 +2070,8 @@ namespace XXCloudService.Api.XCCloud
                             data_GoodStock_Record.StockFlag = (int)StockFlag.In;
                             data_GoodStock_Record.StockCount = detailModel.StorageCount;
                             data_GoodStock_Record.CreateTime = DateTime.Now;
+                            data_GoodStock_Record.MerchID = merchId;
+                            data_GoodStock_Record.StoreID = storeId;
                             Data_GoodStock_RecordService.I.AddModel(data_GoodStock_Record);
 
                             //更新当前库存
@@ -2160,6 +2166,8 @@ namespace XXCloudService.Api.XCCloud
                             //添加出库存异动信息
                             record.StockFlag = (int)StockFlag.Out;
                             record.CreateTime = DateTime.Now;
+                            record.MerchID = merchId;
+                            record.StoreID = storeId;
                             Data_GoodStock_RecordService.I.AddModel(record);
 
                             //更新当前库存
@@ -2727,6 +2735,8 @@ namespace XXCloudService.Api.XCCloud
                             data_GoodStock_Record.StockFlag = (int)StockFlag.Out;
                             data_GoodStock_Record.StockCount = detailModel.OutCount;
                             data_GoodStock_Record.CreateTime = DateTime.Now;
+                            data_GoodStock_Record.MerchID = merchId;
+                            data_GoodStock_Record.StoreID = storeId;
                             Data_GoodStock_RecordService.I.AddModel(data_GoodStock_Record);
 
                             //更新当前库存
@@ -2822,6 +2832,8 @@ namespace XXCloudService.Api.XCCloud
                             //添加入库存异动信息
                             record.StockFlag = (int)StockFlag.In;
                             record.CreateTime = DateTime.Now;
+                            record.MerchID = merchId;
+                            record.StoreID = storeId;
                             Data_GoodStock_RecordService.I.AddModel(record);
 
                             //更新当前库存
@@ -2938,7 +2950,7 @@ namespace XXCloudService.Api.XCCloud
                                 LEFT JOIN Base_StoreInfo d ON a.StoreID = d.StoreID
                                 WHERE
                                 	b.AllowStorage = 1 AND b.Status = 1 AND a.RowNum <= 1 AND a.DepotID = " + depotId;
-                sql += " AND a.MerchID='" + merchId + "'";
+                sql += " AND a.MerchID='" + merchId + "' AND b.MerchID='" + merchId + "'";
                 if (!storeId.IsNull())
                     sql += " AND a.StoreID='" + storeId + "'";
                 if (!goodId.IsNull())
