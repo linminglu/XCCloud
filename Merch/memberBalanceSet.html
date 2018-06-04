@@ -28,7 +28,7 @@
                     <div class="layui-input-block">
                         <select id="HKType" lay-filter="HKType" name="HKType">
                             <option >-请选择-</option>
-                            <option value="0" >不绑定</option>
+                            <option value="0" selected>不绑定</option>
                             <option value="1">代币</option>
                             <option value="2">彩票</option>
                             <option value="3">积分</option>
@@ -87,7 +87,7 @@
     let token=xc.getStorage('token');
     let storeId=[];
     let Id='';
-    let HKType='';
+    let HKType='0';
     let saveFloatRule;
     let parm={'obj':{'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'},
         'url':'/XCCloud/BalanceType?action=GetBalanceTypeList',
@@ -118,7 +118,7 @@
             $('#reset').trigger('click');
              storeId=[];
              Id='';
-             HKType='';
+             HKType='0';
              saveFloatRule='';
             layer.open({
                 title:'会员余额类别设定',
@@ -271,9 +271,6 @@
                 }
             }
         })
-    }
-    xcActionSystem.prototype.saveBalance=function (token,layer,HKType) {
-
     }
 </script>
 <script type="text/html" id="barDemo">
