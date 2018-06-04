@@ -140,12 +140,7 @@
     else if(logMsg.logType==3){
         $('#myPlace').text('商户后台/商户ID:'+logMsg.merchId)
     }
-    //判断是否添加角色切换模块
-    // function exchangeSystem() {
-    //     let logMsg=JSON.parse(getStorage('logMsg'));
 
-    // }
-    // exchangeSystem();
 
     layui.use(['element','form','layer'],function () {
         let element=layui.element;
@@ -231,6 +226,7 @@
         if(logMsg.switchStore==1){
             $('#storeListToGo').on('click','li',function (e) {
                  e.stopPropagation();
+                 let _storeID=$(this).attr('id');
                 let obj={'userToken':token,'merchId':logMsg.merchId,'storeId':$(this).attr('id'),'logType':2,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
                 let parasJson = JSON.stringify(obj);
                 $.ajax({
@@ -245,7 +241,7 @@
                             logMsg.MerchTag=data.result_data.Tag;
                             logMsg.token=data.result_data.Token;
                             logMsg.logType=2;
-                            // logMsg.userType=4;
+                            logMsg.storeId=_storeID;
                             xc.setStorage('logMsg',JSON.stringify(logMsg));
                             xc.setStorage('token',data.result_data.Token);
                             window.location.href='/merch/index1.html';
@@ -255,29 +251,53 @@
             })
         }
         $('#storeSys').on('click',function () {
-            if(logMsg.userType==1||logMsg.userType==2){
-                let obj={'userToken':token,'merchId':logMsg.merchId,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
-                let parasJson = JSON.stringify(obj);
-                $.ajax({
-                    type: "post",
-                    url: '/XCCloud/StoreInfo?action=GetStoreList',
-                    contentType: "application/json; charset=utf-8",
-                    data: {parasJson: parasJson},
-                    success: function (data) {
-                        data = JSON.parse(data);
-                        // console.log(data);
-                        if(data.result_code==1){
-                            let arr=data.result_data;
-                            if(arr.length>0){
-                                $('#storeListToGo').html('');
-                                for(let index in arr){
-                                    $('#storeListToGo').append('<li id="'+arr[index].StoreID+'">'+arr[index].StoreName+'</li>')
+            if(logMsg.switchStore==1){
+                if(logMsg.userType==1||logMsg.userType==2){
+                    let obj={'userToken':token,'merchId':logMsg.merchId,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                    let parasJson = JSON.stringify(obj);
+                    $.ajax({
+                        type: "post",
+                        url: '/XCCloud/StoreInfo?action=GetUnderStores',
+                        contentType: "application/json; charset=utf-8",
+                        data: {parasJson: parasJson},
+                        success: function (data) {
+                            data = JSON.parse(data);
+                            // console.log(data);
+                            if(data.result_code==1){
+                                let arr=data.result_data;
+                                if(arr.length>0){
+                                    $('#storeListToGo').html('');
+                                    for(let index in arr){
+                                        $('#storeListToGo').append('<li id="'+arr[index].Key+'">'+arr[index].Value+'</li>')
+                                    }
+                                    $('#storeListToGo').css({'display':'block'})
                                 }
-                                $('#storeListToGo').css({'display':'block'})
                             }
                         }
-                    }
-                });
+                    });
+                }else if(logMsg.userType==4||logMsg.userType==5){
+                    let obj={'userToken':token,'merchId':logMsg.merchId,'storeId':logMsg.storeId,'logType':2,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                    let parasJson = JSON.stringify(obj);
+                    $.ajax({
+                        type: "post",
+                        url: '/XCCloud/Login?action=SwitchUser',
+                        contentType: "application/json; charset=utf-8",
+                        data: {parasJson: parasJson},
+                        success: function (data) {
+                            data = JSON.parse(data);
+                            console.log(data);
+                            if(data.result_code==1){
+                                logMsg.MerchTag=data.result_data.Tag;
+                                logMsg.token=data.result_data.Token;
+                                logMsg.logType=2;
+                                logMsg.storeId=
+                                xc.setStorage('logMsg',JSON.stringify(logMsg));
+                                xc.setStorage('token',data.result_data.Token);
+                                window.location.href='/merch/index1.html';
+                            }
+                        }
+                    })
+                }
             }
         }).siblings().on('click',function () {
             $('#storeListToGo').css({'display':'none'})
@@ -286,7 +306,8 @@
             if(JSON.parse(getStorage('logMsg')).switchMerch==1){
                 if (logMsg.logType==3){
                       layer.msg('当前为商户系统，请选择切换其他模式！')
-                }else { if(logMsg.userType==1||logMsg.userType==2){
+                }else {
+                    // if(logMsg.userType==1||logMsg.userType==2){
                     let obj={'userToken':token,'merchId':logMsg.merchId,'storeId':logMsg.storeId,'logType':3,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
                     let parasJson = JSON.stringify(obj);
                     $.ajax({
@@ -308,8 +329,7 @@
                         }
                     })
                 }
-
-                }
+                // }
             }
         });
         $('#barSys').on('click',function () {

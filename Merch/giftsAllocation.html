@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -314,14 +314,14 @@
                 $('#InDepBox').addClass('layui-hide');
                 $('#OutStoreBox').addClass('layui-hide');
                 xc.getDepotDic('','',token,layer,form,'OutDepotId');
-                xc.GetStoreList(token,layer,form,'InStoreId');
+                xc.GetUnderStores(token,layer,form,'InStoreId');
             }else if(data.value==3){
                 $('#OutDepBox').addClass('layui-hide');
                 $('#InStoreBox').addClass('layui-hide');
                 $('#InDepBox').removeClass('layui-hide');
                 $('#OutStoreBox').removeClass('layui-hide');
                 xc.getDepotDic('','',token,layer,form,'InDepotId');
-                xc.GetStoreList(token,layer,form,'OutStoreId');
+                xc.GetUnderStores(token,layer,form,'OutStoreId');
             }
             OutDepotId='';InStoreId=''; InDepotId='';OutStoreId='';checkListGoods=[];notGoodId=[];
             table.render({
@@ -403,8 +403,8 @@
             var tableData = table.cache['SendDealTable'];
             // 更新到表格的缓存数据中，才能在获得选中行等等其他的方法中得到更新之后的值
             tableData[trElem.data('index')][elem.attr('name')] = data.value;
-            let _outDepotId=data.value
-            let obj={'depotId':data.value,
+            let _outDepotId=data.value;
+            let obj={'inOrOutDepotId':data.value,
                 'goodNameOrBarCode':trElem[0].children[0].firstChild.innerHTML,
                 'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
             let parseJson = JSON.stringify(obj);
