@@ -2896,7 +2896,7 @@ namespace XXCloudService.Api.XCCloud
                 string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
 
                 string errMsg = string.Empty;
-                if (!dicParas.Get("depotId").Validintnozero("库存ID", out errMsg))
+                if (!dicParas.Get("depotId").Validintnozero("仓库ID", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
                 var depotId = dicParas.Get("depotId").Toint();                

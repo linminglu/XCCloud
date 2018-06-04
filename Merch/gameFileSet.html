@@ -39,7 +39,7 @@
             <div class="layui-inline GameCode" >
                 <label class="layui-form-label">游戏机编号</label>
                 <div class="layui-input-inline">
-                    <input type="text"  class="layui-input" name="GameCode" id="GameCode">
+                    <input type="text"  class="layui-input" name="GameId1" id="GameId1">
                 </div>
             </div>
             <br>
@@ -185,7 +185,7 @@
                                 <div class="layui-inline buyTimeEasy" >
                                     <label class="layui-form-label">游戏机编号</label>
                                     <div class="layui-input-inline">
-                                        <input type="text"  class="layui-input"  name="hGameCode">
+                                        <input type="text"  class="layui-input"  name="GameId2">
                                     </div>
                                 </div>
                                 <div class="layui-inline State">
@@ -913,6 +913,7 @@ let memberLevelId='';let memberLevels='';let MemberLevelNames='';
     function saveEasy(form,layer) {
         let url='/XCCloud/GameInfo?action=SaveGameInfo';
         let _obj={'ID':id,
+            'GameId':$('input[name="GameId1"]').val(),
             'gameMode':0,
             'GameName':$('input[name="GameName"]').val(),
              'GameType':eGameType,
@@ -955,6 +956,7 @@ let memberLevelId='';let memberLevels='';let MemberLevelNames='';
      let url='/XCCloud/GameInfo?action=SaveGameInfo';
      let _obj={'ID':id,
          'gameMode':1,
+         'GameId':$('input[name="GameId2"]').val(),
          'GameName':$('#GameName').val(),
          'GameType':GameType,
          'State':State,
@@ -1833,6 +1835,7 @@ let memberLevelId='';let memberLevels='';let MemberLevelNames='';
                               $('body').find('div[class="layui-inline '+arr[i].name+'"]').attr('name',arr[i].comment);
                           }
                           form.val("easyForm",{
+                              'GameId1':arr[1].value,
                               "GameName":arr[6].value,
                               'GameCode':arr[61].value,
                               'eAreaID':arr[5].value,
@@ -1862,6 +1865,7 @@ let memberLevelId='';let memberLevels='';let MemberLevelNames='';
                           xc.getGameType (token,layer,form,'游戏机类型','GameTypeLow',arr[7].value);
 
                           form.val("hardForm",{
+                              'GameId2':arr[1].value,
                               'AreaID1':arr[5].value,
                               "GameName":arr[6].value,
                               'State': arr[8].value==1?true:false,

@@ -43,7 +43,7 @@ namespace XXCloudService.Api.XCCloud
                                     from c in c1.DefaultIfEmpty()
                                     join d in Data_GroupAreaService.N.GetModels() on a.AreaID equals d.ID into d1
                                     from d in d1.DefaultIfEmpty()
-                                    orderby a.GameID
+                                    orderby a.ID
                                     select new
                                     {
                                         ID = a.ID,
@@ -250,7 +250,12 @@ namespace XXCloudService.Api.XCCloud
                     errMsg = "游戏机参数ID格式不正确";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
-                if (!string.IsNullOrEmpty(gameId) && gameId.Length > 4)
+                if (string.IsNullOrEmpty(gameId))
+                {
+                    errMsg = "游戏机编号gameId不能为空";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+                if (gameId.Length > 4)
                 {
                     errMsg = "游戏机编号长度不能超过4个字符";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -269,12 +274,7 @@ namespace XXCloudService.Api.XCCloud
                 {
                     errMsg = "游戏机参数price格式不正确";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
-                if (string.IsNullOrEmpty(gameCode))
-                {
-                    errMsg = "游戏机出厂编号gameCode不能为空";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
+                }                
                 if (!string.IsNullOrEmpty(lowLimit) && !Utils.IsDecimal(lowLimit))
                 {
                     errMsg = "中奖概率下限参数lowLimit格式不正确";
@@ -351,8 +351,14 @@ namespace XXCloudService.Api.XCCloud
                         int iId = 0;
                         int.TryParse(id, out iId);                        
 
-                        var data_GameInfo = data_GameInfoService.GetModels(p => p.ID == iId).FirstOrDefault() ?? new Data_GameInfo();                                                
-                        if (data_GameInfo_ExtService.Any(a => a.GameID != iId && a.GameCode.Equals(gameCode, StringComparison.OrdinalIgnoreCase)))
+                        var data_GameInfo = data_GameInfoService.GetModels(p => p.ID == iId).FirstOrDefault() ?? new Data_GameInfo();
+                        if (data_GameInfoService.Any(a => a.ID != iId && a.GameID.Equals(gameId, StringComparison.OrdinalIgnoreCase)))
+                        {
+                            errMsg = "该游戏机编号已使用";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }   
+                  
+                        if (data_GameInfo_ExtService.Any(b => b.GameID != iId && b.GameCode.Equals(gameCode, StringComparison.OrdinalIgnoreCase)))
                         {
                             errMsg = "该游戏机出厂编号已使用";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -379,6 +385,9 @@ namespace XXCloudService.Api.XCCloud
                         data_GameInfo.PushAddToGame1 = data_GameInfo.PushAddToGame1 ?? data_GameInfo.PushCoin1; //简易模式下“投币给游戏机脉冲数”与“单局投币数”相同
                         data_GameInfo.PushAddToGame2 = data_GameInfo.PushAddToGame2 ?? data_GameInfo.PushCoin1; //简易模式下“投币给游戏机脉冲数”与“单局投币数”相同
                         data_GameInfo.SSRTimeOut = data_GameInfo.SSRTimeOut ?? 0;
+                        data_GameInfo.PushBalanceIndex2 = data_GameInfo.PushBalanceIndex2 ?? 0;
+                        data_GameInfo.PushCoin2 = data_GameInfo.PushCoin2 ?? 0;
+                        data_GameInfo.OutBalanceIndex = data_GameInfo.OutBalanceIndex ?? 0;
                         data_GameInfo.StoreID = storeId;
                         data_GameInfo.MerchID = merchId;
                         if (iId == 0)

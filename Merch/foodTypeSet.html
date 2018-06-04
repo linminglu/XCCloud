@@ -38,7 +38,7 @@
             </div>
         </div>
     </form>
-    <div class="layui-col-md12" style="text-align:center;">
+    <div class="layui-col-md12" style="text-align:center;margin-bottom: 15px;">
         <button type="button" class="layui-btn" id="save">确定</button>
     </div>
 </div>
@@ -56,7 +56,7 @@
             {field:'ID', title:'ID', align: 'center', sort: true}
             // ,{field:'OrderID', title: '类别编号', align: 'center'}
             ,{field:'DictKey', title: '套餐类别名称', align: 'center'}
-            ,{field:'Enabled', title: '状态', align: 'center'}
+            ,{field:'Enabled', title: '状态', align: 'center',templet:'#enabled'}
             ,{field:'Comment', title: '说明', align: 'center'}
             ,{fixed: 'right', title: '操作', width:140, align:'center', toolbar: '#barDemo'}
         ]
@@ -79,7 +79,7 @@
             layer.open({
                 title:'新增套餐类型',
                 type:1,
-                area:'800px',
+                area:'500px',
                 content:$('#openModel')
             })
         });
@@ -110,5 +110,15 @@
         });
 
     })
+</script>
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+<script type="text/html" id="enabled">
+    {{# if(d.Enabled==1){ }}
+    <input type="checkbox" checked name="switch" lay-skin="switch" lay-text="启用|不启用" class="tb_check" lay-filter="test" disabled>
+    {{# }else{ }}
+    <input type="checkbox" name="switch" lay-skin="switch" lay-text="启用|不启用" class="tb_check" lay-filter="test" disabled>
+    {{#  } }}
 </script>
 </html>
