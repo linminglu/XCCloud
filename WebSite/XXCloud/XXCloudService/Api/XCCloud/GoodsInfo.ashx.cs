@@ -1003,6 +1003,7 @@ namespace XXCloudService.Api.XCCloud
                     if (!dicParas.Get("outStoreId").Nonempty("出库门店ID", out errMsg))
                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
+
                 if (requstType == 2)
                 {       
                     if (!dicParas.Get("inStoreId").Nonempty("调配门店ID", out errMsg))
@@ -1014,15 +1015,16 @@ namespace XXCloudService.Api.XCCloud
                     if (!dicParas.Get("logistOrderId").Nonempty("物流单号", out errMsg))
                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
+
                 if (requstType == 0 || requstType == 1 || requstType == 3)
                 {
                     if (!dicParas.Get("inDepotId").Validint("入库仓库ID", out errMsg))
                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
-                var outStoreId = dicParas.Get("outStoreId").IsNull() ? storeId : dicParas.Get("outStoreId");
+                var outStoreId = dicParas.Get("outStoreId");
                 var outDepotId = dicParas.Get("outDepotId").Toint();
-                var inStoreId = dicParas.Get("inStoreId").IsNull() ? storeId : dicParas.Get("inStoreId");
+                var inStoreId = requstType == 1 ? storeId : dicParas.Get("inStoreId");  //门店向总部申请，入库门店默认为当前门店
                 var inDepotId = dicParas.Get("inDepotId").Toint();
                 var requestReason = dicParas.Get("requestReason");
                 var logistType = dicParas.Get("logistType").Toint();

@@ -160,12 +160,12 @@ namespace XCCloudService.WorkFlow
                 .PermitDynamicIf(_setRequestVerifyTrigger, s =>
                     s == 1 ? State.RequestVerifiedPass : State.RequestVerifiedRefuse, 
                     () => (
-                     (_requestType == (int)RequestType.RequestStore && IsMerchUser()) ||
-                     (_requestType == (int)RequestType.RequestMerch && IsMerchUser())
+                     (_requestType == (int)RequestType.RequestStore && IsMerchUser()) 
                     ) && (_merchId == _targetMerchId && _storeId == ""))
-                .PermitIf(Trigger.SendDeal, State.SendDealed, () => 
-                    _requestType == (int)RequestType.MerchRequest && IsStoreUser()
-                    && (_merchId == _targetMerchId && _storeId == _outStoreId));
+                .PermitIf(Trigger.SendDeal, State.SendDealed, () => (
+                     _requestType == (int)RequestType.MerchRequest && IsStoreUser() ||
+                     _requestType == (int)RequestType.RequestMerch && IsMerchUser()
+                    ) && (_merchId == _targetMerchId && _storeId == _outStoreId));
 
             _machine.Configure(State.RequestVerifiedPass)
                 //.PermitIf(Trigger.Cancel, State.Requested, () => IsMerchUser() && (_merchId == _targetMerchId && _storeId == ""))
