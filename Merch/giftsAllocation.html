@@ -860,6 +860,7 @@
                'inDepotId':InDepotId,
                'requestReason':$('#RequestReason').val(),
                'goodRequestDetails':checkListGoods,
+               'note':$('#Note').val(),
                'userToken':token,
                'signkey':'1f626576304bf5d95b72ece2222e42c3'};
            let url='/XCCloud/GoodsInfo?action=GoodRequest';
@@ -872,8 +873,8 @@
                success: function (data) {
                    data=JSON.parse(data);
                    if(data.result_code==1){
-                       layer.msg('保存成功',{time:1000},function () {
-                           location.href='giftsAllocation.html'
+                       layer.msg('保存成功',{time:1800},function () {
+                           location.reload();
                        });
                    }else {
                        layer.msg(data.result_msg||data.return_msg)

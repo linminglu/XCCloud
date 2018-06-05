@@ -3070,6 +3070,8 @@ namespace XXCloudService.Api.XCCloud
         {
             try
             {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+
                 string errMsg = string.Empty;
                 var depotId = dicParas.Get("depotId").Toint();
                 var storeId = dicParas.Get("storeId");
@@ -3126,7 +3128,7 @@ namespace XXCloudService.Api.XCCloud
                 if (!depotId.IsNull())
                     sql += " AND a.DepotID=" + depotId;
                 if (!merchId.IsNull())
-                    sql += " AND a.MerchID='" + merchId + "' AND b.MerchID='" + merchId + "'";
+                    sql += " AND a.MerchID='" + merchId + "' AND b.MerchID='" + merchId + "' AND ISNULL(a.StoreID,'')<>'" + (userTokenKeyModel.DataModel as TokenDataModel).StoreID + "'";
                 if (!storeId.IsNull())
                     sql += " AND a.StoreID='" + storeId + "'";
                 if (!goodId.IsNull())
