@@ -158,7 +158,7 @@
                       <div class="layui-inline">
                           <label class="layui-form-label">入场锁定</label>
                           <div class="layui-input-inline">
-                              <input type="checkbox" lay-skin="switch" lay-text="启用|禁用" id="lock" lay-filter="lock">
+                              <input type="checkbox" lay-skin="switch" lay-text="启用|禁用" id="lock" lay-filter="Lock">
                           </div>
                       </div>
                   </div>
@@ -639,8 +639,8 @@
                 data = JSON.parse(data);
                 console.log(data);
                 if (data.result_code == "1") {
-                    var arr1 = data.result_data;
-                    let arr=arr1[0].children;
+                    var arr1 = data.result_data.children;
+                    let arr=arr1;
                     $('#' + id).html('<option>-请选择-</option>');
                     if (m == undefined) {
                         for(let i=0; i< arr.length;i++){

@@ -637,8 +637,8 @@ namespace XXCloudService.Api.XCCloud
                         data_FoodInfo.FoodType = foodType;
                         data_FoodInfo.StartTime = startTime;
                         data_FoodInfo.EndTime = endTime;
-                        data_FoodInfo.ForbidStart = forbidStart;
-                        data_FoodInfo.ForbidEnd = forbidEnd;
+                        data_FoodInfo.ForbidStart = forbidStart.Todate();
+                        data_FoodInfo.ForbidEnd = forbidEnd.Todate();
                         data_FoodInfo.Tax = tax;                        
                         data_FoodInfo.AllowPrint = allowPrint;
                         data_FoodInfo.AllowInternet = allowInternet;

@@ -294,6 +294,10 @@ namespace XXCloudService.Api.XCCloud
                         data_CouponInfo.OpUserID = userId;
                         data_CouponInfo.CreateTime = DateTime.Now;
                         data_CouponInfo.MerchID = merchId;
+                        data_CouponInfo.StartDate = data_CouponInfo.StartDate.Todate();
+                        data_CouponInfo.EndDate = data_CouponInfo.EndDate.Todate();
+                        data_CouponInfo.NoStartDate = data_CouponInfo.NoStartDate.Todate();
+                        data_CouponInfo.NoEndDate = data_CouponInfo.NoEndDate.Todate();
                         if (id == 0)
                         {
                             //新增
@@ -1283,8 +1287,7 @@ namespace XXCloudService.Api.XCCloud
 
                 int couponType = Dict_SystemService.N.GetModels(p => p.DictKey.Equals("优惠券类别") && p.PID == 0).FirstOrDefault().ID;
                 var linq = from c in
-                               (from a in Data_CouponInfoService.N.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) 
-                                   && p.StartDate <= DateTime.Now && p.EndDate >= DateTime.Now)
+                               (from a in Data_CouponInfoService.N.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase))//&& p.StartDate <= DateTime.Now && p.EndDate >= DateTime.Now)
                                 join b in Dict_SystemService.N.GetModels(p => p.PID == couponType) on (a.CouponType + "") equals b.DictValue into b1
                                 from b in b1.DefaultIfEmpty()
                                 select new
@@ -1292,6 +1295,7 @@ namespace XXCloudService.Api.XCCloud
                                     a = a,
                                     b = b
                                 }).AsEnumerable()
+                           orderby c.a.CouponLevel
                            select new
                            {
                                ID = c.a.ID,
@@ -1303,7 +1307,7 @@ namespace XXCloudService.Api.XCCloud
                                EndDate = Utils.ConvertFromDatetime(c.a.EndDate, "yyyy-MM-dd"),
                                CouponLevel = c.a.CouponLevel,
                                Context = c.a.Context
-                           };                
+                           };              
                                 
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, linq);
             }
@@ -1337,14 +1341,14 @@ namespace XXCloudService.Api.XCCloud
                 if (!dicParas.Get("updateState").Nonempty("升降级状态", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-                var updateState = dicParas.Get("updateState").Toint();
-
-                if (updateState != 1 && updateState != -1)
+                if (dicParas.Get("updateState").Toint() != 1 && dicParas.Get("updateState").Toint() != -1)
                 {
                     errMsg = "升降级状态参数值不正确";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
-                
+
+                int updateState = dicParas.Get("updateState").Toint(0);
+
                 //开启EF事务
                 using (TransactionScope ts = new TransactionScope())
                 {
@@ -1356,10 +1360,10 @@ namespace XXCloudService.Api.XCCloud
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 
-                        //设置当前优惠券级别，默认为1,且不超过最大优先级
+                        //设置当前优惠券级别, 默认为1, 且不超过最大优先级
                         var data_CouponInfo = Data_CouponInfoService.I.GetModels(p => p.ID == couponId).FirstOrDefault();
-                        var oldLevel = data_CouponInfo.CouponLevel ?? 1;
-                        data_CouponInfo.CouponLevel = oldLevel + updateState;
+                        var oldLevel = data_CouponInfo.CouponLevel;
+                        data_CouponInfo.CouponLevel = (data_CouponInfo.CouponLevel ?? 0) + updateState;
                         if (data_CouponInfo.CouponLevel < 1)
                         {
                             data_CouponInfo.CouponLevel = 1;
@@ -1373,10 +1377,10 @@ namespace XXCloudService.Api.XCCloud
 
                         Data_CouponInfoService.I.UpdateModel(data_CouponInfo);
 
-                        var newLevel = data_CouponInfo.CouponLevel ?? 1;
-                        if (oldLevel != newLevel || oldLevel == 1)
+                        var newLevel = data_CouponInfo.CouponLevel;
+                        if (oldLevel != newLevel || oldLevel == null)
                         {
-                            if (oldLevel == 1)
+                            if (oldLevel == null)
                             {
                                 //后续优惠券降一级
                                 var linq = Data_CouponInfoService.I.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.ID != couponId
@@ -1414,7 +1418,7 @@ namespace XXCloudService.Api.XCCloud
                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                     }
                 }
-                                
+
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
             }
             catch (Exception e)

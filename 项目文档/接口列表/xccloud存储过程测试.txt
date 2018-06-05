@@ -1,5 +1,20 @@
 ********************************************************************会员*****************************************************************
 -----------------------------------------------------------------------------------------------------------------------------------------
+declare @ErrMsg varchar(200)
+declare @CheckEffectiveFoodReturn int = 0
+declare @FoodSaleDetailList [FoodSaleDetailListType]
+insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(9991,0,1,0,1/2.0)
+insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(3,0,2,0,10/2.0)
+insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(6,0,1,98306,100)
+insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(4,0,1,98307,100)
+insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(1,1,1,0,20)
+insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(4,2,1,0,30)
+exec @CheckEffectiveFoodReturn = [CheckEffectiveFood] '100025420106001',@FoodSaleDetailList,@ErrMsg output
+print '@CheckEffectiveFoodReturn:' + cast(@CheckEffectiveFoodReturn as varchar)
+print '@ErrMsg:' + @ErrMsg
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------------------------------------------------------------------
 declare @NewFlwSaleId varchar(29) = '100025420106001' + '20180521' + '000018'
 declare @RegisterMember dbo.RegisterMemberType
 insert @RegisterMember(Mobile,WeChat,QQ,IMME,CardShape,
@@ -168,54 +183,6 @@ exec GetMemberLevel '100025420106001'
 -----------------------------------------------------------------------------------------------------------------------------------------
 --获取会员开卡套餐信息列表
 exec GetMemberOpenCardFood '100025420106001',22
------------------------------------------------------------------------------------------------------------------------------------------
-
------------------------------------------------------------------------------------------------------------------------------------------
-
-declare @Return int
-declare @NewFlwOrderId varchar(32) = ''
-declare @FlwOrderId varchar(32) = '10002542010600120180523000020001'
-declare @StoreId varchar(15) = '100025420106001'
-declare @FlwSaleId varchar(29) = '100025420106001' + '20180521' + '000010'
-declare @NewFlwSaleId varchar(29) = ''
-declare @Mobile varchar(11) = '15618920033'
-declare @ICCardId int = 10004143
-declare @PayCount decimal(18,2) = 50 + 5.5
-declare @Deposit decimal(18,2) = 0.0
-declare @OpenFee decimal(18,2) = 0.0
-declare @FeePay decimal(18,2) = 1.0
-declare @RealPay decimal(18,2) = 2.0
-declare @UserID int = 3
-declare @WorkStation varchar(50) = 'lijunjie'
-declare @AuthorID int = 0
-declare @Note varchar(500) = ''
-declare @OrderSource int = 0
-declare @SaleCoinType int = 1
-declare @ErrMsg varchar(200) = ''
-declare @DisticntRuleID int = 6
-declare @FoodSaleDetailList [FoodSaleDetailListType]
-insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(1,0,1,0,1/2.0)
-insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(3,0,2,0,10/2.0)
---insert into @FoodDetailType(FoodId,Category,FoodCount,PayType,PayNum) values(101,1,0,20/2.0)--开卡套餐
---insert into @FoodDetailType(FoodId,Category,FoodCount,PayType,PayNum) values(3,1,98305,100)-----------
-insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(6,0,1,98306,100)
-insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(4,0,1,98307,100)
-insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(1,1,1,0,20)
-insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(4,2,1,0,30)
-
-declare @CouponsList [CouponsListType]
-insert @CouponsList(CouponId,CouponCode) values(12,'d79847caf5304d4188df251bd8c8d63d')
-insert @CouponsList(CouponId,CouponCode) values(13,'e867895b7da8482d8e46fe449ce163dc')
---insert @CouponsList(CouponId,CouponCode) values(14,'1ca3360a25ca4ef3874e1e9891745117')
-
-select * from @CouponsList
-
-exec @Return = UpdateOrder @FoodSaleDetailList,@CouponsList,@StoreId,@FlwOrderId,
-@NewFlwSaleId,@Mobile,@ICCardId,@DisticntRuleID,
-@PayCount,@RealPay,@FeePay,@UserID,
-@WorkStation,@Note,@OrderSource,@AuthorID,
-@SaleCoinType,@NewFlwOrderId output,@ErrMsg output
-
 -----------------------------------------------------------------------------------------------------------------------------------------
 
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -434,44 +401,6 @@ print '@RS:' + cast(@RS as varchar)
 print '@ErrMsg:' + @ErrMsg  
 
 ----------------------------------------------------------------------------------------------------
---会员开卡
-declare @Return int
-declare @StoreId varchar(15) = '100025420106001'
-declare @CustomerType int = 1
-declare @MemberLevelId int = 21
-declare @Mobile varchar(11) = '15618920039'
-declare @ICCardId int = 10004148
-declare @PayCount decimal(18,2) = 50 + 5.5 + 20 + 30
-declare @Deposit decimal(18,2) = 20
-declare @OpenFee decimal(18,2) = 10
-declare @UserID decimal = 3
-declare @WorkStation varchar(50) = 'lijunjie'
-declare @AuthorID int = 0
-declare @Note varchar(500) = ''
-declare @OrderSource int = 0
-declare @SaleCoinType int = 1
-
-declare @OrderFlwId varchar(32) = 0
-declare @ErrMsg varchar(200) = ''
-declare @FoodSaleDetailList [FoodSaleDetailListType]
-insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(1,0,1,0,1/2.0)
-insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(3,0,2,0,10/2.0)
-insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(101,0,1,0,20)--开卡套餐
---insert into @FoodDetailType(FoodId,Category,FoodCount,PayType,PayNum) values(3,1,98305,100)-----------
---insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(6,0,1,98306,100)
---insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(4,0,1,98307,100)
-insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(1,1,1,0,20)
-insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(4,2,1,0,30)
---insert into @FoodDetailType(FoodId,Category,FoodCount,PayType,PayNum) values(7,1,98308,100)
---insert into @FoodDetailType(FoodId,Category,FoodCount,PayType,PayNum) values(5,1,98309,100)
---insert into @FoodDetailType(FoodId,Category,FoodCount,PayType,PayNum) values(8,1,98315,500)
-declare @FlwSeedId varchar(29) = '100025420106001' + '20180517' + '000010'
-exec @Return = CreateOrder @FoodSaleDetailList,@StoreId,@CustomerType,@Mobile,@MemberLevelId,@ICCardId,@PayCount,@OpenFee,@Deposit,
-@UserID,@WorkStation,@AuthorID,@Note,@OrderSource,@SaleCoinType,@FlwSeedId,@OrderFlwId output,@ErrMsg output
-print @Return 
-print @ErrMsg
-print @OrderFlwId
-
 --散客购买
 declare @Return int
 declare @StoreId varchar(15) = '100025420106001'
@@ -504,6 +433,45 @@ insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values
 --insert into @FoodDetailType(FoodId,Category,FoodCount,PayType,PayNum) values(5,1,98309,100)
 --insert into @FoodDetailType(FoodId,Category,FoodCount,PayType,PayNum) values(8,1,98315,500)
 declare @FlwSeedId varchar(29) = '100025420106001' + '20180517' + '100010'
+exec @Return = CreateOrder @FoodSaleDetailList,@StoreId,@CustomerType,@Mobile,@MemberLevelId,@ICCardId,@PayCount,@OpenFee,@Deposit,
+@UserID,@WorkStation,@AuthorID,@Note,@OrderSource,@SaleCoinType,@FlwSeedId,@OrderFlwId output,@ErrMsg output
+print @Return 
+print @ErrMsg
+print @OrderFlwId
+
+
+--会员开卡
+declare @Return int
+declare @StoreId varchar(15) = '100025420106001'
+declare @CustomerType int = 1
+declare @MemberLevelId int = 21
+declare @Mobile varchar(11) = '15618920039'
+declare @ICCardId int = 10004148
+declare @PayCount decimal(18,2) = 50 + 5.5 + 20 + 30
+declare @Deposit decimal(18,2) = 20
+declare @OpenFee decimal(18,2) = 10
+declare @UserID decimal = 3
+declare @WorkStation varchar(50) = 'lijunjie'
+declare @AuthorID int = 0
+declare @Note varchar(500) = ''
+declare @OrderSource int = 0
+declare @SaleCoinType int = 1
+
+declare @OrderFlwId varchar(32) = 0
+declare @ErrMsg varchar(200) = ''
+declare @FoodSaleDetailList [FoodSaleDetailListType]
+insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(1,0,1,0,1/2.0)
+insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(3,0,2,0,10/2.0)
+insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(101,0,1,0,20)--开卡套餐
+--insert into @FoodDetailType(FoodId,Category,FoodCount,PayType,PayNum) values(3,1,98305,100)-----------
+--insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(6,0,1,98306,100)
+--insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(4,0,1,98307,100)
+insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(1,1,1,0,20)
+insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(4,2,1,0,30)
+--insert into @FoodDetailType(FoodId,Category,FoodCount,PayType,PayNum) values(7,1,98308,100)
+--insert into @FoodDetailType(FoodId,Category,FoodCount,PayType,PayNum) values(5,1,98309,100)
+--insert into @FoodDetailType(FoodId,Category,FoodCount,PayType,PayNum) values(8,1,98315,500)
+declare @FlwSeedId varchar(29) = '100025420106001' + '20180517' + '000010'
 exec @Return = CreateOrder @FoodSaleDetailList,@StoreId,@CustomerType,@Mobile,@MemberLevelId,@ICCardId,@PayCount,@OpenFee,@Deposit,
 @UserID,@WorkStation,@AuthorID,@Note,@OrderSource,@SaleCoinType,@FlwSeedId,@OrderFlwId output,@ErrMsg output
 print @Return 
@@ -554,6 +522,50 @@ select * from Flw_Food_Sale_Pay
 ----------------------------------------------------------------------------------------------------
 
 ----------------------------------------------------------------------------------------------------
+--散客订单更新
+declare @Return int
+declare @NewFlwOrderId varchar(32) = ''
+declare @FlwOrderId varchar(32) = '10002542010600120180517100010001'
+declare @StoreId varchar(15) = '100025420106001'
+declare @FlwSaleId varchar(29) = '100025420106001' + '20180521' + '000010'
+declare @NewFlwSaleId varchar(29) = ''
+declare @Mobile varchar(11) = '15618920033'
+declare @ICCardId int = 10004143
+declare @PayCount decimal(18,2) = 50 + 5.5
+declare @Deposit decimal(18,2) = 0.0
+declare @OpenFee decimal(18,2) = 0.0
+declare @FeePay decimal(18,2) = 1.0
+declare @RealPay decimal(18,2) = 2.0
+declare @UserID int = 3
+declare @WorkStation varchar(50) = 'lijunjie'
+declare @AuthorID int = 0
+declare @Note varchar(500) = ''
+declare @OrderSource int = 0
+declare @SaleCoinType int = 1
+declare @ErrMsg varchar(200) = ''
+declare @DisticntRuleID int = 6
+declare @FoodSaleDetailList [FoodSaleDetailListType]
+insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(1,0,1,0,1/2.0)
+insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(3,0,2,0,10/2.0)
+insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(1,1,1,0,20)
+insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(4,2,1,0,30)
+
+declare @CouponsList [CouponsListType]
+insert @CouponsList(CouponId,CouponCode) values(12,'d79847caf5304d4188df251bd8c8d63d')
+insert @CouponsList(CouponId,CouponCode) values(13,'e867895b7da8482d8e46fe449ce163dc')
+
+exec @Return = UpdateOrder @FoodSaleDetailList,@CouponsList,@StoreId,@FlwOrderId,
+@NewFlwSaleId,@Mobile,@DisticntRuleID,
+@PayCount,@RealPay,@FeePay,@UserID,
+@WorkStation,@Note,@OrderSource,@AuthorID,
+@SaleCoinType,@NewFlwOrderId output,@ErrMsg output
+
+print '@Return:' + cast(@Return as varchar)
+print '@ErrMsg:' + cast(@ErrMsg as varchar)
+print '@NewFlwOrderId:' + cast(@NewFlwOrderId as varchar(32))
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
 declare @AuthorFlag int
 declare @FreePrice decimal(18,2) = 0.1
 declare @ErrMsg varchar(200)
@@ -574,11 +586,11 @@ print '@ErrMsg:' + @ErrMsg
 
 declare @Return int
 declare @NewFlwOrderId varchar(32) = ''
-declare @FlwOrderId varchar(32) = '10002542010600120180521000012001'
+declare @FlwOrderId varchar(32) = '10002542010600120180517100010001'
 declare @StoreId varchar(15) = '100025420106001'
 declare @NewFlwSaleId varchar(29) = '100025420106001' + '20180521' + '000010'
-declare @Mobile varchar(11) = '15618920033'
-declare @ICCardId int = 10004143
+declare @Mobile varchar(11) = '15618920040'
+declare @ICCardId int = 0
 declare @PayCount decimal(18,2) = 50 + 5.5
 declare @Deposit decimal(18,2) = 0.0
 declare @OpenFee decimal(18,2) = 0.0
@@ -597,24 +609,23 @@ insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values
 insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(3,0,2,0,10/2.0)
 --insert into @FoodDetailType(FoodId,Category,FoodCount,PayType,PayNum) values(101,1,0,20/2.0)--开卡套餐
 --insert into @FoodDetailType(FoodId,Category,FoodCount,PayType,PayNum) values(3,1,98305,100)-----------
-insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(6,0,1,98306,100)
-insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(4,0,1,98307,100)
+--insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(6,0,1,98306,100)
+--insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(4,0,1,98307,100)
 insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(1,1,1,0,20)
 insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(4,2,1,0,30)
 
-declare @CouponList [CouponListType]
-insert @CouponList(CouponCode) values('d79847caf5304d4188df251bd8c8d63d')
-insert @CouponList(CouponCode) values('e867895b7da8482d8e46fe449ce163dc')
-insert @CouponList(CouponCode) values('1ca3360a25ca4ef3874e1e9891745117')
+declare @CouponsList [CouponsListType]
+insert @CouponsList(CouponId,CouponCode) values(12,'d79847caf5304d4188df251bd8c8d63d')
+insert @CouponsList(CouponId,CouponCode) values(13,'e867895b7da8482d8e46fe449ce163dc')
+--insert @CouponsList(CouponId,CouponCode) values(14,'1ca3360a25ca4ef3874e1e9891745117')
 
-select * from @CouponList
-
-exec @Return = UpdateOrder @FoodSaleDetailList,@CouponList,@StoreId,@FlwOrderId,
-@NewFlwSaleId,@Mobile,@ICCardId,@DisticntRuleID,
+exec @Return = UpdateOrder @FoodSaleDetailList,@CouponsList,@StoreId,@FlwOrderId,
+@NewFlwSaleId,@Mobile,@DisticntRuleID,
 @PayCount,@RealPay,@FeePay,@UserID,
 @WorkStation,@Note,@OrderSource,@AuthorID,
 @SaleCoinType,@NewFlwOrderId output,@ErrMsg output
 
+print @NewFlwOrderId
 print @Return
 print @ErrMsg
 

@@ -147,8 +147,18 @@ namespace XXCloudService.Api.XCCloud
                             dict_SystemModel.DictKey = dictKey;
                             dict_SystemModel.Comment = comment;
                             dict_SystemModel.MerchID = merchId;
-                            dict_SystemModel.OrderID = 1;
-                            if (!dict_SystemService.Add(dict_SystemModel))
+                            dict_SystemModel.OrderID = 1;                            
+                            dict_SystemService.AddModel(dict_SystemModel);
+
+                            //后续序号加1
+                            var list = dict_SystemService.GetModels(p => p.PID == pId && p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)).OrderBy(or => or.OrderID).ToList();
+                            for (var i = 1; i <= list.Count; i++)
+                            {
+                                list[i - 1].OrderID = i + 1;
+                                dict_SystemService.UpdateModel(list[i - 1]);
+                            }
+
+                            if (!dict_SystemService.SaveChanges())
                             {
                                 errMsg = "添加套餐类别失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -264,7 +274,7 @@ namespace XXCloudService.Api.XCCloud
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 
-                        //设置当前序号，默认为1,且不大于最大序号
+                        //设置当前序号, 默认为1, 且不大于最大序号
                         var dict_System = dict_SystemService.GetModels(p => p.ID == id).FirstOrDefault();
                         var oldOrder = dict_System.OrderID ?? 1;
                         dict_System.OrderID = oldOrder + orderState;
@@ -282,28 +292,15 @@ namespace XXCloudService.Api.XCCloud
                         dict_SystemService.UpdateModel(dict_System);
 
                         var newOrder = dict_System.OrderID ?? 1;
-                        if (oldOrder != newOrder || oldOrder == 1)
+                        if (oldOrder != newOrder)
                         {
-                            if (oldOrder == 1)
+                            //与下一个序号交换位置
+                            var nextModel = dict_SystemService.GetModels(p => p.PID == pId && p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.ID != id && p.OrderID == newOrder).FirstOrDefault();
+                            if (nextModel != null)
                             {
-                                //后续序号加1
-                                var linq = dict_SystemService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.ID != id && p.OrderID >= newOrder);
-                                foreach (var model in linq)
-                                {
-                                    model.OrderID = model.OrderID + 1;
-                                    dict_SystemService.UpdateModel(model);
-                                }
-                            }
-                            else
-                            {
-                                //与下一个序号交换位置
-                                var nextModel = dict_SystemService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.ID != id && p.OrderID == newOrder).FirstOrDefault();
-                                if (nextModel != null)
-                                {
-                                    nextModel.OrderID = nextModel.OrderID - orderState;
-                                    dict_SystemService.UpdateModel(nextModel);
-                                }
-                            }
+                                nextModel.OrderID = oldOrder;
+                                dict_SystemService.UpdateModel(nextModel);
+                            }                            
                         }
 
                         if (!dict_SystemService.SaveChanges())

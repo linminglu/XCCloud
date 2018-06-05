@@ -27,7 +27,7 @@
             <div class="layui-inline">
                 <!--<label  class="layui-form-label">赠送类别</label>-->
                 <div class="layui-input-inline">
-                    <input type="checkbox" title="是否显示" name="enabled" lay-filter="enabled" lay-skin="primary">
+                    <input type="checkbox" checked title="是否显示" name="enabled" lay-filter="enabled" lay-skin="primary">
                 </div>
             </div>
         </div>
@@ -62,7 +62,7 @@
         ]
     };
     xc.getInitData(parm);
-    let id='';let enabled=0;
+    let id='';let enabled=1;
     layui.use(['form','table','layer'],function () {
         let form=layui.form;
         let table=layui.table;

@@ -788,14 +788,14 @@ as
     '(case when isnull(a.CreateTime,'''')='''' then '''' else convert(varchar,a.CreateTime,23) end) as CreateTime '+
     ' from Data_CouponInfo a'+
     ' left join (select b.* from Dict_System a inner join Dict_System b on a.ID=b.PID where a.DictKey=''ÓÅ»ÝÈ¯Àà±ð'' and a.PID=0) b on convert(varchar, a.CouponType)=b.DictValue '+
-    ' left join (select a.ID as CouponID, count(c.ID) as UseCount from Data_CouponInfo a inner join Data_CouponList b on a.ID=b.CouponID inner join Flw_CouponUse c on b.ID=c.CouponCode group by a.ID) c on a.ID=c.CouponID ' +
+    ' left join (select a.ID as CouponID, count(c.ID) as UseCount from Data_CouponInfo a inner join Data_CouponList b on a.ID=b.CouponID inner join Flw_CouponUse c on b.CouponCode=c.CouponCode group by a.ID) c on a.ID=c.CouponID ' +
     ' left join (select a.ID as CouponID, count(b.ID) as UseCount from Data_CouponInfo a inner join Flw_CouponUse b on a.ID=b.CouponID group by a.ID) d on a.ID=d.CouponID '+
     ' left join (select a.ID as CouponID, count(b.ID) as NotAssignedCount from Data_CouponInfo a inner join Data_CouponList b on a.ID=b.CouponID where isnull(b.State, 0)=0 group by a.ID) f on a.ID=f.CouponID ' +
     ' left join (select a.ID as CouponID, count(b.ID) as NotActivatedCount from Data_CouponInfo a inner join Data_CouponList b on a.ID=b.CouponID where isnull(b.State, 0)=1 group by a.ID) g on a.ID=g.CouponID ' +
     ' left join (select a.ID as CouponID, count(b.ID) as ActivatedCount from Data_CouponInfo a inner join Data_CouponList b on a.ID=b.CouponID where isnull(b.State, 0)=2 group by a.ID) h on a.ID=h.CouponID ' +
     ' left join (select a.ID as CouponID, min(isnull(b.IsLock,0)) as IsLock from Data_CouponInfo a inner join Data_CouponList b on a.ID=b.CouponID group by a.ID) i on a.ID=i.CouponID ' +
     ' left join Base_UserInfo j on a.OpUserID=j.UserID ' +
-    ' where a.MerchID=' + @MerchID + @SqlWhere
+    ' where a.MerchID=''' + @MerchID + '''' + @SqlWhere
 	exec (@sql)
 	set @Result = 1
 
