@@ -1414,7 +1414,7 @@ xcActionSystem.prototype= {
         });
     },
     //获取门店列表
-    GetUnderStores:function (token,layer,form,id) {
+    GetUnderStores:function (token,layer,form,id,curStore) {
         let _obj={'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
         let parseJson = JSON.stringify(_obj);
         $.ajax({
@@ -1428,7 +1428,13 @@ xcActionSystem.prototype= {
                     let arr=data.result_data;
                     $('#'+id).html('<option>-请选择-</option>');
                     for(let i in arr){
-                        $('#'+id).append('<option value="'+arr[i].Key+'">'+arr[i].Value+'</option>')
+                        if(curStore!=undefined){
+                            if(arr[i].Key!=curStore){
+                                $('#'+id).append('<option value="'+arr[i].Key+'">'+arr[i].Value+'</option>')
+                            }
+                        }else {
+                            $('#'+id).append('<option value="'+arr[i].Key+'">'+arr[i].Value+'</option>')
+                        }
                     }
                     form.render('select');
                 } else {

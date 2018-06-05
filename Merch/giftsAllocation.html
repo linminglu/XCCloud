@@ -349,28 +349,27 @@
                 $('#InDepBox').addClass('layui-hide');
                 $('#OutStoreBox').addClass('layui-hide');
                 xc.getDepotDic('','',token,layer,form,'OutDepotId');
-                xc.GetUnderStores(token,layer,form,'InStoreId');
+                xc.GetUnderStores(token,layer,form,'InStoreId',logMsg.storeId);
             }else if(data.value==3){
                 $('#OutDepBox').addClass('layui-hide');
                 $('#InStoreBox').addClass('layui-hide');
                 $('#InDepBox').removeClass('layui-hide');
                 $('#OutStoreBox').removeClass('layui-hide');
                 xc.getDepotDic('','',token,layer,form,'InDepotId');
-                xc.GetUnderStores(token,layer,form,'OutStoreId');
+                xc.GetUnderStores(token,layer,form,'OutStoreId',logMsg.storeId);
             }else if(data.value==0){
                 $('#InDepBox').removeClass('layui-hide');
                 $('#OutStoreBox').removeClass('layui-hide');
                 $('#InStoreBox').addClass('layui-hide');
                 $('#OutDepBox').addClass('layui-hide');
                 xc.getDepotDic('','',token,layer,form,'InDepotId');
-                xc.GetUnderStores(token,layer,form,'OutStoreId');
+                xc.GetUnderStores(token,layer,form,'OutStoreId',logMsg.storeId);
             }else if(data.value==1){
                 $('#InDepBox').removeClass('layui-hide');
                 $('#OutStoreBox').addClass('layui-hide');
                 $('#InStoreBox').addClass('layui-hide');
                 $('#OutDepBox').addClass('layui-hide');
                 xc.getDepotDic('','',token,layer,form,'InDepotId');
-                // xc.GetUnderStores(token,layer,form,'OutStoreId');
             }
             OutDepotId='';InStoreId=''; InDepotId='';OutStoreId='';checkListGoods=[];notGoodId=[];
             table.render({
@@ -818,7 +817,7 @@
         //弹出层
         $('#applyBtn').on('click',function () {
             xc.getDepotDic('','',token,layer,form,'OutDepotId');
-            xc.GetUnderStores(token,layer,form,'InStoreId');
+            xc.GetUnderStores(token,layer,form,'InStoreId',logMsg.storeId);
             layer.open({
                 title:'申请记录',
                 type:1,
@@ -843,9 +842,10 @@
         });
         $('#searchGoodBtn').on('click',function () {
             if(RequstType==2){
-                initGoodsTb(RequstType,notGoodId.length==0?'':notGoodId.join('|'),OutDepotId,'',table);
+                initGoodsTb(RequstType,notGoodId.length==0?'':notGoodId.join('|'),OutDepotId,'',table,logMsg.merchId,'');
             }else if(RequstType==0||RequstType==1||RequstType==3){
-                initGoodsTb(RequstType,notGoodId.length==0?'':notGoodId.join('|'),InDepotId,'',table);
+
+                initGoodsTb(RequstType,notGoodId.length==0?'':notGoodId.join('|'),InDepotId,'',table,logMsg.merchId,OutStoreId);
             }else {
                 layer.msg('请先选择调拨方式！')
             }
@@ -974,12 +974,12 @@
             })
         });
     });
-    function initGoodsTb(requestType,a,b,c,table) {
+    function initGoodsTb(requestType,a,b,c,table,merchId,storeID) {
         let obj;
         // if(b!=''){
             if(requestType==1){
                 obj={
-                    'merchId':JSON.parse(xc.getStorage('logMsg')).merchId,
+                    'merchId':merchId,
                     'storeId':'',
                     'depotId':'',
                     'notGoodIds':a,
@@ -989,7 +989,7 @@
             }else if(requestType==0||requestType==3){
                 obj={
                     'merchId':'',
-                    'storeId':JSON.parse(xc.getStorage('logMsg')).storeId,
+                    'storeId':storeID,
                     'depotId':'',
                     'notGoodIds':a,
                     'goodId':c,

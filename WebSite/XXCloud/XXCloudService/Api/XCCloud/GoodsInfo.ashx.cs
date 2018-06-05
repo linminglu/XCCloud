@@ -3070,13 +3070,10 @@ namespace XXCloudService.Api.XCCloud
         {
             try
             {
-                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
-
                 string errMsg = string.Empty;
                 var depotId = dicParas.Get("depotId").Toint();
-                storeId = !dicParas.Get("storeId").IsNull() ? dicParas.Get("storeId") : storeId;
-                var merchId = !dicParas.Get("merchId").IsNull() ? dicParas.Get("merchId") : string.Empty;
+                var storeId = dicParas.Get("storeId");
+                var merchId = dicParas.Get("merchId");
 
                 if (depotId.IsNull() && storeId.IsNull() && merchId.IsNull())
                 {
@@ -3125,13 +3122,13 @@ namespace XXCloudService.Api.XCCloud
                                 LEFT JOIN Dict_System c ON b.GoodType = c.ID
                                 LEFT JOIN Base_StoreInfo d ON a.StoreID = d.StoreID
                                 WHERE
-                                	b.AllowStorage = 1 AND b.Status = 1 AND a.RowNum <= 1 ";
+                                	b.AllowStorage = 1 AND b.Status = 1 AND ISNULL(b.StoreID,'')='' AND a.RowNum <= 1 ";
                 if (!depotId.IsNull())
                     sql += " AND a.DepotID=" + depotId;
                 if (!merchId.IsNull())
-                    sql += " AND a.MerchID='" + merchId + "' AND b.MerchID='" + merchId + "' AND ISNULL(a.StoreID,'')=''";
+                    sql += " AND a.MerchID='" + merchId + "' AND b.MerchID='" + merchId + "'";
                 if (!storeId.IsNull())
-                    sql += " AND a.StoreID='" + storeId + "' AND b.StoreID='" + storeId + "'";
+                    sql += " AND a.StoreID='" + storeId + "'";
                 if (!goodId.IsNull())
                     sql += sql + " AND a.GoodID=" + goodId;
                 if (!goodNameOrBarCode.IsNull())
