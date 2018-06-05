@@ -157,7 +157,7 @@
                 })
             }else if(layevent==='downLevel'){
                 layer.confirm('确定降级该规则吗', function(index){
-                    let _obj={'id':_data.ID,'orderState':-1,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                    let _obj={'id':_data.ID,'orderState':1,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
                     let parseJson = JSON.stringify(_obj);
                     $.ajax({
                         type:'post',

@@ -23,6 +23,7 @@ namespace XCCloudService.Model.CustomModel.XCCloud
     {
         public MemberBalanceExchangeRateModel()
         {
+            this.DecimalNumber = 0;
             this.TargetTypeName = string.Empty;
         }
         [DataMember(Name = "BalanceIndex", Order = 0)]

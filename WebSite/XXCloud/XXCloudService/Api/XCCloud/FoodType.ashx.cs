@@ -34,7 +34,7 @@ namespace XXCloudService.Api.XCCloud
 
                 string sql = @"select a.ID, a.DictKey, a.Comment, a.OrderID, a.Enabled, (case a.Enabled when 1 then '允许' when 0 then '禁止' else '' end) as EnabledStr " +  
                     " from Dict_System a INNER JOIN Dict_System b on a.PID=b.ID" +
-                    " where a.MerchID=@MerchId AND b.PID=0 AND b.DictKey='套餐类别'";
+                    " where a.MerchID=@MerchId AND b.PID=0 AND b.DictKey='套餐类别' order by a.OrderID";
 
                 var data_FoodType = Dict_SystemService.I.SqlQuery<Data_FoodTypeListModel>(sql, parameters).ToList();
 
@@ -264,10 +264,10 @@ namespace XXCloudService.Api.XCCloud
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 
-                        //设置当前序号，默认为1,且不小于1
+                        //设置当前序号，默认为1,且不大于最大序号
                         var dict_System = dict_SystemService.GetModels(p => p.ID == id).FirstOrDefault();
-                        var oldOrder = dict_System.OrderID;
-                        dict_System.OrderID = (dict_System.OrderID ?? 1) + orderState;
+                        var oldOrder = dict_System.OrderID ?? 1;
+                        dict_System.OrderID = oldOrder + orderState;
                         if (dict_System.OrderID < 1)
                         {
                             dict_System.OrderID = 1;
@@ -281,10 +281,10 @@ namespace XXCloudService.Api.XCCloud
 
                         dict_SystemService.UpdateModel(dict_System);
 
-                        var newOrder = dict_System.OrderID;
-                        if (oldOrder != newOrder || oldOrder == null)
+                        var newOrder = dict_System.OrderID ?? 1;
+                        if (oldOrder != newOrder || oldOrder == 1)
                         {
-                            if (oldOrder == null)
+                            if (oldOrder == 1)
                             {
                                 //后续序号加1
                                 var linq = dict_SystemService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.ID != id && p.OrderID >= newOrder);

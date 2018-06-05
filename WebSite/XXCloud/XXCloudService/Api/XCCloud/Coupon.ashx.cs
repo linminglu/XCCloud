@@ -1337,14 +1337,14 @@ namespace XXCloudService.Api.XCCloud
                 if (!dicParas.Get("updateState").Nonempty("升降级状态", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-                if (dicParas.Get("updateState").Toint() != 1 && dicParas.Get("updateState").Toint() != -1)
+                var updateState = dicParas.Get("updateState").Toint();
+
+                if (updateState != 1 && updateState != -1)
                 {
                     errMsg = "升降级状态参数值不正确";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
-
-                int updateState = dicParas.Get("updateState").Toint(0);
-
+                
                 //开启EF事务
                 using (TransactionScope ts = new TransactionScope())
                 {
@@ -1358,8 +1358,8 @@ namespace XXCloudService.Api.XCCloud
 
                         //设置当前优惠券级别，默认为1,且不超过最大优先级
                         var data_CouponInfo = Data_CouponInfoService.I.GetModels(p => p.ID == couponId).FirstOrDefault();
-                        var oldLevel = data_CouponInfo.CouponLevel;
-                        data_CouponInfo.CouponLevel = (data_CouponInfo.CouponLevel ?? 0) + updateState;
+                        var oldLevel = data_CouponInfo.CouponLevel ?? 1;
+                        data_CouponInfo.CouponLevel = oldLevel + updateState;
                         if (data_CouponInfo.CouponLevel < 1)
                         {
                             data_CouponInfo.CouponLevel = 1;
@@ -1373,10 +1373,10 @@ namespace XXCloudService.Api.XCCloud
 
                         Data_CouponInfoService.I.UpdateModel(data_CouponInfo);
 
-                        var newLevel = data_CouponInfo.CouponLevel;
-                        if (oldLevel != newLevel || oldLevel == null)
+                        var newLevel = data_CouponInfo.CouponLevel ?? 1;
+                        if (oldLevel != newLevel || oldLevel == 1)
                         {
-                            if (oldLevel == null)
+                            if (oldLevel == 1)
                             {
                                 //后续优惠券降一级
                                 var linq = Data_CouponInfoService.I.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.ID != couponId

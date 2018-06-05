@@ -5,47 +5,6 @@
     <title>门票设置</title>
     <link rel="stylesheet" href="layui/css/layui.css">
 </head>
-<style>
-    .goodIsAll .layui-form-switch {
-        height: 36px;
-        line-height: 36px;
-        width: 180px;
-        border-radius: 5px;
-        border: 1px solid #orangered;
-        background-color: #999;
-    }
-
-    .goodIsAll .layui-form-switch i {
-        left: 0px;
-        top: 0px;
-        width: 95px;
-        height: 36px;
-        margin-top: 0px;
-        border-radius: 5px 0 0 5px;
-        border: 1px solid #aaa;
-        background-color: #fff;
-    }
-
-    .goodIsAll  .layui-form-switch em {
-        width: 80px;
-        color: #ffffff!important;
-        font-size: 14px;
-    }
-
-    .goodIsAll .layui-form-onswitch {
-        border-color: #1e9fff!important;
-        background-color: #1e9fff!important;
-    }
-
-   .goodIsAll  .layui-form-onswitch i {
-        left: 95px;
-        border-radius: 0 5px 5px 0;
-        border: 1px solid #aaa;
-        margin-top: -1px;
-    }
-
-
-</style>
 <body>
 <div class="layui-row" style="padding: 15px;">
     <blockquote style="text-align: right;padding-right: 150px;" class="layui-col-md12 layui-col-xs12 layui-col-lg12 layui-elem-quote">
@@ -55,7 +14,7 @@
 </div>
 <!--门票设置弹窗-->
 <div id="openModel" style="padding: 15px;display:none;">
-    <form action="" class="layui-form layui-form-pane">
+    <form action="" class="layui-form goodIsAll layui-form-pane">
         <div class="layui-col-md7" style="min-height: 320px;border-right: 1px solid #aaa;">
             <div class="layui-form-item">
                 <label class="layui-form-label">项目名称</label>
@@ -164,7 +123,7 @@
 
     let _storeId=[];
     let parm={'obj':{'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'},
-        'url':'/XCCloud/Project?action=GetProjectInfoList',
+        'url':'/XCCloud/Project?action=QueryProjectList',
         'elem':'#ticketSettingTable',
         'cols':[
             {field:'ID', title:'门票ID', align: 'center', sort: true,width:80}

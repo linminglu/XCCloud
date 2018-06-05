@@ -260,6 +260,9 @@
 		.card-text3{position: absolute;right: 10px;bottom: 50px;font-size: 0.7em;color: salmon;}
 		.btn-margin{margin-top: 3em;}
 		.givingList{height: 6em;}
+		.tdInput{padding: 0!important;width: 100px;}
+		.tdInput input{border: none;}
+		.BackTotal{text-align: right;margin: 1em 0;}
 	</style>
 </head>
 <body>
@@ -623,21 +626,30 @@
 							</tr>
 							</thead>
 							<tbody>
-							<tr v-for="items in ExchangeRate">
+							<tr v-for="items in exchangeRate">
 								<td>{{items.TypeName}}</td>
 								<td>{{items.Total}}</td>
 								<td>{{items.Balance}}</td>
 								<td>{{items.BalanceFree}}</td>
 								<td>{{items.Balance}}</td>
-								<td><input class="form-control" type="text"></td>
-								<td>{{items.changeValue}}</td>
+								<td class="tdInput"><input v-model="items.ExchangeQty" maxlength="8" class="form-control" type="text" :disabled="items.disabled"></td>
+								<td>{{items.ExchangeValue}}</td>
+							</tr>
+							<tr>
+								<td>合计</td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td>{{amountTotal1}}</td>
+								<td>{{amountTotal2}}</td>
 							</tr>
 							</tbody>
 						</table>
 					</div>
 					<p class="modal-p">备注：只有在会员级别中设定余额类别与储值金项目有对应关系才可以退款</p>
 					<div class="col-md-12 col-sm-12 tab-style"><span class="col-md-3 col-sm-3">备注：</span><label class="col-md-9 col-sm-9"><textarea  class="form-control"></textarea></label></div>
-					<div class="col-md-12 col-sm-12 modal-btn"><button type="button" class="btn btn-info">退款又退卡</button><button type="button" class="btn btn-info">仅退款</button></div>
+					<div class="col-md-12 col-sm-12 modal-btn"><button type="button" class="btn btn-info" @click="btnBackCard('2')">退款又退卡</button><button type="button" class="btn btn-info" @click="btnBackCard('1')">仅退款</button></div>
 				</div>
 			</div>
 		</div>
@@ -771,18 +783,70 @@
 		</div>
 	</div>
 	<!-- Modal(通用提示框) -->
-	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="z-index: 99999">
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-					<h4 class="modal-title" id="myModalLabel">温馨提示</h4>
+					<h4 class="modal-title">温馨提示</h4>
 				</div>
 				<div class="modal-body">
 					{{ msg }}
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- comfirm -->
+	<div class="modal fade" id="confirm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title">温馨提示</h4>
+				</div>
+				<div class="modal-body">
+					<div class="col-md-12 col-sm-12">
+						<table class="table table-bordered" v-if="balanceExchangesIf">
+							<thead style="background: #f5f5f5">
+								<tr>
+									<th>余额类别</th>
+									<th>余额数量</th>
+									<th>兑换价值</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr v-for="items in balanceExchanges">
+									<td>{{items.TypeName}}</td>
+									<td>{{items.ExchangeQty}}</td>
+									<td>{{items.ExchangeValue}}</td>
+								</tr>
+							</tbody>
+						</table>
+						<table class="table table-bordered" v-if="cardDepositsIf">
+							<thead style="background: #f5f5f5">
+							<tr>
+								<th>卡类别</th>
+								<th>卡号</th>
+								<th>押金</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr v-for="items in cardDeposits">
+								<td>{{items.cardTypeName}}</td>
+								<td>{{items.ICCardID}}</td>
+								<td>{{items.Deposit}}</td>
+							</tr>
+							</tbody>
+						</table>
+						<p class="BackTotal">总计：{{BackTotal}}元</p>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+					<button type="button" class="btn btn-primary" style="width: 20%" @click="confirmBackCard">确认</button>
 				</div>
 			</div>
 		</div>
@@ -1146,6 +1210,8 @@
 			</li>
 		</ul>
 	</div>
+
+
 </div>
 <script src="js/jquery-2.1.3.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
@@ -1275,7 +1341,16 @@
 			    {txt:"生日送币",selected:false},
 			    {txt:"输赢送币",selected:false}
 			    ],
-            ExchangeRate:[]
+            exchangeRate:[],
+            amountTotal1:0,
+            amountTotal2:0,
+            backType:"",
+            confirmData:[],
+            balanceExchanges:[],
+            cardDeposits:[],
+            balanceExchangesIf:false,
+			cardDepositsIf:false,
+            BackTotal:'0',
         },
         mounted: function () {
             this.Initialize()
@@ -1296,7 +1371,6 @@
                 }else {
                     var inputNum = parseInt(that.inputAmount)*that.fastMoney/that.fastAmount;
                     that.inputMoney =inputNum.toFixed(2)
-
                 }
             },
             inputMoney: function () {
@@ -1358,6 +1432,46 @@
                 },
                 deep:true
             },
+            exchangeRate:{
+                handler:function(newValue){
+                    var that = this;
+                    var amountTotal1_= 0;
+                    var amountTotal2_= 0;
+                    console.log(newValue);
+                    for(var i= 0;i<newValue.length;i++){
+                        if(newValue[i].ExchangeQty > newValue[i].Balance){
+                            that.msg = "请正确输入！";
+                            $('#myModal').modal('show');
+                            newValue[i].ExchangeQty = 0;
+						}else {
+                            var value_ = newValue[i].ExchangeQty*newValue[i].ExchangeRate;
+                            var decimal= Math.pow(10,newValue[i].DecimalNumber);
+                            value_ = value_*decimal;
+                            console.log(newValue[i].AddingType == 0);
+                            switch (newValue[i].AddingType){
+								case 0:
+                                    value_= parseInt(value_);
+								    break;
+                                case 1:
+                                    value_= Math.ceil(value_);
+                                    break;
+                                case 2:
+                                    value_= Math.round(value_);
+                                    break;
+                                default:
+                                    break;
+							}
+							console.log(value_);
+                            newValue[i].ExchangeValue =value_/decimal;
+							amountTotal1_=0+amountTotal1_ + newValue[i].ExchangeQty*1;
+							amountTotal2_=0+amountTotal2_ + newValue[i].ExchangeValue*1;
+						}
+                    }
+                    that.amountTotal1 =amountTotal1_;
+                    that.amountTotal2 =amountTotal2_;
+                },
+                deep:true
+			},
             inputCash:function () {
                 var cashChange = this.inputCash - this.payCount;
                 this.cashChange = cashChange.toFixed(2);
@@ -2151,13 +2265,111 @@
                     that.msgPrompt(res.data);
                     if (res.data.result_code === '1') {
                         $('#backCardSModal').modal('show');
-                        that.ExchangeRate = res.data.result_data
+                        var exchangeRate_ = [];
+                        for(var i = 0;i<res.data.result_data.length;i++){
+                            if(res.data.result_data[i].ExchangeRate == 0){
+                                var disabled = true;
+                                var ExchangeValue = 0;
+							}else {
+                                var disabled = false;
+                                var ExchangeValue = "";
+							}
+                            exchangeRate_.push({
+                                AddingType: res.data.result_data[i].AddingType,
+                                Balance: res.data.result_data[i].Balance,
+                                BalanceFree: res.data.result_data[i].BalanceFree,
+                                BalanceIndex: res.data.result_data[i].BalanceIndex,
+                                DecimalNumber: res.data.result_data[i].DecimalNumber,
+                                ExchangeRate: res.data.result_data[i].ExchangeRate,
+                                TargetBalanceIndex: res.data.result_data[i].TargetBalanceIndex,
+                                TargetTypeName: res.data.result_data[i].TargetTypeName,
+                                Total: res.data.result_data[i].Total,
+                                TypeName: res.data.result_data[i].TypeName,
+                                disabled:disabled,
+								ExchangeQty:"",
+                                ExchangeValue:ExchangeValue
+                            })
+						}
+//                        that.exchangeRate = res.data.result_data
+                        that.exchangeRate = exchangeRate_
                     }
                 }).catch(function (err) {
                     console.log(err);
                 });
-
 			},
+            btnBackCard:function (backType) {
+                var that = this;
+                if(that.amountTotal1 == 0 && that.amountTotal1 == 0 && backType =="1"){
+                    that.msg = "请先输入！";
+                    $('#myModal').modal('show');
+				}else {
+                    var exchangeData_ =[];
+                    for(var i = 0;i<that.exchangeRate.length;i++){
+                        if(that.exchangeRate[i].ExchangeRate != 0 &&that.exchangeRate[i].ExchangeQty != 0){
+                            exchangeData_.push({
+                                BalanceIndex: that.exchangeRate[i].BalanceIndex,
+                                ExchangeQty: that.exchangeRate[i].ExchangeQty,
+                                ExchangeValue: that.exchangeRate[i].ExchangeValue
+                            })
+                        }
+                    }
+                    var exchangeData = JSON.stringify(exchangeData_);
+                    var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,icCardId:that.icCardId,backType:backType,exchangeData:exchangeData};
+                    console.log(obj);
+                    axios.post('/XCCloud/Member?action=BackCard', obj).then(function (res) {
+                        console.log(res.data);
+                        that.msgPrompt(res.data);
+                        if (res.data.result_code === '1') {
+                			$('#confirm').modal('show');
+                            that.backType=backType;
+                            that.confirmData=res.data.result_data;
+                            if(res.data.result_data.CardDeposits.length != 0){
+                                that.cardDepositsIf = true;
+                                var CardDeposits_ = [];
+                                for(var i = 0;i<res.data.result_data.CardDeposits.length;i++) {
+                                    if (res.data.result_data.CardDeposits[i].CardType == 0) {
+                                        var cardTypeName = "主卡";
+                                    } else if(res.data.result_data.CardDeposits[i].CardType == 1){
+                                        var cardTypeName = "附属卡";
+                                    }
+                                    CardDeposits_.push({
+                                        CardId: res.data.result_data.CardDeposits[i].CardId,
+                                        CardType: res.data.result_data.CardDeposits[i].CardType,
+                                        Deposit: res.data.result_data.CardDeposits[i].Deposit,
+                                        ICCardID: res.data.result_data.CardDeposits[i].ICCardID,
+                                        cardTypeName:cardTypeName
+									})
+                                }
+							}
+							if(res.data.result_data.BalanceExchanges.length != 0){
+                                that.balanceExchangesIf = true;
+							}
+                            that.BackTotal=res.data.result_data.BackTotal ;
+                            that.cardDeposits=CardDeposits_ ;
+                            that.balanceExchanges=res.data.result_data.BalanceExchanges;
+                        }
+                    }).catch(function (err) {
+                        console.log(err);
+                    });
+				}
+            },
+            confirmBackCard:function () {
+			    var that = this;
+                var balanceExchanges = JSON.stringify(that.confirmData.BalanceExchanges);
+                var cardDeposits = JSON.stringify(that.confirmData.CardDeposits);
+                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,icCardId:that.icCardId,backType:that.backType,balanceExchanges:balanceExchanges,cardDeposits:cardDeposits};
+                console.log(obj);
+                axios.post('/XCCloud/Member?action=ConfirmBackCard', obj).then(function (res) {	//	获取会员余额及兑换比例
+                    console.log(res.data);
+                    $('#confirm').modal('hide');
+                    that.msgPrompt(res.data);
+                    if (res.data.result_code === '1') {
+
+                    }
+                }).catch(function (err) {
+                    console.log(err);
+                });
+            },
 //			获取会员详细信息
             membershipDetails:function () {
 			    var that = this;
@@ -2182,6 +2394,11 @@
             couponDetail:function () {
 			    alert("")
             },
+//			确认框
+//            confirm:function (confirmMsg) {
+//                this.confirm = confirmMsg;
+//                $('#confirm').modal('show');
+//            },
 //			通用消息提示
             msgPrompt:function (res) {
                 var that = this;

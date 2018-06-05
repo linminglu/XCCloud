@@ -472,6 +472,85 @@ print @Return
 print @ErrMsg
 print @OrderFlwId
 
+--É¢¿Í¹ºÂò
+declare @Return int
+declare @StoreId varchar(15) = '100025420106001'
+declare @CustomerType int = 0
+declare @MemberLevelId int = 0
+declare @Mobile varchar(11) = '15618920040'
+declare @ICCardId int = 0
+declare @PayCount decimal(18,2) = 50 + 5.5
+declare @Deposit decimal(18,2) = 0
+declare @OpenFee decimal(18,2) = 0
+declare @UserID decimal = 3
+declare @WorkStation varchar(50) = 'lijunjie'
+declare @AuthorID int = 0
+declare @Note varchar(500) = ''
+declare @OrderSource int = 0
+declare @SaleCoinType int = 1
+
+declare @OrderFlwId varchar(32) = 0
+declare @ErrMsg varchar(200) = ''
+declare @FoodSaleDetailList [FoodSaleDetailListType]
+insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(1,0,1,0,1/2.0)
+insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(3,0,2,0,10/2.0)
+--insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(101,0,1,0,20)--¿ª¿¨Ì×²Í
+--insert into @FoodDetailType(FoodId,Category,FoodCount,PayType,PayNum) values(3,1,98305,100)-----------
+--insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(6,0,1,98306,100)
+--insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(4,0,1,98307,100)
+insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(1,1,1,0,20)
+insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(4,2,1,0,30)
+--insert into @FoodDetailType(FoodId,Category,FoodCount,PayType,PayNum) values(7,1,98308,100)
+--insert into @FoodDetailType(FoodId,Category,FoodCount,PayType,PayNum) values(5,1,98309,100)
+--insert into @FoodDetailType(FoodId,Category,FoodCount,PayType,PayNum) values(8,1,98315,500)
+declare @FlwSeedId varchar(29) = '100025420106001' + '20180517' + '100010'
+exec @Return = CreateOrder @FoodSaleDetailList,@StoreId,@CustomerType,@Mobile,@MemberLevelId,@ICCardId,@PayCount,@OpenFee,@Deposit,
+@UserID,@WorkStation,@AuthorID,@Note,@OrderSource,@SaleCoinType,@FlwSeedId,@OrderFlwId output,@ErrMsg output
+print @Return 
+print @ErrMsg
+print @OrderFlwId
+
+
+--»áÔ±¹ºÂò
+declare @Return int
+declare @StoreId varchar(15) = '100025420106001'
+declare @CustomerType int = 2
+declare @MemberLevelId int = 21
+declare @Mobile varchar(11) = ''
+declare @ICCardId int = 10004143
+declare @PayCount decimal(18,2) = 50 + 5.5
+declare @Deposit decimal(18,2) = 0
+declare @OpenFee decimal(18,2) = 0
+declare @UserID decimal = 3
+declare @WorkStation varchar(50) = 'lijunjie'
+declare @AuthorID int = 0
+declare @Note varchar(500) = ''
+declare @OrderSource int = 0
+declare @SaleCoinType int = 1
+
+declare @OrderFlwId varchar(32) = 0
+declare @ErrMsg varchar(200) = ''
+declare @FoodSaleDetailList [FoodSaleDetailListType]
+insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(1,0,1,0,1/2.0)
+insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(3,0,2,0,10/2.0)
+insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(6,0,1,98306,100)
+insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(4,0,1,98307,100)
+insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(1,1,1,0,20)
+insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(4,2,1,0,30)
+
+declare @FlwSeedId varchar(29) = '100025420106001' + '20180517' + '200010'
+exec @Return = CreateOrder @FoodSaleDetailList,@StoreId,@CustomerType,@Mobile,@MemberLevelId,@ICCardId,@PayCount,@OpenFee,@Deposit,
+@UserID,@WorkStation,@AuthorID,@Note,@OrderSource,@SaleCoinType,@FlwSeedId,@OrderFlwId output,@ErrMsg output
+print @Return 
+print @ErrMsg
+print @OrderFlwId
+
+select * from Flw_Order
+select * from Flw_Food_Sale
+select * from Flw_Food_SaleDetail
+select * from Flw_Order_Detail
+select * from Flw_Food_Sale_Pay
+
 ----------------------------------------------------------------------------------------------------
 
 ----------------------------------------------------------------------------------------------------
