@@ -65,17 +65,22 @@ namespace XXCloudService.Api.XCCloud
                         var dicPara = new Dictionary<string, object>(el, StringComparer.OrdinalIgnoreCase);
                         var balanceType = dicPara.Get("balanceType").Toint();
                         var useCount = dicPara.Get("useCount").Toint();
+                        var cashValue = dicPara.Get("cashValue").Todecimal();
 
                         if (!balanceType.Nonempty("余额类别", out errMsg))
                             return false;
 
                         if (!useCount.Validint("消耗数量", out errMsg))
-                            return false;                        
+                            return false;
+
+                        if (!cashValue.Validdecimal("现金", out errMsg))
+                            return false;   
 
                         var data_Food_SaleModel = new Data_Food_Sale();
                         data_Food_SaleModel.FoodID = iFoodId;
                         data_Food_SaleModel.BalanceType = balanceType;
                         data_Food_SaleModel.UseCount = useCount;
+                        data_Food_SaleModel.CashValue = cashValue;
                         Data_Food_SaleService.I.AddModel(data_Food_SaleModel);
                     }
                     else
@@ -520,6 +525,7 @@ namespace XXCloudService.Api.XCCloud
                                                     (a.FoodType == (int)FoodDetailType.Ticket) ? (b != null ? b.ProjectName : string.Empty) :
                                                     (a.FoodType == (int)FoodDetailType.Coupon) ? (g != null ? g.CouponName : string.Empty) : string.Empty,
                                       FoodDetailType = a.FoodType,
+                                      BalanceType = a.BalanceType,
                                       FoodDetailTypeStr = (a.FoodType == (int)FoodDetailType.Coin) ? (f != null ? f.TypeName : string.Empty) : 
                                                             //(d != null ? d.DictKey : string.Empty),
                                                             (a.FoodType == (int)FoodDetailType.Coupon ? "优惠券" : a.FoodType == (int)FoodDetailType.Digit ? "数字币" : a.FoodType == (int)FoodDetailType.Good ? "礼品" : a.FoodType == (int)FoodDetailType.Ticket ? "门票" : string.Empty),
@@ -534,7 +540,8 @@ namespace XXCloudService.Api.XCCloud
                                 select new {
                                     BalanceType = a.BalanceType,
                                     BalanceTypeStr = b.TypeName,
-                                    UseCount = a.UseCount
+                                    UseCount = a.UseCount,
+                                    CashValue = a.CashValue
                                 };
 
                 var result = new

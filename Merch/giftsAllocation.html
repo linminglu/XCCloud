@@ -404,7 +404,7 @@
             // 更新到表格的缓存数据中，才能在获得选中行等等其他的方法中得到更新之后的值
             tableData[trElem.data('index')][elem.attr('name')] = data.value;
             let _outDepotId=data.value;
-            let obj={'inOrOutDepotId':data.value,
+            let obj={'DepotId':data.value,
                 'goodNameOrBarCode':trElem[0].children[0].firstChild.innerHTML,
                 'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
             let parseJson = JSON.stringify(obj);
@@ -417,7 +417,7 @@
                     data = JSON.parse(data);
                     if (data.result_code == 1) {
                     if(data.result_data.length>0){
-                        trElem[0].children[6].firstChild.innerHTML=data.result_data[0].AvailableCount
+                        trElem[0].children[7].firstChild.innerHTML=data.result_data[0].AvailableCount
                         for(let i in newArr){
                             if(newArr[i].Barcode==trElem[0].children[0].firstChild.innerHTML){
                                 newArr[i].outDepotId=_outDepotId;
@@ -425,7 +425,7 @@
                             }
                         }
                     }else {
-                        trElem[0].children[6].firstChild.innerHTML=0;
+                        trElem[0].children[7].firstChild.innerHTML=0;
                         for(let i in newArr){
                             if(newArr[i].Barcode==trElem[0].children[0].firstChild.innerHTML){
                                 newArr[i].outDepotId=_outDepotId;
@@ -480,12 +480,13 @@
                     data: { parasJson: parasJson },
                     success: function (data) {
                         data=JSON.parse(data);
+                        console.log(data)
                         if(data.result_code==1){
                            let arr=data.result_data.GoodRequestDetails;
                            if(arr.length>0){
                                for(i in arr){
                                    arr[i].outDepotId='';
-                                   arr[i].RequestCount='';//可调拨数
+                                   // arr[i].RequestCount='';//申请拨数
                                    arr[i].SendCount='';//调拨数量
                                    arr[i].Price='';//不含税单价
                                    arr[i].Tax='';//税率
@@ -500,7 +501,8 @@
                                 , data: newArr
                                 , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
                                 , cols: [[
-                                    {field:'Barcode', title:'商品条码', align: 'center',width:170,fixed: 'left'}
+                                     // {type:'checkbox',fixed: 'left'} ,
+                                     {field:'Barcode', title:'商品条码', align: 'center',width:170,fixed: 'left'}
                                     ,{field:'GoodName',title: '商品类别', align: 'center',width:120,fixed: 'left'} //width 支持：数字、百分比和不填写。
                                     ,{field:'GoodTypeStr', title: '商品类别', align: 'center',width:100,fixed: 'left'}
                                     ,{field:'RequestCount', title: '申请数量', align: 'center'}
@@ -519,12 +521,13 @@
                                             _select+='</select>';
                                             return _select;
                                         }}
-                                    ,{field:'RequestCount', title: '可调拨数', align: 'center'}
+                                    ,{field:'AvailableCount', title: '可调拨数', align: 'center'}
                                     ,{field:'SendCount', title: '调拨数量', align: 'center',edit:true}
                                     ,{field:'Price', title: '不含税单价', align: 'center',edit:true}
                                     ,{field:'Tax', title: '税率', align: 'center',edit:true}
                                     ,{field:'CostPrice', title: '含税单价', align: 'center',edit:true}
-                                    ,{fixed: 'right',title:'操作', width:140, align:'center', toolbar: '#barDemo2'}]]
+                                    // ,{fixed: 'right',title:'操作', width:140, align:'center', toolbar: '#barDemo2'}
+                                    ]]
                                 , page: {page: true, limits: [10, 15, 20, 30, 50, 100]}
                                 , limit: 10
                                 ,done: function (res, curr, count) {
@@ -540,7 +543,12 @@
                             $('#applyDepot').val(_data.InStoreName);
                             $('#applyWay').val(_data.RequstTypeStr);
                             $('#applyStore').val(_data.OutStoreName);
-                            $('#applyReason').val(_data.Note);
+                            $('#applyReason').val(_data.RequestReason);
+                             OutDepotId=data.result_data.OutDepotID||'';
+                              InDepotId=data.result_data.InDepotID||'';
+                             OutStoreId=data.result_data.OutStoreID||'';
+                             InStoreId=data.result_data.InStoreID||'';
+                            requestId=data.result_data.ID;
                             xc.setSelect('物流公司','logisticsCompany');
                             layer.open({
                                 title:'调拨出库',

@@ -158,7 +158,8 @@ namespace XCCloudService.WorkFlow
 
             _machine.Configure(State.Requested)
                 .PermitDynamicIf(_setRequestVerifyTrigger, s =>
-                    s == 1 ? State.RequestVerifiedPass : State.RequestVerifiedRefuse, () => (
+                    s == 1 ? State.RequestVerifiedPass : State.RequestVerifiedRefuse, 
+                    () => (
                      (_requestType == (int)RequestType.RequestStore && IsMerchUser()) ||
                      (_requestType == (int)RequestType.RequestMerch && IsMerchUser())
                     ) && (_merchId == _targetMerchId && _storeId == ""))
@@ -167,11 +168,11 @@ namespace XCCloudService.WorkFlow
                     && (_merchId == _targetMerchId && _storeId == _outStoreId));
 
             _machine.Configure(State.RequestVerifiedPass)
-                .PermitIf(Trigger.Cancel, State.Requested, () => IsMerchUser() && (_merchId == _targetMerchId && _storeId == ""))
+                //.PermitIf(Trigger.Cancel, State.Requested, () => IsMerchUser() && (_merchId == _targetMerchId && _storeId == ""))
                 .PermitIf(Trigger.SendDeal, State.SendDealed, () => IsStoreUser() && (_merchId == _targetMerchId && _storeId == _outStoreId));
 
             _machine.Configure(State.RequestVerifiedRefuse)
-                .PermitIf(Trigger.Cancel, State.Requested, () => IsMerchUser() && (_merchId == _targetMerchId && _storeId == ""))
+                //.PermitIf(Trigger.Cancel, State.Requested, () => IsMerchUser() && (_merchId == _targetMerchId && _storeId == ""))
                 .PermitIf(Trigger.Close, State.Closed, () => IsStoreUser() && (_merchId == _targetMerchId && _storeId == _inStoreId));
 
             _machine.Configure(State.SendDealed)
@@ -182,12 +183,12 @@ namespace XCCloudService.WorkFlow
                      (_requestType == (int)RequestType.RequestMerch && IsMerchUser()) ||
                      (_requestType == (int)RequestType.RequestStore && IsStoreUser())
                     ) && (_merchId == _targetMerchId && _storeId == _outStoreId))
-                .PermitIf(Trigger.Cancel, State.RequestVerifiedPass, () =>
-                    _requestType == (int)RequestType.RequestStore && IsStoreUser() && (_merchId == _targetMerchId && _storeId == _outStoreId), "撤销调拨出库，返回上一步")
-                .PermitIf(Trigger.Cancel, State.Requested, () =>
-                    _requestType == (int)RequestType.MerchRequest && IsStoreUser() && (_merchId == _targetMerchId && _storeId == _outStoreId), "撤销调拨出库，返回上一步")
-                .PermitDynamicIf(_setSendDealVerifyTrigger, s => s == 1 ? State.SendDealVerifiedPass : State.SendDealVerifiedRefuse, () =>
-                     _requestType == (int)RequestType.RequestStore && IsMerchUser() && (_merchId == _targetMerchId && _storeId == ""))
+                //.PermitIf(Trigger.Cancel, State.RequestVerifiedPass, () =>
+                //    _requestType == (int)RequestType.RequestStore && IsStoreUser() && (_merchId == _targetMerchId && _storeId == _outStoreId), "撤销调拨出库，返回上一步")
+                //.PermitIf(Trigger.Cancel, State.Requested, () =>
+                //    _requestType == (int)RequestType.MerchRequest && IsStoreUser() && (_merchId == _targetMerchId && _storeId == _outStoreId), "撤销调拨出库，返回上一步")
+                .PermitDynamicIf(_setSendDealVerifyTrigger, s => s == 1 ? State.SendDealVerifiedPass : State.SendDealVerifiedRefuse, 
+                () => _requestType == (int)RequestType.RequestStore && IsMerchUser() && (_merchId == _targetMerchId && _storeId == ""))
                 .PermitIf(Trigger.RequestDeal, State.RequestDealed, () => 
                     (
                      (_requestType == (int)RequestType.MerchRequest && IsMerchUser()) ||
@@ -196,11 +197,11 @@ namespace XCCloudService.WorkFlow
                     ) && (_merchId == _targetMerchId && _storeId == _inStoreId));
 
             _machine.Configure(State.SendDealVerifiedPass)
-                .PermitIf(Trigger.Cancel, State.SendDealed, () => IsMerchUser() && (_merchId == _targetMerchId && _storeId == ""))
+                //.PermitIf(Trigger.Cancel, State.SendDealed, () => IsMerchUser() && (_merchId == _targetMerchId && _storeId == ""))
                 .PermitIf(Trigger.RequestDeal, State.RequestDealed, () => IsStoreUser() && (_merchId == _targetMerchId && _storeId == _inStoreId));
 
             _machine.Configure(State.SendDealVerifiedRefuse)
-                .PermitIf(Trigger.Cancel, State.SendDealed, () => IsMerchUser() && (_merchId == _targetMerchId && _storeId == ""))
+                //.PermitIf(Trigger.Cancel, State.SendDealed, () => IsMerchUser() && (_merchId == _targetMerchId && _storeId == ""))
                 .PermitIf(Trigger.Close, State.Closed, () => IsStoreUser() && (_merchId == _targetMerchId && _storeId == _outStoreId));
 
             _machine.Configure(State.RequestDealed)
@@ -211,14 +212,14 @@ namespace XCCloudService.WorkFlow
                      (_requestType == (int)RequestType.RequestMerch && IsStoreUser()) ||
                      (_requestType == (int)RequestType.RequestStore && IsStoreUser())
                     ) && (_merchId == _targetMerchId && _storeId == _inStoreId))
-                .PermitIf(Trigger.Cancel, State.SendDealVerifiedPass, () =>
-                    _requestType == (int)RequestType.RequestStore && IsStoreUser() && (_merchId == _targetMerchId && _storeId == _inStoreId), "撤销调拨入库，返回上一步")
-                .PermitIf(Trigger.Cancel, State.SendDealed, () => 
-                    (
-                     (_requestType == (int)RequestType.MerchRequest && IsMerchUser()) || 
-                     (_requestType == (int)RequestType.MerchSend && IsStoreUser()) || 
-                     (_requestType == (int)RequestType.RequestMerch && IsStoreUser())
-                    ) && (_merchId == _targetMerchId && _storeId == _inStoreId), "撤销调拨入库，返回上一步")
+                //.PermitIf(Trigger.Cancel, State.SendDealVerifiedPass, () =>
+                //    _requestType == (int)RequestType.RequestStore && IsStoreUser() && (_merchId == _targetMerchId && _storeId == _inStoreId), "撤销调拨入库，返回上一步")
+                //.PermitIf(Trigger.Cancel, State.SendDealed, () => 
+                //    (
+                //     (_requestType == (int)RequestType.MerchRequest && IsMerchUser()) || 
+                //     (_requestType == (int)RequestType.MerchSend && IsStoreUser()) || 
+                //     (_requestType == (int)RequestType.RequestMerch && IsStoreUser())
+                //    ) && (_merchId == _targetMerchId && _storeId == _inStoreId), "撤销调拨入库，返回上一步")
                 .PermitDynamicIf(_setRequestDealVerifyTrigger, s => s == 1 ? State.RequestDealVerifiedPass : State.RequestDealVerifiedRefuse, () =>
                     _requestType == (int)RequestType.RequestStore && IsMerchUser() && (_merchId == _targetMerchId && _storeId == ""))               
                 .PermitIf(Trigger.Close, State.Closed, () => 
@@ -235,12 +236,12 @@ namespace XCCloudService.WorkFlow
                     ) && (_merchId == _targetMerchId && _storeId == _outStoreId));
 
             _machine.Configure(State.RequestDealVerifiedPass)
-                .PermitIf(Trigger.Cancel, State.RequestDealed, () => IsMerchUser() && (_merchId == _targetMerchId && _storeId == ""))
+                //.PermitIf(Trigger.Cancel, State.RequestDealed, () => IsMerchUser() && (_merchId == _targetMerchId && _storeId == ""))
                 .PermitIf(Trigger.SendDeal, State.SendDealed, () => IsStoreUser() && (_merchId == _targetMerchId && _storeId == _outStoreId))
                 .PermitIf(Trigger.Close, State.Closed, () => IsStoreUser() && (_merchId == _targetMerchId && _storeId == _inStoreId));
 
             _machine.Configure(State.RequestDealVerifiedRefuse)
-                .PermitIf(Trigger.Cancel, State.RequestDealed, () => IsMerchUser() && (_merchId == _targetMerchId && _storeId == ""))
+                //.PermitIf(Trigger.Cancel, State.RequestDealed, () => IsMerchUser() && (_merchId == _targetMerchId && _storeId == ""))
                 .PermitIf(Trigger.Close, State.Closed, () => IsStoreUser() && (_merchId == _targetMerchId && _storeId == _inStoreId));
 
             _machine.Configure(State.Closed)
