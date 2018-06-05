@@ -224,8 +224,8 @@ namespace XCCloudService.WorkFlow
                     _requestType == (int)RequestType.RequestStore && IsMerchUser() && (_merchId == _targetMerchId && _storeId == ""))               
                 .PermitIf(Trigger.Close, State.Closed, () => 
                     (
-                     (_requestType == (int)RequestType.MerchRequest && IsMerchUser() && (_merchId == _targetMerchId && _storeId == _inStoreId)) || 
-                     (_requestType == (int)RequestType.MerchSend && IsStoreUser() && (_merchId == _targetMerchId && _storeId == _outStoreId)) ||
+                     (_requestType == (int)RequestType.MerchRequest && IsMerchUser() && (_merchId == _targetMerchId && _storeId == _inStoreId)) ||
+                     (_requestType == (int)RequestType.MerchSend && IsMerchUser() && (_merchId == _targetMerchId && _storeId == _outStoreId)) ||
                      (_requestType == (int)RequestType.RequestMerch && IsStoreUser() && (_merchId == _targetMerchId && _storeId == _inStoreId))
                     ))
                 .PermitIf(Trigger.SendDeal, State.SendDealed, () => 

@@ -19,6 +19,10 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         /// </summary>
         public int? GoodID { get; set; }
         /// <summary>
+        /// 仓库ID
+        /// </summary>
+        public int? DepotID { get; set; }
+        /// <summary>
         /// 商品类别
         /// </summary>
         public int? GoodType { get; set; }

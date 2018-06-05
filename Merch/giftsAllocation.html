@@ -10,7 +10,7 @@
         height: 28px;
         margin-top: -8px;
     }
-
+   thead .layui-table-cell .layui-form-checkbox[lay-skin=primary]{display: none}
     .layui-table-view .layui-table[lay-size="sm"] .layui-form-select dl dt, .layui-table-view .layui-form-select dl dd {
         line-height: 28px;
     }
@@ -62,7 +62,7 @@
         <form action="" class="layui-form layui-form-pane">
             <div class="layui-form-item">
                 <div class="layui-inline">
-                    <label for="" class="layui-form-label">调拨方式</label>
+                    <label  class="layui-form-label">调拨方式</label>
                     <div class="layui-input-inline">
                         <select name="" id="RequstType" lay-filter="RequstType">
                             <option>-请选择-</option>
@@ -71,55 +71,42 @@
                         </select>
                     </div>
                 </div>
-                <div class="layui-inline" id="OutDepBox">
-                    <label for="" class="layui-form-label">发货仓库</label>
+                <div class="layui-inline layui-hide" id="OutDepBox">
+                    <label  class="layui-form-label">发货仓库</label>
                     <div class="layui-input-inline">
                         <select name="" id="OutDepotId" lay-filter="OutDepotId">
 
                         </select>
                     </div>
                 </div>
-                <div class="layui-inline layui-hide" id="InDepBox">
-                    <label for="" class="layui-form-label">申请仓库</label>
+                <div class="layui-inline " id="InDepBox">
+                    <label  class="layui-form-label">申请仓库</label>
                     <div class="layui-input-inline">
                         <select name="" id="InDepotId" lay-filter="InDepotId">
 
                         </select>
                     </div>
                 </div>
-                <div class="layui-inline" id="InStoreBox">
+                <div class="layui-inline layui-hide" id="InStoreBox">
                     <label class="layui-form-label">调配门店</label>
                     <div class="layui-input-inline">
                         <select name="" id="InStoreId" lay-filter="InStoreId"></select>
                     </div>
                 </div>
-                <div class="layui-inline layui-hide" id="OutStoreBox">
-                    <label for="" class="layui-form-label">调拨门店</label>
+                <div class="layui-inline " id="OutStoreBox">
+                    <label  class="layui-form-label">调拨门店</label>
                     <div class="layui-input-inline">
                         <select name="" id="OutStoreId" lay-filter="OutStoreId"></select>
                     </div>
                 </div>
             </div>
             <div class="layui-form-item">
-                   <label for="" class="layui-form-label">调拨原因</label>
+                   <label  class="layui-form-label">调拨原因</label>
                    <div class="layui-input-block" style="width: 838px">
                        <input type="text" class="layui-input" id="RequestReason">
                    </div>
             </div>
-            <div class="layui-form-item layui-hide">
-                <div class="layui-inline">
-                    <label for="" class="layui-form-label">物流公司</label>
-                    <div class="layui-input-inline">
-                        <select name="" id=""></select>
-                    </div>
-                </div>
-                <div class="layui-inline">
-                    <label for="" class="layui-form-label">物流单号</label>
-                   <div class="layui-input-inline">
-                       <input type="text" class="layui-input">
-                   </div>
-                </div>
-            </div>
+
             <div class="layui-form-item">
                 <div class="layui-inline">
                     <div class="layui-input-inline" style="width: 300px;">
@@ -212,6 +199,42 @@
            <button type="button" class="layui-btn layui-btn-normal" id="saveSendDeal">确定</button>
        </div>
    </div>
+    <!--调拨入库-->
+    <div id="inModel" style="padding: 15px;display:none;">
+        <form action="" class="layui-form layui-form-pane">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">入库仓库</label>
+                    <div class="layui-input-inline">
+                        <select name="inDepot" lay-filter="inDepot"  id="inDepot"></select>
+                        <input type="text" class="layui-input layui-hide" readonly id="inDepot1">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">调拨方式</label>
+                    <div class="layui-input-inline">
+                        <input type="text" class="layui-input" readonly id="inWay">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">调配门店</label>
+                    <div class="layui-input-inline">
+                        <input type="text" class="layui-input" readonly id="inStore">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">调配原因</label>
+                <div class="layui-input-block">
+                    <input type="text" class="layui-input" readonly id="inReason">
+                </div>
+            </div>
+        </form>
+        <table id="inDealTable" lay-filter="inDealTable" class="layui-hide"></table>
+        <div style="text-align:center;">
+            <button type="button" class="layui-btn layui-btn-normal" id="saveInDeal">确定</button>
+        </div>
+    </div>
 </body>
 <script src="js/jquery-1.8.3-min.js"></script>
 <script src="layui/layui.js"></script>
@@ -221,26 +244,29 @@
     <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="Request">调拨申请</a>
     {{#  } }}
     {{# if(JSON.stringify(d.PermittedTriggers).indexOf('2')!=-1){ }}
-    <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="RequestVerify">调拨申请审核</a>
+    <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="RequestVerify">申请审核</a>
     {{#  } }}
     {{# if(JSON.stringify(d.PermittedTriggers).indexOf('3')!=-1){ }}
     <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="SendDeal">调拨出库</a>
     {{#  } }}
     {{# if(JSON.stringify(d.PermittedTriggers).indexOf('4')!=-1){ }}
-    <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="SendDealVerify">调拨出库审核</a>
+    <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="SendDealVerify">出库审核</a>
     {{#  } }}
     {{# if(JSON.stringify(d.PermittedTriggers).indexOf('5')!=-1){ }}
     <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="RequestDeal">调拨入库</a>
     {{#  } }}
     {{# if(JSON.stringify(d.PermittedTriggers).indexOf('6')!=-1){ }}
-    <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="RequestDealVerify">调拨入库审核</a>
+    <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="RequestDealVerify">入库审核</a>
     {{#  } }}
     {{# if(JSON.stringify(d.PermittedTriggers).indexOf('7')!=-1){ }}
     <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="Cancel">撤销</a>
     {{#  } }}
     {{# if(JSON.stringify(d.PermittedTriggers).indexOf('8')!=-1){ }}
-    <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="Close">调拨流程关闭</a>
+    <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="Close">流程关闭</a>
     {{#  } }}
+</script>
+<script type="text/html" id="barDemo1">
+    <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del">删除</a>
 </script>
 <script>
     let xc=xcActionSystem.prototype;
@@ -266,6 +292,13 @@
             ,{fixed: 'right', title: '操作', width:260, align:'center', toolbar: '#barDemo'}]
     };
     xc.getInitData(parm);
+    let logMsg=JSON.parse(xc.getStorage('logMsg'));
+    if(logMsg.logType==2){
+        $('#RequstType').html('<option>-请选择-</option><option value="0">门店向门店申请</option><option value="1">门店向总部申请</option>')
+
+    }else if(logMsg.logType==3){
+        $('#RequstType').html('<option>-请选择-</option><option value="2">总部向门店派货</option><option value="3">总部向门店申请</option>')
+    }
     let indexer;
     let checkListGoods=[];
     let notGoodId=[];//不查询的商品id集合
@@ -281,6 +314,8 @@
     let newArr=[];
     let depotList=[];//仓库列表
     let logisticsCompany='';
+    //调拨入库
+    let inDepotArr=[];let inDepot='';
     let __obj={'merchId':JSON.parse(xc.getStorage('logMsg')).MerchID,
         'storeId':JSON.parse(xc.getStorage('logMsg')).StoreID,
         'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
@@ -322,6 +357,20 @@
                 $('#OutStoreBox').removeClass('layui-hide');
                 xc.getDepotDic('','',token,layer,form,'InDepotId');
                 xc.GetUnderStores(token,layer,form,'OutStoreId');
+            }else if(data.value==0){
+                $('#InDepBox').removeClass('layui-hide');
+                $('#OutStoreBox').removeClass('layui-hide');
+                $('#InStoreBox').addClass('layui-hide');
+                $('#OutDepBox').addClass('layui-hide');
+                xc.getDepotDic('','',token,layer,form,'InDepotId');
+                xc.GetUnderStores(token,layer,form,'OutStoreId');
+            }else if(data.value==1){
+                $('#InDepBox').removeClass('layui-hide');
+                $('#OutStoreBox').addClass('layui-hide');
+                $('#InStoreBox').addClass('layui-hide');
+                $('#OutDepBox').addClass('layui-hide');
+                xc.getDepotDic('','',token,layer,form,'InDepotId');
+                // xc.GetUnderStores(token,layer,form,'OutStoreId');
             }
             OutDepotId='';InStoreId=''; InDepotId='';OutStoreId='';checkListGoods=[];notGoodId=[];
             table.render({
@@ -372,16 +421,29 @@
                         }
                     }
                     if(flag==false){
-                        checkListGoods.push({
-                            'GoodID':obj.data.GoodID,
-                            'GoodName':obj.data.GoodName,
-                            'RequestCount':'',
-                            'Tax':'',
-                            'CostPrice':'',
-                            'SendCount':'',
-                            'RemainCount':obj.data.RemainCount,
-                            'AvailableCount':obj.data.AvailableCount
-                        });
+                        if(RequstType==2||RequstType==3){
+                            checkListGoods.push({
+                                'GoodID':obj.data.GoodID,
+                                'GoodName':obj.data.GoodName,
+                                'RequestCount':'',
+                                'Tax':'',
+                                'NoCostPrice':'',
+                                'CostPrice':'',
+                                'SendCount':'',
+                                'RemainCount':obj.data.RemainCount,
+                                'AvailableCount':obj.data.AvailableCount
+                            });
+                        }else if(RequstType==0||RequstType==1){
+                            checkListGoods.push({
+                                'GoodID':obj.data.GoodID,
+                                'GoodName':obj.data.GoodName,
+                                'RequestCount':'',
+                                'Tax':'',
+                                'RemainCount':obj.data.RemainCount,
+                                'AvailableCount':obj.data.AvailableCount
+                            });
+                        }
+
                     }
                  
                 }else {
@@ -392,7 +454,6 @@
                         }
                     }
                 }
-                console.log(checkListGoods);
             }
         });
 
@@ -417,7 +478,7 @@
                     data = JSON.parse(data);
                     if (data.result_code == 1) {
                     if(data.result_data.length>0){
-                        trElem[0].children[7].firstChild.innerHTML=data.result_data[0].AvailableCount
+                        trElem[0].children[6].firstChild.innerHTML=data.result_data[0].AvailableCount
                         for(let i in newArr){
                             if(newArr[i].Barcode==trElem[0].children[0].firstChild.innerHTML){
                                 newArr[i].outDepotId=_outDepotId;
@@ -425,7 +486,7 @@
                             }
                         }
                     }else {
-                        trElem[0].children[7].firstChild.innerHTML=0;
+                        trElem[0].children[6].firstChild.innerHTML=0;
                         for(let i in newArr){
                             if(newArr[i].Barcode==trElem[0].children[0].firstChild.innerHTML){
                                 newArr[i].outDepotId=_outDepotId;
@@ -459,8 +520,8 @@
             }else if(layevent==='RequestVerify'){//申请审核
                 checkStatus='apply';
                 checkState=0;
-                $('#checkState').attr({'checked':false})
-                form.render()
+                $('#checkState').attr({'checked':false});
+                form.render();
                 layer.open({
                     title:'调拨申请审核',
                     type:1,
@@ -565,8 +626,8 @@
             }else if(layevent==='SendDealVerify'){//调拨出库审核
                 checkStatus='out';
                 checkState=0;
-                $('#checkState').attr({'checked':false})
-                form.render()
+                $('#checkState').attr({'checked':false});
+                form.render();
                 layer.open({
                     title:'调拨出库审核',
                     type:1,
@@ -574,12 +635,78 @@
                     content:$('#checkModel')
                 })
             }else if(layevent==='RequestDeal'){//调拨入库
+                let _obj={
+                    'requestId':requestId, 'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                let url='/XCCloud/GoodsInfo?action=GetGoodRequestDealInfo';
+                let parasJson = JSON.stringify(_obj);
+                $.ajax({
+                    type: "post",
+                    url: url,
+                    contentType: "application/json; charset=utf-8",
+                    data: { parasJson: parasJson },
+                    success: function (data) {
+                        data=JSON.parse(data);
+                        if(data.result_code==1){
+                            let arr=data.result_data.GoodRequestDetails;
+                            table.render({
+                                elem: '#inDealTable'
+                                , height:'300px'
+                                , size:"sm"
+                                , data: arr
+                                , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+                                , cols: [[
+                                    {type:'checkbox',fixed: 'left'} ,
+                                    {field:'ID', title: '调拨ID', align: 'center'}
+                                    ,{field:'GoodID', title: '商品ID', align: 'center'}
+                                    , {field:'Barcode', title:'商品条码', align: 'center',width:170}
+                                    ,{field:'GoodName',title: '商品类别', align: 'center',width:120} //width 支持：数字、百分比和不填写。
+                                    ,{field:'GoodTypeStr', title: '商品类别', align: 'center',width:100}
+                                    ,{field:'RequestCount', title: '申请数量', align: 'center'}
+                                    ,{field:'SendCount', title: '实发数量', align: 'center'}
+                                    ,{field:'StorageCount', title: '入库数量', align: 'center',edit:true}
+                                    ,{field:'CostPrice', title: '含税单价', align: 'center'}
+                                    ,{field:'Tax', title: '税率', align: 'center'}
+                                ]]
+                                , page: {page: true, limits: [10, 15, 20, 30, 50, 100]}
+                                , limit: 10
+                            });
+                            OutDepotId=data.result_data.OutDepotID||'';
+                            InDepotId=data.result_data.InDepotID||'';
+                            OutStoreId=data.result_data.OutStoreID||'';
+                            InStoreId=data.result_data.InStoreID||'';
 
+
+                            if(data.result_data.RequstType==2){
+                                xc.getDepotDic('','',token,layer,form,'inDepot');
+                                $('#inDepot').removeClass('layui-hide');
+                                $('#inDepot1').addClass('layui-hide');
+                                inDepot='';
+                            }else {
+                                $('#inDepot1').val(_data.InDepotName).removeClass('layui-hide');
+                                $('#inDepot1').addClass('layui-hide');
+                                inDepot=InDepotId;
+                            }
+
+                            $('#inWay').val(_data.RequstTypeStr);
+                            $('#inStore').val(_data.InStoreName);
+                            $('#inReason').val(_data.RequestReason);
+                            layer.open({
+                                title:'调拨入库',
+                                type:1,
+                                area:'1000px',
+                                content:$('#inModel')
+                            })
+                        }else {
+                            layer.msg(data.result_msg||data.return_msg)
+                        }
+                    }
+
+                });
             }else if(layevent==='RequestDealVerify'){//调拨入库审核
                 checkStatus='in';
                 checkState=0;
-                $('#checkState').attr({'checked':false})
-                form.render()
+                $('#checkState').attr({'checked':false});
+                form.render();
                 layer.open({
                     title:'调拨入库审核',
                     type:1,
@@ -589,7 +716,28 @@
             }else if(layevent==='Cancel'){//撤销
 
             }else if(layevent==='Close'){//调拨流程关闭
-
+                layer.confirm('是否确定关闭该流程', function(index){
+                    var _obj={'requestID':requestId,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                    var url='/XCCloud/GoodsInfo?action=GoodRequestClose';
+                    let parseJson = JSON.stringify(_obj);
+                    $.ajax({
+                        type: "post",
+                        url: url,
+                        contentType: "application/json; charset=utf-8",
+                        data: {parasJson: parseJson},
+                        success: function (data) {
+                            data = JSON.parse(data);
+                            console.log(data);
+                            if (data.result_code == 1) {
+                                layer.msg('关闭成功！',{time:1500},function () {
+                                   location.reload()
+                                });
+                            } else {
+                                layer.msg(data.result_msg||data.return_msg);
+                            }
+                        }
+                    })
+                });
             }
         });
         table.on('edit(giftsList)', function(obj){ //注：edit是固定事件名，test是table原始容器的属性 lay-filter="对应的值"
@@ -597,6 +745,75 @@
             let key=obj.field; //当前编辑的字段名
             let index=obj.data.LAY_TABLE_INDEX; //所在行的所有相关数据
             checkListGoods[index][key]=value;
+        });
+        //监听选中入库商品
+        table.on('checkbox(inDealTable)', function(obj){
+            if (obj.type == "all") {
+                console.log(obj)
+            } else {
+                if(inDepotArr.length>0){
+                    if(obj.checked==true){
+                        let flag=false;
+                        for(let i in inDepotArr){
+                            if(inDepotArr[i].GoodID==obj.data.GoodID){
+                                flag=true;
+                                break;
+                            }
+                        }
+                        if(flag==false){
+                            inDepotArr.push({
+                                'GoodID':obj.data.GoodID,
+                                'ID':obj.data.ID,
+                                'StorageCount':obj.data.StorageCount,
+                            });
+                        }
+
+                    }else {
+                        for(let i in inDepotArr){
+                            if(inDepotArr[i].GoodID==obj.data.GoodID){
+                                inDepotArr.splice(i,1);
+                                break;
+                            }
+                        }
+                    }
+                }else {
+                    inDepotArr.push({
+                        'GoodID':obj.data.GoodID,
+                        'ID':obj.data.ID,
+                        'StorageCount':obj.data.StorageCount,
+                    });
+                }
+
+            }
+        });
+        form.on('select(inDepot)',function (data){
+            inDepot=data.value;
+        });//
+        //监听修改入库实发数
+        table.on('edit(inDealTable)', function(obj){ //注：edit是固定事件名，test是table原始容器的属性 lay-filter="对应的值"
+            for(let i in inDepotArr){
+                if(inDepotArr[i].GoodID==obj.data.GoodID){
+                    inDepotArr[i][obj.field]=obj.value
+                }
+            }
+        });
+        //删除调拨商品
+        table.on('tool(giftsList)', function(obj){
+            let _data=obj.data;
+            let layevent=obj.event;
+            if(layevent==='del'){//调拨流程关闭
+                for(let i in checkListGoods){
+                    if(_data.GoodID==checkListGoods[i].GoodID){
+                        checkListGoods.splice(i,1);
+                        obj.del();
+                    }
+                }
+               for(let i in notGoodId){
+                   if(_data.GoodID==notGoodId[i]){
+                       notGoodId.splice(i,1)
+                   }
+               }
+            }
         });
         //弹出层
         $('#applyBtn').on('click',function () {
@@ -613,23 +830,22 @@
             });
         });
         $('#saveGoodsBtn').on('click',function () {
-            if(RequstType==2){
-                initSendTable(table,checkListGoods);
-            }else if(RequstType==3){
-                initApplyTable(table,checkListGoods)
+            if(checkListGoods.length>0){
+                initSendTable(table,checkListGoods,RequstType);
+                notGoodId =[];
+                for(let i in checkListGoods){
+                    notGoodId.push(checkListGoods[i].GoodID);
+                }
+                layer.close(indexer)
+            }else {
+                layer.msg('请选择商品')
             }
-            notGoodId =[];
-            for(let i in checkListGoods){
-                notGoodId.push(checkListGoods[i].GoodID);
-            }
-
-            layer.close(indexer)
         });
         $('#searchGoodBtn').on('click',function () {
             if(RequstType==2){
-                initGoodsTb(notGoodId.length==0?'':notGoodId.join('|'),OutDepotId,'',table);
-            }else if(RequstType==3){
-                initGoodsTb(notGoodId.length==0?'':notGoodId.join('|'),InDepotId,'',table);
+                initGoodsTb(RequstType,notGoodId.length==0?'':notGoodId.join('|'),OutDepotId,'',table);
+            }else if(RequstType==0||RequstType==1||RequstType==3){
+                initGoodsTb(RequstType,notGoodId.length==0?'':notGoodId.join('|'),InDepotId,'',table);
             }else {
                 layer.msg('请先选择调拨方式！')
             }
@@ -730,20 +946,70 @@
 
             })
         });
-    });
-    function initGoodsTb(a,b,c,table) {
-        if(b!=''){
-            let obj={
-                'notGoodIds':a,
-                'depotId':b,
-                'goodId':c,
+        //保存调拨出库
+        $('#saveInDeal').on('click',function () {
+            let _obj={ 'requestId':requestId,
+                'inDepotId':inDepot,
+                'goodRequestDetails':inDepotArr,
                 'userToken':token,
                 'signkey':'1f626576304bf5d95b72ece2222e42c3'};
-            let parseJson = JSON.stringify(obj);
-            var index = layer.load(0, {shade: false});
+            let url='/XCCloud/GoodsInfo?action=GoodRequestDeal';
+            let parasJson = JSON.stringify(_obj);
             $.ajax({
                 type: "post",
-                url: '/XCCloud/GoodsInfo?action=QueryGoodsStock',
+                url: url,
+                contentType: "application/json; charset=utf-8",
+                data: { parasJson: parasJson },
+                success: function (data) {
+                    data=JSON.parse(data);
+                    if(data.result_code==1){
+                        layer.msg('保存成功',{time:1000},function () {
+                            location.href='giftsAllocation.html'
+                        });
+                    }else {
+                        layer.msg(data.result_msg||data.return_msg)
+                    }
+                }
+
+            })
+        });
+    });
+    function initGoodsTb(requestType,a,b,c,table) {
+        let obj;
+        // if(b!=''){
+            if(requestType==1){
+                obj={
+                    'merchId':JSON.parse(xc.getStorage('logMsg')).merchId,
+                    'storeId':'',
+                    'depotId':'',
+                    'notGoodIds':a,
+                    'goodId':c,
+                    'userToken':token,
+                    'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+            }else if(requestType==0||requestType==3){
+                obj={
+                    'merchId':'',
+                    'storeId':JSON.parse(xc.getStorage('logMsg')).storeId,
+                    'depotId':'',
+                    'notGoodIds':a,
+                    'goodId':c,
+                    'userToken':token,
+                    'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+            }else if(requestType==2){
+                obj={
+                    'merchId':'',
+                    'storeId':'',
+                    'depotId':b,//出库仓库ID
+                    'notGoodIds':a,
+                    'goodId':c,
+                    'userToken':token,
+                    'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+            }
+
+            let parseJson = JSON.stringify(obj);
+            $.ajax({
+                type: "post",
+                url: '/XCCloud/GoodsInfo?action=QueryGoodsStock2',
                 contentType: "application/json; charset=utf-8",
                 data: {parasJson: parseJson},
                 success: function (_data) {
@@ -767,7 +1033,6 @@
                             , page: {page: true, limits: [5,10, 15, 20, 30, 50]}
                             , limit: 5
                         });
-                        layer.close(index);
                     indexer=layer.open({
                             title:'库存礼品列表',
                             type:1,
@@ -775,34 +1040,45 @@
                             content:$('#goodsBox')
                         });
                     }else {
-                        layer.close(index);
                         layer.msg(_data.result_msg||_data.return_msg)
                     }
                 }
             });
-        }else {
-            layer.msg('申请仓库或发货仓库不能为空！')
-        }
+        // }else {
+        //     layer.msg('申请仓库或发货仓库不能为空！')
+        // }
     }
-    function initSendTable(table,checkListGood) {
+    function initSendTable(table,checkListGood,requestType) {
+        let cols=[];
+        if(requestType==2||requestType==3){
+            cols=[
+                {field: 'GoodID', title: '商品ID', align: 'center',width:100}
+                , {field: 'GoodName', title: '商品名称', align: 'center',width:100}
+                , {field: 'RemainCount', title: '库存', align: 'center',width:100}
+                , {field: 'RequestCount', title: '申请数量', align: 'center',width:100,edit:true}
+                , {field: 'NoCostPrice', title: '不含税单价', align: 'center',width:100,edit:true}
+                , {field: 'Tax', title: '税率%', align: 'center',width:100,edit:true}
+                , {field: 'CostPrice', title: '含税代价', align: 'center',width:100,edit:true}
+                , {field: 'AvailableCount', title: '可调拨数', align: 'center',width:100}
+                ,{fixed: 'right', title: '操作',  align:'center', toolbar: '#barDemo1'}
+            ]
+        }else if(requestType==0||requestType==1){
+            cols=[
+                {field: 'GoodID', title: '商品ID', align: 'center',width:160}
+                , {field: 'GoodName', title: '商品名称', align: 'center',width:160}
+                , {field: 'RemainCount', title: '库存', align: 'center',width:160}
+                , {field: 'RequestCount', title: '申请数量', align: 'center',width:160,edit:true}
+                , {field: 'AvailableCount', title: '可调拨数', align: 'center',width:100}
+                ,{fixed: 'right', title: '操作',  align:'center', toolbar: '#barDemo1'}
+            ]
+        }
         table.render({
             elem: '#giftsList'
             , data: checkListGood
             , height:'220px'
             , size:'sm'
             , cellMinWidth: 90 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
-            , cols: [[
-                 {field: 'GoodID', title: '商品ID', align: 'center',width:100}
-                , {field: 'GoodName', title: '商品名称', align: 'center',width:100}
-                , {field: 'RemainCount', title: '库存', align: 'center',width:100}
-                , {field: 'SendCount', title: '调拨数量', align: 'center',width:100,edit:true}
-                , {field: 'NoCostPrice', title: '不含税单价', align: 'center',width:100,edit:true}
-                , {field: 'Tax', title: '税率%', align: 'center',width:100,edit:true}
-                , {field: 'CostPrice', title: '含税代价', align: 'center',width:100,edit:true}
-                , {field: 'RemainCount', title: '库存', align: 'center',width:100}
-                , {field: 'AvailableCount', title: '可调拨数', align: 'center',width:100}
-
-            ]]
+            , cols: [cols]
         });
     }
     function initApplyTable(table,checkListGood) {

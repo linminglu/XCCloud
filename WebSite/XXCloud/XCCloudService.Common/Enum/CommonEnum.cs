@@ -418,7 +418,7 @@ namespace XCCloudService.Common.Enum
         XcUser = 0,     //莘宸普通员工
         XcAdmin = 1,    //莘宸管理员
         StoreUser = 2,  //门店员工
-        MerchUser = 3,      //商户专员
+        MerchUser = 3,  //商户专员
         Workstation = 4 //吧台员工
     }
 
@@ -1097,9 +1097,9 @@ namespace XCCloudService.Common.Enum
         [Description("撤销")]
         Cancel = 7,
         /// <summary>
-        /// 调拨流程关闭
+        /// 流程关闭
         /// </summary>
-        [Description("调拨流程关闭")]
+        [Description("流程关闭")]
         Close = 8
     }
     /// <summary>
