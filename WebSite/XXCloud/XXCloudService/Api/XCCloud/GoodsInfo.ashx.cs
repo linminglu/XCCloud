@@ -610,10 +610,7 @@ namespace XXCloudService.Api.XCCloud
                     errMsg = "调拨单ID不能为空";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
-
-                var logistType = dicParas.Get("logistType");
-                var logistOrderId = dicParas.Get("logistOrderId");
-
+                
                 if (!Data_GoodRequestService.I.Any(p => p.ID == requestId))
                 {
                     errMsg = "该调拨单信息不存在";
@@ -662,8 +659,8 @@ namespace XXCloudService.Api.XCCloud
                                 		*, ROW_NUMBER() over(partition by DepotID,GoodID order by InitialTime desc) as RowNum
                                 	FROM
                                 		Data_GoodsStock
-                                ) b ON a."
-                                + (requstType == (int)RequestType.MerchSend ? "OutDepotID" : "InDeportID")
+                                ) b ON a.OutDepotID"
+                                //+ (requstType == (int)RequestType.MerchSend ? "OutDepotID" : "InDeportID")
                                 + @" = b.DepotID AND a.GoodID = b.GoodID and b.RowNum <= 1
                                 INNER JOIN Base_GoodsInfo c ON b.GoodID = c.ID 
                                 INNER JOIN Dict_System d ON c.GoodType = d.ID
@@ -680,15 +677,7 @@ namespace XXCloudService.Api.XCCloud
                                 WHERE c.Status = 1
                             ";
                 sql += " AND a.RequestID=" + requestId;
-                if (!logistType.IsNull())
-                {
-                    sql += " AND a.LogistType=" + logistType;
-                }
-                if (!logistOrderId.IsNull())
-                {
-                    sql += " AND a.LogistOrderId='" + logistOrderId + "'";
-                }
-                
+              
                 #endregion
 
                 var list = Data_GoodRequest_ListService.I.SqlQuery<Data_GoodRequest_ListList>(sql);
