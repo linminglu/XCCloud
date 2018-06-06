@@ -106,7 +106,20 @@
                        <input type="text" class="layui-input" id="RequestReason">
                    </div>
             </div>
-
+            <div class="layui-form-item layui-hide logisBox">
+                <div class="layui-inline">
+                    <label class="layui-form-label">物流公司</label>
+                    <div class="layui-input-inline">
+                        <select name="logisticsCompany1" id="logisticsCompany1" lay-filter="logisticsCompany1"></select>
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">物流单号</label>
+                    <div class="layui-input-inline">
+                        <input type="text" class="layui-input" id="logisticsNote1">
+                    </div>
+                </div>
+            </div>
             <div class="layui-form-item">
                 <div class="layui-inline">
                     <div class="layui-input-inline" style="width: 300px;">
@@ -308,7 +321,7 @@
     //出库仓库
     let OutDepotId; let InDepotId;
     let OutStoreId;let InStoreId;
-    let GoodRequests;
+    let logisticsCompany1='';
     //调拨出库
     let checkStatus;
     let newArr=[];
@@ -329,9 +342,8 @@
             data = JSON.parse(data);
             if (data.result_code == 1) {
                 depotList=data.result_data;
-                console.log(depotList)
             } else {
-                layer.msg(data.result_msg||data.return_msg);
+                alert(data.result_msg||data.return_msg);
             }
         }
     });
@@ -350,6 +362,8 @@
                 $('#OutStoreBox').addClass('layui-hide');
                 xc.getDepotDic('','',token,layer,form,'OutDepotId');
                 xc.GetUnderStores(token,layer,form,'InStoreId',logMsg.storeId);
+                $('.logisBox').removeClass('layui-hide');
+                xc.setSelect('物流公司','logisticsCompany1');
             }else if(data.value==3){
                 $('#OutDepBox').addClass('layui-hide');
                 $('#InStoreBox').addClass('layui-hide');
@@ -357,6 +371,7 @@
                 $('#OutStoreBox').removeClass('layui-hide');
                 xc.getDepotDic('','',token,layer,form,'InDepotId');
                 xc.GetUnderStores(token,layer,form,'OutStoreId',logMsg.storeId);
+                $('.logisBox').addClass('layui-hide')
             }else if(data.value==0){
                 $('#InDepBox').removeClass('layui-hide');
                 $('#OutStoreBox').removeClass('layui-hide');
@@ -364,12 +379,14 @@
                 $('#OutDepBox').addClass('layui-hide');
                 xc.getDepotDic('','',token,layer,form,'InDepotId');
                 xc.GetUnderStores(token,layer,form,'OutStoreId',logMsg.storeId);
+                $('.logisBox').addClass('layui-hide')
             }else if(data.value==1){
                 $('#InDepBox').removeClass('layui-hide');
                 $('#OutStoreBox').addClass('layui-hide');
                 $('#InStoreBox').addClass('layui-hide');
                 $('#OutDepBox').addClass('layui-hide');
                 xc.getDepotDic('','',token,layer,form,'InDepotId');
+                $('.logisBox').addClass('layui-hide')
             }
             OutDepotId='';InStoreId=''; InDepotId='';OutStoreId='';checkListGoods=[];notGoodId=[];
             table.render({
@@ -406,6 +423,9 @@
             }else {
                 checkState=0;
             }
+        });
+        form.on('select(logisticsCompany1)',function (data){
+            logisticsCompany1=data.value;
         });
         //监听选中商品
         table.on('checkbox(goodList)', function(obj){
@@ -682,7 +702,7 @@
                                 inDepot='';
                             }else {
                                 $('#inDepot1').val(_data.InDepotName).removeClass('layui-hide');
-                                $('#inDepot1').addClass('layui-hide');
+                                $('#inDepot').addClass('layui-hide');
                                 inDepot=InDepotId;
                             }
 
@@ -860,6 +880,8 @@
                'inDepotId':InDepotId,
                'requestReason':$('#RequestReason').val(),
                'goodRequestDetails':checkListGoods,
+               'logistType':logisticsCompany1,
+               'logistOrderId':$('#logisticsNote1').val(),
                'note':$('#Note').val(),
                'userToken':token,
                'signkey':'1f626576304bf5d95b72ece2222e42c3'};
@@ -977,7 +999,6 @@
     });
     function initGoodsTb(requestType,a,b,c,table,merchId,storeID) {
         let obj;
-        // if(b!=''){
             if(requestType==1){
                 obj={
                     'merchId':merchId,
@@ -997,14 +1018,19 @@
                     'userToken':token,
                     'signkey':'1f626576304bf5d95b72ece2222e42c3'};
             }else if(requestType==2){
-                obj={
-                    'merchId':'',
-                    'storeId':'',
-                    'depotId':b,//出库仓库ID
-                    'notGoodIds':a,
-                    'goodId':c,
-                    'userToken':token,
-                    'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                if(b!=''){
+                    obj={
+                        'merchId':'',
+                        'storeId':'',
+                        'depotId':b,//出库仓库ID
+                        'notGoodIds':a,
+                        'goodId':c,
+                        'userToken':token,
+                        'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                }else {
+                    layer.msg('出库仓库不能为空！')
+                }
+
             }
 
             let parseJson = JSON.stringify(obj);
@@ -1045,9 +1071,6 @@
                     }
                 }
             });
-        // }else {
-        //     layer.msg('申请仓库或发货仓库不能为空！')
-        // }
     }
     function initSendTable(table,checkListGood,requestType) {
         let cols=[];

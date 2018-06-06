@@ -146,16 +146,16 @@
 
             var buyDetail1 = { foodId: "1", category: 0, foodCount: "1", payType: "0", payNum: 0.5 }
             var buyDetail2 = { foodId: "3", category: 0, foodCount: "2", payType: "0", payNum: 5.0 }
-            var buyDetail3 = { foodId: "6", category: 0, foodCount: "1", payType: "98306", payNum: 100 }
-            var buyDetail4 = { foodId: "4", category: 0, foodCount: "1", payType: "98307", payNum: 100 }
+            //var buyDetail3 = { foodId: "6", category: 0, foodCount: "1", payType: "98306", payNum: 100 }
+            //var buyDetail4 = { foodId: "4", category: 0, foodCount: "1", payType: "98307", payNum: 100 }
             var buyDetail5 = { foodId: "1", category: 1, foodCount: "1", payType: "0", payNum: 20 }
             var buyDetail6 = { foodId: "4", category: 2, foodCount: "1", payType: "0", payNum: 30 }
 
             var buyDetails = new Array();
             buyDetails.push(buyDetail1);
             buyDetails.push(buyDetail2);
-            buyDetails.push(buyDetail3);
-            buyDetails.push(buyDetail4);
+            //buyDetails.push(buyDetail3);
+            //buyDetails.push(buyDetail4);
             buyDetails.push(buyDetail5);
             buyDetails.push(buyDetail6);
 
@@ -168,6 +168,7 @@
                 payCount: $("#txtPayCount_do_addOrder").val(),
                 deposit: $("#txtDeposit_do_addOrder").val(),
                 openFee: $("#txtOpenFee_do_addOrder").val(),
+                freePay : $("#txtDeposit_do_freePay").val(),
                 scheduleId:1,
                 workStation: "lijunjie",
                 authorId:"0",
@@ -524,8 +525,9 @@
         会员卡号:<input id="txtMemberCardId_do_addOrder" placeholder="请输入会员卡号" style="width:80px" value="10004143" />
         会员手机号码:<input id="txtMobile_do_addOrder" placeholder="请输入会员手机号码" style="width:100px" value="15618920033" />
         应付:<input id="txtPayCount_do_addOrder" placeholder="请输入应付" style="width:50px" value="5.5" />
+        免费金额:<input id="txtDeposit_do_freePay" placeholder="请输入免费金额" style="width:50px" value="20.00" />
         会员开卡费用:<input id="txtOpenFee_do_addOrder" placeholder="请输入会员手机号码" style="width:50px" value="10.00" />
-        会员押金:<input id="txtDeposit_do_addOrder" placeholder="请输入会员手机号码" style="width:50px" value="20.00" />
+        会员押金:<input id="txtDeposit_do_addOrder" placeholder="请输入会员手机号码" style="width:50px" value="20.00" /> 
         <input id="btn_do_addOrder" type="button" value="do_addOrder(添加订单)" onclick="do_addOrder()" />
         &nbsp;&nbsp;&nbsp;&nbsp;
         客户类型:<select id="sel_CustomerType_do_addOrderToCache"><option value="0">散客</option><option value="1">入会</option><option value="2">会员</option></select>

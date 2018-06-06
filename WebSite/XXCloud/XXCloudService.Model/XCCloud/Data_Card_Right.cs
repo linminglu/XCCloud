@@ -14,8 +14,8 @@ namespace XCCloudService.Model.XCCloud
     
     public partial class Data_Card_Right
     {
-        public int ID { get; set; }
-        public Nullable<int> CardID { get; set; }
+        public string ID { get; set; }
+        public string CardID { get; set; }
         public Nullable<int> AllowPush { get; set; }
         public Nullable<int> AllowOut { get; set; }
         public Nullable<int> AllowExitCoin { get; set; }

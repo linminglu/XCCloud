@@ -96,4 +96,70 @@ namespace XCCloudService.Model.CustomModel.XCCloud
 
         public List<CardDepositDataModel> CardDeposits { get; set; }
     }
+
+    public class MemberCardInfoViewModel
+    {
+        public MemberCardInfoViewModel()
+        {
+            MemberBalances = new List<BalanceModel>();
+        }
+
+        /// <summary>
+        /// 会员卡ID
+        /// </summary>
+        public string CardId { get; set; }
+
+        /// <summary>
+        /// 会员卡编号
+        /// </summary>
+        public string ICCardId { get; set; }
+
+        /// <summary>
+        /// 余额列表
+        /// </summary>
+        public List<BalanceModel> MemberBalances { get; set; }
+        /// <summary>
+        /// 允许投币
+        /// </summary>
+        public int AllowIn { get; set; }
+
+        /// <summary>
+        /// 允许退币
+        /// </summary>
+        public int AllowOut { get; set; }
+
+        /// <summary>
+        /// 允许兑币
+        /// </summary>
+        public int AllowExitCoin { get; set; }
+
+        /// <summary>
+        /// 允许售币
+        /// </summary>
+        public int AllowSaleCoin { get; set; }
+
+        /// <summary>
+        /// 允许存币
+        /// </summary>
+        public int AllowSaveCoin { get; set; }
+
+        /// <summary>
+        /// 允许送币
+        /// </summary>
+        public int AllowFreeCoin { get; set; }
+
+        /// <summary>
+        /// 卡状态
+        /// </summary>
+        public int CardStatus { get; set; }
+    }
+
+    public class BalanceModel
+    {
+        public int BalanceIndex { get; set; }
+
+        public string BalanceName { get; set; }
+
+        public decimal Quantity { get; set; }
+    }
 }

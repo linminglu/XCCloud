@@ -26,6 +26,7 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> RequestOutDepotID { get; set; }
         public string RequestInStoreID { get; set; }
         public Nullable<int> RequestInDepotID { get; set; }
+        public Nullable<System.DateTime> CheckDate { get; set; }
         public string Verifiction { get; set; }
     }
 }

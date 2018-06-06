@@ -14,8 +14,8 @@ namespace XCCloudService.Model.XCCloud
     
     public partial class Data_Card_Balance_StoreList
     {
-        public int ID { get; set; }
-        public Nullable<int> CardBalanceID { get; set; }
+        public string ID { get; set; }
+        public string CardBalanceID { get; set; }
         public string StoreID { get; set; }
     }
 }

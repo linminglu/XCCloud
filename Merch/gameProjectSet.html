@@ -273,6 +273,7 @@
         </div>
     </form>
     <div style="text-align:center;margin-bottom: 15px">
+        <button type="reset" class="layui-btn layui-hide layreset">确定</button>
         <button type="button" class="layui-btn" id="saveDevice">确定</button>
     </div>
 </div>
@@ -296,6 +297,7 @@
             ,{fixed: 'right',title: '操作', width:240, align:'center', toolbar: '#barDemo'}]
     };
     xc.getInitData(parm);
+
    let id='';
    let DeviceList=[];let feeRule=[]; let projectBandPrice=[];
    let index1;let index2;
@@ -310,6 +312,7 @@
         const table=layui.table;
       $('.add').on('click',()=>{  //弹窗
            feeType=''; feeBalance=''; feekinds=''; feeWays=''; Lock=0;
+           $('.layreset').trigger('click');
           xc.getGroupAreaDic(0,token,layer,form,'Area');
           setPlayMenu(form,'游戏机类型','projectType');
           layer.open({
@@ -647,7 +650,7 @@
                         'Count': $(this).find('input[name="discountCount"]').val()
                     });
                 }
-            })
+            });
             feeRule=[{'ChargeType':feeType,
                 'FreeMinute':$('#FreeMinute').val(),
                 'ChargeBalanceIndex':feeBalance,
@@ -729,21 +732,21 @@
         table.render({
             elem: '#bindTable'
             , height:'250px'
-            , size:"sm"
+            // , size:"sm"
             , data: datas
             , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
             , cols: [[
-                {field:'DeviceID', title:'设备编号', align: 'center',width:200}
+                {field:'DeviceID', title:'设备编号', align: 'center',width:121}
                 // ,{field:'FoodTypeStr',title: '设备类别', align: 'center',width:205} //width 支持：数字、百分比和不填写。
-                ,{field:'WorkType', title: '工作方式', align: 'center',width:100}
-                ,{field:'AdjOrder', title: '校验顺序', align: 'center'}
-                ,{field:'ReadFace', title: '人脸', align: 'center'}
-                ,{field:'ReadCard', title: '刷卡', align: 'center'}
-                ,{field:'ReadQRCode', title: '阅票', align: 'center'}
-                ,{field:'AllowCash', title: '现金', align: 'center'}
+                ,{field:'WorkType', title: '工作方式', align: 'center',width:100,templet:'#wt'}
+                ,{field:'AdjOrder', title: '顺序校验', align: 'center',width:100,templet:'#ao'}
+                ,{field:'ReadFace', title: '人脸', align: 'center',width:100,templet:'#rf'}
+                ,{field:'ReadCard', title: '刷卡', align: 'center',width:100,templet:'#rc'}
+                ,{field:'ReadQRCode', title: '阅票', align: 'center',width:100,templet:'#rr'}
+                ,{field:'AllowCash', title: '现金', align: 'center',width:100,templet:'#ac'}
                 ,{fixed: 'right',title:'操作', width:140, align:'center', toolbar: '#barDemo1'}]]
-            , page: {page: true, limits: [10, 15, 20, 30, 50, 100]}
-            , limit: 10
+            , page: {page: true, limits: [7,10, 15, 20, 30, 50, 100]}
+            , limit: 7
         });
     }
 </script>
@@ -757,9 +760,53 @@
 </script>
 <script type="text/html" id="charge">
     {{# if(d.ChargeType==0){ }}
-        按次收费
+    按次收费
+    {{# }else if(d.ChargeType==1){ }}
+    计时收费
+    {{#  } }}
+</script>
+<script type="text/html" id="wt">
+    {{# if(d.WorkType==0){ }}
+       入口
+    {{# }else if(d.WorkType==1){ }}
+        出口
+    {{# }else if(d.WorkType==2){ }}
+    自动
+    {{#  } }}
+</script>
+<script type="text/html" id="ao">
+    {{# if(d.AdjOrder==1){ }}
+    <input type="checkbox" checked name="switch" lay-skin="switch" lay-text="是|否" class="tb_check" lay-filter="test" disabled>
     {{# }else{ }}
-        计时收费
+    <input type="checkbox"  name="switch" lay-skin="switch" lay-text="是|否" class="tb_check" lay-filter="test" disabled>
+    {{#  } }}
+</script>
+<script type="text/html" id="rf">
+    {{# if(d.ReadFace==1){ }}
+    <input type="checkbox" checked name="switch" lay-skin="switch" lay-text="是|否" class="tb_check" lay-filter="test" disabled>
+    {{# }else{ }}
+    <input type="checkbox"  name="switch" lay-skin="switch" lay-text="是|否" class="tb_check" lay-filter="test" disabled>
+    {{#  } }}
+</script>
+<script type="text/html" id="rc">
+    {{# if(d.ReadCard==1){ }}
+    <input type="checkbox" checked name="switch" lay-skin="switch" lay-text="是|否" class="tb_check" lay-filter="test" disabled>
+    {{# }else{ }}
+    <input type="checkbox"  name="switch" lay-skin="switch" lay-text="是|否" class="tb_check" lay-filter="test" disabled>
+    {{#  } }}
+</script>
+<script type="text/html" id="rr">
+    {{# if(d.ReadQRCode==1){ }}
+    <input type="checkbox" checked name="switch" lay-skin="switch" lay-text="是|否" class="tb_check" lay-filter="test" disabled>
+    {{# }else{ }}
+    <input type="checkbox"  name="switch" lay-skin="switch" lay-text="是|否" class="tb_check" lay-filter="test" disabled>
+    {{#  } }}
+</script>
+<script type="text/html" id="ac">
+    {{# if(d.AllowCash==1){ }}
+    <input type="checkbox" checked name="switch" lay-skin="switch" lay-text="是|否" class="tb_check" lay-filter="test" disabled>
+    {{# }else{ }}
+    <input type="checkbox"  name="switch" lay-skin="switch" lay-text="是|否" class="tb_check" lay-filter="test" disabled>
     {{#  } }}
 </script>
 </html>

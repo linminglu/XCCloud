@@ -869,7 +869,6 @@
 						<tr v-for="items in shopData">
 							<td>{{items.foodName}}</td>
 							<td>{{items.amount}}</td>
-							<!--<td>{{items.vipPrice}}</td>-->
 							<td class="selectSty">
 								<select v-model="items.selected">
 									<option v-for="(option,index) in (items.detailInfoList)" :value="index">
@@ -913,7 +912,6 @@
 								<li class="swiper-slide on" @click="screening('All')">
 									<a href="javascript:void(0)">全部</a>
 								</li>
-								<!--:class="{'on':!index}"-->
 								<li v-for="(item,index) in saleTitle" class="swiper-slide" @click="screening(index)">
 									<a href="javascript:void(0)">{{item.FoodTypeName}}</a>
 								</li>
@@ -1949,54 +1947,66 @@
                 }
 				console.log(saleData_);
                 if ( that.shopData.length === 0) {
-                    that.shopData.push({
-                        allowInternet:saleData_[index].allowInternet,
-                        allowPrint:  saleData_[index].allowPrint,
-                        detailInfoList:  saleData_[index].detailInfoList,
-                        detailsCount:  saleData_[index].detailsCount,
-                        foodId:  saleData_[index].foodId,
-                        foodName:  saleData_[index].foodName,
-                        foodType:  saleData_[index].foodType,
-                        foreAuthorize:  saleData_[index].foreAuthorize,
-                        amount: 1,
-                        selected: 0,
-						category:category
-                    });
-                    setTimeout(function () {
+                    if(category == "0"){
+                        that.shopData.push({
+                            detailInfoList:  saleData_[index].detailInfoList,
+                            foodId: saleData_[index].foodId,
+                            foodName: saleData_[index].foodName,
+                            foodType: saleData_[index].foodType,
+                            amount: 1,
+                            selected: 0,
+                            category:category
+                        });
+					}else {
+                        console.log(saleData_[index].foodName);
+                        that.shopData.push({
+                            detailInfoList: [{balanceType:"",foodId:saleData_[index].foodId,typeName:"现金",useCount:saleData_[index].foodPrice}],
+                            foodId: saleData_[index].foodId,
+                            foodName: saleData_[index].foodName,
+                            foodType: saleData_[index].foodType,
+                            amount: 1,
+                            selected: 0,
+                            category:category
+                        });
+					}
+                    that.$nextTick(function () {
                         $("#shopTable tr:last").addClass('tableTag').siblings().removeClass('tableTag');
-                    }, 50);
-                    console.log(that.shopData)
+					})
                 } else {
                     for (var i = 0; i <that.shopData.length; i++) {
-                        console.log( saleData_[index].foodId ===  that.shopData[i].foodId);
-                        console.log(saleData_[index].foodId);
-                        console.log(that.shopData[i].foodId);
                         if (that.shopData[i].foodId == saleData_[index].foodId && that.shopData[i].category == category) {
                             var indexId = i;
-                            console.log("遍历的i" + i);
                             break;
                         } else {
                             var indexId = "";
                         }
                     }
                     if (indexId === "") {
-                        that.shopData.push({
-                            allowInternet:saleData_[index].allowInternet,
-                            allowPrint:  saleData_[index].allowPrint,
-                            detailInfoList:  saleData_[index].detailInfoList,
-                            detailsCount:  saleData_[index].detailsCount,
-                            foodId:  saleData_[index].foodId,
-                            foodName:  saleData_[index].foodName,
-                            foodType:  saleData_[index].foodType,
-                            foreAuthorize:  saleData_[index].foreAuthorize,
-                            amount: 1,
-                            selected : 0,
-							category:category
-                        });
-                        setTimeout(function () {
+                        if(category == "0"){
+                            that.shopData.push({
+                                detailInfoList:  saleData_[index].detailInfoList,
+                                foodId: saleData_[index].foodId,
+                                foodName: saleData_[index].foodName,
+                                foodType: saleData_[index].foodType,
+                                amount: 1,
+                                selected: 0,
+                                category:category
+                            });
+                        }else {
+                            console.log(saleData_[index].foodName);
+                            that.shopData.push({
+                                detailInfoList: [{balanceType:"",foodId:saleData_[index].foodId,typeName:"现金",useCount:saleData_[index].foodPrice}],
+                                foodId: saleData_[index].foodId,
+                                foodName: saleData_[index].foodName,
+                                foodType: saleData_[index].foodType,
+                                amount: 1,
+                                selected: 0,
+                                category:category
+                            });
+                        }
+                        that.$nextTick(function () {
                             $("#shopTable tr:last").addClass('tableTag').siblings().removeClass('tableTag');
-                        }, 50);
-                        console.log(that.shopData)
+                        })
                     } else {
                         that.shopData[indexId].amount ++;
                         $("#shopTable tbody").find("tr").eq(indexId).addClass('tableTag').siblings().removeClass('tableTag');

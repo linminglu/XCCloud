@@ -1048,6 +1048,8 @@ namespace XXCloudService.Api.XCCloud
                         data_GoodRequest.RequestInDepotID = inDepotId;
                         data_GoodRequest.RequestOutStoreID = outStoreId;
                         data_GoodRequest.RequestOutDepotID = outDepotId;
+                        data_GoodRequest.CheckDate = DateTime.Now.Todate();
+
                         if (!Data_GoodRequestService.I.Add(data_GoodRequest))
                         {
                             errMsg = "创建调拨单失败";
@@ -1099,6 +1101,7 @@ namespace XXCloudService.Api.XCCloud
                                     data_GoodRequest_List.StorageCount = 0;
                                     data_GoodRequest_List.CostPrice = costPrice;
                                     data_GoodRequest_List.Tax = tax;
+                                    data_GoodRequest_List.MerchID = merchId;
                                     data_GoodRequest_List.LogistType = logistType;
                                     data_GoodRequest_List.LogistOrderID = logistOrderId;
                                     Data_GoodRequest_ListService.I.AddModel(data_GoodRequest_List);
@@ -1464,6 +1467,7 @@ namespace XXCloudService.Api.XCCloud
                                         data_GoodRequest_List.LogistType = logistType;
                                         data_GoodRequest_List.LogistOrderID = logistOrderId;
                                         data_GoodRequest_List.SendTime = DateTime.Now;
+                                        data_GoodRequest_List.MerchID = merchId;
                                         if (!Data_GoodRequest_ListService.I.Add(data_GoodRequest_List))
                                         {
                                             errMsg = "更新调拨明细信息失败";

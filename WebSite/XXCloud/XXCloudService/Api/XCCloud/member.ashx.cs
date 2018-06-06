@@ -1309,40 +1309,28 @@ namespace XCCloudService.Api.XCCloud
                 string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
                 string merchID = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
 
-                Base_MemberInfo member = Base_MemberInfoService.I.GetModels(t => t.Mobile == mobile).FirstOrDefault();
-                if (member == null)
+                List<Base_MemberInfo> memberList = Base_MemberInfoService.I.GetModels(t => t.Mobile == mobile).ToList();
+                if (memberList.Count == 0)
                 {
-                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "该手机号码不存在");
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员信息不存在");
                 }
 
-                var cardList = from card in Data_Member_CardService.I.GetModels(t => t.MemberID == member.ID && t.MerchID == merchID)
-                             join storeCard in Data_Member_Card_StoreService.I.GetModels(t => t.StoreID == storeId)
-                             on card.ID equals storeCard.CardID
-                             select new
-                             {
-                                 Id = card.ID
-                             };
-
-                if(cardList.Count() == 0)
+                List<MemberCardInfoViewModel> list = new List<MemberCardInfoViewModel>();
+                foreach (var member in memberList)
                 {
-                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "该用户还没有办理会员卡");
+                    MemberCardInfoViewModel model = XCCloudService.Business.XCCloud.MemberBusiness.GetMemberCardInfo(member, merchID, storeId);
+                    if (model != null)
+                    {
+                        list.Add(model);
+                    }
                 }
 
-                string cardId = cardList.FirstOrDefault().Id;
-                Data_Member_Card memberCard = Data_Member_CardService.I.GetModels(t => t.ID == cardId).FirstOrDefault();
-
-                
-
-                //当前商户下该会员拥有的卡集合
-                List<Data_Member_Card> memberCardList = Data_Member_CardService.I.GetModels(t => t.MemberID == member.ID && t.MerchID == merchID).ToList();
-                if (memberCardList.Count == 0)
+                if(list.Count == 0)
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "该用户还没有办理会员卡");
                 }
 
-                Data_Member_Card_Store cardStore = Data_Member_Card_StoreService.I.GetModels(t => t.StoreID == storeId && memberCardList.Any(m => m.ID == t.CardID)).FirstOrDefault();
-
-                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "无数据");
+                return ResponseModelFactory<List<MemberCardInfoViewModel>>.CreateModel(isSignKeyReturn, list);
             }
             catch (Exception e)
             {
@@ -1364,32 +1352,38 @@ namespace XCCloudService.Api.XCCloud
             try
             {
                 string errMsg = string.Empty;
-                string ICCardId = dicParas.ContainsKey("iccardId") ? dicParas["iccardId"].ToString() : string.Empty;
-                string memberId = dicParas.ContainsKey("memberId") ? dicParas["memberId"].ToString() : string.Empty;
-                if (string.IsNullOrEmpty(ICCardId))
+                string idCardNo = dicParas.ContainsKey("idCardNo") ? dicParas["idCardNo"].ToString() : string.Empty;
+                if (string.IsNullOrEmpty(idCardNo))
                 {
-                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员卡号无效");
-                }
-                if (string.IsNullOrEmpty(memberId))
-                {
-                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员信息无效");
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "身份证号码无效");
                 }
 
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
                 string merchID = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
-                string workStation = (userTokenKeyModel.DataModel as TokenDataModel).WorkStation;
-                int userId = userTokenKeyModel.LogId.Toint(0);
 
-                List<MemberBalanceExchangeRateModel> memberBalance = XCCloudService.Business.XCCloud.MemberBusiness.GetMemberBalanceAndExchangeRate(storeId, ICCardId);
-                if (memberBalance.Count > 0)
+                List<Base_MemberInfo> memberList = Base_MemberInfoService.I.GetModels(t => t.IDCard == idCardNo).ToList();
+                if (memberList.Count == 0)
                 {
-                    return ResponseModelFactory<List<MemberBalanceExchangeRateModel>>.CreateModel(isSignKeyReturn, memberBalance);
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员信息不存在");
                 }
-                else
+
+                List<MemberCardInfoViewModel> list = new List<MemberCardInfoViewModel>();
+                foreach (var member in memberList)
                 {
-                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "无数据");
+                    MemberCardInfoViewModel model = XCCloudService.Business.XCCloud.MemberBusiness.GetMemberCardInfo(member, merchID, storeId);
+                    if (model != null)
+                    {
+                        list.Add(model);
+                    }
                 }
+
+                if (list.Count == 0)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "该用户还没有办理会员卡");
+                }
+
+                return ResponseModelFactory<List<MemberCardInfoViewModel>>.CreateModel(isSignKeyReturn, list);
             }
             catch (Exception e)
             {
@@ -1919,6 +1913,7 @@ namespace XCCloudService.Api.XCCloud
             }
         } 
         #endregion 
+
         #endregion
     }
 }
