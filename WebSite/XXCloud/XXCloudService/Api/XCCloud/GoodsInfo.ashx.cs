@@ -2967,6 +2967,9 @@ namespace XXCloudService.Api.XCCloud
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
                 var depotId = dicParas.Get("depotId").Toint();
+                var notGoodIds = dicParas.Get("notGoodIds");
+                var goodId = dicParas.Get("goodId").Toint();
+                var goodNameOrBarCode = dicParas.Get("goodNameOrBarCode");
                
                 object[] conditions = dicParas.ContainsKey("conditions") ? (object[])dicParas["conditions"] : null;
 
@@ -3017,11 +3020,19 @@ namespace XXCloudService.Api.XCCloud
                                 	b.AllowStorage = 1 AND b.Status = 1 AND a.RowNum <= 1 AND a.DepotID = " + depotId;
                 sql += " AND a.MerchID='" + merchId + "' AND b.MerchID='" + merchId + "'";
                 if (!storeId.IsNull())
-                    sql += " AND a.StoreID='" + storeId + "'";                
+                    sql += " AND a.StoreID='" + storeId + "'";
+                if (!goodId.IsNull())
+                    sql += sql + " AND a.GoodID=" + goodId;
+                if (!goodNameOrBarCode.IsNull())
+                    sql += sql + " AND (b.GoodName like '%" + goodNameOrBarCode + "%' OR b.Barcode like '%" + goodNameOrBarCode + "%')";
 
                 #endregion
 
                 var list = Data_GoodsStockService.I.SqlQuery<Data_GoodsStockList>(sql, parameters).ToList();
+                if (!notGoodIds.IsNull())
+                {
+                    list = list.Where(p => !notGoodIds.Contains(p.GoodID + "")).ToList();
+                }
 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, list);
             }
@@ -3090,16 +3101,18 @@ namespace XXCloudService.Api.XCCloud
                                 		*, ROW_NUMBER() over(partition by DepotID,GoodID order by InitialTime desc) as RowNum
                                 	FROM
                                 		Data_GoodsStock
+                                    WHERE
+                                        InitialAvgValue > 0                                                                 /*未盘点或者期初成本金额为0的库存商品不能出库*/
                                 ) a                                                                
                                 INNER JOIN Base_GoodsInfo b ON a.GoodID = b.ID                                
                                 LEFT JOIN Dict_System c ON b.GoodType = c.ID
                                 LEFT JOIN Base_StoreInfo d ON a.StoreID = d.StoreID
                                 WHERE
-                                	b.AllowStorage = 1 AND b.Status = 1 AND ISNULL(b.StoreID,'')='' AND a.RowNum <= 1 ";
+                                	b.AllowStorage = 1 AND b.Status = 1 AND ISNULL(b.StoreID,'')='' AND a.RowNum <= 1 ";    //不能调拨专属商品
                 if (!depotId.IsNull())
                     sql += " AND a.DepotID=" + depotId;
                 if (!merchId.IsNull())
-                    sql += " AND a.MerchID='" + merchId + "' AND b.MerchID='" + merchId + "' AND ISNULL(a.StoreID,'')<>'" + (userTokenKeyModel.DataModel as TokenDataModel).StoreID + "'";
+                    sql += " AND a.MerchID='" + merchId + "' AND b.MerchID='" + merchId + "' AND ISNULL(a.StoreID,'')=''";  //门店向总店申请或总店向门店派货，仅查总店库存
                 if (!storeId.IsNull())
                     sql += " AND a.StoreID='" + storeId + "'";
                 if (!goodId.IsNull())
@@ -3127,6 +3140,88 @@ namespace XXCloudService.Api.XCCloud
                     StoreName = o.FirstOrDefault().StoreName,
                     Source = o.FirstOrDefault().Source
                 }).ToList();
+
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, list);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        /// <summary>
+        /// 商品库存列表（供商品出库使用）
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object QueryGoodsStock3(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+
+                string errMsg = string.Empty;
+                if (!dicParas.Get("depotId").Validintnozero("仓库ID", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                var depotId = dicParas.Get("depotId").Toint();                
+                var notGoodIds = dicParas.Get("notGoodIds");
+                var goodId = dicParas.Get("goodId").Toint();
+                var goodNameOrBarCode = dicParas.Get("goodNameOrBarCode");
+
+                #region Sql语句
+                string sql = @"SELECT
+                                	a.ID,
+                                    a.GoodID,
+                                    a.DepotID,
+                                	/*商品条码*/
+                                	b.Barcode,
+                                	/*商品名称*/
+                                	b.GoodName,                                	
+                                	/*商品类别*/
+                                	b.GoodType AS GoodType,
+                                	/*商品类别[字符串]*/
+                                	c.DictKey AS GoodTypeStr,
+                                	/*门店ID*/
+                                	a.StoreID,
+                                	/*门店名称*/
+                                	d.StoreName,                                	
+                                    ISNULL(a.MinValue,0) AS MinValue,
+                                    ISNULL(a.MaxValue,0) AS MaxValue,
+                                    /*可调拨数*/
+                                    (ISNULL(a.RemainCount,0) - ISNULL(a.MinValue,0)) AS AvailableCount,
+                                    (case when ISNULL(a.InitialTime,'')='' then '' else convert(varchar,a.InitialTime,20) end) AS InitialTime,
+                                    ISNULL(a.InitialValue,0) AS InitialValue,
+                                    ISNULL(a.InitialAvgValue,0) AS InitialAvgValue,
+                                    ISNULL(a.RemainCount,0) AS RemainCount,
+                                    a.Note
+                                FROM
+                                    (
+                                	SELECT
+                                		*, ROW_NUMBER() over(partition by DepotID,GoodID order by InitialTime desc) as RowNum
+                                	FROM
+                                		Data_GoodsStock
+                                    WHERE
+                                        InitialAvgValue > 0                                                                 /*未盘点或者期初成本金额为0的库存商品不能出库*/
+                                ) a                                                                
+                                INNER JOIN Base_GoodsInfo b ON a.GoodID = b.ID                                
+                                LEFT JOIN Dict_System c ON b.GoodType = c.ID
+                                LEFT JOIN Base_StoreInfo d ON a.StoreID = d.StoreID
+                                WHERE
+                                	b.AllowStorage = 1 AND b.Status = 1 AND a.RowNum <= 1 AND a.DepotID = " + depotId;                
+                if (!goodId.IsNull())
+                    sql += sql + " AND a.GoodID=" + goodId;
+                if (!goodNameOrBarCode.IsNull())
+                    sql += sql + " AND (b.GoodName like '%" + goodNameOrBarCode + "%' OR b.Barcode like '%" + goodNameOrBarCode + "%')";
+
+                #endregion
+
+                var list = Data_GoodsStockService.I.SqlQuery<Data_GoodsStockList>(sql).ToList();
+                if (!notGoodIds.IsNull())
+                {
+                    list = list.Where(p => !notGoodIds.Contains(p.GoodID + "")).ToList();
+                }                
 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, list);
             }
