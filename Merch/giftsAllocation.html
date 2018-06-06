@@ -586,7 +586,7 @@
         form.on('select(logisticsCompany)',function (data){
             logisticsCompany=data.value;
         });
-//主表
+        //主表
         table.on('tool(giftAllocationTB)', function(obj){
            let _data=obj.data;
            let layevent=obj.event;
@@ -623,7 +623,6 @@
                            if(arr.length>0){
                                for(i in arr){
                                    arr[i].outDepotId='';
-                                   // arr[i].SendCount='';//调拨数量
                                    arr[i].Price='';//不含税单价
                                    arr[i].Tax='';//税率
                                    arr[i].CostPrice='';//含税单价
@@ -637,7 +636,6 @@
                                 , data: newArr
                                 , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
                                 , cols: [[
-                                     // {type:'checkbox',fixed: 'left'} ,
                                      {field:'Barcode', title:'商品条码', align: 'center',width:170,fixed: 'left'}
                                     ,{field:'GoodName',title: '商品类别', align: 'center',width:120,fixed: 'left'} //width 支持：数字、百分比和不填写。
                                     ,{field:'GoodTypeStr', title: '商品类别', align: 'center',width:100,fixed: 'left'}
@@ -662,7 +660,6 @@
                                     ,{field:'Price', title: '不含税单价', align: 'center',edit:true}
                                     ,{field:'Tax', title: '税率', align: 'center',edit:true}
                                     ,{field:'CostPrice', title: '含税单价', align: 'center',edit:true}
-                                    // ,{fixed: 'right',title:'操作', width:140, align:'center', toolbar: '#barDemo2'}
                                     ]]
                                 , page: {page: true, limits: [10, 15, 20, 30, 50, 100]}
                                 , limit: 10
@@ -749,10 +746,7 @@
                             InDepotId=data.result_data.InDepotID||'';
                             OutStoreId=data.result_data.OutStoreID||'';
                             InStoreId=data.result_data.InStoreID||'';
-
-
                             if(data.result_data.RequstType==2){
-
                                 $('#inDepotBox').removeClass('layui-hide');
                                 $('#inDepot1Box').addClass('layui-hide');
                                 xc.getDepotDic('','',token,layer,form,'inDepot');
@@ -763,7 +757,6 @@
                                 $('#inDepotBox').addClass('layui-hide');
                                 inDepot=InDepotId;
                             }
-
                             $('#inWay').val(_data.RequstTypeStr);
                             $('#inStore').val(_data.InStoreName);
                             $('#inReason').val(_data.RequestReason);
@@ -777,7 +770,6 @@
                             layer.msg(data.result_msg||data.return_msg)
                         }
                     }
-
                 });
             }else if(layevent==='RequestDealVerify'){//调拨入库审核
                 checkStatus='in';
@@ -845,7 +837,7 @@
                                         ,{field:'Tax', title: '税率', align: 'center',width:100}
                                         ,{field:'RemainCount', title: '库存', align: 'center',width:100}
                                         ,{field:'AvailableCount', title: '可调拨数', align: 'center',width:100}
-                                        ,{field:'LogistTypeStr', title: '物流公司', align: 'center',width:100}
+                                        ,{field:'LogistTypeStr', title: '物流公司', align: 'center',width:100,fixed:'right'}
                                         ,{field:'LogistOrderID', title: '物流单号', align: 'center',width:100,fixed:'right',templet:'logis'}
                                         ,{field:'SendTime', title: '发货时间', align: 'center',width:100,fixed:'right'}
                                     ]]
@@ -898,7 +890,6 @@
                                 'StorageCount':obj.data.StorageCount,
                             });
                         }
-
                     }else {
                         for(let i in inDepotArr){
                             if(inDepotArr[i].ID==obj.data.ID){
@@ -914,7 +905,6 @@
                         'StorageCount':obj.data.StorageCount,
                     });
                 }
-
             }
         });
         form.on('select(inDepot)',function (data){
@@ -1014,7 +1004,6 @@
                        layer.msg(data.result_msg||data.return_msg)
                    }
                }
-
            })
        });
        //Handle check
@@ -1050,7 +1039,6 @@
                        layer.msg(data.result_msg||data.return_msg)
                    }
                }
-
            })
        });
        //保存调拨出库
@@ -1215,23 +1203,6 @@
             , size:'sm'
             , cellMinWidth: 90 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
             , cols: [cols]
-        });
-    }
-    function initApplyTable(table,checkListGood) {
-        table.render({
-            elem: '#giftsList'
-            , data: checkListGood
-            , height:'220px'
-            , size:'sm'
-            , cellMinWidth: 90 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
-            , cols: [[
-                  {field: 'GoodID', title: '商品ID', align: 'center',width:100}
-                , {field: 'GoodName', title: '商品名称', align: 'center',width:100}
-                , {field: 'RequestCount', title: '申请数量', align: 'center',width:100,edit:true}
-                , {field: 'RemainCount', title: '库存', align: 'center',width:100}
-                , {field: 'AvailableCount', title: '可调拨数', align: 'center',width:100}
-
-            ]]
         });
     }
 </script>

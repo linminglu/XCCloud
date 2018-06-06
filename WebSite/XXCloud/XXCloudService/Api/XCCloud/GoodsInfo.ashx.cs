@@ -674,7 +674,7 @@ namespace XXCloudService.Api.XCCloud
                                 		Dict_System a
                                 	INNER JOIN Dict_System b ON a.ID = b.PID
                                 	WHERE
-                                		a.DictKey = '物流类型'
+                                		a.DictKey = '物流公司'
                                 	AND a.PID = 0
                                 ) e ON CONVERT (VARCHAR, a.LogistType) = e.DictValue
                                 WHERE c.Status = 1
