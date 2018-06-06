@@ -119,6 +119,8 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         public string LogistTypeStr { get; set; }
         public string LogistOrderID { get; set; }
         public string SendTime { get; set; }
+        public int? OutDepotID { get; set; }
+        public string OutDepotName { get; set; }
     }
 
     public class Data_GoodSendDealList

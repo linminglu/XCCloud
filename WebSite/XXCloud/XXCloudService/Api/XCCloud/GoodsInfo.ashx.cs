@@ -641,6 +641,10 @@ namespace XXCloudService.Api.XCCloud
                                     a.CostPrice,
                                     /*税率*/
                                     a.Tax,
+                                    /*出库仓库*/
+                                    a.OutDepotID,
+                                    /*出库仓库*/
+                                    f.DepotName AS OutDepotName,
                                 	/*库存*/
                                 	ISNULL(b.RemainCount,0) AS RemainCount,
                                     ISNULL(b.MinValue,0) AS MinValue,                                    
@@ -660,7 +664,7 @@ namespace XXCloudService.Api.XCCloud
                                 	FROM
                                 		Data_GoodsStock
                                 ) b ON a.OutDepotID"
-                                //+ (requstType == (int)RequestType.MerchSend ? "OutDepotID" : "InDeportID")
+                    //+ (requstType == (int)RequestType.MerchSend ? "OutDepotID" : "InDeportID")
                                 + @" = b.DepotID AND a.GoodID = b.GoodID and b.RowNum <= 1
                                 INNER JOIN Base_GoodsInfo c ON b.GoodID = c.ID 
                                 INNER JOIN Dict_System d ON c.GoodType = d.ID
@@ -674,6 +678,7 @@ namespace XXCloudService.Api.XCCloud
                                 		a.DictKey = '物流公司'
                                 	AND a.PID = 0
                                 ) e ON CONVERT (VARCHAR, a.LogistType) = e.DictValue
+                                LEFT JOIN Base_DepotInfo f ON a.OutDepotID = f.ID 
                                 WHERE c.Status = 1
                             ";
                 sql += " AND a.RequestID=" + requestId;

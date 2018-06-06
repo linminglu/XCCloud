@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>库存管理</title>
+    <link rel="stylesheet" href="layui/css/layui.css">
+</head>
+<body>
+    <div class="layui-row" style="padding:15px">
+    <blockquote class="layui-elem-quote" style="text-align: right">
+        <button type="button" class="layui-btn layui-btn-normal" i18n-content="查询模板">查询模板</button>
+        <!--<button type="button" class="layui-btn layui-btn-normal add" i18n-content="新增">新增</button>-->
+    </blockquote>
+    <table class="layui-hide" id="stockManage" lay-filter="stockManage"></table>
+</div>
+</body>
+<script src="js/jquery-1.8.3-min.js"></script>
+<script src="layui/layui.js"></script>
+<script src="js/storeSystem.js"></script>
+<script>
+    let xc=xcActionSystem.prototype;
+    let token=xc.getStorage('token');
+    let parm = {
+        'obj': {'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'},
+        'url': '/XCCloud/GoodsInfo?action=QueryGoodsStock',
+        'elem': '#ProjectList',
+        'cols': [
+            // {type:'ckeckbox'} ,
+           {field: 'ID', title: '商品ID', align: 'center'}
+            , {field: 'Barcode', title: '商品条码', align: 'center'}
+            , {field: 'GoodTypeStr', title: '商品类型', align: 'center'}
+            , {field: 'GoodName', title: '商品名称', align: 'center'}
+            , {field: 'Source', title: '添加来源', align: 'center',templet:'#charge'}
+            , {field: 'MinValue', title: '库存下限', align: 'center'}
+            , {field: 'MaxValue', title: '库存上限', align: 'center'}
+            , {field: 'InitialTime', title: '期初时间', align: 'center'}
+            , {field: 'InitialValue', title: '期初库存', align: 'center'}
+            , {field: 'InitialAvgValue', title: '期初平均成本', align: 'center'}
+            , {field: 'InitialTotal', title: '期初库存金额', align: 'center'}
+            , {field: 'RemainCount', title: '当前库存', align: 'center'}
+            , {field: 'RemainTotal', title: '当前库存金额', align: 'center'}
+            , {field: 'AvailableCount', title: '可调拨数', align: 'center'}
+            ,{fixed: 'right',title: '操作', width:320, align:'center', toolbar: '#barDemo'}]
+    };
+    xc.getInitData(parm);
+</script>
+</html>
