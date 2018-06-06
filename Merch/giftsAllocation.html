@@ -825,7 +825,6 @@
                         data=JSON.parse(data);
                         if(data.result_code==1){
                             let arr=data.result_data.GoodRequestDetails;
-                            if(data.result_data.RequstType==2){
                                 table.render({
                                     elem: '#detailTable'
                                     , height:'300px'
@@ -833,52 +832,24 @@
                                     , data: arr
                                     , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
                                     , cols: [[
-                                        // {field:'ID', title: '调拨ID', align: 'center',width:100}
-                                        {field:'GoodID', title: '商品ID', align: 'center',width:100}
-                                        , {field:'Barcode', title:'商品条码', align: 'center',width:170}
-                                        ,{field:'GoodName',title: '商品名称', align: 'center',width:120} //width 支持：数字、百分比和不填写。
-                                        ,{field:'GoodTypeStr', title: '商品类别', align: 'center',width:100}
-                                        // ,{field:'RequestCount', title: '申请数量', align: 'center',width:100}
-                                        ,{field:'SendCount', title: '调拨数量', align: 'center',width:100}
-                                        // ,{field:'StorageCount', title: '入库数量', align: 'center',edit:true,width:100}
-                                        ,{field:'CostPrice', title: '含税单价', align: 'center',width:100}
-                                        ,{field:'Tax', title: '税率', align: 'center',width:100}
-                                        ,{field:'RemainCount', title: '库存', align: 'center',width:100}
-                                        ,{field:'AvailableCount', title: '可调拨数', align: 'center',width:100}
-                                        ,{field:'LogistOrderID', title: '物流单号', align: 'center',width:100,fixed:'right',templet:'logis'}
-                                        ,{field:'SendTime', title: '发货时间', align: 'center',width:100,fixed:'right'}
-                                    ]]
-                                    , page: {page: true, limits: [10, 15, 20, 30, 50, 100]}
-                                    , limit: 10
-                                });
-                            }else {
-                                table.render({
-                                    elem: '#detailTable'
-                                    , height:'300px'
-                                    , size:"sm"
-                                    , data: arr
-                                    , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
-                                    , cols: [[
-                                        // {field:'ID', title: '调拨ID', align: 'center',width:100}
                                         {field:'GoodID', title: '商品ID', align: 'center',width:100}
                                         , {field:'Barcode', title:'商品条码', align: 'center',width:170}
                                         ,{field:'GoodName',title: '商品名称', align: 'center',width:120} //width 支持：数字、百分比和不填写。
                                         ,{field:'GoodTypeStr', title: '商品类别', align: 'center',width:100}
                                         ,{field:'RequestCount', title: '申请数量', align: 'center',width:100}
-                                        // ,{field:'SendCount', title: '调拨数量', align: 'center',width:100}
-                                        // ,{field:'StorageCount', title: '入库数量', align: 'center',edit:true,width:100}
-                                        // ,{field:'CostPrice', title: '含税单价', align: 'center'}
-                                        // ,{field:'Tax', title: '税率', align: 'center'}
+                                        ,{field:'SendCount', title: '实发数量', align: 'center',width:100}
+                                        ,{field:'StorageCount', title: '入库数量', align: 'center',edit:true,width:100}
+                                        ,{field:'CostPrice', title: '含税单价', align: 'center',width:100}
+                                        ,{field:'Tax', title: '税率', align: 'center',width:100}
                                         ,{field:'RemainCount', title: '库存', align: 'center',width:100}
                                         ,{field:'AvailableCount', title: '可调拨数', align: 'center',width:100}
+                                        ,{field:'LogistTypeStr', title: '物流公司', align: 'center',width:100}
                                         ,{field:'LogistOrderID', title: '物流单号', align: 'center',width:100,fixed:'right',templet:'logis'}
                                         ,{field:'SendTime', title: '发货时间', align: 'center',width:100,fixed:'right'}
                                     ]]
                                     , page: {page: true, limits: [10, 15, 20, 30, 50, 100]}
                                     , limit: 10
                                 });
-                            }
-
                             $('#detailDepot').val(data.result_data.OutDepotName||data.result_data.InDepotName);
                             $('#detailWay').val(data.result_data.RequstTypeStr);
                             $('#detailStore').val(data.result_data.InStoreName||data.result_data.OutStoreName);
