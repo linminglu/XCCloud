@@ -488,22 +488,22 @@
                             let arr;
                             arr=data.result_data;
                             form.val('chargeTime',{
-                                'feeType':arr.ChargeType||'',
+                                'feeType':arr.ChargeType==null?'':arr.ChargeType,
                                 'FreeMinute':arr.FreeMinute||'',
                                 'AccompanyCash':arr.AccompanyCash||'',
                                 'Coins':arr.Coins||'',
                                 'BasePrice':arr.BasePrice||'',
                                 'CycleTimes':arr.CycleTimes||'',
                                 'TopPrice':arr.TopPrice||'',
-                                'feeWays':arr.CycleType||'',
+                                'feeWays':arr.CycleType==null?'':arr.CycleType,
                                 'lock':arr.LockMember==1?true:false
                             });
-                            xc.getBalanceTypeDic('',token,layer,form,'feeBalance',arr.ChargeBalanceIndex==null?'':ChargeBalanceIndex);
-                            xc.getBalanceTypeDic('',token,layer,form,'feekinds',arr.BalanceIndex==null?'':BalanceIndex);
+                            xc.getBalanceTypeDic('',token,layer,form,'feeBalance',arr.ChargeBalanceIndex==null?'':arr.ChargeBalanceIndex);
+                            xc.getBalanceTypeDic('',token,layer,form,'feekinds',arr.BalanceIndex==null?'':arr.BalanceIndex);
                             feeType=arr.ChargeType||'';
-                            feeBalance=arr.ChargeBalanceIndex==null?'':ChargeBalanceIndex;
+                            feeBalance=arr.ChargeBalanceIndex==null?'':arr.ChargeBalanceIndex;
                             feeWays=arr.CycleType||'';
-                            feekinds=arr.BalanceIndex==null?'':BalanceIndex;
+                            feekinds=arr.BalanceIndex==null?'':arr.BalanceIndex;
                             Lock=arr.LockMember==1?1:0;
 
                         } else {
@@ -678,6 +678,7 @@
                     $(this).find('input[name="discountCount"]').val()!=''
                 ){
                     projectBandPrice.push({
+
                         'UseTimeCount': $(this).find('input[name="limitCount"]').val(),
                         'UseType': $(this).find('select[name="limitType"] option:selected').val(),
                         'CycleTime': $(this).find('input[name="consumeCount"]').val(),
@@ -686,7 +687,7 @@
                 }
             });
             let obj={
-                'id':id,
+                'ProjectTimeID':id,
                 'ChargeType':feeType,
                 'FreeMinute':$('#FreeMinute').val(),
                 'ChargeBalanceIndex':feeBalance,
