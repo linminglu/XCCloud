@@ -638,6 +638,8 @@ namespace XXCloudService.Api.XCCloud
                                     a.RequestCount,
                                     /*调拨数量*/
                                     a.SendCount,
+                                    /*入库数量*/
+                                    a.StorageCount,
                                     /*含税价格*/
                                     a.CostPrice,
                                     /*税率*/

@@ -141,14 +141,14 @@ namespace XXCloudService.Api.XCCloud
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 if (!dicParas.Get("projectType").Validintnozero("项目类型", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                if (dicParas.Get("chargeType").Toint() == (int)ProjectInfoChargeType.Time && 
-                    !dicParas.GetArray("projectTimeInfo").Validarray("计时规则信息", out errMsg))
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);              
+                //if (dicParas.Get("chargeType").Toint() == (int)ProjectInfoChargeType.Time && 
+                //    !dicParas.GetArray("projectTimeInfo").Validarray("计时规则信息", out errMsg))
+                //    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);              
 
                 var id = dicParas.Get("id").Toint(0);
                 var chargeType = dicParas.Get("chargeType").Toint();                
-                var projectTimeInfo = dicParas.GetArray("projectTimeInfo");
-                var projectBandPrices = dicParas.GetArray("projectBandPrices");
+                //var projectTimeInfo = dicParas.GetArray("projectTimeInfo");
+                //var projectBandPrices = dicParas.GetArray("projectBandPrices");
                       
                 //开启EF事务
                 using (TransactionScope ts = new TransactionScope())
@@ -185,78 +185,204 @@ namespace XXCloudService.Api.XCCloud
 
                         id = model.ID;
 
-                        //保存计时项目
-                        if (projectTimeInfo != null && projectTimeInfo.Count() > 0)
+                        ////保存计时项目
+                        //if (projectTimeInfo != null && projectTimeInfo.Count() > 0)
+                        //{
+                        //    var dicPara = new Dictionary<string, object>((projectTimeInfo[0] as IDictionary<string, object>), StringComparer.OrdinalIgnoreCase);
+                        //    if (dicPara.Get("chargeType").Toint() == (int)ProjectTimeChargeType.Weixin && dicParas.GetObject("cycleType").Toint() != (int)CycleType.Out)
+                        //    {
+                        //        errMsg = "微信票码验证进闸时, 计费方式须为出闸一次性扣费";
+                        //        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        //    }
+                            
+                        //    var projectTimeInfoModel = Data_Project_TimeInfoService.I.GetModels(p => p.ProjectTimeID == id).FirstOrDefault() ?? new Data_Project_TimeInfo();
+                        //    projectTimeInfoModel.StoreID = storeId;
+                        //    Utils.GetModel(dicPara, ref projectTimeInfoModel);
+                        //    if (projectTimeInfoModel.ID == 0)
+                        //    {
+                        //        if (!Data_Project_TimeInfoService.I.Add(projectTimeInfoModel))
+                        //        {
+                        //            errMsg = "保存游乐项目计时规则失败";
+                        //            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        //        }
+                        //    }
+                        //    else
+                        //    {
+                        //        if (!Data_Project_TimeInfoService.I.Update(projectTimeInfoModel))
+                        //        {
+                        //            errMsg = "保存游乐项目计时规则失败";
+                        //            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        //        }
+                        //    }
+
+                        //    //保存计时项目波段设定
+                        //    if (projectBandPrices != null && projectBandPrices.Count() >= 0)
+                        //    {
+                        //        //先删除，后添加
+                        //        foreach (var bandPriceModel in Data_Project_BandPriceService.I.GetModels(p => p.ProjectID == id))
+                        //        {
+                        //            Data_Project_BandPriceService.I.DeleteModel(bandPriceModel);
+                        //        }
+
+                        //        foreach (IDictionary<string, object> el in projectBandPrices)
+                        //        {
+                        //            if (el != null)
+                        //            {
+                        //                var dicPar = new Dictionary<string, object>(el, StringComparer.OrdinalIgnoreCase);
+                        //                if (!dicPar.Get("useTimeCount").Validint("总用时时间", out errMsg))
+                        //                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        //                if (!dicPar.Get("cycleTime").Validint("周期时间", out errMsg))
+                        //                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        //                if (!dicPar.Get("count").Validint("扣费数量", out errMsg))
+                        //                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                        //                var bandPriceModel = new Data_Project_BandPrice();
+                        //                bandPriceModel.UseTimeCount = dicPar.Get("useTimeCount").Toint();
+                        //                bandPriceModel.UseType = dicPar.Get("useType").Toint();
+                        //                bandPriceModel.CycleTime = dicPar.Get("cycleTime").Toint();
+                        //                bandPriceModel.Count = dicPar.Get("count").Toint();
+                        //                bandPriceModel.StoreID = storeId;
+                        //                bandPriceModel.ProjectID = id;
+                        //                Data_Project_BandPriceService.I.AddModel(bandPriceModel);
+                        //            }
+                        //            else
+                        //            {
+                        //                errMsg = "提交数据包含空对象";
+                        //                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        //            }
+                        //        }
+
+                        //        if (!Data_Project_BandPriceService.I.SaveChanges())
+                        //        {
+                        //            errMsg = "保存计时项目波段设定失败";
+                        //            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        //        }
+                        //    }
+                        //}
+
+                        ts.Complete();
+                    }
+                    catch (DbEntityValidationException e)
+                    {
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, e.EntityValidationErrors.ToErrors());
+                    }
+                    catch (Exception ex)
+                    {
+                        errMsg = ex.Message;
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
+                }
+                
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object SaveProjectTimeInfo(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+
+                string errMsg = string.Empty;
+                if (!dicParas.Get("projectTimeId").Validintnozero("游乐项目ID", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);                              
+                if (!dicParas.GetArray("projectBandPrices").Validarray("计时项目波段设定", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (dicParas.Get("chargeType").Toint() == (int)ProjectTimeChargeType.Weixin && dicParas.GetObject("cycleType").Toint() != (int)CycleType.Out)
+                {
+                    errMsg = "微信票码验证进闸时, 计费方式须为出闸一次性扣费";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
+                var projectTimeId = dicParas.Get("projectTimeId").Toint();
+                var projectBandPrices = dicParas.GetArray("projectBandPrices");
+
+                //开启EF事务
+                using (TransactionScope ts = new TransactionScope())
+                {
+                    try
+                    {
+                        var model = Data_ProjectInfoService.I.GetModels(p => p.ID == projectTimeId).FirstOrDefault();
+                        if (model == null)
                         {
-                            var dicPara = new Dictionary<string, object>((projectTimeInfo[0] as IDictionary<string, object>), StringComparer.OrdinalIgnoreCase);
-                            if (dicPara.Get("chargeType").Toint() == (int)ProjectTimeChargeType.Weixin && dicParas.GetObject("cycleType").Toint() != (int)CycleType.Out)
+                            errMsg = "该游乐项目信息不存在";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
+                        if (model.ChargeType != (int)ProjectInfoChargeType.Time)
+                        {
+                            errMsg = "该游乐项目信息不是计时项目";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
+                        var projectTimeInfoModel = Data_Project_TimeInfoService.I.GetModels(p => p.ProjectTimeID == projectTimeId).FirstOrDefault() ?? new Data_Project_TimeInfo();
+                        projectTimeInfoModel.StoreID = storeId;
+                        Utils.GetModel(dicParas, ref projectTimeInfoModel);
+                        if (projectTimeInfoModel.ID == 0)
+                        {
+                            if (!Data_Project_TimeInfoService.I.Add(projectTimeInfoModel))
                             {
-                                errMsg = "微信票码验证进闸时, 计费方式须为出闸一次性扣费";
+                                errMsg = "保存游乐项目计时规则失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                             }
-                            
-                            var projectTimeInfoModel = Data_Project_TimeInfoService.I.GetModels(p => p.ProjectTimeID == id).FirstOrDefault() ?? new Data_Project_TimeInfo();
-                            projectTimeInfoModel.StoreID = storeId;
-                            Utils.GetModel(dicPara, ref projectTimeInfoModel);
-                            if (projectTimeInfoModel.ID == 0)
+                        }
+                        else
+                        {
+                            if (!Data_Project_TimeInfoService.I.Update(projectTimeInfoModel))
                             {
-                                if (!Data_Project_TimeInfoService.I.Add(projectTimeInfoModel))
-                                {
-                                    errMsg = "保存游乐项目计时规则失败";
-                                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                                }
+                                errMsg = "保存游乐项目计时规则失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                             }
-                            else
+                        }
+
+                        //保存计时项目波段设定
+                        if (projectBandPrices != null && projectBandPrices.Count() >= 0)
+                        {
+                            //先删除，后添加
+                            foreach (var bandPriceModel in Data_Project_BandPriceService.I.GetModels(p => p.ProjectID == projectTimeId))
                             {
-                                if (!Data_Project_TimeInfoService.I.Update(projectTimeInfoModel))
-                                {
-                                    errMsg = "保存游乐项目计时规则失败";
-                                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                                }
+                                Data_Project_BandPriceService.I.DeleteModel(bandPriceModel);
                             }
 
-                            //保存计时项目波段设定
-                            if (projectBandPrices != null && projectBandPrices.Count() >= 0)
+                            foreach (IDictionary<string, object> el in projectBandPrices)
                             {
-                                //先删除，后添加
-                                foreach (var bandPriceModel in Data_Project_BandPriceService.I.GetModels(p => p.ProjectID == id))
+                                if (el != null)
                                 {
-                                    Data_Project_BandPriceService.I.DeleteModel(bandPriceModel);
-                                }
-
-                                foreach (IDictionary<string, object> el in projectBandPrices)
-                                {
-                                    if (el != null)
-                                    {
-                                        var dicPar = new Dictionary<string, object>(el, StringComparer.OrdinalIgnoreCase);
-                                        if (!dicPar.Get("useTimeCount").Validint("总用时时间", out errMsg))
-                                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                                        if (!dicPar.Get("cycleTime").Validint("周期时间", out errMsg))
-                                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                                        if (!dicPar.Get("count").Validint("扣费数量", out errMsg))
-                                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-
-                                        var bandPriceModel = new Data_Project_BandPrice();
-                                        bandPriceModel.UseTimeCount = dicPar.Get("useTimeCount").Toint();
-                                        bandPriceModel.UseType = dicPar.Get("useType").Toint();
-                                        bandPriceModel.CycleTime = dicPar.Get("cycleTime").Toint();
-                                        bandPriceModel.Count = dicPar.Get("count").Toint();
-                                        bandPriceModel.StoreID = storeId;
-                                        bandPriceModel.ProjectID = id;
-                                        Data_Project_BandPriceService.I.AddModel(bandPriceModel);
-                                    }
-                                    else
-                                    {
-                                        errMsg = "提交数据包含空对象";
+                                    var dicPara = new Dictionary<string, object>(el, StringComparer.OrdinalIgnoreCase);
+                                    if (!dicPara.Get("useTimeCount").Validint("总用时时间", out errMsg))
                                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                                    }
-                                }
+                                    if (!dicPara.Get("cycleTime").Validint("周期时间", out errMsg))
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    if (!dicPara.Get("count").Validint("扣费数量", out errMsg))
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-                                if (!Data_Project_BandPriceService.I.SaveChanges())
+                                    var bandPriceModel = new Data_Project_BandPrice();
+                                    bandPriceModel.UseTimeCount = dicPara.Get("useTimeCount").Toint();
+                                    bandPriceModel.UseType = dicPara.Get("useType").Toint();
+                                    bandPriceModel.CycleTime = dicPara.Get("cycleTime").Toint();
+                                    bandPriceModel.Count = dicPara.Get("count").Toint();
+                                    bandPriceModel.StoreID = storeId;
+                                    bandPriceModel.ProjectID = projectTimeId;
+                                    Data_Project_BandPriceService.I.AddModel(bandPriceModel);
+                                }
+                                else
                                 {
-                                    errMsg = "保存计时项目波段设定失败";
+                                    errMsg = "提交数据包含空对象";
                                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                                 }
+                            }
+
+                            if (!Data_Project_BandPriceService.I.SaveChanges())
+                            {
+                                errMsg = "保存计时项目波段设定失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                             }
                         }
 
@@ -272,7 +398,7 @@ namespace XXCloudService.Api.XCCloud
                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                     }
                 }
-                
+
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
             }
             catch (Exception e)

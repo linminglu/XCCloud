@@ -110,6 +110,7 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         public string GoodTypeStr { get; set; }
         public int? RequestCount { get; set; }
         public int? SendCount { get; set; }
+        public int? StorageCount { get; set; }
         public decimal? CostPrice { get; set; }
         public decimal? Tax { get; set; }
         public int? RemainCount { get; set; }

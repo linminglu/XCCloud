@@ -55,9 +55,9 @@
                             <option value="1">计时收费</option>
                         </select>
                     </div>
-                    <div class="layui-input-inline">
-                        <button class="layui-btn layui-hide" type="button" id="setRuleBtn">请设置计时规则</button>
-                    </div>
+                    <!--<div class="layui-input-inline">-->
+                        <!--<button class="layui-btn layui-hide" type="button" id="setRuleBtn">请设置计时规则</button>-->
+                    <!--</div>-->
                     <div class="layui-form-mid" style="color: red">友情提醒：网络支付功能请到集团后台中的《套餐设定》进行添加套餐。</div>
                 </div>
             </div>
@@ -294,7 +294,7 @@
             , {field: 'AreaName', title: '区域', align: 'center'}
             , {field: 'ChargeType', title: '扣费类型', align: 'center',templet:'#charge'}
             , {field: 'Note', title: '备注', align: 'center'}
-            ,{fixed: 'right',title: '操作', width:240, align:'center', toolbar: '#barDemo'}]
+            ,{fixed: 'right',title: '操作', width:320, align:'center', toolbar: '#barDemo'}]
     };
     xc.getInitData(parm);
 
@@ -330,12 +330,12 @@
         });
         form.on('select(chargeType)',function (data) {
             chargeType=data.value;
-            if(data.value==1){
-                $('#setRuleBtn').removeClass('layui-hide');
-                feeRule=[];
-            }else {
-                $('#setRuleBtn').addClass('layui-hide')
-            }
+            // if(data.value==1){
+            //     $('#setRuleBtn').removeClass('layui-hide');
+            //     feeRule=[];
+            // }else {
+            //     $('#setRuleBtn').addClass('layui-hide')
+            // }
         });
         //save
         $('#save').click(function () {
@@ -430,12 +430,12 @@
                             projectType=arr.ProjectType;
                             Area=arr.AreaType;
                             chargeType=arr.ChargeType;
-                            if(arr.ChargeType==1){
-                                $('#setRuleBtn').removeClass('layui-hide');
-
-                            }else {
-                                $('#setRuleBtn').addClass('layui-hide')
-                            }
+                            // if(arr.ChargeType==1){
+                            //     $('#setRuleBtn').removeClass('layui-hide');
+                            //
+                            // }else {
+                            //     $('#setRuleBtn').addClass('layui-hide')
+                            // }
                             index1=   layer.open({
                                 title:'新增',
                                 type:1,
@@ -472,9 +472,17 @@
                         }
                     }
                 })
-
+            }else if(layEvent === 'setTime'){
+                xc.getBalanceTypeDic('',token,layer,form,'feeBalance');
+                xc.getBalanceTypeDic('',token,layer,form,'feekinds');
+                index1= layer.open({
+                    title:'新增',
+                    type:1,
+                    area:'840px',
+                    content:$('#chargeModel')
+                })
             }
-        });
+            });
         table.on('tool(bindTable)', function(obj){
             var data = obj.data;
             var layEvent = obj.event;
@@ -625,16 +633,16 @@
             }
         });
         //设置计时规则
-        $('#setRuleBtn').on('click',function () {
-            xc.getBalanceTypeDic('',token,layer,form,'feeBalance');
-            xc.getBalanceTypeDic('',token,layer,form,'feekinds');
-             index1= layer.open({
-                title:'新增',
-                type:1,
-                area:'840px',
-                content:$('#chargeModel')
-            })
-        });
+        // $('#setRuleBtn').on('click',function () {
+        //     xc.getBalanceTypeDic('',token,layer,form,'feeBalance');
+        //     xc.getBalanceTypeDic('',token,layer,form,'feekinds');
+        //      index1= layer.open({
+        //         title:'新增',
+        //         type:1,
+        //         area:'840px',
+        //         content:$('#chargeModel')
+        //     })
+        // });
         //保存计时规则
         $('#saveFee').on('click',function (){
             $('.reduceBox-item .reduceBox').each(function () {
@@ -752,8 +760,11 @@
 </script>
 <script type="text/html" id="barDemo">
     <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del"><i class="layui-icon">&#xe640;</i>删除</a>
-    <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="edit"><i class="layui-icon">&#xe642;</i>编辑</a>
-    <a class="layui-btn layui-btn-xs layui-bg-orange" lay-event="bind"><i class="layui-icon">&#xe642;</i>设备绑定</a>
+    <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-xs layui-bg-orange" lay-event="bind">设备绑定</a>
+    {{# if(d.ChargeType==1){ }}
+    <a class="layui-btn layui-btn-xs layui-bg-orange" lay-event="setTime">计时项目</a>
+    {{#  } }}
 </script>
 <script type="text/html" id="barDemo1">
     <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del"><i class="layui-icon">&#xe640;</i>删除</a>
