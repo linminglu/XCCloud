@@ -498,11 +498,28 @@
                                 'feeWays':arr.CycleType==null?'':arr.CycleType,
                                 'lock':arr.LockMember==1?true:false
                             });
+                            if(arr.ProjectBandPrices.length==1){
+                                $('.reduceBox input[name="limitCount"]').val(arr.ProjectBandPrices[0].UseTimeCount);
+                                $('.reduceBox select[name="limitType"]').val(arr.ProjectBandPrices[0].UseType);
+                                $('.reduceBox input[name="consumeCount"]').val(arr.ProjectBandPrices[0].CycleTime);
+                                $('.reduceBox input[name="discountCount"]').val(arr.ProjectBandPrices[0].Count);
+
+                            }else if(arr.ProjectBandPrices.length>1){
+                                for(let i=1;i<arr.ProjectBandPrices.length;i++){
+                                    $('.reduceBox-item').append($('body').find($('.reduceBox')).eq(0).clone())
+                                }
+                                for(let i=0;i<arr.ProjectBandPrices.length;i++){
+                                    $('.reduceBox-item').find($('.reduceBox')).eq(i).find('input[name="limitCount"]').val(arr.ProjectBandPrices[i].UseTimeCount);
+                                    $('.reduceBox-item').find($('.reduceBox')).eq(i).find('select[name="limitType"]').val(arr.ProjectBandPrices[i].UseType);
+                                    $('.reduceBox-item').find($('.reduceBox')).eq(i).find('input[name="consumeCount"]').val(arr.ProjectBandPrices[i].CycleTime);
+                                    $('.reduceBox-item').find($('.reduceBox')).eq(i).find('input[name="discountCount"]').val(arr.ProjectBandPrices[i].Count);
+                                }
+                            }
                             xc.getBalanceTypeDic('',token,layer,form,'feeBalance',arr.ChargeBalanceIndex==null?'':arr.ChargeBalanceIndex);
                             xc.getBalanceTypeDic('',token,layer,form,'feekinds',arr.BalanceIndex==null?'':arr.BalanceIndex);
-                            feeType=arr.ChargeType||'';
+                            feeType=arr.ChargeType==null?'':arr.ChargeType;
                             feeBalance=arr.ChargeBalanceIndex==null?'':arr.ChargeBalanceIndex;
-                            feeWays=arr.CycleType||'';
+                            feeWays=arr.CycleType==null?'':arr.CycleType;
                             feekinds=arr.BalanceIndex==null?'':arr.BalanceIndex;
                             Lock=arr.LockMember==1?1:0;
 
@@ -513,10 +530,13 @@
                 });
 
                 index1= layer.open({
-                    title:'新增',
+                    title:'计时规则设定',
                     type:1,
                     area:'840px',
-                    content:$('#chargeModel')
+                    content:$('#chargeModel'),
+                    cancel:function () {
+                        location.reload()
+                    }
                 })
             }
             });

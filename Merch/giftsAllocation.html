@@ -455,7 +455,10 @@
                     , {field: 'RequestCount', title: '申请数量', align: 'center',width:100,edit:true}
                     , {field: 'RemainCount', title: '库存', align: 'center',width:100}
                     , {field: 'AvailableCount', title: '可调拨数', align: 'center',width:100}
-
+                    ,{field:'SendCount', title: '实发数量', align: 'center',width:100}
+                    ,{field:'StorageCount', title: '入库数量', align: 'center',edit:true,width:100}
+                    ,{field:'CostPrice', title: '含税单价', align: 'center'}
+                    ,{field:'Tax', title: '税率', align: 'center'}
                 ]]
             });
         });//调拨方式
@@ -838,7 +841,6 @@
                                         ,{field:'GoodTypeStr', title: '商品类别', align: 'center',width:100}
                                         ,{field:'RequestCount', title: '申请数量', align: 'center',width:100}
                                         ,{field:'SendCount', title: '实发数量', align: 'center',width:100}
-                                        ,{field:'StorageCount', title: '入库数量', align: 'center',edit:true,width:100}
                                         ,{field:'CostPrice', title: '含税单价', align: 'center',width:100}
                                         ,{field:'Tax', title: '税率', align: 'center',width:100}
                                         ,{field:'RemainCount', title: '库存', align: 'center',width:100}
