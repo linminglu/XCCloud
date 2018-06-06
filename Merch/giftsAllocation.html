@@ -218,9 +218,11 @@
             <div class="layui-form-item">
                 <div class="layui-inline">
                     <label class="layui-form-label">入库仓库</label>
-                    <div class="layui-input-inline">
+                    <div class="layui-input-inline" id="inDepotBox">
                         <select name="inDepot" lay-filter="inDepot"  id="inDepot"></select>
-                        <input type="text" class="layui-input layui-hide" readonly id="inDepot1">
+                    </div>
+                    <div class="layui-input-inline" id="inDepot1Box">
+                        <input type="text" class="layui-input" readonly id="inDepot1">
                     </div>
                 </div>
                 <div class="layui-inline">
@@ -247,6 +249,56 @@
         <div style="text-align:center;">
             <button type="button" class="layui-btn layui-btn-normal" id="saveInDeal">确定</button>
         </div>
+    </div>
+<!--查看详情-->
+    <div id="detailModel" style="padding: 15px;display:none;">
+        <form action="" class="layui-form layui-form-pane">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">入库仓库</label>
+                    <div class="layui-input-inline">
+                        <input type="text" class="layui-input" readonly id="detailDepot">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">调拨方式</label>
+                    <div class="layui-input-inline">
+                        <input type="text" class="layui-input" readonly id="detailWay">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">调配门店</label>
+                    <div class="layui-input-inline">
+                        <input type="text" class="layui-input" readonly id="detailStore">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">调配原因</label>
+                <div class="layui-input-block">
+                    <input type="text" class="layui-input" readonly id="detailReason">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">申请人</label>
+                    <div class="layui-input-inline">
+                        <input type="text" class="layui-input" readonly id="detailPerson">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">申请时间</label>
+                    <div class="layui-input-inline">
+                        <input type="text" class="layui-input" readonly id="detailTime">
+                    </div>
+                </div>
+            </div>
+        </form>
+        <table id="detailTable" lay-filter="detailTable" class="layui-hide"></table>
+
+        <!--<div style="text-align:center;">-->
+            <!--<button type="button" class="layui-btn layui-btn-normal" id="saveInDeal">确定</button>-->
+        <!--</div>-->
     </div>
 </body>
 <script src="js/jquery-1.8.3-min.js"></script>
@@ -277,6 +329,8 @@
     {{# if(JSON.stringify(d.PermittedTriggers).indexOf('8')!=-1){ }}
     <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="Close">流程关闭</a>
     {{#  } }}
+    <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="details">详情</a>
+
 </script>
 <script type="text/html" id="barDemo1">
     <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del">删除</a>
@@ -427,7 +481,7 @@
         form.on('select(logisticsCompany1)',function (data){
             logisticsCompany1=data.value;
         });
-        //监听选中商品
+        //监听选中商品--->发起申请
         table.on('checkbox(goodList)', function(obj){
             if (obj.type == "all") {
             } else {
@@ -440,19 +494,19 @@
                         }
                     }
                     if(flag==false){
-                        if(RequstType==2||RequstType==3){
+                        if(RequstType==2){
                             checkListGoods.push({
                                 'GoodID':obj.data.GoodID,
                                 'GoodName':obj.data.GoodName,
-                                'RequestCount':'',
+                                // 'RequestCount':'',
                                 'Tax':'',
                                 'NoCostPrice':'',
                                 'CostPrice':'',
-                                'SendCount':'',
+                                // 'SendCount':'',
                                 'RemainCount':obj.data.RemainCount,
                                 'AvailableCount':obj.data.AvailableCount
                             });
-                        }else if(RequstType==0||RequstType==1){
+                        }else if(RequstType==0||RequstType==1||RequstType==3){
                             checkListGoods.push({
                                 'GoodID':obj.data.GoodID,
                                 'GoodName':obj.data.GoodName,
@@ -529,7 +583,7 @@
         form.on('select(logisticsCompany)',function (data){
             logisticsCompany=data.value;
         });
-
+//主表
         table.on('tool(giftAllocationTB)', function(obj){
            let _data=obj.data;
            let layevent=obj.event;
@@ -566,8 +620,7 @@
                            if(arr.length>0){
                                for(i in arr){
                                    arr[i].outDepotId='';
-                                   // arr[i].RequestCount='';//申请拨数
-                                   arr[i].SendCount='';//调拨数量
+                                   // arr[i].SendCount='';//调拨数量
                                    arr[i].Price='';//不含税单价
                                    arr[i].Tax='';//税率
                                    arr[i].CostPrice='';//含税单价
@@ -675,14 +728,14 @@
                                 , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
                                 , cols: [[
                                     {type:'checkbox',fixed: 'left'} ,
-                                    {field:'ID', title: '调拨ID', align: 'center'}
-                                    ,{field:'GoodID', title: '商品ID', align: 'center'}
+                                    {field:'ID', title: '调拨ID', align: 'center',width:100}
+                                    ,{field:'GoodID', title: '商品ID', align: 'center',width:100}
                                     , {field:'Barcode', title:'商品条码', align: 'center',width:170}
                                     ,{field:'GoodName',title: '商品类别', align: 'center',width:120} //width 支持：数字、百分比和不填写。
                                     ,{field:'GoodTypeStr', title: '商品类别', align: 'center',width:100}
-                                    ,{field:'RequestCount', title: '申请数量', align: 'center'}
-                                    ,{field:'SendCount', title: '实发数量', align: 'center'}
-                                    ,{field:'StorageCount', title: '入库数量', align: 'center',edit:true}
+                                    ,{field:'RequestCount', title: '申请数量', align: 'center',width:100}
+                                    ,{field:'SendCount', title: '实发数量', align: 'center',width:100}
+                                    ,{field:'StorageCount', title: '入库数量', align: 'center',edit:true,width:100}
                                     ,{field:'CostPrice', title: '含税单价', align: 'center'}
                                     ,{field:'Tax', title: '税率', align: 'center'}
                                 ]]
@@ -696,13 +749,15 @@
 
 
                             if(data.result_data.RequstType==2){
+
+                                $('#inDepotBox').removeClass('layui-hide');
+                                $('#inDepot1Box').addClass('layui-hide');
                                 xc.getDepotDic('','',token,layer,form,'inDepot');
-                                $('#inDepot').removeClass('layui-hide');
-                                $('#inDepot1').addClass('layui-hide');
                                 inDepot='';
                             }else {
-                                $('#inDepot1').val(_data.InDepotName).removeClass('layui-hide');
-                                $('#inDepot').addClass('layui-hide');
+                                $('#inDepot1').val(_data.InDepotName);
+                                $('#inDepot1Box').removeClass('layui-hide');
+                                $('#inDepotBox').addClass('layui-hide');
                                 inDepot=InDepotId;
                             }
 
@@ -757,6 +812,90 @@
                         }
                     })
                 });
+            }else if(layevent==='details'){//详情
+                let _obj={'requestId':requestId, 'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                let url='/XCCloud/GoodsInfo?action=GetGoodRequestDetail';
+                let parasJson = JSON.stringify(_obj);
+                $.ajax({
+                    type: "post",
+                    url: url,
+                    contentType: "application/json; charset=utf-8",
+                    data: { parasJson: parasJson },
+                    success: function (data) {
+                        data=JSON.parse(data);
+                        if(data.result_code==1){
+                            let arr=data.result_data.GoodRequestDetails;
+                            if(data.result_data.RequstType==2){
+                                table.render({
+                                    elem: '#detailTable'
+                                    , height:'300px'
+                                    , size:"sm"
+                                    , data: arr
+                                    , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+                                    , cols: [[
+                                        // {field:'ID', title: '调拨ID', align: 'center',width:100}
+                                        {field:'GoodID', title: '商品ID', align: 'center',width:100}
+                                        , {field:'Barcode', title:'商品条码', align: 'center',width:170}
+                                        ,{field:'GoodName',title: '商品名称', align: 'center',width:120} //width 支持：数字、百分比和不填写。
+                                        ,{field:'GoodTypeStr', title: '商品类别', align: 'center',width:100}
+                                        // ,{field:'RequestCount', title: '申请数量', align: 'center',width:100}
+                                        ,{field:'SendCount', title: '调拨数量', align: 'center',width:100}
+                                        // ,{field:'StorageCount', title: '入库数量', align: 'center',edit:true,width:100}
+                                        ,{field:'CostPrice', title: '含税单价', align: 'center',width:100}
+                                        ,{field:'Tax', title: '税率', align: 'center',width:100}
+                                        ,{field:'RemainCount', title: '库存', align: 'center',width:100}
+                                        ,{field:'AvailableCount', title: '可调拨数', align: 'center',width:100}
+                                        ,{field:'LogistOrderID', title: '物流单号', align: 'center',width:100,fixed:'right',templet:'logis'}
+                                        ,{field:'SendTime', title: '发货时间', align: 'center',width:100,fixed:'right'}
+                                    ]]
+                                    , page: {page: true, limits: [10, 15, 20, 30, 50, 100]}
+                                    , limit: 10
+                                });
+                            }else {
+                                table.render({
+                                    elem: '#detailTable'
+                                    , height:'300px'
+                                    , size:"sm"
+                                    , data: arr
+                                    , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+                                    , cols: [[
+                                        // {field:'ID', title: '调拨ID', align: 'center',width:100}
+                                        {field:'GoodID', title: '商品ID', align: 'center',width:100}
+                                        , {field:'Barcode', title:'商品条码', align: 'center',width:170}
+                                        ,{field:'GoodName',title: '商品名称', align: 'center',width:120} //width 支持：数字、百分比和不填写。
+                                        ,{field:'GoodTypeStr', title: '商品类别', align: 'center',width:100}
+                                        ,{field:'RequestCount', title: '申请数量', align: 'center',width:100}
+                                        // ,{field:'SendCount', title: '调拨数量', align: 'center',width:100}
+                                        // ,{field:'StorageCount', title: '入库数量', align: 'center',edit:true,width:100}
+                                        // ,{field:'CostPrice', title: '含税单价', align: 'center'}
+                                        // ,{field:'Tax', title: '税率', align: 'center'}
+                                        ,{field:'RemainCount', title: '库存', align: 'center',width:100}
+                                        ,{field:'AvailableCount', title: '可调拨数', align: 'center',width:100}
+                                        ,{field:'LogistOrderID', title: '物流单号', align: 'center',width:100,fixed:'right',templet:'logis'}
+                                        ,{field:'SendTime', title: '发货时间', align: 'center',width:100,fixed:'right'}
+                                    ]]
+                                    , page: {page: true, limits: [10, 15, 20, 30, 50, 100]}
+                                    , limit: 10
+                                });
+                            }
+
+                            $('#detailDepot').val(data.result_data.OutDepotName||data.result_data.InDepotName);
+                            $('#detailWay').val(data.result_data.RequstTypeStr);
+                            $('#detailStore').val(data.result_data.InStoreName||data.result_data.OutStoreName);
+                            $('#detailReason').val(data.result_data.RequestReason);
+                            $('#detailPerson').val(data.result_data.CreateUser);
+                            $('#detailTime').val(data.result_data.CreateTime);
+                            layer.open({
+                                title:'查看明细',
+                                type:1,
+                                area:'1000px',
+                                content:$('#detailModel')
+                            })
+                        }else {
+                            layer.msg(data.result_msg||data.return_msg)
+                        }
+                    }
+                });
             }
         });
         table.on('edit(giftsList)', function(obj){ //注：edit是固定事件名，test是table原始容器的属性 lay-filter="对应的值"
@@ -774,7 +913,7 @@
                     if(obj.checked==true){
                         let flag=false;
                         for(let i in inDepotArr){
-                            if(inDepotArr[i].GoodID==obj.data.GoodID){
+                            if(inDepotArr[i].ID==obj.data.ID){
                                 flag=true;
                                 break;
                             }
@@ -789,7 +928,7 @@
 
                     }else {
                         for(let i in inDepotArr){
-                            if(inDepotArr[i].GoodID==obj.data.GoodID){
+                            if(inDepotArr[i].ID==obj.data.ID){
                                 inDepotArr.splice(i,1);
                                 break;
                             }
@@ -920,7 +1059,7 @@
                url='/XCCloud/GoodsInfo?action=GoodSendDealVerify'
            }
            else  if( checkStatus=='in'){
-
+                url='/XCCloud/GoodsInfo?action=GoodRequestDealVerify'
            }
            let parasJson = JSON.stringify(_obj);
            $.ajax({
@@ -1074,19 +1213,19 @@
     }
     function initSendTable(table,checkListGood,requestType) {
         let cols=[];
-        if(requestType==2||requestType==3){
+        if(requestType==2){
             cols=[
                 {field: 'GoodID', title: '商品ID', align: 'center',width:100}
                 , {field: 'GoodName', title: '商品名称', align: 'center',width:100}
                 , {field: 'RemainCount', title: '库存', align: 'center',width:100}
-                , {field: 'RequestCount', title: '申请数量', align: 'center',width:100,edit:true}
+                , {field: 'SendCount', title: '实发数量', align: 'center',width:100,edit:true}
                 , {field: 'NoCostPrice', title: '不含税单价', align: 'center',width:100,edit:true}
                 , {field: 'Tax', title: '税率%', align: 'center',width:100,edit:true}
                 , {field: 'CostPrice', title: '含税代价', align: 'center',width:100,edit:true}
                 , {field: 'AvailableCount', title: '可调拨数', align: 'center',width:100}
                 ,{fixed: 'right', title: '操作',  align:'center', toolbar: '#barDemo1'}
             ]
-        }else if(requestType==0||requestType==1){
+        }else if(requestType==0||requestType==1||requestType==3){
             cols=[
                 {field: 'GoodID', title: '商品ID', align: 'center',width:160}
                 , {field: 'GoodName', title: '商品名称', align: 'center',width:160}

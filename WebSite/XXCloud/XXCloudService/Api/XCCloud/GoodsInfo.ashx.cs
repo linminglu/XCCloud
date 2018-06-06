@@ -571,6 +571,7 @@ namespace XXCloudService.Api.XCCloud
                 if (!storeId.IsNull())
                     sql += " AND (a.CreateStoreID='" + storeId + "' or a.RequestOutStoreID='" + storeId + "' or a.RequestInStoreID='" + storeId + "')";
 
+                sql += " ORDER BY a.CreateTime desc";
                 #endregion
 
                 var list = Data_GoodRequestService.I.SqlQuery<Data_GoodRequestList>(sql, parameters).ToList();
@@ -672,7 +673,7 @@ namespace XXCloudService.Api.XCCloud
                                 		Dict_System a
                                 	INNER JOIN Dict_System b ON a.ID = b.PID
                                 	WHERE
-                                		a.DictKey = '快递物流'
+                                		a.DictKey = '物流类型'
                                 	AND a.PID = 0
                                 ) e ON CONVERT (VARCHAR, a.LogistType) = e.DictValue
                                 WHERE c.Status = 1
@@ -1024,7 +1025,7 @@ namespace XXCloudService.Api.XCCloud
 
                 var outStoreId = dicParas.Get("outStoreId");
                 var outDepotId = dicParas.Get("outDepotId").Toint();
-                var inStoreId = requstType == 1 ? storeId : dicParas.Get("inStoreId");  //门店向总部申请，入库门店默认为当前门店
+                var inStoreId = (requstType == 0 || requstType == 1 || requstType == 3) ? storeId : dicParas.Get("inStoreId");  //门店向总部申请，入库门店默认为当前门店
                 var inDepotId = dicParas.Get("inDepotId").Toint();
                 var requestReason = dicParas.Get("requestReason");
                 var logistType = dicParas.Get("logistType").Toint();
@@ -1104,6 +1105,7 @@ namespace XXCloudService.Api.XCCloud
                                     data_GoodRequest_List.MerchID = merchId;
                                     data_GoodRequest_List.LogistType = logistType;
                                     data_GoodRequest_List.LogistOrderID = logistOrderId;
+                                    data_GoodRequest_List.SendTime = DateTime.Now;
                                     Data_GoodRequest_ListService.I.AddModel(data_GoodRequest_List);
                                 }
                                 else
@@ -1263,6 +1265,26 @@ namespace XXCloudService.Api.XCCloud
                         if (!wf.SendDealVerify(state, note, out errMsg))
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
+                        var data_GoodRequest_List = Data_GoodRequest_ListService.I;
+                        foreach (var requestListModel in data_GoodRequest_List.GetModels(p => p.RequestID == requestId))
+                        {
+                            //更新当前库存
+                            if (!updateGoodsStock(requestListModel.OutDepotID, requestListModel.GoodID, (int)SourceType.GoodRequest, requestId, requestListModel.CostPrice, (int)StockFlag.Out, requestListModel.SendCount, merchId, storeId, out errMsg))
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
+                        if (!Data_GoodStock_RecordService.I.SaveChanges())
+                        {
+                            errMsg = "添加出库存异动信息失败";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
+                        if (!Data_GoodsStockService.I.SaveChanges())
+                        {
+                            errMsg = "更新当前库存失败";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
                         ts.Complete();
                     }
                     catch (DbEntityValidationException e)
@@ -1327,6 +1349,26 @@ namespace XXCloudService.Api.XCCloud
                         var wf = new GoodReqWorkFlow(requestId, userId);
                         if (!wf.RequestDealVerify(state, note, out errMsg))
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                        var data_GoodRequest_List = Data_GoodRequest_ListService.I;
+                        foreach (var requestListModel in data_GoodRequest_List.GetModels(p => p.RequestID == requestId))
+                        {
+                            //更新当前库存
+                            if (!updateGoodsStock(requestListModel.InDeportID, requestListModel.GoodID, (int)SourceType.GoodRequest, requestId, requestListModel.CostPrice, (int)StockFlag.In, requestListModel.StorageCount, merchId, storeId, out errMsg))
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
+                        if (!Data_GoodStock_RecordService.I.SaveChanges())
+                        {
+                            errMsg = "添加入库存异动信息失败";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
+                        if (!Data_GoodsStockService.I.SaveChanges())
+                        {
+                            errMsg = "更新当前库存失败";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
 
                         ts.Complete();
                     }
@@ -1424,106 +1466,76 @@ namespace XXCloudService.Api.XCCloud
                                     var costPrice = dicPara.Get("costPrice").Todecimal();
                                     var tax = dicPara.Get("tax").Todecimal();
 
-                                    bool isAdd = false;
-                                    if (Data_GoodRequest_ListService.I.GetCount(p => p.RequestID == requestId && p.GoodID == goodId) == 1)
+                                    if (!Data_GoodRequest_ListService.I.Any(a => a.RequestID == requestId && a.GoodID == goodId))
                                     {
-                                        var data_GoodRequest_List = Data_GoodRequest_ListService.I.GetModels(p => p.RequestID == requestId && p.GoodID == goodId).FirstOrDefault();
-                                        if (data_GoodRequest_List.SendCount == 0)
-                                        {
-                                            data_GoodRequest_List.RequestID = requestId;
-                                            data_GoodRequest_List.GoodID = goodId;
-                                            data_GoodRequest_List.OutDepotID = outDepotId;
-                                            data_GoodRequest_List.SendCount = sendCount;
-                                            data_GoodRequest_List.StorageCount = 0;
-                                            data_GoodRequest_List.CostPrice = costPrice;
-                                            data_GoodRequest_List.Tax = tax;
-                                            data_GoodRequest_List.LogistType = logistType;
-                                            data_GoodRequest_List.LogistOrderID = logistOrderId;
-                                            data_GoodRequest_List.SendTime = DateTime.Now;
-                                            if (!Data_GoodRequest_ListService.I.Update(data_GoodRequest_List))
-                                            {
-                                                errMsg = "更新调拨明细信息失败";
-                                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                                            }
-                                        }
-                                        else
-                                        {
-                                            isAdd = true;
-                                        }
+                                        errMsg = "该调拨明细信息不存在";
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    }
+
+                                    //更新调拨明细信息
+                                    var data_GoodRequest_List = Data_GoodRequest_ListService.I.GetModels(a => a.RequestID == requestId && a.GoodID == goodId).OrderByDescending(or => or.ID).FirstOrDefault();
+                                    data_GoodRequest_List.OutDepotID = outDepotId;                                    
+                                    data_GoodRequest_List.StorageCount = 0;
+                                    data_GoodRequest_List.CostPrice = costPrice;
+                                    data_GoodRequest_List.Tax = tax;
+                                    data_GoodRequest_List.LogistType = logistType;
+                                    data_GoodRequest_List.LogistOrderID = logistOrderId;
+                                    data_GoodRequest_List.SendTime = DateTime.Now;
+                                    if (data_GoodRequest_List.SendCount == 0)
+                                    {
+                                        data_GoodRequest_List.SendCount = sendCount;
+                                        Data_GoodRequest_ListService.I.UpdateModel(data_GoodRequest_List);                                        
                                     }
                                     else
-                                        isAdd = true;
-
-                                    if (isAdd)
                                     {
-                                        var data_GoodRequest_List = new Data_GoodRequest_List();
-                                        data_GoodRequest_List.RequestID = requestId;
-                                        data_GoodRequest_List.GoodID = goodId;
-                                        data_GoodRequest_List.OutDepotID = outDepotId;
                                         data_GoodRequest_List.SendCount = sendCount;
-                                        data_GoodRequest_List.StorageCount = 0;
-                                        data_GoodRequest_List.CostPrice = costPrice;
-                                        data_GoodRequest_List.Tax = tax;
-                                        data_GoodRequest_List.LogistType = logistType;
-                                        data_GoodRequest_List.LogistOrderID = logistOrderId;
-                                        data_GoodRequest_List.SendTime = DateTime.Now;
                                         data_GoodRequest_List.MerchID = merchId;
-                                        if (!Data_GoodRequest_ListService.I.Add(data_GoodRequest_List))
-                                        {
-                                            errMsg = "更新调拨明细信息失败";
-                                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                                        }
-                                    }
+                                        Data_GoodRequest_ListService.I.AddModel(data_GoodRequest_List);                                          
+                                    }                                    
                                     
+                                    //更新调拨单信息
                                     var data_GoodRequest = Data_GoodRequestService.I.GetModels(p => p.ID == requestId).FirstOrDefault();
                                     data_GoodRequest.RequestOutDepotID = outDepotId;
-                                    if (!Data_GoodRequestService.I.Update(data_GoodRequest))
+                                    Data_GoodRequestService.I.UpdateModel(data_GoodRequest);
+                                                                                                        
+                                    //如何不需要审核
+                                    if (!wf.CanFire(Trigger.SendDealVerify))
                                     {
-                                        errMsg = "更新调拨信息失败";
-                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                                    }
-                                                                    
-                                    //添加出库存异动信息
-                                    var data_GoodStock_Record = new Data_GoodStock_Record();
-                                    data_GoodStock_Record.DepotID = outDepotId;
-                                    data_GoodStock_Record.GoodID = goodId;
-                                    data_GoodStock_Record.SourceType = (int)SourceType.GoodRequest;
-                                    data_GoodStock_Record.SourceID = requestId;
-                                    data_GoodStock_Record.GoodCost = costPrice;
-                                    data_GoodStock_Record.StockFlag = (int)StockFlag.Out;
-                                    data_GoodStock_Record.StockCount = sendCount;
-                                    data_GoodStock_Record.CreateTime = DateTime.Now;
-                                    data_GoodStock_Record.MerchID = merchId;
-                                    data_GoodStock_Record.StoreID = storeId;
-                                    if (!Data_GoodStock_RecordService.I.Add(data_GoodStock_Record))
-                                    {
-                                        errMsg = "添加调拨出库记录失败";
-                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                                    }
-
-                                    //更新当前库存
-                                    var stockDepotId = data_GoodStock_Record.DepotID;
-                                    var stockGoodId = data_GoodStock_Record.GoodID;
-                                    var stockModel = Data_GoodsStockService.I.GetModels(p => p.DepotID == stockDepotId && p.GoodID == stockGoodId).OrderByDescending(or => or.InitialTime).FirstOrDefault();
-                                    if (stockModel == null)
-                                    {
-                                        errMsg = "仓库未绑定该商品信息";
-                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                                    }
-
-                                    stockModel.RemainCount = (stockModel.RemainCount ?? 0) - data_GoodStock_Record.StockCount;
-                                    if (!Data_GoodsStockService.I.Update(stockModel))
-                                    {
-                                        errMsg = "更新当前库存失败";
-                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                                    }
+                                        //更新当前库存
+                                        if (!updateGoodsStock(outDepotId, goodId, (int)SourceType.GoodRequest, requestId, costPrice, (int)StockFlag.Out, sendCount, merchId, storeId, out errMsg))
+                                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    }                                                                        
                                 }
                                 else
                                 {
                                     errMsg = "提交数据包含空对象";
                                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                                 }
-                            }                            
+                            }
+
+                            if (!Data_GoodRequest_ListService.I.SaveChanges())
+                            {
+                                errMsg = "更新调拨明细失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+
+                            if (!Data_GoodRequestService.I.SaveChanges())
+                            {
+                                errMsg = "更新调拨单失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+
+                            if (!Data_GoodStock_RecordService.I.SaveChanges())
+                            {
+                                errMsg = "添加出库存异动信息失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+
+                            if (!Data_GoodsStockService.I.SaveChanges())
+                            {
+                                errMsg = "更新当前库存失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
                         }
 
                         ts.Complete();
@@ -1545,6 +1557,40 @@ namespace XXCloudService.Api.XCCloud
             {
                 return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
             }
+        }
+
+        /// <summary>
+        /// 更新库存
+        /// </summary>
+        private bool updateGoodsStock(int? depotId, int? goodId, int? sourceType, int? sourceId, decimal? goodCost, int? stockFlag, int? stockCount, string merchId, string storeId, out string errMsg)
+        {
+            errMsg = string.Empty;
+
+            //添加库存异动信息
+            var data_GoodStock_Record = new Data_GoodStock_Record();
+            data_GoodStock_Record.DepotID = depotId;
+            data_GoodStock_Record.GoodID = goodId;
+            data_GoodStock_Record.SourceType = sourceType;
+            data_GoodStock_Record.SourceID = sourceId;
+            data_GoodStock_Record.GoodCost = goodCost;
+            data_GoodStock_Record.StockFlag = stockFlag;
+            data_GoodStock_Record.StockCount = stockCount;
+            data_GoodStock_Record.CreateTime = DateTime.Now;
+            data_GoodStock_Record.MerchID = merchId;
+            data_GoodStock_Record.StoreID = storeId;
+            Data_GoodStock_RecordService.I.AddModel(data_GoodStock_Record);
+
+            //更新当前库存
+            var stockModel = Data_GoodsStockService.I.GetModels(p => p.DepotID == depotId && p.GoodID == goodId).OrderByDescending(or => or.InitialTime).FirstOrDefault();
+            if (stockModel == null)
+            {
+                errMsg = "仓库未绑定该商品信息";
+                return false;
+            }
+
+            stockModel.RemainCount = (stockModel.RemainCount ?? 0) + stockCount;
+            Data_GoodsStockService.I.UpdateModel(stockModel);
+            return true;
         }
 
         /// <summary>
@@ -1597,6 +1643,7 @@ namespace XXCloudService.Api.XCCloud
                             {
                                 if (el != null)
                                 {
+                                    //更新调拨明细
                                     var dicPara = new Dictionary<string, object>(el, StringComparer.OrdinalIgnoreCase);
                                     if (!dicPara.Get("id").Validintnozero("调拨明细ID", out errMsg))
                                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);                                                               
@@ -1610,36 +1657,18 @@ namespace XXCloudService.Api.XCCloud
                                     data_GoodRequest_List.InDeportID = inDepotId;
                                     Data_GoodRequest_ListService.I.UpdateModel(data_GoodRequest_List);
 
+                                    //更新调拨单
                                     var data_GoodRequest = Data_GoodRequestService.I.GetModels(p => p.ID == requestId).FirstOrDefault();
                                     data_GoodRequest.RequestInDepotID = inDepotId;
-                                    Data_GoodRequestService.I.UpdateModel(data_GoodRequest);
+                                    Data_GoodRequestService.I.UpdateModel(data_GoodRequest);                                    
 
-                                    //添加入库存异动信息
-                                    var data_GoodStock_Record = new Data_GoodStock_Record();
-                                    data_GoodStock_Record.DepotID = inDepotId;
-                                    data_GoodStock_Record.GoodID = data_GoodRequest_List.GoodID;
-                                    data_GoodStock_Record.SourceType = (int)SourceType.GoodRequest;
-                                    data_GoodStock_Record.SourceID = requestId;
-                                    data_GoodStock_Record.GoodCost = data_GoodRequest_List.CostPrice;
-                                    data_GoodStock_Record.StockFlag = (int)StockFlag.In;
-                                    data_GoodStock_Record.StockCount = storageCount;
-                                    data_GoodStock_Record.CreateTime = DateTime.Now;
-                                    data_GoodStock_Record.MerchID = merchId;
-                                    data_GoodStock_Record.StoreID = storeId;
-                                    Data_GoodStock_RecordService.I.AddModel(data_GoodStock_Record);
-
-                                    //更新当前库存
-                                    var stockDepotId = data_GoodStock_Record.DepotID;
-                                    var stockGoodId = data_GoodStock_Record.GoodID;
-                                    var stockModel = Data_GoodsStockService.I.GetModels(p => p.DepotID == stockDepotId && p.GoodID == stockGoodId).OrderByDescending(or => or.InitialTime).FirstOrDefault();
-                                    if (stockModel == null)
+                                    //如何不需要审核
+                                    if (!wf.CanFire(Trigger.RequestDealVerify))
                                     {
-                                        errMsg = "仓库未绑定该商品信息";
-                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                                    }
-
-                                    stockModel.RemainCount = (stockModel.RemainCount ?? 0) + data_GoodStock_Record.StockCount;
-                                    Data_GoodsStockService.I.UpdateModel(stockModel);
+                                        //更新当前库存
+                                        if (!updateGoodsStock(inDepotId, data_GoodRequest_List.GoodID, (int)SourceType.GoodRequest, requestId, data_GoodRequest_List.CostPrice, (int)StockFlag.In, storageCount, merchId, storeId, out errMsg))
+                                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);                                        
+                                    }                                    
                                 }
                                 else
                                 {
@@ -1650,13 +1679,19 @@ namespace XXCloudService.Api.XCCloud
 
                             if (!Data_GoodRequest_ListService.I.SaveChanges())
                             {
-                                errMsg = "添加调拨明细失败";
+                                errMsg = "更新调拨明细失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                             }
 
                             if (!Data_GoodRequestService.I.SaveChanges())
                             {
                                 errMsg = "更新调拨单失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+
+                            if (!Data_GoodStock_RecordService.I.SaveChanges())
+                            {
+                                errMsg = "添加入库存异动信息失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                             }
 
@@ -2132,32 +2167,9 @@ namespace XXCloudService.Api.XCCloud
                         var detailList = Data_GoodStorage_DetailService.I.GetModels(p => p.StorageID == id).ToList();
                         foreach (var detailModel in detailList)
                         {
-                            //添加入库存异动信息
-                            var data_GoodStock_Record = new Data_GoodStock_Record();
-                            data_GoodStock_Record.DepotID = model.DepotID;
-                            data_GoodStock_Record.GoodID = detailModel.GoodID;
-                            data_GoodStock_Record.GoodCost = detailModel.TaxPrice;
-                            data_GoodStock_Record.SourceType = (int)SourceType.GoodStorage;
-                            data_GoodStock_Record.SourceID = id;
-                            data_GoodStock_Record.StockFlag = (int)StockFlag.In;
-                            data_GoodStock_Record.StockCount = detailModel.StorageCount;
-                            data_GoodStock_Record.CreateTime = DateTime.Now;
-                            data_GoodStock_Record.MerchID = merchId;
-                            data_GoodStock_Record.StoreID = storeId;
-                            Data_GoodStock_RecordService.I.AddModel(data_GoodStock_Record);
-
                             //更新当前库存
-                            var depotId = model.DepotID;
-                            var goodId = detailModel.GoodID;
-                            var stockModel = Data_GoodsStockService.I.GetModels(p => p.DepotID == depotId && p.GoodID == goodId).OrderByDescending(or => or.InitialTime).FirstOrDefault();
-                            if (stockModel == null)
-                            {
-                                errMsg = "仓库未绑定该商品信息";
-                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                            }
-
-                            stockModel.RemainCount = (stockModel.RemainCount ?? 0) + detailModel.StorageCount;
-                            Data_GoodsStockService.I.UpdateModel(stockModel);                            
+                            if (!updateGoodsStock(model.DepotID, detailModel.GoodID, (int)SourceType.GoodRequest, id, detailModel.TaxPrice, (int)StockFlag.In, detailModel.StorageCount, merchId, storeId, out errMsg))
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);                             
                         }
                         
                         if (!Data_GoodStock_RecordService.I.SaveChanges())
@@ -2241,25 +2253,9 @@ namespace XXCloudService.Api.XCCloud
                         var recordList = Data_GoodStock_RecordService.I.GetModels(p => p.SourceType == (int)SourceType.GoodStorage && p.SourceID == id).ToList();
                         foreach (var record in recordList)
                         {
-                            //添加出库存异动信息
-                            record.StockFlag = (int)StockFlag.Out;
-                            record.CreateTime = DateTime.Now;
-                            record.MerchID = merchId;
-                            record.StoreID = storeId;
-                            Data_GoodStock_RecordService.I.AddModel(record);
-
                             //更新当前库存
-                            var depotId = record.DepotID;
-                            var goodId = record.GoodID;
-                            var stockModel = Data_GoodsStockService.I.GetModels(p => p.DepotID == depotId && p.GoodID == goodId).OrderByDescending(or => or.InitialTime).FirstOrDefault();
-                            if (stockModel == null)
-                            {
-                                errMsg = "仓库未绑定该商品信息";
-                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                            }
-
-                            stockModel.RemainCount = (stockModel.RemainCount ?? 0) - record.StockCount;
-                            Data_GoodsStockService.I.UpdateModel(stockModel);
+                            if (!updateGoodsStock(record.DepotID, record.GoodID, (int)SourceType.GoodStorage, id, record.GoodCost, (int)StockFlag.Out, record.StockCount, merchId, storeId, out errMsg))
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);                            
                         }
 
                         if (!Data_GoodStock_RecordService.I.SaveChanges())
@@ -2394,11 +2390,11 @@ namespace XXCloudService.Api.XCCloud
                                     if (stockModel == null)
                                     {
                                         errMsg = "仓库未绑定该商品信息";
-                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg); 
                                     }
 
                                     stockModel.RemainCount = (stockModel.RemainCount ?? 0) - detailModel.ExitCount;
-                                    Data_GoodsStockService.I.UpdateModel(stockModel);
+                                    Data_GoodsStockService.I.UpdateModel(stockModel);                                    
                                 }
                                 else
                                 {
@@ -2410,6 +2406,12 @@ namespace XXCloudService.Api.XCCloud
                             if (!Data_GoodExit_DetailService.I.SaveChanges())
                             {
                                 errMsg = "保存退货明细信息失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+
+                            if (!Data_GoodsStockService.I.SaveChanges())
+                            {
+                                errMsg = "更新当前库存失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                             }
                         }                        
@@ -2815,32 +2817,9 @@ namespace XXCloudService.Api.XCCloud
                         var detailList = Data_GoodOutOrder_DetailService.I.GetModels(p => p.OrderID == id).ToList();
                         foreach (var detailModel in detailList)
                         {
-                            //添加出库存异动信息
-                            var data_GoodStock_Record = new Data_GoodStock_Record();
-                            data_GoodStock_Record.DepotID = model.DepotID;
-                            data_GoodStock_Record.GoodID = detailModel.GoodID;
-                            data_GoodStock_Record.SourceType = (int)SourceType.GoodOut;
-                            data_GoodStock_Record.SourceID = id;
-                            data_GoodStock_Record.GoodCost = detailModel.OutPrice;
-                            data_GoodStock_Record.StockFlag = (int)StockFlag.Out;
-                            data_GoodStock_Record.StockCount = detailModel.OutCount;
-                            data_GoodStock_Record.CreateTime = DateTime.Now;
-                            data_GoodStock_Record.MerchID = merchId;
-                            data_GoodStock_Record.StoreID = storeId;
-                            Data_GoodStock_RecordService.I.AddModel(data_GoodStock_Record);
-
                             //更新当前库存
-                            var depotId = model.DepotID;
-                            var goodId = detailModel.GoodID;
-                            var stockModel = Data_GoodsStockService.I.GetModels(p => p.DepotID == depotId && p.GoodID == goodId).OrderByDescending(or => or.InitialTime).FirstOrDefault();
-                            if (stockModel == null)
-                            {
-                                errMsg = "仓库未绑定该商品信息";
-                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                            }
-
-                            stockModel.RemainCount = (stockModel.RemainCount ?? 0) - detailModel.OutCount;
-                            Data_GoodsStockService.I.UpdateModel(stockModel);
+                            if (!updateGoodsStock(model.DepotID, detailModel.GoodID, (int)SourceType.GoodOut, id, detailModel.OutPrice, (int)StockFlag.Out, detailModel.OutCount, merchId, storeId, out errMsg))
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);                               
                         }
 
                         if (!Data_GoodStock_RecordService.I.SaveChanges())
@@ -2925,25 +2904,9 @@ namespace XXCloudService.Api.XCCloud
                         var recordList = Data_GoodStock_RecordService.I.GetModels(p => p.SourceType == (int)SourceType.GoodOut && p.SourceID == id).ToList();
                         foreach (var record in recordList)
                         {
-                            //添加入库存异动信息
-                            record.StockFlag = (int)StockFlag.In;
-                            record.CreateTime = DateTime.Now;
-                            record.MerchID = merchId;
-                            record.StoreID = storeId;
-                            Data_GoodStock_RecordService.I.AddModel(record);
-
                             //更新当前库存
-                            var depotId = record.DepotID;
-                            var goodId = record.GoodID;
-                            var stockModel = Data_GoodsStockService.I.GetModels(p => p.DepotID == depotId && p.GoodID == goodId).OrderByDescending(or => or.InitialTime).FirstOrDefault();
-                            if (stockModel == null)
-                            {
-                                errMsg = "仓库未绑定该商品信息";
-                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                            }
-
-                            stockModel.RemainCount = (stockModel.RemainCount ?? 0) + record.StockCount;
-                            Data_GoodsStockService.I.UpdateModel(stockModel);
+                            if (!updateGoodsStock(record.DepotID, record.GoodID, (int)SourceType.GoodOut, id, record.GoodCost, (int)StockFlag.In, record.StockCount, merchId, storeId, out errMsg))
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);                            
                         }
 
                         if (!Data_GoodStock_RecordService.I.SaveChanges())

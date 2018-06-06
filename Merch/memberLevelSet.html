@@ -576,7 +576,10 @@
                 area:'1030px',
                 shade:0.6,
                 offset:'20px',
-                content:$('#openModel')
+                content:$('#openModel'),
+                cancel:function () {
+                    location.reload();
+                }
             });
         });
         //提示
@@ -786,7 +789,10 @@
                                 type:1,
                                 area:'1030px',
                                 shade:0.6,
-                                content:$('#openModel')
+                                content:$('#openModel'),
+                                cancel:function () {
+                                    location.reload();
+                                }
                             });
                         }
                     }
@@ -901,7 +907,7 @@
                             if (data.result_code == 1) {
                                 obj.del();
                                 layer.msg('删除成功',function () {
-                                    xc.getInitData(parm);
+                                   location.reload();
                                 })
                             } else {
                                 layer.msg(data.result_msg);
@@ -1257,7 +1263,7 @@
         let parseJson = JSON.stringify(_obj);
         $.ajax({
             type:'post',
-            url:'/XCCloud/Member?action=QueryMemberLevel',
+            url:'/XCCloud/Member?action=GetMemberLevelDic',
             contentType: "application/json; charset=utf-8",
             data:{parasJson: parseJson},
             success: function (data) {
@@ -1286,7 +1292,7 @@
 </script>
 
 <script type="text/html" id="barDemo">
-    <a class="layui-btn layui-btn-sm layui-btn-danger" lay-event="edit">修改</a>
+    <a class="layui-btn layui-btn-sm layui-btn-normal" lay-event="edit">修改</a>
     <a class="layui-btn layui-btn-sm layui-btn-danger" lay-event="del">删除</a>
 </script>
 <script type="text/html" id="barDemo2">
