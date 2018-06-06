@@ -108,18 +108,18 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 string errMsg = string.Empty;
-                if (!dicParas.Get("id").Validintnozero("项目ID", out errMsg))
+                if (!dicParas.Get("id").Validintnozero("游乐项目ID", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
                 var id = dicParas.Get("id").Toint();
 
                 var linq = new
                 {
-                    data_ProjectTime = Data_Project_TimeInfoService.I.GetModels(p => p.ProjectTimeID == id).FirstOrDefault(),
+                    data_ProjectTime = Data_Project_TimeInfoService.I.GetModels(p => p.ProjectTimeID == id).FirstOrDefault() ?? new Data_Project_TimeInfo { ProjectTimeID = id },
                     ProjectBandPrices = Data_Project_BandPriceService.I.GetModels(p => p.ProjectID == id)
                 };
 
-                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, linq.AsFlatDictionary());
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, linq.AsFlatDictionary());
             }
             catch (Exception e)
             {
@@ -324,6 +324,7 @@ namespace XXCloudService.Api.XCCloud
 
                         var projectTimeInfoModel = Data_Project_TimeInfoService.I.GetModels(p => p.ProjectTimeID == projectTimeId).FirstOrDefault() ?? new Data_Project_TimeInfo();
                         projectTimeInfoModel.StoreID = storeId;
+                        projectTimeInfoModel.MerchID = merchId;
                         Utils.GetModel(dicParas, ref projectTimeInfoModel);
                         if (projectTimeInfoModel.ID == 0)
                         {
@@ -370,6 +371,8 @@ namespace XXCloudService.Api.XCCloud
                                     bandPriceModel.Count = dicPara.Get("count").Toint();
                                     bandPriceModel.StoreID = storeId;
                                     bandPriceModel.ProjectID = projectTimeId;
+                                    bandPriceModel.MerchID = merchId;
+                                    bandPriceModel.StoreID = storeId;
                                     Data_Project_BandPriceService.I.AddModel(bandPriceModel);
                                 }
                                 else
