@@ -303,7 +303,7 @@
         var searchText=$('#goodsName').val();
         if(DepotID==''){layer.msg('请选择入库仓库')}else {
             var parm={'obj':{'depotId':DepotID,'goodNameOrBarCode':searchText,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'},
-                'url':'/XCCloud/GoodsInfo?action=QueryGoodsStock',
+                'url':'/XCCloud/GoodsInfo?action=QueryGoodsStock3',
                 'elem':'#goodsList',
                 'height':'210px',
                 'size':'sm',
