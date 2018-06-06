@@ -658,7 +658,7 @@ namespace XXCloudService.Api.XCCloud
                                     (case when ISNULL(a.SendTime,'')='' then '' else convert(varchar,a.SendTime,20) end) AS SendTime
                                 FROM
                                 	Data_GoodRequest_List a
-                                INNER JOIN (
+                                LEFT JOIN (
                                 	SELECT
                                 		*, ROW_NUMBER() over(partition by DepotID,GoodID order by InitialTime desc) as RowNum
                                 	FROM
@@ -666,7 +666,7 @@ namespace XXCloudService.Api.XCCloud
                                 ) b ON a.OutDepotID"
                     //+ (requstType == (int)RequestType.MerchSend ? "OutDepotID" : "InDeportID")
                                 + @" = b.DepotID AND a.GoodID = b.GoodID and b.RowNum <= 1
-                                INNER JOIN Base_GoodsInfo c ON b.GoodID = c.ID 
+                                INNER JOIN Base_GoodsInfo c ON a.GoodID = c.ID 
                                 INNER JOIN Dict_System d ON c.GoodType = d.ID
                                 LEFT JOIN (
                                 	SELECT
@@ -3036,7 +3036,7 @@ namespace XXCloudService.Api.XCCloud
                                 LEFT JOIN Dict_System c ON b.GoodType = c.ID
                                 LEFT JOIN Base_StoreInfo d ON a.StoreID = d.StoreID
                                 WHERE
-                                	b.AllowStorage = 1 AND b.Status = 1 AND a.RowNum <= 1 AND a.DepotID = " + depotId;
+                                	b.Status = 1 AND a.RowNum <= 1 AND a.DepotID = " + depotId;
                 sql += " AND a.MerchID='" + merchId + "' AND b.MerchID='" + merchId + "'";
                 if (!storeId.IsNull())
                     sql += " AND a.StoreID='" + storeId + "'";
@@ -3125,7 +3125,7 @@ namespace XXCloudService.Api.XCCloud
                                 LEFT JOIN Dict_System c ON b.GoodType = c.ID
                                 LEFT JOIN Base_StoreInfo d ON a.StoreID = d.StoreID
                                 WHERE
-                                	b.AllowStorage = 1 AND b.Status = 1 AND ISNULL(b.StoreID,'')='' AND a.RowNum <= 1 ";    //不能调拨专属商品
+                                	b.Status = 1 AND ISNULL(b.StoreID,'')='' AND a.RowNum <= 1 ";    //不能调拨专属商品
                 if (!depotId.IsNull())
                     sql += " AND a.DepotID=" + depotId;
                 if (!merchId.IsNull())
@@ -3224,7 +3224,7 @@ namespace XXCloudService.Api.XCCloud
                                 LEFT JOIN Dict_System c ON b.GoodType = c.ID
                                 LEFT JOIN Base_StoreInfo d ON a.StoreID = d.StoreID
                                 WHERE
-                                	b.AllowStorage = 1 AND b.Status = 1 AND a.RowNum <= 1 AND a.DepotID = " + depotId;                
+                                	b.Status = 1 AND a.RowNum <= 1 AND a.DepotID = " + depotId;                
                 if (!goodId.IsNull())
                     sql += sql + " AND a.GoodID=" + goodId;
                 if (!goodNameOrBarCode.IsNull())
@@ -3289,9 +3289,7 @@ namespace XXCloudService.Api.XCCloud
                                 	/*门店名称*/
                                 	d.StoreName,                                	
                                     a.MinValue,
-                                    a.MaxValue,
-                                    /*可调拨数*/
-                                    (ISNULL(a.RemainCount,0) - ISNULL(a.MinValue,0)) AS AvailableCount,
+                                    a.MaxValue,                                    
                                     (case when ISNULL(a.InitialTime,'')='' then '' else convert(varchar,a.InitialTime,20) end) AS InitialTime,
                                     a.InitialValue,
                                     a.InitialAvgValue,
@@ -3308,7 +3306,7 @@ namespace XXCloudService.Api.XCCloud
                                 LEFT JOIN Dict_System c ON b.GoodType = c.ID
                                 LEFT JOIN Base_StoreInfo d ON a.StoreID = d.StoreID
                                 WHERE
-                                	b.AllowStorage = 1 AND b.Status = 1 AND a.RowNum <= 1 AND a.DepotID = " + depotId;
+                                	b.Status = 1 AND a.RowNum <= 1 AND a.DepotID = " + depotId;
                 sql += " AND a.MerchID='" + merchId + "'";
                 if (!storeId.IsNull())
                     sql += " AND a.StoreID='" + storeId + "'";
@@ -3448,7 +3446,7 @@ namespace XXCloudService.Api.XCCloud
                                 INNER JOIN Base_UserInfo u ON a.UserID = u.UserID
                                 LEFT JOIN Dict_System d ON c.GoodType = d.ID
                                 WHERE
-                                	c.AllowStorage = 1 AND c.Status = 1 AND ISNULL(a.AuthorID,'')='' AND a.InventoryType = 0 AND a.InventoryIndex = " + depotId;
+                                	c.Status = 1 AND ISNULL(a.AuthorID,'')='' AND a.InventoryType = 0 AND a.InventoryIndex = " + depotId;
                 sql += " AND a.MerchID='" + merchId + "'";
                 if (!storeId.IsNull())
                     sql += " AND a.StoreID='" + storeId + "'";
