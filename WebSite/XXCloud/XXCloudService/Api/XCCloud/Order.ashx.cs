@@ -116,8 +116,7 @@ namespace XXCloudService.Api.XCCloud
             string memberLevelId = dicParas.ContainsKey("memberLevelId") ? dicParas["memberLevelId"].ToString() : string.Empty;
             string icCardId = dicParas.ContainsKey("icCardId") ? dicParas["icCardId"].ToString() : string.Empty;
             string payCount = dicParas.ContainsKey("payCount") ? dicParas["payCount"].ToString() : string.Empty;
-            string freePay = dicParas.ContainsKey("freePay") ? dicParas["freePay"].ToString() : string.Empty;
-            
+            string freePay = dicParas.ContainsKey("freePay") ? dicParas["freePay"].ToString() : string.Empty; 
             string realPay = dicParas.ContainsKey("realPay") ? dicParas["realPay"].ToString() : string.Empty;
             string deposit = dicParas.ContainsKey("deposit") ? dicParas["deposit"].ToString() : string.Empty;
             string openFee = dicParas.ContainsKey("openFee") ? dicParas["openFee"].ToString() : string.Empty;
@@ -140,7 +139,7 @@ namespace XXCloudService.Api.XCCloud
                     new SqlMetaData("payNum", SqlDbType.Decimal,18,2)
             };
 
-            string flwSendId = RedisCacheHelper.CreateCloudSerialNo(userTokenDataModel.StoreID);
+            string flwSendId = RedisCacheHelper.CreateCloudSerialNo(userTokenDataModel.StoreID,true);
 
             for (int i = 0; i < buyDetailList.Count; i++)
             {
@@ -224,13 +223,13 @@ namespace XXCloudService.Api.XCCloud
             if (sqlParameter[19].Value.ToString() == "1")
             {
                 var obj = new {
-                    orderFlwId = sqlParameter[17].Value.ToString()
+                    orderFlwId = sqlParameter[18].Value.ToString()
                 };
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, obj);
             }
             else
             {
-                return new ResponseModel(Return_Code.T, "", Result_Code.F, sqlParameter[15].Value.ToString());
+                return new ResponseModel(Return_Code.T, "", Result_Code.F, sqlParameter[16].Value.ToString());
             }
         }
 

@@ -62,7 +62,7 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         /// <summary>
         /// 可调拨数
         /// </summary>
-        public int? AvailableCount { get; set; }
+        public int? AvailableCount { get { var availableCount = (RemainCount ?? 0) - (MinValue ?? 0); return availableCount > 0 ? availableCount : 0; } set { } }
         /// <summary>
         /// 期初时间
         /// </summary>

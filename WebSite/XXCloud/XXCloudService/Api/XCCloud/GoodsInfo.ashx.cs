@@ -646,8 +646,7 @@ namespace XXCloudService.Api.XCCloud
                                     a.Tax,
                                 	/*库存*/
                                 	ISNULL(b.RemainCount,0) AS RemainCount,
-                                    /*可调拨数*/
-                                    (ISNULL(b.RemainCount,0) - ISNULL(b.MinValue,0)) AS AvailableCount,
+                                    ISNULL(b.MinValue,0) AS MinValue,                                    
                                     /*快递物流*/
                                     a.LogistType,
                                     /*快递物流[名称]*/
@@ -1071,6 +1070,7 @@ namespace XXCloudService.Api.XCCloud
                                     var dicPara = new Dictionary<string, object>(el, StringComparer.OrdinalIgnoreCase);
                                     if (!dicPara.Get("goodId").Validintnozero("商品ID", out errMsg))
                                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    
                                     if (requstType == 2)
                                     {
                                         if (!dicPara.Get("sendCount").Validintnozero("实发数量", out errMsg))
@@ -1078,7 +1078,7 @@ namespace XXCloudService.Api.XCCloud
                                         if (!dicPara.Get("costPrice").Validdecimalnozero("含税单价", out errMsg))
                                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                                         if (!dicPara.Get("tax").Validdecimalnozero("税率", out errMsg))
-                                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);                                        
+                                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);                                                                                
                                     }
                                     else
                                     {
@@ -1091,6 +1091,16 @@ namespace XXCloudService.Api.XCCloud
                                     var sendCount = dicPara.Get("sendCount").Toint(0);
                                     var costPrice = dicPara.Get("costPrice").Todecimal(0);
                                     var tax = dicPara.Get("tax").Todecimal(0);
+
+                                    if (requstType == 2)
+                                    {
+                                        //期初平均成本大于0才能出库
+                                        if (!Data_GoodsStockService.I.Any(a => a.DepotID == outDepotId && a.GoodID == goodId && a.InitialAvgValue > 0))
+                                        {
+                                            errMsg = "该商品库存不符合出库条件, 期初平均成本须大于0";
+                                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                        }
+                                    }
 
                                     var data_GoodRequest_List = new Data_GoodRequest_List();
                                     data_GoodRequest_List.RequestID = requestId;
@@ -1471,6 +1481,13 @@ namespace XXCloudService.Api.XCCloud
                                     if (!Data_GoodRequest_ListService.I.Any(a => a.RequestID == requestId && a.GoodID == goodId))
                                     {
                                         errMsg = "该调拨明细信息不存在";
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    }
+
+                                    //期初平均成本大于0才能出库
+                                    if (!Data_GoodsStockService.I.Any(a => a.DepotID == outDepotId && a.GoodID == goodId && a.InitialAvgValue > 0))
+                                    {
+                                        errMsg = "该商品库存不符合出库条件, 期初平均成本须大于0";
                                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                                     }
 
@@ -2610,6 +2627,7 @@ namespace XXCloudService.Api.XCCloud
 
                 var id = dicParas.Get("id").Toint(0);
                 var goodOutOrderDetail = dicParas.GetArray("goodOutOrderDetail");
+                var depotId = dicParas.Get("depotId").Toint();
 
                 //开启EF事务
                 using (TransactionScope ts = new TransactionScope())
@@ -2666,7 +2684,16 @@ namespace XXCloudService.Api.XCCloud
                                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                                     if (!dicPara.Get("outTotal").Validdecimal("出库金额", out errMsg))
                                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                                    
+
+                                    var goodId = dicPara.Get("goodId").Toint();
+
+                                    //期初平均成本大于0才能出库
+                                    if (!Data_GoodsStockService.I.Any(a => a.DepotID == depotId && a.GoodID == goodId && a.InitialAvgValue > 0))
+                                    {
+                                        errMsg = "该商品库存不符合出库条件, 期初平均成本须大于0";
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    }
+
                                     var detailModel = new Data_GoodOutOrder_Detail();
                                     Utils.GetModel(dicPara, ref detailModel);
                                     detailModel.OrderID = id;
@@ -2999,8 +3026,6 @@ namespace XXCloudService.Api.XCCloud
                                 	d.StoreName,                                	
                                     ISNULL(a.MinValue,0) AS MinValue,
                                     ISNULL(a.MaxValue,0) AS MaxValue,
-                                    /*可调拨数*/
-                                    (ISNULL(a.RemainCount,0) - ISNULL(a.MinValue,0)) AS AvailableCount,
                                     (case when ISNULL(a.InitialTime,'')='' then '' else convert(varchar,a.InitialTime,20) end) AS InitialTime,
                                     ISNULL(a.InitialValue,0) AS InitialValue,
                                     ISNULL(a.InitialAvgValue,0) AS InitialAvgValue,
@@ -3088,8 +3113,6 @@ namespace XXCloudService.Api.XCCloud
                                 	d.StoreName,                                	
                                     ISNULL(a.MinValue,0) AS MinValue,
                                     ISNULL(a.MaxValue,0) AS MaxValue,
-                                    /*可调拨数*/
-                                    (ISNULL(a.RemainCount,0) - ISNULL(a.MinValue,0)) AS AvailableCount,
                                     (case when ISNULL(a.InitialTime,'')='' then '' else convert(varchar,a.InitialTime,20) end) AS InitialTime,
                                     ISNULL(a.InitialValue,0) AS InitialValue,
                                     ISNULL(a.InitialAvgValue,0) AS InitialAvgValue,
@@ -3189,8 +3212,6 @@ namespace XXCloudService.Api.XCCloud
                                 	d.StoreName,                                	
                                     ISNULL(a.MinValue,0) AS MinValue,
                                     ISNULL(a.MaxValue,0) AS MaxValue,
-                                    /*可调拨数*/
-                                    (ISNULL(a.RemainCount,0) - ISNULL(a.MinValue,0)) AS AvailableCount,
                                     (case when ISNULL(a.InitialTime,'')='' then '' else convert(varchar,a.InitialTime,20) end) AS InitialTime,
                                     ISNULL(a.InitialValue,0) AS InitialValue,
                                     ISNULL(a.InitialAvgValue,0) AS InitialAvgValue,

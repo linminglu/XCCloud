@@ -547,7 +547,7 @@
             let parseJson = JSON.stringify(obj);
             $.ajax({
                 type:'post',
-                url:'/XCCloud/GoodsInfo?action=QueryGoodsStock',
+                url:'/XCCloud/GoodsInfo?action=QueryGoodsStock2',
                 contentType: "application/json; charset=utf-8",
                 data:{parasJson: parseJson},
                 success: function (data) {

@@ -1517,7 +1517,7 @@ namespace XCCloudService.Api.XCCloud
                                 case 1:
                                     exchangeVal = Math.Ceiling(exchangeVal); break;
                                 case 2:
-                                    exchangeVal = Math.Round(exchangeVal); break;
+                                    exchangeVal = Math.Round(exchangeVal, MidpointRounding.AwayFromZero); break;
                             }
 
                             //按小数位降位
@@ -1562,7 +1562,7 @@ namespace XCCloudService.Api.XCCloud
                                 case 1:
                                     exchangeVal = Math.Ceiling(exchangeVal); break;
                                 case 2:
-                                    exchangeVal = Math.Round(exchangeVal); break;
+                                    exchangeVal = Math.Round(exchangeVal, MidpointRounding.AwayFromZero); break;
                             }
 
                             //按小数位降位
@@ -1722,7 +1722,7 @@ namespace XCCloudService.Api.XCCloud
                                 mce.CheckDate = schedule.CheckDate;
                                 mce.Note = "附属卡退卡";
 
-                                strCardExitNote += string.Format("附属卡号：{0}，卡押金：{1}" + Environment.NewLine, card.ICCardID, card.Deposit);
+                                strCardExitNote += string.Format("附属卡号：{0}，卡押金：{1}；" + Environment.NewLine, card.ICCardID, card.Deposit);
                                 if (!Flw_MemberCard_ExitService.I.Add(mce, false))
                                 {
                                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "附属卡退卡失败");
@@ -1759,7 +1759,7 @@ namespace XCCloudService.Api.XCCloud
                                 Data_Card_Balance targetBalance = Data_Card_BalanceService.I.GetModels(b => b.BalanceIndex == exchange.TargetBalanceIndex && b.MemberID == memberCard.MemberID).FirstOrDefault();
                                 //储值金增加
                                 targetBalance.Balance += item.ExchangeValue;
-                                if (!Data_Card_BalanceService.I.Update(cardBalance, false))
+                                if (!Data_Card_BalanceService.I.Update(targetBalance, false))
                                 {
                                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "余额更新失败");
                                 }
@@ -1771,7 +1771,7 @@ namespace XCCloudService.Api.XCCloud
                                 balanceChange.StoreID = storeId;
                                 balanceChange.MemberID = cardBalance.MemberID;
                                 balanceChange.SourceBalanceIndex = item.BalanceIndex;
-                                balanceChange.SourceCount = cardBalance.Balance;
+                                balanceChange.SourceCount = item.ExchangeQty;
                                 balanceChange.SourceRemain = cardBalance.Balance;
                                 balanceChange.TargetBalanceIndex = exchange.TargetBalanceIndex;
                                 balanceChange.TargetCount = item.ExchangeValue;
@@ -1787,11 +1787,11 @@ namespace XCCloudService.Api.XCCloud
                                 {
                                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, string.Format("{0}兑换{1}失败", exchange.TypeName, exchange.TargetTypeName));
                                 }
-                                strCardExitNote += string.Format("退{0}:{1}，价值{2}:{3}" + Environment.NewLine, exchange.TypeName, item.ExchangeQty, exchange.TargetTypeName, item.ExchangeValue);
+                                strCardExitNote += string.Format("退{0}：{1}，价值{2}：{3}；" + Environment.NewLine, exchange.TypeName, item.ExchangeQty, exchange.TargetTypeName, item.ExchangeValue);
                             }
                             else
                             {
-                                strCardExitNote += string.Format("退{0}:{1}" + Environment.NewLine, exchange.TargetTypeName, item.ExchangeValue);
+                                strCardExitNote += string.Format("退{0}：{1}；" + Environment.NewLine, exchange.TargetTypeName, item.ExchangeValue);
                             }
                             //总退款额累加
                             backTotal += item.ExchangeValue;
@@ -1807,7 +1807,7 @@ namespace XCCloudService.Api.XCCloud
                         //剩余储值金余额
                         decimal remainMoney = exitBalance.Balance.Value - backTotal;
                         exitBalance.Balance = remainMoney;
-                        if (!Data_Card_BalanceService.I.Update(exitBalance, false))
+                        if (remainMoney < 0 || !Data_Card_BalanceService.I.Update(exitBalance, false))
                         {
                             return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "余额更新失败");
                         }
@@ -1818,9 +1818,9 @@ namespace XCCloudService.Api.XCCloud
                         memberParentCardExit.MerchID = merchID;
                         memberParentCardExit.StoreID = storeId;
                         memberParentCardExit.MemberID = memberCard.MemberID;
-                        memberParentCardExit.OperateType = 1;
+                        memberParentCardExit.OperateType = Convert.ToInt32(backType);
                         memberParentCardExit.CardID = memberCard.ICCardID;
-                        memberParentCardExit.Deposit = memberCard.Deposit;
+                        memberParentCardExit.Deposit = backType == "0" ? memberCard.Deposit : 0;
                         memberParentCardExit.ExitMoney = backTotal;
                         memberParentCardExit.RemainMoney = remainMoney; //储值金余额
                         memberParentCardExit.WorkStation = workStation;

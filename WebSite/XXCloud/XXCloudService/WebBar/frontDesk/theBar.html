@@ -1285,7 +1285,7 @@
             inputCashFocus:false,
             payCount:0,
 			detailNote:"",
-            icCardId:"28801810",
+            icCardId:"10004143",
             footerData:[],
             treeShow:false,
             givingShow:false,
@@ -1361,7 +1361,6 @@
             }
         },
         watch: {
-            // 如果 `question` 发生改变，这个函数就会运行
             inputAmount: function () {
                 var that = this;
                 if(isNaN(that.inputAmount)){
@@ -1560,7 +1559,8 @@
                     console.log(foodCount);
                     console.log(payCount);
                     that.payCount = payCount;
-                    var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,buyDetails:JSON.stringify(that.buyDetails),customerType:that.customerType,mobile:"",memberLevelId:that.memberLevelId,icCardId:that.icCardId,payCount:"0",foodCount:foodCount,deposit:"0",openFee:"0",workStation:"lijunjie",authorId:"0",note:"",orderSource:"0",saleCoinType:"1"};
+                    var buyDetails =JSON.stringify(that.buyDetails);
+                    var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,buyDetails:buyDetails,customerType:that.customerType,mobile:"",memberLevelId:that.memberLevelId,icCardId:that.icCardId,payCount:payCount,foodCount:foodCount,deposit:"0",openFee:"0",workStation:"lijunjie",authorId:"0",note:"",orderSource:"0",saleCoinType:"1",scheduleId:1,freePay:"0"};
                     axios.post('/xccloud/order?action=addOrder', obj).then(function (res) {	//创建订单
                         console.log(res.data);
                         that.msgPrompt(res.data);
@@ -1613,18 +1613,21 @@
                     console.log(foodCount);
                     console.log(payCount);
                     that.payCount = payCount;
-                    var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,buyDetails:JSON.stringify(that.buyDetails),customerType:that.customerType,mobile:"",memberLevelId:that.memberLevelId,icCardId:that.icCardId,payCount:"0",foodCount:foodCount,deposit:"0",openFee:"0",workStation:"lijunjie",authorId:"0",note:"",orderSource:"0",saleCoinType:"1"};
+                    var buyDetails =JSON.stringify(that.buyDetails);
+                    var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,buyDetails:buyDetails,customerType:that.customerType,mobile:"",memberLevelId:that.memberLevelId,icCardId:that.icCardId,payCount:payCount,foodCount:foodCount,deposit:"0",openFee:"0",workStation:"lijunjie",authorId:"0",note:"",orderSource:"0",saleCoinType:"1",scheduleId:1,freePay:"0"};
+                    console.log(obj);
                     axios.post('/xccloud/order?action=addOrder', obj).then(function (res) {	//创建订单
                         console.log(res.data);
                         that.msgPrompt(res.data);
                         if (res.data.result_code === '1') {
-                            var orderFlwId = res.data.result_data
+                            var orderFlwId = res.data.result_data.orderFlwId;
                             var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,icCardId:that.icCardId,orderFlwId:orderFlwId,customerType:that.customerType};
+                            console.log(obj);
                             axios.post('/xccloud/order?action=addOrderToCache', obj).then(function (res) {	//挂起订单
                                 console.log(res.data);
                                 that.msgPrompt(res.data);
                                 if (res.data.result_code === '1') {
-                                    console.log(window.location.href="445444");
+
                                 }
                             }).catch(function (err) {
                                 console.log(err);
@@ -2250,7 +2253,6 @@
 			currency:function () {
                 $('#currencySModal').modal('show');
             },
-//
 //			送币
 			sendCoin:function () {
                 this.givingShow = false;
