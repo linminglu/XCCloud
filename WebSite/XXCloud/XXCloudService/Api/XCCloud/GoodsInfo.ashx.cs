@@ -616,9 +616,7 @@ namespace XXCloudService.Api.XCCloud
                     errMsg = "该调拨单信息不存在";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
-
-                var requstType = Data_GoodRequestService.I.GetModels(p => p.ID == requestId).FirstOrDefault().RequstType;
-                
+  
                 #region Sql语句
                 string sql = @"SELECT
                                     /*调拨明细ID*/
@@ -663,9 +661,7 @@ namespace XXCloudService.Api.XCCloud
                                 		*, ROW_NUMBER() over(partition by DepotID,GoodID order by InitialTime desc) as RowNum
                                 	FROM
                                 		Data_GoodsStock
-                                ) b ON a.OutDepotID"
-                    //+ (requstType == (int)RequestType.MerchSend ? "OutDepotID" : "InDeportID")
-                                + @" = b.DepotID AND a.GoodID = b.GoodID and b.RowNum <= 1
+                                ) b ON a.OutDepotID = b.DepotID AND a.GoodID = b.GoodID and b.RowNum <= 1
                                 INNER JOIN Base_GoodsInfo c ON a.GoodID = c.ID 
                                 INNER JOIN Dict_System d ON c.GoodType = d.ID
                                 LEFT JOIN (
