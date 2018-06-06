@@ -44,6 +44,24 @@
         xc.getDepotDic('','',token,layer,form,'depotList');
         form.on('select(depotList)',function (data) {
             depotList=data.value;
+            var  obj={"depotId":depotList,"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
+            var url="/XCCloud/GoodsInfo?action=QueryGoodsStock";
+            var parasJson = JSON.stringify(obj);
+            $.ajax({
+                type: "post",
+                url: url,
+                contentType: "application/json; charset=utf-8",
+                data: {parasJson: parasJson},
+                success: function (data) {
+                    data = JSON.parse(data);
+                    // console.log(data);
+                    if (data.result_code == "1") {
+                        initTable(table,data.result_data);
+                    } else {
+                        layer.msg(data.result_msg || data.return_msg);
+                    }
+                }
+            })
         });
         $('#searchStock').on('click',function () {
             if(depotList==''){
@@ -66,7 +84,6 @@
                             layer.msg(data.result_msg || data.return_msg);
                         }
                     }
-
                 })
             }
         });
@@ -86,7 +103,7 @@
                     success: function (data) {
                         data = JSON.parse(data);
                         if (data.result_code == "1") {
-                            window.open('/XCCloud/Report.aspx?guid='+data.result_data)
+                            document.location.href ="/Report/ToExcel.aspx?guid="+data.result_data
                         } else {
                             layer.msg(data.result_msg || data.return_msg);
                         }

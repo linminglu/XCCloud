@@ -1125,8 +1125,7 @@
                             data = JSON.parse(data);
                             if (data.result_code == 1) {
                                 layer.msg('本套餐停用成功',{time:1500},function () {
-                                    layer.close(index);
-                                    xc.getInitData(parm);
+                                  location.reload();
                                 })
                             } else {
                                 layer.msg(data.result_msg);
