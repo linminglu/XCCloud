@@ -526,12 +526,12 @@ namespace XCCloudService.Api.XCCloud
 
                         if (userGrants != null && userGrants.Count() >= 0)
                         {
-                            //先删除后添加授权功能表
+                            //添加或修改授权功能
                             var dbContext = DbContextFactory.CreateByModelNamespace(typeof(Base_UserGrant).Namespace);
-                            var base_UserGrantList = dbContext.Set<Base_UserGrant>().Where(p => p.UserID == iUserId).ToList();
-                            foreach (var item in base_UserGrantList)
+                            foreach (var base_UserGrant in dbContext.Set<Base_UserGrant>().Where(w => w.UserID == iUserId))
                             {
-                                dbContext.Entry(item).State = EntityState.Deleted;
+                                base_UserGrant.GrantEN = 0;
+                                dbContext.Entry(base_UserGrant).State = EntityState.Modified;
                             }
 
                             foreach (IDictionary<string, object> iUgr in userGrants)
@@ -540,11 +540,20 @@ namespace XCCloudService.Api.XCCloud
                                 {
                                     var ugr = new Dictionary<string, object>(iUgr, StringComparer.OrdinalIgnoreCase);
                                     int ugrid = Convert.ToInt32(ugr["id"]);
-                                    var base_UserGrant = new Base_UserGrant();
-                                    base_UserGrant.GrantID = ugrid;
-                                    base_UserGrant.UserID = iUserId;
-                                    base_UserGrant.GrantEN = Convert.ToInt32(ugr["grantEn"]);
-                                    dbContext.Entry(base_UserGrant).State = EntityState.Added;
+                                    if (!dbContext.Set<Base_UserGrant>().Any(w => w.GrantID == ugrid && w.UserID == iUserId))
+                                    {
+                                        var base_UserGrant = new Base_UserGrant();
+                                        base_UserGrant.GrantID = ugrid;
+                                        base_UserGrant.UserID = iUserId;
+                                        base_UserGrant.GrantEN = Convert.ToInt32(ugr["grantEn"]);
+                                        dbContext.Entry(base_UserGrant).State = EntityState.Added;
+                                    }
+                                    else
+                                    {
+                                        var base_UserGrant = dbContext.Set<Base_UserGrant>().Where(p => p.GrantID == ugrid && p.UserID == iUserId).FirstOrDefault();
+                                        base_UserGrant.GrantEN = Convert.ToInt32(ugr["grantEn"]);
+                                        dbContext.Entry(base_UserGrant).State = EntityState.Modified;
+                                    } 
                                 }
                                 else
                                 {
@@ -869,7 +878,7 @@ namespace XCCloudService.Api.XCCloud
                         base_UserInfo.SwitchStore = Convert.ToInt32(switchstore);
                         base_UserInfo.SwitchWorkstation = Convert.ToInt32(switchworkstation);
 
-                    string storeId = base_UserInfo.StoreID;
+                        string storeId = base_UserInfo.StoreID;
                         if (base_UserInfo.IsAdmin == 1 && userInfoService.Any(a => a.UserID != iUserId && a.IsAdmin == 1 && a.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)))
                         {
                             errMsg = "同一个门店只能有一个管理员";
@@ -886,6 +895,12 @@ namespace XCCloudService.Api.XCCloud
                         {
                             //添加或修改授权功能表
                             var dbContext = DbContextFactory.CreateByModelNamespace(typeof(Base_UserGrant).Namespace);
+                            foreach (var base_UserGrant in dbContext.Set<Base_UserGrant>().Where(w => w.UserID == iUserId))
+                            {
+                                base_UserGrant.GrantEN = 0;
+                                dbContext.Entry(base_UserGrant).State = EntityState.Modified;
+                            }
+
                             var userGrant = (object[])dicParas["userGrant"];
                             foreach (IDictionary<string, object> iUgr in userGrant)
                             {
@@ -905,8 +920,8 @@ namespace XCCloudService.Api.XCCloud
                                     {
                                         var base_UserGrant = dbContext.Set<Base_UserGrant>().Where(p => p.GrantID == ugrid && p.UserID == iUserId).FirstOrDefault();
                                         base_UserGrant.GrantEN = Convert.ToInt32(ugr["grantEn"]);
-                                        dbContext.Entry(base_UserGrant).State = EntityState.Modified;                                        
-                                    }
+                                        dbContext.Entry(base_UserGrant).State = EntityState.Modified;
+                                    }                                    
                                 }
                                 else
                                 {

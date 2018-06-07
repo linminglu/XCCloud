@@ -91,7 +91,7 @@
             }
         });
         //导出
-        table.on('tool(stockManage)',function (obj) {
+        table.on('tool(stockInventory)',function (obj) {
             let _data=obj.data;
             let layEvent=obj.event;
             if(layEvent==='export'){
@@ -123,6 +123,7 @@
             , cols: [[
                 // {type:'ckeckbox'} ,
                 {field: 'ID', title: '流水号', align: 'center'}
+                , {field: 'GoodID', title: '商品ID', align: 'center'}
                 , {field: 'Barcode', title: '商品条码', align: 'center'}
                 , {field: 'GoodTypeStr', title: '商品类型', align: 'center'}
                 , {field: 'GoodName', title: '商品名称', align: 'center'}
@@ -144,6 +145,10 @@
                 ,{fixed: 'right',title: '操作', width:140, align:'center', toolbar: '#barDemo'}]]
             , page: {page: true, limits: [10, 15, 20, 30, 50, 100]}
             , limit: 10
+            ,done:function(){
+                $('thead th[data-field="GoodID"]').css({'display':'none'});
+                $('tbody td[data-field="GoodID"]').css({'display':'none'});
+            }
         })
     }
 </script>
