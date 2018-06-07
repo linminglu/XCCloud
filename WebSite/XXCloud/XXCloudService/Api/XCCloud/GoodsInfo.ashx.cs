@@ -3413,7 +3413,7 @@ namespace XXCloudService.Api.XCCloud
                 #region Sql语句
                 string sql = @"SELECT
                                     a.GoodID,
-                                	b.ID,
+                                	ISNULL(b.ID,0) AS ID,
                                 	/*商品条码*/
                                 	c.Barcode,
                                 	/*商品名称*/
@@ -3423,7 +3423,7 @@ namespace XXCloudService.Api.XCCloud
                                 	/*商品类别[字符串]*/
                                 	d.DictKey AS GoodTypeStr,
                                 	/*添加类别*/
-                                	b.InventoryType,                                	
+                                	ISNULL(b.InventoryType,0) AS InventoryType,                                	
                                     a.MinValue,
                                     a.MaxValue,                                    
                                     (case when ISNULL(a.InitialTime,'')='' then '' else convert(varchar,a.InitialTime,20) end) AS InitialTime,
@@ -3626,6 +3626,12 @@ namespace XXCloudService.Api.XCCloud
                                     }
 
                                     var model = data_GoodInventoryService.GetModels(p => p.ID == id).FirstOrDefault();
+                                    if (!model.AuthorID.IsNull())
+                                    {
+                                        errMsg = "已盘点审核的记录不能重复审核";
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    }
+
                                     if (model.InventoryType != (int)GoodInventorySource.Depot)
                                     {
                                         errMsg = "该盘点信息来源不是仓库";
