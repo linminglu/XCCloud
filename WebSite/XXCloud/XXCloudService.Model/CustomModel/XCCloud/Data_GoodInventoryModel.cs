@@ -52,9 +52,17 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         /// </summary>
         public string InitialTime { get; set; }
         /// <summary>
+        /// 期初库存
+        /// </summary>
+        public int? InitialValue { get; set; }
+        /// <summary>
         /// 期初平均成本
         /// </summary>
         public decimal? InitialAvgValue { get; set; }
+        /// <summary>
+        /// 期初库存金额
+        /// </summary>
+        public decimal? InitialTotal { get { return Math.Round((InitialValue * InitialAvgValue) ?? 0, 2, MidpointRounding.AwayFromZero); } set { } }
         /// <summary>
         /// 当前库存
         /// </summary>

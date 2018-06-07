@@ -1866,7 +1866,7 @@ namespace XXCloudService.Api.XCCloud
                                 LEFT JOIN Base_StoreInfo b ON a.StoreID = b.StoreID
                                 LEFT JOIN (
                                 	SELECT
-                                		StorageID, SUM(ISNULL(TotalPrice,0)) AS TotalPrice
+                                		StorageOrderID, SUM(ISNULL(TotalPrice,0)) AS TotalPrice
                                 	FROM
                                 		Data_GoodStorage_Detail
                                     GROUP BY StorageOrderID
@@ -3425,10 +3425,11 @@ namespace XXCloudService.Api.XCCloud
                                 	/*添加类别*/
                                 	ISNULL(b.InventoryType,0) AS InventoryType,                                	
                                     a.MinValue,
-                                    a.MaxValue,                                    
+                                    a.MaxValue,                                            
                                     (case when ISNULL(a.InitialTime,'')='' then '' else convert(varchar,a.InitialTime,20) end) AS InitialTime,
-                                    a.InitialAvgValue,
-                                    a.RemainCount,
+                                    ISNULL(a.InitialValue,0) AS InitialValue,
+                                    ISNULL(a.InitialAvgValue,0) AS InitialAvgValue,
+                                    ISNULL(a.RemainCount,0) AS RemainCount,
                                     u.LogName AS UserName,
                                     (case when ISNULL(b.InventoryTime,'')='' then '' else convert(varchar,b.InventoryTime,20) end) AS InventoryTime,
                                     b.InventoryCount

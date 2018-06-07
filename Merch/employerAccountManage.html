@@ -196,7 +196,7 @@
                 checkBoxArr.push({'id':data.value,'grantEn':1})
             }else if(data.elem.checked==false){
                 for( var i=0;i<checkBoxArr.length;i++){
-                    if(checkBoxArr[i].id=data.value){
+                    if(checkBoxArr[i].id==data.value){
                         checkBoxArr.splice(i,1)
                     }
                 }
@@ -280,6 +280,7 @@
                 'userGrant':checkBoxArr,
                 'userToken':token,
                 'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+            console.log(obj)
             let _url='/XCCloud/UserInfo?action=SaveStoreUserInfo';
             $.ajax({
                 type: "post",
@@ -458,7 +459,7 @@ function getMsg(_obj,form,layer,num) {
                         }
                     }
                 }
-
+console.log(checkBoxArr);
                 layui.use('form',function () {
                     var form=layui.form;
                     form.render();
