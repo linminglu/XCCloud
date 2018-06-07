@@ -10,7 +10,7 @@ namespace XCCloudService.Model.CustomModel.XCCloud
 {
     public class Data_GoodInventoryList
     {
-        public int ID { get; set; }
+        public int? ID { get; set; }
         /// <summary>
         /// 商品条码
         /// </summary>

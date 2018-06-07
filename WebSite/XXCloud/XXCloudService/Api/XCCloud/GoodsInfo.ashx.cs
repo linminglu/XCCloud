@@ -3412,6 +3412,7 @@ namespace XXCloudService.Api.XCCloud
 
                 #region Sql语句
                 string sql = @"SELECT
+                                    a.GoodID,
                                 	b.ID,
                                 	/*商品条码*/
                                 	c.Barcode,
@@ -3436,6 +3437,8 @@ namespace XXCloudService.Api.XCCloud
                                 		*, ROW_NUMBER() over(partition by DepotID,GoodID order by InitialTime desc) as RowNum
                                 	FROM
                                 		Data_GoodsStock
+                                    WHERE
+                                        RemainCount > 0
                                 ) a                                
                                 LEFT JOIN Data_GoodInventory b ON a.GoodID = b.GoodID AND b.InventoryType = 0 AND a.DepotID = b.InventoryIndex 
                                 INNER JOIN Base_GoodsInfo c ON a.GoodID = c.ID  
