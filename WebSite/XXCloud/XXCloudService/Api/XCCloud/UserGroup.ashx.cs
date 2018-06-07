@@ -73,11 +73,11 @@ namespace XXCloudService.Api.XCCloud
                 string errMsg = string.Empty;
                 string groupId = dicParas.ContainsKey("groupId") ? dicParas["groupId"].ToString() : string.Empty;
 
-                if (string.IsNullOrEmpty(groupId))
-                {
-                    errMsg = "groupId参数不能为空";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
+                //if (string.IsNullOrEmpty(groupId))
+                //{
+                //    errMsg = "groupId参数不能为空";
+                //    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                //}
 
                 string sql = string.Empty;
                 SqlParameter[] parameters = new SqlParameter[0];
@@ -165,6 +165,12 @@ namespace XXCloudService.Api.XCCloud
                     {
                         IBase_UserGroupService base_UserGroupService = BLLContainer.Resolve<IBase_UserGroupService>();
                         var base_UserGroup = new Base_UserGroup { GroupName = groupName, MerchID = logId, Note = note };
+                        if (base_UserGroupService.Any(a => a.MerchID.Equals(logId, StringComparison.OrdinalIgnoreCase) && a.GroupName.Equals(groupName, StringComparison.OrdinalIgnoreCase)))
+                        {
+                            errMsg = "该工作组名称已存在";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
                         if (!base_UserGroupService.Add(base_UserGroup))
                         {
                             errMsg = "更新数据库失败";
@@ -256,7 +262,13 @@ namespace XXCloudService.Api.XCCloud
                     try
                     {
                         IBase_UserGroupService base_UserGroupService = BLLContainer.Resolve<IBase_UserGroupService>();
-                        var base_UserGroup = base_UserGroupService.GetModels(p => p.ID.ToString().Equals(groupId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault<Base_UserGroup>();
+                        if (base_UserGroupService.Any(a => a.ID.ToString() != groupId && a.GroupName.Equals(groupName, StringComparison.OrdinalIgnoreCase)))
+                        {
+                            errMsg = "该工作组名称已存在";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
+                        var base_UserGroup = base_UserGroupService.GetModels(p => p.ID.ToString() != groupId).FirstOrDefault();
                         if (base_UserGroup == null)
                         {
                             errMsg = "该工作组不存在";

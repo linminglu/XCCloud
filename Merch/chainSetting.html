@@ -543,7 +543,6 @@
                                 }
                             }
                         })
-
                         //向服务端发送删除指令
                     });
                 }
@@ -728,8 +727,9 @@
                          $('#balanceModelBox').html('');
                          let arr=data.Result_Data;
                          xc.setStorage('ruleTypes',ruleTypes);
+                         $('#balanceModelBox').html('<option>-请选择-</option>')
                          for(var i in  arr){
-                             $('#balanceModelBox').html('<option>-请选择-</option>').append('<option value="'+arr[i].StoreID+'">'+arr[i].StoreName+'</option>');
+                             $('#balanceModelBox').append('<option value="'+arr[i].StoreID+'">'+arr[i].StoreName+'</option>');
                          }
                          layui.use(['form','layer'],function () {
                              let form=layui.form;
