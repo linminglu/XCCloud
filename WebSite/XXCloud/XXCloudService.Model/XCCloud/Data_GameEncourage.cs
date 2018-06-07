@@ -27,5 +27,9 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> ContinueTimes { get; set; }
         public string Note { get; set; }
         public string Verifiction { get; set; }
+        public Nullable<int> StartGames { get; set; }
+        public Nullable<int> EndGames { get; set; }
+        public Nullable<decimal> EncouragePrice { get; set; }
+        public Nullable<int> State { get; set; }
     }
 }

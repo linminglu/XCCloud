@@ -91,7 +91,7 @@ namespace XXCloudService.Api.XCCloud
                 var data_GameEncourage = (new
                 {
                     model = model,
-                    EncourageList = Data_GameEncourage_ListService.I.GetModels(p => p.EncourageID == id)
+                    //EncourageList = Data_GameEncourage_ListService.I.GetModels(p => p.EncourageID == id)
                 }).AsFlatDictionary();
 
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, data_GameEncourage);
@@ -156,10 +156,10 @@ namespace XXCloudService.Api.XCCloud
                         if (encourageList != null && encourageList.Count() >= 0)
                         {
                             //先删除，后添加
-                            foreach (var encourageModel in Data_GameEncourage_ListService.I.GetModels(p => p.EncourageID == id))
-                            {
-                                Data_GameEncourage_ListService.I.DeleteModel(encourageModel);
-                            }
+                            //foreach (var encourageModel in Data_GameEncourage_ListService.I.GetModels(p => p.EncourageID == id))
+                            //{
+                            //    Data_GameEncourage_ListService.I.DeleteModel(encourageModel);
+                            //}
 
                             foreach (IDictionary<string, object> el in encourageList)
                             {
@@ -171,13 +171,13 @@ namespace XXCloudService.Api.XCCloud
                                     if (!dicPar.Get("encouragePrice").Validdecimalnozero("减免币数", out errMsg))
                                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-                                    var encourageModel = new Data_GameEncourage_List();
-                                    encourageModel.GameTims = dicPar.Get("gameTims").Toint();
-                                    encourageModel.EncouragePrice = dicPar.Get("encouragePrice").Todecimal();
-                                    encourageModel.EncourageID = id;
-                                    encourageModel.MerchID = merchId;
-                                    encourageModel.StoreID = storeId;
-                                    Data_GameEncourage_ListService.I.AddModel(encourageModel);
+                                    //var encourageModel = new Data_GameEncourage_List();
+                                    //encourageModel.GameTims = dicPar.Get("gameTims").Toint();
+                                    //encourageModel.EncouragePrice = dicPar.Get("encouragePrice").Todecimal();
+                                    //encourageModel.EncourageID = id;
+                                    //encourageModel.MerchID = merchId;
+                                    //encourageModel.StoreID = storeId;
+                                    //Data_GameEncourage_ListService.I.AddModel(encourageModel);
                                 }
                                 else
                                 {
@@ -186,11 +186,11 @@ namespace XXCloudService.Api.XCCloud
                                 }
                             }
 
-                            if (!Data_GameEncourage_ListService.I.SaveChanges())
-                            {
-                                errMsg = "保存鼓励续玩信息失败";
-                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                            }
+                            //if (!Data_GameEncourage_ListService.I.SaveChanges())
+                            //{
+                            //    errMsg = "保存鼓励续玩信息失败";
+                            //    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            //}
                         }                        
 
                         ts.Complete();
@@ -235,10 +235,10 @@ namespace XXCloudService.Api.XCCloud
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 
-                        foreach (var gameEncourageModel in Data_GameEncourage_ListService.I.GetModels(p => p.EncourageID == id))
-                        {
-                            Data_GameEncourage_ListService.I.DeleteModel(gameEncourageModel);
-                        }
+                        //foreach (var gameEncourageModel in Data_GameEncourage_ListService.I.GetModels(p => p.EncourageID == id))
+                        //{
+                        //    Data_GameEncourage_ListService.I.DeleteModel(gameEncourageModel);
+                        //}
 
                         var model = Data_GameEncourageService.I.GetModels(p => p.ID == id).FirstOrDefault();
                         Data_GameEncourageService.I.DeleteModel(model);

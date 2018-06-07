@@ -168,9 +168,6 @@ namespace XXCloudService.Api.XCCloud
                 }
 
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];                
-                var TokenDataModel = (userTokenKeyModel.DataModel as TokenDataModel);
-                TokenDataModel.WorkStationID = workStationId.Toint();
-
                 userTokenKeyModel.LogType = Convert.ToInt32(logType);
                 if (userTokenKeyModel.LogType == (int)RoleType.MerchUser)
                 {
@@ -182,8 +179,8 @@ namespace XXCloudService.Api.XCCloud
                     }
                     var base_MerchantInfoModel = base_MerchantInfoService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
                     tag = base_MerchantInfoModel.MerchTag;
-                    TokenDataModel.MerchID = merchId;
-                    TokenDataModel.StoreID = string.Empty;
+                    var TokenDataModel = new TokenDataModel { WorkStationID = workStationId.Toint(), MerchID = merchId, StoreID = string.Empty, MerchType = base_MerchantInfoModel.MerchType, CreateType = base_MerchantInfoModel.CreateType, CreateUserID = base_MerchantInfoModel.CreateUserID };
+                    userTokenKeyModel.DataModel = TokenDataModel;
                 }
                 else if (userTokenKeyModel.LogType == (int)RoleType.StoreUser)
                 {
@@ -195,8 +192,8 @@ namespace XXCloudService.Api.XCCloud
                     }
                     var base_StoreInfoModel = base_StoreInfoService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
                     tag = base_StoreInfoModel.StoreTag;
-                    TokenDataModel.MerchID = merchId;
-                    TokenDataModel.StoreID = storeId;
+                    var TokenDataModel = new TokenDataModel { WorkStationID = workStationId.Toint(), StoreID = storeId, MerchID = merchId };
+                    userTokenKeyModel.DataModel = TokenDataModel;
                 }
 
                 var token = XCCloudUserTokenBusiness.SetUserToken(userTokenKeyModel);

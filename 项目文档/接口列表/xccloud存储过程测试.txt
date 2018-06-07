@@ -1,5 +1,38 @@
 ********************************************************************ª·‘±*****************************************************************
 -----------------------------------------------------------------------------------------------------------------------------------------
+declare @Result int = 0
+declare @FlwOrderId varchar(32) = '10002542010600120180517100010001'
+declare @StoreID varchar(15) = '100025420106001'
+declare @WorkStation varchar(50) = 'lijunjie'
+declare @Mobile varchar(11) = '15618920033'
+declare @ICCardId int = 0
+declare @RealPay decimal(18,2) = 0
+declare @PayType int = 0
+declare @ErrMsg varchar(200) = ''
+
+declare @FoodSaleDetailList as [FoodSaleDetailListType]
+insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(1,0,1,0,1/2.0)
+insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(3,0,2,0,10/2.0)
+insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(1,1,1,0,20)
+insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(4,2,1,0,30)
+
+declare @RegisterMember as [RegisterMemberType]
+insert @RegisterMember(Mobile,WeChat,QQ,IMME,CardShape,MemberName,MemberPassword,Birthday,Gender,IdentityCard,
+EMail,LeftHandCode,RightHandCode,Photo,RepeatCode,ICCardId,Deposit,ICCardUID,Note)
+values('15618920033','','','','0','≤‚ ‘','123456789','2018-05-23','1','1',
+'','','','',132,'10004143',10,11111111,'')
+
+exec @Result = PayOrder @FoodSaleDetailList,@RegisterMember,@StoreID,@WorkStation,@FlwOrderId,@Mobile,@ICCardId,@RealPay,@PayType,@ErrMsg output
+print '@Result:' + cast(@Result as varchar)
+print '@ErrMsg:' + cast(@ErrMsg as varchar)
+
+select * from Data_CouponList where CouponCode in ('d79847caf5304d4188df251bd8c8d63d','e867895b7da8482d8e46fe449ce163dc')
+
+select * from Flw_CouponUse
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------------------------------------------------------------------
 declare @CheckDiscountCanUseResult int = 0
 declare @ErrMsg varchar(200) = ''
 exec @CheckDiscountCanUseResult = dbo.CheckDiscountCanUse '100025','100025420106001',2,21,6,@ErrMsg output

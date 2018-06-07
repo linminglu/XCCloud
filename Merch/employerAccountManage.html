@@ -199,10 +199,8 @@
                     if(checkBoxArr[i].id=data.value){
                         checkBoxArr.splice(i,1)
                     }
-                    break;
                 }
-                checkBoxArr.push({'id':data.value,'grantEn':0})
-            } //是否被选中，true或者false
+            }
         });
         //保存审核结果
         $('#refuseCheck').on('click',function () {
@@ -297,7 +295,7 @@
                         checkBoxArr=[];
                         getInitData(parm);
                     }else {
-                        layer.msg('修改门店员工失败');
+                        layer.msg(data.result_msg||data.return_msg);
                     }
                 }
             });
@@ -312,7 +310,6 @@ function getMsg(_obj,form,layer,num) {
         data: { parasJson: JSON.stringify(_obj) },
         success: function (data) {
             data=JSON.parse(data);
-            console.log(data);
             if(data.Result_Code==1){
                 $('#RealName').val(data.Result_Data.RealName);
                 $('#LogName').val(data.Result_Data.LogName);
@@ -364,7 +361,7 @@ function getMsg(_obj,form,layer,num) {
                         success: function (data) {
                             data=JSON.parse(data);
                             if(data.result_code=="1"){
-                                var arr=data.result_data;
+                                var arr=data.result_data.children;
                                 $('#Status').html('<option value="">-请选择-</option>');
                                 for(i in arr){
                                     $('#Status').append("<option value='"+arr[i].dictValue+"'>"+arr[i].name+"</option>");
@@ -379,22 +376,12 @@ function getMsg(_obj,form,layer,num) {
                     });
                     form.render();
                 }
-                // else if(num==0){//查看
-                //     $('#RealName').attr({'readonly':true});
-                //     $('#LogName').attr({'readonly':true});
-                //     $('#Mobile').attr({'readonly':true});
-                //     $('#empStatus').html('<input class="layui-input" readonly value="'+data.Result_Data.UserStatusStr+'">');
-                //     $('#userTypesBox').html('<input class="layui-input" readonly value="'+data.Result_Data.UserTypeStr+'">');
-                //     $('#IsAdmin').attr({'disabled':true});
-                //     form.render();
-                // }
                 else if(num==2){//审核
                     $('#userTypesBox').html('<select class="layui-input" id="userTypes" lay-filter="userTypes"></select>');
                     $('#empStatus').html('<input class="layui-input" readonly value="未审核">');
                     form.render();
 
                 }
-
                 if(data.Result_Data.IsAdmin==1){
                     $('#IsAdmin').attr({'checked':true});
                     form.render();
@@ -415,7 +402,6 @@ function getMsg(_obj,form,layer,num) {
         data:{ parasJson: JSON.stringify(_obj) },
         success:function (data) {
             data=JSON.parse(data);
-            console.log(data)
             if(data.Result_Code==1){
                 var arr=data.Result_Data;
                 if(num==0){

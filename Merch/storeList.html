@@ -8,8 +8,8 @@
 	<link rel="stylesheet" href="css/manchartData.css">
 	<link rel="stylesheet" href="layui/css/layui.css">
 	<link rel="stylesheet" href="css/magicsuggest-1.2.2.css">
-	<!--<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=rKXLFp7Q5LaRdax2dtrxkLzzQLrbGG4T"></script>-->
-    <!--<script type="text/javascript" src="http://developer.baidu.com/map/jsdemo/demo/convertor.js"></script> -->
+	<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=rKXLFp7Q5LaRdax2dtrxkLzzQLrbGG4T"></script>
+    <script type="text/javascript" src="http://developer.baidu.com/map/jsdemo/demo/convertor.js"></script>
 	<title>门店列表</title>
 </head>
 <style>
@@ -108,13 +108,13 @@
 							</div>
 						</div>
 						<div class="layui-inline">
-							<label class="layui-form-label" style="width: 32px;padding: 9px  8px">经度:</label>
+							<label class="layui-form-label" style="width: 60px;padding: 9px  8px">经度:</label>
 							<div class="layui-input-inline" style="width: 170px;">
 								<input type="text" name="title" id="lng" required  lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input" disabled>
 							</div>
 						</div>
 						<div class="layui-inline">
-							<label class="layui-form-label"style="width: 32px;padding: 9px 8px">纬度:</label>
+							<label class="layui-form-label"style="width: 60px;padding: 9px 8px">纬度:</label>
 							<div class="layui-input-inline" style="width: 170px;">
 								<input type="text" name="title" id="lat" required  lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input" disabled>
 							</div>
@@ -181,7 +181,7 @@
 								</div>
 							</div>
 							<div class="layui-form-item" style="text-align: center">
-								<button type="button" class="layui-btn" id="test3">银业执照上传</button>
+								<button type="button" class="layui-btn" id="test3">营业执照上传</button>
 								<button type="button" class="layui-btn layui-btn-normal" id="subupID">提交</button>
 							</div>
 						</div>
@@ -898,111 +898,134 @@
                     layer.closeAll('loading');
                 }
             });
-
-            $('#shBtn').on('click',function () {
-                let arr=[]; let arrList=[];
-                // arr.splice(0,arr.length);arrList.splice(0,arrList.length);
-                $('#searchListUp').html("");
-                $('#searchbox').html("");
-                var url='/Query?action=init',
-                    obj={"sysId": "0", "versionNo": "0.0.0.1",
-                        'pagename':'storeSearch','processname':'storeSearch',"token": token, "signkey": "1f626576304bf5d95b72ece2222e42c3"};
-                var  parasJson = JSON.stringify(obj);
-                $.ajax({
-                    type: "post",
-                    url: url,
-                    contentType: "application/json; charset=utf-8",
-                    data:parasJson,
-                    success: function (data) {
-                        data=JSON.parse(data);
-                        if(data.result_code=='1'){
-                            arr=data.result_data;
-                            for(var i=0;i<arr.length;i++){
-                                arrList.push(arr[i])
-                            }
-                            layer.open({
-                                type: 1,
-                                title:'高级查询',
-                                area:['1000px','500px'],
-                                content:$('#searchModel'),
-                                shadeClose:true
-                            });
-                            addCheckbox('searchListDown',arr);
-                            renderDiv(arr);
-                            form.render();
-                        }
-                        layui.use(['layer','form','laydate'],function () {
-                            var layer=layui.layer;
-                            var laydate=layui.laydate;
-                            laydate.render({
-                                elem: '#datetime',type: 'datetime'
-                            });
-                            laydate.render({
-                                elem: '#datetimes',type: 'datetime',range: true
-                            });
-                            laydate.render({
-                                elem: '#date',type: 'date'
-                            });
-                            laydate.render({
-                                elem: '#dates',type: 'date',range: true
-                            });
-                        });
-                        form.on('checkbox(aaaaa)', function(data5){
-                            if(data5.elem.checked==true){
-                                for(var i=0;i<arr.length;i++){
-                                    if(arr[i].title==data5.value){
-                                        $('#searchbox').find('div[name="'+arr[i].title+'"]').removeClass('layui-hide');
-                                        $('#searchListUp').append('<a href="#" class="layui-btn layui-btn-normal layui-btn-sm" style="margin: 5px 1px" name="'+arr[i].field+'" >' +
-                                            '<span name="'+arr[i].width+'">'+arr[i].title+'</span>' +
-                                            '<i class="layui-icon layBtn" name="'+arr[i].type+'"data-id="'+arr[i].id+'"' +
-                                            'style="color: #F00;margin-left: 15px">&#xe640;</i></a >');
-                                        arr.splice(i,1);
-                                        addCheckbox('searchListDown',arr);
-                                    }
-                                }
-                            }
-
-                        });
-
-                        $('#searchListUp').on('click','a i',function (e) {
-                            e.stopPropagation();
-                            var text=$(this).parent().children('span').text();
-                            $('#searchListDown').append(' <input type="checkbox" lay-skin="primary" value="'+text+'" title="'+text+'" lay-filter="aaaaa">');
-                            arr.push({'field':$(this).parent().attr('name'),'id':$(this).attr('data-id'),'iscloune':1,
-                                'issearch':1,'title':text,'type':$(this).attr('name'),'width':$(this).parent().children('span').attr('name')});
-                            form.render();
-                            $('#searchbox').find('div[name="'+text+'"]').addClass('layui-hide');
-                            $(this).parent().remove();
-                        });
-                    }
-                });
-            });
-            $('#searchBtn').on('click',function () {
-                var conditions=[];
-                getValues(arrList,conditions);
-                console.log(conditions);
-                var parm={'url':'/XCCloud/StoreInfo?action=GetStoreList',
-                    'obj':{'conditions':conditions,"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"},
-                    'elem':'#storeListTable',
-                    'cols':[
-                        {type:'checkbox'}
-                        ,{field:'StoreID', title: '门店编号', align: 'center'} //width 支持：数字、百分比和不填写。你还可以通过 minWidth 参数局部定义当前单元格的最小宽度，layui 2.2.1 新增
-                        ,{field:'MerchID', title: '归属商户', sort: true}
-                        ,{field:'StoreName', title: '门头', align: 'center'}
-                        ,{field:'Password', title: '消费密码', align: 'center'} //单元格内容水平居中
-                        ,{field:'AuthorExpireDate', title: '授权到期日期', align: 'center',templet: '#changeTime'} //单元格内容水平居中
-                        ,{field:'AreaCode', title: '邮政编号', align: 'center'}
-                        ,{field:'Address', title: '地址',  align: 'center'}
-                        ,{field:'Contacts', title: '负责人',  align: 'center'}
-                        ,{field:'Mobile', title: '手机号',  align: 'center'}
-                        ,{field:'SelttleTypeStr', title: '结算类型',  align: 'center'}
-                        ,{field:'StoreStateStr', title: '门店状态',  align: 'center'}
-                        ,{fixed: 'right', title: '操作', width:370, align:'center', toolbar: '#barDemo'}
-                    ]};
-                getInitData(parm);
-                layer.closeAll()
-            })
+			$('#shBtn').on('click',function (){
+				searchBy('storeSearch','storeSearch');
+			});
+//            $('#shBtn').on('click',function () {
+//                let arr=[]; let arrList=[];
+//                $('#searchListUp').html("");
+//                $('#searchbox').html("");
+//                var url='/Query?action=init',
+//                    obj={"sysId": "0", "versionNo": "0.0.0.1",
+//                        'pagename':'storeSearch','processname':'storeSearch',"token": token, "signkey": "1f626576304bf5d95b72ece2222e42c3"};
+//                var  parasJson = JSON.stringify(obj);
+//                $.ajax({
+//                    type: "post",
+//                    url: url,
+//                    contentType: "application/json; charset=utf-8",
+//                    data:parasJson,
+//                    success: function (data) {
+//                        data=JSON.parse(data);
+//                        if(data.result_code=='1'){
+//                            arr=data.result_data;
+//                            for(var i=0;i<arr.length;i++){
+//                                arrList.push(arr[i])
+//                            }
+//                            layer.open({
+//                                type: 1,
+//                                title:'高级查询',
+//                                area:['1000px','500px'],
+//                                content:$('#searchModel'),
+//                                shadeClose:true
+//                            });
+//                            addCheckbox('searchListDown',arr);
+//                            renderDiv(arr);
+//                            form.render();
+//                        }
+//                        layui.use(['layer','form','laydate'],function () {
+//                            var layer=layui.layer;
+//                            var laydate=layui.laydate;
+//                            laydate.render({
+//                                elem: '#datetime',type: 'datetime'
+//                            });
+//                            laydate.render({
+//                                elem: '#datetimes',type: 'datetime',range: true
+//                            });
+//                            laydate.render({
+//                                elem: '#date',type: 'date'
+//                            });
+//                            laydate.render({
+//                                elem: '#dates',type: 'date',range: true
+//                            });
+//                        });
+//                        form.on('checkbox(aaaaa)', function(data5){
+//                            if(data5.elem.checked==true){
+//                                for(var i=0;i<arr.length;i++){
+//                                    if(arr[i].title==data5.value){
+//                                        $('#searchbox').find('div[name="'+arr[i].title+'"]').removeClass('layui-hide');
+//                                        $('#searchListUp').append('<a href="#" class="layui-btn layui-btn-normal layui-btn-sm" style="margin: 5px 1px" name="'+arr[i].field+'" >' +
+//                                            '<span name="'+arr[i].width+'">'+arr[i].title+'</span>' +
+//                                            '<i class="layui-icon layBtn" name="'+arr[i].type+'"data-id="'+arr[i].id+'"' +
+//                                            'style="color: #F00;margin-left: 15px">&#xe640;</i></a >');
+//                                        arr.splice(i,1);
+//                                        addCheckbox('searchListDown',arr);
+//                                    }
+//                                }
+//                            }
+//
+//                        });
+//
+//                        $('#searchListUp').on('click','a i',function (e) {
+//                            e.stopPropagation();
+//                            var text=$(this).parent().children('span').text();
+//                            $('#searchListDown').append(' <input type="checkbox" lay-skin="primary" value="'+text+'" title="'+text+'" lay-filter="aaaaa">');
+//                            arr.push({'field':$(this).parent().attr('name'),'id':$(this).attr('data-id'),'iscloune':1,
+//                                'issearch':1,'title':text,'type':$(this).attr('name'),'width':$(this).parent().children('span').attr('name')});
+//                            form.render();
+//                            $('#searchbox').find('div[name="'+text+'"]').addClass('layui-hide');
+//                            $(this).parent().remove();
+//                        });
+//                    }
+//                });
+//            });
+//            $('#searchBtn').on('click',function () {
+//                var conditions=[];
+//                getValues(arrList,conditions);
+//                console.log(conditions);
+//                var parm={'url':'/XCCloud/StoreInfo?action=GetStoreList',
+//                    'obj':{'conditions':conditions,"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"},
+//                    'elem':'#storeListTable',
+//                    'cols':[
+//                        {type:'checkbox'}
+//                        ,{field:'StoreID', title: '门店编号', align: 'center'} //width 支持：数字、百分比和不填写。你还可以通过 minWidth 参数局部定义当前单元格的最小宽度，layui 2.2.1 新增
+//                        ,{field:'MerchID', title: '归属商户', sort: true}
+//                        ,{field:'StoreName', title: '门头', align: 'center'}
+//                        ,{field:'Password', title: '消费密码', align: 'center'} //单元格内容水平居中
+//                        ,{field:'AuthorExpireDate', title: '授权到期日期', align: 'center',templet: '#changeTime'} //单元格内容水平居中
+//                        ,{field:'AreaCode', title: '邮政编号', align: 'center'}
+//                        ,{field:'Address', title: '地址',  align: 'center'}
+//                        ,{field:'Contacts', title: '负责人',  align: 'center'}
+//                        ,{field:'Mobile', title: '手机号',  align: 'center'}
+//                        ,{field:'SelttleTypeStr', title: '结算类型',  align: 'center'}
+//                        ,{field:'StoreStateStr', title: '门店状态',  align: 'center'}
+//                        ,{fixed: 'right', title: '操作', width:370, align:'center', toolbar: '#barDemo'}
+//                    ]};
+//                getInitData(parm);
+//                layer.closeAll()
+//            })
         });
+	//模糊查询
+	function searchBy(pagename,processname){
+		var filedData=[];
+		var url='/Query?action=init';
+		var	obj={"sysId": "0", "versionNo": "0.0.0.1",
+					'pagename':pagename,'processname':processname,"token": token, "signkey": "1f626576304bf5d95b72ece2222e42c3"};
+		var  parasJson = JSON.stringify(obj);
+		$.ajax({
+			type: "post",
+			url: url,
+			contentType: "application/json; charset=utf-8",
+			data: parasJson,
+			async:false,
+			success: function (data) {
+				data = JSON.parse(data);
+				if (data.result_code == '1') {
+					filedData=data.result_data;
+				}
+			}
+		});
+		console.log(filedData);
+	}
         function modifyStore() {
 			var storeId=$('#storeIdModify').val();
 			var parentId=$('#parentIdModify').val();

@@ -57,7 +57,6 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Data_CoinStorage> Data_CoinStorage { get; set; }
         public virtual DbSet<Data_Coupon_StoreList> Data_Coupon_StoreList { get; set; }
         public virtual DbSet<Data_CouponCondition> Data_CouponCondition { get; set; }
-        public virtual DbSet<Data_CouponInfo> Data_CouponInfo { get; set; }
         public virtual DbSet<Data_CouponList> Data_CouponList { get; set; }
         public virtual DbSet<Data_DigitCoinDestroy> Data_DigitCoinDestroy { get; set; }
         public virtual DbSet<Data_DigitCoinFood> Data_DigitCoinFood { get; set; }
@@ -79,17 +78,14 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Data_Game_StockInfo> Data_Game_StockInfo { get; set; }
         public virtual DbSet<Data_GameAPP_Rule> Data_GameAPP_Rule { get; set; }
         public virtual DbSet<Data_GameEncourage> Data_GameEncourage { get; set; }
-        public virtual DbSet<Data_GameEncourage_List> Data_GameEncourage_List { get; set; }
         public virtual DbSet<Data_GameFreeRule> Data_GameFreeRule { get; set; }
         public virtual DbSet<Data_GameFreeRule_List> Data_GameFreeRule_List { get; set; }
         public virtual DbSet<Data_GameInfo_Ext> Data_GameInfo_Ext { get; set; }
         public virtual DbSet<Data_GameInfo_Photo> Data_GameInfo_Photo { get; set; }
         public virtual DbSet<Data_GivebackRule> Data_GivebackRule { get; set; }
-        public virtual DbSet<Data_GoodExit_Detail> Data_GoodExit_Detail { get; set; }
         public virtual DbSet<Data_GoodRequest_List> Data_GoodRequest_List { get; set; }
         public virtual DbSet<Data_GoodsStock> Data_GoodsStock { get; set; }
         public virtual DbSet<Data_GoodStorage> Data_GoodStorage { get; set; }
-        public virtual DbSet<Data_GoodStorage_Detail> Data_GoodStorage_Detail { get; set; }
         public virtual DbSet<Data_GroupArea> Data_GroupArea { get; set; }
         public virtual DbSet<Data_Jackpot_Level> Data_Jackpot_Level { get; set; }
         public virtual DbSet<Data_Jackpot_Matrix> Data_Jackpot_Matrix { get; set; }
@@ -185,7 +181,6 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Data_GameFreeLotteryRule> Data_GameFreeLotteryRule { get; set; }
         public virtual DbSet<Base_DeviceInfo_Ext> Base_DeviceInfo_Ext { get; set; }
         public virtual DbSet<Data_GoodOutOrder> Data_GoodOutOrder { get; set; }
-        public virtual DbSet<Data_GoodOutOrder_Detail> Data_GoodOutOrder_Detail { get; set; }
         public virtual DbSet<Data_GameInfo> Data_GameInfo { get; set; }
         public virtual DbSet<Data_GoodExitInfo> Data_GoodExitInfo { get; set; }
         public virtual DbSet<Data_Card_Balance> Data_Card_Balance { get; set; }
@@ -194,5 +189,11 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Data_Card_Right> Data_Card_Right { get; set; }
         public virtual DbSet<Data_Card_Right_StoreList> Data_Card_Right_StoreList { get; set; }
         public virtual DbSet<Data_GoodRequest> Data_GoodRequest { get; set; }
+        public virtual DbSet<Flw_MemberCard_Change> Flw_MemberCard_Change { get; set; }
+        public virtual DbSet<Flw_MemberCard_Renew> Flw_MemberCard_Renew { get; set; }
+        public virtual DbSet<Data_GoodExit_Detail> Data_GoodExit_Detail { get; set; }
+        public virtual DbSet<Data_GoodStorage_Detail> Data_GoodStorage_Detail { get; set; }
+        public virtual DbSet<Data_GoodOutOrder_Detail> Data_GoodOutOrder_Detail { get; set; }
+        public virtual DbSet<Data_CouponInfo> Data_CouponInfo { get; set; }
     }
 }

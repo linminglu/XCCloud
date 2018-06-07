@@ -880,13 +880,6 @@ function setSelect(objVal,id,m) {
         }
     })
 }
-//获取新增用户 信息列表
-
-//删除表格中一条数据
-function deleteTableList(parm) {
-
-
-}
 //...................................................page门店列表...................................
 //添加门店
 function addStore() {

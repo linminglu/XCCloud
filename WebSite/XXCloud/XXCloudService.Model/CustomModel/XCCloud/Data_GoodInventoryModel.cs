@@ -31,6 +31,9 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         /// 商品名称
         /// </summary>
         public string GoodName { get; set; }
+        /// <summary>
+        /// 盘点类别
+        /// </summary>
         public int? InventoryType { get; set; }
         /// <summary>
         /// 添加来源
@@ -59,7 +62,7 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         /// <summary>
         /// 当前库存金额
         /// </summary>
-        public decimal? RemainTotal { get { return InitialAvgValue * RemainCount; } set { } }
+        public decimal? RemainTotal { get { return Math.Round((RemainCount * InitialAvgValue) ?? 0, 2, MidpointRounding.AwayFromZero); } set { } }
         /// <summary>
         /// 盘点人
         /// </summary>
@@ -73,24 +76,16 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         /// </summary>
         public int? InventoryCount { get; set; }
         /// <summary>
-        /// 预估数量
-        /// </summary>
-        public int? PredictCount { get; set; }
-        /// <summary>
         /// 误差数量
         /// </summary>
-        public int? ErrorCount { get { return PredictCount - InventoryCount; } set { } }
-        /// <summary>
-        /// 库存金额
-        /// </summary>
-        public decimal? TotalPrice { get; set; }
+        public int? ErrorCount { get { return Math.Abs((RemainCount - InventoryCount) ?? 0); } set { } }        
         /// <summary>
         /// 误差金额
         /// </summary>
-        public decimal? ErrorTotal { get { return TotalPrice - RemainTotal; } set { } }
+        public decimal? ErrorTotal { get { return Math.Round((ErrorCount * InitialAvgValue) ?? 0, 2, MidpointRounding.AwayFromZero); } set { } }
         /// <summary>
         /// 误差率
         /// </summary>
-        public decimal? ErrorRate { get { return TotalPrice > 0 ? (Math.Round((ErrorTotal ?? 0) / TotalPrice.Value, 2, MidpointRounding.AwayFromZero)) : 0; } set { } }
+        public decimal? ErrorRate { get { return RemainTotal > 0 ? (Math.Round(((ErrorCount * InitialAvgValue * 100) / RemainTotal) ?? 0, 2, MidpointRounding.AwayFromZero)) : 0; } set { } }
     }
 }

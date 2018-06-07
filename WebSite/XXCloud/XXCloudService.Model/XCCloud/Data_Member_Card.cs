@@ -34,5 +34,6 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<long> UID { get; set; }
         public Nullable<int> CardStatus { get; set; }
         public string Verifiction { get; set; }
+        public Nullable<int> IsLock { get; set; }
     }
 }

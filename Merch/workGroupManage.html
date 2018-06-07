@@ -18,9 +18,9 @@
 <body>
 <div class="" style="padding: 5px;">
 	<div class="layui-row">
-		<blockquote class="layui-elem-quote" style="text-align: right;padding-right: 100px;">
-			<button type="button" class="layui-btn layui-btn-normal" onclick="getAddMerchInfo()"><i class="layui-icon">&#xe615;</i>新增</button>
-		</blockquote>
+		<div class="layui-col-md12 layui-col-sm12" style="text-align: right;">
+			<button type="button" class="layui-btn layui-btn-normal" onclick="getAddMerchInfo()">新增</button>
+		</div>
 		<div class="layui-col-md12">
 			<table class="layui-hide" id="groupManageTable"  lay-filter="groupManage"></table>
 		</div>
@@ -133,12 +133,26 @@
             // } else
                 if (layEvent === 'del') { //删除
                 layer.confirm('真的删除行么', function (index) {
-                    obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
-                    layer.close(index);
-                    //向服务端发送删除指令,删除数据库中此条数据
-                    var   obj1={"groupId":groupId,"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
-                    var parm={'obj':obj1,'url':'/XCCloud/UserGroup?action=DeleteUserGroup'};
-                    deleteTableList(parm);
+                    var obj1={"groupId":groupId,"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
+                    var url='/XCCloud/UserGroup?action=DeleteUserGroup';
+                    var parasJson = JSON.stringify(obj1);
+                    var listData=[];
+                    $.ajax({
+                        type: "post",
+                        url: url,
+                        contentType: "application/json; charset=utf-8",
+                        data: {parasJson: parasJson},
+                        success: function (data) {
+                            data = JSON.parse(data);
+                            if (data.result_code == 1) {
+                                    layer.msg('删除成功',{time:1500},function(){
+                                        obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
+                                    })
+                            }else {
+                                layer.msg(data.result_msg||data.return_msg)
+                            }
+                        }
+                    })
                 });
             } else if (layEvent === 'edit') { //编辑
                 $('#demo1').html('');
@@ -224,7 +238,7 @@
         addGroupManage('新增工作组');
         $('#demo1').html('');
         $('#addGroupBtn-box').removeClass('layui-hide');
-        var obj={"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
+        var obj={'groupId':'',"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
         var url = "/XCCloud/UserGroup?action=GetUserGroup";
         var parasJson = JSON.stringify(obj);
         var listData=[];

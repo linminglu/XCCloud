@@ -154,47 +154,56 @@
         $('.xcLeftMenu').on('click','a[class="aMenu"]',function () {
             var _text = $(this).text();
             var _id = $(this).attr('id');
-            if (_text == '数字币入库') {
-                layer.open({
-                    type: 2,
-                    content: ['digitStorage.html', 'no'],
-                    closeBtn: true,
-                    shade: true,
-                    shadeClose: true,
-                    area: ['800px', '500px']
-                });
-            } else {
-                var flag = false;
-                var _length = $("#xcTabMenu").find("li").length;
-                for (var i = 0; i < _length; i++) {
-                    if ($("#xcTabMenu").find("li").eq(i).attr('lay-id') == _id) {
-                        flag = true;
-                    }
-                }
-                if (flag == true) {
-                    element.tabChange('demo', _id);
+            if(_id=='null'){
+                layer.msg('该功能暂未开放,敬请等待！')
+            }else {
+                if (_text == '数字币入库') {
+                    layer.open({
+                        type: 2,
+                        content: ['digitStorage.html', 'no'],
+                        closeBtn: true,
+                        shade: true,
+                        shadeClose: true,
+                        area: ['800px', '500px']
+                    });
                 } else {
-                    if (_length == 10) {
-                        var thisId = $("#xcTabMenu").find("li").eq(1).attr('lay-id');
-                        element.tabDelete('demo', thisId);
-                        element.tabAdd('demo', {
-                            title: _text
-                            , content: '<iframe src="' + _id + '" style="width: 100%;height: 100%"></iframe>'	 //支持传入html
-                            , id: _id
-                        });
-                    } else {
+                    var flag = false;
+                    var _length = $("#xcTabMenu").find("li").length;
+                    for (var i = 0; i < _length; i++) {
+                        if ($("#xcTabMenu").find("li").eq(i).attr('lay-id') == _id) {
+                            flag = true;
+                        }
+                    }
+                    if (flag == true) {
+                        element.tabDelete('demo', _id);
                         element.tabAdd('demo', {
                             title: _text
                             , content: '<iframe src="' + _id + '" style="width: 100%;height: 100%"></iframe>'	 //支持传入html
                             , id: _id
                         });
                         element.tabChange('demo', _id);
-                    }
 
+                    } else {
+                        if (_length == 10) {
+                            var thisId = $("#xcTabMenu").find("li").eq(1).attr('lay-id');
+                            element.tabDelete('demo', thisId);
+                            element.tabAdd('demo', {
+                                title: _text
+                                , content: '<iframe src="' + _id + '" style="width: 100%;height: 100%"></iframe>'	 //支持传入html
+                                , id: _id
+                            });
+                        } else {
+
+                            element.tabAdd('demo',{
+                                title: _text
+                                , content: '<iframe src="' + _id + '" style="width: 100%;height: 100%"></iframe>'	 //支持传入html
+                                , id: _id
+                            });
+                            element.tabChange('demo', _id);
+                        }
+                    }
                 }
             }
-
-
         });
         $('#_userName').text(getStorage('usernames'));
         if(logMsg.switchMerch==0&&logMsg.swicthStore==0&&logMsg.switchWorkstation==0){
@@ -227,6 +236,7 @@
             $('#storeListToGo').on('click','li',function (e) {
                  e.stopPropagation();
                  let _storeID=$(this).attr('id');
+
                 let obj={'userToken':token,'merchId':logMsg.merchId,'storeId':$(this).attr('id'),'logType':2,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
                 let parasJson = JSON.stringify(obj);
                 $.ajax({
@@ -447,7 +457,6 @@
             window.close();
         }
     }
-
    })
 </script>
 </html>

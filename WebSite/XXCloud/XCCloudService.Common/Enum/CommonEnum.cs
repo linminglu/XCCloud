@@ -996,6 +996,8 @@ namespace XCCloudService.Common.Enum
         GoodReload = 2,     //安装记录
         [Description("出库单")]
         GoodOut = 3,        //出库单
+        [Description("退货单")]
+        GoodExit = 4        //退货单
     }
 
     /// <summary>

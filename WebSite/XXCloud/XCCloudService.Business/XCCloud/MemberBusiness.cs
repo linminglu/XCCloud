@@ -45,7 +45,7 @@ namespace XCCloudService.Business.XCCloud
             parameters[1] = new SqlParameter("@StoreID", storeId);
             System.Data.DataSet ds = XCCloudBLL.GetStoredProcedureSentence(storedProcedure, parameters);
 
-            List<MemberBalanceExchangeRateModel> memberBalance = null;
+            List<MemberBalanceExchangeRateModel> memberBalance = new List<MemberBalanceExchangeRateModel>();
             if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
             {
                 memberBalance = Utils.GetModelList<MemberBalanceExchangeRateModel>(ds.Tables[0]);
@@ -83,7 +83,7 @@ namespace XCCloudService.Business.XCCloud
             model.CardStatus = memberCard.CardStatus.Value;
 
             List<MemberBalanceExchangeRateModel> memberBalance = XCCloudService.Business.XCCloud.MemberBusiness.GetMemberBalanceAndExchangeRate(storeId, memberCard.ICCardID);
-            if (memberBalance.Count > 0)
+            if (memberBalance != null && memberBalance.Count > 0)
             {
                 model.MemberBalances = memberBalance.Select(t => new BalanceModel
                 {
