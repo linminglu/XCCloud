@@ -893,12 +893,13 @@ namespace XXCloudService.Api.XCCloud
                 {
                     #region 商户类型列表
 
-                    sql = " exec  SP_DictionaryNodes @MerchID,@DictKey,@RootID output ";
-                    parameters = new SqlParameter[3];
+                    sql = " exec  SP_DictionaryNodes @MerchID,@DictKey,@PDictKey,@RootID output ";
+                    parameters = new SqlParameter[4];
                     parameters[0] = new SqlParameter("@MerchID", merchId);
                     parameters[1] = new SqlParameter("@DictKey", "商户类别");
-                    parameters[2] = new SqlParameter("@RootID", 0);
-                    parameters[2].Direction = System.Data.ParameterDirection.Output;
+                    parameters[2] = new SqlParameter("@PDictKey", "");
+                    parameters[3] = new SqlParameter("@RootID", 0);
+                    parameters[3].Direction = System.Data.ParameterDirection.Output;
                     ds = XCCloudBLL.ExecuteQuerySentence(sql, parameters);
                     if (ds.Tables.Count == 0)
                     {
