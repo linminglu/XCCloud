@@ -100,22 +100,22 @@
                     </div>
                     <div class="layui-form-mid">币</div>
                 </div>
-                <div class="layui-inline" style="width: 80px">
-                    <div class="layui-btn-group">
-                        <button class="layui-btn layui-btn-sm" type="button" id="addGoods">
-                            <i class="layui-icon">&#xe654;</i>
-                        </button>
-                        <button class="layui-btn layui-btn-sm" type="button" id="reduceGoods">
-                            <i class="layui-icon">&#x1006;</i>
-                        </button>
-                    </div>
-                </div>
+                <!--<div class="layui-inline" style="width: 80px">-->
+                    <!--<div class="layui-btn-group">-->
+                        <!--<button class="layui-btn layui-btn-sm" type="button" id="addGoods">-->
+                            <!--<i class="layui-icon">&#xe654;</i>-->
+                        <!--</button>-->
+                        <!--<button class="layui-btn layui-btn-sm" type="button" id="reduceGoods">-->
+                            <!--<i class="layui-icon">&#x1006;</i>-->
+                        <!--</button>-->
+                    <!--</div>-->
+                <!--</div>-->
 
             </div>
         </div>
 
     </form>
-    <div style="text-align:center;" class="layui-col-md12">
+    <div style="text-align:center;margin-bottom:15px; " class="layui-col-md12">
         <button type="button" id="save" class="layui-btn">确定</button>
     </div>
 </div>
@@ -143,15 +143,15 @@
     let GameList='';
     var xtree3;
 
-    $('#addGoods').click(function () {
-        $('.goodConvert').append($('body').find($('.goodRules')).eq(0).clone())
-    });
-    $('#reduceGoods').click(function () {
-        if($('.goodConvert').find($('.goodRules')).length>1){
-            $('.goodConvert').find($('.goodRules')).last().remove();
-        }else {
-        }
-    });
+//    $('#addGoods').click(function () {
+//        $('.goodConvert').append($('body').find($('.goodRules')).eq(0).clone())
+//    });
+//    $('#reduceGoods').click(function () {
+//        if($('.goodConvert').find($('.goodRules')).length>1){
+//            $('.goodConvert').find($('.goodRules')).last().remove();
+//        }else {
+//        }
+//    });
     layui.use(['table','form','layer','laydate'],function () {
         let table=layui.table;let form=layui.form;let layer=layui.layer;let laydate=layui.laydate;
         var  obj={"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
@@ -411,8 +411,6 @@
                         }
                     }
                 })
-
-
             }
         });
     });

@@ -23,15 +23,6 @@
              </div>
 
          </div>
-         <!--<fieldset class="layui-elem-field">-->
-             <!--&lt;!&ndash;<legend>字段集区块 - 默认风格</legend>&ndash;&gt;-->
-             <!--<div class="layui-field-box">-->
-                 <!--<blockquote class="layui-elem-quote" style="width: 150px">门店权重分配</blockquote>-->
-
-                 <!--<blockquote class="layui-elem-quote" style="width: 150px">会员卡漫游设置</blockquote>-->
-                <!---->
-             <!--</div>-->
-         <!--</fieldset>-->
          <div class="layui-card layui-col-md12">
              <div class="layui-card-header">门店权重分配</div>
              <div class="layui-card-body">
@@ -542,7 +533,7 @@
                                         layer.msg('删除门店权重信息失败！');
                                 }
                             }
-                        })
+                        });
                         //向服务端发送删除指令
                     });
                 }
@@ -557,7 +548,6 @@
                 }else {
                     layer.msg('请先选择门店')
                 }
-
             });
             form.on('select(balanceModelBox)',(data)=>{
                 chainStoreIDs=data.value;
@@ -577,8 +567,6 @@
                 console.log(arr);
             });
         };
-
-
         $('#save').on('click',()=>{
             xc.AddStoreWeight();
         });
@@ -712,7 +700,6 @@
             }else if(that.siblings('blockquote').text()=="储值金金额通用"){
                 ruleTypes=3;
             }
-
             let url='/XCCloud/StoreWeight?action=GetUnChainStoreList';
             let obj={'storeId':_storeId,'ruleType':ruleTypes,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
             let parseJson = JSON.stringify(obj);
@@ -739,10 +726,9 @@
                                  type:1,
                                  title:'选择接收余额的店铺',
                                  area:'340px',
-                                 content:$('#balanceModel'),
+                                 content:$('#balanceModel')
                              })
                          })
-
                      }
                 }
             })

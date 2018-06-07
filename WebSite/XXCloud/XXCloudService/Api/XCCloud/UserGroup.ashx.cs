@@ -226,6 +226,15 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 string errMsg = string.Empty;
+                string logId = string.Empty;
+
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+
+                if (userTokenKeyModel.LogType == (int)RoleType.MerchUser)
+                {
+                    logId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                }
+
                 string groupId = dicParas.ContainsKey("groupId") ? dicParas["groupId"].ToString() : string.Empty;
                 string groupName = dicParas.ContainsKey("groupName") ? dicParas["groupName"].ToString() : string.Empty;
                 string note = dicParas.ContainsKey("note") ? dicParas["note"].ToString() : string.Empty;
@@ -262,13 +271,13 @@ namespace XXCloudService.Api.XCCloud
                     try
                     {
                         IBase_UserGroupService base_UserGroupService = BLLContainer.Resolve<IBase_UserGroupService>();
-                        if (base_UserGroupService.Any(a => a.ID.ToString() != groupId && a.GroupName.Equals(groupName, StringComparison.OrdinalIgnoreCase)))
+                        if (base_UserGroupService.Any(a => a.MerchID.Equals(logId, StringComparison.OrdinalIgnoreCase) && a.ID.ToString() != groupId && a.GroupName.Equals(groupName, StringComparison.OrdinalIgnoreCase)))
                         {
                             errMsg = "该工作组名称已存在";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 
-                        var base_UserGroup = base_UserGroupService.GetModels(p => p.ID.ToString() != groupId).FirstOrDefault();
+                        var base_UserGroup = base_UserGroupService.GetModels(p => p.ID.ToString() == groupId).FirstOrDefault();
                         if (base_UserGroup == null)
                         {
                             errMsg = "该工作组不存在";

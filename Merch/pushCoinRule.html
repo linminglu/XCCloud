@@ -78,9 +78,7 @@
                     <label class="layui-form-label">按键一扣币类别</label>
                     <div class="layui-input-inline">
                         <select name="PushBalanceIndex1" id="PushBalanceIndex1" lay-filter="PushBalanceIndex1">
-                            <option selected>-请选择-</option>
-                            <option value="0" selected>代币</option>
-                            <option value="1">金币</option>
+
                         </select>
                     </div>
                 </div>
@@ -96,9 +94,7 @@
                     <label class="layui-form-label">按键二扣币类别</label>
                     <div class="layui-input-inline">
                         <select name="PushBalanceIndex2" id="PushBalanceIndex2" lay-filter="PushBalanceIndex2">
-                            <option selected>-请选择-</option>
-                            <option value="0">代币</option>
-                            <option value="1">金币</option>
+
                         </select>
                     </div>
                 </div>
@@ -149,7 +145,7 @@
             </div>
         </div>
     </form>
-    <div style="text-align:center;">
+    <div class="layui-col-md12" style="text-align:center;margin-bottom:15px;">
         <button type="button" id="save" class="layui-btn">确定</button>
     </div>
 </div>
@@ -174,8 +170,7 @@
             , {field: 'Level', title: '优先级', align: 'center'}
             , {field: 'StartDate', title: '开始时间', align: 'center'}
             , {field: 'EndDate', title: '结束时间', align: 'center'}
-            , {field: 'StartTime', title: '生效开始时段', align: 'center'}
-            , {field: 'EndTime', title: '生效结束时段', align: 'center'}
+            , {field: 'Period', title: '生效时段', align: 'center'}
             , {field: 'Period', title: '时段', align: 'center'}
             ,{fixed: 'right',title: '操作', width:240, align:'center', toolbar: '#barDemo'}]
     };
@@ -213,8 +208,6 @@
                 }
             }
         });
-
-
         laydate.render({
             elem: '#StartDate',type: 'date',value:new Date()
         });
@@ -281,10 +274,10 @@
         form.on('select(PushBalanceIndex2)',(data)=>{
             if(PushBalanceIndex1==data.value){
                 layer.msg('该选项已选，请选择其他选项')
+                xc.getBalanceTypeDic ('',token,layer,form,'PushBalanceIndex2')
             }else {
                 PushBalanceIndex2=data.value;
             }
-
         });
         form.on('switch(Allow_In)',(data)=>{
             if(data.elem.checked){
@@ -322,16 +315,17 @@
              GameList=[]; MemberLevelList=[];
 
             xc.getMemberTypeAll(token,layer,form,'memBox');
+            xc.getBalanceTypeDic ('',token,layer,form,'PushBalanceIndex1')
+            xc.getBalanceTypeDic ('',token,layer,form,'PushBalanceIndex2')
             layer.open({
                 title:'新增',
                 type:1,
-                area:['1045px','650px'],
+                area:'1045px',
                 content:$('#openModel'),
                 cancel:function () {
                     location.reload();
                 }
             });
-
         });
         $('#save').on('click',function () {
             var oCks = xtree3.GetChecked(); //获取全部选中的末级节点checkbox对象，返回的为Array
@@ -421,14 +415,16 @@
                                'StartDate':arr.StartDate.substring(0, 10),
                                'EndDate':arr.EndDate.substring(0, 10),
                                'poriedType':arr.WeekType,
-                               'PushBalanceIndex1':arr.PushBalanceIndex1,
+//                               'PushBalanceIndex1':arr.PushBalanceIndex1,
                                'PushCoin1':arr.PushCoin1,
-                               'PushBalanceIndex2':arr.PushBalanceIndex2,
+//                               'PushBalanceIndex2':arr.PushBalanceIndex2,
                                'PushCoin2':arr.PushCoin2,
                                'Allow_In':arr.Allow_In==1?true:false,
                                'Allow_Out':arr.Allow_Out==1?true:false,
                                'Level':arr.Level
                            });
+                            xc.getBalanceTypeDic ('',token,layer,form,'PushBalanceIndex1',arr.PushBalanceIndex1)
+                            xc.getBalanceTypeDic ('',token,layer,form,'PushBalanceIndex2',arr.PushBalanceIndex2)
                             $('#StartTime').val(generatelD(arr.StartTime.Hours) +':'+generatelD(arr.StartTime.Minutes) +':'+generatelD(arr.StartTime.Seconds));
                             $('#EndTime').val(generatelD(arr.EndTime.Hours) +':'+generatelD(arr.EndTime.Minutes) +':'+generatelD(arr.EndTime.Seconds));
                             checkedArr=arr.GameList;
@@ -487,8 +483,6 @@
                         }
                     }
                 })
-
-
             }
         });
     });

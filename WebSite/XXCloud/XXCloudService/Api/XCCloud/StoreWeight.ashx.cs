@@ -549,9 +549,10 @@ namespace XXCloudService.Api.XCCloud
                                      join b in base_ChainRule_StoreService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)) on a.RuleGroupID equals b.RuleGroupID
                                      join c in base_ChainRule_StoreService.GetModels() on b.RuleGroupID equals c.RuleGroupID
                                      select c
-                                 ) on a.StoreID equals b.StoreID into b1
+                                 )
+                             on a.StoreID equals b.StoreID into b1
                              from b in b1.DefaultIfEmpty()
-                             where string.IsNullOrEmpty(b.StoreID)
+                             where string.IsNullOrEmpty(b.StoreID) && !a.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)
                              select new
                              {
                                  StoreID = a.StoreID,
@@ -575,8 +576,15 @@ namespace XXCloudService.Api.XCCloud
                 string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
 
                 string errMsg = string.Empty;
+                string storeId = dicParas.ContainsKey("storeId") ? (dicParas["storeId"] + "") : string.Empty;
                 string revStoreId = dicParas.ContainsKey("revStoreId") ? (dicParas["revStoreId"] + "") : string.Empty;
                 string ruleType = dicParas.ContainsKey("ruleType") ? (dicParas["ruleType"] + "") : string.Empty;
+
+                if (string.IsNullOrEmpty(storeId))
+                {
+                    errMsg = "当前门店ID不能为空";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
 
                 if (string.IsNullOrEmpty(revStoreId))
                 {
@@ -607,15 +615,23 @@ namespace XXCloudService.Api.XCCloud
                 }
 
                 int ruleGroupId = base_ChainRuleService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.RuleType == iRuleType).FirstOrDefault().RuleGroupID;
+                if (base_ChainRule_StoreService.Any(a => a.StoreID.Equals(revStoreId, StringComparison.OrdinalIgnoreCase) && a.RuleGroupID == ruleGroupId))
+                {
+                    if (base_ChainRule_StoreService.Any(a => a.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase) && a.RuleGroupID == ruleGroupId))
+                    {
+                        errMsg = "该门店连锁规则已存在";
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
+                    else
+                    {
+                        revStoreId = storeId;
+                    }
+                }
+
                 var base_ChainRule_StoreModel = new Base_ChainRule_Store();
                 base_ChainRule_StoreModel.RuleGroupID = ruleGroupId;
                 base_ChainRule_StoreModel.StoreID = revStoreId;
                 base_ChainRule_StoreModel.MerchID = merchId;                
-                if (base_ChainRule_StoreService.Any(a => a.StoreID.Equals(revStoreId, StringComparison.OrdinalIgnoreCase) && a.RuleGroupID == ruleGroupId))
-                {
-                    errMsg = "该门店连锁规则已存在";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
 
                 if (!base_ChainRule_StoreService.Add(base_ChainRule_StoreModel))
                 {
@@ -659,7 +675,7 @@ namespace XXCloudService.Api.XCCloud
                     errMsg = "删除接收余额的门店失败";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
-
+                
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
             }
             catch (Exception e)
