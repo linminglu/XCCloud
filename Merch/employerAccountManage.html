@@ -175,8 +175,8 @@
             userGroups={'id':data.value,'groupName':data.elem.title}
         });
         table.on('tool(employerManageTable)', function (obj) {
-            var data = obj.data; //获得当前行数据
-             userId=data.UserID;
+            var _data = obj.data; //获得当前行数据
+             userId=_data.UserID;
             var layEvent = obj.event; //
             var _obj={'userId':userId,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
 
@@ -248,10 +248,9 @@
                  success: function (data) {
                      data=JSON.parse(data);
                      if(data.result_code==1){
-                        layer.msg('审核完成');
-                        layer.closeAll();
-                         checkBoxArr=[];
-                         getInitData(parm);
+                        layer.msg('审核完成',{time:1500},function(){
+                            location.reload();
+                        });
                      }else {
                          layer.msg('审核门店员工失败');
                      }
@@ -290,10 +289,9 @@
                 success: function (data) {
                     data=JSON.parse(data);
                     if(data.result_code==1){
-                        layer.msg('修改完成');
-                        layer.closeAll();
-                        checkBoxArr=[];
-                        getInitData(parm);
+                        layer.msg('审核完成',{time:1500},function(){
+                            location.reload();
+                        });
                     }else {
                         layer.msg(data.result_msg||data.return_msg);
                     }
@@ -440,6 +438,7 @@ function getMsg(_obj,form,layer,num) {
             data=JSON.parse(data);
             if(data.result_code==1){
                 var arr=data.result_data;
+                console.log(arr);
                 checkBoxArr=[];
                 if(num==0){
                     for(var i in arr){

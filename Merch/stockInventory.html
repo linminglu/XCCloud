@@ -29,6 +29,21 @@
         </blockquote>
         <table class="layui-hide" id="stockInventory" lay-filter="stockInventory"></table>
     </div>
+
+<!--盘点-->
+<div id="openModel" style="display: none;padding: 15px;">
+    <form class="layui-form layui-form-pane">
+        <div class="layui-form-item">
+            <label class="layui-form-label">实际盘点数</label>
+            <div class="layui-input-block">
+                <input type="text" class="layui-input" id="inventoryCount">
+            </div>
+        </div>
+    </form>
+    <div style="text-align:right;">
+        <button type="button" class="layui-btn layui-btn-normal" id="saveInventory">确定</button>
+    </div>
+</div>
 </body>
 <script src="js/jquery-1.8.3-min.js"></script>
 <script src="layui/layui.js"></script>
@@ -36,7 +51,7 @@
 <script>
     let xc=xcActionSystem.prototype;
     let token=xc.getStorage('token');
-    let depotList='';
+    let depotList='';let goodId='';let id='';
     layui.use(['form','table','layer'],function () {
         let form=layui.form;
         let table=layui.table;
@@ -94,25 +109,38 @@
         table.on('tool(stockInventory)',function (obj) {
             let _data=obj.data;
             let layEvent=obj.event;
-            if(layEvent==='export'){
-                var  obj={"depotId":_data.ID,"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
-                var url="/XCCloud/GoodsInfo?action=ExportGoodsUnderWarning";
-                var parasJson = JSON.stringify(obj);
-                $.ajax({
-                    type: "post",
-                    url: url,
-                    contentType: "application/json; charset=utf-8",
-                    data: {parasJson: parasJson},
-                    success: function (data) {
-                        data = JSON.parse(data);
-                        if (data.result_code == "1") {
-                            document.location.href ="/Report/ToExcel.aspx?guid="+data.result_data
-                        } else {
-                            layer.msg(data.result_msg || data.return_msg);
-                        }
-                    }
+            goodId=_data.GoodID;
+            id=_data.ID;
+            if(layEvent==='check'){
+                layer.open({
+                    title:"商品:"+_data.GoodName+"盘点",
+                    type:1,
+                    area:'600px',
+                    content:$('#openModel')
                 })
             }
+        });
+        $('#saveInventory').on('click',function(){
+            var  obj={"goodsInventoryList":[{'id':id,'goodId':goodId,'depotId':depotList,'inventoryCount':$('#inventoryCount').val()}],
+                "userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
+            var url="/XCCloud/GoodsInfo?action=SaveGoodsInventory";
+            var parasJson = JSON.stringify(obj);
+            $.ajax({
+                type: "post",
+                url: url,
+                contentType: "application/json; charset=utf-8",
+                data: {parasJson: parasJson},
+                success: function (data) {
+                    data = JSON.parse(data);
+                    if (data.result_code == "1") {
+                        layer.msg('盘点完成',{time:1500},function(){
+                            location.reload();
+                        })
+                    } else {
+                        layer.msg(data.result_msg || data.return_msg);
+                    }
+                }
+            })
         })
     });
     function initTable(table,arr) {

@@ -3673,8 +3673,10 @@ namespace XXCloudService.Api.XCCloud
                                     var stockExitCount = stockExitList.Sum(s => s.ExitCount) ?? 0;
                                     var stockExitTotal = stockExitList.Sum(s => s.ExitCount * s.ExitPrice) ?? 0M;
 
-                                    //计算本期平均成本                                    
-                                    var avgValue = Math.Round((initialAvgValue * initialValue + stockInTotal - stockOutTotal - stockExitTotal) / (initialValue + stockInCount - stockOutCount - stockExitCount), 2, MidpointRounding.AwayFromZero);
+                                    //计算本期平均成本 
+                                    var count = initialValue + stockInCount - stockOutCount - stockExitCount;
+                                    var total = initialAvgValue * initialValue + stockInTotal - stockOutTotal - stockExitTotal;
+                                    var avgValue = count > 0 ? Math.Round(total / count, 2, MidpointRounding.AwayFromZero) : 0;
                                     stockModel.InitialTime = DateTime.Now;
                                     stockModel.InitialAvgValue = avgValue;
                                     stockModel.InitialValue = stockModel.RemainCount;
