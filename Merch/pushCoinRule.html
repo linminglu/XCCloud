@@ -75,15 +75,15 @@
             </div>
             <div class="layui-form-item">
                 <div class="layui-inline">
-                    <label class="layui-form-label">按键一扣币类别</label>
-                    <div class="layui-input-inline">
-                        <select name="PushBalanceIndex1" id="PushBalanceIndex1" lay-filter="PushBalanceIndex1">
+                    <label class="layui-form-mid">按键一扣币类别</label>
+                    <!--<div class="layui-input-inline">-->
+                        <!--<select name="PushBalanceIndex1" id="PushBalanceIndex1" lay-filter="PushBalanceIndex1">-->
 
-                        </select>
-                    </div>
-                </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label">扣币数</label>
+                        <!--</select>-->
+                    <!--</div>-->
+                <!--</div>-->
+                <!--<div class="layui-inline">-->
+                    <label class="layui-form-mid">扣币数</label>
                     <div class="layui-input-inline">
                         <input type="text" class="layui-input" name="PushCoin1">
                     </div>
@@ -91,15 +91,15 @@
             </div>
             <div class="layui-form-item">
                 <div class="layui-inline">
-                    <label class="layui-form-label">按键二扣币类别</label>
-                    <div class="layui-input-inline">
-                        <select name="PushBalanceIndex2" id="PushBalanceIndex2" lay-filter="PushBalanceIndex2">
+                    <label class="layui-form-mid">按键二扣币类别</label>
+                    <!--<div class="layui-input-inline">-->
+                        <!--<select name="PushBalanceIndex2" id="PushBalanceIndex2" lay-filter="PushBalanceIndex2">-->
 
-                        </select>
-                    </div>
-                </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label">扣币数</label>
+                        <!--</select>-->
+                    <!--</div>-->
+                <!--</div>-->
+                <!--<div class="layui-inline">-->
+                    <label class="layui-form-mid">扣币数</label>
                     <div class="layui-input-inline">
                         <input type="text" class="layui-input" name="PushCoin2">
                     </div>
@@ -268,17 +268,17 @@
                 }
             }
         });
-        form.on('select(PushBalanceIndex1)',(data)=>{
-            PushBalanceIndex1=data.value;
-        });
-        form.on('select(PushBalanceIndex2)',(data)=>{
-            if(PushBalanceIndex1==data.value){
-                layer.msg('该选项已选，请选择其他选项')
-                xc.getBalanceTypeDic ('',token,layer,form,'PushBalanceIndex2')
-            }else {
-                PushBalanceIndex2=data.value;
-            }
-        });
+//        form.on('select(PushBalanceIndex1)',(data)=>{
+//            PushBalanceIndex1=data.value;
+//        });
+//        form.on('select(PushBalanceIndex2)',(data)=>{
+//            if(PushBalanceIndex1==data.value){
+//                layer.msg('该选项已选，请选择其他选项')
+//                xc.getBalanceTypeDic ('',token,layer,form,'PushBalanceIndex2')
+//            }else {
+//                PushBalanceIndex2=data.value;
+//            }
+//        });
         form.on('switch(Allow_In)',(data)=>{
             if(data.elem.checked){
                 Allow_In=1
@@ -315,8 +315,8 @@
              GameList=[]; MemberLevelList=[];
 
             xc.getMemberTypeAll(token,layer,form,'memBox');
-            xc.getBalanceTypeDic ('',token,layer,form,'PushBalanceIndex1')
-            xc.getBalanceTypeDic ('',token,layer,form,'PushBalanceIndex2')
+//            xc.getBalanceTypeDic ('',token,layer,form,'PushBalanceIndex1')
+//            xc.getBalanceTypeDic ('',token,layer,form,'PushBalanceIndex2')
             layer.open({
                 title:'新增',
                 type:1,
@@ -339,9 +339,9 @@
                 'Allow_out':Allow_Out,
                 'WeekType':WeekType,
                 'week':week.length>0?week.sort().join('|'):'',
-                'PushBalanceIndex1':PushBalanceIndex1,
+//                'PushBalanceIndex1':PushBalanceIndex1,
                 'PushCoin1':$('input[name="PushCoin1"]').val(),
-                'PushBalanceIndex2':PushBalanceIndex2,
+//                'PushBalanceIndex2':PushBalanceIndex2,
                 'PushCoin2':$('input[name="PushCoin2"]').val(),
                 'Level':Level,
                 'StartTime':$('input[name="StartTime"]').val(),
@@ -423,8 +423,8 @@
                                'Allow_Out':arr.Allow_Out==1?true:false,
                                'Level':arr.Level
                            });
-                            xc.getBalanceTypeDic ('',token,layer,form,'PushBalanceIndex1',arr.PushBalanceIndex1)
-                            xc.getBalanceTypeDic ('',token,layer,form,'PushBalanceIndex2',arr.PushBalanceIndex2)
+//                            xc.getBalanceTypeDic ('',token,layer,form,'PushBalanceIndex1',arr.PushBalanceIndex1)
+//                            xc.getBalanceTypeDic ('',token,layer,form,'PushBalanceIndex2',arr.PushBalanceIndex2)
                             $('#StartTime').val(generatelD(arr.StartTime.Hours) +':'+generatelD(arr.StartTime.Minutes) +':'+generatelD(arr.StartTime.Seconds));
                             $('#EndTime').val(generatelD(arr.EndTime.Hours) +':'+generatelD(arr.EndTime.Minutes) +':'+generatelD(arr.EndTime.Seconds));
                             checkedArr=arr.GameList;
@@ -466,7 +466,7 @@
                             form.render();
 
                             WeekType=arr.WeekType; Level=arr.Level;
-                            PushBalanceIndex1=arr.PushBalanceIndex1; PushBalanceIndex2=arr.PushBalanceIndex2;
+//                            PushBalanceIndex1=arr.PushBalanceIndex1; PushBalanceIndex2=arr.PushBalanceIndex2;
                             Allow_In=arr.Allow_In; Allow_Out=arr.Allow_Out;
                             MemberLevelList=arr.MemberLevelList;
                             layer.open({

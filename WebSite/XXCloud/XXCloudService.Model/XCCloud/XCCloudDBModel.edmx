@@ -1666,6 +1666,8 @@
           <Property Name="ProjectType" Type="int" />
           <Property Name="AreaType" Type="int" />
           <Property Name="ChargeType" Type="int" />
+          <Property Name="GameIndex" Type="int" />
+          <Property Name="GuestPrice" Type="numeric" Precision="10" Scale="2" />
           <Property Name="State" Type="int" />
           <Property Name="Note" Type="varchar" MaxLength="200" />
           <Property Name="Verifiction" Type="varchar" MaxLength="32" />
@@ -3235,7 +3237,6 @@
           <EntitySet Name="Data_FreeGiveRule_Memberlevel" EntityType="XCCloudDBModel.Data_FreeGiveRule_Memberlevel" />
           <EntitySet Name="Data_Game_StockInfo" EntityType="XCCloudDBModel.Data_Game_StockInfo" />
           <EntitySet Name="Data_GameAPP_Rule" EntityType="XCCloudDBModel.Data_GameAPP_Rule" />
-          <EntitySet Name="Data_GameEncourage" EntityType="XCCloudDBModel.Data_GameEncourage" />
           <EntitySet Name="Data_GameFreeRule" EntityType="XCCloudDBModel.Data_GameFreeRule" />
           <EntitySet Name="Data_GameFreeRule_List" EntityType="XCCloudDBModel.Data_GameFreeRule_List" />
           <EntitySet Name="Data_GameInfo_Ext" EntityType="XCCloudDBModel.Data_GameInfo_Ext" />
@@ -3264,7 +3265,6 @@
           <EntitySet Name="Data_Project_BandPrice" EntityType="XCCloudDBModel.Data_Project_BandPrice" />
           <EntitySet Name="Data_Project_BindDevice" EntityType="XCCloudDBModel.Data_Project_BindDevice" />
           <EntitySet Name="Data_Project_TimeInfo" EntityType="XCCloudDBModel.Data_Project_TimeInfo" />
-          <EntitySet Name="Data_ProjectInfo" EntityType="XCCloudDBModel.Data_ProjectInfo" />
           <EntitySet Name="Data_ProjectTicket" EntityType="XCCloudDBModel.Data_ProjectTicket" />
           <EntitySet Name="Data_ProjectTicket_Bind" EntityType="XCCloudDBModel.Data_ProjectTicket_Bind" />
           <EntitySet Name="Data_PushRule" EntityType="XCCloudDBModel.Data_PushRule" />
@@ -3354,6 +3354,8 @@
           <EntitySet Name="Data_GoodOutOrder_Detail" EntityType="XCCloudDBModel.Data_GoodOutOrder_Detail" />
           <EntitySet Name="Data_CouponInfo" EntityType="XCCloudDBModel.Data_CouponInfo" />
           <EntitySet Name="XC_HolidayList" EntityType="XCCloudDBModel.XC_HolidayList" />
+          <EntitySet Name="Data_GameEncourage" EntityType="XCCloudDBModel.Data_GameEncourage" />
+          <EntitySet Name="Data_ProjectInfo" EntityType="XCCloudDBModel.Data_ProjectInfo" />
         </EntityContainer>
         <EntityType Name="Base_ChainRule">
           <Key>
@@ -4103,28 +4105,6 @@
           <Property Name="PlayCount" Type="Int32" />
           <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
         </EntityType>
-        <EntityType Name="Data_GameEncourage">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="GameIndex" Type="Int32" />
-          <Property Name="StartDate" Type="DateTime" Precision="0" />
-          <Property Name="EndDate" Type="DateTime" Precision="0" />
-          <Property Name="WeekType" Type="Int32" />
-          <Property Name="Week" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="StartTime" Type="Time" Precision="7" />
-          <Property Name="EndTime" Type="Time" Precision="7" />
-          <Property Name="ContinueTimes" Type="Int32" />
-          <Property Name="Note" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
-          <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
-          <Property Name="StartGames" Type="Int32" />
-          <Property Name="EndGames" Type="Int32" />
-          <Property Name="EncouragePrice" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="State" Type="Int32" />
-        </EntityType>
         <EntityType Name="Data_GameFreeRule">
           <Key>
             <PropertyRef Name="ID" />
@@ -4556,21 +4536,6 @@
           <Property Name="TopPrice" Type="Decimal" Precision="10" Scale="2" />
           <Property Name="CycleType" Type="Int32" />
           <Property Name="LockMember" Type="Int32" />
-          <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
-        </EntityType>
-        <EntityType Name="Data_ProjectInfo">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="ProjectName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="ProjectType" Type="Int32" />
-          <Property Name="AreaType" Type="Int32" />
-          <Property Name="ChargeType" Type="Int32" />
-          <Property Name="State" Type="Int32" />
-          <Property Name="Note" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
           <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="Data_ProjectTicket">
@@ -6111,6 +6076,45 @@
           <Property Name="WorkDay" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="DayType" Type="Int32" Nullable="false" />
         </EntityType>
+        <EntityType Name="Data_GameEncourage">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="GameIndex" Type="Int32" />
+          <Property Name="StartDate" Type="DateTime" Precision="0" />
+          <Property Name="EndDate" Type="DateTime" Precision="0" />
+          <Property Name="WeekType" Type="Int32" />
+          <Property Name="Week" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="StartTime" Type="Time" Precision="7" />
+          <Property Name="EndTime" Type="Time" Precision="7" />
+          <Property Name="ContinueTimes" Type="Int32" />
+          <Property Name="Note" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="StartGames" Type="Int32" />
+          <Property Name="EndGames" Type="Int32" />
+          <Property Name="EncouragePrice" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="State" Type="Int32" />
+          <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Data_ProjectInfo">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="ProjectName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="ProjectType" Type="Int32" />
+          <Property Name="AreaType" Type="Int32" />
+          <Property Name="ChargeType" Type="Int32" />
+          <Property Name="GameIndex" Type="Int32" />
+          <Property Name="GuestPrice" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="State" Type="Int32" />
+          <Property Name="Note" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -6916,29 +6920,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Data_GameEncourage">
-            <EntityTypeMapping TypeName="XCCloudDBModel.Data_GameEncourage">
-              <MappingFragment StoreEntitySet="Data_GameEncourage">
-                <ScalarProperty Name="State" ColumnName="State" />
-                <ScalarProperty Name="EncouragePrice" ColumnName="EncouragePrice" />
-                <ScalarProperty Name="EndGames" ColumnName="EndGames" />
-                <ScalarProperty Name="StartGames" ColumnName="StartGames" />
-                <ScalarProperty Name="Verifiction" ColumnName="Verifiction" />
-                <ScalarProperty Name="Note" ColumnName="Note" />
-                <ScalarProperty Name="ContinueTimes" ColumnName="ContinueTimes" />
-                <ScalarProperty Name="EndTime" ColumnName="EndTime" />
-                <ScalarProperty Name="StartTime" ColumnName="StartTime" />
-                <ScalarProperty Name="Week" ColumnName="Week" />
-                <ScalarProperty Name="WeekType" ColumnName="WeekType" />
-                <ScalarProperty Name="EndDate" ColumnName="EndDate" />
-                <ScalarProperty Name="StartDate" ColumnName="StartDate" />
-                <ScalarProperty Name="GameIndex" ColumnName="GameIndex" />
-                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
-                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Data_GameFreeRule">
             <EntityTypeMapping TypeName="XCCloudDBModel.Data_GameFreeRule">
               <MappingFragment StoreEntitySet="Data_GameFreeRule">
@@ -7394,22 +7375,6 @@
                 <ScalarProperty Name="FreeMinute" ColumnName="FreeMinute" />
                 <ScalarProperty Name="ChargeType" ColumnName="ChargeType" />
                 <ScalarProperty Name="ProjectTimeID" ColumnName="ProjectTimeID" />
-                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
-                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Data_ProjectInfo">
-            <EntityTypeMapping TypeName="XCCloudDBModel.Data_ProjectInfo">
-              <MappingFragment StoreEntitySet="Data_ProjectInfo">
-                <ScalarProperty Name="Verifiction" ColumnName="Verifiction" />
-                <ScalarProperty Name="Note" ColumnName="Note" />
-                <ScalarProperty Name="State" ColumnName="State" />
-                <ScalarProperty Name="ChargeType" ColumnName="ChargeType" />
-                <ScalarProperty Name="AreaType" ColumnName="AreaType" />
-                <ScalarProperty Name="ProjectType" ColumnName="ProjectType" />
-                <ScalarProperty Name="ProjectName" ColumnName="ProjectName" />
                 <ScalarProperty Name="StoreID" ColumnName="StoreID" />
                 <ScalarProperty Name="MerchID" ColumnName="MerchID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
@@ -9039,6 +9004,47 @@
               <MappingFragment StoreEntitySet="XC_HolidayList">
                 <ScalarProperty Name="DayType" ColumnName="DayType" />
                 <ScalarProperty Name="WorkDay" ColumnName="WorkDay" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Data_GameEncourage">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Data_GameEncourage">
+              <MappingFragment StoreEntitySet="Data_GameEncourage">
+                <ScalarProperty Name="Verifiction" ColumnName="Verifiction" />
+                <ScalarProperty Name="State" ColumnName="State" />
+                <ScalarProperty Name="EncouragePrice" ColumnName="EncouragePrice" />
+                <ScalarProperty Name="EndGames" ColumnName="EndGames" />
+                <ScalarProperty Name="StartGames" ColumnName="StartGames" />
+                <ScalarProperty Name="Note" ColumnName="Note" />
+                <ScalarProperty Name="ContinueTimes" ColumnName="ContinueTimes" />
+                <ScalarProperty Name="EndTime" ColumnName="EndTime" />
+                <ScalarProperty Name="StartTime" ColumnName="StartTime" />
+                <ScalarProperty Name="Week" ColumnName="Week" />
+                <ScalarProperty Name="WeekType" ColumnName="WeekType" />
+                <ScalarProperty Name="EndDate" ColumnName="EndDate" />
+                <ScalarProperty Name="StartDate" ColumnName="StartDate" />
+                <ScalarProperty Name="GameIndex" ColumnName="GameIndex" />
+                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
+                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Data_ProjectInfo">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Data_ProjectInfo">
+              <MappingFragment StoreEntitySet="Data_ProjectInfo">
+                <ScalarProperty Name="Verifiction" ColumnName="Verifiction" />
+                <ScalarProperty Name="Note" ColumnName="Note" />
+                <ScalarProperty Name="State" ColumnName="State" />
+                <ScalarProperty Name="GuestPrice" ColumnName="GuestPrice" />
+                <ScalarProperty Name="GameIndex" ColumnName="GameIndex" />
+                <ScalarProperty Name="ChargeType" ColumnName="ChargeType" />
+                <ScalarProperty Name="AreaType" ColumnName="AreaType" />
+                <ScalarProperty Name="ProjectType" ColumnName="ProjectType" />
+                <ScalarProperty Name="ProjectName" ColumnName="ProjectName" />
+                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
+                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>

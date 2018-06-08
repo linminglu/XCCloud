@@ -239,10 +239,10 @@ namespace XXCloudService.Api.XCCloud
                 string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
 
                 string errMsg = string.Empty;
-                if (!dicParas.Get("depotId").Validint("仓库编号", out errMsg))
+                if (!dicParas.Get("depotId").Validintnozero("仓库编号", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-                var depotId = dicParas.Get("depotId").Toint(0) ;
+                var depotId = dicParas.Get("depotId").Toint() ;
 
                 var query = Base_GoodsInfoService.N.GetModels(p => p.AllowStorage == 1 && p.Status == 1); //只显示允许入库的同级商品
                 if (userTokenKeyModel.LogType == (int)RoleType.MerchUser)
@@ -257,11 +257,16 @@ namespace XXCloudService.Api.XCCloud
                         (p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && (p.StoreID ?? "") == ""));
                 }
 
+                //获取分组排序后每组第一条
+                var linq = from s in Data_GoodsStockService.N.GetModels(p => p.DepotID == depotId)
+                           group s by s.GoodID into g
+                           select g.OrderByDescending(or => or.InitialTime).FirstOrDefault();
+
                 var result = from a in query
-                             join b in Data_GoodsStockService.N.GetModels(p => p.DepotID == depotId) on a.ID equals b.GoodID into b1
+                             join b in linq on a.ID equals b.GoodID into b1
                              from b in b1.DefaultIfEmpty()
                              join c in Dict_SystemService.N.GetModels() on a.GoodType equals c.ID into c1
-                             from c in c1.DefaultIfEmpty()                             
+                             from c in c1.DefaultIfEmpty()
                              orderby a.StoreID, a.ID
                              select new
                              {
@@ -343,7 +348,7 @@ namespace XXCloudService.Api.XCCloud
                                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                                     }
 
-                                    Data_GoodsStockService.I.Update(data_GoodsStock);
+                                    Data_GoodsStockService.I.UpdateModel(data_GoodsStock);
                                 }
                                 
                             }

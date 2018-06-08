@@ -1597,7 +1597,7 @@ namespace XXCloudService.Api.XCCloud
                 return false;
             }
 
-            stockModel.RemainCount = (stockModel.RemainCount ?? 0) + stockCount;
+            stockModel.RemainCount = (stockModel.RemainCount ?? 0) + (stockFlag == (int)StockFlag.Out ? -stockCount : stockFlag == (int)StockFlag.In ? stockCount : 0) ?? 0;
             Data_GoodsStockService.I.UpdateModel(stockModel);
             return true;
         }
@@ -2164,6 +2164,12 @@ namespace XXCloudService.Api.XCCloud
                         }
 
                         var model = Data_GoodStorageService.I.GetModels(p => p.ID == id).FirstOrDefault();
+                        if (model.AuthorFlag == (int)GoodOutInState.Done)
+                        {
+                            errMsg = "已入库审核的记录不能重复审核";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
                         model.AuthorFlag = (int)GoodOutInState.Done;
                         model.AuthorID = logId;
                         model.RealTime = DateTime.Now;
@@ -2179,7 +2185,7 @@ namespace XXCloudService.Api.XCCloud
                         foreach (var detailModel in detailList)
                         {
                             //更新当前库存
-                            if (!updateGoodsStock(model.DepotID, detailModel.GoodID, (int)SourceType.GoodRequest, id, detailModel.TaxPrice, (int)StockFlag.In, detailModel.StorageCount, merchId, storeId, out errMsg))
+                            if (!updateGoodsStock(model.DepotID, detailModel.GoodID, (int)SourceType.GoodStorage, id, detailModel.TaxPrice, (int)StockFlag.In, detailModel.StorageCount, merchId, storeId, out errMsg))
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);                             
                         }
                         
@@ -2500,7 +2506,7 @@ namespace XXCloudService.Api.XCCloud
                                 		OrderID, SUM(ISNULL(OutCount,0)) AS OutCount, SUM(ISNULL(OutTotal,0)) AS OutTotal
                                 	FROM
                                 		Data_GoodOutOrder_Detail   
-                                    GROUP BY OrderID                                                                         	
+                                    GROUP BY OrderID                                                                       	
                                 ) b ON a.OrderID = b.OrderID
                                 LEFT JOIN Base_UserInfo u ON a.OPUserID = u.UserID
                                 LEFT JOIN Base_DepotInfo c ON a.DepotID = c.ID                                
@@ -2508,6 +2514,7 @@ namespace XXCloudService.Api.XCCloud
                 sql = sql + " AND a.merchId='" + merchId + "'";
                 if (!storeId.IsNull())
                     sql = sql + " AND a.storeId='" + storeId + "'";
+                sql = sql + " ORDER BY a.ID DESC";
 
                 //查询退货信息
                 string sql2 = @"SELECT
@@ -2538,6 +2545,7 @@ namespace XXCloudService.Api.XCCloud
                 sql2 = sql2 + " AND a.merchId='" + merchId + "'";
                 if (!storeId.IsNull())
                     sql2 = sql2 + " AND a.storeId='" + storeId + "'";
+                sql2 = sql2 + " ORDER BY a.ID DESC";
 
                 var data_GoodOutOrder = Data_GoodOutOrderService.I.SqlQuery<Data_GoodOutOrderList>(sql, parameters)
                     .Union(Data_GoodExitInfoService.I.SqlQuery<Data_GoodOutOrderList>(sql2, parameters)).ToList();
@@ -2634,7 +2642,7 @@ namespace XXCloudService.Api.XCCloud
                             model.OPUserID = logId;
                             model.State = (int)GoodOutInState.Pending;
                             model.CreateTime = DateTime.Now;
-                            model.CheckDate = DateTime.Now;  //应从服务获取当前营业日期
+                            model.CheckDate = DateTime.Now.Todate();  //应从服务获取当前营业日期
                             if (!Data_GoodOutOrderService.I.Add(model))
                             {
                                 errMsg = "保存商品出库信息失败";
@@ -2825,6 +2833,12 @@ namespace XXCloudService.Api.XCCloud
                         }
 
                         var model = Data_GoodOutOrderService.I.GetModels(p => p.ID == id).FirstOrDefault();
+                        if (model.State == (int)GoodOutInState.Done)
+                        {
+                            errMsg = "已出库审核的记录不能重复审核";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
                         model.State = (int)GoodOutInState.Done;
                         model.AuthorID = logId;
                         model.AuthorTime = DateTime.Now;

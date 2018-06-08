@@ -227,7 +227,7 @@
                     })
                 })
             }else if(layevent==='check'){//审核
-                layer.confirm('确定删除此出库信息吗？', function(index){
+                layer.confirm('确定审核此出库信息吗？', function(index){
                     let _obj={'id':_data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
                     let parseJson = JSON.stringify(_obj);
                     $.ajax({

@@ -1,0 +1,9 @@
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+declare @Verifiction varchar(32)
+declare @CurrentDateTime datetime = getdate()
+declare @Verifiction_DataCardBalanceType as Verifiction_DataCardBalanceType
+insert @Verifiction_DataCardBalanceType(FieldName,FieldValue)
+exec GetDataCardBalanceVerifiction '10002542010600120180521000050000','100025','10002542010600120180521000060000',90360,9.03,@CurrentDateTime,@Verifiction output
+print '@Verifiction:' + @Verifiction
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------

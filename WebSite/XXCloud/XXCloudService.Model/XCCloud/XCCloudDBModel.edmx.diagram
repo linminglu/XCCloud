@@ -57,7 +57,6 @@
         <EntityTypeShape EntityType="XCCloudDBModel.Data_FreeGiveRule_Memberlevel" Width="1.5" PointX="22.75" PointY="5.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_Game_StockInfo" Width="1.5" PointX="22.75" PointY="8.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_GameAPP_Rule" Width="1.5" PointX="22.75" PointY="12.75" />
-        <EntityTypeShape EntityType="XCCloudDBModel.Data_GameEncourage" Width="1.5" PointX="22.75" PointY="16.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_GameFreeRule" Width="1.5" PointX="4.75" PointY="23.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_GameFreeRule_List" Width="1.5" PointX="6.75" PointY="23.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_GameInfo_Ext" Width="1.5" PointX="10.75" PointY="23.75" />
@@ -86,7 +85,6 @@
         <EntityTypeShape EntityType="XCCloudDBModel.Data_Project_BandPrice" Width="1.5" PointX="28.75" PointY="23.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_Project_BindDevice" Width="1.5" PointX="28.75" PointY="27.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_Project_TimeInfo" Width="1.5" PointX="24.75" PointY="29.75" />
-        <EntityTypeShape EntityType="XCCloudDBModel.Data_ProjectInfo" Width="1.5" PointX="30.75" PointY="0.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_ProjectTicket" Width="1.5" PointX="30.75" PointY="4.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_ProjectTicket_Bind" Width="1.5" PointX="10.75" PointY="30.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_PushRule" Width="1.5" PointX="30.75" PointY="15.75" />
@@ -176,6 +174,8 @@
         <EntityTypeShape EntityType="XCCloudDBModel.Data_GoodOutOrder_Detail" Width="1.5" PointX="41.375" PointY="5.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_CouponInfo" Width="1.5" PointX="31.375" PointY="42.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.XC_HolidayList" Width="1.5" PointX="17.375" PointY="8.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.Data_GameEncourage" Width="1.5" PointX="33.375" PointY="42.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.Data_ProjectInfo" Width="1.5" PointX="35.375" PointY="42.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

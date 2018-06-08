@@ -77,7 +77,6 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Data_FreeGiveRule_Memberlevel> Data_FreeGiveRule_Memberlevel { get; set; }
         public virtual DbSet<Data_Game_StockInfo> Data_Game_StockInfo { get; set; }
         public virtual DbSet<Data_GameAPP_Rule> Data_GameAPP_Rule { get; set; }
-        public virtual DbSet<Data_GameEncourage> Data_GameEncourage { get; set; }
         public virtual DbSet<Data_GameFreeRule> Data_GameFreeRule { get; set; }
         public virtual DbSet<Data_GameFreeRule_List> Data_GameFreeRule_List { get; set; }
         public virtual DbSet<Data_GameInfo_Ext> Data_GameInfo_Ext { get; set; }
@@ -106,7 +105,6 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Data_Project_BandPrice> Data_Project_BandPrice { get; set; }
         public virtual DbSet<Data_Project_BindDevice> Data_Project_BindDevice { get; set; }
         public virtual DbSet<Data_Project_TimeInfo> Data_Project_TimeInfo { get; set; }
-        public virtual DbSet<Data_ProjectInfo> Data_ProjectInfo { get; set; }
         public virtual DbSet<Data_ProjectTicket> Data_ProjectTicket { get; set; }
         public virtual DbSet<Data_ProjectTicket_Bind> Data_ProjectTicket_Bind { get; set; }
         public virtual DbSet<Data_PushRule> Data_PushRule { get; set; }
@@ -196,5 +194,7 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Data_GoodOutOrder_Detail> Data_GoodOutOrder_Detail { get; set; }
         public virtual DbSet<Data_CouponInfo> Data_CouponInfo { get; set; }
         public virtual DbSet<XC_HolidayList> XC_HolidayList { get; set; }
+        public virtual DbSet<Data_GameEncourage> Data_GameEncourage { get; set; }
+        public virtual DbSet<Data_ProjectInfo> Data_ProjectInfo { get; set; }
     }
 }

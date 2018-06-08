@@ -21,6 +21,8 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> ProjectType { get; set; }
         public Nullable<int> AreaType { get; set; }
         public Nullable<int> ChargeType { get; set; }
+        public Nullable<int> GameIndex { get; set; }
+        public Nullable<decimal> GuestPrice { get; set; }
         public Nullable<int> State { get; set; }
         public string Note { get; set; }
         public string Verifiction { get; set; }

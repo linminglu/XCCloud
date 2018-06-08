@@ -90,30 +90,25 @@
             </div>
             <div class="layui-form-item goodConvert">
                 <div class="layui-inline goodRules" >
-                    <label class="layui-form-label">余额类别</label>
+                    <label class="layui-form-mid">同一玩家连续投币，从第</label>
                     <div class="layui-input-inline" style="width: 130px">
-                        <input type="text" class="layui-input" name="GameTims">
+                        <input type="text" class="layui-input" name="StartGames">
                     </div>
-                    <div class="layui-form-mid">局以内,每局减免</div>
+                    <!--<div class="layui-form-mid"></div>-->
+                    <div class="layui-form-mid">局到</div>
+                    <div class="layui-input-inline"  style="width: 130px">
+                        <input type="text" class="layui-input" name="EndGames">
+                    </div>
+                    <div class="layui-form-mid">局以内</div>
+                    <br>
+                    <div class="layui-form-mid">每局可减免</div>
                     <div class="layui-input-inline"  style="width: 130px">
                         <input type="text" class="layui-input" name="EncouragePrice">
                     </div>
-                    <div class="layui-form-mid">币</div>
+                    <div class="layui-form-mid" id="balanceKind">代币</div>
                 </div>
-                <!--<div class="layui-inline" style="width: 80px">-->
-                    <!--<div class="layui-btn-group">-->
-                        <!--<button class="layui-btn layui-btn-sm" type="button" id="addGoods">-->
-                            <!--<i class="layui-icon">&#xe654;</i>-->
-                        <!--</button>-->
-                        <!--<button class="layui-btn layui-btn-sm" type="button" id="reduceGoods">-->
-                            <!--<i class="layui-icon">&#x1006;</i>-->
-                        <!--</button>-->
-                    <!--</div>-->
-                <!--</div>-->
-
             </div>
         </div>
-
     </form>
     <div style="text-align:center;margin-bottom:15px; " class="layui-col-md12">
         <button type="button" id="save" class="layui-btn">确定</button>
@@ -142,16 +137,6 @@
     let week=[];let WeekType=0;
     let GameList='';
     var xtree3;
-
-//    $('#addGoods').click(function () {
-//        $('.goodConvert').append($('body').find($('.goodRules')).eq(0).clone())
-//    });
-//    $('#reduceGoods').click(function () {
-//        if($('.goodConvert').find($('.goodRules')).length>1){
-//            $('.goodConvert').find($('.goodRules')).last().remove();
-//        }else {
-//        }
-//    });
     layui.use(['table','form','layer','laydate'],function () {
         let table=layui.table;let form=layui.form;let layer=layui.layer;let laydate=layui.laydate;
         var  obj={"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
@@ -256,17 +241,6 @@
             for (var i = 0; i < oCks.length; i++) {
                 GameList=oCks[0].value;
             }
-            let _EncourageList=[];
-            $('.goodConvert .goodRules').each(function () {
-                if($(this).find('input[name="GameTims"]').val()!=''&&
-                    $(this).find('input[name="EncouragePrice"]').val()!=''
-                ){
-                    _EncourageList.push({
-                        'GameTims': $(this).find('input[name="GameTims"]').val(),
-                        'EncouragePrice': $(this).find('input[name="EncouragePrice"]').val()
-                    });
-                }
-            });
             let obj={'id':id,
                 'MerchID':JSON.parse(xc.getStorage('logMsg')).merchId,
                 'StoreID':JSON.parse(xc.getStorage('logMsg')).storeId,
@@ -279,10 +253,11 @@
                 'ContinueTimes':$('input[name="ContinueTimes"]').val(),
                 'Note':$('input[name="Note"]').val(),
                 'gameIndex':GameList,
-                'EncourageList':_EncourageList,
+                'StartGames':$('input[name="StartGames"]').val(),
+                'EndGames':$('input[name="EndGames"]').val(),
+                'EncouragePrice':$('input[name="EncouragePrice"]').val(),
                 'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'
             };
-
             let parseJson = JSON.stringify(obj);
             $.ajax({
                 type:'post',
@@ -307,7 +282,7 @@
             let layEvent=obj.event;
             id=data.ID;
             if(layEvent==='del'){
-                layer.confirm('确定停用此设置吗？', function(index){
+                layer.confirm('确定删除此设置吗？', function(index){
                     let _obj={'id':data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
                     let parseJson = JSON.stringify(_obj);
                     $.ajax({
@@ -320,6 +295,48 @@
                             if (data.result_code == 1) {
                                 layer.msg('本规则停用成功',{time:1500},function () {
                                     layer.close(index);
+                                    location.reload()
+                                })
+                            } else {
+                                layer.msg(data.result_msg);
+                            }
+                        }
+                    })
+                });
+            }else if(layEvent==='on'){
+                layer.confirm('确定启用此设置吗？', function(index){
+                    let _obj={'id':data.ID,'state':1,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                    let parseJson = JSON.stringify(_obj);
+                    $.ajax({
+                        type:'post',
+                        url:'/XCCloud/GameEncourage?action=EnGameEncourage',
+                        contentType: "application/json; charset=utf-8",
+                        data:{parasJson: parseJson},
+                        success: function (data) {
+                            data = JSON.parse(data);
+                            if (data.result_code == 1) {
+                                layer.msg('本规则启用成功',{time:1500},function () {
+                                    location.reload()
+                                })
+                            } else {
+                                layer.msg(data.result_msg);
+                            }
+                        }
+                    })
+                });
+            }else if(layEvent==='off'){
+                layer.confirm('确定停用此设置吗？', function(index){
+                    let _obj={'id':data.ID,'state':0,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                    let parseJson = JSON.stringify(_obj);
+                    $.ajax({
+                        type:'post',
+                        url:'/XCCloud/GameEncourage?action=EnGameEncourage',
+                        contentType: "application/json; charset=utf-8",
+                        data:{parasJson: parseJson},
+                        success: function (data) {
+                            data = JSON.parse(data);
+                            if (data.result_code == 1) {
+                                layer.msg('本规则停用成功',{time:1500},function () {
                                     location.reload()
                                 })
                             } else {
@@ -346,7 +363,10 @@
                                 'EndDate':arr.EndDate.substring(0, 10),
                                 'poriedType':arr.WeekType,
                                 'ContinueTimes':arr.ContinueTimes,
-                                'Note':arr.Note
+                                'Note':arr.Note,
+                                'StartGames':arr.StartGames,
+                                'EndGames':arr.EndGames,
+                                'EncouragePrice':arr.EncouragePrice
                             });
                             $('#StartTime').val(generatelD(arr.StartTime.Hours) +':'+generatelD(arr.StartTime.Minutes) +':'+generatelD(arr.StartTime.Seconds));
                             $('#EndTime').val(generatelD(arr.EndTime.Hours) +':'+generatelD(arr.EndTime.Minutes) +':'+generatelD(arr.EndTime.Seconds));
@@ -387,19 +407,6 @@
                             form.render();
                             week=arr.Week!=''?arr.Week.split('|'):[];
                             WeekType=arr.WeekType;
-
-                            if(arr.EncourageList.length==1){
-                                $('.goodRules input[name="GameTims"]').val(arr.EncourageList[0].GameTims);
-                                $('.goodRules input[name="EncouragePrice"]').val(arr.EncourageList[0].EncouragePrice);
-                            }else if(arr.length>1){
-                                for(let i=1;i<arr.EncourageList.length;i++){
-                                    $('.goodConvert').append($('body').find($('.goodRules')).eq(0).clone())
-                                }
-                                for(let i=0;i<arr.EncourageList.length;i++){
-                                    $('.goodConvert').find($('.goodRules')).eq(i).find('input[name="GameTims"]').val(arr.EncourageList[i].GameTims);
-                                    $('.goodConvert').find($('.goodRules')).eq(i).find('input[name="EncouragePrice"]').val(arr.EncourageList[i].EncouragePrice);
-                                }
-                            }
                             layer.open({
                                 title:'修改设置',
                                 type:1,
@@ -420,6 +427,12 @@
     }
 </script>
 <script type="text/html" id="barDemo">
+        {{# if(d.State==1){　}}
+        <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="off">停用</a>
+        {{# }else { }}
+
+        <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="on">启用</a>
+        {{#  } }}
     <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del"><i class="layui-icon">&#xe640;</i>删除</a>
     <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="modify"><i class="layui-icon">&#xe642;</i>修改</a>
 </script>

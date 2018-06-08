@@ -48,7 +48,7 @@ namespace XXCloudService.Api.XCCloud
                 }
 
                 string sql = @"SELECT
-                                    a.ID, b.GameName,
+                                    a.ID, b.GameName, a.State,
                                     ((case when ISNULL(a.StartDate,'')='' then '' else convert(varchar,a.StartDate,23) end) + '~' +
                                     (case when ISNULL(a.EndDate,'')='' then '' else convert(varchar,a.EndDate,23) end)) AS ValidDate,
                                     a.Note
@@ -88,13 +88,7 @@ namespace XXCloudService.Api.XCCloud
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
-                var data_GameEncourage = (new
-                {
-                    model = model,
-                    //EncourageList = Data_GameEncourage_ListService.I.GetModels(p => p.EncourageID == id)
-                }).AsFlatDictionary();
-
-                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, data_GameEncourage);
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, model);
             }
             catch (Exception e)
             {
@@ -112,11 +106,17 @@ namespace XXCloudService.Api.XCCloud
                 string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
 
                 string errMsg = string.Empty;
-                if (!dicParas.GetArray("encourageList").Validarray("鼓励续玩列表", out errMsg))
+                if (!dicParas.Get("gameIndex").Validintnozero("游戏机ID", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (!dicParas.Get("startGames").Validintnozero("开始局数", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (!dicParas.Get("endGames").Validintnozero("结束局数", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (!dicParas.Get("encouragePrice").Validdecimalnozero("减免币数", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 
                 var id = dicParas.Get("id").Toint(0);
-                var encourageList = dicParas.GetArray("encourageList");
+                var gameIndex = dicParas.Get("gameIndex").Toint();
                
                 //开启EF事务
                 using (TransactionScope ts = new TransactionScope())
@@ -129,6 +129,7 @@ namespace XXCloudService.Api.XCCloud
                         Utils.GetModel(dicParas, ref model);
                         if (id == 0)
                         {
+                            model.State = 1;
                             if (!Data_GameEncourageService.I.Add(model))
                             {
                                 errMsg = "保存鼓励续玩规则失败";
@@ -148,50 +149,7 @@ namespace XXCloudService.Api.XCCloud
                                 errMsg = "保存鼓励续玩规则失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                             }
-                        }
-
-                        id = model.ID;
-
-                        //保存鼓励续玩信息
-                        if (encourageList != null && encourageList.Count() >= 0)
-                        {
-                            //先删除，后添加
-                            //foreach (var encourageModel in Data_GameEncourage_ListService.I.GetModels(p => p.EncourageID == id))
-                            //{
-                            //    Data_GameEncourage_ListService.I.DeleteModel(encourageModel);
-                            //}
-
-                            foreach (IDictionary<string, object> el in encourageList)
-                            {
-                                if (el != null)
-                                {
-                                    var dicPar = new Dictionary<string, object>(el, StringComparer.OrdinalIgnoreCase);
-                                    if (!dicPar.Get("gameTims").Validintnozero("连续启动局数", out errMsg))
-                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                                    if (!dicPar.Get("encouragePrice").Validdecimalnozero("减免币数", out errMsg))
-                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-
-                                    //var encourageModel = new Data_GameEncourage_List();
-                                    //encourageModel.GameTims = dicPar.Get("gameTims").Toint();
-                                    //encourageModel.EncouragePrice = dicPar.Get("encouragePrice").Todecimal();
-                                    //encourageModel.EncourageID = id;
-                                    //encourageModel.MerchID = merchId;
-                                    //encourageModel.StoreID = storeId;
-                                    //Data_GameEncourage_ListService.I.AddModel(encourageModel);
-                                }
-                                else
-                                {
-                                    errMsg = "提交数据包含空对象";
-                                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                                }
-                            }
-
-                            //if (!Data_GameEncourage_ListService.I.SaveChanges())
-                            //{
-                            //    errMsg = "保存鼓励续玩信息失败";
-                            //    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                            //}
-                        }                        
+                        }                                         
 
                         ts.Complete();
                     }
@@ -235,11 +193,6 @@ namespace XXCloudService.Api.XCCloud
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 
-                        //foreach (var gameEncourageModel in Data_GameEncourage_ListService.I.GetModels(p => p.EncourageID == id))
-                        //{
-                        //    Data_GameEncourage_ListService.I.DeleteModel(gameEncourageModel);
-                        //}
-
                         var model = Data_GameEncourageService.I.GetModels(p => p.ID == id).FirstOrDefault();
                         Data_GameEncourageService.I.DeleteModel(model);
 
@@ -259,6 +212,47 @@ namespace XXCloudService.Api.XCCloud
                     {
                         return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
                     }
+                }
+
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object EnGameEncourage(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+
+                string errMsg = string.Empty;
+                if (!dicParas.Get("id").Validintnozero("鼓励续玩ID", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (!dicParas.Get("state").Validint("启停状态", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);                
+
+                var id = dicParas.Get("id").Toint();
+                var state = dicParas.Get("state").Toint();
+
+                var data_GameEncourageService = Data_GameEncourageService.I;
+                if (!data_GameEncourageService.Any(a => a.ID == id))
+                {
+                    errMsg = "该鼓励续玩信息不存在";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
+                var model = data_GameEncourageService.GetModels(p => p.ID == id).FirstOrDefault();
+                model.State = state;
+                if (!data_GameEncourageService.Update(model))
+                {
+                    errMsg = "保存鼓励续玩规则失败";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);

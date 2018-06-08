@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Entity;
 using System.Data.Entity.Validation;
 using System.Data.SqlClient;
@@ -8,6 +9,7 @@ using System.Linq;
 using System.Transactions;
 using System.Web;
 using XCCloudService.Base;
+using XCCloudService.BLL.CommonBLL;
 using XCCloudService.BLL.IBLL.XCCloud;
 using XCCloudService.BLL.XCCloud;
 using XCCloudService.Common;
@@ -29,6 +31,29 @@ namespace XXCloudService.Api.XCCloud
     {
         #region 游乐项目维护
 
+        private string getProjectGameTypes(out string errMsg)
+        {
+            string projectGameTypes = string.Empty;
+            errMsg = string.Empty;
+            string sql = " exec  SP_DictionaryNodes @MerchID,@DictKey,@PDictKey,@RootID output ";
+            SqlParameter[] parameters = new SqlParameter[4];
+            parameters[0] = new SqlParameter("@MerchID", "");
+            parameters[1] = new SqlParameter("@DictKey", "游乐项目");
+            parameters[2] = new SqlParameter("@PDictKey", "游戏机类型");
+            parameters[3] = new SqlParameter("@RootID", SqlDbType.Int);
+            parameters[3].Direction = System.Data.ParameterDirection.Output;
+            System.Data.DataSet ds = XCCloudBLL.ExecuteQuerySentence(sql, parameters);
+            if (ds.Tables.Count == 0)
+            {
+                errMsg = "没有找到节点信息";
+                return projectGameTypes;
+            }
+            var dictionaryResponse = Utils.GetModelList<DictionaryResponseModel>(ds.Tables[0]).Where(w => w.Enabled == 1).ToList();
+            projectGameTypes = string.Join(",", dictionaryResponse.Select(o => o.ID)).Trim(',');
+
+            return projectGameTypes;
+        }
+
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object QueryProjectInfo(Dictionary<string, object> dicParas)
         {
@@ -40,7 +65,7 @@ namespace XXCloudService.Api.XCCloud
 
                 string errMsg = string.Empty;
                 object[] conditions = dicParas.ContainsKey("conditions") ? (object[])dicParas["conditions"] : null;
-                var notProjectIds = dicParas.Get("notProjectIds");
+                var notProjectIds = dicParas.Get("notProjectIds");                
 
                 SqlParameter[] parameters = new SqlParameter[0];
                 string sqlWhere = string.Empty;
@@ -48,6 +73,11 @@ namespace XXCloudService.Api.XCCloud
                 if (conditions != null && conditions.Length > 0)
                     if (!QueryBLL.GenDynamicSql(conditions, "a.", ref sqlWhere, ref parameters, out errMsg))
                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                //排除游乐项目类型的游戏机
+                var projectGameTypes = getProjectGameTypes(out errMsg);
+                if (!errMsg.IsNull())
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
                 #region Sql语句
                 string sql = @"SELECT
@@ -58,8 +88,7 @@ namespace XXCloudService.Api.XCCloud
                                 	Data_ProjectInfo a
                                 LEFT JOIN Data_GroupArea b ON a.AreaType = b.ID  
                                 LEFT JOIN Dict_System c ON a.ProjectType = c.ID                                
-                                WHERE a.State=1
-                            ";
+                                WHERE a.State=1 AND a.ProjectType not in (" + projectGameTypes + ")";
                 sql += " AND a.StoreID=" + storeId;
 
                 #endregion
@@ -94,7 +123,23 @@ namespace XXCloudService.Api.XCCloud
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
-                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, data_ProjectInfo);
+                var gameIndex = data_ProjectInfo.GameIndex;
+                var data_GameInfo = Data_GameInfoService.I.GetModels(p => p.ID == gameIndex).FirstOrDefault();
+                var model = new
+                {
+                    data_ProjectInfo = data_ProjectInfo,
+                    GameInfo = new 
+                    {
+                        PushBalanceIndex1 = data_GameInfo != null ? data_GameInfo.PushBalanceIndex1 : null,
+                        PushCoin1 = data_GameInfo != null ? data_GameInfo.PushCoin1 : null,
+                        PushBalanceIndex2 = data_GameInfo != null ? data_GameInfo.PushBalanceIndex2 : null,
+                        PushCoin2 = data_GameInfo != null ? data_GameInfo.PushCoin2 : null,
+                        ReadCat = data_GameInfo != null ? data_GameInfo.ReadCat : null,
+                        PushLevel = data_GameInfo != null ? data_GameInfo.PushLevel : null,
+                    }
+                }.AsFlatDictionary();
+
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, model);
             }
             catch (Exception e)
             {
@@ -140,15 +185,10 @@ namespace XXCloudService.Api.XCCloud
                 if (!dicParas.Get("chargeType").Validint("扣费类型", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 if (!dicParas.Get("projectType").Validintnozero("项目类型", out errMsg))
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                //if (dicParas.Get("chargeType").Toint() == (int)ProjectInfoChargeType.Time && 
-                //    !dicParas.GetArray("projectTimeInfo").Validarray("计时规则信息", out errMsg))
-                //    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);              
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);             
 
                 var id = dicParas.Get("id").Toint(0);
                 var chargeType = dicParas.Get("chargeType").Toint();                
-                //var projectTimeInfo = dicParas.GetArray("projectTimeInfo");
-                //var projectBandPrices = dicParas.GetArray("projectBandPrices");
                       
                 //开启EF事务
                 using (TransactionScope ts = new TransactionScope())
@@ -159,6 +199,59 @@ namespace XXCloudService.Api.XCCloud
                         model.MerchID = merchId;
                         model.StoreID = storeId;
                         Utils.GetModel(dicParas, ref model);
+
+                        //保存设备配置信息
+                        if (chargeType == (int)ProjectInfoChargeType.Count)
+                        {
+                            if (!dicParas.Get("pushBalanceIndex1").Validintnozero("按钮一投币类别", out errMsg))
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            if (!dicParas.Get("pushCoin1").Validintnozero("按钮一投币量", out errMsg))
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            if (!dicParas.Get("readCat").Validint("刷卡即扣", out errMsg))
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            if (!dicParas.Get("pushLevel").Validint("投币信号电平", out errMsg))
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            if (!dicParas.Get("guestPrice").Validdecimalnozero("散客支付价格", out errMsg))
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                            var gameIndex = model.GameIndex;
+                            var data_GameInfoService = Data_GameInfoService.I;
+                            var data_GameInfo = data_GameInfoService.GetModels(p => p.ID == gameIndex).FirstOrDefault() ?? new Data_GameInfo();
+                            data_GameInfo.GameID = string.Empty;
+                            data_GameInfo.GameName = model.ProjectName;
+                            data_GameInfo.GameType = model.ProjectType;
+                            data_GameInfo.PushBalanceIndex1 = dicParas.Get("pushBalanceIndex1").Toint();
+                            data_GameInfo.PushCoin1 = dicParas.Get("pushCoin1").Toint();
+                            data_GameInfo.PushBalanceIndex2 = dicParas.Get("pushBalanceIndex2").Toint();
+                            data_GameInfo.PushCoin2 = dicParas.Get("pushCoin2").Toint();
+                            data_GameInfo.ReadCat = dicParas.Get("readCat").Toint();
+                            data_GameInfo.PushLevel = dicParas.Get("pushLevel").Toint();
+                            if (gameIndex == 0)
+                            {
+                                if (!data_GameInfoService.Add(data_GameInfo))
+                                {
+                                    errMsg = "保存设备配置信息失败";
+                                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                }
+
+                                model.GameIndex = data_GameInfo.ID;
+                            }
+                            else
+                            {
+                                if (data_GameInfo.ID == 0)
+                                {
+                                    errMsg = "该设备配置信息不存在";
+                                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                }
+
+                                if (!data_GameInfoService.Update(data_GameInfo))
+                                {
+                                    errMsg = "保存设备配置信息失败";
+                                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                }
+                            }                            
+                        }   
+                                                
                         if (id == 0)
                         {
                             model.State = 1;
@@ -181,84 +274,7 @@ namespace XXCloudService.Api.XCCloud
                                 errMsg = "保存游乐项目失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                             }
-                        }
-
-                        id = model.ID;
-
-                        ////保存计时项目
-                        //if (projectTimeInfo != null && projectTimeInfo.Count() > 0)
-                        //{
-                        //    var dicPara = new Dictionary<string, object>((projectTimeInfo[0] as IDictionary<string, object>), StringComparer.OrdinalIgnoreCase);
-                        //    if (dicPara.Get("chargeType").Toint() == (int)ProjectTimeChargeType.Weixin && dicParas.GetObject("cycleType").Toint() != (int)CycleType.Out)
-                        //    {
-                        //        errMsg = "微信票码验证进闸时, 计费方式须为出闸一次性扣费";
-                        //        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        //    }
-                            
-                        //    var projectTimeInfoModel = Data_Project_TimeInfoService.I.GetModels(p => p.ProjectTimeID == id).FirstOrDefault() ?? new Data_Project_TimeInfo();
-                        //    projectTimeInfoModel.StoreID = storeId;
-                        //    Utils.GetModel(dicPara, ref projectTimeInfoModel);
-                        //    if (projectTimeInfoModel.ID == 0)
-                        //    {
-                        //        if (!Data_Project_TimeInfoService.I.Add(projectTimeInfoModel))
-                        //        {
-                        //            errMsg = "保存游乐项目计时规则失败";
-                        //            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        //        }
-                        //    }
-                        //    else
-                        //    {
-                        //        if (!Data_Project_TimeInfoService.I.Update(projectTimeInfoModel))
-                        //        {
-                        //            errMsg = "保存游乐项目计时规则失败";
-                        //            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        //        }
-                        //    }
-
-                        //    //保存计时项目波段设定
-                        //    if (projectBandPrices != null && projectBandPrices.Count() >= 0)
-                        //    {
-                        //        //先删除，后添加
-                        //        foreach (var bandPriceModel in Data_Project_BandPriceService.I.GetModels(p => p.ProjectID == id))
-                        //        {
-                        //            Data_Project_BandPriceService.I.DeleteModel(bandPriceModel);
-                        //        }
-
-                        //        foreach (IDictionary<string, object> el in projectBandPrices)
-                        //        {
-                        //            if (el != null)
-                        //            {
-                        //                var dicPar = new Dictionary<string, object>(el, StringComparer.OrdinalIgnoreCase);
-                        //                if (!dicPar.Get("useTimeCount").Validint("总用时时间", out errMsg))
-                        //                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        //                if (!dicPar.Get("cycleTime").Validint("周期时间", out errMsg))
-                        //                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        //                if (!dicPar.Get("count").Validint("扣费数量", out errMsg))
-                        //                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-
-                        //                var bandPriceModel = new Data_Project_BandPrice();
-                        //                bandPriceModel.UseTimeCount = dicPar.Get("useTimeCount").Toint();
-                        //                bandPriceModel.UseType = dicPar.Get("useType").Toint();
-                        //                bandPriceModel.CycleTime = dicPar.Get("cycleTime").Toint();
-                        //                bandPriceModel.Count = dicPar.Get("count").Toint();
-                        //                bandPriceModel.StoreID = storeId;
-                        //                bandPriceModel.ProjectID = id;
-                        //                Data_Project_BandPriceService.I.AddModel(bandPriceModel);
-                        //            }
-                        //            else
-                        //            {
-                        //                errMsg = "提交数据包含空对象";
-                        //                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        //            }
-                        //        }
-
-                        //        if (!Data_Project_BandPriceService.I.SaveChanges())
-                        //        {
-                        //            errMsg = "保存计时项目波段设定失败";
-                        //            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        //        }
-                        //    }
-                        //}
+                        }                                            
 
                         ts.Complete();
                     }
@@ -516,7 +532,7 @@ namespace XXCloudService.Api.XCCloud
 
                 var bindDeviceIds = Data_Project_BindDeviceService.I.GetModels().Select(o => o.DeviceID);
                 var linq = from a in Base_DeviceInfoService.I.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)
-                               && p.DeviceStatus == 1 && (p.type == (int)DeviceType.卡头 || p.type == (int)DeviceType.闸机)).ToList()
+                               && (p.GameIndexID ?? 0) == 0 && p.DeviceStatus == 1 && (p.type == (int)DeviceType.卡头 || p.type == (int)DeviceType.闸机)).ToList()
                            where !bindDeviceIds.Contains(a.ID)
                            orderby a.DeviceName
                            select new
