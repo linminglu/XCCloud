@@ -28,7 +28,14 @@
             var url = "/service/GetHolidays?action=IsHoliday";
             var parasJson = JSON.stringify(parasObj);
             common(url, parasJson);
-        }        
+        }
+
+        function do_service_exporttodatabase() {
+            var parasObj = {  };
+            var url = "/service/GetHolidays?action=ExportToDatabase";
+            var parasJson = JSON.stringify(parasObj);
+            common(url, parasJson);
+        }
 
     </script>
 
@@ -36,7 +43,9 @@
 <body>
     <div title="网络服务" style="font-size:14px;color:#F00;border:1px solid #ccc;">
         <div>获取节假日</div>
-        <input type="button" value="do_service_getholidays" onclick="do_service_getholidays()" />        
+        <input type="button" value="do_service_getholidays" onclick="do_service_getholidays()" />   
+        <div>导出数据库</div>
+        <input type="button" value="do_service_exporttodatabase" onclick="do_service_exporttodatabase()" />        
     </div>
 </body>
 </html>

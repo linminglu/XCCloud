@@ -3674,9 +3674,21 @@ namespace XXCloudService.Api.XCCloud
                                     var stockExitCount = stockExitList.Sum(s => s.ExitCount) ?? 0;
                                     var stockExitTotal = stockExitList.Sum(s => s.ExitCount * s.ExitPrice) ?? 0M;
 
+                                    //获取调拨入库数量和金额
+                                    var stockRequestInList = from a in Data_GoodStock_RecordService.N.GetModels(p => p.SourceType == (int)SourceType.GoodRequest && p.DepotID == depotId && p.GoodID == goodId && p.StockFlag == (int)StockFlag.In).AsEnumerable().Where(w => w.CreateTime >= initialTime)                                                             
+                                                             select a;
+                                    var stockRequestInCount = stockRequestInList.Sum(s => s.StockCount) ?? 0;
+                                    var stockRequestInTotal = stockRequestInList.Sum(s => s.StockCount * s.GoodCost) ?? 0M;
+
+                                    //获取调拨出库数量和金额
+                                    var stockRequestOutList = from a in Data_GoodStock_RecordService.N.GetModels(p => p.SourceType == (int)SourceType.GoodRequest && p.DepotID == depotId && p.GoodID == goodId && p.StockFlag == (int)StockFlag.Out).AsEnumerable().Where(w => w.CreateTime >= initialTime)                                                                                                                          
+                                                              select a;
+                                    var stockRequestOutCount = stockRequestOutList.Sum(s => s.StockCount) ?? 0;
+                                    var stockRequestOutTotal = stockRequestOutList.Sum(s => s.StockCount * s.GoodCost) ?? 0M;
+
                                     //计算本期平均成本 
-                                    var count = initialValue + stockInCount - stockOutCount - stockExitCount;
-                                    var total = initialAvgValue * initialValue + stockInTotal - stockOutTotal - stockExitTotal;
+                                    var count = initialValue + stockInCount + stockRequestInCount - stockOutCount - stockExitCount - stockRequestOutCount;
+                                    var total = initialAvgValue * initialValue + stockInTotal + stockRequestInTotal - stockOutTotal - stockExitTotal - stockRequestOutTotal;
                                     var avgValue = count > 0 ? Math.Round(total / count, 2, MidpointRounding.AwayFromZero) : 0;
                                     stockModel.InitialTime = DateTime.Now;
                                     stockModel.InitialAvgValue = avgValue;

@@ -46,7 +46,7 @@ namespace XCCloudService.Common
         /// 获取配置的Json文件
         /// </summary>
         /// <returns>经过反序列化之后的对象集合</returns>
-        private List<DateModel> GetConfigList()
+        public static List<DateModel> GetConfigList()
         {
             path = string.Format("{0}/HolidayConfig.json", System.AppDomain.CurrentDomain.BaseDirectory);
             string fileContent = GetFileContent(path);
@@ -235,7 +235,7 @@ namespace XCCloudService.Common
         /// </summary>
         /// <param name="filePath"></param>
         /// <returns></returns>
-        private string GetFileContent(string filePath)
+        private static string GetFileContent(string filePath)
         {
             string result = "";
             if (File.Exists(filePath))
@@ -349,8 +349,11 @@ namespace XCCloudService.Common
 
             return false;
         }
+
+
+
         #endregion
-    }
+    }    
  
     public class DateModel
     {

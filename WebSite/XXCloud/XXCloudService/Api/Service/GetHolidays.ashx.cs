@@ -4,7 +4,9 @@ using System.Globalization;
 using System.Linq;
 using System.Web;
 using XCCloudService.Base;
+using XCCloudService.BLL.XCCloud;
 using XCCloudService.Common;
+using XCCloudService.Model.XCCloud;
 
 namespace XXCloudService.Api.Service
 {
@@ -28,6 +30,56 @@ namespace XXCloudService.Api.Service
                 var dt = DateTime.ParseExact(date, "yyyyMMdd", System.Globalization.CultureInfo.InvariantCulture);
                 var result = HolidayHelper.GetInstance().IsHoliday(dt);
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, result);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.MethodToken, SysIdAndVersionNo = false)]
+        public object ExportToDatabase(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                var errMsg = string.Empty;
+
+                var list = HolidayHelper.GetConfigList();
+                var xC_HolidayListService = XC_HolidayListService.I;
+                foreach (var dateModel in list)
+                {
+                    foreach (var work in dateModel.Work)
+                    {
+                        var model = new XC_HolidayList();
+                        model.DayType = 0;
+                        model.WorkDay = DateTime.ParseExact(dateModel.Year + work, "yyyyMMdd", System.Globalization.CultureInfo.InvariantCulture);
+                        xC_HolidayListService.AddModel(model);
+                    }
+
+                    foreach (var dayOff in dateModel.DayOff)
+                    {
+                        var model = new XC_HolidayList();
+                        model.DayType = 1;
+                        model.WorkDay = DateTime.ParseExact(dateModel.Year + dayOff, "yyyyMMdd", System.Globalization.CultureInfo.InvariantCulture);
+                        xC_HolidayListService.AddModel(model);
+                    }
+
+                    foreach (var holiday in dateModel.Holiday)
+                    {
+                        var model = new XC_HolidayList();
+                        model.DayType = 2;
+                        model.WorkDay = DateTime.ParseExact(dateModel.Year + holiday, "yyyyMMdd", System.Globalization.CultureInfo.InvariantCulture);
+                        xC_HolidayListService.AddModel(model);
+                    }
+                }
+
+                if (!xC_HolidayListService.SaveChanges())
+                {
+                    errMsg = "保存失败";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg); 
+                }
+
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
             }
             catch (Exception e)
             {

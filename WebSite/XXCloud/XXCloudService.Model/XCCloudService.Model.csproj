@@ -788,6 +788,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>XCCloudDBModel.edmx</DependentUpon>
     </Compile>
+    <Compile Include="XCCloud\XC_HolidayList.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
     <Compile Include="XCCloud\XC_WorkInfo.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>

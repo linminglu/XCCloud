@@ -40,7 +40,7 @@ namespace XXCloudService.Api.XCCloud.Common
             curItem.Children.AddRange(subItems);
             curItem.Disabled = true;
             var gameType = curItem.ID;
-            curItem.Children.AddRange(Data_GameInfoService.I.GetModels(p => p.GameType == gameType && p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)).AsEnumerable()
+            curItem.Children.AddRange(Data_GameInfoService.I.GetModels(p => p.GameType == gameType && p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase) && p.State == 1).AsEnumerable()
                 .Select(o => new GameListModel { ID = o.ID, DictKey = o.GameName, Disabled = false, Children = new List<GameListModel>() }).ToList());
 
             foreach (var subItem in subItems)

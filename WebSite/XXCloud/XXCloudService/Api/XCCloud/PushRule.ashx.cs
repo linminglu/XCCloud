@@ -153,7 +153,7 @@ namespace XXCloudService.Api.XCCloud
                         model.MerchID = merchId;
                         model.StoreID = storeId;
                         Utils.GetModel(dicParas, ref model);
-                        model.Week = model.Week ?? string.Empty;
+                        //model.Week = model.Week ?? string.Empty;
                         if (id == 0)
                         {
                             if (!Data_PushRuleService.I.Add(model))

@@ -175,6 +175,7 @@
         <EntityTypeShape EntityType="XCCloudDBModel.Data_GoodStorage_Detail" Width="1.5" PointX="13.375" PointY="42.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_GoodOutOrder_Detail" Width="1.5" PointX="41.375" PointY="5.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_CouponInfo" Width="1.5" PointX="31.375" PointY="42.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.XC_HolidayList" Width="1.5" PointX="17.375" PointY="8.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

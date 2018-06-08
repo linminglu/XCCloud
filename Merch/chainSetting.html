@@ -551,7 +551,8 @@
             });
             form.on('select(balanceModelBox)',(data)=>{
                 chainStoreIDs=data.value;
-            })
+            });
+
         });
         let  getCheckBox=(filter,arr,form)=>{
             form.on('checkbox('+filter+')', function(data){
@@ -736,7 +737,7 @@
         $('#saveBalance').on('click',function () {
            let _ruleTypes=xc.getStorage('ruleTypes');
            let url='/XCCloud/StoreWeight?action=SaveChainStore';
-           let obj={'revStoreId':chainStoreIDs,'ruleType':_ruleTypes,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+           let obj={'storeId':_storeId,'revStoreId':chainStoreIDs,'ruleType':_ruleTypes,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
             let parseJson = JSON.stringify(obj);
             $.ajax({
                 type: "post",

@@ -17,11 +17,13 @@
                     </div>
                     <div class="layui-input-inline">
                         <button type="button" class="layui-btn layui-btn-normal" id="searchStock"><i class="layui-icon layui-icon-search"></i></button>
+                        <button type="button" class="layui-btn layui-btn-danger" i18n-content="查询模板" id="checkMore">批量审核</button>
                     </div>
                 </div>
 
                 <div class="layui-inline" style="float:right;">
                     <button type="button" class="layui-btn layui-btn-normal" i18n-content="查询模板">查询模板</button>
+
                 </div>
             </form>
 
@@ -52,6 +54,7 @@
     let xc=xcActionSystem.prototype;
     let token=xc.getStorage('token');
     let depotList='';let goodId='';let id='';
+    let checkArr=[];
     layui.use(['form','table','layer'],function () {
         let form=layui.form;
         let table=layui.table;
@@ -120,6 +123,47 @@
                 })
             }
         });
+        table.on('checkbox(stockInventory)', function(obj){
+            if (obj.type == "all") {
+
+            } else {
+                if(obj.checked==true){
+                    checkArr.push({'id':obj.data.ID})
+                }else {
+                    for(let i in checkArr){
+                        if(checkArr[i].id==obj.data.ID){
+                            checkArr.splice(i,1)
+                        }
+                    }
+                }
+            }
+        });
+        $('#checkMore').on('click', function () {
+            if(checkArr.length>0){
+                var  obj={"goodsInventoryIDs":checkArr,"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
+                var url="/XCCloud/GoodsInfo?action=CheckGoodsInventory";
+                var parasJson = JSON.stringify(obj);
+                $.ajax({
+                    type: "post",
+                    url: url,
+                    contentType: "application/json; charset=utf-8",
+                    data: {parasJson: parasJson},
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        if (data.result_code == "1") {
+                            layer.msg('审核完成',{time:1500},function(){
+                                location.reload();
+                            })
+                        } else {
+                            layer.msg(data.result_msg || data.return_msg);
+                        }
+                    }
+                })
+            }else {
+                layer.msg('请先选择要审核的数据')
+            }
+
+        })
         $('#saveInventory').on('click',function(){
             var  obj={"goodsInventoryList":[{'id':id,'goodId':goodId,'depotId':depotList,'inventoryCount':$('#inventoryCount').val()}],
                 "userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
@@ -149,7 +193,7 @@
             , data: arr
             , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
             , cols: [[
-                // {type:'ckeckbox'} ,
+                 {type:'checkbox'} ,
                 {field: 'ID', title: '流水号', align: 'center'}
                 , {field: 'GoodID', title: '商品ID', align: 'center'}
                 , {field: 'Barcode', title: '商品条码', align: 'center'}

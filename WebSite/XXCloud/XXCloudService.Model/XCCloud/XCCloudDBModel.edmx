@@ -439,7 +439,7 @@
           <Property Name="MerchID" Type="varchar" MaxLength="15" />
           <Property Name="MemberID" Type="varchar" MaxLength="32" />
           <Property Name="BalanceIndex" Type="int" />
-          <Property Name="Balance" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="Balance" Type="numeric" Precision="10" Scale="2" />
           <Property Name="UpdateTime" Type="datetime" />
           <Property Name="Verifiction" Type="varchar" MaxLength="32" />
         </EntityType>
@@ -451,7 +451,7 @@
           <Property Name="MerchID" Type="varchar" MaxLength="15" />
           <Property Name="MemberID" Type="varchar" MaxLength="32" />
           <Property Name="BalanceIndex" Type="int" />
-          <Property Name="Balance" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="Balance" Type="numeric" Precision="10" Scale="2" />
           <Property Name="UpdateTime" Type="datetime" />
           <Property Name="Verifiction" Type="varchar" MaxLength="32" />
         </EntityType>
@@ -2763,6 +2763,14 @@
           <Property Name="OutFromPrint" Type="int" />
           <Property Name="OutFromReal" Type="int" />
         </EntityType>
+        <EntityType Name="XC_HolidayList">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="WorkDay" Type="datetime" Nullable="false" />
+          <Property Name="DayType" Type="int" Nullable="false" />
+        </EntityType>
         <EntityType Name="XC_WorkInfo">
           <Key>
             <PropertyRef Name="WorkID" />
@@ -2935,6 +2943,7 @@
           <EntitySet Name="Search_Template_Detail" EntityType="Self.Search_Template_Detail" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Store_GameTotal" EntityType="Self.Store_GameTotal" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Store_HeadTotal" EntityType="Self.Store_HeadTotal" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="XC_HolidayList" EntityType="Self.XC_HolidayList" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="XC_WorkInfo" EntityType="Self.XC_WorkInfo" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Data_DigitCoin" EntityType="Self.Data_DigitCoin" store:Type="Tables" store:Schema="dbo">
             <DefiningQuery>SELECT 
@@ -3344,6 +3353,7 @@
           <EntitySet Name="Data_GoodStorage_Detail" EntityType="XCCloudDBModel.Data_GoodStorage_Detail" />
           <EntitySet Name="Data_GoodOutOrder_Detail" EntityType="XCCloudDBModel.Data_GoodOutOrder_Detail" />
           <EntitySet Name="Data_CouponInfo" EntityType="XCCloudDBModel.Data_CouponInfo" />
+          <EntitySet Name="XC_HolidayList" EntityType="XCCloudDBModel.XC_HolidayList" />
         </EntityContainer>
         <EntityType Name="Base_ChainRule">
           <Key>
@@ -6092,6 +6102,14 @@
           <Property Name="OpUserID" Type="Int32" />
           <Property Name="Context" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
           <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="XC_HolidayList">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="WorkDay" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="DayType" Type="Int32" Nullable="false" />
         </EntityType>
         </Schema>
     </edmx:ConceptualModels>
@@ -9012,6 +9030,15 @@
                 <ScalarProperty Name="CouponName" ColumnName="CouponName" />
                 <ScalarProperty Name="CouponLevel" ColumnName="CouponLevel" />
                 <ScalarProperty Name="MerchID" ColumnName="MerchID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="XC_HolidayList">
+            <EntityTypeMapping TypeName="XCCloudDBModel.XC_HolidayList">
+              <MappingFragment StoreEntitySet="XC_HolidayList">
+                <ScalarProperty Name="DayType" ColumnName="DayType" />
+                <ScalarProperty Name="WorkDay" ColumnName="WorkDay" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>

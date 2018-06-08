@@ -1692,7 +1692,16 @@ namespace XCCloudService.Common
                             object obj = null;
                             //非泛型
                             if (!pi.PropertyType.IsGenericType)
-                                obj = string.IsNullOrEmpty(value + "") ? null : Convert.ChangeType(value, pi.PropertyType);
+                            {
+                                if (pi.PropertyType == typeof(String))
+                                {
+                                    obj = string.IsNullOrEmpty(value + "") ? string.Empty : Convert.ChangeType(value, pi.PropertyType);
+                                }
+                                else
+                                {
+                                    obj = string.IsNullOrEmpty(value + "") ? null : Convert.ChangeType(value, pi.PropertyType);
+                                }                                
+                            }                                
                             else //泛型Nullable<>
                             {
                                 Type genericTypeDefinition = pi.PropertyType.GetGenericTypeDefinition();
@@ -1701,11 +1710,11 @@ namespace XCCloudService.Common
                                     if (Nullable.GetUnderlyingType(pi.PropertyType) == typeof(TimeSpan))
                                     {
                                         obj = string.IsNullOrEmpty(value + "") ? null : (object)Utils.StrToTimeSpan(Convert.ToString(value));
-                                    }
+                                    }                                    
                                     else
                                     {
                                         obj = string.IsNullOrEmpty(value + "") ? null : Convert.ChangeType(value, Nullable.GetUnderlyingType(pi.PropertyType));
-                                    }                                    
+                                    }
                                 }
                             }
                             pi.SetValue(t, obj, null);

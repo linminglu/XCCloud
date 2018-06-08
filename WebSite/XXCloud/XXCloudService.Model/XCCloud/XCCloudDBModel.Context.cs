@@ -195,5 +195,6 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Data_GoodStorage_Detail> Data_GoodStorage_Detail { get; set; }
         public virtual DbSet<Data_GoodOutOrder_Detail> Data_GoodOutOrder_Detail { get; set; }
         public virtual DbSet<Data_CouponInfo> Data_CouponInfo { get; set; }
+        public virtual DbSet<XC_HolidayList> XC_HolidayList { get; set; }
     }
 }

@@ -526,6 +526,10 @@ function login_merch(){
                     // }else {
                         window.location.href='index1.html?'+(Date.parse(new Date())/1000);
                     // }
+                }else {
+                    layui.use('layer',function(){
+                        layui.layer.msg(data.result_msg||data.return_msg)
+                    })
                 }
             }
         })
