@@ -28,6 +28,29 @@ namespace XXCloudService.Api.XCCloud
     /// </summary>
     public class GameInfo : ApiBase
     {
+        private string getProjectGameTypes(out string errMsg)
+        {
+            string projectGameTypes = string.Empty;
+            errMsg = string.Empty;
+            string sql = " exec  SP_DictionaryNodes @MerchID,@DictKey,@PDictKey,@RootID output ";
+            SqlParameter[] parameters = new SqlParameter[4];
+            parameters[0] = new SqlParameter("@MerchID", "");
+            parameters[1] = new SqlParameter("@DictKey", "游乐项目");
+            parameters[2] = new SqlParameter("@PDictKey", "游戏机类型");
+            parameters[3] = new SqlParameter("@RootID", SqlDbType.Int);
+            parameters[3].Direction = System.Data.ParameterDirection.Output;
+            System.Data.DataSet ds = XCCloudBLL.ExecuteQuerySentence(sql, parameters);
+            if (ds.Tables.Count == 0)
+            {
+                errMsg = "没有找到节点信息";
+                return projectGameTypes;
+            }
+            var dictionaryResponse = Utils.GetModelList<DictionaryResponseModel>(ds.Tables[0]).Where(w => w.Enabled == 1).ToList();
+            projectGameTypes = string.Join(",", dictionaryResponse.Select(o => o.ID)).Trim(',');
+
+            return projectGameTypes;
+        }
+
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object GetGameInfoList(Dictionary<string, object> dicParas)
         {
@@ -35,6 +58,13 @@ namespace XXCloudService.Api.XCCloud
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+
+                var errMsg = string.Empty;
+                
+                //排除游乐项目类型的游戏机
+                var projectGameTypes = getProjectGameTypes(out errMsg);
+                if (!errMsg.IsNull())
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
                 var data_GameInfo = from a in Data_GameInfoService.N.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase) && p.State == 1)
                                     join b in Dict_SystemService.N.GetModels() on a.GameType equals b.ID into b1
@@ -44,6 +74,7 @@ namespace XXCloudService.Api.XCCloud
                                     join d in Data_GroupAreaService.N.GetModels() on a.AreaID equals d.ID into d1
                                     from d in d1.DefaultIfEmpty()
                                     orderby a.ID
+                                    where !projectGameTypes.Contains(a.GameType + "")
                                     select new
                                     {
                                         ID = a.ID,
