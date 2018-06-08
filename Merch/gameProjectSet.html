@@ -243,13 +243,13 @@
               <div class="layui-inline">
                   <label class="layui-form-label">刷卡即扣</label>
                   <div class="layui-input-inline">
-                     <input type="checkbox" name="ReadCat" id="ReadCat" lay-filter="ReadCat" lay-skin="switch" lay-text="开启|关闭"/>
+                     <input type="checkbox" name="ReadCat" checked id="ReadCat" lay-filter="ReadCat" lay-skin="switch" lay-text="开启|关闭"/>
                   </div>
               </div>
               <div class="layui-inline">
                   <label class="layui-form-label">投币信号电平</label>
                   <div class="layui-input-inline">
-                      <input type="checkbox" class="layui-input" name="PushLevel" lay-filter="PushLevel" lay-skin="switch" lay-text="高电平|低电平">
+                      <input type="checkbox" class="layui-input" checked name="PushLevel" lay-filter="PushLevel" lay-skin="switch" lay-text="高电平|低电平">
                   </div>
               </div>
               <div class="layui-inline">
@@ -364,7 +364,7 @@
    let DeviceList=[];let feeRule=[]; let projectBandPrice=[];
    let index1;let index2;let index3;
    let projectType='';let Area='';let chargeType='';
-    let PushBalanceIndex1='';let PushBalanceIndex2='';let ReadCat=0;let PushLevel=0;
+    let PushBalanceIndex1='';let PushBalanceIndex2='';let ReadCat=1;let PushLevel=1;
 
    let DeviceID='',WorkType='',AdjOrder=0,ReadFace=0,ReadCard=0,ReadQRCode=0,AllowCrah=0;let router='';
     //计时规则
@@ -374,8 +374,9 @@
         const layer=layui.layer;
         const table=layui.table;
       $('.add').on('click',()=>{  //弹窗
+            id='';
            feeType=''; feeBalance=''; feekinds=''; feeWays=''; Lock=0;
-            PushBalanceIndex1=''; PushBalanceIndex2=''; ReadCat=0; PushLevel=0;
+            PushBalanceIndex1=''; PushBalanceIndex2=''; ReadCat=1; PushLevel=1;
             xc.getBalanceTypeDic('',token,layer,form,'PushBalanceIndex1');
             xc.getBalanceTypeDic('',token,layer,form,'PushBalanceIndex2');
             $('#timesModel').find('input[type="checkbox"]').attr({'checked':false});
@@ -538,18 +539,41 @@
                             projectType=arr.ProjectType;
                             Area=arr.AreaType;
                             chargeType=arr.ChargeType;
-                            // if(arr.ChargeType==1){
-                            //     $('#setRuleBtn').removeClass('layui-hide');
-                            //
-                            // }else {
-                            //     $('#setRuleBtn').addClass('layui-hide')
-                            // }
+                            xc.getBalanceTypeDic('',token,layer,form,'PushBalanceIndex1',arr.PushBalanceIndex1);
+                            xc.getBalanceTypeDic('',token,layer,form,'PushBalanceIndex2',arr.PushBalanceIndex2);
+                            PushBalanceIndex1=arr.PushBalanceIndex1;
+                            PushBalanceIndex2=arr.PushBalanceIndex2;
+                            ReadCat=arr.ReadCat;
+                            PushLevel=arr.PushLevel;
+                            $('input[name="GuestPrice"]').val(arr.GuestPrice);
+
+                            $('input[name="PushCoin1"]').val(arr.PushCoin1);
+
+                            $('input[name="PushCoin2"]').val(arr.PushCoin2);
+
+                            if(arr.ReadCat==1){
+                                $('input[name="ReadCat"]').attr({'checked':true})
+                            }else {
+                                $('input[name="ReadCat"]').attr({'checked':false})
+                            }
+                            if(arr.PushLevel==1){
+                                $('input[name="PushLevel"]').attr({'checked':true})
+                            }else {
+                                $('input[name="PushLevel"]').attr({'checked':false})
+                            }
+                             if(arr.ChargeType==0){
+                                 $('#setRuleBtn').removeClass('layui-hide');
+
+                             }else {
+                                 $('#setRuleBtn').addClass('layui-hide')
+                             }
                             index1=   layer.open({
                                 title:'新增',
                                 type:1,
                                 area:'900px',
                                 content:$('#openModel')
                             })
+                            form.render()
                         } else {
                             layer.msg(data.result_msg||data.return_msg);
                         }
