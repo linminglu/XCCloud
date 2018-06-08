@@ -446,10 +446,10 @@
     {{# }else if(d.DeviceStatus==1){ }}
     <a class="layui-btn layui-btn-xs" lay-event="lock">锁定</a>
     {{#  } }}
-    {{# if(d.GameName==''){ }}
+    {{# if(d.Address==null){ }}
     <a class="layui-btn layui-btn-xs" lay-event="bindMachine">机台绑定</a>
     {{# }else{ }}
-    <a class="layui-btn layui-btn-xs" lay-event="unBindMachine">机台解绑</a>
+    <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="unBindMachine">机台解绑</a>
     {{#  } }}
     <a class="layui-btn layui-btn-xs" lay-event="clockCook">报警日志</a>
     <a class="layui-btn layui-btn-xs" lay-event="code">二维码</a>

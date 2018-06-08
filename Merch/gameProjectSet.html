@@ -54,7 +54,7 @@
                             <option value="1">计时收费</option>
                         </select>
                     </div>
-                    <div class="layui-input-inline layui-hide">
+                    <div class="layui-input-inline">
                         <button class="layui-btn layui-hide" type="button" id="setRuleBtn">请设置计次规则</button>
                     </div>
                     <div class="layui-form-mid" style="color: red">友情提醒：若选择计时收费，请设置收费规则。<br>网络支付功能请到集团后台中的《套餐设定》进行添加套餐。</div>
@@ -249,7 +249,7 @@
               <div class="layui-inline">
                   <label class="layui-form-label">投币信号电平</label>
                   <div class="layui-input-inline">
-                      <input type="text" class="layui-input" name="PushLevel" lay-filter="PushLevel" lay-skin="switch" lay-text="高电平|低电平">
+                      <input type="checkbox" class="layui-input" name="PushLevel" lay-filter="PushLevel" lay-skin="switch" lay-text="高电平|低电平">
                   </div>
               </div>
               <div class="layui-inline">
@@ -362,8 +362,9 @@
 
    let id='';
    let DeviceList=[];let feeRule=[]; let projectBandPrice=[];
-   let index1;let index2;
+   let index1;let index2;let index3;
    let projectType='';let Area='';let chargeType='';
+    let PushBalanceIndex1='';let PushBalanceIndex2='';let ReadCat=0;let PushLevel=0;
 
    let DeviceID='',WorkType='',AdjOrder=0,ReadFace=0,ReadCard=0,ReadQRCode=0,AllowCrah=0;let router='';
     //计时规则
@@ -374,6 +375,12 @@
         const table=layui.table;
       $('.add').on('click',()=>{  //弹窗
            feeType=''; feeBalance=''; feekinds=''; feeWays=''; Lock=0;
+            PushBalanceIndex1=''; PushBalanceIndex2=''; ReadCat=0; PushLevel=0;
+            xc.getBalanceTypeDic('',token,layer,form,'PushBalanceIndex1');
+            xc.getBalanceTypeDic('',token,layer,form,'PushBalanceIndex2');
+            $('#timesModel').find('input[type="checkbox"]').attr({'checked':false});
+            $('#timesModel').find('input[type="text"]').val('');
+            form.render();
            $('.layreset').trigger('click');
           xc.getGroupAreaDic(0,token,layer,form,'Area');
           setPlayMenu(form,'projectType');
@@ -399,6 +406,26 @@
                  $('#setRuleBtn').addClass('layui-hide')
              }
         });
+        form.on('select(PushBalanceIndex1)',function (data) {
+            PushBalanceIndex1=data.value;
+        });
+        form.on('select(PushBalanceIndex2)',function (data) {
+            PushBalanceIndex2=data.value;
+        });
+        form.on('switch(ReadCat)',function (data) {
+            if(data.elem.checked){
+                ReadCat=1;
+            }else {
+                ReadCat=0;
+            }
+        });
+        form.on('switch(PushLevel)',function (data) {
+            if(data.elem.checked){
+                PushLevel=1;
+            }else {
+                PushLevel=0;
+            }
+        });
         //save
         $('#save').click(function () {
             let obj={'id':id,
@@ -407,8 +434,14 @@
                 'projectType':projectType,
                 'chargeType':chargeType,
                 'note':$('#Note').val(),
-                // 'projectTimeInfo':feeRule,
-                // 'projectBandPrices':projectBandPrice,
+                'gameIndex':'',
+                'guestPrice':$('input[name="GuestPrice"]').val(),
+                'PushBalanceIndex1': PushBalanceIndex1,
+                'PushCoin1': $('input[name="PushCoin1"]').val(),
+                'PushBalanceIndex2': PushBalanceIndex2,
+                'PushCoin2': $('input[name="PushCoin2"]').val(),
+                'ReadCat':ReadCat,
+                'PushLevel':PushLevel,
                 'userToken':token,
                 'signkey':'1f626576304bf5d95b72ece2222e42c3'};
             let parasJson = JSON.stringify(obj);
@@ -430,7 +463,20 @@
                 }
             })
         });
-        $('#addDevice').on('click',()=>{  //弹窗
+       
+       $('#setRuleBtn').on('click',function(){
+
+           index3=layer.open({
+               title:'计次规则',
+               type:1,
+               area:'800px',
+               content:$('#timesModel')
+           })
+       });
+        $('#saveTimes').on('click',function(){
+            layer.close(index3);
+        })
+       $('#addDevice').on('click',()=>{  //弹窗
             xc.getUnBindDeviceDic(token,layer,form,'deviceList');
              DeviceID='';WorkType='';AdjOrder=0;ReadFace=0;ReadCard=0;ReadQRCode=0;AllowCrah=0;
             index2=   layer.open({

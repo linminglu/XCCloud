@@ -100,12 +100,15 @@ namespace XXCloudService.Api.XCCloud
                 var model = new
                 {
                     data_ProjectInfo = data_ProjectInfo,
-                    PushBalanceIndex1 = data_GameInfo.PushBalanceIndex1,
-                    PushCoin1 = data_GameInfo.PushCoin1,
-                    PushBalanceIndex2 = data_GameInfo.PushBalanceIndex2,
-                    PushCoin2 = data_GameInfo.PushCoin2,
-                    ReadCat = data_GameInfo.ReadCat,
-                    PushLevel = data_GameInfo.PushLevel
+                    gameInfo = new
+                    {
+                        PushBalanceIndex1 = data_GameInfo.PushBalanceIndex1,
+                        PushCoin1 = data_GameInfo.PushCoin1,
+                        PushBalanceIndex2 = data_GameInfo.PushBalanceIndex2,
+                        PushCoin2 = data_GameInfo.PushCoin2,
+                        ReadCat = data_GameInfo.ReadCat,
+                        PushLevel = data_GameInfo.PushLevel
+                    }
                 }.AsFlatDictionary();
 
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, model);
@@ -183,7 +186,7 @@ namespace XXCloudService.Api.XCCloud
                             if (!dicParas.Get("guestPrice").Validdecimalnozero("散客支付价格", out errMsg))
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-                            var gameIndex = model.GameIndex;
+                            var gameIndex = model.GameIndex ?? 0;
                             var data_GameInfoService = Data_GameInfoService.I;
                             var data_GameInfo = data_GameInfoService.GetModels(p => p.ID == gameIndex).FirstOrDefault() ?? new Data_GameInfo();
                             data_GameInfo.GameID = string.Empty;

@@ -1149,17 +1149,17 @@ let motor1En_push=1;let motor2En_push=1;let balanceIndexPush='';let motor1CoinPu
     {{#  }else{ }}
     <a class="layui-btn layui-btn-xs" lay-event="clockCook">报警日志</a>
     <a class="layui-btn layui-btn-xs" lay-event="code">二维码</a>
-    {{# if(d.GameName==''){ }}
-    <a class="layui-btn layui-btn-xs" lay-event="bindMachine">通讯绑定</a>
+    {{# if(d.Address!=null){ }}
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="unBindMachine">通讯解绑</a>
     {{# }else{ }}
-    <a class="layui-btn layui-btn-xs" lay-event="unBindMachine">通讯解绑</a>
+    <a class="layui-btn layui-btn-xs" lay-event="bindMachine">通讯绑定</a>
     {{#  } }}
     {{#  } }}
     {{#  if(d.DeviceType==4){ }}
     <a class="layui-btn layui-btn-xs" lay-event="saleCoin">参数设置</a>
     {{#  } }}
     {{#  if(d.DeviceType==3){ }}
-    <a class="layui-btn layui-btn-xs" lay-event="getCoin">参数设置</a>
+    <a class="layui-btn layui-bg-orange layui-btn-xs" lay-event="getCoin">参数设置</a>
     {{#  } }}
     {{#  if(d.DeviceType==5){ }}
     <a class="layui-btn layui-btn-xs" lay-event="pushCoin">参数设置</a>

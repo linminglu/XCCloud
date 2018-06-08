@@ -15,7 +15,8 @@ namespace XCCloudService.Model.XCCloud
     public partial class Base_MemberInfo
     {
         public string ID { get; set; }
-        public string Wechat { get; set; }
+        public string WechatOpenID { get; set; }
+        public string AlpayOpenID { get; set; }
         public string QQ { get; set; }
         public string IMME { get; set; }
         public string UserName { get; set; }

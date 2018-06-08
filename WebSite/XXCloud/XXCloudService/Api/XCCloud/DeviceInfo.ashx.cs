@@ -343,6 +343,12 @@ namespace XXCloudService.Api.XCCloud
                 //绑定
                 if (iState == 1)
                 {
+                    if ((data_DeviceInfo.GameIndexID ?? 0) > 0 || (data_DeviceInfo.BindDeviceID ?? 0) > 0)
+                    {
+                        errMsg = "该机台已被绑定";
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
+
                     if (!Base_DeviceInfoService.I.Any(p => p.ID == iBindDeviceId))
                     {
                         errMsg = "路由器设备不存在";
@@ -574,39 +580,45 @@ namespace XXCloudService.Api.XCCloud
 
                 if (!Base_DeviceInfoService.I.Any(p => p.ID == iId))
                 {
-                    errMsg = "设备不存在";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
-
-                if (!Base_DeviceInfoService.I.Any(p => p.ID == iBindDeviceId))
-                {
-                    errMsg = "该路由器设备不存在";
+                    errMsg = "该设备不存在";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
                 var data_DeviceInfo = Base_DeviceInfoService.I.GetModels(p => p.ID == iId).FirstOrDefault();
-                if (data_DeviceInfo.type == (int)DeviceType.路由器)
-                {
-                    errMsg = "被绑定设备类型不能是路由器";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
-                if (data_DeviceInfo.type == (int)DeviceType.卡头 || data_DeviceInfo.type == (int)DeviceType.闸机 || data_DeviceInfo.type == (int)DeviceType.自助机)
-                {
-                    errMsg = "被绑定设备类型不能是卡头、闸机或自助机";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
-
-                var routineInfo = Base_DeviceInfoService.I.GetModels(p => p.ID == iBindDeviceId).FirstOrDefault();
+                //if (data_DeviceInfo.type == (int)DeviceType.卡头 || data_DeviceInfo.type == (int)DeviceType.闸机 || data_DeviceInfo.type == (int)DeviceType.自助机)
+                //{
+                //    errMsg = "被绑定设备类型不能是卡头、闸机或自助机";
+                //    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                //}
 
                 //绑定
                 if (iState == 1)
-                {
+                {                    
+                    if ((data_DeviceInfo.BindDeviceID ?? 0) > 0)
+                    {
+                        errMsg = "该设备已被绑定";
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
+
+                    if (!Base_DeviceInfoService.I.Any(p => p.ID == iBindDeviceId))
+                    {
+                        errMsg = "该路由器设备不存在";
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
+                    
+                    if (data_DeviceInfo.type == (int)DeviceType.路由器)
+                    {
+                        errMsg = "被绑定设备类型不能是路由器";
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
+                                        
                     if (Base_DeviceInfoService.I.Any(p => p.ID != iId && p.BindDeviceID == iBindDeviceId && p.Address.Equals(address, StringComparison.OrdinalIgnoreCase)))
                     {
                         errMsg = "该地址被占用";
                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                     }
 
+                    var routineInfo = Base_DeviceInfoService.I.GetModels(p => p.ID == iBindDeviceId).FirstOrDefault();
                     data_DeviceInfo.BindDeviceID = iBindDeviceId;
                     data_DeviceInfo.Address = address.ToUpper();
                     data_DeviceInfo.segment = routineInfo.segment;

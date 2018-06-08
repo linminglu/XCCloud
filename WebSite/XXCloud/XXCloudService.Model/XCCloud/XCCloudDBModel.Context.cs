@@ -31,7 +31,6 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Base_EnumParams> Base_EnumParams { get; set; }
         public virtual DbSet<Base_Goodinfo_Price> Base_Goodinfo_Price { get; set; }
         public virtual DbSet<Base_GoodsInfo> Base_GoodsInfo { get; set; }
-        public virtual DbSet<Base_MemberInfo> Base_MemberInfo { get; set; }
         public virtual DbSet<Base_MerchAlipay> Base_MerchAlipay { get; set; }
         public virtual DbSet<Base_MerchantInfo> Base_MerchantInfo { get; set; }
         public virtual DbSet<Base_MerchFunction> Base_MerchFunction { get; set; }
@@ -159,8 +158,6 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Flw_Coin_Sale> Flw_Coin_Sale { get; set; }
         public virtual DbSet<Flw_Game_Free> Flw_Game_Free { get; set; }
         public virtual DbSet<Flw_Giveback> Flw_Giveback { get; set; }
-        public virtual DbSet<Flw_Project_TicketInfo> Flw_Project_TicketInfo { get; set; }
-        public virtual DbSet<Flw_ProjectTicket_Bind> Flw_ProjectTicket_Bind { get; set; }
         public virtual DbSet<Flw_ProjectTicket_Entry> Flw_ProjectTicket_Entry { get; set; }
         public virtual DbSet<Flw_Transfer> Flw_Transfer { get; set; }
         public virtual DbSet<Store_CheckDate> Store_CheckDate { get; set; }
@@ -196,5 +193,8 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<XC_HolidayList> XC_HolidayList { get; set; }
         public virtual DbSet<Data_GameEncourage> Data_GameEncourage { get; set; }
         public virtual DbSet<Data_ProjectInfo> Data_ProjectInfo { get; set; }
+        public virtual DbSet<Base_MemberInfo> Base_MemberInfo { get; set; }
+        public virtual DbSet<Flw_ProjectTicket_Bind> Flw_ProjectTicket_Bind { get; set; }
+        public virtual DbSet<Flw_Project_TicketInfo> Flw_Project_TicketInfo { get; set; }
     }
 }

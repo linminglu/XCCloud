@@ -16,6 +16,7 @@ using XCCloudService.BLL.Container;
 using XCCloudService.Model.XCGameManager;
 using XCCloudService.Common.Extensions;
 using XCCloudService.BLL.XCCloud;
+using XCCloudService.Model.XCCloud;
 
 namespace XXCloudService.WeiXin
 {
@@ -79,18 +80,12 @@ namespace XXCloudService.WeiXin
                 if (TokenMana.GetTokenForScanQR(code, out accsess_token, out refresh_token, out openId, out errMsg))
                 {
                     bool isReg = false;
-                    IMobileTokenService mobileTokenService = BLLContainer.Resolve<IMobileTokenService>();
-                    var mobileTokenModel = mobileTokenService.GetModels(p => p.OpenId.Equals(openId)).FirstOrDefault<t_MobileToken>();
-                    if (mobileTokenModel != null)
+                    Base_MemberInfo member = Base_MemberInfoService.I.GetModels(t => t.WechatOpenID == openId).FirstOrDefault();
+                    if(member!=null)
                     {
-                        IMemberTokenService memberTokenService = BLLContainer.Resolve<IMemberTokenService>();
-                        var memberTokenModel = memberTokenService.GetModels(p => p.Phone.Equals(mobileTokenModel.Phone)).FirstOrDefault<T_MemberToken>();
-                        if (memberTokenModel != null)
-                        {
-                            isReg = true;
-                        }
+                        isReg = true;
                     }
-                    string redirectUrl = string.Format("{0}?openId={1}&isReg={2}", CommonConfig.H5WeiXinAuthRedirectUrl, openId,Convert.ToInt32(isReg));
+                    string redirectUrl = string.Format("{0}?openId={1}&isReg={2}", CommonConfig.H5WeiXinAuthRedirectUrl, openId, Convert.ToInt32(isReg));
                     Response.Redirect(redirectUrl);
                 }
                 else

@@ -15,9 +15,9 @@ namespace XCCloudService.Model.XCCloud
     public partial class Flw_Project_TicketInfo
     {
         public int ID { get; set; }
-        public Nullable<int> FoodSaleID { get; set; }
-        public Nullable<int> CardID { get; set; }
-        public Nullable<int> ProjectID { get; set; }
+        public string MerchID { get; set; }
+        public string FoodSaleID { get; set; }
+        public string CardID { get; set; }
         public string ParentID { get; set; }
         public string Barcode { get; set; }
         public Nullable<System.DateTime> SaleTime { get; set; }

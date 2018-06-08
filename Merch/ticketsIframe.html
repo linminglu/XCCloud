@@ -207,6 +207,7 @@
                                     <option value="3">本月</option>
                                     <option value="4">本季</option>
                                     <option value="5">本年</option>
+                                    <option value="6">不设置</option>
                                 </select>
                             </div>
                         </div>
@@ -485,28 +486,28 @@
         });
         //监听不可用期限选择
         form.on('select(noUsePried)',function (data) {
-            if(data.value==0){
-                $('#NoStartTime').val(getDayStartDate()).prop('disabled',true);
-                $('#NoEndTime').val(getDayStartDate()).prop('disabled',true);
-            }else if(data.value==1){
-                $('#NoStartTime').val(getWeekStartDate()).prop('disabled',true);
-                $('#NoEndTime').val(getWeekEndDate()).prop('disabled',true);
+            if(data.value==1){
+                $('#NoStartDate').val(getDayStartDate()).prop('disabled',true);
+                $('#NoEndDate').val(getDayStartDate()).prop('disabled',true);
             }else if(data.value==2){
-                $('#NoStartTime').val(getMonthStartDate()).prop('disabled',true);
-                $('#NoEndTime').val(getMonthEndDate()).prop('disabled',true);
-            }else if(data.value==4){
-                $('#NoStartTime').val(getYearStartDate()).prop('disabled',true);
-                $('#NoEndTime').val(getYearEndDate()).prop('disabled',true);
+                $('#NoStartDate').val(getWeekStartDate()).prop('disabled',true);
+                $('#NoEndDate').val(getWeekEndDate()).prop('disabled',true);
             }else if(data.value==3){
-                $('#NoStartTime').val(getQuarterStartDate()).prop('disabled',true);
-                $('#NoEndTime').val(getQuarterEndDate()).prop('disabled',true);
+                $('#NoStartDate').val(getMonthStartDate()).prop('disabled',true);
+                $('#NoEndDate').val(getMonthEndDate()).prop('disabled',true);
             }else if(data.value==5){
-                $('#NoStartTime').prop('disabled',false);
-                $('#NoEndTime').prop('disabled',false);
+                $('#NoStartDate').val(getYearStartDate()).prop('disabled',true);
+                $('#NoEndDate').val(getYearEndDate()).prop('disabled',true);
+            }else if(data.value==4){
+                $('#NoStartDate').val(getQuarterStartDate()).prop('disabled',true);
+                $('#NoEndDate').val(getQuarterEndDate()).prop('disabled',true);
+            }else if(data.value==0){
+                $('#NoStartDate').prop('disabled',false);
+                $('#NoEndDate').prop('disabled',false);
                 layer.msg('<p style="color: red">请自己设置不可用期限</p>')
-            }else {
+            }else  if(data.value==6){
                 $('#NoStartDate').val('').prop('disabled',true);
-                $('#NoEndTime').val('').prop('disabled',true);
+                $('#NoEndDate').val('').prop('disabled',true);
             }
         });
         form.on('checkbox(weeks)', function(data){
@@ -726,7 +727,7 @@
                             RestrictPeriodType=arr.RestrictPeriodType;
                             RestrictShareCount=arr.RestrictShareCount;
                             AllowRestrict=arr.AllowRestrict;
-                            if(ticketSet.name=='times'){
+                            if(ticketSet.name=='times'||ticketSet.name=='boardPackage'){
                                 bindPro(table,arr.ProjectTicketBinds,'proTable');
                             }else if(ticketSet.name=='month'){
                                 AllowRestrict=arr.AllowRestrict;
@@ -735,11 +736,12 @@
                                 }else {
                                     $('#useReasonBox').addClass('layui-hide')
                                 }
-
                                 bindPro1(table,arr.ProjectTicketBinds,'proTable');
                             }else if(ticketSet.name=='group'){
                                 bindPro(table,arr.ProjectTicketBinds,'proTable');
                                 $('#GroupStartupCount').val(arr.GroupStartupCount);
+                            }else  if(ticketSet.name=='timeLimit'){
+                                bindPro1(table,arr.ProjectTicketBinds,'proTable');
                             }
                             form.render();
                         } else {
@@ -954,6 +956,13 @@
                 'ExitTicketType':ExitTicketType,
                 'ExitTicketValue':ExitTicketType==0?$('input[name="ExitTicketVal1"]').val():$('input[name="ExitTicketVal2"]').val(),
                 'ProjectTicketBinds':proListArr,
+
+                'AllowRestrict':AllowRestrict,
+                'RestrictShareCount':AllowRestrict==1?RestrictShareCount:'',
+                'RestrictPeriodType':AllowRestrict==1?RestrictPeriodType:'',
+                'RestrictPreiodValue':AllowRestrict==1?$('input[name="RestrictPreiodValue"]').val():'',
+                'RestrctCount':AllowRestrict==1?$('input[name="RestrctCount"]').val():'',
+
 
                 // 'GroupStartupCount':$('input[name="GroupStartupCount"]').val(),
                 'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};

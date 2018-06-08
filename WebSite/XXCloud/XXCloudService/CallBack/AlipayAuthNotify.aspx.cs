@@ -7,7 +7,9 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using XCCloudService.BLL.XCCloud;
 using XCCloudService.Business.Common;
+using XCCloudService.Model.XCCloud;
 using XCCloudService.Pay.Alipay;
 using XCCloudService.PayChannel.Common;
 
@@ -38,17 +40,15 @@ namespace XXCloudService.CallBack
                     //PayLogHelper.WritePayLog(oauthTokenResponse.UserId);
 
                     string aliId = oauthTokenResponse.UserId;
-                    string mobile = string.Empty;
 
-                    bool isReg = MobileTokenBusiness.IsHasMobile(aliId, out mobile);
-
-                    string isreg = "0";
-                    if (isReg)
+                    bool isReg = false;
+                    Base_MemberInfo member = Base_MemberInfoService.I.GetModels(t => t.AlpayOpenID == aliId).FirstOrDefault();
+                    if (member != null)
                     {
-                        isreg = "1";
+                        isReg = true;
                     }
 
-                    Response.Redirect(string.Format("{0}?userId={1}&isReg={2}", AliPayConfig.AliAuthRedirectUrl, aliId, isreg));
+                    Response.Redirect(string.Format("{0}?userId={1}&isReg={2}", AliPayConfig.AliAuthRedirectUrl, aliId, Convert.ToInt32(isReg)));
                 }
                 catch (Exception ex)
                 {
