@@ -100,15 +100,12 @@ namespace XXCloudService.Api.XCCloud
                 var model = new
                 {
                     data_ProjectInfo = data_ProjectInfo,
-                    GameInfo = new 
-                    {
-                        PushBalanceIndex1 = data_GameInfo.PushBalanceIndex1,
-                        PushCoin1 = data_GameInfo.PushCoin1,
-                        PushBalanceIndex2 = data_GameInfo.PushBalanceIndex2,
-                        PushCoin2 = data_GameInfo.PushCoin2,
-                        ReadCat = data_GameInfo.ReadCat,
-                        PushLevel = data_GameInfo.PushLevel
-                    }
+                    PushBalanceIndex1 = data_GameInfo.PushBalanceIndex1,
+                    PushCoin1 = data_GameInfo.PushCoin1,
+                    PushBalanceIndex2 = data_GameInfo.PushBalanceIndex2,
+                    PushCoin2 = data_GameInfo.PushCoin2,
+                    ReadCat = data_GameInfo.ReadCat,
+                    PushLevel = data_GameInfo.PushLevel
                 }.AsFlatDictionary();
 
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, model);
