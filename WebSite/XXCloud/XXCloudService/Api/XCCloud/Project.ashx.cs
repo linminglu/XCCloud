@@ -96,18 +96,18 @@ namespace XXCloudService.Api.XCCloud
                 }
 
                 var gameIndex = data_ProjectInfo.GameIndex;
-                var data_GameInfo = Data_GameInfoService.I.GetModels(p => p.ID == gameIndex).FirstOrDefault();
+                var data_GameInfo = Data_GameInfoService.I.GetModels(p => p.ID == gameIndex).FirstOrDefault() ?? new Data_GameInfo();
                 var model = new
                 {
                     data_ProjectInfo = data_ProjectInfo,
                     GameInfo = new 
                     {
-                        PushBalanceIndex1 = data_GameInfo != null ? data_GameInfo.PushBalanceIndex1 : null,
-                        PushCoin1 = data_GameInfo != null ? data_GameInfo.PushCoin1 : null,
-                        PushBalanceIndex2 = data_GameInfo != null ? data_GameInfo.PushBalanceIndex2 : null,
-                        PushCoin2 = data_GameInfo != null ? data_GameInfo.PushCoin2 : null,
-                        ReadCat = data_GameInfo != null ? data_GameInfo.ReadCat : null,
-                        PushLevel = data_GameInfo != null ? data_GameInfo.PushLevel : null,
+                        PushBalanceIndex1 = data_GameInfo.PushBalanceIndex1,
+                        PushCoin1 = data_GameInfo.PushCoin1,
+                        PushBalanceIndex2 = data_GameInfo.PushBalanceIndex2,
+                        PushCoin2 = data_GameInfo.PushCoin2,
+                        ReadCat = data_GameInfo.ReadCat,
+                        PushLevel = data_GameInfo.PushLevel
                     }
                 }.AsFlatDictionary();
 
@@ -504,7 +504,7 @@ namespace XXCloudService.Api.XCCloud
 
                 var bindDeviceIds = Data_Project_BindDeviceService.I.GetModels().Select(o => o.DeviceID);
                 var linq = from a in Base_DeviceInfoService.I.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)
-                               && (p.GameIndexID ?? 0) == 0 && p.DeviceStatus == 1 && (p.type == (int)DeviceType.卡头 || p.type == (int)DeviceType.闸机)).ToList()
+                               && (p.GameIndexID ?? 0) == 0 && p.DeviceStatus == 1 && (p.type == (int)DeviceType.卡头 || p.type == (int)DeviceType.闸机 || p.type == (int)DeviceType.自助机)).ToList()
                            where !bindDeviceIds.Contains(a.ID)
                            orderby a.DeviceName
                            select new

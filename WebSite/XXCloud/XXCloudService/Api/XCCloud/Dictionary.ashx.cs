@@ -225,6 +225,7 @@ namespace XXCloudService.Api.XCCloud
                 dict_System.Comment = comment;
                 dict_System.Enabled = Convert.ToInt32(enabled);
                 dict_System.OrderID = orderId.Toint();
+                dict_System.DictLevel = 0;
                 if (dicParas.ContainsKey("merchId"))
                 {
                     dict_System.MerchID = dicParas["merchId"].ToString();
@@ -305,7 +306,14 @@ namespace XXCloudService.Api.XCCloud
                         errMsg = "不能与公有节点重名";
                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                     }
-                }                
+                }
+
+                var pModel = dict_SystemService.GetModels(p => p.ID == iId).FirstOrDefault();
+                if (pModel.DictLevel > 3)
+                {
+                    errMsg = "节点层数不能超过3层";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
 
                 Dict_System dict_System = new Dict_System();
                 dict_System.PID = iId;
@@ -314,6 +322,7 @@ namespace XXCloudService.Api.XCCloud
                 dict_System.Comment = comment;
                 dict_System.Enabled = Convert.ToInt32(enabled);
                 dict_System.OrderID = orderId.Toint();
+                dict_System.DictLevel = (pModel.DictLevel ?? 0) + 1;
                 if (dicParas.ContainsKey("merchId"))
                 {
                     dict_System.MerchID = dicParas["merchId"].ToString();
@@ -404,11 +413,20 @@ namespace XXCloudService.Api.XCCloud
                 //    }
                 //}
 
+                var pModel = dict_SystemService.GetModels(p => p.ID == pId).FirstOrDefault();
+                if (pModel.DictLevel > 3)
+                {
+                    errMsg = "节点层数不能超过3层";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
                 dict_System.DictKey = dictKey;
                 dict_System.DictValue = dictValue;
                 dict_System.Comment = comment;
                 dict_System.Enabled = Convert.ToInt32(enabled);
                 dict_System.OrderID = orderId.Toint();
+                dict_System.DictLevel = (pModel.DictLevel ?? 0) + 1;
+
                 if (dicParas.ContainsKey("merchId"))
                 {
                     dict_System.MerchID = dicParas["merchId"].ToString();

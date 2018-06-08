@@ -334,9 +334,9 @@ namespace XXCloudService.Api.XCCloud
                 }                
 
                 var data_DeviceInfo = Base_DeviceInfoService.I.GetModels(p => p.ID == iId).FirstOrDefault();
-                if (data_DeviceInfo.type != (int)DeviceType.卡头)
+                if (data_DeviceInfo.type != (int)DeviceType.卡头 && data_DeviceInfo.type != (int)DeviceType.闸机 && data_DeviceInfo.type != (int)DeviceType.自助机)
                 {
-                    errMsg = "机台绑定须为卡头设备";
+                    errMsg = "机台绑定类型不正确，须为卡头、闸机或自助机";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
@@ -585,9 +585,14 @@ namespace XXCloudService.Api.XCCloud
                 }
 
                 var data_DeviceInfo = Base_DeviceInfoService.I.GetModels(p => p.ID == iId).FirstOrDefault();
-                if (data_DeviceInfo.type == (int)DeviceType.卡头 || data_DeviceInfo.type == (int)DeviceType.路由器)
+                if (data_DeviceInfo.type == (int)DeviceType.路由器)
                 {
-                    errMsg = "被绑定设备类型不能是卡头或路由器";
+                    errMsg = "被绑定设备类型不能是路由器";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+                if (data_DeviceInfo.type == (int)DeviceType.卡头 || data_DeviceInfo.type == (int)DeviceType.闸机 || data_DeviceInfo.type == (int)DeviceType.自助机)
+                {
+                    errMsg = "被绑定设备类型不能是卡头、闸机或自助机";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
