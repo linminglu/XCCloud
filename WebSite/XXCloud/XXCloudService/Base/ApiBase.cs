@@ -111,6 +111,16 @@ namespace XCCloudService.Base
                 //    return;
                 //}
 
+                //long count = 0;
+                //long count1 = 0;
+                //long freq = 0;
+                //double result = 0;
+                //if (action == "GetBalanceTypeDic")
+                //{                    
+                //    QueryPerformanceFrequency(ref freq);
+                //    QueryPerformanceCounter(ref count);
+                //}
+
                 //调用请求方法
                 object[] paras = null;
                 if (requestMethodInfo.GetParameters().Count<object>() > 0)
@@ -120,6 +130,14 @@ namespace XCCloudService.Base
 
                 object resObj = requestMethodInfo.Invoke(this, paras);
                 SuccessResponseOutput(context, apiMethodAttribute, resObj, signKeyToken);
+
+                //if (action == "GetBalanceTypeDic")
+                //{
+                //    QueryPerformanceCounter(ref count1);
+                //    count = count1 - count;
+                //    result = (double)(count) / (double)freq;
+                //    LogHelper.SaveLog(string.Format("(OUTER)GetBalanceTypeDic调用耗时:{0}秒", result));
+                //}
                                 
                 string return_code;
                 string return_msg;

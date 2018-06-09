@@ -1067,6 +1067,10 @@ let memberLevelId='';let memberLevels='';let MemberLevelNames='';
               data = JSON.parse(data);
               if (data.result_code == 1) {
                   balanceData=data.result_data;
+                  setBal(balanceData,form,'PushBalanceIndex1');
+                  setBal(balanceData,form,'PushBalanceIndex11');
+                  setBal(balanceData,form,'PushBalanceIndex2');
+                  setBal(balanceData,form,'OutBalanceIndex');
               } else {
                   layer.msg(data.result_msg);
               }
@@ -1074,14 +1078,6 @@ let memberLevelId='';let memberLevels='';let MemberLevelNames='';
       });
       xc.getGameType (token,layer,form,'游戏机类型','GameType');
       xc.getGameType (token,layer,form,'游戏机类型','GameTypeLow');
-//      xc.getBalanceTypeDic('',token,layer,form,'PushBalanceIndex1');
-//      xc.getBalanceTypeDic('',token,layer,form,'PushBalanceIndex11');
-//      xc.getBalanceTypeDic('',token,layer,form,'PushBalanceIndex2');
-//      xc.getBalanceTypeDic('',token,layer,form,'OutBalanceIndex');
-      setBal(balanceData,form,'PushBalanceIndex1');
-      setBal(balanceData,form,'PushBalanceIndex11');
-      setBal(balanceData,form,'PushBalanceIndex2');
-      setBal(balanceData,form,'OutBalanceIndex');
       xc.getMemberTypeDic(token,layer,form,'memberLevels');
       xc.getGroupAreaDic('1',token,layer,form,'AreaID');
       xc.getGroupAreaDic('1',token,layer,form,'AreaID1');
