@@ -32,9 +32,9 @@ namespace XCCloudService.Base
         protected string versionNo = string.Empty;
 
         [System.Runtime.InteropServices.DllImport("Kernel32.dll")]
-        static extern bool QueryPerformanceCounter(ref long count);
+        protected static extern bool QueryPerformanceCounter(ref long count);
         [System.Runtime.InteropServices.DllImport("Kernel32.dll")]
-        static extern bool QueryPerformanceFrequency(ref long count); 
+        protected static extern bool QueryPerformanceFrequency(ref long count); 
  
         /// <summary>
         /// 处理请求,完成安全验证,调用接口方法
@@ -94,7 +94,7 @@ namespace XCCloudService.Base
                     return;
                 }
 
-                //验证访问权限
+                //验证访问权限                
                 if (!CheckAuthorize(authorizeAttribute, apiMethodAttribute.SignKeyEnum, dicParas, userTokenKeyModel, out errMsg))
                 {
                     FailResponseOutput(context, apiMethodAttribute, errMsg, signKeyToken);
@@ -117,9 +117,10 @@ namespace XCCloudService.Base
                 {
                     paras = new object[1] { dicParas };
                 }
+
                 object resObj = requestMethodInfo.Invoke(this, paras);
                 SuccessResponseOutput(context, apiMethodAttribute, resObj, signKeyToken);
-                
+                                
                 string return_code;
                 string return_msg;
                 string result_code;
@@ -576,9 +577,9 @@ namespace XCCloudService.Base
                 }
 
                 string token = dicParas["userToken"].ToString();
-
+                
                 //验证token
-                userTokenKeyModel = XCCloudUserTokenBusiness.GetUserTokenModel(token);
+                userTokenKeyModel = XCCloudUserTokenBusiness.GetUserTokenModel(token);                
                 if (userTokenKeyModel == null)
                 {
                     errMsg = "用户令牌已失效, 请重新登录";
@@ -841,7 +842,7 @@ namespace XCCloudService.Base
             //转化为JSON格式
             if (resObj.GetType().FullName.IndexOf("[[System.Object") >= 0 || resObj.GetType().FullName.IndexOf("f__AnonymousType") >= 0)
             {
-                string jsonStr = jss.Serialize(resObj);
+                string jsonStr = jss.Serialize(resObj);                
                 return Utils.DateTimeJsonConverter(jsonStr, @"\\/Date\((\d+)\)\\/", "yyyy-MM-dd HH:mm:ss");
             }           
             else

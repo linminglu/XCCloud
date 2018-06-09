@@ -89,10 +89,8 @@ namespace XXCloudService.Api.XCCloud
                     query = query.Where(w => w.MappingType == hkType);
                 if (!storeId.IsNull())
                     query = from a in query
-                            join b in Data_BalanceType_StoreListService.N.GetModels() on a.ID equals b.BalanceIndex into b1
-                            from b in b1.DefaultIfEmpty()
-                            where b.StroeID == storeId
-                            select a;
+                            join b in Data_BalanceType_StoreListService.N.GetModels(p => p.StroeID.Equals(storeId, StringComparison.OrdinalIgnoreCase)) on a.ID equals b.BalanceIndex
+                            select a;    
 
                 var linq = from a in query
                            orderby a.TypeID

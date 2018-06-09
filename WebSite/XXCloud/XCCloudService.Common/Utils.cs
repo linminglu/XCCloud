@@ -1969,6 +1969,7 @@ namespace XCCloudService.Common
                 serializer.WriteObject(ms, resObj);
                 byteArr = ms.ToArray();
             }
+
             string jsonStr = Encoding.UTF8.GetString(byteArr);
             return DateTimeJsonConverter(jsonStr, @"\\/Date\((\d+)\+(\d+)\)\\/", "yyyy-MM-dd HH:mm:ss");
         }

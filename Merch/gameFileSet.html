@@ -891,6 +891,11 @@
     };
     xc.getInitData(parm);
     let id='';
+
+//    余额类别
+    let balanceData=[];
+
+
     //简易模式参数
     let eAreaID,ePushBalanceIndex1,eGameType,
         ePushLevel=0,LotteryModeLow=0,eOnlyExitLottery=0,
@@ -1050,12 +1055,33 @@ let memberLevelId='';let memberLevels='';let MemberLevelNames='';
       let layer=layui.layer;
       let table=layui.table;
       let laydate=layui.laydate;
+      let __obj={'hkType':'','userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+      let _parseJson = JSON.stringify(__obj);
+      $.ajax({
+          type:'post',
+          url:'/XCCloud/BalanceType?action=GetBalanceTypeDic',
+          contentType: "application/json; charset=utf-8",
+          data:{parasJson: _parseJson},
+          anysc:false,
+          success: function (data) {
+              data = JSON.parse(data);
+              if (data.result_code == 1) {
+                  balanceData=data.result_data;
+              } else {
+                  layer.msg(data.result_msg);
+              }
+          }
+      });
       xc.getGameType (token,layer,form,'游戏机类型','GameType');
       xc.getGameType (token,layer,form,'游戏机类型','GameTypeLow');
-      xc.getBalanceTypeDic('',token,layer,form,'PushBalanceIndex1');
-      xc.getBalanceTypeDic('',token,layer,form,'PushBalanceIndex11');
-      xc.getBalanceTypeDic('',token,layer,form,'PushBalanceIndex2');
-      xc.getBalanceTypeDic('',token,layer,form,'OutBalanceIndex');
+//      xc.getBalanceTypeDic('',token,layer,form,'PushBalanceIndex1');
+//      xc.getBalanceTypeDic('',token,layer,form,'PushBalanceIndex11');
+//      xc.getBalanceTypeDic('',token,layer,form,'PushBalanceIndex2');
+//      xc.getBalanceTypeDic('',token,layer,form,'OutBalanceIndex');
+      setBal(balanceData,form,'PushBalanceIndex1');
+      setBal(balanceData,form,'PushBalanceIndex11');
+      setBal(balanceData,form,'PushBalanceIndex2');
+      setBal(balanceData,form,'OutBalanceIndex');
       xc.getMemberTypeDic(token,layer,form,'memberLevels');
       xc.getGroupAreaDic('1',token,layer,form,'AreaID');
       xc.getGroupAreaDic('1',token,layer,form,'AreaID1');
@@ -2061,6 +2087,21 @@ let memberLevelId='';let memberLevels='';let MemberLevelNames='';
       });
   }
 
+    function setBal(arr,form,id,selected){
+        $('#'+id).html('<option>-请选择-</option>');
+        for(let i in arr){
+            if(selected!=undefined){
+                if(arr[i].ID==selected){
+                    $('#'+id).append('<option value="'+arr[i].ID+'" selected>'+arr[i].TypeName+'</option>')
+                }else {
+                    $('#'+id).append('<option value="'+arr[i].ID+'">'+arr[i].TypeName+'</option>')
+                }
+            }else {
+                $('#'+id).append('<option value="'+arr[i].ID+'">'+arr[i].TypeName+'</option>')
+            }
+        }
+        form.render('select');
+    }
   $('body').find($('.layui-form-item>div')).on('mouseenter','label',function () {
          let _this=$(this);
          layui.use('layer',function () {
