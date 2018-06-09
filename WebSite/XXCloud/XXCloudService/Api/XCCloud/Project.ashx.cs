@@ -100,15 +100,12 @@ namespace XXCloudService.Api.XCCloud
                 var model = new
                 {
                     data_ProjectInfo = data_ProjectInfo,
-                    gameInfo = new
-                    {
-                        PushBalanceIndex1 = data_GameInfo.PushBalanceIndex1,
-                        PushCoin1 = data_GameInfo.PushCoin1,
-                        PushBalanceIndex2 = data_GameInfo.PushBalanceIndex2,
-                        PushCoin2 = data_GameInfo.PushCoin2,
-                        ReadCat = data_GameInfo.ReadCat,
-                        PushLevel = data_GameInfo.PushLevel
-                    }
+                    PushBalanceIndex1 = data_GameInfo.PushBalanceIndex1,
+                    PushCoin1 = data_GameInfo.PushCoin1,
+                    PushBalanceIndex2 = data_GameInfo.PushBalanceIndex2,
+                    PushCoin2 = data_GameInfo.PushCoin2,
+                    ReadCat = data_GameInfo.ReadCat,
+                    PushLevel = data_GameInfo.PushLevel
                 }.AsFlatDictionary();
 
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, model);
@@ -578,8 +575,13 @@ namespace XXCloudService.Api.XCCloud
                 var id = dicParas.Get("id").Toint();
 
                 var bindDevice = Data_Project_BindDeviceService.I.GetModels(p => p.ID == id).FirstOrDefault();
+                var model = new
+                {
+                    bindDevice = bindDevice,
+                    bindDeviceId = Base_DeviceInfoService.I.GetModels(p => p.ID == bindDevice.DeviceID).Select(o => o.BindDeviceID).FirstOrDefault()
+                }.AsFlatDictionary();
 
-                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, bindDevice);
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, model);
             }
             catch (Exception e)
             {
@@ -597,23 +599,92 @@ namespace XXCloudService.Api.XCCloud
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 if (!dicParas.Get("deviceId").Validintnozero("设备ID", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (!dicParas.Get("bindDeviceId").Validintnozero("路由器ID", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
                 var id = dicParas.Get("id").Toint(0);
+                var projectId = dicParas.Get("projectId").Toint();
+                var deviceId = dicParas.Get("deviceId").Toint();
+                var bindDeviceId = dicParas.Get("bindDeviceId").Toint();
 
                 //开启EF事务
                 using (TransactionScope ts = new TransactionScope())
                 {
                     try
                     {
-                        var model = Data_Project_BindDeviceService.I.GetModels(p => p.ID == id).FirstOrDefault() ?? new Data_Project_BindDevice();
+                        var data_ProjectInfoService = Data_ProjectInfoService.I;
+                        var data_Project_BindDeviceService = Data_Project_BindDeviceService.I;
+                        var data_GameInfoService = Data_GameInfoService.I;
+                        var base_DeviceInfoService = Base_DeviceInfoService.I;
+
+                        //检查游乐项目信息
+                        if (!data_ProjectInfoService.Any(a => a.ID == projectId))
+                        {
+                            errMsg = "该游乐项目不存在";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
+                        var projectInfo = data_ProjectInfoService.GetModels(p => p.ID == projectId).FirstOrDefault();
+                        var gameIndex = projectInfo.GameIndex;
+                        if(gameIndex > 0 && !data_GameInfoService.Any(a=>a.ID == gameIndex))
+                        {
+                            errMsg = "该游乐项目绑定的游戏机信息不存在";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
+                        //检查绑定设备信息
+                        if (!base_DeviceInfoService.Any(a => a.ID == deviceId))
+                        {
+                            errMsg = "该设备信息不存在";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
+                        var deviceInfo = base_DeviceInfoService.GetModels(p => p.ID == deviceId).FirstOrDefault();
+                        if (deviceInfo.type != (int)DeviceType.卡头 && deviceInfo.type != (int)DeviceType.闸机 && deviceInfo.type != (int)DeviceType.自助机)
+                        {
+                            errMsg = "绑定的设备类型不正确";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
+                        if (deviceInfo.GameIndexID > 0 || deviceInfo.BindDeviceID > 0)
+                        {
+                            errMsg = "该设备已被绑定";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
+                        //检查路由器信息
+                        if (!base_DeviceInfoService.Any(a => a.ID == bindDeviceId))
+                        {
+                            errMsg = "该路由器信息不存在";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
+                        //继承路由器段号
+                        var routInfo = base_DeviceInfoService.GetModels(p => p.ID == bindDeviceId).FirstOrDefault();
+                        deviceInfo.segment = routInfo.segment;
+
+                        //按顺序生成机头地址(01~9F)十六进制
+                        for (int i = 1; i < 160; i++)
+                        {
+                            var address = Convert.ToString(i, 16).PadLeft(2, '0').ToUpper();
+                            if (!base_DeviceInfoService.Any(p => p.BindDeviceID == bindDeviceId && p.ID != bindDeviceId && p.Address.Equals(address, StringComparison.OrdinalIgnoreCase)))
+                            {
+                                deviceInfo.Address = address;
+                                break;
+                            }
+                        }
+
+                        //更新绑定设备信息
+                        deviceInfo.GameIndexID = gameIndex;
+                        base_DeviceInfoService.UpdateModel(deviceInfo);
+
+                        //保存设备绑定信息
+                        var model = data_Project_BindDeviceService.GetModels(p => p.ID == id).FirstOrDefault() ?? new Data_Project_BindDevice();
                         Utils.GetModel(dicParas, ref model);
+
                         if (id == 0)
                         {
-                            if (!Data_Project_BindDeviceService.I.Add(model))
-                            {
-                                errMsg = "添加绑定设备失败";
-                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                            }
+                            data_Project_BindDeviceService.AddModel(model);
                         }
                         else
                         {
@@ -623,11 +694,19 @@ namespace XXCloudService.Api.XCCloud
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                             }
 
-                            if (!Data_Project_BindDeviceService.I.Update(model))
-                            {
-                                errMsg = "更新绑定设备失败";
-                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                            }
+                            data_Project_BindDeviceService.UpdateModel(model);
+                        }
+
+                        if (!base_DeviceInfoService.SaveChanges())
+                        {
+                            errMsg = "更新绑定设备信息失败";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
+                        if (!data_Project_BindDeviceService.SaveChanges())
+                        {
+                            errMsg = "保存设备绑定信息失败";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 
                         ts.Complete();
@@ -671,10 +750,34 @@ namespace XXCloudService.Api.XCCloud
                         {
                             errMsg = "该绑定流水号不存在";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
+                        }                        
 
                         var model = Data_Project_BindDeviceService.I.GetModels(p => p.ID == id).FirstOrDefault();
-                        if (!Data_Project_BindDeviceService.I.Delete(model))
+                        Data_Project_BindDeviceService.I.DeleteModel(model);
+
+                        //解除设备绑定信息
+                        var deviceId = model.DeviceID;
+                        if (!Base_DeviceInfoService.I.Any(a => a.ID == deviceId))
+                        {
+                            errMsg = "该绑定的设备信息不存在";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
+                        var deviceInfo = Base_DeviceInfoService.I.GetModels(p => p.ID == deviceId).FirstOrDefault();
+                        deviceInfo.GameIndexID = (int?)null;
+                        deviceInfo.BindDeviceID = (int?)null;
+                        deviceInfo.SiteName = string.Empty;
+                        deviceInfo.segment = string.Empty;
+                        deviceInfo.Address = string.Empty;
+                        Base_DeviceInfoService.I.UpdateModel(deviceInfo);
+                        
+                        if (!Base_DeviceInfoService.I.SaveChanges())
+                        {
+                            errMsg = "解除设备绑定失败";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
+                        if (!Data_Project_BindDeviceService.I.SaveChanges())
                         {
                             errMsg = "删除绑定设备失败";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);

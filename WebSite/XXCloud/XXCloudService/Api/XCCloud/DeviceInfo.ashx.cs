@@ -343,7 +343,7 @@ namespace XXCloudService.Api.XCCloud
                 //绑定
                 if (iState == 1)
                 {
-                    if ((data_DeviceInfo.GameIndexID ?? 0) > 0 || (data_DeviceInfo.BindDeviceID ?? 0) > 0)
+                    if (data_DeviceInfo.GameIndexID > 0 || data_DeviceInfo.BindDeviceID > 0)
                     {
                         errMsg = "该机台已被绑定";
                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -378,10 +378,10 @@ namespace XXCloudService.Api.XCCloud
                     //按顺序生成机头地址(01~9F)十六进制
                     for (int i = 1; i < 160; i++)
                     {
-                        var iAddress = Convert.ToString(i, 16).PadLeft(2, '0').ToUpper();
-                        if (!Base_DeviceInfoService.I.Any(p => p.BindDeviceID == iBindDeviceId && p.ID != iBindDeviceId && p.Address.Equals(iAddress, StringComparison.OrdinalIgnoreCase)))
+                        var address = Convert.ToString(i, 16).PadLeft(2, '0').ToUpper();
+                        if (!Base_DeviceInfoService.I.Any(p => p.BindDeviceID == iBindDeviceId && p.ID != iBindDeviceId && p.Address.Equals(address, StringComparison.OrdinalIgnoreCase)))
                         {
-                            data_DeviceInfo.Address = iAddress;
+                            data_DeviceInfo.Address = address;
                             break;
                         }
                     }

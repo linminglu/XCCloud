@@ -802,7 +802,7 @@
                 'VaildStartDate':EffactType==1?$('input[name="VaildStartDate"]').val():'',
                 'VaildEndDate':EffactType==1?$('input[name="VaildEndDate"]').val():'',
                 'WeekType':WeekType,
-                'Week':week.length>0?week.join('|'):'',
+                'Week':week.length>0?week.sort().join('|'):'',
                 'StartTime':$('input[name="StartTime"]').val(),
                 'EndTime':$('input[name="EndTime"]').val(),
                 'NoStartDate':$('input[name="NoStartDate"]').val(),

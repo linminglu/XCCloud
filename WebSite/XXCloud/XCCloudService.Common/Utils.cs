@@ -2095,13 +2095,14 @@ namespace XCCloudService.Common
         }
 
         /// <summary>
-        /// 判断是否C#内置类型(把集合类型也当作内置对象)
+        /// 判断是否C#内置类型(把集合类型或Nullable<>也当作内置对象)
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
         public static bool IsBulitinType(Type type)
         {
-            return (type == typeof(object) || Type.GetTypeCode(type) != TypeCode.Object || type.GetInterface("IEnumerable") != null);
+            return (type == typeof(object) || Type.GetTypeCode(type) != TypeCode.Object || type.GetInterface("IEnumerable") != null 
+                || (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>)));
         }
 
 

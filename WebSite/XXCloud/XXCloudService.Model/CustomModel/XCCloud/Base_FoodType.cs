@@ -8,6 +8,19 @@ using System.Threading.Tasks;
 namespace XCCloudService.Model.CustomModel.XCCloud
 {
     [DataContract]
+    public class Base_Food
+    {
+        [DataMember(Name = "foodTypeMainList", Order = 1)]
+        public List<Base_FoodType> FoodTypeMainList { set; get; }
+
+        [DataMember(Name = "foodTypeGoodList", Order = 2)]
+        public List<Base_FoodType> FoodTypeGoodList { set; get; }
+
+        [DataMember(Name = "foodTypeTicketList", Order = 3)]
+        public List<Base_FoodType> FoodTypeTicketList { set; get; }
+    }
+
+    [DataContract]
     public class Base_FoodType
     {
         [DataMember(Name = "foodTypeId", Order = 1)]

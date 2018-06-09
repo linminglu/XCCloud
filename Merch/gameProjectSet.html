@@ -364,7 +364,7 @@
    let DeviceList=[];let feeRule=[]; let projectBandPrice=[];
    let index1;let index2;let index3;
    let projectType='';let Area='';let chargeType='';
-    let PushBalanceIndex1='';let PushBalanceIndex2='';let ReadCat=1;let PushLevel=1;
+    let PushBalanceIndex1='';let PushBalanceIndex2='';let ReadCat=1;let PushLevel=1;let guestIndex=''
 
    let DeviceID='',WorkType='',AdjOrder=0,ReadFace=0,ReadCard=0,ReadQRCode=0,AllowCrah=0;let router='';
     //计时规则
@@ -374,7 +374,7 @@
         const layer=layui.layer;
         const table=layui.table;
       $('.add').on('click',()=>{  //弹窗
-            id='';
+            id='';guestIndex='';
            feeType=''; feeBalance=''; feekinds=''; feeWays=''; Lock=0;
             PushBalanceIndex1=''; PushBalanceIndex2=''; ReadCat=1; PushLevel=1;
             xc.getBalanceTypeDic('',token,layer,form,'PushBalanceIndex1');
@@ -435,7 +435,7 @@
                 'projectType':projectType,
                 'chargeType':chargeType,
                 'note':$('#Note').val(),
-                'gameIndex':'',
+                'gameIndex':guestIndex,
                 'guestPrice':$('input[name="GuestPrice"]').val(),
                 'PushBalanceIndex1': PushBalanceIndex1,
                 'PushCoin1': $('input[name="PushCoin1"]').val(),
@@ -539,6 +539,7 @@
                             projectType=arr.ProjectType;
                             Area=arr.AreaType;
                             chargeType=arr.ChargeType;
+                            guestIndex=arr.GameIndex;
                             xc.getBalanceTypeDic('',token,layer,form,'PushBalanceIndex1',arr.PushBalanceIndex1);
                             xc.getBalanceTypeDic('',token,layer,form,'PushBalanceIndex2',arr.PushBalanceIndex2);
                             PushBalanceIndex1=arr.PushBalanceIndex1;
