@@ -55,7 +55,10 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         {
             get
             {
-                return Utils.TimeSpanToStr(StartTime) + "~" + Utils.TimeSpanToStr(EndTime);
+                var periodLimit = Utils.TimeSpanToStr(StartTime) + "~" + Utils.TimeSpanToStr(EndTime);
+                if (periodLimit.Trim() == "~")
+                    periodLimit = string.Empty;
+                return periodLimit;
             }
             set { }
         }
@@ -65,7 +68,10 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         {
             get
             {
-                return Utils.ConvertFromDatetime(NoStartDate, "yyyy-MM-dd") + "~" + Utils.ConvertFromDatetime(NoEndDate, "yyyy-MM-dd");
+                var noDate = Utils.ConvertFromDatetime(NoStartDate, "yyyy-MM-dd") + "~" + Utils.ConvertFromDatetime(NoEndDate, "yyyy-MM-dd");
+                if (noDate.Trim() == "~")
+                    noDate = string.Empty;
+                return noDate;
             }
             set { }
         }

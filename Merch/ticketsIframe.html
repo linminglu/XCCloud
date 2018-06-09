@@ -148,12 +148,12 @@
                             <label class="layui-form-label">时间范围</label>
                             <div class="layui-input-inline" style="width: 150px">
                                 <select lay-filter="usePried">
-                                    <option value="0">自定义</option>
                                     <option value="1">当天</option>
                                     <option value="2">本周</option>
                                     <option value="3">本月</option>
                                     <option value="4">本季</option>
                                     <option value="5">本年</option>
+                                    <option value="0">自定义</option>
                                 </select>
                             </div>
                             <div class="layui-input-inline" style="width: 150px">
@@ -201,13 +201,13 @@
                             <label class="layui-form-label">不可用日期</label>
                             <div class="layui-input-inline">
                                 <select name="noUsePried" id="noUsePried" lay-filter="noUsePried">
-                                    <option value="0">自定义</option>
+                                    <option value="6">不设置</option>
                                     <option value="1">当天</option>
                                     <option value="2">本周</option>
                                     <option value="3">本月</option>
                                     <option value="4">本季</option>
                                     <option value="5">本年</option>
-                                    <option value="6">不设置</option>
+                                    <option value="0">自定义</option>
                                 </select>
                             </div>
                         </div>
@@ -391,6 +391,12 @@
         $('#bindTimesBox').addClass('layui-hide');
         $('#useReason').removeClass('layui-hide');
         $('select[name="BusinessType"]').val('1');
+
+        //包时任玩禁用以下属性：允许离场时间，分摊类别，人脸识别，陪同票，权重默认为0，不可修改。
+    $('input[name="AllowExitTimes"]').attr({'disabled':true})
+        $('select[name="DivideType"]').attr({'disabled':true})
+        $('input[name="eadFace"]').attr({'disabled':true})
+        $('input[name="ActiveBar"]').attr({'disabled':true})
     }
 
     let   proListArr=[];let proList='';let ProjcetStr='';let isShare=0;
@@ -401,7 +407,10 @@
     let AllowExitTicket=0;let ExitPeriodType=0;let ExitTicketType=0;//按金额
     let RestrictPeriodType='';let AllowRestrict='';let RestrictShareCount=0;
     layui.use(['table','form','layer','laydate'],function () {
-        let table=layui.table;let form=layui.form;let layer=layui.layer;let laydate=layui.laydate;
+        let table=layui.table;
+        let form=layui.form;
+        let layer=layui.layer;
+        let laydate=layui.laydate;
 
         form.on('select(DivideType)',function (data){DivideType=data.value;});
         form.on('checkbox(ReadFace)',function (data){data.elem.checked==true? ReadFace=1: ReadFace=0});
@@ -544,7 +553,10 @@
             elem: '#NoEndDate',type: 'date',value:new Date()
         });
         //绑定项目
-        if(ticketSet.name=='times'||ticketSet.name=='group'||ticketSet.name=='boardPackage'){
+        if(ticketSet.name=='times'||ticketSet.name=='group'){
+            bindPro(table,[],'proTable');
+        }else if(ticketSet.name=='boardPackage'){
+
             bindPro(table,[],'proTable');
         }else {
             bindPro1(table,[],'proTable');
@@ -674,8 +686,8 @@
                                 'VaildEndDate':VaildPeriodType==1?arr.VaildEndDate.substring(0, 10):'',
                                 'poriedType':arr.WeekType,
 
-                                'NoStartDate':arr.NoStartDate.substring(0, 10),
-                                'NoEndDate':arr.NoEndDate.substring(0, 10),
+                                'NoStartDate':arr.NoStartDate!=null?arr.NoStartDate.substring(0, 10):'',
+                                'NoEndDate':arr.NoEndDate!=null?arr.NoEndDate.substring(0, 10):'',
                                 'AccompanyCash':arr.AccompanyCash,
                                 'BalanceIndex':arr.BalanceIndex,
                                 'BalanceValue':arr.BalanceValue,
@@ -692,9 +704,11 @@
                                 'RestrictShareCount':arr.RestrictShareCount==1?true:false,
 
                             });
-
-                            $('#StartTime').val(generatelD(arr.StartTime.Hours) +':'+generatelD(arr.StartTime.Minutes) +':'+generatelD(arr.StartTime.Seconds));
-                            $('#EndTime').val(generatelD(arr.EndTime.Hours) +':'+generatelD(arr.EndTime.Minutes) +':'+generatelD(arr.EndTime.Seconds));
+//
+//                            $('#StartTime').val(generatelD(arr.StartTime.Hours) +':'+generatelD(arr.StartTime.Minutes) +':'+generatelD(arr.StartTime.Seconds));
+//                            $('#EndTime').val(generatelD(arr.EndTime.Hours) +':'+generatelD(arr.EndTime.Minutes) +':'+generatelD(arr.EndTime.Seconds));
+                            $('#StartTime').val(arr.StartTime.Seconds);
+                            $('#EndTime').val(arr.EndTime.Seconds);
                             if(arr.EffactType==0){
                                 $('.time1').removeClass('layui-hide');
                                 $('.time2').addClass('layui-hide')
@@ -702,7 +716,7 @@
                                 $('.time2').removeClass('layui-hide');
                                 $('.time1').addClass('layui-hide')
                             }
-                            if(arr.Week!=''){
+                            if(arr.Week!=null){
                                    let arrWeek= arr.Week.split('|');
                                    for(let i in arrWeek){
                                        $('#weekBox').find('input[value="'+arrWeek[i]+'"]').attr('checked',true);
@@ -719,7 +733,7 @@
                              EffactPeriodType=arr.EffactPeriodType;
                              VaildPeriodType=arr.VaildPeriodType;
                              WeekType=arr.WeekType;
-                             week=arr.Week!=''?arr.Week.split('|'):[];
+                             week=arr.Week!=null?arr.Week.split('|'):[];
                              BalanceIndex=arr.BalanceIndex;
                              AllowExitTicket=arr.AllowExitTicket;
                              ExitPeriodType=arr.ExitPeriodType;
@@ -757,7 +771,7 @@
             if(layevent==='del'){
                 for(let i in proListArr){
                     if(proListArr[i].ProjectID==data.ProjectID){
-                        proListArr.splice(i,1)
+                        proListArr.splice(i,1);
                         obj.del()
                     }
                 }
