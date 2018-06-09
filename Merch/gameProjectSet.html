@@ -366,7 +366,7 @@
    let projectType='';let Area='';let chargeType='';
     let PushBalanceIndex1='';let PushBalanceIndex2='';let ReadCat=1;let PushLevel=1;let guestIndex=''
 
-   let DeviceID='',WorkType='',AdjOrder=0,ReadFace=0,ReadCard=0,ReadQRCode=0,AllowCrah=0;let router='';
+   let DeviceID='',WorkType='',AdjOrder=0,ReadFace=0,ReadCard=0,ReadQRCode=0,AllowCrah=0;let routerList='';
     //计时规则
     let feeType='';let feeBalance='';let feekinds='';let feeWays='';let Lock=0;
     layui.use(['form','layer','table'],()=>{
@@ -705,6 +705,9 @@
         form.on('select(deviceList)',function (data) {
             DeviceID=data.value;
         });
+        form.on('select(routerList)',function (data) {
+            routerList=data.value;
+        });
         form.on('select(workType)',function (data) {
             WorkType=data.value;
         });
@@ -771,6 +774,7 @@
                   'ReadQRCode':ReadQRCode,
                   'AllowCash':AllowCrah,
                   'DeviceList':DeviceList,
+                  'BindDeviceID':routerList,
                   'userToken':token,
                   'signkey':'1f626576304bf5d95b72ece2222e42c3'};
               let parasJson = JSON.stringify(obj);
