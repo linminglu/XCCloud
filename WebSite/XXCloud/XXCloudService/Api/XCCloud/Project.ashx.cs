@@ -678,6 +678,7 @@ namespace XXCloudService.Api.XCCloud
 
                         //更新绑定设备信息
                         deviceInfo.GameIndexID = gameIndex;
+                        deviceInfo.BindDeviceID = bindDeviceId;
                         base_DeviceInfoService.UpdateModel(deviceInfo);
 
                         //保存设备绑定信息
