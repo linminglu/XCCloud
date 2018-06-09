@@ -476,10 +476,14 @@
        });
         $('#saveTimes').on('click',function(){
             layer.close(index3);
-        })
+        });
        $('#addDevice').on('click',()=>{  //弹窗
             xc.getUnBindDeviceDic(token,layer,form,'deviceList');
-             DeviceID='';WorkType='';AdjOrder=0;ReadFace=0;ReadCard=0;ReadQRCode=0;AllowCrah=0;
+             DeviceID='';WorkType='';AdjOrder=0;ReadFace=0;ReadCard=0;ReadQRCode=0;AllowCrah=0;routerList='';
+            $('#deviceModel').find('input[type="checkbox"]').attr({'checked':false});
+            xc.getRouteDevice(token,layer,form,'routerList');
+            $('#workType').find('option').attr({'selected':false});
+            form.render()
             index2=   layer.open({
                 title:'新增',
                 type:1,
@@ -494,8 +498,8 @@
              id=data.ID;
             if(layEvent === 'del'){ //删除
                 layer.confirm('真的删除行么', function(index){
-                   var _obj={'projectIds':id,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
-                var url='/XCCloud/Project?action=DeleteProjectInfo';
+                   var _obj={'id':id,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                var url='/XCCloud/Project?action=DelProjectInfo';
                 let parseJson = JSON.stringify(_obj);
                 $.ajax({
                     type: "post",
@@ -594,7 +598,8 @@
                         console.log(data);
                         if (data.result_code == 1) {
                             setDeviceTable(table,data.result_data);
-                            xc.getRouteDevice(token,layer,form,'routerList');
+                            DeviceList=data.result_data;
+
                             index1=   layer.open({
                                 title:'新增',
                                 type:1,
@@ -773,7 +778,6 @@
                   'ReadCard':ReadCard,
                   'ReadQRCode':ReadQRCode,
                   'AllowCash':AllowCrah,
-                  'DeviceList':DeviceList,
                   'BindDeviceID':routerList,
                   'userToken':token,
                   'signkey':'1f626576304bf5d95b72ece2222e42c3'};
@@ -787,7 +791,25 @@
                       data=JSON.parse(data);
                       if(data.result_code==1){
                           layer.msg('保存成功',{time:1500},function () {
-                              setDeviceTable(table,DeviceList);
+                              let _obj={'projectId':id,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                              let url='/XCCloud/Project?action=QueryBindDevice';
+                              let parseJson = JSON.stringify(_obj);
+                              $.ajax({
+                                  type: "post",
+                                  url: url,
+                                  contentType: "application/json; charset=utf-8",
+                                  data: {parasJson: parseJson},
+                                  success: function (data) {
+                                      data = JSON.parse(data);
+                                      console.log(data);
+                                      if (data.result_code == 1) {
+                                          setDeviceTable(table,data.result_data);
+                                          DeviceList=data.result_data;
+                                      } else {
+                                          layer.msg(data.result_msg||data.return_msg);
+                                      }
+                                  }
+                              });
                               layer.close(index2);
                           })
                       }else {
@@ -952,7 +974,6 @@
             , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
             , cols: [[
                 {field:'DeviceID', title:'设备编号', align: 'center',width:121}
-                // ,{field:'FoodTypeStr',title: '设备类别', align: 'center',width:205} //width 支持：数字、百分比和不填写。
                 ,{field:'WorkType', title: '工作方式', align: 'center',width:100,templet:'#wt'}
                 ,{field:'AdjOrder', title: '顺序校验', align: 'center',width:100,templet:'#ao'}
                 ,{field:'ReadFace', title: '人脸', align: 'center',width:100,templet:'#rf'}

@@ -419,7 +419,42 @@ namespace XXCloudService.Api.XCCloud
 
                         var model = Data_ProjectInfoService.I.GetModels(p => p.ID == id).FirstOrDefault();
                         model.State = 0;
-                        if (!Data_ProjectInfoService.I.Update(model))
+                        Data_ProjectInfoService.I.UpdateModel(model);
+
+                        //解除设备绑定信息
+                        foreach (var bindModel in Data_Project_BindDeviceService.I.GetModels(p => p.ProjectID == id))
+                        {
+                            Data_Project_BindDeviceService.I.DeleteModel(bindModel);
+                            
+                            var deviceId = bindModel.DeviceID;
+                            if (!Base_DeviceInfoService.I.Any(a => a.ID == deviceId))
+                            {
+                                errMsg = "该绑定的设备信息不存在";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+
+                            var deviceInfo = Base_DeviceInfoService.I.GetModels(p => p.ID == deviceId).FirstOrDefault();
+                            deviceInfo.GameIndexID = (int?)null;
+                            deviceInfo.BindDeviceID = (int?)null;
+                            deviceInfo.SiteName = string.Empty;
+                            deviceInfo.segment = string.Empty;
+                            deviceInfo.Address = string.Empty;
+                            Base_DeviceInfoService.I.UpdateModel(deviceInfo);                            
+                        }
+
+                        if (!Base_DeviceInfoService.I.SaveChanges())
+                        {
+                            errMsg = "解除设备绑定失败";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
+                        if (!Data_Project_BindDeviceService.I.SaveChanges())
+                        {
+                            errMsg = "删除绑定设备失败";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
+                        if (!Data_ProjectInfoService.I.SaveChanges())
                         {
                             errMsg = "删除游乐项目失败";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
