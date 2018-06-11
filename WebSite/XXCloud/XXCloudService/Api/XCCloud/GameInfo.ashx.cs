@@ -27,29 +27,7 @@ namespace XXCloudService.Api.XCCloud
     /// GameInfo 的摘要说明
     /// </summary>
     public class GameInfo : ApiBase
-    {
-        private string getProjectGameTypes(out string errMsg)
-        {
-            string projectGameTypes = string.Empty;
-            errMsg = string.Empty;
-            string sql = " exec  SP_DictionaryNodes @MerchID,@DictKey,@PDictKey,@RootID output ";
-            SqlParameter[] parameters = new SqlParameter[4];
-            parameters[0] = new SqlParameter("@MerchID", "");
-            parameters[1] = new SqlParameter("@DictKey", "游乐项目");
-            parameters[2] = new SqlParameter("@PDictKey", "游戏机类型");
-            parameters[3] = new SqlParameter("@RootID", SqlDbType.Int);
-            parameters[3].Direction = System.Data.ParameterDirection.Output;
-            System.Data.DataSet ds = XCCloudBLL.ExecuteQuerySentence(sql, parameters);
-            if (ds.Tables.Count == 0)
-            {
-                errMsg = "没有找到节点信息";
-                return projectGameTypes;
-            }
-            var dictionaryResponse = Utils.GetModelList<DictionaryResponseModel>(ds.Tables[0]).Where(w => w.Enabled == 1).ToList();
-            projectGameTypes = string.Join(",", dictionaryResponse.Select(o => o.ID)).Trim(',');
-
-            return projectGameTypes;
-        }
+    {       
 
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object GetGameInfoList(Dictionary<string, object> dicParas)

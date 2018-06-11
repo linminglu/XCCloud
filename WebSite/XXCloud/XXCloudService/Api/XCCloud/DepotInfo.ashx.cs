@@ -349,8 +349,7 @@ namespace XXCloudService.Api.XCCloud
                                     }
 
                                     Data_GoodsStockService.I.UpdateModel(data_GoodsStock);
-                                }
-                                
+                                }                                
                             }
                             else
                             {

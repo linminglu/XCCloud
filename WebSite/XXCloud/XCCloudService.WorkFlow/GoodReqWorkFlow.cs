@@ -30,6 +30,7 @@ namespace XCCloudService.WorkFlow
         private int _workId;
         private int _eventId;
         private int _userId;
+        private int _logType;
         private int _userType;
         private string _targetMerchId;
         private string _inStoreId;
@@ -117,27 +118,40 @@ namespace XCCloudService.WorkFlow
             var base_UserInfo = Base_UserInfoService.I.GetModels(p => p.UserID == _userId).FirstOrDefault() ?? new Base_UserInfo();
             _userType = base_UserInfo.UserType ?? 0;
             _merchId = base_UserInfo.MerchID ?? "";
-            _storeId = base_UserInfo.StoreID ?? "";
+            //_storeId = IsStoreUser() ? (base_UserInfo.StoreID ?? "") : "";
         }
 
         private bool IsStoreUser()
         {
-            return _userType == (int)UserType.Store || _userType == (int)UserType.StoreBoss;  
+            //return _userType == (int)UserType.Store || _userType == (int)UserType.StoreBoss;  
+            //商户切换门店时有效
+            return _logType == (int)RoleType.StoreUser;
         }
 
         private bool IsMerchUser()
         {
-            return _userType == (int)UserType.Normal || _userType == (int)UserType.Heavy;
+            //return _userType == (int)UserType.Normal || _userType == (int)UserType.Heavy;
+            //门店切换商户时有效
+            return _logType == (int)RoleType.MerchUser;
         }
         
-        public GoodReqWorkFlow(int eventId, int userId)
+        /// <summary>
+        /// 礼品调拨工作流
+        /// </summary>
+        /// <param name="eventId">调拨申请单ID</param>
+        /// <param name="userId">当前登录用户ID</param>
+        /// <param name="logType">当前用户登录类型</param>
+        /// <param name="storeId">当前登录门店ID</param>
+        public GoodReqWorkFlow(int eventId, int userId, int logType, string storeId)
         {
             _eventId = eventId;
             _userId = userId;
+            _logType = logType;
             _requestType = GetRequestType();
             _workId = GetWorkId();
             GetWorkState();            
             GetUserInfo();
+            _storeId = storeId;
                         
             _machine = new StateMachine<State, Trigger>(() => _state, s => _state = s);            
 

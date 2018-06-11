@@ -19,6 +19,7 @@ using XCCloudService.Business.XCGameMana;
 using XCCloudService.Common.Extensions;
 using System.Data.SqlClient;
 using XCCloudService.BLL.CommonBLL;
+using System.Data;
 
 namespace XCCloudService.Base
 {
@@ -30,6 +31,30 @@ namespace XCCloudService.Base
         protected int defaultPageSize = int.Parse(System.Configuration.ConfigurationManager.AppSettings["defaultPageSize"].ToString());
         protected string sysId = string.Empty;
         protected string versionNo = string.Empty;
+
+        protected string getProjectGameTypes(out string errMsg)
+        {
+            string projectGameTypes = string.Empty;
+            errMsg = string.Empty;
+
+            string sql = " exec  SP_DictionaryNodes @MerchID,@DictKey,@PDictKey,@RootID output ";
+            SqlParameter[] parameters = new SqlParameter[4];
+            parameters[0] = new SqlParameter("@MerchID", "");
+            parameters[1] = new SqlParameter("@DictKey", "游乐项目");
+            parameters[2] = new SqlParameter("@PDictKey", "游戏机类型");
+            parameters[3] = new SqlParameter("@RootID", SqlDbType.Int);
+            parameters[3].Direction = System.Data.ParameterDirection.Output;
+            System.Data.DataSet ds = XCCloudBLL.ExecuteQuerySentence(sql, parameters);
+            if (ds.Tables.Count == 0)
+            {
+                errMsg = "没有找到节点信息";
+                return projectGameTypes;
+            }
+            var dictionaryResponse = Utils.GetModelList<DictionaryResponseModel>(ds.Tables[0]).Where(w => w.Enabled == 1).ToList();
+            projectGameTypes = string.Join(",", dictionaryResponse.Select(o => o.ID)).Trim(',');
+
+            return projectGameTypes;
+        }
 
         [System.Runtime.InteropServices.DllImport("Kernel32.dll")]
         protected static extern bool QueryPerformanceCounter(ref long count);

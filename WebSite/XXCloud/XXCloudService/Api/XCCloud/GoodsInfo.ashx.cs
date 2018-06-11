@@ -484,6 +484,8 @@ namespace XXCloudService.Api.XCCloud
                 string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
                 string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
                 var userId = userTokenKeyModel.LogId.Toint(0);
+                var logType = userTokenKeyModel.LogType;
+
                 string errMsg = string.Empty;
                 object[] conditions = dicParas.ContainsKey("conditions") ? (object[])dicParas["conditions"] : null;
 
@@ -577,7 +579,7 @@ namespace XXCloudService.Api.XCCloud
                 var list = Data_GoodRequestService.I.SqlQuery<Data_GoodRequestList>(sql, parameters).ToList();
                 foreach (var model in list)
                 {
-                    model.PermittedTriggers = new GoodReqWorkFlow(model.ID, userId).PermittedTriggers.Cast<int>();
+                    model.PermittedTriggers = new GoodReqWorkFlow(model.ID, userId, logType, storeId).PermittedTriggers.Cast<int>();
                 }
                 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, list);
@@ -982,6 +984,7 @@ namespace XXCloudService.Api.XCCloud
                 var storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
                 var merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
                 var userId = userTokenKeyModel.LogId.Toint(0);
+                var logType = userTokenKeyModel.LogType;
 
                 var errMsg = string.Empty;
                 if (!dicParas.Get("requstType").Validint("调拨方式", out errMsg))
@@ -1109,6 +1112,13 @@ namespace XXCloudService.Api.XCCloud
                                     data_GoodRequest_List.LogistOrderID = logistOrderId;
                                     data_GoodRequest_List.SendTime = DateTime.Now;
                                     Data_GoodRequest_ListService.I.AddModel(data_GoodRequest_List);
+
+                                    if (requstType == 2)
+                                    {
+                                        //更新当前库存
+                                        if (!updateGoodsStock(outDepotId, goodId, (int)SourceType.GoodRequest, requestId, costPrice, (int)StockFlag.Out, sendCount, merchId, storeId, out errMsg))
+                                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    }
                                 }
                                 else
                                 {
@@ -1122,10 +1132,16 @@ namespace XXCloudService.Api.XCCloud
                                 errMsg = "添加调拨明细失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                             }
+
+                            if (!Data_GoodStock_RecordService.I.SaveChanges())
+                            {
+                                errMsg = "添加出库存异动信息失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
                         }
 
                         //工作流更新
-                        var wf = new GoodReqWorkFlow(requestId, userId);
+                        var wf = new GoodReqWorkFlow(requestId, userId, logType, storeId);
                         if (requstType == 2)
                         {
                             if (!wf.SendDeal(out errMsg))
@@ -1172,6 +1188,7 @@ namespace XXCloudService.Api.XCCloud
                 var storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
                 var merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
                 var userId = userTokenKeyModel.LogId.Toint(0);
+                var logType = userTokenKeyModel.LogType;
 
                 var errMsg = string.Empty;
                 var requestId = dicParas.Get("requestId").Toint(0);
@@ -1198,7 +1215,7 @@ namespace XXCloudService.Api.XCCloud
                         }
 
                         //工作流更新
-                        var wf = new GoodReqWorkFlow(requestId, userId);
+                        var wf = new GoodReqWorkFlow(requestId, userId, logType, storeId);
                         if (!wf.RequestVerify(state, note, out errMsg))
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
@@ -1237,6 +1254,7 @@ namespace XXCloudService.Api.XCCloud
                 var storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
                 var merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
                 var userId = userTokenKeyModel.LogId.Toint(0);
+                var logType = userTokenKeyModel.LogType;
 
                 var errMsg = string.Empty;
                 var requestId = dicParas.Get("requestId").Toint(0);
@@ -1263,7 +1281,7 @@ namespace XXCloudService.Api.XCCloud
                         }
 
                         //工作流更新
-                        var wf = new GoodReqWorkFlow(requestId, userId);
+                        var wf = new GoodReqWorkFlow(requestId, userId, logType, storeId);
                         if (!wf.SendDealVerify(state, note, out errMsg))
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
@@ -1278,12 +1296,6 @@ namespace XXCloudService.Api.XCCloud
                         if (!Data_GoodStock_RecordService.I.SaveChanges())
                         {
                             errMsg = "添加出库存异动信息失败";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
-
-                        if (!Data_GoodsStockService.I.SaveChanges())
-                        {
-                            errMsg = "更新当前库存失败";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 
@@ -1322,6 +1334,7 @@ namespace XXCloudService.Api.XCCloud
                 var storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
                 var merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
                 var userId = userTokenKeyModel.LogId.Toint(0);
+                var logType = userTokenKeyModel.LogType;
 
                 var errMsg = string.Empty;
                 var requestId = dicParas.Get("requestId").Toint(0);
@@ -1348,7 +1361,7 @@ namespace XXCloudService.Api.XCCloud
                         }
 
                         //工作流更新
-                        var wf = new GoodReqWorkFlow(requestId, userId);
+                        var wf = new GoodReqWorkFlow(requestId, userId, logType, storeId);
                         if (!wf.RequestDealVerify(state, note, out errMsg))
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
@@ -1363,12 +1376,6 @@ namespace XXCloudService.Api.XCCloud
                         if (!Data_GoodStock_RecordService.I.SaveChanges())
                         {
                             errMsg = "添加入库存异动信息失败";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
-
-                        if (!Data_GoodsStockService.I.SaveChanges())
-                        {
-                            errMsg = "更新当前库存失败";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 
@@ -1407,6 +1414,7 @@ namespace XXCloudService.Api.XCCloud
                 var storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
                 var merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
                 var userId = userTokenKeyModel.LogId.Toint(0);
+                var logType = userTokenKeyModel.LogType;
 
                 var errMsg = string.Empty;
                 var requestId = dicParas.Get("requestId").Toint(0);
@@ -1439,7 +1447,7 @@ namespace XXCloudService.Api.XCCloud
                         }
 
                         //工作流更新
-                        var wf = new GoodReqWorkFlow(requestId, userId);
+                        var wf = new GoodReqWorkFlow(requestId, userId, logType, storeId);
                         if (!wf.SendDeal(out errMsg))
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);                        
 
@@ -1539,12 +1547,6 @@ namespace XXCloudService.Api.XCCloud
                                 errMsg = "添加出库存异动信息失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                             }
-
-                            if (!Data_GoodsStockService.I.SaveChanges())
-                            {
-                                errMsg = "更新当前库存失败";
-                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                            }
                         }
 
                         ts.Complete();
@@ -1598,7 +1600,12 @@ namespace XXCloudService.Api.XCCloud
             }
 
             stockModel.RemainCount = (stockModel.RemainCount ?? 0) + (stockFlag == (int)StockFlag.Out ? -stockCount : stockFlag == (int)StockFlag.In ? stockCount : 0) ?? 0;
-            Data_GoodsStockService.I.UpdateModel(stockModel);
+            if (!Data_GoodsStockService.I.Update(stockModel))
+            {
+                errMsg = "更新当前库存信息失败";
+                return false;
+            }
+
             return true;
         }
 
@@ -1616,6 +1623,7 @@ namespace XXCloudService.Api.XCCloud
                 var storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
                 var merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
                 var userId = userTokenKeyModel.LogId.Toint(0);
+                var logType = userTokenKeyModel.LogType;
 
                 var errMsg = string.Empty;
                 if (!dicParas.Get("requestId").Validintnozero("调拨单ID", out errMsg))
@@ -1641,7 +1649,7 @@ namespace XXCloudService.Api.XCCloud
                         }
 
                         //工作流更新
-                        var wf = new GoodReqWorkFlow(requestId, userId);
+                        var wf = new GoodReqWorkFlow(requestId, userId, logType, storeId);
                         if (!wf.RequestDeal(out errMsg))
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
@@ -1703,12 +1711,6 @@ namespace XXCloudService.Api.XCCloud
                                 errMsg = "添加入库存异动信息失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                             }
-
-                            if (!Data_GoodsStockService.I.SaveChanges())
-                            {
-                                errMsg = "更新当前库存失败";
-                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                            }
                         }                        
 
                         ts.Complete();
@@ -1746,6 +1748,7 @@ namespace XXCloudService.Api.XCCloud
                 var storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
                 var merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
                 var userId = userTokenKeyModel.LogId.Toint(0);
+                var logType = userTokenKeyModel.LogType;
 
                 var errMsg = string.Empty;
                 if (!dicParas.Get("requestId").Validintnozero("调拨单ID", out errMsg))
@@ -1760,7 +1763,7 @@ namespace XXCloudService.Api.XCCloud
                 }
 
                 //工作流更新
-                var wf = new GoodReqWorkFlow(requestId, userId);
+                var wf = new GoodReqWorkFlow(requestId, userId, logType, storeId);
                 if (!wf.Close(out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
@@ -2194,12 +2197,6 @@ namespace XXCloudService.Api.XCCloud
                             errMsg = "添加入库存异动信息失败";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
-
-                        if (!Data_GoodsStockService.I.SaveChanges())
-                        {
-                            errMsg = "更新当前库存失败";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
                         
                         ts.Complete();
                     }
@@ -2278,12 +2275,6 @@ namespace XXCloudService.Api.XCCloud
                         if (!Data_GoodStock_RecordService.I.SaveChanges())
                         {
                             errMsg = "添加入库存撤销记录失败";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
-
-                        if (!Data_GoodsStockService.I.SaveChanges())
-                        {
-                            errMsg = "更新当前库存失败";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 
@@ -2421,12 +2412,6 @@ namespace XXCloudService.Api.XCCloud
                             if (!Data_GoodStock_RecordService.I.SaveChanges())
                             {
                                 errMsg = "添加出库存异动信息失败";
-                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                            }
-
-                            if (!Data_GoodsStockService.I.SaveChanges())
-                            {
-                                errMsg = "更新当前库存失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                             }
                         }                        
@@ -2864,12 +2849,6 @@ namespace XXCloudService.Api.XCCloud
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 
-                        if (!Data_GoodsStockService.I.SaveChanges())
-                        {
-                            errMsg = "更新当前库存失败";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
-
                         ts.Complete();
                     }
                     catch (DbEntityValidationException e)
@@ -2948,12 +2927,6 @@ namespace XXCloudService.Api.XCCloud
                         if (!Data_GoodStock_RecordService.I.SaveChanges())
                         {
                             errMsg = "添加出库存撤销记录失败";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
-
-                        if (!Data_GoodsStockService.I.SaveChanges())
-                        {
-                            errMsg = "更新当前库存失败";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 

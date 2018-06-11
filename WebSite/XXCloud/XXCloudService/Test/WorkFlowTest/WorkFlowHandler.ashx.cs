@@ -71,7 +71,7 @@ namespace XXCloudService.Test.WorkFlowTest
             int eventId = Convert.ToInt32(p["eventId"]);
             int userId = Convert.ToInt32(p["userId"]);
 
-            var wf = new GoodReqWorkFlow(eventId, userId);
+            var wf = new GoodReqWorkFlow(eventId, userId, 2, "");
             var errMsg = string.Empty;
             var ret = wf.Request(out errMsg);
         }
@@ -80,7 +80,7 @@ namespace XXCloudService.Test.WorkFlowTest
             int eventId = Convert.ToInt32(p["eventId"]);
             int userId = Convert.ToInt32(p["userId"]);
 
-            var wf = new GoodReqWorkFlow(eventId, userId);
+            var wf = new GoodReqWorkFlow(eventId, userId, 3, "");
             var errMsg = string.Empty;
             var ret = wf.RequestVerify(1, string.Empty, out errMsg);
         }
@@ -89,7 +89,7 @@ namespace XXCloudService.Test.WorkFlowTest
             int eventId = Convert.ToInt32(p["eventId"]);
             int userId = Convert.ToInt32(p["userId"]);
 
-            var wf = new GoodReqWorkFlow(eventId, userId);
+            var wf = new GoodReqWorkFlow(eventId, userId, 2, "");
             var errMsg = string.Empty;
             var ret = wf.SendDeal(out errMsg);
         }
@@ -98,7 +98,7 @@ namespace XXCloudService.Test.WorkFlowTest
             int eventId = Convert.ToInt32(p["eventId"]);
             int userId = Convert.ToInt32(p["userId"]);
 
-            var wf = new GoodReqWorkFlow(eventId, userId);
+            var wf = new GoodReqWorkFlow(eventId, userId, 3, "");
             var errMsg = string.Empty;
             var ret = wf.SendDealVerify(1, string.Empty, out errMsg);
         }
@@ -107,7 +107,7 @@ namespace XXCloudService.Test.WorkFlowTest
             int eventId = Convert.ToInt32(p["eventId"]);
             int userId = Convert.ToInt32(p["userId"]);
 
-            var wf = new GoodReqWorkFlow(eventId, userId);
+            var wf = new GoodReqWorkFlow(eventId, userId, 2, "");
             var errMsg = string.Empty;
             var ret = wf.RequestDeal(out errMsg);
         }
@@ -116,7 +116,7 @@ namespace XXCloudService.Test.WorkFlowTest
             int eventId = Convert.ToInt32(p["eventId"]);
             int userId = Convert.ToInt32(p["userId"]);
 
-            var wf = new GoodReqWorkFlow(eventId, userId);
+            var wf = new GoodReqWorkFlow(eventId, userId, 3, "");
             var errMsg = string.Empty;
             var ret = wf.RequestDealVerify(1, string.Empty, out errMsg);
         }
@@ -125,7 +125,7 @@ namespace XXCloudService.Test.WorkFlowTest
             int eventId = Convert.ToInt32(p["eventId"]);
             int userId = Convert.ToInt32(p["userId"]);
 
-            var wf = new GoodReqWorkFlow(eventId, userId);
+            var wf = new GoodReqWorkFlow(eventId, userId, 2, "");
             var errMsg = string.Empty;
             var ret = wf.Cancel(out errMsg);
         }
@@ -134,7 +134,7 @@ namespace XXCloudService.Test.WorkFlowTest
             int eventId = Convert.ToInt32(p["eventId"]);
             int userId = Convert.ToInt32(p["userId"]);
 
-            var wf = new GoodReqWorkFlow(eventId, userId);
+            var wf = new GoodReqWorkFlow(eventId, userId, 2, "");
             var errMsg = string.Empty;
             var ret = wf.Close(out errMsg);
         }

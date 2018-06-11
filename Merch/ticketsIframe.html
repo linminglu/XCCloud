@@ -380,6 +380,7 @@
         $('input[name="BusinessType"]').val('门票');
         BusinessType=0;
     }else if(ticketSet.name=='month'){
+        $('#bindTimesBox').addClass('layui-hide');
         $('#useReason').removeClass('layui-hide');
         $('input[name="BusinessType"]').val('门票');
         BusinessType=0;
@@ -395,11 +396,11 @@
         $('.readFaceBox').addClass('layui-hide');
         $('.togetherBox').addClass('layui-hide');
 
-        BusinessType=1;
+        BusinessType=2;
     }else if(ticketSet.name=='timeLimit'){
         $('#bindTimesBox').addClass('layui-hide');
         $('#useReason').removeClass('layui-hide');
-        $('input[name="BusinessType"]').val('机台打包');
+        $('input[name="BusinessType"]').val('限时任玩');
         BusinessType=1;
 
         //包时任玩禁用以下属性：允许离场时间，分摊类别，人脸识别，陪同票，
@@ -409,7 +410,9 @@
         $('.togetherBox').addClass('layui-hide');
     }
 
-    let   proListArr=[];let proList='';let ProjcetStr='';let isShare=0;
+    let   proListArr=[];
+    let proList='';let ProjcetName='';let ProjcetType='';let ProjcetTypeStr='';let PushCoin1=0;
+    let isShare=0;
 
     let DivideType=''; let ReadFace=0;let ActiveBar=0;let AllowCreatePoint=0;let SaleAuthor=0;
     let EffactType=0; let EffactPeriodType=0; let VaildPeriodType=0;let WeekType=0;let week=[];
@@ -557,29 +560,27 @@
             elem: '#VaildEndDate',type: 'date',value:new Date()
         });
         laydate.render({
-            elem: '#NoStartDate',type: 'date',value:new Date()
+            elem: '#NoStartDate',type: 'date'
         });
         laydate.render({
-            elem: '#NoEndDate',type: 'date',value:new Date()
+            elem: '#NoEndDate',type: 'date'
         });
         //绑定项目
-        if(ticketSet.name=='times'||ticketSet.name=='group'){
-            bindPro(table,[],'proTable');
-        }else if(ticketSet.name=='boardPackage'){
-
-            bindPro(table,[],'proTable');
-        }else {
-            bindPro1(table,[],'proTable');
-        }
-
+        bindPro(ticketSet.name,table,[],'proTable');
         $('#addPro').on('click',function (){
             if(ticketSet.name=='times'){
-
+                initProject(token,form,layer,'proList','0');
             }else if(ticketSet.name=='month'){
-                $('#bindTimesBox').addClass('layui-hide');
+                initProject(token,form,layer,'proList','0');
+            }else if(ticketSet.name=='group'){
+                initProject(token,form,layer,'proList','0');
+            }else if(ticketSet.name=='boardPackage'){
+                initProject(token,form,layer,'proList','2');
+            }else if(ticketSet.name=='timeLimit'){
+                initProject(token,form,layer,'proList','1');
             }
-            xc.getProjectInfoDic(token,layer,form,'proList');
-             proList=''; ProjcetTypeStr=''; isShare=0;
+            proList=''; ProjcetName=''; ProjcetType=''; ProjcetTypeStr=''; PushCoin1=0;
+            isShare=0;
              $('#isShare').attr('checked',false);
              form.render();
             $('#shareTimes').val('');
@@ -591,7 +592,12 @@
         });
         form.on('select(proList)',(data)=>{
             proList=data.value;
-            ProjcetTypeStr=data.elem[data.elem.selectedIndex].title;
+            let  _Title='';
+            _Title=data.elem[data.elem.selectedIndex].title;
+            ProjcetName=data.elem[data.elem.selectedIndex].text;
+            ProjcetType=_Title.split('|')[0];
+            ProjcetTypeStr=_Title.split('|')[1];
+            PushCoin1=_Title.split('|')[2];
         });
         form.on('checkbox(isShare)',(data)=>{
             if(data.elem.checked==true){
@@ -602,19 +608,34 @@
         });
         $('#savePro').on('click',function () {
             if(proList!=''){
+
                 if(ticketSet.way=='add'){
-                    proListArr.push({'ProjectTicketID':''
-                        ,'ProjcetID':proList
-                        ,'ProjcetTypeStr':ProjcetTypeStr
-                        ,'UseCount':$('#shareTimes').val()
-                        ,'AllowShareCount':isShare
-                        ,'WeightValue':''});
+
                     if(ticketSet.name=='times'||ticketSet.name=='group'||ticketSet.name=='boardPackage'){
-                        bindPro(table,proListArr,'proTable');
-                    }else {
-                        bindPro1(table,proListArr,'proTable');
+                        proListArr.push({
+                            'ProjectTicketID':''
+                            ,'ProjcetID':proList
+                            ,'ProjectName':ProjcetName
+                            ,'ProjcetType':ProjcetType
+                            ,'ProjcetTypeStr':ProjcetTypeStr
+                            ,'PushCoin1':PushCoin1
+                            ,'UseCount':$('#shareTimes').val()
+                            ,'AllowShareCount':isShare
+                            ,'WeightValue':parseInt(PushCoin1)*parseInt($('#shareTimes').val())
+                        });
+                    }else if(ticketSet.name=='month'||ticketSet.name=='timeLimit'){
+                        proListArr.push({
+                            'ProjectTicketID':''
+                            ,'ProjcetID':proList
+                            ,'ProjectName':ProjcetName
+                            ,'ProjcetType':ProjcetType
+                            ,'ProjcetTypeStr':ProjcetTypeStr
+                            ,'WeightValue':0
+                        });
+
                     }
-                    layer.closeAll()
+//                    bindPro(ticketSet.name,table,proListArr,'proTable');
+//                    layer.closeAll()
                 }else if(ticketSet.way=='modify'){
                     if(proListArr.length>0){
                         let flag=false;
@@ -626,36 +647,60 @@
                         if(flag){
                             layer.msg('该项目已绑定，请选择其他项目')
                         }else {
-                            proListArr.push({'ProjectTicketID':ticketSet.id
-                                ,'ProjcetID':proList
-                                ,'ProjcetTypeStr':ProjcetTypeStr
-                                ,'UseCount':$('#shareTimes').val()
-                                ,'AllowShareCount':isShare
-                                ,'WeightValue':''});
                             if(ticketSet.name=='times'||ticketSet.name=='group'||ticketSet.name=='boardPackage'){
-                                bindPro(table,proListArr,'proTable');
+                                proListArr.push({'ProjectTicketID':ticketSet.id
+                                    ,'ProjcetID':proList
+                                    ,'ProjectName':ProjcetName
+                                    ,'ProjcetType':ProjcetType
+                                    ,'ProjcetTypeStr':ProjcetTypeStr
+                                    ,'PushCoin1':PushCoin1
+                                    ,'UseCount':$('#shareTimes').val()
+                                    ,'AllowShareCount':isShare
+                                    ,'WeightValue':parseInt(PushCoin1)*parseInt($('#shareTimes').val())});
+
                             }else {
-                                bindPro1(table,proListArr,'proTable');
+                                proListArr.push({'ProjectTicketID':ticketSet.id
+                                    ,'ProjcetID':proList
+                                    ,'ProjectName':ProjcetName
+                                    ,'ProjcetType':ProjcetType
+                                    ,'ProjcetTypeStr':ProjcetTypeStr
+//                                    ,'PushCoin1':PushCoin1
+//                                    ,'UseCount':1
+//                                    ,'AllowShareCount':isShare
+                                    ,'WeightValue':PushCoin1});
                             }
+//                            bindPro(ticketSet.name,table,proListArr,'proTable');
+//                            layer.closeAll();
                         }
                     }else {
-                        proListArr.push({'ProjectTicketID':ticketSet.id
-                            ,'ProjcetID':proList
-                            ,'ProjcetTypeStr':ProjcetTypeStr
-                            ,'UseCount':$('#shareTimes').val()
-                            ,'AllowShareCount':isShare
-                            ,'WeightValue':''});
                         if(ticketSet.name=='times'||ticketSet.name=='group'||ticketSet.name=='boardPackage'){
-                            bindPro(table,proListArr,'proTable');
+                            proListArr.push({'ProjectTicketID':ticketSet.id
+                                ,'ProjcetID':proList
+                                ,'ProjectName':ProjcetName
+                                ,'ProjcetType':ProjcetType
+                                ,'ProjcetTypeStr':ProjcetTypeStr
+                                ,'PushCoin1':PushCoin1
+                                ,'UseCount':$('#shareTimes').val()
+                                ,'AllowShareCount':isShare
+                                ,'WeightValue':parseInt(PushCoin1)*parseInt($('#shareTimes').val())});
+
                         }else {
-                            bindPro1(table,proListArr,'proTable');
+                            proListArr.push({'ProjectTicketID':ticketSet.id
+                                ,'ProjcetID':proList
+                                ,'ProjectName':ProjcetName
+                                ,'ProjcetType':ProjcetType
+                                ,'ProjcetTypeStr':ProjcetTypeStr
+//                                    ,'PushCoin1':PushCoin1
+//                                    ,'UseCount':1
+//                                    ,'AllowShareCount':isShare
+                                ,'WeightValue':PushCoin1});
                         }
-                        layer.closeAll()
+
                     }
-
                 }
+                bindPro(ticketSet.name,table,proListArr,'proTable');
+                layer.closeAll();
             }
-
         });
         $('#save').on('click',function () {
             saveTicketSet(ticketSet,layer);
@@ -677,7 +722,7 @@
                             let arr=data.result_data;
                             form.val('formtest',{
                                 'TicketName':arr.TicketName,
-                                'BusinessType':arr.BusinessType,
+
                                 'AllowExitTimes':arr.AllowExitTimes,
                                 'WriteOffDays':arr.WriteOffDays,
                                 'Price':arr.Price,
@@ -715,10 +760,16 @@
 
                             });
 //
-//                            $('#StartTime').val(generatelD(arr.StartTime.Hours) +':'+generatelD(arr.StartTime.Minutes) +':'+generatelD(arr.StartTime.Seconds));
-//                            $('#EndTime').val(generatelD(arr.EndTime.Hours) +':'+generatelD(arr.EndTime.Minutes) +':'+generatelD(arr.EndTime.Seconds));
-                            $('#StartTime').val(arr.StartTime.Seconds);
-                            $('#EndTime').val(arr.EndTime.Seconds);
+                        if(arr.BusinessType==0){
+                            $('#BusinessType').val('门票')
+                        }else if(arr.BusinessType==1){
+                            $('#BusinessType').val('限时任玩')
+                        }else if(arr.BusinessType==2){
+                            $('#BusinessType').val('机台打包')
+                        }
+                            $('#StartTime').val(arr.StartTimeStr);
+                            $('#EndTime').val(arr.EndTimeStr);
+
                             if(arr.EffactType==0){
                                 $('.time1').removeClass('layui-hide');
                                 $('.time2').addClass('layui-hide')
@@ -751,22 +802,9 @@
                             RestrictPeriodType=arr.RestrictPeriodType;
                             RestrictShareCount=arr.RestrictShareCount;
                             AllowRestrict=arr.AllowRestrict;
-                            if(ticketSet.name=='times'||ticketSet.name=='boardPackage'){
-                                bindPro(table,arr.ProjectTicketBinds,'proTable');
-                            }else if(ticketSet.name=='month'){
-                                AllowRestrict=arr.AllowRestrict;
-                                if(arr.AllowRestrict==1){
-                                    $('#useReasonBox').removeClass('layui-hide')
-                                }else {
-                                    $('#useReasonBox').addClass('layui-hide')
-                                }
-                                bindPro1(table,arr.ProjectTicketBinds,'proTable');
-                            }else if(ticketSet.name=='group'){
-                                bindPro(table,arr.ProjectTicketBinds,'proTable');
-                                $('#GroupStartupCount').val(arr.GroupStartupCount);
-                            }else  if(ticketSet.name=='timeLimit'){
-                                bindPro1(table,arr.ProjectTicketBinds,'proTable');
-                            }
+
+                            bindPro(ticketSet.name,table,arr.ProjectTicketBinds,'proTable');
+
                             form.render();
                         } else {
                             layer.msg(data.result_msg||data.return_msg);
@@ -789,12 +827,28 @@
         });
         table.on('edit(proTable)', function(obj){ //注：edit是固定事件名，test是table原始容器的属性 lay-filter="对应的值"
             let val=obj.value;
+            if(ticketSet.name=='times'||ticketSet.name=='group' ||ticketSet.name=='boardPackage'){
+                for(let i in proListArr){
 
-            for(let i in proListArr){
-                if(proListArr[i].ProjectID==obj.data.ProjectID){
-                    proListArr[i][obj.field]=obj.value
+
+                    if(proListArr[i].ProjcetID==obj.data.ProjcetID){
+                        let a=parseInt(proListArr[i].WeightValue);
+                        let b=Number(proListArr[i].UseCount);
+                        let preWV=parseInt(proListArr[i].WeightValue)/parseInt(proListArr[i].UseCount);
+                        if(obj.field=='UseCount'){
+                            proListArr[i].WeightValue==parseInt(obj.value)*parseInt(preWV);
+                        }
+                        proListArr[i][obj.field]=obj.value;
+                    }
+                }
+            }else if(ticketSet.name=='month'||ticketSet.name=='timeLimit'){
+                for(let i in proListArr){
+                    if(proListArr[i].ProjcetID==obj.data.ProjcetID){
+                        proListArr[i][obj.field]=obj.value
+                    }
                 }
             }
+
            console.log(proListArr)
         });
     });
@@ -1054,46 +1108,65 @@
            }
        })
     };
-   function bindPro(table,datas,id) {
+   function bindPro(type,table,datas,id) {
+       let _cols=[];
+       if(type=='times'||type=='group' ||type=='boardPackage'){
+           _cols=[
+               {field:'ProjectName', title:'项目名称', align: 'center',width:140}
+               ,{field:'ProjcetTypeStr',title: '类别', align: 'center',width:160} //width 支持：数字、百分比和不填写。
+               ,{field:'AllowShareCount', title: '次数共享', align: 'center',width:100}
+               ,{field:'UseCount', title: '游玩次数', align: 'center',width:140,edit:true}
+               ,{field:'WeightValue', title: '权重值', align: 'center',width:220,edit:true}
+               ,{fixed: 'right',title:'操作', width:240, align:'center', toolbar: '#barDemo2'}]
+       }else if(type=='month'||type=='timeLimit'){
+           _cols=[
+               {field:'ProjectName', title:'项目名称', align: 'center',width:140}
+               ,{field:'ProjcetTypeStr',title: '类别', align: 'center',width:160} //width 支持：数字、百分比和不填写。
+//               ,{field:'UseCount', title: '游玩次数', align: 'center',width:140,edit:true}
+               ,{field:'WeightValue', title: '权重值', align: 'center',width:220,edit:true}
+               ,{fixed: 'right',title:'操作', width:240, align:'center', toolbar: '#barDemo2'}]
+       }
        table.render({
            elem: '#'+id
            , height:'250px'
            , size:"sm"
            , data: datas
            , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
-           , cols: [[
-               {field:'ProjcetName', title:'项目名称', align: 'center',width:140}
-               ,{field:'ProjcetTypeStr',title: '类别', align: 'center',width:160} //width 支持：数字、百分比和不填写。
-               ,{field:'UseCount', title: '游玩次数', align: 'center',width:140}
-               ,{field:'AllowShareCount', title: '次数共享', align: 'center',width:100}
-               ,{field:'WeightValue', title: '权重值', align: 'center',width:220,edit:true}
-               ,{fixed: 'right',title:'操作', width:240, align:'center', toolbar: '#barDemo2'}]]
+           , cols: [_cols]
            , page: {page: true, limits: [10, 15, 20, 30, 50, 100]}
            , limit: 10
        });
    }
-    function bindPro1(table,datas,id) {
-        table.render({
-            elem: '#'+id
-            , height:'250px'
-            , size:"sm"
-            , data: datas
-            , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
-            , cols: [[
-                {field:'ProjcetName', title:'项目名称', align: 'center',width:240}
-                ,{field:'ProjcetTypeStr',title: '类别', align: 'center',width:240} //width 支持：数字、百分比和不填写。
-                // ,{field:'UseCount', title: '游玩次数', align: 'center',width:140}
-                // ,{field:'AllowShareCount', title: '次数共享', align: 'center',width:100}
-                ,{field:'WeightValue', title: '权重值', align: 'center',width:220,edit:true}
-                ,{fixed: 'right',title:'操作', width:240, align:'center', toolbar: '#barDemo2'}]]
-            , page: {page: true, limits: [10, 15, 20, 30, 50, 100]}
-            , limit: 10
-        });
-    }
+
    function generatelD(str) {
        var pad='00';
        return pad.substring(0,2-str.length)+str
    }
+
+    function initProject(token,form,layer,id,businessType){
+        let _obj={'businessType':businessType,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+        let parseJson = JSON.stringify(_obj);
+        $.ajax({
+            type:'post',
+            url:'/XCCloud/ProjectTicket?action=GetProjectGameInfoList',
+            contentType: "application/json; charset=utf-8",
+            data:{parasJson: parseJson},
+            success: function (data) {
+                data = JSON.parse(data);
+                if (data.result_code == 1) {
+                    let arr=data.result_data;
+                    $('#'+id).html('<option>-请选择-</option>');
+                    for(let i in arr){
+                        $('#'+id).append('<option value="'+arr[i].ProjectID+'" ' +
+                                'title="'+arr[i].ProjcetType+'|'+arr[i].ProjcetTypeStr+'|'+arr[i].PushCoin1+'">'+arr[i].ProjectName+'</option>')
+                    }
+                    form.render();
+                } else {
+                    layer.msg(data.result_msg);
+                }
+            }
+        });
+    }
 </script>
 <script type="text/html"   id="barDemo2">
     <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del"><i class="layui-icon">&#xe640;</i>删除</a>

@@ -357,7 +357,7 @@ namespace XCCloudService.Common
             {
                 string[] time = str.Split(':');
                 int hours = Convert.ToInt32(time[0]);
-                int minutes = (time.Length == 2) ? Convert.ToInt32(time[1]) : 0;
+                int minutes = (time.Length == 2 || time.Length == 3) ? Convert.ToInt32(time[1]) : 0;
                 int seconds = (time.Length == 3) ? Convert.ToInt32(time[2]) : 0;
                 TimeSpan ts = new TimeSpan(0, hours, minutes, seconds);
                 return ts;
@@ -377,8 +377,8 @@ namespace XCCloudService.Common
 
         public static string TimeSpanToStr(TimeSpan? ts)
         {
-            if (ts == null) return "00:00";
-            return string.Format("{0:00}：{1:00}", ts.Value.Hours, ts.Value.Minutes);
+            if (ts == null) return "00:00:00";
+            return string.Format("{0:00}:{1:00}:{2:00}", ts.Value.Hours, ts.Value.Minutes, ts.Value.Seconds);
         }
 
         /// <summary>

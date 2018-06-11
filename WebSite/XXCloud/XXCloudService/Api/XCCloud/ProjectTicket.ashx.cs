@@ -14,6 +14,8 @@ using XCCloudService.Model.XCCloud;
 using System.Data.SqlClient;
 using XCCloudService.Common.Enum;
 using XCCloudService.DBService.BLL;
+using System.Data;
+using XCCloudService.BLL.CommonBLL;
 
 namespace XXCloudService.Api.XCCloud
 {
@@ -99,27 +101,51 @@ namespace XXCloudService.Api.XCCloud
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
+                //排除游乐项目类型的游戏机
+                var projectGameTypes = getProjectGameTypes(out errMsg);
+                if (!errMsg.IsNull())
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
                 var data_ProjectTicket = (new
                 {
                     model = model,
-                    ProjectTicketBinds = from a in Data_ProjectTicket_BindService.N.GetModels(p => p.ProjcetTicketID == id)
-                                         join b in Data_ProjectInfoService.N.GetModels() on a.ProjcetID equals b.ID
-                                         join c in Dict_SystemService.N.GetModels() on a.ProjcetType equals c.ID into c1
-                                         from c in c1.DefaultIfEmpty()
+                    StartTimeStr = Utils.TimeSpanToStr(model.StartTime),
+                    EndTimeStr = Utils.TimeSpanToStr(model.EndTime),
+                    ProjectTicketBinds = (from a in Data_ProjectTicket_BindService.N.GetModels(p => p.ProjcetTicketID == id).AsEnumerable().Where(w => projectGameTypes.Contains(w.ProjcetType + ""))
+                                          join b in Data_ProjectInfoService.N.GetModels() on a.ProjcetID equals b.ID
+                                          join c in Dict_SystemService.N.GetModels() on a.ProjcetType equals c.ID into c1
+                                          from c in c1.DefaultIfEmpty()
+                                          select new
+                                          {
+                                              ID = a.ID,
+                                              ProjcetTicketID = a.ProjcetTicketID,
+                                              ProjcetID = a.ProjcetID,
+                                              ProjcetType = a.ProjcetType,
+                                              ProjectName = b != null ? b.ProjectName : string.Empty,
+                                              ProjcetTypeStr = c != null ? c.DictKey : string.Empty,
+                                              UseCount = a.UseCount,
+                                              AllowShareCount = a.AllowShareCount,
+                                              WeightValue = a.WeightValue,
+                                              PushCoin1 = (a.UseCount ?? 0) > 0 ? (a.WeightValue / a.UseCount) : 0
+                                          }).Union(
+                                         from a in Data_ProjectTicket_BindService.N.GetModels(p => p.ProjcetTicketID == id).AsEnumerable().Where(w => !projectGameTypes.Contains(w.ProjcetType + ""))
                                          join d in Data_GameInfoService.N.GetModels() on a.ProjcetID equals d.ID
                                          join e in Dict_SystemService.N.GetModels() on a.ProjcetType equals e.ID into e1
                                          from e in e1.DefaultIfEmpty()
-                                         select new 
+                                         select new
                                          {
                                              ID = a.ID,
                                              ProjcetTicketID = a.ProjcetTicketID,
                                              ProjcetID = a.ProjcetID,
-                                             ProjectName = b != null ? b.ProjectName : d != null ? d.GameName : string.Empty,
-                                             ProjcetTypeStr = c != null ? c.DictKey : e != null ? e.DictKey : string.Empty,                                          
+                                             ProjcetType = a.ProjcetType,
+                                             ProjectName = d != null ? d.GameName : string.Empty,
+                                             ProjcetTypeStr = e != null ? e.DictKey : string.Empty,
                                              UseCount = a.UseCount,
                                              AllowShareCount = a.AllowShareCount,
-                                             WeightValue = a.WeightValue                                             
+                                             WeightValue = a.WeightValue,
+                                             PushCoin1 = (a.UseCount ?? 0) > 0 ? (a.WeightValue / a.UseCount) : 0
                                          }
+                                         )
                 }).AsFlatDictionary();
 
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, data_ProjectTicket);
@@ -140,14 +166,15 @@ namespace XXCloudService.Api.XCCloud
                 string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
 
                 string errMsg = string.Empty;
+                if (!dicParas.Get("businessType").Validint("业务类型", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 if (!dicParas.Get("ticketType").Validint("门票类别", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 if (!dicParas.Get("ticketName").Nonempty("门票名称", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                if (!dicParas.Get("divideType").Validint("分摊方式", out errMsg))
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                if (!dicParas.Get("businessType").Validint("业务类型", out errMsg))
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (dicParas.Get("businessType").Toint() == (int)BusinessType.Ticket)
+                    if (!dicParas.Get("divideType").Validint("分摊方式", out errMsg))
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);                
                 if (!dicParas.Get("price").Validdecimalnozero("售价", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
@@ -294,9 +321,15 @@ namespace XXCloudService.Api.XCCloud
                             Data_ProjectTicket_BindService.I.DeleteModel(bindModel);
                         }
 
-                        if (!Data_ProjectTicket_BindService.I.SaveChanges())
+                        if (!Data_ProjectTicketService.I.SaveChanges())
                         {
                             errMsg = "删除门票信息失败";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
+                        if (!Data_ProjectTicket_BindService.I.SaveChanges())
+                        {
+                            errMsg = "删除门票绑定信息失败";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 
@@ -315,7 +348,7 @@ namespace XXCloudService.Api.XCCloud
             {
                 return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
             }
-        }
+        }        
 
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object GetProjectGameInfoList(Dictionary<string, object> dicParas)
@@ -348,11 +381,17 @@ namespace XXCloudService.Api.XCCloud
                 //如果是限时任玩或机台打包，则还可以选择机台绑定
                 if (businessType != (int)BusinessType.Ticket)
                 {
+                    //排除游乐项目类型的游戏机
+                    var projectGameTypes = getProjectGameTypes(out errMsg);
+                    if (!errMsg.IsNull())
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
                     projectGameInfoList =
                         projectGameInfoList.Union(
                             from a in Data_GameInfoService.N.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase) && p.State == 1)
                             join b in Dict_SystemService.N.GetModels() on a.GameType equals b.ID into b1
                             from b in b1.DefaultIfEmpty()
+                            where !projectGameTypes.Contains(a.GameType + "")
                             select new
                             {
                                 ProjectID = a.ID,

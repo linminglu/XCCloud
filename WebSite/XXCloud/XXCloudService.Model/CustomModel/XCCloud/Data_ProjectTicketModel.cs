@@ -29,7 +29,12 @@ namespace XCCloudService.Model.CustomModel.XCCloud
                     return "销售后" + EffactPeriodValue + ((XCCloudService.Common.Enum.FreqType?)EffactPeriodType).GetDescription()
                         + "生效，有效期" + VaildPeriodValue + ((XCCloudService.Common.Enum.FreqType?)VaildPeriodType).GetDescription();
                 else if (EffactType == (int)XCCloudService.Common.Enum.EffactType.Date)
-                    return Utils.ConvertFromDatetime(VaildStartDate, "yyyy-MM-dd") + "~" + Utils.ConvertFromDatetime(VaildEndDate, "yyyy-MM-dd");
+                {
+                    var validDate = Utils.ConvertFromDatetime(VaildStartDate, "yyyy-MM-dd") + "~" + Utils.ConvertFromDatetime(VaildEndDate, "yyyy-MM-dd");
+                    if (validDate.Trim() == "~")
+                        validDate = string.Empty;
+                    return validDate;
+                }
                 else
                     return string.Empty;
             }
@@ -88,7 +93,7 @@ namespace XCCloudService.Model.CustomModel.XCCloud
                 if (AllowExitTicket == 1)
                 {
                     return "销售" + ExitPeriodValue + ((XCCloudService.Common.Enum.FreqType?)ExitPeriodType).GetDescription()
-                        + "后不可退票，退票手续费" + ((XCCloudService.Common.Enum.ExitTicketType?)ExitTicketType).GetDescription() + ExitTicketValue
+                        + "后不可退票，退票手续费" + ((XCCloudService.Common.Enum.ExitTicketType?)ExitTicketType).GetDescription() + Math.Round(ExitTicketValue ?? 0M, 2, MidpointRounding.AwayFromZero)
                         + (ExitTicketType == (int)XCCloudService.Common.Enum.ExitTicketType.Money ? "元" :
                         ExitTicketType == (int)XCCloudService.Common.Enum.ExitTicketType.Percent ? "%" : string.Empty) + "计";
                 }
