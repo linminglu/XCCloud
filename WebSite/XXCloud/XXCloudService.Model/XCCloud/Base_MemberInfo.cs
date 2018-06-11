@@ -16,7 +16,7 @@ namespace XCCloudService.Model.XCCloud
     {
         public string ID { get; set; }
         public string WechatOpenID { get; set; }
-        public string AlpayOpenID { get; set; }
+        public string AlipayOpenID { get; set; }
         public string QQ { get; set; }
         public string IMME { get; set; }
         public string UserName { get; set; }

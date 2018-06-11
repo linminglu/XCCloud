@@ -104,17 +104,21 @@ namespace XXCloudService.Api.XCCloud
                     model = model,
                     ProjectTicketBinds = from a in Data_ProjectTicket_BindService.N.GetModels(p => p.ProjcetTicketID == id)
                                          join b in Data_ProjectInfoService.N.GetModels() on a.ProjcetID equals b.ID
-                                         join c in Dict_SystemService.N.GetModels() on b.ProjectType equals c.ID into c1
+                                         join c in Dict_SystemService.N.GetModels() on a.ProjcetType equals c.ID into c1
                                          from c in c1.DefaultIfEmpty()
+                                         join d in Data_GameInfoService.N.GetModels() on a.ProjcetID equals d.ID
+                                         join e in Dict_SystemService.N.GetModels() on a.ProjcetType equals e.ID into e1
+                                         from e in e1.DefaultIfEmpty()
                                          select new 
                                          {
                                              ID = a.ID,
                                              ProjcetTicketID = a.ProjcetTicketID,
                                              ProjcetID = a.ProjcetID,
+                                             ProjectName = b != null ? b.ProjectName : d != null ? d.GameName : string.Empty,
+                                             ProjcetTypeStr = c != null ? c.DictKey : e != null ? e.DictKey : string.Empty,                                          
                                              UseCount = a.UseCount,
                                              AllowShareCount = a.AllowShareCount,
-                                             WeightValue = a.WeightValue,
-                                             ProjcetTypeStr = c != null ? c.DictKey : string.Empty
+                                             WeightValue = a.WeightValue                                             
                                          }
                 }).AsFlatDictionary();
 
@@ -203,6 +207,8 @@ namespace XXCloudService.Api.XCCloud
                                     var dicPar = new Dictionary<string, object>(el, StringComparer.OrdinalIgnoreCase);
                                     if (!dicPar.Get("projcetId").Validintnozero("游乐项目ID", out errMsg))
                                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    if (!dicPar.Get("projcetType").Validintnozero("游乐项目类型", out errMsg))
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                                     if (!dicPar.Get("weightValue").Validintnozero("权重值", out errMsg))
                                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                                     if (ticketType == (int)TicketType.Count || ticketType == (int)TicketType.Group) //次票或团体票
@@ -214,6 +220,8 @@ namespace XXCloudService.Api.XCCloud
                                     }
 
                                     var bindModel = new Data_ProjectTicket_Bind();
+                                    bindModel.MerchID = merchId;
+                                    bindModel.ProjcetType = dicPar.Get("projcetType").Toint();
                                     bindModel.ProjcetTicketID = id;
                                     bindModel.ProjcetID = dicPar.Get("projcetId").Toint();
                                     bindModel.UseCount = dicPar.Get("useCount").Toint();
@@ -302,6 +310,62 @@ namespace XXCloudService.Api.XCCloud
                 }
 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object GetProjectGameInfoList(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+
+                var errMsg = string.Empty;
+                if (!dicParas.Get("businessType").Validint("业务类型", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                var businessType = dicParas.Get("businessType").Toint();
+
+                //绑定游乐项目
+                var projectGameInfoList = from a in Data_ProjectInfoService.N.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase) && p.State == 1 && p.ChargeType == (int)ProjectInfoChargeType.Count)
+                                          join b in Dict_SystemService.N.GetModels() on a.ProjectType equals b.ID into b1
+                                          from b in b1.DefaultIfEmpty()
+                                          join c in Data_GameInfoService.N.GetModels(p=>p.State == 1) on a.GameIndex equals c.ID
+                                          select new
+                                          {
+                                              ProjectID = a.ID,
+                                              ProjectName = a.ProjectName,
+                                              ProjcetType = a.ProjectType,
+                                              ProjcetTypeStr = b != null ? b.DictKey : string.Empty,
+                                              PushCoin1 = c.PushCoin1 ?? 0
+                                          };
+
+                //如果是限时任玩或机台打包，则还可以选择机台绑定
+                if (businessType != (int)BusinessType.Ticket)
+                {
+                    projectGameInfoList =
+                        projectGameInfoList.Union(
+                            from a in Data_GameInfoService.N.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase) && p.State == 1)
+                            join b in Dict_SystemService.N.GetModels() on a.GameType equals b.ID into b1
+                            from b in b1.DefaultIfEmpty()
+                            select new
+                            {
+                                ProjectID = a.ID,
+                                ProjectName = a.GameName,
+                                ProjcetType = a.GameType,
+                                ProjcetTypeStr = b != null ? b.DictKey : string.Empty,
+                                PushCoin1 = a.PushCoin1 ?? 0
+                            });
+                }
+
+                projectGameInfoList = projectGameInfoList.OrderBy(or => new { or.ProjcetType, or.ProjectID });
+
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, projectGameInfoList);
             }
             catch (Exception e)
             {

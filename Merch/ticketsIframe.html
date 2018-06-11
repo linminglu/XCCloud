@@ -27,14 +27,14 @@
                         <div class="layui-inline">
                             <label class="layui-form-label">业务类别</label>
                             <div class="layui-input-inline">
-                                <select name="BusinessType" id="BusinessType" lay-filter="BusinessType">
-                                    <option value="0">门票</option>
-                                    <option value="1">包段优惠</option>
-                                </select>
-                                <!--<input type="text" class="layui-input" id="BusinessType" name="BusinessType">-->
+                                <!--<select name="BusinessType" id="BusinessType" lay-filter="BusinessType">-->
+                                    <!--<option value="0">门票</option>-->
+                                    <!--<option value="1">包段优惠</option>-->
+                                <!--</select>-->
+                                <input type="text" class="layui-input" id="BusinessType" name="BusinessType" readonly>
                             </div>
                         </div>
-                        <div class="layui-inline">
+                        <div class="layui-inline allowExitBox">
                             <label class="layui-form-label">允许离场时间</label>
                             <div class="layui-input-inline">
                                 <input type="text" class="layui-input" id="AllowExitTimes" name="AllowExitTimes">
@@ -61,8 +61,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="layui-form-item">
-                        <div class="layui-inline">
+                    <div class="layui-form-item " >
+                        <div class="layui-inline DivideTypeBox">
                             <label class="layui-form-label">分摊类别</label>
                             <div class="layui-input-inline">
                                 <select name="DivideType" id="DivideType" lay-filter="DivideType">
@@ -79,8 +79,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="layui-form-item">
-                        <div class="layui-inline">
+                    <div class="layui-form-item ">
+                        <div class="layui-inline readFaceBox">
                             <div class="layui-input-inline">
                                 <input type="checkbox" title="是否开启人脸识别" lay-skin="primary" name="ReadFace" lay-filter="ReadFace">
                             </div>
@@ -226,7 +226,7 @@
                     </div>
                 </div>
             </div>
-            <div class="layui-card">
+            <div class="layui-card togetherBox">
                 <div class="layui-card-header">陪同票</div>
                 <div class="layui-card-body">
                     <div class="layui-form-item">
@@ -377,26 +377,36 @@
     let token=xc.getStorage('token');
     let  ticketSet=JSON.parse(xc.getStorage('ticketSet'));
     if(ticketSet.name=='times'){
-        $('select[name="BusinessType"]').val('0');
+        $('input[name="BusinessType"]').val('门票');
+        BusinessType=0;
     }else if(ticketSet.name=='month'){
         $('#useReason').removeClass('layui-hide');
-        $('select[name="BusinessType"]').val('0');
+        $('input[name="BusinessType"]').val('门票');
+        BusinessType=0;
     }else if(ticketSet.name=='group'){
         $('#groupStart').removeClass('layui-hide');
-        $('select[name="BusinessType"]').val('0');
+        $('input[name="BusinessType"]').val('门票');
+        BusinessType=0;
     }else if(ticketSet.name=='boardPackage'){
-        // $('#useReason').removeClass('layui-hide');
-        $('select[name="BusinessType"]').val('1');
+        $('input[name="BusinessType"]').val('机台打包');
+        //机台打包禁用以下属性：允许离场时间，分摊类别，人脸识别，陪同票
+        $('.allowExitBox').addClass('layui-hide');
+        $('.DivideTypeBox').addClass('layui-hide');
+        $('.readFaceBox').addClass('layui-hide');
+        $('.togetherBox').addClass('layui-hide');
+
+        BusinessType=1;
     }else if(ticketSet.name=='timeLimit'){
         $('#bindTimesBox').addClass('layui-hide');
         $('#useReason').removeClass('layui-hide');
-        $('select[name="BusinessType"]').val('1');
+        $('input[name="BusinessType"]').val('机台打包');
+        BusinessType=1;
 
-        //包时任玩禁用以下属性：允许离场时间，分摊类别，人脸识别，陪同票，权重默认为0，不可修改。
-    $('input[name="AllowExitTimes"]').attr({'disabled':true})
-        $('select[name="DivideType"]').attr({'disabled':true})
-        $('input[name="eadFace"]').attr({'disabled':true})
-        $('input[name="ActiveBar"]').attr({'disabled':true})
+        //包时任玩禁用以下属性：允许离场时间，分摊类别，人脸识别，陪同票，
+        $('.allowExitBox').addClass('layui-hide');
+        $('.DivideTypeBox').addClass('layui-hide');
+        $('.readFaceBox').addClass('layui-hide');
+        $('.togetherBox').addClass('layui-hide');
     }
 
     let   proListArr=[];let proList='';let ProjcetStr='';let isShare=0;
@@ -936,12 +946,12 @@
                 'TicketName':$('input[name="TicketName"]').val(),
                 'TicketType':1,
                 'BusinessType':1,
-                'AllowExitTimes':$('input[name="AllowExitTimes"]').val(),
+//                'AllowExitTimes':$('input[name="AllowExitTimes"]').val(),
                 'WriteOffDays':$('input[name="WriteOffDays"]').val(),
                 'Price':$('input[name="Price"]').val(),
                 'Tax':$('input[name="Tax"]').val(),
-                'DivideType':DivideType,
-                'ReadFace':ReadFace,
+//                'DivideType':DivideType,
+//                'ReadFace':ReadFace,
                 'ActiveBar':ActiveBar,
                 'AllowCreatePoint':AllowCreatePoint,
                 'SaleAuthor':SaleAuthor,
@@ -959,10 +969,10 @@
                 'EndTime':$('input[name="EndTime"]').val(),
                 'NoStartDate':$('input[name="NoStartDate"]').val(),
                 'NoEndDate':$('input[name="NoEndDate"]').val(),
-
-                'AccompanyCash':$('input[name="AccompanyCash"]').val(),
-                'BalanceIndex':BalanceIndex,
-                'BalanceValue':$('input[name="BalanceValue"]').val(),
+//
+//                'AccompanyCash':$('input[name="AccompanyCash"]').val(),
+//                'BalanceIndex':BalanceIndex,
+//                'BalanceValue':$('input[name="BalanceValue"]').val(),
 
                 'AllowExitTicket':AllowExitTicket,
                 'ExitPeriodValue':$('input[name="ExitPeriodValue"]').val(),
@@ -988,12 +998,12 @@
                 'TicketName':$('input[name="TicketName"]').val(),
                 'TicketType':0,
                 'BusinessType':2,
-                'AllowExitTimes':$('input[name="AllowExitTimes"]').val(),
+//                'AllowExitTimes':$('input[name="AllowExitTimes"]').val(),
                 'WriteOffDays':$('input[name="WriteOffDays"]').val(),
                 'Price':$('input[name="Price"]').val(),
                 'Tax':$('input[name="Tax"]').val(),
-                'DivideType':DivideType,
-                'ReadFace':ReadFace,
+//                'DivideType':DivideType,
+//                'ReadFace':ReadFace,
                 'ActiveBar':ActiveBar,
                 'AllowCreatePoint':AllowCreatePoint,
                 'SaleAuthor':SaleAuthor,
@@ -1012,9 +1022,9 @@
                 'NoStartDate':$('input[name="NoStartDate"]').val(),
                 'NoEndDate':$('input[name="NoEndDate"]').val(),
 
-                'AccompanyCash':$('input[name="AccompanyCash"]').val(),
-                'BalanceIndex':BalanceIndex,
-                'BalanceValue':$('input[name="BalanceValue"]').val(),
+//                'AccompanyCash':$('input[name="AccompanyCash"]').val(),
+//                'BalanceIndex':BalanceIndex,
+//                'BalanceValue':$('input[name="BalanceValue"]').val(),
 
                 'AllowExitTicket':AllowExitTicket,
                 'ExitPeriodValue':$('input[name="ExitPeriodValue"]').val(),
@@ -1052,7 +1062,7 @@
            , data: datas
            , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
            , cols: [[
-               {field:'ProjcetID', title:'项目名称', align: 'center',width:140}
+               {field:'ProjcetName', title:'项目名称', align: 'center',width:140}
                ,{field:'ProjcetTypeStr',title: '类别', align: 'center',width:160} //width 支持：数字、百分比和不填写。
                ,{field:'UseCount', title: '游玩次数', align: 'center',width:140}
                ,{field:'AllowShareCount', title: '次数共享', align: 'center',width:100}
@@ -1070,7 +1080,7 @@
             , data: datas
             , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
             , cols: [[
-                {field:'ProjcetID', title:'项目名称', align: 'center',width:240}
+                {field:'ProjcetName', title:'项目名称', align: 'center',width:240}
                 ,{field:'ProjcetTypeStr',title: '类别', align: 'center',width:240} //width 支持：数字、百分比和不填写。
                 // ,{field:'UseCount', title: '游玩次数', align: 'center',width:140}
                 // ,{field:'AllowShareCount', title: '次数共享', align: 'center',width:100}

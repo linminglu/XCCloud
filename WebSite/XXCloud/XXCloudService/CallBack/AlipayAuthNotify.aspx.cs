@@ -42,7 +42,7 @@ namespace XXCloudService.CallBack
                     string aliId = oauthTokenResponse.UserId;
 
                     bool isReg = false;
-                    Base_MemberInfo member = Base_MemberInfoService.I.GetModels(t => t.AlpayOpenID == aliId).FirstOrDefault();
+                    Base_MemberInfo member = Base_MemberInfoService.I.GetModels(t => t.AlipayOpenID == aliId).FirstOrDefault();
                     if (member != null)
                     {
                         isReg = true;

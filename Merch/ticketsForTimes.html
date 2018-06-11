@@ -26,8 +26,9 @@
         'obj': {'ticketType':0,'businessType':0,'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'},
         'url': '/XCCloud/ProjectTicket?action=QueryProjectTicket',
         'elem': '#timesTickets',
-        'cols': [{field: 'ID', title: '项目ID', align: 'center'}
-            , {field: 'TicketName', title: '门票名称', align: 'center'}
+        'cols': [
+            {field: 'ID', title: '项目ID', align: 'center'} ,
+           {field: 'TicketName', title: '门票名称', align: 'center'}
             , {field: 'Price', title: '售价', align: 'center'}
             , {field: 'ValidDate', title: '有效期', align: 'center'}
             , {field: 'WriteOffDays', title: '核销期', align: 'center'}
@@ -60,7 +61,6 @@
                       if(res_=="周一、周二、周三、周四、周五、周六、周天") {
                           res_="全周"
                       }
-                        console.log(res_)
                         return res_;
                 }
 
@@ -124,47 +124,11 @@
             }
         })
     });
-    function changeW(str){
-        let res_='';
-        if(str=='1|2|3|4|5|6|7'){
-            res_='全周'
-        }else {
-            if(str.indexOf('1')!==-1){
-                res_+='周一、';
-            }
-            if(str.indexOf('2')!==-1){
-                res_+='周二、';
-            }
-            if(str.indexOf('3')!==-1){
-                res_+='周三、';
-            }
-            if(str.indexOf('4')!==-1){
-                res_+='周四、';
-            }
-            if(str.indexOf('5')!==-1){
-                res_+='周五、';
-            }
-            if(str.indexOf('6')!==-1){
-                res_+='周六、';
-            }
-            if(str.indexOf('7')!==-1){
-                res_+='周天、';
-            }
-       }
-        res_=res_.substring(0,res_.length-1);
-        console.log(res_)
-        return '"'+res_+'"';
-    }
 </script>
 <script type="text/html" id="barDemo">
     <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del"><i class="layui-icon">&#xe640;</i>删除</a>
     <!--<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="edit"><i class="layui-icon">&#xe642;</i>编辑</a>-->
     <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="modify"><i class="layui-icon">&#xe642;</i>修改</a>
 </script>
-<!--<script type="text/html" id="weektype">-->
-    <!--{{# if(d.WeekType=='0'&&d.WeekTypeStr!=''){　}}-->
-    <!--d.WeekTypeStr+-->
-     <!--changeW(d.WeekTypeStr)-->
-    <!--{{#  } }}-->
-<!--</script>-->
+
 </html>

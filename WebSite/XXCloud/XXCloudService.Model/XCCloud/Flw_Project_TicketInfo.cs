@@ -30,5 +30,6 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> BalanceIndex { get; set; }
         public Nullable<decimal> BalanceCount { get; set; }
         public Nullable<decimal> RemainDividePrice { get; set; }
+        public string MemberID { get; set; }
     }
 }
