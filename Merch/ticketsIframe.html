@@ -8,6 +8,9 @@
     <style>
         .layui-form-item{
             margin-bottom: 0;}
+         .layui-card-body .layui-table{
+            margin: 0!important;
+        }
     </style>
 </head>
 <body>
@@ -548,10 +551,10 @@
 
         //渲染时间StartTime
         laydate.render({
-            elem: '#StartTime',type: 'time',value:'00:00:00'
+            elem: '#StartTime',type: 'time'
         });
         laydate.render({
-            elem: '#EndTime',type: 'time',value:'23:59:59'
+            elem: '#EndTime',type: 'time'
         });
         laydate.render({
             elem: '#VaildStartDate',type: 'date',value:new Date()
@@ -632,10 +635,7 @@
                             ,'ProjcetTypeStr':ProjcetTypeStr
                             ,'WeightValue':0
                         });
-
                     }
-//                    bindPro(ticketSet.name,table,proListArr,'proTable');
-//                    layer.closeAll()
                 }else if(ticketSet.way=='modify'){
                     if(proListArr.length>0){
                         let flag=false;
@@ -664,13 +664,8 @@
                                     ,'ProjectName':ProjcetName
                                     ,'ProjcetType':ProjcetType
                                     ,'ProjcetTypeStr':ProjcetTypeStr
-//                                    ,'PushCoin1':PushCoin1
-//                                    ,'UseCount':1
-//                                    ,'AllowShareCount':isShare
                                     ,'WeightValue':PushCoin1});
                             }
-//                            bindPro(ticketSet.name,table,proListArr,'proTable');
-//                            layer.closeAll();
                         }
                     }else {
                         if(ticketSet.name=='times'||ticketSet.name=='group'||ticketSet.name=='boardPackage'){
@@ -690,9 +685,6 @@
                                 ,'ProjectName':ProjcetName
                                 ,'ProjcetType':ProjcetType
                                 ,'ProjcetTypeStr':ProjcetTypeStr
-//                                    ,'PushCoin1':PushCoin1
-//                                    ,'UseCount':1
-//                                    ,'AllowShareCount':isShare
                                 ,'WeightValue':PushCoin1});
                         }
 
@@ -767,9 +759,14 @@
                         }else if(arr.BusinessType==2){
                             $('#BusinessType').val('机台打包')
                         }
-                            $('#StartTime').val(arr.StartTimeStr);
-                            $('#EndTime').val(arr.EndTimeStr);
-
+//                            $('#StartTime').val(arr.StartTimeStr);
+//                            $('#EndTime').val(arr.EndTimeStr);
+                            laydate.render({
+                                elem: '#StartTime',type: 'time',value:arr.StartTimeStr
+                            });
+                            laydate.render({
+                                elem: '#EndTime',type: 'time',value:arr.EndTimeStr
+                            });
                             if(arr.EffactType==0){
                                 $('.time1').removeClass('layui-hide');
                                 $('.time2').addClass('layui-hide')
@@ -833,19 +830,12 @@
                         if(obj.field=='UseCount'){
                             proListArr[i].WeightValue=parseInt(obj.value)*parseInt( proListArr[i].PushCoin1);
                         }
-//                        proListArr[i][obj.field]=obj.value;
                     }
                 }
             }else if(ticketSet.name=='month'||ticketSet.name=='timeLimit'){
-//                for(let i in proListArr){
-//                    if(proListArr[i].ProjcetID==obj.data.ProjcetID){
-//                        proListArr[i][obj.field]=obj.value
-//                    }
-//                }
+
             }
             bindPro(ticketSet.name,table,proListArr,'proTable');
-//           console.log(proListArr)
-
         });
     });
    let saveTicketSet= function (ticketSet,layer) {
@@ -1108,19 +1098,19 @@
        let _cols=[];
        if(type=='times'||type=='group' ||type=='boardPackage'){
            _cols=[
-               {field:'ProjectName', title:'项目名称', align: 'center',width:140}
+               {field:'ProjectName', title:'项目名称', align: 'center',width:200}
                ,{field:'ProjcetTypeStr',title: '类别', align: 'center',width:160} //width 支持：数字、百分比和不填写。
-               ,{field:'AllowShareCount', title: '次数共享', align: 'center',width:100}
+               ,{field:'AllowShareCount', title: '次数共享', align: 'center',width:100,templet:'#allowShare'}
                ,{field:'UseCount', title: '游玩次数', align: 'center',width:140,edit:true}
-               ,{field:'WeightValue', title: '权重值', align: 'center',width:220,edit:true}
-               ,{fixed: 'right',title:'操作', width:240, align:'center', toolbar: '#barDemo2'}]
+               ,{field:'WeightValue', title: '权重值', align: 'center',width:175,edit:true}
+               ,{fixed: 'right',title:'操作', width:180, align:'center', toolbar: '#barDemo2'}]
        }else if(type=='month'||type=='timeLimit'){
            _cols=[
-               {field:'ProjectName', title:'项目名称', align: 'center',width:140}
+               {field:'ProjectName', title:'项目名称', align: 'center',width:200}
                ,{field:'ProjcetTypeStr',title: '类别', align: 'center',width:160} //width 支持：数字、百分比和不填写。
 //               ,{field:'UseCount', title: '游玩次数', align: 'center',width:140,edit:true}
-               ,{field:'WeightValue', title: '权重值', align: 'center',width:220,edit:true}
-               ,{fixed: 'right',title:'操作', width:240, align:'center', toolbar: '#barDemo2'}]
+               ,{field:'WeightValue', title: '权重值', align: 'center',width:175,edit:true}
+               ,{fixed: 'right',title:'操作', width:180, align:'center', toolbar: '#barDemo2'}]
        }
        table.render({
            elem: '#'+id
@@ -1166,5 +1156,16 @@
 </script>
 <script type="text/html"   id="barDemo2">
     <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del"><i class="layui-icon">&#xe640;</i>删除</a>
+</script>
+<script type="text/html" id="allowShare">
+    {{# if(d.AllowShareCount==1){ }}
+    <div style="width: 42px;height: 20px;line-height: 20px;background-color:#5FB878;border-radius: 11px;position: relative;">
+        <em style="left: 5px;position: absolute;width: 25px;color: #fff;font-size: 10px">是</em>
+        <i style="left: 32px;position: absolute;width: 16px;height: 16px;border-radius: 50%;"></i></div>
+    {{# }else{ }}
+    <div style="width: 42px;height: 20px;line-height: 20px;background-color:red;border-radius: 11px;position: relative;">
+        <em style="left: 5px;position: absolute;width: 25px;color: #fff;font-size: 10px">否</em>
+        <i style="left: 32px;position: absolute;width: 16px;height: 16px;border-radius: 50%;"></i></div>
+    {{#  } }}
 </script>
 </html>

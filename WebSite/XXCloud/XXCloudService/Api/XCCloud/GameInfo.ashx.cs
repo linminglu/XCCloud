@@ -93,8 +93,16 @@ namespace XXCloudService.Api.XCCloud
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
-                
-                Dictionary<int, string> gameInfo = Data_GameInfoService.I.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase) && p.State == 1).Select(o => new
+
+                var errMsg = string.Empty;
+
+                //排除游乐项目类型的游戏机
+                var projectGameTypes = getProjectGameTypes(out errMsg);
+                if (!errMsg.IsNull())
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                Dictionary<int, string> gameInfo = Data_GameInfoService.I.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase) && p.State == 1
+                    && !projectGameTypes.Contains(p.GameType + "")).Select(o => new
                 {
                     ID = o.ID,
                     GameName = o.GameName

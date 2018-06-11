@@ -75,8 +75,8 @@
         'obj': {'ticketType':1,'businessType':0,'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'},
         'url': '/XCCloud/ProjectTicket?action=QueryProjectTicket',
         'elem': '#timesTickets',
-        'cols': [{field: 'ID', title: '项目ID', align: 'center'}
-            , {field: 'TicketName', title: '门票名称', align: 'center'}
+        'cols': [{field: 'ID', title: '项目ID', align: 'center',fixed:'left'}
+            , {field: 'TicketName', title: '门票名称', align: 'center',fixed:'left'}
             , {field: 'Price', title: '售价', align: 'center'}
             , {field: 'ValidDate', title: '有效期', align: 'center'}
             , {field: 'WriteOffDays', title: '核销期', align: 'center'}
@@ -109,7 +109,6 @@
                     if(res_=="周一、周二、周三、周四、周五、周六、周天") {
                         res_="全周"
                     }
-                    console.log(res_)
                     return res_;
                 }
             }

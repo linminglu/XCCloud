@@ -10,6 +10,7 @@ using System.Transactions;
 using System.Web;
 using XCCloudService.Base;
 using XCCloudService.BLL.CommonBLL;
+using XCCloudService.BLL.Container;
 using XCCloudService.BLL.IBLL.XCCloud;
 using XCCloudService.BLL.XCCloud;
 using XCCloudService.Common;
@@ -186,6 +187,17 @@ namespace XXCloudService.Api.XCCloud
                             var gameIndex = model.GameIndex ?? 0;
                             var data_GameInfoService = Data_GameInfoService.I;
                             var data_GameInfo = data_GameInfoService.GetModels(p => p.ID == gameIndex).FirstOrDefault() ?? new Data_GameInfo();
+
+                            //获取参数默认值
+                            IDict_SystemService dict_SystemService = BLLContainer.Resolve<IDict_SystemService>(resolveNew: true);
+                            int GameInfoId = dict_SystemService.GetModels(p => p.DictKey.Equals("游戏机档案维护")).FirstOrDefault().ID;
+                            var dict = dict_SystemService.GetModels(p => p.PID == GameInfoId && p.Enabled == 1).Select(o => new
+                            {
+                                DictKey = o.DictKey,
+                                DictValue = o.DictValue
+                            }).Distinct().ToDictionary(d => d.DictKey, d => (object)d.DictValue);
+                            
+                            Utils.GetModel(dict, ref data_GameInfo);                            
                             data_GameInfo.GameID = string.Empty;
                             data_GameInfo.GameName = model.ProjectName;
                             data_GameInfo.GameType = model.ProjectType;
@@ -195,8 +207,11 @@ namespace XXCloudService.Api.XCCloud
                             data_GameInfo.PushCoin2 = dicParas.Get("pushCoin2").Toint();
                             data_GameInfo.ReadCat = dicParas.Get("readCat").Toint();
                             data_GameInfo.PushLevel = dicParas.Get("pushLevel").Toint();
+                            data_GameInfo.State = 1;
+                            data_GameInfo.MerchID = merchId;
+                            data_GameInfo.StoreID = storeId;
                             if (gameIndex == 0)
-                            {
+                            {                                
                                 if (!data_GameInfoService.Add(data_GameInfo))
                                 {
                                     errMsg = "保存设备配置信息失败";

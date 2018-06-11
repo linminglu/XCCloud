@@ -446,7 +446,7 @@
     {{# }else if(d.DeviceStatus==1){ }}
     <a class="layui-btn layui-btn-xs" lay-event="lock">锁定</a>
     {{#  } }}
-    {{# if(d.Address==null){ }}
+    {{# if(d.Address==""){ }}
     <a class="layui-btn layui-btn-xs" lay-event="bindMachine">机台绑定</a>
     {{# }else{ }}
     <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="unBindMachine">机台解绑</a>
