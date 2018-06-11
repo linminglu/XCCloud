@@ -9,11 +9,20 @@
     <link rel="stylesheet" href="css/ydui.rem.css">
     <!-- 引入rem自适应类库 -->
     <style>
-
+        .qrcode{width: 5rem;height: auto;margin: 0 auto;padding-top: 2rem;text-align: center;}
+        .qrcode img{width: 5rem;height: 5rem;}
+        .qrcode p{color: #ff3030;margin-top: 0.5rem;font-size: 0.25rem;}
+        .qrcode a{color: #1E90FF;font-size: 0.3rem;border-bottom: 0.01rem solid #1E90FF;line-height: 0.4rem;padding-bottom: 0.1rem;}
     </style>
 </head>
 <body>
-<div id="app"></div>
+<div id="app">
+    <div v-if="qrcodeShow" class="qrcode">
+        <img src="images/qrcode.jpg">
+        <p>点击长按关注公众号，您将获得更好的体验！</p>
+        <p><a href="index.html">无情跳过</a></p>
+    </div>
+</div>
 <script src="js/ydui.flexible.js"></script>
 <!-- 引入 Vue -->
 <script src="js/vue.js"></script>
@@ -25,10 +34,11 @@
 <script>
     var sysId = 0; //调用方应用Id
     var versionNo= "0.89"; //版本号
-    var htmlfnc = new Vue({
+    var vm = new Vue({
         el: '#app',
         data:{
-            userThirdId:""
+            userThirdId:"",
+            qrcodeShow:true
         },
         mounted: function () {
             this.Load()
@@ -37,51 +47,26 @@
             Load:function () {
                 var that =this;
                 var isReg = getQueryString("isReg");
-//                alert(isReg);
+                var isSubscribe = getQueryString("isSubscribe");
+                if(isSubscribe == 1){
+                    that.qrcodeShow =false;
+                }
+                setStorage("isReg",isReg);
                 if (/MicroMessenger/.test(window.navigator.userAgent)) {
                     var openId = getQueryString("openId");
                     that.userThirdId =openId;
 //                    alert(openId);
-                    setStorage("openId",openId);
-                    if(isReg == 0){
-                        window.location.href = "login.html"
-                    }else if(isReg == 1){
-                        that.getMobile();
-                    }
+                    setStorage("userThirdId",openId);
+                    window.location.href = "index.html"
                 } else if (/AlipayClient/.test(window.navigator.userAgent)) {
                     var userid = getQueryString("userId");
                     that.userThirdId =userid;
 //                    alert(userid);
-                    setStorage("userId",userid);
-                    if(isReg == 0){
-                        window.location.href = "login.html"
-                    }else if(isReg == 1){
-                        that.getMobile();
-                    }
+                    setStorage("userThirdId",userid);
+                    window.location.href = "index.html"
                 } else {
                     console.log("暂不支持此浏览器")
                 }
-            },
-            getMobile:function () {
-                var that =this;
-                this.$dialog.loading.open('');
-                var obj={
-                    sysId: sysId,
-                    versionNo: versionNo,
-                    userThirdId:that.userThirdId
-                };
-                axios.post('/xcgamemana/token?action=getMobileTokenByThirdId', obj).then(function (res) {
-                    that.$dialog.loading.close();
-                    that.msgPrompt(res.data);
-                    console.log(res.data);
-                    if (res.data.result_code === '1') {
-                        setStorage("mobileToken",res.data.result_data.mobileToken);
-                        window.location.href = "home.html"
-                    }
-                }).catch(function (err) {
-                    that.$dialog.loading.close();
-                    console.log(err);
-                })
             },
             msgPrompt:function (res) {
                 if(res.return_code == 0){

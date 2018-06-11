@@ -401,7 +401,10 @@
     <Content Include="Api\XCCloud\GameEncourage.ashx" />
     <Content Include="Api\XCCloud\XCCloudMD5Key.ashx" />
     <Content Include="Api\XCCloud\FoodType.ashx" />
+    <Content Include="Api\XCCloudH5\Member.ashx" />
+    <Content Include="Api\XCCloudH5\Amusement.ashx" />
     <None Include="Properties\PublishProfiles\111.pubxml" />
+    <None Include="Properties\PublishProfiles\aaa.pubxml" />
     <None Include="Properties\PublishProfiles\qqq.pubxml" />
     <None Include="Properties\PublishProfiles\rrr.pubxml" />
     <None Include="Scripts\jquery-1.6.4-vsdoc.js" />
@@ -495,8 +498,6 @@
     <Content Include="WebBar\frontDesk\login.html" />
     <Content Include="WebBar\frontDesk\Member.html" />
     <Content Include="WebBar\frontDesk\MemberOperation.html" />
-    <Content Include="WebBar\frontDesk\MembersReturn.html" />
-    <Content Include="WebBar\frontDesk\sales.html" />
     <Content Include="WebBar\frontDesk\test.html" />
     <Content Include="WebBar\Merch\.idea\encodings.xml" />
     <Content Include="WebBar\Merch\.idea\misc.xml" />
@@ -1165,6 +1166,12 @@
     </Compile>
     <Compile Include="Api\Payment.ashx.cs">
       <DependentUpon>Payment.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="Api\XCCloudH5\Amusement.ashx.cs">
+      <DependentUpon>Amusement.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="Api\XCCloudH5\Member.ashx.cs">
+      <DependentUpon>Member.ashx</DependentUpon>
     </Compile>
     <Compile Include="Api\XCCloud\FoodType.ashx.cs">
       <DependentUpon>FoodType.ashx</DependentUpon>

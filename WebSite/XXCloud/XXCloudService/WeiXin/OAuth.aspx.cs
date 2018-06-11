@@ -17,6 +17,9 @@ using XCCloudService.Model.XCGameManager;
 using XCCloudService.Common.Extensions;
 using XCCloudService.BLL.XCCloud;
 using XCCloudService.Model.XCCloud;
+using XCCloudService.WeiXin.WeixinPub;
+using XCCloudService.Model.WeiXin;
+using XCCloudService.CacheService;
 
 namespace XXCloudService.WeiXin
 {
@@ -79,13 +82,33 @@ namespace XXCloudService.WeiXin
             {
                 if (TokenMana.GetTokenForScanQR(code, out accsess_token, out refresh_token, out openId, out errMsg))
                 {
-                    bool isReg = false;
+                    //获取微信用户基本信息
+                    WechatInfo model = CommonHelper.GetWechatInfo(openId);
+                    if(model == null)
+                    {
+                        model = CommonHelper.GetWechatInfo(accsess_token, openId);
+                    }
+ 
+                    MemberTokenModel tokenModel = new MemberTokenModel();
+                    tokenModel.Token = openId;
+                    tokenModel.Info = model;                    
+
+                    //是否关注了公众号
+                    int isSubscribe = model.subscribe;
+
+                    //是否注册了会员
+                    int isReg = 0;
                     Base_MemberInfo member = Base_MemberInfoService.I.GetModels(t => t.WechatOpenID == openId).FirstOrDefault();
                     if(member!=null)
                     {
-                        isReg = true;
+                        isReg = 1;
+                        tokenModel.MemberId = member.ID;
+                        tokenModel.Mobile = string.IsNullOrEmpty(member.Mobile) ? string.Empty : member.Mobile;
                     }
-                    string redirectUrl = string.Format("{0}?openId={1}&isReg={2}", CommonConfig.H5WeiXinAuthRedirectUrl, openId, Convert.ToInt32(isReg));
+
+                    MemberTokenCache.AddToken(openId, tokenModel);
+
+                    string redirectUrl = string.Format("{0}?openId={1}&isReg={2}&isSubscribe={3}", CommonConfig.H5WeiXinAuthRedirectUrl, openId, isReg, isSubscribe);
                     Response.Redirect(redirectUrl);
                 }
                 else

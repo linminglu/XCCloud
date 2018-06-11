@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using XCCloudService.Model.CustomModel.XCCloud;
 
 namespace XCCloudService.CacheService
 {
@@ -39,7 +40,7 @@ namespace XCCloudService.CacheService
 
     public class FoodOrderCacheModel
     {
-        public FoodOrderCacheModel(string merchId, string storeId, string flwOrderId, int customerType, int icCardId, string workStation)
+        public FoodOrderCacheModel(string merchId, string storeId, string flwOrderId, int customerType, int icCardId, string workStation, int workStationId,RegisterMember regMember)
         {
             this.MerchId = merchId;
             this.StoreId = storeId;
@@ -48,6 +49,8 @@ namespace XCCloudService.CacheService
             this.ICCardId = icCardId;
             this.WorkStation = workStation;
             this.CreateTime = System.DateTime.Now;
+            this.WorkStationId = workStationId;
+            this.RegisterMember = regMember;
         }
 
         public string MerchId { set; get; }
@@ -62,6 +65,10 @@ namespace XCCloudService.CacheService
 
         public int ICCardId { set; get; }
 
+        public int WorkStationId { set; get; }
+
         public string WorkStation { set; get; }
+
+        RegisterMember RegisterMember { set; get; }
     }
 }

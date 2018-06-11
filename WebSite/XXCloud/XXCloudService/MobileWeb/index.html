@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="css/ydui.rem.css">
     <!-- 引入 Vue -->
     <script src="js/vue.js"></script>
-    <!-- 引入rem自适应类库 -->>
+    <!-- 引入rem自适应类库 -->
     <script src="js/ydui.rem.js"></script>
     <style>
         .wx-img{min-width: 1.2rem;min-height:1.3rem;width: 1rem;height: 1.2rem;margin-right: 0.5rem;background-color: #eeeeee;padding: 0.1rem;margin-top: 0.1rem;}
@@ -32,12 +32,12 @@
             <!--<yd-flexbox-item>yd-flexbox-item</yd-flexbox-item>-->
             <!--<div>div</div>-->
         <!--</yd-flexbox>-->
-        <!---->
+
         <yd-layout>
             <yd-cell-item class="index-header">
                 <img slot="icon" class="wx-img" src="http://static.ydcss.com/ydui/img/logo.png">
                 <div slot="left" class="index-div">
-                    <p class="iconSty" @click="loginFnc"><img slot="icon" class="cardIcon" src="images/user.png"><span class="index-change">请注册或登录</span></p>
+                    <p class="iconSty"><img slot="icon" class="cardIcon" src="images/user.png"><span>请注册或登录</span></p>
                     <!--<p><img slot="icon" class="cardIcon" src="images/cardIcon.png"><span></span></p>-->
                 </div>
                 <!--<span slot="right">图标是image</span>-->
@@ -100,6 +100,7 @@
             buyData:[{imgUrl:"images/recharge.png",playName:"充值"},{imgUrl:"images/buyCoin.png",playName:"购币"}],
             mobileToken : "1",
             memberToken : "1",
+            userThirdId : "",
             tiedCard:false
         },
         mounted: function () {
@@ -108,6 +109,9 @@
         methods: {
             Load:function () {
                 var that =this;
+                var ifScanCode = getStorage("ifScanCode");        //是否是扫码进入
+                var deviceToken = getStorage("deviceNo")||"";       //获取设备令牌
+                var userThirdId = getStorage("userThirdId")||"";       //获取第三方令牌
                 if (/MicroMessenger/.test(window.navigator.userAgent)){
                     var coordinates = getStorage("coordinates")||"";
                     if(coordinates == ""){
@@ -127,18 +131,34 @@
                             that.signatureNew();
                         });
                     }
-                    wx.getLocation({
-                        type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
-                        success: function (res) {
-                            alert(JSON.stringify(res));
-                            var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
-                            var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
-                            var speed = res.speed; // 速度，以米/每秒计
-                            var accuracy = res.accuracy; // 位置精度
-                        }
-                    });
                 }
+                var obj={sysId: sysId,versionNo: versionNo,token:"oNWocwSC_GFO8n_8mtZ0iV9tL0WI"};
+                axios.post('XCCloudH5/Member?action=getMemberWechatInfo', obj).then(function (res) {
+                    that.$dialog.loading.close();
+                    that.msgPrompt(res.data);
+                    console.log(res.data);
+                    if (res.data.result_code === '1') {
 
+                    }
+                }).catch(function (err) {
+                    that.$dialog.loading.close();
+                    console.log(err);
+                })
+//                that.$nextTick(function () {
+//                    alert(111);
+//                    if (/MicroMessenger/.test(window.navigator.userAgent)) {
+//                        wx.getLocation({
+//                            type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
+//                            success: function (res) {
+//                                alert(JSON.stringify(res));
+//                                var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
+//                                var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
+//                                var speed = res.speed; // 速度，以米/每秒计
+//                                var accuracy = res.accuracy; // 位置精度
+//                            }
+//                        });
+//                    }
+//                })
             },
 //            获取地理坐标和调用微信功能
             signatureNew:function () {
@@ -166,20 +186,6 @@
                     that.$dialog.loading.close();
                     console.log(err);
                 })
-            },
-            loginFnc:function () {
-                var that =this;
-                if(that.mobileToken == ""){
-                    window.location.href = "login.html"
-                }else {
-                    that.$dialog.confirm({
-                        title: '温馨提示!',
-                        mes: "是否前往登录或注册？",
-                        opts: (function () {
-                            window.location.href = "login.html"
-                        })
-                    });
-                }
             },
 //          play功能
             playFnc:function (index) {
@@ -309,17 +315,18 @@
 //          切换会员卡或绑卡
             mineCard:function () {
                 var that = this;
-                if(that.mobileToken == ""){
-                    that.$dialog.confirm({
-                        title: '温馨提示!',
-                        mes: "是否前往登录或注册？",
-                        opts: (function () {
-                            window.location.href = "login.html"
-                        })
-                    });
-                }else {
-                    window.location.href ="mineCard.html"
-                }
+
+//                if(that.mobileToken == ""){
+//                    that.$dialog.confirm({
+//                        title: '温馨提示!',
+//                        mes: "是否前往登录或注册？",
+//                        opts: (function () {
+//                            window.location.href = "login.html"
+//                        })
+//                    });
+//                }else {
+//                    window.location.href ="mineCard.html"
+//                }
             },
             msgPrompt:function (res) {
                 if(res.return_code == 0){

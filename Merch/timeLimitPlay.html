@@ -29,7 +29,38 @@
             , {field: 'Price', title: '售价', align: 'center'}
             , {field: 'ValidDate', title: '有效期', align: 'center'}
             , {field: 'WriteOffDays', title: '核销期', align: 'center'}
-            , {field: 'WeekTypeStr', title: '限定游玩期限', align: 'center'}
+            , {field: 'WeekTypeStr', title: '限定游玩期限', align: 'center',
+                templet:function (d) {
+                    let str=d.WeekTypeStr;
+                    let res_= '';
+                    if(str.indexOf('1')!==-1){
+                        res_+='周一、';
+                    }
+                    if(str.indexOf('2')!==-1){
+                        res_+='周二、';
+                    }
+                    if(str.indexOf('3')!==-1){
+                        res_+='周三、';
+                    }
+                    if(str.indexOf('4')!==-1){
+                        res_+='周四、';
+                    }
+                    if(str.indexOf('5')!==-1){
+                        res_+='周五、';
+                    }
+                    if(str.indexOf('6')!==-1){
+                        res_+='周六、';
+                    }
+                    if(str.indexOf('7')!==-1){
+                        res_+='周天、';
+                    }
+                    res_=res_.substring(0,res_.length-1);
+                    if(res_=="周一、周二、周三、周四、周五、周六、周天") {
+                        res_="全周"
+                    }
+                    console.log(res_)
+                    return res_;
+                }}
             , {field: 'PeriodLimit', title: '限定时段', align: 'center',templet:'#charge'}
             , {field: 'NoDate', title: '不可用日期', align: 'center',templet:'#state'}
             , {field: 'ExitLimit', title: '退票信息', align: 'center'}

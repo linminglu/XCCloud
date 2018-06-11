@@ -597,7 +597,16 @@ namespace XCCloudService.Base
                 string token = dicParas["userToken"].ToString();
                 
                 //验证token
-                userTokenKeyModel = XCCloudUserTokenBusiness.GetUserTokenModel(token);                
+                try
+                {
+                    userTokenKeyModel = XCCloudUserTokenBusiness.GetUserTokenModel(token); 
+                }
+                catch
+                {
+                    errMsg = "服务器连接超时，请稍后刷新重试";
+                    return false;
+                }
+                               
                 if (userTokenKeyModel == null)
                 {
                     errMsg = "用户令牌已失效, 请重新登录";

@@ -176,29 +176,27 @@
         methods: {
             Load:function () {
                 var that =this;
-                var mobileToken = getStorage("mobileToken");        //获取手机令牌
-                var deviceToken = getStorage("deviceToken")||"";       //获取手机令牌
-                var memberToken = getStorage("memberToken")||"";    //获取会员令牌
+                var deviceToken = getStorage("deviceNo")||"";       //获取设备令牌
+                var userThirdId = getStorage("userThirdId")||"";       //获取第三方令牌
                 that.deviceToken = deviceToken;
-                that.mobileToken = mobileToken;
-                that.memberToken = memberToken;
+                that.userThirdId = userThirdId;
                 this.$dialog.loading.open('');
-                chatHub = $.connection.XCGameClientHub;
-                chatHub.client.broadcastMessage = function (name, message) {
-                    //接受广播消息
-                };
-                chatHub.client.hubCall = function (data) {
-                    console.log(data);
-                    switch (data.callType) {
-                        case "connect": that.callBackFnc2(data); break;
-                        case "notify": that.callBackFnc(data); break;
-                        default: break;
-                    }
-                };
-                // Start Hub
-                $.connection.hub.start().done(function () {
-                    chatHub.server.connect(mobileToken, "0");
-                });
+//                chatHub = $.connection.XCGameClientHub;
+//                chatHub.client.broadcastMessage = function (name, message) {
+//                    //接受广播消息
+//                };
+//                chatHub.client.hubCall = function (data) {
+//                    console.log(data);
+//                    switch (data.callType) {
+//                        case "connect": that.callBackFnc2(data); break;
+//                        case "notify": that.callBackFnc(data); break;
+//                        default: break;
+//                    }
+//                };
+//                // Start Hub
+//                $.connection.hub.start().done(function () {
+//                    chatHub.server.connect(mobileToken, "0");
+//                });
                 var obj={
                     sysId: sysId,
                     versionNo: versionNo,
@@ -213,33 +211,32 @@
                         that.deviceName = res.data.result_data.deviceName;
                         that.stateName = res.data.result_data.stateName;
                         that.deviceType =res.data.result_data.deviceType;
-                        console.log(that.memberToken == "");
-                        if(that.memberToken == ""){
-                            console.log(111);
-                            var memData={
-                                sysId: sysId,
-                                versionNo: versionNo,
-                                storeId: that.storeId,
-                                mobileToken: that.mobileToken
-                            };
-                            axios.post('/xcgamemana/token?action=getMemberToken', memData).then(function (res) {
-                                that.$dialog.loading.close();
-                                that.msgPrompt(res.data);
-                                console.log(res.data);
-                                if (res.data.result_code === '1') {
-                                    that.memberToken = res.data.result_data.memberToken;
-                                    that.balance = res.data.result_data.member.balance;
-                                    setStorage("memberToken",memberToken);
-                                    that.GetGameInfo();
-                                }
-                            }).catch(function (err) {
-                                that.$dialog.loading.close();
-                                console.log(err);
-                            });
-
-                        }else {
-                            that.GetGameInfo();
-                        }
+//                        if(that.memberToken == ""){
+//                            console.log(111);
+//                            var memData={
+//                                sysId: sysId,
+//                                versionNo: versionNo,
+//                                storeId: that.storeId,
+//                                mobileToken: that.mobileToken
+//                            };
+//                            axios.post('/xcgamemana/token?action=getMemberToken', memData).then(function (res) {
+//                                that.$dialog.loading.close();
+//                                that.msgPrompt(res.data);
+//                                console.log(res.data);
+//                                if (res.data.result_code === '1') {
+//                                    that.memberToken = res.data.result_data.memberToken;
+//                                    that.balance = res.data.result_data.member.balance;
+//                                    setStorage("memberToken",memberToken);
+//                                    that.GetGameInfo();
+//                                }
+//                            }).catch(function (err) {
+//                                that.$dialog.loading.close();
+//                                console.log(err);
+//                            });
+//
+//                        }else {
+//                            that.GetGameInfo();
+//                        }
                     }
                 }).catch(function (err) {
                     that.$dialog.loading.close();

@@ -55,6 +55,7 @@
     <Compile Include="FlwFoodOrderCache.cs" />
     <Compile Include="IconOutLockCache.cs" />
     <Compile Include="MemberICICard.cs" />
+    <Compile Include="MemberTokenCache.cs" />
     <Compile Include="RedisCacheHelper.cs" />
     <Compile Include="WorkFlowCache.cs" />
     <Compile Include="UDPSocketCommonQueryAnswerCache.cs" />

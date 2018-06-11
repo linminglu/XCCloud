@@ -246,7 +246,9 @@ namespace XXCloudService.Api.XCCloud
             string orderFlwId = dicParas.ContainsKey("orderFlwId") ? dicParas["orderFlwId"].ToString() : string.Empty;
             string customerType = dicParas.ContainsKey("customerType") ? dicParas["customerType"].ToString() : string.Empty;
             string icCardId = dicParas.ContainsKey("icCardId") ? dicParas["icCardId"].ToString() : string.Empty;
-
+            string registerJson = dicParas.ContainsKey("registerMemberJson") ? dicParas["registerMemberJson"].ToString() : string.Empty;
+            RegisterMember registerMember = null;
+            
             XCCloudUserTokenModel userTokenModel = (XCCloudUserTokenModel)(dicParas[Constant.XCCloudUserTokenModel]);
             TokenDataModel userTokenDataModel = (TokenDataModel)(userTokenModel.DataModel);
 
@@ -289,7 +291,15 @@ namespace XXCloudService.Api.XCCloud
                 }
                 else
                 {
-                    FoodOrderCacheModel orderModel = new FoodOrderCacheModel(userTokenDataModel.MerchID, userTokenDataModel.StoreID, orderFlwId, int.Parse(customerType), int.Parse(icCardId), userTokenDataModel.WorkStation);
+                    if (customerType == "1")
+                    {
+                        registerMember = Utils.DataContractJsonDeserializer<RegisterMember>(registerJson);
+                    }
+                    else
+                    {
+                        registerMember = null;
+                    }
+                    FoodOrderCacheModel orderModel = new FoodOrderCacheModel(userTokenDataModel.MerchID, userTokenDataModel.StoreID, orderFlwId, int.Parse(customerType), int.Parse(icCardId), userTokenDataModel.WorkStation, Convert.ToInt32(userTokenDataModel.WorkStationID), registerMember);
                     FlwFoodOrderBusiness.Add(orderModel);
                     return new ResponseModel(Return_Code.T, "", Result_Code.T, "");                    
                 }

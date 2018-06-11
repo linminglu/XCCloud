@@ -15,6 +15,7 @@ using StackExchange.Redis;
 using XCCloudService.Common.Enum;
 using XCCloudService.WeiXin.WeixinOAuth;
 using XCCloudService.Business.WeiXin;
+using XCCloudService.Model.WeiXin;
 
 namespace XCCloudService.WeiXin.WeixinPub
 {
@@ -238,6 +239,76 @@ namespace XCCloudService.WeiXin.WeixinPub
         {
             TimeSpan ts = DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, 0);
             return Convert.ToInt64(ts.TotalSeconds).ToString();
+        }
+        #endregion
+
+        #region 获取会员微信信息
+        /// <summary>
+        /// 获取会员微信信息
+        /// </summary>
+        /// <returns></returns>
+        public static WechatInfo GetWechatInfo(string openId)
+        {
+            string accessToken = GetAccessToken();
+
+            string url = string.Format("https://api.weixin.qq.com/cgi-bin/user/info?access_token={0}&openid={1}&lang=zh_CN", accessToken, openId);
+            WechatInfo model = null;
+            try
+            {
+                string res = Utils.WebClientDownloadString(url);
+                JObject jo = JObject.Parse(res);
+
+                if (jo["headimgurl"] != null)
+                {
+                    model = new WechatInfo();
+                    model.subscribe = jo["subscribe"] != null ? Convert.ToInt32(jo["subscribe"].ToString()) : 0;
+                    model.nickname = jo["nickname"].ToString();
+                    model.headimgurl = jo["headimgurl"].ToString();
+                }
+                else
+                {
+                    LogHelper.SaveLog(TxtLogType.WeiXin, TxtLogContentType.Exception, TxtLogFileType.Day, "获取微信用户基本信息失败，openid：" + openId);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.SaveLog(TxtLogType.WeiXin, TxtLogContentType.Exception, TxtLogFileType.Day, "获取微信用户基本信息失败，原因：" + ex.InnerException != null ? ex.InnerException.Message : ex.Message);
+            }
+            return model;
+        }
+        #endregion
+
+        #region 通过网页授权获取会员微信信息
+        /// <summary>
+        /// 通过网页授权获取会员微信信息
+        /// </summary>
+        /// <returns></returns>
+        public static WechatInfo GetWechatInfo(string accessToken, string openId)
+        {
+            string url = string.Format("https://api.weixin.qq.com/sns/userinfo?access_token={0}&openid={1}&lang=zh_CN", accessToken, openId);
+            WechatInfo model = null;
+            try
+            {
+                string res = Utils.WebClientDownloadString(url);
+                JObject jo = JObject.Parse(res);
+
+                if (jo["errcode"] != null)
+                {
+                    LogHelper.SaveLog(TxtLogType.Redis, TxtLogContentType.Exception, TxtLogFileType.Day, "网页授权-获取微信用户基本信息失败，错误代码：" + jo["errcode"].ToString());
+                }
+                else
+                {
+                    model = new WechatInfo();
+                    model.subscribe = jo["subscribe"] != null ? Convert.ToInt32(jo["subscribe"].ToString()) : 0;
+                    model.nickname = jo["nickname"].ToString();
+                    model.headimgurl = jo["headimgurl"].ToString();
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.SaveLog(TxtLogType.WeiXin, TxtLogContentType.Exception, TxtLogFileType.Day, "网页授权-获取微信用户基本信息失败，原因：" + ex.InnerException != null ? ex.InnerException.Message : ex.Message);
+            }
+            return model;
         }
         #endregion
 

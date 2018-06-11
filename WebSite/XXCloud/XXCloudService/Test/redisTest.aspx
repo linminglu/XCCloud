@@ -20,6 +20,15 @@
 
         <asp:Button ID="Button3" runat="server" Text="读取令牌" OnClick="Button3_Click"  />
     </div>
+        <hr />
+    <div>
+        openid:<asp:TextBox ID="TextBox1" runat="server"></asp:TextBox>
+        subscribe:<asp:TextBox ID="TextBox2" Text="0" runat="server"></asp:TextBox>
+        headimgurl:<asp:TextBox ID="TextBox3" runat="server"></asp:TextBox>
+        nickname:<asp:TextBox ID="TextBox4" runat="server"></asp:TextBox>
+
+        <asp:Button ID="Button4" runat="server" Text="写入缓存" OnClick="Button4_Click"  />
+    </div>
     </form>
 </body>
 </html>

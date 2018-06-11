@@ -12,7 +12,7 @@
 <script src="js/jquery-1.8.3-min.js"></script>
 <script>
     if (/MicroMessenger/.test(window.navigator.userAgent)) {
-        window.location.href = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx86275e2035a8089d&redirect_uri=http%3a%2f%2fmp.4000051530.com%2fWeiXin%2fOAuth.aspx&response_type=code&scope=snsapi_base&state=h5_Auth_Common#wechat_redirect"
+        window.location.href = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx86275e2035a8089d&redirect_uri=http%3a%2f%2fmp.4000051530.com%2fWeiXin%2fOAuth.aspx&response_type=code&scope=snsapi_userinfo&state=h5_Auth_Common#wechat_redirect"
     } else if (/AlipayClient/.test(window.navigator.userAgent)) {
         window.location.href = "https://openauth.alipay.com/oauth2/publicAppAuthorize.htm?app_id=2018032302435860&scope=auth_user&redirect_uri=https://mp.4000051530.com/CallBack/AlipayAuthNotify.aspx"
     } else {
@@ -20,7 +20,14 @@
     }
     $(function () {
         var deviceNo = getQueryString("deviceNo");
-        setStorage("deviceNo",deviceNo)
+        console.log(deviceNo);
+        if(deviceNo == null){
+            setStorage("deviceNo","");
+            setStorage("ifScanCode","0");
+        }else {
+            setStorage("deviceNo",deviceNo);
+            setStorage("ifScanCode","1");
+        }
     });
     function setStorage(key,value) {
         if(window.localStorage){

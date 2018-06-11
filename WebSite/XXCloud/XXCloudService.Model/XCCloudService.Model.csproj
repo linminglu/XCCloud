@@ -218,6 +218,7 @@
     <Compile Include="WeiXin\SAppMessage\MemberFoodSaleDataModel.cs" />
     <Compile Include="WeiXin\SAppMessage\MemberFoodSaleConfigModel.cs" />
     <Compile Include="WeiXin\Session\WeiXinSAppSessionModel.cs" />
+    <Compile Include="WeiXin\WechatInfo.cs" />
     <Compile Include="XCCloudRS232\Base_DeviceInfo.cs">
       <DependentUpon>XCCloudRS232DBModel.tt</DependentUpon>
     </Compile>

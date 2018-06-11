@@ -35,4 +35,27 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         public string DeviceStatusStr { get; set; }
     }
 
+    public class GameCoinInfoModel
+    {
+        public int GameId { get; set; }
+
+        public string GameName { get; set; }
+
+        public string GameType { get; set; }
+
+        public int Coins { get; set; }
+
+        public GameFreeRule GameFreeRule { get; set; }
+    }
+
+    public class GameFreeRule
+    {
+        public int RuleId { get; set; }
+
+        public int NeedCoin { get; set; }
+
+        public int FreeCoin { get; set; }
+
+        public int ExitCoin { get; set; }
+    }
 }

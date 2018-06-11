@@ -7,6 +7,7 @@ using System.Web.UI.WebControls;
 using XCCloudService.Business.XCGameMana;
 using XCCloudService.CacheService;
 using XCCloudService.Model.CustomModel.XCCloud;
+using XCCloudService.Model.WeiXin;
 using XCCloudService.OrderPayCallback.Common;
 
 namespace XXCloudService.Test
@@ -48,6 +49,19 @@ namespace XXCloudService.Test
             string token = txtToken.Text.Trim();
 
             XCCloudUserTokenModel model = XCCloudUserTokenBusiness.GetUserTokenModel(token);
+        }
+
+        protected void Button4_Click(object sender, EventArgs e)
+        {
+            MemberTokenModel tokenModel = new MemberTokenModel();
+            tokenModel.Token = TextBox1.Text.Trim();
+            WechatInfo wechat = new WechatInfo();
+            wechat.subscribe = Convert.ToInt32(TextBox2.Text.Trim());
+            wechat.headimgurl = TextBox3.Text.Trim();
+            wechat.nickname = TextBox4.Text.Trim();
+            tokenModel.Info = wechat;
+
+            MemberTokenCache.AddToken(tokenModel.Token, tokenModel);
         }
     }
 }
