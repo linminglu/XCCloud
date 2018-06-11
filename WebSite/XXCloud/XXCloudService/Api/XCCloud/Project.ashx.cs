@@ -205,16 +205,16 @@ namespace XXCloudService.Api.XCCloud
                             data_GameInfo.GameType = model.ProjectType;
                             data_GameInfo.AreaID = model.AreaType;
                             data_GameInfo.PushBalanceIndex1 = dicParas.Get("pushBalanceIndex1").Toint();
-                            data_GameInfo.PushCoin1 = dicParas.Get("pushCoin1").Toint();
-                            data_GameInfo.PushBalanceIndex2 = dicParas.Get("pushBalanceIndex2").Toint(0);
-                            data_GameInfo.PushCoin2 = dicParas.Get("pushCoin2").Toint(0);
+                            data_GameInfo.PushCoin1 = dicParas.Get("pushCoin1").Toint();                            
                             data_GameInfo.ReadCat = dicParas.Get("readCat").Toint();
                             data_GameInfo.PushLevel = dicParas.Get("pushLevel").Toint();
-                            data_GameInfo.State = 1;
-                            data_GameInfo.MerchID = merchId;
-                            data_GameInfo.StoreID = storeId;
+                            data_GameInfo.PushBalanceIndex2 = dicParas.Get("pushBalanceIndex2").Toint(0);
+                            data_GameInfo.PushCoin2 = dicParas.Get("pushCoin2").Toint(0);
                             if (gameIndex == 0)
-                            {                                
+                            {
+                                data_GameInfo.State = 1;
+                                data_GameInfo.MerchID = merchId;
+                                data_GameInfo.StoreID = storeId;
                                 if (!data_GameInfoService.Add(data_GameInfo))
                                 {
                                     errMsg = "保存设备配置信息失败";
@@ -439,6 +439,21 @@ namespace XXCloudService.Api.XCCloud
                         model.State = 0;
                         Data_ProjectInfoService.I.UpdateModel(model);
 
+                        if (model.ChargeType == (int)ProjectInfoChargeType.Count)
+                        {
+                            //删除游戏机信息
+                            var gameIndex = model.GameIndex;
+                            if (!Data_GameInfoService.I.Any(a => a.ID == gameIndex))
+                            {
+                                errMsg = "该计次项目关联的游戏机信息不存在";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+
+                            var gameInfo = Data_GameInfoService.I.GetModels(p => p.ID == gameIndex).FirstOrDefault();
+                            gameInfo.State = 0;
+                            Data_GameInfoService.I.UpdateModel(gameInfo);
+                        }
+                        
                         //解除设备绑定信息
                         foreach (var bindModel in Data_Project_BindDeviceService.I.GetModels(p => p.ProjectID == id))
                         {
@@ -469,6 +484,12 @@ namespace XXCloudService.Api.XCCloud
                         if (!Data_Project_BindDeviceService.I.SaveChanges())
                         {
                             errMsg = "删除绑定设备失败";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
+                        if (!Data_GameInfoService.I.SaveChanges())
+                        {
+                            errMsg = "删除关联游戏机失败";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 
