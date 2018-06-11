@@ -197,14 +197,14 @@ namespace XXCloudService.Api.XCCloud
                                 DictValue = o.DictValue
                             }).Distinct().ToDictionary(d => d.DictKey, d => (object)d.DictValue);
                             
-                            Utils.GetModel(dict, ref data_GameInfo);                            
+                            Utils.GetModel(dict, ref data_GameInfo);
                             data_GameInfo.GameID = string.Empty;
                             data_GameInfo.GameName = model.ProjectName;
                             data_GameInfo.GameType = model.ProjectType;
                             data_GameInfo.PushBalanceIndex1 = dicParas.Get("pushBalanceIndex1").Toint();
                             data_GameInfo.PushCoin1 = dicParas.Get("pushCoin1").Toint();
-                            data_GameInfo.PushBalanceIndex2 = dicParas.Get("pushBalanceIndex2").Toint();
-                            data_GameInfo.PushCoin2 = dicParas.Get("pushCoin2").Toint();
+                            data_GameInfo.PushBalanceIndex2 = dicParas.Get("pushBalanceIndex2").Toint(0);
+                            data_GameInfo.PushCoin2 = dicParas.Get("pushCoin2").Toint(0);
                             data_GameInfo.ReadCat = dicParas.Get("readCat").Toint();
                             data_GameInfo.PushLevel = dicParas.Get("pushLevel").Toint();
                             data_GameInfo.State = 1;
@@ -644,6 +644,10 @@ namespace XXCloudService.Api.XCCloud
         {
             try
             {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+
                 string errMsg = string.Empty;
                 if (!dicParas.Get("projectId").Validintnozero("游乐项目ID", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -734,9 +738,9 @@ namespace XXCloudService.Api.XCCloud
                         //保存设备绑定信息
                         var model = data_Project_BindDeviceService.GetModels(p => p.ID == id).FirstOrDefault() ?? new Data_Project_BindDevice();
                         Utils.GetModel(dicParas, ref model);
-
+                        model.MerchID = merchId;
                         if (id == 0)
-                        {
+                        {                            
                             data_Project_BindDeviceService.AddModel(model);
                         }
                         else
