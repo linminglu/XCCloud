@@ -155,7 +155,9 @@ namespace XXCloudService.Api.XCCloud
                 if (!dicParas.Get("chargeType").Validint("扣费类型", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 if (!dicParas.Get("projectType").Validintnozero("项目类型", out errMsg))
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);             
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (!dicParas.Get("areaType").Validintnozero("区域ID", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
                 var id = dicParas.Get("id").Toint(0);
                 var chargeType = dicParas.Get("chargeType").Toint();                
@@ -201,6 +203,7 @@ namespace XXCloudService.Api.XCCloud
                             data_GameInfo.GameID = string.Empty;
                             data_GameInfo.GameName = model.ProjectName;
                             data_GameInfo.GameType = model.ProjectType;
+                            data_GameInfo.AreaID = model.AreaType;
                             data_GameInfo.PushBalanceIndex1 = dicParas.Get("pushBalanceIndex1").Toint();
                             data_GameInfo.PushCoin1 = dicParas.Get("pushCoin1").Toint();
                             data_GameInfo.PushBalanceIndex2 = dicParas.Get("pushBalanceIndex2").Toint(0);
