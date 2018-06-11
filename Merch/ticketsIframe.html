@@ -829,27 +829,23 @@
             let val=obj.value;
             if(ticketSet.name=='times'||ticketSet.name=='group' ||ticketSet.name=='boardPackage'){
                 for(let i in proListArr){
-
-
                     if(proListArr[i].ProjcetID==obj.data.ProjcetID){
-                        let a=parseInt(proListArr[i].WeightValue);
-                        let b=Number(proListArr[i].UseCount);
-                        let preWV=parseInt(proListArr[i].WeightValue)/parseInt(proListArr[i].UseCount);
                         if(obj.field=='UseCount'){
-                            proListArr[i].WeightValue==parseInt(obj.value)*parseInt(preWV);
+                            proListArr[i].WeightValue=parseInt(obj.value)*parseInt( proListArr[i].PushCoin1);
                         }
-                        proListArr[i][obj.field]=obj.value;
+//                        proListArr[i][obj.field]=obj.value;
                     }
                 }
             }else if(ticketSet.name=='month'||ticketSet.name=='timeLimit'){
-                for(let i in proListArr){
-                    if(proListArr[i].ProjcetID==obj.data.ProjcetID){
-                        proListArr[i][obj.field]=obj.value
-                    }
-                }
+//                for(let i in proListArr){
+//                    if(proListArr[i].ProjcetID==obj.data.ProjcetID){
+//                        proListArr[i][obj.field]=obj.value
+//                    }
+//                }
             }
+            bindPro(ticketSet.name,table,proListArr,'proTable');
+//           console.log(proListArr)
 
-           console.log(proListArr)
         });
     });
    let saveTicketSet= function (ticketSet,layer) {
