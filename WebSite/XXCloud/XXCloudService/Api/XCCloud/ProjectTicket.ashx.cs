@@ -52,6 +52,11 @@ namespace XXCloudService.Api.XCCloud
 
                 #region Sql语句
 
+                //排除游乐项目类型的游戏机
+                var projectGameTypes = getProjectGameTypes(out errMsg);
+                if (!errMsg.IsNull())
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
                 string sql = @"SELECT
                                     a.*, stuff((
                                     select '|' + t.ProjectName 
@@ -60,7 +65,13 @@ namespace XXCloudService.Api.XCCloud
                                         from Data_ProjectTicket b
                                         inner join Data_ProjectTicket_Bind c on b.ID = c.ProjcetTicketID
                                         inner join Data_ProjectInfo d on c.ProjcetID = d.ID
-                                        where b.ID=a.ID
+                                        where b.ID=a.ID and d.projecttype in (" + projectGameTypes + @")
+                                        union
+                                        select d.GameName AS ProjectName
+                                        from Data_ProjectTicket b
+                                        inner join Data_ProjectTicket_Bind c on b.ID = c.ProjcetTicketID
+                                        inner join Data_GameInfo d on c.ProjcetID = d.ID
+                                        where b.ID=a.ID and d.gametype not in (" + projectGameTypes + @")
                                     ) t
                                     for xml path('')),1,1,'') as BindProjects
                                 FROM
