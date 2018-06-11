@@ -18,6 +18,7 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         public int? EffactPeriodValue { get; set; }
         public int? VaildPeriodType { get; set; }
         public int? VaildPeriodValue { get; set; }
+        public int? WriteOffDays { get; set; }
         public DateTime? VaildStartDate { get; set; }
         public DateTime? VaildEndDate { get; set; }
         public string ValidDate
