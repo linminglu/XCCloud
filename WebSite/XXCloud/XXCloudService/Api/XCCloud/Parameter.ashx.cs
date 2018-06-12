@@ -227,7 +227,7 @@ namespace XXCloudService.Api.XCCloud
         {
             try
             {
-                string errMsg = string.Empty;
+                string errMsg = string.Empty; 
                 string storeId = dicParas.ContainsKey("storeId") ? dicParas["storeId"].ToString() : string.Empty;
 
                 //验证参数信息

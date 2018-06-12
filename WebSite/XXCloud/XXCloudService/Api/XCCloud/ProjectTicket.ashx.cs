@@ -60,23 +60,38 @@ namespace XXCloudService.Api.XCCloud
                 Array.Resize(ref parameters, parameters.Length + 1);
                 parameters[parameters.Length - 1] = new SqlParameter("@projectGameTypes", projectGameTypes);
 
+//                string sql = @"SELECT
+//                                    a.*, stuff((
+//                                    select '|' + t.ProjectName 
+//                                    from (
+//                                        select (case when CHARINDEX(CONVERT(varchar, c.ProjcetType), @projectGameTypes)>0 then d.ProjectName else e.GameName end) AS ProjectName
+//                                        from Data_ProjectTicket b
+//                                        inner join Data_ProjectTicket_Bind c on b.ID = c.ProjcetTicketID
+//                                        left join Data_ProjectInfo d on c.ProjcetID = d.ID and d.State = 1
+//                                        left join Data_GameInfo e on c.ProjcetID = e.ID and e.State = 1
+//                                        where b.ID=a.ID
+//                                    ) t
+//                                    for xml path('')),1,1,'') as BindProjects
+//                                FROM
+//                                	Data_ProjectTicket a
+//                                WHERE 1=1
+//                            ";
                 string sql = @"SELECT
-                                    a.*, stuff((
-                                    select '|' + t.ProjectName 
-                                    from (
-                                        select (case when CHARINDEX(CONVERT(varchar, c.ProjcetType), @projectGameTypes)>0 then d.ProjectName else e.GameName end) AS ProjectName
-                                        from Data_ProjectTicket b
-                                        inner join Data_ProjectTicket_Bind c on b.ID = c.ProjcetTicketID
-                                        left join Data_ProjectInfo d on c.ProjcetID = d.ID and d.State = 1
-                                        left join Data_GameInfo e on c.ProjcetID = e.ID and e.State = 1
-                                        where b.ID=a.ID
-                                    ) t
-                                    for xml path('')),1,1,'') as BindProjects
+                                    TOP 1 a.*, t.ProjectName + '等多个' as BindProjects
                                 FROM
                                 	Data_ProjectTicket a
+                                LEFT JOIN (                                
+                                	SELECT 
+                                		b.ID, (case when CHARINDEX(CONVERT(varchar, c.ProjcetType), @projectGameTypes)>0 then d.ProjectName else e.GameName end) AS ProjectName
+                                	FROM
+                                		Data_ProjectTicket b                                                        
+                                	inner join Data_ProjectTicket_Bind c on b.ID = c.ProjcetTicketID
+                                    left join Data_ProjectInfo d on c.ProjcetID = d.ID and d.State = 1
+                                    left join Data_GameInfo e on c.ProjcetID = e.ID and e.State = 1                                          
+                                ) t ON a.ID = t.ID
                                 WHERE 1=1
                             ";
-                sql += " AND a.StoreID=" + storeId;
+                sql += " AND a.StoreID=" + storeId; 
                 sql += " AND a.TicketType=" + ticketType;
                 sql += " AND a.BusinessType=" + businessType;
 
@@ -139,7 +154,6 @@ namespace XXCloudService.Api.XCCloud
                                              PushCoin1 = (a.UseCount ?? 0) > 0 ? (a.WeightValue / a.UseCount) : 0,
                                              ProjectName = projectGameTypes.Contains(a.ProjcetType + "") ? b.ProjectName : d.GameName,
                                              ProjcetTypeStr = c != null ? c.DictKey : string.Empty
-
                                          }
                 }.AsFlatDictionary();
 

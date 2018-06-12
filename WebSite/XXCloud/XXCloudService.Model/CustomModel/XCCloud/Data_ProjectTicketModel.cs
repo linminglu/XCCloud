@@ -27,7 +27,7 @@ namespace XCCloudService.Model.CustomModel.XCCloud
             {
                 if (EffactType == (int)XCCloudService.Common.Enum.EffactType.Period)
                     return "销售后" + ((EffactPeriodValue ?? 0) == 0 ? "当" : Convert.ToString(EffactPeriodValue)) + ((XCCloudService.Common.Enum.FreqType?)EffactPeriodType).GetDescription()
-                        + "生效，有效期" + VaildPeriodValue + ((XCCloudService.Common.Enum.FreqType?)VaildPeriodType).GetDescription();
+                        + "生效，有效期" + (VaildPeriodValue ?? 0) + ((XCCloudService.Common.Enum.FreqType?)VaildPeriodType).GetDescription();
                 else if (EffactType == (int)XCCloudService.Common.Enum.EffactType.Date)
                 {
                     var validDate = Utils.ConvertFromDatetime(VaildStartDate, "yyyy-MM-dd") + "~" + Utils.ConvertFromDatetime(VaildEndDate, "yyyy-MM-dd");

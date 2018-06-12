@@ -887,6 +887,7 @@ function setSelect(objVal,id,m) {
 //...................................................page门店列表...................................
 //添加门店
 function addStore() {
+    let logMsg=JSON.parse(getStorage('logMsg'));
        var storeId='';
        var parentId=$('#parentId option:selected').val();
        var storeName=$('#storeName').val();
@@ -913,7 +914,7 @@ function addStore() {
 
         var obj={'storeId':storeId,'parentId':parentId,'storeName':storeName,'password':password,'authorExpireDate':authorExpireDate,
         'Address':Address,'lng':lng,'lat':lat,'contracts':contracts,'idCard':idCard,'idExpireDate':idExpireDate,
-        'mobile':mobile,'shopSignPhoto':shopSignPhoto,'licencePhoto':licencePhoto,'StoreTag':StoreTag,
+        'mobile':mobile,'shopSignPhoto':shopSignPhoto,'licencePhoto':licencePhoto,'StoreTag':logMsg.tag,
         'licenceId':licenceId,'licenceExpireDate':licenceExpireDate,'bankType':bankType,'bankCode':bankCode,
         'bankAccount':bankAccount,'selttleType':selttleType,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
         var url='/XCCloud/StoreInfo?action=AddStoreInfo';
