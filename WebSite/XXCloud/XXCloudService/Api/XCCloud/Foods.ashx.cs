@@ -130,15 +130,15 @@ namespace XXCloudService.Api.XCCloud
             parameters[2] = new SqlParameter("@MemberLevelId", memberLevelId);
             parameters[3] = new SqlParameter("@FoodTypeStr", foodTypeStr);
             System.Data.DataSet ds = XCCloudBLL.ExecuteQuerySentence(sql, parameters);
-            DataTable dtFoodInfo = ds.Tables[0];
 
             List<FoodInfoModel> listFoodInfo = Utils.GetModelList<FoodInfoModel>(ds.Tables[0]).ToList();
             List<GoodModel> listGoodInfo = Utils.GetModelList<GoodModel>(ds.Tables[1]).ToList();
             List<TicketModel> listTicketInfo = Utils.GetModelList<TicketModel>(ds.Tables[2]).ToList();
-            List<FoodDetailInfoModel> listFoodDetailInfo = Utils.GetModelList<FoodDetailInfoModel>(ds.Tables[3]).ToList();
+            List<FoodDetailInfoModel> listFoodDetailInfo1 = Utils.GetModelList<FoodDetailInfoModel>(ds.Tables[3]).ToList();
+            List<FoodDetailInfoModel> listFoodDetailInfo2 = Utils.GetModelList<FoodDetailInfoModel>(ds.Tables[4]).ToList();
             FoodSetModel foodSetModel = new FoodSetModel();
 
-            if (dtFoodInfo.Rows.Count > 0)
+            if (listFoodInfo.Count > 0)
             {
                 for (int i = 0; i < listFoodInfo.Count; i++)
                 {
@@ -148,10 +148,20 @@ namespace XXCloudService.Api.XCCloud
                     }
                     else
                     {
-                        List<FoodDetailInfoModel> foodDetialInfo = listFoodDetailInfo.Where<FoodDetailInfoModel>(p => p.FoodId == listFoodInfo[i].FoodID).ToList<FoodDetailInfoModel>();
-                        listFoodInfo[i].DetailInfoList = foodDetialInfo;
+                        List<FoodDetailInfoModel> foodDetialInfo1 = listFoodDetailInfo1.Where<FoodDetailInfoModel>(p => p.FoodId == listFoodInfo[i].FoodID).ToList<FoodDetailInfoModel>();
+                        listFoodInfo[i].DetailInfoList = foodDetialInfo1;
                         listFoodInfo[i].DetailsCount = listFoodInfo[i].DetailInfoList.Count();
                     }
+                }
+            }
+
+            if (listGoodInfo.Count > 0)
+            {
+                for (int i = 0; i < listGoodInfo.Count; i++)
+                {
+                    List<FoodDetailInfoModel> foodDetialInfo1 = listFoodDetailInfo1.Where<FoodDetailInfoModel>(p => p.FoodId == listFoodInfo[i].FoodID).ToList<FoodDetailInfoModel>();
+                    listGoodInfo[i].DetailInfoList = foodDetialInfo1;
+                    listGoodInfo[i].DetailsCount = listGoodInfo[i].DetailInfoList.Count();
                 }
             }
 

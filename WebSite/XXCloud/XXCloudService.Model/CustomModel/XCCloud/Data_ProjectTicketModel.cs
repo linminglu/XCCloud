@@ -26,7 +26,7 @@ namespace XCCloudService.Model.CustomModel.XCCloud
             get
             {
                 if (EffactType == (int)XCCloudService.Common.Enum.EffactType.Period)
-                    return "销售后" + EffactPeriodValue + ((XCCloudService.Common.Enum.FreqType?)EffactPeriodType).GetDescription()
+                    return "销售后" + ((EffactPeriodValue ?? 0) == 0 ? "当" : Convert.ToString(EffactPeriodValue)) + ((XCCloudService.Common.Enum.FreqType?)EffactPeriodType).GetDescription()
                         + "生效，有效期" + VaildPeriodValue + ((XCCloudService.Common.Enum.FreqType?)VaildPeriodType).GetDescription();
                 else if (EffactType == (int)XCCloudService.Common.Enum.EffactType.Date)
                 {
@@ -90,7 +90,7 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         {
             get 
             {
-                if (AllowExitTicket == 1)
+                if (AllowExitTicket == 1 && (ExitPeriodValue ?? 0) > 0)
                 {
                     return "销售" + ExitPeriodValue + ((XCCloudService.Common.Enum.FreqType?)ExitPeriodType).GetDescription()
                         + "后不可退票，退票手续费" + ((XCCloudService.Common.Enum.ExitTicketType?)ExitTicketType).GetDescription() + Math.Round(ExitTicketValue ?? 0M, 2, MidpointRounding.AwayFromZero)

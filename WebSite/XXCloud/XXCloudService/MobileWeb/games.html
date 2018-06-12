@@ -11,8 +11,8 @@
     <script src="js/ydui.flexible.js"></script>
     <style>
         body{height: 100%;width: 100%;overflow: hidden;}
-        .header{width: 90%;display: flex;flex-direction: row;margin: 0.2rem 5%;justify-content: space-between;}
-        .header_img{width: 1.3rem;height: 1.3rem;}
+        .header{width: 90%;display: flex;flex-direction: row;margin: 0.2rem 5%;}
+        .header_img{width: 1.3rem;height: 1.3rem;min-width: 1.3rem;min-height: 1.3rem;max-height: 1.3rem;min-width: 1.3rem;}
         .header_text{padding-left: 0.2rem;font-size: 0.28rem;margin-top: 0.1rem}
         .header_active{margin-top: 0.2rem; display: flex;flex-direction: row;color: #ff5400;}
         .header_active span{margin-left: 0.1rem;margin-top: 0.15rem;color: #ff5400;font-weight: 600;}
@@ -57,7 +57,7 @@
     <div class='header'>
         <img class="header_img" src="images/portrait.jpg" alt="头像">
         <div class="header_text">
-            <p>机台名称：{{deviceName}}</p>
+            <p>机台名称：{{GameName}}</p>
             <div class="header_active"><img slot="icon" src="images/sendImg.png"><span>限时活动中</span></div>
         </div>
         <yd-button class='header_b' type="hollow" v-if="headerBtn" @click.native="show = true"><img src='images/welfare.png'></yd-button>
@@ -148,8 +148,8 @@
             show: false,
             show2: false,
             mobileToken:"",
-            deviceToken:"",
-            deviceName:"",
+            deviceToken:"86A8AFBDB2E84B8E95BF52C052E8BA7C",
+            GameName:"",
             headerBtn:true,
             deleteHide:"",
             gameGive:false,
@@ -181,6 +181,25 @@
                 that.deviceToken = deviceToken;
                 that.userThirdId = userThirdId;
                 this.$dialog.loading.open('');
+                var getDeviceInfo ={sysId: sysId,versionNo: versionNo,token:"oNWocwSC_GFO8n_8mtZ0iV9tL0WI",deviceToken:"86A8AFBDB2E84B8E95BF52C052E8BA7C"};
+                axios.post('/XCCloudH5/Amusement?action=getDeviceInfo', getDeviceInfo).then(function (res) {
+                    that.$dialog.loading.close();
+                    that.msgPrompt(res.data);
+                    console.log(res.data);
+                    if (res.data.result_code === '1') {
+                        that.GameFreeRule =res.data.result_data.GameFreeRule;
+                        that.Coins =res.data.result_data.Coins;
+                        that.GameId =res.data.result_data.GameId;
+                        that.GameName =res.data.result_data.GameName;
+                        that.GameType =res.data.result_data.GameType;
+                        if(that.GameFreeRul == null){
+                            that.headerBtn = false;
+                        }
+                    }
+                }).catch(function (err) {
+                    that.$dialog.loading.close();
+                    console.log(err);
+                });
 //                chatHub = $.connection.XCGameClientHub;
 //                chatHub.client.broadcastMessage = function (name, message) {
 //                    //接受广播消息
@@ -197,51 +216,52 @@
 //                $.connection.hub.start().done(function () {
 //                    chatHub.server.connect(mobileToken, "0");
 //                });
-                var obj={
-                    sysId: sysId,
-                    versionNo: versionNo,
-                    deviceToken:that.deviceToken
-                };
-                axios.post('/xcgamemana/store?action=storeInfoByTerminalNo', obj).then(function (res) {
-                    that.$dialog.loading.close();
-                    that.msgPrompt(res.data);
-                    console.log(res.data);
-                    if (res.data.result_code === '1') {
-                        that.storeId = res.data.result_data.storeId;
-                        that.deviceName = res.data.result_data.deviceName;
-                        that.stateName = res.data.result_data.stateName;
-                        that.deviceType =res.data.result_data.deviceType;
-//                        if(that.memberToken == ""){
-//                            console.log(111);
-//                            var memData={
-//                                sysId: sysId,
-//                                versionNo: versionNo,
-//                                storeId: that.storeId,
-//                                mobileToken: that.mobileToken
-//                            };
-//                            axios.post('/xcgamemana/token?action=getMemberToken', memData).then(function (res) {
-//                                that.$dialog.loading.close();
-//                                that.msgPrompt(res.data);
-//                                console.log(res.data);
-//                                if (res.data.result_code === '1') {
-//                                    that.memberToken = res.data.result_data.memberToken;
-//                                    that.balance = res.data.result_data.member.balance;
-//                                    setStorage("memberToken",memberToken);
-//                                    that.GetGameInfo();
-//                                }
-//                            }).catch(function (err) {
-//                                that.$dialog.loading.close();
-//                                console.log(err);
-//                            });
-//
-//                        }else {
-//                            that.GetGameInfo();
-//                        }
-                    }
-                }).catch(function (err) {
-                    that.$dialog.loading.close();
-                    console.log(err);
-                })
+//                var obj={
+//                    sysId: sysId,
+//                    versionNo: versionNo,
+//                    deviceToken:that.deviceToken
+//                };
+//                axios.post('/xcgamemana/store?action=storeInfoByTerminalNo', obj).then(function (res) {
+//                    that.$dialog.loading.close();
+//                    that.msgPrompt(res.data);
+//                    console.log(res.data);
+//                    if (res.data.result_code === '1') {
+//                        that.storeId = res.data.result_data.storeId;
+//                        that.deviceName = res.data.result_data.deviceName;
+//                        that.stateName = res.data.result_data.stateName;
+//                        that.deviceType =res.data.result_data.deviceType;
+////                        if(that.memberToken == ""){
+////                            console.log(111);
+////                            var memData={
+////                                sysId: sysId,
+////                                versionNo: versionNo,
+////                                storeId: that.storeId,
+////                                mobileToken: that.mobileToken
+////                            };
+////                            axios.post('/xcgamemana/token?action=getMemberToken', memData).then(function (res) {
+////                                that.$dialog.loading.close();
+////                                that.msgPrompt(res.data);
+////                                console.log(res.data);
+////                                if (res.data.result_code === '1') {
+////                                    that.memberToken = res.data.result_data.memberToken;
+////                                    that.balance = res.data.result_data.member.balance;
+////                                    setStorage("memberToken",memberToken);
+////                                    that.GetGameInfo();
+////                                }
+////                            }).catch(function (err) {
+////                                that.$dialog.loading.close();
+////                                console.log(err);
+////                            });
+////
+////                        }else {
+////                            that.GetGameInfo();
+////                        }
+////
+//                    }
+//                }).catch(function (err) {
+//                    that.$dialog.loading.close();
+//                    console.log(err);
+//                })
             },
             callBackFnc: function (data) {
                 this.msgPrompt(data);

@@ -80,6 +80,7 @@
     <Compile Include="XCCloudRS232\MerchBusiness.cs" />
     <Compile Include="XCCloudRS232\MerchDeviceBusiness.cs" />
     <Compile Include="XCCloudRS232\MerchSegmentBusiness.cs" />
+    <Compile Include="XCCloud\FlwMemberRegisterBusiness.cs" />
     <Compile Include="XCCloud\Flw_OrderBusiness.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -24,5 +24,11 @@ namespace XCCloudService.Model.CustomModel.XCCloud
 
         [DataMember(Name = "imageUrl", Order = 5)]
         public string ImageUrl {set;get;}
+
+        [DataMember(Name = "detailsCount", Order = 6)]
+        public int DetailsCount { get; set; }
+
+        [DataMember(Name = "detailInfoList", Order = 7)]
+        public List<FoodDetailInfoModel> DetailInfoList { set; get; }
     }
 }

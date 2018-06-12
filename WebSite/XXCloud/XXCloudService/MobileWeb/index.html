@@ -15,6 +15,7 @@
         .wx-img{min-width: 1.2rem;min-height:1.3rem;width: 1rem;height: 1.2rem;margin-right: 0.5rem;background-color: #eeeeee;padding: 0.1rem;margin-top: 0.1rem;}
         .index-header{background-color: #393a3f;border-top: 0.1rem solid #eeeeee;border-bottom: 0.15rem solid #eeeeee;}
         .iconSty{color: #eeeeee; line-height: 0.4rem;display: flex;flex-direction: row;}
+        .margin_top{margin-top: 0.2rem;}
         .index-change{border-bottom: 0.02rem solid #eeeeee;}
         .cardIcon{width: 0.4rem;height: 0.4rem;margin-right: 0.1rem;}
         .iconRight{justify-content:flex-end;margin-top: 0.2rem;margin-right: 0.6rem;color: #ff3030;}
@@ -32,13 +33,13 @@
             <!--<yd-flexbox-item>yd-flexbox-item</yd-flexbox-item>-->
             <!--<div>div</div>-->
         <!--</yd-flexbox>-->
-
         <yd-layout>
             <yd-cell-item class="index-header">
-                <img slot="icon" class="wx-img" src="http://static.ydcss.com/ydui/img/logo.png">
+                <img slot="icon" class="wx-img" :src="headimgurl">
                 <div slot="left" class="index-div">
-                    <p class="iconSty"><img slot="icon" class="cardIcon" src="images/user.png"><span>请注册或登录</span></p>
-                    <!--<p><img slot="icon" class="cardIcon" src="images/cardIcon.png"><span></span></p>-->
+                    <p class="iconSty"><img slot="icon" class="cardIcon" src="images/user.png"><span>你好，{{nickname}}</span></p>
+                    <!--<p class="iconSty"><img slot="icon" class="cardIcon" src="images/user.png"><span>请注册或登录</span></p>-->
+                    <p class="iconSty margin_top"><img slot="icon" class="cardIcon" src="images/member.png"><span class="index-change">请注册或登录</span></p>
                 </div>
                 <!--<span slot="right">图标是image</span>-->
             </yd-cell-item>
@@ -98,8 +99,12 @@
         data:{
             playData:[{imgUrl:"images/billQuery.png",playName:"账单查询"},{imgUrl:"images/scanCode.png",playName:"扫一扫"},{imgUrl:"images/surrounding.png",playName:"周边推荐"},{imgUrl:"images/giftExchange.png",playName:"礼品兑换"}],
             buyData:[{imgUrl:"images/recharge.png",playName:"充值"},{imgUrl:"images/buyCoin.png",playName:"购币"}],
-            mobileToken : "1",
-            memberToken : "1",
+            headimgurl : "",
+            nickname : "",
+            CurrentCardInfo : "",
+            MemberBalances : "",
+            MemberId : "",
+            Token : "",
             userThirdId : "",
             tiedCard:false
         },
@@ -109,6 +114,8 @@
         methods: {
             Load:function () {
                 var that =this;
+
+
                 var ifScanCode = getStorage("ifScanCode");        //是否是扫码进入
                 var deviceToken = getStorage("deviceNo")||"";       //获取设备令牌
                 var userThirdId = getStorage("userThirdId")||"";       //获取第三方令牌
@@ -133,17 +140,24 @@
                     }
                 }
                 var obj={sysId: sysId,versionNo: versionNo,token:"oNWocwSC_GFO8n_8mtZ0iV9tL0WI"};
-                axios.post('XCCloudH5/Member?action=getMemberWechatInfo', obj).then(function (res) {
+                axios.post('/XCCloudH5/Member?action=getMemberWechatInfo', obj).then(function (res) {
                     that.$dialog.loading.close();
                     that.msgPrompt(res.data);
                     console.log(res.data);
                     if (res.data.result_code === '1') {
+                        that.CurrentCardInfo =res.data.result_data.CurrentCardInfo;
+                        that.MemberBalances =res.data.result_data.CurrentCardInfo;
+                        that.MemberId =res.data.result_data.CurrentCardInfo;
+                        that.headimgurl =res.data.result_data.Info.headimgurl;
+                        that.nickname =res.data.result_data.Info.nickname;
 
                     }
                 }).catch(function (err) {
                     that.$dialog.loading.close();
                     console.log(err);
-                })
+                });
+
+//
 //                that.$nextTick(function () {
 //                    alert(111);
 //                    if (/MicroMessenger/.test(window.navigator.userAgent)) {
@@ -191,7 +205,7 @@
             playFnc:function (index) {
                 var that = this;
                 console.log(index);
-                if(that.memberToken != "" || index == 1){
+                if(that.CurrentCardInfo != null || index == 1){
                     switch (index){
                         case 0:
                             window.location.href = "MyOrder.html";
@@ -214,23 +228,13 @@
                     }
 
                 }else {
-                    if(that.mobileToken == ""){
-                        that.$dialog.confirm({
-                            title: '温馨提示!',
-                            mes: "是否前往登录或注册？",
-                            opts: (function () {
-                                window.location.href = "login.html"
-                            })
-                        });
-                    }else {
-                        that.$dialog.confirm({
-                            title: '温馨提示!',
-                            mes: "前往绑定会员卡",
-                            opts: (function () {
-                                window.location.href = "mineCard.html"
-                            })
-                        });
-                    }
+                    that.$dialog.confirm({
+                        title: '温馨提示!',
+                        mes: "前往绑定会员卡",
+                        opts: (function () {
+                            window.location.href = "mineCard.html"
+                        })
+                    });
                 }
             },
 //          扫码函数
@@ -315,18 +319,13 @@
 //          切换会员卡或绑卡
             mineCard:function () {
                 var that = this;
-
-//                if(that.mobileToken == ""){
-//                    that.$dialog.confirm({
-//                        title: '温馨提示!',
-//                        mes: "是否前往登录或注册？",
-//                        opts: (function () {
-//                            window.location.href = "login.html"
-//                        })
-//                    });
-//                }else {
-//                    window.location.href ="mineCard.html"
-//                }
+                that.$dialog.confirm({
+                    title: '温馨提示!',
+                    mes: "是否前往绑卡或换卡？",
+                    opts: (function () {
+                        window.location.href ="mineCard.html"
+                    })
+                });
             },
             msgPrompt:function (res) {
                 if(res.return_code == 0){

@@ -217,13 +217,13 @@
                         <div class="layui-inline">
                             <label class="layui-form-label">不可用期限</label>
                             <div class="layui-input-inline">
-                                <input type="text" class="layui-input" name="NoStartDate" id="NoStartDate">
+                                <input type="text" class="layui-input" disabled name="NoStartDate" id="NoStartDate">
                             </div>
                             <div class="layui-form-mid">
                                 至
                             </div>
                             <div class="layui-input-inline">
-                                <input type="text" class="layui-input" name="NoEndDate" id="NoEndDate">
+                                <input type="text" class="layui-input" disabled name="NoEndDate" id="NoEndDate">
                             </div>
                         </div>
                     </div>
@@ -330,7 +330,25 @@
                 </div>
             </div>
             <div class="layui-card">
-                <div class="layui-card-header">绑定项目<button type="button" class="layui-btn" id="addPro">添加项目</button></div>
+                <div class="layui-card-header">
+                    <div class="layui-form-item" id="bindTimesBox">
+
+                        <div class="layui-inline">
+                            <div class="layui-form-mid" style="padding: 0!important;">
+                                <button type="button" class="layui-btn" id="addPro">绑定项目>>添加项目</button>
+                            </div>
+                            <div class="layui-input-inline bindTimesBox" style="text-align:right;">
+                                <input type="checkbox" title="次数共享" lay-filter="isShare" id="isShare" lay-skin="primary">
+                            </div>
+                        </div>
+                        <div class="layui-inline bindTimesBox">
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input" id="shareTimes" disabled>
+                            </div>
+                            <div class="layui-form-mid" style="padding: 0!important;">次</div>
+                        </div>
+                    </div>
+                </div>
                 <div class="layui-card-body">
                     <table class="layui-hide" id="proTable" lay-filter="proTable"></table>
                 </div>
@@ -352,20 +370,7 @@
                 </select>
             </div>
         </div>
-        <div class="layui-form-item" id="bindTimesBox">
-            <div class="layui-inline">
-                <div class="layui-input-inline">
-                    <input type="checkbox" title="次数共享" lay-filter="isShare" id="isShare" lay-skin="primary">
-                </div>
-            </div>
-            <div class="layui-inline">
 
-                <div class="layui-input-inline">
-                    <input type="text" class="layui-input" id="shareTimes">
-                </div>
-                <div class="layui-form-mid">次</div>
-            </div>
-        </div>
     </form>
     <div style="text-align:center;" >
         <button type="button" class="layui-btn" id="savePro">确定</button>
@@ -383,7 +388,7 @@
         $('input[name="BusinessType"]').val('门票');
         BusinessType=0;
     }else if(ticketSet.name=='month'){
-        $('#bindTimesBox').addClass('layui-hide');
+        $('.bindTimesBox').addClass('layui-hide');
         $('#useReason').removeClass('layui-hide');
         $('input[name="BusinessType"]').val('门票');
         BusinessType=0;
@@ -401,7 +406,7 @@
 
         BusinessType=2;
     }else if(ticketSet.name=='timeLimit'){
-        $('#bindTimesBox').addClass('layui-hide');
+        $('.bindTimesBox').addClass('layui-hide');
         $('#useReason').removeClass('layui-hide');
         $('input[name="BusinessType"]').val('限时任玩');
         BusinessType=1;
@@ -583,15 +588,23 @@
                 initProject(token,form,layer,'proList','1');
             }
             proList=''; ProjcetName=''; ProjcetType=''; ProjcetTypeStr=''; PushCoin1=0;
-            isShare=0;
-             $('#isShare').attr('checked',false);
-             form.render();
-            $('#shareTimes').val('');
-            layer.open({
-                type:1,
-                area:'600px',
-                content:$('#openModel')
-            })
+            if(isShare==1) {
+                if ($('#shareTimes').val() == '') {
+                    layer.msg('当前为次数共享模式,请先设置共享次数！', {time: 1500})
+                }else if(Number($('#shareTimes').val())>0){
+                    layer.open({
+                        type:1,
+                        area:'600px',
+                        content:$('#openModel')
+                    })
+                }
+            }else {
+                layer.open({
+                    type:1,
+                    area:'600px',
+                    content:$('#openModel')
+                })
+            }
         });
         form.on('select(proList)',(data)=>{
             proList=data.value;
@@ -605,37 +618,241 @@
         form.on('checkbox(isShare)',(data)=>{
             if(data.elem.checked==true){
                 isShare=1;
+                for(let i in proListArr){
+                    proListArr[i].AllowShareCount=1;
+                }
+                layer.msg('请填写共享次数,需大于0且必须填写！')
+                table.render({
+                    elem: '#proTable'
+                    , height:'250px'
+                    , size:"sm"
+                    , data: proListArr
+                    , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+                    , cols: [[
+                        {field:'ProjectName', title:'项目名称', align: 'center',width:200}
+                        ,{field:'ProjcetTypeStr',title: '类别', align: 'center',width:160} //width 支持：数字、百分比和不填写。
+                        ,{field:'AllowShareCount', title: '次数共享', align: 'center',width:100,templet:'#allowShare'}
+                        ,{field:'UseCount', title: '游玩次数', align: 'center',width:140}
+                        ,{field:'WeightValue', title: '权重值', align: 'center',width:175,edit:true}
+                        ,{fixed: 'right',title:'操作', width:180, align:'center', toolbar: '#barDemo2'}]]
+                    , page: {page: true, limits: [10, 15, 20, 30, 50, 100]}
+                    , limit: 10
+                });
+                $('#shareTimes').attr({'disabled':false})
             }else {
                 isShare=0;
+                for(let i in proListArr){
+                    proListArr[i].AllowShareCount=0;
+                }
+                table.render({
+                    elem: '#proTable'
+                    , height:'250px'
+                    , size:"sm"
+                    , data: proListArr
+                    , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+                    , cols: [[
+                        {field:'ProjectName', title:'项目名称', align: 'center',width:200}
+                        ,{field:'ProjcetTypeStr',title: '类别', align: 'center',width:160} //width 支持：数字、百分比和不填写。
+                        ,{field:'AllowShareCount', title: '次数共享', align: 'center',width:100,templet:'#allowShare'}
+                        ,{field:'UseCount', title: '游玩次数', align: 'center',width:140,edit:true}
+                        ,{field:'WeightValue', title: '权重值', align: 'center',width:175,edit:true}
+                        ,{fixed: 'right',title:'操作', width:180, align:'center', toolbar: '#barDemo2'}]]
+                    , page: {page: true, limits: [10, 15, 20, 30, 50, 100]}
+                    , limit: 10
+                });
+                $('#shareTimes').attr({'disabled':true}).val('')
             }
         });
+        $('#shareTimes').on('blur',function(){
+            if(Number($(this).val())>0){
+                for(let i in proListArr){
+                    proListArr[i].UseCount=$('#shareTimes').val();
+                    proListArr[i].WeightValue=parseInt($('#shareTimes').val())*parseInt(proListArr[i].PushCoin1)
+                }
+                table.render({
+                    elem: '#proTable'
+                    , height:'250px'
+                    , size:"sm"
+                    , data: proListArr
+                    , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+                    , cols: [[
+                        {field:'ProjectName', title:'项目名称', align: 'center',width:200}
+                        ,{field:'ProjcetTypeStr',title: '类别', align: 'center',width:160} //width 支持：数字、百分比和不填写。
+                        ,{field:'AllowShareCount', title: '次数共享', align: 'center',width:100,templet:'#allowShare'}
+                        ,{field:'UseCount', title: '游玩次数', align: 'center',width:140}
+                        ,{field:'WeightValue', title: '权重值', align: 'center',width:175,edit:true}
+                        ,{fixed: 'right',title:'操作', width:180, align:'center', toolbar: '#barDemo2'}]]
+                    , page: {page: true, limits: [10, 15, 20, 30, 50, 100]}
+                    , limit: 10
+                });
+            }
+
+        })
         $('#savePro').on('click',function () {
             if(proList!=''){
 
                 if(ticketSet.way=='add'){
+                    if(proListArr.length>0) {
+                        let flag = false;
+                        for (let i in proListArr) {
+                            if (proListArr[i].ProjcetID == proList) {
+                                flag = true;
+                            }
+                        }
+                        if(flag){
+                            layer.msg('该项目已绑定，请选择其他项目',{time:1500})
+                        }else {
+                            if(ticketSet.name=='times'||ticketSet.name=='group'||ticketSet.name=='boardPackage'){
+                                if(isShare==1){
+                                    if($('#shareTimes').val()==''){
+                                        layer.msg('当前为次数共享模式,请先设置共享次数！')
+                                    }else if($('#shareTimes').val()>0){
+                                        proListArr.push({
+                                            'ProjectTicketID':''
+                                            ,'ProjcetID':proList
+                                            ,'ProjectName':ProjcetName
+                                            ,'ProjcetType':ProjcetType
+                                            ,'ProjcetTypeStr':ProjcetTypeStr
+                                            ,'PushCoin1':PushCoin1
+                                            ,'UseCount':$('#shareTimes').val()
+                                            ,'AllowShareCount':isShare
+                                            ,'WeightValue':parseInt(PushCoin1)*parseInt($('#shareTimes').val())
+                                        });
+                                        table.render({
+                                            elem: '#proTable'
+                                            , height:'250px'
+                                            , size:"sm"
+                                            , data: proListArr
+                                            , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+                                            , cols: [[
+                                                {field:'ProjectName', title:'项目名称', align: 'center',width:200}
+                                                ,{field:'ProjcetTypeStr',title: '类别', align: 'center',width:160} //width 支持：数字、百分比和不填写。
+                                                ,{field:'AllowShareCount', title: '次数共享', align: 'center',width:100,templet:'#allowShare'}
+                                                ,{field:'UseCount', title: '游玩次数', align: 'center',width:140}
+                                                ,{field:'WeightValue', title: '权重值', align: 'center',width:175,edit:true}
+                                                ,{fixed: 'right',title:'操作', width:180, align:'center', toolbar: '#barDemo2'}]]
+                                            , page: {page: true, limits: [10, 15, 20, 30, 50, 100]}
+                                            , limit: 10
+                                        });
+                                    }
+                                }else {
+                                    proListArr.push({
+                                        'ProjectTicketID':''
+                                        ,'ProjcetID':proList
+                                        ,'ProjectName':ProjcetName
+                                        ,'ProjcetType':ProjcetType
+                                        ,'ProjcetTypeStr':ProjcetTypeStr
+                                        ,'PushCoin1':PushCoin1
+                                        ,'UseCount':PushCoin1
+                                        ,'AllowShareCount':isShare
+                                        ,'WeightValue':parseInt(PushCoin1)*parseInt(PushCoin1)
+                                    });
+                                    table.render({
+                                        elem: '#proTable'
+                                        , height:'250px'
+                                        , size:"sm"
+                                        , data: proListArr
+                                        , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+                                        , cols: [[
+                                            {field:'ProjectName', title:'项目名称', align: 'center',width:200}
+                                            ,{field:'ProjcetTypeStr',title: '类别', align: 'center',width:160} //width 支持：数字、百分比和不填写。
+                                            ,{field:'AllowShareCount', title: '次数共享', align: 'center',width:100,templet:'#allowShare'}
+                                            ,{field:'UseCount', title: '游玩次数', align: 'center',width:140,edit:true}
+                                            ,{field:'WeightValue', title: '权重值', align: 'center',width:175,edit:true}
+                                            ,{fixed: 'right',title:'操作', width:180, align:'center', toolbar: '#barDemo2'}]]
+                                        , page: {page: true, limits: [10, 15, 20, 30, 50, 100]}
+                                        , limit: 10
+                                    });
+                                }
 
-                    if(ticketSet.name=='times'||ticketSet.name=='group'||ticketSet.name=='boardPackage'){
-                        proListArr.push({
-                            'ProjectTicketID':''
-                            ,'ProjcetID':proList
-                            ,'ProjectName':ProjcetName
-                            ,'ProjcetType':ProjcetType
-                            ,'ProjcetTypeStr':ProjcetTypeStr
-                            ,'PushCoin1':PushCoin1
-                            ,'UseCount':$('#shareTimes').val()
-                            ,'AllowShareCount':isShare
-                            ,'WeightValue':parseInt(PushCoin1)*parseInt($('#shareTimes').val())
-                        });
-                    }else if(ticketSet.name=='month'||ticketSet.name=='timeLimit'){
-                        proListArr.push({
-                            'ProjectTicketID':''
-                            ,'ProjcetID':proList
-                            ,'ProjectName':ProjcetName
-                            ,'ProjcetType':ProjcetType
-                            ,'ProjcetTypeStr':ProjcetTypeStr
-                            ,'WeightValue':0
-                        });
+                            }else if(ticketSet.name=='month'||ticketSet.name=='timeLimit'){
+                                proListArr.push({
+                                    'ProjectTicketID':''
+                                    ,'ProjcetID':proList
+                                    ,'ProjectName':ProjcetName
+                                    ,'ProjcetType':ProjcetType
+                                    ,'ProjcetTypeStr':ProjcetTypeStr
+                                    ,'WeightValue':0
+                                });
+                                bindPro(ticketSet.name,table,proListArr,'proTable');
+                            }
+                        }
+
+                    }else {
+                        if(ticketSet.name=='times'||ticketSet.name=='group'||ticketSet.name=='boardPackage'){
+                            if(isShare==1){
+                                    proListArr.push({
+                                        'ProjectTicketID':''
+                                        ,'ProjcetID':proList
+                                        ,'ProjectName':ProjcetName
+                                        ,'ProjcetType':ProjcetType
+                                        ,'ProjcetTypeStr':ProjcetTypeStr
+                                        ,'PushCoin1':PushCoin1
+                                        ,'UseCount':$('#shareTimes').val()
+                                        ,'AllowShareCount':isShare
+                                        ,'WeightValue':parseInt(PushCoin1)*parseInt($('#shareTimes').val())
+                                    });
+
+                                table.render({
+                                    elem: '#proTable'
+                                    , height:'250px'
+                                    , size:"sm"
+                                    , data: proListArr
+                                    , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+                                    , cols: [[
+                                        {field:'ProjectName', title:'项目名称', align: 'center',width:200}
+                                        ,{field:'ProjcetTypeStr',title: '类别', align: 'center',width:160} //width 支持：数字、百分比和不填写。
+                                        ,{field:'AllowShareCount', title: '次数共享', align: 'center',width:100,templet:'#allowShare'}
+                                        ,{field:'UseCount', title: '游玩次数', align: 'center',width:140}
+                                        ,{field:'WeightValue', title: '权重值', align: 'center',width:175,edit:true}
+                                        ,{fixed: 'right',title:'操作', width:180, align:'center', toolbar: '#barDemo2'}]]
+                                    , page: {page: true, limits: [10, 15, 20, 30, 50, 100]}
+                                    , limit: 10
+                                });
+                            }else {
+                                proListArr.push({
+                                    'ProjectTicketID':ticketSet.id
+                                    ,'ProjcetID':proList
+                                    ,'ProjectName':ProjcetName
+                                    ,'ProjcetType':ProjcetType
+                                    ,'ProjcetTypeStr':ProjcetTypeStr
+                                    ,'PushCoin1':PushCoin1
+                                    ,'UseCount':PushCoin1
+                                    ,'AllowShareCount':isShare
+                                    ,'WeightValue':parseInt(PushCoin1)*parseInt(PushCoin1)
+                                });
+                                for(let i in proListArr){
+                                    proListArr[i].AllowShareCount=0;
+                                }
+                                table.render({
+                                    elem: '#proTable'
+                                    , height:'250px'
+                                    , size:"sm"
+                                    , data: proListArr
+                                    , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+                                    , cols: [[
+                                        {field:'ProjectName', title:'项目名称', align: 'center',width:200}
+                                        ,{field:'ProjcetTypeStr',title: '类别', align: 'center',width:160} //width 支持：数字、百分比和不填写。
+                                        ,{field:'AllowShareCount', title: '次数共享', align: 'center',width:100,templet:'#allowShare'}
+                                        ,{field:'UseCount', title: '游玩次数', align: 'center',width:140,edit:true}
+                                        ,{field:'WeightValue', title: '权重值', align: 'center',width:175,edit:true}
+                                        ,{fixed: 'right',title:'操作', width:180, align:'center', toolbar: '#barDemo2'}]]
+                                    , page: {page: true, limits: [10, 15, 20, 30, 50, 100]}
+                                    , limit: 10
+                                });
+                            }
+
+                        }else {
+                            proListArr.push({'ProjectTicketID':''
+                                ,'ProjcetID':proList
+                                ,'ProjectName':ProjcetName
+                                ,'ProjcetType':ProjcetType
+                                ,'ProjcetTypeStr':ProjcetTypeStr
+                                ,'WeightValue':PushCoin1});
+                            bindPro(ticketSet.name,table,proListArr,'proTable');
+                        }
                     }
+
                 }else if(ticketSet.way=='modify'){
                     if(proListArr.length>0){
                         let flag=false;
@@ -645,18 +862,77 @@
                             }
                         }
                         if(flag){
-                            layer.msg('该项目已绑定，请选择其他项目')
+                            layer.msg('该项目已绑定，请选择其他项目',{time:1500})
                         }else {
                             if(ticketSet.name=='times'||ticketSet.name=='group'||ticketSet.name=='boardPackage'){
-                                proListArr.push({'ProjectTicketID':ticketSet.id
-                                    ,'ProjcetID':proList
-                                    ,'ProjectName':ProjcetName
-                                    ,'ProjcetType':ProjcetType
-                                    ,'ProjcetTypeStr':ProjcetTypeStr
-                                    ,'PushCoin1':PushCoin1
-                                    ,'UseCount':$('#shareTimes').val()
-                                    ,'AllowShareCount':isShare
-                                    ,'WeightValue':parseInt(PushCoin1)*parseInt($('#shareTimes').val())});
+                                if(isShare==1){
+                                    if($('#shareTimes').val()==''){
+                                        layer.msg('当前为次数共享模式,请先设置共享次数！',{time:1500})
+                                    }else if($('#shareTimes').val()>0){
+                                        proListArr.push({
+                                            'ProjectTicketID':ticketSet.id
+                                            ,'ProjcetID':proList
+                                            ,'ProjectName':ProjcetName
+                                            ,'ProjcetType':ProjcetType
+                                            ,'ProjcetTypeStr':ProjcetTypeStr
+                                            ,'PushCoin1':PushCoin1
+                                            ,'UseCount':$('#shareTimes').val()
+                                            ,'AllowShareCount':isShare
+                                            ,'WeightValue':parseInt(PushCoin1)*parseInt($('#shareTimes').val())
+                                        });
+                                    }
+                                    for(let i in proListArr){
+                                        proListArr[i].UseCount=$('#shareTimes').val();
+                                        proListArr[i].WeightValue=parseInt($('#shareTimes').val())*parseInt(proListArr[i].PushCoin1)
+                                    }
+                                    table.render({
+                                        elem: '#proTable'
+                                        , height:'250px'
+                                        , size:"sm"
+                                        , data: proListArr
+                                        , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+                                        , cols: [[
+                                            {field:'ProjectName', title:'项目名称', align: 'center',width:200}
+                                            ,{field:'ProjcetTypeStr',title: '类别', align: 'center',width:160} //width 支持：数字、百分比和不填写。
+                                            ,{field:'AllowShareCount', title: '次数共享', align: 'center',width:100,templet:'#allowShare'}
+                                            ,{field:'UseCount', title: '游玩次数', align: 'center',width:140}
+                                            ,{field:'WeightValue', title: '权重值', align: 'center',width:175,edit:true}
+                                            ,{fixed: 'right',title:'操作', width:180, align:'center', toolbar: '#barDemo2'}]]
+                                        , page: {page: true, limits: [10, 15, 20, 30, 50, 100]}
+                                        , limit: 10
+                                    });
+                                }else {
+                                    proListArr.push({
+                                        'ProjectTicketID':ticketSet.id
+                                        ,'ProjcetID':proList
+                                        ,'ProjectName':ProjcetName
+                                        ,'ProjcetType':ProjcetType
+                                        ,'ProjcetTypeStr':ProjcetTypeStr
+                                        ,'PushCoin1':PushCoin1
+                                        ,'UseCount':PushCoin1
+                                        ,'AllowShareCount':isShare
+                                        ,'WeightValue':parseInt(PushCoin1)*parseInt(PushCoin1)
+                                    });
+                                    for(let i in proListArr){
+                                        proListArr[i].AllowShareCount=0;
+                                    }
+                                    table.render({
+                                        elem: '#proTable'
+                                        , height:'250px'
+                                        , size:"sm"
+                                        , data: proListArr
+                                        , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+                                        , cols: [[
+                                            {field:'ProjectName', title:'项目名称', align: 'center',width:200}
+                                            ,{field:'ProjcetTypeStr',title: '类别', align: 'center',width:160} //width 支持：数字、百分比和不填写。
+                                            ,{field:'AllowShareCount', title: '次数共享', align: 'center',width:100,templet:'#allowShare'}
+                                            ,{field:'UseCount', title: '游玩次数', align: 'center',width:140,edit:true}
+                                            ,{field:'WeightValue', title: '权重值', align: 'center',width:175,edit:true}
+                                            ,{fixed: 'right',title:'操作', width:180, align:'center', toolbar: '#barDemo2'}]]
+                                        , page: {page: true, limits: [10, 15, 20, 30, 50, 100]}
+                                        , limit: 10
+                                    });
+                                }
 
                             }else {
                                 proListArr.push({'ProjectTicketID':ticketSet.id
@@ -665,19 +941,75 @@
                                     ,'ProjcetType':ProjcetType
                                     ,'ProjcetTypeStr':ProjcetTypeStr
                                     ,'WeightValue':PushCoin1});
+                                bindPro(ticketSet.name,table,proListArr,'proTable');
                             }
                         }
                     }else {
                         if(ticketSet.name=='times'||ticketSet.name=='group'||ticketSet.name=='boardPackage'){
-                            proListArr.push({'ProjectTicketID':ticketSet.id
-                                ,'ProjcetID':proList
-                                ,'ProjectName':ProjcetName
-                                ,'ProjcetType':ProjcetType
-                                ,'ProjcetTypeStr':ProjcetTypeStr
-                                ,'PushCoin1':PushCoin1
-                                ,'UseCount':$('#shareTimes').val()
-                                ,'AllowShareCount':isShare
-                                ,'WeightValue':parseInt(PushCoin1)*parseInt($('#shareTimes').val())});
+                            if(isShare==1){
+                                    proListArr.push({
+                                        'ProjectTicketID':ticketSet.id
+                                        ,'ProjcetID':proList
+                                        ,'ProjectName':ProjcetName
+                                        ,'ProjcetType':ProjcetType
+                                        ,'ProjcetTypeStr':ProjcetTypeStr
+                                        ,'PushCoin1':PushCoin1
+                                        ,'UseCount':$('#shareTimes').val()
+                                        ,'AllowShareCount':isShare
+                                        ,'WeightValue':parseInt(PushCoin1)*parseInt($('#shareTimes').val())
+                                    });
+
+                                for(let i in proListArr){
+                                    proListArr[i].AllowShareCount=1;
+                                }
+                                table.render({
+                                    elem: '#proTable'
+                                    , height:'250px'
+                                    , size:"sm"
+                                    , data: proListArr
+                                    , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+                                    , cols: [[
+                                        {field:'ProjectName', title:'项目名称', align: 'center',width:200}
+                                        ,{field:'ProjcetTypeStr',title: '类别', align: 'center',width:160} //width 支持：数字、百分比和不填写。
+                                        ,{field:'AllowShareCount', title: '次数共享', align: 'center',width:100,templet:'#allowShare'}
+                                        ,{field:'UseCount', title: '游玩次数', align: 'center',width:140}
+                                        ,{field:'WeightValue', title: '权重值', align: 'center',width:175,edit:true}
+                                        ,{fixed: 'right',title:'操作', width:180, align:'center', toolbar: '#barDemo2'}]]
+                                    , page: {page: true, limits: [10, 15, 20, 30, 50, 100]}
+                                    , limit: 10
+                                });
+                            }else {
+                                proListArr.push({
+                                    'ProjectTicketID':ticketSet.id
+                                    ,'ProjcetID':proList
+                                    ,'ProjectName':ProjcetName
+                                    ,'ProjcetType':ProjcetType
+                                    ,'ProjcetTypeStr':ProjcetTypeStr
+                                    ,'PushCoin1':PushCoin1
+                                    ,'UseCount':PushCoin1
+                                    ,'AllowShareCount':isShare
+                                    ,'WeightValue':parseInt(PushCoin1)*parseInt(PushCoin1)
+                                });
+                                for(let i in proListArr){
+                                    proListArr[i].AllowShareCount=0;
+                                }
+                                table.render({
+                                    elem: '#proTable'
+                                    , height:'250px'
+                                    , size:"sm"
+                                    , data: proListArr
+                                    , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+                                    , cols: [[
+                                        {field:'ProjectName', title:'项目名称', align: 'center',width:200}
+                                        ,{field:'ProjcetTypeStr',title: '类别', align: 'center',width:160} //width 支持：数字、百分比和不填写。
+                                        ,{field:'AllowShareCount', title: '次数共享', align: 'center',width:100,templet:'#allowShare'}
+                                        ,{field:'UseCount', title: '游玩次数', align: 'center',width:140,edit:true}
+                                        ,{field:'WeightValue', title: '权重值', align: 'center',width:175,edit:true}
+                                        ,{fixed: 'right',title:'操作', width:180, align:'center', toolbar: '#barDemo2'}]]
+                                    , page: {page: true, limits: [10, 15, 20, 30, 50, 100]}
+                                    , limit: 10
+                                });
+                            }
 
                         }else {
                             proListArr.push({'ProjectTicketID':ticketSet.id
@@ -686,11 +1018,15 @@
                                 ,'ProjcetType':ProjcetType
                                 ,'ProjcetTypeStr':ProjcetTypeStr
                                 ,'WeightValue':PushCoin1});
+                            for(let i in proListArr){
+                                proListArr[i].AllowShareCount=0;
+                            }
+                            bindPro(ticketSet.name,table,proListArr,'proTable');
                         }
 
                     }
                 }
-                bindPro(ticketSet.name,table,proListArr,'proTable');
+
                 layer.closeAll();
             }
         });

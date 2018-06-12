@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,45 +7,43 @@ using XCCloudService.Model.CustomModel.XCCloud;
 
 namespace XCCloudService.CacheService
 {
-    public class FlwFoodOrderCache
+    public class FlwMemberRegisterCache
     {
-        private static Dictionary<string, object> _foodOrderHt = new Dictionary<string, object>();
+        private static Dictionary<string, object> _memberRegisterHt = new Dictionary<string, object>();
 
-        public static Dictionary<string, object> FoodOrderHt
+        public static Dictionary<string, object> MemberRegisterHt
         {
-            get { return _foodOrderHt; }
+            get { return _memberRegisterHt; }
         }
 
-        public static void Add(FoodOrderCacheModel model)
+        public static void Add(FlwMemberRegisterCacheModel model)
         {
-            _foodOrderHt.Add(model.FlwOrderId, model);
+            _memberRegisterHt.Add(model.FlwOrderId, model);
         }
 
-        public static FoodOrderCacheModel GetModel(string orderId)
+        public static FlwMemberRegisterCacheModel GetModel(string orderId)
         {
-            return (FoodOrderCacheModel)(_foodOrderHt[orderId]);
+            return (FlwMemberRegisterCacheModel)(_memberRegisterHt[orderId]);
         }
 
         public static bool Exist(string orderId)
         {
-            return _foodOrderHt.ContainsKey(orderId);
+            return _memberRegisterHt.ContainsKey(orderId);
         }
 
         public static void Remove(string storeId)
         {
-            _foodOrderHt.Remove(storeId);
+            _memberRegisterHt.Remove(storeId);
         }
     }
 
-    public class FoodOrderCacheModel
+    public class FlwMemberRegisterCacheModel
     {
-        public FoodOrderCacheModel(string merchId, string storeId, string flwOrderId, int customerType, int icCardId, string workStation, int workStationId,RegisterMember regMember)
+        public FlwMemberRegisterCacheModel(string merchId, string storeId, string flwOrderId, string workStation, int workStationId, RegisterMember regMember)
         {
             this.MerchId = merchId;
             this.StoreId = storeId;
             this.FlwOrderId = flwOrderId;
-            this.CustomerType = customerType;
-            this.ICCardId = icCardId;
             this.WorkStation = workStation;
             this.CreateTime = System.DateTime.Now;
             this.WorkStationId = workStationId;
@@ -60,10 +57,6 @@ namespace XCCloudService.CacheService
         public string FlwOrderId { set; get; }
 
         public DateTime CreateTime { set; get; }
-
-        public int CustomerType { set; get; }
-
-        public int ICCardId { set; get; }
 
         public int WorkStationId { set; get; }
 

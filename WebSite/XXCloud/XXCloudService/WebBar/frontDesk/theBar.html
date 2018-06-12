@@ -939,7 +939,7 @@
 									<a href="javascript:void(0)">全部</a>
 								</li>
 								<li v-for="(item,index) in saleTitle" class="swiper-slide" @click="screening(index)">
-									<a href="javascript:void(0)">{{item.FoodTypeName}}</a>
+									<a href="javascript:void(0)">{{item.foodTypeName}}</a>
 								</li>
 							</ul>
 						</div>
@@ -950,13 +950,13 @@
 						<select class="form-control">
 							<option value="-1">全部</option>
 							<option v-for="(item,index) in saleTitle" :value="index">
-								{{item.FoodTypeName}}
+								{{item.foodTypeName}}
 							</option>
 						</select>
 						<select class="form-control">
 							<option value="-1">全部</option>
 							<option v-for="(item,index) in saleTitle" :value="index">
-								{{item.FoodTypeName}}
+								{{item.foodTypeName}}
 							</option>
 						</select>
 						<input class="form-control" type="text" placeholder="扫码添加购物">
@@ -970,7 +970,7 @@
 									<span><i class="glyphicon glyphicon-minus"></i></span> <a href="javascript:void(0)" @click="singletonScreening('-1','good')">商品</a>
 									<ul>
 										<li v-for="(item,index) in foodTypeGoodList" @click="singletonScreening(index,'good')">
-											<span><i class="glyphicon glyphicon-resize-horizontal"></i></span> <a href="javascript:void(0)">{{item.FoodTypeName}}</a>
+											<span><i class="glyphicon glyphicon-resize-horizontal"></i></span> <a href="javascript:void(0)">{{item.foodTypeName}}</a>
 										</li>
 									</ul>
 								</li>
@@ -1947,12 +1947,10 @@
                     this.saleShow = true;
                     this.memberShow = false;
                     var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken};
-
                     axios.post('/XCCloud/Foods?action=getFoodType', obj).then(function (res) {	//套餐类别
                         console.log(res.data);
                         that.msgPrompt(res.data);
                         if (res.data.result_code === '1') {
-
                             that.saleTitle = res.data.result_data.foodTypeMainList;
                             that.foodTypeGoodList = res.data.result_data.foodTypeGoodList;
                             that.foodTypeTicketList = res.data.result_data.foodTypeTicketList;
@@ -1968,11 +1966,11 @@
                                 });
                             }, 200);
                             that.$nextTick(function () {
-                                var foodTypeAll = "-1";
-                                console.log(that.saleTitle.length);
-                                for(var i = 0;i<that.saleTitle.length;i++){
-                                    foodTypeAll = foodTypeAll+","+i;
-								}
+                                var foodTypeAll = "0";
+//                                console.log(that.saleTitle.length);
+//                                for(var i = -1;i<that.saleTitle.length-1;i++){
+//                                    foodTypeAll = foodTypeAll+","+i;
+//								}
 								console.log(foodTypeAll);
                                 that.getMeal(that.customerType,foodTypeAll);
                             })
@@ -2074,7 +2072,8 @@
 			getMeal:function(customerType,foodType) {			//获取销售列表
 				var that = this;
                 var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken ,customerType:customerType,memberLevelId:that.memberLevelId,foodTypeStr:foodType};
-                axios.post('/api/XCCloud/Foods.ashx?action=getFoodList', obj).then(function (res) {
+                console.log(obj);
+                axios.post('/XCCloud/Foods?action=getFoodList', obj).then(function (res) {
                     console.log(res.data);
                     that.msgPrompt(res.data);
                     if (res.data.result_code === '1') {
@@ -2221,27 +2220,48 @@
                 switch(index){
                     case 'All':
                         index = 0;
-                        for(var i = 0;i<that.saleTitle.length;i++){
+//                        foodTypeAll = 0;
+                        foodTypeAll = "-2";
+                        console.log(that.saleTitle.length);
+                        for(var i = -1;i<that.saleTitle.length-1;i++){
                             foodTypeAll = foodTypeAll+","+i;
                         }
                         break;
                     case 0:
-                        that.treeShow = true;
+//                        that.treeShow = true;
                         index++;
-                        that.$nextTick(function () {
-                            $('.tree li:has(ul)').addClass('parent_li').find(' > span').attr('title', 'Collapse this branch');
-                            $('.tree li.parent_li > span').on('click', function (e) {
-                                var children = $(this).parent('li.parent_li').find(' > ul > li');
-                                if (children.is(":visible")) {
-                                    children.hide('fast');
-                                    $(this).attr('title', 'Expand this branch').find(' > i').addClass('glyphicon-plus').removeClass('glyphicon-minus');
-                                } else {
-                                    children.show('fast');
-                                    $(this).attr('title', 'Collapse this branch').find(' > i').addClass('glyphicon-minus').removeClass('glyphicon-plus');
-                                }
-                                e.stopPropagation();
-                            });
-                        });
+//                        that.$nextTick(function () {
+//                            $('.tree li:has(ul)').addClass('parent_li').find(' > span').attr('title', 'Collapse this branch');
+//                            $('.tree li.parent_li > span').on('click', function (e) {
+//                                var children = $(this).parent('li.parent_li').find(' > ul > li');
+//                                if (children.is(":visible")) {
+//                                    children.hide('fast');
+//                                    $(this).attr('title', 'Expand this branch').find(' > i').addClass('glyphicon-plus').removeClass('glyphicon-minus');
+//                                } else {
+//                                    children.show('fast');
+//                                    $(this).attr('title', 'Collapse this branch').find(' > i').addClass('glyphicon-minus').removeClass('glyphicon-plus');
+//                                }
+//                                e.stopPropagation();
+//                            });
+//                        });
+                        break;
+                    case 1:
+//                        that.treeShow = true;
+                        index++;
+//                        that.$nextTick(function () {
+//                            $('.tree li:has(ul)').addClass('parent_li').find(' > span').attr('title', 'Collapse this branch');
+//                            $('.tree li.parent_li > span').on('click', function (e) {
+//                                var children = $(this).parent('li.parent_li').find(' > ul > li');
+//                                if (children.is(":visible")) {
+//                                    children.hide('fast');
+//                                    $(this).attr('title', 'Expand this branch').find(' > i').addClass('glyphicon-plus').removeClass('glyphicon-minus');
+//                                } else {
+//                                    children.show('fast');
+//                                    $(this).attr('title', 'Collapse this branch').find(' > i').addClass('glyphicon-minus').removeClass('glyphicon-plus');
+//                                }
+//                                e.stopPropagation();
+//                            });
+//                        });
                         break;
                     default:
                         foodTypeAll = that.saleTitle[index].FoodTypeId;

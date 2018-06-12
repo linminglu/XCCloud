@@ -57,21 +57,19 @@ namespace XXCloudService.Api.XCCloud
                 if (!errMsg.IsNull())
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
+                Array.Resize(ref parameters, parameters.Length + 1);
+                parameters[parameters.Length - 1] = new SqlParameter("@projectGameTypes", projectGameTypes);
+
                 string sql = @"SELECT
                                     a.*, stuff((
                                     select '|' + t.ProjectName 
                                     from (
-                                        select d.ProjectName
+                                        select (case when CHARINDEX(CONVERT(varchar, c.ProjcetType), @projectGameTypes)>0 then d.ProjectName else e.GameName end) AS ProjectName
                                         from Data_ProjectTicket b
                                         inner join Data_ProjectTicket_Bind c on b.ID = c.ProjcetTicketID
-                                        inner join Data_ProjectInfo d on c.ProjcetID = d.ID
-                                        where b.ID=a.ID and d.projecttype in (" + projectGameTypes + @")
-                                        union
-                                        select d.GameName AS ProjectName
-                                        from Data_ProjectTicket b
-                                        inner join Data_ProjectTicket_Bind c on b.ID = c.ProjcetTicketID
-                                        inner join Data_GameInfo d on c.ProjcetID = d.ID
-                                        where b.ID=a.ID and d.gametype not in (" + projectGameTypes + @")
+                                        left join Data_ProjectInfo d on c.ProjcetID = d.ID and d.State = 1
+                                        left join Data_GameInfo e on c.ProjcetID = e.ID and e.State = 1
+                                        where b.ID=a.ID
                                     ) t
                                     for xml path('')),1,1,'') as BindProjects
                                 FROM
@@ -117,47 +115,33 @@ namespace XXCloudService.Api.XCCloud
                 if (!errMsg.IsNull())
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-                var data_ProjectTicket = (new
+                var data_ProjectTicket = new
                 {
                     model = model,
                     StartTimeStr = Utils.TimeSpanToStr(model.StartTime),
                     EndTimeStr = Utils.TimeSpanToStr(model.EndTime),
-                    ProjectTicketBinds = (from a in Data_ProjectTicket_BindService.N.GetModels(p => p.ProjcetTicketID == id).AsEnumerable().Where(w => projectGameTypes.Contains(w.ProjcetType + ""))
-                                          join b in Data_ProjectInfoService.N.GetModels() on a.ProjcetID equals b.ID
-                                          join c in Dict_SystemService.N.GetModels() on a.ProjcetType equals c.ID into c1
-                                          from c in c1.DefaultIfEmpty()
-                                          select new
-                                          {
-                                              ID = a.ID,
-                                              ProjcetTicketID = a.ProjcetTicketID,
-                                              ProjcetID = a.ProjcetID,
-                                              ProjcetType = a.ProjcetType,
-                                              ProjectName = b != null ? b.ProjectName : string.Empty,
-                                              ProjcetTypeStr = c != null ? c.DictKey : string.Empty,
-                                              UseCount = a.UseCount,
-                                              AllowShareCount = a.AllowShareCount,
-                                              WeightValue = a.WeightValue,
-                                              PushCoin1 = (a.UseCount ?? 0) > 0 ? (a.WeightValue / a.UseCount) : 0
-                                          }).Union(
-                                         from a in Data_ProjectTicket_BindService.N.GetModels(p => p.ProjcetTicketID == id).AsEnumerable().Where(w => !projectGameTypes.Contains(w.ProjcetType + ""))
-                                         join d in Data_GameInfoService.N.GetModels() on a.ProjcetID equals d.ID
-                                         join e in Dict_SystemService.N.GetModels() on a.ProjcetType equals e.ID into e1
-                                         from e in e1.DefaultIfEmpty()
+                    ProjectTicketBinds = from a in Data_ProjectTicket_BindService.N.GetModels(p => p.ProjcetTicketID == id)
+                                         join b in Data_ProjectInfoService.N.GetModels(p => p.State == 1) on a.ProjcetID equals b.ID into b1
+                                         from b in b1.DefaultIfEmpty()
+                                         join c in Dict_SystemService.N.GetModels() on a.ProjcetType equals c.ID into c1
+                                         from c in c1.DefaultIfEmpty()
+                                         join d in Data_GameInfoService.N.GetModels(p => p.State == 1) on a.ProjcetID equals d.ID into d1
+                                         from d in d1.DefaultIfEmpty()
                                          select new
                                          {
                                              ID = a.ID,
                                              ProjcetTicketID = a.ProjcetTicketID,
                                              ProjcetID = a.ProjcetID,
                                              ProjcetType = a.ProjcetType,
-                                             ProjectName = d != null ? d.GameName : string.Empty,
-                                             ProjcetTypeStr = e != null ? e.DictKey : string.Empty,
                                              UseCount = a.UseCount,
                                              AllowShareCount = a.AllowShareCount,
                                              WeightValue = a.WeightValue,
-                                             PushCoin1 = (a.UseCount ?? 0) > 0 ? (a.WeightValue / a.UseCount) : 0
+                                             PushCoin1 = (a.UseCount ?? 0) > 0 ? (a.WeightValue / a.UseCount) : 0,
+                                             ProjectName = projectGameTypes.Contains(a.ProjcetType + "") ? b.ProjectName : d.GameName,
+                                             ProjcetTypeStr = c != null ? c.DictKey : string.Empty
+
                                          }
-                                         )
-                }).AsFlatDictionary();
+                }.AsFlatDictionary();
 
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, data_ProjectTicket);
             }
@@ -379,7 +363,7 @@ namespace XXCloudService.Api.XCCloud
                 var projectGameInfoList = from a in Data_ProjectInfoService.N.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase) && p.State == 1 && p.ChargeType == (int)ProjectInfoChargeType.Count)
                                           join b in Dict_SystemService.N.GetModels() on a.ProjectType equals b.ID into b1
                                           from b in b1.DefaultIfEmpty()
-                                          join c in Data_GameInfoService.N.GetModels(p=>p.State == 1) on a.GameIndex equals c.ID
+                                          join c in Data_GameInfoService.N.GetModels(p => p.State == 1) on a.GameIndex equals c.ID
                                           select new
                                           {
                                               ProjectID = a.ID,

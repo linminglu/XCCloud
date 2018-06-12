@@ -53,6 +53,7 @@
     <Compile Include="DataOrderCaChe.cs" />
     <Compile Include="DeviceStateCache.cs" />
     <Compile Include="FlwFoodOrderCache.cs" />
+    <Compile Include="FlwMemberRegisterCache.cs" />
     <Compile Include="IconOutLockCache.cs" />
     <Compile Include="MemberICICard.cs" />
     <Compile Include="MemberTokenCache.cs" />

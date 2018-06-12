@@ -79,7 +79,7 @@ namespace XCCloudService.Model.CustomModel.XCCloud
             
         }
 
-        public FoodDetailInfoModel(int foodId, int balanceType,string typeName,int useCount)
+        public FoodDetailInfoModel(int foodId, int balanceType,string typeName,decimal useCount)
         {
             this.FoodId = foodId;
             this.BalanceType = balanceType;
@@ -97,7 +97,7 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         public string TypeName { set; get; }
 
         [DataMember(Name = "useCount", Order = 4)]
-        public int UseCount { set; get; }
+        public decimal UseCount { set; get; }
     }
 
     [DataContract]
