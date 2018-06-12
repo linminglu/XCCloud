@@ -58,24 +58,20 @@
          <div class="layui-card layui-col-md12">
              <div class="layui-card-header">会员卡漫游设置</div>
              <div class="layui-card-body">
-                 <div class="layui-col-md12">
+                 <div class="layui-col-md12" id="memBalance">
+                     <!--<div class="layui-col-md3 ">-->
+                         <!--<blockquote class="layui-elem-quote" style="width: 150px">代币余额通用</blockquote>-->
+                         <!--<div class="vipSet setBox"></div>-->
+                     <!--</div>-->
+                     <!--<div class="layui-col-md3 ">-->
+                         <!--<blockquote class="layui-elem-quote" style="width: 150px">积分余额通用</blockquote>-->
+                         <!--<div class="scoreSet setBox"></div>-->
+                     <!--</div>-->
+                     <!--<div class="layui-col-md3 ">-->
+                         <!--<blockquote class="layui-elem-quote" style="width: 150px">彩票余额通用</blockquote>-->
+                         <!--<div class="lotterySet setBox"></div>-->
+                     <!--</div>-->
 
-                     <div class="layui-col-md3 ">
-                         <blockquote class="layui-elem-quote" style="width: 150px">代币余额通用</blockquote>
-                         <div class="vipSet setBox"></div>
-                     </div>
-                     <div class="layui-col-md3 ">
-                         <blockquote class="layui-elem-quote" style="width: 150px">积分余额通用</blockquote>
-                         <div class="scoreSet setBox"></div>
-                     </div>
-                     <div class="layui-col-md3 ">
-                         <blockquote class="layui-elem-quote" style="width: 150px">彩票余额通用</blockquote>
-                         <div class="lotterySet setBox"></div>
-                     </div>
-                     <div class="layui-col-md3 ">
-                         <blockquote class="layui-elem-quote" style="width: 150px">储值金金额通用</blockquote>
-                         <div class="moneySet setBox"></div>
-                     </div>
                  </div>
              </div>
          </div>
@@ -443,44 +439,63 @@
                 data: {parasJson: parseJson},
                 success: function (data) {
                     data = JSON.parse(data);
-                    console.log(data);
+                    // console.log(data);
                     if(data.Result_Code==1){
                         $('.setBox').html('');
                          let arr=data.Result_Data;
                          for(var i in arr){
-                             if(arr[i].RuleType==0){
-                                 $('.vipSet').append('<div id="'+arr[i].ID+'">' +
+                            $('#'+arr[i].RuleType).append('<div id="'+arr[i].ID+'">' +
                                      '<span>'+arr[i].StoreName+'</span>' +
                                      '<i class="layui-icon iconDel" style="color: red;">&#x1006;</i></div>')
-                             }else if(arr[i].RuleType==1){
-                                 $('.scoreSet').append('<div id="'+arr[i].ID+'">' +
-                                     '<span>'+arr[i].StoreName+'</span>' +
-                                     '<i class="layui-icon iconDel" style="color: red;">&#x1006;</i></div>')
-                             }else if(arr[i].RuleType==2){
-                                 $('.lotterySet').append('<div id="'+arr[i].ID+'">' +
-                                     '<span>'+arr[i].StoreName+'</span>' +
-                                     '<i class="layui-icon iconDel" style="color: red;">&#x1006;</i></div>')
-                             }else if(arr[i].RuleType==3){
-                                 $('.moneySet').append('<div id="'+arr[i].ID+'">' +
-                                     '<span>'+arr[i].StoreName+'</span>' +
-                                     '<i class="layui-icon iconDel" style="color: red;">&#x1006;</i></div>')
-                             }
                          }
 
                         layui.use('form',function () {
                             let form=layui.form;
                             form.render();
                         })
+                    }else {
+                        layui.use('layer',function () {
+                            let layer=layui.layer;
+                            layer.msg(data.result_msg||data.return_msg)
+                        })
                     }
                 }
             })
         };
+        xcActionSystem.prototype.initMemberBalance=(token)=>{
+            let _obj={'hkType':'','userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+            let parseJson = JSON.stringify(_obj);
+            $.ajax({
+                type:'post',
+                url:'/XCCloud/BalanceType?action=GetBalanceTypeDic',
+                contentType: "application/json; charset=utf-8",
+                data:{parasJson: parseJson},
+                success: function (data) {
+                    data = JSON.parse(data);
+                    if (data.result_code == 1) {
+                        let arr=data.result_data;
+                        $('#memBalance').html('');
+                        for(let i in arr){
+                            $('#memBalance').append(
+                                ' <div class="layui-col-md3 ">' +
+                                    ' <blockquote class="layui-elem-quote" style="width: 150px">'+arr[i].TypeName+'</blockquote>' +
+                                    ' <div class="moneySet setBox" id="'+arr[i].ID+'"></div>' +
+                                ' </div>')
+                        }
+                        // form.render('select');
+                    } else {
+                        layer.msg(data.result_msg||data.retrun_msg);
+                    }
+                }
+            });
+        }
         xc.getStoreList();
         xc.GetStoreWeightList('0');
         layui.use(['form','table','layer'],function () {
             let form=layui.form;
             let table=layui.table;
             let layer=layui.layer;
+            xc.initMemberBalance(token);
             form.on('select(checkStore)',(data)=>{
                 _storeId=data.value;
                 xc.getUserList(_storeId);
@@ -689,18 +704,11 @@
                     }
                   }
              })
-        }).dblclick(function () {
+        });
+        $('#memBalance').on('dblclick','.setBox',function () {
             let that=$(this);
             let ruleTypes='';
-            if(that.siblings('blockquote').text()=="代币余额通用"){
-                ruleTypes=0;
-            }else if(that.siblings('blockquote').text()=="积分余额通用"){
-                ruleTypes=1;
-            }else if(that.siblings('blockquote').text()=="彩票余额通用"){
-                ruleTypes=2;
-            }else if(that.siblings('blockquote').text()=="储值金金额通用"){
-                ruleTypes=3;
-            }
+            ruleTypes=that.attr('id'); console.log(ruleTypes);
             let url='/XCCloud/StoreWeight?action=GetUnChainStoreList';
             let obj={'storeId':_storeId,'ruleType':ruleTypes,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
             let parseJson = JSON.stringify(obj);

@@ -122,12 +122,14 @@ namespace XCCloudService.DAL.Base
         public BaseDAL()
         {
             dbContext = DbContextFactory.CreateByModelNamespace(typeof(T).Namespace);
+            dbContext.Configuration.UseDatabaseNullSemantics = true;
         }
 
         public BaseDAL(string containerName)
         {
             this.dbContextName = containerName;
             dbContext = DbContextFactory.CreateByContainerName(containerName);
+            dbContext.Configuration.UseDatabaseNullSemantics = true;
         }
 
         private object GetEntityInDatabase(T entity)

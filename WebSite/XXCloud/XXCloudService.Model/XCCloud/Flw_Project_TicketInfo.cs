@@ -18,10 +18,14 @@ namespace XCCloudService.Model.XCCloud
         public string MerchID { get; set; }
         public string FoodSaleID { get; set; }
         public string CardID { get; set; }
+        public string MemberID { get; set; }
         public string ParentID { get; set; }
+        public Nullable<int> TicketType { get; set; }
+        public Nullable<int> NeedActive { get; set; }
         public string Barcode { get; set; }
         public Nullable<System.DateTime> SaleTime { get; set; }
-        public Nullable<System.DateTime> ActiveTime { get; set; }
+        public Nullable<System.DateTime> FirstUseTime { get; set; }
+        public Nullable<int> WriteOffDays { get; set; }
         public Nullable<System.DateTime> EndTime { get; set; }
         public Nullable<int> State { get; set; }
         public Nullable<int> BuyCount { get; set; }
@@ -30,6 +34,6 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> BalanceIndex { get; set; }
         public Nullable<decimal> BalanceCount { get; set; }
         public Nullable<decimal> RemainDividePrice { get; set; }
-        public string MemberID { get; set; }
+        public string Verifiction { get; set; }
     }
 }

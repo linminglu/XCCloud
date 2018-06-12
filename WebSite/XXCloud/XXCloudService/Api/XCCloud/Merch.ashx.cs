@@ -442,30 +442,7 @@ namespace XXCloudService.Api.XCCloud
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                             }
                         }
-
-                        #region 初始化连锁店余额通用设置
-                        //初始化连锁店余额通用设置
-                        var base_ChainRuleContext = DbContextFactory.CreateByModelNamespace(typeof(Base_ChainRule).Namespace);
-                        if (base_ChainRuleContext.Set<Base_ChainRule>().Any(a => a.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)))
-                        {
-                            errMsg = "初始化连锁店余额通用设置异常，该商户ID已存在";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
-                        foreach (ChainStoreRuleType item in Enum.GetValues(typeof(ChainStoreRuleType)))
-                        {
-                            var base_ChainRuleModel = new Base_ChainRule();
-                            base_ChainRuleModel.GroupName = item.ToString() + "余额通用";
-                            base_ChainRuleModel.MerchID = merchId;
-                            base_ChainRuleModel.RuleType = (int)item;
-                            base_ChainRuleContext.Entry(base_ChainRuleModel).State = EntityState.Added;
-                        }
-                        if (base_ChainRuleContext.SaveChanges() < 0)
-                        {
-                            errMsg = "初始化连锁店余额通用设置失败";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
-                        #endregion
-
+                        
                         ts.Complete();
                     }
                     catch (Exception ex)

@@ -127,13 +127,13 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         public string Photo {set;get;}
 
         [DataMember(Name = "repeatCode", Order = 16)]
-        public string RepeatCode {set;get;}
+        public int RepeatCode {set;get;}
 
         [DataMember(Name = "icCardId", Order = 17)]
-        public string ICCardId {set;get;}
+        public int ICCardId {set;get;}
 
         [DataMember(Name = "icCardUID", Order = 18)]
-        public string ICCardUID {set;get;}
+        public long ICCardUID {set;get;}
 
         [DataMember(Name = "note", Order = 19)]
         public string Note {set;get;}

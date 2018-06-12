@@ -77,18 +77,19 @@ namespace XXCloudService.Api.XCCloud
 //                                WHERE 1=1
 //                            ";
                 string sql = @"SELECT
-                                    TOP 1 a.*, t.ProjectName + '等多个' as BindProjects
+                                    a.*, b.ProjectName + '等多个' as BindProjects
                                 FROM
                                 	Data_ProjectTicket a
                                 LEFT JOIN (                                
                                 	SELECT 
-                                		b.ID, (case when CHARINDEX(CONVERT(varchar, c.ProjcetType), @projectGameTypes)>0 then d.ProjectName else e.GameName end) AS ProjectName
+                                		b.ID, (case when CHARINDEX(CONVERT(varchar, c.ProjcetType), @projectGameTypes)>0 then d.ProjectName else e.GameName end) AS ProjectName,
+                                        ROW_NUMBER() over(partition by b.ID order by b.ID) as RowNum
                                 	FROM
                                 		Data_ProjectTicket b                                                        
                                 	inner join Data_ProjectTicket_Bind c on b.ID = c.ProjcetTicketID
                                     left join Data_ProjectInfo d on c.ProjcetID = d.ID and d.ChargeType = 0 and d.State = 1
                                     left join Data_GameInfo e on c.ProjcetID = e.ID and e.State = 1                                          
-                                ) t ON a.ID = t.ID
+                                ) b ON a.ID = b.ID and b.RowNum <= 1
                                 WHERE 1=1
                             ";
                 sql += " AND a.StoreID=" + storeId; 
@@ -177,19 +178,55 @@ namespace XXCloudService.Api.XCCloud
                 string errMsg = string.Empty;
                 if (!dicParas.Get("businessType").Validint("业务类型", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (dicParas.Get("businessType").Toint() == (int)BusinessType.Ticket)
+                    if (!dicParas.Get("divideType").Validint("分摊方式", out errMsg))
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg); 
                 if (!dicParas.Get("ticketType").Validint("门票类别", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 if (!dicParas.Get("ticketName").Nonempty("门票名称", out errMsg))
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                if (dicParas.Get("businessType").Toint() == (int)BusinessType.Ticket)
-                    if (!dicParas.Get("divideType").Validint("分摊方式", out errMsg))
-                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);                
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);                                       
                 if (!dicParas.Get("price").Validdecimalnozero("售价", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-
+                
                 var id = dicParas.Get("id").Toint(0);
                 var ticketType = dicParas.Get("ticketType").Toint();
+                var divideType = dicParas.Get("divideType").Toint(0);
+                var businessType = dicParas.Get("businessType").Toint();
                 var projectTicketBinds = dicParas.GetArray("projectTicketBinds");
+                var allowExitTimes = dicParas.Get("allowExitTimes").Toint(0);
+                var groupStartupCount = dicParas.Get("groupStartupCount").Toint(0);
+                var readFace = dicParas.Get("readFace").Toint(0);
+                var accompanyCash = dicParas.Get("accompanyCash").Todecimal(0);
+                var balanceIndex = dicParas.Get("balanceIndex").Toint(0);
+                var balanceValue = dicParas.Get("balanceValue").Todecimal(0);
+                var allowRestrict = dicParas.Get("allowRestrict").Toint(0);
+                var restrictShareCount = dicParas.Get("restrictShareCount").Toint(0);
+                var restrictPeriodType = dicParas.Get("restrictPeriodType").Toint(0);
+                var restrictPeriodValue = dicParas.Get("restrictPeriodValue").Toint(0);
+                var restrctCount = dicParas.Get("restrctCount").Toint(0);
+                var note = dicParas.Get("note");
+                var vaildStartDate = dicParas.Get("vaildStartDate").Todate();
+                var vaildEndDate = dicParas.Get("vaildEndDate").Todate();
+                var noStartDate = dicParas.Get("noStartDate").Todate();
+                var noEndDate = dicParas.Get("noEndDate").Todate();
+
+                if ((businessType == (int)BusinessType.Ticket && ticketType == (int)TicketType.Period) || ticketType == (int)TicketType.Group) //年月日票或团体票
+                {
+                    if (divideType != (int)DivideType.Day)
+                    {
+                        errMsg = "年月日票或团体票应为按天分摊方式";
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
+                }
+
+                if (businessType == (int)BusinessType.Ticket && ticketType == (int)TicketType.Count) //次票
+                {
+                    if (divideType != (int)DivideType.Once && divideType != (int)DivideType.Count)
+                    {
+                        errMsg = "次票应为一次性分摊或按次分摊方式";
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
+                }
 
                 //开启EF事务
                 using (TransactionScope ts = new TransactionScope())
@@ -198,8 +235,18 @@ namespace XXCloudService.Api.XCCloud
                     {
                         var model = Data_ProjectTicketService.I.GetModels(p => p.ID == id).FirstOrDefault() ?? new Data_ProjectTicket();                        
                         Utils.GetModel(dicParas, ref model);
-                        model.NoStartDate = model.NoStartDate.Todate();
-                        model.NoEndDate = model.NoEndDate.Todate();
+                        model.DivideType = divideType;
+                        model.AllowExitTimes = allowExitTimes;
+                        model.GroupStartupCount = groupStartupCount;
+                        model.ReadFace = readFace;
+                        model.AccompanyCash = accompanyCash;
+                        model.BalanceIndex = balanceIndex;
+                        model.BalanceValue = balanceValue;
+                        model.Note = note;
+                        model.VaildStartDate = vaildStartDate;
+                        model.VaildEndDate = vaildEndDate;
+                        model.NoStartDate = noStartDate;
+                        model.NoEndDate = noEndDate;
                         if (id == 0)
                         {
                             model.MerchID = merchId;

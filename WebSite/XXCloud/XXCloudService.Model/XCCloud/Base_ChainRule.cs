@@ -14,7 +14,7 @@ namespace XCCloudService.Model.XCCloud
     
     public partial class Base_ChainRule
     {
-        public int RuleGroupID { get; set; }
+        public int ID { get; set; }
         public string GroupName { get; set; }
         public string MerchID { get; set; }
         public Nullable<int> RuleType { get; set; }

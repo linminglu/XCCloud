@@ -28,13 +28,16 @@
             <img class="itemImg" slot="icon" src="images/account.png">
             <input slot="right" type="number" placeholder="请输入手机号" v-model="mobile" v-on:blur="inputPrompt" oninput="if(value.length>11)value=value.slice(0,11)">
         </yd-cell-item>
+        <yd-cell-item arrow>
+            <img class="itemImg" slot="icon" src="images/birthday.png">
+            <span slot="left">生日：</span>
+            <yd-datetime type="day" v-model="datetime" slot="right"></yd-datetime>
+        </yd-cell-item>
+    </yd-cell-group>
+    <yd-cell-group>
         <yd-cell-item>
-            <img class="itemImg" slot="icon" src="images/note.png">
-            <yd-input slot="left" v-model="imgCode" max="6" placeholder="请输入验证码" ></yd-input>
-            <div class="codeDiv" slot="right">
-                <img class="codeImg" slot="icon" :src="Verification">
-                <span class="codeText" @click="verificationChange">点击刷新</span>
-            </div>
+            <img class="itemImg" slot="icon" src="images/IdCard.png">
+            <input slot="right" type="number" placeholder="身份证号" v-model="IdCard" v-on:blur="inputIdCard" oninput="if(value.length>18)value=value.slice(0,18)">
         </yd-cell-item>
     </yd-cell-group>
     <yd-cell-group>
@@ -42,16 +45,14 @@
             <yd-icon slot="icon" name="phone3" size=".45rem"></yd-icon>
             <input type="text" slot="right" placeholder="请输入短信验证码" v-model="smsCode">
             <yd-sendcode slot="right"
-                         v-model="start1"
+                         v-model="start"
                          second="30"
                          @click.native="sendCode"
                          type="warning"
             ></yd-sendcode>
-
-
         </yd-cell-item>
     </yd-cell-group>
-    <yd-button size="large" type="primary" @click.native="register">注册</yd-button>
+    <yd-button size="large" type="primary" @click.native="register">提交</yd-button>
 </div>
 
 <!-- 引入 Vue -->
@@ -64,21 +65,35 @@
 <script>
     var sysId = 0; //调用方应用Id
     var versionNo= "0.89"; //版本号
-    var htmlfnc = new Vue({
+    var vm = new Vue({
         el: '#app',
         data:{
             Verification: "/ServicePage/ValidateImg.aspx? t =" + new Date().getTime(),
             mobile: '',
             imgCode: '',
             smsCode:"",
-            start1:false
+            start:false,
+            datetime: '',
+            IdCard: '',
+            monthFormat: '<span style="color:#0BB20C;">{value}<i style="font-size: 12px;margin-left: 1px;">月</i></span>',
+            dayFormat: '<span style="color:#FFB400;">{value}<i style="font-size: 12px;margin-left: 1px;">日</i></span>'
         },
         mounted: function () {
             this.Load();
         },
         methods: {
-            verificationChange:function(){
-                this.Verification = "/ServicePage/ValidateImg.aspx? t =" + new Date().getTime()
+            inputIdCard:function () {
+                var that = this;
+                var myreg =/^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/;
+                var IdCard = this.IdCard;
+                if (!myreg.test(IdCard) || IdCard.length == 0 || IdCard.length != 18) {
+                    this.$dialog.toast({
+                        mes: '请输入正确身份证号！',
+                        timeout: 1500,
+                        icon: 'error'
+                    });
+                    that.IdCard = ""
+                }
             },
             inputPrompt:function () {
                 var mobile =this.mobile;
@@ -89,23 +104,23 @@
                         timeout: 1500,
                         icon: 'error'
                     });
-                    this.mobile ==""
+                    this.mobile =""
                 }
             },
             sendCode:function () {
                 var that=this;
-                if(that.mobile =="" ||that.imgCode =="" ){
+                if(that.mobile ==""){
                     that.$dialog.toast({
-                        mes: '请先填入手机号和图形验证码！',
+                        mes: '请先填入手机号！',
                         icon: 'error',
                         timeout: 1500
                     });
                 }else {
-                    this.$dialog.loading.open('发送中...');
-                    this.start1 = true;
+                    that.$dialog.loading.open('发送中...');
+                    this.start = true;
                     console.log(that.mobile+"/"+that.imgCode);
-                    var obj={"sysId": sysId,"versionNo": versionNo,mobile:that.mobile,imgCode:that.imgCode};
-                    axios.post("/xcgamemana/token?action=getSMSCode", obj).then(function (res) {
+                    var obj={"sysId": sysId,"versionNo": versionNo,mobile:that.mobile};
+                    axios.post("/XCCloudH5/Member?action=getSMSCode", obj).then(function (res) {
                         console.log(res.data);
                         that.$dialog.loading.close();
                         if (res.data.result_code === '1') {
@@ -128,40 +143,40 @@
             },
             register:function () {
                 var that =this;
-                if(that.mobile == "" || that.smsCode == ""){
-                    this.$dialog.toast({
-                        mes: "请先填写正确!",
-                        timeout: 1500,
-                        icon: 'error'
-                    });
-                }else {
-                    this.$dialog.loading.open('');
-                    if (/MicroMessenger/.test(window.navigator.userAgent)) {
-                        var thirdType ="0";
-                        var userThirdId =getStorage("openId");
-                    } else if (/AlipayClient/.test(window.navigator.userAgent)) {
-                        var thirdType ="1";
-                        var userThirdId =getStorage("userId");
-                    } else {
-                        console.log("暂不支持此浏览器")
-                    }
-                    var obj={"sysId": sysId,"versionNo": versionNo,mobile: that.mobile,smsCode: that.smsCode,thirdType:thirdType,userThirdId:userThirdId};
-                    axios.post("/xcgamemana/token?action=getMobileToken", obj).then(function (res) {
-                        that.$dialog.loading.close();
-                        console.log(res.data);
-                        that.msgPrompt(res.data);
-                        if (res.data.result_code === '1') {
-                            setStorage("mobileToken",res.data.result_data.mobileToken);
-                            window.location.href = "home.html"
-                        }
-                    }).catch(function (err) {
-                        that.$dialog.loading.close();
-                        console.log(err);
-                    })
+                this.$dialog.loading.open('');
+                if (/MicroMessenger/.test(window.navigator.userAgent)) {
+                    var thirdType ="0";
+                    var userThirdId =getStorage("openId");
+                } else if (/AlipayClient/.test(window.navigator.userAgent)) {
+                    var thirdType ="1";
+                    var userThirdId =getStorage("userId");
+                } else {
+                    console.log("暂不支持此浏览器")
                 }
+                var obj={"sysId": sysId,"versionNo": versionNo,mobile: that.mobile,smsCode: that.smsCode,thirdType:thirdType,userThirdId:userThirdId};
+                axios.post("/xcgamemana/token?action=getMobileToken", obj).then(function (res) {
+                    that.$dialog.loading.close();
+                    console.log(res.data);
+                    that.msgPrompt(res.data);
+                    if (res.data.result_code === '1') {
+                        setStorage("mobileToken",res.data.result_data.mobileToken);
+                        window.location.href = "index.html"
+                    }
+                }).catch(function (err) {
+                    that.$dialog.loading.close();
+                    console.log(err);
+                })
             },
             Load: function () {
-
+                var that =this;
+                var myDate = new Date();
+                var mm = myDate.getMonth();
+                var yy = myDate.getDate();
+                mm ++;
+                if(mm<10){
+                    mm =0+""+mm;
+                }
+                that.datetime= mm + "-" + yy
             },
             msgPrompt:function (res) {
                 if(res.return_code == 0){

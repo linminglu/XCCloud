@@ -673,31 +673,25 @@ namespace XXCloudService.Api.XCCloud
         public object payOrder(Dictionary<string, object> dicParas)
         {
             string errMsg = string.Empty;
-            string orderFlwId = dicParas.ContainsKey("orderFlwId") ? dicParas["orderFlwId"].ToString() : string.Empty;
-            string openICCardId = dicParas.ContainsKey("openICCardId") ? dicParas["openICCardId"].ToString() : string.Empty;
-            string workStation = dicParas.ContainsKey("workStation") ? dicParas["workStation"].ToString() : string.Empty;
-            string authorId = dicParas.ContainsKey("authorId") ? dicParas["authorId"].ToString() : string.Empty;
+            string registerMemberJson = dicParas.ContainsKey("registerMemberJson") ? dicParas["registerMemberJson"].ToString() : string.Empty;
+            string flwSeedId = dicParas.ContainsKey("flwSeedId") ? dicParas["flwSeedId"].ToString() : string.Empty;
+            string workStationId = dicParas.ContainsKey("workStationId") ? dicParas["workStationId"].ToString() : string.Empty;
+            string flwOrderId = dicParas.ContainsKey("flwOrderId") ? dicParas["flwOrderId"].ToString() : string.Empty;
+            string mobile = dicParas.ContainsKey("mobile") ? dicParas["mobile"].ToString() : string.Empty;
             string realPay = dicParas.ContainsKey("realPay") ? dicParas["realPay"].ToString() : string.Empty;
+            string payType = dicParas.ContainsKey("payType") ? dicParas["payType"].ToString() : string.Empty;
 
             XCCloudUserTokenModel userTokenModel = (XCCloudUserTokenModel)(dicParas[Constant.XCCloudUserTokenModel]);
             TokenDataModel userTokenDataModel = (TokenDataModel)(userTokenModel.DataModel);
 
-            if (string.IsNullOrEmpty(orderFlwId))
+            string flwSendId = RedisCacheHelper.CreateCloudSerialNo(userTokenDataModel.StoreID, true);
+
+            if (string.IsNullOrEmpty(flwOrderId))
             {
                 return new ResponseModel(Return_Code.T, "", Result_Code.F, "订单Id参数无效");
             }
 
-            if (!Utils.IsNumeric(openICCardId) || int.Parse(openICCardId) <0)
-            {
-                return new ResponseModel(Return_Code.T, "", Result_Code.F, "开通卡号参数无效");
-            }
-
-            if (!Utils.IsNumeric(authorId) || int.Parse(authorId) < 0)
-            {
-                return new ResponseModel(Return_Code.T, "", Result_Code.F, "授权Id无效");
-            }
-
-            if (string.IsNullOrEmpty(workStation))
+            if (string.IsNullOrEmpty(workStationId))
             {
                 return new ResponseModel(Return_Code.T, "", Result_Code.F, "工作站参数无效");
             }
@@ -707,37 +701,32 @@ namespace XXCloudService.Api.XCCloud
                 return new ResponseModel(Return_Code.T, "", Result_Code.F, "实付金额无效");
             }
 
-            string storedProcedure = "FinishOrderPayment";
-            SqlParameter[] sqlParameter = new SqlParameter[9];
-            sqlParameter[0] = new SqlParameter("@StoreID", SqlDbType.VarChar);
-            sqlParameter[0].Value = userTokenDataModel.StoreID;
-
-            sqlParameter[1] = new SqlParameter("@OrderFlwId", SqlDbType.Int);
-            sqlParameter[1].Value = orderFlwId;
-
-            sqlParameter[2] = new SqlParameter("@OpenICCardId", SqlDbType.Int);
-            sqlParameter[2].Value = openICCardId;
-
-            sqlParameter[3] = new SqlParameter("@RealPay", SqlDbType.Decimal);
-            sqlParameter[3].Value = realPay;
-
-            sqlParameter[4] = new SqlParameter("@UserID", SqlDbType.Int);
-            sqlParameter[4].Value = userTokenModel.LogId;
-
-            sqlParameter[5] = new SqlParameter("@WorkStation", SqlDbType.VarChar);
-            sqlParameter[5].Value = workStation;
-
-            sqlParameter[6] = new SqlParameter("@AuthorID", SqlDbType.Int);
-            sqlParameter[6].Value = authorId;
-
-            sqlParameter[7] = new SqlParameter("@ErrMsg", SqlDbType.VarChar,200);
-            sqlParameter[7].Direction = ParameterDirection.Output;
-
-            sqlParameter[8] = new SqlParameter("@Return", SqlDbType.Int);
-            sqlParameter[8].Direction = ParameterDirection.ReturnValue;
+            RegisterMember registerMember = Utils.DataContractJsonDeserializer<RegisterMember>(registerMemberJson);
+            string storedProcedure = "payOrder";
+            SqlParameter[] sqlParameter = new SqlParameter[10];
+            sqlParameter[0] = new SqlParameter("@RegisterMember", SqlDbType.Structured);
+            sqlParameter[0].Value = FlwFoodOrderBusiness.GetRegisterMember(registerMember);
+            sqlParameter[1] = new SqlParameter("@FlwSeedId", SqlDbType.VarChar, 29);
+            sqlParameter[1].Value = flwSendId;
+            sqlParameter[2] = new SqlParameter("@StoreId", SqlDbType.VarChar, 32);
+            sqlParameter[2].Value = userTokenDataModel.StoreID;
+            sqlParameter[3] = new SqlParameter("@WorkStationId", SqlDbType.Int);
+            sqlParameter[3].Value = userTokenDataModel.WorkStationID;
+            sqlParameter[4] = new SqlParameter("@FlwOrderId", SqlDbType.VarChar,32);
+            sqlParameter[4].Value = flwOrderId;
+            sqlParameter[5] = new SqlParameter("@Mobile", SqlDbType.VarChar, 11);
+            sqlParameter[5].Value = mobile;
+            sqlParameter[6] = new SqlParameter("@RealPay", SqlDbType.Decimal);
+            sqlParameter[6].Value = realPay;
+            sqlParameter[7] = new SqlParameter("@PayType", SqlDbType.Int);
+            sqlParameter[7].Value = payType;
+            sqlParameter[8] = new SqlParameter("@ErrMsg", SqlDbType.VarChar, 200);
+            sqlParameter[8].Direction = ParameterDirection.Output;
+            sqlParameter[9] = new SqlParameter("@Return", SqlDbType.Int);
+            sqlParameter[9].Direction = ParameterDirection.ReturnValue;
 
             XCCloudBLL.ExecuteStoredProcedureSentence(storedProcedure, sqlParameter);
-            if (sqlParameter[8].Value.ToString() == "1")
+            if (sqlParameter[9].Value.ToString() == "1")
             {
                 return new ResponseModel(Return_Code.T, "", Result_Code.T, "");
             }

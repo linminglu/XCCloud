@@ -1689,8 +1689,8 @@
                     that.payCount = payCount;
                     var buyDetails =JSON.stringify(that.buyDetails);
                     if(that.updateOrder){
-                        var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,foodSaleDetailList:buyDetails,couponsList:[],flwOrderId:that.flwOrderId,mobile:"",icCardId:that.icCardId,distinctRuleId:"0",payCount:payCount,realPay:payCount,freePay:"0",workStation:"lijunjie",note:"",orderSource:"0",authorId:"0",saleCoinType:"1"};
-                        axios.post('/xccloud/order?action=addOrder', obj).then(function (res) {	//创建订单
+                        var addOrderJson={sysId: sysId,versionNo: versionNo,userToken:that.userToken,foodSaleDetailList:buyDetails,couponsList:[],flwOrderId:that.flwOrderId,mobile:"",icCardId:that.icCardId,distinctRuleId:"0",payCount:payCount,realPay:payCount,freePay:"0",workStation:"lijunjie",note:"",orderSource:"0",authorId:"0",saleCoinType:"1"};
+                        axios.post('/xccloud/order?action=addOrder', addOrderJson).then(function (res) {	//创建订单
                             console.log(res.data);
                             that.msgPrompt(res.data);
                             if (res.data.result_code === '1') {
@@ -1966,7 +1966,7 @@
                                 });
                             }, 200);
                             that.$nextTick(function () {
-                                var foodTypeAll = "0";
+                                var foodTypeAll = "-2,0";
 //                                console.log(that.saleTitle.length);
 //                                for(var i = -1;i<that.saleTitle.length-1;i++){
 //                                    foodTypeAll = foodTypeAll+","+i;

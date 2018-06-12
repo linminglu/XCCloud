@@ -459,6 +459,61 @@
             common(url, parasJson);
         }
 
+        function do_payOrder() {
+            //var FoodSaleDetailList1 = { foodId: 1, category: 0, foodCount: 1, payType: 0, payNum: 1 / 2.0 };
+            //var FoodSaleDetailList2 = { foodId: 3, category: 0, foodCount: 2, payType: 0, payNum: 10 / 2.0 };
+            //var FoodSaleDetailList3 = { foodId: 6, category: 0, foodCount: 1, payType: 98306, payNum: 100 };
+            //var FoodSaleDetailList4 = { foodId: 4, category: 0, foodCount: 1, payType: 98307, payNum: 100 };
+            //var FoodSaleDetailList5 = { foodId: 1, category: 1, foodCount: 1, payType: 0, payNum: 20 };
+            //var FoodSaleDetailList6 = { foodId: 4, category: 2, foodCount: 1, payType: 0, payNum: 30 };
+
+            //var foodSaleDetailListArray = new Array();
+            //foodSaleDetailListArray.push(FoodSaleDetailList1);
+            //foodSaleDetailListArray.push(FoodSaleDetailList2);
+            //foodSaleDetailListArray.push(FoodSaleDetailList3);
+            //foodSaleDetailListArray.push(FoodSaleDetailList4);
+            //foodSaleDetailListArray.push(FoodSaleDetailList5);
+            //foodSaleDetailListArray.push(FoodSaleDetailList6);
+
+            var registerMemberObj = {
+                "mobile": "15618920033",
+                "wechatOpenId": "wechatOpenId",
+                "alipayOpenId": "alipayOpenId",
+                "qq": "751192533",
+                "imme": "",
+                "cardShape": "1",
+                "userName": "lijunjie2",
+                "userPassword": "123456",
+                "gender": 1,
+                "birthday": "2019-01-01",
+                "idCard": "",
+                "eMail": "",
+                "leftHandCode": "",
+                "rightHandCode": "",
+                "photo": "photo",
+                "repeatCode": 1234,
+                "icCardId": "10004145",
+                "icCardUID": "32143432432",
+                "note": "note"
+            };
+
+            var parasObj = {
+                "sysId": "0",
+                "versionNo": "0.0.0.1",
+                "userToken": userToken,
+                "registerMemberJson": JSON.stringify(registerMemberObj),
+                "flwOrderId": '100025420106001' + '20180621' + '000010',
+                "workStationId": "3",
+                "mobile": "15618920033",
+                "realPay": 50 + 5.5,
+                "payType": "0"    
+            };
+
+            var url = "/XCCloud/order?action=payOrder";
+            var parasJson = JSON.stringify(parasObj);
+            common(url, parasJson);
+        }
+
         function do_updateOrder() {
             var FoodSaleDetailList1 = { foodId: 1, category: 0, foodCount: 1, payType: 0, payNum: 1 / 2.0 };
             var FoodSaleDetailList2 = { foodId: 3, category: 0, foodCount: 2, payType: 0, payNum: 10 / 2.0 };
@@ -487,7 +542,6 @@
                 "userToken": userToken,
                 "foodSaleDetailListJson": JSON.stringify(foodSaleDetailListArray),
                 "couponsListJson": JSON.stringify(couponsListArray),
-                //"storeId": "100025420106001",
                 "flwOrderId": '100025420106001' + '20180521' + '000010',
                 "newFlwOrderId": "",
                 "mobile": "15618920033",
@@ -496,7 +550,6 @@
                 "disticntRuleId": "6",
                 "payCount": 50 + 5.5,
                 "realPay": "0",
-                //"userId": "3",
                 "workStation": "lijunjie",
                 "deposit": "0",
                 "openFee": "0",
@@ -604,7 +657,9 @@
         &nbsp;&nbsp;&nbsp;&nbsp;
         订单号:<input id="txt_FlwOrderId_do_saveRegisterMember" placeholder="保存注册会员" style="width:250px" value="0" />
         <input id="Buttonorder_do_saveRegisterMember" type="button" value="do_saveRegisterMember(保存注册会员)" onclick="do_saveRegisterMember()" />
-
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        订单号:<input id="txt_FlwOrderId_do_updateOrder placeholder="支付订单" style="width:250px" value="0" />
+        <input id="Buttonorder_do_updateOrder" type="button" value="do_payOrder(支付订单)" onclick="do_payOrder()" />
         
     
     </div>

@@ -552,35 +552,7 @@ namespace XCCloudService.Common.Enum
         Whole = 0,//按全场
         Game = 1//按游戏机
     }
-
-    //连锁门店余额通用设定
-    public enum ChainStoreRuleType : int 
-    {
-        /// <summary>
-        /// 代币
-        /// </summary>
-        [Description("代币")]
-        代币 = 0,
-
-        /// <summary>
-        /// 积分
-        /// </summary>
-        [Description("积分")]
-        积分 = 1,
-
-        /// <summary>
-        /// 彩票
-        /// </summary>
-        [Description("彩票")]
-        彩票 = 2,
-
-        /// <summary>
-        /// 储值金
-        /// </summary>
-        [Description("储值金")]
-        储值金 = 3
-    }
-
+    
     /// <summary>
     /// 余额类别映射类型
     /// </summary>
@@ -699,6 +671,21 @@ namespace XCCloudService.Common.Enum
         Group = 1, 
         [Description("期限票")]
         Period = 2
+    }
+
+    /// <summary>
+    /// 分摊方式
+    /// </summary>
+    public enum DivideType
+    {
+        [Description("不分摊")]
+        NoDivide = 0,
+        [Description("一次性分摊")]
+        Once = 1,
+        [Description("按次分摊")]
+        Count = 2,
+        [Description("按天分摊")]
+        Day = 3
     }
 
     /// <summary>

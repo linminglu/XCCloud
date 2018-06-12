@@ -29,6 +29,10 @@
 
         <asp:Button ID="Button4" runat="server" Text="写入缓存" OnClick="Button4_Click"  />
     </div>
+    <hr />
+    <div>
+        <asp:Button ID="Button5" runat="server" Text="获取博彩类" OnClick="Button5_Click"  />
+    </div>
     </form>
 </body>
 </html>

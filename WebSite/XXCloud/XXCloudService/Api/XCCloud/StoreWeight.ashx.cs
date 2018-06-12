@@ -484,7 +484,7 @@ namespace XXCloudService.Api.XCCloud
                 IBase_ChainRuleService base_ChainRuleService = BLLContainer.Resolve<IBase_ChainRuleService>(resolveNew: true);
                 IBase_ChainRule_StoreService base_ChainRule_StoreService = BLLContainer.Resolve<IBase_ChainRule_StoreService>(resolveNew: true);
                 var result = from a in base_ChainRuleService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase))
-                             join b in base_ChainRule_StoreService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)) on a.RuleGroupID equals b.RuleGroupID
+                             join b in base_ChainRule_StoreService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)) on a.ID equals b.RuleGroupID
                              join c in base_ChainRule_StoreService.GetModels() on b.RuleGroupID equals c.RuleGroupID               
                              join d in base_StoreInfoService.GetModels() on c.StoreID equals d.StoreID 
                              where !c.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)
@@ -541,12 +541,14 @@ namespace XXCloudService.Api.XCCloud
                 int iRuleType = Convert.ToInt32(ruleType);
                 IBase_StoreInfoService base_StoreInfoService = BLLContainer.Resolve<IBase_StoreInfoService>(resolveNew: true);
                 IBase_ChainRuleService base_ChainRuleService = BLLContainer.Resolve<IBase_ChainRuleService>(resolveNew: true);
+                IData_BalanceType_StoreListService data_BalanceType_StoreListService = BLLContainer.Resolve<IData_BalanceType_StoreListService>(resolveNew: true);
                 IBase_ChainRule_StoreService base_ChainRule_StoreService = BLLContainer.Resolve<IBase_ChainRule_StoreService>(resolveNew: true);
                 var result = from a in base_StoreInfoService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && (p.StoreState == (int)StoreState.Open || p.StoreState == (int)StoreState.Valid))
+                             join d in data_BalanceType_StoreListService.GetModels(p => p.BalanceIndex == iRuleType) on a.StoreID equals d.StroeID  //仅查找适用的余额类别的门店
                              join b in
                                  (
                                      from a in base_ChainRuleService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.RuleType == iRuleType)
-                                     join b in base_ChainRule_StoreService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)) on a.RuleGroupID equals b.RuleGroupID
+                                     join b in base_ChainRule_StoreService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)) on a.ID equals b.RuleGroupID
                                      join c in base_ChainRule_StoreService.GetModels() on b.RuleGroupID equals c.RuleGroupID
                                      select c
                                  )
@@ -607,33 +609,49 @@ namespace XXCloudService.Api.XCCloud
                 int iRuleType = Convert.ToInt32(ruleType);
                 IBase_ChainRuleService base_ChainRuleService = BLLContainer.Resolve<IBase_ChainRuleService>();
                 IBase_ChainRule_StoreService base_ChainRule_StoreService = BLLContainer.Resolve<IBase_ChainRule_StoreService>();
+                IDict_BalanceTypeService dict_BalanceTypeService = BLLContainer.Resolve<IDict_BalanceTypeService>();
 
-                if (!base_ChainRuleService.Any(a => a.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && a.RuleType == iRuleType))
+                if (!dict_BalanceTypeService.Any(a => a.ID == iRuleType))
                 {
-                    errMsg = "该商户分组规则不存在";
+                    errMsg = "该余额类别不存在";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
-                int ruleGroupId = base_ChainRuleService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.RuleType == iRuleType).FirstOrDefault().RuleGroupID;
-                if (base_ChainRule_StoreService.Any(a => a.StoreID.Equals(revStoreId, StringComparison.OrdinalIgnoreCase) && a.RuleGroupID == ruleGroupId))
+                var dict_BalanceTypeModel = dict_BalanceTypeService.GetModels(p=>p.ID == iRuleType).FirstOrDefault();
+                var base_ChainRuleModel = base_ChainRuleService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.RuleType == iRuleType).FirstOrDefault() ?? new Base_ChainRule();
+                if (base_ChainRuleModel.ID == 0)
                 {
-                    if (base_ChainRule_StoreService.Any(a => a.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase) && a.RuleGroupID == ruleGroupId))
+                    base_ChainRuleModel.GroupName = dict_BalanceTypeModel.TypeName + "余额通用";
+                    base_ChainRuleModel.MerchID = merchId;
+                    base_ChainRuleModel.RuleType = iRuleType;
+                    if (!base_ChainRuleService.Add(base_ChainRuleModel))
                     {
-                        errMsg = "该门店连锁规则已存在";
+                        errMsg = "添加规则类别失败";
                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                    }
-                    else
-                    {
-                        revStoreId = storeId;
                     }
                 }
 
-                var base_ChainRule_StoreModel = new Base_ChainRule_Store();
-                base_ChainRule_StoreModel.RuleGroupID = ruleGroupId;
-                base_ChainRule_StoreModel.StoreID = revStoreId;
-                base_ChainRule_StoreModel.MerchID = merchId;                
+                int ruleGroupId = base_ChainRuleModel.ID;
 
-                if (!base_ChainRule_StoreService.Add(base_ChainRule_StoreModel))
+                if (!base_ChainRule_StoreService.Any(a => a.StoreID.Equals(revStoreId, StringComparison.OrdinalIgnoreCase) && a.RuleGroupID == ruleGroupId))
+                {
+                    var base_ChainRule_StoreModel = new Base_ChainRule_Store();
+                    base_ChainRule_StoreModel.RuleGroupID = ruleGroupId;
+                    base_ChainRule_StoreModel.StoreID = revStoreId;
+                    base_ChainRule_StoreModel.MerchID = merchId;
+                    base_ChainRule_StoreService.AddModel(base_ChainRule_StoreModel);                    
+                }
+
+                if (!base_ChainRule_StoreService.Any(a => a.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase) && a.RuleGroupID == ruleGroupId))
+                {
+                    var base_ChainRule_StoreModel = new Base_ChainRule_Store();
+                    base_ChainRule_StoreModel.RuleGroupID = ruleGroupId;
+                    base_ChainRule_StoreModel.StoreID = storeId;
+                    base_ChainRule_StoreModel.MerchID = merchId;
+                    base_ChainRule_StoreService.AddModel(base_ChainRule_StoreModel);           
+                }
+                
+                if (!base_ChainRule_StoreService.SaveChanges())
                 {
                     errMsg = "保存接收余额的门店失败";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);

@@ -7,16 +7,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- 引入样式 -->
     <link rel="stylesheet" href="css/ydui.rem.css">
-    <!-- 引入 Vue -->
-    <script src="js/vue.js"></script>
-    <!-- 引入rem自适应类库 -->
-    <script src="js/ydui.rem.js"></script>
     <style>
         .wx-img{min-width: 1.2rem;min-height:1.3rem;width: 1rem;height: 1.2rem;margin-right: 0.5rem;background-color: #eeeeee;padding: 0.1rem;margin-top: 0.1rem;}
         .index-header{background-color: #393a3f;border-top: 0.1rem solid #eeeeee;border-bottom: 0.15rem solid #eeeeee;}
         .iconSty{color: #eeeeee; line-height: 0.4rem;display: flex;flex-direction: row;}
         .margin_top{margin-top: 0.2rem;}
-        .index-change{border-bottom: 0.02rem solid #eeeeee;}
+        .index-change{border-bottom: 0.02rem solid #eeeeee; color: #ff3030;margin-right: 0.1rem;}
         .cardIcon{width: 0.4rem;height: 0.4rem;margin-right: 0.1rem;}
         .iconRight{justify-content:flex-end;margin-top: 0.2rem;margin-right: 0.6rem;color: #ff3030;}
         .vipCard{width: 5rem;height: 2.5rem;margin: 0.3rem auto}
@@ -28,20 +24,14 @@
 </head>
 <body>
     <div id="app">
-        <!--<yd-flexbox>-->
-            <!--<div>div</div>-->
-            <!--<yd-flexbox-item>yd-flexbox-item</yd-flexbox-item>-->
-            <!--<div>div</div>-->
-        <!--</yd-flexbox>-->
         <yd-layout>
             <yd-cell-item class="index-header">
                 <img slot="icon" class="wx-img" :src="headimgurl">
                 <div slot="left" class="index-div">
                     <p class="iconSty"><img slot="icon" class="cardIcon" src="images/user.png"><span>你好，{{nickname}}</span></p>
-                    <!--<p class="iconSty"><img slot="icon" class="cardIcon" src="images/user.png"><span>请注册或登录</span></p>-->
-                    <p class="iconSty margin_top"><img slot="icon" class="cardIcon" src="images/member.png"><span class="index-change">请注册或登录</span></p>
+                    <p class="iconSty margin_top"><img slot="icon" class="cardIcon" src="images/member.png"><span class="index-change" @click="loginFnc">完善信息</span><span>享受更多优惠</span></p>
                 </div>
-                <!--<span slot="right">图标是image</span>-->
+                <!--<span slot="right">图标是image{{hka,}}</span>-->
             </yd-cell-item>
             <yd-grids-group title="绑定的会员卡">
                 <div class="iconSty iconRight" @click="mineCard"><img slot="icon" class="cardIcon" src="images/switch.png"><span>切换会员卡</span></div>
@@ -52,13 +42,12 @@
                     <img src="images/addpic.png">
                     <p>请添加卡</p>
                 </div>
-                <!--<yd-grids-group>-->
-                    <!--<yd-grids-item v-for="n in 6">-->
-                        <!--<span slot="text">各种余额</span>-->
-                    <!--</yd-grids-item>-->
-                <!--</yd-grids-group>-->
+                <yd-grids-group>
+                    <yd-grids-item v-for="n in 6" v-if="tiedCard">
+                        <span slot="text">各种余额</span>
+                    </yd-grids-item>
+                </yd-grids-group>
             </yd-grids-group>
-
             <yd-grids-group :rows="3" title="开心玩">
                 <yd-grids-item v-for="(item,index) in playData" @click.native="playFnc(index)">
                     <img :src="item.imgUrl" slot="icon"/>
@@ -66,7 +55,7 @@
                 </yd-grids-item>
             </yd-grids-group>
             <yd-grids-group :rows="3" title="快乐购">
-                <yd-grids-item v-for="(item,index) in buyData">
+                <yd-grids-item v-for="(item,index) in buyData" @click.native="recharge(index)">
                     <img :src="item.imgUrl" slot="icon"/>
                     <span slot="text">{{item.playName}}</span>
                 </yd-grids-item>
@@ -81,9 +70,13 @@
                 <!--<yd-navbar-next-icon></yd-navbar-next-icon>-->
             <!--</router-link>-->
         <!--</yd-navbar>-->
-        <!--微信头部颜色393a3f-->
+        <!--微信头部颜色393a3f{{[]}}-->
     </div>
 <script src="js/jquery-1.8.3-min.js"></script>
+<!-- 引入 Vue -->
+<script src="js/vue.js"></script>
+<!-- 引入rem自适应类库 -->
+<script src="js/ydui.rem.js"></script>
 <!-- 引入组件库 -->
 <script src="js/ydui.rem.js"></script>
 <script src="js/ydui.flexible.js"></script>
@@ -106,41 +99,61 @@
             MemberId : "",
             Token : "",
             userThirdId : "",
-            tiedCard:false
+            tiedCard:true
         },
         mounted: function () {
+            var that = this;
             this.Load();
+            setTimeout(function () {
+                that.getLocationFnc();
+            },2000)
         },
         methods: {
             Load:function () {
                 var that =this;
-
-
                 var ifScanCode = getStorage("ifScanCode");        //是否是扫码进入
                 var deviceToken = getStorage("deviceNo")||"";       //获取设备令牌
                 var userThirdId = getStorage("userThirdId")||"";       //获取第三方令牌
-                if (/MicroMessenger/.test(window.navigator.userAgent)){
-                    var coordinates = getStorage("coordinates")||"";
-                    if(coordinates == ""){
-                        this.$dialog.loading.open('');
-                        this.signatureNew();
-                    }else {
-                        wx.config({
-                            debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-                            appId: coordinates.AppId, // 必填，公众号的唯一标识
-                            timestamp: coordinates.TimeStamp, // 必填，生成签名的时间戳
-                            nonceStr: coordinates.NonceStr, // 必填，生成签名的随机串
-                            signature: coordinates.Signature,// 必填，签名
-                            jsApiList: ["scanQRCode","getLocation"] // 必填，需要使用的JS接口列表
-                        });
-                        wx.error(function(res){
+                if(ifScanCode == "1"){
+                    var getDeviceInfo ={sysId: sysId,versionNo: versionNo,token:"oNWocwSC_GFO8n_8mtZ0iV9tL0WI",deviceToken:"86A8AFBDB2E84B8E95BF52C052E8BA7C"};
+                    axios.post('/XCCloudH5/Amusement?action=getDeviceInfo', getDeviceInfo).then(function (res) {
+                        that.$dialog.loading.close();
+                        that.msgPrompt(res.data);
+                        console.log(res.data);
+                        if (res.data.result_code === '1') {
+                            if(res.data.result_data == ""){
+                                setStorage("ifScanCode","0");
+                                that.jumpFnc(deviceToken);
+                            }
+                        }
+                    }).catch(function (err) {
+                        that.$dialog.loading.close();
+                        console.log(err);
+                    });
+                }else {
+                    if (/MicroMessenger/.test(window.navigator.userAgent)){
+                        var coordinates = getStorage("coordinates")||"";
+                        if(coordinates == ""){
+                            this.$dialog.loading.open('');
+                            this.signatureNew();
+                        }else {
+                            wx.config({
+                                debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+                                appId: coordinates.AppId, // 必填，公众号的唯一标识
+                                timestamp: coordinates.TimeStamp, // 必填，生成签名的时间戳
+                                nonceStr: coordinates.NonceStr, // 必填，生成签名的随机串
+                                signature: coordinates.Signature,// 必填，签名
+                                jsApiList: ["scanQRCode","getLocation"] // 必填，需要使用的JS接口列表
+                            });
+                            wx.error(function(res){
 //                            alert(JSON.stringify(res));
-                            that.signatureNew();
-                        });
+                                that.signatureNew();
+                            });
+                        }
                     }
                 }
                 var obj={sysId: sysId,versionNo: versionNo,token:"oNWocwSC_GFO8n_8mtZ0iV9tL0WI"};
-                axios.post('/XCCloudH5/Member?action=getMemberWechatInfo', obj).then(function (res) {
+                axios.post('/XCCloudH5/Member?action=getMemberInfo', obj).then(function (res) {
                     that.$dialog.loading.close();
                     that.msgPrompt(res.data);
                     console.log(res.data);
@@ -150,31 +163,13 @@
                         that.MemberId =res.data.result_data.CurrentCardInfo;
                         that.headimgurl =res.data.result_data.Info.headimgurl;
                         that.nickname =res.data.result_data.Info.nickname;
-
                     }
                 }).catch(function (err) {
                     that.$dialog.loading.close();
                     console.log(err);
                 });
-
-//
-//                that.$nextTick(function () {
-//                    alert(111);
-//                    if (/MicroMessenger/.test(window.navigator.userAgent)) {
-//                        wx.getLocation({
-//                            type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
-//                            success: function (res) {
-//                                alert(JSON.stringify(res));
-//                                var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
-//                                var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
-//                                var speed = res.speed; // 速度，以米/每秒计
-//                                var accuracy = res.accuracy; // 位置精度
-//                            }
-//                        });
-//                    }
-//                })
             },
-//            获取地理坐标和调用微信功能
+//            调用微信功能
             signatureNew:function () {
                 var that =this;
                 var obj={sysId: sysId,versionNo: versionNo, fileName:"index"};
@@ -200,6 +195,36 @@
                     that.$dialog.loading.close();
                     console.log(err);
                 })
+            },
+//          获取地理坐标
+            getLocationFnc:function () {
+                if (/MicroMessenger/.test(window.navigator.userAgent)) {
+                    wx.getLocation({
+                        type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
+                        success: function (res) {
+                            alert(JSON.stringify(res));
+                            var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
+                            var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
+                            var speed = res.speed; // 速度，以米/每秒计
+                            var accuracy = res.accuracy; // 位置精度
+                        }
+                    });
+                }else if (/AlipayClient/.test(window.navigator.userAgent)) {
+                    AlipayJSBridge.call('getCurrentLocation', {}, function (result) {
+                        alert(JSON.stringify(result));
+                    });
+                }
+            },
+//          登录跳转
+            loginFnc:function () {
+                var that = this;
+                that.$dialog.confirm({
+                    title: '温馨提示!',
+                    mes: "即将前往登录或注册页面？",
+                    opts: (function () {
+                        window.location.href = "login.html"
+                    })
+                });
             },
 //          play功能
             playFnc:function (index) {
@@ -248,17 +273,42 @@
                             var result = res.resultStr; // 当needResult 为 1 时，扫码返回的结果
                             console.log(result);
 //                            alert(JSON.stringify(result));
-                            that.jumpFnc(result);
+                            var str = result.toString();
+                            strSplit = str.split("/");
+                            var strCode = strSplit[strSplit.length - 2];
+                            if (strCode=="m"){
+                                var deviceToken = strSplit[strSplit.length - 1];//扫码获得终端号解析
+                                that.jumpFnc(deviceToken);
+                            }else {
+                                this.$dialog.toast({
+                                    mes: "二维码错误！",
+                                    timeout: 1500,
+                                    icon: 'error'
+                                });
+                            }
                         }
                     });
                 } else if (/AlipayClient/.test(window.navigator.userAgent)) {
-//                    alert("ali");
                     AlipayJSBridge.call('scan', {
                         type: 'qr',
                         actionType: 'scan'
                     }, function(result) {
 //                        alert(JSON.stringify(result));
-                        that.jumpFnc(result.qrCode);
+                        var qrCode = result.qrCode;
+                        var str = qrCode.toString();
+                        strSplit = str.split("/");
+                        var strCode = strSplit[strSplit.length - 2];
+                        if (strCode=="m"){
+                            var deviceToken = strSplit[strSplit.length - 1];//扫码获得终端号解析
+                            that.jumpFnc(deviceToken);
+                        }else {
+                            this.$dialog.toast({
+                                mes: "二维码错误！",
+                                timeout: 1500,
+                                icon: 'error'
+                            });
+                        }
+
                     });
                 } else {
                     that.$dialog.toast({
@@ -272,50 +322,33 @@
 //          扫码之后跳转函数
             jumpFnc:function (result) {
                 var that =this;
-//                alert(JSON.stringify(result));
-                var str = result.toString();
-                strSplit = str.split("/");
-//                alert(JSON.stringify(strSplit));
-                var strCode = strSplit[strSplit.length - 2];
-//                alert(strCode);
-//                alert(strCode == "m");
-                if (strCode=="m"){
-                    var deviceToken = strSplit[strSplit.length - 1];//扫码获得终端号解析
-                    this.$dialog.loading.open('');
-                    var obj={sysId: sysId, versionNo: versionNo, deviceToken:deviceToken};
-                    axios.post('/xcgamemana/store?action=storeInfoByTerminalNo', obj).then(function (res) {
-                        that.$dialog.loading.close();
-                        that.msgPrompt(res.data);
-                        console.log(res.data);
-                        if (res.data.result_code === '1') {
-                            setStorage("deviceToken",deviceToken);
-                            switch (res.data.result_data.deviceType) {
-                                case "自助提币机":
-                                    window.location.href = "CurrencyOperation.html";
-                                    break;
-                                case "自助存币机":
-                                    window.location.href = "CurrencyOperation.html";
-                                    break;
-                                case "游戏机":
-                                    window.location.href = "games.html";
-                                    break;
-                                default:
-                                    break;
-                            }
+                this.$dialog.loading.open('');
+                var obj={sysId: sysId, versionNo: versionNo, deviceToken:deviceToken};
+                axios.post('/xcgamemana/store?action=storeInfoByTerminalNo', obj).then(function (res) {
+                    that.$dialog.loading.close();
+                    that.msgPrompt(res.data);
+                    console.log(res.data);
+                    if (res.data.result_code === '1') {
+                        setStorage("deviceToken",deviceToken);
+                        switch (res.data.result_data.deviceType) {
+                            case "自助提币机":
+                                window.location.href = "CurrencyOperation.html";
+                                break;
+                            case "自助存币机":
+                                window.location.href = "CurrencyOperation.html";
+                                break;
+                            case "游戏机":
+                                window.location.href = "games.html";
+                                break;
+                            default:
+                                break;
                         }
-                    }).catch(function (err) {
-                        that.$dialog.loading.close();
-                        console.log(err);
-                    });
-                }else {
-                    this.$dialog.toast({
-                        mes: "二维码错误！",
-                        timeout: 1500,
-                        icon: 'error'
-                    });
-                }
+                    }
+                }).catch(function (err) {
+                    that.$dialog.loading.close();
+                    console.log(err);
+                });
             },
-
 //          切换会员卡或绑卡
             mineCard:function () {
                 var that = this;
@@ -327,6 +360,11 @@
                     })
                 });
             },
+//          充值
+            recharge:function(index){
+
+            },
+//          通用提示
             msgPrompt:function (res) {
                 if(res.return_code == 0){
                     this.$dialog.toast({

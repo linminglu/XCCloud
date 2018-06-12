@@ -17,9 +17,15 @@ namespace XCCloudService.Model.XCCloud
         public string ID { get; set; }
         public string MerchID { get; set; }
         public string ICCardID { get; set; }
-        public Nullable<int> ParentCard { get; set; }
+        public string ParentCard { get; set; }
+        public Nullable<int> JoinChannel { get; set; }
+        public string CardPassword { get; set; }
         public Nullable<int> CardType { get; set; }
         public Nullable<int> CardShape { get; set; }
+        public string CardName { get; set; }
+        public Nullable<int> CardSex { get; set; }
+        public Nullable<System.DateTime> CardBirthDay { get; set; }
+        public string FaceReadID { get; set; }
         public Nullable<int> CardLimit { get; set; }
         public Nullable<int> AllowIn { get; set; }
         public Nullable<int> AllowOut { get; set; }
@@ -32,8 +38,9 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> Deposit { get; set; }
         public Nullable<int> RepeatCode { get; set; }
         public Nullable<long> UID { get; set; }
-        public Nullable<int> CardStatus { get; set; }
-        public string Verifiction { get; set; }
         public Nullable<int> IsLock { get; set; }
+        public Nullable<int> CardStatus { get; set; }
+        public string OrderID { get; set; }
+        public string Verifiction { get; set; }
     }
 }

@@ -1689,32 +1689,29 @@ namespace XCCloudService.Common
                         //如果非空，则赋给对象的属性   
                         if (value != DBNull.Value)
                         {
+                            var isNull = string.IsNullOrEmpty(value + "");
                             object obj = null;
                             //非泛型
                             if (!pi.PropertyType.IsGenericType)
                             {
-                                if (pi.PropertyType == typeof(String))
+                                switch (pi.PropertyType.FullName)
                                 {
-                                    obj = string.IsNullOrEmpty(value + "") ? string.Empty : Convert.ChangeType(value, pi.PropertyType);
-                                }
-                                else
-                                {
-                                    obj = string.IsNullOrEmpty(value + "") ? null : Convert.ChangeType(value, pi.PropertyType);
-                                }                                
+                                    case "System.String": obj = value + ""; break;
+                                    default: obj = isNull ? null : Convert.ChangeType(value, pi.PropertyType); break;
+                                }                                                             
                             }                                
                             else //泛型Nullable<>
                             {
                                 Type genericTypeDefinition = pi.PropertyType.GetGenericTypeDefinition();
                                 if (genericTypeDefinition == typeof(Nullable<>))
                                 {
-                                    if (Nullable.GetUnderlyingType(pi.PropertyType) == typeof(TimeSpan))
+                                    switch (Nullable.GetUnderlyingType(pi.PropertyType).FullName)
                                     {
-                                        obj = string.IsNullOrEmpty(value + "") ? null : (object)Utils.StrToTimeSpan(Convert.ToString(value));
-                                    }                                    
-                                    else
-                                    {
-                                        obj = string.IsNullOrEmpty(value + "") ? null : Convert.ChangeType(value, Nullable.GetUnderlyingType(pi.PropertyType));
-                                    }
+                                        case "System.TimeSpan": obj = isNull ? null : (object)Utils.StrToTimeSpan(Convert.ToString(value)); break;
+                                        case "System.Int32": obj = isNull ? 0 : Convert.ChangeType(value, Nullable.GetUnderlyingType(pi.PropertyType)); break;
+                                        case "System.Decimal": obj = isNull ? 0M : Convert.ChangeType(value, Nullable.GetUnderlyingType(pi.PropertyType)); break;
+                                        default: obj = isNull ? null : Convert.ChangeType(value, Nullable.GetUnderlyingType(pi.PropertyType)); break;
+                                    }   
                                 }
                             }
                             pi.SetValue(t, obj, null);

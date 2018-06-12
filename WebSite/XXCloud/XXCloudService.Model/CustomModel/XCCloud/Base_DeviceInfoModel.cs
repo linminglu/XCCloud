@@ -37,15 +37,18 @@ namespace XCCloudService.Model.CustomModel.XCCloud
 
     public class GameCoinInfoModel
     {
-        public int GameId { get; set; }
+        public GameCoinInfoModel()
+        {
+            this.GameCoinList = new List<GameCoinInfo>();
+            this.GameFreeRuleList = new List<GameFreeRule>();
+        }
+        public string DeviceName { get; set; }
 
-        public string GameName { get; set; }
+        public string DeviceType { get; set; }
 
-        public string GameType { get; set; }
+        public List<GameCoinInfo> GameCoinList { get; set; }
 
-        public int Coins { get; set; }
-
-        public GameFreeRule GameFreeRule { get; set; }
+        public List<GameFreeRule> GameFreeRuleList { get; set; }
     }
 
     public class GameFreeRule
@@ -57,5 +60,12 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         public int FreeCoin { get; set; }
 
         public int ExitCoin { get; set; }
+    }
+
+    public class GameCoinInfo
+    {
+        public int PlayCount { get; set; }
+
+        public string Amount { get; set; }
     }
 }

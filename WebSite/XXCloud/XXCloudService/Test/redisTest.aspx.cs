@@ -4,10 +4,12 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using XCCloudService.BLL.XCCloud;
 using XCCloudService.Business.XCGameMana;
 using XCCloudService.CacheService;
 using XCCloudService.Model.CustomModel.XCCloud;
 using XCCloudService.Model.WeiXin;
+using XCCloudService.Model.XCCloud;
 using XCCloudService.OrderPayCallback.Common;
 
 namespace XXCloudService.Test
@@ -62,6 +64,29 @@ namespace XXCloudService.Test
             tokenModel.Info = wechat;
 
             MemberTokenCache.AddToken(tokenModel.Token, tokenModel);
+        }
+
+        protected void Button5_Click(object sender, EventArgs e)
+        {
+            List<Dict_System> gameTypeList = new List<Dict_System>();
+            GetGamingList(515, gameTypeList);
+
+            string str = string.Empty;
+            foreach (var item in gameTypeList)
+            {
+                str += item.ID + "|" + item.DictKey + "<br />";
+            }
+            Response.Write(str);
+        }
+
+        private void GetGamingList(int pid, List<Dict_System> gameTypeList)
+        {
+            var list = Dict_SystemService.I.GetModels(t => t.PID == pid).ToList();
+            foreach (var item in list)
+            {
+                gameTypeList.Add(item);
+                GetGamingList(item.ID, gameTypeList);
+            }
         }
     }
 }

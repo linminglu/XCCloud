@@ -25,7 +25,6 @@ namespace XCCloudService.Model.XCCloud
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<Base_ChainRule> Base_ChainRule { get; set; }
         public virtual DbSet<Base_ChainRule_Store> Base_ChainRule_Store { get; set; }
         public virtual DbSet<Base_DepotInfo> Base_DepotInfo { get; set; }
         public virtual DbSet<Base_EnumParams> Base_EnumParams { get; set; }
@@ -88,7 +87,6 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Data_Jackpot_Level> Data_Jackpot_Level { get; set; }
         public virtual DbSet<Data_Jackpot_Matrix> Data_Jackpot_Matrix { get; set; }
         public virtual DbSet<Data_JackpotInfo> Data_JackpotInfo { get; set; }
-        public virtual DbSet<Data_Member_Card> Data_Member_Card { get; set; }
         public virtual DbSet<Data_Member_Card_Store> Data_Member_Card_Store { get; set; }
         public virtual DbSet<Data_MemberLevel> Data_MemberLevel { get; set; }
         public virtual DbSet<Data_MemberLevel_Balance> Data_MemberLevel_Balance { get; set; }
@@ -177,8 +175,6 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Data_GoodOutOrder> Data_GoodOutOrder { get; set; }
         public virtual DbSet<Data_GameInfo> Data_GameInfo { get; set; }
         public virtual DbSet<Data_GoodExitInfo> Data_GoodExitInfo { get; set; }
-        public virtual DbSet<Data_Card_Balance> Data_Card_Balance { get; set; }
-        public virtual DbSet<Data_Card_Balance_Free> Data_Card_Balance_Free { get; set; }
         public virtual DbSet<Data_Card_Balance_StoreList> Data_Card_Balance_StoreList { get; set; }
         public virtual DbSet<Data_Card_Right> Data_Card_Right { get; set; }
         public virtual DbSet<Data_Card_Right_StoreList> Data_Card_Right_StoreList { get; set; }
@@ -192,9 +188,13 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<XC_HolidayList> XC_HolidayList { get; set; }
         public virtual DbSet<Data_GameEncourage> Data_GameEncourage { get; set; }
         public virtual DbSet<Data_ProjectInfo> Data_ProjectInfo { get; set; }
-        public virtual DbSet<Flw_Project_TicketInfo> Flw_Project_TicketInfo { get; set; }
         public virtual DbSet<Data_ProjectTicket_Bind> Data_ProjectTicket_Bind { get; set; }
         public virtual DbSet<Flw_ProjectTicket_Bind> Flw_ProjectTicket_Bind { get; set; }
         public virtual DbSet<Base_MemberInfo> Base_MemberInfo { get; set; }
+        public virtual DbSet<Base_ChainRule> Base_ChainRule { get; set; }
+        public virtual DbSet<Data_Member_Card> Data_Member_Card { get; set; }
+        public virtual DbSet<Data_Card_Balance> Data_Card_Balance { get; set; }
+        public virtual DbSet<Data_Card_Balance_Free> Data_Card_Balance_Free { get; set; }
+        public virtual DbSet<Flw_Project_TicketInfo> Flw_Project_TicketInfo { get; set; }
     }
 }

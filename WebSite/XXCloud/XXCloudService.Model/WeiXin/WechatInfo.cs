@@ -12,6 +12,7 @@ namespace XCCloudService.Model.WeiXin
         {
             this.MemberId = string.Empty;
             this.Mobile = string.Empty;
+            //this.CurrStoreId = string.Empty;
         }
         public string Token { get; set; }
 
@@ -19,11 +20,14 @@ namespace XCCloudService.Model.WeiXin
 
         public string Mobile { set; get; }
 
+        //public string CurrStoreId { get; set; }
+
+        /// <summary>
+        /// 微信基本信息
+        /// </summary>
         public WechatInfo Info { get; set; }
 
         public MemberCard CurrentCardInfo { get; set; }
-
-        public MemberBalance MemberBalances { get; set; }
     }
 
     public class WechatInfo

@@ -548,69 +548,7 @@ namespace XCCloudService.Api.XCCloud
                         {
                             errMsg = "保存门店信息失败";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
-
-                        #region 初始化连锁店余额通用设置
-                        //初始化连锁店余额通用设置
-                        var base_ChainRule_StoreContext = DbContextFactory.CreateByModelNamespace(typeof(Base_ChainRule_Store).Namespace);
-                        if (!base_ChainRule_StoreContext.Set<Base_ChainRule>().Any(a => a.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)))
-                        {
-                            errMsg = "初始化连锁店余额通用设置异常，找不到商户分组信息";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
-                        if (base_ChainRule_StoreContext.Set<Base_ChainRule_Store>().Any(a => a.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)))
-                        {
-                            errMsg = "初始化连锁店余额通用设置异常，该门店ID已存在";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
-                        var base_ChainRule = base_ChainRule_StoreContext.Set<Base_ChainRule>().Where(w => w.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)).ToList();
-                        foreach (var model in base_ChainRule)
-                        {
-                            var base_ChainRule_Store = new Base_ChainRule_Store();
-                            base_ChainRule_Store.RuleGroupID = model.RuleGroupID;
-                            base_ChainRule_Store.StoreID = storeId;
-                            base_ChainRule_StoreContext.Entry(base_ChainRule_Store).State = EntityState.Added;
-                        }
-                        if (base_ChainRule_StoreContext.SaveChanges() < 0)
-                        {
-                            errMsg = "初始化连锁店余额通用设置失败";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
-                        #endregion
-
-                        //#region 初始化运营参数
-
-                        ////初始化门店运营参数配置
-                        //var dbContext = DbContextFactory.CreateByModelNamespace(typeof(Data_Parameters).Namespace);
-                        //var data_Parameter = dbContext.Set<Data_Parameters>().AsQueryable();
-                        //if (base_StoreInfo.StoreTag == (int)MerchTag.Game)
-                        //{
-                        //    data_Parameter = data_Parameter.Where(p => p.StoreID.Equals(MerchTag.Game.ToString()));
-                        //}
-                        //else
-                        //{
-                        //    data_Parameter = data_Parameter.Where(p => p.StoreID.Equals(MerchTag.Lottery.ToString()));
-                        //}
-
-                        //foreach (var model in data_Parameter.ToList())
-                        //{
-                        //    var data_ParameterModel = new Data_Parameters();
-                        //    data_ParameterModel.StoreID = storeId;
-                        //    data_ParameterModel.ParameterName = model.ParameterName;
-                        //    data_ParameterModel.ParameterValue = model.ParameterValue;
-                        //    data_ParameterModel.System = model.System;
-                        //    data_ParameterModel.IsAllow = model.IsAllow;
-                        //    data_ParameterModel.Note = model.Note;
-                        //    dbContext.Entry(data_ParameterModel).State = EntityState.Added;
-                        //}
-
-                        //if (dbContext.SaveChanges() < 0)
-                        //{
-                        //    errMsg = "初始化门店运营参数失败";
-                        //    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        //}                        
-
-                        //#endregion
+                        }                                              
 
                         ts.Complete();
 

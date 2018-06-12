@@ -34,9 +34,16 @@ namespace XCCloudService.CacheService
                     return "";
                 }
 
-                int currIndex = Convert.ToInt32(currNo);
-                currIndex += 500000;
                 string date = DateTime.Now.ToString("yyyyMMdd");
+
+                //会员专属
+                if(string.IsNullOrEmpty( storeId.Replace("0","")))
+                {
+                    return storeId + date + currNo.ToString().PadLeft(9, '0');
+                }
+
+                int currIndex = Convert.ToInt32(currNo);
+                currIndex += 500000;                
 
                 string serialNo = storeId + date + currIndex.ToString().PadLeft(6, '0');
                 if (!isProc)

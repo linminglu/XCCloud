@@ -258,36 +258,40 @@
             <div class="layui-card">
                 <div class="layui-card-header">退货信息</div>
                 <div class="layui-card-body">
-                    <div class="layui-form-item">
+                    <div class="layui-form-item" style="margin: 10px 15px">
                         <div class="layui-inline">
                             <div class="layui-input-inline" style="width: 120px">
                                 <input type="checkbox" title="允许退票" lay-skin="primary" name="AllowExitTicket" lay-filter="AllowExitTicket">
                             </div>
-
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
                             <div class="layui-form-mid">销售</div>
                             <div class="layui-input-inline" style="width: 100px">
-                                <input type="text" class="layui-input" name="ExitPeriodValue">
+                                <input type="text" class="layui-input allowExitList" name="ExitPeriodValue" disabled>
                             </div>
                             <div class="layui-input-inline" style="width: 100px">
-                                <select name="ExitPeriodType" id="ExitPeriodType" lay-filter="ExitPeriodType">
+                                <select name="ExitPeriodType" id="ExitPeriodType" class="allowExitList" lay-filter="ExitPeriodType" disabled>
                                     <option value="0">小时</option>
                                     <option value="1">天</option>
                                 </select>
                             </div>
                             <div class="layui-form-mid">后不可退票</div>
                         </div>
-                    </div>
-                    <div class="layui-form-item">
-                        <label for="" class="layui-form-label">退票方式</label>
-                        <div class="layui-input-inline" style="width: 200px">
-                            <input type="radio" name="ExitTicketType" title="按金额" value="0" lay-skin="primary" checked lay-filter="ExitTicketType">
-                            <input type="radio" name="ExitTicketType" title="按比例" value="1" lay-skin="primary" lay-filter="ExitTicketType">
-                        </div>
-                        <div class="layui-input-inline " style="width: 100px" id="ETV1">
-                            <input type="text" class="layui-input" name="ExitTicketVal1" placeholder="元">
-                        </div>
-                        <div class="layui-input-inline layui-hide" id="ETV2" style="width: 100px">
-                            <input type="text" class="layui-input" name="ExitTicketVal2" placeholder="%">
+
+                        <div class="layui-inline" disabled>
+                            <label for="" class="layui-form-label">退票方式</label>
+                            <div class="layui-input-inline" style="width: 200px;height: 38px;line-height: 38px;">
+                                <input type="radio" disabled name="ExitTicketType" class="allowExitList"  title="按金额" value="0" lay-skin="primary" checked lay-filter="ExitTicketType">
+                                <input type="radio" disabled name="ExitTicketType" class="allowExitList" title="按比例" value="1" lay-skin="primary" lay-filter="ExitTicketType">
+                            </div>
+                            <div class="layui-form-mid " style="width: 100px;padding: 0!important;" id="ETV1">
+                                <input type="text" disabled class="layui-input etv allowExitList" name="ExitTicketVal1" placeholder="元">
+                            </div>
+                            <div class="layui-form-mid layui-hide" id="ETV2" style="width: 100px;padding: 0!important;">
+                                <input type="text" disabled class="layui-input etv allowExitList" name="ExitTicketVal2" placeholder="%">
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -345,7 +349,7 @@
                             <div class="layui-input-inline">
                                 <input type="text" class="layui-input" id="shareTimes" disabled>
                             </div>
-                            <div class="layui-form-mid" style="padding: 0!important;">次</div>
+                            <div class="layui-form-mid">次</div>
                         </div>
                     </div>
                 </div>
@@ -384,41 +388,9 @@
     let xc=xcActionSystem.prototype;
     let token=xc.getStorage('token');
     let  ticketSet=JSON.parse(xc.getStorage('ticketSet'));
-    if(ticketSet.name=='times'){
-        $('input[name="BusinessType"]').val('门票');
-        BusinessType=0;
-    }else if(ticketSet.name=='month'){
-        $('.bindTimesBox').addClass('layui-hide');
-        $('#useReason').removeClass('layui-hide');
-        $('input[name="BusinessType"]').val('门票');
-        BusinessType=0;
-    }else if(ticketSet.name=='group'){
-        $('#groupStart').removeClass('layui-hide');
-        $('input[name="BusinessType"]').val('门票');
-        BusinessType=0;
-    }else if(ticketSet.name=='boardPackage'){
-        $('input[name="BusinessType"]').val('机台打包');
-        //机台打包禁用以下属性：允许离场时间，分摊类别，人脸识别，陪同票
-        $('.allowExitBox').addClass('layui-hide');
-        $('.DivideTypeBox').addClass('layui-hide');
-        $('.readFaceBox').addClass('layui-hide');
-        $('.togetherBox').addClass('layui-hide');
 
-        BusinessType=2;
-    }else if(ticketSet.name=='timeLimit'){
-        $('.bindTimesBox').addClass('layui-hide');
-        $('#useReason').removeClass('layui-hide');
-        $('input[name="BusinessType"]').val('限时任玩');
-        BusinessType=1;
 
-        //包时任玩禁用以下属性：允许离场时间，分摊类别，人脸识别，陪同票，
-        $('.allowExitBox').addClass('layui-hide');
-        $('.DivideTypeBox').addClass('layui-hide');
-        $('.readFaceBox').addClass('layui-hide');
-        $('.togetherBox').addClass('layui-hide');
-    }
-
-    let   proListArr=[];
+    let proListArr=[];
     let proList='';let ProjcetName='';let ProjcetType='';let ProjcetTypeStr='';let PushCoin1=0;
     let isShare=0;
 
@@ -433,6 +405,49 @@
         let layer=layui.layer;
         let laydate=layui.laydate;
 
+        if(ticketSet.name=='times'){
+            $('input[name="BusinessType"]').val('门票');
+            BusinessType=0;
+            $('select[name="DivideType"]').html('<option selected value="1">一次性分摊</option>' +
+                '<option value="2">按次分摊</option>');
+            DivideType=1;
+            form.render('select','DivideType')
+        }else if(ticketSet.name=='month'){
+            $('.bindTimesBox').addClass('layui-hide');
+            $('#useReason').removeClass('layui-hide');
+            $('input[name="BusinessType"]').val('门票');
+            BusinessType=0;
+            $('select[name="DivideType"]').html(' <option selected value="3">按天分摊</option>');
+            form.render('select','DivideType');
+            DivideType=3;
+            form.render('select','DivideType')
+        }else if(ticketSet.name=='group'){
+            $('#groupStart').removeClass('layui-hide');
+            $('input[name="BusinessType"]').val('门票');
+            BusinessType=0;
+            $('select[name="DivideType"]').html(' <option selected value="3">按天分摊</option>');
+            form.render('select','DivideType');
+            DivideType=3;
+            form.render('select','DivideType')
+        }else if(ticketSet.name=='boardPackage'){
+            $('input[name="BusinessType"]').val('机台打包');
+            //机台打包禁用以下属性：允许离场时间，分摊类别，人脸识别，陪同票
+            $('.allowExitBox').addClass('layui-hide');
+            $('.DivideTypeBox').addClass('layui-hide');
+            $('.readFaceBox').addClass('layui-hide');
+            $('.togetherBox').addClass('layui-hide');
+            BusinessType=2;
+        }else if(ticketSet.name=='timeLimit'){
+            $('.bindTimesBox').addClass('layui-hide');
+            $('#useReason').removeClass('layui-hide');
+            $('input[name="BusinessType"]').val('限时任玩');
+            BusinessType=1;
+            //包时任玩禁用以下属性：允许离场时间，分摊类别，人脸识别，陪同票，
+            $('.allowExitBox').addClass('layui-hide');
+            $('.DivideTypeBox').addClass('layui-hide');
+            $('.readFaceBox').addClass('layui-hide');
+            $('.togetherBox').addClass('layui-hide');
+        }
         form.on('select(DivideType)',function (data){DivideType=data.value;});
         form.on('checkbox(ReadFace)',function (data){data.elem.checked==true? ReadFace=1: ReadFace=0});
         form.on('checkbox(ActiveBar)',function (data){data.elem.checked==true? ActiveBar=1: ActiveBar=0});
@@ -466,7 +481,23 @@
             }
         });
         form.on('select(BalanceIndex)',function (data){BalanceIndex=data.value;});
-        form.on('checkbox(AllowExitTicket)',function (data){data.elem.checked==true? AllowExitTicket=1: AllowExitTicket=0});
+        form.on('checkbox(AllowExitTicket)',function (data){
+            if(data.elem.checked){
+                AllowExitTicket=1;
+                $('input[name="ExitPeriodValue"]').attr({'disabled':false});
+                $('.allowExitList').attr({'disabled':false});
+                $('select[name="ExitPeriodType"]').attr({'disabled':false});
+                form.render();
+            }else {
+                AllowExitTicket=0;
+                $('.allowExitList').attr({'disabled':true});
+                $('input[name="ExitPeriodValue"]').val('');
+                $('select[name="ExitPeriodType"]').find('option').attr({'selected':false});
+                ExitPeriodType='';
+                $('.etv').val('');
+                form.render()
+            }
+        });
         form.on('select(ExitPeriodType)',function (data){ExitPeriodType=data.value;});
         form.on('radio(ExitTicketType)', function(data){
             ExitTicketType=data.value
@@ -482,7 +513,7 @@
             RestrictPeriodType=data.value;
         });//限制类型
         form.on('select(AllowRestrict)',function (data){
-            AllowRestrict=data.value;
+            AllowRestrict=data.value!='-请选择-'?data.value:'';
             if(AllowRestrict==1){
                 $('#useReasonBox').removeClass('layui-hide')
             }else {
@@ -583,9 +614,9 @@
             }else if(ticketSet.name=='group'){
                 initProject(token,form,layer,'proList','0');
             }else if(ticketSet.name=='boardPackage'){
-                initProject(token,form,layer,'proList','2');
-            }else if(ticketSet.name=='timeLimit'){
                 initProject(token,form,layer,'proList','1');
+            }else if(ticketSet.name=='timeLimit'){
+                initProject(token,form,layer,'proList','2');
             }
             proList=''; ProjcetName=''; ProjcetType=''; ProjcetTypeStr=''; PushCoin1=0;
             if(isShare==1) {
@@ -746,7 +777,7 @@
                                         ,'ProjcetType':ProjcetType
                                         ,'ProjcetTypeStr':ProjcetTypeStr
                                         ,'PushCoin1':PushCoin1
-                                        ,'UseCount':PushCoin1
+                                        ,'UseCount':1
                                         ,'AllowShareCount':isShare
                                         ,'WeightValue':parseInt(PushCoin1)*parseInt(PushCoin1)
                                     });
@@ -820,7 +851,7 @@
                                     ,'ProjcetType':ProjcetType
                                     ,'ProjcetTypeStr':ProjcetTypeStr
                                     ,'PushCoin1':PushCoin1
-                                    ,'UseCount':PushCoin1
+                                    ,'UseCount':1
                                     ,'AllowShareCount':isShare
                                     ,'WeightValue':parseInt(PushCoin1)*parseInt(PushCoin1)
                                 });
@@ -912,7 +943,7 @@
                                         ,'ProjcetType':ProjcetType
                                         ,'ProjcetTypeStr':ProjcetTypeStr
                                         ,'PushCoin1':PushCoin1
-                                        ,'UseCount':PushCoin1
+                                        ,'UseCount':1
                                         ,'AllowShareCount':isShare
                                         ,'WeightValue':parseInt(PushCoin1)*parseInt(PushCoin1)
                                     });
@@ -989,7 +1020,7 @@
                                     ,'ProjcetType':ProjcetType
                                     ,'ProjcetTypeStr':ProjcetTypeStr
                                     ,'PushCoin1':PushCoin1
-                                    ,'UseCount':PushCoin1
+                                    ,'UseCount':1
                                     ,'AllowShareCount':isShare
                                     ,'WeightValue':parseInt(PushCoin1)*parseInt(PushCoin1)
                                 });
@@ -1098,8 +1129,14 @@
                         }else if(arr.BusinessType==2){
                             $('#BusinessType').val('机台打包')
                         }
-//                            $('#StartTime').val(arr.StartTimeStr);
-//                            $('#EndTime').val(arr.EndTimeStr);
+                            if(arr.AllowExitTicket==1){
+                                $('.allowExitList').attr({'disabled':false});
+
+                                }else {
+                                $('.allowExitList').attr({'disabled':true});
+                                    $('input[name="ExitPeriodValue"]').attr({'disabled':true}).val('');
+                                    $('select[name="ExitPeriodType"]').attr({'disabled':true}).find('option').attr({'selected':false});
+                            }
                             laydate.render({
                                 elem: '#StartTime',type: 'time',value:arr.StartTimeStr
                             });
@@ -1228,7 +1265,7 @@
                 'MerchID':JSON.parse(xc.getStorage('logMsg')).merchId,
                 'StoreID':JSON.parse(xc.getStorage('logMsg')).storeId,
                 'TicketName':$('input[name="TicketName"]').val(),
-                'TicketType':1,
+                'TicketType':2,
                 'BusinessType':0,
                 'AllowExitTimes':$('input[name="AllowExitTimes"]').val(),
                 'WriteOffDays':$('input[name="WriteOffDays"]').val(),
@@ -1278,7 +1315,7 @@
                 'MerchID':JSON.parse(xc.getStorage('logMsg')).merchId,
                 'StoreID':JSON.parse(xc.getStorage('logMsg')).storeId,
                 'TicketName':$('input[name="TicketName"]').val(),
-                'TicketType':2,
+                'TicketType':1,
                 'BusinessType':0,
                 'AllowExitTimes':$('input[name="AllowExitTimes"]').val(),
                 'WriteOffDays':$('input[name="WriteOffDays"]').val(),
@@ -1323,7 +1360,7 @@
                 'MerchID':JSON.parse(xc.getStorage('logMsg')).merchId,
                 'StoreID':JSON.parse(xc.getStorage('logMsg')).storeId,
                 'TicketName':$('input[name="TicketName"]').val(),
-                'TicketType':1,
+                'TicketType':2,
                 'BusinessType':1,
 //                'AllowExitTimes':$('input[name="AllowExitTimes"]').val(),
                 'WriteOffDays':$('input[name="WriteOffDays"]').val(),
