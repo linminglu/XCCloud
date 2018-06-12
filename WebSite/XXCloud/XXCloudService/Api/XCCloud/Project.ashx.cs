@@ -744,14 +744,22 @@ namespace XXCloudService.Api.XCCloud
                         deviceInfo.segment = routInfo.segment;
 
                         //按顺序生成机头地址(01~9F)十六进制
+                        var flag = false;
                         for (int i = 1; i < 160; i++)
                         {
                             var address = Convert.ToString(i, 16).PadLeft(2, '0').ToUpper();
-                            if (!base_DeviceInfoService.Any(p => p.BindDeviceID == bindDeviceId && p.ID != bindDeviceId && p.Address.Equals(address, StringComparison.OrdinalIgnoreCase)))
+                            if (!base_DeviceInfoService.Any(p => p.BindDeviceID == bindDeviceId && p.ID != deviceId && p.ID != bindDeviceId && p.Address.Equals(address, StringComparison.OrdinalIgnoreCase)))
                             {
                                 deviceInfo.Address = address;
+                                flag = true;
                                 break;
                             }
+                        }
+
+                        if (!flag)
+                        {
+                            errMsg = "没有可用的机头地址";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 
                         //更新绑定设备信息

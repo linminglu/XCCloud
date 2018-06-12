@@ -383,14 +383,22 @@ namespace XXCloudService.Api.XCCloud
                     data_DeviceInfo.segment = routInfo.segment;
 
                     //按顺序生成机头地址(01~9F)十六进制
+                    var flag = false;
                     for (int i = 1; i < 160; i++)
                     {
                         var address = Convert.ToString(i, 16).PadLeft(2, '0').ToUpper();
-                        if (!Base_DeviceInfoService.I.Any(p => p.BindDeviceID == iBindDeviceId && p.ID != iBindDeviceId && p.Address.Equals(address, StringComparison.OrdinalIgnoreCase)))
+                        if (!Base_DeviceInfoService.I.Any(p => p.BindDeviceID == iBindDeviceId && p.ID != iId && p.ID != iBindDeviceId && p.Address.Equals(address, StringComparison.OrdinalIgnoreCase)))
                         {
                             data_DeviceInfo.Address = address;
+                            flag = true;
                             break;
                         }
+                    }
+                    
+                    if (!flag)
+                    {
+                        errMsg = "没有可用的机头地址";
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                     }
                 }
                 //解绑
@@ -577,9 +585,10 @@ namespace XXCloudService.Api.XCCloud
                             break;
                         }
                     }
+
                     if(!isValidAddress)
                     {
-                        errMsg = "通讯地址范围是A0~AA";
+                        errMsg = "通讯地址有效范围是A0~AA";
                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                     }
                 }
@@ -592,11 +601,6 @@ namespace XXCloudService.Api.XCCloud
                 }
 
                 var data_DeviceInfo = Base_DeviceInfoService.I.GetModels(p => p.ID == iId).FirstOrDefault();
-                //if (data_DeviceInfo.type == (int)DeviceType.卡头 || data_DeviceInfo.type == (int)DeviceType.闸机 || data_DeviceInfo.type == (int)DeviceType.自助机)
-                //{
-                //    errMsg = "被绑定设备类型不能是卡头、闸机或自助机";
-                //    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                //}
 
                 //绑定
                 if (iState == 1)
@@ -621,7 +625,7 @@ namespace XXCloudService.Api.XCCloud
                                         
                     if (Base_DeviceInfoService.I.Any(p => p.ID != iId && p.BindDeviceID == iBindDeviceId && p.Address.Equals(address, StringComparison.OrdinalIgnoreCase)))
                     {
-                        errMsg = "该地址被占用";
+                        errMsg = "该通讯地址被占用";
                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                     }
 

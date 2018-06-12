@@ -67,7 +67,7 @@ namespace XXCloudService.Api.XCCloud
 //                                        select (case when CHARINDEX(CONVERT(varchar, c.ProjcetType), @projectGameTypes)>0 then d.ProjectName else e.GameName end) AS ProjectName
 //                                        from Data_ProjectTicket b
 //                                        inner join Data_ProjectTicket_Bind c on b.ID = c.ProjcetTicketID
-//                                        left join Data_ProjectInfo d on c.ProjcetID = d.ID and d.State = 1
+//                                        left join Data_ProjectInfo d on c.ProjcetID = d.ID and d.ChargeType = 0 and d.State = 1
 //                                        left join Data_GameInfo e on c.ProjcetID = e.ID and e.State = 1
 //                                        where b.ID=a.ID
 //                                    ) t
@@ -86,7 +86,7 @@ namespace XXCloudService.Api.XCCloud
                                 	FROM
                                 		Data_ProjectTicket b                                                        
                                 	inner join Data_ProjectTicket_Bind c on b.ID = c.ProjcetTicketID
-                                    left join Data_ProjectInfo d on c.ProjcetID = d.ID and d.State = 1
+                                    left join Data_ProjectInfo d on c.ProjcetID = d.ID and d.ChargeType = 0 and d.State = 1
                                     left join Data_GameInfo e on c.ProjcetID = e.ID and e.State = 1                                          
                                 ) t ON a.ID = t.ID
                                 WHERE 1=1
@@ -136,7 +136,7 @@ namespace XXCloudService.Api.XCCloud
                     StartTimeStr = Utils.TimeSpanToStr(model.StartTime),
                     EndTimeStr = Utils.TimeSpanToStr(model.EndTime),
                     ProjectTicketBinds = from a in Data_ProjectTicket_BindService.N.GetModels(p => p.ProjcetTicketID == id)
-                                         join b in Data_ProjectInfoService.N.GetModels(p => p.State == 1) on a.ProjcetID equals b.ID into b1
+                                         join b in Data_ProjectInfoService.N.GetModels(p => p.ChargeType == (int)ProjectInfoChargeType.Count && p.State == 1) on a.ProjcetID equals b.ID into b1
                                          from b in b1.DefaultIfEmpty()
                                          join c in Dict_SystemService.N.GetModels() on a.ProjcetType equals c.ID into c1
                                          from c in c1.DefaultIfEmpty()

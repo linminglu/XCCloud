@@ -663,30 +663,33 @@
                 $('#shareTimes').attr({'disabled':true}).val('')
             }
         });
-        $('#shareTimes').on('blur',function(){
-            if(Number($(this).val())>0){
-                for(let i in proListArr){
-                    proListArr[i].UseCount=$('#shareTimes').val();
-                    proListArr[i].WeightValue=parseInt($('#shareTimes').val())*parseInt(proListArr[i].PushCoin1)
+        $('#shareTimes').on('keyup',function(e){
+            if(e.keyCode>47&& e.keyCode<58||e.keyCode>95&& e.keyCode<106){
+                if(Number($(this).val())>0){
+                    for(let i in proListArr){
+                        proListArr[i].UseCount=$('#shareTimes').val();
+                        proListArr[i].WeightValue=parseInt($('#shareTimes').val())*parseInt(proListArr[i].PushCoin1)
+                    }
+                    table.render({
+                        elem: '#proTable'
+                        , height:'250px'
+                        , size:"sm"
+                        , data: proListArr
+                        , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+                        , cols: [[
+                            {field:'ProjectName', title:'项目名称', align: 'center',width:200}
+                            ,{field:'ProjcetTypeStr',title: '类别', align: 'center',width:160} //width 支持：数字、百分比和不填写。
+                            ,{field:'AllowShareCount', title: '次数共享', align: 'center',width:100,templet:'#allowShare'}
+                            ,{field:'UseCount', title: '游玩次数', align: 'center',width:140}
+                            ,{field:'WeightValue', title: '权重值', align: 'center',width:175,edit:true}
+                            ,{fixed: 'right',title:'操作', width:180, align:'center', toolbar: '#barDemo2'}]]
+                        , page: {page: true, limits: [10, 15, 20, 30, 50, 100]}
+                        , limit: 10
+                    });
                 }
-                table.render({
-                    elem: '#proTable'
-                    , height:'250px'
-                    , size:"sm"
-                    , data: proListArr
-                    , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
-                    , cols: [[
-                        {field:'ProjectName', title:'项目名称', align: 'center',width:200}
-                        ,{field:'ProjcetTypeStr',title: '类别', align: 'center',width:160} //width 支持：数字、百分比和不填写。
-                        ,{field:'AllowShareCount', title: '次数共享', align: 'center',width:100,templet:'#allowShare'}
-                        ,{field:'UseCount', title: '游玩次数', align: 'center',width:140}
-                        ,{field:'WeightValue', title: '权重值', align: 'center',width:175,edit:true}
-                        ,{fixed: 'right',title:'操作', width:180, align:'center', toolbar: '#barDemo2'}]]
-                    , page: {page: true, limits: [10, 15, 20, 30, 50, 100]}
-                    , limit: 10
-                });
+            }else {
+                $(this).val('')
             }
-
         })
         $('#savePro').on('click',function () {
             if(proList!=''){
