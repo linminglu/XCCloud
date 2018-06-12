@@ -242,6 +242,11 @@ namespace XXCloudService.Api.XCCloud
                         model.AccompanyCash = accompanyCash;
                         model.BalanceIndex = balanceIndex;
                         model.BalanceValue = balanceValue;
+                        model.AllowRestrict = allowRestrict;
+                        model.RestrictShareCount = restrictShareCount;
+                        model.RestrictPeriodType = restrictPeriodType;
+                        model.RestrictPreiodValue = restrictPeriodValue;
+                        model.RestrctCount = restrctCount;
                         model.Note = note;
                         model.VaildStartDate = vaildStartDate;
                         model.VaildEndDate = vaildEndDate;
@@ -292,11 +297,11 @@ namespace XXCloudService.Api.XCCloud
                                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                                     if (!dicPar.Get("projcetType").Validintnozero("游乐项目类型", out errMsg))
                                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                                    if (!dicPar.Get("weightValue").Validintnozero("权重值", out errMsg))
+                                    if (!dicPar.Get("weightValue").Validint("权重值", out errMsg))
                                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                                     if (ticketType == (int)TicketType.Count || ticketType == (int)TicketType.Group) //次票或团体票
                                     {
-                                        if (!dicPar.Get("allowShareCount").Validint("是否共享次数", out errMsg))
+                                        if (!dicPar.Get("allowShareCount").Validint("次数共享", out errMsg))
                                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                                         if (!dicPar.Get("useCount").Validintnozero("游玩次数", out errMsg))
                                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
