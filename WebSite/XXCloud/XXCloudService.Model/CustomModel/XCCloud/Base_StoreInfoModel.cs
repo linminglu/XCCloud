@@ -60,13 +60,12 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         public string MerchID { get; set; }
         public string StoreName { get; set; }
         public string Password { get; set; }
-        public Nullable<DateTime> AuthorExpireDate { get; set; }
+        public string AuthorExpireDate { get; set; }
         public string AreaCode { get; set; }
         public string Address { get; set; }
         public string Contacts { get; set; }
         public string Mobile { get; set; }
         public string SelttleTypeStr { get; set; }
         public string StoreStateStr { get; set; }
-        public Nullable<DateTime> AuditTime { get; set; }
     }
 }

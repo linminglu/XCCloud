@@ -555,7 +555,8 @@
                     chkExitCardCatch=arr[12].ParameterValue;
                     chkExitFoodCatch=arr[13].ParameterValue;
                     //游乐项目规则设定
-                   chkAccompanyOutWithMain=arr[14].ParameterValue;
+                    chkAccompanyOutWithMain=arr[14].ParameterValue;
+                    cmbAutoJoinMemberLevel=arr[16].ParameterValue;
                     chkForceClearBalanceOnExitCard=arr[23].ParameterValue;
 
                    if(chkAccompanyOutWithMain==1){
@@ -574,7 +575,7 @@
                     if(txtClientBuyTicketInfo!=''){
                         cmbAutoJoinMemberLevels=txtClientBuyTicketInfo.split('|');
                         for(let i in cmbAutoJoinMemberLevels){
-                            $('#cusmor').find('input').eq(i).attr({'checked':true})
+                            $('#cusmor').find('input[value="'+cmbAutoJoinMemberLevels[i]+'"]').attr({'checked':true})
                         }
                     }
                     form.render();
@@ -588,7 +589,7 @@
     let obj={'storeId':storeId,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
     $.ajax({
         type: "post",
-        // async:false,
+         async:false,
         url: '/XCCloud/Parameter?action=GetFreeCoinRule',
         contentType: "application/json; charset=utf-8",
         data: {parasJson: JSON.stringify(obj)},
@@ -624,10 +625,10 @@
         let layer=layui.layer;
         let table=layui.table;
         ifNeedSet(_storeId,form,layer);
-        setTimeout(setBbi(_storeId,form,layer),200);
+
         xc.getMemberTypeDic(token,layer,form,'cmbAutoJoinMemberLevel');
         xc.getMemberTypeDic(token,layer,form,'cmdCardOpenLevel');
-
+        setTimeout(setBbi(_storeId,form,layer),200);
         //正价币增加 或者减少一条
         $('#addPrice').on('click',function () {
            if($('.priceCoinBox').find($('.priceCoin')).length<$('body').find('select[name="limitType"]').eq(0).find('option').length-1) {
@@ -735,7 +736,7 @@
             }else {
                 for(let i in cmbAutoJoinMemberLevels ){
                     if(cmbAutoJoinMemberLevels[i]==data.elem.value){
-                        cmbAutoJoinMemberLevels.split(i,1);
+                        cmbAutoJoinMemberLevels.splice(i,1);
                     }
                 }
             }

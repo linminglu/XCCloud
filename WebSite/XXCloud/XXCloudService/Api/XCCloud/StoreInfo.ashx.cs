@@ -163,7 +163,7 @@ namespace XCCloudService.Api.XCCloud
                     }
                 }
 
-                string sql = @"select a.StoreID, a.MerchID, a.StoreName, a.Password, a.AuthorExpireDate, a.AreaCode, a.Address, a.Contacts, a.Mobile, b.DictKey as SelttleTypeStr, c.DictKey as StoreStateStr from Base_StoreInfo a " +
+                string sql = @"select a.StoreID, a.MerchID, a.StoreName, a.Password, convert(varchar, a.AuthorExpireDate, 23) AS AuthorExpireDate, a.AreaCode, a.Address, a.Contacts, a.Mobile, b.DictKey as SelttleTypeStr, c.DictKey as StoreStateStr from Base_StoreInfo a " +
                     " left join (select b.* from Dict_System a inner join Dict_System b on a.ID=b.PID where a.DictKey='结算类型' and a.PID=0) b on convert(varchar, a.SelttleType)=b.DictValue " +
                     " left join (select b.* from Dict_System a inner join Dict_System b on a.ID=b.PID where a.DictKey='门店状态' and a.PID=0) c on convert(varchar, a.StoreState)=c.DictValue " +
                     " where a.MerchID=@merchId ";
@@ -478,12 +478,12 @@ namespace XCCloudService.Api.XCCloud
                 base_StoreInfo.Lat = ObjectExt.Todecimal(lat);
                 base_StoreInfo.Contacts = contracts;
                 base_StoreInfo.IDCard = idCard;
-                base_StoreInfo.IDExpireDate = ObjectExt.Todatetime(idExpireDate);
+                base_StoreInfo.IDExpireDate = ObjectExt.Todate(idExpireDate);
                 base_StoreInfo.Mobile = mobile;
                 base_StoreInfo.ShopSignPhoto = shopSignPhoto;
                 base_StoreInfo.LicencePhoto = licencePhoto;
                 base_StoreInfo.LicenceID = licenceId;
-                base_StoreInfo.LicenceExpireDate = ObjectExt.Todatetime(licenceExpireDate);
+                base_StoreInfo.LicenceExpireDate = ObjectExt.Todate(licenceExpireDate);
                 base_StoreInfo.BankType = bankType;
                 base_StoreInfo.BankCode = bankCode;
                 base_StoreInfo.BankAccount = bankAccount;
@@ -748,49 +748,7 @@ namespace XCCloudService.Api.XCCloud
                 {
                     errMsg = "修改门店信息失败";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
-
-                //#region 初始化运营参数
-
-                ////初始化门店运营参数配置
-                //var dbContext = DbContextFactory.CreateByModelNamespace(typeof(Data_Parameters).Namespace);
-                //var data_Parameter = dbContext.Set<Data_Parameters>().AsQueryable();
-                //if (isStoreTagEdit)
-                //{
-                //    foreach (var model in data_Parameter.Where(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)))
-                //    {
-                //        dbContext.Entry(model).State = EntityState.Deleted;
-                //    }
-                //}
-                
-                //if (base_StoreInfo.StoreTag == (int)MerchTag.Game)
-                //{
-                //    data_Parameter = data_Parameter.Where(p => p.StoreID.Equals(MerchTag.Game.ToString()));
-                //}
-                //else
-                //{
-                //    data_Parameter = data_Parameter.Where(p => p.StoreID.Equals(MerchTag.Lottery.ToString()));
-                //}
-                
-                //foreach (var model in data_Parameter.ToList())
-                //{
-                //    var data_ParameterModel = new Data_Parameters();
-                //    data_ParameterModel.StoreID = storeId;
-                //    data_ParameterModel.ParameterName = model.ParameterName;
-                //    data_ParameterModel.ParameterValue = model.ParameterValue;
-                //    data_ParameterModel.System = model.System;
-                //    data_ParameterModel.IsAllow = model.IsAllow;
-                //    data_ParameterModel.Note = model.Note;
-                //    dbContext.Entry(data_ParameterModel).State = EntityState.Added;
-                //}
-
-                //if (dbContext.SaveChanges() < 0)
-                //{
-                //    errMsg = "初始化门店运营参数失败";
-                //    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                //}
-
-                //#endregion
+                }                
 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
             }
