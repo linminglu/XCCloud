@@ -295,10 +295,6 @@
             </div>
         </form>
         <table id="detailTable" lay-filter="detailTable" class="layui-hide"></table>
-
-        <!--<div style="text-align:center;">-->
-            <!--<button type="button" class="layui-btn layui-btn-normal" id="saveInDeal">确定</button>-->
-        <!--</div>-->
     </div>
 </body>
 <script src="js/jquery-1.8.3-min.js"></script>
@@ -342,17 +338,18 @@
         'url':'/XCCloud/GoodsInfo?action=QueryGoodRequest',
         'elem':'#giftAllocationTB',
         'cols':[
-             {field:'ID', title:'调拨单ID', align: 'center', sort: true}
-            ,{field:'RequestCode',title: '调拨单号', align: 'center'}
+             // {field:'ID', title:'调拨单ID', align: 'center', sort: true},
+            {field:'RequestCode',title: '调拨单号', align: 'center'}
             ,{field:'CreateTime',title: '申请时间', align: 'center'}
             ,{field:'CreateStore',title: '申请门店', align: 'center'}
             ,{field:'CreateUser', title: '申请人', align: 'center'}
             ,{field:'RequstTypeStr', title: '调拨方式', align: 'center'}
-            ,{field:'OutStoreName', title: '调拨出库门店', align: 'center'}
-            ,{field:'OutDepotName', title: '调拨出库仓库', align: 'center',templet:'#reqState'}
+
+            ,{field:'OutStoreName', title: '调出门店', align: 'center'}
+            ,{field:'OutDepotName', title: '调出仓库', align: 'center',templet:'#reqState'}
             ,{field:'OutDepotTime', title: '出库时间', align: 'center'}
-            ,{field:'InStoreName', title: '调拨入库门店', align: 'center'}
-            ,{field:'InDepotName', title: '调拨入库仓库', align: 'center'}
+            ,{field:'InStoreName', title: '调入门店', align: 'center'}
+            ,{field:'InDepotName', title: '调入仓库', align: 'center'}
             ,{field:'InDepotTime', title: '入库时间', align: 'center'}
             ,{field:'StateStr', title: '调拨状态', align: 'center'}
             ,{field:'Note', title: '调拨说明', align: 'center'}
@@ -832,8 +829,10 @@
                                         ,{field:'GoodName',title: '商品名称', align: 'center',width:120} //width 支持：数字、百分比和不填写。
                                         ,{field:'GoodTypeStr', title: '商品类别', align: 'center',width:100}
                                         ,{field:'AvailableCount', title: '可调拨数', align: 'center',width:100}
+
                                         ,{field:'RequestCount', title: '申请数量', align: 'center',width:100}
                                         ,{field:'SendCount', title: '实发数量', align: 'center',width:100}
+                                        ,{field:'StorageCount', title: '入库数量', align: 'center'}
                                         ,{field:'CostPrice', title: '含税单价', align: 'center',width:100}
                                         ,{field:'Tax', title: '税率', align: 'center',width:100}
                                         ,{field:'OutDepotName', title: '出库仓库', align: 'center',width:100}

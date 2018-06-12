@@ -21,7 +21,7 @@
     let xc=xcActionSystem.prototype;
     let token=xc.getStorage('token');
     let parm = {
-        'obj': {'ticketType':1,'businessType':1,'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'},
+        'obj': {'ticketType':2,'businessType':1,'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'},
         'url': '/XCCloud/ProjectTicket?action=QueryProjectTicket',
         'elem': '#groupTickets',
         'cols': [{field: 'ID', title: '项目ID', align: 'center'}
@@ -58,7 +58,6 @@
                     if(res_=="周一、周二、周三、周四、周五、周六、周天") {
                         res_="全周"
                     }
-                    console.log(res_)
                     return res_;
                 }}
             , {field: 'PeriodLimit', title: '限定时段', align: 'center',templet:'#charge'}

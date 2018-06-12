@@ -694,11 +694,11 @@ namespace XCCloudService.Common.Enum
     public enum TicketType
     {
         [Description("计次票")]
-        Count = 0,
-        [Description("期限票")]
-        Period = 1,
+        Count = 0,        
         [Description("团体票")]
-        Group = 2 
+        Group = 1, 
+        [Description("期限票")]
+        Period = 2
     }
 
     /// <summary>
