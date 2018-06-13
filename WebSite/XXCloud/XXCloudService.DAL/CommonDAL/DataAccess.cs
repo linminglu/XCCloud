@@ -646,15 +646,15 @@ namespace XCCloudService.DAL.CommonDAL
             {
                 for (int i = 0; i < Arr.Count; i++)
                 {
-                    sql += "执行语句：" + ((TransactionBody)Arr[i]).SSQLText;
-                    SqlCommand cmd = new SqlCommand(((TransactionBody)Arr[i]).SSQLText, conn, trans);
+                    //sql += "执行语句：" + ((TransactionBody)Arr[i]).SSQLText;
+                    SqlCommand cmd = new SqlCommand(Arr[i].SSQLText, conn, trans);
                     cmd.CommandTimeout = 120;
-                    if (((TransactionBody)Arr[i]).Parameters != null && ((TransactionBody)Arr[i]).Parameters.Length > 0)
+                    if (Arr[i].Parameters != null && Arr[i].Parameters.Length > 0)
                     {
-                        foreach (SqlParameter p in ((TransactionBody)Arr[i]).Parameters)
+                        foreach (SqlParameter p in Arr[i].Parameters)
                         {
                             cmd.Parameters.Add(p);
-                            sql += "|参数：" + p.Value;
+                            //sql += "|参数：" + p.Value;
                         }
                     }
                     cmd.ExecuteNonQuery();

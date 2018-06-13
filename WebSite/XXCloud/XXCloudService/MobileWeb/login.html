@@ -28,6 +28,8 @@
             <img class="itemImg" slot="icon" src="images/account.png">
             <input slot="right" type="number" placeholder="请输入手机号" v-model="mobile" v-on:blur="inputPrompt" oninput="if(value.length>11)value=value.slice(0,11)">
         </yd-cell-item>
+    </yd-cell-group>
+    <yd-cell-group>
         <yd-cell-item arrow>
             <img class="itemImg" slot="icon" src="images/birthday.png">
             <span slot="left">生日：</span>

@@ -26,5 +26,6 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> State { get; set; }
         public Nullable<System.DateTime> CreateTime { get; set; }
         public string Verifiction { get; set; }
+        public Nullable<int> GameIndexID { get; set; }
     }
 }

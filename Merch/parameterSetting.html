@@ -514,7 +514,7 @@
             data: {parasJson: JSON.stringify(obj)},
             success: function (data) {
                 data = JSON.parse(data);
-                 console.log(data);
+                 // console.log(data);
                 if(data.result_code==1){
                     let arr=data.result_data;
                     if(arr[0].Tag==0){
@@ -619,15 +619,41 @@
         }
     })
 }
+    function initMember(token,layer,form){
+        let _obj={'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+        let parseJson = JSON.stringify(_obj);
+        $.ajax({
+            type:'post',
+            url:'/XCCloud/Member?action=GetMemberLevelDic',
+            contentType: "application/json; charset=utf-8",
+            async:false,
+            data:{parasJson: parseJson},
+            success: function (data) {
+                data = JSON.parse(data);
+                if (data.result_code == 1) {
+                    let arr=data.result_data;
+                    $('#cmbAutoJoinMemberLevel').html('<option>-请选择-</option>');
+                    $('#cmbCardOpenLevel').html('<option>-请选择-</option>');
+                    for(let i in arr){
+                        $('#cmbAutoJoinMemberLevel').append('<option value="'+arr[i].MemberLevelID+'">'+arr[i].MemberLevelName+'</option>')
+                        $('#cmbCardOpenLevel').append('<option value="'+arr[i].MemberLevelID+'">'+arr[i].MemberLevelName+'</option>')
+                    }
+                    form.render('select');
+                } else {
+                    layer.msg(data.result_msg);
+                }
+            }
+        });
+
+    }
     layui.use(['element','form','layer','table'], function(){
         let element = layui.element;
         let form=layui.form;
         let layer=layui.layer;
         let table=layui.table;
-        ifNeedSet(_storeId,form,layer);
 
-        xc.getMemberTypeDic(token,layer,form,'cmbAutoJoinMemberLevel');
-        xc.getMemberTypeDic(token,layer,form,'cmbCardOpenLevel');
+        initMember(token,layer,form);
+        ifNeedSet(_storeId,form,layer);
         setTimeout(setBbi(_storeId,form,layer),200);
         //正价币增加 或者减少一条
         $('#addPrice').on('click',function () {

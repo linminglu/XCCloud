@@ -830,7 +830,7 @@
                 </div>
                 <label class="layui-form-mid">支付</label>
                 <div class="layui-input-inline" style="width: 100px">
-                    <input type="text" class="layui-input" name="pCoin1">
+                    <input type="text" class="layui-input groupValue" name="pCoin1">
                 </div>
                 <label class="layui-form-mid">支付类别</label>
                 <div class="layui-input-inline"  style="width: 105px">
@@ -838,11 +838,11 @@
                 </div>
                 <label class="layui-form-mid">支付</label>
                 <div class="layui-input-inline" style="width: 100px">
-                    <input type="text" class="layui-input" name="pCoin2">
+                    <input type="text" class="layui-input groupValue" name="pCoin2">
                 </div>
                 <label class="layui-form-mid">启动局数</label>
                 <div class="layui-input-inline" style="width: 100px">
-                    <input type="text" class="layui-input" name="playCount">
+                    <input type="text" class="layui-input groupValue" name="playCount">
                 </div>
                 <label class="layui-form-mid">局</label>
             </div>
@@ -1049,6 +1049,7 @@ let memberLevelId='';let memberLevels='';let MemberLevelNames='';
             }
         })
     }
+    let index5,index4;
   layui.use(['form','element','layer','table','laydate'],function () {
       let element=layui.element;
       let form=layui.form;
@@ -1466,7 +1467,6 @@ let memberLevelId='';let memberLevels='';let MemberLevelNames='';
                       }else {layer.msg(data.result_msg||data.return_msg)}
                   }
               })
-
           }else if(layEvent==='edit'){
               xc.getGameInfoByid(data.ID,token,form,layer,table);
               $('.saveBox').css('display','inline-block');
@@ -1736,7 +1736,8 @@ let memberLevelId='';let memberLevels='';let MemberLevelNames='';
             xc.getMemberTypeDic(token,layer,form,'memberLevelId');
             xc.getBalanceTypeDic ('',token,layer,form,'BalanceIndex1');
             xc.getBalanceTypeDic('',token,layer,form,'BalanceIndex2');
-            index= layer.open({
+            $('.groupValue').val('');
+            index5= layer.open({
                 title:'二维码',
                 type:1,
                 area:'1000px',
@@ -1780,8 +1781,8 @@ let memberLevelId='';let memberLevels='';let MemberLevelNames='';
                   data = JSON.parse(data);
                   if (data.result_code == 1) {
                       layer.msg('保存成功',{time:1500},function () {
-                         layer.close(index);
-                          newMem(id,token,table,layer)
+                          layer.close(index5);
+                          newMem(id,token,table,layer,'1')
                       });
                   } else {
                       layer.msg(data.result_msg||data.return_msg);
@@ -2025,7 +2026,7 @@ let memberLevelId='';let memberLevels='';let MemberLevelNames='';
       }
       form.render();
   };
-  function newMem(gameId,token,table,layer) {
+  function newMem(gameId,token,table,layer,t) {
       let _obj={'gameId':gameId,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
       let url='/XCCloud/GameInfo?action=GetGameAppMemberRule';
       let parasJson = JSON.stringify(_obj);
@@ -2059,10 +2060,13 @@ let memberLevelId='';let memberLevels='';let MemberLevelNames='';
                       , page: {page: true, limits: [10, 15, 20, 30, 50, 100]}
                       , limit: 10
                   });
-                  layer.open({title:'会员扫码优惠',
-                      type:1,
-                      area:'1000px',
-                      content:$('#memberCodeModel')})
+                  if(t==null){
+                      index4=layer.open({title:'会员扫码优惠',
+                          type:1,
+                          area:'1000px',
+                          content:$('#memberCodeModel')})
+                  }
+
               }else {layer.msg(data.result_msg||data.return_msg)}
           }
       })
@@ -2083,7 +2087,7 @@ let memberLevelId='';let memberLevels='';let MemberLevelNames='';
       });
   }
 
-    function setBal(arr,form,id,selected){
+  function setBal(arr,form,id,selected){
         $('#'+id).html('<option>-请选择-</option>');
         for(let i in arr){
             if(selected!=undefined){

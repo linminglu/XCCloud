@@ -20,10 +20,13 @@
         .addCard{width: 5rem;height: 2.5rem;margin: 0.3rem auto;text-align: center;}
         .addCard img{width: 2rem;height: 2rem;}
         .addCard p{margin-top: 0.2rem;font-size: 0.26rem;line-height: 0.3rem;}
+        [v-cloak] {
+            display: none;
+        }
     </style>
 </head>
 <body>
-    <div id="app">
+    <div id="app" v-cloak>
         <yd-layout>
             <yd-cell-item class="index-header">
                 <img slot="icon" class="wx-img" :src="headimgurl">
@@ -70,7 +73,7 @@
                 <!--<yd-navbar-next-icon></yd-navbar-next-icon>-->
             <!--</router-link>-->
         <!--</yd-navbar>-->
-        <!--微信头部颜色393a3f{{[]}}-->
+        <!--微信头部颜色393a3f{{【】}}-->
     </div>
 <script src="js/jquery-1.8.3-min.js"></script>
 <!-- 引入 Vue -->
@@ -98,7 +101,7 @@
             MemberBalances : "",
             MemberId : "",
             Token : "",
-            userThirdId : "",
+            userThirdId : "oNWocwSC_GFO8n_8mtZ0iV9tL0WI",
             tiedCard:true
         },
         mounted: function () {
@@ -113,9 +116,10 @@
                 var that =this;
                 var ifScanCode = getStorage("ifScanCode");        //是否是扫码进入
                 var deviceToken = getStorage("deviceNo")||"";       //获取设备令牌
-                var userThirdId = getStorage("userThirdId")||"";       //获取第三方令牌
+//                var userThirdId = getStorage("userThirdId")||"";     //获取第三方令牌
+//                that.userThirdId = userThirdId;
                 if(ifScanCode == "1"){
-                    var getDeviceInfo ={sysId: sysId,versionNo: versionNo,token:"oNWocwSC_GFO8n_8mtZ0iV9tL0WI",deviceToken:"86A8AFBDB2E84B8E95BF52C052E8BA7C"};
+                    var getDeviceInfo ={sysId: sysId,versionNo: versionNo,token:that.userThirdId,deviceToken:"86A8AFBDB2E84B8E95BF52C052E8BA7C"};
                     axios.post('/XCCloudH5/Amusement?action=getDeviceInfo', getDeviceInfo).then(function (res) {
                         that.$dialog.loading.close();
                         that.msgPrompt(res.data);

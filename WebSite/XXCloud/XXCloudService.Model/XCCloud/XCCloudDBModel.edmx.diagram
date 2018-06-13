@@ -44,7 +44,6 @@
         <EntityTypeShape EntityType="XCCloudDBModel.Data_Discount_RecordStore" Width="1.5" PointX="20.75" PointY="0.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_Discount_StoreList" Width="1.5" PointX="20.75" PointY="4.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_DiscountRule" Width="1.5" PointX="20.75" PointY="7.75" />
-        <EntityTypeShape EntityType="XCCloudDBModel.Data_Food_Detial" Width="1.5" PointX="20.75" PointY="13.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_Food_Level" Width="1.5" PointX="14.75" PointY="20.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_Food_Sale" Width="1.5" PointX="20.75" PointY="17.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_Food_StoreList" Width="1.5" PointX="2.75" PointY="21.75" />
@@ -176,6 +175,7 @@
         <EntityTypeShape EntityType="XCCloudDBModel.Data_Card_Balance" Width="1.5" PointX="9.375" PointY="43.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_Card_Balance_Free" Width="1.5" PointX="3.375" PointY="37.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_Project_TicketInfo" Width="1.5" PointX="43.375" PointY="0.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.Data_Food_Detial" Width="1.5" PointX="43.375" PointY="14.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -12,7 +12,7 @@ namespace XCCloudService.Model.WeiXin
         {
             this.MemberId = string.Empty;
             this.Mobile = string.Empty;
-            //this.CurrStoreId = string.Empty;
+            this.CurrStoreId = string.Empty;
         }
         public string Token { get; set; }
 
@@ -20,7 +20,7 @@ namespace XCCloudService.Model.WeiXin
 
         public string Mobile { set; get; }
 
-        //public string CurrStoreId { get; set; }
+        public string CurrStoreId { get; set; }
 
         /// <summary>
         /// 微信基本信息
@@ -50,14 +50,20 @@ namespace XCCloudService.Model.WeiXin
 
     public class MemberCard
     {
+        public MemberCard()
+        {
+            this.CardBalanceList = new List<CardBalance>();
+        }
         public string CardId { get; set; }
 
         public string ICCardId { get; set; }
 
         public int MemberLevelId { get; set; }
+
+        public List<CardBalance> CardBalanceList { get; set; }
     }
 
-    public class MemberBalance
+    public class CardBalance
     {
         public int BalanceIndex { get; set; }
 

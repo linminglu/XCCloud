@@ -767,7 +767,6 @@
           <Property Name="MerchID" Type="varchar" MaxLength="15" />
           <Property Name="FoodID" Type="int" />
           <Property Name="FoodType" Type="int" />
-          <Property Name="BalanceType" Type="int" />
           <Property Name="OperateType" Type="int" />
           <Property Name="WeightValue" Type="decimal" Precision="18" Scale="2" />
           <Property Name="ContainID" Type="int" />
@@ -985,6 +984,7 @@
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="MerchID" Type="varchar" MaxLength="15" />
           <Property Name="RuleType" Type="int" />
+          <Property Name="GameIndexID" Type="int" />
           <Property Name="MemberLevelID" Type="int" />
           <Property Name="StartTime" Type="datetime" />
           <Property Name="EndTime" Type="datetime" />
@@ -1405,7 +1405,7 @@
           </Key>
           <Property Name="ID" Type="varchar" MaxLength="32" Nullable="false" />
           <Property Name="MerchID" Type="varchar" MaxLength="15" />
-          <Property Name="ICCardID" Type="varchar" MaxLength="20" />
+          <Property Name="ICCardID" Type="varchar" MaxLength="32" />
           <Property Name="ParentCard" Type="varchar" MaxLength="32" />
           <Property Name="JoinChannel" Type="int" />
           <Property Name="CardPassword" Type="varchar" MaxLength="8" />
@@ -3252,7 +3252,6 @@
           <EntitySet Name="Data_Discount_RecordStore" EntityType="XCCloudDBModel.Data_Discount_RecordStore" />
           <EntitySet Name="Data_Discount_StoreList" EntityType="XCCloudDBModel.Data_Discount_StoreList" />
           <EntitySet Name="Data_DiscountRule" EntityType="XCCloudDBModel.Data_DiscountRule" />
-          <EntitySet Name="Data_Food_Detial" EntityType="XCCloudDBModel.Data_Food_Detial" />
           <EntitySet Name="Data_Food_Level" EntityType="XCCloudDBModel.Data_Food_Level" />
           <EntitySet Name="Data_Food_Sale" EntityType="XCCloudDBModel.Data_Food_Sale" />
           <EntitySet Name="Data_Food_StoreList" EntityType="XCCloudDBModel.Data_Food_StoreList" />
@@ -3384,6 +3383,7 @@
           <EntitySet Name="Data_Card_Balance" EntityType="XCCloudDBModel.Data_Card_Balance" />
           <EntitySet Name="Data_Card_Balance_Free" EntityType="XCCloudDBModel.Data_Card_Balance_Free" />
           <EntitySet Name="Flw_Project_TicketInfo" EntityType="XCCloudDBModel.Flw_Project_TicketInfo" />
+          <EntitySet Name="Data_Food_Detial" EntityType="XCCloudDBModel.Data_Food_Detial" />
         </EntityContainer>
         <EntityType Name="Base_ChainRule_Store">
           <Key>
@@ -3932,22 +3932,6 @@
           <Property Name="State" Type="Int32" />
           <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
         </EntityType>
-        <EntityType Name="Data_Food_Detial">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="FoodID" Type="Int32" />
-          <Property Name="FoodType" Type="Int32" />
-          <Property Name="BalanceType" Type="Int32" />
-          <Property Name="OperateType" Type="Int32" />
-          <Property Name="WeightValue" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="ContainID" Type="Int32" />
-          <Property Name="ContainCount" Type="Int32" />
-          <Property Name="Status" Type="Int32" />
-          <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
-        </EntityType>
         <EntityType Name="Data_Food_Level">
           <Key>
             <PropertyRef Name="ID" />
@@ -4116,6 +4100,7 @@
           <Property Name="State" Type="Int32" />
           <Property Name="CreateTime" Type="DateTime" Precision="3" />
           <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="GameIndexID" Type="Int32" />
         </EntityType>
         <EntityType Name="Data_GameFreeRule_List">
           <Key>
@@ -6085,7 +6070,7 @@
           </Key>
           <Property Name="ID" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="false" />
           <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="ICCardID" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="ICCardID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
           <Property Name="ParentCard" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
           <Property Name="JoinChannel" Type="Int32" />
           <Property Name="CardPassword" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
@@ -6160,6 +6145,21 @@
           <Property Name="BalanceIndex" Type="Int32" />
           <Property Name="BalanceCount" Type="Decimal" Precision="10" Scale="2" />
           <Property Name="RemainDividePrice" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Data_Food_Detial">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="FoodID" Type="Int32" />
+          <Property Name="FoodType" Type="Int32" />
+          <Property Name="OperateType" Type="Int32" />
+          <Property Name="WeightValue" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="ContainID" Type="Int32" />
+          <Property Name="ContainCount" Type="Int32" />
+          <Property Name="Status" Type="Int32" />
           <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
         </EntityType>
         </Schema>
@@ -6753,23 +6753,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Data_Food_Detial">
-            <EntityTypeMapping TypeName="XCCloudDBModel.Data_Food_Detial">
-              <MappingFragment StoreEntitySet="Data_Food_Detial">
-                <ScalarProperty Name="Verifiction" ColumnName="Verifiction" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="ContainCount" ColumnName="ContainCount" />
-                <ScalarProperty Name="ContainID" ColumnName="ContainID" />
-                <ScalarProperty Name="WeightValue" ColumnName="WeightValue" />
-                <ScalarProperty Name="OperateType" ColumnName="OperateType" />
-                <ScalarProperty Name="BalanceType" ColumnName="BalanceType" />
-                <ScalarProperty Name="FoodType" ColumnName="FoodType" />
-                <ScalarProperty Name="FoodID" ColumnName="FoodID" />
-                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Data_Food_Level">
             <EntityTypeMapping TypeName="XCCloudDBModel.Data_Food_Level">
               <MappingFragment StoreEntitySet="Data_Food_Level">
@@ -6935,6 +6918,7 @@
           <EntitySetMapping Name="Data_GameFreeRule">
             <EntityTypeMapping TypeName="XCCloudDBModel.Data_GameFreeRule">
               <MappingFragment StoreEntitySet="Data_GameFreeRule">
+                <ScalarProperty Name="GameIndexID" ColumnName="GameIndexID" />
                 <ScalarProperty Name="Verifiction" ColumnName="Verifiction" />
                 <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
                 <ScalarProperty Name="State" ColumnName="State" />
@@ -9110,6 +9094,22 @@
                 <ScalarProperty Name="MemberID" ColumnName="MemberID" />
                 <ScalarProperty Name="CardID" ColumnName="CardID" />
                 <ScalarProperty Name="FoodSaleID" ColumnName="FoodSaleID" />
+                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Data_Food_Detial">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Data_Food_Detial">
+              <MappingFragment StoreEntitySet="Data_Food_Detial">
+                <ScalarProperty Name="Verifiction" ColumnName="Verifiction" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="ContainCount" ColumnName="ContainCount" />
+                <ScalarProperty Name="ContainID" ColumnName="ContainID" />
+                <ScalarProperty Name="WeightValue" ColumnName="WeightValue" />
+                <ScalarProperty Name="OperateType" ColumnName="OperateType" />
+                <ScalarProperty Name="FoodType" ColumnName="FoodType" />
+                <ScalarProperty Name="FoodID" ColumnName="FoodID" />
                 <ScalarProperty Name="MerchID" ColumnName="MerchID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>

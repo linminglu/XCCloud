@@ -278,7 +278,7 @@ namespace XXCloudService.Api.XCCloud
                     {
                         var dicPara = new Dictionary<string, object>(el, StringComparer.OrdinalIgnoreCase);
                         var foodDetailType = dicPara.Get("foodDetailType").Toint();
-                        var balanceType = dicPara.Get("balanceType").Toint();
+                        //var balanceType = dicPara.Get("balanceType").Toint();
                         var operateType = dicPara.Get("operateType").Toint();
                         var containId = dicPara.Get("containId").Toint();
                         var containCount = dicPara.Get("containCount").Toint();
@@ -290,7 +290,7 @@ namespace XXCloudService.Api.XCCloud
 
                         if (foodDetailType == (int)FoodDetailType.Coin)
                         {
-                            if (!balanceType.Nonempty("会员币种种类", out errMsg))
+                            if (!containId.Nonempty("会员币种种类", out errMsg))
                                 return false;
                             if (!operateType.Nonempty("会员币种处理方式", out errMsg))
                                 return false;
@@ -311,7 +311,7 @@ namespace XXCloudService.Api.XCCloud
                         data_Food_DetialModel.FoodID = iFoodId;
                         data_Food_DetialModel.Status = 1;
                         data_Food_DetialModel.FoodType = foodDetailType;
-                        data_Food_DetialModel.BalanceType = balanceType;
+                        //data_Food_DetialModel.BalanceType = balanceType;
                         data_Food_DetialModel.ContainCount = containCount;
                         data_Food_DetialModel.ContainID = containId;
                         //data_Food_DetialModel.WeightType = (int)WeightType.Money;
@@ -509,7 +509,7 @@ namespace XXCloudService.Api.XCCloud
                                   from c in c1.DefaultIfEmpty()
                                   //join d in Dict_SystemService.N.GetModels(p => p.PID == FoodDetailTypeId) on (a.FoodType + "") equals d.DictValue into d1
                                   //from d in d1.DefaultIfEmpty()
-                                  join f in Dict_BalanceTypeService.N.GetModels(p => p.State == 1) on a.BalanceType equals f.ID into f1
+                                  join f in Dict_BalanceTypeService.N.GetModels(p => p.State == 1) on a.ContainID equals f.ID into f1
                                   from f in f1.DefaultIfEmpty()
                                   join g in Data_CouponInfoService.N.GetModels() on new { ContainID = a.ContainID, FoodType = a.FoodType } equals new { ContainID = (int?)g.ID, FoodType = (int?)FoodDetailType.Coupon } into g1
                                   from g in g1.DefaultIfEmpty()
@@ -525,9 +525,8 @@ namespace XXCloudService.Api.XCCloud
                                                     (a.FoodType == (int)FoodDetailType.Ticket) ? (b != null ? b.ProjectName : string.Empty) :
                                                     (a.FoodType == (int)FoodDetailType.Coupon) ? (g != null ? g.CouponName : string.Empty) : string.Empty,
                                       FoodDetailType = a.FoodType,
-                                      BalanceType = a.BalanceType,
+                                      //BalanceType = a.BalanceType,
                                       FoodDetailTypeStr = (a.FoodType == (int)FoodDetailType.Coin) ? (f != null ? f.TypeName : string.Empty) : 
-                                                            //(d != null ? d.DictKey : string.Empty),
                                                             (a.FoodType == (int)FoodDetailType.Coupon ? "优惠券" : a.FoodType == (int)FoodDetailType.Digit ? "数字币" : a.FoodType == (int)FoodDetailType.Good ? "礼品" : a.FoodType == (int)FoodDetailType.Ticket ? "门票" : string.Empty),
                                       ContainCount = a.ContainCount,
                                       //Days = a.Days,

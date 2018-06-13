@@ -7,6 +7,7 @@ using XCCloudService.Base;
 using XCCloudService.BLL.XCCloud;
 using XCCloudService.Business;
 using XCCloudService.Business.Common;
+using XCCloudService.Business.XCCloud;
 using XCCloudService.CacheService;
 using XCCloudService.Common;
 using XCCloudService.Model.WeiXin;
@@ -85,6 +86,7 @@ namespace XXCloudService.Api.XCCloudH5
             try
             {
                 string token = dicParas.ContainsKey("token") ? dicParas["token"].ToString().Trim() : "";
+                string storeId = dicParas.ContainsKey("storeId") ? dicParas["storeId"].ToString().Trim() : "";
                 if (string.IsNullOrEmpty(token))
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "用户令牌无效");
@@ -97,7 +99,13 @@ namespace XXCloudService.Api.XCCloudH5
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "用户令牌无效，请重新登陆");
                 }
 
-                if (!string.IsNullOrEmpty(model.MemberId) && model.CurrentCardInfo == null)
+                Base_StoreInfo store = Base_StoreInfoService.I.GetModels(t => t.StoreID == storeId).FirstOrDefault();
+                if(store != null && model.CurrStoreId != store.StoreID)
+                {
+                    model.CurrStoreId = store.StoreID;
+                }
+
+                if (!string.IsNullOrEmpty(model.CurrStoreId) && !string.IsNullOrEmpty(model.MemberId))
                 {
                     Data_Member_Card card = Data_Member_CardService.I.GetModels(t => t.MemberID == model.MemberId).OrderByDescending(t => t.UpdateTime).FirstOrDefault();
                     if (card != null)
@@ -106,9 +114,15 @@ namespace XXCloudService.Api.XCCloudH5
                         cardInfo.CardId = card.ID;
                         cardInfo.ICCardId = card.ICCardID;
                         cardInfo.MemberLevelId = card.MemberLevelID.Value;
+
+                        //卡余额
+                        cardInfo.CardBalanceList = XCCloudStoreBusiness.GetCardStoreBalanceList(card.MerchID, model.CurrStoreId, card.ID);
                         model.CurrentCardInfo = cardInfo;
                     }
                 }
+
+                //更新缓存
+                MemberTokenCache.AddToken(token, model);
 
                 return ResponseModelFactory<MemberTokenModel>.CreateModel(isSignKeyReturn, model);
             }
@@ -245,7 +259,7 @@ namespace XXCloudService.Api.XCCloudH5
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员卡号无效");
                 }
-                if(currCard.ParentCard != "0")
+                if(currCard.CardType == 1)
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "当前卡片为附属卡，不能绑定");
                 }

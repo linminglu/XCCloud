@@ -21,6 +21,8 @@
         .hid_btn{height: 0.5rem;font-size: 0.24rem;line-height: 0.5rem;margin-top: 0.1rem;color: #fff;background: #1E90FF;}
         .hid_contSty{display: flex;flex-direction: row;}
         .hid_contStys{width: 1.6rem;text-align: left;color: #d24a58;}
+        .cardIcon{width: 0.8rem;height: 0.8rem;margin-right: 0.1rem;}
+        .iconSty{color: #1E90FF; line-height: 0.8rem;display: flex;flex-direction: row-reverse;font-size: 0.35rem;margin-top: 0.3rem;margin-right: 0.2rem;}
         [v-cloak] {
             display: none;
         }
@@ -28,6 +30,15 @@
 </head>
 <body>
 <div id="app" v-cloak>
+    <yd-navbar title="莘拍档">
+        <router-link to="h" slot="left">
+            <yd-navbar-back-icon>返回</yd-navbar-back-icon>
+        </router-link>
+        <!--<router-link to="#" slot="right">-->
+            <!--<yd-navbar-next-icon></yd-navbar-next-icon>-->
+        <!--</router-link>-->
+    </yd-navbar>
+    <div class="iconSty" @click="tiedCard"><span>我要绑卡</span><img slot="icon" class="cardIcon" src="images/tiedCard.png"></div>
     <div v-for="(item,index) in memberCard" :key="index">
         <div class='section_items' @click="dropdown(index)">
             <img class="section_image" slot="img" src="images/card.png">
@@ -146,6 +157,10 @@
                     console.log(err);
                 })
 
+            },
+//          绑卡跳转
+            tiedCard:function () {
+                window.location.href = "tiedCard.html"
             },
             dropdown:function (index) {
                 var that =this;
