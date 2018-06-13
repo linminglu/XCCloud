@@ -9,6 +9,7 @@ using Dapper;
 using System.Data.SqlClient;
 using XCCloudService.Model.CustomModel.XCCloud;
 using XCCloudService.Model.WeiXin;
+using XCCloudService.Model.XCCloud;
 
 namespace XCCloudService.Business.XCCloud
 {
@@ -112,6 +113,12 @@ namespace XCCloudService.Business.XCCloud
                 list.Add(cb);
             }
             return list;
+        }
+
+        public static Data_MemberLevel GetMemberLevel(int memberLevelId)
+        {
+            Data_MemberLevel level = Data_MemberLevelService.I.GetModels(t => t.MemberLevelID == memberLevelId).FirstOrDefault();
+            return level;
         }
     }
 }

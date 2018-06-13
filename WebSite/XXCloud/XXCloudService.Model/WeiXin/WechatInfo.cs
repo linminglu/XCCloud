@@ -60,6 +60,8 @@ namespace XCCloudService.Model.WeiXin
 
         public int MemberLevelId { get; set; }
 
+        public string MemberLevelName { get; set; }
+
         public List<CardBalance> CardBalanceList { get; set; }
     }
 

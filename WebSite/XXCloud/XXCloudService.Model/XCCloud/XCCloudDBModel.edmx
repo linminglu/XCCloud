@@ -1736,6 +1736,7 @@
           </Key>
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="MerchID" Type="varchar" MaxLength="15" />
+          <Property Name="StoreID" Type="varchar" MaxLength="15" />
           <Property Name="ProjcetTicketID" Type="int" />
           <Property Name="ProjcetID" Type="int" />
           <Property Name="ProjcetType" Type="int" />
@@ -2543,15 +2544,17 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ID" Type="varchar" MaxLength="32" Nullable="false" />
+          <Property Name="MerchID" Type="varchar" MaxLength="15" />
           <Property Name="StoreID" Type="varchar" MaxLength="15" />
           <Property Name="ProjectTicketCode" Type="varchar" MaxLength="32" />
           <Property Name="MemberID" Type="int" />
           <Property Name="DeviceID" Type="int" />
-          <Property Name="WorkType" Type="int" />
-          <Property Name="WorkState" Type="int" />
-          <Property Name="WorkChannel" Type="int" />
-          <Property Name="WorkTime" Type="datetime" />
+          <Property Name="DeviceName" Type="varchar" MaxLength="50" />
+          <Property Name="InTime" Type="datetime" />
+          <Property Name="OutTime" Type="datetime" />
+          <Property Name="OutMinuteTotal" Type="int" />
+          <Property Name="Verifiction" Type="varchar" MaxLength="32" />
         </EntityType>
         <!--生成过程中发现错误:
 警告 6002: 表/视图“XCCloud.dbo.Flw_ProjectTicket_Bind”未定义主键。已推断出该键，并将定义创建为只读的表/视图。-->
@@ -3327,7 +3330,6 @@
           <EntitySet Name="Flw_Order_Detail" EntityType="XCCloudDBModel.Flw_Order_Detail" />
           <EntitySet Name="Flw_Order_SerialNumber" EntityType="XCCloudDBModel.Flw_Order_SerialNumber" />
           <EntitySet Name="Flw_Project_PlayTime" EntityType="XCCloudDBModel.Flw_Project_PlayTime" />
-          <EntitySet Name="Flw_Project_TicketUse" EntityType="XCCloudDBModel.Flw_Project_TicketUse" />
           <EntitySet Name="Flw_Schedule" EntityType="XCCloudDBModel.Flw_Schedule" />
           <EntitySet Name="Flw_Ticket_Exit" EntityType="XCCloudDBModel.Flw_Ticket_Exit" />
           <EntitySet Name="Log_Operation" EntityType="XCCloudDBModel.Log_Operation" />
@@ -3375,7 +3377,6 @@
           <EntitySet Name="XC_HolidayList" EntityType="XCCloudDBModel.XC_HolidayList" />
           <EntitySet Name="Data_GameEncourage" EntityType="XCCloudDBModel.Data_GameEncourage" />
           <EntitySet Name="Data_ProjectInfo" EntityType="XCCloudDBModel.Data_ProjectInfo" />
-          <EntitySet Name="Data_ProjectTicket_Bind" EntityType="XCCloudDBModel.Data_ProjectTicket_Bind" />
           <EntitySet Name="Flw_ProjectTicket_Bind" EntityType="XCCloudDBModel.Flw_ProjectTicket_Bind" />
           <EntitySet Name="Base_MemberInfo" EntityType="XCCloudDBModel.Base_MemberInfo" />
           <EntitySet Name="Base_ChainRule" EntityType="XCCloudDBModel.Base_ChainRule" />
@@ -3384,6 +3385,8 @@
           <EntitySet Name="Data_Card_Balance_Free" EntityType="XCCloudDBModel.Data_Card_Balance_Free" />
           <EntitySet Name="Flw_Project_TicketInfo" EntityType="XCCloudDBModel.Flw_Project_TicketInfo" />
           <EntitySet Name="Data_Food_Detial" EntityType="XCCloudDBModel.Data_Food_Detial" />
+          <EntitySet Name="Data_ProjectTicket_Bind" EntityType="XCCloudDBModel.Data_ProjectTicket_Bind" />
+          <EntitySet Name="Flw_Project_TicketUse" EntityType="XCCloudDBModel.Flw_Project_TicketUse" />
         </EntityContainer>
         <EntityType Name="Base_ChainRule_Store">
           <Key>
@@ -5104,20 +5107,6 @@
           <Property Name="PayState" Type="Int32" />
           <Property Name="QrCode" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
         </EntityType>
-        <EntityType Name="Flw_Project_TicketUse">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="ProjectTicketCode" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
-          <Property Name="MemberID" Type="Int32" />
-          <Property Name="DeviceID" Type="Int32" />
-          <Property Name="WorkType" Type="Int32" />
-          <Property Name="WorkState" Type="Int32" />
-          <Property Name="WorkChannel" Type="Int32" />
-          <Property Name="WorkTime" Type="DateTime" Precision="3" />
-        </EntityType>
         <EntityType Name="Flw_Schedule">
           <Key>
             <PropertyRef Name="ID" />
@@ -6003,20 +5992,6 @@
           <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
           <Property Name="ForceUse" Type="Int32" />
         </EntityType>
-        <EntityType Name="Data_ProjectTicket_Bind">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="ProjcetTicketID" Type="Int32" />
-          <Property Name="ProjcetID" Type="Int32" />
-          <Property Name="ProjcetType" Type="Int32" />
-          <Property Name="UseCount" Type="Int32" />
-          <Property Name="AllowShareCount" Type="Int32" />
-          <Property Name="WeightValue" Type="Int32" />
-          <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
-        </EntityType>
         <EntityType Name="Flw_ProjectTicket_Bind">
           <Key>
             <PropertyRef Name="ID" />
@@ -6160,6 +6135,37 @@
           <Property Name="ContainID" Type="Int32" />
           <Property Name="ContainCount" Type="Int32" />
           <Property Name="Status" Type="Int32" />
+          <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Data_ProjectTicket_Bind">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="ProjcetTicketID" Type="Int32" />
+          <Property Name="ProjcetID" Type="Int32" />
+          <Property Name="ProjcetType" Type="Int32" />
+          <Property Name="UseCount" Type="Int32" />
+          <Property Name="AllowShareCount" Type="Int32" />
+          <Property Name="WeightValue" Type="Int32" />
+          <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Flw_Project_TicketUse">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="ProjectTicketCode" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="MemberID" Type="Int32" />
+          <Property Name="DeviceID" Type="Int32" />
+          <Property Name="DeviceName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="InTime" Type="DateTime" Precision="3" />
+          <Property Name="OutTime" Type="DateTime" Precision="3" />
+          <Property Name="OutMinuteTotal" Type="Int32" />
           <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
         </EntityType>
         </Schema>
@@ -8000,21 +8006,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Flw_Project_TicketUse">
-            <EntityTypeMapping TypeName="XCCloudDBModel.Flw_Project_TicketUse">
-              <MappingFragment StoreEntitySet="Flw_Project_TicketUse">
-                <ScalarProperty Name="WorkTime" ColumnName="WorkTime" />
-                <ScalarProperty Name="WorkChannel" ColumnName="WorkChannel" />
-                <ScalarProperty Name="WorkState" ColumnName="WorkState" />
-                <ScalarProperty Name="WorkType" ColumnName="WorkType" />
-                <ScalarProperty Name="DeviceID" ColumnName="DeviceID" />
-                <ScalarProperty Name="MemberID" ColumnName="MemberID" />
-                <ScalarProperty Name="ProjectTicketCode" ColumnName="ProjectTicketCode" />
-                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Flw_Schedule">
             <EntityTypeMapping TypeName="XCCloudDBModel.Flw_Schedule">
               <MappingFragment StoreEntitySet="Flw_Schedule">
@@ -8947,21 +8938,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Data_ProjectTicket_Bind">
-            <EntityTypeMapping TypeName="XCCloudDBModel.Data_ProjectTicket_Bind">
-              <MappingFragment StoreEntitySet="Data_ProjectTicket_Bind">
-                <ScalarProperty Name="Verifiction" ColumnName="Verifiction" />
-                <ScalarProperty Name="WeightValue" ColumnName="WeightValue" />
-                <ScalarProperty Name="AllowShareCount" ColumnName="AllowShareCount" />
-                <ScalarProperty Name="UseCount" ColumnName="UseCount" />
-                <ScalarProperty Name="ProjcetType" ColumnName="ProjcetType" />
-                <ScalarProperty Name="ProjcetID" ColumnName="ProjcetID" />
-                <ScalarProperty Name="ProjcetTicketID" ColumnName="ProjcetTicketID" />
-                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Flw_ProjectTicket_Bind">
             <EntityTypeMapping TypeName="XCCloudDBModel.Flw_ProjectTicket_Bind">
               <MappingFragment StoreEntitySet="Flw_ProjectTicket_Bind">
@@ -9110,6 +9086,39 @@
                 <ScalarProperty Name="OperateType" ColumnName="OperateType" />
                 <ScalarProperty Name="FoodType" ColumnName="FoodType" />
                 <ScalarProperty Name="FoodID" ColumnName="FoodID" />
+                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Data_ProjectTicket_Bind">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Data_ProjectTicket_Bind">
+              <MappingFragment StoreEntitySet="Data_ProjectTicket_Bind">
+                <ScalarProperty Name="Verifiction" ColumnName="Verifiction" />
+                <ScalarProperty Name="WeightValue" ColumnName="WeightValue" />
+                <ScalarProperty Name="AllowShareCount" ColumnName="AllowShareCount" />
+                <ScalarProperty Name="UseCount" ColumnName="UseCount" />
+                <ScalarProperty Name="ProjcetType" ColumnName="ProjcetType" />
+                <ScalarProperty Name="ProjcetID" ColumnName="ProjcetID" />
+                <ScalarProperty Name="ProjcetTicketID" ColumnName="ProjcetTicketID" />
+                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
+                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Flw_Project_TicketUse">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Flw_Project_TicketUse">
+              <MappingFragment StoreEntitySet="Flw_Project_TicketUse">
+                <ScalarProperty Name="Verifiction" ColumnName="Verifiction" />
+                <ScalarProperty Name="OutMinuteTotal" ColumnName="OutMinuteTotal" />
+                <ScalarProperty Name="OutTime" ColumnName="OutTime" />
+                <ScalarProperty Name="InTime" ColumnName="InTime" />
+                <ScalarProperty Name="DeviceName" ColumnName="DeviceName" />
+                <ScalarProperty Name="DeviceID" ColumnName="DeviceID" />
+                <ScalarProperty Name="MemberID" ColumnName="MemberID" />
+                <ScalarProperty Name="ProjectTicketCode" ColumnName="ProjectTicketCode" />
+                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
                 <ScalarProperty Name="MerchID" ColumnName="MerchID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>

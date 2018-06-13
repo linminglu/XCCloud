@@ -21,11 +21,11 @@
         <div class="layui-form-item">
             <div class="layui-inline">
                 <label  class="layui-form-label">规则名称</label>
-                <div class="layui-input-inline" style="width: 300px">
+                <div class="layui-input-inline" style="width: 390px">
                     <input type="text" class="layui-input" name="RuleName">
                 </div>
             </div>
-           <div class="layui-inline">
+           <div class="layui-inline" style="margin-left: 10px">
                <div class="layui-input-inline">
                    <input type="checkbox" lay-text="启用|禁用" checked lay-skin="switch" name="State" lay-filter="State">
                </div>
@@ -43,7 +43,7 @@
                         <option value="4">本年</option>
                     </select>
                 </div>
-                <div class="layui-input-inline">
+                <div class="layui-input-inline" style="margin-left: 14px;width: 176px">
                     <input type="text" id="StartTime" class="layui-input" name="StartTime">
                 </div>
                 <div class="layui-form-mid">至</div>
@@ -164,7 +164,7 @@
     layui.use(['table','form','layer','laydate'],function () {
         let table=layui.table;let form=layui.form;let layer=layui.layer;let laydate=layui.laydate;
         form.on('switch(State)',function (data) {
-            if(data.elem.checked==true){
+            if(data.elem.checked){
                 State=1
             }else {
                 State=0;
@@ -193,7 +193,7 @@
             }
         });
         form.on('select(FreeBalanceIndex)',function (data) {
-            FreeBalanceIndex=data.value;
+            FreeBalanceIndex=data.value=='-请选择-'?'':data.value;
         });
         form.on('checkbox(AllowGuest)',function (data) {
             if(data.elem.checked==true){
@@ -203,16 +203,16 @@
             }
         });
         form.on('select(FreeBalanceIndex)',function (data) {
-            FreeBalanceIndex=data.value;
+            FreeBalanceIndex=data.value=='-请选择-'?'':data.value;
         });
         form.on('select(IDReadType)',function (data) {
-            IDReadType=data.value;
+            IDReadType=data.value=='-请选择-'?'':data.value;
         });
         form.on('select(PeriodType)',function (data) {
-            PeriodType=data.value;
+            PeriodType=data.value=='-请选择-'?'':data.value;
         });
         form.on('select(SpanType)',function (data) {
-            SpanType=data.value;
+            SpanType=data.value=='-请选择-'?'':data.value;
         });
 
         form.on('checkbox(ml)',function () {
@@ -302,7 +302,7 @@
                                     location.reload();
                                 });
                             } else {
-                                layer.msg(data.result_msg||return_msg);
+                                layer.msg(data.result_msg||data.return_msg);
                             }
                         }
                     })
@@ -323,7 +323,7 @@
                                     location.reload();
                                 });
                             } else {
-                                layer.msg(data.result_msg||return_msg);
+                                layer.msg(data.result_msg||data.return_msg);
                             }
                         }
                     })
@@ -344,7 +344,7 @@
                                    obj.del();
                                 });
                             } else {
-                                layer.msg(data.result_msg||return_msg);
+                                layer.msg(data.result_msg||data.return_msg);
                             }
                         }
                     })

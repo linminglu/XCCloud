@@ -139,7 +139,6 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Flw_Order_Detail> Flw_Order_Detail { get; set; }
         public virtual DbSet<Flw_Order_SerialNumber> Flw_Order_SerialNumber { get; set; }
         public virtual DbSet<Flw_Project_PlayTime> Flw_Project_PlayTime { get; set; }
-        public virtual DbSet<Flw_Project_TicketUse> Flw_Project_TicketUse { get; set; }
         public virtual DbSet<Flw_Schedule> Flw_Schedule { get; set; }
         public virtual DbSet<Flw_Ticket_Exit> Flw_Ticket_Exit { get; set; }
         public virtual DbSet<Log_Operation> Log_Operation { get; set; }
@@ -187,7 +186,6 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<XC_HolidayList> XC_HolidayList { get; set; }
         public virtual DbSet<Data_GameEncourage> Data_GameEncourage { get; set; }
         public virtual DbSet<Data_ProjectInfo> Data_ProjectInfo { get; set; }
-        public virtual DbSet<Data_ProjectTicket_Bind> Data_ProjectTicket_Bind { get; set; }
         public virtual DbSet<Flw_ProjectTicket_Bind> Flw_ProjectTicket_Bind { get; set; }
         public virtual DbSet<Base_MemberInfo> Base_MemberInfo { get; set; }
         public virtual DbSet<Base_ChainRule> Base_ChainRule { get; set; }
@@ -196,5 +194,7 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Data_Card_Balance_Free> Data_Card_Balance_Free { get; set; }
         public virtual DbSet<Flw_Project_TicketInfo> Flw_Project_TicketInfo { get; set; }
         public virtual DbSet<Data_Food_Detial> Data_Food_Detial { get; set; }
+        public virtual DbSet<Data_ProjectTicket_Bind> Data_ProjectTicket_Bind { get; set; }
+        public virtual DbSet<Flw_Project_TicketUse> Flw_Project_TicketUse { get; set; }
     }
 }

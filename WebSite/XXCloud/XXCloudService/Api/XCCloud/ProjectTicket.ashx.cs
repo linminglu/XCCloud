@@ -337,6 +337,8 @@ namespace XXCloudService.Api.XCCloud
                                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                                     if (!dicPar.Get("projcetType").Validintnozero("游乐项目类型", out errMsg))
                                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    if (!dicPar.Get("storeId").Nonempty("游乐项目所属门店ID", out errMsg))
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                                     if (!dicPar.Get("weightValue").Validint("权重值", out errMsg))
                                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                                     if (ticketType == (int)TicketType.Count || ticketType == (int)TicketType.Group) //次票或团体票
@@ -349,6 +351,7 @@ namespace XXCloudService.Api.XCCloud
 
                                     var bindModel = new Data_ProjectTicket_Bind();
                                     bindModel.MerchID = merchId;
+                                    bindModel.StoreID = dicPar.Get("storeId");
                                     bindModel.ProjcetType = dicPar.Get("projcetType").Toint();
                                     bindModel.ProjcetTicketID = id;
                                     bindModel.ProjcetID = dicPar.Get("projcetId").Toint();
@@ -457,31 +460,55 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
                 string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
 
                 var errMsg = string.Empty;
                 if (!dicParas.Get("businessType").Validint("业务类型", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-                var businessType = dicParas.Get("businessType").Toint();
-
-                //绑定游乐项目
-                var projectGameInfoList = from a in Data_ProjectInfoService.N.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase) && p.State == 1 && p.ChargeType == (int)ProjectInfoChargeType.Count)
-                                          join b in Dict_SystemService.N.GetModels() on a.ProjectType equals b.ID into b1
-                                          from b in b1.DefaultIfEmpty()
-                                          join c in Data_GameInfoService.N.GetModels(p => p.State == 1) on a.GameIndex equals c.ID
-                                          select new
-                                          {
-                                              ProjectID = a.ID,
-                                              ProjectName = a.ProjectName,
-                                              ProjcetType = a.ProjectType,
-                                              ProjcetTypeStr = b != null ? b.DictKey : string.Empty,
-                                              PushCoin1 = c.PushCoin1 ?? 0
-                                          };
-
-                //如果是限时任玩或机台打包，则还可以选择机台绑定
-                if (businessType != (int)BusinessType.Ticket)
+                var businessType = dicParas.Get("businessType").Toint();                
+                if (businessType == (int)BusinessType.Ticket)
                 {
+                    //如果是门票, 可以跨店选择其他门店的游乐项目
+                    var projectGameInfoList = from a in Data_ProjectInfoService.N.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.State == 1 && p.ChargeType == (int)ProjectInfoChargeType.Count)
+                                              join b in Dict_SystemService.N.GetModels() on a.ProjectType equals b.ID into b1
+                                              from b in b1.DefaultIfEmpty()
+                                              join c in Data_GameInfoService.N.GetModels(p => p.State == 1) on a.GameIndex equals c.ID
+                                              join d in Base_StoreInfoService.N.GetModels() on a.StoreID equals d.StoreID
+                                              orderby a.StoreID, a.ProjectType
+                                              select new
+                                              {
+                                                  StoreID = a.StoreID,
+                                                  StoreName = d.StoreName,
+                                                  ProjectID = a.ID,
+                                                  ProjectName = a.ProjectName,
+                                                  ProjcetType = a.ProjectType,
+                                                  ProjcetTypeStr = b != null ? b.DictKey : string.Empty,
+                                                  PushCoin1 = c.PushCoin1 ?? 0
+                                              };
+
+                    return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, projectGameInfoList);
+                }
+                else
+                {
+                    //如果是限时任玩或机台打包，则还可以选择机台绑定
+                    var projectGameInfoList = from a in Data_ProjectInfoService.N.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase) && p.State == 1 && p.ChargeType == (int)ProjectInfoChargeType.Count)
+                                              join b in Dict_SystemService.N.GetModels() on a.ProjectType equals b.ID into b1
+                                              from b in b1.DefaultIfEmpty()
+                                              join c in Data_GameInfoService.N.GetModels(p => p.State == 1) on a.GameIndex equals c.ID
+                                              join d in Base_StoreInfoService.N.GetModels() on a.StoreID equals d.StoreID
+                                              select new
+                                              {
+                                                  StoreID = a.StoreID,
+                                                  StoreName = d.StoreName,
+                                                  ProjectID = a.ID,
+                                                  ProjectName = a.ProjectName,
+                                                  ProjcetType = a.ProjectType,
+                                                  ProjcetTypeStr = b != null ? b.DictKey : string.Empty,
+                                                  PushCoin1 = c.PushCoin1 ?? 0
+                                              };
+
                     //排除游乐项目类型的游戏机
                     var projectGameTypes = getProjectGameTypes(out errMsg);
                     if (!errMsg.IsNull())
@@ -492,20 +519,21 @@ namespace XXCloudService.Api.XCCloud
                             from a in Data_GameInfoService.N.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase) && p.State == 1)
                             join b in Dict_SystemService.N.GetModels() on a.GameType equals b.ID into b1
                             from b in b1.DefaultIfEmpty()
+                            join c in Base_StoreInfoService.N.GetModels() on a.StoreID equals c.StoreID
                             where !projectGameTypes.Contains(a.GameType + "")
                             select new
                             {
+                                StoreID = a.StoreID,
+                                StoreName = c.StoreName,
                                 ProjectID = a.ID,
                                 ProjectName = a.GameName,
                                 ProjcetType = a.GameType,
                                 ProjcetTypeStr = b != null ? b.DictKey : string.Empty,
                                 PushCoin1 = a.PushCoin1 ?? 0
-                            });
-                }
+                            }).OrderBy(or => new { or.StoreID, or.ProjcetType });
 
-                projectGameInfoList = projectGameInfoList.OrderBy(or => new { or.ProjcetType, or.ProjectID });
-
-                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, projectGameInfoList);
+                    return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, projectGameInfoList);
+                }                
             }
             catch (Exception e)
             {

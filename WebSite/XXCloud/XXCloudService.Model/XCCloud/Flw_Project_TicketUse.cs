@@ -14,14 +14,16 @@ namespace XCCloudService.Model.XCCloud
     
     public partial class Flw_Project_TicketUse
     {
-        public int ID { get; set; }
+        public string ID { get; set; }
+        public string MerchID { get; set; }
         public string StoreID { get; set; }
         public string ProjectTicketCode { get; set; }
         public Nullable<int> MemberID { get; set; }
         public Nullable<int> DeviceID { get; set; }
-        public Nullable<int> WorkType { get; set; }
-        public Nullable<int> WorkState { get; set; }
-        public Nullable<int> WorkChannel { get; set; }
-        public Nullable<System.DateTime> WorkTime { get; set; }
+        public string DeviceName { get; set; }
+        public Nullable<System.DateTime> InTime { get; set; }
+        public Nullable<System.DateTime> OutTime { get; set; }
+        public Nullable<int> OutMinuteTotal { get; set; }
+        public string Verifiction { get; set; }
     }
 }

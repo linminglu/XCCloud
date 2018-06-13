@@ -179,6 +179,7 @@ namespace XXCloudService.Api.XCCloudH5
                 cacheCard.CardId = card.ID;
                 cacheCard.ICCardId = card.ICCardID;
                 cacheCard.MemberLevelId = card.MemberLevelID.Value;
+                cacheCard.MemberLevelName = XCCloudStoreBusiness.GetMemberLevel(card.MemberLevelID.Value).MemberLevelName;
                 //卡余额
                 cacheCard.CardBalanceList = XCCloudStoreBusiness.GetCardStoreBalanceList(device.MerchID, storeId, card.ID);
                 model.CurrentCardInfo = cacheCard;
