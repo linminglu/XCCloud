@@ -1139,6 +1139,7 @@
 
                            //可用时段
                             if(arr.EffactType==1){
+                                let isdisabled=false;//用于禁用时段编辑
                                 let days=compareDate(arr.VaildStartDate,arr.VaildEndDate);
                                 let aStart=arr.VaildStartDate.substring(5, 10);
                                 let aEnd=arr.VaildEndDate.substring(5, 10);
@@ -1148,45 +1149,128 @@
                                 let endMon=arr.VaildEndDate.substring(5, 7);
                                if(days==0){
                                     $('#usePried').find('option[value="1"]').attr('selected',true);
+                                   isdisabled=true;
                                }else if(days==6){
                                     $('#usePried').find('option[value="2"]').attr('selected',true);
+                                   isdisabled=true;
                                 }else if(days>26&&days<31){
                                    let flag=false;
-                                   if(startMon==endMon==('01'||'03'||'05'||'07'||'08'||'10'||'12')&&(startDay=='01')&&(endtDay=='31')){
-                                       flag=true;
-                                   }
-                                   if(startMon==endMon==('04'||'06'||'09'||'11')&&(startDay=='01')&&(endtDay=='30')){
-                                       flag=true;
-                                   }
+                                   if(startMon==endMon&&(startDay=='01')&&(endtDay=='31')){
+                                       if(startMon=='01'||startMon=='03'||startMon=='05'||startMon=='07'||startMon=='08'||
+                                           startMon=='10'||startMon=='12'){
+                                           flag=true;
+                                       }
 
-                                   if(startMon==endMon==('02')&&(startDay=='01')&&(endtDay==('28'||'29'))){
-                                       flag=true;
+                                   }
+                                   if(startMon==endMon&&(startDay=='01')&&(endtDay=='30')){
+                                       if(startMon=='04'||startMon=='06'||startMon=='09'||startMon=='11'){
+                                           flag=true;
+                                       }
+                                   }
+                                   if(startMon==endMon&&(startDay=='01')&&(endtDay=='28'||endtDay=='29')){
+                                       if(startMon=='02'){
+                                           flag=true;
+                                       }
                                    }
                                    if(flag){
                                        $('#usePried').find('option[value="3"]').attr('selected',true);
+                                       isdisabled=true;
                                    }
 
                                }else if(days>87&&days<93){
                                    if(aStart=='01-01'&&aEnd=='03-31'||aStart=='04-01'&&aEnd=='06-30'
                                        ||aStart=='07-01'&&aEnd=='09-30'||aStart=='10-01'&&aEnd=='12-31'){
                                        $('#usePried').find('option[value="4"]').attr('selected',true);
+                                       isdisabled=true;
                                    }
                                }else if(days>360&&days<370){
                                    if(aStart=='01-01'&&aEnd=='12-31'){
                                        $('#usePried').find('option[value="5"]').attr('selected',true);
+                                       isdisabled=true;
                                    }
                                }else {
                                    $('#usePried').find('option[value="0"]').attr('selected',true);
                                }
-                               form.render()
-                            }
+                               form.render();
 
+                               if(isdisabled){
+                                   $('#VaildStartDate').attr('disabled',true);
+                                   $('#VaildEndDate').attr('disabled',true);
+                               }
+                            }
                             laydate.render({
                                 elem: '#VaildStartDate',type: 'date',value:arr.EffactType==1?(arr.VaildStartDate.substring(0,10)):''
                             });
                             laydate.render({
                                 elem: '#VaildEndDate',type: 'date',value:arr.EffactType==1?(arr.VaildEndDate.substring(0,10)):''
                             });
+                            //判断不可用时段类型
+                            let noStart=arr.NoStartDate;
+                            let noEnd=arr.NoEndDate;
+                            if(noStart==null){
+                                $('#noUsePried').find('option[value="6"]').attr('selected',true);
+                            }else {
+                                let isdisabled=false;//用于禁用时段编辑
+                                let days=compareDate(noStart,noEnd);
+                                let aStart=noStart.substring(5, 10);
+                                let aEnd=noEnd.substring(5, 10);
+                                let startDay=noStart.substring(8, 10);
+                                let startMon=noStart.substring(5, 7);
+                                let endtDay=noEnd.substring(8, 10);
+                                let endMon=noEnd.substring(5, 7);
+                                if(days==0){
+                                    $('#noUsePried').find('option[value="1"]').attr('selected',true);
+                                    isdisabled=true;
+                                }else if(days==6){
+                                    $('#noUsePried').find('option[value="2"]').attr('selected',true);
+                                    isdisabled=true;
+                                }else if(days>26&&days<31){
+                                    let flag=false;
+                                    if(startMon==endMon&&(startDay=='01')&&(endtDay=='31')){
+                                        if(startMon=='01'||startMon=='03'||startMon=='05'||startMon=='07'||startMon=='08'||
+                                            startMon=='10'||startMon=='12'){
+                                            flag=true;
+                                        }
+
+                                    }
+                                    if(startMon==endMon&&(startDay=='01')&&(endtDay=='30')){
+                                        if(startMon=='04'||startMon=='06'||startMon=='09'||startMon=='11'){
+                                            flag=true;
+                                        }
+                                    }
+                                    if(startMon==endMon&&(startDay=='01')&&(endtDay=='28'||endtDay=='29')){
+                                        if(startMon=='02'){
+                                            flag=true;
+                                        }
+                                    }
+                                    if(flag){
+                                        $('#noUsePried').find('option[value="3"]').attr('selected',true);
+                                        isdisabled=true;
+                                    }
+
+                                }else if(days>87&&days<93){
+                                    if(aStart=='01-01'&&aEnd=='03-31'||aStart=='04-01'&&aEnd=='06-30'
+                                        ||aStart=='07-01'&&aEnd=='09-30'||aStart=='10-01'&&aEnd=='12-31'){
+                                        $('#noUsePried').find('option[value="4"]').attr('selected',true);
+                                        isdisabled=true;
+                                    }
+                                }else if(days>360&&days<370){
+                                    if(aStart=='01-01'&&aEnd=='12-31'){
+                                        $('#noUsePried').find('option[value="5"]').attr('selected',true);
+                                        isdisabled=true;
+                                    }
+                                }else {
+                                    $('#noUsePried').find('option[value="0"]').attr('selected',true);
+                                }
+                                form.render();
+
+                                if(isdisabled){
+                                    $('#NoStartDate').attr('disabled',true);
+                                    $('#NoEndDate').attr('disabled',true);
+                                }
+                            }
+
+                            //.可用时段显示方式
                             if(arr.EffactType==0){
                                 $('.time1').removeClass('layui-hide');
                                 $('.time2').addClass('layui-hide')

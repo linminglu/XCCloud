@@ -824,6 +824,7 @@ namespace XXCloudService.Api.XCCloud
                                     data_GameAPP_MemberRule.MerchID = merchId;
                                     data_GameAPP_MemberRule.StoreID = storeId;
                                     data_GameAPP_MemberRule.GameID = gameId;
+                                    data_GameAPP_MemberRule.MemberLevelID = memberLevelId;
                                     data_GameAPP_MemberRule.PushBalanceIndex1 = pushBalanceIndex1;
                                     data_GameAPP_MemberRule.PushCoin1 = pushCoin1;
                                     data_GameAPP_MemberRule.PushBalanceIndex2 = pushBalanceIndex2;
