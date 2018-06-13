@@ -34,6 +34,17 @@
     <form action="" class="layui-form layui-form-pane">
         <div class="layui-collapse">
             <div class="layui-colla-item">
+                <h2 class="layui-colla-title" style="height: 36px;line-height: 36px">套餐适用门店设置</h2>
+                <div class="layui-colla-content layui-show layui-col-md12">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">门店列表</label>
+                        <div class="layui-input-block" id="allStoreList">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-colla-item">
                 <h2 class="layui-colla-title" style="height: 36px;line-height: 36px">基本设置</h2>
                 <div class="layui-colla-content layui-show layui-col-md12">
                     <div class="layui-col-md8">
@@ -242,7 +253,7 @@
             </div>
         </div>
         <div style="text-align: right;margin-right: 100px;padding-top: 15px">
-            <button type="reset" class="layui-btn layui-btn-normal" id="saveTimeReset"><i class="layui-icon">&#x1002;</i>重置</button>
+            <button type="reset" class="layui-btn layui-btn-primary" id="saveTimeReset"><i class="layui-icon">&#x1002;</i>重置</button>
             <button type="button" class="layui-btn layui-btn-normal" id="lastSave"><i class="layui-icon">&#xe6af;</i>确定</button>
         </div>
     </form>
@@ -525,7 +536,7 @@
             ,{field:'ForeAuthorize', title: '是否允许前台授权', align: 'center',templet:'#authorize'}
             ,{field:'StartTime', title: '启用时间', align: 'center'}
             ,{field:'EndTime', title: '停用时间', align: 'center'}
-            ,{fixed: 'right', title: '操作', width:260, align:'center', toolbar: '#barDemo'}
+            ,{fixed: 'right', title: '操作', width:160, align:'center', toolbar: '#barDemo'}
             ]
         ,total:true
     };
@@ -619,7 +630,6 @@
                 OperateType=0;
             }
         });
-
         form.on('select(typeCheck)',(data)=>{
             typeChecks=data.value=='-请选择-'?'':data.value;
         });
@@ -775,29 +785,50 @@
             }
         });
         //新增一个套餐
-     $('.addNewPackage').on('click',()=>{
-          FoodSale=[];FoodDetial=[];FoodLevel=[];
-          FoodType='';//套餐类别
-          BalanceType='';//余额类别
-          BalanceTypeStr='';
-         xc.getFoodTypeDic(token,layer,form,'FoodType');
-         xc.getBalanceTypeDic('',token,layer,form,'BalanceType');
-         newTable(table,FoodSale,layer,form);
-         newFoodDetialsTable(table,FoodDetial,layer,form);
-         newFoodLevelTable(table,FoodLevel,layer,form);
-         layer.open({
+        $('.addNewPackage').on('click',()=>{
+             foodID='';
+             _storeId=[];
+             index='';
+             FoodSale=[];//套餐余额消耗
+             FoodDetial=[];
+             FoodLevel=[];
+
+             FoodType='';//套餐类别
+             BalanceType='';//余额类别
+             BalanceTypeStr='';
+
+             vipCoinType=''; vipCoinTypeStr=''; OperateType=0;
+             digitType=''; digitTypeStr='';
+             giftList=[];
+             ticketType=''; ticketTypeStr='';
+             CouponType='';  CouponTypeStr='';
+            // let EntryCouponFlag='';
+
+             week=[]; weekStr=[];
+             memberLevelID=[];let MemberLevel=[];
+             timeType='0'; Time='';
+             AllowInternet=0; AllowPrint=0; ForeAuthorize=0;
+             $('#saveTimeReset').trigger('click');
+          xc.ProjectFoodStores('',form,token,'allStoreList');
+          xc.getFoodTypeDic(token,layer,form,'FoodType');
+          xc.getBalanceTypeDic('',token,layer,form,'BalanceType');
+          newTable(table,FoodSale,layer,form);
+          newFoodDetialsTable(table,FoodDetial,layer,form);
+          newFoodLevelTable(table,FoodLevel,layer,form);
+          layer.open({
              title:'新增套餐',
              shade:0.6,
              type:1,
              area:'1100px',
              offset: '20px',
-             content:$('#openModel'),
-             cancel:function () {
-                 location.reload()
-             }
+             content:$('#openModel')
+             //  ,
+             // cancel:function () {
+             //     location.reload()
+             // }
          })
      });
-     $('#addFoodSaleBtn').on('click',()=>{
+        $('#addFoodSaleBtn').on('click',()=>{
          let flag=false;
          //当2个参数都填满后，点击向表里面加一条数据，初始化输入框
          if(BalanceType!=''&&$('#UseCount').val()!=''&&$('#CashValue').val()!=''){
@@ -831,7 +862,7 @@
         //会员币种
         $('#vipCoinBtn').on('click',()=>{
             xc.getBalanceTypeDic('',token,layer,form,'vipCoinType');
-            vipCoinType=''; vipCoinTypeStr=''
+            vipCoinType=''; vipCoinTypeStr='';
             index= layer.open({
                 title:'新增套餐',
                 shade:0.6,
@@ -947,6 +978,7 @@
             layer.close(index);
             newFoodDetialsTable(table,FoodDetial,layer,form)
         });
+        //上传图片
         var demoListViewStore=$('#demo2'),uploadListInsStore=upload.render({
             elem: '#imgBtn'
             ,url: '/XCCloud/Promotion?action=UploadFoodPhoto'
@@ -1045,10 +1077,11 @@
                     success: function (data) {
                         data=JSON.parse(data);
                         if(data.result_code==1){
-                           console.log(data)
+                           // console.log(data)
                             let arr=data.result_data;
                             $('#FoodName').val(arr.FoodName||'');
                             FoodType=arr.FoodType;
+                            xc.ProjectFoodStores('',form,token,'allStoreList');
                             xc.getFoodTypeDic(token,layer,form,'FoodType',arr.FoodType);
                             xc.getBalanceTypeDic('',token,layer,form,'BalanceType');
                             BalanceType='';//余额类别
@@ -1138,16 +1171,17 @@
                         }
                     })
                 });
-            }else if(layEvent === 'set'){
-                xc.ProjectFoodStores(data.FoodID,form,token,'storeListBox');
-                layer.open({
-                    title:'设置适用门店',
-                    type:1,
-                    area:'305px',
-                    content:$('#openStore')
-                })
             }
-     });
+            // else if(layEvent === 'set'){
+            //     xc.ProjectFoodStores(data.FoodID,form,token,'storeListBox');
+            //     layer.open({
+            //         title:'设置适用门店',
+            //         type:1,
+            //         area:'305px',
+            //         content:$('#openStore')
+            //     })
+            // }
+    });
          //删除套餐余额消耗
         table.on('tool(FoodSaleTable)', function(obj){
             let data = obj.data;
@@ -1357,19 +1391,19 @@
                                 }
                                 if(flag){
                                     $('#'+id).append('<input checked type="checkbox" lay-skin="primary" value="'+array[i].StoreID+
-                                        '" lay-filter="chooseStore" title="'+array[i].StoreName+'"><hr class="layui-bg-blue">')
+                                        '" lay-filter="chooseStore" title="'+array[i].StoreName+'">')
                                 }else {
                                     $('#'+id).append('<input type="checkbox" lay-skin="primary" value="'+array[i].StoreID+
-                                        '" lay-filter="chooseStore" title="'+array[i].StoreName+'"><hr class="layui-bg-blue">')
+                                        '" lay-filter="chooseStore" title="'+array[i].StoreName+'">')
                                 }
                             }else {
                                 $('#'+id).append('<input type="checkbox" lay-skin="primary" value="'+array[i].StoreID+
-                                    '" lay-filter="chooseStore" title="'+array[i].StoreName+'"><hr class="layui-bg-blue">')
+                                    '" lay-filter="chooseStore" title="'+array[i].StoreName+'">')
 
                             }
                         }else {
                             $('#'+id).append('<input type="checkbox" lay-skin="primary" value="'+array[i].StoreID+
-                                '" lay-filter="chooseStore" title="'+array[i].StoreName+'"><hr class="layui-bg-blue">')
+                                '" lay-filter="chooseStore" title="'+array[i].StoreName+'">')
 
                         }
                     }
@@ -1464,7 +1498,6 @@
     })
 </script>
 <script type="text/html" id="barDemo">
-    <a class="layui-btn layui-btn-xs layui-bg-orange" lay-event="set"> <i class="layui-icon">&#xe642;</i>适用门店</a>
     <a class="layui-btn layui-btn-xs" lay-event="detail"> <i class="layui-icon">&#xe642;</i>编辑</a>
     <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del"> <i class="layui-icon">&#xe642;</i>停用</a>
 </script>

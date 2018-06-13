@@ -390,7 +390,7 @@
 
 
     let proListArr=[];
-    let proList='';let ProjcetName='';let ProjcetType='';let ProjcetTypeStr='';let PushCoin1=0;
+    let proList='';let ProjcetName='';let ProjcetType='';let ProjcetTypeStr='';let PushCoin1=0;let StoreID_='';let StoreName_='';
     let isShare=0;
 
     let DivideType=''; let ReadFace=0;let ActiveBar=0;let AllowCreatePoint=0;let SaleAuthor=0;
@@ -612,7 +612,7 @@
             }else if(ticketSet.name=='timeLimit'){
                 initProject(token,form,layer,'proList','2');
             }
-            proList=''; ProjcetName=''; ProjcetType=''; ProjcetTypeStr=''; PushCoin1=0;
+            proList=''; ProjcetName=''; ProjcetType=''; ProjcetTypeStr=''; PushCoin1=0; StoreID_=''; StoreName_='';
             if(isShare==1) {
                 if ($('#shareTimes').val() == '') {
                     layer.msg('当前为次数共享模式,请先设置共享次数！', {time: 1500})
@@ -632,13 +632,19 @@
             }
         });
         form.on('select(proList)',(data)=>{
-            proList=data.value;
-            let  _Title='';
-            _Title=data.elem[data.elem.selectedIndex].title;
-            ProjcetName=data.elem[data.elem.selectedIndex].text;
-            ProjcetType=_Title.split('|')[0];
-            ProjcetTypeStr=_Title.split('|')[1];
-            PushCoin1=_Title.split('|')[2];
+            if(data.value!='-请选择-'){
+                proList=data.value;
+                let  _Title='';
+                _Title=data.elem[data.elem.selectedIndex].title;
+                ProjcetName=data.elem[data.elem.selectedIndex].text;
+                ProjcetType=_Title.split('|')[0];
+                ProjcetTypeStr=_Title.split('|')[1];
+                PushCoin1=_Title.split('|')[2];
+                StoreID_=_Title.split('|')[3];
+                StoreName_=_Title.split('|')[4];
+            }
+
+
         });
         form.on('checkbox(isShare)',(data)=>{
             if(data.elem.checked==true){
@@ -654,8 +660,9 @@
                     , data: proListArr
                     , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
                     , cols: [[
-                        {field:'ProjectName', title:'项目名称', align: 'center',width:200}
-                        ,{field:'ProjcetTypeStr',title: '类别', align: 'center',width:160} //width 支持：数字、百分比和不填写。
+                        {field:'ProjectName', title:'项目名称', align: 'center',width:140}
+                        ,{field:'StoreName', title:'归属门店', align: 'center',width:140}
+                        ,{field:'ProjcetTypeStr',title: '类别', align: 'center',width:140}  //width 支持：数字、百分比和不填写。
                         ,{field:'AllowShareCount', title: '次数共享', align: 'center',width:100,templet:'#allowShare'}
                         ,{field:'UseCount', title: '游玩次数', align: 'center',width:140}
                         ,{field:'WeightValue', title: '权重值', align: 'center',width:175,edit:true}
@@ -676,8 +683,9 @@
                     , data: proListArr
                     , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
                     , cols: [[
-                        {field:'ProjectName', title:'项目名称', align: 'center',width:200}
-                        ,{field:'ProjcetTypeStr',title: '类别', align: 'center',width:160} //width 支持：数字、百分比和不填写。
+                        {field:'ProjectName', title:'项目名称', align: 'center',width:140}
+                        ,{field:'StoreName', title:'归属门店', align: 'center',width:140}
+                        ,{field:'ProjcetTypeStr',title: '类别', align: 'center',width:140}  //width 支持：数字、百分比和不填写。
                         ,{field:'AllowShareCount', title: '次数共享', align: 'center',width:100,templet:'#allowShare'}
                         ,{field:'UseCount', title: '游玩次数', align: 'center',width:140,edit:true}
                         ,{field:'WeightValue', title: '权重值', align: 'center',width:175,edit:true}
@@ -702,8 +710,9 @@
                         , data: proListArr
                         , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
                         , cols: [[
-                            {field:'ProjectName', title:'项目名称', align: 'center',width:200}
-                            ,{field:'ProjcetTypeStr',title: '类别', align: 'center',width:160} //width 支持：数字、百分比和不填写。
+                            {field:'ProjectName', title:'项目名称', align: 'center',width:140}
+                            ,{field:'StoreName', title:'归属门店', align: 'center',width:140}
+                            ,{field:'ProjcetTypeStr',title: '类别', align: 'center',width:140}  //width 支持：数字、百分比和不填写。
                             ,{field:'AllowShareCount', title: '次数共享', align: 'center',width:100,templet:'#allowShare'}
                             ,{field:'UseCount', title: '游玩次数', align: 'center',width:140}
                             ,{field:'WeightValue', title: '权重值', align: 'center',width:175,edit:true}
@@ -738,6 +747,8 @@
                                         proListArr.push({
                                             'ProjectTicketID':''
                                             ,'ProjcetID':proList
+                                            ,'StoreID':StoreID_
+                                            ,'StoreName':StoreName_
                                             ,'ProjectName':ProjcetName
                                             ,'ProjcetType':ProjcetType
                                             ,'ProjcetTypeStr':ProjcetTypeStr
@@ -753,8 +764,9 @@
                                             , data: proListArr
                                             , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
                                             , cols: [[
-                                                {field:'ProjectName', title:'项目名称', align: 'center',width:200}
-                                                ,{field:'ProjcetTypeStr',title: '类别', align: 'center',width:160} //width 支持：数字、百分比和不填写。
+                                                {field:'ProjectName', title:'项目名称', align: 'center',width:140}
+                                                ,{field:'StoreName', title:'归属门店', align: 'center',width:140}
+                                                ,{field:'ProjcetTypeStr',title: '类别', align: 'center',width:140}  //width 支持：数字、百分比和不填写。
                                                 ,{field:'AllowShareCount', title: '次数共享', align: 'center',width:100,templet:'#allowShare'}
                                                 ,{field:'UseCount', title: '游玩次数', align: 'center',width:140}
                                                 ,{field:'WeightValue', title: '权重值', align: 'center',width:175,edit:true}
@@ -767,6 +779,8 @@
                                     proListArr.push({
                                         'ProjectTicketID':''
                                         ,'ProjcetID':proList
+                                        ,'StoreID':StoreID_
+                                        ,'StoreName':StoreName_
                                         ,'ProjectName':ProjcetName
                                         ,'ProjcetType':ProjcetType
                                         ,'ProjcetTypeStr':ProjcetTypeStr
@@ -782,8 +796,9 @@
                                         , data: proListArr
                                         , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
                                         , cols: [[
-                                            {field:'ProjectName', title:'项目名称', align: 'center',width:200}
-                                            ,{field:'ProjcetTypeStr',title: '类别', align: 'center',width:160} //width 支持：数字、百分比和不填写。
+                                            {field:'ProjectName', title:'项目名称', align: 'center',width:140}
+                                            ,{field:'StoreName', title:'归属门店', align: 'center',width:140}
+                                            ,{field:'ProjcetTypeStr',title: '类别', align: 'center',width:140} //width 支持：数字、百分比和不填写。
                                             ,{field:'AllowShareCount', title: '次数共享', align: 'center',width:100,templet:'#allowShare'}
                                             ,{field:'UseCount', title: '游玩次数', align: 'center',width:140,edit:true}
                                             ,{field:'WeightValue', title: '权重值', align: 'center',width:175,edit:true}
@@ -797,6 +812,8 @@
                                 proListArr.push({
                                     'ProjectTicketID':''
                                     ,'ProjcetID':proList
+                                    ,'StoreID':StoreID_
+                                    ,'StoreName':StoreName_
                                     ,'ProjectName':ProjcetName
                                     ,'ProjcetType':ProjcetType
                                     ,'ProjcetTypeStr':ProjcetTypeStr
@@ -812,6 +829,8 @@
                                     proListArr.push({
                                         'ProjectTicketID':''
                                         ,'ProjcetID':proList
+                                        ,'StoreID':StoreID_
+                                        ,'StoreName':StoreName_
                                         ,'ProjectName':ProjcetName
                                         ,'ProjcetType':ProjcetType
                                         ,'ProjcetTypeStr':ProjcetTypeStr
@@ -828,8 +847,9 @@
                                     , data: proListArr
                                     , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
                                     , cols: [[
-                                        {field:'ProjectName', title:'项目名称', align: 'center',width:200}
-                                        ,{field:'ProjcetTypeStr',title: '类别', align: 'center',width:160} //width 支持：数字、百分比和不填写。
+                                        {field:'ProjectName', title:'项目名称', align: 'center',width:140}
+                                        ,{field:'StoreName', title:'归属门店', align: 'center',width:140}
+                                        ,{field:'ProjcetTypeStr',title: '类别', align: 'center',width:140}  //width 支持：数字、百分比和不填写。
                                         ,{field:'AllowShareCount', title: '次数共享', align: 'center',width:100,templet:'#allowShare'}
                                         ,{field:'UseCount', title: '游玩次数', align: 'center',width:140}
                                         ,{field:'WeightValue', title: '权重值', align: 'center',width:175,edit:true}
@@ -841,6 +861,8 @@
                                 proListArr.push({
                                     'ProjectTicketID':ticketSet.id
                                     ,'ProjcetID':proList
+                                    ,'StoreID':StoreID_
+                                    ,'StoreName':StoreName_
                                     ,'ProjectName':ProjcetName
                                     ,'ProjcetType':ProjcetType
                                     ,'ProjcetTypeStr':ProjcetTypeStr
@@ -859,8 +881,9 @@
                                     , data: proListArr
                                     , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
                                     , cols: [[
-                                        {field:'ProjectName', title:'项目名称', align: 'center',width:200}
-                                        ,{field:'ProjcetTypeStr',title: '类别', align: 'center',width:160} //width 支持：数字、百分比和不填写。
+                                        {field:'ProjectName', title:'项目名称', align: 'center',width:140}
+                                        ,{field:'StoreName', title:'归属门店', align: 'center',width:140}
+                                        ,{field:'ProjcetTypeStr',title: '类别', align: 'center',width:140}  //width 支持：数字、百分比和不填写。
                                         ,{field:'AllowShareCount', title: '次数共享', align: 'center',width:100,templet:'#allowShare'}
                                         ,{field:'UseCount', title: '游玩次数', align: 'center',width:140,edit:true}
                                         ,{field:'WeightValue', title: '权重值', align: 'center',width:175,edit:true}
@@ -873,6 +896,8 @@
                         }else {
                             proListArr.push({'ProjectTicketID':''
                                 ,'ProjcetID':proList
+                                ,'StoreID':StoreID_
+                                ,'StoreName':StoreName_
                                 ,'ProjectName':ProjcetName
                                 ,'ProjcetType':ProjcetType
                                 ,'ProjcetTypeStr':ProjcetTypeStr
@@ -900,6 +925,8 @@
                                         proListArr.push({
                                             'ProjectTicketID':ticketSet.id
                                             ,'ProjcetID':proList
+                                            ,'StoreID':StoreID_
+                                            ,'StoreName':StoreName_
                                             ,'ProjectName':ProjcetName
                                             ,'ProjcetType':ProjcetType
                                             ,'ProjcetTypeStr':ProjcetTypeStr
@@ -920,8 +947,9 @@
                                         , data: proListArr
                                         , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
                                         , cols: [[
-                                            {field:'ProjectName', title:'项目名称', align: 'center',width:200}
-                                            ,{field:'ProjcetTypeStr',title: '类别', align: 'center',width:160} //width 支持：数字、百分比和不填写。
+                                            {field:'ProjectName', title:'项目名称', align: 'center',width:140}
+                                            ,{field:'StoreName', title:'归属门店', align: 'center',width:140}
+                                            ,{field:'ProjcetTypeStr',title: '类别', align: 'center',width:140}  //width 支持：数字、百分比和不填写。
                                             ,{field:'AllowShareCount', title: '次数共享', align: 'center',width:100,templet:'#allowShare'}
                                             ,{field:'UseCount', title: '游玩次数', align: 'center',width:140}
                                             ,{field:'WeightValue', title: '权重值', align: 'center',width:175,edit:true}
@@ -933,6 +961,8 @@
                                     proListArr.push({
                                         'ProjectTicketID':ticketSet.id
                                         ,'ProjcetID':proList
+                                        ,'StoreID':StoreID_
+                                        ,'StoreName':StoreName_
                                         ,'ProjectName':ProjcetName
                                         ,'ProjcetType':ProjcetType
                                         ,'ProjcetTypeStr':ProjcetTypeStr
@@ -951,8 +981,9 @@
                                         , data: proListArr
                                         , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
                                         , cols: [[
-                                            {field:'ProjectName', title:'项目名称', align: 'center',width:200}
-                                            ,{field:'ProjcetTypeStr',title: '类别', align: 'center',width:160} //width 支持：数字、百分比和不填写。
+                                            {field:'ProjectName', title:'项目名称', align: 'center',width:140}
+                                            ,{field:'StoreName', title:'归属门店', align: 'center',width:140}
+                                            ,{field:'ProjcetTypeStr',title: '类别', align: 'center',width:140}  //width 支持：数字、百分比和不填写。
                                             ,{field:'AllowShareCount', title: '次数共享', align: 'center',width:100,templet:'#allowShare'}
                                             ,{field:'UseCount', title: '游玩次数', align: 'center',width:140,edit:true}
                                             ,{field:'WeightValue', title: '权重值', align: 'center',width:175,edit:true}
@@ -965,6 +996,8 @@
                             }else {
                                 proListArr.push({'ProjectTicketID':ticketSet.id
                                     ,'ProjcetID':proList
+                                    ,'StoreID':StoreID_
+                                    ,'StoreName':StoreName_
                                     ,'ProjectName':ProjcetName
                                     ,'ProjcetType':ProjcetType
                                     ,'ProjcetTypeStr':ProjcetTypeStr
@@ -978,6 +1011,8 @@
                                     proListArr.push({
                                         'ProjectTicketID':ticketSet.id
                                         ,'ProjcetID':proList
+                                        ,'StoreID':StoreID_
+                                        ,'StoreName':StoreName_
                                         ,'ProjectName':ProjcetName
                                         ,'ProjcetType':ProjcetType
                                         ,'ProjcetTypeStr':ProjcetTypeStr
@@ -997,8 +1032,9 @@
                                     , data: proListArr
                                     , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
                                     , cols: [[
-                                        {field:'ProjectName', title:'项目名称', align: 'center',width:200}
-                                        ,{field:'ProjcetTypeStr',title: '类别', align: 'center',width:160} //width 支持：数字、百分比和不填写。
+                                        {field:'ProjectName', title:'项目名称', align: 'center',width:140}
+                                        ,{field:'StoreName', title:'归属门店', align: 'center',width:140}
+                                        ,{field:'ProjcetTypeStr',title: '类别', align: 'center',width:140}  //width 支持：数字、百分比和不填写。
                                         ,{field:'AllowShareCount', title: '次数共享', align: 'center',width:100,templet:'#allowShare'}
                                         ,{field:'UseCount', title: '游玩次数', align: 'center',width:140}
                                         ,{field:'WeightValue', title: '权重值', align: 'center',width:175,edit:true}
@@ -1010,6 +1046,8 @@
                                 proListArr.push({
                                     'ProjectTicketID':ticketSet.id
                                     ,'ProjcetID':proList
+                                    ,'StoreID':StoreID_
+                                    ,'StoreName':StoreName_
                                     ,'ProjectName':ProjcetName
                                     ,'ProjcetType':ProjcetType
                                     ,'ProjcetTypeStr':ProjcetTypeStr
@@ -1028,11 +1066,12 @@
                                     , data: proListArr
                                     , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
                                     , cols: [[
-                                        {field:'ProjectName', title:'项目名称', align: 'center',width:200}
-                                        ,{field:'ProjcetTypeStr',title: '类别', align: 'center',width:160} //width 支持：数字、百分比和不填写。
+                                        {field:'ProjectName', title:'项目名称', align: 'center',width:140}
+                                        ,{field:'StoreName', title:'归属门店', align: 'center',width:140}
+                                        ,{field:'ProjcetTypeStr',title: '类别', align: 'center',width:140} //width 支持：数字、百分比和不填写。
                                         ,{field:'AllowShareCount', title: '次数共享', align: 'center',width:100,templet:'#allowShare'}
                                         ,{field:'UseCount', title: '游玩次数', align: 'center',width:140,edit:true}
-                                        ,{field:'WeightValue', title: '权重值', align: 'center',width:175,edit:true}
+                                        ,{field:'WeightValue', title: '权重值', align: 'center',width:115,edit:true}
                                         ,{fixed: 'right',title:'操作', width:180, align:'center', toolbar: '#barDemo2'}]]
                                     , page: {page: true, limits: [10, 15, 20, 30, 50, 100]}
                                     , limit: 10
@@ -1042,6 +1081,8 @@
                         }else {
                             proListArr.push({'ProjectTicketID':ticketSet.id
                                 ,'ProjcetID':proList
+                                ,'StoreID':StoreID_
+                                ,'StoreName':StoreName_
                                 ,'ProjectName':ProjcetName
                                 ,'ProjcetType':ProjcetType
                                 ,'ProjcetTypeStr':ProjcetTypeStr
@@ -1054,7 +1095,6 @@
 
                     }
                 }
-
                 layer.closeAll();
             }
         });
@@ -1122,13 +1162,7 @@
                             //是否允许退票
                             if(arr.AllowExitTicket==1){
                                 $('.allowExitList').attr({'disabled':false});
-                                // $('#useReasonBox').removeClass('layui-hide');
-                                // $('#AllowRestrict').find('option[value="1"]').attr('selected',true)
-                                // $('#AllowRestrict').find('option[value="0"]').attr('selected',false)
                             }else {
-                                // $('#AllowRestrict').find('option[value="0"]').attr('selected',true)
-                                // $('#AllowRestrict').find('option[value="1"]').attr('selected',false)
-                                // $('#useReasonBox').addClass('layui-hide');
                                 $('.allowExitList').attr({'disabled':true});
                                 $('input[name="ExitPeriodValue"]').attr({'disabled':true}).val('');
                                 $('select[name="ExitPeriodType"]').attr({'disabled':true}).find('option[value="0"]').attr({'selected':false});
@@ -1152,70 +1186,75 @@
 
                            //可用时段
                             if(arr.EffactType==1){
-                                let isdisabled=false;//用于禁用时段编辑
-                                let days=compareDate(arr.VaildStartDate,arr.VaildEndDate);
-                                let aStart=arr.VaildStartDate.substring(5, 10);
-                                let aEnd=arr.VaildEndDate.substring(5, 10);
-                                let startDay=arr.VaildStartDate.substring(8, 10);
-                                let startMon=arr.VaildStartDate.substring(5, 7);
-                                let endtDay=arr.VaildEndDate.substring(8, 10);
-                                let endMon=arr.VaildEndDate.substring(5, 7);
-                               if(days==0){
-                                    $('#usePried').find('option[value="1"]').attr('selected',true);
-                                   isdisabled=true;
-                               }else if(days==6){
-                                    $('#usePried').find('option[value="2"]').attr('selected',true);
-                                   isdisabled=true;
-                                }else if(days>26&&days<31){
-                                   let flag=false;
-                                   if(startMon==endMon&&(startDay=='01')&&(endtDay=='31')){
-                                       if(startMon=='01'||startMon=='03'||startMon=='05'||startMon=='07'||startMon=='08'||
-                                           startMon=='10'||startMon=='12'){
-                                           flag=true;
-                                       }
+                                if(arr.VaildStartDate!=null){
+                                    let isdisabled=false;//用于禁用时段编辑
+                                    let days=compareDate(arr.VaildStartDate,arr.VaildEndDate);
+                                    let aStart=arr.VaildStartDate.substring(5, 10);
+                                    let aEnd=arr.VaildEndDate.substring(5, 10);
+                                    let startDay=arr.VaildStartDate.substring(8, 10);
+                                    let startMon=arr.VaildStartDate.substring(5, 7);
+                                    let endtDay=arr.VaildEndDate.substring(8, 10);
+                                    let endMon=arr.VaildEndDate.substring(5, 7);
+                                    if(days==0){
+                                        $('#usePried').find('option[value="1"]').attr('selected',true);
+                                        isdisabled=true;
+                                    }else if(days==6){
+                                        $('#usePried').find('option[value="2"]').attr('selected',true);
+                                        isdisabled=true;
+                                    }else if(days>26&&days<31){
+                                        let flag=false;
+                                        if(startMon==endMon&&(startDay=='01')&&(endtDay=='31')){
+                                            if(startMon=='01'||startMon=='03'||startMon=='05'||startMon=='07'||startMon=='08'||
+                                                startMon=='10'||startMon=='12'){
+                                                flag=true;
+                                            }
 
-                                   }
-                                   if(startMon==endMon&&(startDay=='01')&&(endtDay=='30')){
-                                       if(startMon=='04'||startMon=='06'||startMon=='09'||startMon=='11'){
-                                           flag=true;
-                                       }
-                                   }
-                                   if(startMon==endMon&&(startDay=='01')&&(endtDay=='28'||endtDay=='29')){
-                                       if(startMon=='02'){
-                                           flag=true;
-                                       }
-                                   }
-                                   if(flag){
-                                       $('#usePried').find('option[value="3"]').attr('selected',true);
-                                       isdisabled=true;
-                                   }
+                                        }
+                                        if(startMon==endMon&&(startDay=='01')&&(endtDay=='30')){
+                                            if(startMon=='04'||startMon=='06'||startMon=='09'||startMon=='11'){
+                                                flag=true;
+                                            }
+                                        }
+                                        if(startMon==endMon&&(startDay=='01')&&(endtDay=='28'||endtDay=='29')){
+                                            if(startMon=='02'){
+                                                flag=true;
+                                            }
+                                        }
+                                        if(flag){
+                                            $('#usePried').find('option[value="3"]').attr('selected',true);
+                                            isdisabled=true;
+                                        }
 
-                               }else if(days>87&&days<93){
-                                   if(aStart=='01-01'&&aEnd=='03-31'||aStart=='04-01'&&aEnd=='06-30'
-                                       ||aStart=='07-01'&&aEnd=='09-30'||aStart=='10-01'&&aEnd=='12-31'){
-                                       $('#usePried').find('option[value="4"]').attr('selected',true);
-                                       isdisabled=true;
-                                   }
-                               }else if(days>360&&days<370){
-                                   if(aStart=='01-01'&&aEnd=='12-31'){
-                                       $('#usePried').find('option[value="5"]').attr('selected',true);
-                                       isdisabled=true;
-                                   }
-                               }else {
-                                   $('#usePried').find('option[value="0"]').attr('selected',true);
-                               }
-                               form.render();
+                                    }else if(days>87&&days<93){
+                                        if(aStart=='01-01'&&aEnd=='03-31'||aStart=='04-01'&&aEnd=='06-30'
+                                            ||aStart=='07-01'&&aEnd=='09-30'||aStart=='10-01'&&aEnd=='12-31'){
+                                            $('#usePried').find('option[value="4"]').attr('selected',true);
+                                            isdisabled=true;
+                                        }
+                                    }else if(days>360&&days<370){
+                                        if(aStart=='01-01'&&aEnd=='12-31'){
+                                            $('#usePried').find('option[value="5"]').attr('selected',true);
+                                            isdisabled=true;
+                                        }
+                                    }else {
+                                        $('#usePried').find('option[value="0"]').attr('selected',true);
+                                    }
+                                    form.render();
 
-                               if(isdisabled){
-                                   $('#VaildStartDate').attr('disabled',true);
-                                   $('#VaildEndDate').attr('disabled',true);
-                               }
+                                    if(isdisabled){
+                                        $('#VaildStartDate').attr('disabled',true);
+                                        $('#VaildEndDate').attr('disabled',true);
+                                    }
+                                }else {
+                                    $('#usePried').find('option[value="0"]').attr('selected',true);
+                                }
+
                             }
                             laydate.render({
-                                elem: '#VaildStartDate',type: 'date',value:arr.EffactType==1?(arr.VaildStartDate.substring(0,10)):''
+                                elem: '#VaildStartDate',type: 'date',value:arr.EffactType==1?(arr.VaildStartDate==null?'':arr.VaildStartDate.substring(0,10)):''
                             });
                             laydate.render({
-                                elem: '#VaildEndDate',type: 'date',value:arr.EffactType==1?(arr.VaildEndDate.substring(0,10)):''
+                                elem: '#VaildEndDate',type: 'date',value:arr.EffactType==1?(arr.VaildEndDate==null?'':arr.VaildEndDate.substring(0,10)):''
                             });
                             //判断不可用时段类型
                             let noStart=arr.NoStartDate;
@@ -1291,12 +1330,7 @@
                                 $('.time2').removeClass('layui-hide');
                                 $('.time1').addClass('layui-hide')
                             }
-                            if(arr.Week!=null){
-                                   let arrWeek= arr.Week.split('|');
-                                   for(let i in arrWeek){
-                                       $('#weekBox').find('input[value="'+arrWeek[i]+'"]').attr('checked',true);
-                                   }
-                            }
+
                             proListArr=arr.ProjectTicketBinds;
 
                              DivideType=arr.DivideType;
@@ -1308,6 +1342,19 @@
                              EffactPeriodType=arr.EffactPeriodType;
                              VaildPeriodType=arr.VaildPeriodType;
                              WeekType=arr.WeekType;
+                             //时段类型
+                            if(arr.WeekType==0){
+                                $('#weekSetBox').removeClass('layui-hide')
+                            }else {
+                                $('#weekSetBox').addClass('layui-hide')
+                            }
+                            //时段周天
+                            if(arr.Week!=null){
+                                let arrWeek= arr.Week.split('|');
+                                for(let i in arrWeek){
+                                    $('#weekBox').find('input[value="'+arrWeek[i]+'"]').attr('checked',true);
+                                }
+                            }
                              week=arr.Week!=null?arr.Week.split('|'):[];
                              BalanceIndex=arr.BalanceIndex;
                              AllowExitTicket=arr.AllowExitTicket;
@@ -1622,16 +1669,18 @@
        let _cols=[];
        if(type=='times'||type=='group' ||type=='boardPackage'){
            _cols=[
-               {field:'ProjectName', title:'项目名称', align: 'center',width:200}
-               ,{field:'ProjcetTypeStr',title: '类别', align: 'center',width:160} //width 支持：数字、百分比和不填写。
+               {field:'ProjectName', title:'项目名称', align: 'center',width:140}
+               ,{field:'StoreName', title:'归属门店', align: 'center',width:140}
+               ,{field:'ProjcetTypeStr',title: '类别', align: 'center',width:140}  //width 支持：数字、百分比和不填写。
                ,{field:'AllowShareCount', title: '次数共享', align: 'center',width:100,templet:'#allowShare'}
                ,{field:'UseCount', title: '游玩次数', align: 'center',width:140,edit:true}
                ,{field:'WeightValue', title: '权重值', align: 'center',width:175,edit:true}
                ,{fixed: 'right',title:'操作', width:180, align:'center', toolbar: '#barDemo2'}]
        }else if(type=='month'||type=='timeLimit'){
            _cols=[
-               {field:'ProjectName', title:'项目名称', align: 'center',width:200}
-               ,{field:'ProjcetTypeStr',title: '类别', align: 'center',width:160} //width 支持：数字、百分比和不填写。
+               {field:'ProjectName', title:'项目名称', align: 'center',width:140}
+               ,{field:'StoreName', title:'归属门店', align: 'center',width:140}
+               ,{field:'ProjcetTypeStr',title: '类别', align: 'center',width:140}  //width 支持：数字、百分比和不填写。
 //               ,{field:'UseCount', title: '游玩次数', align: 'center',width:140,edit:true}
                ,{field:'WeightValue', title: '权重值', align: 'center',width:175,edit:true}
                ,{fixed: 'right',title:'操作', width:180, align:'center', toolbar: '#barDemo2'}]
@@ -1647,7 +1696,6 @@
            , limit: 10
        });
    }
-
    function initProject(token,form,layer,id,businessType){
         let _obj={'businessType':businessType,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
         let parseJson = JSON.stringify(_obj);
@@ -1663,7 +1711,7 @@
                     $('#'+id).html('<option>-请选择-</option>');
                     for(let i in arr){
                         $('#'+id).append('<option value="'+arr[i].ProjectID+'" ' +
-                                'title="'+arr[i].ProjcetType+'|'+arr[i].ProjcetTypeStr+'|'+arr[i].PushCoin1+'">'+arr[i].ProjectName+'</option>')
+                                'title="'+arr[i].ProjcetType+'|'+arr[i].ProjcetTypeStr+'|'+arr[i].PushCoin1+'|'+arr[i].StoreID+'|'+arr[i].StoreName+'">'+arr[i].ProjectName+'</option>')
                     }
                     form.render();
                 } else {
@@ -1672,8 +1720,7 @@
             }
         });
     }
-
-    function compareDate(sDate1, sDate2) {    //sDate1和sDate2是2006-12-18格式
+   function compareDate(sDate1, sDate2) {    //sDate1和sDate2是2006-12-18格式
         var dateSpan,
             tempDate,
             iDays;
@@ -1684,7 +1731,7 @@
         iDays = Math.floor(dateSpan / (24 * 3600 * 1000));
         return iDays
     };
-  console.log(compareDate('2018-06-11','2018-06-17'))
+
 </script>
 <script type="text/html"   id="barDemo2">
     <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del"><i class="layui-icon">&#xe640;</i>删除</a>
