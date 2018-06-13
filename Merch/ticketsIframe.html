@@ -1122,14 +1122,27 @@
                             //是否允许退票
                             if(arr.AllowExitTicket==1){
                                 $('.allowExitList').attr({'disabled':false});
-                                $('#useReasonBox').removeClass('layui-hide')
-                                }else {
-                                $('#useReasonBox').addClass('layui-hide');
+                                // $('#useReasonBox').removeClass('layui-hide');
+                                // $('#AllowRestrict').find('option[value="1"]').attr('selected',true)
+                                // $('#AllowRestrict').find('option[value="0"]').attr('selected',false)
+                            }else {
+                                // $('#AllowRestrict').find('option[value="0"]').attr('selected',true)
+                                // $('#AllowRestrict').find('option[value="1"]').attr('selected',false)
+                                // $('#useReasonBox').addClass('layui-hide');
                                 $('.allowExitList').attr({'disabled':true});
-                                    $('input[name="ExitPeriodValue"]').attr({'disabled':true}).val('');
-                                    $('select[name="ExitPeriodType"]').attr({'disabled':true}).find('option').attr({'selected':false});
+                                $('input[name="ExitPeriodValue"]').attr({'disabled':true}).val('');
+                                $('select[name="ExitPeriodType"]').attr({'disabled':true}).find('option[value="0"]').attr({'selected':false});
                             }
-
+                            //使用限制
+                            if(arr.AllowRestrict==1){
+                                $('#useReasonBox').removeClass('layui-hide');
+                                $('#AllowRestrict').find('option[value="1"]').attr('selected',true)
+                                $('#AllowRestrict').find('option[value="0"]').attr('selected',false)
+                            }else {
+                                $('#AllowRestrict').find('option[value="0"]').attr('selected',true)
+                                $('#AllowRestrict').find('option[value="1"]').attr('selected',false)
+                                $('#useReasonBox').addClass('layui-hide');
+                            }
                             laydate.render({
                                 elem: '#StartTime',type: 'time',value:arr.StartTimeStr
                             });

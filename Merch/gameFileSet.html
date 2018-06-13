@@ -1780,7 +1780,7 @@ let memberLevelId='';let memberLevels='';let MemberLevelNames='';
                   data = JSON.parse(data);
                   if (data.result_code == 1) {
                       layer.msg('保存成功',{time:1500},function () {
-                         layer.closeAll();
+                         layer.close(index);
                           newMem(id,token,table,layer)
                       });
                   } else {
