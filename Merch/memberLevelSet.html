@@ -283,7 +283,7 @@
                                   <input type="text" class="layui-input" name="chargeOff">
                               </div>
                               <div class="layui-form-mid">%</div>
-                              <div class="layui-input-inline" style="width: 110px;">
+                              <div class="layui-input-inline" style="width: 110px;height: 38px;line-height: 38px;">
                                   <input type="checkbox" name="needAuth" lay-ignore > 需要授权
                               </div>
                               <label  class="layui-form-mid" style="width: 100px;">最大存储余额</label>
@@ -512,19 +512,52 @@
 
    let  AllowExitCard=0,AllowExitMoney=0,AllowExitCoinToCar=0,LockHead=0,States=0;
    let allowCharge=0,allowSaveLottery=0,allowSaveCoin=0,allowGetCoin=0,allowTransfer=0;
+   //给下拉框设置option
+    let getBalanceTypeDic=(token,layer,form)=>{
+        let _obj={'hkType':'','userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+        let parseJson = JSON.stringify(_obj);
+        $.ajax({
+            type:'post',
+            url:'/XCCloud/BalanceType?action=GetBalanceTypeDic',
+            contentType: "application/json; charset=utf-8",
+            data:{parasJson: parseJson},
+            success: function (data) {
+                data = JSON.parse(data);
+                if (data.result_code == 1) {
+                    let arr=data.result_data;
+                    $('#freeRates').html('<option>-请选择-</option>');
+                    $('#freeBalanceType').html('<option>-请选择-</option>');
+                    $('#sourceBalanceType').html('<option>-请选择-</option>');
+                    $('#targetBalanceIndex').html('<option>-请选择-</option>');
+                    $('#freeBalanceIndex').html('<option>-请选择-</option>');
+                    for(let i in arr){
+                        $('#freeRates').append('<option value="'+arr[i].ID+'">'+arr[i].TypeName+'</option>');
+                        $('#freeBalanceType').append('<option value="'+arr[i].ID+'">'+arr[i].TypeName+'</option>');
+                        $('#sourceBalanceType').append('<option value="'+arr[i].ID+'">'+arr[i].TypeName+'</option>');
+                        $('#targetBalanceIndex').append('<option value="'+arr[i].ID+'">'+arr[i].TypeName+'</option>');
+                        $('#freeBalanceIndex').append('<option value="'+arr[i].ID+'">'+arr[i].TypeName+'</option>');
+                    }
+                    form.render('select');
+                } else {
+                    layer.msg(data.result_msg||data.return_msg);
+                }
+            }
+        });
+    }
     layui.use(['form','layer','table','element','upload'],()=> {
         let layer=layui.layer,
             table=layui.table,
              form=layui.form,
             element=layui.element;
           let  upload=layui.upload;
-        xc.getBalanceTypeDic('',token,layer,form,'freeRates');
-        xc.getBalanceTypeDic('',token,layer,form,'freeBalanceType');
-        xc.getBalanceTypeDic('',token,layer,form,'sourceBalanceType');
-        xc.getBalanceTypeDic('',token,layer,form,'targetBalanceIndex');
+        getBalanceTypeDic(token,layer,form);
+        // xc.getBalanceTypeDic('',token,layer,form,'freeRates');
+        // xc.getBalanceTypeDic('',token,layer,form,'freeBalanceType');
+        // xc.getBalanceTypeDic('',token,layer,form,'sourceBalanceType');
+        // xc.getBalanceTypeDic('',token,layer,form,'targetBalanceIndex');
         xc.setSelect('生日送币方式','birthdayFree');
         xc.setSelect('送币方式','freeType');
-        xc.getBalanceTypeDic('',token,layer,form,'freeBalanceIndex');
+        // xc.getBalanceTypeDic('',token,layer,form,'freeBalanceIndex');
         xc.getFoodInfoDic(token,layer,form,'FoodID');
         getUpDownLevel(token,form,layer,'upML');
         getUpDownLevel(token,form,layer,'downML');
@@ -755,8 +788,6 @@
                                 }else { $('#lockHead').attr('checked',false)}
 
                             xc.setSelect('生日送币方式','birthdayFree',arr.BirthdayFree);
-                            // xc.setSelect('送币频率','freeRate',arr.FreeRate);
-                            // xc.setSelect('送币方式','freeType',arr.FreeType);
                             form.val('formtest',{
                                 'upML':arr.UpdateLevelID,
                                 'downML':arr.ReduceLevelID,
@@ -963,15 +994,15 @@
         });
       //送币频率
         form.on('select(freeRate)', function(data){
-            freeRate=data.value;
+            freeRate = data.value=='-请选择-'?'':data.value;
         });
         //送币方式
         form.on('select(freeType)', function(data){
-            freeType=data.value;
+            freeType = data.value=='-请选择-'?'':data.value;
         });
         //生日送币方式
         form.on('select(birthdayFree)', function(data){
-            BirthdayFree=data.value;
+            BirthdayFree = data.value=='-请选择-'?'':data.value;
         });
         form.on('switch(needAuthor)', function(data){
             data.elem.checked==true ? needAuthor=1:needAuthor=0;
@@ -1031,19 +1062,19 @@
 
 
         form.on('select(freeBalanceType)', function(data){
-            freeBalanceType=data.value;
+            freeBalanceType = data.value=='-请选择-'?'':data.value;
         });
         form.on('select(upML)', function(data){
-            upML=data.value;
+            upML = data.value=='-请选择-'?'':data.value;
         });
         form.on('select(downML)', function(data){
-            downML=data.value;
+            downML = data.value=='-请选择-'?'':data.value;
         });
         form.on('select(freeBalanceIndex)', function(data){
-            freeBalanceIndex=data.value;
+            freeBalanceIndex = data.value=='-请选择-'?'':data.value;
         });
         form.on('select(FoodID)', function(data){
-            FoodID=data.value;
+            FoodID = data.value=='-请选择-'?'':data.value;
         });
     });
     var saveML=(layer,token)=>{

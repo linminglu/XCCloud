@@ -1082,7 +1082,7 @@
         });
         //监听
         form.on('select(CouponType)',(data)=>{
-            CouponType=data.value;
+            CouponType=data.value=='-请选择-'?'':data.value;
             if(data.value==2){
                 $('#tokenShow').removeClass('layui-hide');
                 $('#saleShow').addClass('layui-hide')
@@ -1092,7 +1092,7 @@
             }
          });
         form.on('select(SendType)',(data)=>{
-            SendType=data.value;
+            SendType=data.value=='-请选择-'?'':data.value;
             jackpotId='';
             $('body').find('input[name="disturbInput"]').each(function () {
                 $(this).val("");
@@ -1121,7 +1121,7 @@
             form.render('select','JackpotActive');
         });
         form.on('select(chargeType)',(data)=>{
-            chargeType=data.value;
+            chargeType=data.value=='-请选择-'?'':data.value;
             $('#ChargeCount').val('');
             if(data.value==0){
                 $('.chargeGoods').removeClass('layui-hide');
@@ -1154,16 +1154,16 @@
             form.render('select');
         });
         form.on('select(GoodID)',(data)=>{
-            goodId=data.value;
+            goodId=data.value=='-请选择-'?'':data.value;
         });
         form.on('select(ProjectID)',(data)=>{
-            projectId=data.value;
+            projectId=data.value=='-请选择-'?'':data.value;
         });
         form.on('select(balanceType)',(data)=>{
-            balanceIndex=data.value;
+            balanceIndex=data.value=='-请选择-'?'':data.value;
         });
         form.on('select(JackpotActive)',(data)=>{
-            jackpotId=data.value;
+            jackpotId=data.value=='-请选择-'?'':data.value;
         });
         form.on('switch(entryCouponFlag)',(data)=>{
             if(data.elem.checked==true){
@@ -1238,7 +1238,7 @@
         });
         //监听有效期间的可用期限
         form.on('select(weekType)',function (data) {
-            weekType=data.value;
+            weekType=data.value=='-请选择-'?'':data.value;
             week=[];
             if(data.value==0){
                 $('#weekSetBox').removeClass('layui-hide');
@@ -1274,7 +1274,7 @@
             }
         });
         form.on('select(transferStore)',(data)=>{
-            transferStore=data.value;
+            transferStore=data.value=='-请选择-'?'':data.value;
         });
         //点击新增打开弹窗
         $('.add').on('click',()=>{
@@ -1330,7 +1330,9 @@
                 title:'新增优惠券',
                 type:'1',
                 area:'1000px',
-                content:$('#addOrModify')
+                content:$('#addOrModify'), cancel:function () {
+                    location.reload();
+                }
             })
         });
         $('#saveStorebtn').on('click',()=>{
@@ -1543,7 +1545,10 @@
                     title:'选择导出优惠券',
                     type:'1',
                     area:'670px',
-                    content:$('.couponExport')
+                    content:$('.couponExport'),
+                    cancel:function () {
+                        location.reload();
+                    }
                 })
             }else  if(layEvent === 'transfers'){ //调拨
                 Id=data.ID;
@@ -1572,7 +1577,10 @@
                                 title:'选择调拨优惠券',
                                 type:'1',
                                 area:'670px',
-                                content:$('.couponTransfer')
+                                content:$('.couponTransfer'),
+                                cancel:function () {
+                                    location.reload();
+                                }
                             })
                         }
                     }
@@ -1654,7 +1662,10 @@
                                     title:'选择派发优惠券',
                                     type:'1',
                                     area:'670px',
-                                    content:$('.couponSend')
+                                    content:$('.couponSend'),
+                                    cancel:function () {
+                                        location.reload();
+                                    }
                                 })
                             }
                         }
@@ -1953,7 +1964,10 @@
                             // title:'设置适用门店',
                             type:1,
                             area:'500px',
-                            content:$('.setVip')
+                            content:$('.setVip'),
+                            cancel:function () {
+                                location.reload();
+                            }
                         })
                     }else {
                         layer.msg('当前没有可设置的会员！')

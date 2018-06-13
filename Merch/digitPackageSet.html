@@ -112,7 +112,7 @@
         let table=layui.table;
 
         form.on('select(BalanceType)',function (data) {
-            BalanceType=data.value;
+            BalanceType=data.value=='-请选择-'?'':data.value;
         });
         form.on('switch(AuthorFlag)',function (data) {
             if(data.elem.checked==true){
@@ -138,7 +138,7 @@
                         if (data.result_code == 1) {
                              $('#FoodName').val(data.result_data.FoodName);
                              BalanceType=data.result_data.BalanceIndex;
-                            xc.getBalanceTypeDic(token,layer,form,'BalanceType',data.result_data.BalanceIndex);
+                             xc.getBalanceTypeDic('',token,layer,form,'BalanceType',data.result_data.BalanceIndex);
                              $('#FoodCount').val(data.result_data.Coins);
                              AuthorFlag=data.result_data.AuthorFlag;
                              if(data.result_data.AuthorFlag==1){
@@ -150,7 +150,10 @@
                                 title:'新增套餐',
                                 type:1,
                                 area:['40%','400px'],
-                                content:$('#openModel')
+                                content:$('#openModel'),
+                                cancel:function () {
+                                    location.reload()
+                                }
                             })
                         } else {
                             layer.msg(data.result_msg||return_msg);
@@ -183,13 +186,16 @@
         //点击弹出弹窗
         $('.add').on('click',function () {
              id='';BalanceType='';  AuthorFlag=0;
-            xc.getBalanceTypeDic(token,layer,form,'BalanceType');
+            xc.getBalanceTypeDic('',token,layer,form,'BalanceType');
             $('#openModel').find('input').val('');
             layer.open({
                 title:'新增套餐',
                 type:1,
                 area:['40%','400px'],
-                content:$('#openModel')
+                content:$('#openModel'),
+                cancel:function () {
+                    location.reload()
+                }
             })
         });
         //保存新方案设置
@@ -211,22 +217,16 @@
                 success: function (data) {
                     data=JSON.parse(data);
                     if(data.result_code==1){
-                        layer.msg('保存成功',{time:1000},function () {
-                            location.href='digitPackageSet.html'
+                        layer.msg('保存成功',{time:1500},function () {
+                            location.reload()
                         })
                     }else {
-                        layer.msg('操作失败');
+                        layer.msg(data.result_msg||data.return_msg);
                         return false;
                     }
                 }
             })
         });
-
-        //表格钻取
-        $('body').on('click','button',function () {
-            console.log($(this))
-            console.log($(this).text())
-        })
     })
 </script>
 <script type="text/html" id="barDemo">

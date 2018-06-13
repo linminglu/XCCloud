@@ -26,25 +26,29 @@
                     </select>
                 </div>
             </div>
-            <div class="layui-inline">
+            <div class="layui-inline" style="margin-left: 10px;">
                 <label class="layui-form-label">返还累计天数</label>
                 <div class="layui-input-inline">
                     <input type="text" class="layui-input" id="totalDays">
                 </div>
                 <div class="layui-form-mid">填0表示仅当天有效</div>
             </div>
+        </div>
+        <div class="layui-form-item">
             <div class="layui-inline goodIsAll">
                 <label  class="layui-form-label">返还方式</label>
                 <div class="layui-input-inline">
                     <input type="checkbox" checked lay-skin="switch" id="Backtype" lay-filter="Backtype" lay-text="按营业日期|按自然日期">
                 </div>
             </div>
-            <div class="layui-inline goodIsAll">
+            <div class="layui-inline goodIsAll" style="margin-left: 10px;">
                 <label  class="layui-form-label">统计方式</label>
                 <div class="layui-input-inline">
                     <input type="checkbox" checked lay-skin="switch" id="AllowContainToday" lay-filter="AllowContainToday" lay-text="包含当天|不包含当天">
                 </div>
             </div>
+        </div>
+        <div class="layui-form-item">
             <div class="layui-inline">
                 <label  class="layui-form-label">输币期间</label>
                 <div class="layui-input-inline">
@@ -56,19 +60,23 @@
                 </div>
 
             </div>
+        </div>
+        <div class="layui-form-item">
             <div class="layui-inline">
                 <label class="layui-form-label">返还比例</label>
                 <div class="layui-input-inline">
                     <input type="text" class="layui-input" id="backScale">
                 </div>
             </div>
-            <div class="layui-inline">
+            <div class="layui-inline" style="margin-left: 10px;">
                 <label  class="layui-form-label">返还卡少于</label>
                 <div class="layui-input-inline">
                     <input type="text" class="layui-input" id="exitCardMin">
                 </div>
                 <div class="layui-form-mid">币不能退卡(返还到会员卡时无效)</div>
             </div>
+        </div>
+        <div class="layui-form-item">
             <div class="layui-inline goodIsAll">
                 <label  class="layui-form-label" style="padding: 8px 0;">是否扣除返还币</label>
                 <div class="layui-input-inline">
@@ -76,7 +84,7 @@
                 </div>
             </div>
         </div>
-        <div style="text-align:right;margin: 15px 0">
+        <div style="text-align:center;margin: 15px 0">
             <button id="save" class="layui-btn layui-btn-normal" type="button">确定</button>
         </div>
     </form>
@@ -118,7 +126,7 @@
         let table=layui.table;
         let form=layui.form;
         form.on('select(memberLevel)',function (data) {
-            memberLevel=data.value;
+            memberLevel=data.value=='-请选择-'?'':data.value;
             memberLevelStr=data.elem[data.elem.selectedIndex].text;
         });
         form.on('switch(AllowBackPrincipal)',function (data) {
@@ -146,8 +154,11 @@
             layui.layer.open({
                 title:'新增返还规则',
                 type:1,
-                area:'900px',
-                content:$('#openModel')
+                area:'910px',
+                content:$('#openModel'),
+                cancel:function () {
+                    location.reload();
+                }
             })
         });
         //保存返还规则
@@ -216,7 +227,10 @@
                      title:'修改返还规则',
                      type:1,
                      area:'900px',
-                     content:$('#openModel')
+                     content:$('#openModel'),
+                     cancel:function () {
+                         location.reload();
+                     }
                  })
              }
         })

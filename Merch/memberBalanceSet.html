@@ -72,7 +72,7 @@
             </div>
         </div>
         <div class="layui-col-md12" style="margin: 15px 0;padding-right: 60px;text-align:right;">
-            <button type="button" class="layui-btn layui-btn-normal" id="cancelBtn">取消</button>
+            <button type="button" class="layui-btn layui-btn-danger" id="cancelBtn">取消</button>
             <button type="reset" class="layui-btn layui-btn-normal layui-hide" id="reset">取消</button>
             <button type="button" class="layui-btn layui-btn-normal" id="saveBtn">保存</button>
         </div>
@@ -108,10 +108,10 @@
         let layer=layui.layer;
         let table=layui.table;
         form.on('select(HKType)',function (data) {
-            HKType=data.value;
+            HKType=data.value=='-请选择-'?'':data.value;
         });
         form.on('select(saveFloatRule)',function (data) {
-            saveFloatRule=data.value;
+            saveFloatRule=data.value=='-请选择-'?'':data.value;
         });
         $('#add').on('click',function () {
             setStore(form,token);
@@ -124,7 +124,10 @@
                 title:'会员余额类别设定',
                 type:1,
                 area:'650px',
-                content:$('#openModel')
+                content:$('#openModel'),
+                cancel:function () {
+                    location.reload()
+                }
             })
         });
         //saveBtn
@@ -210,7 +213,10 @@
                                     title:'修改会员余额类别',
                                     type:1,
                                     area:'650px',
-                                    content:$('#openModel')
+                                    content:$('#openModel'),
+                                    cancel:function () {
+                                        location.reload()
+                                    }
                                 }) 
                         }else {
                             layer.msg(data.result_msg);

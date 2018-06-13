@@ -768,7 +768,7 @@ namespace XXCloudService.Api.XCCloud
                 var goodNameOrBarcode = dicParas.ContainsKey("goodNameOrBarcode") ? (dicParas["goodNameOrBarcode"] + "") : string.Empty;
 
                 int goodTypeId = Dict_SystemService.I.GetModels(p => p.DictKey.Equals("商品类别")).FirstOrDefault().ID;
-                var query = Base_GoodsInfoService.N.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.GoodType == (int)GoodType.Good && p.Status == 1);
+                var query = Base_GoodsInfoService.N.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.Status == 1);
                 if (!string.IsNullOrEmpty(goodNameOrBarcode))
                 {
                     query = query.Where(w => w.GoodName.Contains(goodNameOrBarcode) || w.Barcode.Contains(goodNameOrBarcode));
