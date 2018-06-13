@@ -79,7 +79,7 @@
                         <div class="layui-inline">
                             <label class="layui-form-label">线上开卡级别</label>
                             <div class="layui-input-inline">
-                                <select  id="cmdCardOpenLevel" name="cmdCardOpenLevel" lay-filter="cmdCardOpenLevel">
+                                <select  id="cmbCardOpenLevel" name="cmbCardOpenLevel" lay-filter="cmbCardOpenLevel">
 
                                 </select>
                             </div>
@@ -464,7 +464,7 @@
     let _storeId=getStorage('storeId_merch');
     // //运营参数设定
     let  chkPrintBarcode=0;let chkBarSendCoinAuthorize=0;let txtBusinessClass;
-    let cmbAuthChannel ;let chkShift=0;let chkTaxInSale=0;let  cmdCardOpenLevel='';
+    let cmbAuthChannel ;let chkShift=0;let chkTaxInSale=0;let  cmbCardOpenLevel='';
     //会员设定
     let cmbBirthdaySendSms;let chkPhotograph=0;let chkExitCardCatch=0;
     let chkExitFoodCatch=0; let chkForceClearBalanceOnExitCard=0;
@@ -527,7 +527,7 @@
                         "chkPrintBarcode": arr[3].ParameterValue==1?true:false
                         ,"chkBarSendCoinAuthorize": arr[4].ParameterValue==1?true:false
                         ,'cmbAutoJoinMemberLevel':arr[16].ParameterValue
-                        ,'cmdCardOpenLevel':arr[24].ParameterValue
+                        ,'cmbCardOpenLevel':arr[24].ParameterValue
                         ,"txtOnceSellCoinMin": arr[7].ParameterValue
                         ,"txtBusinessClass": arr[5].ParameterValue
                         ,"chkShift":  arr[6].ParameterValue==1?true:false
@@ -548,7 +548,7 @@
                     cmbAuthChannel=arr[21].ParameterValue||'';
                     chkShift=arr[6].ParameterValue;
                     chkTaxInSale=arr[22].ParameterValue||'';
-                    cmdCardOpenLevel=arr[24].ParameterValue||'';
+                    cmbCardOpenLevel=arr[24].ParameterValue||'';
                     //会员设定
                     cmbBirthdaySendSms=arr[10].ParameterValue;
                     chkPhotograph=arr[11].ParameterValue;
@@ -627,7 +627,7 @@
         ifNeedSet(_storeId,form,layer);
 
         xc.getMemberTypeDic(token,layer,form,'cmbAutoJoinMemberLevel');
-        xc.getMemberTypeDic(token,layer,form,'cmdCardOpenLevel');
+        xc.getMemberTypeDic(token,layer,form,'cmbCardOpenLevel');
         setTimeout(setBbi(_storeId,form,layer),200);
         //正价币增加 或者减少一条
         $('#addPrice').on('click',function () {
@@ -667,8 +667,8 @@
         form.on('select(cmbAuthChannel)',function (data) {
             cmbAuthChannel =data.value;
         });
-        form.on('select(cmdCardOpenLevel)',function (data) {
-            cmdCardOpenLevel =data.value;
+        form.on('select(cmbCardOpenLevel)',function (data) {
+            cmbCardOpenLevel =data.value;
         });
         form.on('switch(chkShift)',(data)=>{
             data.elem.checked==true ?chkShift=1 :chkShift=0
@@ -817,7 +817,7 @@
             { "storeId":storeIds, "system":"txtClientBuyTicketInfo", "isAllow":1, "pValue":cmbAutoJoinMemberLevels.length>0?cmbAutoJoinMemberLevels.join('|'):'', "note":""},
             { "storeId":storeIds, "system":"txtCreditEveryday", "isAllow":1, "pValue":$('input[name="txtCreditEveryday"]').val(), "note":""},
             { "storeId":storeIds, "system":"txtMaxSendCard", "isAllow":"1", "pValue":$('input[name="txtMaxSendCard"]').val(), "note":""},
-            { "storeId":storeIds, "system":"cmdCardOpenLevel", "isAllow":"1", "pValue":cmdCardOpenLevel, "note":""}
+            { "storeId":storeIds, "system":"cmbCardOpenLevel", "isAllow":"1", "pValue":cmbCardOpenLevel, "note":""}
         ];
         let obj={"submitData":submitData, "userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
         let parasJson = JSON.stringify(obj);

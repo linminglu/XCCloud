@@ -241,7 +241,7 @@ function getPara() {
         str = args[i];
         var arg = str.split("=");
         if (args.length < 1) {break;}
-        else if(paras[i]!=""&&values[i]!=""){
+        else if(paras[i]!=""&&values[i]!=""){ ``
             paras[i] = arg[0];      //参数名
             values[i] = arg[1];     //参数值
         }

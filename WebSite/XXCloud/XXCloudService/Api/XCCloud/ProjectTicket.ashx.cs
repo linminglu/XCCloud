@@ -187,7 +187,46 @@ namespace XXCloudService.Api.XCCloud
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);                                       
                 if (!dicParas.Get("price").Validdecimalnozero("售价", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                
+                if (dicParas.Get("effactType").Toint() == (int)EffactType.Period)
+                {
+                    if (!dicParas.Get("effactPeriodType").Validint("生效周期方式", out errMsg))
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    if (!dicParas.Get("effactPeriodValue").Validint("生效周期值", out errMsg))
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    if (!dicParas.Get("vaildPeriodType").Validint("有效周期方式", out errMsg))
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    if (!dicParas.Get("vaildPeriodValue").Validintnozero("有效周期值", out errMsg))
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg); 
+                }
+                if (dicParas.Get("weekType").Toint() == (int)TimeType.Custom)
+                {
+                    if (!dicParas.Get("week").Nonempty("有效周", out errMsg))
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                   
+                }
+                if (dicParas.Get("allowExitTicket").Toint() == 1)
+                {
+                    if (!dicParas.Get("exitPeriodType").Validint("退票周期方式", out errMsg))
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    if (!dicParas.Get("exitPeriodValue").Validint("退票周期值", out errMsg))
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    if (!dicParas.Get("exitTicketType").Validint("退票方式", out errMsg))
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    if (!dicParas.Get("exitTicketValue").Validintnozero("退票值", out errMsg))
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+                if (dicParas.Get("allowRestrict").Toint() == 1)
+                {
+                    if (!dicParas.Get("restrictShareCount").Validint("频率限制是否共享", out errMsg))
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    if (!dicParas.Get("restrictPeriodType").Validint("限制周期方式", out errMsg))
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    if (!dicParas.Get("restrictPreiodValue").Validintnozero("限制周期值", out errMsg))
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    if (!dicParas.Get("restrctCount").Validintnozero("限制使用次数", out errMsg))
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+                                    
                 var id = dicParas.Get("id").Toint(0);
                 var ticketType = dicParas.Get("ticketType").Toint();
                 var divideType = dicParas.Get("divideType").Toint(0);
@@ -202,7 +241,7 @@ namespace XXCloudService.Api.XCCloud
                 var allowRestrict = dicParas.Get("allowRestrict").Toint(0);
                 var restrictShareCount = dicParas.Get("restrictShareCount").Toint(0);
                 var restrictPeriodType = dicParas.Get("restrictPeriodType").Toint(0);
-                var restrictPeriodValue = dicParas.Get("restrictPeriodValue").Toint(0);
+                var restrictPreiodValue = dicParas.Get("restrictPreiodValue").Toint(0);
                 var restrctCount = dicParas.Get("restrctCount").Toint(0);
                 var note = dicParas.Get("note");
                 var vaildStartDate = dicParas.Get("vaildStartDate").Todate();
@@ -245,13 +284,14 @@ namespace XXCloudService.Api.XCCloud
                         model.AllowRestrict = allowRestrict;
                         model.RestrictShareCount = restrictShareCount;
                         model.RestrictPeriodType = restrictPeriodType;
-                        model.RestrictPreiodValue = restrictPeriodValue;
+                        model.RestrictPreiodValue = restrictPreiodValue;
                         model.RestrctCount = restrctCount;
                         model.Note = note;
                         model.VaildStartDate = vaildStartDate;
                         model.VaildEndDate = vaildEndDate;
                         model.NoStartDate = noStartDate;
                         model.NoEndDate = noEndDate;
+
                         if (id == 0)
                         {
                             model.MerchID = merchId;

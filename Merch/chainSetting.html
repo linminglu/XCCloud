@@ -446,7 +446,7 @@
                          for(var i in arr){
                             $('#'+arr[i].RuleType).append('<div id="'+arr[i].ID+'">' +
                                      '<span>'+arr[i].StoreName+'</span>' +
-                                     '<i class="layui-icon iconDel" style="color: red;">&#x1006;</i></div>')
+                                     '<i class="layui-icon iconDel" style="color: red;cursor: pointer;">&#x1006;</i></div>')
                          }
 
                         layui.use('form',function () {
@@ -682,7 +682,7 @@
 
         });
         //13.删除接收余额的门店
-        $('.setBox').on('click','div>i',function () {
+        $('#memBalance').on('click','.setBox>div>i',function () {
             let that=$(this);
             let ids=$(this).parent('div').attr('id');
             let url='/XCCloud/StoreWeight?action=DelChainStore';

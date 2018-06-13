@@ -150,17 +150,17 @@
                         <div class="layui-inline time2 layui-hide">
                             <label class="layui-form-label">时间范围</label>
                             <div class="layui-input-inline" style="width: 150px">
-                                <select lay-filter="usePried">
+                                <select lay-filter="usePried" id="usePried">
+                                    <option value="0">自定义</option>
                                     <option value="1">当天</option>
                                     <option value="2">本周</option>
                                     <option value="3">本月</option>
                                     <option value="4">本季</option>
                                     <option value="5">本年</option>
-                                    <option value="0">自定义</option>
                                 </select>
                             </div>
                             <div class="layui-input-inline" style="width: 150px">
-                                <input type="text" class="layui-input" name="VaildStartDate" id="VaildStartDate">
+                                <input type="text" class="layui-input" name="VaildStartDate" id="VaildStartDate" >
                             </div>
                             <div class="layui-form-mid">
                                 至
@@ -304,8 +304,7 @@
                             <label class="layui-form-label">限制条件</label>
                             <div class="layui-input-inline">
                                 <select name="AllowRestrict" id="AllowRestrict" lay-filter="AllowRestrict">
-                                    <option>-请选择-</option>
-                                    <option value="0">不限次数</option>
+                                    <option value="0" selected>不限次数</option>
                                     <option value="1">限定游玩次数</option>
                                 </select>
                             </div>
@@ -398,7 +397,7 @@
     let EffactType=0; let EffactPeriodType=0; let VaildPeriodType=0;let WeekType=0;let week=[];
     let BalanceIndex='';
     let AllowExitTicket=0;let ExitPeriodType=0;let ExitTicketType=0;//按金额
-    let RestrictPeriodType='';let AllowRestrict='';let RestrictShareCount=0;
+    let RestrictPeriodType='';let AllowRestrict='0';let RestrictShareCount=0;
     layui.use(['table','form','layer','laydate'],function () {
         let table=layui.table;
         let form=layui.form;
@@ -592,12 +591,7 @@
         laydate.render({
             elem: '#EndTime',type: 'time'
         });
-        laydate.render({
-            elem: '#VaildStartDate',type: 'date',value:new Date()
-        });
-        laydate.render({
-            elem: '#VaildEndDate',type: 'date',value:new Date()
-        });
+
         laydate.render({
             elem: '#NoStartDate',type: 'date'
         });
@@ -779,7 +773,7 @@
                                         ,'PushCoin1':PushCoin1
                                         ,'UseCount':1
                                         ,'AllowShareCount':isShare
-                                        ,'WeightValue':parseInt(PushCoin1)*parseInt(PushCoin1)
+                                        ,'WeightValue':parseInt(1)*parseInt(PushCoin1)
                                     });
                                     table.render({
                                         elem: '#proTable'
@@ -853,7 +847,7 @@
                                     ,'PushCoin1':PushCoin1
                                     ,'UseCount':1
                                     ,'AllowShareCount':isShare
-                                    ,'WeightValue':parseInt(PushCoin1)*parseInt(PushCoin1)
+                                    ,'WeightValue':parseInt(1)*parseInt(PushCoin1)
                                 });
                                 for(let i in proListArr){
                                     proListArr[i].AllowShareCount=0;
@@ -945,7 +939,7 @@
                                         ,'PushCoin1':PushCoin1
                                         ,'UseCount':1
                                         ,'AllowShareCount':isShare
-                                        ,'WeightValue':parseInt(PushCoin1)*parseInt(PushCoin1)
+                                        ,'WeightValue':parseInt(1)*parseInt(PushCoin1)
                                     });
                                     for(let i in proListArr){
                                         proListArr[i].AllowShareCount=0;
@@ -1022,7 +1016,7 @@
                                     ,'PushCoin1':PushCoin1
                                     ,'UseCount':1
                                     ,'AllowShareCount':isShare
-                                    ,'WeightValue':parseInt(PushCoin1)*parseInt(PushCoin1)
+                                    ,'WeightValue':parseInt(1)*parseInt(PushCoin1)
                                 });
                                 for(let i in proListArr){
                                     proListArr[i].AllowShareCount=0;
@@ -1067,7 +1061,6 @@
         $('#save').on('click',function () {
             saveTicketSet(ticketSet,layer);
         });
-
         //如果是修改
         if(ticketSet.way=='modify'){
                 let _obj={'id':ticketSet.id,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
@@ -1084,7 +1077,6 @@
                             let arr=data.result_data;
                             form.val('formtest',{
                                 'TicketName':arr.TicketName,
-
                                 'AllowExitTimes':arr.AllowExitTimes,
                                 'WriteOffDays':arr.WriteOffDays,
                                 'Price':arr.Price,
@@ -1099,8 +1091,6 @@
                                 'EffactPeriodType':arr.EffactPeriodType,
                                 'VaildPeriodValue':arr.VaildPeriodValue,
                                 'VaildPeriodType':arr.VaildPeriodType,
-                                'VaildStartDate':VaildPeriodType==1?arr.VaildStartDate.substring(0, 10):'',
-                                'VaildEndDate':VaildPeriodType==1?arr.VaildEndDate.substring(0, 10):'',
                                 'poriedType':arr.WeekType,
 
                                 'NoStartDate':arr.NoStartDate!=null?arr.NoStartDate.substring(0, 10):'',
@@ -1121,27 +1111,81 @@
                                 'RestrictShareCount':arr.RestrictShareCount==1?true:false,
 
                             });
-//
-                        if(arr.BusinessType==0){
-                            $('#BusinessType').val('门票')
-                        }else if(arr.BusinessType==1){
-                            $('#BusinessType').val('限时任玩')
-                        }else if(arr.BusinessType==2){
-                            $('#BusinessType').val('机台打包')
-                        }
+                            //  业务类型
+                            if(arr.BusinessType==0){
+                                $('#BusinessType').val('门票')
+                            }else if(arr.BusinessType==1){
+                                $('#BusinessType').val('限时任玩')
+                            }else if(arr.BusinessType==2){
+                                $('#BusinessType').val('机台打包')
+                            }
+                            //是否允许退票
                             if(arr.AllowExitTicket==1){
                                 $('.allowExitList').attr({'disabled':false});
-
+                                $('#useReasonBox').removeClass('layui-hide')
                                 }else {
+                                $('#useReasonBox').addClass('layui-hide');
                                 $('.allowExitList').attr({'disabled':true});
                                     $('input[name="ExitPeriodValue"]').attr({'disabled':true}).val('');
                                     $('select[name="ExitPeriodType"]').attr({'disabled':true}).find('option').attr({'selected':false});
                             }
+
                             laydate.render({
                                 elem: '#StartTime',type: 'time',value:arr.StartTimeStr
                             });
                             laydate.render({
                                 elem: '#EndTime',type: 'time',value:arr.EndTimeStr
+                            });
+
+                           //可用时段
+                            if(arr.EffactType==1){
+                                let days=compareDate(arr.VaildStartDate,arr.VaildEndDate);
+                                let aStart=arr.VaildStartDate.substring(5, 10);
+                                let aEnd=arr.VaildEndDate.substring(5, 10);
+                                let startDay=arr.VaildStartDate.substring(8, 10);
+                                let startMon=arr.VaildStartDate.substring(5, 7);
+                                let endtDay=arr.VaildEndDate.substring(8, 10);
+                                let endMon=arr.VaildEndDate.substring(5, 7);
+                               if(days==0){
+                                    $('#usePried').find('option[value="1"]').attr('selected',true);
+                               }else if(days==6){
+                                    $('#usePried').find('option[value="2"]').attr('selected',true);
+                                }else if(days>26&&days<31){
+                                   let flag=false;
+                                   if(startMon==endMon==('01'||'03'||'05'||'07'||'08'||'10'||'12')&&(startDay=='01')&&(endtDay=='31')){
+                                       flag=true;
+                                   }
+                                   if(startMon==endMon==('04'||'06'||'09'||'11')&&(startDay=='01')&&(endtDay=='30')){
+                                       flag=true;
+                                   }
+
+                                   if(startMon==endMon==('02')&&(startDay=='01')&&(endtDay==('28'||'29'))){
+                                       flag=true;
+                                   }
+                                   if(flag){
+                                       $('#usePried').find('option[value="3"]').attr('selected',true);
+                                   }
+
+                               }else if(days>87&&days<93){
+                                   if(aStart=='01-01'&&aEnd=='03-31'||aStart=='04-01'&&aEnd=='06-30'
+                                       ||aStart=='07-01'&&aEnd=='09-30'||aStart=='10-01'&&aEnd=='12-31'){
+                                       $('#usePried').find('option[value="4"]').attr('selected',true);
+                                   }
+                               }else if(days>360&&days<370){
+                                   if(aStart=='01-01'&&aEnd=='12-31'){
+                                       $('#usePried').find('option[value="5"]').attr('selected',true);
+                                   }
+                               }else {
+                                   $('#usePried').find('option[value="0"]').attr('selected',true);
+                               }
+                               form.render()
+                            }
+
+                            laydate.render({
+                                elem: '#VaildStartDate',type: 'date',value:arr.EffactType==1?(arr.VaildStartDate.substring(0,10)):''
+                            });
+                            laydate.render({
+                                elem: '#VaildEndDate',type: 'date',value:arr.EffactType==1?(arr.VaildEndDate.substring(0,10)):''
                             });
                             if(arr.EffactType==0){
                                 $('.time1').removeClass('layui-hide');
@@ -1172,26 +1216,33 @@
                              AllowExitTicket=arr.AllowExitTicket;
                              ExitPeriodType=arr.ExitPeriodType;
                              ExitTicketType=arr.ExitTicketType;//按金额
-                            RestrictPeriodType=arr.RestrictPeriodType;
-                            RestrictShareCount=arr.RestrictShareCount;
-                            AllowRestrict=arr.AllowRestrict;
+                             RestrictPeriodType=arr.RestrictPeriodType;
+                             RestrictShareCount=arr.RestrictShareCount;
+                             AllowRestrict=arr.AllowRestrict;
 
-                            bindPro(ticketSet.name,table,arr.ProjectTicketBinds,'proTable');
+                             bindPro(ticketSet.name,table,arr.ProjectTicketBinds,'proTable');
 
-                            form.render();
+                             form.render();
                         } else {
                             layer.msg(data.result_msg||data.return_msg);
                         }
                     }
                 })
 
+        }else {
+            laydate.render({
+                elem: '#VaildStartDate',type: 'date',value:new Date()
+            });
+            laydate.render({
+                elem: '#VaildEndDate',type: 'date',value:new Date()
+            });
         }
         table.on('tool(proTable)',function (obj) {
             let data=obj.data;
             let layevent=obj.event;
             if(layevent==='del'){
                 for(let i in proListArr){
-                    if(proListArr[i].ProjectID==data.ProjectID){
+                    if(proListArr[i].ProjcetID==data.ProjcetID){
                         proListArr.splice(i,1);
                         obj.del()
                     }
@@ -1214,7 +1265,7 @@
             bindPro(ticketSet.name,table,proListArr,'proTable');
         });
     });
-   let saveTicketSet= function (ticketSet,layer) {
+   let saveTicketSet= function (ticketSet,layer){
        let _obj;
         if(ticketSet.name=='times'){
              _obj={
@@ -1242,7 +1293,7 @@
                 'VaildStartDate':EffactType==1?$('input[name="VaildStartDate"]').val():'',
                 'VaildEndDate':EffactType==1?$('input[name="VaildEndDate"]').val():'',
                 'WeekType':WeekType,
-                'Week':week.length>0?week.sort().join('|'):'',
+                'Week':week.length>0?week.sort().sort().join('|'):'',
                 'StartTime':$('input[name="StartTime"]').val(),
                 'EndTime':$('input[name="EndTime"]').val(),
                 'NoStartDate':$('input[name="NoStartDate"]').val(),
@@ -1285,7 +1336,7 @@
                 'VaildStartDate':EffactType==1?$('input[name="VaildStartDate"]').val():'',
                 'VaildEndDate':EffactType==1?$('input[name="VaildEndDate"]').val():'',
                 'WeekType':WeekType,
-                'Week':week.length>0?week.join('|'):'',
+                'Week':week.length>0?week.sort().join('|'):'',
                 'StartTime':$('input[name="StartTime"]').val(),
                 'EndTime':$('input[name="EndTime"]').val(),
                 'NoStartDate':$('input[name="NoStartDate"]').val(),
@@ -1335,7 +1386,7 @@
                 'VaildStartDate':EffactType==1?$('input[name="VaildStartDate"]').val():'',
                 'VaildEndDate':EffactType==1?$('input[name="VaildEndDate"]').val():'',
                 'WeekType':WeekType,
-                'Week':week.length>0?week.join('|'):'',
+                'Week':week.length>0?week.sort().join('|'):'',
                 'StartTime':$('input[name="StartTime"]').val(),
                 'EndTime':$('input[name="EndTime"]').val(),
                 'NoStartDate':$('input[name="NoStartDate"]').val(),
@@ -1380,7 +1431,7 @@
                 'VaildStartDate':EffactType==1?$('input[name="VaildStartDate"]').val():'',
                 'VaildEndDate':EffactType==1?$('input[name="VaildEndDate"]').val():'',
                 'WeekType':WeekType,
-                'Week':week.length>0?week.join('|'):'',
+                'Week':week.length>0?week.sort().join('|'):'',
                 'StartTime':$('input[name="StartTime"]').val(),
                 'EndTime':$('input[name="EndTime"]').val(),
                 'NoStartDate':$('input[name="NoStartDate"]').val(),
@@ -1432,7 +1483,7 @@
                 'VaildStartDate':EffactType==1?$('input[name="VaildStartDate"]').val():'',
                 'VaildEndDate':EffactType==1?$('input[name="VaildEndDate"]').val():'',
                 'WeekType':WeekType,
-                'Week':week.length>0?week.join('|'):'',
+                'Week':week.length>0?week.sort().join('|'):'',
                 'StartTime':$('input[name="StartTime"]').val(),
                 'EndTime':$('input[name="EndTime"]').val(),
                 'NoStartDate':$('input[name="NoStartDate"]').val(),
@@ -1462,7 +1513,7 @@
                if (data.result_code == 1) {
                    layer.msg('设置成功',{time:1500},function () {
                        layer.closeAll();
-                       parent.location.reload()
+                       parent.location.reload();
                    })
                } else {
                    layer.msg(data.result_msg||data.return_msg);
@@ -1500,12 +1551,7 @@
        });
    }
 
-   function generatelD(str) {
-       var pad='00';
-       return pad.substring(0,2-str.length)+str
-   }
-
-    function initProject(token,form,layer,id,businessType){
+   function initProject(token,form,layer,id,businessType){
         let _obj={'businessType':businessType,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
         let parseJson = JSON.stringify(_obj);
         $.ajax({
@@ -1529,6 +1575,19 @@
             }
         });
     }
+
+    function compareDate(sDate1, sDate2) {    //sDate1和sDate2是2006-12-18格式
+        var dateSpan,
+            tempDate,
+            iDays;
+        sDate1 = Date.parse(sDate1);
+        sDate2 = Date.parse(sDate2);
+        dateSpan = sDate2 - sDate1;
+        dateSpan = Math.abs(dateSpan);
+        iDays = Math.floor(dateSpan / (24 * 3600 * 1000));
+        return iDays
+    };
+  console.log(compareDate('2018-06-11','2018-06-17'))
 </script>
 <script type="text/html"   id="barDemo2">
     <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del"><i class="layui-icon">&#xe640;</i>删除</a>

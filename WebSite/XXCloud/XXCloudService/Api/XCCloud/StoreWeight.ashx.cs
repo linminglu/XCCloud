@@ -13,6 +13,7 @@ using XCCloudService.Common.Enum;
 using XCCloudService.DAL;
 using XCCloudService.Model.CustomModel.XCCloud;
 using XCCloudService.Model.XCCloud;
+using XCCloudService.Common.Extensions;
 
 namespace XXCloudService.Api.XCCloud
 {
@@ -261,12 +262,17 @@ namespace XXCloudService.Api.XCCloud
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
+                //排除游乐项目类型的游戏机
+                var projectGameTypes = getProjectGameTypes(out errMsg);
+                if (!errMsg.IsNull())
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
                 IData_GameInfoService data_GameInfoService = BLLContainer.Resolve<IData_GameInfoService>(resolveNew: true);
                 IBase_StoreWeight_GameService base_StoreWeight_GameService = BLLContainer.Resolve<IBase_StoreWeight_GameService>(resolveNew: true);
                 var result = from a in data_GameInfoService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase))
                              join b in base_StoreWeight_GameService.GetModels() on a.ID equals b.GameID into b1
                              from b in b1.DefaultIfEmpty()
-                             where b.GameID == (int?)null
+                             where b.GameID == (int?)null && !projectGameTypes.Contains(a.ID + "")
                              select new
                              {
                                  GameName = a.GameName,
