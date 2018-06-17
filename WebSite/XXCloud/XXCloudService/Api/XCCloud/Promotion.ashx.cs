@@ -261,7 +261,8 @@ namespace XXCloudService.Api.XCCloud
 
             return true;
         }
-        private bool saveFoodDetail(int iFoodId, object[] foodDetials, out string errMsg)
+
+        private bool saveFoodDetail(string storeIds, int iFoodId, object[] foodDetials, out string errMsg)
         {
             errMsg = string.Empty;
             if (foodDetials != null && foodDetials.Count() >= 0)
@@ -301,11 +302,35 @@ namespace XXCloudService.Api.XCCloud
                         if (!weightValue.Validdecimal("权重价值", out errMsg)) 
                             return false;
 
-                        //if (foodDetailType == (int)FoodDetailType.Ticket || foodDetailType == (int)FoodDetailType.Coupon)
-                        //{
-                        //    if (!days.Validint("有效天数", out errMsg))
-                        //        return false;
-                        //}
+                        if (foodDetailType == (int)FoodDetailType.Ticket)
+                        {
+                            if (!Data_ProjectTicketService.I.Any(p => p.ID == containId && (p.StoreID ?? "").Equals(storeIds, StringComparison.OrdinalIgnoreCase)))
+                            {
+                                errMsg = "套餐门票不能适用于多门店";
+                                return false;
+                            }
+                        }
+
+                        if (foodDetailType == (int)FoodDetailType.Good)
+                        {
+                            if (storeIds.IsNull() || storeIds.Contains("|"))
+                            {
+                                if (!Base_GoodsInfoService.I.Any(p => p.ID == containId && p.Status == 1 && (p.StoreID ?? "") != ""))
+                                {
+                                    errMsg = "套餐不能包含多门店的私有属性的商品";
+                                    return false;
+                                }
+                            }
+                            else
+                            {
+                                if (!Base_GoodsInfoService.I.Any(p => p.ID == containId && p.Status == 1 && ((p.StoreID ?? "") == "" || p.StoreID.Equals(storeIds))))
+                                {
+                                    errMsg = "套餐不能包含多门店的私有属性的商品";
+                                    return false;
+                                }
+                            }
+                            
+                        }
 
                         var data_Food_DetialModel = new Data_Food_Detial();
                         data_Food_DetialModel.FoodID = iFoodId;
@@ -466,6 +491,9 @@ namespace XXCloudService.Api.XCCloud
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
+                //获取适用门店
+                var StoreIDs = Data_Food_StoreListService.I.GetModels(p => p.FoodID == foodId).Select(o => new { StoreID = o.StoreID });
+
                 var FoodLevels = from c in
                                      (from a in Data_Food_LevelService.N.GetModels(p => p.FoodID == foodId)
                                       join b in Data_MemberLevelService.N.GetModels(p => p.State == 1) on a.MemberLevelID equals b.MemberLevelID
@@ -563,6 +591,7 @@ namespace XXCloudService.Api.XCCloud
                     ClientPrice = FoodInfo.ClientPrice,
                     MemberPrice = FoodInfo.MemberPrice,
                     RenewDays = FoodInfo.RenewDays,
+                    StoreIDs = StoreIDs,
                     FoodDetials = FoodDetials,
                     FoodLevels = FoodLevels,
                     FoodSales = FoodSales
@@ -603,6 +632,7 @@ namespace XXCloudService.Api.XCCloud
                 var memberPrice = dicParas.Get("memberPrice").Todecimal();
                 var renewDays = dicParas.Get("renewDays").Toint();
                 var imageUrl = dicParas.Get("imageUrl");
+                var storeIds = dicParas.Get("storeIds");
                 object[] foodSales = dicParas.GetArray("foodSales");
                 object[] foodDetials = dicParas.GetArray("foodDetials");
                 object[] foodLevels = dicParas.GetArray("foodLevels");
@@ -698,8 +728,34 @@ namespace XXCloudService.Api.XCCloud
                         }
 
                         //保存套餐内容信息
-                        if (!saveFoodDetail(foodId, foodDetials, out errMsg))
+                        if (!saveFoodDetail(storeIds, foodId, foodDetials, out errMsg))
                         {
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
+                        //保存适用门店
+                        foreach (var model in Data_Food_StoreListService.I.GetModels(p => p.FoodID == foodId))
+                        {
+                            Data_Food_StoreListService.I.DeleteModel(model);
+                        }
+
+                        if (!string.IsNullOrEmpty(storeIds))
+                        {
+                            foreach (var storeId in storeIds.Split('|'))
+                            {
+                                if (!storeId.Nonempty("门店ID", out errMsg))
+                                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                                var model = new Data_Food_StoreList();
+                                model.FoodID = foodId;
+                                model.StoreID = storeId;                                
+                                Data_Food_StoreListService.I.AddModel(model);
+                            }
+                        }
+
+                        if (!Data_Food_StoreListService.I.SaveChanges())
+                        {
+                            errMsg = "更新套餐适用门店表失败";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 
@@ -766,12 +822,21 @@ namespace XXCloudService.Api.XCCloud
 
                 string errMsg = string.Empty;                
                 var goodNameOrBarcode = dicParas.ContainsKey("goodNameOrBarcode") ? (dicParas["goodNameOrBarcode"] + "") : string.Empty;
+                var storeIds = dicParas.Get("storeIds");
 
                 int goodTypeId = Dict_SystemService.I.GetModels(p => p.DictKey.Equals("商品类别")).FirstOrDefault().ID;
                 var query = Base_GoodsInfoService.N.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.Status == 1);
                 if (!string.IsNullOrEmpty(goodNameOrBarcode))
                 {
                     query = query.Where(w => w.GoodName.Contains(goodNameOrBarcode) || w.Barcode.Contains(goodNameOrBarcode));
+                }
+                if (storeIds.IsNull() || storeIds.Contains("|"))
+                {
+                    query = query.Where(w => (w.StoreID ?? "") == "");
+                }
+                else
+                {
+                    query = query.Where(w => ((w.StoreID ?? "") == "" || w.StoreID.Equals(storeIds, StringComparison.OrdinalIgnoreCase)));
                 }
 
                 var linq = from a in query
@@ -783,6 +848,42 @@ namespace XXCloudService.Api.XCCloud
                                Barcode = a.Barcode,
                                GoodName = a.GoodName,
                                GoodTypeStr = b != null ? b.DictKey : string.Empty
+                           };
+
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, linq);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object GetProjectTicketList(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+
+                string errMsg = string.Empty;
+                var storeIds = dicParas.Get("storeIds");
+               
+                var query = Data_ProjectTicketService.I.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase));                
+                if (storeIds.IsNull() || storeIds.Contains("|"))
+                {
+                    query = query.Where(w => (w.StoreID ?? "") == "");
+                }
+                else
+                {
+                    query = query.Where(w => ((w.StoreID ?? "") == "" || w.StoreID.Equals(storeIds, StringComparison.OrdinalIgnoreCase)));
+                }
+
+                var linq = from a in query
+                           select new
+                           {
+                               ID = a.ID,
+                               TicketName = a.TicketName
                            };
 
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, linq);
