@@ -165,6 +165,8 @@ namespace XXCloudService.Api.XCCloud
                 int userId = Convert.ToInt32(userTokenKeyModel.LogId);
 
                 string errMsg = string.Empty;
+                var storeIds = dicParas.Get("storeIds");
+
                 if (!dicParas.Get("couponName").Nonempty("优惠券名称", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 if (!dicParas.Get("publishCount").Validint("发行张数", out errMsg))
@@ -213,7 +215,7 @@ namespace XXCloudService.Api.XCCloud
                         }
                         else
                         {
-                            if (!Base_GoodsInfoService.I.Any(p => p.ID == containId && p.Status == 1 && ((p.StoreID ?? "") == "" || p.StoreID.Equals(dicParas.Get("storeIds")))))
+                            if (!Base_GoodsInfoService.I.Any(p => p.ID == containId && p.Status == 1 && ((p.StoreID ?? "") == "" || p.StoreID.Equals(storeIds, StringComparison.OrdinalIgnoreCase))))
                             {
                                 errMsg = "兑换券不能包含多个门店的私有商品";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -226,7 +228,7 @@ namespace XXCloudService.Api.XCCloud
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
                         var containId = dicParas.Get("projectId").Toint();
-                        if (!Data_ProjectInfoService.I.Any(p => p.ID == containId && (p.StoreID ?? "").Equals(dicParas.Get("storeIds"), StringComparison.OrdinalIgnoreCase)))
+                        if (!Data_ProjectInfoService.I.Any(p => p.ID == containId && (p.StoreID ?? "").Equals(storeIds, StringComparison.OrdinalIgnoreCase)))
                         {
                             errMsg = "兑换券不能包含多个门店的游乐项目";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -316,8 +318,7 @@ namespace XXCloudService.Api.XCCloud
                 var publishCount = dicParas.Get("publishCount").Toint();
                 var sendType = dicParas.Get("sendType").Toint();
                 var couponConditions = dicParas.GetArray("couponConditions");
-                var memberIds = dicParas.GetArray("memberIds");
-                var storeIds = dicParas.Get("storeIds");
+                var memberIds = dicParas.GetArray("memberIds");                
 
                 //开启EF事务
                 using (TransactionScope ts = new TransactionScope())
@@ -1360,7 +1361,7 @@ namespace XXCloudService.Api.XCCloud
                            {
                                ID = c.a.ID,
                                CouponName = c.a.CouponName,
-                               EntryCouponFlag = c.a.EntryCouponFlag,
+                               EntryCouponFlag = ((CouponFlag?)c.a.EntryCouponFlag).GetDescription(),
                                CouponType = c.a.CouponType,
                                CouponTypeStr = c.b != null ? c.b.DictKey : string.Empty,
                                StartDate = Utils.ConvertFromDatetime(c.a.StartDate, "yyyy-MM-dd"),

@@ -7,27 +7,29 @@
 </head>
 <body>
     <div class="layui-row" style="padding:15px">
-    <blockquote class="layui-elem-quote">
-        <form class="layui-form layui-form-pane">
-            <div class="layui-inline">
-                <label class="layui-form-label">选择仓库</label>
-                <div class="layui-input-inline">
-                    <select name="depotList" id="depotList" lay-filter="depotList"></select>
+        <blockquote class="layui-elem-quote">
+            <form class="layui-form layui-form-pane">
+                <div class="layui-inline">
+                    <label class="layui-form-label">选择仓库</label>
+                    <div class="layui-input-inline">
+                        <select name="depotList" id="depotList" lay-filter="depotList"></select>
+                    </div>
+                    <div class="layui-input-inline">
+                        <button type="button" class="layui-btn layui-btn-normal" id="searchStock"><i class="layui-icon layui-icon-search"></i></button>
+                    </div>
                 </div>
-                <div class="layui-input-inline">
-                    <button type="button" class="layui-btn layui-btn-normal" id="searchStock"><i class="layui-icon layui-icon-search"></i></button>
+
+                <div class="layui-inline" style="float:right;">
+
+                    <button type="button" class="layui-btn layui-btn-normal" i18n-content="查询模板">查询模板</button>
+                    <button type="button" class="layui-btn layui-btn-normal" id="exportBtn" i18n-content="查询模板">导出预警商品</button>
                 </div>
-            </div>
+            </form>
 
-            <div class="layui-inline" style="float:right;">
-                <button type="button" class="layui-btn layui-btn-normal" i18n-content="查询模板">查询模板</button>
-            </div>
-        </form>
-
-        <!--<button type="button" class="layui-btn layui-btn-normal add" i18n-content="新增">新增</button>-->
-    </blockquote>
-    <table class="layui-hide" id="stockManage" lay-filter="stockManage"></table>
-</div>
+            <!--<button type="button" class="layui-btn layui-btn-normal add" i18n-content="新增">新增</button>-->
+        </blockquote>
+        <table class="layui-hide" id="stockManage" lay-filter="stockManage"></table>
+    </div>
 </body>
 <script src="js/jquery-1.8.3-min.js"></script>
 <script src="layui/layui.js"></script>
@@ -42,6 +44,7 @@
         let layer=layui.layer;
         initTable(table,[]);
         xc.getDepotDic('','',token,layer,form,'depotList');
+        //选择仓库后立即刷新
         form.on('select(depotList)',function (data) {
             depotList=data.value;
             var  obj={"depotId":depotList,"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
@@ -63,6 +66,7 @@
                 }
             })
         });
+        //手动刷新
         $('#searchStock').on('click',function () {
             if(depotList==''){
                 layer.msg('请先选择仓库！')
@@ -77,7 +81,6 @@
                     data: {parasJson: parasJson},
                     success: function (data) {
                         data = JSON.parse(data);
-                        // console.log(data);
                         if (data.result_code == "1") {
                             initTable(table,data.result_data);
                         } else {
@@ -88,30 +91,32 @@
             }
         });
         //导出
-        table.on('tool(stockManage)',function (obj) {
-            let _data=obj.data;
-            let layEvent=obj.event;
-            if(layEvent==='export'){
-                var  obj={"depotId":_data.ID,"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
-                var url="/XCCloud/GoodsInfo?action=ExportGoodsUnderWarning";
-                var parasJson = JSON.stringify(obj);
-                $.ajax({
-                    type: "post",
-                    url: url,
-                    contentType: "application/json; charset=utf-8",
-                    data: {parasJson: parasJson},
-                    success: function (data) {
-                        data = JSON.parse(data);
-                        if (data.result_code == "1") {
-                            document.location.href ="/Report/ToExcel.aspx?guid="+data.result_data
-                        } else {
-                            layer.msg(data.result_msg || data.return_msg);
-                        }
+        // table.on('tool(stockManage)',function (obj) {
+        //     let _data=obj.data;
+        //     let layEvent=obj.event;
+        //     if(layEvent==='export'){
+        $('#exportBtn').on('click',function () {
+            var  obj={"depotId":depotList,"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
+            var url="/XCCloud/GoodsInfo?action=ExportGoodsUnderWarning";
+            var parasJson = JSON.stringify(obj);
+            $.ajax({
+                type: "post",
+                url: url,
+                contentType: "application/json; charset=utf-8",
+                data: {parasJson: parasJson},
+                success: function (data) {
+                    data = JSON.parse(data);
+                    if (data.result_code == "1") {
+                        document.location.href ="/Report/ToExcel.aspx?guid="+data.result_data
+                    } else {
+                        layer.msg(data.result_msg || data.return_msg);
                     }
-
-                })
-            }
+                }
+            })
         })
+
+        //     }
+        // })
     });
     function initTable(table,arr) {
         table.render({
@@ -134,13 +139,14 @@
                 , {field: 'RemainCount', title: '当前库存', align: 'center'}
                 , {field: 'RemainTotal', title: '当前库存金额', align: 'center'}
                 , {field: 'AvailableCount', title: '可调拨数', align: 'center'}
-                ,{fixed: 'right',title: '操作', width:140, align:'center', toolbar: '#barDemo'}]]
+                // ,{fixed: 'right',title: '操作', width:140, align:'center', toolbar: '#barDemo'}
+                ]]
             , page: {page: true, limits: [10, 15, 20, 30, 50, 100]}
             , limit: 10
         })
     }
 </script>
-<script type="text/html" id="barDemo">
-    <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="export">导出预警商品</a>
-</script>
+<!--<script type="text/html" id="barDemo">-->
+    <!--<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="export">导出预警商品</a>-->
+<!--</script>-->
 </html>
