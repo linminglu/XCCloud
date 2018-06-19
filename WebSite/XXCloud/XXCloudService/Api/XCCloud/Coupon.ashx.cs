@@ -1322,7 +1322,7 @@ namespace XXCloudService.Api.XCCloud
                                StoreName = g.FirstOrDefault().StoreName,
                                AssignedCount = g.Count(),
                                StartEnd = g.Min(m => m.CouponIndex) + "~" + g.Max(m => m.CouponIndex),
-                               IsLock = g.Min(m=>m.IsLock) == 1 ? 1 : 0
+                               IsLock = g.Min(m => m.IsLock) == 1 ? 1 : 0
                            };
 
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, linq);

@@ -868,7 +868,10 @@
                             if(arr.length==1){
                                 $('.goodRules select[name="freeRates"]').val(arr[0].BalanceIndex);
                                 $('.goodRules input[name="chargeOff"]').val(arr[0].ChargeOFF);
-                                $('.goodRules input[name="needAuth"]').val(arr[0].MinSpaceDays);
+                                if(arr[0].NeedAuthor==1){
+                                    $('.goodRules input[name="needAuth"]').attr('checked',true)
+                                }
+                                // $('.goodRules input[name="needAuth"]').val(arr[0].NeedAuthor);
                                 $('.goodRules input[name="maxSaveCount"]').val(arr[0].MaxSaveCount);
                                 $('.goodRules input[name="maxUplife"]').val(arr[0].MaxUplife);
                             }else if(arr.length>1){
@@ -879,7 +882,10 @@
 
                                     $('.goodConvert').find($('.goodRules')).eq(i).find('select[name="freeRates"]').val(arr[i].BalanceIndex);
                                     $('.goodConvert').find($('.goodRules')).eq(i).find('input[name="chargeOff"]').val(arr[i].ChargeOFF);
-                                    $('.goodConvert').find($('.goodRules')).eq(i).find('input[name="needAuth"]').val(arr[i].MinSpaceDays);
+                                    // $('.goodConvert').find($('.goodRules')).eq(i).find('input[name="needAuth"]').val(arr[i].NeedAuthor);
+                                    if(arr[i].NeedAuthor==1){
+                                        $('.goodConvert').find($('.goodRules')).eq(i).find('input[name="needAuth"]').attr('checked',true)
+                                    }
                                     $('.goodConvert').find($('.goodRules')).eq(i).find('input[name="maxSaveCount"]').val(arr[i].MaxSaveCount);
                                     $('.goodConvert').find($('.goodRules')).eq(i).find('input[name="maxUplife"]').val(arr[i].MaxUplife);
                                 }
@@ -1053,8 +1059,6 @@
         form.on('switch(allowTransfer)', function(data){
             data.elem.checked==true ? allowTransfer=1:allowTransfer=0;
         });
-
-
         form.on('select(freeBalanceType)', function(data){
             freeBalanceType = data.value=='-请选择-'?'':data.value;
         });
