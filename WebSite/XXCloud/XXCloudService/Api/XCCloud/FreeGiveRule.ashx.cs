@@ -84,6 +84,7 @@ namespace XXCloudService.Api.XCCloud
                                 WHERE 1=1
                             ";
                 sql += " AND a.MerchID='" + merchId + "'";
+                sql += " ORDER BY a.RuleLevel ";
                 
                 #endregion
 
