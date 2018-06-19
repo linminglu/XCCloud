@@ -1290,6 +1290,7 @@
         data:{
             salesIS: true,
             shopData:[],
+			dataObj:[],
             userToken:'',
             storeId:'',
             memberLevelId:21,
@@ -1594,15 +1595,17 @@
 								    break;
 								case 2:                                   
 								    break;
-                                case 3:
+                                case "5":
+									that.msg = receivedMsg.answerMsg
+									$('#myModal').modal('show');
                                     break;
 								case "11":
-									that.icCardId =receivedMsg.dataObj.icCardId
+									that.dataObj =receivedMsg.dataObj;
 									$('#checkoutModal').modal('show');
 									that.inputCashFocus = true;
 									that.registerCheckOut = true;
 									that.shopCheckOut = false;
-									that.registerFnc()
+									that.registerFnc();
                                 	break;
                                 default:
 								    break;
@@ -1619,13 +1622,13 @@
 						alert("连接已关闭...");
 					};
 
-        }
-        else
-        {
-            // 浏览器不支持 WebSocket
-            alert("您的浏览器不支持 WebSocket!");
-        }
-    },
+				}
+				else
+				{
+					// 浏览器不支持 WebSocket
+					alert("您的浏览器不支持 WebSocket!");
+				}
+			},
             inputFnc:function (inputValue) {
                 var that = this;
                 var isDot = false;
@@ -2353,10 +2356,12 @@
 							console.log(res.data);
 							that.msgPrompt(res.data);
 							if (res.data.result_code === '1') {
-                                }
-                            }).catch(function (err) {
-                                console.log(err);
-                            })
+								var msgType5 =JSON.stringify({"msgType":"5", "sObj": {"userToken": that.userToken},"dataObj": {icCardId:that.dataObj.icCardId,repeatCode:that.dataObj.repeatCode}});
+                				ws.send(msgType5);
+                            }
+                        }).catch(function (err) {
+                            console.log(err);
+                        })
                     }
                 }).catch(function (err) {
                     console.log(err);

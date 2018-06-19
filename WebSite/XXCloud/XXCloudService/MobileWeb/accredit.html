@@ -20,7 +20,7 @@
     <div v-if="qrcodeShow" class="qrcode">
         <img src="images/qrcode.jpg">
         <p>点击长按关注公众号，您将获得更好的体验！</p>
-        <p><a href="index.html">无情跳过</a></p>
+        <p><a href="/index.html">无情跳过</a></p>
     </div>
 </div>
 <script src="js/ydui.flexible.js"></script>
@@ -50,6 +50,7 @@
                 var isSubscribe = getQueryString("isSubscribe");
                 if(isSubscribe == 1){
                     that.qrcodeShow =false;
+                    window.location.href = "index.html"
                 }
                 setStorage("isReg",isReg);
                 if (/MicroMessenger/.test(window.navigator.userAgent)) {
@@ -57,13 +58,11 @@
                     that.userThirdId =openId;
 //                    alert(openId);
                     setStorage("userThirdId",openId);
-                    window.location.href = "index.html"
                 } else if (/AlipayClient/.test(window.navigator.userAgent)) {
                     var userid = getQueryString("userId");
                     that.userThirdId =userid;
 //                    alert(userid);
                     setStorage("userThirdId",userid);
-                    window.location.href = "index.html"
                 } else {
                     console.log("暂不支持此浏览器")
                 }

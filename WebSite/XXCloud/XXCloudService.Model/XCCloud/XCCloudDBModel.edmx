@@ -150,7 +150,7 @@
           <Property Name="RightHandCode" Type="varchar" MaxLength="5000" />
           <Property Name="MemberState" Type="int" />
           <Property Name="CreateTime" Type="datetime" />
-          <Property Name="Photo" Type="varchar" MaxLength="100" />
+          <Property Name="Photo" Type="varchar" MaxLength="500" />
           <Property Name="Note" Type="text" />
           <Property Name="Verifiction" Type="varchar" MaxLength="32" />
         </EntityType>
@@ -3383,7 +3383,6 @@
           <EntitySet Name="Data_GameEncourage" EntityType="XCCloudDBModel.Data_GameEncourage" />
           <EntitySet Name="Data_ProjectInfo" EntityType="XCCloudDBModel.Data_ProjectInfo" />
           <EntitySet Name="Flw_ProjectTicket_Bind" EntityType="XCCloudDBModel.Flw_ProjectTicket_Bind" />
-          <EntitySet Name="Base_MemberInfo" EntityType="XCCloudDBModel.Base_MemberInfo" />
           <EntitySet Name="Base_ChainRule" EntityType="XCCloudDBModel.Base_ChainRule" />
           <EntitySet Name="Data_Member_Card" EntityType="XCCloudDBModel.Data_Member_Card" />
           <EntitySet Name="Data_Card_Balance" EntityType="XCCloudDBModel.Data_Card_Balance" />
@@ -3394,6 +3393,7 @@
           <EntitySet Name="Flw_Order" EntityType="XCCloudDBModel.Flw_Order" />
           <EntitySet Name="Flw_Project_TicketUse" EntityType="XCCloudDBModel.Flw_Project_TicketUse" />
           <EntitySet Name="Data_Project_BindDevice" EntityType="XCCloudDBModel.Data_Project_BindDevice" />
+          <EntitySet Name="Base_MemberInfo" EntityType="XCCloudDBModel.Base_MemberInfo" />
         </EntityContainer>
         <EntityType Name="Base_ChainRule_Store">
           <Key>
@@ -5970,30 +5970,6 @@
           <Property Name="WeightValue" Type="Int32" />
           <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
         </EntityType>
-        <EntityType Name="Base_MemberInfo">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="false" />
-          <Property Name="WechatOpenID" Type="String" MaxLength="64" FixedLength="false" Unicode="false" />
-          <Property Name="AlipayOpenID" Type="String" MaxLength="64" FixedLength="false" Unicode="false" />
-          <Property Name="QQ" Type="String" MaxLength="64" FixedLength="false" Unicode="false" />
-          <Property Name="IMME" Type="String" MaxLength="64" FixedLength="false" Unicode="false" />
-          <Property Name="UserName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="UserPassword" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
-          <Property Name="Gender" Type="Int32" />
-          <Property Name="Birthday" Type="DateTime" Precision="3" />
-          <Property Name="IDCard" Type="String" MaxLength="18" FixedLength="false" Unicode="false" />
-          <Property Name="Mobile" Type="String" MaxLength="11" FixedLength="false" Unicode="false" />
-          <Property Name="EMail" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="LeftHandCode" Type="String" MaxLength="5000" FixedLength="false" Unicode="false" />
-          <Property Name="RightHandCode" Type="String" MaxLength="5000" FixedLength="false" Unicode="false" />
-          <Property Name="MemberState" Type="Int32" />
-          <Property Name="CreateTime" Type="DateTime" Precision="3" />
-          <Property Name="Photo" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="Note" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
-        </EntityType>
         <EntityType Name="Base_ChainRule">
           <Key>
             <PropertyRef Name="ID" />
@@ -6180,6 +6156,30 @@
           <Property Name="ReadCard" Type="Int32" />
           <Property Name="ReadQRCode" Type="Int32" />
           <Property Name="AllowCash" Type="Int32" />
+          <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Base_MemberInfo">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="WechatOpenID" Type="String" MaxLength="64" FixedLength="false" Unicode="false" />
+          <Property Name="AlipayOpenID" Type="String" MaxLength="64" FixedLength="false" Unicode="false" />
+          <Property Name="QQ" Type="String" MaxLength="64" FixedLength="false" Unicode="false" />
+          <Property Name="IMME" Type="String" MaxLength="64" FixedLength="false" Unicode="false" />
+          <Property Name="UserName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="UserPassword" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="Gender" Type="Int32" />
+          <Property Name="Birthday" Type="DateTime" Precision="3" />
+          <Property Name="IDCard" Type="String" MaxLength="18" FixedLength="false" Unicode="false" />
+          <Property Name="Mobile" Type="String" MaxLength="11" FixedLength="false" Unicode="false" />
+          <Property Name="EMail" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="LeftHandCode" Type="String" MaxLength="5000" FixedLength="false" Unicode="false" />
+          <Property Name="RightHandCode" Type="String" MaxLength="5000" FixedLength="false" Unicode="false" />
+          <Property Name="MemberState" Type="Int32" />
+          <Property Name="CreateTime" Type="DateTime" Precision="3" />
+          <Property Name="Photo" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="Note" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
         </EntityType>
         </Schema>
@@ -8922,31 +8922,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Base_MemberInfo">
-            <EntityTypeMapping TypeName="XCCloudDBModel.Base_MemberInfo">
-              <MappingFragment StoreEntitySet="Base_MemberInfo">
-                <ScalarProperty Name="Verifiction" ColumnName="Verifiction" />
-                <ScalarProperty Name="Note" ColumnName="Note" />
-                <ScalarProperty Name="Photo" ColumnName="Photo" />
-                <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
-                <ScalarProperty Name="MemberState" ColumnName="MemberState" />
-                <ScalarProperty Name="RightHandCode" ColumnName="RightHandCode" />
-                <ScalarProperty Name="LeftHandCode" ColumnName="LeftHandCode" />
-                <ScalarProperty Name="EMail" ColumnName="EMail" />
-                <ScalarProperty Name="Mobile" ColumnName="Mobile" />
-                <ScalarProperty Name="IDCard" ColumnName="IDCard" />
-                <ScalarProperty Name="Birthday" ColumnName="Birthday" />
-                <ScalarProperty Name="Gender" ColumnName="Gender" />
-                <ScalarProperty Name="UserPassword" ColumnName="UserPassword" />
-                <ScalarProperty Name="UserName" ColumnName="UserName" />
-                <ScalarProperty Name="IMME" ColumnName="IMME" />
-                <ScalarProperty Name="QQ" ColumnName="QQ" />
-                <ScalarProperty Name="AlipayOpenID" ColumnName="AlipayOpenID" />
-                <ScalarProperty Name="WechatOpenID" ColumnName="WechatOpenID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Base_ChainRule">
             <EntityTypeMapping TypeName="XCCloudDBModel.Base_ChainRule">
               <MappingFragment StoreEntitySet="Base_ChainRule">
@@ -9141,6 +9116,31 @@
                 <ScalarProperty Name="DeviceID" ColumnName="DeviceID" />
                 <ScalarProperty Name="ProjectID" ColumnName="ProjectID" />
                 <ScalarProperty Name="MerchID" ColumnName="MerchID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Base_MemberInfo">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Base_MemberInfo">
+              <MappingFragment StoreEntitySet="Base_MemberInfo">
+                <ScalarProperty Name="Verifiction" ColumnName="Verifiction" />
+                <ScalarProperty Name="Note" ColumnName="Note" />
+                <ScalarProperty Name="Photo" ColumnName="Photo" />
+                <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
+                <ScalarProperty Name="MemberState" ColumnName="MemberState" />
+                <ScalarProperty Name="RightHandCode" ColumnName="RightHandCode" />
+                <ScalarProperty Name="LeftHandCode" ColumnName="LeftHandCode" />
+                <ScalarProperty Name="EMail" ColumnName="EMail" />
+                <ScalarProperty Name="Mobile" ColumnName="Mobile" />
+                <ScalarProperty Name="IDCard" ColumnName="IDCard" />
+                <ScalarProperty Name="Birthday" ColumnName="Birthday" />
+                <ScalarProperty Name="Gender" ColumnName="Gender" />
+                <ScalarProperty Name="UserPassword" ColumnName="UserPassword" />
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="IMME" ColumnName="IMME" />
+                <ScalarProperty Name="QQ" ColumnName="QQ" />
+                <ScalarProperty Name="AlipayOpenID" ColumnName="AlipayOpenID" />
+                <ScalarProperty Name="WechatOpenID" ColumnName="WechatOpenID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>

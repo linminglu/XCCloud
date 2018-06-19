@@ -50,7 +50,7 @@
             display: none;
         }
         .morePlay span{font-size: 0.3rem;line-height: 0.45rem;color: #999;}
-        .morePlayImg{display: flex;flex-direction: row;justify-content:center;margin-top: 0.3rem;}
+        .morePlayImg{display: flex;flex-direction: row;justify-content:center;}
         .morePlayImg img{width: 0.4rem;height: 0.4rem;margin-right: 0.08rem}
     </style>
 </head>
@@ -67,18 +67,17 @@
     <yd-rollnotice autoplay="2000" class="rollText">
         <yd-rollnotice-item @click.native="show = true" v-for="(item,index) in gamePlaylist" :key="index"><span style="color:#F00;"> 荐 </span> 立投“{{item.needCoin}}”，直接送“{{item.freeCoin}}”</yd-rollnotice-item>
     </yd-rollnotice>
-    <div class="gamePlay_img" v-if="gameGiveIf" @click="gamePlay('0')">
-        <h3>玩{{PlayCount}}局</h3>
-        <div class="gameGive_b"><img slot="icon" :src='gameGiveImg'><span>×{{Amount}}{{gameGiveText}}</span></div>
-    </div>
+    <!--<div class="gamePlay_img" v-if="gameGiveIf" @click="gamePlay('0')">-->
+        <!--<h3>玩{{PlayCount}}局</h3>-->
+        <!--<div class="gameGive_b"><img slot="icon" :src='gameGiveImg'><span>×{{Amount}}{{gameGiveText}}</span></div>-->
+    <!--</div>-->
     <!--<div class="gamePlay_img" v-if="gameGiveTourists" @click="gamePlay">-->
         <!--<h3>玩{{PlayCount}}局</h3>-->
         <!--<div class="gameGive_b"><img slot="icon" src='images/money.png'><span>×{{Amount}}元</span></div>-->
     <!--</div>-->
     <yd-grids-group :rows="3" title="多玩多送" v-if="gameGiveIf">
         <yd-grids-item v-for="(item,index) in playData" class="morePlay" @click.native="gamePlay(index)">
-            <span slot="text">玩{{item.PlayCount}}局</span>
-            <div slot="text" class="morePlayImg"><img slot="icon" src='images/money.png'><span>{{item.Amount}}元</span></div>
+            <div slot="text" class="morePlayImg"><img slot="icon" src='images/money.png'><span slot="text">{{item.CoinRuleName}}</span></div>
         </yd-grids-item>
     </yd-grids-group>
     <!--<yd-popup v-model="show" position="bottom" height="60%">-->
@@ -223,8 +222,13 @@
                                 that.playData = res.data.result_data.GameCoinList;
                                 that.Amount =res.data.result_data.GameCoinList[0].Amount;
                                 that.PlayCount =res.data.result_data.GameCoinList[0].PlayCount;
-                            }else {
-
+                            }else if(res.data.result_data.GamePushRules.length != 0) {
+//                                that.gameGiveIf = true;
+//                                that.gameGiveText = "元";
+//                                that.gameGiveImg = "images/money.png";
+//                                that.playData = res.data.result_data.GameCoinList;
+//                                that.Amount =res.data.result_data.GameCoinList[0].Amount;
+//                                that.PlayCount =res.data.result_data.GameCoinList[0].PlayCount;
                             }
                         }else if(that.GameType == 1){
 
@@ -455,11 +459,6 @@
             gamePlay:function (index) {  //玩一局
                 var that = this;
                 console.log(index);
-                if(that.gameGiveText = "元"){
-                   var coinType = 0;
-                }else {
-                    var coinType = 1;
-                }
                 console.log(that.playData);
                 this.$dialog.loading.open('');
                 var obj={

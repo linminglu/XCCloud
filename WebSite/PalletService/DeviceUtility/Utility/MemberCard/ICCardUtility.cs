@@ -796,7 +796,7 @@ namespace DeviceUtility.Utility.MemberCard
         /// <summary>
         /// ÅÐ¶Ï¶Á¿¨Æ÷ÖÐ²åÈëµÄÊÇÒ»ÕÅ¿Õ¿¨
         /// </summary>
-        public static bool CheckNullCard(string storePassword)
+        public static bool CheckNullCard(string storePassword,bool isBeep = true)
         {
             int icdev = 0;
             try
@@ -824,7 +824,11 @@ namespace DeviceUtility.Utility.MemberCard
                     return false;
                 }
 
-                st = ICCardUtility.IC_DevBeep(icdev, 10);//µÈ´ý10ºÁÃë
+                if (isBeep)
+                { 
+                    st = ICCardUtility.IC_DevBeep(icdev, 10);//µÈ´ý10ºÁÃë
+                }
+                
                 st = ICCardUtility.IC_Status(icdev);
                 if (st == 1)
                 {
@@ -1043,8 +1047,8 @@ namespace DeviceUtility.Utility.MemberCard
             bool isBeep = false;
             icCardId = string.Empty;
             errMsg = string.Empty;
-
-            if (!ICCardUtility.ReadNewICCard(storePassword, out sICCardID, out repeatCode, out errMsg, isBeep, true))
+            bool isNewCard = false;
+            if (!ICCardUtility.ReadNewICCard(storePassword, out isNewCard, out sICCardID, out repeatCode, out errMsg, isBeep, true))
             {
                 return false;
             }
@@ -1081,8 +1085,9 @@ namespace DeviceUtility.Utility.MemberCard
             return true;
         }
 
-        public static bool ReadNewICCard(string storePassword, out string icCardId, out string repeatCode, out string errMsg, bool isBeep = true, bool isCreate = true)
+        public static bool ReadNewICCard(string storePassword, out bool isNewCard ,out string icCardId, out string repeatCode, out string errMsg, bool isBeep = true, bool isCreate = true)
         {
+            isNewCard = false;
             string checkStr = "";
             icCardId = string.Empty;
             repeatCode = string.Empty;
@@ -1118,9 +1123,9 @@ namespace DeviceUtility.Utility.MemberCard
                         icCardId = data.ToString().Substring(0, len - 1);
                         repeatCode = new Random().Next(100, 999).ToString();
 
-                        if (!CheckNullCard(storePassword))
+                        if (CheckNullCard(storePassword,false))
                         {
-                            return false;
+                            isNewCard = true;
                         }
 
                         return true;

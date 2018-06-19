@@ -20,45 +20,39 @@
       <file leaf-file-name="index.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="625">
-              <caret line="88" column="0" lean-forward="false" selection-start-line="88" selection-start-column="0" selection-end-line="88" selection-end-column="70" />
+            <state relative-caret-position="380">
+              <caret line="117" column="0" lean-forward="false" selection-start-line="117" selection-start-column="0" selection-end-line="123" selection-end-column="47" />
               <folding>
-                <element signature="e#10739#11667#0" expanded="false" />
-                <element signature="e#11719#12027#0" expanded="false" />
-                <element signature="e#12085#13351#0" expanded="false" />
-                <element signature="e#13403#15941#0" expanded="false" />
-                <element signature="e#17428#17736#0" expanded="false" />
-                <element signature="e#17861#18358#0" expanded="false" />
+                <element signature="e#10677#11605#0" expanded="false" />
+                <element signature="e#11657#11965#0" expanded="false" />
+                <element signature="e#13340#15878#0" expanded="false" />
+                <element signature="e#17365#17673#0" expanded="false" />
+                <element signature="e#17798#18295#0" expanded="false" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="games.html" pinned="false" current-in-tab="true">
+      <file leaf-file-name="games.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/games.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="280">
-              <caret line="162" column="57" lean-forward="false" selection-start-line="162" selection-start-column="25" selection-end-line="162" selection-end-column="57" />
+            <state relative-caret-position="305">
+              <caret line="198" column="16" lean-forward="false" selection-start-line="198" selection-start-column="16" selection-end-line="205" selection-end-column="46" />
               <folding>
                 <element signature="n#style#0;n#yd-button#0;n#yd-popup#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#div#0;n#yd-popup#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-                <element signature="e#41853#42350#0" expanded="false" />
+                <element signature="e#42174#42671#0" expanded="false" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="mineCard.html" pinned="false" current-in-tab="false">
+      <file leaf-file-name="mineCard.html" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/mineCard.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1650">
-              <caret line="162" column="48" lean-forward="false" selection-start-line="162" selection-start-column="48" selection-end-line="162" selection-end-column="48" />
-              <folding>
-                <element signature="n#div#1;n#div#0;n#body#0;n#html#0;n#!!top" expanded="false" />
-                <element signature="n#yd-tabbar#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="false" />
-                <element signature="e#5280#7109#0" expanded="false" />
-                <element signature="e#7271#8776#0" expanded="false" />
-              </folding>
+            <state relative-caret-position="605">
+              <caret line="138" column="24" lean-forward="true" selection-start-line="138" selection-start-column="24" selection-end-line="138" selection-end-column="24" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -92,13 +86,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>wxData</find>
-      <find>&gt;</find>
-      <find>$</find>
-      <find>XCGameClientHub</find>
-      <find>callBackFnc</find>
-      <find>iconSty</find>
-      <find>getLocation</find>
       <find>set</find>
       <find>.test(window.navigator.userAgent)</find>
       <find>CurrentCardInfo</find>
@@ -120,8 +107,15 @@
       <find>gamePlay:</find>
       <find>deviceToken</find>
       <find>gamePlay</find>
-      <find>WeixinJSBridge</find>
       <find>@click</find>
+      <find>用户令牌</find>
+      <find>window.location.href</find>
+      <find>86A8AFBDB2E84B8E95BF52C052E8BA7C</find>
+      <find>oNWocwSC_GFO8n_8mtZ0iV9tL0WI</find>
+      <find>MemberBalances</find>
+      <find>WeixinJSBridge</find>
+      <find>MemberId</find>
+      <find>memberCard</find>
     </findStrings>
     <replaceStrings>
       <replace />
@@ -148,14 +142,14 @@
         <option value="$PROJECT_DIR$/CurrencyOperation.html" />
         <option value="$PROJECT_DIR$/mine.html" />
         <option value="$PROJECT_DIR$/entrance.html" />
-        <option value="$PROJECT_DIR$/accredit.html" />
         <option value="$USER_HOME$/Desktop/index.html" />
         <option value="$PROJECT_DIR$/test.html" />
-        <option value="$PROJECT_DIR$/mineCard.html" />
         <option value="$PROJECT_DIR$/login.html" />
         <option value="$PROJECT_DIR$/tiedCard.html" />
-        <option value="$PROJECT_DIR$/index.html" />
+        <option value="$PROJECT_DIR$/accredit.html" />
         <option value="$PROJECT_DIR$/games.html" />
+        <option value="$PROJECT_DIR$/index.html" />
+        <option value="$PROJECT_DIR$/mineCard.html" />
       </list>
     </option>
   </component>
@@ -186,8 +180,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scratches" />
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -199,6 +191,8 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
+      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -293,18 +287,22 @@
       <workItem from="1529040244849" duration="498000" />
       <workItem from="1529040982338" duration="1004000" />
       <workItem from="1529043033229" duration="1754000" />
-      <workItem from="1529050042411" duration="6807000" />
+      <workItem from="1529050042411" duration="7405000" />
+      <workItem from="1529369430501" duration="2278000" />
+      <workItem from="1529372848445" duration="50000" />
+      <workItem from="1529380870459" duration="3893000" />
+      <workItem from="1529389531422" duration="9283000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="444275000" />
+    <option name="totallyTimeSpent" value="460377000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.22128557" sideWeight="0.4961998" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.22128557" sideWeight="0.4961998" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="调试" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32899022" sideWeight="0.5" order="9" side_tool="true" content_ui="tabs" />
@@ -333,13 +331,6 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/login.html</url>
-          <line>28</line>
-          <option name="timeStamp" value="7" />
-        </line-breakpoint>
-      </breakpoints>
       <option name="time" value="8" />
     </breakpoint-manager>
     <watches-manager />
@@ -552,31 +543,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="375">
-          <caret line="15" column="0" lean-forward="false" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/mine.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="120">
           <caret line="20" column="21" lean-forward="true" selection-start-line="20" selection-start-column="21" selection-end-line="20" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/accredit.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1600">
-          <caret line="64" column="50" lean-forward="false" selection-start-line="64" selection-start-column="50" selection-end-line="64" selection-end-column="50" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/entrance.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="525">
-          <caret line="21" column="50" lean-forward="false" selection-start-line="21" selection-start-column="50" selection-end-line="21" selection-end-column="50" />
         </state>
       </provider>
     </entry>
@@ -593,6 +563,20 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$USER_HOME$/Desktop/MobileWeb/games.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="500">
+          <caret line="182" column="46" lean-forward="true" selection-start-line="182" selection-start-column="46" selection-end-line="182" selection-end-column="46" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CurrencyOperation.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="580">
+          <caret line="268" column="49" lean-forward="true" selection-start-line="268" selection-start-column="49" selection-end-line="268" selection-end-column="49" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/login.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1400">
@@ -606,58 +590,61 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/Desktop/MobileWeb/games.html">
+    <entry file="file://$PROJECT_DIR$/accredit.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="500">
-          <caret line="182" column="46" lean-forward="true" selection-start-line="182" selection-start-column="46" selection-end-line="182" selection-end-column="46" />
+        <state relative-caret-position="450">
+          <caret line="18" column="14" lean-forward="true" selection-start-line="18" selection-start-column="14" selection-end-line="18" selection-end-column="14" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/mineCard.html">
+    <entry file="file://$PROJECT_DIR$/test.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1650">
-          <caret line="162" column="48" lean-forward="false" selection-start-line="162" selection-start-column="48" selection-end-line="162" selection-end-column="48" />
-          <folding>
-            <element signature="n#div#1;n#div#0;n#body#0;n#html#0;n#!!top" expanded="false" />
-            <element signature="n#yd-tabbar#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="false" />
-            <element signature="e#5280#7109#0" expanded="false" />
-            <element signature="e#7271#8776#0" expanded="false" />
-          </folding>
+        <state relative-caret-position="575">
+          <caret line="68" column="17" lean-forward="true" selection-start-line="68" selection-start-column="17" selection-end-line="68" selection-end-column="17" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/index.html">
+    <entry file="file://$PROJECT_DIR$/entrance.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="625">
-          <caret line="88" column="0" lean-forward="false" selection-start-line="88" selection-start-column="0" selection-end-line="88" selection-end-column="70" />
-          <folding>
-            <element signature="e#10739#11667#0" expanded="false" />
-            <element signature="e#11719#12027#0" expanded="false" />
-            <element signature="e#12085#13351#0" expanded="false" />
-            <element signature="e#13403#15941#0" expanded="false" />
-            <element signature="e#17428#17736#0" expanded="false" />
-            <element signature="e#17861#18358#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/CurrencyOperation.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="580">
-          <caret line="268" column="49" lean-forward="true" selection-start-line="268" selection-start-column="49" selection-end-line="268" selection-end-column="49" />
+        <state relative-caret-position="525">
+          <caret line="21" column="50" lean-forward="false" selection-start-line="21" selection-start-column="50" selection-end-line="21" selection-end-column="50" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/games.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="280">
-          <caret line="162" column="57" lean-forward="false" selection-start-line="162" selection-start-column="25" selection-end-line="162" selection-end-column="57" />
+        <state relative-caret-position="305">
+          <caret line="198" column="16" lean-forward="false" selection-start-line="198" selection-start-column="16" selection-end-line="205" selection-end-column="46" />
           <folding>
             <element signature="n#style#0;n#yd-button#0;n#yd-popup#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#div#0;n#yd-popup#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="e#41853#42350#0" expanded="false" />
+            <element signature="e#42174#42671#0" expanded="false" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="380">
+          <caret line="117" column="0" lean-forward="false" selection-start-line="117" selection-start-column="0" selection-end-line="123" selection-end-column="47" />
+          <folding>
+            <element signature="e#10677#11605#0" expanded="false" />
+            <element signature="e#11657#11965#0" expanded="false" />
+            <element signature="e#13340#15878#0" expanded="false" />
+            <element signature="e#17365#17673#0" expanded="false" />
+            <element signature="e#17798#18295#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/mineCard.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="605">
+          <caret line="138" column="24" lean-forward="true" selection-start-line="138" selection-start-column="24" selection-end-line="138" selection-end-column="24" />
+          <folding />
         </state>
       </provider>
     </entry>

@@ -53,18 +53,28 @@ namespace XXCloudService.Api.XCCloudH5
                 }
                 if (!string.IsNullOrEmpty(model.CurrStoreId) && model.CurrStoreId != device.StoreID)
                 {
-                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "当前门店与设备所属门店不符，请先选择门店");
+                    //return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "当前门店与设备所属门店不符，请先选择门店");
+                    model.CurrStoreId = device.StoreID;
                 }
 
                 string storeId = device.StoreID;
 
-                //获取默认电子卡开卡级别
-                Data_Parameters defaultMemberLevelId = Data_ParametersService.I.GetModels(t => t.StoreID == storeId && t.System == "cmbCardOpenLevel").FirstOrDefault();
-                //没有卡就创建电子卡
-                Data_Member_Card card = Data_Member_CardService.I.GetModels(t => t.MemberID == member.ID).FirstOrDefault();
+                Data_Member_Card card = null;
+                
+                //当前会员在该门店的可用卡集合
+                var cardIds = from a in Data_Member_CardService.I.GetModels(t => t.MemberID == member.ID)
+                            join b in Data_Member_Card_StoreService.I.GetModels(t => t.StoreID == storeId) on a.ID equals b.CardID
+                            select new
+                            {
+                                CardId = a.ID
+                            };
 
-                if (card == null)
+                //没有卡就创建电子卡
+                if (cardIds.Count() == 0)
                 {
+                    //获取默认电子卡开卡级别
+                    Data_Parameters defaultMemberLevelId = Data_ParametersService.I.GetModels(t => t.StoreID == storeId && t.System == "cmbCardOpenLevel").FirstOrDefault();
+
                     using (TransactionScope ts = new TransactionScope(TransactionScopeOption.RequiresNew))
                     {
                         card = new Data_Member_Card();
@@ -179,6 +189,19 @@ namespace XXCloudService.Api.XCCloudH5
                         ts.Complete();
                     }
                 }
+                else
+                {
+                    if (model.CurrentCardInfo != null)
+                    {
+                        //读取缓存中的卡信息
+                        card = Data_Member_CardService.I.GetModels(t => t.ID == model.CurrentCardInfo.CardId).FirstOrDefault();
+                    }
+                    else
+                    {
+                        //默认卡
+                        card = Data_Member_CardService.I.GetModels(t => t.ID == cardIds.FirstOrDefault().CardId).FirstOrDefault();
+                    }
+                }
 
                 MemberCard cacheCard = new MemberCard();
                 cacheCard.CardId = card.ID;
@@ -215,13 +238,19 @@ namespace XXCloudService.Api.XCCloudH5
                     gameInfo.DeviceName = game.GameName;
                     gameInfo.DeviceCategoryName = gameCategoryName;
 
-                    //获取当前会员卡余额集合
-
                     //获取当前会员投币规则
-                    List<GamePushRule> coinRules = XCCloudStoreBusiness.GetGamePushRule(storeId, game.ID, card.MemberLevelID.Value);
-                    if(coinRules.Count > 0)
+                    List<GamePushRule> coinRules = XCCloudStoreBusiness.GetGamePushRule(device.MerchID, storeId, game.ID, card.MemberLevelID.Value);
+
+                    if (coinRules.Count > 0 && cacheCard.CardBalanceList.Sum(t => t.Quantity) > 0)
                     {
-                        gameInfo.GamePushRules = coinRules;
+
+                        gameInfo.GamePushRules = coinRules.Select(t => new MemberPushRule
+                                                {
+                                                    Id = t.Id,
+                                                    Allow_In = t.Allow_In,
+                                                    Allow_Out = t.Allow_Out,
+                                                    PushPlanName = t.PushCoin1 + t.PushBalanceName1 + (t.PushCoin2 > 0 ? " + " + t.PushCoin2 + t.PushBalanceName2 : "")
+                                                }).ToList();
                     }
                     else
                     {
@@ -232,12 +261,11 @@ namespace XXCloudService.Api.XCCloudH5
                                 CoinRuleId = t.ID,
                                 PlayCount = t.PlayCount,
                                 Amount = t.PayCount
-                            }).ToList().Select(t => new GameCoinInfo
+                            }).OrderBy(t => t.PlayCount).ToList().Select(t => new GameCoinInfo
                             {
                                 CoinRuleId = t.CoinRuleId,
-                                PlayCount = t.PlayCount.Value,
-                                Amount = t.Amount.Value.ToString("0.00")
-                            }).OrderBy(t => t.PlayCount).ToList();
+                                CoinRuleName = string.Format("{0}元{1}局", t.Amount, t.PlayCount)
+                            }).ToList();
                     }
                 }
                 else

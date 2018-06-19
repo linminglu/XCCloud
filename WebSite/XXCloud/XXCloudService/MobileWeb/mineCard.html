@@ -39,66 +39,66 @@
         <!--</router-link>-->
     </yd-navbar>
     <div class="iconSty" @click="tiedCard"><span>我要绑卡</span><img slot="icon" class="cardIcon" src="images/tiedCard.png"></div>
-    <div v-for="(item,index) in memberCard" :key="index">
-        <div class='section_items' @click="dropdown(index)">
-            <img class="section_image" slot="img" src="images/card.png">
-            <div class="section_cont">
-                <div class='hid_contSty'>
-                    <p class='hid_contStys'>卡号：</p>
-                    <p>{{item.icCardID}}</p>
-                </div>
-                <div class='hid_contSty'>
-                    <p class='hid_contStys'>级别：</p>
-                    <p>{{item.memberLevelName}}</p>
-                </div>
-                <div class='hid_contSty'>
-                    <p class='hid_contStys'>店名：</p>
-                    <p>{{item.storeName}}</p>
-                </div>
-            </div>
-            <div class="BuyCoins" @click.stop="topUp(index)">
-                <p>充值</p>
-            </div>
-        </div>
-        <div class='hid_cont' v-if="item.hidden">
-            <div class="hid_contLeft">
-                <div class='hid_contSty'>
-                    <p class='hid_contStys'>币余额：</p>
-                    <p>{{item.balance}}</p>
-                </div>
-                <div class='hid_contSty'>
-                    <p class='hid_contStys'>彩票：</p>
-                    <p>{{item.lottery}}</p>
-                </div>
-                <div class='hid_contSty'>
-                    <p class='hid_contStys'>积分：</p>
-                    <p>{{item.point}}</p>
-                </div>
-            </div>
-            <div class="hid_contLeft">
-                <div class='hid_contSty'>
-                    <p class='hid_contStys'>到期日期：</p>
-                    <p>{{item.endDate}}</p>
-                </div>
-                <div class='hid_contSty'>
-                    <p class='hid_contStys'>押金：</p>
-                    <p>{{item.deposit}}</p>
-                </div>
-                <yd-button @click.stop.native="laundryList(index)" size="small">流水账单</yd-button>
-            </div>
-        </div>
-    </div>
-    <yd-tabbar fixed=true active-color="#000000">
-        <yd-tabbar-item title="首页" @click.native="register1">
-            <yd-icon name="home" slot="icon" size="0.54rem"></yd-icon>
-        </yd-tabbar-item>
-        <yd-tabbar-item title="我的订单" @click.native="register2">
-            <yd-icon name="shopcart" slot="icon" size="0.54rem"></yd-icon>
-        </yd-tabbar-item>
-        <yd-tabbar-item title="个人中心" @click.native="register3">
-            <yd-icon name="ucenter-outline" slot="icon" size="0.54rem"></yd-icon>
-        </yd-tabbar-item>
-    </yd-tabbar>
+    <!--<div v-for="(item,index) in memberCard" :key="index">-->
+        <!--<div class='section_items' @click="dropdown(index)">-->
+            <!--<img class="section_image" slot="img" src="images/card.png">-->
+            <!--<div class="section_cont">-->
+                <!--<div class='hid_contSty'>-->
+                    <!--<p class='hid_contStys'>卡号：</p>-->
+                    <!--<p>{{item.icCardID}}</p>-->
+                <!--</div>-->
+                <!--<div class='hid_contSty'>-->
+                    <!--<p class='hid_contStys'>级别：</p>-->
+                    <!--<p>{{item.memberLevelName}}</p>-->
+                <!--</div>-->
+                <!--<div class='hid_contSty'>-->
+                    <!--<p class='hid_contStys'>店名：</p>-->
+                    <!--<p>{{item.storeName}}</p>-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="BuyCoins" @click.stop="topUp(index)">-->
+                <!--<p>充值</p>-->
+            <!--</div>-->
+        <!--</div>-->
+        <!--<div class='hid_cont' v-if="item.hidden">-->
+            <!--<div class="hid_contLeft">-->
+                <!--<div class='hid_contSty'>-->
+                    <!--<p class='hid_contStys'>币余额：</p>-->
+                    <!--<p>{{item.balance}}</p>-->
+                <!--</div>-->
+                <!--<div class='hid_contSty'>-->
+                    <!--<p class='hid_contStys'>彩票：</p>-->
+                    <!--<p>{{item.lottery}}</p>-->
+                <!--</div>-->
+                <!--<div class='hid_contSty'>-->
+                    <!--<p class='hid_contStys'>积分：</p>-->
+                    <!--<p>{{item.point}}</p>-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="hid_contLeft">-->
+                <!--<div class='hid_contSty'>-->
+                    <!--<p class='hid_contStys'>到期日期：</p>-->
+                    <!--<p>{{item.endDate}}</p>-->
+                <!--</div>-->
+                <!--<div class='hid_contSty'>-->
+                    <!--<p class='hid_contStys'>押金：</p>-->
+                    <!--<p>{{item.deposit}}</p>-->
+                <!--</div>-->
+                <!--<yd-button @click.stop.native="laundryList(index)" size="small">流水账单</yd-button>-->
+            <!--</div>-->
+        <!--</div>-->
+    <!--</div>-->
+    <!--<yd-tabbar fixed=true active-color="#000000">-->
+        <!--<yd-tabbar-item title="首页" @click.native="register1">-->
+            <!--<yd-icon name="home" slot="icon" size="0.54rem"></yd-icon>-->
+        <!--</yd-tabbar-item>-->
+        <!--<yd-tabbar-item title="我的订单" @click.native="register2">-->
+            <!--<yd-icon name="shopcart" slot="icon" size="0.54rem"></yd-icon>-->
+        <!--</yd-tabbar-item>-->
+        <!--<yd-tabbar-item title="个人中心" @click.native="register3">-->
+            <!--<yd-icon name="ucenter-outline" slot="icon" size="0.54rem"></yd-icon>-->
+        <!--</yd-tabbar-item>-->
+    <!--</yd-tabbar>-->
 </div>
 
 <!-- 引入 Vue -->
@@ -110,10 +110,10 @@
 <script>
     var sysId = 0; //调用方应用Id
     var versionNo= "0.89"; //版本号
-    var htmlfnc = new Vue({
+    var vm = new Vue({
         el: '#app',
         data:{
-            memberCard:""
+            userThirdId:""
         },
         mounted: function () {
             this.Load();
@@ -121,36 +121,38 @@
         methods: {
             Load:function () {
                 var that =this;
-                var mobileToken = getStorage("mobileToken");//获取手机令牌
-                console.log(mobileToken);
+                var userThirdId = "oNWocwSC_GFO8n_8mtZ0iV9tL0WI";
+//                var userThirdId = getStorage("userThirdId")||"";     //获取第三方令牌
+                that.userThirdId = userThirdId;
                 this.$dialog.loading.open('');
                 var obj={
                     sysId: sysId,
                     versionNo: versionNo,
-                    mobileToken: mobileToken
+                    token: userThirdId
                 };
-                axios.post('/XCGameMana/Member?action=getMemberCard', obj).then(function (res) {
+                axios.post('/XCloudH5/CMember?action=getCardList', obj).then(function (res) {
                     that.$dialog.loading.close();
                     that.msgPrompt(res.data);
                     console.log(res.data);
                     if (res.data.result_code === '1') {
-                        var memberCard_ = [];
-                        for (var i = 0; i < res.data.result_data.length; i++) memberCard_.push({
-                            memberLevelName: res.data.result_data[i].MemberLevelName,
-                            mobile: res.data.result_data[i].Phone,
-                            endDate: res.data.result_data[i].EndTime,
-                            icCardID: res.data.result_data[i].ICCardID,
-                            storeId: res.data.result_data[i].StoreId,
-                            storeName: res.data.result_data[i].StoreName,
-                            memberToken: res.data.result_data[i].Token,
-                            hidden: false,
-                            balance: "",
-                            point: "",
-                            deposit: "",
-                            lottery: ""
-                        });
-                        that.memberCard = memberCard_;
-                        console.log(that.memberCard)
+//                        var memberCard_ = [];
+                        
+//                        for (var i = 0; i < res.data.result_data.length; i++) memberCard_.push({
+//                            memberLevelName: res.data.result_data[i].MemberLevelName,
+//                            mobile: res.data.result_data[i].Phone,
+//                            endDate: res.data.result_data[i].EndTime,
+//                            icCardID: res.data.result_data[i].ICCardID,
+//                            storeId: res.data.result_data[i].StoreId,
+//                            storeName: res.data.result_data[i].StoreName,
+//                            memberToken: res.data.result_data[i].Token,
+//                            hidden: false,
+//                            balance: "",
+//                            point: "",
+//                            deposit: "",
+//                            lottery: ""
+//                        });
+//                        that.memberCard = memberCard_;
+//                        console.log(that.memberCard)
                     }
                 }).catch(function (err) {
                     that.$dialog.loading.close();
@@ -162,59 +164,7 @@
             tiedCard:function () {
                 window.location.href = "tiedCard.html"
             },
-            dropdown:function (index) {
-                var that =this;
-                this.$dialog.loading.open('');
-                var obj={
-                    sysId: sysId,
-                    versionNo: versionNo,
-                    memberToken: that.memberCard[index].memberToken
-                };
-                axios.post('/xcgame/member?action=getInfo', obj).then(function (res) {
-                    that.$dialog.loading.close();
-                    that.msgPrompt(res.data);
-                    console.log(res.data);
-                    if (res.data.result_code === '1') {
-                        that.memberCard[index].balance = res.data.result_data.balance;
-                        that.memberCard[index].deposit = res.data.result_data.deposit;
-                        that.memberCard[index].lottery = res.data.result_data.lottery;
-                        that.memberCard[index].point = res.data.result_data.point;
-                        if(that.memberCard[index].hidden){
-                            that.memberCard[index].hidden = false;
-                        }else {
-                            for (var i = 0; i < that.memberCard.length; i++) {
-                                that.memberCard[i].hidden = false;
-                            }
-                            that.memberCard[index].hidden = true
-                        }
-                    }
-                }).catch(function (err) {
-                    that.$dialog.loading.close();
-                    console.log(err);
-                })
-            },
-            laundryList:function (index) {
-                var that = this;
-                var memberToken = that.memberCard[index].memberToken;
-                console.log(that.memberCard[index].memberToken);
-                setStorage("billListmemberToken",memberToken);
-                window.location.href = "billList.html";
-            },
-            topUp:function (index) {
-                var that = this;
-                var memberTokens = {storeId: that.memberCard[index].storeId, memberToken: that.memberCard[index].memberToken};
-                setStorage("memberTokens",memberTokens);
-                window.location.href = "mall.html"
-            },
-            register1:function () {
-                window.location.href = "home.html"
-            },
-            register3:function () {
-                window.location.href = "mine.html"
-            },
-            register2:function () {
-                window.location.href = "MyOrder.html"
-            },
+
             msgPrompt:function (res) {
                 if(res.return_code == 0){
                     this.$dialog.toast({

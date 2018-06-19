@@ -38,31 +38,36 @@ namespace XCCloudService.Business.XCCloud
             return false;
         }
 
-        public static List<GamePushRule> GetGamePushRule(string storeId, int gameId, int memberLevelId)
+        public static List<GamePushRule> GetGamePushRule(string merchId, string storeId, int gameId, int memberLevelId)
         {
-            string strSql = @"declare @storeid varchar(15)
-                            declare @gameid int
-                            declare @memberlevelid int
+            string strSql = @"DECLARE @merchId VARCHAR(15)
+                            DECLARE @storeid VARCHAR(15)
+                            DECLARE @gameid INT
+                            DECLARE @memberlevelid INT
 
-                            set @storeid='{0}'
-                            set @gameid={1}
-                            set @memberlevelid={2}
-                            set datefirst 1--设置一周第一天为周一
-                            select ID,Allow_In,Allow_Out,PushBalanceIndex1,PushCoin1,PushBalanceIndex2,PushCoin2 from 
-	                            (select ID,Allow_In,Allow_Out,PushBalanceIndex1,PushCoin1,PushBalanceIndex2,PushCoin2,Level from Data_PushRule where 
+                            SET @merchId='{0}'
+                            SET @storeid='{1}'
+                            SET @gameid={2}
+                            SET @memberlevelid={3}
+                            SET DATEFIRST 1--设置一周第一天为周一
+                            SELECT ID,Allow_In,Allow_Out,PushBalanceIndex1,PushBalanceName1,PushCoin1,PushBalanceIndex2,PushBalanceName2,PushCoin2 FROM   
+	                            (SELECT ID,Allow_In,Allow_Out,PushBalanceIndex1,PushCoin1,PushBalanceIndex2,PushCoin2,Level FROM Data_PushRule WHERE 
 	                            StoreID=@storeid 
-	                            and GETDATE() between CONVERT(varchar(20), StartDate, 23) +' '+ CONVERT(varchar(20), StartTime, 8) and CONVERT(varchar(20), EndDate, 23) +' '+ CONVERT(varchar(20), EndTime, 8)	--判断日期是否可用
-	                            and (
-	                            (WeekType=0 and CHARINDEX(CAST( datepart(weekday, CONVERT(datetime, GETDATE())) as varchar(1)),week)>0)	--自定义方法是否包含当前周，周一1 周日7
-	                            or (WeekType=1 and (select COUNT(DayType) n from XC_HolidayList where CONVERT(varchar(20), WorkDay, 23)=CONVERT(varchar(20), GETDATE(), 23) and DayType=0)>0) --工作日方法判断当前是否为工作日
-	                            or (WeekType=2 and (select COUNT(DayType) n from XC_HolidayList where CONVERT(varchar(20), WorkDay, 23)=CONVERT(varchar(20), GETDATE(), 23) and DayType=1)>0) --周末方式判断当前是否为周末
-	                            or (WeekType=3 and (select COUNT(DayType) n from XC_HolidayList where CONVERT(varchar(20), WorkDay, 23)=CONVERT(varchar(20), GETDATE(), 23) and DayType=2)>0) --周末方式判断当前是否为周末
-	                            )
+	                            AND GETDATE() BETWEEN CONVERT(VARCHAR(20), StartDate, 23) +' '+ CONVERT(VARCHAR(20), StartTime, 8) AND CONVERT(VARCHAR(20), EndDate, 23) +' '+ CONVERT(VARCHAR(20), EndTime, 8)	--判断日期是否可用
+	                            AND (
+		                            (WeekType=0 AND CHARINDEX(CAST(DATEPART(WEEKDAY, CONVERT(DATETIME, GETDATE())) AS VARCHAR(1)),week)>0)	--自定义方法是否包含当前周，周一1 周日7
+		                            OR (WeekType=1 AND (SELECT COUNT(DayType) n from XC_HolidayList where CONVERT(varchar(20), WorkDay, 23)=CONVERT(varchar(20), GETDATE(), 23) AND DayType=0)>0) --工作日方法判断当前是否为工作日
+		                            OR (WeekType=2 AND (SELECT COUNT(DayType) n from XC_HolidayList where CONVERT(varchar(20), WorkDay, 23)=CONVERT(varchar(20), GETDATE(), 23) AND DayType=1)>0) --周末方式判断当前是否为周末
+		                            OR (WeekType=3 AND (SELECT COUNT(DayType) n from XC_HolidayList where CONVERT(varchar(20), WorkDay, 23)=CONVERT(varchar(20), GETDATE(), 23) AND DayType=2)>0) --周末方式判断当前是否为周末
+		                            )
 	                            ) r,
-	                            (select PushRuleID from Data_PushRule_GameList where StoreID=@storeid and GameID=@gameid) g,
-	                            (select PushRuleID from Data_PushRule_MemberLevelList where StoreID=@storeid and MemberLevelID=@memberlevelid) m 
-                            where r.ID=g.PushRuleID and r.ID=m.PushRuleID order by r.Level desc";
-            strSql = string.Format(strSql, storeId, gameId, memberLevelId);
+	                            (SELECT PushRuleID FROM Data_PushRule_GameList WHERE StoreID=@storeid AND GameID=@gameid) g,
+	                            (SELECT PushRuleID FROM Data_PushRule_MemberLevelList WHERE StoreID=@storeid AND MemberLevelID=@memberlevelid) m, 
+	                            (SELECT id AS BalanceIndex, TypeName AS PushBalanceName1 FROM Dict_BalanceType WHERE [State] = 1 AND MerchID=@merchId) l,
+	                            (SELECT id AS BalanceIndex, TypeName AS PushBalanceName2 FROM Dict_BalanceType WHERE [State] = 1 AND MerchID=@merchId) n
+                            where r.ID=g.PushRuleID AND r.ID=m.PushRuleID AND r.PushBalanceIndex1 = l.BalanceIndex AND r.PushBalanceIndex2 = n.BalanceIndex 
+                            ORDER BY r.Level DESC";
+            strSql = string.Format(strSql, merchId, storeId, gameId, memberLevelId);
 
             List<GamePushRule> currList = null;
             using (SqlConnection connection = new SqlConnection(System.Configuration.ConfigurationManager.ConnectionStrings["XCCloudDB"].ToString()))

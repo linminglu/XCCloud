@@ -32,6 +32,8 @@
     <hr />
     <div>
         <asp:Button ID="Button5" runat="server" Text="获取博彩类" OnClick="Button5_Click"  />
+        <asp:Button ID="Button6" runat="server" Text="添加会员" OnClick="Button6_Click"  />
+        <asp:Button ID="Button7" runat="server" Text="读取会员缓存" OnClick="Button7_Click"  />
     </div>
     </form>
 </body>

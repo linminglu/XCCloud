@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Transactions;
 using System.Web;
 using XCCloudService.Base;
 using XCCloudService.BLL.XCCloud;
@@ -292,7 +293,7 @@ namespace XXCloudService.Api.XCCloudH5
         /// <param name="dicParas"></param>
         /// <returns></returns>
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.MethodToken)]
-        public object BindCard(Dictionary<string, object> dicParas)
+        public object bindCard(Dictionary<string, object> dicParas)
         {
             try
             {
@@ -305,13 +306,28 @@ namespace XXCloudService.Api.XCCloudH5
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "用户令牌无效");
                 }
 
+                MemberTokenModel model = MemberTokenCache.GetModel(token);
+
+                if (model == null)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "用户令牌无效，请重新登陆");
+                }
+
                 //短信验证码校验
-                //if()
+                string code = RedisCacheHelper.StringGet(mobile);
+                if(!code.Equals(smsCode, StringComparison.OrdinalIgnoreCase))
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "验证码错误");
+                }
 
                 Data_Member_Card card = Data_Member_CardService.I.GetModels(t => t.ICCardID == icCardId).FirstOrDefault();
                 if(card==null)
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员卡号无效");
+                }
+                if (card.CardType == 1)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "当前卡片为附属卡，不能绑定");
                 }
 
                 Base_MemberInfo member = Base_MemberInfoService.I.GetModels(t => t.ID == card.MemberID && t.Mobile == mobile).FirstOrDefault();
@@ -321,16 +337,85 @@ namespace XXCloudService.Api.XCCloudH5
                 }
 
                 //更新主卡及附属卡的memberId
-                //更新memberInfo的openid
+                //更新memberInfo的openid               
+                using (TransactionScope ts = new TransactionScope(TransactionScopeOption.RequiresNew))
+                {
+                    var cardList = Data_Member_CardService.I.GetModels(t => t.ParentCard == card.ID || t.ID == card.ID);
+                    foreach (var item in cardList)
+                    {
+                        item.MemberID = model.MemberId;
+                        if (!Data_Member_CardService.I.Update(item))
+                        {
+                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "绑定会员卡失败");
+                        }
+                    }
 
-                //MemberTokenModel model = MemberTokenCache.GetModel(token);
-
-                //if (model == null)
-                //{
-                //    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "用户令牌无效，请重新登陆");
-                //}
+                    //微信openid长度28位，阿里userid长度16位
+                    if (token.Length > 16)
+                    {
+                        member.WechatOpenID = token;
+                    }
+                    else
+                    {
+                        member.AlipayOpenID = token;
+                    }
+                    if (!Base_MemberInfoService.I.Update(member))
+                    {
+                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "绑定会员卡失败");
+                    }
+                    ts.Complete();
+                }
 
                 return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.T, "");
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+        #endregion
+
+        #region 获取会员卡列表
+        /// <summary>
+        /// 获取会员卡列表
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.MethodToken)]
+        public object getCardList(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                string token = dicParas.ContainsKey("token") ? dicParas["token"].ToString().Trim() : "";
+                if (string.IsNullOrEmpty(token))
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "用户令牌无效");
+                }
+
+                MemberTokenModel model = MemberTokenCache.GetModel(token);
+
+                if (model == null)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "用户令牌无效，请重新登陆");
+                }
+
+                var cardList = Data_Member_CardService.I.GetModels(t => t.MemberID == model.MemberId && t.CardType == 0).Select(t => new
+                {
+                    Id = t.ID,
+                    ICCardId = t.ICCardID,
+                    LevelId = t.MemberLevelID,
+                    CreateDate = t.CreateTime,
+                    EndDate = t.EndDate
+                }).ToList().Select(t => new
+                {
+                    Id = t.Id,
+                    ICCardId = t.ICCardId,
+                    LevelName = Data_MemberLevelService.I.GetModels(m=>m.MemberLevelID == t.LevelId).FirstOrDefault().MemberLevelName,
+                    CreateDate = t.CreateDate.Value.ToString("yyyy-MM-dd"),
+                    EndDate = t.EndDate.Value.ToString("yyyy-MM-dd")
+                }).ToList();
+
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, cardList);
             }
             catch (Exception e)
             {

@@ -41,7 +41,7 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         {
             this.GameType = -1;
             this.GameCoinList = new List<GameCoinInfo>();
-            this.GamePushRules = new List<GamePushRule>();
+            this.GamePushRules = new List<MemberPushRule>();
         }
         public string DeviceName { get; set; }
 
@@ -53,7 +53,7 @@ namespace XCCloudService.Model.CustomModel.XCCloud
 
         public List<GameCoinInfo> GameCoinList { get; set; }
 
-        public List<GamePushRule> GamePushRules { get; set; }
+        public List<MemberPushRule> GamePushRules { get; set; }
     }
 
     public class GameFreeRule
@@ -71,9 +71,11 @@ namespace XCCloudService.Model.CustomModel.XCCloud
     {
         public int CoinRuleId { get; set; }
 
-        public int PlayCount { get; set; }
+        public string CoinRuleName { get; set; }
 
-        public string Amount { get; set; }
+        //public int PlayCount { get; set; }
+
+        //public string Amount { get; set; }
     }
 
     public class GamePushRule
@@ -86,10 +88,25 @@ namespace XCCloudService.Model.CustomModel.XCCloud
 
         public int PushBalanceIndex1 { get; set; }
 
+        public string PushBalanceName1 { get; set; }
+
         public int PushCoin1 { get; set; }
 
         public int PushBalanceIndex2 { get; set; }
 
+        public string PushBalanceName2 { get; set; }
+
         public int PushCoin2 { get; set; }
+    }
+
+    public class MemberPushRule
+    {
+        public int Id { get; set; }
+
+        public int Allow_In { get; set; }
+
+        public int Allow_Out { get; set; }
+
+        public string PushPlanName { get; set; }
     }
 }

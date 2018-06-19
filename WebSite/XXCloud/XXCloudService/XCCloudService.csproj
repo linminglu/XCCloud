@@ -107,6 +107,10 @@
     <Reference Include="pingpp">
       <HintPath>..\packages\PayChannel\pingpp.dll</HintPath>
     </Reference>
+    <Reference Include="StackExchange.Redis, Version=1.2.6.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\StackExchange.Redis.1.2.6\lib\net45\StackExchange.Redis.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Activities" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -387,7 +391,6 @@
     <Content Include="Api\XCGameMana\Order.ashx" />
     <Content Include="Api\XCGameMana\WxCommon.ashx" />
     <Content Include="Api\XCCloud\BalanceType.ashx" />
-    <Content Include="Api\XCCloud\ProjectTime.ashx" />
     <Content Include="Api\XCCloud\DepotInfo.ashx" />
     <Content Include="Api\XCCloud\Supplier.ashx" />
     <Content Include="Api\XCCloud\GroupVerify.ashx" />
@@ -1262,9 +1265,6 @@
     </Compile>
     <Compile Include="Api\XCCloud\Order.ashx.cs">
       <DependentUpon>Order.ashx</DependentUpon>
-    </Compile>
-    <Compile Include="Api\XCCloud\ProjectTime.ashx.cs">
-      <DependentUpon>ProjectTime.ashx</DependentUpon>
     </Compile>
     <Compile Include="Api\XCCloud\Project.ashx.cs">
       <DependentUpon>Project.ashx</DependentUpon>

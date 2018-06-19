@@ -1,5 +1,21 @@
 ********************************************************************ª·‘±*****************************************************************
 -----------------------------------------------------------------------------------------------------------------------------------------
+declare @CouponsList [CouponsListType]
+insert @CouponsList(CouponId,CouponCode) values(14,'cff2f1d93b67480e84fd85a7f5b5aeda')
+insert @CouponsList(CouponId,CouponCode) values(14,'4e4ffb2461b046dfb40e360cffe0d0e9')
+insert @CouponsList(CouponId,CouponCode) values(14,'3a9da6aa8ae14530bbb7ee126cfe60c')
+declare @StoreId varchar(15) = '100025420106001'
+declare @CardId varchar(32) = ''
+declare @SaleCoinType int = 0
+declare @OrderSource int = 0
+declare @ErrMsg varchar(200)
+declare @ChargeReturn int = 0
+exec @ChargeReturn = Charge @CouponsList,@StoreId,@CardId,@SaleCoinType,@OrderSource,@ErrMsg output
+print '@ChargeReturn:' + cast(@ChargeReturn as varchar)
+print '@ErrMsg:' + @ErrMsg
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------------------------------------------------------------------
 declare @Result int = 0
 declare @FlwOrderId varchar(32) = '10002542010600120180517100010001'
 declare @StoreID varchar(15) = '100025420106001'

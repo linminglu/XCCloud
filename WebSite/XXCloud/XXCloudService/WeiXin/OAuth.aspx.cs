@@ -125,6 +125,7 @@ namespace XXCloudService.WeiXin
                     int isSubscribe = memberCacheModel.Info.subscribe;
                     string redirectUrl = string.Format("{0}?openId={1}&isReg={2}&isSubscribe={3}", CommonConfig.H5WeiXinAuthRedirectUrl, openId, 1, isSubscribe);
                     Response.Redirect(redirectUrl);
+                    Response.End();
                 }
                 else
                 {

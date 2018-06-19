@@ -381,15 +381,15 @@ namespace PalletService.TCPService
             //ReadNewICCard
             string icCardId = string.Empty;
             string repeatCode = string.Empty;
-            if (!ICCardUtility.ReadNewICCard(storePassword, out icCardId, out repeatCode, out errMsg, false, true))
+            bool isNewCard = false;
+            if (!ICCardUtility.ReadNewICCard(storePassword, out isNewCard, out icCardId, out repeatCode, out errMsg, true, true))
             {
-                //SendFailData(answerMsgType, sessionPool, sendIP, errMsg);
                 var obj = new
                 {
                     icCardId = icCardId,
                     repeatCode = repeatCode
                 };
-                SendFailData(answerMsgType, sessionPool, sendIP, "已开卡", obj);
+                SendFailData(answerMsgType, sessionPool, sendIP, errMsg, obj);
                 return;
             }
             else
@@ -398,7 +398,14 @@ namespace PalletService.TCPService
                     icCardId = icCardId,
                     repeatCode = repeatCode      
                 };
-                SendSuccessData(answerMsgType, sessionPool, sendIP, "新卡", obj);
+                if (isNewCard)
+                {
+                    SendSuccessData(answerMsgType, sessionPool, sendIP, "新卡", obj);
+                }
+                else
+                {
+                    SendSuccessData(answerMsgType, sessionPool, sendIP, "已开卡", obj);
+                }
             }
         }
 

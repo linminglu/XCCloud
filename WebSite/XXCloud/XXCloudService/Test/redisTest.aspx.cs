@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity.Validation;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
@@ -7,6 +8,7 @@ using System.Web.UI.WebControls;
 using XCCloudService.BLL.XCCloud;
 using XCCloudService.Business.XCGameMana;
 using XCCloudService.CacheService;
+using XCCloudService.Common;
 using XCCloudService.Model.CustomModel.XCCloud;
 using XCCloudService.Model.WeiXin;
 using XCCloudService.Model.XCCloud;
@@ -86,6 +88,48 @@ namespace XXCloudService.Test
             {
                 gameTypeList.Add(item);
                 GetGamingList(item.ID, gameTypeList);
+            }
+        }
+
+        protected void Button6_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                Base_MemberInfo member = new Base_MemberInfo();
+                member.ID = RedisCacheHelper.CreateCloudSerialNo("0".PadLeft(15, '0'));
+                member.WechatOpenID = "oNWocwSC_GFO8n_8mtZ0iV9tL0WI";
+                member.UserPassword = Utils.MD5("123456");
+                member.UserName = "慕斯";
+                member.Photo = "http://thirdwx.qlogo.cn/mmopen/SmBMwo29LaUa5THehbCwRbwnvXUvmCtYPaxImCGEeIGKqJgPGUiaD4JiaNgbBj0VzbJ1nDbePekVUZIuTVVwPtiavPU0xIK1k0P/132";
+                member.CreateTime = DateTime.Now;
+                member.MemberState = 1;
+                bool ret = Base_MemberInfoService.I.Add(member);
+                if (!ret)
+                {
+                    Response.Write("添加成功");
+                }
+            }
+            catch (DbEntityValidationException ex)
+            {
+                throw ex;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        protected void Button7_Click(object sender, EventArgs e)
+        {
+            string fieldKey = "oNWocwSC_GFO8n_8mtZ0iV9tL0WI1";
+            MemberTokenModel memberCacheModel = MemberTokenCache.GetModel(fieldKey);
+            if (memberCacheModel == null)
+            {
+                Response.Write("00000");
+            }
+            else
+            {
+                Response.Write("11111");
             }
         }
     }
