@@ -516,6 +516,7 @@ namespace XXCloudService.Api.XCCloud
             }
         }
 
+        [Authorize(Roles = "MerchUser", Inherit = true)]
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object GetProjectDic(Dictionary<string, object> dicParas)
         {

@@ -1137,7 +1137,7 @@
                 balanceIndex='';
                 $('#ProjectID').html('');
                 $('#balanceType').html('');
-                xc.getChargeGood(token,form);
+                xc.getChargeGood(token,form,layer,storeId.length>0?storeId.join('|'):'');
             } else if(data.value==1){
                 $('.chargeGoods').addClass('layui-hide');
                 $('.chargeProgect').removeClass('layui-hide');
@@ -1146,7 +1146,7 @@
                 balanceIndex='';
                 $('#GoodID').html('');
                 $('#balanceType').html('');
-                xc.getChargeProgect(token,form)
+                xc.getChargeProgect(token,form,layer,storeId.length>0?storeId.join('|'):'')
             }else if(data.value==2){
                 $('.chargeGoods').addClass('layui-hide');
                 $('.chargeProgect').addClass('layui-hide');
@@ -1844,8 +1844,8 @@
         })
     };
     //加载兑换奖品
-    xcActionSystem.prototype.getChargeGood=function (token,form,j) {
-        let obj={'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+    xcActionSystem.prototype.getChargeGood=function (token,form,layer,storeIds,j) {
+        let obj={'storeIds':storeIds,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
         let parseJson = JSON.stringify(obj);
         $.ajax({
             type:'post',
@@ -1875,27 +1875,31 @@
         })
     };
     //加载兑换游乐项目
-    xcActionSystem.prototype.getChargeProgect=function (token,form,j) {
-        let obj={'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
-        let parseJson = JSON.stringify(obj);
-        $.ajax({
-            type:'post',
-            url:'/XCCloud/Project?action=GetProjectDic',
-            contentType: "application/json; charset=utf-8",
-            data:{parasJson: parseJson},
-            success: function (data) {
-                data=JSON.parse(data);
-                if(data.result_code==1){
-                    $('#ProjectID').html('<option>-请选择-</option>');
-                    let array=data.result_data;
-                    for(let i in array){
-                        $('#ProjectID').append('<option value="'+array[i].ID+'">'+array[i].ProjectName+'</option>')
+    xcActionSystem.prototype.getChargeProgect=function (token,form,layer,storeID,j) {
+            let obj={'storeIds':storeID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+            let parseJson = JSON.stringify(obj);
+            $.ajax({
+                type:'post',
+                url:'/XCCloud/Project?action=GetProjectDic',
+                contentType: "application/json; charset=utf-8",
+                data:{parasJson: parseJson},
+                success: function (data) {
+                    data=JSON.parse(data);
+                    if(data.result_code==1){
+                        $('#ProjectID').html('<option>-请选择-</option>');
+                        let array=data.result_data;
+                        for(let i in array){
+                            $('#ProjectID').append('<option value="'+array[i].ID+'">'+array[i].ProjectName+'</option>')
+                        }
+                        $('#ProjectID').find('option[value="'+j+'"]').attr('selected',true);
+                        form.render('select');
+                    }else {
+                        layer.msg(data.result_data||data.return_msg)
                     }
-                    $('#ProjectID').find('option[value="'+j+'"]').attr('selected',true);
-                    form.render('select');
                 }
-            }
-        })
+            })
+
+
     };
     //加载可选门店
     xcActionSystem.prototype.setUsefulStore=function (token,form,layer,selected) {
