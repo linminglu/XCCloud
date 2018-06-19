@@ -46,7 +46,8 @@ namespace XXCloudService.Api.XCCloud
                                     HkTypeStr = d != null ? d.DictKey : string.Empty,
                                     StoreName = c != null ? c.StoreName : string.Empty
                                 }).AsEnumerable()
-                           group d by d.a.ID into g                           
+                           group d by d.a.ID into g   
+                           orderby g.Key
                            select new
                            {
                                ID = g.Key,
@@ -93,7 +94,7 @@ namespace XXCloudService.Api.XCCloud
                             select a;    
 
                 var linq = from a in query
-                           orderby a.TypeID
+                           orderby a.ID
                            select new
                            {
                                ID = a.ID,
