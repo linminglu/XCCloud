@@ -46,8 +46,8 @@
                     <p>请添加卡</p>
                 </div>
                 <yd-grids-group>
-                    <yd-grids-item v-for="n in 6" v-if="tiedCard">
-                        <span slot="text">各种余额</span>
+                    <yd-grids-item v-for="item in cardBalanceList" v-if="tiedCard">
+                        <span slot="text">{{item.BalanceName}}：{{item.Quantity}}</span>
                     </yd-grids-item>
                 </yd-grids-group>
             </yd-grids-group>
@@ -65,6 +65,7 @@
             </yd-grids-group>
         </yd-layout>
         <yd-backtop></yd-backtop>
+        <yd-button size="large" type="primary" @click.native="jumpFnc">扫码</yd-button>
         <!--<yd-navbar title="莘拍档">-->
             <!--<router-link to="h" slot="left">-->
                 <!--<yd-navbar-back-icon>返回</yd-navbar-back-icon>-->
@@ -100,7 +101,8 @@
             CurrentCardInfo : "",
             MemberBalances : "",
             MemberId : "",
-            Token : "",
+            cardBalanceList : null,
+            deviceToken : "86A8AFBDB2E84B8E95BF52C052E8BA7C",
             userThirdId : "oNWocwSC_GFO8n_8mtZ0iV9tL0WI",
             tiedCard:true
         },
@@ -115,11 +117,12 @@
             Load:function () {
                 var that =this;
                 var ifScanCode = getStorage("ifScanCode");        //是否是扫码进入
-                var deviceToken = getStorage("deviceNo")||"";       //获取设备令牌
+//                var deviceToken = getStorage("deviceNo")||"";       //获取设备令牌
 //                var userThirdId = getStorage("userThirdId")||"";     //获取第三方令牌
 //                that.userThirdId = userThirdId;
+//                that.deviceToken = deviceToken;
                 if(ifScanCode == "1"){
-                    var getDeviceInfo ={sysId: sysId,versionNo: versionNo,token:that.userThirdId,deviceToken:"86A8AFBDB2E84B8E95BF52C052E8BA7C"};
+                    var getDeviceInfo ={sysId: sysId,versionNo: versionNo,token:that.userThirdId,deviceToken:that.deviceToken};
                     axios.post('/XCCloudH5/Amusement?action=getDeviceInfo', getDeviceInfo).then(function (res) {
                         that.$dialog.loading.close();
                         that.msgPrompt(res.data);
@@ -167,6 +170,9 @@
                         that.MemberId =res.data.result_data.CurrentCardInfo;
                         that.headimgurl =res.data.result_data.Info.headimgurl;
                         that.nickname =res.data.result_data.Info.nickname;
+                        that.cardBalanceList =res.data.result_data.CurrentCardInfo.CardBalanceList;
+                        setStorage("headimgurl",that.headimgurl);
+                        console.log(that.headimgurl)
                     }
                 }).catch(function (err) {
                     that.$dialog.loading.close();
@@ -324,25 +330,25 @@
 
             },
 //          扫码之后跳转函数
-            jumpFnc:function (result) {
+            jumpFnc:function (deviceToken) {
                 var that =this;
                 this.$dialog.loading.open('');
-                var obj={sysId: sysId, versionNo: versionNo, deviceToken:deviceToken};
-                axios.post('/xcgamemana/store?action=storeInfoByTerminalNo', obj).then(function (res) {
+                var obj={sysId: sysId, versionNo: versionNo,token:that.userThirdId, deviceToken:that.deviceToken};
+                axios.post('/XCCloudH5/Amusement?action=getDeviceInfo', obj).then(function (res) {
                     that.$dialog.loading.close();
                     that.msgPrompt(res.data);
                     console.log(res.data);
                     if (res.data.result_code === '1') {
-                        setStorage("deviceToken",deviceToken);
-                        switch (res.data.result_data.deviceType) {
-                            case "自助提币机":
-                                window.location.href = "CurrencyOperation.html";
-                                break;
-                            case "自助存币机":
-                                window.location.href = "CurrencyOperation.html";
-                                break;
-                            case "游戏机":
+//                        setStorage("deviceToken",deviceToken);
+                        switch (res.data.result_data.DeviceType) {
+                            case 0:
                                 window.location.href = "games.html";
+                                break;
+                            case 2:
+                                window.location.href = "CurrencyOperation.html";
+                                break;
+                            case 3:
+                                window.location.href = "CurrencyOperation.html";
                                 break;
                             default:
                                 break;

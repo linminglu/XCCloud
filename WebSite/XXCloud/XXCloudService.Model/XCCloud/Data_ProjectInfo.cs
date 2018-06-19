@@ -27,5 +27,6 @@ namespace XCCloudService.Model.XCCloud
         public string Note { get; set; }
         public string Verifiction { get; set; }
         public Nullable<int> ForceUse { get; set; }
+        public Nullable<int> AdjOrder { get; set; }
     }
 }

@@ -20,40 +20,29 @@
       <file leaf-file-name="index.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="475">
-              <caret line="118" column="0" lean-forward="false" selection-start-line="118" selection-start-column="0" selection-end-line="119" selection-end-column="49" />
+            <state relative-caret-position="625">
+              <caret line="88" column="0" lean-forward="false" selection-start-line="88" selection-start-column="0" selection-end-line="88" selection-end-column="70" />
               <folding>
-                <element signature="e#8820#10215#0" expanded="false" />
-                <element signature="e#10275#11203#0" expanded="false" />
-                <element signature="e#11255#11563#0" expanded="false" />
-                <element signature="e#11621#12887#0" expanded="false" />
-                <element signature="e#12939#15477#0" expanded="false" />
-                <element signature="e#15538#16894#0" expanded="false" />
-                <element signature="e#16950#17258#0" expanded="false" />
-                <element signature="e#17383#17880#0" expanded="false" />
+                <element signature="e#10739#11667#0" expanded="false" />
+                <element signature="e#11719#12027#0" expanded="false" />
+                <element signature="e#12085#13351#0" expanded="false" />
+                <element signature="e#13403#15941#0" expanded="false" />
+                <element signature="e#17428#17736#0" expanded="false" />
+                <element signature="e#17861#18358#0" expanded="false" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="games.html" pinned="false" current-in-tab="false">
+      <file leaf-file-name="games.html" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/games.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2700">
-              <caret line="108" column="108" lean-forward="false" selection-start-line="108" selection-start-column="108" selection-end-line="108" selection-end-column="108" />
+            <state relative-caret-position="280">
+              <caret line="162" column="57" lean-forward="false" selection-start-line="162" selection-start-column="25" selection-end-line="162" selection-end-column="57" />
               <folding>
-                <element signature="n#style#0;n#div#0;n#yd-popup#1;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-                <element signature="e#14867#15243#0" expanded="false" />
-                <element signature="e#15287#15466#0" expanded="false" />
-                <element signature="e#18505#23195#0" expanded="false" />
-                <element signature="e#23230#24198#0" expanded="false" />
-                <element signature="e#24244#26023#0" expanded="false" />
-                <element signature="e#26068#26839#0" expanded="false" />
-                <element signature="e#26876#28648#0" expanded="false" />
-                <element signature="e#28684#30356#0" expanded="false" />
-                <element signature="e#30391#30505#0" expanded="false" />
-                <element signature="e#30548#36432#0" expanded="false" />
-                <element signature="e#36471#36968#0" expanded="false" />
+                <element signature="n#style#0;n#yd-button#0;n#yd-popup#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#div#0;n#yd-popup#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+                <element signature="e#41853#42350#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -62,7 +51,7 @@
       <file leaf-file-name="mineCard.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/mineCard.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="393">
+            <state relative-caret-position="1650">
               <caret line="162" column="48" lean-forward="false" selection-start-line="162" selection-start-column="48" selection-end-line="162" selection-end-column="48" />
               <folding>
                 <element signature="n#div#1;n#div#0;n#body#0;n#html#0;n#!!top" expanded="false" />
@@ -77,8 +66,8 @@
       <file leaf-file-name="login.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/login.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="370">
-              <caret line="25" column="0" lean-forward="false" selection-start-line="25" selection-start-column="0" selection-end-line="30" selection-end-column="20" />
+            <state relative-caret-position="1400">
+              <caret line="56" column="4" lean-forward="false" selection-start-line="56" selection-start-column="4" selection-end-line="56" selection-end-column="82" />
               <folding>
                 <marker date="1528860469167" expanded="true" signature="2833:2847" ph="..." />
                 <marker date="1528860469167" expanded="true" signature="2866:2899" ph="..." />
@@ -89,11 +78,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="tiedCard.html" pinned="false" current-in-tab="true">
+      <file leaf-file-name="tiedCard.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tiedCard.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="355">
-              <caret line="111" column="0" lean-forward="true" selection-start-line="111" selection-start-column="0" selection-end-line="111" selection-end-column="0" />
+            <state relative-caret-position="2900">
+              <caret line="116" column="18" lean-forward="false" selection-start-line="116" selection-start-column="18" selection-end-line="116" selection-end-column="18" />
               <folding />
             </state>
           </provider>
@@ -103,21 +92,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>section_cont</find>
-      <find>register1</find>
-      <find>unbind</find>
-      <find>register3</find>
-      <find>inputNumber</find>
-      <find>Nice</find>
-      <find>setStorage</find>
-      <find>.confirm</find>
-      <find>btnClick</find>
-      <find>htmlfnc</find>
-      <find>@click</find>
-      <find>alert</find>
-      <find>switch</find>
-      <find>&lt;script src=&quot;js/vue.js&quot;&gt;&lt;/script&gt;</find>
-      <find>jumpFnc</find>
       <find>wxData</find>
       <find>&gt;</find>
       <find>$</find>
@@ -131,8 +105,23 @@
       <find>start1</find>
       <find>/XCCloudH5/Member?action=getMemberInf</find>
       <find>inputPrompt</find>
-      <find>cardIcon</find>
       <find>tiedCard</find>
+      <find>GameName</find>
+      <find>cardIcon</find>
+      <find>deleteHide</find>
+      <find>gameGiveVip</find>
+      <find>GameCoinList</find>
+      <find>gamePlaylist</find>
+      <find>playData</find>
+      <find>recharge</find>
+      <find>headimgurl</find>
+      <find>.gameGive_b</find>
+      <find>setStorage</find>
+      <find>gamePlay:</find>
+      <find>deviceToken</find>
+      <find>gamePlay</find>
+      <find>WeixinJSBridge</find>
+      <find>@click</find>
     </findStrings>
     <replaceStrings>
       <replace />
@@ -143,6 +132,7 @@
       <replace>imgCode</replace>
       <replace>GameName</replace>
       <replace>start</replace>
+      <replace>PlayCount</replace>
     </replaceStrings>
   </component>
   <component name="IdeDocumentHistory">
@@ -161,11 +151,11 @@
         <option value="$PROJECT_DIR$/accredit.html" />
         <option value="$USER_HOME$/Desktop/index.html" />
         <option value="$PROJECT_DIR$/test.html" />
-        <option value="$PROJECT_DIR$/games.html" />
-        <option value="$PROJECT_DIR$/index.html" />
         <option value="$PROJECT_DIR$/mineCard.html" />
         <option value="$PROJECT_DIR$/login.html" />
         <option value="$PROJECT_DIR$/tiedCard.html" />
+        <option value="$PROJECT_DIR$/index.html" />
+        <option value="$PROJECT_DIR$/games.html" />
       </list>
     </option>
   </component>
@@ -213,7 +203,7 @@
   </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../WebBar" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="HbShouldOpenHtmlAsHb" value="" />
     <property name="nodejs_interpreter_path" value="C:/Program Files/nodejs/node" />
     <property name="settings.editor.selected.configurable" value="vcs.Subversion" />
@@ -297,12 +287,18 @@
       <workItem from="1528770095726" duration="6148000" />
       <workItem from="1528784149362" duration="11590000" />
       <workItem from="1528804216887" duration="1279000" />
-      <workItem from="1528851522373" duration="13966000" />
+      <workItem from="1528851522373" duration="18316000" />
+      <workItem from="1528879560902" duration="230000" />
+      <workItem from="1529025650126" duration="9082000" />
+      <workItem from="1529040244849" duration="498000" />
+      <workItem from="1529040982338" duration="1004000" />
+      <workItem from="1529043033229" duration="1754000" />
+      <workItem from="1529050042411" duration="6807000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="420550000" />
+    <option name="totallyTimeSpent" value="444275000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
@@ -317,7 +313,6 @@
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="运行" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.22128557" sideWeight="0.5038002" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="找到" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32899022" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -327,6 +322,7 @@
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32899022" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="找到" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32899022" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -337,18 +333,18 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="7" />
+      <breakpoints>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/login.html</url>
+          <line>28</line>
+          <option name="timeStamp" value="7" />
+        </line-breakpoint>
+      </breakpoints>
+      <option name="time" value="8" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/games.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1175">
-          <caret line="47" column="19" lean-forward="true" selection-start-line="47" selection-start-column="19" selection-end-line="47" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/home.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1000">
@@ -540,13 +536,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/CurrencyOperation.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="10875">
-          <caret line="435" column="38" lean-forward="true" selection-start-line="435" selection-start-column="38" selection-end-line="435" selection-end-column="65" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/hTest.html" />
     <entry file="file://$USER_HOME$/Desktop/全局动画.gif" />
     <entry file="file://$PROJECT_DIR$/home.html">
@@ -567,7 +556,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="375">
           <caret line="15" column="0" lean-forward="false" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -575,32 +563,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="120">
           <caret line="20" column="21" lean-forward="true" selection-start-line="20" selection-start-column="21" selection-end-line="20" selection-end-column="21" />
-          <folding>
-            <element signature="e#2619#3748#0" expanded="false" />
-            <element signature="e#3801#5203#0" expanded="false" />
-            <element signature="e#8897#11019#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/games.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2700">
-          <caret line="108" column="108" lean-forward="false" selection-start-line="108" selection-start-column="108" selection-end-line="108" selection-end-column="108" />
-          <folding>
-            <element signature="n#style#0;n#div#0;n#yd-popup#1;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="e#14867#15243#0" expanded="false" />
-            <element signature="e#15287#15466#0" expanded="false" />
-            <element signature="e#18505#23195#0" expanded="false" />
-            <element signature="e#23230#24198#0" expanded="false" />
-            <element signature="e#24244#26023#0" expanded="false" />
-            <element signature="e#26068#26839#0" expanded="false" />
-            <element signature="e#26876#28648#0" expanded="false" />
-            <element signature="e#28684#30356#0" expanded="false" />
-            <element signature="e#30391#30505#0" expanded="false" />
-            <element signature="e#30548#36432#0" expanded="false" />
-            <element signature="e#36471#36968#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -608,7 +570,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1600">
           <caret line="64" column="50" lean-forward="false" selection-start-line="64" selection-start-column="50" selection-end-line="64" selection-end-column="50" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -616,7 +577,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="525">
           <caret line="21" column="50" lean-forward="false" selection-start-line="21" selection-start-column="50" selection-end-line="21" selection-end-column="50" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -625,9 +585,37 @@
         <state />
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/tiedCard.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2900">
+          <caret line="116" column="18" lean-forward="false" selection-start-line="116" selection-start-column="18" selection-end-line="116" selection-end-column="18" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/login.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1400">
+          <caret line="56" column="4" lean-forward="false" selection-start-line="56" selection-start-column="4" selection-end-line="56" selection-end-column="82" />
+          <folding>
+            <marker date="1528860469167" expanded="true" signature="2833:2847" ph="..." />
+            <marker date="1528860469167" expanded="true" signature="2866:2899" ph="..." />
+            <marker date="1528860469167" expanded="true" signature="2953:2967" ph="..." />
+            <marker date="1528860469167" expanded="true" signature="2986:3019" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/Desktop/MobileWeb/games.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="500">
+          <caret line="182" column="46" lean-forward="true" selection-start-line="182" selection-start-column="46" selection-end-line="182" selection-end-column="46" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/mineCard.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="393">
+        <state relative-caret-position="1650">
           <caret line="162" column="48" lean-forward="false" selection-start-line="162" selection-start-column="48" selection-end-line="162" selection-end-column="48" />
           <folding>
             <element signature="n#div#1;n#div#0;n#body#0;n#html#0;n#!!top" expanded="false" />
@@ -638,41 +626,38 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/login.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="370">
-          <caret line="25" column="0" lean-forward="false" selection-start-line="25" selection-start-column="0" selection-end-line="30" selection-end-column="20" />
-          <folding>
-            <marker date="1528860469167" expanded="true" signature="2833:2847" ph="..." />
-            <marker date="1528860469167" expanded="true" signature="2866:2899" ph="..." />
-            <marker date="1528860469167" expanded="true" signature="2953:2967" ph="..." />
-            <marker date="1528860469167" expanded="true" signature="2986:3019" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="475">
-          <caret line="118" column="0" lean-forward="false" selection-start-line="118" selection-start-column="0" selection-end-line="119" selection-end-column="49" />
+        <state relative-caret-position="625">
+          <caret line="88" column="0" lean-forward="false" selection-start-line="88" selection-start-column="0" selection-end-line="88" selection-end-column="70" />
           <folding>
-            <element signature="e#8820#10215#0" expanded="false" />
-            <element signature="e#10275#11203#0" expanded="false" />
-            <element signature="e#11255#11563#0" expanded="false" />
-            <element signature="e#11621#12887#0" expanded="false" />
-            <element signature="e#12939#15477#0" expanded="false" />
-            <element signature="e#15538#16894#0" expanded="false" />
-            <element signature="e#16950#17258#0" expanded="false" />
-            <element signature="e#17383#17880#0" expanded="false" />
+            <element signature="e#10739#11667#0" expanded="false" />
+            <element signature="e#11719#12027#0" expanded="false" />
+            <element signature="e#12085#13351#0" expanded="false" />
+            <element signature="e#13403#15941#0" expanded="false" />
+            <element signature="e#17428#17736#0" expanded="false" />
+            <element signature="e#17861#18358#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tiedCard.html">
+    <entry file="file://$PROJECT_DIR$/CurrencyOperation.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="355">
-          <caret line="111" column="0" lean-forward="true" selection-start-line="111" selection-start-column="0" selection-end-line="111" selection-end-column="0" />
+        <state relative-caret-position="580">
+          <caret line="268" column="49" lean-forward="true" selection-start-line="268" selection-start-column="49" selection-end-line="268" selection-end-column="49" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/games.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="280">
+          <caret line="162" column="57" lean-forward="false" selection-start-line="162" selection-start-column="25" selection-end-line="162" selection-end-column="57" />
+          <folding>
+            <element signature="n#style#0;n#yd-button#0;n#yd-popup#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#0;n#yd-popup#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="e#41853#42350#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>

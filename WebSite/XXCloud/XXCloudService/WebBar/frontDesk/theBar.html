@@ -133,7 +133,7 @@
 
 		/*快速售币弹出层*/
 		.FastSellSty{margin: 1em 0;height: 2.5em;line-height: 2em;font-size: 1.2em;}
-		.formNum{margin-top: 2em;}
+		.formNum{margin-top: 1em;}
 
 		.formNum2 a{display: block;padding: 1em 1.5em!important;}
 		.formNum a{display: block;background-color: #555555;color: #fff;border-top: 1px solid #444444;border-left: 1px solid #444444;padding: 1em;text-align: center;font-size: 1.2em;}
@@ -231,17 +231,22 @@
 		.saleContent{display: flex;flex-direction: row;}
 		/*.salesCoin{float: right;float: left;}*/
 		/*树形结构*/
-		.tree{min-height:20px;margin:1em 0;background-color:#fbfbfb;min-width: 300px;display: inline-block;height: inherit;}
-		.tree ul{padding-left: 35px;}
-		.tree li{list-style-type:none;margin:0;padding:10px 5px 0 5px!important;position:relative}
-		.tree li::before, .tree li::after{content:'';left:-20px;position:absolute;right:auto}
-		.tree li::before{border-left:1px solid #999;bottom:50px;height:100%;top:0;width:1px}
-		.tree li::after{border-top:1px solid #999;height:20px;top:25px;width:25px}
-		.tree li span{-moz-border-radius:5px;-webkit-border-radius:5px;border:1px solid #999;border-radius:5px;display:inline-block;padding:3px 8px;text-decoration:none}
-		.tree li.parent_li>span{cursor:pointer}
-		.tree>ul>li::before, .tree>ul>li::after{border:0}
-		.tree li:last-child::before{height:30px}
-		.tree li.parent_li>span:hover, .tree li.parent_li>span:hover+ul li span{background:#eee;border:1px solid #94a0b4;color:#000}
+		.treeBox{margin:0.5em 0;background-color:#fbfbfb;min-width: 200px;display: inline-block;height: inherit;}
+		.treeList{width:200px;}
+		.treeList li{margin:5px 0 0 0;}
+		.treeList a{background-color: #FFFFFF; color: #174867; padding: 7px 15px 7px 15px; width: 150px; display: block; text-decoration: none; -webkit-transition: all 0.3s ease-out; -moz-transition: all 0.3s ease-out; -o-transition: all 0.3s ease-out; -webkit-box-shadow: 2px 2px 4px #EDEDED; -moz-box-shadow: 2px 2px 4px #888; -o-box-shadow: 2px 2px 4px #888; border-left: 0px solid #CCCCCC; border-right: 1px solid #E3E3E3; border-bottom: 1px solid #E3E3E3; border-top: 1px solid #E3E3E3; box-shadow: 2px 2px 4px #EDEDED; }
+		.treeList a:hover{color:#67a5cd;padding:7px 15px 7px 30px;width: 180px;background-color: #e0e0e0;}
+
+		/*.tree ul{padding-left: 35px;}*/
+		/*.tree li{list-style-type:none;margin:0;padding:10px 5px 0 5px!important;position:relative}*/
+		/*.tree li::before, .tree li::after{content:'';left:-20px;position:absolute;right:auto}*/
+		/*.tree li::before{border-left:1px solid #999;bottom:50px;height:100%;top:0;width:1px}*/
+		/*.tree li::after{border-top:1px solid #999;height:20px;top:25px;width:25px}*/
+		/*.tree li span{-moz-border-radius:5px;-webkit-border-radius:5px;border:1px solid #999;border-radius:5px;display:inline-block;padding:3px 8px;text-decoration:none}*/
+		/*.tree li.parent_li>span{cursor:pointer}*/
+		/*.tree>ul>li::before, .tree>ul>li::after{border:0}*/
+		/*.tree li:last-child::before{height:30px}*/
+		/*.tree li.parent_li>span:hover, .tree li.parent_li>span:hover+ul li span{background:#eee;border:1px solid #94a0b4;color:#000}*/
 		/*会员操作*/
 		.Operation{padding: 1em;}
 		.tab-text{margin: 1em 0;}
@@ -410,7 +415,8 @@
 								<label class="col-md-12 col-sm-12 pad_0"><input id="input5" type="text" class="form-control" /></label>
 							</li>
 						</ul>
-						<div class="col-md-12 col-sm-12 shopCStyle" style="margin-top: 1em"><button type="button" class="btn btn-danger">结账</button></div>
+						<div class="col-md-12 col-sm-12 shopCStyle" style="margin-top: 1em" v-if="shopCheckOut"><button type="button" class="btn btn-danger">结账</button></div>
+						<div class="col-md-12 col-sm-12 shopCStyle" style="margin-top: 1em" v-if="registerCheckOut"><button type="button" class="btn btn-danger" @click="registerCheckBtn">结账</button></div>
 					</div>
 					<div class="formNum formNum2 col-md-4 col-sm-4">
 						<div class=" col-md-4 col-sm-4 pad_0"><a href="javascript:void(0);" class="num">1</a></div>
@@ -425,7 +431,6 @@
 						<div class=" col-md-4 col-sm-4 pad_0"><a href="javascript:void(0);" class="num">.</a></div>
 						<div class=" col-md-4 col-sm-4 pad_0"><a href="javascript:void(0);" class="num">0</a></div>
 						<div class=" col-md-4 col-sm-4 pad_0"><a href="javascript:void(0);" class="remove" >删除</a></div>
-
 					</div>
 					<ul class="col-md-2 col-sm-2 payList">
 						<li><button type="button" class="btn btn-primary btn-lg">现金</button></li>
@@ -964,17 +969,17 @@
 						<button type="button" class="btn btn-primary">查询</button>
 					</div>
 					<div class="saleContent" ref="saleContent">
-						<div class="tree" v-if="treeShow">
-							<ul>
-								<li>
-									<span><i class="glyphicon glyphicon-minus"></i></span> <a href="javascript:void(0)" @click="singletonScreening('-1','good')">商品</a>
-									<ul>
-										<li v-for="(item,index) in foodTypeGoodList" @click="singletonScreening(index,'good')">
-											<span><i class="glyphicon glyphicon-resize-horizontal"></i></span> <a href="javascript:void(0)">{{item.foodTypeName}}</a>
-										</li>
-									</ul>
+						<div class="treeBox" v-if="treeShow">
+							<ul class="treeList">
+								<li v-for="(item,index) in foodTypeGoodList" @click="singletonScreening(index,'good')">
+									<a href="javascript:void(0)">{{item.foodTypeName}}</a>
+								</li>
+								<li v-for="(item,index) in foodTypeTicketList" @click="singletonScreening(index,'ticket')">
+									<a href="javascript:void(0)">{{item.FoodTypeName}}</a>
 								</li>
 							</ul>
+						</div>
+
 							<!--<ul>-->
 								<!--<li>-->
 									<!--<span><i class="glyphicon glyphicon-move"></i></span> <a href="javascript:void(0)" @click="singletonScreening('-1','all')">单品全部</a>-->
@@ -998,7 +1003,6 @@
 									<!--</ul>-->
 								<!--</li>-->
 							<!--</ul>-->
-						</div>
 						<ul class="salesCoin">
 							<li v-for="(item,index) in saleData" class="salesLi" @click="deletePerson(index,'0')">
 								<img :src="item.imageUrl"/>
@@ -1207,7 +1211,7 @@
                     <div class="row">
                         <h3 class="hStyle titleSty">用户信息</h3>
                         <div class="McText col-md-12">
-                            <div class="col-md-4 col-sm-12"><span class="col-md-4 col-sm-4">手机号码：</span><label class="col-md-8 col-sm-8"><input type="text" class="form-control" v-model="memberForm.mobile"/></label></div>
+                            <div class="col-md-4 col-sm-12"><span class="col-md-4 col-sm-4">手机号码：</span><label class="col-md-8 col-sm-8"><input type="text" class="form-control" v-model.number="memberForm.mobile" maxlength="11"/></label></div>
                             <div class="col-md-3 col-sm-12"><span class="col-md-4 col-sm-4">会员姓名：</span><label class="col-md-8 col-sm-8"><input type="text" class="form-control" v-model="memberForm.name"/></label></div>
                             <div class="col-md-3 col-sm-9"><span class="col-md-3 col-sm-6">生日：</span><label class="col-md-9 col-sm-6"><input type="text"  class="form-control" v-model="memberForm.birthday" readonly/></label></div>
                             <div class="col-md-2 col-sm-3 pad_0"><span class="col-md-6 col-sm-6 pad_0">性别：</span>
@@ -1228,7 +1232,7 @@
                             <label class="col-md-10 col-sm-12 col-marL_2" ><textarea class="form-control" v-model="memberForm.remark"></textarea></label>
                         </div>
                         <div class="col-md-10 col-sm-8" ></div>
-                        <div class="col-md-2 text-center col-sm-4" ><button type="button" class="btn btn-success">发卡</button></div>
+                        <div class="col-md-2 text-center col-sm-4" ><button type="button" class="btn btn-success" @click="registerMember">发卡</button></div>
                     </div>
 				</div>
 			</div>
@@ -1274,6 +1278,9 @@
 <script>
     var sysId = 0; //调用方应用Id
     var versionNo= "0.01"; //版本号
+    var machineName ="";
+    var dogIdToken ="";
+    var ws = new WebSocket("ws://127.0.0.1:12880");
     var destroy =[
         {"no":1,"name":"2017-09-04 12:44:30","name1":108,"name2":108,"name3":108,"name4":108,"name5":108,"name6":108,"name7":108,"name8":108,"name9":108,"name10":108},
         {"no":1,"name":"2017-09-04 12:44:30","name1":107,"name2":108,"name3":108,"name4":108,"name5":108,"name6":108,"name7":108,"name8":108,"name9":108,"name10":108}
@@ -1297,13 +1304,15 @@
             memberForm:{
                 name:"",
                 sex:"0",
-                mobile :"",
+                mobile :"15827149648",
                 IdNumber:"",
                 birthday:"",
                 mobileCode:"",
                 codeBtn:"获取验证码",
                 remark:"",
-                disabled: false
+                disabled: false,
+                membershipIndex:"",
+                foodSelectedIndex:""
             },
             handle:{
 			},
@@ -1403,10 +1412,14 @@
             updateOrder:false,
             flwOrderId:"",
             orderIf:false,
-            orderList:[]
+            orderList:[],
+            registerCheckOut:false,
+            shopCheckOut:true,
+            registerCheckOutData:null
         },
         mounted: function () {
-            this.Initialize()
+            this.Initialize();
+            this.WebSocketTest()
         },
         directives: {
             focus: {
@@ -1528,7 +1541,14 @@
                 deep:true
 			},
             inputCash:function () {
-                var cashChange = this.inputCash - this.payCount;
+                var that = this;
+                for(var i =0;i<that.shopping.length;i++){
+                    if(that.shopping[i].typeName == "现金"){
+                       var payNum =that.shopping[i].payNum
+                    }
+                }
+                console.log(this.shopping);
+                var cashChange = this.inputCash - payNum*1;
                 this.cashChange = cashChange.toFixed(2);
             }
         },
@@ -1546,6 +1566,66 @@
                 $('.heightKz').height(heightkz);
 
             },
+//			websocket配置函数
+            WebSocketTest:function() {
+                var that =this;
+				if ("WebSocket" in window)
+				{
+					// 打开一个 websocket
+					ws.onopen = function() {
+						console.log("连接成功");
+						var msgType0 =JSON.stringify({"msgType":"0","sObj":{"userToken": that.userToken}});
+						function send(data)
+						{
+							console.log("Send:"+data);
+							ws.send(data);
+						}
+						send(msgType0);
+					};
+					ws.onmessage = function (evt)
+					{
+						console.log("接收成功");
+						var receivedMsg = JSON.parse(evt.data);
+						console.log(receivedMsg);
+						
+						if(receivedMsg.result_code == 1){
+						    switch (receivedMsg.answerMsgType){
+								case 1:                                              
+								    break;
+								case 2:                                   
+								    break;
+                                case 3:
+                                    break;
+								case "11":
+									that.icCardId =receivedMsg.dataObj.icCardId
+									$('#checkoutModal').modal('show');
+									that.inputCashFocus = true;
+									that.registerCheckOut = true;
+									that.shopCheckOut = false;
+									that.registerFnc()
+                                	break;
+                                default:
+								    break;
+							}
+						}else if(receivedMsg.result_code == 0) {
+							that.msg = receivedMsg.answerMsg
+                    		$('#myModal').modal('show');
+						}
+					};
+
+					ws.onclose = function()
+					{
+						// 关闭 websocket
+						alert("连接已关闭...");
+					};
+
+        }
+        else
+        {
+            // 浏览器不支持 WebSocket
+            alert("您的浏览器不支持 WebSocket!");
+        }
+    },
             inputFnc:function (inputValue) {
                 var that = this;
                 var isDot = false;
@@ -2008,6 +2088,7 @@
 //			会员入会（会员等级获取对应会员套餐）
             membershipFood:function (index) {
                 var that = this;
+
 				if(that.memberLevel[index].selected){
 				    that.memberFood =[];
 				    for(var i = 0;i<that.memberLevel.length;i++){
@@ -2017,6 +2098,7 @@
                     for(var i = 0;i<that.memberLevel.length;i++){
                         that.memberLevel[i].selected = false;
                     }
+                    that.memberForm.membershipIndex = index;
                     that.memberLevel[index].selected = true;
                     var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,memberLevelId:that.memberLevel[index].memberLevelId,storeId:that.storeId};
                     console.log(obj);
@@ -2057,6 +2139,7 @@
 //			选中会员入会套餐
             foodSelected:function (index) {
                 var that = this;
+
                 if(that.memberFood[index].selected){
                     for(var i = 0;i<that.memberFood.length;i++){
                         that.memberFood[i].selected = false;
@@ -2066,6 +2149,7 @@
                         that.memberFood[i].selected = false;
                     }
                     that.memberFood[index].selected = true;
+                    that.memberForm.foodSelectedIndex = index;
                 }
             },
 //			获取销售的函数
@@ -2172,6 +2256,112 @@
                     }
                 }
             },
+//          开卡
+            registerMember:function () {
+                var that = this;
+                if(that.memberForm.membershipIndex === "" || that.memberForm.foodSelectedIndex === "" || that.memberForm.mobile === ""){
+                    that.msg = "请先选择开卡和套餐,手机号为必填项！";
+                    $('#myModal').modal('show');
+                }else {
+					var msgType11 =JSON.stringify({"msgType":"11", "sObj": {"userToken": that.userToken}});
+                	ws.send(msgType11);
+                }
+
+            },
+			// 开卡函数
+			registerFnc:function(){
+				var that = this;
+				var registerData = that.memberFood[that.memberForm.foodSelectedIndex];
+                var buyDetail = [{foodId:registerData.foodId,category:"0",foodCount:"1",payType:"0",payNum:registerData.foodPrice}];
+                var buyDetails =JSON.stringify(buyDetail);
+                var openFee =  that.memberLevel[that.memberForm.membershipIndex].openFee;
+                openFee = openFee.toFixed(2);
+                console.log(1*registerData.foodPrice+(1*openFee));
+                var obj = {
+                    sysId: sysId,
+                    versionNo: versionNo,
+                    userToken: that.userToken,
+                    buyDetails: buyDetails,
+                    customerType: "1",
+                    mobile: "",
+                    memberLevelId: that.memberLevel[that.memberForm.membershipIndex].memberLevelId,
+                    icCardId: that.icCardId,
+                    payCount: 1*registerData.foodPrice+(1*openFee)+(1*that.memberLevel[that.memberForm.membershipIndex].deposit),
+                    foodCount: "1",
+                    deposit: that.memberLevel[that.memberForm.membershipIndex].deposit,
+                    openFee: openFee,
+                    workStation: "lijunjie",
+                    authorId: "0",
+                    note: "",
+                    orderSource: "0",
+                    saleCoinType: "1",
+                    scheduleId: 1,
+                    freePay: "0"
+                };
+                console.log(obj);
+                that.shopping = [{typeName:"现金",payNum:obj.payCount}];
+                axios.post('/xccloud/order?action=addOrder', obj).then(function (res) {	//创建开卡订单
+                    console.log(res.data);
+                    that.msgPrompt(res.data);
+                    if (res.data.result_code === '1') {
+                        var registerMEmber = [{
+                                mobile:that.memberForm.mobile,
+                                wechatOpenId:"",
+                                alipayOpenId:"",
+                                qq:"",
+                                imme:"",
+                                cardShape:"0",
+                                userName:that.memberForm.name,
+                                userPassword:"888888",
+                                gender:that.memberForm.sex,
+                                birthday:that.memberForm.birthday,
+                                idCard:that.memberForm.IdNumber,
+                                eMail:"",
+                                photo:"",
+                                icCardId:that.icCardId,
+                                note:that.memberForm.remark,
+                                mobileCode:that.memberForm.mobileCode
+                            }];
+                        var registerMemberJson =JSON.stringify(registerMEmber);
+                        that.registerCheckOutData ={flwOrderId:res.data.result_data.orderFlwId,registerMemberJson:registerMemberJson}
+                    }
+                }).catch(function (err) {
+                    console.log(err);
+                });
+			},
+//          开卡结账
+            registerCheckBtn:function () {
+                var that = this;
+                console.log(that.registerCheckOutData);
+                var ojb = [{
+                    userToken:that.userToken,
+                    registerMemberJson:that.registerCheckOutData.registerMemberJson,
+                    workStationId:"3",
+                    flwOrderId:that.registerCheckOutData.flwOrderId,
+                    mobile:"",
+                    realPay:that.shopping[0].payNum,
+                    payType:"0"
+                }];
+                console.log(ojb);
+                axios.post('/xccloud/order?action=payOrder', ojb).then(function (res) {
+                    console.log(res.data);
+                    that.msgPrompt(res.data);
+                    if (res.data.result_code === '1') {
+						var registerJson={sysId: sysId,versionNo: versionNo,userToken:that.userToken ,flwOrderId:that.registerCheckOutData.flwOrderId,registerMemberJson:that.registerCheckOutData.registerMemberJson};
+						console.log(registerJson);
+						axios.post('/xccloud/order?action=saveRegisterMember', registerJson).then(function (res) {
+							console.log(res.data);
+							that.msgPrompt(res.data);
+							if (res.data.result_code === '1') {
+                                }
+                            }).catch(function (err) {
+                                console.log(err);
+                            })
+                    }
+                }).catch(function (err) {
+                    console.log(err);
+                })
+            },
 //			产品详情
             details:function(index,category){
                 var that = this;
@@ -2207,9 +2397,9 @@
 					 
                       setTimeout("detailTime("+index_+")",10);
 				  }
-			  }).catch(function (err) {
-				  console.log(err);
-			  });
+                }).catch(function (err) {
+                    console.log(err);
+                });
 			},
 //			产品标题筛选
             screening:function (index) {		//saleTitle(标题函数)
@@ -2228,7 +2418,7 @@
                         }
                         break;
                     case 0:
-//                        that.treeShow = true;
+                        that.treeShow = true;
                         index++;
 //                        that.$nextTick(function () {
 //                            $('.tree li:has(ul)').addClass('parent_li').find(' > span').attr('title', 'Collapse this branch');
@@ -2398,16 +2588,7 @@
             replacement:function () {
 				this.memberLevel = [];
 				this.memberFood = [];
-				this.memberForm = {		name:"",
-										sex:"0",
-										mobile :"",
-										IdNumber:"",
-										birthday:"",
-										mobileCode:"",
-										codeBtn:"获取验证码",
-										remark:"",
-										disabled: false
-									};
+				this.memberForm = {	name:"",sex:"0",mobile :"",IdNumber:"",birthday:"",mobileCode:"",codeBtn:"获取验证码",remark:"",disabled: false,membershipIndex:"",foodSelectedIndex:""};
                 this.onSwitch0 = false;
                 this.onSwitch1 = false;
                 this.onSwitch2 = false;
@@ -2697,6 +2878,9 @@
             return value;
         }
     }
+    //WebSocket
+
+
 </script>
 </body>
 </html>

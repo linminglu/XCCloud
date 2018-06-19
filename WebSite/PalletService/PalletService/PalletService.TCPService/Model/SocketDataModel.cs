@@ -82,7 +82,7 @@ namespace PalletService.TCPService.Model
         /// <summary>
         /// 数据内容
         /// </summary>
-        [DataMember(Name = "data", Order = 4)]
+        [DataMember(Name = "dataObj", Order = 4)]
         public TDataObject Data { set; get; }
     }
 

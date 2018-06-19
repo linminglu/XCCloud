@@ -289,13 +289,14 @@
     <Content Include="Imgs\masterEmv.jpg" />
     <Content Include="index.html" />
     <Content Include="login.html" />
+    <Content Include="MobileWeb\about.html" />
     <Content Include="MobileWeb\accredit.html" />
     <Content Include="MobileWeb\billList.html" />
     <Content Include="MobileWeb\css\ydui.rem.css" />
     <Content Include="MobileWeb\CurrencyOperation.html" />
+    <Content Include="MobileWeb\entrance.html" />
     <Content Include="MobileWeb\games.html" />
     <Content Include="MobileWeb\home.html" />
-    <Content Include="MobileWeb\hTest.html" />
     <Content Include="MobileWeb\images\account.png" />
     <Content Include="MobileWeb\images\addpic.png" />
     <Content Include="MobileWeb\images\b.png" />
@@ -318,6 +319,7 @@
     <Content Include="MobileWeb\images\star_green.png" />
     <Content Include="MobileWeb\images\vip.png" />
     <Content Include="MobileWeb\images\welfare.png" />
+    <Content Include="MobileWeb\index.html" />
     <Content Include="MobileWeb\js\axios.min.js" />
     <Content Include="MobileWeb\js\jquery-1.8.3-min.js" />
     <Content Include="MobileWeb\js\vue.js" />
@@ -326,8 +328,10 @@
     <Content Include="MobileWeb\login.html" />
     <Content Include="MobileWeb\mall.html" />
     <Content Include="MobileWeb\mine.html" />
+    <Content Include="MobileWeb\mineCard.html" />
     <Content Include="MobileWeb\MyOrder.html" />
     <Content Include="MobileWeb\test.html" />
+    <Content Include="MobileWeb\tiedCard.html" />
     <Content Include="OrderPayCallback\AlipayCallBack.aspx" />
     <Content Include="OrderPayCallback\DinPayCallBack.aspx" />
     <Content Include="OrderPayCallback\LCSWPayCallBack.aspx" />

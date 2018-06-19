@@ -39,6 +39,7 @@ using XCCloudService.BLL.IBLL.XCCloud;
 using XCCloudService.BLL.Container;
 using XCCloudService.Model.CustomModel.XCGame;
 using XCCloudService.Business.XCCloud;
+using XCCloudService.Model.WeiXin;
 
 namespace XXCloudService.Api
 {
@@ -658,80 +659,136 @@ namespace XXCloudService.Api
         /// </summary>
         /// <param name="dicParas"></param>
         /// <returns></returns>
-        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCGameMemberOrMobileToken)]
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.MethodToken)]
         public object getPposWxPay(Dictionary<string, object> dicParas)
         {
             try
             {
-                int coins = 0;
-                string orderNo = string.Empty;
-                string errMsg = string.Empty;
-                string mobileToken = dicParas.ContainsKey("mobileToken") ? dicParas["mobileToken"].ToString() : string.Empty;
-                string openId = dicParas.ContainsKey("openid") ? dicParas["openId"].ToString() : string.Empty;
-                string storeId = dicParas.ContainsKey("storeId") ? dicParas["storeId"].ToString() : string.Empty;
-                string productName = dicParas.ContainsKey("productName") ? dicParas["productName"].ToString() : string.Empty;
-                string payPriceStr = dicParas.ContainsKey("payPrice") ? dicParas["payPrice"].ToString() : string.Empty;
-                string buyType = dicParas.ContainsKey("buyType") ? dicParas["buyType"].ToString() : string.Empty;
-                string coinsStr = dicParas.ContainsKey("coins") ? dicParas["coins"].ToString() : string.Empty;
+                string token = dicParas.ContainsKey("token") ? dicParas["token"].ToString().Trim() : string.Empty;
+                string deviceToken = dicParas.ContainsKey("deviceToken") ? dicParas["deviceToken"].ToString().Trim() : "";
+                string coinType = dicParas.ContainsKey("coinType") ? dicParas["coinType"].ToString().Trim() : string.Empty;//投币方式 0 散客 1 会员
+                string coinRuleId = dicParas.ContainsKey("coinRuleId") ? dicParas["coinRuleId"].ToString().Trim() : string.Empty;
 
-                string memberToken = dicParas.ContainsKey("membertoken") ? dicParas["membertoken"].ToString() : string.Empty;
-                string deviceToken = dicParas.ContainsKey("deviceToken") ? dicParas["deviceToken"].ToString() : string.Empty;
-                string strFoodId = dicParas.ContainsKey("foodid") ? dicParas["foodid"].ToString() : string.Empty;
-
-                decimal payPrice = 0;
-                if (!decimal.TryParse(payPriceStr, out payPrice))
+                if (string.IsNullOrEmpty(deviceToken))
                 {
-                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "支付金额不正确");
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "设备令牌无效");
                 }
 
-                if (!int.TryParse(coinsStr, out coins))
+                MemberTokenModel memberTokenModel = MemberTokenCache.GetModel(token);
+                if (memberTokenModel == null)
                 {
-                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "购买币数不正确");
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "用户令牌无效，请重新登陆");
                 }
 
-                int foodId = 0;
-                if (!int.TryParse(strFoodId, out foodId))
-                {
-                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "套餐编号不正确");
-                }
-
-                XCGameMemberTokenModel memberTokenModel = (XCGameMemberTokenModel)(dicParas[Constant.XCGameMemberTokenModel]);
-                string mobile = memberTokenModel.Mobile;
-                //XCGameMemberTokenModel memberTokenModel = null;
-                //MobileTokenModel mobileTokenModel = null;
-                //if (!string.IsNullOrWhiteSpace(deviceToken))
+                //Base_MemberInfo member = Base_MemberInfoService.I.GetModels(t => t.ID == memberTokenModel.MemberId).FirstOrDefault();
+                //if (member == null)
                 //{
-                //    memberTokenModel = (XCGameMemberTokenModel)(dicParas[Constant.XCGameMemberTokenModel]);
-                //    mobile = memberTokenModel.Mobile;
+                //    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "用户令牌无效，请重新登陆");
                 //}
-                //else
-                //{
-                //    mobileTokenModel = (MobileTokenModel)(dicParas[Constant.MobileTokenModel]);
-                //    mobile = mobileTokenModel.Mobile;
-                //}                
 
-                //生成服务器订单号
-                orderNo = PayOrderHelper.CreateXCGameOrderNo(storeId, payPrice, 0, (int)(OrderType.WeiXin), productName, mobile, buyType, coins);
+                Base_DeviceInfo device = Base_DeviceInfoService.I.GetModels().FirstOrDefault(t => t.Token == deviceToken);
+                if (device == null)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "设备令牌无效");
+                }
+                if (!string.IsNullOrEmpty(memberTokenModel.CurrStoreId) && memberTokenModel.CurrStoreId != device.StoreID)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "当前门店与设备所属门店不符，请先选择门店");
+                }
+
+                Data_GameInfo game = Data_GameInfoService.I.GetModels(t => t.ID == device.GameIndexID).FirstOrDefault();
+                if (game == null)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "游戏机不存在");
+                }
+
+                //付款方式 0 现金 1 微信 2 支付宝 3 银联 4 储值金
+                int PayType = 1;
+                int OrderSource = 1; //订单来源 1 自助机
+                decimal PayCount = 0m; //应付金额
+                decimal FreePay = 0m; //减免金额
+
+                string coinNote = string.Empty;
+
+                int currCoinRuleId = 0;
+                if (!int.TryParse(coinRuleId, out currCoinRuleId))
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "参数错误，请重试");
+                }
+                if(coinType == "0")
+                {
+                    //散客扫码支付
+                    Data_GameAPP_Rule coinRule = Data_GameAPP_RuleService.I.GetModels(t => t.ID == currCoinRuleId).FirstOrDefault();
+                    PayCount = coinRule.PayCount.Value;
+                    coinNote = string.Format("{0}元{1}局", PayCount, coinRule.PlayCount);
+                }
+                else
+                {
+                    #region 会员投币
+                    //散客扫码支付
+                    Data_GameAPP_MemberRule coinRule = Data_GameAPP_MemberRuleService.I.GetModels(t => t.ID == currCoinRuleId).FirstOrDefault();
+                    if (coinRule.PushCoin1 > 0)
+                    {
+                        CardBalance currBalance = memberTokenModel.CurrentCardInfo.CardBalanceList.FirstOrDefault(t => t.BalanceIndex == coinRule.PushBalanceIndex1);
+                        if (currBalance.Quantity < coinRule.PushCoin1)
+                        {
+                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, string.Format("{0}余额不足，请充值", currBalance.BalanceName));
+                        }
+                    }
+                    if (coinRule.PushCoin2 > 0)
+                    {
+                        CardBalance currBalance = memberTokenModel.CurrentCardInfo.CardBalanceList.FirstOrDefault(t => t.BalanceIndex == coinRule.PushBalanceIndex2);
+                        if (currBalance.Quantity < coinRule.PushCoin2)
+                        {
+                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, string.Format("{0}余额不足，请充值", currBalance.BalanceName));
+                        }
+                    }
+                    //会员投币 
+                    #endregion
+                }
+
+                Flw_Order order = new Flw_Order();
+                order.ID = RedisCacheHelper.CreateCloudSerialNo(device.StoreID);
+                order.StoreID = device.StoreID;
+                order.OrderID = RedisCacheHelper.CreateCloudSerialNo(device.StoreID);
+                order.FoodCount = 1;
+                order.GoodCount = 0;
+                order.MemberID = memberTokenModel.MemberId;
+                order.CardID = memberTokenModel.CurrentCardInfo.CardId;
+                order.OrderSource = OrderSource;
+                order.CreateTime = DateTime.Now;
+                order.PayType = PayType;
+                order.PayCount = PayCount;
+                order.FreePay = FreePay;
+                order.OrderStatus = 1; //待支付
+                order.Note = "手机扫码直接支付";
+
+                bool ret = Flw_OrderService.I.Add(order, false);
+                if(!ret)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "生成订单失败");
+                }
+
 
 
                 #region 新大陆微信公众号支付
                 string error = "";
                 PPosPayData.WeiXinPubPay pay = new PPosPayData.WeiXinPubPay();
 
-                pay.openid = openId;//在授权回调页面中获取到的授权code或者openid
+                pay.openid = token;//在授权回调页面中获取到的授权code或者openid
 
-                pay.amount = ((int)(payPrice * 100)).ToString();//实际付款
+                pay.amount = ((int)(PayCount * 100)).ToString();//实际付款
                 pay.total_amount = pay.amount;//订单总金额
-                pay.subject = CommonConfig.PayTitle + "-" + buyType;
-                pay.selOrderNo = orderNo;
-                pay.goods_tag = productName;
+                pay.subject = game.GameName + "-投币";
+                pay.selOrderNo = order.ID;
+                pay.goods_tag = coinNote;
 
                 PPosPayApi ppos = new PPosPayApi();
                 PPosPayData.WeiXinPubPayACK ack = new PPosPayData.WeiXinPubPayACK();
                 PPosPayData.WeiXinPubPayACK result = ppos.PubPay(pay, ref ack, out error);
                 if (result == null)
                 {
-                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "支付失败，" + error);
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "生成订单失败，" + error);
                 }
                 #endregion
 
@@ -744,15 +801,15 @@ namespace XXCloudService.Api
                 model.package = result.apiPackage;
                 model.paySign = result.apiPaysign;
 
-                //将订单相关的设备、套餐信息加入到缓存，用于在收不到回调的时候发起主动查询
-                OrderUnpaidModel UnpaidOrder = new OrderUnpaidModel();
-                UnpaidOrder.OrderId = orderNo;
-                UnpaidOrder.DeviceToken = deviceToken;
-                UnpaidOrder.FoodId = foodId;
-                UnpaidOrder.MemberTokenModel = memberTokenModel;
-                UnpaidOrder.OpenId = openId;
-                UnpaidOrder.CreateTime = DateTime.Now;
-                UnpaidOrderList.AddNewItem(UnpaidOrder);
+                ////将订单相关的设备、套餐信息加入到缓存，用于在收不到回调的时候发起主动查询
+                //OrderUnpaidModel UnpaidOrder = new OrderUnpaidModel();
+                //UnpaidOrder.OrderId = orderNo;
+                //UnpaidOrder.DeviceToken = deviceToken;
+                //UnpaidOrder.FoodId = foodId;
+                //UnpaidOrder.MemberTokenModel = memberTokenModel;
+                //UnpaidOrder.OpenId = openId;
+                //UnpaidOrder.CreateTime = DateTime.Now;
+                //UnpaidOrderList.AddNewItem(UnpaidOrder);
 
                 return ResponseModelFactory<PposPubSigPay>.CreateModel(isSignKeyReturn, model);
             }

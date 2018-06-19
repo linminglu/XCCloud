@@ -51,6 +51,11 @@ namespace XXCloudService.Api.XCCloudH5
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "设备令牌无效");
                 }
+                if (!string.IsNullOrEmpty(model.CurrStoreId) && model.CurrStoreId != device.StoreID)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "当前门店与设备所属门店不符，请先选择门店");
+                }
+
                 string storeId = device.StoreID;
 
                 //获取默认电子卡开卡级别
@@ -224,13 +229,15 @@ namespace XXCloudService.Api.XCCloudH5
                         gameInfo.GameCoinList = Data_GameAPP_RuleService.I.GetModels(t => t.GameID == device.GameIndexID && t.StoreID == device.StoreID)
                             .Select(t => new
                             {
+                                CoinRuleId = t.ID,
                                 PlayCount = t.PlayCount,
                                 Amount = t.PayCount
                             }).ToList().Select(t => new GameCoinInfo
                             {
+                                CoinRuleId = t.CoinRuleId,
                                 PlayCount = t.PlayCount.Value,
                                 Amount = t.Amount.Value.ToString("0.00")
-                            }).ToList();
+                            }).OrderBy(t => t.PlayCount).ToList();
                     }
                 }
                 else

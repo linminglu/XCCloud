@@ -3,82 +3,39 @@
 <head>
 	<meta charset="utf-8">
 	<title>iview example</title>
-	<link rel="stylesheet" type="text/css" href="http://unpkg.com/iview/dist/styles/iview.css">
-	<script type="text/javascript" src="http://v1.vuejs.org/js/vue.min.js"></script>
-	<script type="text/javascript" src="http://unpkg.com/iview@1.0.1/dist/iview.min.js"></script>
 </head>
 <body>
 <div id="app">
-	<Tree :data="data1" @on-select-change="show"></Tree>
-	<!--<Row>-->
-		<!--<i-col span="12">col-12</i-col>-->
-		<!--<i-col span="12">col-12</i-col>-->
-	<!--</Row>-->
-	<!--<br>-->
-	<!--<Row>-->
-		<!--<i-col span="8">col-8</i-col>-->
-		<!--<i-col span="8">col-8</i-col>-->
-		<!--<i-col span="8">col-8</i-col>-->
-	<!--</Row>-->
-	<!--<Poptip placement="top" width="400">-->
-		<!--<a type="ghost" style="width: 1000px;">mmpmppmpmppmpmpmpmpmpmpmpmpmpmpmpmpmpmpppmpppmmp</a>-->
-		<!--<div class="api" slot="content">-->
-			<!--<p style="text-align: center">{{contentText1}}</p>-->
-		<!--</div>-->
-	<!--</Poptip>-->
-	<!--<Poptip placement="top" width="400">-->
-		<!--<i-button type="ghost">Click</i-button>-->
-		<!--<div class="api" slot="content">-->
-			<!--<p>{{contentText2}}</p>-->
-		<!--</div>-->
-	<!--</Poptip>-->
+	<input type="text" v-model="inputValue">
+	<button @click="handleSubmit">提交</button>
+	<ul>
+		<list v-for="(item,index) in testList" :key="index" :content="item" :index="index" @delete="handleDelete"></list>
+	</ul>
 </div>
+<script src="js/vue.js"></script>
 <script>
+    Vue.component('list', {
+        props:["content","index"],
+        template:"<li @click='handleClick'>{{content}}</li>",
+		methods:{
+            handleClick:function () {
+				this.$emit("delete",this.index)
+            }
+		}
+    });
     new Vue({
         el: '#app',
         data: {
-            contentText1:"545456156456563455",
-            contentText2:"ajhahsjkshkhskjs",
-            data1: [
-                {
-                    title: '全部',
-                    expand: true,
-                    children: [
-                        {
-                            id:"ticket",
-                            title: '门票',
-                            expand: true,
-                            children: [
-                                {
-                                    title: 'leaf 1-1-1'
-                                },
-                                {
-                                    title: 'leaf 1-1-2'
-                                }
-                            ]
-                        },
-                        {
-                            id:"good",
-                            title: '商品',
-                            expand: true,
-                            children: [
-                                {
-                                    id:1,
-                                    title: 'leaf 1-2-1'
-                                },
-                                {
-                                    id:2,
-                                    title: 'leaf 1-2-1'
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
+            inputValue:"",
+            testList:[]
         },
         methods: {
-            show: function (arr) {
-                console.log(arr);
+            handleSubmit:function () {
+				this.testList.push(this.inputValue);
+				this.inputValue = "";
+            },
+            handleDelete:function (index) {
+                this.testList.splice(index,1)
             }
         }
     })

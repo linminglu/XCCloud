@@ -19,6 +19,7 @@ namespace XCCloudService.Model.XCCloud
         public string OrderID { get; set; }
         public Nullable<int> FoodCount { get; set; }
         public Nullable<int> GoodCount { get; set; }
+        public string MemberID { get; set; }
         public string CardID { get; set; }
         public Nullable<int> OrderSource { get; set; }
         public Nullable<System.DateTime> CreateTime { get; set; }
@@ -36,5 +37,10 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> SettleFlag { get; set; }
         public string Note { get; set; }
         public Nullable<decimal> PayFee { get; set; }
+        public string OrderNumber { get; set; }
+        public Nullable<decimal> ExitPrice { get; set; }
+        public Nullable<decimal> ExitFee { get; set; }
+        public Nullable<System.DateTime> ExitTime { get; set; }
+        public string Verification { get; set; }
     }
 }

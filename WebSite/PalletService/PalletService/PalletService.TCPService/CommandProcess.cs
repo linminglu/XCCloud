@@ -277,19 +277,26 @@ namespace PalletService.TCPService
                 return;
             }
 
-            object result_data = null;
             
             //读取IC卡信息
             if (ICCardUtility.GetICCardID(storePassword,out icCardId,out repeatCode, out errMsg))
             {
-                if (MemberBusiness.GetMember(userToken, sendObj.StoreId, icCardId, ref result_data, out errMsg))
-                {
-                    SendSuccessData(answerMsgType, sessionPool, sendIP, "读取会员信息成功", result_data);
-                }
-                else
-                {
-                    SendFailData(answerMsgType, sessionPool, sendIP, errMsg);
-                }      
+                var obj = new {
+                    icCardId = icCardId,
+                    repeatCode = repeatCode
+                };
+
+                SendSuccessData(answerMsgType, sessionPool, sendIP, "读取会员卡成功", obj);
+
+
+                //if (MemberBusiness.GetMember(userToken, sendObj.StoreId, icCardId, ref result_data, out errMsg))
+                //{
+                //    SendSuccessData(answerMsgType, sessionPool, sendIP, "读取会员信息成功", result_data);
+                //}
+                //else
+                //{
+                //    SendFailData(answerMsgType, sessionPool, sendIP, errMsg);
+                //}      
             }
             else
             {
@@ -299,7 +306,6 @@ namespace PalletService.TCPService
 
         public static void CreateICCard(string msg, Dictionary<string, Session> sessionPool, string sendIP)
         {
-            string sRepeatCode = (new Random()).Next(0,255).ToString();
             string receiveIP = string.Empty;
             string dogId = string.Empty;
             string storePassword = string.Empty;
@@ -307,10 +313,10 @@ namespace PalletService.TCPService
             string errMsg = string.Empty;
             string answerMsgType = Convert.ToInt32(TCPMessageType.办理新IC卡).ToString();
             //解析消息对象
-            SocketDataModel<UserSendObject, MemberRegisterModel> socketDataModel = Utils.DataContractJsonDeserializer<SocketDataModel<UserSendObject, MemberRegisterModel>>(msg);
+            SocketDataModel<UserSendObject, MemberOpenCardModel> socketDataModel = Utils.DataContractJsonDeserializer<SocketDataModel<UserSendObject, MemberOpenCardModel>>(msg);
             UserSendObject sendObj = socketDataModel.SendObject;
-            MemberRegisterModel memberRegisterModel = (MemberRegisterModel)(socketDataModel.Data);
-            newICCardId = memberRegisterModel.ICCardId;
+            MemberOpenCardModel memberOpenCardModel = (MemberOpenCardModel)(socketDataModel.Data);
+            newICCardId = memberOpenCardModel.ICCardId;
             //接受信息方是否存在
             if (!GetIP(sessionPool, sendObj.UserToken, out receiveIP))
             {
@@ -327,27 +333,14 @@ namespace PalletService.TCPService
             //验证是否可以办卡
             if (ICCardUtility.CheckNullCard(storePassword))
             {
-                if (MemberBusiness.CheckMemberCanRegister(userToken, memberRegisterModel.StoreId, memberRegisterModel.Mobile, out errMsg))
+                //办理新卡
+                if (ICCardUtility.CreateICCard(newICCardId, memberOpenCardModel.RepeatCode, storePassword, out errMsg, true))
                 {
-                    //办理新卡
-                    if (ICCardUtility.CreateICCard(newICCardId, sRepeatCode, storePassword, out errMsg, true))
-                    {
-                        memberRegisterModel.RepeatCode = sRepeatCode;
-                        object result_data = null;
-                        int repeatCode = 0;
-                        if (MemberBusiness.MemberRegister(memberRegisterModel,out repeatCode,out errMsg,ref result_data))
-                        {
-                            SendSuccessData(answerMsgType, sessionPool, sendIP, "会员卡开通成功", result_data);
-                        }
-                        else
-                        {
-                            SendFailData(answerMsgType, sessionPool, sendIP, errMsg);
-                        }
-                    }
-                    else
-                    {
-                        SendFailData(answerMsgType, sessionPool, sendIP, errMsg);
-                    }
+                    var obj = new {
+                        icCardId = newICCardId,
+                        repeatCode = memberOpenCardModel.RepeatCode
+                    };
+                    SendSuccessData(answerMsgType, sessionPool, sendIP, "开通会员卡成功", obj);
                 }
                 else
                 {
@@ -360,6 +353,54 @@ namespace PalletService.TCPService
             }
         }
 
+
+        public static void GetNewICCard(string msg, Dictionary<string, Session> sessionPool, string sendIP)
+        {
+            string receiveIP = string.Empty;
+            string dogId = string.Empty;
+            string storePassword = string.Empty;
+            string newICCardId = string.Empty;
+            string errMsg = string.Empty;
+            string answerMsgType = Convert.ToInt32(TCPMessageType.读取新卡).ToString();
+            //解析消息对象
+            SocketDataModel<UserSendObject> socketDataModel = Utils.DataContractJsonDeserializer<SocketDataModel<UserSendObject>>(msg);
+            UserSendObject sendObj = socketDataModel.SendObject;
+            //接受信息方是否存在
+            if (!GetIP(sessionPool, sendObj.UserToken, out receiveIP))
+            {
+                SendFailData(answerMsgType, sessionPool, sendIP, "用户未注册");
+                return;
+            }
+            //获取店密码接口
+            string userToken = sendObj.UserToken;
+            if (!StoreBusiness.GetStorePassword(userToken, out storePassword, out errMsg))
+            {
+                SendFailData(answerMsgType, sessionPool, sendIP, "获取门店信息出错");
+                return;
+            }
+            //ReadNewICCard
+            string icCardId = string.Empty;
+            string repeatCode = string.Empty;
+            if (!ICCardUtility.ReadNewICCard(storePassword, out icCardId, out repeatCode, out errMsg, false, true))
+            {
+                //SendFailData(answerMsgType, sessionPool, sendIP, errMsg);
+                var obj = new
+                {
+                    icCardId = icCardId,
+                    repeatCode = repeatCode
+                };
+                SendFailData(answerMsgType, sessionPool, sendIP, "已开卡", obj);
+                return;
+            }
+            else
+            {
+                var obj = new { 
+                    icCardId = icCardId,
+                    repeatCode = repeatCode      
+                };
+                SendSuccessData(answerMsgType, sessionPool, sendIP, "新卡", obj);
+            }
+        }
 
         public static void ExitICCard(string msg, Dictionary<string, Session> sessionPool, string sendIP)
         {
@@ -444,6 +485,32 @@ namespace PalletService.TCPService
                 answerMsg = errMsg,
             };
             SendData(msgObj, sessionPool, sendIP);
+        }
+
+
+        private static void SendFailData(string answerMsgType, Dictionary<string, Session> sessionPool, string sendIP, string answerMsg, object dataObj)
+        {
+            if (dataObj == null)
+            {
+                var msgObj = new
+                {
+                    result_code = 0,
+                    answerMsgType = answerMsgType,
+                    answerMsg = answerMsg
+                };
+                SendData(msgObj, sessionPool, sendIP);
+            }
+            else
+            {
+                var msgObj = new
+                {
+                    result_code = 0,
+                    answerMsgType = answerMsgType,
+                    answerMsg = answerMsg,
+                    dataObj = dataObj
+                };
+                SendData(msgObj, sessionPool, sendIP);
+            }
         }
 
         private static void SendSuccessData(string answerMsgType, Dictionary<string, Session> sessionPool, string sendIP, string answerMsg,object dataObj)

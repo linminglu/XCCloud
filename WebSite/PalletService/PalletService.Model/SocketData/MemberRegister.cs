@@ -66,4 +66,14 @@ namespace PalletService.Model.SocketData
         [DataMember(Name = "saleCoinType", Order = 16)]
         public int SaleCoinType { set; get; }
     }
+
+    [DataContract]
+    public class MemberOpenCardModel
+    {
+        [DataMember(Name = "icCardId", Order = 1)]
+        public string ICCardId { set; get; }
+
+        [DataMember(Name = "repeatCode", Order = 2)]
+        public string RepeatCode { set; get; }
+    }
 }

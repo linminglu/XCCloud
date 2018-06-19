@@ -310,6 +310,7 @@ namespace XXCloudService.Api.XCCloud
             TokenDataModel userTokenDataModel = (TokenDataModel)(userTokenModel.DataModel);
             string flwOrderId = dicParas.ContainsKey("flwOrderId") ? dicParas["flwOrderId"].ToString() : string.Empty;
             string registerMemberJson = dicParas.ContainsKey("registerMemberJson") ? dicParas["registerMemberJson"].ToString() : string.Empty;
+            string smsCode = dicParas.ContainsKey("smsCode") ? dicParas["smsCode"].ToString() : string.Empty;
             RegisterMember registerMember = Utils.DataContractJsonDeserializer<RegisterMember>(registerMemberJson);
             if (FlwMemberRegisterBusiness.Exist(flwOrderId))
             {
@@ -680,6 +681,7 @@ namespace XXCloudService.Api.XCCloud
             string mobile = dicParas.ContainsKey("mobile") ? dicParas["mobile"].ToString() : string.Empty;
             string realPay = dicParas.ContainsKey("realPay") ? dicParas["realPay"].ToString() : string.Empty;
             string payType = dicParas.ContainsKey("payType") ? dicParas["payType"].ToString() : string.Empty;
+            
 
             XCCloudUserTokenModel userTokenModel = (XCCloudUserTokenModel)(dicParas[Constant.XCCloudUserTokenModel]);
             TokenDataModel userTokenDataModel = (TokenDataModel)(userTokenModel.DataModel);
@@ -732,7 +734,7 @@ namespace XXCloudService.Api.XCCloud
             }
             else
             {
-                return new ResponseModel(Return_Code.T, "", Result_Code.F, sqlParameter[7].Value.ToString());
+                return new ResponseModel(Return_Code.T, "", Result_Code.F, sqlParameter[8].Value.ToString());
             }
         }
 

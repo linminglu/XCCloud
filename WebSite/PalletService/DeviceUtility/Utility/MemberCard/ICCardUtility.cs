@@ -1034,5 +1034,139 @@ namespace DeviceUtility.Utility.MemberCard
             return false;
         }
 
+
+        public static bool GetNewICCard(string storePassword, out string icCardId, out string errMsg)
+        {
+            string sICCardID = string.Empty;
+            string repeatCode = string.Empty;
+            bool isCreate = false;
+            bool isBeep = false;
+            icCardId = string.Empty;
+            errMsg = string.Empty;
+
+            if (!ICCardUtility.ReadNewICCard(storePassword, out sICCardID, out repeatCode, out errMsg, isBeep, true))
+            {
+                return false;
+            }
+
+            if (IsValidCardNo(sICCardID))
+            {
+                try
+                {
+                    string sRepeatCode = Convert.ToInt32(sICCardID.Substring(8), 16).ToString();
+                    sICCardID = sICCardID.Substring(0, 8);
+                    int iICCardID = 0;
+                    if (ICCardUtility.isNumberic(sICCardID, out iICCardID))
+                    {
+                        icCardId = iICCardID.ToString();
+                    }
+                    else
+                    {
+                        icCardId = sICCardID;
+                    }
+                    return true;
+                }
+                catch
+                {
+                    errMsg = "读取卡片出错";
+                    return false;
+                }
+            }
+            else
+            {
+                errMsg = sICCardID;
+                return false;
+            }
+
+            return true;
+        }
+
+        public static bool ReadNewICCard(string storePassword, out string icCardId, out string repeatCode, out string errMsg, bool isBeep = true, bool isCreate = true)
+        {
+            string checkStr = "";
+            icCardId = string.Empty;
+            repeatCode = string.Empty;
+            errMsg = string.Empty;
+
+            int icdev = 0;
+            try
+            {
+                icdev = ICCardUtility.IC_InitComm(100); //初始化usb  
+                checkStr = check(icdev, isBeep);  //基本检查
+                if (!checkStr.Equals("ok"))
+                {
+                    errMsg = checkStr;
+                    return false;
+                }
+
+                short st = 0;
+
+                //开新卡
+                if (isCreate)
+                {
+                    st = ICCardUtility.IC_CheckPass_4442hex(icdev, ICPass, secnr_index_ic);
+                    if (st != 0)
+                    {
+                        errMsg = "提示：无法读取IC卡信息。";
+                        return false;
+                    }
+
+                    StringBuilder data = new StringBuilder();
+                    st = ICCardUtility.IC_Read_hex(icdev, 1, len - 1, data); //新卡块4无卡号,改为读块1的原始卡号
+                    if (st == 0)
+                    {
+                        icCardId = data.ToString().Substring(0, len - 1);
+                        repeatCode = new Random().Next(100, 999).ToString();
+
+                        if (!CheckNullCard(storePassword))
+                        {
+                            return false;
+                        }
+
+                        return true;
+                    }
+                }
+                else
+                {
+                    st = ICCardUtility.IC_CheckPass_4442hex(icdev, ICPass_one, secnr_index);
+                    if (st == 0)
+                    {
+                        return true;
+                    }
+                    st = ICCardUtility.IC_CheckPass_4442hex(icdev, storePassword, secnr_index);
+                    if (st != 0)
+                    {
+                        errMsg = "提示：无法通过密码校验，可能不是本店的卡。";
+                        return false;
+                    }
+
+                    byte[] data = new byte[len];
+                    st = ICCardUtility.IC_Read(icdev, ic_postion, len, data);
+                    if (st == 0)
+                    {
+                        byte[] b1 = new byte[len - 1];
+                        Array.Copy(data, b1, b1.Length);
+                        byte b2 = data[len - 1];
+                        string s = Encoding.ASCII.GetString(b1) + b2.ToString("X2");
+                        repeatCode = Convert.ToInt32(s.Substring(8), 16).ToString();
+                        string sICCardID = s.Substring(0, 8).Replace("\0", "");
+                        icCardId = s;
+                        return true;
+
+                    }
+                }
+                errMsg = "提示：无法读取IC卡信息。";
+                return false;
+            }
+            finally
+            {
+                ICCardUtility.IC_Down(icdev);
+                ICCardUtility.IC_ExitComm(icdev);
+            }
+
+        }
+
+
+
     }
 }

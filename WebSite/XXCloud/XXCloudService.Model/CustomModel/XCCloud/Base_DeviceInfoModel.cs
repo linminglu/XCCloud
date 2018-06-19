@@ -69,6 +69,8 @@ namespace XCCloudService.Model.CustomModel.XCCloud
 
     public class GameCoinInfo
     {
+        public int CoinRuleId { get; set; }
+
         public int PlayCount { get; set; }
 
         public string Amount { get; set; }

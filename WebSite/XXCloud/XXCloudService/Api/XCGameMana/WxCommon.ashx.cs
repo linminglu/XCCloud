@@ -51,9 +51,9 @@ namespace XXCloudService.Api.XCGameMana
         }
         #endregion
 
-        #region 获取微信H5配置
+        #region 获取微信access_token配置
         /// <summary>
-        /// 获取微信H5配置
+        /// 获取微信access_token
         /// </summary>
         /// <param name="dicParas"></param>
         /// <returns></returns>

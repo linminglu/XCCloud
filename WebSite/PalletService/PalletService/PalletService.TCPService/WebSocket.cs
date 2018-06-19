@@ -223,6 +223,7 @@ namespace PalletService.SocketService
                 case (int)(TCPMessageType.打印小票): CommandProcessHandler.Print(msg, SessionPool, IP); break;
                 case (int)(TCPMessageType.出币): CommandProcessHandler.Coin(msg, SessionPool, IP); break;
                 case (int)(TCPMessageType.读取加密狗和机器名): CommandProcessHandler.GetDogIdAndMachineName(msg, SessionPool, IP); break;
+                case (int)(TCPMessageType.读取新卡): CommandProcessHandler.GetNewICCard(msg, SessionPool, IP); break;
             }
         }
 
