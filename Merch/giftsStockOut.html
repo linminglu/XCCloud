@@ -187,25 +187,26 @@
             let _data=obj.data;
             let layevent=obj.event;
             id=_data.ID;
-            if(layevent==='edit'){
-                let _obj={'id':_data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
-                let parseJson = JSON.stringify(_obj);
-                $.ajax({
-                    type:'post',
-                    url:'/XCCloud/GoodsInfo?action=GetGoodStorage',
-                    contentType: "application/json; charset=utf-8",
-                    data:{parasJson: parseJson},
-                    success: function (data) {
-                        data = JSON.parse(data);
-                        console.log(data);
-                        if (data.result_code == 1) {
-
-                        } else {
-                            layer.msg(data.result_msg);
-                        }
-                    }
-                })
-            }else if(layevent==='del'){      //删除
+//            if(layevent==='edit'){
+//                let _obj={'id':_data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+//                let parseJson = JSON.stringify(_obj);
+//                $.ajax({
+//                    type:'post',
+//                    url:'/XCCloud/GoodsInfo?action=GetGoodOutOrder',
+//                    contentType: "application/json; charset=utf-8",
+//                    data:{parasJson: parseJson},
+//                    success: function (data) {
+//                        data = JSON.parse(data);
+//                        console.log(data);
+//                        if (data.result_code == 1) {
+//
+//                        } else {
+//                            layer.msg(data.result_msg);
+//                        }
+//                    }
+//                })
+//            }else
+            if(layevent==='del'){      //删除
                 layer.confirm('确定删除此出库信息吗？', function(index){
                     let _obj={'id':_data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
                     let parseJson = JSON.stringify(_obj);
@@ -350,7 +351,7 @@
 </script>
 <script type="text/html" id="barDemo">
     {{# if(d.OrderType!=3){ }}
-    <a class="layui-btn layui-btn-xs" lay-event="edit"> <i class="layui-icon">&#xe642;</i>编辑</a>
+    <!--<a class="layui-btn layui-btn-xs" lay-event="edit"> <i class="layui-icon">&#xe642;</i>编辑</a>-->
     <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del"> <i class="layui-icon">&#xe642;</i>删除</a>
     <a class="layui-btn layui-btn-xs layui-bg-orange" lay-event="check"> <i class="layui-icon">&#xe642;</i>审核</a>
     {{# } }}
