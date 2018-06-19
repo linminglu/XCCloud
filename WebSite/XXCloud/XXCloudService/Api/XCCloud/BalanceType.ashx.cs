@@ -29,7 +29,7 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;             
 
                 var linq = from d in
                                (from a in Dict_BalanceTypeService.N.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.State == 1)
@@ -39,14 +39,14 @@ namespace XXCloudService.Api.XCCloud
                                 where e.DictKey == "关联类别"
                                 join b in Data_BalanceType_StoreListService.N.GetModels() on a.ID equals b.BalanceIndex into b1
                                 from b in b1.DefaultIfEmpty()
-                                join c in Base_StoreInfoService.N.GetModels() on b.StroeID equals c.StoreID                              
+                                join c in Base_StoreInfoService.N.GetModels() on b.StroeID equals c.StoreID
                                 select new
                                 {
                                     a = a,
                                     HkTypeStr = d != null ? d.DictKey : string.Empty,
                                     StoreName = c != null ? c.StoreName : string.Empty
                                 }).AsEnumerable()
-                           group d by d.a.ID into g   
+                           group d by d.a.ID into g
                            orderby g.Key
                            select new
                            {
@@ -58,7 +58,8 @@ namespace XXCloudService.Api.XCCloud
                                AddingTypeStr = ((AddingType?)g.FirstOrDefault().a.AddingType).GetDescription(),
                                DecimalNumber = g.FirstOrDefault().a.DecimalNumber,
                                HkTypeStr = g.FirstOrDefault().HkTypeStr,
-                               StoreNames = string.Join("|", g.OrderBy(o => o.StoreName).Select(o => o.StoreName))
+                               //StoreNames = string.Join("|", g.OrderBy(o => o.StoreName).Select(o => o.StoreName))
+                               StoreNames = g.OrderBy(o => o.StoreName).Select(o => o.StoreName).FirstOrDefault() + (g.Count() > 1 ? "等多个" : string.Empty)
                            };
                            
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, linq);

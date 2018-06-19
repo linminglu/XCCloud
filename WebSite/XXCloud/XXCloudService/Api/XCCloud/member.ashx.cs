@@ -1171,6 +1171,7 @@ namespace XCCloudService.Api.XCCloud
                                BalanceIndex = a.BalanceIndex,
                                BalanceStr = b != null ? b.TypeName : string.Empty,
                                ChargeOFF = a.ChargeOFF,
+                               NeedAuthor = a.NeedAuthor,
                                MaxSaveCount = a.MaxSaveCount,
                                MaxUplife = a.MaxUplife
                            };
