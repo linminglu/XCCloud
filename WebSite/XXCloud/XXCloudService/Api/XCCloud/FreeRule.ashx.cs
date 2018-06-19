@@ -54,9 +54,9 @@ namespace XXCloudService.Api.XCCloud
                 IData_GameFreeRuleService data_GameFreeRuleService = BLLContainer.Resolve<IData_GameFreeRuleService>();
                 var data_GameFreeRule = data_GameFreeRuleService.SqlQuery<Data_GameFreeRuleList>(sql, parameters).ToList();
                 var linq = from a in data_GameFreeRule
-                           group a by new { ID = a.ID } into g
+                           group a by a.ID into g
                            select new { 
-                               g.Key.ID,
+                               g.Key,
                                GameID = string.Join("|", g.Select(p => p.GameID)),
                                GameName = string.Join("|", g.Select(p => p.GameName)),
                                MemberLevelName = g.Max(p=>p.MemberLevelName),
