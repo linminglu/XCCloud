@@ -541,7 +541,7 @@
                  })
              }else if(layevent==='downLevel'){
                  layer.confirm('确定降级该优惠券吗', function(index){
-                     let _obj={'discountRuleId':data.ID,'updateState':'-1','userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                     let _obj={'discountRuleId':data.ID,'updateState':'1','userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
                      let parseJson = JSON.stringify(_obj);
                      $.ajax({
                          type:'post',

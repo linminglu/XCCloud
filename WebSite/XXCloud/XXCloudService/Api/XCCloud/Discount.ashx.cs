@@ -243,7 +243,7 @@ namespace XXCloudService.Api.XCCloud
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
-                var data_DiscountRule = Utils.GetModelList<Data_DiscountRuleModel>(ds.Tables[0]).ToList();
+                var data_DiscountRule = Utils.GetModelList<Data_DiscountRuleModel>(ds.Tables[0]).OrderBy(or => or.RuleLevel).ToList();
 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, data_DiscountRule);
             }
@@ -375,6 +375,10 @@ namespace XXCloudService.Api.XCCloud
                 var discountDetails = dicParas.GetArray("discountDetails");
                 var discountMemberLevels = dicParas.GetArray("discountMemberLevels");
                 var discountStores = dicParas.GetArray("discountStores");
+                var startDate = dicParas.Get("startDate").Todate();
+                var enddate = dicParas.Get("enddate").Todate();
+                var noStartDate = dicParas.Get("noStartDate").Todate();
+                var noEndDate = dicParas.Get("noEndDate").Todate();
 
                 //开启EF事务
                 using (TransactionScope ts = new TransactionScope())
@@ -384,6 +388,10 @@ namespace XXCloudService.Api.XCCloud
                         var data_DiscountRule = new Data_DiscountRule();
                         Utils.GetModel(dicParas, ref data_DiscountRule);
                         data_DiscountRule.MerchID = merchId;
+                        data_DiscountRule.StartDate = startDate;
+                        data_DiscountRule.Enddate = enddate;
+                        data_DiscountRule.NoStartDate = noStartDate;
+                        data_DiscountRule.NoEndDate = noEndDate;
                         if (id == 0)
                         {
                             //新增
