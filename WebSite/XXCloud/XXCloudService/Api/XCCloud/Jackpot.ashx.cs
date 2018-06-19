@@ -43,7 +43,7 @@ namespace XXCloudService.Api.XCCloud
                     }
                 }
 
-                string sql = @"select a.* from Data_JackpotInfo a where a.MerchInfo=@MerchId";
+                string sql = @"select a.* from Data_JackpotInfo a where a.MerchID=@MerchId";
                 sql = sql + sqlWhere;
 
                 IData_JackpotInfoService data_JackpotInfoService = BLLContainer.Resolve<IData_JackpotInfoService>();

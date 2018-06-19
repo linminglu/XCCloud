@@ -87,7 +87,7 @@ namespace XXCloudService.Api.XCCloud
                 var ruleId = dicParas.Get("ruleId").Toint();
 
                 var ruleOverlying = (from a in Data_RuleOverlying_ListService.N.GetModels(p => p.RuleType == ruleType && p.RuleID == ruleId && p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase))
-                                     join b in Data_RuleOverlying_ListService.N.GetModels(p => p.RuleType != ruleType && p.RuleID != ruleId && p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)) on a.GroupID equals b.GroupID
+                                     join b in Data_RuleOverlying_ListService.N.GetModels(p => (p.RuleType != ruleType || p.RuleID != ruleId) && p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)) on a.GroupID equals b.GroupID
                                      where a.GroupID != null
                                      select new
                                      {
@@ -159,7 +159,7 @@ namespace XXCloudService.Api.XCCloud
 
                                         var gRuleId = dicPara.Get("ruleId").Toint();
                                         var gRuleType = dicPara.Get("ruleType").Toint();
-                                        if (ruleId != gRuleId && ruleType != gRuleType)
+                                        if (ruleId != gRuleId || ruleType != gRuleType)
                                         {
                                             //目标规则与当前规则是否已分组
                                             bool grouped = (from a in Data_RuleOverlying_ListService.N.GetModels(p => p.RuleID == ruleId && p.RuleType == ruleType && p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase))

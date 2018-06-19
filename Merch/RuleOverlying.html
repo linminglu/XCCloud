@@ -105,7 +105,19 @@
                             elem:'#tree',
                             nodes:treeData,
                             click:function (node) {
-                                console.log(node)
+                                $(this.elem).find('cite').each(function () {
+                                    if($(this).text()==node.name){
+                                        $(this).parent().css('color','blue')
+                                        // $(this).parent().append('<icon style="color: lime;font-size: 16px" class="layui-icon layui-icon-ok">&#xe605;</icon>')
+                                    }else {
+                                        $(this).parent().css('color','#333')
+                                        // if($(this).parent().children()[2]){
+                                        //     $(this).parent().children()[2].remove()
+                                        // }
+                                    }
+                                    form.render()
+                                })
+
                                 if(node.id!=undefined&&node.ruleType!=undefined){
                                     getRule(node.ruleType,node.id,table);
                                      _ruleId=node.id;
@@ -141,16 +153,13 @@
                         success: function (data) {
                             data = JSON.parse(data);
                             if (data.result_code == 1) {
-                                layer.msg('保存成功',{time:'1500px'},function () {
+                                layer.msg('保存成功',{time:1500},function () {
                                     location.reload();
                                 })
-
                             }else {
                                 layer.msg(data.result_msg||data.return_msg)
                             }
                         }
-
-
                      })
                 }else {
                     layer.msg('请先在左边选择一条优惠规则')
@@ -158,7 +167,7 @@
 
             })
         });
-      let  showRule=function(token,layer,layui,table) {
+        let  showRule=function(token,layer,layui,table) {
           let _obj={'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
           let parseJson = JSON.stringify(_obj);
           $.ajax({
@@ -169,7 +178,6 @@
               success: function (data) {
                   data = JSON.parse(data);
                   if (data.result_code == 1) {
-                  console.log(data);
                   let treeData=[
                       {name:'满减规则',spread: true,children:[]},
                       {name:'优惠券',spread: true,children:[
@@ -221,7 +229,6 @@
                     click:function (node) {
                         if(node.id!=undefined&&node.ruleType!=undefined){
                             getRule(node.ruleType,node.id,table)
-                            
                         }
                     }
                 })
@@ -295,7 +302,6 @@
                 data:{parasJson: parseJson},
                 success: function (data) {
                     data = JSON.parse(data);
-                    console.log(data);
                     if (data.result_code == 1) {
                        let arr=data.result_data;
                         initTable('ruleTreeTable',tableData,arr);

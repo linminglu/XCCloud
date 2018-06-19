@@ -524,7 +524,19 @@ namespace XXCloudService.Api.XCCloud
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
 
-                var linq = from a in Data_ProjectInfoService.I.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase))
+                var storeIds = dicParas.Get("storeIds");
+
+                var query = Data_ProjectInfoService.I.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase));
+                if (storeIds.IsNull() || storeIds.Contains("|"))
+                {
+                    query = query.Where(w => (w.StoreID ?? "") == "");
+                }
+                else
+                {
+                    query = query.Where(w => ((w.StoreID ?? "") == "" || w.StoreID.Equals(storeIds, StringComparison.OrdinalIgnoreCase)));
+                }
+
+                var linq = from a in query
                            select new
                            {
                                ID = a.ID,

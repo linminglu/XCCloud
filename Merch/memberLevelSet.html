@@ -407,7 +407,7 @@
                           </div>
                           </div>
                           <div class="layui-inline goodIsAll">
-                          <label  class="layui-form-label" style="padding: 8px 0!important;">投币后拔卡锁机头</label>
+                          <label  class="layui-form-label" style="padding: 0px 0!important;white-space: normal">投币后拔卡锁机头</label>
                           <div class="layui-input-inline">
                           <input type="checkbox" name="zzz" lay-skin="switch" lay-text="启用|禁用" id="lockHead" lay-filter="lockHead">
                           </div>
@@ -442,7 +442,7 @@
                                   <input type="checkbox" name="allowGetCoin" lay-skin="switch" id="allowGetCoin" lay-filter="allowGetCoin" lay-text="启用|禁用">
                               </div>
                           </div>
-                          <div class="layui-inline"><label for="" class="layui-form-label">允许余额过户给他人</label>
+                          <div class="layui-inline"><label for="" class="layui-form-label" style="padding: 0px 0!important;white-space: normal">允许余额过户给他人</label>
                               <div class="layui-input-inline">
                                   <input type="checkbox" name="allowTransfer" lay-skin="switch" id="allowTransfer" lay-filter="allowTransfer" lay-text="启用|禁用">
                               </div>
@@ -463,7 +463,7 @@
     <form action="" class="layui-form">
         <div class="layui-form-item">
             <label for="" class="layui-form-label">选择套餐</label>
-            <div class="layui-input-inline" id="foodListBox">
+            <div class="layui-input-block" id="foodListBox">
 
             </div>
         </div>
@@ -551,13 +551,8 @@
             element=layui.element;
           let  upload=layui.upload;
         getBalanceTypeDic(token,layer,form);
-        // xc.getBalanceTypeDic('',token,layer,form,'freeRates');
-        // xc.getBalanceTypeDic('',token,layer,form,'freeBalanceType');
-        // xc.getBalanceTypeDic('',token,layer,form,'sourceBalanceType');
-        // xc.getBalanceTypeDic('',token,layer,form,'targetBalanceIndex');
         xc.setSelect('生日送币方式','birthdayFree');
         xc.setSelect('送币方式','freeType');
-        // xc.getBalanceTypeDic('',token,layer,form,'freeBalanceIndex');
         xc.getFoodInfoDic(token,layer,form,'FoodID');
         getUpDownLevel(token,form,layer,'upML');
         getUpDownLevel(token,form,layer,'downML');
@@ -602,8 +597,6 @@
 
               AllowExitCard=0;AllowExitMoney=0;AllowExitCoinToCar=0;LockHead=0;States=0;
              allowCharge=0;allowSaveLottery=0;allowSaveCoin=0;allowGetCoin=0;allowTransfer=0;
-            // newTable(table,arrSendCoinTable,layer,form);
-
             layer.open({
                 type:1,
                 area:'1030px',
@@ -638,18 +631,19 @@
                         data=JSON.parse(data);
                         console.log(data);
                         if(data.result_code==1){
-                            let arr=data.result_data;
-                            getFoodList(token,form,layer,arr)
+                            memberLevelFood=data.result_data;
+                            getFoodList(token,form,layer,memberLevelFood);
+                            index= layer.open({
+                                type:1,
+                                area:'800px',
+                                content:$('#bindFood')
+                            })
                         }else {layer.msg(data.result_msg||data.return_msg)}
                     }
                 });
             }
 
-            index= layer.open({
-                type:1,
-                area:'400px',
-                content:$('#bindFood')
-            })
+
         });
         //保存选中套餐
         $('#saveFood').on('click',function () {
@@ -1034,7 +1028,7 @@
         form.on('switch(allowExitMoney)', function(data){
             data.elem.checked==true ? AllowExitMoney=1:AllowExitMoney=0;
         });
-        form.on('switch(LockHead)', function(data){
+        form.on('switch(lockHead)', function(data){
             data.elem.checked==true ? LockHead=1:LockHead=0;
         });
         form.on('switch(allowExitCoinToCar)', function(data){
@@ -1273,12 +1267,12 @@
                                 }
                             }
                             if(flag){
-                                $('#foodListBox').append('<input type="checkbox" checked lay-filter="foodList" value="'+arr[i].FoodID+'" title="'+arr[i].FoodName+'"> ')
+                                $('#foodListBox').append('<input type="checkbox" lay-skin="primary" checked lay-filter="foodList" value="'+arr[i].FoodID+'" title="'+arr[i].FoodName+'"> ')
                             }else {
-                                $('#foodListBox').append('<input type="checkbox" lay-filter="foodList" value="'+arr[i].FoodID+'" title="'+arr[i].FoodName+'"> ')
+                                $('#foodListBox').append('<input type="checkbox" lay-skin="primary" lay-filter="foodList" value="'+arr[i].FoodID+'" title="'+arr[i].FoodName+'"> ')
                             }
                         }else {
-                            $('#foodListBox').append('<input type="checkbox" lay-filter="foodList" value="'+arr[i].FoodID+'" title="'+arr[i].FoodName+'"> ')
+                            $('#foodListBox').append('<input type="checkbox" lay-skin="primary" lay-filter="foodList" value="'+arr[i].FoodID+'" title="'+arr[i].FoodName+'"> ')
                         }
                     }
                     form.render('checkbox');

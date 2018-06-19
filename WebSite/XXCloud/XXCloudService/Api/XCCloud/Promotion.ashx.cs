@@ -306,7 +306,7 @@ namespace XXCloudService.Api.XCCloud
                         {
                             if (!Data_ProjectTicketService.I.Any(p => p.ID == containId && (p.StoreID ?? "").Equals(storeIds, StringComparison.OrdinalIgnoreCase)))
                             {
-                                errMsg = "套餐门票不能适用于多门店";
+                                errMsg = "套餐不能包含多个门店的门票";
                                 return false;
                             }
                         }
@@ -315,21 +315,20 @@ namespace XXCloudService.Api.XCCloud
                         {
                             if (storeIds.IsNull() || storeIds.Contains("|"))
                             {
-                                if (!Base_GoodsInfoService.I.Any(p => p.ID == containId && p.Status == 1 && (p.StoreID ?? "") != ""))
+                                if (!Base_GoodsInfoService.I.Any(p => p.ID == containId && p.Status == 1 && (p.StoreID ?? "") == ""))
                                 {
-                                    errMsg = "套餐不能包含多门店的私有属性的商品";
+                                    errMsg = "套餐不能包含多个门店的私有商品";
                                     return false;
                                 }
                             }
                             else
                             {
-                                if (!Base_GoodsInfoService.I.Any(p => p.ID == containId && p.Status == 1 && ((p.StoreID ?? "") == "" || p.StoreID.Equals(storeIds))))
+                                if (!Base_GoodsInfoService.I.Any(p => p.ID == containId && p.Status == 1 && ((p.StoreID ?? "") == "" || p.StoreID.Equals(storeIds, StringComparison.OrdinalIgnoreCase))))
                                 {
-                                    errMsg = "套餐不能包含多门店的私有属性的商品";
+                                    errMsg = "套餐不能包含多个门店的私有商品";
                                     return false;
                                 }
-                            }
-                            
+                            }                            
                         }
 
                         var data_Food_DetialModel = new Data_Food_Detial();
@@ -531,7 +530,7 @@ namespace XXCloudService.Api.XCCloud
                 //int FoodDetailTypeId = Dict_SystemService.I.GetModels(p => p.DictKey.Equals("套餐类别") && p.PID == FoodDetailId).FirstOrDefault().ID;
                 int FeeTypeId = Dict_SystemService.I.GetModels(p => p.DictKey.Equals("计费方式")).FirstOrDefault().ID;
                 var FoodDetials = from a in Data_Food_DetialService.N.GetModels(p => p.FoodID == foodId && p.Status == 1)
-                                  join b in Data_ProjectInfoService.N.GetModels() on new { ContainID = a.ContainID, FoodType = a.FoodType } equals new { ContainID = (int?)b.ID, FoodType = (int?)FoodDetailType.Ticket } into b1
+                                  join b in Data_ProjectTicketService.N.GetModels() on new { ContainID = a.ContainID, FoodType = a.FoodType } equals new { ContainID = (int?)b.ID, FoodType = (int?)FoodDetailType.Ticket } into b1
                                   from b in b1.DefaultIfEmpty()
                                   join c in Base_GoodsInfoService.N.GetModels() on new { ContainID = a.ContainID, FoodType = a.FoodType } equals new { ContainID = (int?)c.ID, FoodType = (int?)FoodDetailType.Good } into c1
                                   from c in c1.DefaultIfEmpty()
@@ -550,7 +549,7 @@ namespace XXCloudService.Api.XCCloud
                                       ProjectName = (a.FoodType == (int)FoodDetailType.Coin) ? "游戏币" :
                                                     (a.FoodType == (int)FoodDetailType.Digit) ? (h != null ? h.FoodName : string.Empty) :
                                                     (a.FoodType == (int)FoodDetailType.Good) ? (c != null ? c.GoodName : string.Empty) :
-                                                    (a.FoodType == (int)FoodDetailType.Ticket) ? (b != null ? b.ProjectName : string.Empty) :
+                                                    (a.FoodType == (int)FoodDetailType.Ticket) ? (b != null ? b.TicketName : string.Empty) :
                                                     (a.FoodType == (int)FoodDetailType.Coupon) ? (g != null ? g.CouponName : string.Empty) : string.Empty,
                                       FoodDetailType = a.FoodType,
                                       //BalanceType = a.BalanceType,
@@ -819,8 +818,7 @@ namespace XXCloudService.Api.XCCloud
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
-
-                string errMsg = string.Empty;                
+                
                 var goodNameOrBarcode = dicParas.ContainsKey("goodNameOrBarcode") ? (dicParas["goodNameOrBarcode"] + "") : string.Empty;
                 var storeIds = dicParas.Get("storeIds");
 
@@ -866,7 +864,6 @@ namespace XXCloudService.Api.XCCloud
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
 
-                string errMsg = string.Empty;
                 var storeIds = dicParas.Get("storeIds");
                
                 var query = Data_ProjectTicketService.I.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase));                

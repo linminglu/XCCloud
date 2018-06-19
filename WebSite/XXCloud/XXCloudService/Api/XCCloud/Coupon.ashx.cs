@@ -136,9 +136,18 @@ namespace XXCloudService.Api.XCCloud
                 {
                     errMsg = "该优惠券不存在";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }               
-                          
-                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, data_CouponInfo);
+                }
+
+                //获取适用门店
+                var StoreIDs = Data_Coupon_StoreListService.I.GetModels(p => p.CouponID == id).Select(o => new { StoreID = o.StoreID });
+
+                var linq = new
+                {
+                    data_CouponInfo = data_CouponInfo,
+                    StoreIDs = StoreIDs
+                }.AsFlatDictionary();
+
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, linq);
             }
             catch (Exception e)
             {
@@ -192,11 +201,36 @@ namespace XXCloudService.Api.XCCloud
                     {
                         if (!dicParas.Get("goodId").Nonempty("兑换内容", out errMsg))
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                        var containId = dicParas.Get("goodId").Toint();
+                        if (dicParas.Get("storeIds").IsNull() || dicParas.Get("storeIds").Contains("|"))
+                        {                            
+                            if (!Base_GoodsInfoService.I.Any(p => p.ID == containId && p.Status == 1 && (p.StoreID ?? "") == ""))
+                            {
+                                errMsg = "兑换券不能包含多个门店的私有商品";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+                        }
+                        else
+                        {
+                            if (!Base_GoodsInfoService.I.Any(p => p.ID == containId && p.Status == 1 && ((p.StoreID ?? "") == "" || p.StoreID.Equals(dicParas.Get("storeIds")))))
+                            {
+                                errMsg = "兑换券不能包含多个门店的私有商品";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+                        }
                     }
                     else if (dicParas.Get("chargeType").Toint() == (int)ChargeType.Project)
                     {
                         if (!dicParas.Get("projectId").Nonempty("兑换内容", out errMsg))
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                        var containId = dicParas.Get("projectId").Toint();
+                        if (!Data_ProjectInfoService.I.Any(p => p.ID == containId && (p.StoreID ?? "").Equals(dicParas.Get("storeIds"), StringComparison.OrdinalIgnoreCase)))
+                        {
+                            errMsg = "兑换券不能包含多个门店的游乐项目";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
                     }
                     else if (dicParas.Get("chargeType").Toint() == (int)ChargeType.Coin)
                     {
@@ -283,6 +317,7 @@ namespace XXCloudService.Api.XCCloud
                 var sendType = dicParas.Get("sendType").Toint();
                 var couponConditions = dicParas.GetArray("couponConditions");
                 var memberIds = dicParas.GetArray("memberIds");
+                var storeIds = dicParas.Get("storeIds");
 
                 //开启EF事务
                 using (TransactionScope ts = new TransactionScope())
@@ -422,11 +457,36 @@ namespace XXCloudService.Api.XCCloud
                         parameters[parameters.Length - 1] = new SqlParameter("@Result", 0);
                         parameters[parameters.Length - 1].Direction = ParameterDirection.Output;
 
-                        //XCCloudBLL.ExecuteStoredProcedureSentence(storedProcedure, parameters);
-                        XCCloudBLLExt.ExecuteStoredProcedure(storedProcedure, parameters);                        
+                        XCCloudBLLExt.ExecuteStoredProcedure(storedProcedure, parameters);
                         if (parameters[parameters.Length - 1].Value.ToString() != "1")
                         {
                             errMsg = "添加优惠券记录表失败";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
+                        //保存适用门店信息
+                        foreach (var model in Data_Coupon_StoreListService.I.GetModels(p => p.CouponID == id))
+                        {
+                            Data_Coupon_StoreListService.I.DeleteModel(model);
+                        }
+
+                        if (!string.IsNullOrEmpty(storeIds))
+                        {
+                            foreach (var storeId in storeIds.Split('|'))
+                            {
+                                if (!storeId.Nonempty("门店ID", out errMsg))
+                                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                                var model = new Data_Coupon_StoreList();
+                                model.CouponID = id;
+                                model.StoreID = storeId;
+                                Data_Coupon_StoreListService.I.AddModel(model);
+                            }
+                        }
+
+                        if (!Data_Coupon_StoreListService.I.SaveChanges())
+                        {
+                            errMsg = "更新优惠券适用门店表失败";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 
