@@ -1258,6 +1258,7 @@
           <Property Name="RemainCount" Type="int" />
           <Property Name="InitialAvgValue" Type="numeric" Precision="10" Scale="2" />
           <Property Name="Note" Type="varchar" MaxLength="200" />
+          <Property Name="Verifiction" Type="varchar" MaxLength="32" />
         </EntityType>
         <EntityType Name="Data_GoodStock_Record">
           <Key>
@@ -3278,7 +3279,6 @@
           <EntitySet Name="Data_GameInfo_Photo" EntityType="XCCloudDBModel.Data_GameInfo_Photo" />
           <EntitySet Name="Data_GivebackRule" EntityType="XCCloudDBModel.Data_GivebackRule" />
           <EntitySet Name="Data_GoodRequest_List" EntityType="XCCloudDBModel.Data_GoodRequest_List" />
-          <EntitySet Name="Data_GoodsStock" EntityType="XCCloudDBModel.Data_GoodsStock" />
           <EntitySet Name="Data_GoodStorage" EntityType="XCCloudDBModel.Data_GoodStorage" />
           <EntitySet Name="Data_GroupArea" EntityType="XCCloudDBModel.Data_GroupArea" />
           <EntitySet Name="Data_Jackpot_Level" EntityType="XCCloudDBModel.Data_Jackpot_Level" />
@@ -3394,6 +3394,7 @@
           <EntitySet Name="Flw_Project_TicketUse" EntityType="XCCloudDBModel.Flw_Project_TicketUse" />
           <EntitySet Name="Data_Project_BindDevice" EntityType="XCCloudDBModel.Data_Project_BindDevice" />
           <EntitySet Name="Base_MemberInfo" EntityType="XCCloudDBModel.Base_MemberInfo" />
+          <EntitySet Name="Data_GoodsStock" EntityType="XCCloudDBModel.Data_GoodsStock" />
         </EntityContainer>
         <EntityType Name="Base_ChainRule_Store">
           <Key>
@@ -4184,23 +4185,6 @@
           <Property Name="LogistType" Type="Int32" />
           <Property Name="LogistOrderID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
           <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
-        </EntityType>
-        <EntityType Name="Data_GoodsStock">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="DepotID" Type="Int32" />
-          <Property Name="GoodID" Type="Int32" />
-          <Property Name="MinValue" Type="Int32" />
-          <Property Name="MaxValue" Type="Int32" />
-          <Property Name="InitialValue" Type="Int32" />
-          <Property Name="InitialTime" Type="DateTime" Precision="3" />
-          <Property Name="RemainCount" Type="Int32" />
-          <Property Name="InitialAvgValue" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="Note" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="Data_GoodStorage">
           <Key>
@@ -6182,6 +6166,24 @@
           <Property Name="Note" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
         </EntityType>
+        <EntityType Name="Data_GoodsStock">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="DepotID" Type="Int32" />
+          <Property Name="GoodID" Type="Int32" />
+          <Property Name="MinValue" Type="Int32" />
+          <Property Name="MaxValue" Type="Int32" />
+          <Property Name="InitialValue" Type="Int32" />
+          <Property Name="InitialTime" Type="DateTime" Precision="3" />
+          <Property Name="RemainCount" Type="Int32" />
+          <Property Name="InitialAvgValue" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="Note" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -7027,24 +7029,6 @@
                 <ScalarProperty Name="RequestCount" ColumnName="RequestCount" />
                 <ScalarProperty Name="GoodID" ColumnName="GoodID" />
                 <ScalarProperty Name="RequestID" ColumnName="RequestID" />
-                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Data_GoodsStock">
-            <EntityTypeMapping TypeName="XCCloudDBModel.Data_GoodsStock">
-              <MappingFragment StoreEntitySet="Data_GoodsStock">
-                <ScalarProperty Name="Note" ColumnName="Note" />
-                <ScalarProperty Name="InitialAvgValue" ColumnName="InitialAvgValue" />
-                <ScalarProperty Name="RemainCount" ColumnName="RemainCount" />
-                <ScalarProperty Name="InitialTime" ColumnName="InitialTime" />
-                <ScalarProperty Name="InitialValue" ColumnName="InitialValue" />
-                <ScalarProperty Name="MaxValue" ColumnName="MaxValue" />
-                <ScalarProperty Name="MinValue" ColumnName="MinValue" />
-                <ScalarProperty Name="GoodID" ColumnName="GoodID" />
-                <ScalarProperty Name="DepotID" ColumnName="DepotID" />
-                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
                 <ScalarProperty Name="MerchID" ColumnName="MerchID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
@@ -9141,6 +9125,25 @@
                 <ScalarProperty Name="QQ" ColumnName="QQ" />
                 <ScalarProperty Name="AlipayOpenID" ColumnName="AlipayOpenID" />
                 <ScalarProperty Name="WechatOpenID" ColumnName="WechatOpenID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Data_GoodsStock">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Data_GoodsStock">
+              <MappingFragment StoreEntitySet="Data_GoodsStock">
+                <ScalarProperty Name="Verifiction" ColumnName="Verifiction" />
+                <ScalarProperty Name="Note" ColumnName="Note" />
+                <ScalarProperty Name="InitialAvgValue" ColumnName="InitialAvgValue" />
+                <ScalarProperty Name="RemainCount" ColumnName="RemainCount" />
+                <ScalarProperty Name="InitialTime" ColumnName="InitialTime" />
+                <ScalarProperty Name="InitialValue" ColumnName="InitialValue" />
+                <ScalarProperty Name="MaxValue" ColumnName="MaxValue" />
+                <ScalarProperty Name="MinValue" ColumnName="MinValue" />
+                <ScalarProperty Name="GoodID" ColumnName="GoodID" />
+                <ScalarProperty Name="DepotID" ColumnName="DepotID" />
+                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
+                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>

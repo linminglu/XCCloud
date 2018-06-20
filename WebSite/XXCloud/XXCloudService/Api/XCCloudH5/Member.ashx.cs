@@ -423,5 +423,123 @@ namespace XXCloudService.Api.XCCloudH5
             }
         }
         #endregion
+
+        #region 切换会员卡
+        /// <summary>
+        /// 切换会员卡
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.MethodToken)]
+        public object chooseCard(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                string token = dicParas.ContainsKey("token") ? dicParas["token"].ToString().Trim() : "";
+                string cardId = dicParas.ContainsKey("cardId") ? dicParas["cardId"].ToString().Trim() : "";
+
+                if (string.IsNullOrEmpty(token))
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "用户令牌无效");
+                }
+
+                MemberTokenModel model = MemberTokenCache.GetModel(token);
+
+                if (model == null)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "用户令牌无效，请重新登陆");
+                }
+
+                Data_Member_Card card = Data_Member_CardService.I.GetModels(t => t.ID == cardId).FirstOrDefault();
+                if (cardId == null)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员卡无效");
+                }
+
+                MemberCard mc = new MemberCard();
+                mc.CardId = card.ID;
+                mc.ICCardId = card.ICCardID;
+                mc.MemberLevelId = card.MemberLevelID.Value;
+                mc.MemberLevelName = XCCloudStoreBusiness.GetMemberLevel(card.MemberLevelID.Value).MemberLevelName;
+                //卡余额
+                mc.CardBalanceList = XCCloudStoreBusiness.GetCardStoreBalanceList(card.MerchID, card.LastStore, card.ID);
+                model.CurrentCardInfo = mc;
+                //更新缓存
+                MemberTokenCache.AddToken(token, model);
+
+                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.T, "");
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+        #endregion
+
+        #region 完善会员信息
+        /// <summary>
+        /// 完善会员信息
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.MethodToken)]
+        public object setMemberInfo(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                string token = dicParas.ContainsKey("token") ? dicParas["token"].ToString().Trim() : "";
+                string gender = dicParas.ContainsKey("gender") ? dicParas["gender"].ToString().Trim() : "";
+                string birthday = dicParas.ContainsKey("birthday") ? dicParas["birthday"].ToString().Trim() : "";
+                string idCard = dicParas.ContainsKey("idCard") ? dicParas["idCard"].ToString().Trim() : "";
+                string mobile = dicParas.ContainsKey("mobile") ? dicParas["mobile"].ToString().Trim() : "";
+                if (string.IsNullOrEmpty(token))
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "用户令牌无效");
+                }
+
+                MemberTokenModel model = MemberTokenCache.GetModel(token);
+
+                if (model == null)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "用户令牌无效，请重新登陆");
+                }
+
+                Base_MemberInfo member = Base_MemberInfoService.I.GetModels(t => t.ID == model.MemberId).FirstOrDefault();
+                member.Gender = Convert.ToInt32(gender);
+                if (!string.IsNullOrWhiteSpace(idCard))
+                {
+                    if(!Regex.IsMatch(idCard, @"^(^\d{15}$|^\d{18}$|^\d{17}(\d|X|x))$", RegexOptions.IgnoreCase))
+                    {
+                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "身份证号码不正确");
+                    }
+                    else
+                    {
+                        member.IDCard = idCard;
+                        birthday = idCard.Substring(6, 4) + "-" + idCard.Substring(10, 2) + "-" + idCard.Substring(12, 2);
+                    }
+                }
+                member.Birthday = Convert.ToDateTime(birthday);
+                if(string.IsNullOrWhiteSpace(mobile) || !Regex.IsMatch(mobile, @"^1(3|5|7|8)\d{9}$"))
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "手机号码无效");
+                }
+                member.Mobile = mobile;
+
+                if(!Base_MemberInfoService.I.Update(member))
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "完善资料失败");
+                }
+
+                model.Mobile = mobile;
+                MemberTokenCache.AddToken(token, model);
+
+                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.T, "");
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+        #endregion
     }
 }

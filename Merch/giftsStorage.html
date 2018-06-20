@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -243,7 +243,7 @@
             sumExit=parseInt(sumExit)+parseInt(exitDetails[i].ExitCount);
         }
         $('#shouldExit').val(parseInt(sumExit)*obj.data.ExitPrice);
-        $('#exitTotal').val(parseInt(sumExit)*obj.data.ExitPrice);
+        $('#exitTotal').val(parseInt(sumExit)*obj.data.ExitPrice-parseInt($('#exitCost').val()==''?0:$('#exitCost').val()));
         newBackGoodTable(table,arrBack);
     });
     table.on('checkbox(backGoodTable)', function(obj){
@@ -271,7 +271,7 @@
             sumExit+=parseInt(exitDetails[i].ExitCount);
         }
         $('#shouldExit').val(parseInt(sumExit)*obj.data.ExitPrice||'');
-        $('#exitTotal').val(parseInt(sumExit)*obj.data.ExitPrice||'');
+        $('#exitTotal').val(parseInt(sumExit)*obj.data.ExitPrice-parseInt($('#exitCost').val()==''?0:$('#exitCost').val())||'');
         });
     //保存退货
         $('#saveExit').click(function () {

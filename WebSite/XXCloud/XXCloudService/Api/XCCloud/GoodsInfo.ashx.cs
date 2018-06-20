@@ -3438,9 +3438,9 @@ namespace XXCloudService.Api.XCCloud
                                 	FROM
                                 		Data_GoodsStock
                                     WHERE
-                                        RemainCount > 0
+                                        RemainCount > 0  
                                 ) a                                
-                                LEFT JOIN Data_GoodInventory b ON a.GoodID = b.GoodID AND b.InventoryType = 0 AND a.DepotID = b.InventoryIndex 
+                                LEFT JOIN Data_GoodInventory b ON a.GoodID = b.GoodID AND b.InventoryType = 0 AND a.s = b.InventoryIndex 
                                 INNER JOIN Base_GoodsInfo c ON a.GoodID = c.ID  
                                 LEFT JOIN Dict_System d ON c.GoodType = d.ID
                                 LEFT JOIN Base_UserInfo u ON b.UserID = u.UserID                                
