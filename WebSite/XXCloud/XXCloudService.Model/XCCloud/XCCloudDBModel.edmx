@@ -1249,7 +1249,8 @@
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="MerchID" Type="varchar" MaxLength="15" />
           <Property Name="StoreID" Type="varchar" MaxLength="15" />
-          <Property Name="DepotID" Type="int" />
+          <Property Name="StockType" Type="int" />
+          <Property Name="StockIndex" Type="int" />
           <Property Name="GoodID" Type="int" />
           <Property Name="MinValue" Type="int" />
           <Property Name="MaxValue" Type="int" />
@@ -1893,6 +1894,7 @@
           <Property Name="MerchID" Type="varchar" MaxLength="15" />
           <Property Name="StoreID" Type="varchar" MaxLength="15" />
           <Property Name="WorkStation" Type="varchar" MaxLength="50" />
+          <Property Name="StationType" Type="int" />
           <Property Name="DepotID" Type="int" />
           <Property Name="MacAddress" Type="varchar" MaxLength="50" />
           <Property Name="DiskID" Type="varchar" MaxLength="50" />
@@ -3355,7 +3357,6 @@
           <EntitySet Name="Flw_CouponUse" EntityType="XCCloudDBModel.Flw_CouponUse" />
           <EntitySet Name="Flw_DiscountRule" EntityType="XCCloudDBModel.Flw_DiscountRule" />
           <EntitySet Name="Base_StoreDogList" EntityType="XCCloudDBModel.Base_StoreDogList" />
-          <EntitySet Name="Data_Workstation" EntityType="XCCloudDBModel.Data_Workstation" />
           <EntitySet Name="Data_WorkStation_GoodList" EntityType="XCCloudDBModel.Data_WorkStation_GoodList" />
           <EntitySet Name="Log_GameAlarm" EntityType="XCCloudDBModel.Log_GameAlarm" />
           <EntitySet Name="Base_DeviceInfo" EntityType="XCCloudDBModel.Base_DeviceInfo" />
@@ -3395,6 +3396,7 @@
           <EntitySet Name="Data_Project_BindDevice" EntityType="XCCloudDBModel.Data_Project_BindDevice" />
           <EntitySet Name="Base_MemberInfo" EntityType="XCCloudDBModel.Base_MemberInfo" />
           <EntitySet Name="Data_GoodsStock" EntityType="XCCloudDBModel.Data_GoodsStock" />
+          <EntitySet Name="Data_Workstation" EntityType="XCCloudDBModel.Data_Workstation" />
         </EntityContainer>
         <EntityType Name="Base_ChainRule_Store">
           <Key>
@@ -5411,19 +5413,6 @@
           <Property Name="DogID" Type="String" MaxLength="128" FixedLength="false" Unicode="false" />
           <Property Name="Status" Type="Int32" />
         </EntityType>
-        <EntityType Name="Data_Workstation">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="WorkStation" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="DepotID" Type="Int32" />
-          <Property Name="MacAddress" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="DiskID" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="State" Type="Int32" />
-        </EntityType>
         <EntityType Name="Data_WorkStation_GoodList">
           <Key>
             <PropertyRef Name="ID" />
@@ -6173,7 +6162,8 @@
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
           <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="DepotID" Type="Int32" />
+          <Property Name="StockType" Type="Int32" />
+          <Property Name="StockIndex" Type="Int32" />
           <Property Name="GoodID" Type="Int32" />
           <Property Name="MinValue" Type="Int32" />
           <Property Name="MaxValue" Type="Int32" />
@@ -6183,6 +6173,20 @@
           <Property Name="InitialAvgValue" Type="Decimal" Precision="10" Scale="2" />
           <Property Name="Note" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
           <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Data_Workstation">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="WorkStation" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="StationType" Type="Int32" />
+          <Property Name="DepotID" Type="Int32" />
+          <Property Name="MacAddress" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="DiskID" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="State" Type="Int32" />
         </EntityType>
         </Schema>
     </edmx:ConceptualModels>
@@ -8335,20 +8339,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Data_Workstation">
-            <EntityTypeMapping TypeName="XCCloudDBModel.Data_Workstation">
-              <MappingFragment StoreEntitySet="Data_Workstation">
-                <ScalarProperty Name="State" ColumnName="State" />
-                <ScalarProperty Name="DiskID" ColumnName="DiskID" />
-                <ScalarProperty Name="MacAddress" ColumnName="MacAddress" />
-                <ScalarProperty Name="DepotID" ColumnName="DepotID" />
-                <ScalarProperty Name="WorkStation" ColumnName="WorkStation" />
-                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
-                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Data_WorkStation_GoodList">
             <EntityTypeMapping TypeName="XCCloudDBModel.Data_WorkStation_GoodList">
               <MappingFragment StoreEntitySet="Data_WorkStation_GoodList">
@@ -9141,7 +9131,23 @@
                 <ScalarProperty Name="MaxValue" ColumnName="MaxValue" />
                 <ScalarProperty Name="MinValue" ColumnName="MinValue" />
                 <ScalarProperty Name="GoodID" ColumnName="GoodID" />
+                <ScalarProperty Name="StockIndex" ColumnName="StockIndex" />
+                <ScalarProperty Name="StockType" ColumnName="StockType" />
+                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
+                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Data_Workstation">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Data_Workstation">
+              <MappingFragment StoreEntitySet="Data_Workstation">
+                <ScalarProperty Name="State" ColumnName="State" />
+                <ScalarProperty Name="DiskID" ColumnName="DiskID" />
+                <ScalarProperty Name="MacAddress" ColumnName="MacAddress" />
                 <ScalarProperty Name="DepotID" ColumnName="DepotID" />
+                <ScalarProperty Name="StationType" ColumnName="StationType" />
+                <ScalarProperty Name="WorkStation" ColumnName="WorkStation" />
                 <ScalarProperty Name="StoreID" ColumnName="StoreID" />
                 <ScalarProperty Name="MerchID" ColumnName="MerchID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />

@@ -38,7 +38,7 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         /// <summary>
         /// 添加来源
         /// </summary>
-        public string Source { get { return ((GoodInventorySource?)InventoryType).GetDescription(); } set { } }
+        public string Source { get; set; }
         /// <summary>
         /// 库存下限
         /// </summary>

@@ -1100,7 +1100,7 @@ namespace XXCloudService.Api.XCCloud
                                     if (requstType == 2)
                                     {
                                         //期初平均成本大于0才能出库
-                                        if (!Data_GoodsStockService.I.Any(a => a.DepotID == outDepotId && a.GoodID == goodId && a.InitialAvgValue > 0))
+                                        if (!Data_GoodsStockService.I.Any(a => a.StockType == (int)StockType.Depot && a.StockIndex == outDepotId && a.GoodID == goodId && a.InitialAvgValue > 0))
                                         {
                                             errMsg = "该商品库存不符合出库条件, 期初平均成本须大于0";
                                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -1495,7 +1495,7 @@ namespace XXCloudService.Api.XCCloud
                                     }
 
                                     //期初平均成本大于0才能出库
-                                    if (!Data_GoodsStockService.I.Any(a => a.DepotID == outDepotId && a.GoodID == goodId && a.InitialAvgValue > 0))
+                                    if (!Data_GoodsStockService.I.Any(a => a.StockType == (int)StockType.Depot && a.StockIndex == outDepotId && a.GoodID == goodId && a.InitialAvgValue > 0))
                                     {
                                         errMsg = "该商品库存不符合出库条件, 期初平均成本须大于0";
                                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -1604,7 +1604,7 @@ namespace XXCloudService.Api.XCCloud
             Data_GoodStock_RecordService.I.AddModel(data_GoodStock_Record);
 
             //更新当前库存
-            var stockModel = Data_GoodsStockService.I.GetModels(p => p.DepotID == depotId && p.GoodID == goodId).OrderByDescending(or => or.InitialTime).FirstOrDefault();
+            var stockModel = Data_GoodsStockService.I.GetModels(p => p.StockType == (int)StockType.Depot && p.StockIndex == depotId && p.GoodID == goodId).OrderByDescending(or => or.InitialTime).FirstOrDefault();
             if (stockModel == null)
             {
                 errMsg = "仓库未绑定该商品信息";
@@ -1923,7 +1923,7 @@ namespace XXCloudService.Api.XCCloud
                                         join b in Base_GoodsInfoService.N.GetModels() on a.GoodID equals b.ID
                                         join c in Dict_SystemService.N.GetModels() on b.GoodType equals c.ID
                                         join d in Data_GoodStorageService.N.GetModels(p => p.ID == id) on a.StorageOrderID equals d.StorageOrderID
-                                        join e in Data_GoodsStockService.N.GetModels() on new { d.DepotID, a.GoodID } equals new { e.DepotID, e.GoodID }
+                                        join e in Data_GoodsStockService.N.GetModels(p => p.StockType == (int)StockType.Depot) on new { DepotID = d.DepotID, a.GoodID } equals new { DepotID = e.StockIndex, e.GoodID }
                                         select new
                                         {
                                             GoodID = a.GoodID,
@@ -2572,20 +2572,20 @@ namespace XXCloudService.Api.XCCloud
                 var id = dicParas.Get("id").Toint();
 
                 var GoodOutOrderDetail = from a in Data_GoodOutOrder_DetailService.N.GetModels()
-                                        join b in Base_GoodsInfoService.N.GetModels() on a.GoodID equals b.ID
-                                        join c in Dict_SystemService.N.GetModels() on b.GoodType equals c.ID
-                                        join d in Data_GoodOutOrderService.N.GetModels(p=>p.ID == id) on a.OrderID equals d.OrderID
-                                        join e in Data_GoodsStockService.N.GetModels() on new { d.DepotID, a.GoodID } equals new { e.DepotID, e.GoodID }
-                                        select new
-                                        {
-                                            BarCode = b.Barcode,
-                                            GoodName = b.GoodName,
-                                            GoodTypeStr = c.DictKey,
-                                            RemainCount = e.RemainCount ?? 0,
-                                            OutCount = a.OutCount,
-                                            InitialAvgValue = e.InitialAvgValue ?? 0,
-                                            OutTotal = a.OutTotal                                            
-                                        };
+                                         join b in Base_GoodsInfoService.N.GetModels() on a.GoodID equals b.ID
+                                         join c in Dict_SystemService.N.GetModels() on b.GoodType equals c.ID
+                                         join d in Data_GoodOutOrderService.N.GetModels(p => p.ID == id) on a.OrderID equals d.OrderID
+                                         join e in Data_GoodsStockService.N.GetModels(p => p.StockType == (int)StockType.Depot) on new { DepotID = d.DepotID, a.GoodID } equals new { DepotID = e.StockIndex, e.GoodID }
+                                         select new
+                                         {
+                                             BarCode = b.Barcode,
+                                             GoodName = b.GoodName,
+                                             GoodTypeStr = c.DictKey,
+                                             RemainCount = e.RemainCount ?? 0,
+                                             OutCount = a.OutCount,
+                                             InitialAvgValue = e.InitialAvgValue ?? 0,
+                                             OutTotal = a.OutTotal
+                                         };
 
                 var linq = new
                 {
@@ -2683,7 +2683,7 @@ namespace XXCloudService.Api.XCCloud
                                     var goodId = dicPara.Get("goodId").Toint();
 
                                     //期初平均成本大于0才能出库
-                                    if (!Data_GoodsStockService.I.Any(a => a.DepotID == depotId && a.GoodID == goodId && a.InitialAvgValue > 0))
+                                    if (!Data_GoodsStockService.I.Any(a => a.StockType == (int)StockType.Depot && a.StockIndex == depotId && a.GoodID == goodId && a.InitialAvgValue > 0))
                                     {
                                         errMsg = "该商品库存不符合出库条件, 期初平均成本须大于0";
                                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -3443,7 +3443,7 @@ namespace XXCloudService.Api.XCCloud
                                 LEFT JOIN Data_GoodInventory b ON a.GoodID = b.GoodID AND b.InventoryType = 0 AND a.s = b.InventoryIndex 
                                 INNER JOIN Base_GoodsInfo c ON a.GoodID = c.ID  
                                 LEFT JOIN Dict_System d ON c.GoodType = d.ID
-                                LEFT JOIN Base_UserInfo u ON b.UserID = u.UserID                                
+                                LEFT JOIN Base_UserInfo u ON b.UserID = u.UserID
                                 WHERE
                                 	c.Status = 1 AND a.RowNum <= 1 AND ISNULL(b.AuthorID,'')='' AND a.DepotID = " + depotId;    //查询未盘点审核的记录
 
@@ -3502,13 +3502,13 @@ namespace XXCloudService.Api.XCCloud
                                     var depotId = dicPara.Get("depotId").Toint();
                                     var inventoryCount = dicPara.Get("inventoryCount").Toint();
 
-                                    if (!data_GoodsStockService.Any(p => p.DepotID == depotId && p.GoodID == goodId))
+                                    if (!data_GoodsStockService.Any(p => p.StockType == (int)StockType.Depot && p.StockIndex == depotId && p.GoodID == goodId))
                                     {
                                         errMsg = "该商品库存信息不存在";
                                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                                     }
 
-                                    var data_GoodsStock = data_GoodsStockService.GetModels(p => p.DepotID == depotId && p.GoodID == goodId).OrderByDescending(or => or.InitialTime).FirstOrDefault();
+                                    var data_GoodsStock = data_GoodsStockService.GetModels(p => p.StockType == (int)StockType.Depot && p.StockIndex == depotId && p.GoodID == goodId).OrderByDescending(or => or.InitialTime).FirstOrDefault();
 
                                     var data_GoodInventory = data_GoodInventoryService.GetModels(p => p.ID == id).FirstOrDefault() ?? new Data_GoodInventory();                                    
                                     data_GoodInventory.PredictCount = data_GoodsStock.RemainCount;
@@ -3517,8 +3517,8 @@ namespace XXCloudService.Api.XCCloud
                                     data_GoodInventory.UserID = logId;
                                     data_GoodInventory.InventoryTime = DateTime.Now;                                    
                                     if (id == 0)
-                                    {                                        
-                                        data_GoodInventory.InventoryType = (int)GoodInventorySource.Depot;
+                                    {
+                                        data_GoodInventory.InventoryType = (int)StockType.Depot;
                                         data_GoodInventory.InventoryIndex = depotId;
                                         data_GoodInventory.GoodID = goodId;
                                         data_GoodInventory.MerchID = merchId;
@@ -3536,12 +3536,6 @@ namespace XXCloudService.Api.XCCloud
                                         if (!data_GoodInventory.AuthorID.IsNull())
                                         {
                                             errMsg = "已盘点审核的记录不能修改";
-                                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                                        }
-
-                                        if (data_GoodInventory.InventoryType != (int)GoodInventorySource.Depot)
-                                        {
-                                            errMsg = "该盘点信息来源不是仓库";
                                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                                         }
 
@@ -3631,23 +3625,17 @@ namespace XXCloudService.Api.XCCloud
                                         errMsg = "已盘点审核的记录不能重复审核";
                                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                                     }
-
-                                    if (model.InventoryType != (int)GoodInventorySource.Depot)
-                                    {
-                                        errMsg = "该盘点信息来源不是仓库";
-                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                                    }
                                     
                                     var depotId = model.InventoryIndex;
                                     var goodId = model.GoodID;
-                                    if (!data_GoodsStockService.Any(a => a.DepotID == depotId && a.GoodID == goodId))
+                                    if (!data_GoodsStockService.Any(a => a.StockType == (int)StockType.Depot && a.StockIndex == depotId && a.GoodID == goodId))
                                     {
                                         errMsg = "该商品库存信息不存在";
                                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                                     }
 
                                     //获取期初平均成本 
-                                    var stockModel = data_GoodsStockService.GetModels(p => p.DepotID == depotId && p.GoodID == goodId).OrderByDescending(or => or.InitialTime).FirstOrDefault();
+                                    var stockModel = data_GoodsStockService.GetModels(p => p.StockType == (int)StockType.Depot && p.StockIndex == depotId && p.GoodID == goodId).OrderByDescending(or => or.InitialTime).FirstOrDefault();
                                     var initialAvgValue = stockModel.InitialAvgValue ?? 0M;
                                     var initialValue = stockModel.InitialValue ?? 0;
                                     var initialTime = stockModel.InitialTime;

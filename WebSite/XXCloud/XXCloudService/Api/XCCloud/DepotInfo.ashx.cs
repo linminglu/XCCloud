@@ -258,7 +258,7 @@ namespace XXCloudService.Api.XCCloud
                 }
 
                 //获取分组排序后每组第一条
-                var linq = from s in Data_GoodsStockService.N.GetModels(p => p.DepotID == depotId)
+                var linq = from s in Data_GoodsStockService.N.GetModels(p => p.StockType == (int)StockType.Depot && p.StockIndex == depotId)
                            group s by s.GoodID into g
                            select g.OrderByDescending(or => or.InitialTime).FirstOrDefault();
 
@@ -327,8 +327,9 @@ namespace XXCloudService.Api.XCCloud
                                 var minValue = dicPara.Get("minValue").Toint();
                                 var maxValue = dicPara.Get("maxValue").Toint();
 
-                                var data_GoodsStock = Data_GoodsStockService.I.GetModels(p => p.ID == id).FirstOrDefault() ?? new Data_GoodsStock();                                
-                                data_GoodsStock.DepotID = depotId;                                
+                                var data_GoodsStock = Data_GoodsStockService.I.GetModels(p => p.ID == id).FirstOrDefault() ?? new Data_GoodsStock();
+                                data_GoodsStock.StockType = (int)StockType.Depot;
+                                data_GoodsStock.StockIndex = depotId;                                
                                 data_GoodsStock.GoodID = goodId;
                                 data_GoodsStock.MerchID = merchId;
                                 data_GoodsStock.StoreID = storeId;

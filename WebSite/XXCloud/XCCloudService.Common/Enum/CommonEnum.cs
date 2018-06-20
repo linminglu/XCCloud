@@ -1154,21 +1154,21 @@ namespace XCCloudService.Common.Enum
     }
 
     /// <summary>
-    /// 库存盘点添加来源
+    /// 库存类别
     /// </summary>
-    public enum GoodInventorySource
+    public enum StockType
     {      
         [Description("仓库")]
         Depot = 0,
         
         [Description("吧台")]
-        Workstation = 1,
+        WorkStation = 1,
         
         [Description("自助机")]
-        Selfservice = 2,
+        SelfService = 2,
         
-        [Description("游戏机位置")]
-        Device = 3,
+        [Description("游戏机")]
+        GameInfo = 3,
     }
 
     //工作流工作类别

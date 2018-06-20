@@ -18,6 +18,7 @@ namespace XCCloudService.Model.XCCloud
         public string MerchID { get; set; }
         public string StoreID { get; set; }
         public string WorkStation { get; set; }
+        public Nullable<int> StationType { get; set; }
         public Nullable<int> DepotID { get; set; }
         public string MacAddress { get; set; }
         public string DiskID { get; set; }
