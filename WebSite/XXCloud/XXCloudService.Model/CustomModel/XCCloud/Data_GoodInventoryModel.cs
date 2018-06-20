@@ -30,11 +30,7 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         /// <summary>
         /// 商品名称
         /// </summary>
-        public string GoodName { get; set; }
-        /// <summary>
-        /// 盘点类别
-        /// </summary>
-        public int? InventoryType { get; set; }
+        public string GoodName { get; set; }        
         /// <summary>
         /// 添加来源
         /// </summary>

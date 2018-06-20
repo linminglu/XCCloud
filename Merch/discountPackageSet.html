@@ -86,20 +86,26 @@
                             <div class="layui-inline">
                                 <label class="layui-form-label">默认打印凭条</label>
                                 <div class="layui-input-inline" style="height: 36px;border: 1px solid rgb(230,230,230)">
-                                    <input type="checkbox" id="AllowPrint" name="open" lay-skin="switch" lay-filter="AllowPrint" lay-text="允许|禁止">
+                                    <input type="checkbox" id="AllowPrint" name="AllowPrint" lay-skin="switch" lay-filter="AllowPrint" lay-text="允许|禁止">
                                 </div>
                             </div>
                             <br>
                             <div class="layui-inline ">
                                 <label class="layui-form-label">需要授权</label>
                                 <div class="layui-input-inline" style="height: 36px;border: 1px solid rgb(230,230,230)">
-                                    <input type="checkbox" id="ForeAuthorize" name="open" lay-skin="switch" lay-filter="ForeAuthorize" lay-text="允许|禁止">
+                                    <input type="checkbox" id="ForeAuthorize" name="ForeAuthorize" lay-skin="switch" lay-filter="ForeAuthorize" lay-text="允许|禁止">
                                 </div>
                             </div>
                             <div class="layui-inline ">
                                 <label class="layui-form-label">是否允许第三方</label>
                                 <div class="layui-input-inline" style="height: 36px;border: 1px solid rgb(230,230,230)">
-                                    <input type="checkbox" id="AllowInternet" name="open" lay-skin="switch" lay-filter="AllowInternet" lay-text="允许|禁止">
+                                    <input type="checkbox" id="AllowInternet" name="AllowInternet" lay-skin="switch" lay-filter="AllowInternet" lay-text="允许|禁止">
+                                </div>
+                            </div>
+                            <div class="layui-inline ">
+                                <label class="layui-form-label" style="padding: 0 10px; white-space: normal;">是否应用到快速售币套餐</label>
+                                <div class="layui-input-inline" style="height: 36px;border: 1px solid rgb(230,230,230)">
+                                    <input type="checkbox" id="isFirstFood" name="isFirstFood" lay-skin="switch" lay-filter="isFirstFood" lay-text="允许|禁止">
                                 </div>
                             </div>
                             <br>
@@ -552,6 +558,7 @@
     let giftList=[];
     let ticketType='';let ticketTypeStr='';
     let CouponType=''; let CouponTypeStr='';
+    let isFirstFood=0;
     // let EntryCouponFlag='';
 
     let week=[];let weekStr=[];
@@ -609,6 +616,13 @@
                 AllowPrint=1;
             }else {
                 AllowPrint=0;
+            }
+        });
+        form.on('switch(isFirstFood)',function (data) {
+            if(data.elem.checked===true){
+                isFirstFood=1;
+            }else {
+                isFirstFood=0;
             }
         });
         form.on('switch(ForeAuthorize)',function (data) {
@@ -1063,13 +1077,13 @@
             'Time':$('#StartDate').val()+'~'+$('#EndDate').val(),
             'ClientPrice':$('#custorPrice').val(),
             'VIPPrice':$('#VipPrice').val(),
-                'AllFreqType':$('#allFreq option:selected').val(),
-                'AllCount':$('#allFreqCount').val(),
-                'MemberFreqType':$('#memFreq option:selected').val(),
-                'MemberCount':$('#memFreqCount').val(),
-                'PriorityLevel':$('#proLevel').val(),
+            'AllFreqType':$('#allFreq option:selected').val(),
+            'AllCount':$('#allFreqCount').val(),
+            'MemberFreqType':$('#memFreq option:selected').val(),
+            'MemberCount':$('#memFreqCount').val(),
+            'PriorityLevel':$('#proLevel').val(),
             'UpdateLevelID':$('#changeVip option:selected').val(),
-                'UpdateLevelName':$('#changeVip option:selected').text()});
+            'UpdateLevelName':$('#changeVip option:selected').text()});
             newFoodLevelTable(table,FoodLevel,layer,form);
             layer.close(index);
         });
@@ -1120,6 +1134,12 @@
                                 $('#AllowInternet').attr('checked',false);
                                 $('#otherShow').addClass('layui-hide');
                             }
+                            if(arr.AllowQuickFood==1){
+                                $('#isFirstFood').attr('checked',true);
+                            }else {
+                                $('#isFirstFood').attr('checked',false);
+                            }
+                            isFirstFood=arr.AllowQuickFood;
                             AllowPrint=arr.AllowPrint;
                             if(arr.AllowPrint==1){
                                 $('#AllowPrint').attr('checked',true);
@@ -1262,6 +1282,7 @@
                 'allowInternet':AllowInternet,
                 'allowPrint':AllowPrint,
                 'foreAuthorize':ForeAuthorize,
+                'AllowQuickFood':isFirstFood,
                 'meituanID':$('#MeituanID').val(),
                 'DianpinID':$('#DianpinID').val(),
                 'KoubeiID':$('#KoubeiID').val(),

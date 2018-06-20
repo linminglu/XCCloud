@@ -20,6 +20,7 @@ namespace XCCloudService.Model.XCCloud
         public string Note { get; set; }
         public string ImageURL { get; set; }
         public Nullable<int> FoodType { get; set; }
+        public Nullable<int> AllowQuickFood { get; set; }
         public Nullable<int> AllowInternet { get; set; }
         public string MeituanID { get; set; }
         public string DianpinID { get; set; }

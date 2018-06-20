@@ -56,6 +56,12 @@
                     <select name="eAreaID" id="AreaID" lay-filter="eAreaID"></select>
                 </div>
             </div>
+            <div class="layui-inline DepotID" >
+                <label class="layui-form-label">仓库</label>
+                <div class="layui-input-inline">
+                    <select name="eDepotID" id="eDepotID" lay-filter="eDepotID"></select>
+                </div>
+            </div>
             <div class="layui-inline PushBalanceIndex1" >
                 <label class="layui-form-label">扣币种类</label>
                 <div class="layui-input-inline">
@@ -229,6 +235,12 @@
                                     <label class="layui-form-label">区域</label>
                                     <div class="layui-input-inline">
                                         <select name="AreaID1" id="AreaID1" lay-filter="AreaID1"></select>
+                                    </div>
+                                </div>
+                                <div class="layui-inline DepotID" >
+                                    <label class="layui-form-label">仓库</label>
+                                    <div class="layui-input-inline">
+                                        <select name="DepotID" id="DepotID" lay-filter="DepotID"></select>
                                     </div>
                                 </div>
                             </div>
@@ -900,6 +912,7 @@
     let eAreaID,ePushBalanceIndex1,eGameType,
         ePushLevel=0,LotteryModeLow=0,eOnlyExitLottery=0,
         eReadCat=0,echkCheckGift=0,StateLow=1;
+    let eDepotID='';
     //高级模式参数
     let AreaID1,State=1,PushBalanceIndex11=' ',PushBalanceIndex2,GameType,
        OutBalanceIndex='',ReturnCheck=0,OutsideAlertCheck=0,
@@ -912,8 +925,11 @@
         SecondStartInterval=0,
         OutSpeed=35,OutMode=0,
         OutPulse=35,CountLevel=0,OutLevel=0,ExceptOutTest=0,ExceptOutSpeed=45;
-let FreeLotteryRules=[];
-let memberLevelId='';let memberLevels='';let MemberLevelNames='';
+    let DepotID='';
+    let FreeLotteryRules=[];
+    let memberLevelId='';let memberLevels='';let MemberLevelNames='';
+
+    let storeId=JSON.parse(xc.getStorage('logMsg')).storeId;
     //简易模式保存
     function saveEasy(form,layer) {
         let url='/XCCloud/GameInfo?action=SaveGameInfo';
@@ -926,6 +942,7 @@ let memberLevelId='';let memberLevels='';let MemberLevelNames='';
             'PushLevel':ePushLevel,
             'LotteryMode':LotteryModeLow,
             'AreaID':eAreaID,
+            'DepotID':eDepotID,
             'PushBalanceIndex1':ePushBalanceIndex1,
             'OnlyExitLottery':eOnlyExitLottery,
             'ReadCat':eReadCat,
@@ -970,8 +987,9 @@ let memberLevelId='';let memberLevels='';let MemberLevelNames='';
          'chkCheckGift':chkCheckGift1,
          'LowLimit':$('input[name="LowLimit"]').val(),
          'HighLimit':$('input[name="HighLimit"]').val(),
-        'AreaID':AreaID1,
-         FreeLotteryRules:FreeLotteryRules.length>0?FreeLotteryRules:'',
+         'AreaID':AreaID1,
+         'DepotID':DepotID,
+         'FreeLotteryRules':FreeLotteryRules.length>0?FreeLotteryRules:'',
          'Area':$('input[name="hArea"]').val(),
          'ChangeTime':$('input[name="hChangeTime"]').val(),
          'Price':$('input[name="hPrice"]').val(),
@@ -1039,7 +1057,7 @@ let memberLevelId='';let memberLevels='';let MemberLevelNames='';
             data: {parasJson: parasJson},
             success: function (data) {
                 data = JSON.parse(data);
-                if(data.result_code==1){
+                if(data.result_code===1){
                     layer.msg('保存成功！',{time:1500},function () {
                         location.href='gameFileSet.html'
                     })
@@ -1082,6 +1100,8 @@ let memberLevelId='';let memberLevels='';let MemberLevelNames='';
       xc.getMemberTypeDic(token,layer,form,'memberLevels');
       xc.getGroupAreaDic('1',token,layer,form,'AreaID');
       xc.getGroupAreaDic('1',token,layer,form,'AreaID1');
+      xc.getDepotDic('',storeId,token,layer,form,'eDepotID');
+      xc.getDepotDic('',storeId,token,layer,form,'DepotID');
 
       //正价币增加 或者减少一条
       $('#addCoin').on('click',function () {
@@ -1151,6 +1171,9 @@ let memberLevelId='';let memberLevels='';let MemberLevelNames='';
       });
       form.on('select(eAreaID)',(data)=>{
           eAreaID=data.value;
+      });
+      form.on('select(eDepotID)',(data)=>{
+          data.value==='-请选择-'?eDepotID='':eDepotID=data.value;
       });
       form.on('select(ePushBalanceIndex1)',(data)=>{
           ePushBalanceIndex1=data.value;
@@ -1377,6 +1400,9 @@ let memberLevelId='';let memberLevels='';let MemberLevelNames='';
       });
       form.on('select(ExceptOutSpeed)',(data)=>{
           ExceptOutSpeed=data.value;
+      });
+      form.on('select(DepotID)',(data)=>{
+          data.value==='-请选择-'?DepotID='':DepotID=data.value;
       });
       form.on('switch(NotGiveBack)',(data)=>{
           if(data.elem.checked==true){
@@ -1886,7 +1912,10 @@ let memberLevelId='';let memberLevels='';let MemberLevelNames='';
                           echkCheckGift=arr[25].value;
                           StateLow=arr[8].value;
                           xc.getGameType (token,layer,form,'游戏机类型','GameTypeLow',arr[7].value);
-
+                          xc.getDepotDic('',storeId,token,layer,form,'eDepotID',arr[4].value);
+                          xc.getDepotDic('',storeId,token,layer,form,'DepotID',arr[4].value);
+                          eDepotID=arr[4].value;
+                          DepotID=arr[4].value;
                           form.val("hardForm",{
                               'GameId2':arr[1].value,
                               'AreaID1':arr[5].value,

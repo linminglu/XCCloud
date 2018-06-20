@@ -16,6 +16,7 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         public string AllowInternet { get; set; }
         public string AllowPrint { get; set; }
         public string ForeAuthorize { get; set; }
+        public string AllowQuickFood { get; set; }
         public string StartTime { get; set; }
         public string EndTime { get; set; }
     }

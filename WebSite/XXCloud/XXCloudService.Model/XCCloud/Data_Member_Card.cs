@@ -42,5 +42,6 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> CardStatus { get; set; }
         public string OrderID { get; set; }
         public string Verifiction { get; set; }
+        public string StoreID { get; set; }
     }
 }

@@ -385,7 +385,7 @@ namespace XXCloudService.Api.XCCloud
                 }
 
                 string sql = @"select a.FoodID, a.FoodName,a.ClientPrice,a.MemberPrice, b.DictKey as FoodTypeStr, (case a.AllowInternet when 1 then '允许' when 0 then '禁止' else '' end) as AllowInternet, " +
-                    " (case a.AllowPrint when 1 then '允许' when 0 then '禁止' else '' end) as AllowPrint, (case a.ForeAuthorize when 1 then '允许' when 0 then '禁止' else '' end) as ForeAuthorize, " +
+                    " (case a.AllowPrint when 1 then '允许' when 0 then '禁止' else '' end) as AllowPrint, (case a.ForeAuthorize when 1 then '允许' when 0 then '禁止' else '' end) as ForeAuthorize, (case a.AllowQuickFood when 1 then '是' when 0 then '否' else '' end) as AllowQuickFood, " +
                     " (case when a.StartTime is null or a.StartTime='' then '' else convert(varchar,a.StartTime,23) end) as StartTime, (case when a.EndTime is null or a.EndTime='' then '' else convert(varchar,a.EndTime,23) end) as EndTime from Data_FoodInfo a " +
                     " left join Dict_System b on a.FoodType=b.ID " +
                     " where a.MerchID=@MerchId and a.FoodState=1 ";
@@ -586,6 +586,7 @@ namespace XXCloudService.Api.XCCloud
                     DianpinID = FoodInfo.DianpinID,
                     KoubeiID = FoodInfo.KoubeiID,
                     AllowPrint = FoodInfo.AllowPrint,
+                    AllowQuickFood = FoodInfo.AllowQuickFood,
                     ForeAuthorize = FoodInfo.ForeAuthorize,
                     ClientPrice = FoodInfo.ClientPrice,
                     MemberPrice = FoodInfo.MemberPrice,
@@ -622,6 +623,7 @@ namespace XXCloudService.Api.XCCloud
                 var forbidEnd = dicParas.Get("forbidEnd").Todatetime();
                 var tax = dicParas.Get("tax").Todecimal();               
                 var allowInternet = dicParas.Get("allowInternet").Toint();
+                var allowQuickFood = dicParas.Get("allowQuickFood").Toint();
                 var meituanID = dicParas.Get("meituanID");
                 var dianpinID = dicParas.Get("dianpinID");
                 var koubeiID = dicParas.Get("koubeiID");
@@ -666,7 +668,7 @@ namespace XXCloudService.Api.XCCloud
                 {
                     try
                     {
-                        var data_FoodInfo = Data_FoodInfoService.I.GetModels(p=>p.FoodID == foodId).FirstOrDefault() ?? new Data_FoodInfo();
+                        var data_FoodInfo = Data_FoodInfoService.I.GetModels(p => p.FoodID == foodId).FirstOrDefault() ?? new Data_FoodInfo();
                         data_FoodInfo.FoodID = foodId;
                         data_FoodInfo.FoodName = foodName;
                         data_FoodInfo.FoodType = foodType;
@@ -686,6 +688,7 @@ namespace XXCloudService.Api.XCCloud
                         data_FoodInfo.RenewDays = renewDays;
                         data_FoodInfo.MerchID = merchId;
                         data_FoodInfo.ImageURL = imageUrl;
+                        data_FoodInfo.AllowQuickFood = allowQuickFood;
                         if (foodId == 0)
                         {
                             //新增
@@ -758,6 +761,22 @@ namespace XXCloudService.Api.XCCloud
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 
+                        //保存快速套餐, 设置其他快速套餐为0
+                        if (allowQuickFood == 1)
+                        {
+                            foreach (var model in Data_FoodInfoService.I.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.FoodID != foodId && p.AllowQuickFood == 1))
+                            {
+                                model.AllowQuickFood = 0;
+                                Data_FoodInfoService.I.UpdateModel(model);
+                            }
+
+                            if (!Data_FoodInfoService.I.SaveChanges())
+                            {
+                                errMsg = "更新快速售币套餐失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+                        }
+                                                
                         ts.Complete();
                     }
                     catch (Exception ex)
