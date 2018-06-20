@@ -143,7 +143,8 @@ namespace XXCloudService.Api.XCCloud
                                          from c in c1.DefaultIfEmpty()
                                          join d in Data_GameInfoService.N.GetModels(p => p.State == 1) on a.ProjcetID equals d.ID into d1
                                          from d in d1.DefaultIfEmpty()
-                                         join e in Base_StoreInfoService.N.GetModels() on a.StoreID equals e.StoreID
+                                         join e in Base_StoreInfoService.N.GetModels() on a.StoreID equals e.StoreID into e1
+                                         from e in e1.DefaultIfEmpty()
                                          select new
                                          {
                                              ID = a.ID,

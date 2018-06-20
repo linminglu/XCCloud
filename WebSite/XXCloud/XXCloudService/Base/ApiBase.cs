@@ -86,7 +86,7 @@ namespace XCCloudService.Base
             AuthorizeAttribute authorizeAttribute = new AuthorizeAttribute();
             MethodInfo requestMethodInfo = null;
             Dictionary<string, object> dicParas = null;
-            XCCloudUserTokenModel userTokenKeyModel = null;
+            object userTokenKeyModel = null;
             string requestUrl = string.Empty;
             string action = RequestHelper.GetString("action");
             try
@@ -474,7 +474,7 @@ namespace XCCloudService.Base
         }
 
         //验证签名
-        private bool CheckSignKey(SignKeyEnum signKeyEnum, Dictionary<string, object> dicParas, out string signkeyToken, out XCCloudUserTokenModel userTokenKeyModel, out string errMsg)
+        private bool CheckSignKey(SignKeyEnum signKeyEnum, Dictionary<string, object> dicParas, out string signkeyToken, out object userTokenKeyModel, out string errMsg)
         {
             errMsg = string.Empty;
             signkeyToken = string.Empty;
@@ -667,13 +667,13 @@ namespace XCCloudService.Base
             else if (signKeyEnum == SignKeyEnum.XCManaUserHelperToken)
             {
                 string userToken = dicParas.ContainsKey("userToken") ? dicParas["userToken"].ToString() : string.Empty;
-                XCManaUserHelperTokenModel userTokenModel = XCManaUserHelperTokenBusiness.GetManaUserTokenModel(userToken);
-                if (userTokenModel == null)
+                userTokenKeyModel = XCManaUserHelperTokenBusiness.GetManaUserTokenModel(userToken);
+                if (userTokenKeyModel == null)
                 {
                     errMsg = "用户没有授权";
                     return false;
                 }
-                dicParas.Add(Constant.XCManaUserHelperToken, userTokenModel);
+                dicParas.Add(Constant.XCManaUserHelperToken, userTokenKeyModel);
                 return true;
             }
             else if (signKeyEnum == SignKeyEnum.XCGameManamAdminUserToken)
@@ -699,12 +699,45 @@ namespace XCCloudService.Base
         }
 
         /// <summary>
+        /// 检查用户权限
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="errMsg"></param>
+        /// <returns></returns>
+        protected bool CheckUserGrant(string grants, int? userId, out string errMsg)
+        {
+            errMsg = string.Empty;
+
+            if (!string.IsNullOrEmpty(grants))
+            {
+                string sql = " exec SelectUserGrant @UserID";
+                SqlParameter[] parameters = new SqlParameter[1];
+                parameters[0] = new SqlParameter("@UserID", userId);
+                System.Data.DataSet ds = XCCloudBLL.ExecuteQuerySentence(sql, parameters);
+                if (ds.Tables[0].Rows.Count <= 0)
+                {
+                    errMsg = "当前用户无权操作";
+                    return false;
+                }
+
+                var list = Utils.GetModelList<UserGrantModel>(ds.Tables[0]);
+                if (!list.Any(a => a.GrantEN == 1 && grants.Contains(a.DictKey)))
+                {
+                    errMsg = "当前用户无权操作";
+                    return false;
+                }
+            }            
+
+            return true;
+        }
+
+        /// <summary>
         /// 验证访问权限
         /// </summary>
         /// <param name="context">上下文信息</param>
         /// <param name="errMsg">错误信息</param>
         /// <returns></returns>
-        private bool CheckAuthorize(AuthorizeAttribute authorizeAttribute, SignKeyEnum signKeyEnum, Dictionary<string, object> dicParas, XCCloudUserTokenModel userTokenKeyModel, out string errMsg)
+        private bool CheckAuthorize(AuthorizeAttribute authorizeAttribute, SignKeyEnum signKeyEnum, Dictionary<string, object> dicParas, object userTokenKeyModel, out string errMsg)
         {
             errMsg = string.Empty;
 
@@ -714,7 +747,7 @@ namespace XCCloudService.Base
                 case SignKeyEnum.XCGameMemberToken: break;
                 case SignKeyEnum.XCGameMemberOrMobileToken: break;
                 case SignKeyEnum.XCGameUserCacheToken: break;
-                case SignKeyEnum.XCCloudUserCacheToken:
+                case SignKeyEnum.XCManaUserHelperToken:
                     {
                         if (userTokenKeyModel == null)
                         {
@@ -722,16 +755,31 @@ namespace XCCloudService.Base
                             return false;
                         }
 
+                        var utk = userTokenKeyModel as XCManaUserHelperTokenModel;
+                        if (!CheckUserGrant(authorizeAttribute.Grants, utk.UserId, out errMsg))
+                            return false;
+
+                        break;
+                    }
+                case SignKeyEnum.XCCloudUserCacheToken:
+                    {                        
+                        if (userTokenKeyModel == null)
+                        {
+                            errMsg = "用户令牌已失效, 请重新登录";
+                            return false;
+                        }
+
                         bool accessible = true;
+                        var utk = userTokenKeyModel as XCCloudUserTokenModel;
                         if (!string.IsNullOrEmpty(authorizeAttribute.Roles))
                         {
-                            string roleName = Enum.GetName(typeof(RoleType), userTokenKeyModel.LogType);
+                            string roleName = Enum.GetName(typeof(RoleType), utk.LogType);
                             accessible = authorizeAttribute.Roles.Contains(roleName);
                         }
 
                         if (!accessible && !string.IsNullOrEmpty(authorizeAttribute.Merches))
                         {
-                            var TokenDataModel = userTokenKeyModel.DataModel as TokenDataModel;
+                            var TokenDataModel = utk.DataModel as TokenDataModel;
                             if (TokenDataModel != null && TokenDataModel.MerchType != null)
                             {
                                 string merchType = Enum.GetName(typeof(MerchType), TokenDataModel.MerchType);
@@ -745,27 +793,8 @@ namespace XCCloudService.Base
                             return false;
                         }
 
-                        if (!string.IsNullOrEmpty(authorizeAttribute.Grants))
-                        {
-                            var userId = userTokenKeyModel.LogId.Toint();
-
-                            string sql = " exec SelectUserGrant @UserID";
-                            SqlParameter[] parameters = new SqlParameter[1];
-                            parameters[0] = new SqlParameter("@UserID", userId);
-                            System.Data.DataSet ds = XCCloudBLL.ExecuteQuerySentence(sql, parameters);
-                            if (ds.Tables[0].Rows.Count <= 0)
-                            {
-                                errMsg = "当前用户无权操作";
-                                return false;
-                            }
-
-                            var list = Utils.GetModelList<UserGrantModel>(ds.Tables[0]);
-                            if (!list.Any(a => a.GrantEN == 1 && authorizeAttribute.Grants.Contains(a.DictKey)))
-                            {
-                                errMsg = "当前用户无权操作";
-                                return false;
-                            }
-                        }
+                        if (!CheckUserGrant(authorizeAttribute.Grants, utk.LogId.Toint(), out errMsg))
+                            return false;
 
                         break;
                     }

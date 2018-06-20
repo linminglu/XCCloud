@@ -676,7 +676,7 @@ namespace XXCloudService.Api.XCCloud
             }
         }
 
-        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.MethodToken, SysIdAndVersionNo = false)]
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object SaveBindDevice(Dictionary<string, object> dicParas)
         {
             try

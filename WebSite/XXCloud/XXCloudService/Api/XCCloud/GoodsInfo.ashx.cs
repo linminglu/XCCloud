@@ -3396,14 +3396,15 @@ namespace XXCloudService.Api.XCCloud
         /// </summary>
         /// <param name="dicParas"></param>
         /// <returns></returns>
-        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCManaUserHelperToken, SysIdAndVersionNo = false)]
         public object GetStockIndexDic(Dictionary<string, object> dicParas)
         {
             try
             {
-                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
-                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                XCManaUserHelperTokenModel userTokenModel = (XCManaUserHelperTokenModel)(dicParas[Constant.XCManaUserHelperToken]);
+                string storeId = userTokenModel.StoreId;
+                string merchId = storeId.Substring(0, 6);
+                var logId = userTokenModel.UserId;
 
                 string errMsg = string.Empty;
                 if (!dicParas.Get("stockType").Validint("库存类别", out errMsg))
@@ -3415,13 +3416,25 @@ namespace XXCloudService.Api.XCCloud
                 {
                     case (int)StockType.Depot:
                         {
-                            var linq = from a in Base_DepotInfoService.I.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && (p.StoreID ?? "").Equals(storeId, StringComparison.OrdinalIgnoreCase))
+                            var linq = from a in Base_DepotInfoService.N.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && (p.StoreID ?? "").Equals(storeId, StringComparison.OrdinalIgnoreCase))
+                                       join b in Base_StoreInfoService.N.GetModels() on a.StoreID equals b.StoreID
                                        select new
                                        {
                                            StockIndex = a.ID,
-                                           StockName = a.DepotName
+                                           StockName = b.StoreName + a.DepotName
                                        };
-                               
+
+                            var err = string.Empty;
+                            if (CheckUserGrant("总部盘点", logId, out err))
+                            {
+                                linq = linq.Union(from a in Base_DepotInfoService.I.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && (p.StoreID ?? "") == "")
+                                                  select new
+                                                  {
+                                                      StockIndex = a.ID,
+                                                      StockName = "总部-" + a.DepotName
+                                                  });
+                            }
+
                             return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, linq);
                         }
                     case (int)StockType.WorkStation:
@@ -3472,14 +3485,13 @@ namespace XXCloudService.Api.XCCloud
         /// </summary>
         /// <param name="dicParas"></param>
         /// <returns></returns>
-        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCManaUserHelperToken, SysIdAndVersionNo = false)]
         public object GetGoodsInventory(Dictionary<string, object> dicParas)
         {
             try
             {
-                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
-                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                XCManaUserHelperTokenModel userTokenModel = (XCManaUserHelperTokenModel)(dicParas[Constant.XCManaUserHelperToken]);
+                string storeId = userTokenModel.StoreId;
 
                 string errMsg = string.Empty;
                 if (!dicParas.Get("stockType").Validint("库存类别", out errMsg))
@@ -3542,15 +3554,16 @@ namespace XXCloudService.Api.XCCloud
             }
         }
 
-        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        [Authorize(Grants = "库存盘点")]
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCManaUserHelperToken, SysIdAndVersionNo = false)]
         public object SaveGoodsInventory(Dictionary<string, object> dicParas)
         {
             try
             {
-                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
-                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
-                var logId = userTokenKeyModel.LogId.Toint();
+                XCManaUserHelperTokenModel userTokenModel = (XCManaUserHelperTokenModel)(dicParas[Constant.XCManaUserHelperToken]);
+                string storeId = userTokenModel.StoreId;
+                string merchId = storeId.Substring(0, 6);
+                var logId = userTokenModel.UserId;
 
                 string errMsg = string.Empty;
                 if (!dicParas.GetArray("goodsInventoryList").Validarray("盘点列表", out errMsg))
@@ -3565,6 +3578,7 @@ namespace XXCloudService.Api.XCCloud
                     {            
                         var data_GoodInventoryService = Data_GoodInventoryService.I;
                         var data_GoodsStockService = Data_GoodsStockService.I;
+                        var base_DepotInfoService = Base_DepotInfoService.I;
  
                         if (goodsInventoryList != null && goodsInventoryList.Count() >= 0)
                         {
@@ -3599,7 +3613,15 @@ namespace XXCloudService.Api.XCCloud
                                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                                     }
 
+                                    if (stockType == (int)StockType.Depot && !base_DepotInfoService.Any(p => p.ID == stockIndex))
+                                    {
+                                        errMsg = "该商品仓库信息不存在";
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    }
+
                                     var data_GoodsStock = data_GoodsStockService.GetModels(p => p.StockType == stockType && p.StockIndex == stockIndex && p.GoodID == goodId).OrderByDescending(or => or.InitialTime).FirstOrDefault();
+
+                                    var base_DepotInfo = stockType == (int)StockType.Depot ? base_DepotInfoService.GetModels(p => p.ID == stockIndex).FirstOrDefault() : null;
 
                                     var data_GoodInventory = new Data_GoodInventory();                                    
                                     data_GoodInventory.PredictCount = data_GoodsStock.RemainCount;
@@ -3611,7 +3633,7 @@ namespace XXCloudService.Api.XCCloud
                                     data_GoodInventory.InventoryIndex = stockIndex;
                                     data_GoodInventory.GoodID = goodId;
                                     data_GoodInventory.MerchID = merchId;
-                                    data_GoodInventory.StoreID = storeId;
+                                    data_GoodInventory.StoreID = base_DepotInfo != null ? base_DepotInfo.StoreID : storeId;
                                     data_GoodInventoryService.AddModel(data_GoodInventory);
                                 }
                                 else

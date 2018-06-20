@@ -294,7 +294,7 @@
                         <option>-请选择-</option>
                         <option value="0">入口</option>
                         <option value="1">出口</option>
-                        <option value="2">自动</option>
+                        <!--<option value="2">自动</option>-->
                     </select>
                 </div>
             </div>
@@ -822,16 +822,16 @@
 
         });
         form.on('select(feeType)',function (data) {
-            feeType=data.value;
+            data.value==='-请选择-'?feeType='':feeType=data.value;
         });
         form.on('select(feeBalance)',function (data) {
-            feeBalance=data.value;
+            data.value==='-请选择-'?feeBalance='': feeBalance=data.value;
         });
         form.on('select(feekinds)',function (data) {
-            feekinds=data.value;
+            data.value==='-请选择-'?feekinds='':feekinds=data.value;
         });
         form.on('select(feeWays)',function (data) {
-            feeWays=data.value;
+            data.value==='-请选择-'?feeWays='':feeWays=data.value;
         });
         form.on('switch(Lock)',function (data) {
             if(data.elem.checked==true){
