@@ -327,6 +327,12 @@ namespace XXCloudService.Api.XCCloud
                                 var minValue = dicPara.Get("minValue").Toint();
                                 var maxValue = dicPara.Get("maxValue").Toint();
 
+                                if (!Base_GoodsInfoService.I.Any(a => a.ID == goodId && a.AllowStorage == 1))
+                                {
+                                    errMsg = "该商品不能入库";
+                                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                }
+
                                 var data_GoodsStock = Data_GoodsStockService.I.GetModels(p => p.ID == id).FirstOrDefault() ?? new Data_GoodsStock();
                                 data_GoodsStock.StockType = (int)StockType.Depot;
                                 data_GoodsStock.StockIndex = depotId;                                
