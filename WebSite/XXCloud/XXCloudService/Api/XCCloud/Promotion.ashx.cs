@@ -262,17 +262,41 @@ namespace XXCloudService.Api.XCCloud
             return true;
         }
 
-        private bool saveFoodDetail(string storeIds, int iFoodId, object[] foodDetials, out string errMsg)
+        private bool isQuickFood(object el)
+        {
+            if ((el as IDictionary<string, object>) != null)
+            {
+                var dicPara = new Dictionary<string, object>((el as IDictionary<string, object>), StringComparer.OrdinalIgnoreCase);
+                var foodDetailType = dicPara.Get("foodDetailType").Toint();
+                if (foodDetailType == (int)FoodDetailType.Coin)
+                {
+                    var containId = dicPara.Get("containId").Toint();
+                    return Dict_BalanceTypeService.I.Any(a => a.ID == containId && a.MappingType == (int)HKType.Coin);
+                }                
+            }
+
+            return false;
+        }
+
+        private bool saveFoodDetail(string storeIds, int? allowQuickFood, int iFoodId, object[] foodDetials, out string errMsg)
         {
             errMsg = string.Empty;
-            if (foodDetials != null && foodDetials.Count() >= 0)
+
+            //快速售币套餐
+            if (allowQuickFood == 1 && (foodDetials == null || foodDetials.Count() != 1 || !isQuickFood(foodDetials[0])))
             {
+                errMsg = "快速售币套餐内容必须有且仅有一个代币种类的项目";
+                return false;
+            }
+
+            if (foodDetials != null && foodDetials.Count() >= 0)
+            {                
                 //先删除，后添加
                 foreach (var model in Data_Food_DetialService.I.GetModels(p=>p.FoodID == iFoodId))
                 {
                     Data_Food_DetialService.I.DeleteModel(model);
                 }
-
+                
                 foreach (IDictionary<string, object> el in foodDetials)
                 {
                     if (el != null)
@@ -730,7 +754,7 @@ namespace XXCloudService.Api.XCCloud
                         }
 
                         //保存套餐内容信息
-                        if (!saveFoodDetail(storeIds, foodId, foodDetials, out errMsg))
+                        if (!saveFoodDetail(storeIds, allowQuickFood, foodId, foodDetials, out errMsg))
                         {
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }

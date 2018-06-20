@@ -151,7 +151,7 @@
                     <div class="layui-col-md12">
                         <div class="layui-form-item">
                             <div class="layui-inline">
-                                <label class="layui-form-label">不可用日期</label>
+                                <label class="layui-form-label">不可售卖日期</label>
                                 <div class="layui-input-inline" style="width: 110px">
                                     <select id="noTimeType" lay-filter="noUsePried">
                                         <option value="0">当天</option>
@@ -534,7 +534,8 @@
             ,{field:'FoodTypeStr', title: '套餐类别', align: 'center'}
             ,{field:'AllowInternet', title: '是否允许第三方', align: 'center',templet:'#internet'}
             ,{field:'AllowPrint', title: '是否允许打印', align: 'center',templet:'#print'}
-            ,{field:'ForeAuthorize', title: '是否允许前台授权', align: 'center',templet:'#authorize'}
+            ,{field:'ForeAuthorize', title: '是否允许前台授权', align: 'center',templet:'#authorize',width:145}
+            ,{field:'AllowQuickFood', title: '是否快速售币套餐', align: 'center',templet:'#allowQuickFood',width:145}
             ,{field:'StartTime', title: '启用时间', align: 'center'}
             ,{field:'EndTime', title: '停用时间', align: 'center'}
             ,{fixed: 'right', title: '操作', width:160, align:'center', toolbar: '#barDemo'}
@@ -954,7 +955,7 @@
                 // 'BalanceType':vipCoinType,
                 'OperateType':OperateType,
                 'ContainId':vipCoinType,
-                'ProjectName':'数字币',
+                'ProjectName':'游戏币',
                 'ContainCount':$('#vipCoinCount').val(),
                 'WeightValue':$('#weightValue').val()
             });
@@ -1518,6 +1519,13 @@
     <input type="checkbox" checked name="switch" lay-skin="switch" lay-text="允许|禁止" class="tb_check" lay-filter="test"disabled >
     {{# }else{ }}
     <input type="checkbox" name="switch" lay-skin="switch" lay-text="允许|禁止" class="tb_check" lay-filter="test" disabled>
+    {{#  } }}
+</script>
+<script type="text/html" id="allowQuickFood">
+    {{# if(d.AllowQuickFood==='是'){ }}
+    <input type="checkbox" checked name="switch" lay-skin="switch" lay-text="是|否" class="tb_check" lay-filter="test"disabled >
+    {{# }else{ }}
+    <input type="checkbox" name="switch" lay-skin="switch" lay-text="是|否" class="tb_check" lay-filter="test" disabled>
     {{#  } }}
 </script>
 </html>
