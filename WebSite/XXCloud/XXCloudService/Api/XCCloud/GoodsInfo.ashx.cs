@@ -3595,7 +3595,7 @@ namespace XXCloudService.Api.XCCloud
 
                                     if (data_GoodInventoryService.Any(p => p.InventoryType == stockType && p.InventoryIndex == stockIndex && p.GoodID == goodId && (p.AuthorID ?? 0) == 0))
                                     {
-                                        errMsg = "该商品存在未审核的盘点记录, 不能重复盘点";
+                                        errMsg = "该商品存在未审核的盘点记录, 不能盘点";
                                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                                     }
 
