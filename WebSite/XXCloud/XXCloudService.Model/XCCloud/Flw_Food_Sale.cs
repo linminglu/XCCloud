@@ -15,10 +15,11 @@ namespace XCCloudService.Model.XCCloud
     public partial class Flw_Food_Sale
     {
         public string ID { get; set; }
+        public string MerchID { get; set; }
         public string StoreID { get; set; }
         public Nullable<int> FlowType { get; set; }
         public Nullable<int> SingleType { get; set; }
-        public Nullable<int> FoodID { get; set; }
+        public string FoodID { get; set; }
         public Nullable<int> SaleCount { get; set; }
         public Nullable<int> Point { get; set; }
         public Nullable<int> PointBalance { get; set; }
@@ -27,12 +28,12 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<decimal> OpenFee { get; set; }
         public Nullable<decimal> RenewFee { get; set; }
         public Nullable<decimal> ChangeFee { get; set; }
+        public Nullable<decimal> ReissueFee { get; set; }
         public Nullable<decimal> TotalMoney { get; set; }
-        public string Note { get; set; }
         public Nullable<int> BuyFoodType { get; set; }
-        public string MerchID { get; set; }
         public Nullable<decimal> TaxFee { get; set; }
         public Nullable<decimal> TaxTotal { get; set; }
+        public string Note { get; set; }
         public string Verifiction { get; set; }
     }
 }

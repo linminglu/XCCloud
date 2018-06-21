@@ -40,14 +40,11 @@ namespace XCCloudService.DAL.Base
                         var str = val.Contains('.') ? val.TrimEnd('0') : val;//去除小数点后尾部0
                         value = Convert.ChangeType(str, typeof(Decimal));
                     }
-                    //else if (Nullable.GetUnderlyingType(pi.PropertyType) == typeof(DateTime))
-                    //{
-                    //    //如果是短日期类型
-                    //    if (value.Todatetime() == value.Todate())
-                    //    {
-                    //        value = Utils.ConvertFromDatetime(value.Todate(), "yyyy-MM-dd");
-                    //    }
-                    //}
+                    else if (Nullable.GetUnderlyingType(pi.PropertyType) == typeof(DateTime))
+                    {
+                        //如果是短日期类型
+                        value = Utils.ConvertFromDatetime(value.Todatetime(), "yyyy-MM-dd HH:mm:ss");
+                    }
 
                     fields.Add(pi.Name, value.ToString());
                 }

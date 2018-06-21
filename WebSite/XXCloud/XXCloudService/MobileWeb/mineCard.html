@@ -10,13 +10,18 @@
     <!-- 引入rem自适应类库 -->
     <script src="js/ydui.flexible.js"></script>
     <style>
-        .section_image{width: 1rem;height: 0.7rem;display: inline-block;margin-top: 0.36rem;}
-        .section_items{display:flex;flex-direction: row;justify-content: space-between;padding:0.3rem;border-top:1px solid #ddd;position: relative;margin-top: 0.2rem;border-bottom: 0.01rem solid #1E90FF;}
-        .section_cont{width:4rem;font-size:0.26rem;color:#a9a9a9;}
-        .BuyCoins{display: inline-block;width:0.8rem;height:0.8rem;font-size:0.26rem;border-radius:100%;background:#d24a58;line-height: 0.8rem;color:#fff;text-align: center; margin-top:0.3rem;  }
+        .section_image{width: 1rem;height: 0.7rem;display: inline-block;margin-top: 0.36rem;min-width: 1rem;max-width: 1rem;margin-right: 0.2rem;}
+        .section_items{display:flex;flex-direction: row;margin:0.3rem;padding:0.2rem;border-radius: 3px;position: relative;}
+        .section_cont{width:4rem;font-size:0.26rem;color:#666;}
+        .BuyCoins{display: inline-block;padding:0.1rem;height:0.5rem;font-size:0.26rem;border-radius:0.05rem;background:#10aeff;line-height: 0.3rem;color:#fff;text-align: center; margin-top:0.3rem;position: absolute;bottom: 0.3rem;right: 0.3rem;}
+        .section_items:nth-child(5n+1){background-image: linear-gradient(120deg, #89f7fe 0%, #66a6ff 100%);}
+        .section_items:nth-child(5n+2){background-image: linear-gradient(to top, #accbee 0%, #e7f0fd 100%);}
+        .section_items:nth-child(5n+3){background-image: linear-gradient(to right, #f78ca0 0%, #f9748f 19%, #fd868c 60%, #fe9a8b 100%);}
+        .section_items:nth-child(5n+4){background: #C9CCD3; background-image: linear-gradient(-180deg, rgba(255,255,255,0.50) 0%, rgba(0,0,0,0.50) 100%); background-blend-mode: lighten;}
+        .section_items:nth-child(5n+5){background-image: linear-gradient(45deg, #93a5cf 0%, #e4efe9 100%);}
         .hid_contSty{display: flex;flex-direction: row;margin-top: 0.1rem;}
         .hid_contStys{width: 1.6rem;text-align: left;color: #d24a58;}
-        .cardIcon{width: 0.8rem;height: 0.8rem;margin-right: 0.1rem;}
+        .cardIcon{width: 0.5rem;height: 0.5rem;margin-top: 0.16rem;}
         .iconSty{color: #1E90FF; line-height: 0.8rem;display: flex;flex-direction: row-reverse;font-size: 0.35rem;margin-top: 0.3rem;margin-right: 0.2rem;}
         [v-cloak] {
             display: none;
@@ -28,18 +33,21 @@
 <div id="app" v-cloak>
     <yd-navbar title="莘拍档">
         <router-link to="index.html" slot="left">
-            <yd-navbar-back-icon>返回</yd-navbar-back-icon>
+            <yd-navbar-back-icon @click.native="goBack">返回</yd-navbar-back-icon>
         </router-link>
-        <!--<router-link to="#" slot="right">-->
-            <!--<yd-navbar-next-icon></yd-navbar-next-icon>-->
-        <!--</router-link>-->
-        <!---->
+        <router-link slot="right">
+            <img slot="icon" class="cardIcon" src="images/addpic.png" @click="tiedCard">
+        </router-link>
     </yd-navbar>
-    <div class="iconSty" @click="tiedCard"><span>我要绑卡</span><img slot="icon" class="cardIcon" src="images/tiedCard.png"></div>
-    <div v-for="(item,index) in memberCard" :key="index">
-        <div class='section_items' @click="chooseCard(index)">
-            <img class="section_image" slot="img" src="images/card.png">
+    <!--<div class="iconSty" @click="tiedCard"><span>我要绑卡</span><img slot="icon" class="cardIcon" src="images/tiedCard.png"></div>-->
+    <div>
+        <div class='section_items' v-for="(item,index) in memberCard" :key="index" @click="chooseCard(index)">
+            <img class="section_image" slot="img" src="images/vipCard.png">
             <div class="section_cont">
+                <div class='hid_contSty'>
+                    <p class='hid_contStys'>开卡门店：</p>
+                    <p>{{item.StoreName}}</p>
+                </div>
                 <div class='hid_contSty'>
                     <p class='hid_contStys'>卡号：</p>
                     <p class="width3">{{item.ICCardId}}</p>
@@ -53,38 +61,10 @@
                     <p>{{item.EndDate}}</p>
                 </div>
             </div>
-            <div class="BuyCoins" @click.stop="topUp(index)">
-                <p>流水账单</p>
-            </div>
+            <span class="BuyCoins" @click.stop="topUp(index)">流水账单</span>
         </div>
-        <!--<div class='hid_cont' v-if="item.hidden">-->
-            <!--<div class="hid_contLeft">-->
-                <!--<div class='hid_contSty'>-->
-                    <!--<p class='hid_contStys'>币余额：</p>-->
-                    <!--<p>{{item.balance}}</p>-->
-                <!--</div>-->
-                <!--<div class='hid_contSty'>-->
-                    <!--<p class='hid_contStys'>彩票：</p>-->
-                    <!--<p>{{item.lottery}}</p>-->
-                <!--</div>-->
-                <!--<div class='hid_contSty'>-->
-                    <!--<p class='hid_contStys'>积分：</p>-->
-                    <!--<p>{{item.point}}</p>-->
-                <!--</div>-->
-            <!--</div>-->
-            <!--<div class="hid_contLeft">-->
-                <!--<div class='hid_contSty'>-->
-                    <!--<p class='hid_contStys'>到期日期：</p>-->
-                    <!--<p>{{item.endDate}}</p>-->
-                <!--</div>-->
-                <!--<div class='hid_contSty'>-->
-                    <!--<p class='hid_contStys'>押金：</p>-->
-                    <!--<p>{{item.deposit}}</p>-->
-                <!--</div>-->
-                <!--<yd-button @click.stop.native="laundryList(index)" size="small">流水账单</yd-button>-->
-            <!--</div>-->
-        <!--</div>-->
     </div>
+
     <!--<yd-tabbar fixed=true active-color="#000000">-->
         <!--<yd-tabbar-item title="首页" @click.native="register1">-->
             <!--<yd-icon name="home" slot="icon" size="0.54rem"></yd-icon>-->
@@ -133,24 +113,19 @@
                     that.msgPrompt(res.data);
                     console.log(res.data);
                     if (res.data.result_code === '1') {
-                        that.memberCard = res.data.result_data;
+                        var memberCard_ = [];
+                        for (var i = 0; i < res.data.result_data.length; i++){
+                            var ICCardId = res.data.result_data[i].ICCardId;
+                            ICCardId=ICCardId.substring(ICCardId.length-10);
+                            memberCard_.push({
+                                EndDate: res.data.result_data[i].EndDate,
+                                LevelName: res.data.result_data[i].LevelName,
+                                Id: res.data.result_data[i].Id,
+                                ICCardId: ICCardId
+                            })
+                        }
+                        that.memberCard = memberCard_;
                         console.log(that.memberCard)
-//                        for (var i = 0; i < res.data.result_data.length; i++) memberCard_.push({
-//                            memberLevelName: res.data.result_data[i].MemberLevelName,
-//                            mobile: res.data.result_data[i].Phone,
-//                            endDate: res.data.result_data[i].EndTime,
-//                            icCardID: res.data.result_data[i].ICCardID,
-//                            storeId: res.data.result_data[i].StoreId,
-//                            storeName: res.data.result_data[i].StoreName,
-//                            memberToken: res.data.result_data[i].Token,
-//                            hidden: false,
-//                            balance: "",
-//                            point: "",
-//                            deposit: "",
-//                            lottery: ""
-//                        });
-//                        that.memberCard = memberCard_;
-//                        console.log(that.memberCard)
                     }
                 }).catch(function (err) {
                     that.$dialog.loading.close();
@@ -161,6 +136,10 @@
 //          绑卡跳转
             tiedCard:function () {
                 window.location.href = "tiedCard.html"
+            },
+//          返回
+            goBack:function () {
+                window.location.href = "index.html";
             },
 //          选择卡
             chooseCard:function (index) {

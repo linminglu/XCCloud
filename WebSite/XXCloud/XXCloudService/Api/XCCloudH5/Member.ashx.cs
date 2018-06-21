@@ -116,6 +116,7 @@ namespace XXCloudService.Api.XCCloudH5
                         MemberCard cardInfo = new MemberCard();
                         cardInfo.CardId = card.ID;
                         cardInfo.ICCardId = card.ICCardID;
+                        cardInfo.StoreName = Base_StoreInfoService.I.GetModels(s => s.StoreID == card.StoreID).FirstOrDefault().StoreName ?? "";
                         cardInfo.MemberLevelId = card.MemberLevelID.Value;
                         cardInfo.MemberLevelName = XCCloudStoreBusiness.GetMemberLevel(card.MemberLevelID.Value).MemberLevelName;
                         //卡余额
@@ -405,6 +406,7 @@ namespace XXCloudService.Api.XCCloudH5
                 {
                     Id = t.ID,
                     ICCardId = t.ICCardID,
+                    StoreId = t.StoreID,
                     LevelId = t.MemberLevelID,
                     CreateDate = t.CreateTime,
                     EndDate = t.EndDate
@@ -412,6 +414,8 @@ namespace XXCloudService.Api.XCCloudH5
                 {
                     Id = t.Id,
                     ICCardId = t.ICCardId,
+                    StoreId = t.StoreId,
+                    StoreName = Base_StoreInfoService.I.GetModels(s=>s.StoreID == t.StoreId).FirstOrDefault().StoreName ?? "",
                     LevelName = Data_MemberLevelService.I.GetModels(m=>m.MemberLevelID == t.LevelId).FirstOrDefault().MemberLevelName,
                     CreateDate = t.CreateDate.Value.ToString("yyyy-MM-dd"),
                     EndDate = t.EndDate.Value.ToString("yyyy-MM-dd")
@@ -461,6 +465,7 @@ namespace XXCloudService.Api.XCCloudH5
                 MemberCard mc = new MemberCard();
                 mc.CardId = card.ID;
                 mc.ICCardId = card.ICCardID;
+                mc.StoreName = Base_StoreInfoService.I.GetModels(s => s.StoreID == card.StoreID).FirstOrDefault().StoreName ?? "";
                 mc.MemberLevelId = card.MemberLevelID.Value;
                 mc.MemberLevelName = XCCloudStoreBusiness.GetMemberLevel(card.MemberLevelID.Value).MemberLevelName;
                 //卡余额

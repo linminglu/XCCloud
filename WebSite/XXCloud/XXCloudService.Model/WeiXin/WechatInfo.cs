@@ -58,6 +58,8 @@ namespace XCCloudService.Model.WeiXin
 
         public string ICCardId { get; set; }
 
+        public string StoreName { get; set; }
+
         public int MemberLevelId { get; set; }
 
         public string MemberLevelName { get; set; }

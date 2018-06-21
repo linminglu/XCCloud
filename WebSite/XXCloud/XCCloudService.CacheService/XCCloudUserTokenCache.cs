@@ -32,11 +32,29 @@ namespace XCCloudService.CacheService
             UserTokenList.Add(model);
         }
 
+        //public static XCCloudUserTokenModel GetModel(string token)
+        //{
+        //    if (ExistToken(token))
+        //    {
+        //        XCCloudUserTokenModel model = UserTokenList.FirstOrDefault(t => t.Token == token);
+        //        if (model != null)
+        //        {
+        //            SetKeyExpire(XCCloudUserTokenCacheKey);
+        //        }
+        //        return model;
+        //    }
+        //    else
+        //    {
+        //        Remove(token);
+        //        return null;
+        //    }
+        //}
+
         public static XCCloudUserTokenModel GetModel(string token)
         {
             if (ExistToken(token))
             {
-                XCCloudUserTokenModel model = UserTokenList.FirstOrDefault(t => t.Token == token);
+                XCCloudUserTokenModel model = RedisCacheHelper.HashGet<XCCloudUserTokenModel>(XCCloudUserTokenCacheKey, token);
                 if (model != null)
                 {
                     SetKeyExpire(XCCloudUserTokenCacheKey);
@@ -47,7 +65,7 @@ namespace XCCloudService.CacheService
             {
                 Remove(token);
                 return null;
-            }
+            }            
         }
 
         /// <summary>
@@ -55,9 +73,9 @@ namespace XCCloudService.CacheService
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        public static Task<bool> SetKeyExpire(string key)
+        public static bool SetKeyExpire(string key)
         {
-            return RedisCacheHelper.KeyExpireAsync(key, new TimeSpan(0, 0, 0, CacheExpires.CommonPageQueryDataCacheTime));
+            return RedisCacheHelper.KeyExpire(key, new TimeSpan(0, 0, 0, CacheExpires.CommonPageQueryDataCacheTime));
         }
 
         public static bool ExistToken(string key)

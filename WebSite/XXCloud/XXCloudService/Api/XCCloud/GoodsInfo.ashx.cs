@@ -3417,11 +3417,11 @@ namespace XXCloudService.Api.XCCloud
                     case (int)StockType.Depot:
                         {
                             var linq = from a in Base_DepotInfoService.N.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && (p.StoreID ?? "").Equals(storeId, StringComparison.OrdinalIgnoreCase))
-                                       join b in Base_StoreInfoService.N.GetModels() on a.StoreID equals b.StoreID
                                        select new
                                        {
                                            StockIndex = a.ID,
-                                           StockName = b.StoreName + "-" + a.DepotName
+                                           StockName = a.DepotName,
+                                           Source = 1
                                        };
 
                             var err = string.Empty;
@@ -3431,7 +3431,8 @@ namespace XXCloudService.Api.XCCloud
                                                   select new
                                                   {
                                                       StockIndex = a.ID,
-                                                      StockName = "总部-" + a.DepotName
+                                                      StockName = a.DepotName,
+                                                      Source = 0
                                                   });
                             }
 

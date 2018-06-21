@@ -81,9 +81,9 @@
                     <div class="layui-form-mid" style="color: red">友情提醒：若选择计时收费，请设置收费规则。<br>网络支付功能请到集团后台中的《套餐设定》进行添加套餐。</div>
                 </div>
             </div>
-            <div class="layui-form-item mustBindBox layui-hide">
-                <button type="button" class="layui-btn layui-btn-danger" id="mustBind">绑定设备</button>
-            </div>
+            <!--<div class="layui-form-item mustBindBox layui-hide">-->
+                <!--<button type="button" class="layui-btn layui-btn-danger" id="mustBind">绑定设备</button>-->
+            <!--</div>-->
             <div class="layui-form-item">
                 <label class="layui-form-label">备注</label>
                 <div class="layui-input-block">
@@ -382,7 +382,7 @@
             ,{fixed: 'right',title: '操作', width:320, align:'center', toolbar: '#barDemo'}]
     };
     xc.getInitData(parm);
-let addOrModi=false;
+// let addOrModi=false;
    let id='';
    let DeviceList=[];let feeRule=[]; let projectBandPrice=[];
    let index1;let index2;let index3;
@@ -421,7 +421,7 @@ let addOrModi=false;
       $('.add').on('click',()=>{  //弹窗
           $('.layreset').trigger('click');
             id='';guestIndex='';
-          addOrModi=true;
+          // addOrModi=true;
            feeType=''; feeBalance=''; feekinds=''; feeWays=''; Lock=0;
             PushBalanceIndex1=''; PushBalanceIndex2=''; ReadCat=1; PushLevel=1;AdjOrder=0;
             $('#timesModel').find('input[type="checkbox"]').attr({'checked':true});
@@ -607,7 +607,7 @@ let addOrModi=false;
                     success: function (data) {
                         data = JSON.parse(data);
                         if (data.result_code == 1) {
-                            addOrModi=false;
+                            // addOrModi=false;
                             let arr;
                             arr=data.result_data;
                             xc.getGroupAreaDic(0,token,layer,form,'Area',arr.AreaType);
@@ -682,10 +682,8 @@ let addOrModi=false;
                         data = JSON.parse(data);
                         console.log(data);
                         if (data.result_code == 1) {
-
                             setDeviceTable(table,data.result_data);
                             DeviceList=data.result_data;
-
                             index1=layer.open({
                                 title:'新增',
                                 type:1,
@@ -816,12 +814,12 @@ let addOrModi=false;
         form.on('switch(AdjOrder)',function (data) {
             if(data.elem.checked==true){
                 AdjOrder=1;
-                if(addOrModi){
-                    $('.mustBindBox').removeClass('layui-hide');
-                }
+                // if(addOrModi){
+                //     $('.mustBindBox').removeClass('layui-hide');
+                // }
             }else {
                 AdjOrder=0;
-                $('.mustBindBox').addClass('layui-hide');
+                // $('.mustBindBox').addClass('layui-hide');
             }
         });
         form.on('switch(ReadFace)',function (data) {
@@ -852,17 +850,6 @@ let addOrModi=false;
                 AllowCrah=0
             }
         });
-        $('#mustBind').click(function () {
-            setDeviceTable(table,[]);
-            DeviceList=[];
-            $('.adjBox').removeClass('layui-hide');
-            index1=layer.open({
-                title:'新增',
-                type:1,
-                area:'900px',
-                content:$('#bindModel')
-            })
-        });
         $('#saveAdj').click(function () {
             layer.close(index1);
         });
@@ -885,7 +872,6 @@ let addOrModi=false;
                 canBind=true;
             }
           if(canBind){
-                if(AdjOrder==0){
                     let obj={'projectid':id,
                         'DeviceID':DeviceID,
                         'WorkType':WorkType,
@@ -934,20 +920,6 @@ let addOrModi=false;
                             }
                         }
                     })
-                }else if(AdjOrder==1){
-                    DeviceList.push({
-                        'DeviceID':DeviceID,
-                        'WorkType':WorkType,
-                        'ReadFace':ReadFace,
-                        'ReadCard':ReadCard,
-                        'ReadQRCode':ReadQRCode,
-                        'AllowCash':AllowCrah,
-                        'BindDeviceID':routerList
-                    });
-                    setDeviceTable(table,DeviceList);
-                    layer.close(index2);
-                }
-
           }
 
         });

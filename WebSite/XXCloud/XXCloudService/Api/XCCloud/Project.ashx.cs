@@ -717,7 +717,8 @@ namespace XXCloudService.Api.XCCloud
                 var id = dicParas.Get("id").Toint(0);
                 var projectId = dicParas.Get("projectId").Toint();
                 var deviceId = dicParas.Get("deviceId").Toint();
-                var bindDeviceId = dicParas.Get("bindDeviceId").Toint();                
+                var bindDeviceId = dicParas.Get("bindDeviceId").Toint();  
+                var workType = dicParas.Get("workType").Toint();    
 
                 //开启EF事务
                 using (TransactionScope ts = new TransactionScope())
@@ -797,6 +798,7 @@ namespace XXCloudService.Api.XCCloud
                         //更新绑定设备信息
                         deviceInfo.GameIndexID = gameIndex;
                         deviceInfo.BindDeviceID = bindDeviceId;
+                        deviceInfo.SiteName = ((ProjectBindDeviceWorkType?)workType).GetDescription();
                         base_DeviceInfoService.UpdateModel(deviceInfo);
 
                         //保存设备绑定信息

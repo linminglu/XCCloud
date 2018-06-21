@@ -39,7 +39,7 @@ namespace XCCloudService.Common.Redis
         {
             get
             {
-                if (_instance == null)
+                if (_instance == null || !_instance.IsConnected)
                 {
                     lock (Locker)
                     {

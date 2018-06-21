@@ -14,14 +14,20 @@
         .margin_top{margin-top: 0.2rem;}
         .index-change{border-bottom: 0.02rem solid #eeeeee; color: #ff3030;margin-right: 0.1rem;}
         .cardIcon{width: 0.4rem;height: 0.4rem;margin-right: 0.1rem;}
-        .iconRight{justify-content:flex-end;margin-top: 0.2rem;margin-right: 0.6rem;color: #ff3030;}
-        .vipCard{width: 5rem;height: 2.5rem;margin: 0.3rem auto;position: relative;}
-        .vipCard img{width: 5rem;height: 2.5rem;}
-        .MemberLevel{position: absolute;top: 1.2rem;right: 0.5rem;font-size: 0.3rem;font-weight: 700;color: #ffb400;}
-        .ICCard{position: absolute;bottom: 0.1rem;width:5rem;text-align: center;color: goldenrod;}
-        .addCard{width: 5rem;height: 2.5rem;margin: 0.3rem auto;text-align: center;}
-        .addCard img{width: 2rem;height: 2rem;}
-        .addCard p{margin-top: 0.2rem;font-size: 0.26rem;line-height: 0.3rem;}
+        .iconRight{justify-content:flex-end;margin-top: 0.1rem;margin-right: 0.6rem;color: #ff3030;margin-bottom: 0.1rem;}
+        .vipCard{display:flex;flex-direction: row;padding-left:1rem;border-radius: 3px;position: relative;width: 100%;height: 1.5rem;background-image: linear-gradient(to right, #fff 0%, #00c9ff 100%);}
+        .section_image{width: 1rem;height: 0.7rem;display: inline-block;margin-top: 0.16rem;min-width: 1rem;max-width: 1rem;margin-right: 0.2rem;}
+        .section_cont{font-size:0.26rem;color:#666;line-height: 0.4rem;}
+        .stored{font-size: 0.36rem;font-weight: 700;color: #666;margin-top: 0.08rem;}
+        .MemberLevel{margin-left: 0.3rem;margin-top: 0.1rem;font-size: 0.3rem;font-weight: 700;color: #ffb400;}
+        .ICCard{color: goldenrod;margin-top: 0.1rem;}
+        .addCard{width: 5rem;height: 1.5rem;margin: 0.1rem auto;text-align: center;}
+        .addCard img{width: 1rem;height: 1rem;}
+        .addCard p{margin-top: 0.1rem;font-size: 0.26rem;line-height: 0.3rem;}
+        .yd-gridstitle{font-size: 0.16rem;padding-top: 0.1rem;}
+        .yd-grids-txt span{display: block;}
+        .yd-grids-txt .spanSty{font-weight: 600;margin-top: 0.15rem;}
+
         [v-cloak] {
             display: none;
         }
@@ -36,25 +42,29 @@
                     <p class="iconSty"><img slot="icon" class="cardIcon" src="images/user.png"><span>你好，{{nickname}}</span></p>
                     <p class="iconSty margin_top"><img slot="icon" class="cardIcon" src="images/member.png"><span class="index-change" @click="loginFnc">完善信息</span><span>享受更多优惠</span></p>
                 </div>
-                <!--<span slot="right">图标是image{{hka,}}</span>-->
             </yd-cell-item>
             <yd-grids-group title="绑定的会员卡">
                 <div class="iconSty iconRight" @click="mineCard"><img slot="icon" class="cardIcon" src="images/switch.png"><span>切换会员卡</span></div>
                 <div class="vipCard" v-if="tiedCard">
-                    <img src="images/vipCard.png">
-                    <p class="MemberLevel">{{MemberLevelName}}</p>
-                    <p class="ICCard">{{ICCardId}}</p>
+                    <!--<img class="section_image" slot="img" src="images/vipCard.png">-->
+                    <div class="section_cont">
+                        <p class='stored'>开卡门店</p>
+                        <p class="MemberLevel">{{MemberLevelName}}</p>
+                        <p class="ICCard">{{ICCardId}}</p>
+                    </div>
                 </div>
                 <div class="addCard" v-if="!tiedCard" @click="mineCard">
                     <img src="images/addpic.png">
                     <p>请添加卡</p>
                 </div>
+                <yd-grids-group :rows="3">
+                    <yd-grids-item v-for="item in cardBalanceList" v-if="tiedCard">
+                        <span slot="text">{{item.BalanceName}}：</span>
+                        <span slot="text" class="spanSty">{{item.Quantity}}</span>
+                    </yd-grids-item>
+                </yd-grids-group>
             </yd-grids-group>
-            <yd-grids-group :rows="3">
-                <yd-grids-item v-for="item in cardBalanceList" v-if="tiedCard">
-                    <span slot="text">{{item.BalanceName}}：{{item.Quantity}}</span>
-                </yd-grids-item>
-            </yd-grids-group>
+
             <yd-grids-group :rows="3" title="开心玩">
                 <yd-grids-item v-for="(item,index) in playData" @click.native="playFnc(index)">
                     <img :src="item.imgUrl" slot="icon"/>
@@ -174,7 +184,9 @@
                     if (res.data.result_code === '1') {
                         that.CurrentCardInfo =res.data.result_data.CurrentCardInfo;
                         that.MemberLevelName =res.data.result_data.CurrentCardInfo.MemberLevelName;
-                        that.ICCardId =res.data.result_data.CurrentCardInfo.ICCardId;
+                        var ICCardId = res.data.result_data.CurrentCardInfo.ICCardId;
+                        ICCardId=ICCardId.substring(0,6)+"****"+ICCardId.substring(ICCardId.length-6);
+                        that.ICCardId =ICCardId;
                         that.MemberId =res.data.result_data.MemberId;
                         that.headimgurl =res.data.result_data.Info.headimgurl;
                         that.nickname =res.data.result_data.Info.nickname;

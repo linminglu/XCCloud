@@ -59,7 +59,7 @@ namespace XCCloudService.Common
             var value = 0;
             if (!int.TryParse(t.ToString(), out value) || value < 0)
             {
-                errMsg = discription + "格式不正确，须为非负整数";
+                errMsg = discription + "格式不正确，须为大于或等于0的整数";
                 return false;
             }
 
@@ -85,7 +85,7 @@ namespace XCCloudService.Common
             var value = 0M;
             if (!decimal.TryParse(t.ToString(), out value) || value < 0)
             {
-                errMsg = discription + "格式不正确，须为非负数";
+                errMsg = discription + "格式不正确，须为大于或等于0的数值";
                 return false;
             }
 
@@ -111,7 +111,7 @@ namespace XCCloudService.Common
             var value = 0;
             if (!int.TryParse(t.ToString(), out value) || value <= 0)
             {
-                errMsg = discription + "格式不正确，须为正整数";
+                errMsg = discription + "格式不正确，须为大于0的整数";
                 return false;
             }
 
@@ -137,7 +137,7 @@ namespace XCCloudService.Common
             var value = 0M;
             if (!decimal.TryParse(t.ToString(), out value) || value <= 0)
             {
-                errMsg = discription + "格式不正确，须为正实数";
+                errMsg = discription + "格式不正确，须为大于0的数值";
                 return false;
             }
 

@@ -102,7 +102,6 @@
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_Digite_Coin_Detail" Width="1.5" PointX="32.75" PointY="30.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_Food_Exit" Width="1.5" PointX="30.75" PointY="33.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_Food_ExitDetail" Width="1.5" PointX="32.75" PointY="33.75" />
-        <EntityTypeShape EntityType="XCCloudDBModel.Flw_Food_Sale" Width="1.5" PointX="34.75" PointY="0.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_Food_Sale_Pay" Width="1.5" PointX="4.75" PointY="34.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_Food_SaleDetail" Width="1.5" PointX="34.75" PointY="5.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_Game_Watch" Width="1.5" PointX="34.75" PointY="9.75" />
@@ -176,6 +175,7 @@
         <EntityTypeShape EntityType="XCCloudDBModel.Data_FoodInfo" Width="1.5" PointX="27.375" PointY="41.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_Project_BindDevice" Width="1.5" PointX="5.375" PointY="37.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_ProjectInfo" Width="1.5" PointX="35.375" PointY="42.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.Flw_Food_Sale" Width="1.5" PointX="19.375" PointY="43.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

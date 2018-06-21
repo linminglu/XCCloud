@@ -122,7 +122,6 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Flw_Digite_Coin_Detail> Flw_Digite_Coin_Detail { get; set; }
         public virtual DbSet<Flw_Food_Exit> Flw_Food_Exit { get; set; }
         public virtual DbSet<Flw_Food_ExitDetail> Flw_Food_ExitDetail { get; set; }
-        public virtual DbSet<Flw_Food_Sale> Flw_Food_Sale { get; set; }
         public virtual DbSet<Flw_Food_Sale_Pay> Flw_Food_Sale_Pay { get; set; }
         public virtual DbSet<Flw_Food_SaleDetail> Flw_Food_SaleDetail { get; set; }
         public virtual DbSet<Flw_Game_Watch> Flw_Game_Watch { get; set; }
@@ -196,5 +195,6 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Data_FoodInfo> Data_FoodInfo { get; set; }
         public virtual DbSet<Data_Project_BindDevice> Data_Project_BindDevice { get; set; }
         public virtual DbSet<Data_ProjectInfo> Data_ProjectInfo { get; set; }
+        public virtual DbSet<Flw_Food_Sale> Flw_Food_Sale { get; set; }
     }
 }

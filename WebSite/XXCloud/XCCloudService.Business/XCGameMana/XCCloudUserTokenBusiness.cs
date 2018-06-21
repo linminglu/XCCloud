@@ -17,11 +17,11 @@ namespace XCCloudService.Business.XCGameMana
         {
             //设置用户token      
             string newToken = System.Guid.NewGuid().ToString("N");
-            string token = string.Empty;
-            if (GetUserTokenModel(logId, logType, out token))
-            {
-                XCCloudUserTokenCache.Remove(token);
-            }
+            //string token = string.Empty;
+            //if (GetUserTokenModel(logId, logType, out token))
+            //{
+            //    XCCloudUserTokenCache.Remove(token);
+            //}
 
             RemoveUserToken(logId);
 
@@ -61,7 +61,7 @@ namespace XCCloudService.Business.XCGameMana
         {
             lock (syncRoot)
             {
-                var query = XCCloudUserTokenCache.UserTokenList.Where(t => t.LogId.Equals(logId)).Select(o=>o.Token).ToArray();
+                var query = XCCloudUserTokenCache.UserTokenList.Where(t => t.LogId.Equals(logId)).Select(o => o.Token).ToArray();
                 foreach (var item in query)
                 {
                     XCCloudUserTokenCache.Remove(item);

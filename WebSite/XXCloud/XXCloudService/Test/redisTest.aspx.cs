@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Entity.Validation;
 using System.Linq;
+using System.Threading;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -130,6 +131,24 @@ namespace XXCloudService.Test
             else
             {
                 Response.Write("11111");
+            }
+        }
+
+        protected void Button8_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string key = "testWriteExpireKey";
+                RedisCacheHelper.StringSet(key, "aadfs");
+                for (int i = 0; i < 5; i++)
+                {
+                    RedisCacheHelper.KeyExpire(key, new TimeSpan(0, 0, 0, CacheExpires.CommonPageQueryDataCacheTime));
+                    //Thread.Sleep(10);
+                }
+            }
+            catch(Exception ex)
+            {
+                Response.Write(ex.Message);
             }
         }
     }

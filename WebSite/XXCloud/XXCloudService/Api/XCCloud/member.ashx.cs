@@ -1624,238 +1624,238 @@ namespace XCCloudService.Api.XCCloud
         {
             try
             {
-                //string errMsg = string.Empty;
-                //string ICCardId = dicParas.ContainsKey("ICCardId") ? dicParas["ICCardId"].ToString().Trim() : string.Empty;
-                ////退款方式： 1 仅退款 2 退款又退卡
-                //string backType = dicParas.ContainsKey("backType") ? dicParas["backType"].ToString().Trim() : string.Empty;
-                //if (string.IsNullOrEmpty(backType))
-                //{
-                //    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "退款方式无效");
-                //}
+                string errMsg = string.Empty;
+                string ICCardId = dicParas.ContainsKey("ICCardId") ? dicParas["ICCardId"].ToString().Trim() : string.Empty;
+                //退款方式： 1 仅退款 2 退款又退卡
+                string backType = dicParas.ContainsKey("backType") ? dicParas["backType"].ToString().Trim() : string.Empty;
+                if (string.IsNullOrEmpty(backType))
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "退款方式无效");
+                }
 
-                //Data_Member_Card memberCard = Data_Member_CardService.I.GetModels(t => t.ICCardID == ICCardId).FirstOrDefault();
-                //if (string.IsNullOrEmpty(ICCardId) || memberCard == null)
-                //{
-                //    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员卡号无效");
-                //}
+                Data_Member_Card memberCard = Data_Member_CardService.I.GetModels(t => t.ICCardID == ICCardId).FirstOrDefault();
+                if (string.IsNullOrEmpty(ICCardId) || memberCard == null)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员卡号无效");
+                }
 
-                //if (backType == "1" && memberCard.ParentCard != "0")
-                //{
-                //    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "附属卡不能退款");
-                //}
+                if (backType == "1" && memberCard.ParentCard != "0")
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "附属卡不能退款");
+                }
 
-                //XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                //string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
-                //string merchID = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
-                //string workStation = (userTokenKeyModel.DataModel as TokenDataModel).WorkStation;
-                //int userId = userTokenKeyModel.LogId.Toint(0);
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+                string merchID = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string workStation = (userTokenKeyModel.DataModel as TokenDataModel).WorkStation;
+                int userId = userTokenKeyModel.LogId.Toint(0);
 
-                ////获取会员余额及兑换规则比列
-                //List<MemberBalanceExchangeRateModel> memberBalanceExchange = XCCloudService.Business.XCCloud.MemberBusiness.GetMemberBalanceAndExchangeRate(storeId, ICCardId);
+                //获取会员余额及兑换规则比列
+                List<MemberBalanceExchangeRateModel> memberBalanceExchange = XCCloudService.Business.XCCloud.MemberBusiness.GetMemberBalanceAndExchangeRate(storeId, ICCardId);
 
-                ////可退款集合
-                ////memberBalanceExchange = memberBalanceExchange.Where(t => t.ExchangeRate != 0).ToList();
+                //可退款集合
+                //memberBalanceExchange = memberBalanceExchange.Where(t => t.ExchangeRate != 0).ToList();
 
-                ////退款集合
-                //List<BalanceExchangeDataModel> backList = new List<BalanceExchangeDataModel>();
-                ////退卡集合
-                //List<CardDepositDataModel> cardDepositList = new List<CardDepositDataModel>();
+                //退款集合
+                List<BalanceExchangeDataModel> backList = new List<BalanceExchangeDataModel>();
+                //退卡集合
+                List<CardDepositDataModel> cardDepositList = new List<CardDepositDataModel>();
 
-                //string balanceExchanges = dicParas.ContainsKey("balanceExchanges") ? dicParas["balanceExchanges"].ToString().Trim() : string.Empty;
-                //if (!string.IsNullOrEmpty(balanceExchanges))
-                //{
-                //    backList = JsonConvert.DeserializeObject<List<BalanceExchangeDataModel>>(balanceExchanges);
-                //}
+                string balanceExchanges = dicParas.ContainsKey("balanceExchanges") ? dicParas["balanceExchanges"].ToString().Trim() : string.Empty;
+                if (!string.IsNullOrEmpty(balanceExchanges))
+                {
+                    backList = JsonConvert.DeserializeObject<List<BalanceExchangeDataModel>>(balanceExchanges);
+                }
 
-                //string cardDeposits = dicParas.ContainsKey("cardDeposits") ? dicParas["cardDeposits"].ToString().Trim() : string.Empty;
-                //if (!string.IsNullOrEmpty(cardDeposits))
-                //{
-                //    cardDepositList = JsonConvert.DeserializeObject<List<CardDepositDataModel>>(cardDeposits);
-                //}
+                string cardDeposits = dicParas.ContainsKey("cardDeposits") ? dicParas["cardDeposits"].ToString().Trim() : string.Empty;
+                if (!string.IsNullOrEmpty(cardDeposits))
+                {
+                    cardDepositList = JsonConvert.DeserializeObject<List<CardDepositDataModel>>(cardDeposits);
+                }
 
-                //using (TransactionScope ts = new TransactionScope(TransactionScopeOption.RequiresNew))
-                //{
-                //    DateTime currDate = DateTime.Now.Date;
-                //    //当前班次
-                //    Flw_Schedule schedule = Flw_ScheduleService.I.GetModels(t => t.StoreID == storeId && t.UserID == userId && t.CheckDate == currDate && t.State == 0 && t.WorkStation == workStation).FirstOrDefault();
-                //    if (schedule == null)
-                //    {
-                //        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "当前班次为空，不能进行退款操作");
-                //    }
+                using (TransactionScope ts = new TransactionScope(TransactionScopeOption.RequiresNew))
+                {
+                    DateTime currDate = DateTime.Now.Date;
+                    //当前班次
+                    Flw_Schedule schedule = Flw_ScheduleService.I.GetModels(t => t.StoreID == storeId && t.UserID == userId && t.CheckDate == currDate && t.State == 0 && t.WorkStation == workStation).FirstOrDefault();
+                    if (schedule == null)
+                    {
+                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "当前班次为空，不能进行退款操作");
+                    }
 
-                //    //主卡退款退卡流水号
-                //    string backSerialNo = RedisCacheHelper.CreateStoreSerialNo(storeId);
+                    //主卡退款退卡流水号
+                    string backSerialNo = RedisCacheHelper.CreateStoreSerialNo(storeId);
 
-                //    //储值金退款总和
-                //    decimal backTotal = 0m;
-                //    //退款明细说明
-                //    string strCardExitNote = string.Empty;
+                    //储值金退款总和
+                    decimal backTotal = 0m;
+                    //退款明细说明
+                    string strCardExitNote = string.Empty;
 
-                //    //退卡
-                //    if (cardDepositList.Count > 0)
-                //    {
-                //        foreach (var item in cardDepositList)
-                //        {
-                //            Data_Member_Card card = Data_Member_CardService.I.GetModels(t => t.ID == item.CardId).FirstOrDefault();
-                //            card.CardStatus = 0;
-                //            //修改卡状态为不可用
-                //            if (!Data_Member_CardService.I.Update(card, false))
-                //            {
-                //                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "退卡失败");
-                //            }
-                //            //退附属卡
-                //            if (card.ParentCard != "0")
-                //            {
-                //                //写入附属卡退卡记录
-                //                Flw_MemberCard_Exit mce = new Flw_MemberCard_Exit();
-                //                mce.OrderID = RedisCacheHelper.CreateStoreSerialNo(storeId);
-                //                mce.MerchID = merchID;
-                //                mce.StoreID = storeId;
-                //                mce.MemberID = card.MemberID;
-                //                mce.OperateType = 1;
-                //                mce.CardID = card.ICCardID;
-                //                mce.Deposit = card.Deposit;
-                //                mce.ExitMoney = 0;
-                //                mce.WorkStation = workStation;
-                //                mce.UserID = userId;
-                //                mce.ScheduldID = schedule.ID.ToString();
-                //                mce.CheckDate = schedule.CheckDate;
-                //                mce.Note = "附属卡退卡";
+                    //退卡
+                    if (cardDepositList.Count > 0)
+                    {
+                        foreach (var item in cardDepositList)
+                        {
+                            Data_Member_Card card = Data_Member_CardService.I.GetModels(t => t.ID == item.CardId).FirstOrDefault();
+                            card.CardStatus = 0;
+                            //修改卡状态为不可用
+                            if (!Data_Member_CardService.I.Update(card, false))
+                            {
+                                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "退卡失败");
+                            }
+                            //退附属卡
+                            if (card.ParentCard != "0")
+                            {
+                                //写入附属卡退卡记录
+                                Flw_MemberCard_Exit mce = new Flw_MemberCard_Exit();
+                                mce.OrderID = RedisCacheHelper.CreateStoreSerialNo(storeId);
+                                mce.MerchID = merchID;
+                                mce.StoreID = storeId;
+                                mce.MemberID = card.MemberID;
+                                mce.OperateType = 1;
+                                mce.CardID = card.ICCardID;
+                                mce.Deposit = card.Deposit;
+                                mce.ExitMoney = 0;
+                                mce.WorkStation = workStation;
+                                mce.UserID = userId;
+                                mce.ScheduldID = schedule.ID.ToString();
+                                mce.CheckDate = schedule.CheckDate;
+                                mce.Note = "附属卡退卡";
 
-                //                strCardExitNote += string.Format("附属卡号：{0}，卡押金：{1}；" + Environment.NewLine, card.ICCardID, card.Deposit);
-                //                if (!Flw_MemberCard_ExitService.I.Add(mce, false))
-                //                {
-                //                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "附属卡退卡失败");
-                //                }
-                //            }
-                //        }
-                //    }
-                //    //退款
-                //    if (backList.Count > 0)
-                //    {
-                //        foreach (var item in backList)
-                //        {
-                //            //源余额种类实体
-                //            Data_Card_Balance cardBalance = Data_Card_BalanceService.I.GetModels(b => b.BalanceIndex == item.BalanceIndex && b.MemberID == memberCard.MemberID).FirstOrDefault();
-                //            MemberBalanceExchangeRateModel exchange = memberBalanceExchange.FirstOrDefault(t => t.BalanceIndex == item.BalanceIndex);
+                                strCardExitNote += string.Format("附属卡号：{0}，卡押金：{1}；" + Environment.NewLine, card.ICCardID, card.Deposit);
+                                if (!Flw_MemberCard_ExitService.I.Add(mce, false))
+                                {
+                                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "附属卡退卡失败");
+                                }
+                            }
+                        }
+                    }
+                    //退款
+                    if (backList.Count > 0)
+                    {
+                        foreach (var item in backList)
+                        {
+                            //源余额种类实体
+                            Data_Card_Balance cardBalance = Data_Card_BalanceService.I.GetModels(b => b.BalanceIndex == item.BalanceIndex && b.CardIndex == memberCard.ID).FirstOrDefault();
+                            MemberBalanceExchangeRateModel exchange = memberBalanceExchange.FirstOrDefault(t => t.BalanceIndex == item.BalanceIndex);
 
-                //            //其他余额种类兑换储值金
-                //            if (exchange.BalanceIndex != exchange.TargetBalanceIndex)
-                //            {
-                //                //判断要扣除的数量是否大于当前余额数量
-                //                if (item.ExchangeQty > cardBalance.Balance)
-                //                {
-                //                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "退款失败");
-                //                }
+                            //其他余额种类兑换储值金
+                            if (exchange.BalanceIndex != exchange.TargetBalanceIndex)
+                            {
+                                //判断要扣除的数量是否大于当前余额数量
+                                if (item.ExchangeQty > cardBalance.Balance)
+                                {
+                                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "退款失败");
+                                }
 
-                //                //源余额减少
-                //                cardBalance.Balance = cardBalance.Balance - item.ExchangeQty;
-                //                if (!Data_Card_BalanceService.I.Update(cardBalance, false))
-                //                {
-                //                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "余额更新失败");
-                //                }
+                                //源余额减少
+                                cardBalance.Balance = cardBalance.Balance - item.ExchangeQty;
+                                if (!Data_Card_BalanceService.I.Update(cardBalance, false))
+                                {
+                                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "余额更新失败");
+                                }
 
-                //                //目标余额种类实体(储值金)
-                //                Data_Card_Balance targetBalance = Data_Card_BalanceService.I.GetModels(b => b.BalanceIndex == exchange.TargetBalanceIndex && b.MemberID == memberCard.MemberID).FirstOrDefault();
-                //                //储值金增加
-                //                targetBalance.Balance += item.ExchangeValue;
-                //                if (!Data_Card_BalanceService.I.Update(targetBalance, false))
-                //                {
-                //                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "余额更新失败");
-                //                }
+                                //目标余额种类实体(储值金)
+                                Data_Card_Balance targetBalance = Data_Card_BalanceService.I.GetModels(b => b.BalanceIndex == exchange.TargetBalanceIndex && b.CardIndex == memberCard.ID).FirstOrDefault();
+                                //储值金增加
+                                targetBalance.Balance += item.ExchangeValue;
+                                if (!Data_Card_BalanceService.I.Update(targetBalance, false))
+                                {
+                                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "余额更新失败");
+                                }
 
-                //                //增加会员卡余额互转记录
-                //                Flw_MemberCard_BalanceCharge balanceChange = new Flw_MemberCard_BalanceCharge();
-                //                balanceChange.ID = RedisCacheHelper.CreateStoreSerialNo(storeId);
-                //                balanceChange.MerchID = merchID;
-                //                balanceChange.StoreID = storeId;
-                //                balanceChange.MemberID = cardBalance.MemberID;
-                //                balanceChange.SourceBalanceIndex = item.BalanceIndex;
-                //                balanceChange.SourceCount = item.ExchangeQty;
-                //                balanceChange.SourceRemain = cardBalance.Balance;
-                //                balanceChange.TargetBalanceIndex = exchange.TargetBalanceIndex;
-                //                balanceChange.TargetCount = item.ExchangeValue;
-                //                balanceChange.TargetRemain = targetBalance.Balance;
-                //                balanceChange.OpTime = DateTime.Now;
-                //                balanceChange.OpUserID = userId;
-                //                balanceChange.ScheduleID = schedule.ID;
-                //                balanceChange.Workstation = workStation;
-                //                balanceChange.CheckDate = schedule.CheckDate;
-                //                balanceChange.ExitID = backSerialNo;///***主卡退卡记录ID***
-                //                balanceChange.Note = string.Format("{0}兑换{1}", exchange.TypeName, exchange.TargetTypeName);
-                //                if (!Flw_MemberCard_BalanceChargeService.I.Add(balanceChange, false))
-                //                {
-                //                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, string.Format("{0}兑换{1}失败", exchange.TypeName, exchange.TargetTypeName));
-                //                }
-                //                strCardExitNote += string.Format("退{0}：{1}，价值{2}：{3}；" + Environment.NewLine, exchange.TypeName, item.ExchangeQty, exchange.TargetTypeName, item.ExchangeValue);
-                //            }
-                //            else
-                //            {
-                //                strCardExitNote += string.Format("退{0}：{1}；" + Environment.NewLine, exchange.TargetTypeName, item.ExchangeValue);
-                //            }
-                //            //总退款额累加
-                //            backTotal += item.ExchangeValue;
-                //        }
+                                //增加会员卡余额互转记录
+                                Flw_MemberCard_BalanceCharge balanceChange = new Flw_MemberCard_BalanceCharge();
+                                balanceChange.ID = RedisCacheHelper.CreateStoreSerialNo(storeId);
+                                balanceChange.MerchID = merchID;
+                                balanceChange.StoreID = storeId;
+                                balanceChange.MemberID = memberCard.MemberID;
+                                balanceChange.SourceBalanceIndex = item.BalanceIndex;
+                                balanceChange.SourceCount = item.ExchangeQty;
+                                balanceChange.SourceRemain = cardBalance.Balance;
+                                balanceChange.TargetBalanceIndex = exchange.TargetBalanceIndex;
+                                balanceChange.TargetCount = item.ExchangeValue;
+                                balanceChange.TargetRemain = targetBalance.Balance;
+                                balanceChange.OpTime = DateTime.Now;
+                                balanceChange.OpUserID = userId;
+                                balanceChange.ScheduleID = schedule.ID;
+                                balanceChange.Workstation = workStation;
+                                balanceChange.CheckDate = schedule.CheckDate;
+                                balanceChange.ExitID = backSerialNo;///***主卡退卡记录ID***
+                                balanceChange.Note = string.Format("{0}兑换{1}", exchange.TypeName, exchange.TargetTypeName);
+                                if (!Flw_MemberCard_BalanceChargeService.I.Add(balanceChange, false))
+                                {
+                                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, string.Format("{0}兑换{1}失败", exchange.TypeName, exchange.TargetTypeName));
+                                }
+                                strCardExitNote += string.Format("退{0}：{1}，价值{2}：{3}；" + Environment.NewLine, exchange.TypeName, item.ExchangeQty, exchange.TargetTypeName, item.ExchangeValue);
+                            }
+                            else
+                            {
+                                strCardExitNote += string.Format("退{0}：{1}；" + Environment.NewLine, exchange.TargetTypeName, item.ExchangeValue);
+                            }
+                            //总退款额累加
+                            backTotal += item.ExchangeValue;
+                        }
 
-                //        //商户映射到储值金的币种类
-                //        var balanceTypes = Dict_BalanceTypeService.I.GetModels(t => t.MerchID == merchID && t.State == 1 && t.MappingType == 4).ToList();
-                //        //当前用户余额集合
-                //        var balances = Data_Card_BalanceService.I.GetModels(t => t.MerchID == merchID && t.MemberID == memberCard.MemberID).ToList();
+                        //商户映射到储值金的币种类
+                        var balanceTypes = Dict_BalanceTypeService.I.GetModels(t => t.MerchID == merchID && t.State == 1 && t.MappingType == 4).ToList();
+                        //当前用户余额集合
+                        var balances = Data_Card_BalanceService.I.GetModels(t => t.MerchID == merchID && t.CardIndex == memberCard.ID).ToList();
 
-                //        //储值金
-                //        Data_Card_Balance exitBalance = balances.Where(t => balanceTypes.Any(b => b.ID == t.BalanceIndex)).FirstOrDefault();
-                //        //剩余储值金余额
-                //        decimal remainMoney = exitBalance.Balance.Value - backTotal;
-                //        exitBalance.Balance = remainMoney;
-                //        if (remainMoney < 0 || !Data_Card_BalanceService.I.Update(exitBalance, false))
-                //        {
-                //            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "余额更新失败");
-                //        }
+                        //储值金
+                        Data_Card_Balance exitBalance = balances.Where(t => balanceTypes.Any(b => b.ID == t.BalanceIndex)).FirstOrDefault();
+                        //剩余储值金余额
+                        decimal remainMoney = exitBalance.Balance.Value - backTotal;
+                        exitBalance.Balance = remainMoney;
+                        if (remainMoney < 0 || !Data_Card_BalanceService.I.Update(exitBalance, false))
+                        {
+                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "余额更新失败");
+                        }
 
-                //        //主卡退卡、退款信息
-                //        Flw_MemberCard_Exit memberParentCardExit = new Flw_MemberCard_Exit();
-                //        memberParentCardExit.OrderID = backSerialNo;
-                //        memberParentCardExit.MerchID = merchID;
-                //        memberParentCardExit.StoreID = storeId;
-                //        memberParentCardExit.MemberID = memberCard.MemberID;
-                //        memberParentCardExit.OperateType = Convert.ToInt32(backType);
-                //        memberParentCardExit.CardID = memberCard.ICCardID;
-                //        memberParentCardExit.Deposit = backType == "0" ? memberCard.Deposit : 0;
-                //        memberParentCardExit.ExitMoney = backTotal;
-                //        memberParentCardExit.RemainMoney = remainMoney; //储值金余额
-                //        memberParentCardExit.WorkStation = workStation;
-                //        memberParentCardExit.UserID = userId;
-                //        memberParentCardExit.ScheduldID = schedule.ID.ToString();
-                //        memberParentCardExit.CheckDate = schedule.CheckDate;
-                //        memberParentCardExit.Note = strCardExitNote;
-                //        if (!Flw_MemberCard_ExitService.I.Add(memberParentCardExit, false))
-                //        {
-                //            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "主卡退款失败");
-                //        }
-                //    }
+                        //主卡退卡、退款信息
+                        Flw_MemberCard_Exit memberParentCardExit = new Flw_MemberCard_Exit();
+                        memberParentCardExit.OrderID = backSerialNo;
+                        memberParentCardExit.MerchID = merchID;
+                        memberParentCardExit.StoreID = storeId;
+                        memberParentCardExit.MemberID = memberCard.MemberID;
+                        memberParentCardExit.OperateType = Convert.ToInt32(backType);
+                        memberParentCardExit.CardID = memberCard.ICCardID;
+                        memberParentCardExit.Deposit = backType == "0" ? memberCard.Deposit : 0;
+                        memberParentCardExit.ExitMoney = backTotal;
+                        memberParentCardExit.RemainMoney = remainMoney; //储值金余额
+                        memberParentCardExit.WorkStation = workStation;
+                        memberParentCardExit.UserID = userId;
+                        memberParentCardExit.ScheduldID = schedule.ID.ToString();
+                        memberParentCardExit.CheckDate = schedule.CheckDate;
+                        memberParentCardExit.Note = strCardExitNote;
+                        if (!Flw_MemberCard_ExitService.I.Add(memberParentCardExit, false))
+                        {
+                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "主卡退款失败");
+                        }
+                    }
 
-                //    //读取门店退卡配置，退卡时余额是否清零
-                //    var storeExitCardConfig = Data_ParametersService.I.GetModels(t => t.StoreID == storeId && t.System == "chkForceClearBalanceOnExitCard").FirstOrDefault();
-                //    //当退卡类型为退卡又退款时，还要判断是否将不兑换为储值金的余额（如积分、彩票等）清零
-                //    if (backType == "2" && storeExitCardConfig != null && storeExitCardConfig.ParameterValue == "1")
-                //    {
-                //        List<MemberBalanceExchangeRateModel> query = memberBalanceExchange.Where(t => t.ExchangeRate == 0).ToList();
-                //        foreach (var item in query)
-                //        {
-                //            Data_Card_Balance cardBalance = Data_Card_BalanceService.I.GetModels(b => b.BalanceIndex == item.BalanceIndex && b.MemberID == memberCard.MemberID).FirstOrDefault();
-                //            if (cardBalance.Balance > 0)
-                //            {
-                //                cardBalance.Balance = 0;
-                //                if (!Data_Card_BalanceService.I.Update(cardBalance, false))
-                //                {
-                //                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, string.Format("{0}清零失败", item.TypeName));
-                //                }
-                //            }
-                //        }
-                //    }
+                    //读取门店退卡配置，退卡时余额是否清零
+                    var storeExitCardConfig = Data_ParametersService.I.GetModels(t => t.StoreID == storeId && t.System == "chkForceClearBalanceOnExitCard").FirstOrDefault();
+                    //当退卡类型为退卡又退款时，还要判断是否将不能兑换为储值金的余额（如积分、彩票等）清零
+                    if (backType == "2" && storeExitCardConfig != null && storeExitCardConfig.ParameterValue == "1")
+                    {
+                        List<MemberBalanceExchangeRateModel> query = memberBalanceExchange.Where(t => t.ExchangeRate == 0).ToList();
+                        foreach (var item in query)
+                        {
+                            Data_Card_Balance cardBalance = Data_Card_BalanceService.I.GetModels(b => b.BalanceIndex == item.BalanceIndex && b.CardIndex == memberCard.ID).FirstOrDefault();
+                            if (cardBalance.Balance > 0)
+                            {
+                                cardBalance.Balance = 0;
+                                if (!Data_Card_BalanceService.I.Update(cardBalance, false))
+                                {
+                                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, string.Format("{0}清零失败", item.TypeName));
+                                }
+                            }
+                        }
+                    }
 
-                //    ts.Complete();
-                //}
+                    ts.Complete();
+                }
                 return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.T, "");
             }
             catch (Exception e)

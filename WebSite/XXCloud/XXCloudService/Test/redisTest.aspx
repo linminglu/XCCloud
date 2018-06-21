@@ -35,6 +35,12 @@
         <asp:Button ID="Button6" runat="server" Text="添加会员" OnClick="Button6_Click"  />
         <asp:Button ID="Button7" runat="server" Text="读取会员缓存" OnClick="Button7_Click"  />
     </div>
+    <hr />
+    <div>
+
+        <asp:Button ID="Button8" runat="server" OnClick="Button8_Click" Text="Redis过期时间连续写入测试" />
+
+    </div>
     </form>
 </body>
 </html>
