@@ -14,6 +14,7 @@ using XCCloudService.BLL.CommonBLL;
 using XCCloudService.BLL.Container;
 using XCCloudService.BLL.IBLL.XCCloud;
 using XCCloudService.BLL.XCCloud;
+using XCCloudService.CacheService;
 using XCCloudService.Common;
 using XCCloudService.Common.Extensions;
 using XCCloudService.Model.CustomModel.XCCloud;
@@ -107,6 +108,41 @@ namespace XXCloudService.Api.XCCloud
                     ID = o.ID,
                     GameName = o.GameName
                 }).Distinct().ToDictionary(d => d.ID, d => d.GameName);
+
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, gameInfo);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        /// <summary>
+        /// 获取游戏机下拉菜单
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCManaUserHelperToken, SysIdAndVersionNo = false)]
+        public object GetGameInfoDicFromProgram(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                XCManaUserHelperTokenModel userTokenModel = (XCManaUserHelperTokenModel)(dicParas[Constant.XCManaUserHelperToken]);
+                string storeId = userTokenModel.StoreId;
+
+                var errMsg = string.Empty;
+
+                //排除游乐项目类型的游戏机
+                var projectGameTypes = getProjectGameTypes(out errMsg);
+                if (!errMsg.IsNull())
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                Dictionary<int, string> gameInfo = Data_GameInfoService.I.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase) && p.State == 1
+                    && !projectGameTypes.Contains(p.GameType + "")).Select(o => new
+                    {
+                        ID = o.ID,
+                        GameName = o.GameName
+                    }).Distinct().ToDictionary(d => d.ID, d => d.GameName);
 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, gameInfo);
             }

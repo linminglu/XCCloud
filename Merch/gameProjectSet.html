@@ -81,6 +81,9 @@
                     <div class="layui-form-mid" style="color: red">友情提醒：若选择计时收费，请设置收费规则。<br>网络支付功能请到集团后台中的《套餐设定》进行添加套餐。</div>
                 </div>
             </div>
+            <div class="layui-form-item mustBindBox layui-hide">
+                <button type="button" class="layui-btn layui-btn-danger" id="mustBind">绑定设备</button>
+            </div>
             <div class="layui-form-item">
                 <label class="layui-form-label">备注</label>
                 <div class="layui-input-block">
@@ -427,7 +430,10 @@
               title:'新增',
               type:1,
               area:'700px',
-              content:$('#openModel')
+              content:$('#openModel'),
+              cancel:function () {
+                  location.reload()
+              }
           })
       });
         form.on('select(projectType)',function (data) {
@@ -531,7 +537,7 @@
             })
         });
        
-       $('#setRuleBtn').on('click',function(){
+        $('#setRuleBtn').on('click',function(){
             PushBalanceIndex1=''; PushBalanceIndex2=''; ReadCat=1; PushLevel=1;
            index3=layer.open({
                title:'计次规则',
@@ -642,7 +648,10 @@
                                 title:'新增',
                                 type:1,
                                 area:'900px',
-                                content:$('#openModel')
+                                content:$('#openModel'),
+                                cancel:function () {
+                                    location.reload()
+                                }
                             })
                             form.render()
                         } else {
@@ -666,7 +675,7 @@
                             setDeviceTable(table,data.result_data);
                             DeviceList=data.result_data;
 
-                            index1=   layer.open({
+                            index1=layer.open({
                                 title:'新增',
                                 type:1,
                                 area:'900px',
@@ -784,9 +793,11 @@
         });
         form.on('switch(AdjOrder)',function (data) {
             if(data.elem.checked==true){
-                AdjOrder=1
+                AdjOrder=1;
+                $('.mustBindBox').removeClass('layui-hide');
             }else {
-                AdjOrder=0
+                AdjOrder=0;
+                $('.mustBindBox').addClass('layui-hide');
             }
         });
         form.on('switch(ReadFace)',function (data) {
@@ -816,6 +827,17 @@
             }else {
                 AllowCrah=0
             }
+        });
+        $('#mustBind').click(function () {
+            setDeviceTable(table,[]);
+            DeviceList=[];
+
+            index1=layer.open({
+                title:'新增',
+                type:1,
+                area:'900px',
+                content:$('#bindModel')
+            })
         });
         //保存选定的设备
         $('#saveDevice').on('click',function () {

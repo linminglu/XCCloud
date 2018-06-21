@@ -9,6 +9,7 @@ using XCCloudService.Base;
 using XCCloudService.BLL.Container;
 using XCCloudService.BLL.IBLL.XCCloud;
 using XCCloudService.BLL.XCCloud;
+using XCCloudService.CacheService;
 using XCCloudService.Common;
 using XCCloudService.Common.Enum;
 using XCCloudService.Common.Extensions;
@@ -270,6 +271,35 @@ namespace XXCloudService.Api.XCCloud
         }
 
         /// <summary>
+        /// 获取路由器设备
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCManaUserHelperToken, SysIdAndVersionNo = false)]
+        public object GetRouteDeviceFromProgram(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                XCManaUserHelperTokenModel userTokenModel = (XCManaUserHelperTokenModel)(dicParas[Constant.XCManaUserHelperToken]);
+                string storeId = userTokenModel.StoreId;
+
+                var query = Base_DeviceInfoService.I.GetModels(p => p.type == (int)DeviceType.路由器 && p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase));
+
+                var routeDevices = from a in query
+                                   select new
+                                   {
+                                       ID = a.ID,
+                                       DeviceName = a.DeviceName
+                                   };
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, routeDevices);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        /// <summary>
         /// 机台绑定(解绑)
         /// </summary>
         /// <param name="dicParas"></param>
@@ -422,6 +452,48 @@ namespace XXCloudService.Api.XCCloud
             {
                 return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
             }
+        }
+
+        /// <summary>
+        /// 获取机台信息
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCManaUserHelperToken, SysIdAndVersionNo = false)]
+        public object GetDeviceInfoFromProgram(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                string errMsg = string.Empty;
+                if(!dicParas.Get("token").Nonempty("设备Token", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                var token = dicParas.Get("token");
+                if (!Base_DeviceInfoService.I.Any(a => a.Token.Equals(token, StringComparison.OrdinalIgnoreCase)))
+                {
+                    errMsg = "该设备信息不存在";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
+                var base_DeviceInfo = Base_DeviceInfoService.I.GetModels(p => p.Token.Equals(token, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, base_DeviceInfo);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        /// <summary>
+        /// 机台绑定(解绑)
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCManaUserHelperToken, SysIdAndVersionNo = false)]
+        public object BindDeviceInfoFromProgram(Dictionary<string, object> dicParas)
+        {
+            return BindDeviceInfo(dicParas);
         }
 
         /// <summary>
