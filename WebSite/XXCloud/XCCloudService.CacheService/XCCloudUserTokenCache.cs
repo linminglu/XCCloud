@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using XCCloudService.Model.CustomModel.XCCloud;
 
@@ -54,9 +55,9 @@ namespace XCCloudService.CacheService
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        public static bool SetKeyExpire(string key)
+        public static Task<bool> SetKeyExpire(string key)
         {
-            return RedisCacheHelper.KeyExpire(key, new TimeSpan(0, 0, 0, CacheExpires.CommonPageQueryDataCacheTime));
+            return RedisCacheHelper.KeyExpireAsync(key, new TimeSpan(0, 0, 0, CacheExpires.CommonPageQueryDataCacheTime));
         }
 
         public static bool ExistToken(string key)

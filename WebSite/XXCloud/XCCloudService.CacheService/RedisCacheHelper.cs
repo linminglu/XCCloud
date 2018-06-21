@@ -306,6 +306,18 @@ namespace XCCloudService.CacheService
             RedisHelper redisHelper = new RedisHelper();
             return redisHelper.KeyExpire(key, expiry);
         }
+
+        /// <summary>
+        /// 设置Key的过期时间
+        /// </summary>
+        /// <param name="key">redis key</param>
+        /// <param name="expiry"></param>
+        /// <returns></returns>
+        public static Task<bool> KeyExpireAsync(string key, TimeSpan? expiry = default(TimeSpan?))
+        {
+            RedisHelper redisHelper = new RedisHelper();
+            return redisHelper.KeyExpireAsync(key, expiry);
+        }
         #endregion
 
         #region String
