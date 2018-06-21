@@ -10,6 +10,7 @@ using System.Data.SqlClient;
 using XCCloudService.Model.CustomModel.XCCloud;
 using XCCloudService.Model.WeiXin;
 using XCCloudService.Model.XCCloud;
+using System.Data;
 
 namespace XCCloudService.Business.XCCloud
 {
@@ -124,6 +125,26 @@ namespace XCCloudService.Business.XCCloud
         {
             Data_MemberLevel level = Data_MemberLevelService.I.GetModels(t => t.MemberLevelID == memberLevelId).FirstOrDefault();
             return level;
+        }
+
+        public static List<FoodInfoViewModel> GetFoodInfoList(string merchId, string storeId, int memberLevelId)
+        {
+            var param = new DynamicParameters();
+            param.Add("@merchId", merchId, DbType.String);
+            param.Add("@storeId", storeId, DbType.String);
+            param.Add("@memberlevelId", memberLevelId, DbType.Int32);
+
+            List<FoodInfoViewModel> foodList = null;
+            using (SqlConnection connection = new SqlConnection(System.Configuration.ConfigurationManager.ConnectionStrings["XCCloudDB"].ToString()))
+            {
+                foodList = connection.Query<FoodInfoViewModel>("sp_GetFoodInfoList", param, null, true, null, CommandType.StoredProcedure).ToList();
+
+            }
+            if (foodList == null)
+            {
+                foodList = new List<FoodInfoViewModel>();
+            }
+            return foodList;
         }
     }
 }

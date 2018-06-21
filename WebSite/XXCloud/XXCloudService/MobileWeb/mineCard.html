@@ -10,56 +10,53 @@
     <!-- 引入rem自适应类库 -->
     <script src="js/ydui.flexible.js"></script>
     <style>
-        .section_image{width: 1rem;height: 0.7rem;display: inline-block;margin-top: 0.16rem;}
-        .section_items{display:flex;flex-direction: row;justify-content: space-between;padding:0.3rem;border-bottom:1px solid #ddd;position: relative;}
+        .section_image{width: 1rem;height: 0.7rem;display: inline-block;margin-top: 0.36rem;}
+        .section_items{display:flex;flex-direction: row;justify-content: space-between;padding:0.3rem;border-top:1px solid #ddd;position: relative;margin-top: 0.2rem;border-bottom: 0.01rem solid #1E90FF;}
         .section_cont{width:4rem;font-size:0.26rem;color:#a9a9a9;}
-        .BuyCoins{display: inline-block;width:0.8rem;height:0.8rem;font-size:0.26rem;border-radius:100%;background:#d24a58;line-height: 0.8rem;color:#fff;text-align: center; margin-top:0.16rem;  }
-        .BuyCoinsBlue{background:#1E90FF; margin-left: 0.3rem;}
-        .addcard_img{width: 0.8rem;height: 0.8rem;display: inline-block;}
-        .addcard{text-align: center;margin: 0.2rem;}
-        .hid_cont{ display:flex;flex-direction: row;justify-content: space-between;padding: 0.2rem 0.3rem;  border-bottom:1px solid #ddd;font-size: 0.3rem;color: #999;  }
-        .hid_btn{height: 0.5rem;font-size: 0.24rem;line-height: 0.5rem;margin-top: 0.1rem;color: #fff;background: #1E90FF;}
-        .hid_contSty{display: flex;flex-direction: row;}
+        .BuyCoins{display: inline-block;width:0.8rem;height:0.8rem;font-size:0.26rem;border-radius:100%;background:#d24a58;line-height: 0.8rem;color:#fff;text-align: center; margin-top:0.3rem;  }
+        .hid_contSty{display: flex;flex-direction: row;margin-top: 0.1rem;}
         .hid_contStys{width: 1.6rem;text-align: left;color: #d24a58;}
         .cardIcon{width: 0.8rem;height: 0.8rem;margin-right: 0.1rem;}
         .iconSty{color: #1E90FF; line-height: 0.8rem;display: flex;flex-direction: row-reverse;font-size: 0.35rem;margin-top: 0.3rem;margin-right: 0.2rem;}
         [v-cloak] {
             display: none;
         }
+        .width3{width:2.5rem;overflow:hidden; text-overflow:ellipsis; white-space:nowrap;min-width: 2.5rem;max-width: 2.5rem;}
     </style>
 </head>
 <body>
 <div id="app" v-cloak>
     <yd-navbar title="莘拍档">
-        <router-link to="h" slot="left">
+        <router-link to="index.html" slot="left">
             <yd-navbar-back-icon>返回</yd-navbar-back-icon>
         </router-link>
         <!--<router-link to="#" slot="right">-->
             <!--<yd-navbar-next-icon></yd-navbar-next-icon>-->
         <!--</router-link>-->
+        <!---->
     </yd-navbar>
     <div class="iconSty" @click="tiedCard"><span>我要绑卡</span><img slot="icon" class="cardIcon" src="images/tiedCard.png"></div>
-    <!--<div v-for="(item,index) in memberCard" :key="index">-->
-        <!--<div class='section_items' @click="dropdown(index)">-->
-            <!--<img class="section_image" slot="img" src="images/card.png">-->
-            <!--<div class="section_cont">-->
-                <!--<div class='hid_contSty'>-->
-                    <!--<p class='hid_contStys'>卡号：</p>-->
-                    <!--<p>{{item.icCardID}}</p>-->
-                <!--</div>-->
-                <!--<div class='hid_contSty'>-->
-                    <!--<p class='hid_contStys'>级别：</p>-->
-                    <!--<p>{{item.memberLevelName}}</p>-->
-                <!--</div>-->
-                <!--<div class='hid_contSty'>-->
-                    <!--<p class='hid_contStys'>店名：</p>-->
-                    <!--<p>{{item.storeName}}</p>-->
-                <!--</div>-->
-            <!--</div>-->
-            <!--<div class="BuyCoins" @click.stop="topUp(index)">-->
-                <!--<p>充值</p>-->
-            <!--</div>-->
-        <!--</div>-->
+    <div v-for="(item,index) in memberCard" :key="index">
+        <div class='section_items' @click="chooseCard(index)">
+            <img class="section_image" slot="img" src="images/card.png">
+            <div class="section_cont">
+                <div class='hid_contSty'>
+                    <p class='hid_contStys'>卡号：</p>
+                    <p class="width3">{{item.ICCardId}}</p>
+                </div>
+                <div class='hid_contSty'>
+                    <p class='hid_contStys'>级别：</p>
+                    <p>{{item.LevelName}}</p>
+                </div>
+                <div class='hid_contSty'>
+                    <p class='hid_contStys'>到期日期：</p>
+                    <p>{{item.EndDate}}</p>
+                </div>
+            </div>
+            <div class="BuyCoins" @click.stop="topUp(index)">
+                <p>流水账单</p>
+            </div>
+        </div>
         <!--<div class='hid_cont' v-if="item.hidden">-->
             <!--<div class="hid_contLeft">-->
                 <!--<div class='hid_contSty'>-->
@@ -87,7 +84,7 @@
                 <!--<yd-button @click.stop.native="laundryList(index)" size="small">流水账单</yd-button>-->
             <!--</div>-->
         <!--</div>-->
-    <!--</div>-->
+    </div>
     <!--<yd-tabbar fixed=true active-color="#000000">-->
         <!--<yd-tabbar-item title="首页" @click.native="register1">-->
             <!--<yd-icon name="home" slot="icon" size="0.54rem"></yd-icon>-->
@@ -109,11 +106,12 @@
 <script src="js/axios.min.js"></script>
 <script>
     var sysId = 0; //调用方应用Id
-    var versionNo= "0.89"; //版本号
+    var versionNo= "0.01"; //版本号
     var vm = new Vue({
         el: '#app',
         data:{
-            userThirdId:""
+            userThirdId:"",
+            memberCard:null
         },
         mounted: function () {
             this.Load();
@@ -128,15 +126,15 @@
                 var obj={
                     sysId: sysId,
                     versionNo: versionNo,
-                    token: userThirdId
+                    token: that.userThirdId
                 };
-                axios.post('/XCloudH5/CMember?action=getCardList', obj).then(function (res) {
+                axios.post('/XCCloudH5/Member?action=getCardList', obj).then(function (res) {
                     that.$dialog.loading.close();
                     that.msgPrompt(res.data);
                     console.log(res.data);
                     if (res.data.result_code === '1') {
-//                        var memberCard_ = [];
-                        
+                        that.memberCard = res.data.result_data;
+                        console.log(that.memberCard)
 //                        for (var i = 0; i < res.data.result_data.length; i++) memberCard_.push({
 //                            memberLevelName: res.data.result_data[i].MemberLevelName,
 //                            mobile: res.data.result_data[i].Phone,
@@ -164,7 +162,27 @@
             tiedCard:function () {
                 window.location.href = "tiedCard.html"
             },
-
+//          选择卡
+            chooseCard:function (index) {
+                var that = this;
+                var obj={
+                    sysId: sysId,
+                    versionNo: versionNo,
+                    token: that.userThirdId,
+                    cardId:that.memberCard[index].Id
+                };
+                axios.post('/XCCloudH5/Member?action=chooseCard', obj).then(function (res) {
+                    that.$dialog.loading.close();
+                    that.msgPrompt(res.data);
+                    console.log(res.data);
+                    if (res.data.result_code === '1') {
+                        window.location.href = "index.html"
+                    }
+                }).catch(function (err) {
+                    that.$dialog.loading.close();
+                    console.log(err);
+                })
+            },
             msgPrompt:function (res) {
                 if(res.return_code == 0){
                     this.$dialog.toast({

@@ -19,7 +19,6 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> ProjectID { get; set; }
         public Nullable<int> DeviceID { get; set; }
         public Nullable<int> WorkType { get; set; }
-        public Nullable<int> AdjOrder { get; set; }
         public Nullable<int> ReadFace { get; set; }
         public Nullable<int> ReadCard { get; set; }
         public Nullable<int> ReadQRCode { get; set; }

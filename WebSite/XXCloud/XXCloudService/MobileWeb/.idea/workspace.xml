@@ -20,14 +20,14 @@
       <file leaf-file-name="index.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="380">
-              <caret line="117" column="0" lean-forward="false" selection-start-line="117" selection-start-column="0" selection-end-line="123" selection-end-column="47" />
+            <state relative-caret-position="5700">
+              <caret line="245" column="21" lean-forward="false" selection-start-line="245" selection-start-column="21" selection-end-line="245" selection-end-column="21" />
               <folding>
-                <element signature="e#10677#11605#0" expanded="false" />
-                <element signature="e#11657#11965#0" expanded="false" />
-                <element signature="e#13340#15878#0" expanded="false" />
-                <element signature="e#17365#17673#0" expanded="false" />
-                <element signature="e#17798#18295#0" expanded="false" />
+                <element signature="e#11282#12210#0" expanded="false" />
+                <element signature="e#13953#16491#0" expanded="false" />
+                <element signature="e#16557#17922#0" expanded="false" />
+                <element signature="e#17978#18286#0" expanded="false" />
+                <element signature="e#19565#20062#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -36,7 +36,7 @@
       <file leaf-file-name="games.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/games.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="305">
+            <state relative-caret-position="4950">
               <caret line="198" column="16" lean-forward="false" selection-start-line="198" selection-start-column="16" selection-end-line="205" selection-end-column="46" />
               <folding>
                 <element signature="n#style#0;n#yd-button#0;n#yd-popup#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
@@ -50,8 +50,8 @@
       <file leaf-file-name="mineCard.html" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/mineCard.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="605">
-              <caret line="138" column="24" lean-forward="true" selection-start-line="138" selection-start-column="24" selection-end-line="138" selection-end-column="24" />
+            <state relative-caret-position="596">
+              <caret line="27" column="22" lean-forward="true" selection-start-line="27" selection-start-column="22" selection-end-line="27" selection-end-column="22" />
               <folding />
             </state>
           </provider>
@@ -60,13 +60,13 @@
       <file leaf-file-name="login.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/login.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1400">
-              <caret line="56" column="4" lean-forward="false" selection-start-line="56" selection-start-column="4" selection-end-line="56" selection-end-column="82" />
+            <state relative-caret-position="750">
+              <caret line="30" column="19" lean-forward="false" selection-start-line="30" selection-start-column="19" selection-end-line="30" selection-end-column="19" />
               <folding>
-                <marker date="1528860469167" expanded="true" signature="2833:2847" ph="..." />
-                <marker date="1528860469167" expanded="true" signature="2866:2899" ph="..." />
-                <marker date="1528860469167" expanded="true" signature="2953:2967" ph="..." />
-                <marker date="1528860469167" expanded="true" signature="2986:3019" ph="..." />
+                <marker date="1529491907383" expanded="true" signature="3082:3096" ph="..." />
+                <marker date="1529491907383" expanded="true" signature="3115:3148" ph="..." />
+                <marker date="1529491907383" expanded="true" signature="3202:3216" ph="..." />
+                <marker date="1529491907383" expanded="true" signature="3235:3268" ph="..." />
               </folding>
             </state>
           </provider>
@@ -86,21 +86,7 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>set</find>
-      <find>.test(window.navigator.userAgent)</find>
-      <find>CurrentCardInfo</find>
-      <find>start1</find>
-      <find>/XCCloudH5/Member?action=getMemberInf</find>
-      <find>inputPrompt</find>
-      <find>tiedCard</find>
-      <find>GameName</find>
-      <find>cardIcon</find>
-      <find>deleteHide</find>
-      <find>gameGiveVip</find>
-      <find>GameCoinList</find>
-      <find>gamePlaylist</find>
       <find>playData</find>
-      <find>recharge</find>
       <find>headimgurl</find>
       <find>.gameGive_b</find>
       <find>setStorage</find>
@@ -116,6 +102,20 @@
       <find>WeixinJSBridge</find>
       <find>MemberId</find>
       <find>memberCard</find>
+      <find>getCardList</find>
+      <find>XCCloudH5</find>
+      <find>hid_contSty</find>
+      <find>hid_contStys</find>
+      <find>section_image</find>
+      <find>section_items</find>
+      <find>register</find>
+      <find>@click.n</find>
+      <find>location</find>
+      <find>window.location</find>
+      <find>inputPrompt</find>
+      <find>ICCardId</find>
+      <find>vipCard</find>
+      <find>recharge</find>
     </findStrings>
     <replaceStrings>
       <replace />
@@ -127,6 +127,7 @@
       <replace>GameName</replace>
       <replace>start</replace>
       <replace>PlayCount</replace>
+      <replace>setMemberInfo</replace>
     </replaceStrings>
   </component>
   <component name="IdeDocumentHistory">
@@ -144,12 +145,12 @@
         <option value="$PROJECT_DIR$/entrance.html" />
         <option value="$USER_HOME$/Desktop/index.html" />
         <option value="$PROJECT_DIR$/test.html" />
-        <option value="$PROJECT_DIR$/login.html" />
         <option value="$PROJECT_DIR$/tiedCard.html" />
         <option value="$PROJECT_DIR$/accredit.html" />
         <option value="$PROJECT_DIR$/games.html" />
-        <option value="$PROJECT_DIR$/index.html" />
         <option value="$PROJECT_DIR$/mineCard.html" />
+        <option value="$PROJECT_DIR$/login.html" />
+        <option value="$PROJECT_DIR$/index.html" />
       </list>
     </option>
   </component>
@@ -159,14 +160,14 @@
     <detection-done>true</detection-done>
     <sorting>DEFINITION_ORDER</sorting>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
+  <component name="ProjectFrameBounds" extendedState="7">
     <option name="x" value="626" />
     <option name="y" value="112" />
     <option name="width" value="1706" />
     <option name="height" value="825" />
   </component>
   <component name="ProjectView">
-    <navigator currentView="ProjectPane" proportions="" version="1">
+    <navigator proportions="" version="1">
       <flattenPackages />
       <showMembers />
       <showModules />
@@ -179,21 +180,7 @@
       <manualOrder />
       <foldersAlwaysOnTop value="true" />
     </navigator>
-    <panes>
-      <pane id="ProjectPane">
-        <subPane>
-          <expand>
-            <path>
-              <item name="MobileWeb" type="b2602c69:ProjectViewProjectNode" />
-              <item name="MobileWeb" type="462c0819:PsiDirectoryNode" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
-      <pane id="Scope" />
-      <pane id="Scratches" />
-    </panes>
+    <panes />
   </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
@@ -291,18 +278,23 @@
       <workItem from="1529369430501" duration="2278000" />
       <workItem from="1529372848445" duration="50000" />
       <workItem from="1529380870459" duration="3893000" />
-      <workItem from="1529389531422" duration="9283000" />
+      <workItem from="1529389531422" duration="11431000" />
+      <workItem from="1529401263525" duration="3968000" />
+      <workItem from="1529455889635" duration="972000" />
+      <workItem from="1529458776253" duration="619000" />
+      <workItem from="1529475850751" duration="17336000" />
+      <workItem from="1529542197042" duration="490000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="460377000" />
+    <option name="totallyTimeSpent" value="485910000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="7" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.22128557" sideWeight="0.4961998" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.22128557" sideWeight="0.4961998" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="调试" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32899022" sideWeight="0.5" order="9" side_tool="true" content_ui="tabs" />
@@ -577,24 +569,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/login.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1400">
-          <caret line="56" column="4" lean-forward="false" selection-start-line="56" selection-start-column="4" selection-end-line="56" selection-end-column="82" />
-          <folding>
-            <marker date="1528860469167" expanded="true" signature="2833:2847" ph="..." />
-            <marker date="1528860469167" expanded="true" signature="2866:2899" ph="..." />
-            <marker date="1528860469167" expanded="true" signature="2953:2967" ph="..." />
-            <marker date="1528860469167" expanded="true" signature="2986:3019" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/accredit.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="450">
           <caret line="18" column="14" lean-forward="true" selection-start-line="18" selection-start-column="14" selection-end-line="18" selection-end-column="14" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -602,7 +580,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="575">
           <caret line="68" column="17" lean-forward="true" selection-start-line="68" selection-start-column="17" selection-end-line="68" selection-end-column="17" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -610,13 +587,12 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="525">
           <caret line="21" column="50" lean-forward="false" selection-start-line="21" selection-start-column="50" selection-end-line="21" selection-end-column="50" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/games.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="305">
+        <state relative-caret-position="4950">
           <caret line="198" column="16" lean-forward="false" selection-start-line="198" selection-start-column="16" selection-end-line="205" selection-end-column="46" />
           <folding>
             <element signature="n#style#0;n#yd-button#0;n#yd-popup#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
@@ -626,24 +602,37 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/login.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="750">
+          <caret line="30" column="19" lean-forward="false" selection-start-line="30" selection-start-column="19" selection-end-line="30" selection-end-column="19" />
+          <folding>
+            <marker date="1529491907383" expanded="true" signature="3082:3096" ph="..." />
+            <marker date="1529491907383" expanded="true" signature="3115:3148" ph="..." />
+            <marker date="1529491907383" expanded="true" signature="3202:3216" ph="..." />
+            <marker date="1529491907383" expanded="true" signature="3235:3268" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="380">
-          <caret line="117" column="0" lean-forward="false" selection-start-line="117" selection-start-column="0" selection-end-line="123" selection-end-column="47" />
+        <state relative-caret-position="5700">
+          <caret line="245" column="21" lean-forward="false" selection-start-line="245" selection-start-column="21" selection-end-line="245" selection-end-column="21" />
           <folding>
-            <element signature="e#10677#11605#0" expanded="false" />
-            <element signature="e#11657#11965#0" expanded="false" />
-            <element signature="e#13340#15878#0" expanded="false" />
-            <element signature="e#17365#17673#0" expanded="false" />
-            <element signature="e#17798#18295#0" expanded="false" />
+            <element signature="e#11282#12210#0" expanded="false" />
+            <element signature="e#13953#16491#0" expanded="false" />
+            <element signature="e#16557#17922#0" expanded="false" />
+            <element signature="e#17978#18286#0" expanded="false" />
+            <element signature="e#19565#20062#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/mineCard.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="605">
-          <caret line="138" column="24" lean-forward="true" selection-start-line="138" selection-start-column="24" selection-end-line="138" selection-end-column="24" />
+        <state relative-caret-position="596">
+          <caret line="27" column="22" lean-forward="true" selection-start-line="27" selection-start-column="22" selection-end-line="27" selection-end-column="22" />
           <folding />
         </state>
       </provider>

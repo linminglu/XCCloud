@@ -626,8 +626,9 @@ namespace XCCloudService.Base
                 {
                     userTokenKeyModel = XCCloudUserTokenBusiness.GetUserTokenModel(token); 
                 }
-                catch
+                catch(Exception ex)
                 {
+                    LogHelper.SaveLog(ex.Message);
                     errMsg = "服务器连接超时，请稍后刷新重试";
                     return false;
                 }

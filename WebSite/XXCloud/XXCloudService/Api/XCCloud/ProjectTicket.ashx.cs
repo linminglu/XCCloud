@@ -353,12 +353,15 @@ namespace XXCloudService.Api.XCCloud
                                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                                     }
 
+                                    var projcetType = dicPar.Get("projcetType").Toint();
+                                    var projcetId = dicPar.Get("projcetId").Toint();                                   
+
                                     var bindModel = new Data_ProjectTicket_Bind();
                                     bindModel.MerchID = merchId;
                                     bindModel.StoreID = dicPar.Get("storeId");
-                                    bindModel.ProjcetType = dicPar.Get("projcetType").Toint();
-                                    bindModel.ProjcetTicketID = id;
-                                    bindModel.ProjcetID = dicPar.Get("projcetId").Toint();
+                                    bindModel.ProjcetType = projcetType;
+                                    bindModel.ProjcetID = projcetId;
+                                    bindModel.ProjcetTicketID = id;                                    
                                     bindModel.UseCount = dicPar.Get("useCount").Toint();
                                     bindModel.AllowShareCount = dicPar.Get("allowShareCount").Toint();
                                     bindModel.WeightValue = dicPar.Get("weightValue").Toint();

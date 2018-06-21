@@ -146,19 +146,13 @@ namespace XXCloudService.Api.XCCloud
                     query = query.Where(w => w.GameIndexID == gameId);
                 }
 
-                //排除游乐项目类型的游戏机
-                var projectGameTypes = getProjectGameTypes(out errMsg);
-                if (!errMsg.IsNull())
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-
-                var base_DeviceInfo = (from a in query
+                var list = (from a in query
                                        join b in Data_GameInfoService.N.GetModels() on a.GameIndexID equals b.ID into b1
                                        from b in b1.DefaultIfEmpty()
                                        join c in Dict_SystemService.N.GetModels() on b.GameType equals c.ID into c1
                                        from c in c1.DefaultIfEmpty()
                                        join d in Data_GroupAreaService.N.GetModels() on b.AreaID equals d.ID into d1
                                        from d in d1.DefaultIfEmpty()
-                                       where !projectGameTypes.Contains(b.GameType + "")
                                        orderby a.MCUID
                                        select new Base_DeviceInfoList
                                        {
@@ -180,7 +174,7 @@ namespace XXCloudService.Api.XCCloud
                                                          a.DeviceStatus == 2 ? "锁定" : string.Empty) : string.Empty
                                        }).ToList();
 
-                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, base_DeviceInfo);
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, list);
             }
             catch (Exception e)
             {

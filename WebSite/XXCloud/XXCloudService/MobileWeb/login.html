@@ -18,28 +18,33 @@
         .codeDiv{width: 4rem;display: flex;flex-direction: row;}
         .codeImg{width: 1.4rem;height: 0.6rem;margin-top: 0.1rem;}
         .codeText{line-height: 0.8rem;margin-left: 0.2rem;}
+        .margin1{line-height: 0.3rem;}
     </style>
 </head>
 <body>
-
 <div id="app">
+    <yd-navbar title="莘拍档">
+        <router-link to="index.html" slot="left">
+            <yd-navbar-back-icon @click.native="goBack">返回</yd-navbar-back-icon>
+        </router-link>
+    </yd-navbar>
     <yd-cell-group>
         <yd-cell-item>
             <img class="itemImg" slot="icon" src="images/account.png">
-            <input slot="right" type="number" placeholder="请输入手机号" v-model="mobile" v-on:blur="inputPrompt" oninput="if(value.length>11)value=value.slice(0,11)">
+            <input slot="right" type="number" placeholder="请输入手机号" v-model="mobile" :blur="inputPrompt" oninput="if(value.length>11)value=value.slice(0,11)">
         </yd-cell-item>
     </yd-cell-group>
     <yd-cell-group>
         <yd-cell-item arrow>
             <img class="itemImg" slot="icon" src="images/birthday.png">
-            <span slot="left">生日：</span>
-            <yd-datetime type="day" v-model="datetime" slot="right"></yd-datetime>
+            <span slot="left" class="margin1">生日：</span>
+            <yd-datetime type="date" v-model="datetime" slot="right"></yd-datetime>
         </yd-cell-item>
     </yd-cell-group>
     <yd-cell-group>
         <yd-cell-item>
             <img class="itemImg" slot="icon" src="images/IdCard.png">
-            <input slot="right" type="number" placeholder="身份证号" v-model="IdCard" v-on:blur="inputIdCard" oninput="if(value.length>18)value=value.slice(0,18)">
+            <input slot="right" type="number" placeholder="身份证号" v-model="IdCard" :blur="inputIdCard" oninput="if(value.length>18)value=value.slice(0,18)">
         </yd-cell-item>
     </yd-cell-group>
     <yd-cell-group>
@@ -54,13 +59,11 @@
             ></yd-sendcode>
         </yd-cell-item>
     </yd-cell-group>
-    <yd-button size="large" type="primary" @click.native="register">提交</yd-button>
+    <yd-button size="large" type="primary" @click.native="setMemberInfo">提交</yd-button>
 </div>
-
 <!-- 引入 Vue -->
 <script src="js/vue.js"></script>
 <script src="js/jquery-1.8.3-min.js"></script>
-
 <!-- 引入组件库 -->
 <script src="js/ydui.rem.js"></script>
 <script src="js/axios.min.js"></script>
@@ -84,6 +87,22 @@
             this.Load();
         },
         methods: {
+            Load: function () {
+                var that =this;
+                var myDate = new Date();
+                var yy = myDate.getFullYear();
+                var mm = myDate.getMonth();
+                var dd = myDate.getDate();
+                mm ++;
+                if(mm<10){
+                    mm =0+""+mm;
+                }
+                that.datetime= yy + "-" +mm + "-" + dd
+                console.log(that.datetime)
+            },
+            goBack:function () {
+              window.location.href = "index.html";
+            },
             inputIdCard:function () {
                 var that = this;
                 var myreg =/^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/;
@@ -118,9 +137,9 @@
                         timeout: 1500
                     });
                 }else {
-                    that.$dialog.loading.open('发送中...');
+                    that.$dialog.loading.open('发送中....');
                     this.start = true;
-                    console.log(that.mobile+"/"+that.imgCode);
+                    console.log(that.mobile);
                     var obj={"sysId": sysId,"versionNo": versionNo,mobile:that.mobile};
                     axios.post("/XCCloudH5/Member?action=getSMSCode", obj).then(function (res) {
                         console.log(res.data);
@@ -143,7 +162,7 @@
                     });
                 }
             },
-            register:function () {
+            setMemberInfo:function () {
                 var that =this;
                 this.$dialog.loading.open('');
                 if (/MicroMessenger/.test(window.navigator.userAgent)) {
@@ -168,17 +187,6 @@
                     that.$dialog.loading.close();
                     console.log(err);
                 })
-            },
-            Load: function () {
-                var that =this;
-                var myDate = new Date();
-                var mm = myDate.getMonth();
-                var yy = myDate.getDate();
-                mm ++;
-                if(mm<10){
-                    mm =0+""+mm;
-                }
-                that.datetime= mm + "-" + yy
             },
             msgPrompt:function (res) {
                 if(res.return_code == 0){

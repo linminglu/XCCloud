@@ -3421,7 +3421,7 @@ namespace XXCloudService.Api.XCCloud
                                        select new
                                        {
                                            StockIndex = a.ID,
-                                           StockName = b.StoreName + a.DepotName
+                                           StockName = b.StoreName + "-" + a.DepotName
                                        };
 
                             var err = string.Empty;

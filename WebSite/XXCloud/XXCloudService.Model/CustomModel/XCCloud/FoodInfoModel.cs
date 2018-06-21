@@ -161,4 +161,21 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         [DataMember(Name = "ticket", Order = 3)]
         public List<TicketModel> ListTicketModel { set; get; }
     }
+
+    public class FoodInfoViewModel
+    {
+        public FoodInfoViewModel()
+        {
+            this.Note = string.Empty;
+            this.FoodName = string.Empty;
+            this.ImageURL = string.Empty;
+            this.Price = string.Empty;
+        }
+        public int FoodId { get; set; }
+        public string FoodName { get; set; }
+        public string Note { get; set; }
+        public string ImageURL { get; set; }
+        public int FoodType { get; set; }
+        public string Price { get; set; }
+    }
 }

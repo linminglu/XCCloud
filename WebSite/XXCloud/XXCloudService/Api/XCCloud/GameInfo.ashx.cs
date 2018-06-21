@@ -407,6 +407,13 @@ namespace XXCloudService.Api.XCCloud
                         data_GameInfo.OutBalanceIndex = data_GameInfo.OutBalanceIndex ?? 0;
                         data_GameInfo.StoreID = storeId;
                         data_GameInfo.MerchID = merchId;
+
+                        //有第二投币项刷卡即扣禁用
+                        if (data_GameInfo.PushBalanceIndex2 > 0)
+                        {
+                            data_GameInfo.ReadCat = 0;
+                        }
+
                         if (iId == 0)
                         {                            
                             data_GameInfo.State = 1;                            

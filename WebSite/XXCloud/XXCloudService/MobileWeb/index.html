@@ -8,15 +8,17 @@
     <!-- 引入样式 -->
     <link rel="stylesheet" href="css/ydui.rem.css">
     <style>
-        .wx-img{min-width: 1.2rem;min-height:1.3rem;width: 1rem;height: 1.2rem;margin-right: 0.5rem;background-color: #eeeeee;padding: 0.1rem;margin-top: 0.1rem;}
+        .wx-img{min-width: 1.3rem;min-height:1.3rem;width: 1.2rem;height: 1.2rem;margin-right: 0.5rem;background-color: #eeeeee;padding: 0.1rem;margin-top: 0.1rem;}
         .index-header{background-color: #393a3f;border-top: 0.1rem solid #eeeeee;border-bottom: 0.15rem solid #eeeeee;}
         .iconSty{color: #eeeeee; line-height: 0.4rem;display: flex;flex-direction: row;}
         .margin_top{margin-top: 0.2rem;}
         .index-change{border-bottom: 0.02rem solid #eeeeee; color: #ff3030;margin-right: 0.1rem;}
         .cardIcon{width: 0.4rem;height: 0.4rem;margin-right: 0.1rem;}
         .iconRight{justify-content:flex-end;margin-top: 0.2rem;margin-right: 0.6rem;color: #ff3030;}
-        .vipCard{width: 5rem;height: 2.5rem;margin: 0.3rem auto}
+        .vipCard{width: 5rem;height: 2.5rem;margin: 0.3rem auto;position: relative;}
         .vipCard img{width: 5rem;height: 2.5rem;}
+        .MemberLevel{position: absolute;top: 1.2rem;right: 0.5rem;font-size: 0.3rem;font-weight: 700;color: #ffb400;}
+        .ICCard{position: absolute;bottom: 0.1rem;width:5rem;text-align: center;color: goldenrod;}
         .addCard{width: 5rem;height: 2.5rem;margin: 0.3rem auto;text-align: center;}
         .addCard img{width: 2rem;height: 2rem;}
         .addCard p{margin-top: 0.2rem;font-size: 0.26rem;line-height: 0.3rem;}
@@ -40,16 +42,18 @@
                 <div class="iconSty iconRight" @click="mineCard"><img slot="icon" class="cardIcon" src="images/switch.png"><span>切换会员卡</span></div>
                 <div class="vipCard" v-if="tiedCard">
                     <img src="images/vipCard.png">
+                    <p class="MemberLevel">{{MemberLevelName}}</p>
+                    <p class="ICCard">{{ICCardId}}</p>
                 </div>
                 <div class="addCard" v-if="!tiedCard" @click="mineCard">
                     <img src="images/addpic.png">
                     <p>请添加卡</p>
                 </div>
-                <yd-grids-group>
-                    <yd-grids-item v-for="item in cardBalanceList" v-if="tiedCard">
-                        <span slot="text">{{item.BalanceName}}：{{item.Quantity}}</span>
-                    </yd-grids-item>
-                </yd-grids-group>
+            </yd-grids-group>
+            <yd-grids-group :rows="3">
+                <yd-grids-item v-for="item in cardBalanceList" v-if="tiedCard">
+                    <span slot="text">{{item.BalanceName}}：{{item.Quantity}}</span>
+                </yd-grids-item>
             </yd-grids-group>
             <yd-grids-group :rows="3" title="开心玩">
                 <yd-grids-item v-for="(item,index) in playData" @click.native="playFnc(index)">
@@ -65,7 +69,7 @@
             </yd-grids-group>
         </yd-layout>
         <yd-backtop></yd-backtop>
-        <yd-button size="large" type="primary" @click.native="jumpFnc">扫码</yd-button>
+        <!--<yd-button size="large" type="primary" @click.native="jumpFnc">扫码</yd-button>-->
         <!--<yd-navbar title="莘拍档">-->
             <!--<router-link to="h" slot="left">-->
                 <!--<yd-navbar-back-icon>返回</yd-navbar-back-icon>-->
@@ -100,6 +104,8 @@
             nickname : "",
             CurrentCardInfo : "",
             MemberId : "",
+            MemberLevelName : "",
+            ICCardId : "",
             cardBalanceList : null,
             deviceToken : "",
             userThirdId : "",
@@ -167,6 +173,8 @@
                     console.log(res.data);
                     if (res.data.result_code === '1') {
                         that.CurrentCardInfo =res.data.result_data.CurrentCardInfo;
+                        that.MemberLevelName =res.data.result_data.CurrentCardInfo.MemberLevelName;
+                        that.ICCardId =res.data.result_data.CurrentCardInfo.ICCardId;
                         that.MemberId =res.data.result_data.MemberId;
                         that.headimgurl =res.data.result_data.Info.headimgurl;
                         that.nickname =res.data.result_data.Info.nickname;
@@ -228,13 +236,14 @@
 //          登录跳转
             loginFnc:function () {
                 var that = this;
-                that.$dialog.confirm({
-                    title: '温馨提示!',
-                    mes: "即将前往登录或注册页面？",
-                    opts: (function () {
-                        window.location.href = "login.html"
-                    })
-                });
+                window.location.href = "login.html";
+//                that.$dialog.confirm({
+//                    title: '温馨提示!',
+//                    mes: "即将前往登录或注册页面？",
+//                    opts: (function () {
+//
+//                    })
+//                });
             },
 //          play功能
             playFnc:function (index) {
@@ -371,7 +380,38 @@
             },
 //          充值
             recharge:function(index){
+                var that = this;
+                console.log(index);
+                if(that.CurrentCardInfo != null || index == 1){
+                    switch (index){
+                        case 0:
+//                            window.location.href = "MyOrder.html";
+                            break;
+                        case 1:
+                            this.$dialog.toast({
+                                mes: "请使用扫一扫，在购币机上购币",
+                                timeout: 1500,
+                                icon: 'error'
+                            });
+                            break;
+                        case 2:
 
+                            break;
+                        case 3:
+
+                            break;
+                        default:
+                            break;
+                    }
+                }else {
+                    that.$dialog.confirm({
+                        title: '温馨提示!',
+                        mes: "请先选择会员卡",
+                        opts: (function () {
+                            window.location.href = "mineCard.html"
+                        })
+                    });
+                }
             },
 //          通用提示
             msgPrompt:function (res) {

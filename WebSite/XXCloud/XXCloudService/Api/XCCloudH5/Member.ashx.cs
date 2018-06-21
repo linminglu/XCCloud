@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Transactions;
@@ -11,6 +12,7 @@ using XCCloudService.Business.Common;
 using XCCloudService.Business.XCCloud;
 using XCCloudService.CacheService;
 using XCCloudService.Common;
+using XCCloudService.Model.CustomModel.XCCloud;
 using XCCloudService.Model.WeiXin;
 using XCCloudService.Model.XCCloud;
 using XCCloudService.WeiXin.WeixinPub;
@@ -476,6 +478,50 @@ namespace XXCloudService.Api.XCCloudH5
         }
         #endregion
 
+        #region 获取会员个人资料
+        /// <summary>
+        /// 获取会员个人资料
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.MethodToken)]
+        public object getMemberDetail(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                string token = dicParas.ContainsKey("token") ? dicParas["token"].ToString().Trim() : "";
+
+                if (string.IsNullOrEmpty(token))
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "用户令牌无效");
+                }
+
+                MemberTokenModel model = MemberTokenCache.GetModel(token);
+
+                if (model == null)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "用户令牌无效，请重新登陆");
+                }
+
+                Base_MemberInfo member = Base_MemberInfoService.I.GetModels(t => t.ID == model.MemberId).FirstOrDefault();
+
+                var info = new
+                {
+                    Gender = member.Gender == null ? "" : member.Gender.Value.ToString(),
+                    Birthday = member.Birthday == null ? "" : member.Birthday.Value.ToString("yyyy-MM-dd"),
+                    IdCard = member.IDCard ?? "",
+                    Mobile = member.Mobile ?? ""
+                };
+
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, info);
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+        #endregion
+
         #region 完善会员信息
         /// <summary>
         /// 完善会员信息
@@ -534,6 +580,54 @@ namespace XXCloudService.Api.XCCloudH5
                 MemberTokenCache.AddToken(token, model);
 
                 return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.T, "");
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+        #endregion
+
+        #region 获取充值套餐
+        /// <summary>
+        /// 获取充值套餐
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.MethodToken)]
+        public object getRechargeFood(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                string token = dicParas.ContainsKey("token") ? dicParas["token"].ToString().Trim() : "";
+
+                if (string.IsNullOrEmpty(token))
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "用户令牌无效");
+                }
+
+                MemberTokenModel model = MemberTokenCache.GetModel(token);
+
+                if (model == null)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "用户令牌无效，请重新登陆");
+                }
+                if(string.IsNullOrEmpty(model.CurrStoreId))
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "请先选择附近门店");
+                }
+                int memberLevelId = 0;
+                if(model.CurrentCardInfo != null)
+                {
+                    //return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "请先办理会员卡");
+                    memberLevelId = model.CurrentCardInfo.MemberLevelId;
+                }
+
+                Base_StoreInfo store = Base_StoreInfoService.I.GetModels(t => t.StoreID == model.CurrStoreId).FirstOrDefault();
+
+                List<FoodInfoViewModel> foodList = XCCloudStoreBusiness.GetFoodInfoList(store.MerchID, store.StoreID, memberLevelId);
+
+                return ResponseModelFactory<List<FoodInfoViewModel>>.CreateModel(isSignKeyReturn, foodList);
             }
             catch (Exception e)
             {

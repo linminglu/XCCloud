@@ -23,6 +23,18 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         /// </summary>
         public string DeviceName { get; set; }
         /// <summary>
+        /// P位
+        /// </summary>
+        public string SiteName { get; set; }
+        /// <summary>
+        /// 路由器段号
+        /// </summary>
+        public string segment { get; set; }
+        /// <summary>
+        /// 设备短地址
+        /// </summary>
+        public string Address { get; set; }
+        /// <summary>
         /// 设备类别
         /// </summary>
         public string DeviceTypeStr { get; set; }     
