@@ -42,7 +42,6 @@ namespace XCCloudService.DAL.Base
                     }
                     else if (Nullable.GetUnderlyingType(pi.PropertyType) == typeof(DateTime))
                     {
-                        //如果是短日期类型
                         value = Utils.ConvertFromDatetime(value.Todatetime(), "yyyy-MM-dd HH:mm:ss");
                     }
 
