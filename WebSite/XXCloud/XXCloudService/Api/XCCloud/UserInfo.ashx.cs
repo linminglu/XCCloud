@@ -668,25 +668,25 @@ namespace XCCloudService.Api.XCCloud
                     int UserStatusId = dict_SystemService.GetModels(p => p.DictKey.Equals("员工状态")).FirstOrDefault().ID;
 
                     var dbContext = DbContextFactory.CreateByModelNamespace(typeof(Base_UserInfo).Namespace);
-                    var linq = from a in dbContext.Set<Base_UserInfo>().Where(p => p.UserID != userId && (storeIds.Contains(p.StoreID) || merchId.Equals(p.MerchID, StringComparison.OrdinalIgnoreCase)))
-                                join b in dbContext.Set<Base_StoreInfo>() on a.StoreID equals b.StoreID into b1
-                                from b in b1.DefaultIfEmpty()
-                                join c in dbContext.Set<Base_UserGroup>() on a.UserGroupID equals c.ID into c1
-                                from c in c1.DefaultIfEmpty()
-                                join d in dbContext.Set<Dict_System>().Where(p => p.PID == UserStatusId) on (a.Status + "") equals d.DictValue into d1
-                                from d in d1.DefaultIfEmpty()
-                                select new
-                                {
-                                    UserID = a.UserID,
-                                    RealName = a.RealName,
-                                    LogName = a.LogName,
-                                    Mobile = a.Mobile,
-                                    IsAdminStr = a.IsAdmin == 1 ? "是" : "否",
-                                    StoreID = a.StoreID,
-                                    StoreName = b != null ? b.StoreName : "总店",
-                                    UserGroupName = c != null ? c.GroupName : string.Empty,
-                                    UserStatusStr = d != null ? d.DictKey : string.Empty
-                                };
+                    var linq = from a in dbContext.Set<Base_UserInfo>().Where(p => ((p.UserID != userId && p.IsAdmin == 1) || (p.IsAdmin ?? 0) == 0) && (storeIds.Contains(p.StoreID) || merchId.Equals(p.MerchID, StringComparison.OrdinalIgnoreCase)))
+                               join b in dbContext.Set<Base_StoreInfo>() on a.StoreID equals b.StoreID into b1
+                               from b in b1.DefaultIfEmpty()
+                               join c in dbContext.Set<Base_UserGroup>() on a.UserGroupID equals c.ID into c1
+                               from c in c1.DefaultIfEmpty()
+                               join d in dbContext.Set<Dict_System>().Where(p => p.PID == UserStatusId) on (a.Status + "") equals d.DictValue into d1
+                               from d in d1.DefaultIfEmpty()
+                               select new
+                               {
+                                   UserID = a.UserID,
+                                   RealName = a.RealName,
+                                   LogName = a.LogName,
+                                   Mobile = a.Mobile,
+                                   IsAdminStr = a.IsAdmin == 1 ? "是" : "否",
+                                   StoreID = a.StoreID,
+                                   StoreName = b != null ? b.StoreName : "总店",
+                                   UserGroupName = c != null ? c.GroupName : string.Empty,
+                                   UserStatusStr = d != null ? d.DictKey : string.Empty
+                               };
                     if (!storeId.IsNull())
                     {
                         linq = linq.Where(w => w.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase));
