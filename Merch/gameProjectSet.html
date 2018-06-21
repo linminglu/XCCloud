@@ -38,16 +38,37 @@
                     </div>
             </div>
             <div class="layui-form-item">
-
+                <div class="layui-inline">
                     <label class="layui-form-label">区域</label>
-                    <div class="layui-input-block">
+                    <div class="layui-input-inline">
                         <select name="Area" id="Area" lay-filter="Area"></select>
                     </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">校验顺序</label>
+                    <div class="layui-input-inline">
+                        <input type="checkbox" id="AdjOrder" lay-filter="AdjOrder" lay-skin="switch" lay-text="开启|关闭">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label" style="padding: 0;white-space: normal;">刷卡即扣时是否强制扣除余额</label>
+                    <div class="layui-input-inline">
+                        <input type="checkbox" id="ForceUse" lay-filter="ForceUse" name="ForceUse" lay-skin="switch" lay-text="开启|关闭">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">入场锁定</label>
+                    <div class="layui-input-inline">
+                        <input type="checkbox" id="LockCard" lay-filter="LockCard" name="LockCard" lay-skin="switch" lay-text="开启|关闭">
+                    </div>
+                </div>
             </div>
             <div class="layui-form-item">
                 <div class="layui-inline">
                     <label class="layui-form-label">扣费类型</label>
-                    <div class="layui-input-inline" style="height: 36px;border: 1px solid rgb(230,230,230)">
+                    <div class="layui-input-inline">
                         <select name="chargeType" id="chargeType" lay-filter="chargeType">
                             <option>-请选择-</option>
                             <option value="0">按次收费</option>
@@ -218,7 +239,7 @@
                   </div>
               </div>
                <div class="layui-inline">
-                   <label class="layui-form-label">第一按钮扣币数</label>
+                   <label class="layui-form-label">第一按钮 <span class="cutCoin1">扣币数</span></label>
                    <div class="layui-input-inline">
                        <input type="text" class="layui-input" name="PushCoin1">
                    </div>
@@ -233,7 +254,7 @@
                   </div>
               </div>
               <div class="layui-inline">
-                  <label class="layui-form-label">第二按钮扣币数</label>
+                  <label class="layui-form-label">第二按钮<span class="cutCoin2">扣币数</span></label>
                   <div class="layui-input-inline">
                       <input type="text" class="layui-input" name="PushCoin2">
                   </div>
@@ -292,18 +313,13 @@
                 <div class="layui-input-inline">
                     <select id="workType" lay-filter="workType">
                         <option>-请选择-</option>
-                        <option value="0">入口</option>
+                        <option value="0" selected>入口</option>
                         <option value="1">出口</option>
                         <!--<option value="2">自动</option>-->
                     </select>
                 </div>
             </div>
-            <div class="layui-inline">
-                <label class="layui-form-label">校验顺序</label>
-                <div class="layui-input-inline">
-                    <input type="checkbox" id="AdjOrder" lay-filter="AdjOrder" lay-skin="switch" lay-text="开启|关闭">
-                </div>
-            </div>
+
         </div>
         <div class="layui-form-item">
             <div class="layui-inline">
@@ -355,6 +371,7 @@
             , {field: 'ProjectTypeStr', title: '项目类型', align: 'center'}
             , {field: 'AreaName', title: '区域', align: 'center'}
             , {field: 'ChargeType', title: '扣费类型', align: 'center',templet:'#charge'}
+            ,{field:'AdjOrder', title: '顺序校验', align: 'center',width:100,templet:'#ao'}
             , {field: 'Note', title: '备注', align: 'center'}
             ,{fixed: 'right',title: '操作', width:320, align:'center', toolbar: '#barDemo'}]
     };
@@ -366,23 +383,44 @@
    let projectType='';let Area='';let chargeType='';
     let PushBalanceIndex1='';let PushBalanceIndex2='';let ReadCat=1;let PushLevel=1;let guestIndex=''
 
-   let DeviceID='',WorkType='',AdjOrder=0,ReadFace=0,ReadCard=0,ReadQRCode=0,AllowCrah=0;let routerList='';
+   let DeviceID='',WorkType='0',AdjOrder=0,ReadFace=0,ReadCard=0,ReadQRCode=0,AllowCrah=0;let routerList='';
+   let ForceUse=0;let LockCard=0;
+
     //计时规则
     let feeType='';let feeBalance='';let feekinds='';let feeWays='';let Lock=0;
     layui.use(['form','layer','table'],()=>{
         const form=layui.form;
         const layer=layui.layer;
         const table=layui.table;
+        //用户余额类别
+        let __obj={'hkType':'','userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+        let _parseJson = JSON.stringify(__obj);
+        $.ajax({
+            type:'post',
+            url:'/XCCloud/BalanceType?action=GetBalanceTypeDic',
+            contentType: "application/json; charset=utf-8",
+            data:{parasJson: _parseJson},
+            anysc:false,
+            success: function (data) {
+                data = JSON.parse(data);
+                if (data.result_code == 1) {
+                   let balanceData=data.result_data;
+                    setBal(balanceData,form,'PushBalanceIndex1');
+                    setBal(balanceData,form,'PushBalanceIndex2');
+                } else {
+                    layer.msg(data.result_msg);
+                }
+            }
+        });
       $('.add').on('click',()=>{  //弹窗
+          $('.layreset').trigger('click');
             id='';guestIndex='';
            feeType=''; feeBalance=''; feekinds=''; feeWays=''; Lock=0;
-            PushBalanceIndex1=''; PushBalanceIndex2=''; ReadCat=1; PushLevel=1;
-            xc.getBalanceTypeDic('',token,layer,form,'PushBalanceIndex1');
-            xc.getBalanceTypeDic('',token,layer,form,'PushBalanceIndex2');
-            $('#timesModel').find('input[type="checkbox"]').attr({'checked':false});
+            PushBalanceIndex1=''; PushBalanceIndex2=''; ReadCat=1; PushLevel=1;AdjOrder=0;
+            $('#timesModel').find('input[type="checkbox"]').attr({'checked':true});
             $('#timesModel').find('input[type="text"]').val('');
             form.render();
-           $('.layreset').trigger('click');
+
           xc.getGroupAreaDic(0,token,layer,form,'Area');
           setPlayMenu(form,'projectType');
           layer.open({
@@ -408,16 +446,41 @@
              }
         });
         form.on('select(PushBalanceIndex1)',function (data) {
-            PushBalanceIndex1=data.value;
+
+            if(data.value=='-请选择-'){
+                $('.cutCoin1').text('金币数')
+            }else {
+                PushBalanceIndex1=data.value;
+                $('.cutCoin1').text(data.elem[data.elem.selectedIndex].text)
+            }
         });
         form.on('select(PushBalanceIndex2)',function (data) {
-            PushBalanceIndex2=data.value;
+            if(data.value=='-请选择-'){
+                $('.cutCoin2').text('金币数')
+            }else {
+                PushBalanceIndex2=data.value;
+                $('.cutCoin2').text(data.elem[data.elem.selectedIndex].text)
+            }
         });
         form.on('switch(ReadCat)',function (data) {
             if(data.elem.checked){
                 ReadCat=1;
             }else {
                 ReadCat=0;
+            }
+        });
+        form.on('switch(LockCard)',function (data) {
+            if(data.elem.checked){
+                LockCard=1;
+            }else {
+                LockCard=0;
+            }
+        });
+        form.on('switch(ForceUse)',function (data) {
+            if(data.elem.checked){
+                ForceUse=1;
+            }else {
+                ForceUse=0;
             }
         });
         form.on('switch(PushLevel)',function (data) {
@@ -434,6 +497,9 @@
                 'areaType':Area,
                 'projectType':projectType,
                 'chargeType':chargeType,
+                'AdjOrder':AdjOrder,
+                'LockCard':LockCard,
+                'ForceUse':ForceUse,
                 'note':$('#Note').val(),
                 'gameIndex':guestIndex,
                 'guestPrice':$('input[name="GuestPrice"]').val(),
@@ -466,7 +532,7 @@
         });
        
        $('#setRuleBtn').on('click',function(){
-
+            PushBalanceIndex1=''; PushBalanceIndex2=''; ReadCat=1; PushLevel=1;
            index3=layer.open({
                title:'计次规则',
                type:1,
@@ -479,10 +545,10 @@
         });
        $('#addDevice').on('click',()=>{  //弹窗
             xc.getUnBindDeviceDic(token,layer,form,'deviceList');
-             DeviceID='';WorkType='';AdjOrder=0;ReadFace=0;ReadCard=0;ReadQRCode=0;AllowCrah=0;routerList='';
+             DeviceID='';WorkType='0';AdjOrder=0;ReadFace=0;ReadCard=0;ReadQRCode=0;AllowCrah=0;routerList='';
             $('#deviceModel').find('input[type="checkbox"]').attr({'checked':false});
             xc.getRouteDevice(token,layer,form,'routerList');
-            $('#workType').find('option').attr({'selected':false});
+            // $('#workType').find('option').attr({'selected':false});
             form.render()
             index2=   layer.open({
                 title:'新增',
@@ -773,7 +839,7 @@
               let obj={'projectid':id,
                   'DeviceID':DeviceID,
                   'WorkType':WorkType,
-                  'AdjOrder':AdjOrder,
+                  // 'AdjOrder':AdjOrder,
                   'ReadFace':ReadFace,
                   'ReadCard':ReadCard,
                   'ReadQRCode':ReadQRCode,
@@ -978,7 +1044,7 @@
                 ,{field:'segment', title:'网络段号', align: 'center',width:121}
                 ,{field:'SiteName', title:'P位', align: 'center',width:121}
                 ,{field:'WorkType', title: '工作方式', align: 'center',width:100,templet:'#wt'}
-                ,{field:'AdjOrder', title: '顺序校验', align: 'center',width:100,templet:'#ao'}
+                // ,{field:'AdjOrder', title: '顺序校验', align: 'center',width:100,templet:'#ao'}
                 ,{field:'ReadFace', title: '人脸', align: 'center',width:100,templet:'#rf'}
                 ,{field:'ReadCard', title: '刷卡', align: 'center',width:100,templet:'#rc'}
                 ,{field:'ReadQRCode', title: '阅票', align: 'center',width:100,templet:'#rr'}
@@ -987,7 +1053,22 @@
             , page: {page: true, limits: [7,10, 15, 20, 30, 50, 100]}
             , limit: 7
         });
-    }
+    };
+     function setBal(arr,form,id,selected){
+         $('#'+id).html('<option>-请选择-</option>');
+         for(let i in arr){
+             if(selected!=undefined){
+                 if(arr[i].ID==selected){
+                     $('#'+id).append('<option value="'+arr[i].ID+'" selected>'+arr[i].TypeName+'</option>')
+                 }else {
+                     $('#'+id).append('<option value="'+arr[i].ID+'">'+arr[i].TypeName+'</option>')
+                 }
+             }else {
+                 $('#'+id).append('<option value="'+arr[i].ID+'">'+arr[i].TypeName+'</option>')
+             }
+         }
+         form.render('select');
+     };
 </script>
 <script type="text/html" id="barDemo">
     <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del"><i class="layui-icon">&#xe640;</i>删除</a>
