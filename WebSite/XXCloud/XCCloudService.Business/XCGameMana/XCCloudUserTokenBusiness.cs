@@ -52,12 +52,9 @@ namespace XCCloudService.Business.XCGameMana
 
         public static XCCloudUserTokenModel GetUserTokenModel(string token)
         {
-            lock (syncRoot)
-            {
-                XCCloudUserTokenModel userTokenModel = null;
-                userTokenModel = XCCloudUserTokenCache.GetModel(token);
-                return userTokenModel;
-            }            
+            XCCloudUserTokenModel userTokenModel = null;
+            userTokenModel = XCCloudUserTokenCache.GetModel(token);
+            return userTokenModel;
         }
 
         public static void RemoveUserToken(string logId)

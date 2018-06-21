@@ -256,55 +256,7 @@ namespace XXCloudService.Api.XCCloud
                             {
                                 errMsg = "保存游乐项目失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                            }
-
-                            id = model.ID;
-
-                            //保存绑定信息
-                            if (projectBindDevices != null && projectBindDevices.Count() > 0)
-                            {
-                                foreach (IDictionary<string, object> el in projectBindDevices)
-                                {
-                                    if (el != null)
-                                    {
-                                        var dicPara = new Dictionary<string, object>(el, StringComparer.OrdinalIgnoreCase);
-                                        if (!dicPara.Get("deviceId").Validintnozero("设备ID", out errMsg))
-                                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                                        if (!dicPara.Get("workType").Validint("工作方式", out errMsg))
-                                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                                        if (!dicPara.Get("readFace").Validint("人脸识别", out errMsg))
-                                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                                        if (!dicPara.Get("readCard").Validint("刷卡校验", out errMsg))
-                                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                                        if (!dicPara.Get("readQRCode").Validint("阅票", out errMsg))
-                                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                                        if (!dicPara.Get("allowCash").Validint("现金", out errMsg))
-                                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-
-                                        var projectBindDevice = new Data_Project_BindDevice();
-                                        projectBindDevice.ProjectID = id;
-                                        projectBindDevice.DeviceID = dicPara.Get("deviceId").Toint();
-                                        projectBindDevice.WorkType = dicPara.Get("workType").Toint();
-                                        projectBindDevice.ReadFace = dicPara.Get("readFace").Toint();
-                                        projectBindDevice.ReadCard = dicPara.Get("readCard").Toint();
-                                        projectBindDevice.ReadQRCode = dicPara.Get("readQRCode").Toint();
-                                        projectBindDevice.AllowCash = dicPara.Get("allowCash").Toint();
-                                        projectBindDevice.MerchID = merchId;
-                                        Data_Project_BindDeviceService.I.AddModel(projectBindDevice);                                        
-                                    }
-                                    else
-                                    {
-                                        errMsg = "提交数据包含空对象";
-                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                                    }
-                                }
-
-                                if (!Data_Project_BindDeviceService.I.SaveChanges())
-                                {
-                                    errMsg = "保存设备绑定信息失败";
-                                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                                }
-                            }
+                            }                            
                         }
                         else
                         {
@@ -314,20 +266,20 @@ namespace XXCloudService.Api.XCCloud
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                             }
 
+                            //校验顺序开启时，必须至少绑定一进一出的设备
+                            if (adjOrder == 1 && !(Data_Project_BindDeviceService.I.Any(a => a.ProjectID == id && a.WorkType == (int)ProjectBindDeviceWorkType.Entry)
+                                && Data_Project_BindDeviceService.I.Any(a => a.ProjectID == id && a.WorkType == (int)ProjectBindDeviceWorkType.Exit)))
+                            {
+                                errMsg = "校验顺序开启时，必须至少绑定一进一出的设备";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+
                             if (!Data_ProjectInfoService.I.Update(model))
                             {
                                 errMsg = "保存游乐项目失败";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                             }
-                        }
-
-                        //校验顺序开启的项目，必须绑定一进一出的设备
-                        if (adjOrder == 1 && !(Data_Project_BindDeviceService.I.Any(a => a.ProjectID == id && a.WorkType == (int)ProjectBindDeviceWorkType.Entry)
-                            && Data_Project_BindDeviceService.I.Any(a => a.ProjectID == id && a.WorkType == (int)ProjectBindDeviceWorkType.Exit)))
-                        {
-                            errMsg = "校验顺序开启的项目，必须绑定一进一出的设备";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
+                        }                        
 
                         ts.Complete();
                     }

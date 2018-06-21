@@ -294,6 +294,9 @@
         <button type="button" class="layui-btn" id="addDevice">添加设备</button>
     </blockquote>
     <table class="layui-hide" id="bindTable" lay-filter="bindTable"></table>
+    <div class="adjBox layui-hide" style="text-align:center;">
+        <button type="button" class="layui-btn layui-btn-normal" id="saveAdj"></button>
+    </div>
 </div>
 <!--选择绑定设备-->
 <div id="deviceModel" style="padding: 15px;display:none;" class="goodIsAll">
@@ -379,7 +382,7 @@
             ,{fixed: 'right',title: '操作', width:320, align:'center', toolbar: '#barDemo'}]
     };
     xc.getInitData(parm);
-
+let addOrModi=false;
    let id='';
    let DeviceList=[];let feeRule=[]; let projectBandPrice=[];
    let index1;let index2;let index3;
@@ -418,6 +421,7 @@
       $('.add').on('click',()=>{  //弹窗
           $('.layreset').trigger('click');
             id='';guestIndex='';
+          addOrModi=true;
            feeType=''; feeBalance=''; feekinds=''; feeWays=''; Lock=0;
             PushBalanceIndex1=''; PushBalanceIndex2=''; ReadCat=1; PushLevel=1;AdjOrder=0;
             $('#timesModel').find('input[type="checkbox"]').attr({'checked':true});
@@ -515,6 +519,7 @@
                 'PushCoin2': $('input[name="PushCoin2"]').val(),
                 'ReadCat':ReadCat,
                 'PushLevel':PushLevel,
+                'ProjectBindDevices':AdjOrder==1?DeviceList:[],
                 'userToken':token,
                 'signkey':'1f626576304bf5d95b72ece2222e42c3'};
             let parasJson = JSON.stringify(obj);
@@ -551,11 +556,10 @@
         });
        $('#addDevice').on('click',()=>{  //弹窗
             xc.getUnBindDeviceDic(token,layer,form,'deviceList');
-             DeviceID='';WorkType='0';AdjOrder=0;ReadFace=0;ReadCard=0;ReadQRCode=0;AllowCrah=0;routerList='';
+             DeviceID='';WorkType='0';ReadFace=0;ReadCard=0;ReadQRCode=0;AllowCrah=0;routerList='';
             $('#deviceModel').find('input[type="checkbox"]').attr({'checked':false});
             xc.getRouteDevice(token,layer,form,'routerList');
-            // $('#workType').find('option').attr({'selected':false});
-            form.render()
+            form.render();
             index2=   layer.open({
                 title:'新增',
                 type:1,
@@ -603,6 +607,7 @@
                     success: function (data) {
                         data = JSON.parse(data);
                         if (data.result_code == 1) {
+                            addOrModi=false;
                             let arr;
                             arr=data.result_data;
                             xc.getGroupAreaDic(0,token,layer,form,'Area',arr.AreaType);
@@ -610,14 +615,19 @@
                             form.val('formtest',{
                                 'projectName':arr.ProjectName,
                                 'chargeType':arr.ChargeType,
-                                'Note':arr.Note
+                                'Note':arr.Note,
                             });
+                            form.val('chargeTimes',{
+                                'PushBalanceIndex1':arr.PushBalanceIndex1,
+                                'PushBalanceIndex2':arr.PushBalanceIndex2
+                            });
+
                             projectType=arr.ProjectType;
                             Area=arr.AreaType;
                             chargeType=arr.ChargeType;
                             guestIndex=arr.GameIndex;
-                            xc.getBalanceTypeDic('',token,layer,form,'PushBalanceIndex1',arr.PushBalanceIndex1);
-                            xc.getBalanceTypeDic('',token,layer,form,'PushBalanceIndex2',arr.PushBalanceIndex2);
+                            // xc.getBalanceTypeDic('',token,layer,form,'PushBalanceIndex1',arr.PushBalanceIndex1);
+                            // xc.getBalanceTypeDic('',token,layer,form,'PushBalanceIndex2',arr.PushBalanceIndex2);
                             PushBalanceIndex1=arr.PushBalanceIndex1;
                             PushBalanceIndex2=arr.PushBalanceIndex2;
                             ReadCat=arr.ReadCat;
@@ -644,7 +654,7 @@
                              }else {
                                  $('#setRuleBtn').addClass('layui-hide')
                              }
-                            index1=   layer.open({
+                            index1=layer.open({
                                 title:'新增',
                                 type:1,
                                 area:'900px',
@@ -672,6 +682,7 @@
                         data = JSON.parse(data);
                         console.log(data);
                         if (data.result_code == 1) {
+
                             setDeviceTable(table,data.result_data);
                             DeviceList=data.result_data;
 
@@ -759,26 +770,37 @@
             var layEvent = obj.event;
             if(layEvent === 'del'){ //删除
                 layer.confirm('真的删除行么', function(index){
-                    var _obj={'id':data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
-                    var url='/XCCloud/Project?action=DelBindDevice';
-                    let parseJson = JSON.stringify(_obj);
-                    $.ajax({
-                        type: "post",
-                        url: url,
-                        contentType: "application/json; charset=utf-8",
-                        data: {parasJson: parseJson},
-                        success: function (data) {
-                            data = JSON.parse(data);
-                            console.log(data);
-                            if (data.result_code == 1) {
-                                layer.msg('删除成功！',{time:1500},function () {
-                                    obj.del();
-                                });
-                            } else {
-                                layer.msg(data.result_msg||data.return_msg);
+                    if(AdjOrder==0){
+                        var _obj={'id':data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                        var url='/XCCloud/Project?action=DelBindDevice';
+                        let parseJson = JSON.stringify(_obj);
+                        $.ajax({
+                            type: "post",
+                            url: url,
+                            contentType: "application/json; charset=utf-8",
+                            data: {parasJson: parseJson},
+                            success: function (data) {
+                                data = JSON.parse(data);
+                                console.log(data);
+                                if (data.result_code == 1) {
+                                    layer.msg('删除成功！',{time:1500},function () {
+                                        obj.del();
+                                    });
+                                } else {
+                                    layer.msg(data.result_msg||data.return_msg);
+                                }
+                            }
+                        })
+                    }else {
+                        for(let i in DeviceList){
+                            if(DeviceList[i].DeviceID==data.DeviceID){
+                                DeviceList.splice(i,1);
+                                obj.del();
+                                layer.clone(index)
                             }
                         }
-                    })
+                    }
+
                 });
             }
         });
@@ -794,7 +816,9 @@
         form.on('switch(AdjOrder)',function (data) {
             if(data.elem.checked==true){
                 AdjOrder=1;
-                $('.mustBindBox').removeClass('layui-hide');
+                if(addOrModi){
+                    $('.mustBindBox').removeClass('layui-hide');
+                }
             }else {
                 AdjOrder=0;
                 $('.mustBindBox').addClass('layui-hide');
@@ -831,13 +855,16 @@
         $('#mustBind').click(function () {
             setDeviceTable(table,[]);
             DeviceList=[];
-
+            $('.adjBox').removeClass('layui-hide');
             index1=layer.open({
                 title:'新增',
                 type:1,
                 area:'900px',
                 content:$('#bindModel')
             })
+        });
+        $('#saveAdj').click(function () {
+            layer.close(index1);
         });
         //保存选定的设备
         $('#saveDevice').on('click',function () {
@@ -846,7 +873,7 @@
                 let flag=false;
                 for(let i in DeviceList){
                     if(DeviceList[i].DeviceID==DeviceID){
-                        flag==true
+                        flag=true
                     }
                 }
                 if(flag){
@@ -858,54 +885,69 @@
                 canBind=true;
             }
           if(canBind){
-              let obj={'projectid':id,
-                  'DeviceID':DeviceID,
-                  'WorkType':WorkType,
-                  // 'AdjOrder':AdjOrder,
-                  'ReadFace':ReadFace,
-                  'ReadCard':ReadCard,
-                  'ReadQRCode':ReadQRCode,
-                  'AllowCash':AllowCrah,
-                  'BindDeviceID':routerList,
-                  'userToken':token,
-                  'signkey':'1f626576304bf5d95b72ece2222e42c3'};
-              let parasJson = JSON.stringify(obj);
-              $.ajax({
-                  type: "post",
-                  url: '/XCCloud/Project?action=SaveBindDevice',
-                  contentType: "application/json; charset=utf-8",
-                  data: { parasJson: parasJson },
-                  success: function (data) {
-                      data=JSON.parse(data);
-                      if(data.result_code==1){
-                          layer.msg('保存成功',{time:1500},function () {
-                              let _obj={'projectId':id,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
-                              let url='/XCCloud/Project?action=QueryBindDevice';
-                              let parseJson = JSON.stringify(_obj);
-                              $.ajax({
-                                  type: "post",
-                                  url: url,
-                                  contentType: "application/json; charset=utf-8",
-                                  data: {parasJson: parseJson},
-                                  success: function (data) {
-                                      data = JSON.parse(data);
-                                      console.log(data);
-                                      if (data.result_code == 1) {
-                                          setDeviceTable(table,data.result_data);
-                                          DeviceList=data.result_data;
-                                      } else {
-                                          layer.msg(data.result_msg||data.return_msg);
-                                      }
-                                  }
-                              });
-                              layer.close(index2);
-                          })
-                      }else {
-                          layer.msg(data.result_msg||data.return_msg);
-                          return false;
-                      }
-                  }
-              })
+                if(AdjOrder==0){
+                    let obj={'projectid':id,
+                        'DeviceID':DeviceID,
+                        'WorkType':WorkType,
+                        // 'AdjOrder':AdjOrder,
+                        'ReadFace':ReadFace,
+                        'ReadCard':ReadCard,
+                        'ReadQRCode':ReadQRCode,
+                        'AllowCash':AllowCrah,
+                        'BindDeviceID':routerList,
+                        'userToken':token,
+                        'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                    let parasJson = JSON.stringify(obj);
+                    $.ajax({
+                        type: "post",
+                        url: '/XCCloud/Project?action=SaveBindDevice',
+                        contentType: "application/json; charset=utf-8",
+                        data: { parasJson: parasJson },
+                        success: function (data) {
+                            data=JSON.parse(data);
+                            if(data.result_code==1){
+                                layer.msg('保存成功',{time:1500},function () {
+                                    let _obj={'projectId':id,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                                    let url='/XCCloud/Project?action=QueryBindDevice';
+                                    let parseJson = JSON.stringify(_obj);
+                                    $.ajax({
+                                        type: "post",
+                                        url: url,
+                                        contentType: "application/json; charset=utf-8",
+                                        data: {parasJson: parseJson},
+                                        success: function (data) {
+                                            data = JSON.parse(data);
+                                            console.log(data);
+                                            if (data.result_code == 1) {
+                                                setDeviceTable(table,data.result_data);
+                                                DeviceList=data.result_data;
+                                            } else {
+                                                layer.msg(data.result_msg||data.return_msg);
+                                            }
+                                        }
+                                    });
+                                    layer.close(index2);
+                                })
+                            }else {
+                                layer.msg(data.result_msg||data.return_msg);
+                                return false;
+                            }
+                        }
+                    })
+                }else if(AdjOrder==1){
+                    DeviceList.push({
+                        'DeviceID':DeviceID,
+                        'WorkType':WorkType,
+                        'ReadFace':ReadFace,
+                        'ReadCard':ReadCard,
+                        'ReadQRCode':ReadQRCode,
+                        'AllowCash':AllowCrah,
+                        'BindDeviceID':routerList
+                    });
+                    setDeviceTable(table,DeviceList);
+                    layer.close(index2);
+                }
+
           }
 
         });
