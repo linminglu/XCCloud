@@ -311,12 +311,14 @@ namespace XXCloudService.Api.XCCloud
             {
                 string errMsg = string.Empty;
                 string id = dicParas.ContainsKey("id") ? Convert.ToString(dicParas["id"]) : string.Empty;
+                string newId = dicParas.ContainsKey("newId") ? Convert.ToString(dicParas["newId"]) : string.Empty;
                 string state = dicParas.ContainsKey("state") ? Convert.ToString(dicParas["state"]) : string.Empty;
                 string gameIndexId = dicParas.ContainsKey("gameIndexId") ? Convert.ToString(dicParas["gameIndexId"]) : string.Empty;
                 string bindDeviceId = dicParas.ContainsKey("bindDeviceId") ? Convert.ToString(dicParas["bindDeviceId"]) : string.Empty;
                 string siteName = dicParas.ContainsKey("siteName") ? Convert.ToString(dicParas["siteName"]) : string.Empty;
-                int iId = 0, iState = 0, iGameIndexId = 0, iBindDeviceId = 0;
+                int iId = 0, iState = 0, iGameIndexId = 0, iBindDeviceId = 0, iNewId = 0;
                 int.TryParse(id, out iId);
+                int.TryParse(newId, out iNewId);
                 int.TryParse(state, out iState);
                 int.TryParse(gameIndexId, out iGameIndexId);
                 int.TryParse(bindDeviceId, out iBindDeviceId);
@@ -324,7 +326,7 @@ namespace XXCloudService.Api.XCCloud
                 #region 参数验证
                 if (string.IsNullOrEmpty(id))
                 {
-                    errMsg = "设备流水号不能为空";
+                    errMsg = "设备ID不能为空";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
                 if (string.IsNullOrEmpty(state))
@@ -354,8 +356,15 @@ namespace XXCloudService.Api.XCCloud
                     {
                         errMsg = "P位编号长度不能超过20个字符";
                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                    }
+                    }                    
                 }
+
+                if (iState == 2 && string.IsNullOrEmpty(newId))
+                {
+                    errMsg = "替换的新设备ID不能为空";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
                 #endregion
 
                 if (!Base_DeviceInfoService.I.Any(p => p.ID == iId))
@@ -428,6 +437,57 @@ namespace XXCloudService.Api.XCCloud
                 //解绑
                 else if (iState == 0)
                 {
+                    data_DeviceInfo.GameIndexID = (int?)null;
+                    data_DeviceInfo.BindDeviceID = (int?)null;
+                    data_DeviceInfo.SiteName = string.Empty;
+                    data_DeviceInfo.segment = string.Empty;
+                    data_DeviceInfo.Address = string.Empty;
+                }
+                //替换
+                else if (iState == 2)
+                {
+                    if (!(data_DeviceInfo.GameIndexID > 0 || data_DeviceInfo.BindDeviceID > 0))
+                    {
+                        errMsg = "原机台未被绑定";
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
+
+                    if (!Base_DeviceInfoService.I.Any(p => p.ID == iBindDeviceId))
+                    {
+                        errMsg = "路由器设备不存在";
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
+
+                    if (!Data_GameInfoService.I.Any(p => p.ID == iGameIndexId))
+                    {
+                        errMsg = "游戏机信息不存在";
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
+
+                    var data_DeviceInfoNew = Base_DeviceInfoService.I.GetModels(p => p.ID == iNewId).FirstOrDefault();
+                    if (data_DeviceInfoNew.type != (int)DeviceType.卡头 && data_DeviceInfoNew.type != (int)DeviceType.闸机 && data_DeviceInfoNew.type != (int)DeviceType.自助机)
+                    {
+                        errMsg = "新机台绑定类型不正确，须为卡头、闸机或自助机";
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
+
+                    if (data_DeviceInfoNew.GameIndexID > 0 || data_DeviceInfoNew.BindDeviceID > 0)
+                    {
+                        errMsg = "新机台已被绑定";
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
+
+                    data_DeviceInfoNew.GameIndexID = data_DeviceInfo.GameIndexID;
+                    data_DeviceInfoNew.BindDeviceID = data_DeviceInfo.BindDeviceID;
+                    data_DeviceInfoNew.SiteName = data_DeviceInfo.SiteName;
+                    data_DeviceInfoNew.segment = data_DeviceInfo.segment;
+                    data_DeviceInfoNew.Address = data_DeviceInfo.Address;
+                    if (!Base_DeviceInfoService.I.Update(data_DeviceInfoNew))
+                    {
+                        errMsg = "机台替换失败";
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
+
                     data_DeviceInfo.GameIndexID = (int?)null;
                     data_DeviceInfo.BindDeviceID = (int?)null;
                     data_DeviceInfo.SiteName = string.Empty;

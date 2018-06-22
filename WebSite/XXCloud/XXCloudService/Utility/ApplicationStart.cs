@@ -30,8 +30,8 @@ namespace XCCloudService.Utility
             {
                 LogHelper.SaveLog(TxtLogType.SystemInit, "********************************Application Start********************************");
                 //TestInit();
-                //TCPSocketInit();
-                UDPSocketInit();
+                //TCPSocketInit(); 
+                UDPSocketInit(); 
                 StoreInit(); //redis
                 StoreDogInit();
                 MibleTokenInit(); //redis

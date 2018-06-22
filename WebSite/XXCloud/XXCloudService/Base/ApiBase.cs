@@ -22,19 +22,18 @@ using XCCloudService.BLL.CommonBLL;
 using System.Data;
 
 namespace XCCloudService.Base
-{
-
+{ 
     public class ApiBase : IHttpHandler
     {
         protected System.Web.Script.Serialization.JavaScriptSerializer jss = new System.Web.Script.Serialization.JavaScriptSerializer();
         protected bool isSignKeyReturn = false;
         protected int defaultPageSize = int.Parse(System.Configuration.ConfigurationManager.AppSettings["defaultPageSize"].ToString());
         protected string sysId = string.Empty;
-        protected string versionNo = string.Empty;
+        protected string versionNo = string.Empty;  
 
         protected string getProjectGameTypes(out string errMsg)
         {
-            string projectGameTypes = string.Empty;
+            string projectGameTypes = string.Empty; 
             errMsg = string.Empty;
 
             string sql = " exec  SP_DictionaryNodes @MerchID,@DictKey,@PDictKey,@RootID output ";
@@ -678,7 +677,7 @@ namespace XCCloudService.Base
                 return true;
             }
             else if (signKeyEnum == SignKeyEnum.XCGameManamAdminUserToken)
-            {
+            { 
                 string userToken = dicParas.ContainsKey("userToken") ? dicParas["userToken"].ToString() : string.Empty;
                 XCGameManaAdminUserTokenModel tokenModel = XCGameManaAdminUserTokenBusiness.GetTokenModel(userToken);
                 if (tokenModel == null)
