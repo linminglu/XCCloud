@@ -17,9 +17,9 @@ namespace XCCloudService.Model.XCCloud
         public int ID { get; set; }
         public string MerchID { get; set; }
         public string StoreID { get; set; }
-        public Nullable<int> ProjcetTicketID { get; set; }
-        public Nullable<int> ProjcetID { get; set; }
-        public Nullable<int> ProjcetType { get; set; }
+        public Nullable<int> ProjectTicketID { get; set; }
+        public Nullable<int> ProjectID { get; set; }
+        public Nullable<int> ProjectType { get; set; }
         public Nullable<int> UseCount { get; set; }
         public Nullable<int> AllowShareCount { get; set; }
         public Nullable<int> WeightValue { get; set; }

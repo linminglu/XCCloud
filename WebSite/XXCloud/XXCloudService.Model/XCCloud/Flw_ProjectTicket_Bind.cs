@@ -14,11 +14,12 @@ namespace XCCloudService.Model.XCCloud
     
     public partial class Flw_ProjectTicket_Bind
     {
-        public int ID { get; set; }
+        public string ID { get; set; }
         public string MerchID { get; set; }
         public string ProjectCode { get; set; }
         public Nullable<int> ProjectID { get; set; }
-        public Nullable<int> UseCount { get; set; }
+        public Nullable<int> BuyCount { get; set; }
+        public Nullable<int> RemainCount { get; set; }
         public Nullable<int> AllowShareCount { get; set; }
         public Nullable<int> WeightValue { get; set; }
         public string Verifiction { get; set; }

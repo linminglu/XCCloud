@@ -3427,7 +3427,7 @@ namespace XXCloudService.Api.XCCloud
                             var err = string.Empty;
                             if (CheckUserGrant("总部盘点", logId, out err))
                             {
-                                linq = linq.Union(from a in Base_DepotInfoService.I.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && (p.StoreID ?? "") == "")
+                                linq = linq.Union(from a in Base_DepotInfoService.N.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && (p.StoreID ?? "") == "")
                                                   select new
                                                   {
                                                       StockIndex = a.ID,

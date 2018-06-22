@@ -1742,9 +1742,9 @@
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="MerchID" Type="varchar" MaxLength="15" />
           <Property Name="StoreID" Type="varchar" MaxLength="15" />
-          <Property Name="ProjcetTicketID" Type="int" />
-          <Property Name="ProjcetID" Type="int" />
-          <Property Name="ProjcetType" Type="int" />
+          <Property Name="ProjectTicketID" Type="int" />
+          <Property Name="ProjectID" Type="int" />
+          <Property Name="ProjectType" Type="int" />
           <Property Name="UseCount" Type="int" />
           <Property Name="AllowShareCount" Type="int" />
           <Property Name="WeightValue" Type="int" />
@@ -2531,7 +2531,7 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ID" Type="varchar" MaxLength="32" Nullable="false" />
           <Property Name="MerchID" Type="varchar" MaxLength="15" />
           <Property Name="FoodSaleID" Type="varchar" MaxLength="32" />
           <Property Name="CardID" Type="varchar" MaxLength="32" />
@@ -2545,8 +2545,6 @@
           <Property Name="WriteOffDays" Type="int" />
           <Property Name="EndTime" Type="datetime" />
           <Property Name="State" Type="int" />
-          <Property Name="BuyCount" Type="int" />
-          <Property Name="RemainCount" Type="int" />
           <Property Name="BuyPrice" Type="numeric" Precision="10" Scale="2" />
           <Property Name="BalanceIndex" Type="int" />
           <Property Name="BalanceCount" Type="numeric" Precision="10" Scale="2" />
@@ -2575,11 +2573,12 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ID" Type="varchar" MaxLength="32" Nullable="false" />
           <Property Name="MerchID" Type="varchar" MaxLength="15" />
           <Property Name="ProjectCode" Type="varchar" MaxLength="32" />
           <Property Name="ProjectID" Type="int" />
-          <Property Name="UseCount" Type="int" />
+          <Property Name="BuyCount" Type="int" />
+          <Property Name="RemainCount" Type="int" />
           <Property Name="AllowShareCount" Type="int" />
           <Property Name="WeightValue" Type="int" />
           <Property Name="Verifiction" Type="varchar" MaxLength="32" />
@@ -3107,8 +3106,6 @@
     [Flw_Project_TicketInfo].[WriteOffDays] AS [WriteOffDays], 
     [Flw_Project_TicketInfo].[EndTime] AS [EndTime], 
     [Flw_Project_TicketInfo].[State] AS [State], 
-    [Flw_Project_TicketInfo].[BuyCount] AS [BuyCount], 
-    [Flw_Project_TicketInfo].[RemainCount] AS [RemainCount], 
     [Flw_Project_TicketInfo].[BuyPrice] AS [BuyPrice], 
     [Flw_Project_TicketInfo].[BalanceIndex] AS [BalanceIndex], 
     [Flw_Project_TicketInfo].[BalanceCount] AS [BalanceCount], 
@@ -3122,7 +3119,8 @@
     [Flw_ProjectTicket_Bind].[MerchID] AS [MerchID], 
     [Flw_ProjectTicket_Bind].[ProjectCode] AS [ProjectCode], 
     [Flw_ProjectTicket_Bind].[ProjectID] AS [ProjectID], 
-    [Flw_ProjectTicket_Bind].[UseCount] AS [UseCount], 
+    [Flw_ProjectTicket_Bind].[BuyCount] AS [BuyCount], 
+    [Flw_ProjectTicket_Bind].[RemainCount] AS [RemainCount], 
     [Flw_ProjectTicket_Bind].[AllowShareCount] AS [AllowShareCount], 
     [Flw_ProjectTicket_Bind].[WeightValue] AS [WeightValue], 
     [Flw_ProjectTicket_Bind].[Verifiction] AS [Verifiction]
@@ -3383,14 +3381,11 @@
           <EntitySet Name="Data_CouponInfo" EntityType="XCCloudDBModel.Data_CouponInfo" />
           <EntitySet Name="XC_HolidayList" EntityType="XCCloudDBModel.XC_HolidayList" />
           <EntitySet Name="Data_GameEncourage" EntityType="XCCloudDBModel.Data_GameEncourage" />
-          <EntitySet Name="Flw_ProjectTicket_Bind" EntityType="XCCloudDBModel.Flw_ProjectTicket_Bind" />
           <EntitySet Name="Base_ChainRule" EntityType="XCCloudDBModel.Base_ChainRule" />
           <EntitySet Name="Data_Member_Card" EntityType="XCCloudDBModel.Data_Member_Card" />
           <EntitySet Name="Data_Card_Balance" EntityType="XCCloudDBModel.Data_Card_Balance" />
           <EntitySet Name="Data_Card_Balance_Free" EntityType="XCCloudDBModel.Data_Card_Balance_Free" />
-          <EntitySet Name="Flw_Project_TicketInfo" EntityType="XCCloudDBModel.Flw_Project_TicketInfo" />
           <EntitySet Name="Data_Food_Detial" EntityType="XCCloudDBModel.Data_Food_Detial" />
-          <EntitySet Name="Data_ProjectTicket_Bind" EntityType="XCCloudDBModel.Data_ProjectTicket_Bind" />
           <EntitySet Name="Flw_Order" EntityType="XCCloudDBModel.Flw_Order" />
           <EntitySet Name="Flw_Project_TicketUse" EntityType="XCCloudDBModel.Flw_Project_TicketUse" />
           <EntitySet Name="Base_MemberInfo" EntityType="XCCloudDBModel.Base_MemberInfo" />
@@ -3400,6 +3395,9 @@
           <EntitySet Name="Data_Project_BindDevice" EntityType="XCCloudDBModel.Data_Project_BindDevice" />
           <EntitySet Name="Data_ProjectInfo" EntityType="XCCloudDBModel.Data_ProjectInfo" />
           <EntitySet Name="Flw_Food_Sale" EntityType="XCCloudDBModel.Flw_Food_Sale" />
+          <EntitySet Name="Data_ProjectTicket_Bind" EntityType="XCCloudDBModel.Data_ProjectTicket_Bind" />
+          <EntitySet Name="Flw_ProjectTicket_Bind" EntityType="XCCloudDBModel.Flw_ProjectTicket_Bind" />
+          <EntitySet Name="Flw_Project_TicketInfo" EntityType="XCCloudDBModel.Flw_Project_TicketInfo" />
         </EntityContainer>
         <EntityType Name="Base_ChainRule_Store">
           <Key>
@@ -5862,19 +5860,6 @@
           <Property Name="State" Type="Int32" />
           <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
         </EntityType>
-        <EntityType Name="Flw_ProjectTicket_Bind">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="ProjectCode" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
-          <Property Name="ProjectID" Type="Int32" />
-          <Property Name="UseCount" Type="Int32" />
-          <Property Name="AllowShareCount" Type="Int32" />
-          <Property Name="WeightValue" Type="Int32" />
-          <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
-        </EntityType>
         <EntityType Name="Base_ChainRule">
           <Key>
             <PropertyRef Name="ID" />
@@ -5943,32 +5928,6 @@
           <Property Name="UpdateTime" Type="DateTime" Precision="3" />
           <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
         </EntityType>
-        <EntityType Name="Flw_Project_TicketInfo">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="FoodSaleID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
-          <Property Name="CardID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
-          <Property Name="MemberID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
-          <Property Name="ParentID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
-          <Property Name="TicketType" Type="Int32" />
-          <Property Name="NeedActive" Type="Int32" />
-          <Property Name="Barcode" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
-          <Property Name="SaleTime" Type="DateTime" Precision="3" />
-          <Property Name="FirstUseTime" Type="DateTime" Precision="3" />
-          <Property Name="WriteOffDays" Type="Int32" />
-          <Property Name="EndTime" Type="DateTime" Precision="3" />
-          <Property Name="State" Type="Int32" />
-          <Property Name="BuyCount" Type="Int32" />
-          <Property Name="RemainCount" Type="Int32" />
-          <Property Name="BuyPrice" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="BalanceIndex" Type="Int32" />
-          <Property Name="BalanceCount" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="RemainDividePrice" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
-        </EntityType>
         <EntityType Name="Data_Food_Detial">
           <Key>
             <PropertyRef Name="ID" />
@@ -5982,21 +5941,6 @@
           <Property Name="ContainID" Type="Int32" />
           <Property Name="ContainCount" Type="Int32" />
           <Property Name="Status" Type="Int32" />
-          <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
-        </EntityType>
-        <EntityType Name="Data_ProjectTicket_Bind">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="ProjcetTicketID" Type="Int32" />
-          <Property Name="ProjcetID" Type="Int32" />
-          <Property Name="ProjcetType" Type="Int32" />
-          <Property Name="UseCount" Type="Int32" />
-          <Property Name="AllowShareCount" Type="Int32" />
-          <Property Name="WeightValue" Type="Int32" />
           <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="Flw_Order">
@@ -6192,6 +6136,59 @@
           <Property Name="TaxFee" Type="Decimal" Precision="10" Scale="6" />
           <Property Name="TaxTotal" Type="Decimal" Precision="10" Scale="2" />
           <Property Name="Note" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Data_ProjectTicket_Bind">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="ProjectTicketID" Type="Int32" />
+          <Property Name="ProjectID" Type="Int32" />
+          <Property Name="ProjectType" Type="Int32" />
+          <Property Name="UseCount" Type="Int32" />
+          <Property Name="AllowShareCount" Type="Int32" />
+          <Property Name="WeightValue" Type="Int32" />
+          <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Flw_ProjectTicket_Bind">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="ProjectCode" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="ProjectID" Type="Int32" />
+          <Property Name="BuyCount" Type="Int32" />
+          <Property Name="RemainCount" Type="Int32" />
+          <Property Name="AllowShareCount" Type="Int32" />
+          <Property Name="WeightValue" Type="Int32" />
+          <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Flw_Project_TicketInfo">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="FoodSaleID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="CardID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="MemberID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="ParentID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="TicketType" Type="Int32" />
+          <Property Name="NeedActive" Type="Int32" />
+          <Property Name="Barcode" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="SaleTime" Type="DateTime" Precision="3" />
+          <Property Name="FirstUseTime" Type="DateTime" Precision="3" />
+          <Property Name="WriteOffDays" Type="Int32" />
+          <Property Name="EndTime" Type="DateTime" Precision="3" />
+          <Property Name="State" Type="Int32" />
+          <Property Name="BuyPrice" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="BalanceIndex" Type="Int32" />
+          <Property Name="BalanceCount" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="RemainDividePrice" Type="Decimal" Precision="10" Scale="2" />
           <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
         </EntityType>
         </Schema>
@@ -8814,20 +8811,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Flw_ProjectTicket_Bind">
-            <EntityTypeMapping TypeName="XCCloudDBModel.Flw_ProjectTicket_Bind">
-              <MappingFragment StoreEntitySet="Flw_ProjectTicket_Bind">
-                <ScalarProperty Name="Verifiction" ColumnName="Verifiction" />
-                <ScalarProperty Name="WeightValue" ColumnName="WeightValue" />
-                <ScalarProperty Name="AllowShareCount" ColumnName="AllowShareCount" />
-                <ScalarProperty Name="UseCount" ColumnName="UseCount" />
-                <ScalarProperty Name="ProjectID" ColumnName="ProjectID" />
-                <ScalarProperty Name="ProjectCode" ColumnName="ProjectCode" />
-                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Base_ChainRule">
             <EntityTypeMapping TypeName="XCCloudDBModel.Base_ChainRule">
               <MappingFragment StoreEntitySet="Base_ChainRule">
@@ -8900,33 +8883,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Flw_Project_TicketInfo">
-            <EntityTypeMapping TypeName="XCCloudDBModel.Flw_Project_TicketInfo">
-              <MappingFragment StoreEntitySet="Flw_Project_TicketInfo">
-                <ScalarProperty Name="Verifiction" ColumnName="Verifiction" />
-                <ScalarProperty Name="RemainDividePrice" ColumnName="RemainDividePrice" />
-                <ScalarProperty Name="BalanceCount" ColumnName="BalanceCount" />
-                <ScalarProperty Name="BalanceIndex" ColumnName="BalanceIndex" />
-                <ScalarProperty Name="BuyPrice" ColumnName="BuyPrice" />
-                <ScalarProperty Name="RemainCount" ColumnName="RemainCount" />
-                <ScalarProperty Name="BuyCount" ColumnName="BuyCount" />
-                <ScalarProperty Name="State" ColumnName="State" />
-                <ScalarProperty Name="EndTime" ColumnName="EndTime" />
-                <ScalarProperty Name="WriteOffDays" ColumnName="WriteOffDays" />
-                <ScalarProperty Name="FirstUseTime" ColumnName="FirstUseTime" />
-                <ScalarProperty Name="SaleTime" ColumnName="SaleTime" />
-                <ScalarProperty Name="Barcode" ColumnName="Barcode" />
-                <ScalarProperty Name="NeedActive" ColumnName="NeedActive" />
-                <ScalarProperty Name="TicketType" ColumnName="TicketType" />
-                <ScalarProperty Name="ParentID" ColumnName="ParentID" />
-                <ScalarProperty Name="MemberID" ColumnName="MemberID" />
-                <ScalarProperty Name="CardID" ColumnName="CardID" />
-                <ScalarProperty Name="FoodSaleID" ColumnName="FoodSaleID" />
-                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Data_Food_Detial">
             <EntityTypeMapping TypeName="XCCloudDBModel.Data_Food_Detial">
               <MappingFragment StoreEntitySet="Data_Food_Detial">
@@ -8938,22 +8894,6 @@
                 <ScalarProperty Name="OperateType" ColumnName="OperateType" />
                 <ScalarProperty Name="FoodType" ColumnName="FoodType" />
                 <ScalarProperty Name="FoodID" ColumnName="FoodID" />
-                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Data_ProjectTicket_Bind">
-            <EntityTypeMapping TypeName="XCCloudDBModel.Data_ProjectTicket_Bind">
-              <MappingFragment StoreEntitySet="Data_ProjectTicket_Bind">
-                <ScalarProperty Name="Verifiction" ColumnName="Verifiction" />
-                <ScalarProperty Name="WeightValue" ColumnName="WeightValue" />
-                <ScalarProperty Name="AllowShareCount" ColumnName="AllowShareCount" />
-                <ScalarProperty Name="UseCount" ColumnName="UseCount" />
-                <ScalarProperty Name="ProjcetType" ColumnName="ProjcetType" />
-                <ScalarProperty Name="ProjcetID" ColumnName="ProjcetID" />
-                <ScalarProperty Name="ProjcetTicketID" ColumnName="ProjcetTicketID" />
-                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
                 <ScalarProperty Name="MerchID" ColumnName="MerchID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
@@ -9158,6 +9098,62 @@
                 <ScalarProperty Name="SingleType" ColumnName="SingleType" />
                 <ScalarProperty Name="FlowType" ColumnName="FlowType" />
                 <ScalarProperty Name="StoreID" ColumnName="StoreID" />
+                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Data_ProjectTicket_Bind">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Data_ProjectTicket_Bind">
+              <MappingFragment StoreEntitySet="Data_ProjectTicket_Bind">
+                <ScalarProperty Name="Verifiction" ColumnName="Verifiction" />
+                <ScalarProperty Name="WeightValue" ColumnName="WeightValue" />
+                <ScalarProperty Name="AllowShareCount" ColumnName="AllowShareCount" />
+                <ScalarProperty Name="UseCount" ColumnName="UseCount" />
+                <ScalarProperty Name="ProjectType" ColumnName="ProjectType" />
+                <ScalarProperty Name="ProjectID" ColumnName="ProjectID" />
+                <ScalarProperty Name="ProjectTicketID" ColumnName="ProjectTicketID" />
+                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
+                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Flw_ProjectTicket_Bind">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Flw_ProjectTicket_Bind">
+              <MappingFragment StoreEntitySet="Flw_ProjectTicket_Bind">
+                <ScalarProperty Name="Verifiction" ColumnName="Verifiction" />
+                <ScalarProperty Name="WeightValue" ColumnName="WeightValue" />
+                <ScalarProperty Name="AllowShareCount" ColumnName="AllowShareCount" />
+                <ScalarProperty Name="RemainCount" ColumnName="RemainCount" />
+                <ScalarProperty Name="BuyCount" ColumnName="BuyCount" />
+                <ScalarProperty Name="ProjectID" ColumnName="ProjectID" />
+                <ScalarProperty Name="ProjectCode" ColumnName="ProjectCode" />
+                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Flw_Project_TicketInfo">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Flw_Project_TicketInfo">
+              <MappingFragment StoreEntitySet="Flw_Project_TicketInfo">
+                <ScalarProperty Name="Verifiction" ColumnName="Verifiction" />
+                <ScalarProperty Name="RemainDividePrice" ColumnName="RemainDividePrice" />
+                <ScalarProperty Name="BalanceCount" ColumnName="BalanceCount" />
+                <ScalarProperty Name="BalanceIndex" ColumnName="BalanceIndex" />
+                <ScalarProperty Name="BuyPrice" ColumnName="BuyPrice" />
+                <ScalarProperty Name="State" ColumnName="State" />
+                <ScalarProperty Name="EndTime" ColumnName="EndTime" />
+                <ScalarProperty Name="WriteOffDays" ColumnName="WriteOffDays" />
+                <ScalarProperty Name="FirstUseTime" ColumnName="FirstUseTime" />
+                <ScalarProperty Name="SaleTime" ColumnName="SaleTime" />
+                <ScalarProperty Name="Barcode" ColumnName="Barcode" />
+                <ScalarProperty Name="NeedActive" ColumnName="NeedActive" />
+                <ScalarProperty Name="TicketType" ColumnName="TicketType" />
+                <ScalarProperty Name="ParentID" ColumnName="ParentID" />
+                <ScalarProperty Name="MemberID" ColumnName="MemberID" />
+                <ScalarProperty Name="CardID" ColumnName="CardID" />
+                <ScalarProperty Name="FoodSaleID" ColumnName="FoodSaleID" />
                 <ScalarProperty Name="MerchID" ColumnName="MerchID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>

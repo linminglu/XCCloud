@@ -136,12 +136,12 @@ namespace XXCloudService.Api.XCCloud
                     model = model,
                     StartTimeStr = Utils.TimeSpanToStr(model.StartTime),
                     EndTimeStr = Utils.TimeSpanToStr(model.EndTime),
-                    ProjectTicketBinds = from a in Data_ProjectTicket_BindService.N.GetModels(p => p.ProjcetTicketID == id)
-                                         join b in Data_ProjectInfoService.N.GetModels(p => p.ChargeType == (int)ProjectInfoChargeType.Count && p.State == 1) on a.ProjcetID equals b.ID into b1
+                    ProjectTicketBinds = from a in Data_ProjectTicket_BindService.N.GetModels(p => p.ProjectTicketID == id)
+                                         join b in Data_ProjectInfoService.N.GetModels(p => p.ChargeType == (int)ProjectInfoChargeType.Count && p.State == 1) on a.ProjectID equals b.ID into b1
                                          from b in b1.DefaultIfEmpty()
-                                         join c in Dict_SystemService.N.GetModels() on a.ProjcetType equals c.ID into c1
+                                         join c in Dict_SystemService.N.GetModels() on a.ProjectType equals c.ID into c1
                                          from c in c1.DefaultIfEmpty()
-                                         join d in Data_GameInfoService.N.GetModels(p => p.State == 1) on a.ProjcetID equals d.ID into d1
+                                         join d in Data_GameInfoService.N.GetModels(p => p.State == 1) on a.ProjectID equals d.ID into d1
                                          from d in d1.DefaultIfEmpty()
                                          join e in Base_StoreInfoService.N.GetModels() on a.StoreID equals e.StoreID into e1
                                          from e in e1.DefaultIfEmpty()
@@ -150,14 +150,14 @@ namespace XXCloudService.Api.XCCloud
                                              ID = a.ID,
                                              StoreID = a.StoreID,
                                              StoreName = e.StoreName,
-                                             ProjcetTicketID = a.ProjcetTicketID,
-                                             ProjcetID = a.ProjcetID,
-                                             ProjcetType = a.ProjcetType,
+                                             ProjcetTicketID = a.ProjectTicketID,
+                                             ProjcetID = a.ProjectID,
+                                             ProjcetType = a.ProjectType,
                                              UseCount = a.UseCount,
                                              AllowShareCount = a.AllowShareCount,
                                              WeightValue = a.WeightValue,
                                              PushCoin1 = (a.UseCount ?? 0) > 0 ? (a.WeightValue / a.UseCount) : 0,
-                                             ProjectName = projectGameTypes.Contains(a.ProjcetType + "") ? b.ProjectName : d.GameName,
+                                             ProjectName = projectGameTypes.Contains(a.ProjectType + "") ? b.ProjectName : d.GameName,
                                              ProjcetTypeStr = c != null ? c.DictKey : string.Empty
                                          }
                 }.AsFlatDictionary();
@@ -327,7 +327,7 @@ namespace XXCloudService.Api.XCCloud
                         if (projectTicketBinds != null && projectTicketBinds.Count() >= 0)
                         {
                             //先删除，后添加
-                            foreach (var bindModel in Data_ProjectTicket_BindService.I.GetModels(p => p.ProjcetTicketID == id))
+                            foreach (var bindModel in Data_ProjectTicket_BindService.I.GetModels(p => p.ProjectTicketID == id))
                             {
                                 Data_ProjectTicket_BindService.I.DeleteModel(bindModel);
                             }
@@ -368,9 +368,9 @@ namespace XXCloudService.Api.XCCloud
                                     var bindModel = new Data_ProjectTicket_Bind();
                                     bindModel.MerchID = merchId;
                                     bindModel.StoreID = dicPar.Get("storeId");
-                                    bindModel.ProjcetType = projcetType;
-                                    bindModel.ProjcetID = projcetId;
-                                    bindModel.ProjcetTicketID = id;                                    
+                                    bindModel.ProjectType = projcetType;
+                                    bindModel.ProjectID = projcetId;
+                                    bindModel.ProjectTicketID = id;                                    
                                     bindModel.UseCount = dicPar.Get("useCount").Toint();
                                     bindModel.AllowShareCount = dicPar.Get("allowShareCount").Toint();
                                     bindModel.WeightValue = dicPar.Get("weightValue").Toint();
@@ -436,7 +436,7 @@ namespace XXCloudService.Api.XCCloud
                         var model = Data_ProjectTicketService.I.GetModels(p => p.ID == id).FirstOrDefault();
                         Data_ProjectTicketService.I.DeleteModel(model);
 
-                        foreach (var bindModel in Data_ProjectTicket_BindService.I.GetModels(p => p.ProjcetTicketID == id))
+                        foreach (var bindModel in Data_ProjectTicket_BindService.I.GetModels(p => p.ProjectTicketID == id))
                         {
                             Data_ProjectTicket_BindService.I.DeleteModel(bindModel);
                         }
