@@ -3515,7 +3515,7 @@ namespace XXCloudService.Api.XCCloud
                                 	/*商品名称*/
                                 	c.GoodName,   
                                     /*商品来源*/
-                                    ISNULL(e.StoreName, '总店') AS Source,                             	
+                                    ISNULL(s.StoreName, '总店') AS Source,                             	
                                 	/*商品类别*/
                                 	c.GoodType AS GoodType,
                                 	/*商品类别[字符串]*/
