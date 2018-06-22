@@ -64,11 +64,11 @@ namespace XXCloudService.Api.XCCloud
 //                                    a.*, stuff((
 //                                    select '|' + t.ProjectName 
 //                                    from (
-//                                        select (case when CHARINDEX(CONVERT(varchar, c.ProjcetType), @projectGameTypes)>0 then d.ProjectName else e.GameName end) AS ProjectName
+//                                        select (case when CHARINDEX(CONVERT(varchar, c.ProjectType), @projectGameTypes)>0 then d.ProjectName else e.GameName end) AS ProjectName
 //                                        from Data_ProjectTicket b
-//                                        inner join Data_ProjectTicket_Bind c on b.ID = c.ProjcetTicketID
-//                                        left join Data_ProjectInfo d on c.ProjcetID = d.ID and d.ChargeType = 0 and d.State = 1
-//                                        left join Data_GameInfo e on c.ProjcetID = e.ID and e.State = 1
+//                                        inner join Data_ProjectTicket_Bind c on b.ID = c.ProjectTicketID
+//                                        left join Data_ProjectInfo d on c.ProjectID = d.ID and d.ChargeType = 0 and d.State = 1
+//                                        left join Data_GameInfo e on c.ProjectID = e.ID and e.State = 1
 //                                        where b.ID=a.ID
 //                                    ) t
 //                                    for xml path('')),1,1,'') as BindProjects
@@ -82,13 +82,13 @@ namespace XXCloudService.Api.XCCloud
                                 	Data_ProjectTicket a
                                 LEFT JOIN (                                
                                 	SELECT 
-                                		b.ID, (case when CHARINDEX(CONVERT(varchar, c.ProjcetType), @projectGameTypes)>0 then d.ProjectName else e.GameName end) AS ProjectName,
+                                		b.ID, (case when CHARINDEX(CONVERT(varchar, c.ProjectType), @projectGameTypes)>0 then d.ProjectName else e.GameName end) AS ProjectName,
                                         ROW_NUMBER() over(partition by b.ID order by b.ID) as RowNum
                                 	FROM
                                 		Data_ProjectTicket b                                                        
-                                	inner join Data_ProjectTicket_Bind c on b.ID = c.ProjcetTicketID
-                                    left join Data_ProjectInfo d on c.ProjcetID = d.ID and d.ChargeType = 0 and d.State = 1
-                                    left join Data_GameInfo e on c.ProjcetID = e.ID and e.State = 1                                          
+                                	inner join Data_ProjectTicket_Bind c on b.ID = c.ProjectTicketID
+                                    left join Data_ProjectInfo d on c.ProjectID = d.ID and d.ChargeType = 0 and d.State = 1
+                                    left join Data_GameInfo e on c.ProjectID = e.ID and e.State = 1                                          
                                 ) b ON a.ID = b.ID and b.RowNum <= 1
                                 WHERE 1=1
                             ";

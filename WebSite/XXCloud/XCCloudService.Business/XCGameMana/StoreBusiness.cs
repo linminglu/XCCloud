@@ -137,8 +137,8 @@ namespace XCCloudService.Business.XCGameMana
 
         public static void StoreInit()
         {
-            //if (!RedisCacheHelper.KeyExists(StoreCache.storeCacheKey))
-            //{
+            if (!RedisCacheHelper.KeyExists(StoreCache.storeCacheKey))
+            {
                 string errMsg = string.Empty;
                 //IStoreService storeService = BLLContainer.Resolve<IStoreService>();
                 //string sql = " select ID as StoreID,store_password as StorePassword,store_dbname as StoreDBName,companyname as StoreName,StoreType,StoreDBDeployType from t_store where state = 1";
@@ -152,7 +152,7 @@ namespace XCCloudService.Business.XCGameMana
                     var list = Utils.GetModelList<StoreCacheModel>(ds.Tables[0]).ToList();
                     StoreCache.Init(list);
                 }
-            //}         
+            }
         }
 
         public static void StoreDogInit()
