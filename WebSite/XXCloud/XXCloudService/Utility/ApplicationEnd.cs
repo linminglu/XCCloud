@@ -14,7 +14,7 @@ namespace XCCloudService.Utility
         public static void End()
         {
             LogHelper.SaveLog(TxtLogType.SystemInit, "********************************Application End********************************");
-            TCPSocketEnd();
+            //TCPSocketEnd();
             UDPSocketEnd();
         }
 

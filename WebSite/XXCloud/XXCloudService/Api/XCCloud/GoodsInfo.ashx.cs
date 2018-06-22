@@ -3094,7 +3094,7 @@ namespace XXCloudService.Api.XCCloud
                 string sql = @"SELECT
                                 	a.ID,
                                     a.GoodID,
-                                    a.DepotID,
+                                    a.StockIndex AS DepotID,
                                 	/*商品条码*/
                                 	b.Barcode,
                                 	/*商品名称*/
@@ -3193,7 +3193,7 @@ namespace XXCloudService.Api.XCCloud
                 string sql = @"SELECT
                                 	a.ID,
                                     a.GoodID,
-                                    a.DepotID,
+                                    a.StockIndex AS DepotID,
                                 	/*商品条码*/
                                 	b.Barcode,
                                 	/*商品名称*/

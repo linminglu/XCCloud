@@ -137,12 +137,14 @@ namespace XCCloudService.Business.XCGameMana
 
         public static void StoreInit()
         {
-            if (!RedisCacheHelper.KeyExists(StoreCache.storeCacheKey))
-            {
+            //if (!RedisCacheHelper.KeyExists(StoreCache.storeCacheKey))
+            //{
                 string errMsg = string.Empty;
-                IStoreService storeService = BLLContainer.Resolve<IStoreService>();
-                string sql = " select ID as StoreID,store_password as StorePassword,store_dbname as StoreDBName,companyname as StoreName,StoreType,StoreDBDeployType from t_store where state = 1";
-                System.Data.DataSet ds = XCGameManabll.ExecuteQuerySentence(sql, null);
+                //IStoreService storeService = BLLContainer.Resolve<IStoreService>();
+                //string sql = " select ID as StoreID,store_password as StorePassword,store_dbname as StoreDBName,companyname as StoreName,StoreType,StoreDBDeployType from t_store where state = 1";
+                //System.Data.DataSet ds = XCGameManabll.ExecuteQuerySentence(sql, null);
+                string sql = "select StoreID, Password as StorePassword, '' as StoreDBName, StoreName, 2 AS StoreType, 1 AS StoreDBDeployType from Base_StoreInfo where StoreState = 1";
+                System.Data.DataSet ds = XCCloudBLL.ExecuteQuerySentence(sql, null);
                 DataTable dt = ds.Tables[0];
                 if (dt.Rows.Count > 0)
                 {
@@ -150,7 +152,7 @@ namespace XCCloudService.Business.XCGameMana
                     var list = Utils.GetModelList<StoreCacheModel>(ds.Tables[0]).ToList();
                     StoreCache.Init(list);
                 }
-            }         
+            //}         
         }
 
         public static void StoreDogInit()

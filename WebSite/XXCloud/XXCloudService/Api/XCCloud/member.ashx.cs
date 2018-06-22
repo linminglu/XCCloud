@@ -1867,9 +1867,9 @@ namespace XCCloudService.Api.XCCloud
 
         #region 补卡、换卡、续期
 
-        #region 补卡
+        #region 补卡、换卡
         /// <summary>
-        /// 补卡
+        /// 补卡、换卡
         /// </summary>
         /// <param name="dicParas"></param>
         /// <returns></returns>
@@ -1925,43 +1925,72 @@ namespace XCCloudService.Api.XCCloud
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, string.Format("当前班次为空，不能进行{0}操作", operate));
                 }
 
-                //更新新卡号
-                memberCard.ICCardID = newCardId;
-                bool ret = Data_Member_CardService.I.Update(memberCard, false);
-                if(!ret)
+                using (TransactionScope ts = new TransactionScope(TransactionScopeOption.RequiresNew))
                 {
-                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "补卡失败");
+                    //更新新卡号
+                    memberCard.ICCardID = newCardId;
+                    bool ret = Data_Member_CardService.I.Update(memberCard, false);
+                    if (!ret)
+                    {
+                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "补卡失败");
+                    }
+
+                    string saleId = RedisCacheHelper.CreateStoreSerialNo(storeId);
+
+                    Data_MemberLevel memberLevel = Data_MemberLevelService.I.GetModels(t => t.MemberLevelID == memberCard.MemberLevelID).FirstOrDefault();
+
+                    //会员补卡记录
+                    Flw_MemberCard_Change cardChange = new Flw_MemberCard_Change();
+                    cardChange.OrderID = RedisCacheHelper.CreateStoreSerialNo(storeId);
+                    cardChange.MerchID = merchID;
+                    cardChange.StoreID = storeId;
+                    cardChange.MemberID = memberCard.MemberID;
+                    cardChange.OperateType = Convert.ToInt32(operateType);
+                    cardChange.OldCardID = oldCardId;
+                    cardChange.NewCardID = newCardId;
+                    cardChange.FoodSaleID = saleId;
+                    cardChange.OpFee = operateType == "1" ? memberLevel.RechargeFee : memberLevel.ChangeFee;
+                    cardChange.OpStoreID = storeId;
+                    cardChange.WorkStation = workStation;
+                    cardChange.UserID = userId;
+                    cardChange.ScheduldID = schedule.ID.ToString();
+                    cardChange.CheckDate = schedule.CheckDate;
+                    cardChange.Note = operate;
+                    if (!Flw_MemberCard_ChangeService.I.Add(cardChange, false))
+                    {
+                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "补卡失败");
+                    }                    
+
+                    //增加销售流水
+                    Flw_Food_Sale sale = new Flw_Food_Sale();
+                    sale.ID = saleId;
+                    sale.MerchID = merchID;
+                    sale.StoreID = storeId;
+                    sale.FlowType = 0;//单品
+                    sale.SingleType = operateType == "0" ? 5 : 4;
+                    sale.FoodID = cardChange.OrderID;
+                    sale.SaleCount = 1;
+                    sale.MemberLevelID = memberCard.MemberLevelID;
+                    sale.Deposit = 0;
+                    if (operateType == "1")
+                    {
+                        sale.ReissueFee = memberLevel.RechargeFee.HasValue ? memberLevel.RechargeFee : 0;
+                        sale.TotalMoney = sale.ReissueFee;
+                    }
+                    else
+                    {
+                        sale.ChangeFee = memberLevel.ChangeFee.HasValue ? memberLevel.ChangeFee : 0;
+                        sale.TotalMoney = sale.ChangeFee;
+                    }                    
+                    sale.BuyFoodType = 0;
+                    sale.Note = operate;
+                    if (!Flw_Food_SaleService.I.Add(sale))
+                    {
+                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "补卡失败");
+                    }
+
+                    ts.Complete();
                 }
-
-                string saleId = RedisCacheHelper.CreateStoreSerialNo(storeId);
-
-                //会员补卡记录
-                Flw_MemberCard_Change cardChange = new Flw_MemberCard_Change();
-                cardChange.OrderID = RedisCacheHelper.CreateStoreSerialNo(storeId);
-                cardChange.MerchID = merchID;
-                cardChange.StoreID = storeId;
-                cardChange.MemberID = memberCard.MemberID;
-                cardChange.OperateType = Convert.ToInt32(operateType);
-                cardChange.OldCardID = oldCardId;
-                cardChange.NewCardID = newCardId;
-                cardChange.FoodSaleID = saleId;
-                cardChange.OpFee = 0;
-                cardChange.OpStoreID = storeId;
-                cardChange.WorkStation = workStation;
-                cardChange.UserID = userId;
-                cardChange.ScheduldID = schedule.ID.ToString();
-                cardChange.CheckDate = schedule.CheckDate;
-                cardChange.Note = operate;
-                Flw_MemberCard_ChangeService.I.Add(cardChange, false);
-
-                ////增加销售流水
-                //Flw_Food_Sale sale = new Flw_Food_Sale();
-                //sale.ID = saleId;
-                //sale.MerchID = merchID;
-                //sale.StoreID = storeId;
-                //sale.FlowType = 0;//单品
-                //sale.SingleType = operateType == "0" ? 5 : 4;
-                //sale.FoodID = 
 
                 return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.T, "");
             }
@@ -1972,6 +2001,117 @@ namespace XCCloudService.Api.XCCloud
         } 
         #endregion 
 
+        #region 续卡
+        /// <summary>
+        /// 续卡
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
+        [Authorize(Roles = "StoreUser")]
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object RenewCard(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                string errMsg = string.Empty;
+                string ICCardId = dicParas.ContainsKey("ICCardId") ? dicParas["ICCardId"].ToString() : string.Empty;
+                if (string.IsNullOrEmpty(ICCardId))
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员卡号无效");
+                }
+
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+                string merchID = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string workStation = (userTokenKeyModel.DataModel as TokenDataModel).WorkStation;
+                int userId = userTokenKeyModel.LogId.Toint(0);
+
+                Data_Member_Card memberCard = Data_Member_CardService.I.GetModels(t => t.MerchID == merchID && t.ICCardID == ICCardId).FirstOrDefault();
+                if (memberCard == null)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员卡不存在");
+                }
+
+                DateTime currDate = DateTime.Now.Date;
+                //当前班次
+                Flw_Schedule schedule = Flw_ScheduleService.I.GetModels(t => t.StoreID == storeId && t.UserID == userId && t.CheckDate == currDate && t.State == 0 && t.WorkStation == workStation).FirstOrDefault();
+                if (schedule == null)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "当前班次为空，不能进行续卡操作");
+                }
+
+                Data_MemberLevel memberLevel = Data_MemberLevelService.I.GetModels(t => t.MemberLevelID == memberCard.MemberLevelID).FirstOrDefault();
+                DateTime? oldEndDate = memberCard.EndDate;
+
+                using (TransactionScope ts = new TransactionScope(TransactionScopeOption.RequiresNew))
+                {
+                    //更新会员卡到期时间
+                    memberCard.EndDate = memberCard.EndDate.HasValue ? memberCard.EndDate.Value.AddDays(memberLevel.Validday.Value) : DateTime.Now.AddDays(memberLevel.Validday.Value);
+                    bool ret = Data_Member_CardService.I.Update(memberCard, false);
+                    if (!ret)
+                    {
+                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "续卡失败");
+                    }
+
+                    string saleId = RedisCacheHelper.CreateStoreSerialNo(storeId);
+
+                    //会员补卡记录
+                    Flw_MemberCard_Renew cardRenew = new Flw_MemberCard_Renew();
+                    cardRenew.OrderID = RedisCacheHelper.CreateStoreSerialNo(storeId);
+                    cardRenew.MerchID = merchID;
+                    cardRenew.StoreID = storeId;
+                    cardRenew.MemberID = memberCard.MemberID;
+                    cardRenew.CardID = ICCardId;
+                    cardRenew.OldEndDate = oldEndDate;
+                    cardRenew.NewEndDate = memberCard.EndDate;
+                    cardRenew.FoodSaleID = saleId;
+                    cardRenew.RenewFee = memberLevel.ContinueFee;
+                    cardRenew.WorkStation = workStation;
+                    cardRenew.UserID = userId;
+                    cardRenew.ScheduldID = schedule.ID.ToString();
+                    cardRenew.CheckDate = schedule.CheckDate;
+                    cardRenew.Note = "续卡";
+                    if (!Flw_MemberCard_RenewService.I.Add(cardRenew, false))
+                    {
+                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "续卡失败");
+                    }
+
+                    //增加销售流水
+                    Flw_Food_Sale sale = new Flw_Food_Sale();
+                    sale.ID = saleId;
+                    sale.MerchID = merchID;
+                    sale.StoreID = storeId;
+                    sale.FlowType = 0;//单品
+                    sale.SingleType = 3;
+                    sale.FoodID = cardRenew.OrderID;
+                    sale.SaleCount = 1;
+                    sale.MemberLevelID = memberCard.MemberLevelID;
+                    sale.Deposit = 0;
+                    sale.RenewFee = memberLevel.ContinueFee.HasValue ? memberLevel.ContinueFee.Value : 0;
+                    sale.TotalMoney = sale.RenewFee;
+                    sale.BuyFoodType = 0;
+                    sale.Note = "续卡";
+                    if (!Flw_Food_SaleService.I.Add(sale))
+                    {
+                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "续卡失败");
+                    }
+
+                    ts.Complete();
+                }
+
+                var result = new
+                {
+                    ICCardId = ICCardId,
+                    EndDate = memberCard.EndDate.Value.ToString("yyyy-MM-dd")
+                };
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, result);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+        #endregion 
         #endregion
     }
 }
