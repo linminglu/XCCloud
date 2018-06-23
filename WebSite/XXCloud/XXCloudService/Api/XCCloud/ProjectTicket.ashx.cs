@@ -351,7 +351,7 @@ namespace XXCloudService.Api.XCCloud
                                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                                         if (!dicPar.Get("useCount").Validintnozero("游玩次数", out errMsg))
                                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                                    }
+                                    }                                    
 
                                     var projcetType = dicPar.Get("projcetType").Toint();
                                     var projcetId = dicPar.Get("projcetId").Toint();
@@ -371,7 +371,7 @@ namespace XXCloudService.Api.XCCloud
                                     bindModel.ProjectType = projcetType;
                                     bindModel.ProjectID = projcetId;
                                     bindModel.ProjectTicketID = id;                                    
-                                    bindModel.UseCount = dicPar.Get("useCount").Toint();
+                                    bindModel.UseCount = dicPar.Get("useCount").Toint() ?? 1;
                                     bindModel.AllowShareCount = dicPar.Get("allowShareCount").Toint();
                                     bindModel.WeightValue = dicPar.Get("weightValue").Toint();
                                     Data_ProjectTicket_BindService.I.AddModel(bindModel);

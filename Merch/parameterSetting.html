@@ -53,17 +53,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="layui-inline">
-                            <label class="layui-form-label">授权通道</label>
-                            <div class="layui-input-inline">
-                                <select  id="cmbAuthChannel" name="cmbAuthChannel" lay-filter="cmbAuthChannel">
-                                    <option>-请选择-</option>
-                                    <option value="0">授权卡</option>
-                                    <option value="1">公众号通知</option>
-                                    <option value="2">扫码授权</option>
-                                </select>
-                            </div>
-                        </div>
+
                         <div class="layui-inline">
                             <label class="layui-form-label" style="white-space: normal;padding: 0;">换班时需要输入实点数</label>
                             <div class="layui-input-inline">
@@ -85,6 +75,21 @@
                             </div>
                         </div>
 
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">授权通道</label>
+                        <div class="layui-input-block" id="cmbAuthChannelBox">
+                            <!--<select  id="cmbAuthChannel" name="cmbAuthChannel" lay-filter="cmbAuthChannel">-->
+                                <!--<option>-请选择-</option>-->
+                                <!--<option value="0">授权卡</option>-->
+                                <!--<option value="1">公众号通知</option>-->
+                                <!--<option value="2">扫码授权</option>-->
+                            <!--</select>-->
+                            <input type="checkbox" lay-filter="cmbAuthChannel" title="授权卡" value="0" lay-skin="primary">
+                            <input type="checkbox" lay-filter="cmbAuthChannel" title="公众号通知" value="1" lay-skin="primary">
+                            <input type="checkbox" lay-filter="cmbAuthChannel" title="扫码授权" value="2" lay-skin="primary">
+
+                        </div>
                     </div>
                     <div class="layui-form-item priceCoinBox">
                         <div class="layui-inline priceCoin">
@@ -464,7 +469,7 @@
     let _storeId=getStorage('storeId_merch');
     // //运营参数设定
     let  chkPrintBarcode=0;let chkBarSendCoinAuthorize=0;let txtBusinessClass;
-    let cmbAuthChannel ;let chkShift=0;let chkTaxInSale=0;let  cmbCardOpenLevel='';
+    let cmbAuthChannel=[] ;let chkShift=0;let chkTaxInSale=0;let  cmbCardOpenLevel='';
     //会员设定
     let cmbBirthdaySendSms;let chkPhotograph=0;let chkExitCardCatch=0;
     let chkExitFoodCatch=0; let chkForceClearBalanceOnExitCard=0;
@@ -514,7 +519,7 @@
             data: {parasJson: JSON.stringify(obj)},
             success: function (data) {
                 data = JSON.parse(data);
-                 // console.log(data);
+                 console.log(data);
                 if(data.result_code==1){
                     let arr=data.result_data;
                     if(arr[0].Tag==0){
@@ -537,7 +542,7 @@
                         ,"chkExitFoodCatch": arr[13].ParameterValue==1?true:false
                         ,"txtCreditEveryday": arr[18].ParameterValue
                         ,"txtMaxSendCard": arr[19].ParameterValue
-                        ,"cmbAuthChannel": arr[21].ParameterValue
+                        // ,"cmbAuthChannel": arr[21].ParameterValue
                         ,"chkTaxInSale": arr[22].ParameterValue
                         ,"chkForceClearBalanceOnExitCard": arr[23].ParameterValue==1?true:false
                     });
@@ -545,7 +550,11 @@
                     chkPrintBarcode=arr[3].ParameterValue;
                     chkBarSendCoinAuthorize=arr[4].ParameterValue;
                     txtBusinessClass=arr[5].ParameterValue||'';
-                    cmbAuthChannel=arr[21].ParameterValue||'';
+                    cmbAuthChannel=arr[21].ParameterValue!=''?arr[21].ParameterValue.split('|'):[];
+
+                    for(let i in cmbAuthChannel){
+                        $('#cmbAuthChannelBox').find('input[value="'+cmbAuthChannel[i]+'"]').attr('checked',true);
+                    }
                     chkShift=arr[6].ParameterValue;
                     chkTaxInSale=arr[22].ParameterValue||'';
                     cmbCardOpenLevel=arr[24].ParameterValue||'';
@@ -766,7 +775,19 @@
                     }
                 }
             }
-        })
+        });
+
+        form.on('checkbox(cmbAuthChannel)',function (data) {
+            if(data.elem.checked){
+                cmbAuthChannel.push(data.elem.value)
+            }else {
+                for(let i in cmbAuthChannel ){
+                    if(cmbAuthChannel[i]==data.elem.value){
+                        cmbAuthChannel.splice(i,1);
+                    }
+                }
+            }
+        });
         table.on('tool(chargeRules)',function (obj) {
             let data=obj.data;
             let enevt=obj.event;
@@ -805,7 +826,6 @@
                                 ,{field:'TotalDays', title: '累计天数',  align: 'center'}
                                 ,{field:'AllowBackPrincipal', title: '是否扣除返还币', align: 'center'}
                                 ,{field:'AllowContainToday', title: '是否当天统计', align: 'center'}
-                                // ,{fixed: 'right', title: '操作', width:100, align:'center', toolbar: '#barDemo'}
                             ]]
                             ,page:true
                             ,limit:10
@@ -829,7 +849,7 @@
             { "storeId":storeIds, "system":"chkBarSendCoinAuthorize", "isAllow":1, "pValue":chkBarSendCoinAuthorize, "note":""},  //5
             { "storeId":storeIds, "system":"txtOnceSellCoinMin", "isAllow":"1", "pValue":$('#txtOnceSellCoinMin').val(), "note":""},//7
             { "storeId":storeIds, "system":"txtBusinessClass", "isAllow":"1", "pValue":txtBusinessClass, "note":""},//7
-            { "storeId":storeIds, "system":"cmbAuthChannel", "isAllow":1, "pValue":cmbAuthChannel, "note":""},
+            { "storeId":storeIds, "system":"cmbAuthChannel", "isAllow":1, "pValue":cmbAuthChannel.length>0?cmbAuthChannel.join('|'):'', "note":""},
             { "storeId":storeIds, "system":"chkShift", "isAllow":1, "pValue":chkShift, "note":""},
             { "storeId":storeIds, "system":"chkTaxInSale", "isAllow":1, "pValue":chkTaxInSale, "note":""},
             { "storeId":storeIds, "system":"cmbBirthdaySendSms", "isAllow":"1", "pValue":cmbBirthdaySendSms, "note":""},
