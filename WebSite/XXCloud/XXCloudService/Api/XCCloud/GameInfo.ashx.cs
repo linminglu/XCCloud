@@ -573,6 +573,8 @@ namespace XXCloudService.Api.XCCloud
                         }
                         
                         ts.Complete();
+
+                        return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, new { ID = iId, GameName = data_GameInfo.GameName });
                     }
                     catch (DbEntityValidationException e)
                     {
@@ -583,9 +585,7 @@ namespace XXCloudService.Api.XCCloud
                         errMsg = ex.Message;
                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                     }
-                }                
-                
-                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
+                }
             }            
             catch (Exception e)
             {
