@@ -33,7 +33,7 @@ layuiXtreeLook.prototype.dataBind = function (d) {
                 xtree_isend = 'data-xend="1"';
                 xtree_ischecked = d[i].checked ? ' checked ' : '';
             }
-            _this._domStr += '<input type="checkbox" class="layui-xtree-checkbox" ' + xtree_isend +xtree_ischecked+ ' value="' + d[i].value + '" title="' + d[i].title + '" lay-skin="primary" lay-filter="xtreeck">';
+            _this._domStr += '<input type="checkbox" disabled class="layui-xtree-checkbox" ' + xtree_isend +xtree_ischecked+ ' value="' + d[i].value + '" title="' + d[i].title + '" lay-skin="primary" lay-filter="xtreeck">';
             _this.dataBind(d[i].data);
             _this._domStr += '</div>';
         }

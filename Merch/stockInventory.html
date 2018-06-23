@@ -11,6 +11,18 @@
         <blockquote class="layui-elem-quote">
             <form class="layui-form layui-form-pane">
                 <div class="layui-inline">
+                    <label class="layui-form-label">库存类别</label>
+                    <div class="layui-input-inline">
+                        <select name="depotType" id="depotType" lay-filter="depotType">
+                            <option value="">-请选择-</option>
+                            <option value="0">仓库</option>
+                            <option value="1">吧台</option>
+                            <option value="2">自助机</option>
+                            <option value="3">游戏机</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-inline">
                     <label class="layui-form-label">选择仓库</label>
                     <div class="layui-input-inline">
                         <select name="depotList" id="depotList" lay-filter="depotList"></select>
@@ -54,6 +66,7 @@
     let xc=xcActionSystem.prototype;
     let token=xc.getStorage('token');
     let depotList='';let goodId='';let id='';
+    let stockType='';
     let checkArr=[];
     layui.use(['form','table','layer'],function () {
         let form=layui.form;
@@ -62,50 +75,68 @@
         initTable(table,[]);
         xc.getDepotDic('','',token,layer,form,'depotList');
         //选择仓库后立即刷新
+        form.on('select(depotType)',function (data) {
+            if (data.value != '-请选择-') {
+                stockType=data.value;
+            }
+        }
         form.on('select(depotList)',function (data) {
-            depotList=data.value;
-            var  obj={"depotId":depotList,"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
-            var url="/XCCloud/GoodsInfo?action=QueryGoodsInventory";
-            var parasJson = JSON.stringify(obj);
-            $.ajax({
-                type: "post",
-                url: url,
-                contentType: "application/json; charset=utf-8",
-                data: {parasJson: parasJson},
-                success: function (data) {
-                    data = JSON.parse(data);
-                    // console.log(data);
-                    if (data.result_code == "1") {
-                        initTable(table,data.result_data);
-                    } else {
-                        layer.msg(data.result_msg || data.return_msg);
-                    }
+            if(data.value!='-请选择-'){
+                if(stockType!==''){
+                    depotList=data.value;
+                    var  obj={"depotId":depotList,'stockType':stockType,"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
+                    var url="/XCCloud/GoodsInfo?action=QueryGoodsInventory";
+                    var parasJson = JSON.stringify(obj);
+                    $.ajax({
+                        type: "post",
+                        url: url,
+                        contentType: "application/json; charset=utf-8",
+                        data: {parasJson: parasJson},
+                        success: function (data) {
+                            data = JSON.parse(data);
+                            // console.log(data);
+                            if (data.result_code == "1") {
+                                initTable(table,data.result_data);
+                            } else {
+                                layer.msg(data.result_msg || data.return_msg);
+                            }
+                        }
+                    })
+                }else {
+                    layer.msg('请选择库存类型')
                 }
-            })
+
+            }
+
         });
         //手动刷新
         $('#searchStock').on('click',function () {
             if(depotList==''){
                 layer.msg('请先选择仓库！')
             }else {
-                var  obj={"depotId":depotList,"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
-                var url="/XCCloud/GoodsInfo?action=QueryGoodsInventory";
-                var parasJson = JSON.stringify(obj);
-                $.ajax({
-                    type: "post",
-                    url: url,
-                    contentType: "application/json; charset=utf-8",
-                    data: {parasJson: parasJson},
-                    success: function (data) {
-                        data = JSON.parse(data);
-                        // console.log(data);
-                        if (data.result_code == "1") {
-                            initTable(table,data.result_data);
-                        } else {
-                            layer.msg(data.result_msg || data.return_msg);
+                if(stockType!==''){
+                    depotList=data.value;
+                    var  obj={"depotId":depotList,'stockType':stockType,"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
+                    var url="/XCCloud/GoodsInfo?action=QueryGoodsInventory";
+                    var parasJson = JSON.stringify(obj);
+                    $.ajax({
+                        type: "post",
+                        url: url,
+                        contentType: "application/json; charset=utf-8",
+                        data: {parasJson: parasJson},
+                        success: function (data) {
+                            data = JSON.parse(data);
+                            // console.log(data);
+                            if (data.result_code == "1") {
+                                initTable(table,data.result_data);
+                            } else {
+                                layer.msg(data.result_msg || data.return_msg);
+                            }
                         }
-                    }
-                })
+                    })
+                }else {
+                    layer.msg('请选择库存类型')
+                }
             }
         });
         //导出

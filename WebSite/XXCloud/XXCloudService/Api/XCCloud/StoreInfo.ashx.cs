@@ -187,9 +187,11 @@ namespace XCCloudService.Api.XCCloud
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
                 
                 IBase_StoreInfoService base_StoreInfoService = BLLContainer.Resolve<IBase_StoreInfoService>();
-                var base_StoreInfo = base_StoreInfoService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && (p.StoreState == (int)StoreState.Open || p.StoreState == (int)StoreState.Valid));       
+                var base_StoreInfo = base_StoreInfoService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && (p.StoreState == (int)StoreState.Open || p.StoreState == (int)StoreState.Valid)
+                    && !p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase));  
    
                 Dictionary<string, string> pStoreList = base_StoreInfo.Select(o => new { StoreID = o.StoreID, StoreName = o.StoreName }).Distinct()
                     .ToDictionary(d => d.StoreID, d => d.StoreName, StringComparer.OrdinalIgnoreCase);
