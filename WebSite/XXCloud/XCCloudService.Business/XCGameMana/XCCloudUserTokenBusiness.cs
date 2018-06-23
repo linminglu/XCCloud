@@ -11,7 +11,7 @@ namespace XCCloudService.Business.XCGameMana
 {
     public class XCCloudUserTokenBusiness
     {
-        private static object syncRoot = new Object();
+        //private static object syncRoot = new Object();
 
         public static string SetUserToken(string logId, int logType, TokenDataModel dataModel = null)
         {
@@ -59,49 +59,40 @@ namespace XCCloudService.Business.XCGameMana
 
         public static void RemoveUserToken(string logId)
         {
-            lock (syncRoot)
+            var query = XCCloudUserTokenCache.UserTokenList.Where(t => t.LogId.Equals(logId)).Select(o => o.Token).ToArray();
+            foreach (var item in query)
             {
-                var query = XCCloudUserTokenCache.UserTokenList.Where(t => t.LogId.Equals(logId)).Select(o => o.Token).ToArray();
-                foreach (var item in query)
-                {
-                    XCCloudUserTokenCache.Remove(item);
-                }
+                XCCloudUserTokenCache.Remove(item);
             }
         }
 
         public static bool GetUserTokenModel(string logId, out string token)
         {
             token = string.Empty;
-            lock (syncRoot)
+            var query = XCCloudUserTokenCache.UserTokenList.FirstOrDefault(t => t.LogId.Equals(logId));
+            if (query == null)
             {
-                var query = XCCloudUserTokenCache.UserTokenList.FirstOrDefault(t => t.LogId.Equals(logId));
-                if (query == null)
-                {
-                    return false;
-                }
-                else
-                {
-                    token = query.Token;
-                    return true;
-                }
+                return false;
+            }
+            else
+            {
+                token = query.Token;
+                return true;
             }
         }
 
         public static bool GetUserTokenModel(string logId, int logType, out string token)
         {
             token = string.Empty;
-            lock (syncRoot)
+            var query = XCCloudUserTokenCache.UserTokenList.FirstOrDefault(t => t.LogId.Equals(logId) && t.LogType == logType);
+            if (query == null)
             {
-                var query = XCCloudUserTokenCache.UserTokenList.FirstOrDefault(t => t.LogId.Equals(logId) && t.LogType == logType);
-                if (query == null)
-                {
-                    return false;
-                }
-                else
-                {
-                    token = query.Token;
-                    return true;
-                }
+                return false;
+            }
+            else
+            {
+                token = query.Token;
+                return true;
             }
         }
 
