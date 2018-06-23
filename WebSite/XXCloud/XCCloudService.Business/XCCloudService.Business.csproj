@@ -116,6 +116,7 @@
     <Compile Include="XCGameMana\PayBusiness.cs" />
     <Compile Include="XCGameMana\StoreBusiness.cs" />
     <Compile Include="XCGameMana\XCGameManaAdminUserTokenBusiness.cs" />
+    <Compile Include="XCGameMana\XCManaDogTokenBusiness.cs" />
     <Compile Include="XCGameMana\XCManaUserHelperTokenBusiness.cs" />
     <Compile Include="XCGameMana\XCCloudUserTokenBusiness.cs" />
     <Compile Include="XCGame\DeviceBusiness.cs" />

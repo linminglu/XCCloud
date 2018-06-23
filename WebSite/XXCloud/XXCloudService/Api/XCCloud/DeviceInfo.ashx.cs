@@ -515,7 +515,7 @@ namespace XXCloudService.Api.XCCloud
         }
 
         /// <summary>
-        /// 获取机台信息
+        /// 获取机台信息（小程序）
         /// </summary>
         /// <param name="dicParas"></param>
         /// <returns></returns>
@@ -536,8 +536,16 @@ namespace XXCloudService.Api.XCCloud
                 }
 
                 var base_DeviceInfo = Base_DeviceInfoService.I.GetModels(p => p.Token.Equals(token, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                var gameIndexId = base_DeviceInfo.GameIndexID;
+                var bindDeviceId = base_DeviceInfo.BindDeviceID;
+                var linq = new
+                {
+                    base_DeviceInfo = base_DeviceInfo,
+                    GameIndexName = Data_GameInfoService.I.GetModels(p => p.ID == gameIndexId).Select(o => o.GameName),
+                    BindDeviceName = Base_DeviceInfoService.I.GetModels(p => p.ID == bindDeviceId).Select(o => o.DeviceName)
+                }.AsFlatDictionary();
 
-                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, base_DeviceInfo);
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, linq);
             }
             catch (Exception e)
             {

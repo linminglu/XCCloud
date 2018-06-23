@@ -687,7 +687,7 @@ namespace XCCloudService.Base
                 }
                 dicParas.Add(Constant.XCGameManamAdminUserToken, tokenModel);
                 return true;
-            }
+            }            
             else
             {
                 string token = dicParas["token"].ToString();

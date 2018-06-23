@@ -747,6 +747,9 @@
     <Compile Include="XCCloud\Flw_Schedule.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
+    <Compile Include="XCCloud\Flw_Schedule_UserInfo.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
     <Compile Include="XCCloud\Flw_Ticket_Exit.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>

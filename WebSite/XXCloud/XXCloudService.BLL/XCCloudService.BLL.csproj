@@ -540,6 +540,9 @@
     <Compile Include="IBLL\IFlw_ScheduleService.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
+    <Compile Include="IBLL\IFlw_Schedule_UserInfoService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
     <Compile Include="IBLL\IFlw_Ticket_ExitService.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
@@ -1119,6 +1122,9 @@
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Flw_ScheduleService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Flw_Schedule_UserInfoService.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Flw_Ticket_ExitService.cs">

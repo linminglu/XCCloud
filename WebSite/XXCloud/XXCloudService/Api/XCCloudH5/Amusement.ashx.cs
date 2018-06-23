@@ -83,7 +83,7 @@ namespace XXCloudService.Api.XCCloudH5
                         card.ICCardID = RedisCacheHelper.CreateCloudSerialNo(storeId);
                         card.ParentCard = "0";
                         card.JoinChannel = 2;
-                        card.CardPassword = "";
+                        card.CardPassword = "888888";
                         card.CardType = 0;
                         card.CardShape = 0;
                         card.CardName = member.UserName ?? "";
@@ -99,6 +99,7 @@ namespace XXCloudService.Api.XCCloudH5
                         card.LastStore = storeId;
                         card.UpdateTime = DateTime.Now;
                         card.Deposit = 0;
+                        card.RepeatCode = new Random(Guid.NewGuid().GetHashCode()).Next(1, 256);
                         card.IsLock = 0;
                         card.CardStatus = 1;
                         bool ret = Data_Member_CardService.I.Add(card, false);

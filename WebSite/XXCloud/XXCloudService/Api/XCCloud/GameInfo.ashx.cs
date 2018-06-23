@@ -593,6 +593,12 @@ namespace XXCloudService.Api.XCCloud
             }
         }
 
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCManaUserHelperToken, SysIdAndVersionNo = false)]
+        public object SaveGameInfoFromProgram(Dictionary<string, object> dicParas)
+        {
+            return SaveGameInfo(dicParas);
+        }
+
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object DelGameInfo(Dictionary<string, object> dicParas)
         {

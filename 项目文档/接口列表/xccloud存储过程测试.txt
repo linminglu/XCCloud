@@ -1,5 +1,54 @@
 ********************************************************************会员*****************************************************************
 ----------------------------------------------------------------------------------------------------------------------------------------
+售币类型 :1电子币、2实物币手工、3、实物币售币机
+----------------------------------------------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+declare @TicketId varchar(32) = 4
+declare @FlwSeedId varchar(29) = '100025420106001' + '20180622' + '000210'
+declare @CardId varchar(32) = '10002542010600120180614100038001'
+declare @MemberId varchar(32) = '10002542010600120180521000060000'
+declare @ParentID varchar(32) = ''
+declare @FoodFlwId varchar(32) = 'gggggggggggggggggggggggggggggggggggg'
+declare @BuyPrice decimal(18,2) = 20
+declare @BalanceIndex int = 0
+declare @BalanceCount int = 0
+declare @RemainDividePrice decimal(18,2) = 0
+exec [dbo].[AddTicket] @TicketId,@FlwSeedId,@CardId,@MemberId,@ParentID,@FoodFlwId,@BuyPrice,@BalanceIndex,@BalanceCount,@RemainDividePrice
+
+select * from Flw_Project_TicketInfo where ID = '10002542010600120180622221250002'
+select * from Flw_ProjectTicket_Bind where ID = '10002542010600120180622221250005'
+select * from Flw_ProjectTicket_Entry where ProjectTicketID = (select ProjectID from Flw_ProjectTicket_Bind where ID = '10002542010600120180622221250005')
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------------------------------------------
+declare @CardId varchar(32) = ''
+declare @NewFlwSaleId varchar(29) = '100025420106001' + '20180622' + '000018'
+exec AddTicket 3,@NewFlwSaleId,@CardId,0,0,0 
+----------------------------------------------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------------------------------------------
+--Flw_Food_Sale
+(1)FoodType-0售币1入会2退卡3数字币4商品5门票6餐饮7混合
+(2)SingleType-0套餐 FoodID=Data_FoodInfo 1门票单品 FoodID=Data_ProjectTicketm,2商品单品 FoodID=Base_GoodInfo,3会员卡续期 FoodID=Flw_MemberCard_Renew,4会员卡补卡 FoodID=Flw_MemberCard_Change,5会员卡换卡 FoodID=Flw_MemberCard_Change,6兑换券使用 FoodID=Data_CouponList
+
+--Flw_Food_SaleDetail
+
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+declare @Coins int = 0
+declare @SaleCoinType int = 0
+declare @GetOrderCoinsInfoReturn int = 0 
+exec @GetOrderCoinsInfoReturn = GetOrderCoinsInfo '10002542010600120180517226839001',@Coins output,@SaleCoinType output
+print @SaleCoinType
+print @Coins
+
+----------------------------------------------------------------------------------------------------------------------------------------
 
 
 declare @FoodName varchar(50)

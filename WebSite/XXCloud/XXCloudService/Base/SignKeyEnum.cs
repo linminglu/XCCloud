@@ -49,7 +49,7 @@ namespace XCCloudService.Base
         /// <summary>
         /// XCGameManaDB表系统管理权限（t_AdminUser用户权限）
         /// </summary>
-        XCGameManamAdminUserToken = 11, 
+        XCGameManamAdminUserToken = 11
     }
 
     public enum RespDataTypeEnum

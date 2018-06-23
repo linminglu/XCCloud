@@ -11,7 +11,7 @@
     <script src="js/ydui.flexible.js"></script>
     <style>
         .section_image{width: 1rem;height: 0.7rem;display: inline-block;margin-top: 0.36rem;min-width: 1rem;max-width: 1rem;margin-right: 0.2rem;}
-        .section_items{display:flex;flex-direction: row;margin:0.3rem;padding:0.2rem;border-radius: 3px;position: relative;}
+        .section_items{display:flex;flex-direction: row;margin:0.3rem;padding:0.2rem;border-radius: 12px;position: relative;}
         .section_cont{width:4rem;font-size:0.26rem;color:#666;}
         .BuyCoins{display: inline-block;padding:0.1rem;height:0.5rem;font-size:0.26rem;border-radius:0.05rem;background:#10aeff;line-height: 0.3rem;color:#fff;text-align: center; margin-top:0.3rem;position: absolute;bottom: 0.3rem;right: 0.3rem;}
         .section_items:nth-child(5n+1){background-image: linear-gradient(120deg, #89f7fe 0%, #66a6ff 100%);}
@@ -42,7 +42,7 @@
     <!--<div class="iconSty" @click="tiedCard"><span>我要绑卡</span><img slot="icon" class="cardIcon" src="images/tiedCard.png"></div>-->
     <div>
         <div class='section_items' v-for="(item,index) in memberCard" :key="index" @click="chooseCard(index)">
-            <img class="section_image" slot="img" src="images/vipCard.png">
+            <!--<img class="section_image" slot="img" src="images/vipCard.png">-->
             <div class="section_cont">
                 <div class='hid_contSty'>
                     <p class='hid_contStys'>开卡门店：</p>
@@ -100,7 +100,7 @@
             Load:function () {
                 var that =this;
                 var userThirdId = "oNWocwSC_GFO8n_8mtZ0iV9tL0WI";
-//                var userThirdId = getStorage("userThirdId")||"";     //获取第三方令牌
+                var userThirdId = getStorage("userThirdId")||"";     //获取第三方令牌
                 that.userThirdId = userThirdId;
                 this.$dialog.loading.open('');
                 var obj={

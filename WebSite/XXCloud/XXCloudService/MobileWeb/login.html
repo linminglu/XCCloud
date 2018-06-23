@@ -19,6 +19,7 @@
         .codeImg{width: 1.4rem;height: 0.6rem;margin-top: 0.1rem;}
         .codeText{line-height: 0.8rem;margin-left: 0.2rem;}
         .margin1{line-height: 0.3rem;}
+        .prompt{color: #666666;margin-top: 0.1rem;text-align: center;}
         [v-cloak] {
             display: none;
         }
@@ -63,6 +64,7 @@
         </yd-cell-item>
     </yd-cell-group>
     <yd-button size="large" type="primary" @click.native="setMemberInfo">提交</yd-button>
+    <p class="prompt">（一旦提交无法修改，如有需要，请到吧台修改。）</p>
 </div>
 <!-- 引入 Vue -->
 <script src="js/vue.js"></script>
@@ -89,7 +91,7 @@
         created:function(){
             var that =this;
             var userThirdId = "oNWocwSC_GFO8n_8mtZ0iV9tL0WI";
-//                var userThirdId = getStorage("userThirdId")||"";     //获取第三方令牌
+            var userThirdId = getStorage("userThirdId")||"";     //获取第三方令牌
             that.userThirdId = userThirdId;
             var obj={"sysId": sysId,"versionNo": versionNo,token:that.userThirdId};
             axios.post("/XCCloudH5/Member?action=getMemberDetail", obj).then(function (res) {

@@ -55,7 +55,7 @@ namespace XCCloudService.Business.XCCloud
 
         public static MemberCardInfoViewModel GetMemberCardInfo(Base_MemberInfo member, string merchId, string storeId)
         {
-            var cardList = from card in Data_Member_CardService.I.GetModels(t => t.MemberID == member.ID && t.MerchID == merchId)
+            var cardList = from card in Data_Member_CardService.I.GetModels(t => t.MemberID == member.ID && t.MerchID == merchId && t.CardStatus == 1)
                            join storeCard in Data_Member_Card_StoreService.I.GetModels(t => t.StoreID == storeId)
                            on card.ID equals storeCard.CardID
                            select new

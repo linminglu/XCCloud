@@ -196,5 +196,6 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Data_ProjectTicket_Bind> Data_ProjectTicket_Bind { get; set; }
         public virtual DbSet<Flw_ProjectTicket_Bind> Flw_ProjectTicket_Bind { get; set; }
         public virtual DbSet<Flw_Project_TicketInfo> Flw_Project_TicketInfo { get; set; }
+        public virtual DbSet<Flw_Schedule_UserInfo> Flw_Schedule_UserInfo { get; set; }
     }
 }

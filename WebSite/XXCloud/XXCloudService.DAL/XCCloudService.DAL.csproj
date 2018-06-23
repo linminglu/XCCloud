@@ -544,6 +544,9 @@
     <Compile Include="IDAL\IFlw_ScheduleDAL.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
+    <Compile Include="IDAL\IFlw_Schedule_UserInfoDAL.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
     <Compile Include="IDAL\IFlw_Ticket_ExitDAL.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
@@ -1123,6 +1126,9 @@
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Flw_ScheduleDAL.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Flw_Schedule_UserInfoDAL.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Flw_Ticket_ExitDAL.cs">
