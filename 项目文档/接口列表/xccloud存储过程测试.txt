@@ -6,11 +6,11 @@
 ----------------------------------------------------------------------------------------------------------------------------------------
 
 declare @TicketId varchar(32) = 4
-declare @FlwSeedId varchar(29) = '100025420106001' + '20180622' + '000210'
+declare @FlwSeedId varchar(29) = '100025420106001' + '20180622' + '5669031'
 declare @CardId varchar(32) = '10002542010600120180614100038001'
 declare @MemberId varchar(32) = '10002542010600120180521000060000'
 declare @ParentID varchar(32) = ''
-declare @FoodFlwId varchar(32) = 'gggggggggggggggggggggggggggggggggggg'
+declare @FoodFlwId varchar(32) = '2222222222222222222222222222222'
 declare @BuyPrice decimal(18,2) = 20
 declare @BalanceIndex int = 0
 declare @BalanceCount int = 0

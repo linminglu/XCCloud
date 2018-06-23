@@ -815,6 +815,21 @@ namespace XCCloudService.Common.Enum
         Ticket = 0,//门票
         Time = 1 //计时
     }
+
+    /// <summary>
+    /// 班次状态
+    /// </summary>
+    public enum ScheduleState
+    {
+        [Description("未开班")]
+        Stopped = 0,
+        [Description("进行中")]
+        Starting = 1,
+        [Description("已交班")]
+        Submitted = 2,
+        [Description("已审核")]
+        Checked = 3
+    }
     
     /// <summary>
     /// 优惠券类别

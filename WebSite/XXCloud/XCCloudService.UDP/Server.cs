@@ -120,7 +120,8 @@ namespace XCCloudService.SocketService.UDP
             {
                 Console.WriteLine(oe);
 
-                throw oe;
+                //throw oe;
+                return;
             }
             catch (SocketException se)
             {
@@ -134,7 +135,7 @@ namespace XCCloudService.SocketService.UDP
                 LogHelper.SaveLog(TxtLogType.UPDService, TxtLogContentType.Exception, TxtLogFileType.Time, "ReceiveCallback:" + e.Message);
                 // 获得接收失败信息 
                 throw e;
-            }
+            } 
 
             if (readBytes > 0)
             {
