@@ -80,6 +80,8 @@ namespace XXCloudService.Api.XCCloud
                         var currScheduleModel = flw_ScheduleService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase) && p.CheckDate == currCheckDate && p.State == (int)ScheduleState.Starting).FirstOrDefault();
                         currScheduleModel.State = (int)ScheduleState.Submitted;
                         flw_ScheduleService.UpdateModel(currScheduleModel, false);
+                        
+                        //统计每个员工的订单现金、网络支付金额
                         var scheduleId = currScheduleModel.ID;
                         var linq = from a in flw_Schedule_UserInfoService.GetModels(p => p.ScheduleID.Equals(scheduleId))
                                    join b in flw_OrderService.GetModels() on new { a.ScheduleID, a.UserID } equals new { b.ScheduleID, b.UserID }
@@ -91,8 +93,6 @@ namespace XXCloudService.Api.XCCloud
                                        CashTotle = g.Where(w => w.PayType == 0).Sum(s => s.RealPay),
                                        NetTotle = g.Where(w => w.PayType == 1 || w.PayType == 2).Sum(s => s.RealPay)
                                    };
-
-                        //统计每个员工的订单现金、网络支付金额
                         foreach (var model in linq)
                         {
                             var userId = model.UserID;
