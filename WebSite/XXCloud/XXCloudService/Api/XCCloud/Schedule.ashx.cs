@@ -42,7 +42,6 @@ namespace XXCloudService.Api.XCCloud
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
                 var forceScheduleToNow = dicParas.Get("forceScheduleToNow").Toint(); //是否强制结账到当前日期
-
                 var store_CheckDateService = Store_CheckDateService.I;
                 var flw_ScheduleService = Flw_ScheduleService.I;
                 var flw_Schedule_UserInfoService = Flw_Schedule_UserInfoService.I;
