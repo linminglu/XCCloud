@@ -410,6 +410,7 @@
     <Content Include="Api\XCCloud\FoodType.ashx" />
     <Content Include="Api\XCCloudH5\Member.ashx" />
     <Content Include="Api\XCCloudH5\Amusement.ashx" />
+    <Content Include="Api\XCCloud\Schedule.ashx" />
     <None Include="Properties\PublishProfiles\111.pubxml" />
     <None Include="Properties\PublishProfiles\aaa.pubxml" />
     <None Include="Properties\PublishProfiles\qqq.pubxml" />
@@ -1249,6 +1250,9 @@
     </Compile>
     <Compile Include="Api\XCCloud\RuleOverlying.ashx.cs">
       <DependentUpon>RuleOverlying.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="Api\XCCloud\Schedule.ashx.cs">
+      <DependentUpon>Schedule.ashx</DependentUpon>
     </Compile>
     <Compile Include="Api\XCCloud\Supplier.ashx.cs">
       <DependentUpon>Supplier.ashx</DependentUpon>

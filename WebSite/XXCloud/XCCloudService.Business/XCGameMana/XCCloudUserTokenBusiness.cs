@@ -112,5 +112,21 @@ namespace XCCloudService.Business.XCGameMana
             }
         }
 
+        /// <summary>
+        /// 移除门店所有工作站用户
+        /// </summary>
+        /// <param name="logId"></param>
+        /// <param name="logType"></param>
+        public static void RemoveWorkStationUserToken(string storeId)
+        {
+            var query = XCCloudUserTokenCache.UserTokenList
+                .Where(t => t.DataModel != null && t.DataModel.WorkStation != null && t.DataModel.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase))
+                .Select(t => t.Token).ToArray();
+            foreach (var item in query)
+            {
+                XCCloudUserTokenCache.Remove(item);
+            }
+        }
+
     }
 }

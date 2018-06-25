@@ -164,10 +164,11 @@
 		@media (min-width: 1024px) and (max-width: 1280px) {
 		}
 		/*销售列表样式修改*/
-		.salesLi{width: 16em;height: 7em;display: inline-flex;flex-direction: row;justify-content: space-between;margin: 0.2em;padding: 0.5em 0.2em;border: 1px solid #00F7DE;}
-		.saleText h3{font-size: 0.9em;margin-top: 0.5em;}
-		.saleText a.btn{padding: 0 6px;}
-		.saleText{display: flex;flex-direction: column-reverse;width: 7em;justify-content: space-between;text-align: center;}
+		.salesLi{width: 20em;height: 7em;display: inline-flex;flex-direction: row;justify-content: space-between;margin: 0.2em;padding: 0.5em 0.2em;border: 1px solid #00F7DE;}
+		.saleText h3{font-size: 1.2em;margin-top: 0.5em;font-weight: 600;}
+		.saleText a.btn{padding: 0 6px;width: 50%;margin-left: 40%;}
+		.saleText{display: flex;flex-direction: column-reverse;width: 10.5em;justify-content: space-between;text-align: left;margin-left: 0.5em;}
+        .saleDetails{width: 50%;margin-left: 40%;}
 		.salesLi img{width: 8em;height: 6em;}
 		.saleTitleBg li:nth-child(7n) a{background-color: #3279b4;}
 		.saleTitleBg li:nth-child(7n+1) a{background-color: #32c7d2;}
@@ -206,7 +207,7 @@
 		.saleContent{display: flex;flex-direction: row;}
 
 		/*商品二级套餐*/
-		.treeBox{margin:0.5em 0;background-color:#fbfbfb;min-width: 200px;display: inline-block;height: inherit;}
+		.treeBox{margin:0.5em 0;background-color:#fbfbfb;min-width: 200px;display: inline-block;height: inherit;max-height: 40em;overflow-y: auto;}
 		.treeList{width:200px;}
 		.treeList li{margin:5px 0 0 0;}
 		.treeList a{background-color: #FFFFFF; color: #174867; padding: 7px 15px 7px 15px; width: 150px; display: block; text-decoration: none; -webkit-transition: all 0.3s ease-out; -moz-transition: all 0.3s ease-out; -o-transition: all 0.3s ease-out; -webkit-box-shadow: 2px 2px 4px #EDEDED; -moz-box-shadow: 2px 2px 4px #888; -o-box-shadow: 2px 2px 4px #888; border-left: 0px solid #CCCCCC; border-right: 1px solid #E3E3E3; border-bottom: 1px solid #E3E3E3; border-top: 1px solid #E3E3E3; box-shadow: 2px 2px 4px #EDEDED; }
@@ -214,20 +215,23 @@
 
 		/*会员操作*/
 		.Operation{padding: 1em;}
+		.tab-min{margin-top: 2em;padding: 0;}
 		.tab-text{margin: 1em 0;}
-		.tab-style{margin-top: 1em;padding-left: 0;padding-right: 0;line-height: 2em;}
+		.width100{width: 100%;background-color: #349ffd;}
+		.tab-style{margin-top: 1.5em;line-height: 2em;font-size: 1.2em;}
 		.switchZdy {border-radius: 4px;}
 		.mcImg img{width: 10em;height: 13em;margin-top: 1em;}
 		.inquire{text-align: right;margin-right: 2em;margin-bottom: 1em;margin-top: 1em;}
 		.tab-btn{text-align: right;padding-right: 2em;margin-bottom: 1em;}
+		.tab-btn .btn{width: 10em;}
 		.modal-h4{line-height: 2em;border-bottom: 1px solid sandybrown;}
 		.modal-p{padding-left: 2em;color: #FF0000;line-height: 2em;}
 		.modal-btn{display: flex; flex-direction: row;justify-content: space-between;margin-top: 1em;padding: 0 2em;}
-		.card-Img{background: url("images/member.png") no-repeat left center;width: 250px;height: 130px;background-size: 100% 100%;border-radius: 10px;margin-top:2em;position: relative;}
-		.card-text1{position: absolute;right: 10px;bottom: 10px;font-size: 0.82em;color: gold;}
-		.card-text2{position: absolute;left: 30px;bottom: 3px;font-size: 0.7em;color: #000;}
-		.card-text4{position: absolute;right: 10px;bottom: 30px;font-size: 0.7em;color: #666;}
-		.card-text3{position: absolute;right: 10px;bottom: 50px;font-size: 0.7em;color: salmon;}
+		/*.card-Img{background: url("images/member.png") no-repeat left center;width: 250px;height: 130px;background-size: 100% 100%;border-radius: 10px;margin-top:2em;position: relative;}*/
+		/*.card-text1{position: absolute;right: 10px;bottom: 10px;font-size: 0.82em;color: gold;}*/
+		/*.card-text2{position: absolute;left: 30px;bottom: 3px;font-size: 0.7em;color: #000;}*/
+		/*.card-text4{position: absolute;right: 10px;bottom: 30px;font-size: 0.7em;color: #666;}*/
+		/*.card-text3{position: absolute;right: 10px;bottom: 50px;font-size: 0.7em;color: salmon;}*/
 		.btn-margin{margin-top: 3em;}
 		.givingList{height: 6em;}
 		.tdInput{padding: 0!important;width: 100px;}
@@ -409,120 +413,112 @@
 		</div>
 	</div>
 	<!--手工存币弹出层-->
-	<div class="modal fade bs-example-modal-lg" id="ManualSModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-		<div class="modal-dialog modal-lg" role="document">
+	<div class="modal fade bs-example-modal-sm" id="ManualSModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+		<div class="modal-dialog modal-md" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 					<h4 class="modal-title">温馨提示</h4>
 				</div>
 				<div class="modal-body row">
-					<div class="col-md-6 col-sm-6 tab-style">
-						<span class="col-md-6 col-sm-6">补币币种：</span>
-						<div class="col-md-6 col-sm-6">
-							<select class="form-control">
-								<option value="男">代币</option>
-								<option value="女">积分</option>
-								<option value="女">彩票</option>
-								<option value="女">储值金</option>
+					<div class="container-fluid">
+						<div class="input-group col-md-6 col-sm-6 tab-style">
+							<span class="input-group-addon">补币币种：</span>
+							<select  class="form-control">
+								<option value="0">代币</option>
+								<option value="1">积分</option>
+								<option value="1">储值金</option>
 							</select>
 						</div>
-					</div>
-					<div class="col-md-6 col-sm-6 tab-style">
-						<span class="col-md-6 col-sm-6">存币数量：</span>
-						<label class="col-md-6 col-sm-6"><input class="form-control" type="text"></label>
-					</div>
-					<div class="col-md-12 col-sm-12 tab-style">
-						<span class="col-md-3 col-sm-3">补币方式：</span>
-						<div class="col-md-9 col-sm-9">
+						<div class="input-group col-md-6 col-sm-6 tab-style">
+							<span class="input-group-addon">存币数量：</span>
+							<input type="text" class="form-control" placeholder="请输入存币数量"/>
+						</div>
+						<div class="input-group col-md-12 col-sm-12 tab-style">
+							<span class="input-group-addon">补币方式：</span>
 							<select class="form-control">
-								<option value="男">实物币</option>
-								<option value="女">存入卡中</option>
+								<option value="0">实物币</option>
+								<option value="1">存入卡中</option>
 							</select>
 						</div>
+						<div class="input-group col-md-12 col-sm-12 tab-style">
+							<span class="input-group-addon">备注：</span>
+							<textarea  class="form-control"></textarea>
+						</div>
+						<div class="col-md-12 tab-btn tab-style"><button type="button" class=" btn btn-info">补币</button></div>
 					</div>
-					<div class="col-md-12 col-sm-12 tab-style">
-						<span class="col-md-3 col-sm-3">备注：</span>
-						<label class="col-md-9 col-sm-9"><textarea  class="form-control"></textarea></label>
-					</div>
-					<div class="col-md-12 tab-btn tab-style"><button type="button" class="btn btn-info">补币</button></div>
 				</div>
 			</div>
 		</div>
 	</div>
 	<!--提币弹出层-->
-	<div class="modal fade bs-example-modal-lg" id="currencySModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-		<div class="modal-dialog modal-lg" role="document">
+	<div class="modal fade bs-example-modal-sm" id="currencySModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+		<div class="modal-dialog modal-md" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 					<h4 class="modal-title">温馨提示</h4>
 				</div>
 				<div class="modal-body row">
-					<ul class="nav nav-tabs" role="tablist">
-						<li role="presentation" class="active"><a href="#cardOperation" aria-controls="cardOperation" role="tab" data-toggle="tab">卡操作</a></li>
-						<li role="presentation"><a href="#WeChat" aria-controls="WeChat" role="tab" data-toggle="tab">微信</a></li>
-						<li role="presentation"><a href="#mobileVerification" aria-controls="mobileVerification" role="tab" data-toggle="tab">手机验证</a></li>
-					</ul>
-					<div class="tab-content tab-style">
-						<div role="tabpanel" class="tab-pane active" id="cardOperation">
-							<div class="col-md-6 col-sm-6 tab-style">
-								<span class="col-md-6 col-sm-6">提币数：</span>
-								<label class="col-md-6 col-sm-6"><input class="form-control" type="text"></label>
+					<div class="container-fluid">
+						<ul class="nav nav-tabs" role="tablist">
+							<li role="presentation" class="active"><a href="#cardOperation" aria-controls="cardOperation" role="tab" data-toggle="tab">卡操作</a></li>
+							<li role="presentation"><a href="#WeChat" aria-controls="WeChat" role="tab" data-toggle="tab">微信</a></li>
+							<li role="presentation"><a href="#mobileVerification" aria-controls="mobileVerification" role="tab" data-toggle="tab">手机验证</a></li>
+						</ul>
+						<div class="tab-content">
+							<div role="tabpanel" class="tab-pane active" id="cardOperation">
+								<div class="input-group col-md-6 col-sm-6 tab-style">
+									<span class="input-group-addon">提币数：</span>
+									<input type="text" class="form-control" placeholder="请输入提币数量"/>
+								</div>
+								<div class="input-group col-md-6 col-sm-6 tab-style">
+									<span class="input-group-addon">密码：</span>
+									<input type="password" class="form-control"/>
+								</div>
 							</div>
-							<div class="col-md-6 col-sm-6 tab-style">
-								<span class="col-md-6 col-sm-6">密码：</span>
-								<label class="col-md-6 col-sm-6"><input class="form-control" type="text"></label>
+							<div role="tabpanel" class="tab-pane" id="WeChat">
+								<div class="input-group col-md-12 col-sm-12 tab-style">
+									<span class="input-group-addon">密码微信提币码：</span>
+									<input type="text" class="form-control"/>
+								</div>
 							</div>
-
+							<div role="tabpanel" class="tab-pane" id="mobileVerification">
+								<div class="input-group col-md-6 col-sm-6 tab-style">
+									<span class="input-group-addon">手机号码：</span>
+									<input type="text" class="form-control"/>
+								</div>
+								<div class="input-group col-md-6 col-sm-6 tab-style">
+									<span class="input-group-addon">消费密码：</span>
+									<input type="password" class="form-control"/>
+								</div>
+							</div>
 						</div>
-						<div role="tabpanel" class="tab-pane" id="WeChat">
-							<div class="col-md-12 col-sm-12 tab-style">
-								<span class="col-md-3 col-sm-3">微信提币码：</span>
-								<label class="col-md-9 col-sm-9"><input class="form-control" type="text"></label>
-							</div>
-
-						</div>
-						<div role="tabpanel" class="tab-pane" id="mobileVerification">
-							<div class="col-md-6 col-sm-6 tab-style">
-								<span class="col-md-6 col-sm-6">手机号码：</span>
-								<label class="col-md-6 col-sm-6"><input class="form-control" type="text"></label>
-							</div>
-							<div class="col-md-6 col-sm-6 tab-style">
-								<span class="col-md-6 col-sm-6">消费密码：</span>
-								<label class="col-md-6 col-sm-6"><input class="form-control" type="text"></label>
-							</div>
-						</div>
-					</div>
-					<div class="col-md-12 col-sm-12 tab-style">
-						<span class="col-md-3 col-sm-3">余额种类：</span>
-						<div class="col-md-9 col-sm-9">
+						<div class="input-group col-md-12 col-sm-12 tab-style">
+							<span class="input-group-addon">余额种类：</span>
 							<select class="form-control">
-								<option value="男">代币</option>
-								<option value="女">积分</option>
-								<option value="女">彩票</option>
-								<option value="女">储值金</option>
+								<option value="0">代币</option>
+								<option value="1">储值金</option>
 							</select>
 						</div>
-					</div>
-					<div class="col-md-6 col-sm-6 tab-style">
-						<span class="col-md-6 col-sm-6">余额：</span>
-						<label class="col-md-6 col-sm-6"><input class="form-control" type="text"></label>
-					</div>
-					<div class="col-md-6 col-sm-6 tab-style" >
-						<span  class="col-md-5 col-sm-5">提币方式：</span>
-						<div class="col-md-7 col-sm-7">
+						<div class="input-group col-md-12 col-sm-12 tab-style">
+							<span class="input-group-addon">余额：</span>
+							<input type="text" class="form-control" placeholder="请输入提币数量"/>
+						</div>
+						<div class="input-group col-md-12 col-sm-12 tab-style">
+							<span class="input-group-addon">提币方式：</span>
 							<div class="switchZdy col-md-12 col-sm-12">
 								<div class="col-md-6 col-sm-6 onSwitch">售币机</div>
 								<div class="col-md-6 col-sm-6">失效</div>
 							</div>
 						</div>
+						<div class="input-group col-md-12 col-sm-12 tab-style">
+							<span class="input-group-addon">备注：</span>
+							<textarea  class="form-control"></textarea>
+						</div>
+						<div class="col-md-12 tab-btn tab-style"><button type="button" class="btn btn-info">提币</button></div>
 					</div>
-					<div class="col-md-12 col-sm-12 tab-style">
-						<span class="col-md-3 col-sm-3">备注：</span>
-						<label class="col-md-9 col-sm-9"><textarea  class="form-control"></textarea></label>
-					</div>
-					<div class="col-md-12 tab-btn"><button type="button" class="btn btn-info">提币</button></div>
+
 				</div>
 			</div>
 		</div>
@@ -531,6 +527,10 @@
 	<div class="modal fade bs-example-modal-lg" id="SendSModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 		<div class="modal-dialog modal-lg" role="document" v-if="givingShow">
 			<div class="modal-content row">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title">温馨提示</h4>
+				</div>
 				<div class="givingList swiper-container">
 					<ul class="swiper-wrapper">
 						<li class="swiper-slide" v-for="(item,index) in givingData" @click="givingFnc(index)">
@@ -896,6 +896,7 @@
 				<li @click="FastSell"><a href="javascript:void(0)">快速售币</a></li>
 				<li @click="salesAll" :class="{cur:saleShow}"><a id="sales" href="javascript:void(0)">产品销售</a></li>
 				<li @click="operationFnc" :class="{cur:operationShow}"><a href="javascript:void(0)">会员操作</a></li>
+				<li @click="cardLossFnc" :class="{cur:cardLossShow}"><a href="javascript:void(0)">会员卡挂失</a></li>
 				<li><a href="other.html">其他业务</a></li>
 				<li @click="membershipReading"><a href="javascript:void(0)">读卡</a></li>
 			</ul>
@@ -934,7 +935,7 @@
 						<input class="form-control" type="text" placeholder="扫码添加购物">
 						<button type="button" class="btn btn-primary">查询</button>
 					</div>
-					<div class="saleContent" ref="saleContent">
+					<div class="saleContent">
 						<div class="treeBox" v-if="treeShow">
 							<ul class="treeList">
 								<li v-for="(item,index) in foodTypeGoodList" @click="singletonScreening(index,'good')">
@@ -973,22 +974,22 @@
 							<li v-for="(item,index) in saleData" class="salesLi" @click="deletePerson(index,'0')">
 								<img :src="item.imageUrl"/>
 								<div class="saleText">
-									<a tabindex="0" class="btn btn-group-sm btn-info" role="button" data-toggle="popover" @click.stop="details(index,'0')">详情</a>
-									<h3>{{item.foodName}}</h3>
+									<a tabindex="0" class="btn btn-info saleDetails" role="button" data-toggle="popover" @click.stop="details(index,'0')">详情</a>
+									<h3 ref="saleH3">{{item.foodName}}</h3>
 								</div>
 							</li>
 							<li v-for="(item,index) in saleGood" class="salesLi" @click="deletePerson(index,'1')">
 								<img :src="item.imageUrl"/>
 								<div class="saleText">
 									<a tabindex="0" class="btn btn-group-sm btn-info" role="button" data-toggle="popover" @click.stop="details(index,'1')">详情</a>
-									<h3>{{item.foodName}}</h3>
+									<h3 ref="saleH3">{{item.foodName}}</h3>
 								</div>
 							</li>
 							<li v-for="(item,index) in saleTicket" class="salesLi" @click="deletePerson(index,'2')">
 								<img :src="item.imageUrl"/>
 								<div class="saleText">
 									<a tabindex="0" class="btn btn-group-sm btn-info" role="button" data-toggle="popover" @click.stop="details(index,'2')">详情</a>
-									<h3>{{item.foodName}}</h3>
+									<h3 ref="saleH3">{{item.foodName}}</h3>
 								</div>
 							</li>
 						</ul>
@@ -1007,39 +1008,37 @@
 							<div class="tab-content">
 								<div role="tabpanel" class="tab-pane active container-fluid" id="TheInformation">
 									<div class="row">
-										<div class="tab-text col-md-10 col-sm-10 pad_0">
-											<div class="tab-style col-md-4 col-sm-4">
-												<span class="col-md-4 col-sm-4">会员姓名：</span>
-												<label class="col-md-8 col-sm-8"><input type="text" class="form-control"/></label>
-                                            </div>
-											<div class="tab-style col-md-3 col-sm-6">
-												<span class="col-md-4 col-sm-4">生日：</span>
-												<label class="col-md-8 col-sm-8"><input type="text" class="form-control" readonly/></label>
-											</div>
-											<div class="tab-style col-md-2 col-sm-6 pad_0"><span class="col-md-6 col-sm-6 pad_0">性别：</span>
-												<div class="col-md-6 col-sm-6 text-left pad_0">
-													<select  name="select" class="form-control">
-														<option value="男">男</option>
-														<option value="女">女</option>
-													</select>
+										<div class="col-md-10 col-sm-10 tab-min">
+											<div class="tab-text col-md-12 col-sm-12">
+												<div class="input-group col-md-3 col-sm-3">
+													<span class="input-group-addon" readonly>会员姓名：</span>
+													<input type="text" class="form-control"/>
+												</div>
+												<div class="input-group col-md-3 col-sm-3">
+													<span class="input-group-addon" readonly>生日：</span>
+													<input type="text" class="form-control"/>
+												</div>
+												<div class="input-group col-md-3 col-sm-3">
+													<span class="input-group-addon" readonly>性别：</span>
+													<input type="text" class="form-control"/>
+												</div>
+												<div class="input-group col-md-3 col-sm-3">
+													<span class="input-group-addon" readonly>手机号码：</span>
+													<input type="text" class="form-control" readonly/>
 												</div>
 											</div>
-											<div class="tab-style col-md-3 col-sm-3">
-												<span class="col-md-5 col-sm-5">手机号码：</span>
-												<label class="col-md-7 col-sm-7"><input type="text" class="form-control" readonly/></label>
-											</div>
-											<div class="tab-style col-md-8 col-sm-12">
-												<span class="col-md-2 col-sm-2">证件号码：</span>
-												<label class="col-md-7 col-sm-7"><input type="text" class="form-control" readonly/></label>
-												<label class="col-md-2 col-sm-2"><button type="button" class="btn btn-primary">读取</button></label>
-											</div>
-											<div class="tab-style col-md-4 col-sm-12"><span class="col-md-4 col-sm-">微信：</span><label class="col-md-8 col-sm-8"><input type="text" class="form-control" /></label></div>
-											<div class="tab-style col-md-4 col-sm-4" ><span  class="col-md-4 col-sm-4">卡状态：</span>
-												<div class="col-md-8 col-sm-8 pd_5">
-													<div class="switchZdy col-md-12 col-sm-12">
-														<div class="col-md-6 col-sm-6 onSwitch">有效</div>
-														<div class="col-md-6 col-sm-6">失效</div>
-													</div>
+											<div class="tab-text col-md-12 col-sm-12">
+												<div class="input-group col-md-3 col-sm-3">
+													<span class="input-group-addon" readonly>证件号码：</span>
+													<input type="text" class="form-control" readonly/>
+												</div>
+												<div class="input-group col-md-3 col-sm-3">
+													<span class="input-group-addon" readonly>微信：</span>
+													<input type="text" class="form-control" readonly/>
+												</div>
+												<div class="input-group col-md-3 col-sm-3">
+													<span class="input-group-addon" readonly>卡状态：</span>
+													<input type="text" class="form-control" readonly/>
 												</div>
 											</div>
 										</div>
@@ -1140,12 +1139,12 @@
 							</div>
 						</div>
 						<div class="btn-margin container-fluid">
-							<div class="row text-center">
-								<div class="col-md-4"></div>
-								<div class="col-md-2 col-sm-3"><button @click="saveManual" type="button" class="btn btn-info">手工补币</button></div>
-								<div class="col-md-2 col-sm-3"><button @click="currency" type="button" class="btn btn-info">提币</button></div>
-								<div class="col-md-2 col-sm-3"><button @click="sendCoin" type="button" class="btn btn-info">送币</button></div>
-								<div class="col-md-2 col-sm-3"><button @click="backCard" type="button" class="btn btn-info">退卡</button></div>
+							<div class="row">
+								<div class="col-md-3"></div>
+								<div class="col-md-2 col-sm-3"><button @click="saveManual" type="button" class="btn width100 btn-info">手工补币</button></div>
+								<div class="col-md-2 col-sm-3"><button @click="currency" type="button" class="btn width100 btn-info">提币</button></div>
+								<div class="col-md-2 col-sm-3"><button @click="sendCoin" type="button" class="btn width100 btn-info">送币</button></div>
+								<div class="col-md-2 col-sm-3"><button @click="backCard" type="button" class="btn width100 btn-info">退卡</button></div>
 							</div>
 						</div>
 				</div>
@@ -1214,6 +1213,75 @@
                         <div class="col-md-12 col-sm-12">
                             <div class="col-md-10 col-sm-8"></div>
                             <div class="col-md-2 text-center col-sm-4" ><button type="button" class="btn btn-success" @click="registerMember">发卡</button></div>
+                        </div>
+                    </div>
+				</div>
+				<!--会员卡丢失-->
+				<div class="enrollment" v-if="cardLossShow">
+                    <div class="row">                  
+                        <h3 class="titleSty">用户信息</h3>
+                        <div class="McText col-md-12">
+                            <div class="input-group col-md-4 col-sm-6">
+                                <span class="input-group-addon">手机号码：</span>
+                                <input type="text" class="form-control" v-model.number="memberForm.mobile" maxlength="11" placeholder="请输入手机号"/>
+							</div>
+							<div class="input-group col-md-5 col-sm-6">
+								<span class="input-group-addon">验证码：</span>
+								<input type="text" class="form-control" v-model="memberForm.mobileCode"/>
+								<div class="input-group-btn">
+									<input class="form-control btnSendCode readCard" type="button" v-model="memberForm.codeBtn" @click="sendCode" :disabled="memberForm.disabled"/>
+								</div>
+							</div>
+							<div class="input-group col-md-3 col-sm-6">
+								<span class="input-group-addon">按手机号查询</span>
+								<div class="input-group-btn">
+									<button type="button" class="btn btn-default readCard">查询</button>
+								</div>
+							</div>                       
+						</div>
+						<div class="McText col-md-12">
+							<div class="input-group col-md-7 col-sm-12">
+								<span class="input-group-addon">证件号码：</span>
+								<input type="text" class="form-control" v-model="memberForm.IdNumber" readonly/>
+								<div class="input-group-btn">
+									<button type="button" class="btn btn-default readCard">读取</button>
+								</div>
+							</div>
+						</div>
+						<div class="McText col-md-12">
+							<div class="input-group col-md-4 col-sm-6">
+								<span class="input-group-addon">会员姓名：</span>
+								<input type="text" class="form-control" v-model="memberForm.name" placeholder="请输入会员姓名"/>
+							</div>
+							<div class="input-group col-md-3 col-sm-6">
+								<span class="input-group-addon">生日：</span>
+								<input type="text"  class="form-control" v-model="memberForm.birthday" readonly/>
+							</div>								
+							<div class="input-group col-md-2 col-sm-6">
+								<span class="input-group-addon">性别：</span>
+								<select  class="form-control" v-model="memberForm.sex">
+									<option value="0">男</option>
+									<option value="1">女</option>
+								</select>
+							</div>
+						</div>
+						<div class="col-md-12 McTarea col-sm-12">
+                            <div class="input-group col-md-12 col-sm-12">
+                                <span class="input-group-addon">备注：</span>
+                                <textarea class="form-control" v-model="memberForm.remark"></textarea>
+                            </div>
+						</div>
+						<div class="col-md-12 col-sm-12">
+							<h4>会员卡号：12345678</h4>
+							<p>代币：400</p>
+							<p>积分：1800</p>
+							<p>彩票：6000</p>
+						</div>
+                        <div class="col-md-12 col-sm-12">
+                            <div class="col-md-6 col-sm-8"></div>
+							<div class="col-md-2 text-center col-sm-4" ><button type="button" class="btn btn-success">换卡</button></div>
+							<div class="col-md-2 text-center col-sm-4" ><button type="button" class="btn btn-success">挂失</button></div>
+							<div class="col-md-2 text-center col-sm-4" ><button type="button" class="btn btn-success">补卡</button></div>
                         </div>
                     </div>
 				</div>
@@ -1309,6 +1377,7 @@
             onFocus:false,
             fastAmountFocus:false,
             operationShow:false,
+			cardLossShow:false,
             saleShow:false,
             memberShow:false,
 			saleTitle:[],
@@ -1547,7 +1616,6 @@
                 var widthKz = $(window).width();
                 console.log(heightkz);
                 $('.heightKz').height(heightkz);
-
             },
 //			websocket配置函数
             WebSocketTest:function() {
@@ -1916,6 +1984,7 @@
                             }
                             that.memberLevel = memberLevel_;
                             that.operationShow = false;
+							that.cardLossShow = false;
                             that.saleShow = false;
                             that.memberShow = true;
                         }
@@ -1929,6 +1998,7 @@
             operationFnc:function () {
                 var that = this;
                 this.operationShow = true;
+				that.cardLossShow = false;
                 this.saleShow = false;
                 this.memberShow = false;
                 var columns1=[
@@ -1991,6 +2061,14 @@
                     createTable("#memberTable4",destroy,columns4);
                 }, 50);
             },
+// 			会员卡挂失
+			cardLossFnc:function(){
+				var that = this;
+                this.operationShow = false;
+				that.cardLossShow = true;
+                this.saleShow = false;
+                this.memberShow = false;
+			},
 //			挖掘对应余额流水记录
             billingRecord:function (index) {
                 $('#billingRecord').modal('show');
@@ -2000,6 +2078,7 @@
                 var that = this;
                 if(!this.saleShow){
                     this.operationShow = false;
+					that.cardLossShow = false;
                     this.saleShow = true;
                     this.memberShow = false;
                     var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken};
@@ -2138,7 +2217,15 @@
                     that.msgPrompt(res.data);
                     if (res.data.result_code === '1') {
                         that.saleAll = res.data.result_data;
-                        that.saleData =res.data.result_data.food;
+                        var saledata_ = res.data.result_data.food
+                        for (var i =0;i<saledata_.length;i++){
+							if(saledata_[i].foodName.length > 30){
+                                var foodname = saledata_[i].foodName;
+								foodname = foodname.slice(0,30);
+                                saledata_[i].foodName = foodname
+							}
+						}
+                        that.saleData =saledata_;
 						that.saleGood =res.data.result_data.good;
 						that.saleTicket =res.data.result_data.ticket;
                     }
@@ -2577,9 +2664,6 @@
             },
 //			读取会员卡，更新会员消息
             membershipReading: function(){
-
-
-
 			},
 //			存币
             saveManual:function () {

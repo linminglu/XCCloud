@@ -7,6 +7,7 @@ using XCCloudService.Base;
 using XCCloudService.BLL.Container;
 using XCCloudService.BLL.IBLL.XCCloud;
 using XCCloudService.BLL.XCCloud;
+using XCCloudService.CacheService;
 using XCCloudService.Common;
 using XCCloudService.Common.Enum;
 using XCCloudService.Common.Extensions;
@@ -93,6 +94,46 @@ namespace XXCloudService.Api.XCCloud
                     query = from a in query
                             join b in Data_BalanceType_StoreListService.N.GetModels(p => p.StroeID.Equals(storeId, StringComparison.OrdinalIgnoreCase)) on a.ID equals b.BalanceIndex
                             select a;    
+
+                var linq = from a in query
+                           orderby a.ID
+                           select new
+                           {
+                               ID = a.ID,
+                               TypeName = a.TypeName
+                           };
+
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, linq);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCManaUserHelperToken, SysIdAndVersionNo = false)]
+        public object GetBalanceTypeDicFromProgram(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                XCManaUserHelperTokenModel userTokenModel = (XCManaUserHelperTokenModel)(dicParas[Constant.XCManaUserHelperToken]);
+                string storeId = userTokenModel.StoreId;
+                string merchId = storeId.Substring(0, 6);
+
+                string errMsg = string.Empty;
+                var hkType = dicParas.Get("hkType").Toint();
+                if (!dicParas.Get("storeId").IsNull())
+                {
+                    storeId = dicParas.Get("storeId");
+                }
+
+                var query = Dict_BalanceTypeService.N.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.State == 1);
+                if (hkType != null)
+                    query = query.Where(w => w.MappingType == hkType);
+                if (!storeId.IsNull())
+                    query = from a in query
+                            join b in Data_BalanceType_StoreListService.N.GetModels(p => p.StroeID.Equals(storeId, StringComparison.OrdinalIgnoreCase)) on a.ID equals b.BalanceIndex
+                            select a;
 
                 var linq = from a in query
                            orderby a.ID

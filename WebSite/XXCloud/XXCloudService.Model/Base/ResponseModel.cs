@@ -3,10 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Runtime.Serialization;
+using System.ComponentModel;
 
 
 namespace XCCloudService.Base
 {
+    public enum Result_Type
+    {
+        [Description("提示框")]
+        Tips = 0,
+        [Description("确认框")]
+        Confirm = 1
+    }
+
     /// <summary>
     /// 接口响应输出实体
     /// </summary>
@@ -19,12 +28,13 @@ namespace XCCloudService.Base
             this.Return_Msg = return_msg;
         }
 
-        public ResponseModel(string return_code,string return_msg,string result_code,string result_msg)
+        public ResponseModel(string return_code, string return_msg, string result_code, string result_msg, int result_type = (int)XCCloudService.Base.Result_Type.Tips)
         {
             this.Return_Code = return_code;
             this.Return_Msg = return_msg;
             this.Result_Code = result_code;
             this.Result_Msg = result_msg;
+            this.Result_Type = result_type;
         }
 
         public ResponseModel()
@@ -65,6 +75,12 @@ namespace XCCloudService.Base
         /// </summary>
         [DataMember(Name = "signkey", Order = 5)]
         public string SignKey { set; get; }
+
+        /// <summary>
+        /// 返回消息类型
+        /// </summary>
+        [DataMember(Name = "result_type", Order = 6)]
+        public int Result_Type { set; get; }
     }
 
 
@@ -104,8 +120,14 @@ namespace XCCloudService.Base
         /// <summary>
         /// 返回结果签名（对return_code、return_msg、result_code、result_msg、加密狗号做字符串连接的MD5）
         /// </summary>
-        [DataMember(Name = "signkey", Order = 5)]
+        [DataMember(Name = "signkey", Order = 3)]
         public string SignKey { set; get; }
+
+        /// <summary>
+        /// 返回消息类型
+        /// </summary>
+        [DataMember(Name = "result_type", Order = 4)]
+        public int Result_Type { set; get; }
     }
 
 
@@ -121,12 +143,13 @@ namespace XCCloudService.Base
             this.Return_Msg = return_msg;
         }
 
-        public NoSignKeyResponseModel(string return_code, string return_msg, string result_code, string result_msg)
+        public NoSignKeyResponseModel(string return_code, string return_msg, string result_code, string result_msg, int result_type = (int)XCCloudService.Base.Result_Type.Tips)
         {
             this.Return_Code = return_code;
             this.Return_Msg = return_msg;
             this.Result_Code = result_code;
             this.Result_Msg = result_msg;
+            this.Result_Type = result_type;
         }
 
         public NoSignKeyResponseModel()
@@ -160,6 +183,12 @@ namespace XCCloudService.Base
         /// </summary>
         [DataMember(Name = "result_msg", Order = 4)]
         public string Result_Msg { set; get; }
+
+        /// <summary>
+        /// 返回消息类型
+        /// </summary>
+        [DataMember(Name = "result_type", Order = 5)]
+        public int Result_Type { set; get; }
     }
 
 
@@ -254,6 +283,12 @@ namespace XCCloudService.Base
         /// </summary>
         [DataMember(Name = "signkey", Order = 6)]
         public string SignKey { set; get; }
+
+        /// <summary>
+        /// 返回消息类型
+        /// </summary>
+        [DataMember(Name = "result_type", Order = 7)]
+        public int Result_Type { set; get; }
     }
 
 
@@ -309,6 +344,12 @@ namespace XCCloudService.Base
         /// </summary>
         [DataMember(Name = "result_data", Order = 5)]
         public T Result_Data { set; get; }
+
+        /// <summary>
+        /// 返回消息类型
+        /// </summary>
+        [DataMember(Name = "result_type", Order = 6)]
+        public int Result_Type { set; get; }
     }
 
     /// <summary>

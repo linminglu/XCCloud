@@ -30,7 +30,7 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<decimal> RealPay { get; set; }
         public Nullable<decimal> FreePay { get; set; }
         public Nullable<int> UserID { get; set; }
-        public Nullable<int> ScheduleID { get; set; }
+        public string ScheduleID { get; set; }
         public string WorkStation { get; set; }
         public Nullable<int> AuthorID { get; set; }
         public Nullable<int> OrderStatus { get; set; }

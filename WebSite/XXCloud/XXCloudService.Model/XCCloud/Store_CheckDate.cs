@@ -15,22 +15,21 @@ namespace XCCloudService.Model.XCCloud
     public partial class Store_CheckDate
     {
         public int ID { get; set; }
-        public Nullable<System.DateTime> CheckDate { get; set; }
+        public string MerchID { get; set; }
         public string StoreID { get; set; }
-        public Nullable<System.DateTime> PostDate { get; set; }
-        public Nullable<decimal> Cash { get; set; }
+        public Nullable<System.DateTime> CheckDate { get; set; }
+        public Nullable<System.DateTime> CreateTime { get; set; }
+        public Nullable<int> AuthorID { get; set; }
+        public Nullable<System.DateTime> AuthorTime { get; set; }
+        public Nullable<decimal> CashTotle { get; set; }
         public Nullable<decimal> AliPay { get; set; }
+        public Nullable<decimal> AliPayFee { get; set; }
         public Nullable<decimal> Wechat { get; set; }
-        public Nullable<decimal> BankPOS { get; set; }
-        public Nullable<int> CardNumberCount { get; set; }
-        public Nullable<int> CardCoins { get; set; }
-        public Nullable<decimal> CardDepositCount { get; set; }
-        public Nullable<int> ICPushCoins { get; set; }
-        public Nullable<int> DigiteCoins { get; set; }
-        public Nullable<int> OutCoins { get; set; }
-        public Nullable<int> LotteryCount { get; set; }
-        public Nullable<int> LotteryCoins { get; set; }
-        public Nullable<int> ChargeCoins { get; set; }
-        public Nullable<int> NoChargeCoins { get; set; }
+        public Nullable<decimal> WechatFee { get; set; }
+        public Nullable<decimal> GroupTotle { get; set; }
+        public Nullable<decimal> GroupFee { get; set; }
+        public Nullable<int> MemberCount { get; set; }
+        public Nullable<int> MemberCardCount { get; set; }
+        public Nullable<decimal> DepositTotle { get; set; }
     }
 }

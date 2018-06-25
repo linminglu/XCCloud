@@ -27,7 +27,7 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<System.DateTime> VerityTime { get; set; }
         public Nullable<int> VerityType { get; set; }
         public Nullable<int> WorkStationID { get; set; }
-        public Nullable<int> ScheduleID { get; set; }
+        public string ScheduleID { get; set; }
         public string 备注 { get; set; }
     }
 }

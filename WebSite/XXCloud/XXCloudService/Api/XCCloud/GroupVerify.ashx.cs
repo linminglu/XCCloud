@@ -37,7 +37,7 @@ namespace XXCloudService.Api.XCCloud
 
                 IData_WorkstationService data_WorkstationService = BLLContainer.Resolve<IData_WorkstationService>(resolveNew: true);
                 IBase_UserInfoService base_UserInfoService = BLLContainer.Resolve<IBase_UserInfoService>(resolveNew:true);
-                IFlw_ScheduleService flw_ScheduleService = BLLContainer.Resolve<IFlw_ScheduleService>(resolveNew: true);
+                IFlw_Schedule_UserInfoService flw_Schedule_UserInfoService = BLLContainer.Resolve<IFlw_Schedule_UserInfoService>(resolveNew: true);
                 IBase_StoreInfoService base_StoreInfoService = BLLContainer.Resolve<IBase_StoreInfoService>(resolveNew:true);
                 IDict_SystemService dict_SystemService = BLLContainer.Resolve<IDict_SystemService>(resolveNew:true);
                 IFlw_GroupVerityService flw_GroupVerityService = BLLContainer.Resolve<IFlw_GroupVerityService>(resolveNew:true);
@@ -51,7 +51,7 @@ namespace XXCloudService.Api.XCCloud
                              join b in dict_SystemService.GetModels() on (a.GroupType + "") equals b.DictValue into b1
                              from b in b1.DefaultIfEmpty()
                              join c in base_StoreInfoService.GetModels() on a.StoreID equals c.StoreID
-                             join d in flw_ScheduleService.GetModels() on a.ScheduleID equals d.ID
+                             join d in flw_Schedule_UserInfoService.GetModels() on a.ScheduleID equals d.ScheduleID
                              join e in base_UserInfoService.GetModels() on d.UserID equals e.UserID
                              join f in data_WorkstationService.GetModels() on a.WorkStationID equals f.ID
                              orderby a.ID

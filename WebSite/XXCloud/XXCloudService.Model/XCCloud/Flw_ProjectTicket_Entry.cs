@@ -14,8 +14,9 @@ namespace XCCloudService.Model.XCCloud
     
     public partial class Flw_ProjectTicket_Entry
     {
+        public string ProjectTicketID { get; set; }
         public string ProjectCode { get; set; }
-        public int ProjectTicketID { get; set; }
+        public string MerchID { get; set; }
         public string TicketName { get; set; }
         public Nullable<int> TicketType { get; set; }
         public Nullable<int> DivideType { get; set; }
@@ -47,7 +48,6 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> RestrictPeriodType { get; set; }
         public Nullable<int> RestrictPreiodValue { get; set; }
         public Nullable<int> RestrctCount { get; set; }
-        public string MerchID { get; set; }
         public string Verifiction { get; set; }
     }
 }

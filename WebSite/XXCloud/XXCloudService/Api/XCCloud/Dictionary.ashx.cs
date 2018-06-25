@@ -127,6 +127,12 @@ namespace XXCloudService.Api.XCCloud
             }            
         }
 
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCManaUserHelperToken, SysIdAndVersionNo = false)]
+        public object GetNodesFromProgram(Dictionary<string, object> dicParas)
+        {
+            return GetNodes(dicParas);
+        }
+
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object GetNodeInfo(Dictionary<string, object> dicParas)
         {

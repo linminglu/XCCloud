@@ -20,6 +20,7 @@ using XCCloudService.Common.Extensions;
 using System.Data.SqlClient;
 using XCCloudService.BLL.CommonBLL;
 using System.Data;
+using XCCloudService.Model.XCCloud;
 
 namespace XCCloudService.Base
 { 
@@ -31,6 +32,7 @@ namespace XCCloudService.Base
         protected string sysId = string.Empty;
         protected string versionNo = string.Empty;  
 
+        //获取游乐项目的游戏机类型
         protected string getProjectGameTypes(out string errMsg)
         {
             string projectGameTypes = string.Empty; 
@@ -53,6 +55,117 @@ namespace XCCloudService.Base
             projectGameTypes = string.Join(",", dictionaryResponse.Select(o => o.ID)).Trim(',');
 
             return projectGameTypes;
+        }
+
+        //验证加密狗令牌
+        protected bool checkDog(string dogToken, string storeId, out string errMsg)
+        {
+            errMsg = string.Empty;
+            if (dogToken.IsNull())
+            {
+                errMsg = "加密狗令牌不能为空, 请先插入加密狗";
+                return false;
+            }
+
+            var dogTokenModel = XCManaDogTokenBusiness.GetManaDogTokenModel(dogToken);
+            if (dogTokenModel == null || !storeId.Equals(dogTokenModel.StoreId, StringComparison.OrdinalIgnoreCase))
+            {
+                errMsg = "加密狗令牌无效";
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// 创建新营业日期, 创建新班次, 默认开第一个班
+        /// </summary>
+        /// <param name="merchId"></param>
+        /// <param name="storeId"></param>
+        /// <param name="newCheckDate"></param>
+        /// <param name="scheduleName"></param>
+        /// <param name="errMsg"></param>
+        /// <returns></returns>
+        protected bool createCheckDateAndSchedule(string merchId, string storeId, DateTime newCheckDate, List<string> scheduleNames, out string errMsg, bool isEmptySchedule = false)
+        {
+            errMsg = string.Empty;
+
+            var store_CheckDateService = Store_CheckDateService.I;
+            var flw_ScheduleService = Flw_ScheduleService.I;
+            var newCheckDateModel = new Store_CheckDate();
+            newCheckDateModel.CheckDate = newCheckDate;
+            newCheckDateModel.StoreID = storeId;
+            newCheckDateModel.MerchID = merchId;
+            newCheckDateModel.CreateTime = DateTime.Now;
+            store_CheckDateService.AddModel(newCheckDateModel);
+
+            if (scheduleNames == null || scheduleNames.Count == 0)
+            {
+                errMsg = "班次列表不能为空";
+                return false;
+            }
+
+            int i = 0;
+            foreach (var scheduleName in scheduleNames)
+            {
+                var newScheduleModel = new Flw_Schedule();
+                newScheduleModel.ID = RedisCacheHelper.CreateStoreSerialNo(storeId);
+                newScheduleModel.MerchID = merchId;
+                newScheduleModel.StoreID = storeId;
+                newScheduleModel.ScheduleName = scheduleName;
+                newScheduleModel.CheckDate = newCheckDate;
+                if (!isEmptySchedule && i == 0)
+                {
+                    newScheduleModel.OpenTime = DateTime.Now;
+                    newScheduleModel.State = (int)ScheduleState.Starting;
+                }
+                else
+                {
+                    newScheduleModel.State = (int)ScheduleState.Stopped;
+                }
+
+                flw_ScheduleService.AddModel(newScheduleModel, false);
+
+                i++;
+            }
+
+
+            return true;
+        }        
+
+        /// <summary>
+        /// 获取班次数参数
+        /// </summary>
+        /// <param name="storeId"></param>
+        /// <param name="scheduleNames"></param>
+        /// <param name="errMsg"></param>
+        /// <returns></returns>
+        protected bool getScheduleCount(string storeId, ref List<string> scheduleNames, out string errMsg)
+        {
+            errMsg = string.Empty;
+
+            var data_ParametersService = Data_ParametersService.I;
+
+            if (!data_ParametersService.Any(a => a.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase) && a.System.Equals("txtBusinessClass", StringComparison.OrdinalIgnoreCase) && a.IsAllow == 1 && (a.ParameterValue ?? "") != ""))
+            {
+                errMsg = "无法找到营业日期内班次个数的设置信息";
+                return false;
+            }
+
+            var parameterValue = data_ParametersService.GetModels(a => a.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase) && a.System.Equals("txtBusinessClass", StringComparison.OrdinalIgnoreCase) && a.IsAllow == 1).Select(o => o.ParameterValue).FirstOrDefault().Toint();
+            switch (parameterValue)
+            {
+                case (int)ScheduleCount.One: { scheduleNames = new List<string> { "A" }; break; }
+                case (int)ScheduleCount.Two: { scheduleNames = new List<string> { "A", "B" }; break; }
+                case (int)ScheduleCount.Three: { scheduleNames = new List<string> { "A", "B", "C" }; break; }
+                default:
+                    {
+                        errMsg = "班次个数超出最大个数3";
+                        return false;
+                    }
+            }
+
+            return true;
         }
 
         [System.Runtime.InteropServices.DllImport("Kernel32.dll")]

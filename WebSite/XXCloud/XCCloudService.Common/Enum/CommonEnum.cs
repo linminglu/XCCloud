@@ -830,6 +830,19 @@ namespace XCCloudService.Common.Enum
         [Description("已审核")]
         Checked = 3
     }
+
+    /// <summary>
+    /// 班次个数
+    /// </summary>
+    public enum ScheduleCount
+    {
+        [Description("A班")]
+        One = 0,
+        [Description("AB班")]
+        Two = 1,
+        [Description("ABC班")]
+        Three = 2
+    }
     
     /// <summary>
     /// 优惠券类别

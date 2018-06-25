@@ -422,30 +422,42 @@
 
 
 
-                          <div class="layui-inline"><label for="" class="layui-form-label">允许充值</label>
+                          <div class="layui-inline"><label  class="layui-form-label">允许充值</label>
                               <div class="layui-input-inline">
                                   <input type="checkbox" name="allowCharge" lay-skin="switch" id="allowCharge" lay-filter="allowCharge" lay-text="启用|禁用">
                               </div>
                           </div>
-                          <div class="layui-inline"><label for="" class="layui-form-label">允许碎票</label>
+                          <div class="layui-inline"><label  class="layui-form-label">允许碎票</label>
                               <div class="layui-input-inline">
                                   <input type="checkbox" name="allowSaveLottery" lay-skin="switch" id="allowSaveLottery" lay-filter="allowSaveLottery" lay-text="启用|禁用">
                               </div>
                           </div>
-                          <div class="layui-inline"><label for="" class="layui-form-label">允许存币</label>
+                          <div class="layui-inline"><label  class="layui-form-label">允许存币</label>
                               <div class="layui-input-inline">
                                   <input type="checkbox" name="allowSaveCoin" lay-skin="switch" id="allowSaveCoin" lay-filter="allowSaveCoin" lay-text="启用|禁用">
                               </div>
                           </div>
-                          <div class="layui-inline"><label for="" class="layui-form-label">允许提币</label>
+                          <div class="layui-inline"><label class="layui-form-label">允许提币</label>
                               <div class="layui-input-inline">
                                   <input type="checkbox" name="allowGetCoin" lay-skin="switch" id="allowGetCoin" lay-filter="allowGetCoin" lay-text="启用|禁用">
                               </div>
                           </div>
-                          <div class="layui-inline"><label for="" class="layui-form-label" style="padding: 0px 0!important;white-space: normal">允许余额过户给他人</label>
+                          //允许转出
+                          <div class="layui-inline"><label  class="layui-form-label" >允许转出</label>
                               <div class="layui-input-inline">
-                                  <input type="checkbox" name="allowTransfer" lay-skin="switch" id="allowTransfer" lay-filter="allowTransfer" lay-text="启用|禁用">
+                                  <input type="checkbox" name="AllowTransferOut" lay-skin="switch" id="AllowTransferOut" lay-filter="AllowTransferOut" lay-text="启用|禁用">
                               </div>
+                          </div>
+                          <div class="layui-input-inline">
+                              <select name="TransferOutLevelID" id="TransferOutLevelID" lay-filter="TransferOutLevelID"></select>
+                          </div>
+                          <div class="layui-inline"><label  class="layui-form-label" >允许转入</label>
+                              <div class="layui-input-inline">
+                                  <input type="checkbox" name="AllowTransferIn" lay-skin="switch" id="AllowTransferIn" lay-filter="AllowTransferIn" lay-text="启用|禁用">
+                              </div>
+                          </div>
+                          <div class="layui-input-inline">
+                              <select name="TransferInLevelID" id="TransferInLevelID" lay-filter="TransferInLevelID"></select>
                           </div>
                       </div>
                   </div>
@@ -511,7 +523,9 @@
    let freeBalanceType='';let freeBalanceIndex='';let FoodID='';
 
    let  AllowExitCard=0,AllowExitMoney=0,AllowExitCoinToCar=0,LockHead=0,States=0;
-   let allowCharge=0,allowSaveLottery=0,allowSaveCoin=0,allowGetCoin=0,allowTransfer=0;
+   let allowCharge=0,allowSaveLottery=0,allowSaveCoin=0,allowGetCoin=0;
+
+   let AllowTransferOut=0;let TransferOutLevelID='';let AllowTransferIn=0; let TransferInLevelID='';
    //给下拉框设置option
     let getBalanceTypeDic=(token,layer,form)=>{
         let _obj={'hkType':'','userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
@@ -530,12 +544,17 @@
                     $('#sourceBalanceType').html('<option>-请选择-</option>');
                     $('#targetBalanceIndex').html('<option>-请选择-</option>');
                     $('#freeBalanceIndex').html('<option>-请选择-</option>');
+                    $('#TransferOutLevelID').html('<option>-请选择-</option>');
+                    $('#TransferInLevelID').html('<option>-请选择-</option>');
+
                     for(let i in arr){
                         $('#freeRates').append('<option value="'+arr[i].ID+'">'+arr[i].TypeName+'</option>');
                         $('#freeBalanceType').append('<option value="'+arr[i].ID+'">'+arr[i].TypeName+'</option>');
                         $('#sourceBalanceType').append('<option value="'+arr[i].ID+'">'+arr[i].TypeName+'</option>');
                         $('#targetBalanceIndex').append('<option value="'+arr[i].ID+'">'+arr[i].TypeName+'</option>');
                         $('#freeBalanceIndex').append('<option value="'+arr[i].ID+'">'+arr[i].TypeName+'</option>');
+                        $('#TransferOutLevelID').append('<option value="'+arr[i].ID+'">'+arr[i].TypeName+'</option>');
+                        $('#TransferInLevelID').append('<option value="'+arr[i].ID+'">'+arr[i].TypeName+'</option>');
                     }
                     form.render('select');
                 } else {
@@ -596,7 +615,9 @@
              freeBalanceType=''; freeBalanceIndex=''; FoodID='';
 
               AllowExitCard=0;AllowExitMoney=0;AllowExitCoinToCar=0;LockHead=0;States=0;
-             allowCharge=0;allowSaveLottery=0;allowSaveCoin=0;allowGetCoin=0;allowTransfer=0;
+             allowCharge=0;allowSaveLottery=0;allowSaveCoin=0;allowGetCoin=0;
+
+             AllowTransferOut=0; TransferOutLevelID=''; AllowTransferIn=0;  TransferInLevelID='';
             layer.open({
                 type:1,
                 area:'1030px',
@@ -723,7 +744,6 @@
                         if(data.result_code==1){
                             getMemberFreeRule(memberLevelID,table,layer,form);
                             let arr=data.result_data;
-
                             $('#MemberLevelName').val(arr.MemberLevelName);
                                 $('#openFee').val(arr.OpenFee);
                                 $('#deposit').val(arr.Deposit);
@@ -787,11 +807,15 @@
                                 'downML':arr.ReduceLevelID,
                                 'freeBalanceIndex':arr.FreeBalanceIndex,
                                 'FoodID':arr.FoodID,
-                                'allowCharge':arr.AllowCharge,
-                                'allowSaveLottery':arr.AllowSaveLottery,
-                                'allowSaveCoin':arr.AllowSaveCoin,
-                                'allowGetCoin':arr.AllowGetCoin,
-                                'allowTransfer':arr.AllowTransfer,
+                                'allowCharge':arr.AllowCharge==1?true:false,
+                                'allowSaveLottery':arr.AllowSaveLottery==1?true:false,
+                                'allowSaveCoin':arr.AllowSaveCoin==1?true:false,
+                                'allowGetCoin':arr.AllowGetCoin==1?true:false,
+
+                                'AllowTransferOut':arr.AllowTransferOut==1?true:false,
+                                'TransferOutLevelID':arr.TransferOutLevelID,
+                                'AllowTransferIn':arr.AllowTransferIn==1?true:false,
+                                'TransferInLevelID':arr.TransferInLevelID,
                             });
                             freeBalanceIndex=arr.FreeBalanceIndex;
                             FoodID=arr.FoodID;
@@ -801,8 +825,10 @@
                                 allowSaveLottery=arr.AllowSaveLottery;
                                 allowSaveCoin=arr.AllowSaveCoin;
                                 allowGetCoin=arr.AllowGetCoin;
-                                allowTransfer=arr.AllowTransfer;
-
+                             AllowTransferOut=arr.AllowTransferOut;
+                              TransferOutLevelID=arr.TransferOutLevelID;
+                              AllowTransferIn=arr.AllowTransferIn;
+                              TransferInLevelID=arr.TransferInLevelID;
 
                             $('#demo2') .append('<div style="display: inline-block;position: relative" class="imgBox">' +
                                 '<button type="button" ><i class="layui-icon"><i class="layui-icon">&#xe640</i></i></button>' +
@@ -937,7 +963,7 @@
                         data:{parasJson: parseJson},
                         success: function (data) {
                             data = JSON.parse(data);
-                            if (data.result_code == 1) {
+                            if (data.result_code === 1) {
                                 obj.del();
                                 layer.msg('删除成功',function () {
                                    location.reload();
@@ -962,7 +988,7 @@
             ,done: function(res,index,upload){
                 //上传完毕
                 // console.log(res);
-                if(res.result_code==1){
+                if(res.result_code===1){
                     $('#demo2').children('div[class="imgBox"]').remove();
                     $('#demo2 .loadTips').addClass('layui-hide');
                     $('#demo2') .append('<div style="display: inline-block;position: relative" class="imgBox">' +
@@ -996,96 +1022,109 @@
         });
       //送币频率
         form.on('select(freeRate)', function(data){
-            freeRate = data.value=='-请选择-'?'':data.value;
+            freeRate = data.value==='-请选择-'?'':data.value;
         });
         //送币方式
         form.on('select(freeType)', function(data){
-            freeType = data.value=='-请选择-'?'':data.value;
+            freeType = data.value==='-请选择-'?'':data.value;
         });
         //生日送币方式
         form.on('select(birthdayFree)', function(data){
-            BirthdayFree = data.value=='-请选择-'?'':data.value;
+            BirthdayFree = data.value==='-请选择-'?'':data.value;
         });
         form.on('switch(needAuthor)', function(data){
-            data.elem.checked==true ? needAuthor=1:needAuthor=0;
+            data.elem.checked===true ? needAuthor=1:needAuthor=0;
         });
         form.on('switch(useReadID)', function(data){
-            data.elem.checked==true ? useReadID=1:useReadID=0;
+            data.elem.checked===true ? useReadID=1:useReadID=0;
         });
         form.on('switch(mustPhone)', function(data){
-            data.elem.checked==true ? mustPhone=1:mustPhone=0;
+            data.elem.checked===true ? mustPhone=1:mustPhone=0;
         });
         form.on('switch(mustIDCard)', function(data){
-            data.elem.checked==true ? mustIDCard=1:mustIDCard=0;
+            data.elem.checked===true ? mustIDCard=1:mustIDCard=0;
         });
         form.on('checkbox(PhoneOnly)', function(data){
-            data.elem.checked==true ? PhoneOnly=1:PhoneOnly=0;
+            data.elem.checked===true ? PhoneOnly=1:PhoneOnly=0;
         });
         form.on('checkbox(IDCardOnly)', function(data){
-            data.elem.checked==true ? IDCardOnly=1:IDCardOnly=0;
+            data.elem.checked===true ? IDCardOnly=1:IDCardOnly=0;
         });
         form.on('switch(readFace)', function(data){
-            data.elem.checked==true ? readFace=1:readFace=0;
+            data.elem.checked===true ? readFace=1:readFace=0;
         });
         form.on('switch(readPlam)', function(data){
-            data.elem.checked==true ? readPlam=1:readPlam=0;
+            data.elem.checked===true ? readPlam=1:readPlam=0;
         });
         form.on('switch(allowExitCard)', function(data){
-            data.elem.checked==true ? AllowExitCard=1:AllowExitCard=0;
+            data.elem.checked===true ? AllowExitCard=1:AllowExitCard=0;
         });
         form.on('switch(allowExitMoney)', function(data){
-            data.elem.checked==true ? AllowExitMoney=1:AllowExitMoney=0;
+            data.elem.checked===true ? AllowExitMoney=1:AllowExitMoney=0;
         });
         form.on('switch(lockHead)', function(data){
-            data.elem.checked==true ? LockHead=1:LockHead=0;
+            data.elem.checked===true ? LockHead=1:LockHead=0;
         });
         form.on('switch(allowExitCoinToCar)', function(data){
-            data.elem.checked==true ? AllowExitCoinToCar=1:AllowExitCoinToCar=0;
+            data.elem.checked===true ? AllowExitCoinToCar=1:AllowExitCoinToCar=0;
         });
         form.on('switch(State)', function(data){
-            data.elem.checked==true ? States=1:States=0;
+            data.elem.checked===true ? States=1:States=0;
         });
 
         form.on('switch(allowCharge)', function(data){
-            data.elem.checked==true ? allowCharge=1:allowCharge=0;
+            data.elem.checked===true ? allowCharge=1:allowCharge=0;
         });
         form.on('switch(allowSaveLottery)', function(data){
-            data.elem.checked==true ? allowSaveLottery=1:allowSaveLottery=0;
+            data.elem.checked===true ? allowSaveLottery=1:allowSaveLottery=0;
         });
         form.on('switch(allowSaveCoin)', function(data){
-            data.elem.checked==true ? allowSaveCoin=1:allowSaveCoin=0;
+            data.elem.checked===true ? allowSaveCoin=1:allowSaveCoin=0;
         });
         form.on('switch(allowGetCoin)', function(data){
-            data.elem.checked==true ? allowGetCoin=1:allowGetCoin=0;
+            data.elem.checked===true ? allowGetCoin=1:allowGetCoin=0;
         });
-        form.on('switch(allowTransfer)', function(data){
-            data.elem.checked==true ? allowTransfer=1:allowTransfer=0;
-        });
+        // form.on('switch(allowTransfer)', function(data){
+        //     data.elem.checked===true ? allowTransfer=1:allowTransfer=0;
+        // });
         form.on('select(freeBalanceType)', function(data){
-            freeBalanceType = data.value=='-请选择-'?'':data.value;
+            freeBalanceType = data.value==='-请选择-'?'':data.value;
         });
         form.on('select(upML)', function(data){
-            upML = data.value=='-请选择-'?'':data.value;
+            upML = data.value==='-请选择-'?'':data.value;
         });
         form.on('select(downML)', function(data){
-            downML = data.value=='-请选择-'?'':data.value;
+            downML = data.value==='-请选择-'?'':data.value;
         });
         form.on('select(freeBalanceIndex)', function(data){
-            freeBalanceIndex = data.value=='-请选择-'?'':data.value;
+            freeBalanceIndex = data.value==='-请选择-'?'':data.value;
         });
         form.on('select(FoodID)', function(data){
-            FoodID = data.value=='-请选择-'?'':data.value;
+            FoodID = data.value==='-请选择-'?'':data.value;
         });
+
+        form.on('switch(AllowTransferOut)', function(data){
+            data.elem.checked===true ? AllowTransferOut=1:AllowTransferOut=0;
+        });
+        form.on('select(TransferOutLevelID)', function(data){
+            TransferOutLevelID = data.value==='-请选择-'?'':data.value;
+        });
+        form.on('switch(AllowTransferIn)', function(data){
+            data.elem.checked===true ? AllowTransferIn=1:AllowTransferIn=0;
+        });
+        form.on('select(TransferInLevelID)', function(data){
+            TransferInLevelID = data.value==='-请选择-'?'':data.value;
+        });
+
     });
     var saveML=(layer,token)=>{
         let _memberLevelBalance=[];let _memberLevelFrees=[];let _memberLevelFood=[];
         let _memberLevelBalanceCharge=[];
         $('.goodConvert .goodRules').each(function () {
-            if($(this).find('input[name="chargeOff"]').val()!=''&&
-                $(this).find('select[name="freeRates"] option:selected').val()!=''&&
-                $(this).find('input[name="maxSaveCount"]').val()!=''&&
-                // $(this).find('input[name="needAuth"]').val()!=''&&
-                $(this).find('input[name="maxUplife"]').val()!=''
+            if($(this).find('input[name="chargeOff"]').val()!==''&&
+                $(this).find('select[name="freeRates"] option:selected').val()!==''&&
+                $(this).find('input[name="maxSaveCount"]').val()!==''&&
+                $(this).find('input[name="maxUplife"]').val()!==''
             ){
                 _memberLevelBalance.push({
                     'BalanceIndex': $(this).find('select[name="freeRates"] option:selected').val(),
@@ -1097,12 +1136,12 @@
             }
         });
         $('.freeLast .reduceBox').each(function () {
-            if($(this).find('input[name="chargeTotal"]').val()!=''&&
-                $(this).find('select[name="freeBalanceType"] option:selected').val()!=''&&
-                $(this).find('input[name="freeCount"]').val()!=''&&
-                $(this).find('input[name="minSpaceDays"]').val()!=''&&
-                $(this).find('input[name="onceFreeCount"]').val()!=''&&
-                $(this).find('input[name="expireDays"]').val()!=''
+            if($(this).find('input[name="chargeTotal"]').val()!==''&&
+                $(this).find('select[name="freeBalanceType"] option:selected').val()!==''&&
+                $(this).find('input[name="freeCount"]').val()!==''&&
+                $(this).find('input[name="minSpaceDays"]').val()!==''&&
+                $(this).find('input[name="onceFreeCount"]').val()!==''&&
+                $(this).find('input[name="expireDays"]').val()!==''
             ){
                 _memberLevelFrees.push({
                     'ChargeTotal': $(this).find('input[name="chargeTotal"]').val(),
@@ -1116,10 +1155,10 @@
         });
         $('.memBalanceBox .memBalance').each(function () {
             if(
-                $(this).find('select[name="sourceBalanceType"] option:selected').val()!=''&&
-                $(this).find('input[name="sourceCount"]').val()!=''&&
-                $(this).find('select[name="targetBalanceIndex"] option:selected').val()!=''&&
-                $(this).find('input[name="targetCount"]').val()!=''
+                $(this).find('select[name="sourceBalanceType"] option:selected').val()!==''&&
+                $(this).find('input[name="sourceCount"]').val()!==''&&
+                $(this).find('select[name="targetBalanceIndex"] option:selected').val()!==''&&
+                $(this).find('input[name="targetCount"]').val()!==''
             ){
                 _memberLevelBalanceCharge.push({
                     'sourceBalanceIndex': $(this).find('select[name="sourceBalanceType"] option:selected').val(),
@@ -1178,7 +1217,12 @@
             'allowSaveLottery':allowSaveLottery,
             'allowSaveCoin':allowSaveCoin,
             'allowGetCoin':allowGetCoin,
-            'allowTransfer':allowTransfer,
+            // 'allowTransfer':allowTransfer,
+
+            'AllowTransferOut':AllowTransferOut,
+            'TransferOutLevelID':TransferOutLevelID,
+            'AllowTransferIn':AllowTransferIn,
+            'TransferInLevelID':TransferInLevelID,
 
             'memberLevelFoods':memberLevelFood,
             'memberLevelFrees':_memberLevelFrees,

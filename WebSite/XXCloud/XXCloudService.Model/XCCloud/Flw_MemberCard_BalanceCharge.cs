@@ -26,7 +26,7 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<decimal> TargetRemain { get; set; }
         public Nullable<System.DateTime> OpTime { get; set; }
         public Nullable<int> OpUserID { get; set; }
-        public Nullable<int> ScheduleID { get; set; }
+        public string ScheduleID { get; set; }
         public string Workstation { get; set; }
         public Nullable<System.DateTime> CheckDate { get; set; }
         public string ExitID { get; set; }

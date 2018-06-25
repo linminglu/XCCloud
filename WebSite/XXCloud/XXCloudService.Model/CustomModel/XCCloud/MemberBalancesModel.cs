@@ -162,4 +162,49 @@ namespace XCCloudService.Model.CustomModel.XCCloud
 
         public decimal Quantity { get; set; }
     }
+
+    public class SourceBalanceModel
+    {
+        public string BalanceId { get; set; }
+        public int BalanceIndex { get; set; }
+        public string BalanceName { get; set; }
+        public decimal? Balance { get; set; }
+        public decimal? BalanceFree { get; set; }
+        public decimal? BalanceTotal { get; set; }
+    }
+
+    public class ChargeBalanceModel
+    {
+        public string BalanceId { get; set; }
+        public string SourceBalanceName { get; set; }
+
+        public string BalanceTotal { get; set; }
+        public string Balance { get; set; }
+        public string BalanceFree { get; set; }
+
+        public List<TargetChargeModel> TargetChargeList { get; set; }
+    }
+
+    public class TargetChargeModel
+    {
+        public int ExchangeRuleId { get; set; }
+        public string TargetBalanceName { get; set; }
+        public string TargetBalanceQty { get; set; }
+        public int SourceCount { get; set; }
+        public int TargetCount { get; set; }
+        public int DecimalNumber { get; set; }
+        public int AddingType { get; set; }
+        public string ExchangeRate { get { 
+            if(SourceCount != 0 && TargetCount != 0)
+            {
+                decimal rate = TargetCount / (decimal)SourceCount;
+                rate = Math.Round(rate, 2, MidpointRounding.AwayFromZero); 
+                return rate.ToString();
+            }
+            else
+            {
+                return "0";
+            }
+        } }
+    }
 }

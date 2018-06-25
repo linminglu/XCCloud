@@ -70,6 +70,41 @@ namespace XXCloudService.Api.XCCloud
             }
         }
 
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCManaUserHelperToken, SysIdAndVersionNo = false)]
+        public object GetDepotDicFromProgram(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                XCManaUserHelperTokenModel userTokenModel = (XCManaUserHelperTokenModel)(dicParas[Constant.XCManaUserHelperToken]);
+                string storeId = userTokenModel.StoreId;
+                string merchId = storeId.Substring(0, 6);
+
+                string errMsg = string.Empty;
+                
+                if (!dicParas.Get("merchId").IsNull())
+                    merchId = dicParas.Get("merchId");
+                if (!dicParas.Get("storeId").IsNull())
+                    storeId = dicParas.Get("storeId");
+
+                IBase_DepotInfoService base_DepotInfoService = BLLContainer.Resolve<IBase_DepotInfoService>();
+                IQueryable<Base_DepotInfo> query = base_DepotInfoService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase));
+                
+                var result = from a in query
+                             orderby a.ID
+                             select new
+                             {
+                                 ID = a.ID,
+                                 DepotName = a.DepotName
+                             };
+
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, result);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object QueryDepotInfo(Dictionary<string, object> dicParas)
         {

@@ -14,18 +14,18 @@ namespace XCCloudService.Model.XCCloud
     
     public partial class Flw_Schedule
     {
-        public int ID { get; set; }
+        public string ID { get; set; }
+        public string MerchID { get; set; }
         public string StoreID { get; set; }
-        public Nullable<int> CheckDateID { get; set; }
-        public Nullable<int> UserID { get; set; }
+        public string ScheduleName { get; set; }
         public Nullable<System.DateTime> OpenTime { get; set; }
-        public Nullable<System.DateTime> ShiftTime { get; set; }
         public Nullable<System.DateTime> CheckDate { get; set; }
         public Nullable<int> State { get; set; }
         public Nullable<decimal> RealCash { get; set; }
         public Nullable<decimal> RealCredit { get; set; }
-        public Nullable<int> RealCoin { get; set; }
-        public string WorkStation { get; set; }
+        public Nullable<int> AuthorID { get; set; }
+        public Nullable<System.DateTime> ShiftTime { get; set; }
         public string Note { get; set; }
+        public string Verifiction { get; set; }
     }
 }

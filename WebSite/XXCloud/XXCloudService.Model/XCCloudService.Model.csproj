@@ -738,6 +738,9 @@
     <Compile Include="XCCloud\Flw_Project_PlayTime.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
+    <Compile Include="XCCloud\Flw_Project_TicketDeviceLog.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
     <Compile Include="XCCloud\Flw_Project_TicketInfo.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>

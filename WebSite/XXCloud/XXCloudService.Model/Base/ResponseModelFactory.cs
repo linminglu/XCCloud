@@ -31,6 +31,18 @@ namespace XCCloudService.Base
             }
         }
 
+        public static object CreateConfirmModel(bool isSignKeyReturn, string conMsg)
+        {
+            if (!isSignKeyReturn)
+            {
+                return new NoSignKeyResponseModel("1", string.Empty, "1", conMsg, (int)Result_Type.Confirm);
+            }
+            else
+            {
+                return new ResponseModel("1", string.Empty, "1", conMsg, (int)Result_Type.Confirm);
+            }
+        }
+
         public static object CreateSuccessModel<T>(bool isSignKeyReturn, T obj)
         {
             if (!isSignKeyReturn)
@@ -42,7 +54,7 @@ namespace XCCloudService.Base
                 return new ResponseModel<T>(obj);
             }
         }
-
+        
         public static object CreateFailModel(bool isSignKeyReturn, string errMsg)
         {
             if (!isSignKeyReturn)

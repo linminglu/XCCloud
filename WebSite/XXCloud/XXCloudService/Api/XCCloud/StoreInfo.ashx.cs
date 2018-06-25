@@ -835,6 +835,8 @@ namespace XCCloudService.Api.XCCloud
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 
+                        var merchId = base_StoreInfoModel.MerchID;
+
                         //结算设置
                         if (Convert.ToInt32(workState) == (int)WorkState.Pass)
                         {
@@ -988,7 +990,15 @@ namespace XCCloudService.Api.XCCloud
                                     errMsg = "结算分类索引不能为空";
                                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                                 }
-                            } 
+                            }
+ 
+                            //创建初始营业日期和空班次
+                            var checkDate = Convert.ToDateTime(DateTime.Now.ToShortDateString());
+                            List<string> scheduleNames = null;
+                            if (!getScheduleCount(storeId, ref scheduleNames, out errMsg))
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            if(!createCheckDateAndSchedule(merchId, storeId, checkDate, scheduleNames, out errMsg, true))
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }                                                                       
 
                         base_StoreInfoModel.SettleID = !string.IsNullOrEmpty(settleId) ? Convert.ToInt32(settleId) : (int?)null;
@@ -1000,8 +1010,7 @@ namespace XCCloudService.Api.XCCloud
 
                         //修改工单
                         IBase_MerchantInfoService base_MerchantInfoService = BLLContainer.Resolve<IBase_MerchantInfoService>();
-                        IBase_UserInfoService base_UserInfoService = BLLContainer.Resolve<IBase_UserInfoService>();
-                        var merchId = base_StoreInfoModel.MerchID;
+                        IBase_UserInfoService base_UserInfoService = BLLContainer.Resolve<IBase_UserInfoService>();                        
                         var base_MerchantInfo = base_MerchantInfoService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
                         var wxOpenId = base_MerchantInfo.WxOpenID;
                         if (!base_UserInfoService.Any(p => p.OpenID.Equals(wxOpenId, StringComparison.OrdinalIgnoreCase)))

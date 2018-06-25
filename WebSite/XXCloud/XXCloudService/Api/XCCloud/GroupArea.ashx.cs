@@ -11,6 +11,7 @@ using XCCloudService.Common.Extensions;
 using System.Transactions;
 using XCCloudService.Model.XCCloud;
 using System.Data.Entity.Validation;
+using XCCloudService.CacheService;
 
 namespace XXCloudService.Api.XCCloud
 {
@@ -47,6 +48,43 @@ namespace XXCloudService.Api.XCCloud
                                ID = g.Key,
                                AreaName = g.FirstOrDefault().a.AreaName,
                                ProjectCount = g.Count(c=>c.ProjectID != null)
+                           };
+
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, linq.ToList());
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        /// <summary>
+        /// 查询区域列表
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCManaUserHelperToken, SysIdAndVersionNo = false)]
+        public object QueryGroupAreaFromProgram(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                XCManaUserHelperTokenModel userTokenModel = (XCManaUserHelperTokenModel)(dicParas[Constant.XCManaUserHelperToken]);
+                string storeId = userTokenModel.StoreId;
+                string merchId = storeId.Substring(0, 6);
+
+                var linq = from t in
+                               (from a in Data_GroupAreaService.N.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)
+                         && p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase))
+                                join b in Data_ProjectInfoService.N.GetModels(p => p.State == 1) on a.ID equals b.AreaType into b1
+                                from b in b1.DefaultIfEmpty()
+                                select new { a = a, ProjectID = b.ID })
+                           group t by t.a.ID into g
+                           orderby g.FirstOrDefault().a.AreaName
+                           select new GroupAreaModel
+                           {
+                               ID = g.Key,
+                               AreaName = g.FirstOrDefault().a.AreaName,
+                               ProjectCount = g.Count(c => c.ProjectID != null)
                            };
 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, linq.ToList());
