@@ -83,8 +83,9 @@ namespace XCCloudService.Base
         /// <param name="merchId"></param>
         /// <param name="storeId"></param>
         /// <param name="newCheckDate"></param>
-        /// <param name="scheduleName"></param>
+        /// <param name="scheduleNames"></param>
         /// <param name="errMsg"></param>
+        /// <param name="isEmptySchedule">是否是空班次, 如果是班次状态均为已审核</param>
         /// <returns></returns>
         protected bool createCheckDateAndSchedule(string merchId, string storeId, DateTime newCheckDate, List<string> scheduleNames, out string errMsg, bool isEmptySchedule = false)
         {
@@ -121,7 +122,7 @@ namespace XCCloudService.Base
                 }
                 else
                 {
-                    newScheduleModel.State = (int)ScheduleState.Stopped;
+                    newScheduleModel.State = !isEmptySchedule ? (int)ScheduleState.Stopped : (int)ScheduleState.Checked;
                 }
 
                 flw_ScheduleService.AddModel(newScheduleModel, false);
