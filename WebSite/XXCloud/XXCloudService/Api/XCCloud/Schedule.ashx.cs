@@ -63,19 +63,19 @@ namespace XXCloudService.Api.XCCloud
                     errMsg = "上一个营业日期存在未审核的班次, 禁止交班";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
+
+                //是否有且仅有一个正在进行中的班次
+                if (flw_ScheduleService.GetCount(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase) && p.CheckDate == currCheckDate && p.State == (int)ScheduleState.Starting) != 1)
+                {
+                    errMsg = "当前应该有且仅有一个正在进行中的班次";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
                 
                 //开启EF事务
                 using (TransactionScope ts = new TransactionScope())
                 {
                     try
-                    {                        
-                        //有且仅有一个正在进行中的班次
-                        if (flw_ScheduleService.GetCount(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase) && p.CheckDate == currCheckDate && p.State == (int)ScheduleState.Starting) != 1)
-                        {
-                            errMsg = "当前营业日期应该有且仅有一个正在进行中的班次";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
-                                                
+                    {
                         //修改班次状态, 清理吧台用户令牌, 通知所有吧台用户
                         var currScheduleModel = flw_ScheduleService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase) && p.CheckDate == currCheckDate && p.State == (int)ScheduleState.Starting).FirstOrDefault();
                         currScheduleModel.State = (int)ScheduleState.Submitted;
