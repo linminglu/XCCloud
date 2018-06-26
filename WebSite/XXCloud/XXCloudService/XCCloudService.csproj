@@ -1135,6 +1135,7 @@
     <Content Include="WebSite\uploadify\check-exists.php" />
     <Content Include="WebSite\uploadify\index.php" />
     <Content Include="WebSite\uploadify\uploadify.php" />
+    <Content Include="WeiXin\Api\Schedule.ashx" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Api\Client.ashx.cs">
@@ -1758,6 +1759,9 @@
     <Compile Include="WeiXin\Api\OAuth.ashx.cs">
       <DependentUpon>OAuth.ashx</DependentUpon>
       <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="WeiXin\Api\Schedule.ashx.cs">
+      <DependentUpon>Schedule.ashx</DependentUpon>
     </Compile>
     <Compile Include="WeiXin\Api\Users.ashx.cs">
       <DependentUpon>Users.ashx</DependentUpon>
