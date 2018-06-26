@@ -70,7 +70,7 @@
     <div class="weui-cell ">
         <div class="weui-cell__hd"><label for="RealCash" class="weui-label" style="font-weight: bold;">实点现金</label></div>
         <div class="weui-cell__bd">
-            <input class="weui-input" type="text" placeholder="请输入用户名" id="RealCash" readonly>
+            <input class="weui-input" type="text" placeholder="请输入用户名" id="RealCash" >
         </div>
     </div>
 </div>
@@ -78,18 +78,119 @@
     <div class="weui-cell ">
         <div class="weui-cell__hd"><label for="RealCredit" class="weui-label" style="font-weight: bold;">实点信用卡小票</label></div>
         <div class="weui-cell__bd">
-            <input class="weui-input" type="text" placeholder="请输入用户名" id="RealCredit" readonly>
+            <input class="weui-input" type="text" placeholder="请输入用户名" id="RealCredit" >
         </div>
     </div>
 </div>
 <div style="text-align: center;margin-top: 50px;text-align:center;">
-    <a href="javascript:;" class="weui-btn  weui-btn_primary reason_sure_btn"  style="width: 60%;">确定</a>
+    <a href="javascript:;" class="weui-btn  weui-btn_primary reason_sure_btn" id="submit"  style="width: 60%;">确定</a>
 </div>
 </body>
 <script>
     window.onload=function () {
         console.log(1);
-        console.log('wewe')
+        console.log('wewe');
+        let scheduleInfo;
+        getScheduleInfo('10001642011100120180626500320000','7',scheduleInfo);
+        document.getElementById('submit').addEventListener('click',function () {
+            let id=document.getElementById('ID').value;
+            let RealCash=document.getElementById('RealCash').value;
+            let RealCredit=document.getElementById('RealCredit').value;
+
+            var xhr;
+            try{ // Firefox, Opera 8.0+, Safari
+                xhr=new XMLHttpRequest();
+            }
+            catch (e){
+                try{// Internet Explorer
+                    xhr=new ActiveXObject("Msxml2.XMLHTTP");
+                }
+                catch (e){
+                    try{
+                        xhr=new ActiveXObject("Microsoft.XMLHTTP");
+                    }
+                    catch (e){}
+                }
+            }
+
+            xhr.onreadystatechange = function(){
+                if(xhr.readyState==4){
+                    if(xhr.status==200||xhr.status==304){
+                        var data = xhr.responseText;
+                        data=JSON.parse(data);
+                        console.log(data);
+                        if(data.result_code==1){
+location.href='toModifySuccess.html'
+                        }else{
+                            alert(data.result_msg||data.return_msg)
+                        }
+                    }
+                }
+            }
+
+
+            xhr.open("POST","/wx/Schedule?action=SaveScheduleUserInfo",true);
+
+            //如果是POST请求方式，设置请求首部信息
+            xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+
+            xhr.send("id="+id+"&RealCash="+RealCash+"&RealCredit="+RealCredit);        //xhr.send(null);
+        })
+        function getScheduleInfo(scheduleId,userId,scheduleInfo) {
+    /*
+         * 1    创建XMLHttpRequest对象
+         */
+    var xhr;
+    try{ // Firefox, Opera 8.0+, Safari
+        xhr=new XMLHttpRequest();
+    }
+    catch (e){
+        try{// Internet Explorer
+            xhr=new ActiveXObject("Msxml2.XMLHTTP");
+        }
+        catch (e){
+            try{
+                xhr=new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            catch (e){}
+        }
+    }
+
+    xhr.onreadystatechange = function(){
+        // alert(xhr.readyState);
+        //alert(xhr.status);
+        if(xhr.readyState==4){
+            if(xhr.status==200||xhr.status==304){
+                var data = xhr.responseText;
+                data=JSON.parse(data);
+                console.log(data);
+                if(data.result_code==1){
+                    document.getElementById('ID').value=data.result_data[0].ID;
+                    document.getElementById('CheckDate').value=data.result_data[0].CheckDate;
+                    document.getElementById('OpenTime').value=data.result_data[0].OpenTime;
+                    document.getElementById('ScheduleName').value=data.result_data[0].ScheduleName;
+                    document.getElementById('OpenTime').value=data.result_data[0].OpenTime;
+                    document.getElementById('ShiftTime').value=data.result_data[0].ShiftTime;
+                    document.getElementById('WorkStation').value=data.result_data[0].WorkStation;
+                    document.getElementById('RealCash').value=data.result_data[0].RealCash;
+                    document.getElementById('RealCredit').value=data.result_data[0].RealCredit;
+
+                }
+                // scheduleInfo=xhr.responseText;
+                // return scheduleInfo;
+            }
+        }
+    }
+
+
+    xhr.open("POST","/wx/Schedule?action=GetScheduleUserInfo",true);
+
+    //如果是POST请求方式，设置请求首部信息
+    xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+
+    xhr.send("scheduleId="+scheduleId+"&userId="+userId);        //xhr.send(null);
+}
+
     }
 </script>
 </html>

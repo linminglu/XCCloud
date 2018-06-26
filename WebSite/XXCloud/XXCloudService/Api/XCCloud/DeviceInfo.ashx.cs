@@ -519,10 +519,11 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 string errMsg = string.Empty;
-                if(!dicParas.Get("token").Nonempty("设备Token", out errMsg))
+                int lastIndex = dicParas.Get("token").LastIndexOf('/');
+                var token = dicParas.Get("token").Substring(lastIndex);
+                if(!token.Nonempty("设备Token", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-                var token = dicParas.Get("token");
                 if (!Base_DeviceInfoService.I.Any(a => a.Token.Equals(token, StringComparison.OrdinalIgnoreCase)))
                 {
                     errMsg = "该设备信息不存在";
@@ -540,6 +541,139 @@ namespace XXCloudService.Api.XCCloud
                 }.AsFlatDictionary();
 
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, linq);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        /// <summary>
+        /// 获取码表抄账信息（小程序）
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCManaUserHelperToken, SysIdAndVersionNo = false)]
+        public object GetGameWatchFromProgram(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                XCManaUserHelperTokenModel userTokenModel = (XCManaUserHelperTokenModel)(dicParas[Constant.XCManaUserHelperToken]);
+                string storeId = userTokenModel.StoreId;
+                string merchId = storeId.Substring(0, 6);
+
+                string errMsg = string.Empty;
+                int lastIndex = dicParas.Get("token").LastIndexOf('/');
+                var token = dicParas.Get("token").Substring(lastIndex);
+                if (!token.Nonempty("设备Token", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                if (!Base_DeviceInfoService.I.Any(a => a.Token.Equals(token, StringComparison.OrdinalIgnoreCase)))
+                {
+                    errMsg = "该设备信息不存在";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
+                var base_DeviceInfo = Base_DeviceInfoService.I.GetModels(p => p.Token.Equals(token, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                var gameIndexId = base_DeviceInfo.GameIndexID;
+                var bindDeviceId = base_DeviceInfo.BindDeviceID;
+                var checkDate = Store_CheckDateService.I.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)).OrderByDescending(or => or.CheckDate).Select(o => o.CheckDate).FirstOrDefault();
+                var linq = new
+                {
+                    GameIndexID = gameIndexId,
+                    BindDeviceID = bindDeviceId,
+                    GameName = Data_GameInfoService.I.GetModels(p=>p.ID == gameIndexId).Select(o=>o.GameName),
+                    CheckDate = checkDate
+                };
+
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, linq);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        /// <summary>
+        /// 上传码表多媒体文件（小程序）
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCManaUserHelperToken, SysIdAndVersionNo = false)]
+        public object UploadGameWatchMediaFile(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                string errMsg = string.Empty;
+
+                List<string> imageUrls = null;
+                if (!Utils.UploadImageFile("/XCCloud/GameWatch/Media/", out imageUrls, out errMsg))
+                {
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, new
+                {
+                    ImageURL = imageUrls
+                });
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        /// <summary>
+        /// 保存码表抄账信息（小程序）
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCManaUserHelperToken, SysIdAndVersionNo = false)]
+        public object SaveGameWatchFromProgram(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                XCManaUserHelperTokenModel userTokenModel = (XCManaUserHelperTokenModel)(dicParas[Constant.XCManaUserHelperToken]);
+                string storeId = userTokenModel.StoreId;
+                string merchId = storeId.Substring(0, 6);
+                int userId = userTokenModel.UserId;
+
+                string errMsg = string.Empty;
+                if(!dicParas.Get("gameIndex").Validintnozero("游戏机ID", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (!dicParas.Get("headIndex").Validintnozero("机头ID", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+
+                var mediaURL1 = dicParas.Get("mediaURL1");
+                var mediaURL2 = dicParas.Get("mediaURL2");
+                var mediaURL3 = dicParas.Get("mediaURL3");
+
+                var suffix = new List<String>();
+                suffix.Add(mediaURL1.Substring(mediaURL1.LastIndexOf('.')));
+                suffix.Add(mediaURL2.Substring(mediaURL1.LastIndexOf('.')));
+                suffix.Add(mediaURL3.Substring(mediaURL1.LastIndexOf('.')));
+                if (suffix.Where(w => !"jpg,jpeg,gif,png,bmp".Contains(w.ToLower())).Count() > 1)
+                {
+                    errMsg = "非图片多媒体文件不能超过1个";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
+                var flw_Game_WatchService = Flw_Game_WatchService.I;
+                var flw_Game_Watch = new Flw_Game_Watch();
+                Utils.GetModel(dicParas, ref flw_Game_Watch);
+                flw_Game_Watch.CreateTime = DateTime.Now;
+                flw_Game_Watch.UserID = userId;
+                flw_Game_Watch.MerchID = merchId;
+                flw_Game_Watch.StoreID = storeId;
+                flw_Game_Watch.ID = RedisCacheHelper.CreateStoreSerialNo(storeId);
+                if (!flw_Game_WatchService.Add(flw_Game_Watch, false))
+                {
+                    errMsg = "保存码表抄账信息失败";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
             }
             catch (Exception e)
             {

@@ -21,7 +21,7 @@ namespace XXCloudService.WeiXin.Api
         /// </summary>
         /// <param name="dicParas"></param>
         /// <returns></returns>
-        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.MethodToken)]
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.MethodToken, SysIdAndVersionNo = false)]
         public object GetScheduleUserInfo(Dictionary<string, object> dicParas)
         {
             try
@@ -62,7 +62,7 @@ namespace XXCloudService.WeiXin.Api
         /// </summary>
         /// <param name="dicParas"></param>
         /// <returns></returns>
-        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.MethodToken)]
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.MethodToken, SysIdAndVersionNo = false)]
         public object SaveScheduleUserInfo(Dictionary<string, object> dicParas)
         {
             try

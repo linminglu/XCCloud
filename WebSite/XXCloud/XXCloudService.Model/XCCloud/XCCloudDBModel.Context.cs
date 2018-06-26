@@ -119,11 +119,7 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Flw_CheckDate> Flw_CheckDate { get; set; }
         public virtual DbSet<Flw_Digite_Coin> Flw_Digite_Coin { get; set; }
         public virtual DbSet<Flw_Digite_Coin_Detail> Flw_Digite_Coin_Detail { get; set; }
-        public virtual DbSet<Flw_Food_Exit> Flw_Food_Exit { get; set; }
-        public virtual DbSet<Flw_Food_ExitDetail> Flw_Food_ExitDetail { get; set; }
         public virtual DbSet<Flw_Food_Sale_Pay> Flw_Food_Sale_Pay { get; set; }
-        public virtual DbSet<Flw_Food_SaleDetail> Flw_Food_SaleDetail { get; set; }
-        public virtual DbSet<Flw_Game_Watch> Flw_Game_Watch { get; set; }
         public virtual DbSet<Flw_Game_WinPrize> Flw_Game_WinPrize { get; set; }
         public virtual DbSet<Flw_Good_Detail> Flw_Good_Detail { get; set; }
         public virtual DbSet<Flw_Goods> Flw_Goods { get; set; }
@@ -192,11 +188,15 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Flw_Project_TicketDeviceLog> Flw_Project_TicketDeviceLog { get; set; }
         public virtual DbSet<Data_MemberLevel> Data_MemberLevel { get; set; }
         public virtual DbSet<Flw_ProjectTicket_Entry> Flw_ProjectTicket_Entry { get; set; }
-        public virtual DbSet<Flw_MemberCard_BalanceCharge> Flw_MemberCard_BalanceCharge { get; set; }
-        public virtual DbSet<Flw_GroupVerity> Flw_GroupVerity { get; set; }
         public virtual DbSet<Flw_Schedule_UserInfo> Flw_Schedule_UserInfo { get; set; }
         public virtual DbSet<Flw_Schedule> Flw_Schedule { get; set; }
+        public virtual DbSet<Flw_Food_SaleDetail> Flw_Food_SaleDetail { get; set; }
+        public virtual DbSet<Flw_Food_ExitDetail> Flw_Food_ExitDetail { get; set; }
+        public virtual DbSet<Flw_Game_Watch> Flw_Game_Watch { get; set; }
+        public virtual DbSet<Flw_Food_Exit> Flw_Food_Exit { get; set; }
         public virtual DbSet<Store_CheckDate> Store_CheckDate { get; set; }
+        public virtual DbSet<Flw_MemberCard_BalanceCharge> Flw_MemberCard_BalanceCharge { get; set; }
+        public virtual DbSet<Flw_GroupVerity> Flw_GroupVerity { get; set; }
         public virtual DbSet<Flw_Order> Flw_Order { get; set; }
     }
 }

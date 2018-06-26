@@ -44,5 +44,6 @@ namespace XCCloudService.Model.XCCloud
         public string Verifiction { get; set; }
         public string StoreID { get; set; }
         public string Note { get; set; }
+        public string CardPhoto { get; set; }
     }
 }

@@ -15,9 +15,9 @@ namespace XCCloudService.Model.XCCloud
     public partial class Store_CheckDate
     {
         public int ID { get; set; }
+        public Nullable<System.DateTime> CheckDate { get; set; }
         public string MerchID { get; set; }
         public string StoreID { get; set; }
-        public Nullable<System.DateTime> CheckDate { get; set; }
         public Nullable<System.DateTime> CreateTime { get; set; }
         public Nullable<int> AuthorID { get; set; }
         public Nullable<System.DateTime> AuthorTime { get; set; }

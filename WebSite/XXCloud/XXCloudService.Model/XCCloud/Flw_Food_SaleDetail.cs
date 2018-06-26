@@ -16,7 +16,7 @@ namespace XCCloudService.Model.XCCloud
     {
         public string ID { get; set; }
         public string FlwFoodID { get; set; }
-        public Nullable<int> SaleType { get; set; }
+        public Nullable<int> FoodType { get; set; }
         public Nullable<int> ContainID { get; set; }
         public Nullable<int> ContainCount { get; set; }
         public Nullable<System.DateTime> ExpireDay { get; set; }

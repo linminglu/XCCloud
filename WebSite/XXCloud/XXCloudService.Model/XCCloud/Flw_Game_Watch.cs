@@ -14,13 +14,20 @@ namespace XCCloudService.Model.XCCloud
     
     public partial class Flw_Game_Watch
     {
-        public int ID { get; set; }
+        public string ID { get; set; }
+        public string MerchID { get; set; }
+        public string StoreID { get; set; }
         public Nullable<int> GameIndex { get; set; }
         public Nullable<int> HeadIndex { get; set; }
+        public string MediaURL1 { get; set; }
+        public string MediaURL2 { get; set; }
+        public string MediaURL3 { get; set; }
         public Nullable<System.DateTime> CreateTime { get; set; }
         public Nullable<int> UserID { get; set; }
         public Nullable<int> InCoin { get; set; }
         public Nullable<int> InCoinError { get; set; }
+        public Nullable<int> InCoin2 { get; set; }
+        public Nullable<int> InCoinError2 { get; set; }
         public Nullable<int> PrizeCount { get; set; }
         public Nullable<int> PrizeError { get; set; }
         public Nullable<decimal> GoodPrice { get; set; }
@@ -28,8 +35,8 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> OutCoinError { get; set; }
         public Nullable<int> OutLottery { get; set; }
         public Nullable<int> OutLotteryError { get; set; }
-        public string MediaUrl1 { get; set; }
-        public string MediaUrl2 { get; set; }
-        public string MediaUrl3 { get; set; }
+        public Nullable<int> Winner { get; set; }
+        public Nullable<int> WinnerError { get; set; }
+        public string Verifiction { get; set; }
     }
 }

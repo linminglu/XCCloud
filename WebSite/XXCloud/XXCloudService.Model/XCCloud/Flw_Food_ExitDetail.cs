@@ -14,8 +14,8 @@ namespace XCCloudService.Model.XCCloud
     
     public partial class Flw_Food_ExitDetail
     {
-        public int ID { get; set; }
-        public Nullable<int> ExitID { get; set; }
+        public string ID { get; set; }
+        public string ExitID { get; set; }
         public Nullable<int> FoodType { get; set; }
         public Nullable<int> ContainID { get; set; }
         public Nullable<int> ContainCount { get; set; }

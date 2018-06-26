@@ -18,15 +18,15 @@ namespace XCCloudService.Model.XCCloud
         public string MerchID { get; set; }
         public string StoreID { get; set; }
         public string OrderID { get; set; }
-        public string FoodID { get; set; }
-        public Nullable<int> CardID { get; set; }
+        public Nullable<int> FoodID { get; set; }
+        public string CardID { get; set; }
         public Nullable<decimal> ExitFee { get; set; }
         public Nullable<decimal> Tax { get; set; }
         public Nullable<decimal> TaxFee { get; set; }
         public Nullable<decimal> TotalMoney { get; set; }
         public string Note { get; set; }
         public Nullable<int> UserID { get; set; }
-        public Nullable<int> ScheduleID { get; set; }
+        public string ScheduleID { get; set; }
         public Nullable<int> AuthorID { get; set; }
         public Nullable<System.DateTime> RealTime { get; set; }
         public string WorkStation { get; set; }

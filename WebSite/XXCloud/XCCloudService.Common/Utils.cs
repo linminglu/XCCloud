@@ -1086,13 +1086,13 @@ namespace XCCloudService.Common
                 var file = HttpContext.Current.Request.Files[i];
                 if (file == null)
                 {
-                    errMsg = "未找到图片";
+                    errMsg = "未找到上传文件";
                     return false;
                 }
 
                 if (file.ContentLength > int.Parse(System.Configuration.ConfigurationManager.AppSettings["MaxImageSize"].ToString()))
                 {
-                    errMsg = "超过图片的最大限制为1M";
+                    errMsg = "超过文件的最大限制为1M";
                     return false;
                 }
 
@@ -1108,7 +1108,7 @@ namespace XCCloudService.Common
 
                 if (File.Exists(path + fileName))
                 {
-                    errMsg = "图片名称已存在，请重命名后上传";
+                    errMsg = "文件名称已存在，请重命名后上传";
                     return false;
                 }
 
