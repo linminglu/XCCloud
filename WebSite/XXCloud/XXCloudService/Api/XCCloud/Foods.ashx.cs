@@ -159,7 +159,7 @@ namespace XXCloudService.Api.XCCloud
             {
                 for (int i = 0; i < listGoodInfo.Count; i++)
                 {
-                    List<FoodDetailInfoModel> foodDetialInfo1 = listFoodDetailInfo1.Where<FoodDetailInfoModel>(p => p.FoodId == listFoodInfo[i].FoodID).ToList<FoodDetailInfoModel>();
+                    List<FoodDetailInfoModel> foodDetialInfo1 = listFoodDetailInfo1.Where<FoodDetailInfoModel>(p => p.FoodId == listGoodInfo[i].FoodId).ToList<FoodDetailInfoModel>();
                     listGoodInfo[i].DetailInfoList = foodDetialInfo1;
                     listGoodInfo[i].DetailsCount = listGoodInfo[i].DetailInfoList.Count();
                 }
