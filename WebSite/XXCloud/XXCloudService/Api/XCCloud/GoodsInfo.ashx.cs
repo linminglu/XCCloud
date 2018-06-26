@@ -1996,7 +1996,7 @@ namespace XXCloudService.Api.XCCloud
                             model.StoreID = storeId;
                             model.UserID = logId;
                             model.AuthorFlag = (int)GoodOutInState.Pending;
-                            model.CheckDate = DateTime.Now.Todate();  //应从服务获取当前营业日期
+                            model.CheckDate = Store_CheckDateService.I.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)).OrderByDescending(or => or.CheckDate).Select(o => o.CheckDate).FirstOrDefault() ?? DateTime.Now.Todate();  //获取当前营业日期
                             if (!Data_GoodStorageService.I.Add(model))
                             {
                                 errMsg = "保存商品入库信息失败";
@@ -2266,10 +2266,18 @@ namespace XXCloudService.Api.XCCloud
                             errMsg = "该入库单不存在";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
-
-                        //判断Flw_CheckDate营业日期为已交班或已结算状态的, 出入库不能撤销
-
+                        
                         var model = Data_GoodStorageService.I.GetModels(p => p.ID == id).FirstOrDefault();
+                        var checkDate = model.CheckDate;
+                        var modelMerchId = model.MerchID;
+                        var modelStoreId = model.StoreID;
+                        //判断Store_CheckDate营业日期为已结算状态的, 出入库不能撤销
+                        if (Store_CheckDateService.I.Any(a => a.MerchID.Equals(modelMerchId, StringComparison.OrdinalIgnoreCase) && a.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase) && a.CheckDate == checkDate && a.AuthorID > 0))
+                        {
+                            errMsg = "营业日期为已结算状态的, 出入库不能撤销";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
                         model.AuthorFlag = (int)GoodOutInState.Cancel;
                         model.AuthorID = logId;
                         if (!Data_GoodStorageService.I.Update(model))
@@ -2642,7 +2650,7 @@ namespace XXCloudService.Api.XCCloud
                             model.OPUserID = logId;
                             model.State = (int)GoodOutInState.Pending;
                             model.CreateTime = DateTime.Now;
-                            model.CheckDate = DateTime.Now.Todate();  //应从服务获取当前营业日期
+                            model.CheckDate = Store_CheckDateService.I.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)).OrderByDescending(or => or.CheckDate).Select(o => o.CheckDate).FirstOrDefault() ?? DateTime.Now.Todate();  //获取当前营业日期
                             if (!Data_GoodOutOrderService.I.Add(model))
                             {
                                 errMsg = "保存商品出库信息失败";
@@ -2917,10 +2925,18 @@ namespace XXCloudService.Api.XCCloud
                             errMsg = "该出库单不存在";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
-
-                        //判断Flw_CheckDate营业日期为已交班或已结算状态的, 出入库不能撤销
-
+                       
                         var model = Data_GoodOutOrderService.I.GetModels(p => p.ID == id).FirstOrDefault();
+                        var checkDate = model.CheckDate;
+                        var modelMerchId = model.MerchID;
+                        var modelStoreId = model.StoreID;
+                        //判断Store_CheckDate营业日期为已结算状态的, 出入库不能撤销
+                        if (Store_CheckDateService.I.Any(a => a.MerchID.Equals(modelMerchId, StringComparison.OrdinalIgnoreCase) && a.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase) && a.CheckDate == checkDate && a.AuthorID > 0))
+                        {
+                            errMsg = "营业日期为已结算状态的, 出入库不能撤销";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
                         model.State = (int)GoodOutInState.Cancel;
                         model.CancelUserID = logId;
                         model.CancelTime = DateTime.Now;
