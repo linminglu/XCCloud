@@ -606,16 +606,16 @@ namespace XXCloudService.Api.XCCloud
                 string id = dicParas.ContainsKey("ID") ? (dicParas["ID"] + "") : string.Empty;
                 string gameId = dicParas.ContainsKey("gameId") ? (dicParas["gameId"] + "") : string.Empty;
                 string gameName = dicParas.ContainsKey("GameName") ? (dicParas["GameName"] + "") : string.Empty;
-                string area = dicParas.ContainsKey("area") ? (dicParas["area"] + "") : string.Empty;
-                string changeTime = dicParas.ContainsKey("changeTime") ? (dicParas["changeTime"] + "") : string.Empty;
-                string evaluation = dicParas.ContainsKey("evaluation") ? (dicParas["evaluation"] + "") : string.Empty;
-                string price = dicParas.ContainsKey("price") ? (dicParas["price"] + "") : string.Empty;
-                string gameCode = dicParas.ContainsKey("gameCode") ? (dicParas["gameCode"] + "") : string.Empty;
-                string lowLimit = dicParas.ContainsKey("lowLimit") ? (dicParas["lowLimit"] + "") : string.Empty;
-                string highLimit = dicParas.ContainsKey("highLimit") ? (dicParas["highLimit"] + "") : string.Empty;
-                string[] photoURLs = dicParas.ContainsKey("photoURLs") ? (string[])dicParas["photoURLs"] : null;
+                //string area = dicParas.ContainsKey("area") ? (dicParas["area"] + "") : string.Empty;
+                //string changeTime = dicParas.ContainsKey("changeTime") ? (dicParas["changeTime"] + "") : string.Empty;
+                //string evaluation = dicParas.ContainsKey("evaluation") ? (dicParas["evaluation"] + "") : string.Empty;
+                //string price = dicParas.ContainsKey("price") ? (dicParas["price"] + "") : string.Empty;
+                //string gameCode = dicParas.ContainsKey("gameCode") ? (dicParas["gameCode"] + "") : string.Empty;
+                //string lowLimit = dicParas.ContainsKey("lowLimit") ? (dicParas["lowLimit"] + "") : string.Empty;
+                //string highLimit = dicParas.ContainsKey("highLimit") ? (dicParas["highLimit"] + "") : string.Empty;
+                //string[] photoURLs = dicParas.ContainsKey("photoURLs") ? (string[])dicParas["photoURLs"] : null;
 
-                var freeLotteryRules = dicParas.GetArray("freeLotteryRules");
+                //var freeLotteryRules = dicParas.GetArray("freeLotteryRules");
 
                 #region 参数验证
                 if (string.IsNullOrEmpty(gameName))
@@ -638,31 +638,31 @@ namespace XXCloudService.Api.XCCloud
                     errMsg = "游戏机编号长度不能超过4个字符";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
-                if (!string.IsNullOrEmpty(area) && !Utils.IsDecimal(area))
-                {
-                    errMsg = "游戏机参数area格式不正确";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
-                if (!string.IsNullOrEmpty(evaluation) && !Utils.isNumber(evaluation))
-                {
-                    errMsg = "游戏机参数evaluation格式不正确";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
-                if (!string.IsNullOrEmpty(price) && !Utils.isNumber(price))
-                {
-                    errMsg = "游戏机参数price格式不正确";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
-                if (!string.IsNullOrEmpty(lowLimit) && !Utils.IsDecimal(lowLimit))
-                {
-                    errMsg = "中奖概率下限参数lowLimit格式不正确";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
-                if (!string.IsNullOrEmpty(highLimit) && !Utils.IsDecimal(highLimit))
-                {
-                    errMsg = "中奖概率上限参数highLimit格式不正确";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
+                //if (!string.IsNullOrEmpty(area) && !Utils.IsDecimal(area))
+                //{
+                //    errMsg = "游戏机参数area格式不正确";
+                //    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                //}
+                //if (!string.IsNullOrEmpty(evaluation) && !Utils.isNumber(evaluation))
+                //{
+                //    errMsg = "游戏机参数evaluation格式不正确";
+                //    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                //}
+                //if (!string.IsNullOrEmpty(price) && !Utils.isNumber(price))
+                //{
+                //    errMsg = "游戏机参数price格式不正确";
+                //    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                //}
+                //if (!string.IsNullOrEmpty(lowLimit) && !Utils.IsDecimal(lowLimit))
+                //{
+                //    errMsg = "中奖概率下限参数lowLimit格式不正确";
+                //    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                //}
+                //if (!string.IsNullOrEmpty(highLimit) && !Utils.IsDecimal(highLimit))
+                //{
+                //    errMsg = "中奖概率上限参数highLimit格式不正确";
+                //    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                //}
                 #endregion
 
                 #region 游戏机参数验证
@@ -736,11 +736,11 @@ namespace XXCloudService.Api.XCCloud
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 
-                        if (data_GameInfo_ExtService.Any(b => b.GameID != iId && b.GameCode.Equals(gameCode, StringComparison.OrdinalIgnoreCase)))
-                        {
-                            errMsg = "该游戏机出厂编号已使用";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
+                        //if (data_GameInfo_ExtService.Any(b => b.GameID != iId && b.GameCode.Equals(gameCode, StringComparison.OrdinalIgnoreCase)))
+                        //{
+                        //    errMsg = "该游戏机出厂编号已使用";
+                        //    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        //}
 
                         //获取参数默认值
                         IDict_SystemService dict_SystemService = BLLContainer.Resolve<IDict_SystemService>(resolveNew: true);
@@ -801,101 +801,101 @@ namespace XXCloudService.Api.XCCloud
 
                         iId = data_GameInfo.ID;
 
-                        //保存会员电子存票赠送设置
-                        if (freeLotteryRules != null && freeLotteryRules.Count() >= 0)
-                        {
-                            //先删除，后添加
-                            foreach (var model in Data_GameFreeLotteryRuleService.I.GetModels(p => p.GameIndex == iId))
-                            {
-                                Data_GameFreeLotteryRuleService.I.DeleteModel(model);
-                            }
+                        ////保存会员电子存票赠送设置
+                        //if (freeLotteryRules != null && freeLotteryRules.Count() >= 0)
+                        //{
+                        //    //先删除，后添加
+                        //    foreach (var model in Data_GameFreeLotteryRuleService.I.GetModels(p => p.GameIndex == iId))
+                        //    {
+                        //        Data_GameFreeLotteryRuleService.I.DeleteModel(model);
+                        //    }
 
-                            foreach (IDictionary<string, object> el in freeLotteryRules)
-                            {
-                                if (el != null)
-                                {
-                                    var dicPara = new Dictionary<string, object>(el, StringComparer.OrdinalIgnoreCase);
-                                    if (!dicPara.Get("memberLevelID").Validintnozero("会员级别ID", out errMsg))
-                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                                    if (!dicPara.Get("baseLottery").Validintnozero("彩票赠送基数", out errMsg))
-                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                                    if (!dicPara.Get("freeCount").Validintnozero("赠送彩票数", out errMsg))
-                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        //    foreach (IDictionary<string, object> el in freeLotteryRules)
+                        //    {
+                        //        if (el != null)
+                        //        {
+                        //            var dicPara = new Dictionary<string, object>(el, StringComparer.OrdinalIgnoreCase);
+                        //            if (!dicPara.Get("memberLevelID").Validintnozero("会员级别ID", out errMsg))
+                        //                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        //            if (!dicPara.Get("baseLottery").Validintnozero("彩票赠送基数", out errMsg))
+                        //                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        //            if (!dicPara.Get("freeCount").Validintnozero("赠送彩票数", out errMsg))
+                        //                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-                                    var memberLevelID = dicPara.Get("memberLevelID").Toint();
-                                    var baseLottery = dicPara.Get("baseLottery").Toint();
-                                    var freeCount = dicPara.Get("freeCount").Toint();
+                        //            var memberLevelID = dicPara.Get("memberLevelID").Toint();
+                        //            var baseLottery = dicPara.Get("baseLottery").Toint();
+                        //            var freeCount = dicPara.Get("freeCount").Toint();
 
-                                    var data_GameFreeLotteryRule = new Data_GameFreeLotteryRule();
-                                    data_GameFreeLotteryRule.MemberLevelID = memberLevelID;
-                                    data_GameFreeLotteryRule.BaseLottery = baseLottery;
-                                    data_GameFreeLotteryRule.FreeCount = freeCount;
-                                    data_GameFreeLotteryRule.GameIndex = iId;
-                                    Data_GameFreeLotteryRuleService.I.AddModel(data_GameFreeLotteryRule);
-                                }
-                                else
-                                {
-                                    errMsg = "提交数据包含空对象";
-                                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                                }
-                            }
+                        //            var data_GameFreeLotteryRule = new Data_GameFreeLotteryRule();
+                        //            data_GameFreeLotteryRule.MemberLevelID = memberLevelID;
+                        //            data_GameFreeLotteryRule.BaseLottery = baseLottery;
+                        //            data_GameFreeLotteryRule.FreeCount = freeCount;
+                        //            data_GameFreeLotteryRule.GameIndex = iId;
+                        //            Data_GameFreeLotteryRuleService.I.AddModel(data_GameFreeLotteryRule);
+                        //        }
+                        //        else
+                        //        {
+                        //            errMsg = "提交数据包含空对象";
+                        //            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        //        }
+                        //    }
 
-                            if (!Data_GameFreeLotteryRuleService.I.SaveChanges())
-                            {
-                                errMsg = "保存会员电子存票赠送设置失败";
-                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                            }
-                        }
+                        //    if (!Data_GameFreeLotteryRuleService.I.SaveChanges())
+                        //    {
+                        //        errMsg = "保存会员电子存票赠送设置失败";
+                        //        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        //    }
+                        //}
 
-                        //保存游戏机扩展信息
-                        foreach (var model in data_GameInfo_ExtService.GetModels(p => p.GameID == iId))
-                        {
-                            model.ValidFlag = 0;
-                            data_GameInfo_ExtService.UpdateModel(model);
-                        }
+                        ////保存游戏机扩展信息
+                        //foreach (var model in data_GameInfo_ExtService.GetModels(p => p.GameID == iId))
+                        //{
+                        //    model.ValidFlag = 0;
+                        //    data_GameInfo_ExtService.UpdateModel(model);
+                        //}
 
-                        var data_GameInfo_Ext = new Data_GameInfo_Ext();
-                        data_GameInfo_Ext.Area = area.Todecimal();
-                        data_GameInfo_Ext.ChangeTime = changeTime.Todatetime();
-                        data_GameInfo_Ext.Evaluation = evaluation.Toint();
-                        data_GameInfo_Ext.Price = price.Toint();
-                        data_GameInfo_Ext.LowLimit = lowLimit.Todecimal();
-                        data_GameInfo_Ext.HighLimit = highLimit.Todecimal();
-                        data_GameInfo_Ext.GameCode = gameCode;
-                        data_GameInfo_Ext.GameID = iId;
-                        data_GameInfo_Ext.MerchID = merchId;
-                        data_GameInfo_Ext.StoreID = storeId;
-                        data_GameInfo_Ext.ValidFlag = 1;
-                        data_GameInfo_ExtService.AddModel(data_GameInfo_Ext);
-                        if (!data_GameInfo_ExtService.SaveChanges())
-                        {
-                            errMsg = "保存游戏机扩展信息失败";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
+                        //var data_GameInfo_Ext = new Data_GameInfo_Ext();
+                        //data_GameInfo_Ext.Area = area.Todecimal();
+                        //data_GameInfo_Ext.ChangeTime = changeTime.Todatetime();
+                        //data_GameInfo_Ext.Evaluation = evaluation.Toint();
+                        //data_GameInfo_Ext.Price = price.Toint();
+                        //data_GameInfo_Ext.LowLimit = lowLimit.Todecimal();
+                        //data_GameInfo_Ext.HighLimit = highLimit.Todecimal();
+                        //data_GameInfo_Ext.GameCode = gameCode;
+                        //data_GameInfo_Ext.GameID = iId;
+                        //data_GameInfo_Ext.MerchID = merchId;
+                        //data_GameInfo_Ext.StoreID = storeId;
+                        //data_GameInfo_Ext.ValidFlag = 1;
+                        //data_GameInfo_ExtService.AddModel(data_GameInfo_Ext);
+                        //if (!data_GameInfo_ExtService.SaveChanges())
+                        //{
+                        //    errMsg = "保存游戏机扩展信息失败";
+                        //    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        //}
 
-                        //保存图片地址
-                        if (photoURLs != null && photoURLs.Length >= 0)
-                        {
-                            foreach (var model in data_GameInfo_PhotoService.GetModels(p => p.GameID == iId))
-                            {
-                                data_GameInfo_PhotoService.DeleteModel(model);
-                            }
+                        ////保存图片地址
+                        //if (photoURLs != null && photoURLs.Length >= 0)
+                        //{
+                        //    foreach (var model in data_GameInfo_PhotoService.GetModels(p => p.GameID == iId))
+                        //    {
+                        //        data_GameInfo_PhotoService.DeleteModel(model);
+                        //    }
 
-                            foreach (string photoURL in photoURLs)
-                            {
-                                var data_GameInfo_Photo = new Data_GameInfo_Photo();
-                                data_GameInfo_Photo.GameID = iId;
-                                data_GameInfo_Photo.PhotoURL = photoURL;
-                                data_GameInfo_Photo.UploadTime = DateTime.Now;
-                                data_GameInfo_PhotoService.AddModel(data_GameInfo_Photo);
-                            }
+                        //    foreach (string photoURL in photoURLs)
+                        //    {
+                        //        var data_GameInfo_Photo = new Data_GameInfo_Photo();
+                        //        data_GameInfo_Photo.GameID = iId;
+                        //        data_GameInfo_Photo.PhotoURL = photoURL;
+                        //        data_GameInfo_Photo.UploadTime = DateTime.Now;
+                        //        data_GameInfo_PhotoService.AddModel(data_GameInfo_Photo);
+                        //    }
 
-                            if (!data_GameInfo_PhotoService.SaveChanges())
-                            {
-                                errMsg = "保存图片地址失败";
-                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                            }
-                        }
+                        //    if (!data_GameInfo_PhotoService.SaveChanges())
+                        //    {
+                        //        errMsg = "保存图片地址失败";
+                        //        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        //    }
+                        //}
 
                         ts.Complete();
 
