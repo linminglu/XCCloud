@@ -14,9 +14,9 @@ namespace XCCloudService.Model.XCCloud
     
     public partial class Flw_Order
     {
-        public string ID { get; set; }
-        public string StoreID { get; set; }
         public string OrderID { get; set; }
+        public string MerchID { get; set; }
+        public string StoreID { get; set; }
         public Nullable<int> FoodCount { get; set; }
         public Nullable<int> GoodCount { get; set; }
         public string MemberID { get; set; }
@@ -41,6 +41,6 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<decimal> ExitPrice { get; set; }
         public Nullable<decimal> ExitFee { get; set; }
         public Nullable<System.DateTime> ExitTime { get; set; }
-        public string Verification { get; set; }
+        public string Verifiction { get; set; }
     }
 }

@@ -16,12 +16,6 @@
 <div id="deviceBindOpen" style="padding: 15px;display: none;" class="goodIsAll">
     <form action="" class="layui-form-pane layui-form">
         <div class="layui-form-item">
-            <!--<div class="layui-inline">-->
-                <!--<label class="layui-form-label">选择游戏机</label>-->
-                <!--<div class="layui-input-inline">-->
-                    <!--<select name="" id="gameIndexId" lay-filter="gameIndexId"></select>-->
-                <!--</div>-->
-            <!--</div>-->
             <div class="layui-inline">
                 <label class="layui-form-label">选择路由器</label>
                 <div class="layui-input-inline">
@@ -271,7 +265,7 @@
             <div class="layui-inline">
                 <label  class="layui-form-label">存币机存币数</label>
                 <div class="layui-input-inline">
-                    <input type="text" class="layui-input" name="toCardsave">
+                    <input type="text" class="layui-input" name="formDeviceSave">
                 </div>
             </div>
             <div class="layui-inline">
@@ -287,7 +281,7 @@
             <div class="layui-inline">
                 <label  class="layui-form-label">会员卡余额增加数</label>
                 <div class="layui-input-inline">
-                    <input type="text" class="layui-input" name="formDeviceSave">
+                    <input type="text" class="layui-input" name="toCardsave">
                 </div>
             </div>
             <div class="layui-inline">
@@ -299,6 +293,52 @@
         </div>
         <div style="text-align:center;">
             <button type="button" class="layui-btn layui-btn-normal" id="saveSaveBtn"> 确定</button>
+        </div>
+    </form>
+</div>
+<!--存币机-->
+<div id="brokenTicketModel" style="padding: 15px;display: none">
+    <form lay-filter="broken" class="layui-form layui-form-pane goodIsAll">
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label  class="layui-form-label">1号马达</label>
+                <div class="layui-input-inline">
+                    <input type="checkbox" checked name="motor1En_broken" lay-filter="motor1En_broken" lay-skin="switch" lay-text="启用|禁用">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label  class="layui-form-label">2号马达</label>
+                <div class="layui-input-inline">
+                    <input type="checkbox" checked name="motor2En_broken" lay-filter="motor2En_broken" lay-skin="switch" lay-text="启用|禁用">
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label  class="layui-form-label">碎票机碎票数</label>
+                <div class="layui-input-inline">
+                    <input type="text" class="layui-input" name="fromDevicebroken">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">会员碎票类型</label>
+                <div class="layui-input-inline">
+                    <select name="balanceIndexbroken" lay-filter="balanceIndexbroken" id="balanceIndexbroken">
+
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label  class="layui-form-label">会员卡余额增加数</label>
+                <div class="layui-input-inline">
+                    <input type="text" class="layui-input" name="toCardbroken">
+                </div>
+            </div>
+        </div>
+        <div style="text-align:center;">
+            <button type="button" class="layui-btn layui-btn-normal" id="saveBrokenBtn"> 确定</button>
         </div>
     </form>
 </div>
@@ -387,6 +427,9 @@ let motor1En_get=1;let motor2En_get=1;let motor1Coin_get=1;let motor2Coin_get=1;
 let motor1En_save=1;let motor2En_save=1;let balanceIndexSave='';
 //投币机
 let motor1En_push=1;let motor2En_push=1;let balanceIndexPush='';let motor1CoinPush=1;let motor2CoinPush=1;
+
+//碎票机
+let motor1En_broken=1;let motor2En_broken=1;let balanceIndexbroken='';let toCardbroken=1;let fromDevicebroken=1;
     let parm={'obj':{'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'},
         'url':'/XCCloud/DeviceInfo?action=QueryDeviceInfo',
         'elem':'#gameDeviceTable',
@@ -977,6 +1020,49 @@ let motor1En_push=1;let motor2En_push=1;let balanceIndexPush='';let motor1CoinPu
                     }
                 })
 
+            }else if(layEvent==='brokenTicket'){//碎票机
+
+                let _obj={'deviceId':data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                let parseJson = JSON.stringify(_obj);
+                $.ajax({
+                    type: 'post',
+                    url: '/XCCloud/DeviceInfo?action=GetTypeDeviceInfo',
+                    contentType: "application/json; charset=utf-8",
+                    data: {parasJson: parseJson},
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        console.log(data);
+                        if (data.result_code == 1) {
+                            let arr = data.result_data;
+                            if(arr.ID==0){
+                                motor1En_broken=1; motor2En_broken=1; balanceIndexbroken="";toCardbroken=1; fromDevicebroken=1;
+                                xc.getBalanceTypeDic('',token,layer,form,'balanceIndexSave')
+                            }else {
+                                // let motor1En_broken=1;let motor2En_broken=1;let balanceIndexbroken='';let toCardbroken=1;let fromDevicebroken=1;
+                                form.val("broken",{
+                                    'motor1En_broken':arr.Motor1EN==1 ? true : false ,
+                                    'motor2En_broken':arr.Motor2EN==1 ? true : false ,
+                                    'maxSaveCount':arr.MaxSaveCount ,
+                                    'toCardbroken':arr.ToCard,
+                                    'fromDevicebroken':arr.FromDevice
+                                });
+
+                                motor1En_broken=arr.Motor1EN||0;
+                                motor2En_broken=arr.Motor2EN||0;
+                                balanceIndexbroken=arr.BalanceIndex||"";
+                                xc. getBalanceTypeDic('',token,layer,form,'balanceIndexbroken',arr.BalanceIndex)
+                            }
+
+                            layer.open({
+                                title:'碎票机参数设置' ,
+                                type:1,
+                                area:'800px',
+                                content:$('#brokenTicketModel')
+                            })
+                        }
+                    }
+                })
+
             }else if(layEvent==='pushCoin'){
                  // motor1En_push=1; motor2En_push=1; balanceIndexPush=1; motor1CoinPush=1; motor2CoinPush=1;
 
@@ -1167,7 +1253,9 @@ let motor1En_push=1;let motor2En_push=1;let balanceIndexPush='';let motor1CoinPu
     {{# if(d.DeviceType==2){ }}
     <a class="layui-btn layui-btn-xs" lay-event="saveCoin">参数设置</a>
     {{#  } }}
-
+    {{#  if(d.DeviceType==1){ }}
+    <a class="layui-btn layui-btn-xs" lay-event="brokenTicket">参数设置</a>
+    {{#  } }}
 
 
 </script>

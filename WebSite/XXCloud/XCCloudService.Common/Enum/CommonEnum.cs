@@ -725,6 +725,17 @@ namespace XCCloudService.Common.Enum
     }
 
     /// <summary>
+    /// 代理渠道类别
+    /// </summary>
+    public enum ProxyType
+    {
+        [Description("无代理")]
+        None = 0,
+        [Description("广州好酷")]
+        HaoKu = 1    
+    }
+
+    /// <summary>
     /// 设备类型
     /// </summary>
     public enum DeviceType : int

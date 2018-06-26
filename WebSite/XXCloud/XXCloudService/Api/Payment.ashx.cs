@@ -748,9 +748,8 @@ namespace XXCloudService.Api
                 }
 
                 Flw_Order order = new Flw_Order();
-                order.ID = RedisCacheHelper.CreateCloudSerialNo(device.StoreID);
-                order.StoreID = device.StoreID;
                 order.OrderID = RedisCacheHelper.CreateCloudSerialNo(device.StoreID);
+                order.StoreID = device.StoreID;
                 order.FoodCount = 1;
                 order.GoodCount = 0;
                 order.MemberID = memberTokenModel.MemberId;
@@ -780,7 +779,7 @@ namespace XXCloudService.Api
                 pay.amount = ((int)(PayCount * 100)).ToString();//实际付款
                 pay.total_amount = pay.amount;//订单总金额
                 pay.subject = game.GameName + "-投币";
-                pay.selOrderNo = order.ID;
+                pay.selOrderNo = order.OrderID;
                 pay.goods_tag = coinNote;
 
                 PPosPayApi ppos = new PPosPayApi();

@@ -28,6 +28,6 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> VerityType { get; set; }
         public Nullable<int> WorkStationID { get; set; }
         public string ScheduleID { get; set; }
-        public string 备注 { get; set; }
+        public string Remark { get; set; }
     }
 }

@@ -196,6 +196,7 @@ namespace XXCloudService.Api.XCCloud
                 string merchTag = dicParas.ContainsKey("merchTag") ? dicParas["merchTag"].ToString() : string.Empty; 
                 string merchStatus = dicParas.ContainsKey("merchStatus") ? dicParas["merchStatus"].ToString() : string.Empty;
                 string merchAccount = dicParas.ContainsKey("merchAccount") ? dicParas["merchAccount"].ToString() : string.Empty;
+                string proxyType = dicParas.ContainsKey("proxyType") ? dicParas["proxyType"].ToString() : string.Empty;
                 string merchName = dicParas.ContainsKey("merchName") ? dicParas["merchName"].ToString() : string.Empty;
                 string openId = dicParas.ContainsKey("openId") ? dicParas["openId"].ToString() : string.Empty;
                 string unionId = dicParas.ContainsKey("unionId") ? dicParas["unionId"].ToString() : string.Empty;
@@ -227,7 +228,7 @@ namespace XXCloudService.Api.XCCloud
                     errMsg = "商户类别不是Int类型";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
-
+              
                 if (string.IsNullOrEmpty(merchStatus))
                 {
                     errMsg = "商户状态不能为空";
@@ -352,6 +353,7 @@ namespace XXCloudService.Api.XCCloud
                         base_MerchantInfo.MerchID = merchId;
                         base_MerchantInfo.MerchType = Convert.ToInt32(merchType);
                         base_MerchantInfo.MerchStatus = Convert.ToInt32(merchStatus);
+                        base_MerchantInfo.ProxyType = proxyType.Toint(0);
                         base_MerchantInfo.MerchAccount = merchAccount;
                         base_MerchantInfo.MerchName = merchName;
                         base_MerchantInfo.Mobil = mobil;
@@ -474,6 +476,7 @@ namespace XXCloudService.Api.XCCloud
                 string merchTag = dicParas.ContainsKey("merchTag") ? dicParas["merchTag"].ToString() : string.Empty; 
                 string merchStatus = dicParas.ContainsKey("merchStatus") ? dicParas["merchStatus"].ToString() : string.Empty;
                 string merchAccount = dicParas.ContainsKey("merchAccount") ? dicParas["merchAccount"].ToString() : string.Empty;
+                string proxyType = dicParas.ContainsKey("proxyType") ? dicParas["proxyType"].ToString() : string.Empty;
                 string merchName = dicParas.ContainsKey("merchName") ? dicParas["merchName"].ToString() : string.Empty;
                 string openId = dicParas.ContainsKey("openId") ? dicParas["openId"].ToString() : string.Empty;
                 string unionId = dicParas.ContainsKey("unionId") ? dicParas["unionId"].ToString() : string.Empty;
@@ -505,7 +508,7 @@ namespace XXCloudService.Api.XCCloud
                     errMsg = "商户类别不是Int类型";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
-
+                
                 if (string.IsNullOrWhiteSpace(merchStatus))
                 {
                     errMsg = "商户状态不能为空";
@@ -662,6 +665,7 @@ namespace XXCloudService.Api.XCCloud
                         base_MerchantInfo.MerchStatus = Convert.ToInt32(merchStatus);
                         base_MerchantInfo.MerchAccount = merchAccount;
                         base_MerchantInfo.MerchName = merchName;
+                        base_MerchantInfo.ProxyType = proxyType.Toint(0);
                         base_MerchantInfo.Mobil = mobil;
                         base_MerchantInfo.WxOpenID = openId;
                         base_MerchantInfo.WxUnionID = unionId;

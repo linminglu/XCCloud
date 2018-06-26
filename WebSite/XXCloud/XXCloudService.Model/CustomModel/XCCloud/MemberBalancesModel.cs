@@ -97,6 +97,7 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         public List<CardDepositDataModel> CardDeposits { get; set; }
     }
 
+    [DataContract]
     public class MemberCardInfoViewModel
     {
         public MemberCardInfoViewModel()
@@ -107,29 +108,38 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         /// <summary>
         /// 会员卡ID
         /// </summary>
+        [DataMember(Order = 0)]
         public string CardId { get; set; }
 
         /// <summary>
         /// 会员卡编号
         /// </summary>
+        [DataMember(Order = 1)]
         public string ICCardId { get; set; }
 
         /// <summary>
         /// 会员信息
         /// </summary>
+        [DataMember(Order = 2)]
         public CardMemberInfoModel MemberInfo { get; set; }
 
         /// <summary>
         /// 卡权限
         /// </summary>
+        [DataMember(Order = 3)]
         public CardPurviewModel CardPurview { get; set; }
 
         /// <summary>
         /// 余额列表
         /// </summary>
+        [DataMember(Order = 4)]
         public List<BalanceModel> MemberBalances { get; set; }
-   
 
+        /// <summary>
+        /// 附属卡列表
+        /// </summary>
+        [DataMember(Order = 5)]
+        public List<ChildCardModel> ChildCardList { get; set; }
     }
 
     public class CardMemberInfoModel
@@ -139,6 +149,7 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         public string IDCardNo { get; set; }
         public string Mobile { get; set; }
         public string Gender { get; set; }
+        public string Avatar { get; set; }
     }
     public class CardPurviewModel
     {
@@ -191,8 +202,18 @@ namespace XCCloudService.Model.CustomModel.XCCloud
     {
         public string ChildCardId { get; set; }
         public string ChildICCardId { get; set; }
+        public string CardShape { get; set; }
         public string Deposit { get; set; }
         public string EndDate { get; set; }
+        public ChildCardMemberInfoModel ChildCardMemberInfo { get; set; }
+    }
+
+    public class ChildCardMemberInfoModel
+    {
+        public string UserName { get; set; }
+        public string Birthday { get; set; }
+        public string Gender { get; set; }
+        public string Avatar { get; set; }
     }
 
     public class SourceBalanceModel

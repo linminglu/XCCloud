@@ -18,5 +18,7 @@ namespace XCCloudService.Model.XCCloud
         public string OrderFlwID { get; set; }
         public string FoodFlwID { get; set; }
         public Nullable<int> GoodsCount { get; set; }
+        public string MerchID { get; set; }
+        public string Verifiction { get; set; }
     }
 }

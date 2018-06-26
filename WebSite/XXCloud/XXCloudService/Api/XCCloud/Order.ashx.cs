@@ -864,7 +864,7 @@ namespace XXCloudService.Api.XCCloud
                 var orderFlwId = dicParas.Get("id");
 
                 IFlw_OrderService flw_OrderService = BLLContainer.Resolve<IFlw_OrderService>();
-                if (!flw_OrderService.Any(p => p.ID.Equals(orderFlwId, StringComparison.OrdinalIgnoreCase)))
+                if (!flw_OrderService.Any(p => p.OrderID.Equals(orderFlwId, StringComparison.OrdinalIgnoreCase)))
                 {
                     errMsg = "该订单不存在";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);

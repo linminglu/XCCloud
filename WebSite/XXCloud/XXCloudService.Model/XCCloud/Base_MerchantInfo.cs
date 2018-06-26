@@ -20,6 +20,7 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> MerchStatus { get; set; }
         public string MerchPassword { get; set; }
         public string MerchSecret { get; set; }
+        public Nullable<int> ProxyType { get; set; }
         public Nullable<int> MerchTag { get; set; }
         public string WxOpenID { get; set; }
         public string WxUnionID { get; set; }

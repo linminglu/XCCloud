@@ -53,58 +53,29 @@ namespace XCCloudService.Business.XCCloud
             return memberBalance;
         }
 
-        public static MemberCardInfoViewModel GetMemberCardInfo(Base_MemberInfo member, string merchId, string storeId)
+        public static bool ExistsCardByICCardId(string iccardId, string merchId, string storeId, out string msg)
         {
-            //var cardList = from card in Data_Member_CardService.I.GetModels(t => t.MemberID == member.ID && t.MerchID == merchId && t.CardStatus == 1)
-            //               join storeCard in Data_Member_Card_StoreService.I.GetModels(t => t.StoreID == storeId)
-            //               on card.ID equals storeCard.CardID
-            //               select new
-            //               {
-            //                   Id = card.ID
-            //               };
+            msg = string.Empty;
+            //查询卡是否存在
+            var cardQuery = from a in Data_Member_CardService.N.GetModels(t => t.MerchID == merchId && t.ICCardID == iccardId)
+                            join b in Data_Member_Card_StoreService.N.GetModels(t => t.StoreID == storeId) on a.ID equals b.CardID
+                            select new
+                            {
+                                CardId = a.ID
+                            };
+            int cardCount = cardQuery.Count();
 
-            //if (cardList.Count() == 0)
-            //{
-            //    return null;
-            //}
-
-            //string cardId = cardList.FirstOrDefault().Id;
-            //Data_Member_Card memberCard = Data_Member_CardService.I.GetModels(t => t.ID == cardId).FirstOrDefault();
-            //if (memberCard == null)
-            //{
-            //    return null;
-            //}
-
-            //MemberCardInfoViewModel model = new MemberCardInfoViewModel();
-            //model.CardId = memberCard.ID;
-            //model.ICCardId = memberCard.ICCardID;
-            //model.AllowIn = memberCard.AllowIn.Value;
-            //model.AllowOut = memberCard.AllowOut.Value;
-            //model.CardStatus = memberCard.CardStatus.Value;
-
-            //List<MemberBalanceExchangeRateModel> memberBalance = XCCloudService.Business.XCCloud.MemberBusiness.GetMemberBalanceAndExchangeRate(storeId, memberCard.ICCardID);
-            //if (memberBalance != null && memberBalance.Count > 0)
-            //{
-            //    model.MemberBalances = memberBalance.Select(t => new BalanceModel
-            //    {
-            //        BalanceIndex = t.BalanceIndex,
-            //        BalanceName = t.TypeName,
-            //        Quantity = t.Total
-            //    }).ToList();
-            //}
-
-            //var cardRights = Data_Card_RightService.I.GetModels(t => t.CardID == memberCard.ID).ToList();
-            //var storeRights = Data_Card_Right_StoreListService.I.GetModels(t => t.StoreID == storeId).ToList();
-            //Data_Card_Right currCardRight = cardRights.Where(t => storeRights.Any(s => s.CardRightID == t.ID)).FirstOrDefault();
-            //if (currCardRight != null)
-            //{
-            //    model.AllowExitCoin = currCardRight.AllowExitCoin.Value;
-            //    model.AllowSaleCoin = currCardRight.AllowSaleCoin.Value;
-            //    model.AllowSaveCoin = currCardRight.AllowSaveCoin.Value;
-            //    model.AllowFreeCoin = currCardRight.AllowFreeCoin.Value;
-            //}
-            //return model;
-            return null;
+            if (cardCount == 0)
+            {
+                msg = "会员卡不存在";
+                return false;
+            }
+            else if (cardCount > 1)
+            {
+                msg = "存在多张相同卡号的会员卡";
+                return false;
+            }
+            return true;
         }
     }
 }

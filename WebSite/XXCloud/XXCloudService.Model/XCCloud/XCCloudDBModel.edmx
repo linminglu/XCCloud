@@ -176,6 +176,7 @@
           <Property Name="MerchStatus" Type="int" />
           <Property Name="MerchPassword" Type="varchar" MaxLength="64" />
           <Property Name="MerchSecret" Type="varchar" MaxLength="32" />
+          <Property Name="ProxyType" Type="int" />
           <Property Name="MerchTag" Type="int" />
           <Property Name="WxOpenID" Type="varchar" MaxLength="32" />
           <Property Name="WxUnionID" Type="varchar" MaxLength="64" />
@@ -2338,7 +2339,7 @@
           <Property Name="VerityType" Type="int" />
           <Property Name="WorkStationID" Type="int" />
           <Property Name="ScheduleID" Type="varchar" MaxLength="32" />
-          <Property Name="备注" Type="varchar" MaxLength="200" />
+          <Property Name="Remark" Type="varchar" MaxLength="200" />
         </EntityType>
         <EntityType Name="Flw_Jackpot">
           <Key>
@@ -2458,11 +2459,11 @@
         </EntityType>
         <EntityType Name="Flw_Order">
           <Key>
-            <PropertyRef Name="ID" />
+            <PropertyRef Name="OrderID" />
           </Key>
-          <Property Name="ID" Type="varchar" MaxLength="32" Nullable="false" />
+          <Property Name="OrderID" Type="varchar" MaxLength="32" Nullable="false" />
+          <Property Name="MerchID" Type="varchar" MaxLength="15" />
           <Property Name="StoreID" Type="varchar" MaxLength="15" />
-          <Property Name="OrderID" Type="varchar" MaxLength="32" />
           <Property Name="FoodCount" Type="int" />
           <Property Name="GoodCount" Type="int" />
           <Property Name="MemberID" Type="varchar" MaxLength="32" />
@@ -2487,16 +2488,18 @@
           <Property Name="ExitPrice" Type="decimal" Precision="10" Scale="2" />
           <Property Name="ExitFee" Type="decimal" Precision="10" Scale="2" />
           <Property Name="ExitTime" Type="datetime" />
-          <Property Name="Verification" Type="varchar" MaxLength="32" />
+          <Property Name="Verifiction" Type="varchar" MaxLength="32" />
         </EntityType>
         <EntityType Name="Flw_Order_Detail">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="varchar" MaxLength="32" Nullable="false" />
+          <Property Name="MerchID" Type="varchar" MaxLength="15" />
           <Property Name="OrderFlwID" Type="varchar" MaxLength="32" />
           <Property Name="FoodFlwID" Type="varchar" MaxLength="32" />
           <Property Name="GoodsCount" Type="int" />
+          <Property Name="Verifiction" Type="varchar" MaxLength="32" />
         </EntityType>
         <EntityType Name="Flw_Order_SerialNumber">
           <Key>
@@ -3277,7 +3280,6 @@
           <EntitySet Name="Base_Goodinfo_Price" EntityType="XCCloudDBModel.Base_Goodinfo_Price" />
           <EntitySet Name="Base_GoodsInfo" EntityType="XCCloudDBModel.Base_GoodsInfo" />
           <EntitySet Name="Base_MerchAlipay" EntityType="XCCloudDBModel.Base_MerchAlipay" />
-          <EntitySet Name="Base_MerchantInfo" EntityType="XCCloudDBModel.Base_MerchantInfo" />
           <EntitySet Name="Base_MerchFunction" EntityType="XCCloudDBModel.Base_MerchFunction" />
           <EntitySet Name="Base_SettleLCPay" EntityType="XCCloudDBModel.Base_SettleLCPay" />
           <EntitySet Name="Base_SettleOrg" EntityType="XCCloudDBModel.Base_SettleOrg" />
@@ -3371,7 +3373,6 @@
           <EntitySet Name="Flw_Goods" EntityType="XCCloudDBModel.Flw_Goods" />
           <EntitySet Name="Flw_Jackpot" EntityType="XCCloudDBModel.Flw_Jackpot" />
           <EntitySet Name="Flw_Lottery" EntityType="XCCloudDBModel.Flw_Lottery" />
-          <EntitySet Name="Flw_Order_Detail" EntityType="XCCloudDBModel.Flw_Order_Detail" />
           <EntitySet Name="Flw_Order_SerialNumber" EntityType="XCCloudDBModel.Flw_Order_SerialNumber" />
           <EntitySet Name="Flw_Project_PlayTime" EntityType="XCCloudDBModel.Flw_Project_PlayTime" />
           <EntitySet Name="Flw_Ticket_Exit" EntityType="XCCloudDBModel.Flw_Ticket_Exit" />
@@ -3416,7 +3417,6 @@
           <EntitySet Name="XC_HolidayList" EntityType="XCCloudDBModel.XC_HolidayList" />
           <EntitySet Name="Data_GameEncourage" EntityType="XCCloudDBModel.Data_GameEncourage" />
           <EntitySet Name="Base_ChainRule" EntityType="XCCloudDBModel.Base_ChainRule" />
-          <EntitySet Name="Data_Member_Card" EntityType="XCCloudDBModel.Data_Member_Card" />
           <EntitySet Name="Data_Card_Balance" EntityType="XCCloudDBModel.Data_Card_Balance" />
           <EntitySet Name="Data_Card_Balance_Free" EntityType="XCCloudDBModel.Data_Card_Balance_Free" />
           <EntitySet Name="Data_Food_Detial" EntityType="XCCloudDBModel.Data_Food_Detial" />
@@ -3438,10 +3438,13 @@
           <EntitySet Name="Flw_Schedule" EntityType="XCCloudDBModel.Flw_Schedule" />
           <EntitySet Name="Flw_Food_SaleDetail" EntityType="XCCloudDBModel.Flw_Food_SaleDetail" />
           <EntitySet Name="Flw_Food_ExitDetail" EntityType="XCCloudDBModel.Flw_Food_ExitDetail" />
-          <EntitySet Name="Flw_Game_Watch" EntityType="XCCloudDBModel.Flw_Game_Watch" />
-          <EntitySet Name="Flw_Food_Exit" EntityType="XCCloudDBModel.Flw_Food_Exit" />
           <EntitySet Name="Store_CheckDate" EntityType="XCCloudDBModel.Store_CheckDate" />
           <EntitySet Name="Flw_MemberCard_BalanceCharge" EntityType="XCCloudDBModel.Flw_MemberCard_BalanceCharge" />
+          <EntitySet Name="Flw_Order_Detail" EntityType="XCCloudDBModel.Flw_Order_Detail" />
+          <EntitySet Name="Flw_Food_Exit" EntityType="XCCloudDBModel.Flw_Food_Exit" />
+          <EntitySet Name="Flw_Game_Watch" EntityType="XCCloudDBModel.Flw_Game_Watch" />
+          <EntitySet Name="Data_Member_Card" EntityType="XCCloudDBModel.Data_Member_Card" />
+          <EntitySet Name="Base_MerchantInfo" EntityType="XCCloudDBModel.Base_MerchantInfo" />
           <EntitySet Name="Flw_GroupVerity" EntityType="XCCloudDBModel.Flw_GroupVerity" />
           <EntitySet Name="Flw_Order" EntityType="XCCloudDBModel.Flw_Order" />
         </EntityContainer>
@@ -3523,28 +3526,6 @@
           <Property Name="PrivateKey" Type="String" MaxLength="5000" FixedLength="false" Unicode="false" />
           <Property Name="PublicKey" Type="String" MaxLength="5000" FixedLength="false" Unicode="false" />
           <Property Name="Fee" Type="Decimal" Precision="10" Scale="6" />
-          <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
-        </EntityType>
-        <EntityType Name="Base_MerchantInfo">
-          <Key>
-            <PropertyRef Name="MerchID" />
-          </Key>
-          <Property Name="MerchID" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="MerchType" Type="Int32" />
-          <Property Name="MerchAccount" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="MerchStatus" Type="Int32" />
-          <Property Name="MerchPassword" Type="String" MaxLength="64" FixedLength="false" Unicode="false" />
-          <Property Name="MerchSecret" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
-          <Property Name="MerchTag" Type="Int32" />
-          <Property Name="WxOpenID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
-          <Property Name="WxUnionID" Type="String" MaxLength="64" FixedLength="false" Unicode="false" />
-          <Property Name="Mobil" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="MerchName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="AllowCreateCount" Type="Int32" />
-          <Property Name="AllowCreateSub" Type="Int32" />
-          <Property Name="CreateType" Type="Int32" />
-          <Property Name="CreateUserID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="Comment" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
           <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="Base_MerchFunction">
@@ -4863,15 +4844,6 @@
           <Property Name="UserID" Type="Int32" />
           <Property Name="WorkStation" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
         </EntityType>
-        <EntityType Name="Flw_Order_Detail">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="false" />
-          <Property Name="OrderFlwID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
-          <Property Name="FoodFlwID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
-          <Property Name="GoodsCount" Type="Int32" />
-        </EntityType>
         <EntityType Name="Flw_Order_SerialNumber">
           <Key>
             <PropertyRef Name="ID" />
@@ -5671,42 +5643,6 @@
           <Property Name="RuleType" Type="Int32" />
           <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
         </EntityType>
-        <EntityType Name="Data_Member_Card">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="false" />
-          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="ICCardID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
-          <Property Name="ParentCard" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
-          <Property Name="JoinChannel" Type="Int32" />
-          <Property Name="CardPassword" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
-          <Property Name="CardType" Type="Int32" />
-          <Property Name="CardShape" Type="Int32" />
-          <Property Name="CardName" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="CardSex" Type="Int32" />
-          <Property Name="CardBirthDay" Type="DateTime" Precision="0" />
-          <Property Name="FaceReadID" Type="String" MaxLength="128" FixedLength="false" Unicode="false" />
-          <Property Name="CardLimit" Type="Int32" />
-          <Property Name="AllowIn" Type="Int32" />
-          <Property Name="AllowOut" Type="Int32" />
-          <Property Name="MemberID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
-          <Property Name="MemberLevelID" Type="Int32" />
-          <Property Name="CreateTime" Type="DateTime" Precision="3" />
-          <Property Name="EndDate" Type="DateTime" Precision="3" />
-          <Property Name="LastStore" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="UpdateTime" Type="DateTime" Precision="3" />
-          <Property Name="Deposit" Type="Int32" />
-          <Property Name="RepeatCode" Type="Int32" />
-          <Property Name="UID" Type="Int64" />
-          <Property Name="IsLock" Type="Int32" />
-          <Property Name="CardStatus" Type="Int32" />
-          <Property Name="OrderID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
-          <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
-          <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="Note" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
-          <Property Name="CardPhoto" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
-        </EntityType>
         <EntityType Name="Data_Card_Balance">
           <Key>
             <PropertyRef Name="ID" />
@@ -6130,58 +6066,6 @@
           <Property Name="ValidType" Type="Int32" />
           <Property Name="Status" Type="Int32" />
         </EntityType>
-        <EntityType Name="Flw_Game_Watch">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="false" />
-          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="GameIndex" Type="Int32" />
-          <Property Name="HeadIndex" Type="Int32" />
-          <Property Name="MediaURL1" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
-          <Property Name="MediaURL2" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
-          <Property Name="MediaURL3" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
-          <Property Name="CreateTime" Type="DateTime" Precision="3" />
-          <Property Name="UserID" Type="Int32" />
-          <Property Name="InCoin" Type="Int32" />
-          <Property Name="InCoinError" Type="Int32" />
-          <Property Name="InCoin2" Type="Int32" />
-          <Property Name="InCoinError2" Type="Int32" />
-          <Property Name="PrizeCount" Type="Int32" />
-          <Property Name="PrizeError" Type="Int32" />
-          <Property Name="GoodPrice" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="OutCoin" Type="Int32" />
-          <Property Name="OutCoinError" Type="Int32" />
-          <Property Name="OutLottery" Type="Int32" />
-          <Property Name="OutLotteryError" Type="Int32" />
-          <Property Name="Winner" Type="Int32" />
-          <Property Name="WinnerError" Type="Int32" />
-          <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
-        </EntityType>
-        <EntityType Name="Flw_Food_Exit">
-          <Key>
-            <PropertyRef Name="ExitID" />
-          </Key>
-          <Property Name="ExitID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="OrderID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
-          <Property Name="FoodID" Type="Int32" />
-          <Property Name="CardID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
-          <Property Name="ExitFee" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="Tax" Type="Decimal" Precision="10" Scale="6" />
-          <Property Name="TaxFee" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="TotalMoney" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="Note" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
-          <Property Name="UserID" Type="Int32" />
-          <Property Name="ScheduleID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
-          <Property Name="AuthorID" Type="Int32" />
-          <Property Name="RealTime" Type="DateTime" Precision="3" />
-          <Property Name="WorkStation" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="CheckDate" Type="DateTime" Precision="0" />
-          <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
-        </EntityType>
         <EntityType Name="Store_CheckDate">
           <Key>
             <PropertyRef Name="ID" />
@@ -6227,6 +6111,128 @@
           <Property Name="Note" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
           <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
         </EntityType>
+        <EntityType Name="Flw_Order_Detail">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="OrderFlwID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="FoodFlwID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="GoodsCount" Type="Int32" />
+          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Flw_Food_Exit">
+          <Key>
+            <PropertyRef Name="ExitID" />
+          </Key>
+          <Property Name="ExitID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="OrderID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="FoodID" Type="Int32" />
+          <Property Name="CardID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="ExitFee" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="Tax" Type="Decimal" Precision="10" Scale="6" />
+          <Property Name="TaxFee" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="TotalMoney" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="Note" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="UserID" Type="Int32" />
+          <Property Name="ScheduleID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="AuthorID" Type="Int32" />
+          <Property Name="RealTime" Type="DateTime" Precision="3" />
+          <Property Name="WorkStation" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CheckDate" Type="DateTime" Precision="0" />
+          <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Flw_Game_Watch">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="GameIndex" Type="Int32" />
+          <Property Name="HeadIndex" Type="Int32" />
+          <Property Name="MediaURL1" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="MediaURL2" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="MediaURL3" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="CreateTime" Type="DateTime" Precision="3" />
+          <Property Name="UserID" Type="Int32" />
+          <Property Name="InCoin" Type="Int32" />
+          <Property Name="InCoinError" Type="Int32" />
+          <Property Name="InCoin2" Type="Int32" />
+          <Property Name="InCoinError2" Type="Int32" />
+          <Property Name="PrizeCount" Type="Int32" />
+          <Property Name="PrizeError" Type="Int32" />
+          <Property Name="GoodPrice" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="OutCoin" Type="Int32" />
+          <Property Name="OutCoinError" Type="Int32" />
+          <Property Name="OutLottery" Type="Int32" />
+          <Property Name="OutLotteryError" Type="Int32" />
+          <Property Name="Winner" Type="Int32" />
+          <Property Name="WinnerError" Type="Int32" />
+          <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Data_Member_Card">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="ICCardID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="ParentCard" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="JoinChannel" Type="Int32" />
+          <Property Name="CardPassword" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+          <Property Name="CardType" Type="Int32" />
+          <Property Name="CardShape" Type="Int32" />
+          <Property Name="CardPhoto" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="CardName" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="CardSex" Type="Int32" />
+          <Property Name="CardBirthDay" Type="DateTime" Precision="0" />
+          <Property Name="FaceReadID" Type="String" MaxLength="128" FixedLength="false" Unicode="false" />
+          <Property Name="CardLimit" Type="Int32" />
+          <Property Name="AllowIn" Type="Int32" />
+          <Property Name="AllowOut" Type="Int32" />
+          <Property Name="MemberID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="MemberLevelID" Type="Int32" />
+          <Property Name="CreateTime" Type="DateTime" Precision="3" />
+          <Property Name="EndDate" Type="DateTime" Precision="3" />
+          <Property Name="LastStore" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="UpdateTime" Type="DateTime" Precision="3" />
+          <Property Name="Deposit" Type="Int32" />
+          <Property Name="RepeatCode" Type="Int32" />
+          <Property Name="UID" Type="Int64" />
+          <Property Name="IsLock" Type="Int32" />
+          <Property Name="CardStatus" Type="Int32" />
+          <Property Name="OrderID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="Note" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Base_MerchantInfo">
+          <Key>
+            <PropertyRef Name="MerchID" />
+          </Key>
+          <Property Name="MerchID" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="MerchType" Type="Int32" />
+          <Property Name="MerchAccount" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="MerchStatus" Type="Int32" />
+          <Property Name="MerchPassword" Type="String" MaxLength="64" FixedLength="false" Unicode="false" />
+          <Property Name="MerchSecret" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="ProxyType" Type="Int32" />
+          <Property Name="MerchTag" Type="Int32" />
+          <Property Name="WxOpenID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="WxUnionID" Type="String" MaxLength="64" FixedLength="false" Unicode="false" />
+          <Property Name="Mobil" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="MerchName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="AllowCreateCount" Type="Int32" />
+          <Property Name="AllowCreateSub" Type="Int32" />
+          <Property Name="CreateType" Type="Int32" />
+          <Property Name="CreateUserID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="Comment" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+        </EntityType>
         <EntityType Name="Flw_GroupVerity">
           <Key>
             <PropertyRef Name="ID" />
@@ -6245,15 +6251,15 @@
           <Property Name="VerityType" Type="Int32" />
           <Property Name="WorkStationID" Type="Int32" />
           <Property Name="ScheduleID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
-          <Property Name="备注" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="Remark" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="Flw_Order">
           <Key>
-            <PropertyRef Name="ID" />
+            <PropertyRef Name="OrderID" />
           </Key>
-          <Property Name="ID" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="OrderID" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
           <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="OrderID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
           <Property Name="FoodCount" Type="Int32" />
           <Property Name="GoodCount" Type="Int32" />
           <Property Name="MemberID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
@@ -6278,7 +6284,7 @@
           <Property Name="ExitPrice" Type="Decimal" Precision="10" Scale="2" />
           <Property Name="ExitFee" Type="Decimal" Precision="10" Scale="2" />
           <Property Name="ExitTime" Type="DateTime" Precision="3" />
-          <Property Name="Verification" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
         </EntityType>
         </Schema>
     </edmx:ConceptualModels>
@@ -6368,29 +6374,6 @@
                 <ScalarProperty Name="AppID" ColumnName="AppID" />
                 <ScalarProperty Name="MerchID" ColumnName="MerchID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Base_MerchantInfo">
-            <EntityTypeMapping TypeName="XCCloudDBModel.Base_MerchantInfo">
-              <MappingFragment StoreEntitySet="Base_MerchantInfo">
-                <ScalarProperty Name="Verifiction" ColumnName="Verifiction" />
-                <ScalarProperty Name="Comment" ColumnName="Comment" />
-                <ScalarProperty Name="CreateUserID" ColumnName="CreateUserID" />
-                <ScalarProperty Name="CreateType" ColumnName="CreateType" />
-                <ScalarProperty Name="AllowCreateSub" ColumnName="AllowCreateSub" />
-                <ScalarProperty Name="AllowCreateCount" ColumnName="AllowCreateCount" />
-                <ScalarProperty Name="MerchName" ColumnName="MerchName" />
-                <ScalarProperty Name="Mobil" ColumnName="Mobil" />
-                <ScalarProperty Name="WxUnionID" ColumnName="WxUnionID" />
-                <ScalarProperty Name="WxOpenID" ColumnName="WxOpenID" />
-                <ScalarProperty Name="MerchTag" ColumnName="MerchTag" />
-                <ScalarProperty Name="MerchSecret" ColumnName="MerchSecret" />
-                <ScalarProperty Name="MerchPassword" ColumnName="MerchPassword" />
-                <ScalarProperty Name="MerchStatus" ColumnName="MerchStatus" />
-                <ScalarProperty Name="MerchAccount" ColumnName="MerchAccount" />
-                <ScalarProperty Name="MerchType" ColumnName="MerchType" />
-                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -7803,16 +7786,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Flw_Order_Detail">
-            <EntityTypeMapping TypeName="XCCloudDBModel.Flw_Order_Detail">
-              <MappingFragment StoreEntitySet="Flw_Order_Detail">
-                <ScalarProperty Name="GoodsCount" ColumnName="GoodsCount" />
-                <ScalarProperty Name="FoodFlwID" ColumnName="FoodFlwID" />
-                <ScalarProperty Name="OrderFlwID" ColumnName="OrderFlwID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Flw_Order_SerialNumber">
             <EntityTypeMapping TypeName="XCCloudDBModel.Flw_Order_SerialNumber">
               <MappingFragment StoreEntitySet="Flw_Order_SerialNumber">
@@ -8656,43 +8629,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Data_Member_Card">
-            <EntityTypeMapping TypeName="XCCloudDBModel.Data_Member_Card">
-              <MappingFragment StoreEntitySet="Data_Member_Card">
-                <ScalarProperty Name="CardPhoto" ColumnName="CardPhoto" />
-                <ScalarProperty Name="Note" ColumnName="Note" />
-                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
-                <ScalarProperty Name="Verifiction" ColumnName="Verifiction" />
-                <ScalarProperty Name="OrderID" ColumnName="OrderID" />
-                <ScalarProperty Name="CardStatus" ColumnName="CardStatus" />
-                <ScalarProperty Name="IsLock" ColumnName="IsLock" />
-                <ScalarProperty Name="UID" ColumnName="UID" />
-                <ScalarProperty Name="RepeatCode" ColumnName="RepeatCode" />
-                <ScalarProperty Name="Deposit" ColumnName="Deposit" />
-                <ScalarProperty Name="UpdateTime" ColumnName="UpdateTime" />
-                <ScalarProperty Name="LastStore" ColumnName="LastStore" />
-                <ScalarProperty Name="EndDate" ColumnName="EndDate" />
-                <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
-                <ScalarProperty Name="MemberLevelID" ColumnName="MemberLevelID" />
-                <ScalarProperty Name="MemberID" ColumnName="MemberID" />
-                <ScalarProperty Name="AllowOut" ColumnName="AllowOut" />
-                <ScalarProperty Name="AllowIn" ColumnName="AllowIn" />
-                <ScalarProperty Name="CardLimit" ColumnName="CardLimit" />
-                <ScalarProperty Name="FaceReadID" ColumnName="FaceReadID" />
-                <ScalarProperty Name="CardBirthDay" ColumnName="CardBirthDay" />
-                <ScalarProperty Name="CardSex" ColumnName="CardSex" />
-                <ScalarProperty Name="CardName" ColumnName="CardName" />
-                <ScalarProperty Name="CardShape" ColumnName="CardShape" />
-                <ScalarProperty Name="CardType" ColumnName="CardType" />
-                <ScalarProperty Name="CardPassword" ColumnName="CardPassword" />
-                <ScalarProperty Name="JoinChannel" ColumnName="JoinChannel" />
-                <ScalarProperty Name="ParentCard" ColumnName="ParentCard" />
-                <ScalarProperty Name="ICCardID" ColumnName="ICCardID" />
-                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Data_Card_Balance">
             <EntityTypeMapping TypeName="XCCloudDBModel.Data_Card_Balance">
               <MappingFragment StoreEntitySet="Data_Card_Balance">
@@ -9137,60 +9073,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Flw_Game_Watch">
-            <EntityTypeMapping TypeName="XCCloudDBModel.Flw_Game_Watch">
-              <MappingFragment StoreEntitySet="Flw_Game_Watch">
-                <ScalarProperty Name="Verifiction" ColumnName="Verifiction" />
-                <ScalarProperty Name="WinnerError" ColumnName="WinnerError" />
-                <ScalarProperty Name="Winner" ColumnName="Winner" />
-                <ScalarProperty Name="OutLotteryError" ColumnName="OutLotteryError" />
-                <ScalarProperty Name="OutLottery" ColumnName="OutLottery" />
-                <ScalarProperty Name="OutCoinError" ColumnName="OutCoinError" />
-                <ScalarProperty Name="OutCoin" ColumnName="OutCoin" />
-                <ScalarProperty Name="GoodPrice" ColumnName="GoodPrice" />
-                <ScalarProperty Name="PrizeError" ColumnName="PrizeError" />
-                <ScalarProperty Name="PrizeCount" ColumnName="PrizeCount" />
-                <ScalarProperty Name="InCoinError2" ColumnName="InCoinError2" />
-                <ScalarProperty Name="InCoin2" ColumnName="InCoin2" />
-                <ScalarProperty Name="InCoinError" ColumnName="InCoinError" />
-                <ScalarProperty Name="InCoin" ColumnName="InCoin" />
-                <ScalarProperty Name="UserID" ColumnName="UserID" />
-                <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
-                <ScalarProperty Name="MediaURL3" ColumnName="MediaURL3" />
-                <ScalarProperty Name="MediaURL2" ColumnName="MediaURL2" />
-                <ScalarProperty Name="MediaURL1" ColumnName="MediaURL1" />
-                <ScalarProperty Name="HeadIndex" ColumnName="HeadIndex" />
-                <ScalarProperty Name="GameIndex" ColumnName="GameIndex" />
-                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
-                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Flw_Food_Exit">
-            <EntityTypeMapping TypeName="XCCloudDBModel.Flw_Food_Exit">
-              <MappingFragment StoreEntitySet="Flw_Food_Exit">
-                <ScalarProperty Name="Verifiction" ColumnName="Verifiction" />
-                <ScalarProperty Name="CheckDate" ColumnName="CheckDate" />
-                <ScalarProperty Name="WorkStation" ColumnName="WorkStation" />
-                <ScalarProperty Name="RealTime" ColumnName="RealTime" />
-                <ScalarProperty Name="AuthorID" ColumnName="AuthorID" />
-                <ScalarProperty Name="ScheduleID" ColumnName="ScheduleID" />
-                <ScalarProperty Name="UserID" ColumnName="UserID" />
-                <ScalarProperty Name="Note" ColumnName="Note" />
-                <ScalarProperty Name="TotalMoney" ColumnName="TotalMoney" />
-                <ScalarProperty Name="TaxFee" ColumnName="TaxFee" />
-                <ScalarProperty Name="Tax" ColumnName="Tax" />
-                <ScalarProperty Name="ExitFee" ColumnName="ExitFee" />
-                <ScalarProperty Name="CardID" ColumnName="CardID" />
-                <ScalarProperty Name="FoodID" ColumnName="FoodID" />
-                <ScalarProperty Name="OrderID" ColumnName="OrderID" />
-                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
-                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
-                <ScalarProperty Name="ExitID" ColumnName="ExitID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Store_CheckDate">
             <EntityTypeMapping TypeName="XCCloudDBModel.Store_CheckDate">
               <MappingFragment StoreEntitySet="Store_CheckDate">
@@ -9238,10 +9120,137 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="Flw_Order_Detail">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Flw_Order_Detail">
+              <MappingFragment StoreEntitySet="Flw_Order_Detail">
+                <ScalarProperty Name="Verifiction" ColumnName="Verifiction" />
+                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
+                <ScalarProperty Name="GoodsCount" ColumnName="GoodsCount" />
+                <ScalarProperty Name="FoodFlwID" ColumnName="FoodFlwID" />
+                <ScalarProperty Name="OrderFlwID" ColumnName="OrderFlwID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Flw_Food_Exit">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Flw_Food_Exit">
+              <MappingFragment StoreEntitySet="Flw_Food_Exit">
+                <ScalarProperty Name="Verifiction" ColumnName="Verifiction" />
+                <ScalarProperty Name="CheckDate" ColumnName="CheckDate" />
+                <ScalarProperty Name="WorkStation" ColumnName="WorkStation" />
+                <ScalarProperty Name="RealTime" ColumnName="RealTime" />
+                <ScalarProperty Name="AuthorID" ColumnName="AuthorID" />
+                <ScalarProperty Name="ScheduleID" ColumnName="ScheduleID" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="Note" ColumnName="Note" />
+                <ScalarProperty Name="TotalMoney" ColumnName="TotalMoney" />
+                <ScalarProperty Name="TaxFee" ColumnName="TaxFee" />
+                <ScalarProperty Name="Tax" ColumnName="Tax" />
+                <ScalarProperty Name="ExitFee" ColumnName="ExitFee" />
+                <ScalarProperty Name="CardID" ColumnName="CardID" />
+                <ScalarProperty Name="FoodID" ColumnName="FoodID" />
+                <ScalarProperty Name="OrderID" ColumnName="OrderID" />
+                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
+                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
+                <ScalarProperty Name="ExitID" ColumnName="ExitID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Flw_Game_Watch">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Flw_Game_Watch">
+              <MappingFragment StoreEntitySet="Flw_Game_Watch">
+                <ScalarProperty Name="Verifiction" ColumnName="Verifiction" />
+                <ScalarProperty Name="WinnerError" ColumnName="WinnerError" />
+                <ScalarProperty Name="Winner" ColumnName="Winner" />
+                <ScalarProperty Name="OutLotteryError" ColumnName="OutLotteryError" />
+                <ScalarProperty Name="OutLottery" ColumnName="OutLottery" />
+                <ScalarProperty Name="OutCoinError" ColumnName="OutCoinError" />
+                <ScalarProperty Name="OutCoin" ColumnName="OutCoin" />
+                <ScalarProperty Name="GoodPrice" ColumnName="GoodPrice" />
+                <ScalarProperty Name="PrizeError" ColumnName="PrizeError" />
+                <ScalarProperty Name="PrizeCount" ColumnName="PrizeCount" />
+                <ScalarProperty Name="InCoinError2" ColumnName="InCoinError2" />
+                <ScalarProperty Name="InCoin2" ColumnName="InCoin2" />
+                <ScalarProperty Name="InCoinError" ColumnName="InCoinError" />
+                <ScalarProperty Name="InCoin" ColumnName="InCoin" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
+                <ScalarProperty Name="MediaURL3" ColumnName="MediaURL3" />
+                <ScalarProperty Name="MediaURL2" ColumnName="MediaURL2" />
+                <ScalarProperty Name="MediaURL1" ColumnName="MediaURL1" />
+                <ScalarProperty Name="HeadIndex" ColumnName="HeadIndex" />
+                <ScalarProperty Name="GameIndex" ColumnName="GameIndex" />
+                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
+                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Data_Member_Card">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Data_Member_Card">
+              <MappingFragment StoreEntitySet="Data_Member_Card">
+                <ScalarProperty Name="Verifiction" ColumnName="Verifiction" />
+                <ScalarProperty Name="Note" ColumnName="Note" />
+                <ScalarProperty Name="OrderID" ColumnName="OrderID" />
+                <ScalarProperty Name="CardStatus" ColumnName="CardStatus" />
+                <ScalarProperty Name="IsLock" ColumnName="IsLock" />
+                <ScalarProperty Name="UID" ColumnName="UID" />
+                <ScalarProperty Name="RepeatCode" ColumnName="RepeatCode" />
+                <ScalarProperty Name="Deposit" ColumnName="Deposit" />
+                <ScalarProperty Name="UpdateTime" ColumnName="UpdateTime" />
+                <ScalarProperty Name="LastStore" ColumnName="LastStore" />
+                <ScalarProperty Name="EndDate" ColumnName="EndDate" />
+                <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
+                <ScalarProperty Name="MemberLevelID" ColumnName="MemberLevelID" />
+                <ScalarProperty Name="MemberID" ColumnName="MemberID" />
+                <ScalarProperty Name="AllowOut" ColumnName="AllowOut" />
+                <ScalarProperty Name="AllowIn" ColumnName="AllowIn" />
+                <ScalarProperty Name="CardLimit" ColumnName="CardLimit" />
+                <ScalarProperty Name="FaceReadID" ColumnName="FaceReadID" />
+                <ScalarProperty Name="CardBirthDay" ColumnName="CardBirthDay" />
+                <ScalarProperty Name="CardSex" ColumnName="CardSex" />
+                <ScalarProperty Name="CardName" ColumnName="CardName" />
+                <ScalarProperty Name="CardPhoto" ColumnName="CardPhoto" />
+                <ScalarProperty Name="CardShape" ColumnName="CardShape" />
+                <ScalarProperty Name="CardType" ColumnName="CardType" />
+                <ScalarProperty Name="CardPassword" ColumnName="CardPassword" />
+                <ScalarProperty Name="JoinChannel" ColumnName="JoinChannel" />
+                <ScalarProperty Name="ParentCard" ColumnName="ParentCard" />
+                <ScalarProperty Name="ICCardID" ColumnName="ICCardID" />
+                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
+                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Base_MerchantInfo">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Base_MerchantInfo">
+              <MappingFragment StoreEntitySet="Base_MerchantInfo">
+                <ScalarProperty Name="Verifiction" ColumnName="Verifiction" />
+                <ScalarProperty Name="Comment" ColumnName="Comment" />
+                <ScalarProperty Name="CreateUserID" ColumnName="CreateUserID" />
+                <ScalarProperty Name="CreateType" ColumnName="CreateType" />
+                <ScalarProperty Name="AllowCreateSub" ColumnName="AllowCreateSub" />
+                <ScalarProperty Name="AllowCreateCount" ColumnName="AllowCreateCount" />
+                <ScalarProperty Name="MerchName" ColumnName="MerchName" />
+                <ScalarProperty Name="Mobil" ColumnName="Mobil" />
+                <ScalarProperty Name="WxUnionID" ColumnName="WxUnionID" />
+                <ScalarProperty Name="WxOpenID" ColumnName="WxOpenID" />
+                <ScalarProperty Name="MerchTag" ColumnName="MerchTag" />
+                <ScalarProperty Name="ProxyType" ColumnName="ProxyType" />
+                <ScalarProperty Name="MerchSecret" ColumnName="MerchSecret" />
+                <ScalarProperty Name="MerchPassword" ColumnName="MerchPassword" />
+                <ScalarProperty Name="MerchStatus" ColumnName="MerchStatus" />
+                <ScalarProperty Name="MerchAccount" ColumnName="MerchAccount" />
+                <ScalarProperty Name="MerchType" ColumnName="MerchType" />
+                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Flw_GroupVerity">
             <EntityTypeMapping TypeName="XCCloudDBModel.Flw_GroupVerity">
               <MappingFragment StoreEntitySet="Flw_GroupVerity">
-                <ScalarProperty Name="备注" ColumnName="备注" />
+                <ScalarProperty Name="Remark" ColumnName="Remark" />
                 <ScalarProperty Name="ScheduleID" ColumnName="ScheduleID" />
                 <ScalarProperty Name="WorkStationID" ColumnName="WorkStationID" />
                 <ScalarProperty Name="VerityType" ColumnName="VerityType" />
@@ -9262,7 +9271,7 @@
           <EntitySetMapping Name="Flw_Order">
             <EntityTypeMapping TypeName="XCCloudDBModel.Flw_Order">
               <MappingFragment StoreEntitySet="Flw_Order">
-                <ScalarProperty Name="Verification" ColumnName="Verification" />
+                <ScalarProperty Name="Verifiction" ColumnName="Verifiction" />
                 <ScalarProperty Name="ExitTime" ColumnName="ExitTime" />
                 <ScalarProperty Name="ExitFee" ColumnName="ExitFee" />
                 <ScalarProperty Name="ExitPrice" ColumnName="ExitPrice" />
@@ -9287,9 +9296,9 @@
                 <ScalarProperty Name="MemberID" ColumnName="MemberID" />
                 <ScalarProperty Name="GoodCount" ColumnName="GoodCount" />
                 <ScalarProperty Name="FoodCount" ColumnName="FoodCount" />
-                <ScalarProperty Name="OrderID" ColumnName="OrderID" />
                 <ScalarProperty Name="StoreID" ColumnName="StoreID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
+                <ScalarProperty Name="OrderID" ColumnName="OrderID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

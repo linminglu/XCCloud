@@ -957,6 +957,11 @@ namespace XXCloudService.Api.XCCloud
             }
         }
 
+        /// <summary>
+        /// 售币机参数设置
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object SaveCoinSalerInfo(Dictionary<string, object> dicParas)
         {
@@ -1050,6 +1055,11 @@ namespace XXCloudService.Api.XCCloud
             }
         }        
 
+        /// <summary>
+        /// 提币机参数设置
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object SaveCoinFetcherInfo(Dictionary<string, object> dicParas)
         {
@@ -1070,22 +1080,30 @@ namespace XXCloudService.Api.XCCloud
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 if (!dicParas.Get("motor2Coin").Validintnozero("马达2出币比例", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                if (!dicParas.Get("balanceIndex").Validintnozero("会员卡存币数", out errMsg))
+                if (!dicParas.Get("balanceIndex").Validintnozero("会员卡提币类型", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                if (!dicParas.Get("toCard").Validdecimalnozero("会员卡提币类型", out errMsg))
+                if (!dicParas.Get("toCard").Validdecimalnozero("会员卡提币数", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 if (!dicParas.Get("fromDevice").Validintnozero("提币机出币数", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
                 var deviceId = dicParas.Get("deviceId").Toint();
+                var balanceIndex = dicParas.Get("balanceIndex").Toint();
 
                 //开启EF事务
+                var dict_BalanceTypeService = Dict_BalanceTypeService.I;
                 var base_DeviceInfoService = Base_DeviceInfoService.I;
                 var base_DeviceInfo_ExtService = Base_DeviceInfo_ExtService.I;
                 using (TransactionScope ts = new TransactionScope())
                 {
                     try
                     {
+                        if (!dict_BalanceTypeService.Any(a => a.ID == balanceIndex && a.MappingType == (int)HKType.Coin))
+                        {
+                            errMsg = "会员卡提币类型必须是关联代币的余额类别";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
                         if (!base_DeviceInfoService.Any(a => a.ID == deviceId))
                         {
                             errMsg = "该设备信息不存在";
@@ -1145,6 +1163,11 @@ namespace XXCloudService.Api.XCCloud
             }
         }
 
+        /// <summary>
+        /// 存币机参数设置
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object SaveCoinSaverInfo(Dictionary<string, object> dicParas)
         {
@@ -1163,22 +1186,30 @@ namespace XXCloudService.Api.XCCloud
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);               
                 if (!dicParas.Get("balanceIndex").Validintnozero("会员卡存币类型", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                if (!dicParas.Get("toCard").Validdecimalnozero("会员卡存币数", out errMsg))
+                if (!dicParas.Get("toCard").Validdecimalnozero("会员卡余额增加数", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                if (!dicParas.Get("fromDevice").Validintnozero("会员卡余额增加数", out errMsg))
+                if (!dicParas.Get("fromDevice").Validintnozero("存币机存币数", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 if (!dicParas.Get("maxSaveCount").Validintnozero("币箱存储最大值", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
                 var deviceId = dicParas.Get("deviceId").Toint();
+                var balanceIndex = dicParas.Get("balanceIndex").Toint();
 
                 //开启EF事务
+                var dict_BalanceTypeService = Dict_BalanceTypeService.I;
                 var base_DeviceInfoService = Base_DeviceInfoService.I;
                 var base_DeviceInfo_ExtService = Base_DeviceInfo_ExtService.I;
                 using (TransactionScope ts = new TransactionScope())
                 {
                     try
                     {
+                        if (!dict_BalanceTypeService.Any(a => a.ID == balanceIndex && a.MappingType == (int)HKType.Coin))
+                        {
+                            errMsg = "会员卡存币类型必须是关联代币的余额类别";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
                         if (!base_DeviceInfoService.Any(a => a.ID == deviceId))
                         {
                             errMsg = "该设备信息不存在";
@@ -1238,6 +1269,115 @@ namespace XXCloudService.Api.XCCloud
             }
         }
 
+        /// <summary>
+        /// 碎票机参数设置
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object SaveLotteryBrokenInfo(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+
+                string errMsg = string.Empty;
+                if (!dicParas.Get("deviceId").Validintnozero("设备ID", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (!dicParas.Get("motor1En").Validint("1号马达", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (!dicParas.Get("motor2En").Validint("2号马达", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (!dicParas.Get("balanceIndex").Validintnozero("会员卡碎票类型", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (!dicParas.Get("toCard").Validdecimalnozero("会员卡余额增加数", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (!dicParas.Get("fromDevice").Validintnozero("碎票机碎票数", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                var deviceId = dicParas.Get("deviceId").Toint();
+                var balanceIndex = dicParas.Get("balanceIndex").Toint();
+
+                //开启EF事务
+                var dict_BalanceTypeService = Dict_BalanceTypeService.I;
+                var base_DeviceInfoService = Base_DeviceInfoService.I;
+                var base_DeviceInfo_ExtService = Base_DeviceInfo_ExtService.I;
+                using (TransactionScope ts = new TransactionScope())
+                {
+                    try
+                    {
+                        if (!dict_BalanceTypeService.Any(a => a.ID == balanceIndex && a.MappingType == (int)HKType.Lottery))
+                        {
+                            errMsg = "会员卡碎票类型必须是关联彩票的余额类别";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
+                        if (!base_DeviceInfoService.Any(a => a.ID == deviceId))
+                        {
+                            errMsg = "该设备信息不存在";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
+                        var base_DeviceInfo = base_DeviceInfoService.GetModels(p => p.ID == deviceId).FirstOrDefault();
+                        if (base_DeviceInfo.type != (int)DeviceType.碎票机)
+                        {
+                            errMsg = "该设备不是碎票机类型设备";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
+                        var base_DeviceInfo_Ext = base_DeviceInfo_ExtService.GetModels(p => p.DeviceID == deviceId).FirstOrDefault() ?? new Base_DeviceInfo_Ext();
+                        Utils.GetModel(dicParas, ref base_DeviceInfo_Ext);
+                        if (base_DeviceInfo_Ext.ID == 0)
+                        {
+                            if (base_DeviceInfo_ExtService.GetCount(a => a.ID == deviceId) > 0)
+                            {
+                                errMsg = "该碎票机参数设置已存在";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+
+                            if (!base_DeviceInfo_ExtService.Add(base_DeviceInfo_Ext))
+                            {
+                                errMsg = "碎票机参数设置失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+                        }
+                        else
+                        {
+                            if (!base_DeviceInfo_ExtService.Update(base_DeviceInfo_Ext))
+                            {
+                                errMsg = "碎票机参数设置失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+                        }
+
+                        ts.Complete();
+                    }
+                    catch (DbEntityValidationException e)
+                    {
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, e.EntityValidationErrors.ToErrors());
+                    }
+                    catch (Exception ex)
+                    {
+                        errMsg = ex.Message;
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
+                }
+
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        /// <summary>
+        /// 投币机参数设置
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object SaveCoinPusherInfo(Dictionary<string, object> dicParas)
         {

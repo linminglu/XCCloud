@@ -47,7 +47,7 @@ namespace XCCloudService.Pay.WeiXinPay.Business
             data.SetValue("total_fee", Convert.ToInt32(amount * 100));//总金额，单位：分
             data.SetValue("time_start", DateTime.Now.ToString("yyyyMMddHHmmss"));//交易起始时间
             data.SetValue("time_expire", DateTime.Now.AddMinutes(10).ToString("yyyyMMddHHmmss"));//交易结束时间
-            data.SetValue("goods_tag", order.ID.ToString());//商品标记
+            data.SetValue("goods_tag", order.OrderID.ToString());//商品标记
             data.SetValue("trade_type", "NATIVE");//交易类型
             data.SetValue("product_id", order.OrderID);//商品ID，商户自定义
 
