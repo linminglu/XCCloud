@@ -115,9 +115,33 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         public string ICCardId { get; set; }
 
         /// <summary>
+        /// 会员信息
+        /// </summary>
+        public CardMemberInfoModel MemberInfo { get; set; }
+
+        /// <summary>
+        /// 卡权限
+        /// </summary>
+        public CardPurviewModel CardPurview { get; set; }
+
+        /// <summary>
         /// 余额列表
         /// </summary>
         public List<BalanceModel> MemberBalances { get; set; }
+   
+
+    }
+
+    public class CardMemberInfoModel
+    {
+        public string UserName { get; set; }
+        public string Birthday { get; set; }
+        public string IDCardNo { get; set; }
+        public string Mobile { get; set; }
+        public string Gender { get; set; }
+    }
+    public class CardPurviewModel
+    {
         /// <summary>
         /// 允许投币
         /// </summary>
@@ -161,6 +185,14 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         public string BalanceName { get; set; }
 
         public decimal Quantity { get; set; }
+    }
+
+    public class ChildCardModel
+    {
+        public string ChildCardId { get; set; }
+        public string ChildICCardId { get; set; }
+        public string Deposit { get; set; }
+        public string EndDate { get; set; }
     }
 
     public class SourceBalanceModel

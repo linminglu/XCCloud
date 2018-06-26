@@ -190,6 +190,7 @@
     <Compile Include="WeiXin\Message\DoScheduleDataModel.cs" />
     <Compile Include="WeiXin\Message\OrderAuditConfigModel.cs" />
     <Compile Include="WeiXin\Message\OrderAuditDataModel.cs" />
+    <Compile Include="WeiXin\Message\PhoneVerifyCodeModel.cs" />
     <Compile Include="WeiXin\Message\SAppMsgConfigAttribute.cs" />
     <Compile Include="WeiXin\Message\XcGameGetCoinSuccessConfigModel.cs" />
     <Compile Include="WeiXin\Message\XcGameGetCoinSuccessDataModel.cs" />

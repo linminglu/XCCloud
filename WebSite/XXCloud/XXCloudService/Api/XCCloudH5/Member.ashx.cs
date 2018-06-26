@@ -12,9 +12,12 @@ using XCCloudService.Business.Common;
 using XCCloudService.Business.XCCloud;
 using XCCloudService.CacheService;
 using XCCloudService.Common;
+using XCCloudService.Common.Enum;
 using XCCloudService.Model.CustomModel.XCCloud;
 using XCCloudService.Model.WeiXin;
+using XCCloudService.Model.WeiXin.Message;
 using XCCloudService.Model.XCCloud;
+using XCCloudService.WeiXin.Message;
 using XCCloudService.WeiXin.WeixinPub;
 
 namespace XXCloudService.Api.XCCloudH5
@@ -24,6 +27,56 @@ namespace XXCloudService.Api.XCCloudH5
     /// </summary>
     public class Member : ApiBase
     {
+        #region 发送模版消息
+        /// <summary>
+        /// 发送模版消息
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.MethodToken)]
+        public object sendTemplateMessage(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                string errMsg = string.Empty;
+                string mobile = dicParas.ContainsKey("mobile") ? dicParas["mobile"].ToString().Trim() : "";
+
+                if (!Utils.CheckMobile(mobile))
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "手机号码无效");
+                }
+
+                Base_MemberInfo member = Base_MemberInfoService.I.GetModels(t => t.Mobile == mobile && t.WechatOpenID != "").FirstOrDefault();
+                if(member == null || string.IsNullOrWhiteSpace( member.WechatOpenID))
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "请先关注微信公众号");
+                }                
+
+                string key = string.Empty;
+                string code = Utils.getNumRandomCode(6);
+                RedisCacheHelper.StringSet(CommonConfig.PrefixKey + mobile, code, TimeSpan.FromMinutes(5));
+
+                PhoneVerifyCodeModel dataModel = new PhoneVerifyCodeModel();
+                dataModel.keyword1 = code;
+                dataModel.keyword2 = "5分钟";
+                dataModel.remark = "如非您本人操作，请忽略此消息。";
+                if (MessageMana.PushMessage(WeiXinMesageType.PhoneVerifyCode, member.WechatOpenID, dataModel, out errMsg))
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.T, "");
+                }
+                else
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
+                }
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+        #endregion
+
         #region 发送短信验证码
         /// <summary>
         /// 获取短信验证码

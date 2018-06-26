@@ -137,15 +137,30 @@
     <keynote3color>#173177</keynote3color>
     <remarkcolor>#173177</remarkcolor>
   </msgtemplate>
-  <msgtemplate id="DoSchedule">
-    <title>吧台交班通知</title>
-    <templateid>tHvW3c-ygrn-lmzDTCKmjgSlIdp8gMgUQRlH6dMEJkw</templateid>
-    <detailsurl>http://mp.4000051530.com/merch/authManage.html</detailsurl>
+  <msgtemplate id="PhoneVerifyCode">
+    <title>尊敬的用户您好!</title>
+    <templateid>dbyJIycVZtCvl0cXSD3CH1H4wnQGUufwW8TSzrI0i2E</templateid>
+    <detailsurl></detailsurl>
     <sapppagepath></sapppagepath>
-    <remark>点击进入详细页面</remark>
+    <remark>如果有疑问,请联系我们客服,24小时为您服务</remark>
     <firstcolor>#173177</firstcolor>
     <keynote1color>#173177</keynote1color>
     <keynote2color>#173177</keynote2color>
+    <keynote3color>#173177</keynote3color>
+    <remarkcolor>#173177</remarkcolor>
+  </msgtemplate>
+  <msgtemplate id="DoSchedule">
+    <title>班已结束, 请点击进入详细页面提交实点数</title>
+    <templateid>vao-hP_vQpvzRXoURHTd8-DQd59qfvZpHeDivf6_XJA</templateid>
+    <detailsurl>http://mp.4000051530.com/merch/authManage.html</detailsurl>
+    <sapppagepath></sapppagepath>
+    <remark>辛苦一天了，好好休息吧！</remark>
+    <firstcolor>#173177</firstcolor>
+    <keynote1color>#173177</keynote1color>
+    <keynote2color>#173177</keynote2color>
+    <keynote3color>#173177</keynote3color>
+    <keynote4color>#173177</keynote4color>
+    <keynote5color>#173177</keynote5color>    
     <remarkcolor>#173177</remarkcolor>
   </msgtemplate>
 </msgtemplates> 

@@ -1880,7 +1880,7 @@ namespace XCCloudService.Common
 
             string validateCode = string.Empty;
             // 声明随机数生成器
-            Random ran = new Random();
+            Random ran = new Random(Guid.NewGuid().GetHashCode());
             //循环的次数代表生成的随机字符串的长度
             for (int i = 0; i < validateCodeLength; i++)
             {

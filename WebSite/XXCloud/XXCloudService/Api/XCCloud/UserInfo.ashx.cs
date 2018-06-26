@@ -197,7 +197,7 @@ namespace XCCloudService.Api.XCCloud
                 try
                 {
                     string errMsg = string.Empty;
-                    int currentSchedule = 0;
+                    string currentSchedule = string.Empty;
                     int workStationId = 0;
                     string openTime = string.Empty; 
                     string loginName = dicParas.ContainsKey("loginName") ? dicParas["loginName"].ToString() : string.Empty;
@@ -233,7 +233,7 @@ namespace XCCloudService.Api.XCCloud
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "用户名或密码错误");
                     }
                     //开班
-                    if (!ScheduleBusiness.OpenSchedule(userModel.StoreID, userModel.UserID, "", workStation, out workStationId,out currentSchedule, out openTime, out errMsg))
+                    if (!ScheduleBusiness.OpenSchedule(userModel.MerchID,userModel.StoreID, userModel.UserID, "", workStation, out workStationId, out currentSchedule, out openTime, out errMsg))
                     {
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
                     }

@@ -205,7 +205,8 @@ namespace XCCloudService.Common.Enum
         XcUserResetPassword = 9,//莘宸用户重置密码
         XCGameGetCoinSuccess = 10,//莘宸用户提币成功
         XCCloudOrderAuditRequest = 11,//订单审核
-        DoSchedule = 12//交班通知
+        DoSchedule = 12,//交班通知
+        PhoneVerifyCode = 13//手机验证码
     }
 
     public enum OrderType

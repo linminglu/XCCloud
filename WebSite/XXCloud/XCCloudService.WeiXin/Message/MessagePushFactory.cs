@@ -98,6 +98,10 @@ namespace XCCloudService.WeiXin.Message
             {
                 return GetMemberRechargeNotifyData(configModel, dataModel);
             }
+            else if (typeof(TConfig) == typeof(PhoneVerifyCodeConfigModel))
+            {
+                return GetPhoneVerifyCodeData(configModel, dataModel);
+            }
             else if (typeof(TConfig) == typeof(DoScheduleConfigModel))
             {
                 return GetDoScheduleNotifyData(configModel, dataModel, out uriParams);
@@ -283,6 +287,21 @@ namespace XCCloudService.WeiXin.Message
             return msgData;
         }
 
+        private static object GetPhoneVerifyCodeData<TConfig, TData>(TConfig configModel, TData dataModel)
+        {
+            PhoneVerifyCodeConfigModel config = Utils.GetCopy<PhoneVerifyCodeConfigModel>(configModel);
+            PhoneVerifyCodeModel data = Utils.GetCopy<PhoneVerifyCodeModel>(dataModel);
+            var msgData = new
+            {
+                first = new { value = config.Title, color = config.FirstColor },
+                keyword1 = new { value = data.keyword1, color = config.Keynote1Color },
+                keyword2 = new { value = data.keyword2, color = config.Keynote2Color },
+                remark = new { value = data.remark, color = config.RemarkColor }
+            };
+
+            return msgData;
+        }
+
         private static object GetDoScheduleNotifyData<TConfig, TData>(TConfig configModel, TData dataModel, out string uriParams)
         {
             uriParams = string.Empty;
@@ -290,10 +309,13 @@ namespace XCCloudService.WeiXin.Message
             DoScheduleDataModel data = Utils.GetCopy<DoScheduleDataModel>(dataModel);          
             var msgData = new
             {
-                first = new { value = config.Title, color = config.FirstColor },
-                keyword1 = new { value = data.ScheduleID, color = config.Keynote1Color },
-                keyword2 = new { value = data.UserID, color = config.Keynote2Color },
-                remark = new { value = "班次号：" + data.ScheduleID + "\n" + "用户ID：" + data.UserID + "\n" + config.Remark, color = config.RemarkColor }
+                first = new { value = data.ScheduleName + config.Title, color = config.FirstColor },
+                keyword1 = new { value = string.Format("{0}年{1}月{2}日 {3}:{4}",data.OpenTime.Year, data.OpenTime.Month, data.OpenTime.Day, data.OpenTime.Hour, data.OpenTime.Minute), color = config.Keynote1Color },
+                keyword2 = new { value = string.Format("{0}年{1}月{2}日 {3}:{4}", data.ShiftTime.Year, data.ShiftTime.Month, data.ShiftTime.Day, data.ShiftTime.Hour, data.ShiftTime.Minute), color = config.Keynote2Color },
+                keyword3 = new { value = data.PayCount, color = config.Keynote3Color },
+                keyword4 = new { value = data.FreePay, color = config.Keynote4Color },
+                keyword5 = new { value = data.RealPay, color = config.Keynote5Color },
+                remark = new { value = config.Remark, color = config.RemarkColor }
             };
             uriParams = string.Format("scheduleId={0}&userId={1}", data.ScheduleID, data.UserID);
             return msgData;

@@ -448,19 +448,13 @@ namespace XXCloudService.Api.XCCloud
                 {
                     if (!(data_DeviceInfo.GameIndexID > 0 || data_DeviceInfo.BindDeviceID > 0))
                     {
-                        errMsg = "原机台未被绑定";
+                        errMsg = "原设备未被绑定";
                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                     }
 
-                    if (!Base_DeviceInfoService.I.Any(p => p.ID == iBindDeviceId))
+                    if (!Base_DeviceInfoService.I.Any(a => a.ID == iNewId))
                     {
-                        errMsg = "路由器设备不存在";
-                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                    }
-
-                    if (!Data_GameInfoService.I.Any(p => p.ID == iGameIndexId))
-                    {
-                        errMsg = "游戏机信息不存在";
+                        errMsg = "目标设备不存在";
                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                     }
 

@@ -1287,21 +1287,22 @@ namespace XCCloudService.Api.XCCloud
             }
         }
 
-        #region 按手机号码查询会员卡信息
+        #region 查询会员卡信息
+
+        #region 按手机号码查询会员主卡列表
         /// <summary>
-        /// 按手机号码查询会员及信息
+        /// 按手机号码查询会员主卡列表
         /// </summary>
         /// <param name="dicParas"></param>
         /// <returns></returns>
         [Authorize(Roles = "StoreUser")]
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
-        public object GetMenberCardInfoByPhone(Dictionary<string, object> dicParas)
+        public object getCardListByPhone(Dictionary<string, object> dicParas)
         {
             try
             {
-                string errMsg = string.Empty;
                 string mobile = dicParas.ContainsKey("mobile") ? dicParas["mobile"].ToString() : string.Empty;
-                string smsCode = dicParas.ContainsKey("smsCode") ? dicParas["smsCode"].ToString().Trim() : "";
+                string code = dicParas.ContainsKey("code") ? dicParas["code"].ToString().Trim() : "";
                 if (string.IsNullOrEmpty(mobile))
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "手机号码无效");
@@ -1311,59 +1312,60 @@ namespace XCCloudService.Api.XCCloud
                 string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
                 string merchID = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
 
-                //短信验证码校验
-                string code = RedisCacheHelper.StringGet(mobile);
-                if (!FilterMobileBusiness.IsTestSMS && !FilterMobileBusiness.ExistMobile(mobile))
+                if (CommonConfig.IsVerifyCode)
                 {
-                    if (!code.Equals(smsCode, StringComparison.OrdinalIgnoreCase))
+                    //验证码校验
+                    string TempCode = RedisCacheHelper.StringGet(CommonConfig.PrefixKey + mobile);
+                    if (!TempCode.Equals(code, StringComparison.OrdinalIgnoreCase))
                     {
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "验证码错误");
                     }
                 }
 
-                List<Base_MemberInfo> memberList = Base_MemberInfoService.I.GetModels(t => t.Mobile == mobile).ToList();
-                if (memberList.Count == 0)
-                {
-                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员信息不存在");
-                }
+                var query = from a in Base_MemberInfoService.N.GetModels(t => t.Mobile == mobile)
+                            join b in Data_Member_CardService.N.GetModels(t => t.MerchID == merchID && t.CardType == 0 && t.CardStatus == 1) on a.ID equals b.MemberID
+                            join c in Data_Member_Card_StoreService.N.GetModels(t=>t.StoreID == storeId) on b.ID equals c.CardID
+                            select new
+                            {
+                                CardId = b.ID,
+                                ICCardNo = b.ICCardID,
+                                LevelId = b.MemberLevelID,
+                                EndDate = b.EndDate
+                            };
 
-                List<MemberCardInfoViewModel> list = new List<MemberCardInfoViewModel>();
-                foreach (var member in memberList)
+                var list = query.ToList().Select(t => new
                 {
-                    MemberCardInfoViewModel model = XCCloudService.Business.XCCloud.MemberBusiness.GetMemberCardInfo(member, merchID, storeId);
-                    if (model != null)
-                    {
-                        list.Add(model);
-                    }
-                }
-
-                if(list.Count == 0)
-                {
-                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "该用户还没有办理会员卡");
-                }
-
-                return ResponseModelFactory<List<MemberCardInfoViewModel>>.CreateModel(isSignKeyReturn, list);
+                    CardId = t.CardId,
+                    ICCardNo = t.ICCardNo,
+                    LevelName = Data_MemberLevelService.I.GetModels(m => m.MemberLevelID == t.LevelId).FirstOrDefault().MemberLevelName,
+                    EndDate = t.EndDate.Value.ToString("yyyy-MM-dd")
+                }).ToList();
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, list);
             }
             catch (Exception e)
             {
                 return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
             }
         }
-        #endregion 
 
-        #region 按身份证号查询会员及卡信息
+        private string GetLockState(int islock)
+        {
+            return "";
+        }
+        #endregion
+
+        #region 按身份证号查询会员主卡列表
         /// <summary>
-        /// 按身份证号查询会员及卡信息
+        /// 按身份证号查询会员主卡列表
         /// </summary>
         /// <param name="dicParas"></param>
         /// <returns></returns>
         [Authorize(Roles = "StoreUser")]
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
-        public object GetMenberCardInfoByCardId(Dictionary<string, object> dicParas)
+        public object getCardListByIDnumber(Dictionary<string, object> dicParas)
         {
             try
             {
-                string errMsg = string.Empty;
                 string idCardNo = dicParas.ContainsKey("idCardNo") ? dicParas["idCardNo"].ToString() : string.Empty;
                 if (string.IsNullOrEmpty(idCardNo))
                 {
@@ -1374,26 +1376,112 @@ namespace XCCloudService.Api.XCCloud
                 string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
                 string merchID = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
 
-                List<Base_MemberInfo> memberList = Base_MemberInfoService.I.GetModels(t => t.IDCard == idCardNo).ToList();
-                if (memberList.Count == 0)
+                var query = from a in Base_MemberInfoService.N.GetModels(t => t.IDCard == idCardNo)
+                            join b in Data_Member_CardService.N.GetModels(t => t.MerchID == merchID && t.CardType == 0 && t.CardStatus == 1) on a.ID equals b.MemberID
+                            join c in Data_Member_Card_StoreService.N.GetModels(t => t.StoreID == storeId) on b.ID equals c.CardID
+                            select new
+                            {
+                                CardId = b.ID,
+                                ICCardNo = b.ICCardID,
+                                LevelId = b.MemberLevelID,
+                                EndDate = b.EndDate
+                            };
+
+                var list = query.ToList().Select(t => new
                 {
-                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员信息不存在");
+                    CardId = t.CardId,
+                    ICCardNo = t.ICCardNo,
+                    LevelName = Data_MemberLevelService.I.GetModels(m => m.MemberLevelID == t.LevelId).FirstOrDefault().MemberLevelName,
+                    EndDate = t.EndDate.Value.ToString("yyyy-MM-dd")
+                }).ToList();
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, list);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+        #endregion
+
+        #region 按会员卡查询会员及卡信息
+        /// <summary>
+        /// 按会员卡查询会员及卡信息
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
+        [Authorize(Roles = "StoreUser")]
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object GetMenberCardInfoByICCardId(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                string errMsg = string.Empty;
+                string icCardId = dicParas.ContainsKey("icCardId") ? dicParas["icCardId"].ToString() : string.Empty;
+                if (string.IsNullOrEmpty(icCardId))
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员卡无效");
                 }
+
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+                string merchID = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+
+                //查询卡是否存在
+                var cardQuery = from a in Data_Member_CardService.N.GetModels(t => t.MerchID == merchID && t.ICCardID == icCardId)
+                                join b in Data_Member_Card_StoreService.N.GetModels(t => t.StoreID == storeId) on a.ID equals b.CardID
+                                select new
+                                {
+                                    CardId = a.ID
+                                };
+                int cardCount = cardQuery.Count();
+
+                if (cardCount == 0)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员卡不存在");
+                }
+                else if (cardCount > 1)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "存在多张相同卡号的会员卡");
+                }
+
+                //查询卡实体信息
+                Data_Member_Card card = Data_Member_CardService.I.GetModels(t => t.ID == cardQuery.FirstOrDefault().CardId).FirstOrDefault();
+                if (card == null)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员卡不存在");
+                }
+
+                //查询会员实体
+                Base_MemberInfo member = Base_MemberInfoService.I.GetModels(t => t.ID == card.MemberID).FirstOrDefault();
+                if (member == null)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员信息无效");
+                }
+
+
+
+
+
+                //List<Base_MemberInfo> memberList = Base_MemberInfoService.I.GetModels(t => t.IDCard == idCardNo).ToList();
+                //if (memberList.Count == 0)
+                //{
+                //    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员信息不存在");
+                //}
 
                 List<MemberCardInfoViewModel> list = new List<MemberCardInfoViewModel>();
-                foreach (var member in memberList)
-                {
-                    MemberCardInfoViewModel model = XCCloudService.Business.XCCloud.MemberBusiness.GetMemberCardInfo(member, merchID, storeId);
-                    if (model != null)
-                    {
-                        list.Add(model);
-                    }
-                }
+                //foreach (var member in memberList)
+                //{
+                //    MemberCardInfoViewModel model = XCCloudService.Business.XCCloud.MemberBusiness.GetMemberCardInfo(member, merchID, storeId);
+                //    if (model != null)
+                //    {
+                //        list.Add(model);
+                //    }
+                //}
 
-                if (list.Count == 0)
-                {
-                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "该用户还没有办理会员卡");
-                }
+                //if (list.Count == 0)
+                //{
+                //    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "该用户还没有办理会员卡");
+                //}
 
                 return ResponseModelFactory<List<MemberCardInfoViewModel>>.CreateModel(isSignKeyReturn, list);
             }
@@ -1403,6 +1491,8 @@ namespace XCCloudService.Api.XCCloud
             }
         }
         #endregion 
+
+        #endregion
 
         #region 退款/退卡
 
@@ -1899,7 +1989,7 @@ namespace XCCloudService.Api.XCCloud
                 string errMsg = string.Empty;
                 string oldCardIndexId = dicParas.ContainsKey("oldCardIndexId") ? dicParas["oldCardIndexId"].ToString() : string.Empty;
                 string newCardNo = dicParas.ContainsKey("newCardNo") ? dicParas["newCardNo"].ToString() : string.Empty;
-                string cardPwd = dicParas.ContainsKey("cardPwd") ? dicParas["cardPwd"].ToString() : string.Empty;
+                string repeatCode = dicParas.ContainsKey("repeatCode") ? dicParas["repeatCode"].ToString() : string.Empty;
                 string operateType = dicParas.ContainsKey("OperateType") ? dicParas["OperateType"].ToString() : string.Empty;
                 if (string.IsNullOrEmpty(oldCardIndexId))
                 {
@@ -1908,6 +1998,11 @@ namespace XCCloudService.Api.XCCloud
                 if (string.IsNullOrEmpty(newCardNo))
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "新会员卡号为空");
+                }
+                int iRepeatCode = repeatCode.Toint(0);
+                if (iRepeatCode == 0)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "卡动态密码无效");
                 }
                 string operate = string.Empty;
                 if (operateType == "0")
@@ -1934,11 +2029,11 @@ namespace XCCloudService.Api.XCCloud
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员卡不存在");
                 }
-                //判断密码
-                if(!oldCard.CardPassword.Equals(cardPwd))
-                {
-                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "卡密码错误");
-                }
+                ////判断密码
+                //if(!oldCard.CardPassword.Equals(cardPwd))
+                //{
+                //    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "卡密码错误");
+                //}
                 //判断状态
                 if(oldCard.CardStatus != 1)
                 {
@@ -2003,7 +2098,8 @@ namespace XCCloudService.Api.XCCloud
                     newCard.Deposit = oldCard.Deposit;
                     newCard.UID = oldCard.UID;
                     newCard.IsLock = oldCard.IsLock;
-                    newCard.RepeatCode = new Random(Guid.NewGuid().GetHashCode()).Next(1, 256);
+                    //newCard.RepeatCode = new Random(Guid.NewGuid().GetHashCode()).Next(1, 256);
+                    newCard.RepeatCode = iRepeatCode;
                     newCard.CardStatus = 1;
                     newCard.OrderID = oldCard.OrderID;
                     if (!Data_Member_CardService.I.Add(newCard, false))

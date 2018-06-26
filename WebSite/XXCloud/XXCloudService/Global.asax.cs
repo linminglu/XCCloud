@@ -19,7 +19,7 @@ namespace XCCloudService
         void Application_Start(object sender, EventArgs e)
         {
             ApplicationStart.Init();
-            UDPServer.Init();  
+            //UDPServer.Init();  
         }
 
         void Application_End(object sender, EventArgs e)

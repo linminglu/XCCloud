@@ -37,9 +37,19 @@ namespace XXCloudService.WeiXin.Api
 
                 var flw_Schedule_UserInfoService = Flw_Schedule_UserInfoService.I;
 
-                var flw_Schedule_UserInfo = flw_Schedule_UserInfoService.GetModels(p => p.ScheduleID.Equals(scheduleId, StringComparison.OrdinalIgnoreCase) && p.UserID == userId).FirstOrDefault();
+                var flw_Schedule_UserInfo = flw_Schedule_UserInfoService.GetModels(p => p.ScheduleID.Equals(scheduleId, StringComparison.OrdinalIgnoreCase) && p.UserID == userId).Select(o => new 
+                                            {
+                                                ID = o.ID, //班次操作ID
+                                                CheckDate = o.CheckDate, //营业日期
+                                                ScheduleName = o.ScheduleName, //班次名
+                                                OpenTime = o.OpenTime, //开始时间
+                                                ShiftTime = o.ShiftTime, //结束时间
+                                                WorkStation = o.WorkStation,  //工作站名
+                                                RealCash = o.RealCash, //实点现金
+                                                RealCredit = o.RealCredit //实点信用卡小票
+                                            });
 
-                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, flw_Schedule_UserInfo);
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, flw_Schedule_UserInfo);
             }
             catch (Exception e)
             {
@@ -60,10 +70,14 @@ namespace XXCloudService.WeiXin.Api
                 string errMsg = string.Empty;
                 if (!dicParas.Get("id").Nonempty("班次操作ID", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (!dicParas.Get("realCash").Validdecimal("实点现金", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (!dicParas.Get("realCredit").Validdecimal("实点信用卡小票", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
                 var id = dicParas.Get("id"); 
-                var realCash = dicParas.Get("realCash").Todecimal();
-                var realCredit = dicParas.Get("realCredit").Todecimal();
+                var realCash = dicParas.Get("realCash").Todecimal(0);
+                var realCredit = dicParas.Get("realCredit").Todecimal(0);
 
                 var flw_Schedule_UserInfoService = Flw_Schedule_UserInfoService.I;
 

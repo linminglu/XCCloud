@@ -32,16 +32,16 @@ namespace XCCloudService.Utility
                 //TestInit();
                 //TCPSocketInit(); 
                 UDPSocketInit(); 
-                StoreInit(); //redis
-                StoreDogInit();
-                MibleTokenInit(); //redis
-                MemberTokenInit();//redis
-                RS232MibleTokenInit();//redis
+                //StoreInit(); //redis
+                //StoreDogInit();
+                //MibleTokenInit(); //redis
+                //MemberTokenInit();//redis
+                //RS232MibleTokenInit();//redis
                 XCCloudUserInit();//redis
-                XCGameManaDeviceInit();
-                XCCloudManaUserInit();//redis
+                //XCGameManaDeviceInit();
+                //XCCloudManaUserInit();//redis
                 FilterMobileInit();
-                XinchenPayInit(); 
+                //XinchenPayInit(); 
             }
             catch(Exception e)
             {

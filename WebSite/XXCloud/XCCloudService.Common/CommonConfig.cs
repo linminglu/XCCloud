@@ -38,7 +38,18 @@ namespace XCCloudService.Common
         /// <summary>
         /// 缓存key前缀
         /// </summary>
-        public static string PrefixKey = "RS232";
+        public static string PrefixKey = "weChat";
+
+        public static bool IsVerifyCode
+        {
+            get
+            {
+                string val = ConfigurationManager.AppSettings["isVerifyCode"] ?? "true";
+                bool isVerify = true;
+                bool.TryParse(val, out isVerify);
+                return isVerify;
+            }
+        }
 
 
         public static string SAppMessagePushXmlFilePath = System.Web.HttpContext.Current.Server.MapPath("/Config/SAppMessageTemplate.xml");

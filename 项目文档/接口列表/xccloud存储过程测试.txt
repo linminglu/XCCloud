@@ -4,6 +4,59 @@
 ----------------------------------------------------------------------------------------------------------------------------------------
 
 ----------------------------------------------------------------------------------------------------------------------------------------
+declare @WorkStation varchar(50) = 'lijunjie'
+declare @UserID int = 3
+declare @StoreId varchar(15) = '100025420106001'
+declare @FlwOrderId varchar(32) = '10002542010600120180625100110001'
+declare @ExitFood as ExitFoodType
+insert @ExitFood(Category,FoodId,FoodCount) values(0,1,1)
+declare @ErrMsg varchar(200) = ''
+exec ExistFood @StoreId,@FlwOrderId,@UserID,@WorkStation,@ExitFood,@ErrMsg output
+print @ErrMsg
+----------------------------------------------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+declare @CurrentSchedule varchar(32) = ''
+declare @OpenTime varchar(20) = ''
+declare @errMsg varchar(200) = ''
+declare @GetScheduleReturn int = 0
+exec @GetScheduleReturn = GetSchedule '100025420106001',3,'lijunjie',@CurrentSchedule output,@OpenTime output,@errMsg output
+print '@GetScheduleReturn:' + cast(@GetScheduleReturn as varchar)
+print '@CurrentSchedule:' + cast(@CurrentSchedule as varchar(32))
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+declare @FlwSeedId varchar(29) = '100025420106001' + '20180622' + '999931'
+declare @CheckDate varchar(10) = '2018-06-05'
+declare @MerchId varchar(32) = '100025'
+declare @StoreId varchar(15) = '100025420106001'
+declare @UserId int = 3
+declare @ScheduleName varchar(50) = ''
+declare @WorkStation varchar(50) = 'lijunjie'
+declare @RealCash decimal(18,2) = 0
+declare @RealCredit decimal(18,2) = 0
+declare @AuthorID int = 0
+declare @WorkStationId int = 0
+declare @CurrentSchedule varchar(32)
+declare @OpenTime varchar(20)
+declare @errMsg varchar(20)
+exec OpenSchedule @FlwSeedId,@CheckDate,@MerchId,@StoreId,@UserId,@ScheduleName,@WorkStation,@RealCash,@RealCredit,@AuthorID,@WorkStationId output,@CurrentSchedule output,@OpenTime output,@errMsg output
+print @CurrentSchedule
+
+select * from flw_schedule
+select * from Flw_Schedule_UserInfo
+select * from Flw_CheckDate
+
+delete from flw_schedule
+delete from Flw_Schedule_UserInfo
+delete from Flw_CheckDate
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------------------------------------------
 declare @PriceLimit as PriceLimitType
 insert @PriceLimit(BalanceIndex,MinPrice,MaxPrice) values(0,0,0.30)
 insert @PriceLimit(BalanceIndex,MinPrice,MaxPrice) values(98307,0,999)

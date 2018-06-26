@@ -186,7 +186,7 @@ namespace XCCloudService.OrderPayCallback.Common
                     dataModel.Account = order.Descript;
                     dataModel.Amount = order.Price.ToString("0.00");
                     dataModel.Status = "成功";
-                    dataModel.Remark = "充值成功，感谢您的光临！";
+                    dataModel.Remark = "充值成功，祝您生活愉快！";
                     MessageMana.PushMessage(WeiXinMesageType.MemberRechargeNotify, orderCache.OpenId, dataModel, out errMsg);
                 }
             }

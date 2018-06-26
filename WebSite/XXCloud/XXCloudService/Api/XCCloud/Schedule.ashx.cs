@@ -25,10 +25,10 @@ namespace XXCloudService.Api.XCCloud
     /// </summary>
     public class Schedule : ApiBase
     {
-        private void DoSchedulePush(string openId, string scheduleId, int userId)
+        private void DoSchedulePush(string openId, string scheduleId, int userId, string scheduleName, DateTime openTime, DateTime shiftTime, decimal payCount, decimal realPay, decimal freePay)
         {
             string errMsg = string.Empty;
-            DoScheduleDataModel dataModel = new DoScheduleDataModel(scheduleId, userId);
+            DoScheduleDataModel dataModel = new DoScheduleDataModel(scheduleId, userId, scheduleName, openTime, shiftTime, payCount, realPay, freePay);
             if (MessageMana.PushMessage(WeiXinMesageType.DoSchedule, openId, dataModel, out errMsg))
             {
                 LogHelper.SaveLog(TxtLogType.WeiXin, TxtLogContentType.Common, TxtLogFileType.Day, "true");
@@ -94,6 +94,7 @@ namespace XXCloudService.Api.XCCloud
                         //修改班次状态, 清理吧台用户令牌, 通知所有吧台用户
                         var currScheduleModel = flw_ScheduleService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase) && p.CheckDate == currCheckDate && p.State == (int)ScheduleState.Starting).FirstOrDefault();
                         currScheduleModel.State = (int)ScheduleState.Submitted;
+                        currScheduleModel.ShiftTime = DateTime.Now;
                         flw_ScheduleService.UpdateModel(currScheduleModel, false);
                         
                         //统计每个员工的订单现金、网络支付金额
@@ -106,7 +107,10 @@ namespace XXCloudService.Api.XCCloud
                                        ScheduleID = g.Key.ScheduleID,
                                        UserID = g.Key.UserID,
                                        CashTotle = g.Where(w => w.PayType == 0).Sum(s => s.RealPay),
-                                       NetTotle = g.Where(w => w.PayType == 1 || w.PayType == 2).Sum(s => s.RealPay)
+                                       NetTotle = g.Where(w => w.PayType == 1 || w.PayType == 2).Sum(s => s.RealPay),
+                                       PayCount = g.Sum(s => s.PayCount),
+                                       RealPay = g.Sum(s => s.RealPay),
+                                       FreePay = g.Sum(s => s.FreePay)
                                    };
                         foreach (var model in linq)
                         {
@@ -118,7 +122,7 @@ namespace XXCloudService.Api.XCCloud
 
                             //通知所有吧台用户
                             var openId = Base_UserInfoService.I.GetModels(p => p.UserID == userId).Select(o => o.OpenID).FirstOrDefault();
-                            DoSchedulePush(openId, scheduleId, userId ?? 0);
+                            DoSchedulePush(openId, scheduleId, userId ?? 0, currScheduleModel.ScheduleName, currScheduleModel.OpenTime.Value, currScheduleModel.ShiftTime.Value, model.PayCount ?? 0, model.RealPay ?? 0, model.FreePay ?? 0);
                         }
 
                         //清理吧台用户令牌
