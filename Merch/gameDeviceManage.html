@@ -692,7 +692,7 @@ let motor1En_push=1;let motor2En_push=1;let balanceIndexPush='';let motor1CoinPu
                     let parseJson = JSON.stringify(_obj);
                     $.ajax({
                         type:'post',
-                        url:'/XCCloud/DeviceInfo?action=BindDeviceInfo',
+                        url:'/XCCloud/DeviceInfo?action=BindRoutineInfo',
                         contentType: "application/json; charset=utf-8",
                         data:{parasJson: parseJson},
                         success: function (data) {
@@ -1149,7 +1149,7 @@ let motor1En_push=1;let motor2En_push=1;let balanceIndexPush='';let motor1CoinPu
     {{#  }else{ }}
     <a class="layui-btn layui-btn-xs" lay-event="clockCook">报警日志</a>
     <a class="layui-btn layui-btn-xs" lay-event="code">二维码</a>
-    {{# if(d.Address!=null){ }}
+    {{# if(d.Address!=null&&d.Address!=""){ }}
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="unBindMachine">通讯解绑</a>
     {{# }else{ }}
     <a class="layui-btn layui-btn-xs" lay-event="bindMachine">通讯绑定</a>
