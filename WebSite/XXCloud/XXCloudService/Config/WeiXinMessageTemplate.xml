@@ -152,7 +152,7 @@
   <msgtemplate id="DoSchedule">
     <title>班已结束, 请点击进入详细页面提交实点数</title>
     <templateid>vao-hP_vQpvzRXoURHTd8-DQd59qfvZpHeDivf6_XJA</templateid>
-    <detailsurl>http://mp.4000051530.com/merch/authManage.html</detailsurl>
+    <detailsurl>http://mp.4000051530.com/merch/schedule.html</detailsurl>
     <sapppagepath></sapppagepath>
     <remark>辛苦一天了，好好休息吧！</remark>
     <firstcolor>#173177</firstcolor>
