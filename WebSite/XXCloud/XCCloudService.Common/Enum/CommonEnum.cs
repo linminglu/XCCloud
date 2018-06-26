@@ -204,7 +204,8 @@ namespace XCCloudService.Common.Enum
         XcUserNewPassword = 8,//莘宸用户登录密码
         XcUserResetPassword = 9,//莘宸用户重置密码
         XCGameGetCoinSuccess = 10,//莘宸用户提币成功
-        XCCloudOrderAuditRequest = 11//订单审核
+        XCCloudOrderAuditRequest = 11,//订单审核
+        DoSchedule = 12//交班通知
     }
 
     public enum OrderType
@@ -418,8 +419,7 @@ namespace XCCloudService.Common.Enum
         XcUser = 0,     //莘宸普通员工
         XcAdmin = 1,    //莘宸管理员
         StoreUser = 2,  //门店员工
-        MerchUser = 3,  //商户专员
-        Workstation = 4 //吧台员工
+        MerchUser = 3   //商户专员
     }
 
     public enum MerchType

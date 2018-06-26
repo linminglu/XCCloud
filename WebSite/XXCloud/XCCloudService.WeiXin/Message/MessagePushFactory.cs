@@ -98,6 +98,10 @@ namespace XCCloudService.WeiXin.Message
             {
                 return GetMemberRechargeNotifyData(configModel, dataModel);
             }
+            else if (typeof(TConfig) == typeof(DoScheduleConfigModel))
+            {
+                return GetDoScheduleNotifyData(configModel, dataModel, out uriParams);
+            }
             return null;
         }
 
@@ -276,6 +280,22 @@ namespace XCCloudService.WeiXin.Message
                 remark = new { value = data.Remark, color = config.RemarkColor }
             };
 
+            return msgData;
+        }
+
+        private static object GetDoScheduleNotifyData<TConfig, TData>(TConfig configModel, TData dataModel, out string uriParams)
+        {
+            uriParams = string.Empty;
+            DoScheduleConfigModel config = Utils.GetCopy<DoScheduleConfigModel>(configModel);
+            DoScheduleDataModel data = Utils.GetCopy<DoScheduleDataModel>(dataModel);          
+            var msgData = new
+            {
+                first = new { value = config.Title, color = config.FirstColor },
+                keyword1 = new { value = data.ScheduleID, color = config.Keynote1Color },
+                keyword2 = new { value = data.UserID, color = config.Keynote2Color },
+                remark = new { value = "班次号：" + data.ScheduleID + "\n" + "用户ID：" + data.UserID + "\n" + config.Remark, color = config.RemarkColor }
+            };
+            uriParams = string.Format("scheduleId={0}&userId={1}", data.ScheduleID, data.UserID);
             return msgData;
         }
     }

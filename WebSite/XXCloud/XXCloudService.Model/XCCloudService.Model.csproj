@@ -186,6 +186,8 @@
     <Compile Include="Socket\UDP\UserPhoneQueryResultNotifyRequestModel.cs" />
     <Compile Include="WeiXin\Message\MemberRechargeNotifyConfigModel.cs" />
     <Compile Include="WeiXin\Message\MemberRechargeNotifyDataModel.cs" />
+    <Compile Include="WeiXin\Message\DoScheduleConfigModel.cs" />
+    <Compile Include="WeiXin\Message\DoScheduleDataModel.cs" />
     <Compile Include="WeiXin\Message\OrderAuditConfigModel.cs" />
     <Compile Include="WeiXin\Message\OrderAuditDataModel.cs" />
     <Compile Include="WeiXin\Message\SAppMsgConfigAttribute.cs" />

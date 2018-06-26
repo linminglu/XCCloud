@@ -31,6 +31,7 @@ namespace XCCloudService.WeiXin.Message
                 case WeiXinMesageType.XCGameGetCoinSuccess: return Push<XcGameGetCoinSuccessConfigModel, XcGameGetCoinSuccessDataModel>(openId, (XcGameGetCoinSuccessDataModel)dataModel, out errMsg);
                 case WeiXinMesageType.MemberRechargeNotify: return Push<MemberRechargeNotifyConfigModel, MemberRechargeNotifyDataModel>(openId, (MemberRechargeNotifyDataModel)dataModel, out errMsg);
                 case WeiXinMesageType.XCCloudOrderAuditRequest: return Push<OrderAuditConfigModel, OrderAuditDataModel>(openId, (OrderAuditDataModel)dataModel, out errMsg);
+                case WeiXinMesageType.DoSchedule: return Push<DoScheduleConfigModel, DoScheduleDataModel>(openId, (DoScheduleDataModel)dataModel, out errMsg);
                 default: return false;
             }
         }

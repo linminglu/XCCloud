@@ -137,4 +137,15 @@
     <keynote3color>#173177</keynote3color>
     <remarkcolor>#173177</remarkcolor>
   </msgtemplate>
+  <msgtemplate id="DoSchedule">
+    <title>吧台交班通知</title>
+    <templateid>tHvW3c-ygrn-lmzDTCKmjgSlIdp8gMgUQRlH6dMEJkw</templateid>
+    <detailsurl>http://mp.4000051530.com/merch/authManage.html</detailsurl>
+    <sapppagepath></sapppagepath>
+    <remark>点击进入详细页面</remark>
+    <firstcolor>#173177</firstcolor>
+    <keynote1color>#173177</keynote1color>
+    <keynote2color>#173177</keynote2color>
+    <remarkcolor>#173177</remarkcolor>
+  </msgtemplate>
 </msgtemplates> 

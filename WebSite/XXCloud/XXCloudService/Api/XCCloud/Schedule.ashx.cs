@@ -14,6 +14,8 @@ using System.Transactions;
 using System.Data.Entity.Validation;
 using XXCloudService.Api.XCCloud.Common;
 using XCCloudService.Business.XCGameMana;
+using XCCloudService.Model.WeiXin.Message;
+using XCCloudService.WeiXin.Message;
 
 namespace XXCloudService.Api.XCCloud
 {
@@ -23,6 +25,20 @@ namespace XXCloudService.Api.XCCloud
     /// </summary>
     public class Schedule : ApiBase
     {
+        private void DoSchedulePush(string openId, string scheduleId, int userId)
+        {
+            string errMsg = string.Empty;
+            DoScheduleDataModel dataModel = new DoScheduleDataModel(scheduleId, userId);
+            if (MessageMana.PushMessage(WeiXinMesageType.DoSchedule, openId, dataModel, out errMsg))
+            {
+                LogHelper.SaveLog(TxtLogType.WeiXin, TxtLogContentType.Common, TxtLogFileType.Day, "true");
+            }
+            else
+            {
+                LogHelper.SaveLog(TxtLogType.WeiXin, TxtLogContentType.Common, TxtLogFileType.Day, errMsg);
+            }
+        }
+
         /// <summary>
         /// 交班
         /// </summary>
@@ -99,12 +115,14 @@ namespace XXCloudService.Api.XCCloud
                             currScheduleUserInfoModel.CashTotle = model.CashTotle;
                             currScheduleUserInfoModel.NetTotle = model.NetTotle;
                             flw_Schedule_UserInfoService.UpdateModel(currScheduleUserInfoModel, false);
+
+                            //通知所有吧台用户
+                            var openId = Base_UserInfoService.I.GetModels(p => p.UserID == userId).Select(o => o.OpenID).FirstOrDefault();
+                            DoSchedulePush(openId, scheduleId, userId ?? 0);
                         }
 
                         //清理吧台用户令牌
-                        XCCloudUserTokenBusiness.RemoveWorkStationUserToken(storeId);
-
-                        //通知所有吧台用户
+                        XCCloudUserTokenBusiness.RemoveWorkStationUserToken(storeId);                        
 
                         //是否为当前营业日期最后一个班次
                         if (flw_ScheduleService.GetCount(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase) && p.CheckDate == currCheckDate && p.State != (int)ScheduleState.Checked && p.State != (int)ScheduleState.Submitted) == 1)
