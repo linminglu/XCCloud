@@ -575,14 +575,14 @@ namespace XXCloudService.Api.XCCloud
                 }
 
                 var base_DeviceInfo = Base_DeviceInfoService.I.GetModels(p => p.Token.Equals(token, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
-                var gameIndexId = base_DeviceInfo.GameIndexID;
-                var bindDeviceId = base_DeviceInfo.BindDeviceID;
+                var gameIndex = base_DeviceInfo.GameIndexID;
+                var headIndex = base_DeviceInfo.ID;
                 var checkDate = Store_CheckDateService.I.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)).OrderByDescending(or => or.CheckDate).Select(o => o.CheckDate).FirstOrDefault();
                 var linq = new
                 {
-                    GameIndexID = gameIndexId,
-                    BindDeviceID = bindDeviceId,
-                    GameName = Data_GameInfoService.I.GetModels(p=>p.ID == gameIndexId).Select(o=>o.GameName),
+                    GameIndex = gameIndex,
+                    HeadIndex = headIndex,
+                    GameName = Data_GameInfoService.I.GetModels(p => p.ID == gameIndex).Select(o => o.GameName),
                     CheckDate = checkDate
                 };
 
