@@ -639,7 +639,7 @@ namespace XXCloudService.Api.XCCloud
                 int userId = userTokenModel.UserId;
 
                 string errMsg = string.Empty;
-                if(!dicParas.Get("gameIndex").Validintnozero("游戏机ID", out errMsg))
+                if (!dicParas.Get("gameIndex").Validintnozero("游戏机ID", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 if (!dicParas.Get("headIndex").Validintnozero("机头ID", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -648,12 +648,15 @@ namespace XXCloudService.Api.XCCloud
                 var mediaURL1 = dicParas.Get("mediaURL1");
                 var mediaURL2 = dicParas.Get("mediaURL2");
                 var mediaURL3 = dicParas.Get("mediaURL3");
+                var lastIndexMediaURL1 = mediaURL1.LastIndexOf('.');
+                var lastIndexMediaURL2 = mediaURL2.LastIndexOf('.');
+                var lastIndexMediaURL3 = mediaURL3.LastIndexOf('.');
 
                 var suffix = new List<String>();
-                suffix.Add(mediaURL1.Substring(mediaURL1.LastIndexOf('.')));
-                suffix.Add(mediaURL2.Substring(mediaURL1.LastIndexOf('.')));
-                suffix.Add(mediaURL3.Substring(mediaURL1.LastIndexOf('.')));
-                if (suffix.Where(w => !"jpg,jpeg,gif,png,bmp".Contains(w.ToLower())).Count() > 1)
+                if (lastIndexMediaURL1 >= 0) suffix.Add(mediaURL1.Substring(lastIndexMediaURL1));
+                if (lastIndexMediaURL2 >= 0) suffix.Add(mediaURL2.Substring(lastIndexMediaURL2));
+                if (lastIndexMediaURL3 >= 0) suffix.Add(mediaURL3.Substring(lastIndexMediaURL3));
+                if (suffix.Where(w => !"jpg,jpeg,gif,png,bmp".Contains((w ?? "").ToLower())).Count() > 1)
                 {
                     errMsg = "非图片多媒体文件不能超过1个";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
