@@ -2438,6 +2438,26 @@
           <Property Name="Note" Type="varchar" MaxLength="200" />
           <Property Name="Verifiction" Type="varchar" MaxLength="32" />
         </EntityType>
+        <EntityType Name="Flw_MemberCard_Free">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="varchar" MaxLength="32" Nullable="false" />
+          <Property Name="MerchID" Type="varchar" MaxLength="15" />
+          <Property Name="StoreID" Type="varchar" MaxLength="15" />
+          <Property Name="MemberID" Type="varchar" MaxLength="32" />
+          <Property Name="CardIndex" Type="varchar" MaxLength="32" />
+          <Property Name="FreeType" Type="int" />
+          <Property Name="IsRealCoin" Type="int" />
+          <Property Name="BalanceIndex" Type="int" />
+          <Property Name="FreeCount" Type="numeric" Precision="10" Scale="2" />
+          <Property Name="DeviceID" Type="int" />
+          <Property Name="UserID" Type="int" />
+          <Property Name="ScheduleID" Type="varchar" MaxLength="32" />
+          <Property Name="WorkStation" Type="varchar" MaxLength="50" />
+          <Property Name="CheckDate" Type="date" />
+          <Property Name="Verifiction" Type="varchar" MaxLength="32" />
+        </EntityType>
         <EntityType Name="Flw_MemberCard_Renew">
           <Key>
             <PropertyRef Name="OrderID" />
@@ -3013,6 +3033,7 @@
           <EntitySet Name="Flw_MemberCard_BalanceCharge" EntityType="Self.Flw_MemberCard_BalanceCharge" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Flw_MemberCard_Change" EntityType="Self.Flw_MemberCard_Change" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Flw_MemberCard_Exit" EntityType="Self.Flw_MemberCard_Exit" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Flw_MemberCard_Free" EntityType="Self.Flw_MemberCard_Free" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Flw_MemberCard_Renew" EntityType="Self.Flw_MemberCard_Renew" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Flw_Order" EntityType="Self.Flw_Order" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Flw_Order_Detail" EntityType="Self.Flw_Order_Detail" Schema="dbo" store:Type="Tables" />
@@ -3448,6 +3469,7 @@
           <EntitySet Name="Flw_Order" EntityType="XCCloudDBModel.Flw_Order" />
           <EntitySet Name="Dict_BalanceType" EntityType="XCCloudDBModel.Dict_BalanceType" />
           <EntitySet Name="Dict_System" EntityType="XCCloudDBModel.Dict_System" />
+          <EntitySet Name="Flw_MemberCard_Free" EntityType="XCCloudDBModel.Flw_MemberCard_Free" />
         </EntityContainer>
         <EntityType Name="Base_ChainRule_Store">
           <Key>
@@ -6287,6 +6309,26 @@
           <Property Name="Enabled" Type="Int32" />
           <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
           <Property Name="DictLevel" Type="Int32" />
+        </EntityType>
+        <EntityType Name="Flw_MemberCard_Free">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="MemberID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="CardIndex" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="FreeType" Type="Int32" />
+          <Property Name="IsRealCoin" Type="Int32" />
+          <Property Name="BalanceIndex" Type="Int32" />
+          <Property Name="FreeCount" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="DeviceID" Type="Int32" />
+          <Property Name="UserID" Type="Int32" />
+          <Property Name="ScheduleID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="WorkStation" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CheckDate" Type="DateTime" Precision="0" />
+          <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
         </EntityType>
         </Schema>
     </edmx:ConceptualModels>
@@ -9301,6 +9343,27 @@
                 <ScalarProperty Name="DictValue" ColumnName="DictValue" />
                 <ScalarProperty Name="DictKey" ColumnName="DictKey" />
                 <ScalarProperty Name="PID" ColumnName="PID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Flw_MemberCard_Free">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Flw_MemberCard_Free">
+              <MappingFragment StoreEntitySet="Flw_MemberCard_Free">
+                <ScalarProperty Name="Verifiction" ColumnName="Verifiction" />
+                <ScalarProperty Name="CheckDate" ColumnName="CheckDate" />
+                <ScalarProperty Name="WorkStation" ColumnName="WorkStation" />
+                <ScalarProperty Name="ScheduleID" ColumnName="ScheduleID" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="DeviceID" ColumnName="DeviceID" />
+                <ScalarProperty Name="FreeCount" ColumnName="FreeCount" />
+                <ScalarProperty Name="BalanceIndex" ColumnName="BalanceIndex" />
+                <ScalarProperty Name="IsRealCoin" ColumnName="IsRealCoin" />
+                <ScalarProperty Name="FreeType" ColumnName="FreeType" />
+                <ScalarProperty Name="CardIndex" ColumnName="CardIndex" />
+                <ScalarProperty Name="MemberID" ColumnName="MemberID" />
+                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
+                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>

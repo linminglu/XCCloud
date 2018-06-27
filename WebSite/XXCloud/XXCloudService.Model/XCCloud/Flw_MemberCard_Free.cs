@@ -25,7 +25,7 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<decimal> FreeCount { get; set; }
         public Nullable<int> DeviceID { get; set; }
         public Nullable<int> UserID { get; set; }
-        public Nullable<int> ScheduleID { get; set; }
+        public string ScheduleID { get; set; }
         public string WorkStation { get; set; }
         public Nullable<System.DateTime> CheckDate { get; set; }
         public string Verifiction { get; set; }

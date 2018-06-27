@@ -3009,32 +3009,54 @@ namespace XCCloudService.Api.XCCloud
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "当前班次为空，不能进行续卡操作");
                 }
 
-                //using (TransactionScope ts = new TransactionScope(TransactionScopeOption.RequiresNew))
-                //{
-                //    //添加补币记录
-                //    Flw_MemberCard_Free mcf = new Flw_MemberCard_Free();
-
-
-                //    if (repairType == "2")
-                //    {
-                //        //补币的余额
-                //        Data_Card_Balance balance = Data_Card_BalanceService.I.GetModels(t => t.MerchID == merchID && t.CardIndex == memberCard.ID && t.BalanceIndex == balanceIndex).FirstOrDefault();
-                //        balance.Balance += quantity;
-                //        if(!Data_Card_BalanceService.I.Update(balance, false))
-                //        {
-                //            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "更新卡余额失败");
-                //        }
-                //    }                   
-
-                //    ts.Complete();
-                //}
-
-                var result = new
+                int isRealCoin = 0;
+                if (repairType == "1")
                 {
-                    ICCardId = memberCard.ICCardID,
-                    EndDate = memberCard.EndDate.Value.ToString("yyyy-MM-dd")
-                };
-                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, result);
+                    isRealCoin = 1;
+                }
+                int deviceId = 0;
+                using (TransactionScope ts = new TransactionScope(TransactionScopeOption.RequiresNew))
+                {
+                    if (repairType == "1")
+                    {
+                        //实物币  -- 发送出币指令
+                        //deviceId = 0;
+                    }
+                    else if (repairType == "2")
+                    {
+                        //存入卡中 -- 补币的余额
+                        Data_Card_Balance balance = Data_Card_BalanceService.I.GetModels(t => t.MerchID == merchID && t.CardIndex == memberCard.ID && t.BalanceIndex == balanceIndex).FirstOrDefault();
+                        balance.Balance += quantity;
+                        if (!Data_Card_BalanceService.I.Update(balance, false))
+                        {
+                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "更新卡余额失败");
+                        }
+                    }
+
+                    //添加补币记录
+                    Flw_MemberCard_Free mcf = new Flw_MemberCard_Free();
+                    mcf.ID = RedisCacheHelper.CreateStoreSerialNo(storeId);
+                    mcf.MerchID = merchID;
+                    mcf.StoreID = storeId;
+                    mcf.MemberID = memberCard.MemberID;
+                    mcf.CardIndex = memberCard.ID;
+                    mcf.FreeType = 0;
+                    mcf.IsRealCoin = isRealCoin;
+                    mcf.BalanceIndex = balanceIndex;
+                    mcf.FreeCount = quantity;
+                    mcf.DeviceID = deviceId;
+                    mcf.UserID = userId;
+                    mcf.ScheduleID = schedule.ID;
+                    mcf.WorkStation = workStation;
+                    mcf.CheckDate = schedule.CheckDate;
+                    if (!Flw_MemberCard_FreeService.I.Add(mcf, false))
+                    {
+                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "补币失败");
+                    }
+                    ts.Complete();
+                }
+
+                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.T, "");
             }
             catch (Exception e)
             {

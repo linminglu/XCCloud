@@ -198,5 +198,6 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Flw_Order> Flw_Order { get; set; }
         public virtual DbSet<Dict_BalanceType> Dict_BalanceType { get; set; }
         public virtual DbSet<Dict_System> Dict_System { get; set; }
+        public virtual DbSet<Flw_MemberCard_Free> Flw_MemberCard_Free { get; set; }
     }
 }
