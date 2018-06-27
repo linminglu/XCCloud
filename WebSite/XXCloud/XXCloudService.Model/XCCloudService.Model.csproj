@@ -108,6 +108,7 @@
     <Compile Include="CustomModel\XCCloud\Order\OrderDetailModel.cs" />
     <Compile Include="CustomModel\XCCloud\Order\OrderModel.cs" />
     <Compile Include="CustomModel\XCCloud\PaymentModel.cs" />
+    <Compile Include="CustomModel\XCCloud\PriceLimitModel.cs" />
     <Compile Include="CustomModel\XCCloud\RuleOverlyingModel.cs" />
     <Compile Include="CustomModel\XCCloud\TicketModel.cs" />
     <Compile Include="CustomModel\XCCloud\UploadFileResultModel.cs" />
@@ -718,6 +719,9 @@
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Flw_MemberCard_Exit.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Flw_MemberCard_Free.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Flw_MemberCard_Renew.cs">

@@ -32,7 +32,7 @@ namespace XXCloudService.Api.XCCloud
                 SqlParameter[] parameters = new SqlParameter[1];
                 parameters[0] = new SqlParameter("@MerchId", merchId);
 
-                string sql = @"select a.ID, a.DictKey, a.Comment, a.OrderID, a.Enabled, (case a.Enabled when 1 then '允许' when 0 then '禁止' else '' end) as EnabledStr " +  
+                string sql = @"select a.ID, a.DictKey, a.DictValue, a.Comment, a.OrderID, a.Enabled, (case a.Enabled when 1 then '允许' when 0 then '禁止' else '' end) as EnabledStr " +  
                     " from Dict_System a INNER JOIN Dict_System b on a.PID=b.ID" +
                     " where a.MerchID=@MerchId AND b.PID=0 AND b.DictKey='套餐类别' order by a.OrderID";
 
@@ -115,6 +115,7 @@ namespace XXCloudService.Api.XCCloud
 
                 var id = dicParas.Get("id").Toint(0);
                 var dictKey = dicParas.Get("dictKey");
+                var dictValue = dicParas.Get("dictValue");
                 var comment = dicParas.Get("comment");
                 var enabled = dicParas.Get("enabled").Toint();
                
@@ -145,6 +146,7 @@ namespace XXCloudService.Api.XCCloud
                             dict_SystemModel.PID = pId;
                             dict_SystemModel.Enabled = enabled;
                             dict_SystemModel.DictKey = dictKey;
+                            dict_SystemModel.DictValue = dictValue;
                             dict_SystemModel.Comment = comment;
                             dict_SystemModel.MerchID = merchId;
                             dict_SystemModel.OrderID = 1;                            
@@ -174,6 +176,7 @@ namespace XXCloudService.Api.XCCloud
 
                             //修改
                             dict_SystemModel.DictKey = dictKey;
+                            dict_SystemModel.DictValue = dictValue;
                             dict_SystemModel.Enabled = enabled;
                             dict_SystemModel.Comment = comment;
                             if (!dict_SystemService.Update(dict_SystemModel))
@@ -319,6 +322,35 @@ namespace XXCloudService.Api.XCCloud
                 }
 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        /// <summary>
+        /// 上传套餐类别背景图片
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object UploadFoodTypeImage(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                string errMsg = string.Empty;
+
+                List<string> imageUrls = null;
+                if (!Utils.UploadImageFile("/XCCloud/FoodType/Image/", out imageUrls, out errMsg))
+                {
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, new
+                {
+                    ImageURL = imageUrls
+                });
             }
             catch (Exception e)
             {

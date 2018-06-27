@@ -1962,7 +1962,7 @@
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="PID" Type="int" />
           <Property Name="DictKey" Type="varchar" MaxLength="50" />
-          <Property Name="DictValue" Type="varchar" MaxLength="50" />
+          <Property Name="DictValue" Type="varchar" MaxLength="200" />
           <Property Name="Comment" Type="varchar" MaxLength="500" />
           <Property Name="OrderID" Type="int" />
           <Property Name="Enabled" Type="int" />
@@ -3360,7 +3360,6 @@
           <EntitySet Name="Data_WorkFlowConfig" EntityType="XCCloudDBModel.Data_WorkFlowConfig" />
           <EntitySet Name="Dict_Area" EntityType="XCCloudDBModel.Dict_Area" />
           <EntitySet Name="Dict_FunctionMenu" EntityType="XCCloudDBModel.Dict_FunctionMenu" />
-          <EntitySet Name="Dict_System" EntityType="XCCloudDBModel.Dict_System" />
           <EntitySet Name="Divide_ProjectInfo" EntityType="XCCloudDBModel.Divide_ProjectInfo" />
           <EntitySet Name="Flw_485_Coin" EntityType="XCCloudDBModel.Flw_485_Coin" />
           <EntitySet Name="Flw_485_SaveCoin" EntityType="XCCloudDBModel.Flw_485_SaveCoin" />
@@ -3448,6 +3447,7 @@
           <EntitySet Name="Flw_GroupVerity" EntityType="XCCloudDBModel.Flw_GroupVerity" />
           <EntitySet Name="Flw_Order" EntityType="XCCloudDBModel.Flw_Order" />
           <EntitySet Name="Dict_BalanceType" EntityType="XCCloudDBModel.Dict_BalanceType" />
+          <EntitySet Name="Dict_System" EntityType="XCCloudDBModel.Dict_System" />
         </EntityContainer>
         <EntityType Name="Base_ChainRule_Store">
           <Key>
@@ -4634,20 +4634,6 @@
           <Property Name="ICON" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="MenuType" Type="Int32" />
           <Property Name="UseType" Type="Int32" />
-        </EntityType>
-        <EntityType Name="Dict_System">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="PID" Type="Int32" />
-          <Property Name="DictKey" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="DictValue" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Comment" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
-          <Property Name="OrderID" Type="Int32" />
-          <Property Name="Enabled" Type="Int32" />
-          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="DictLevel" Type="Int32" />
         </EntityType>
         <EntityType Name="Divide_ProjectInfo">
           <Key>
@@ -6288,6 +6274,20 @@
           <Property Name="AddingType" Type="Int32" />
           <Property Name="Note" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
         </EntityType>
+        <EntityType Name="Dict_System">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PID" Type="Int32" />
+          <Property Name="DictKey" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="DictValue" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="Comment" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="OrderID" Type="Int32" />
+          <Property Name="Enabled" Type="Int32" />
+          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="DictLevel" Type="Int32" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -7561,21 +7561,6 @@
                 <ScalarProperty Name="FunctionName" ColumnName="FunctionName" />
                 <ScalarProperty Name="ParentID" ColumnName="ParentID" />
                 <ScalarProperty Name="FunctionID" ColumnName="FunctionID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Dict_System">
-            <EntityTypeMapping TypeName="XCCloudDBModel.Dict_System">
-              <MappingFragment StoreEntitySet="Dict_System">
-                <ScalarProperty Name="DictLevel" ColumnName="DictLevel" />
-                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
-                <ScalarProperty Name="Enabled" ColumnName="Enabled" />
-                <ScalarProperty Name="OrderID" ColumnName="OrderID" />
-                <ScalarProperty Name="Comment" ColumnName="Comment" />
-                <ScalarProperty Name="DictValue" ColumnName="DictValue" />
-                <ScalarProperty Name="DictKey" ColumnName="DictKey" />
-                <ScalarProperty Name="PID" ColumnName="PID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -9301,6 +9286,21 @@
                 <ScalarProperty Name="TypeName" ColumnName="TypeName" />
                 <ScalarProperty Name="TypeID" ColumnName="TypeID" />
                 <ScalarProperty Name="MerchID" ColumnName="MerchID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Dict_System">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Dict_System">
+              <MappingFragment StoreEntitySet="Dict_System">
+                <ScalarProperty Name="DictLevel" ColumnName="DictLevel" />
+                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
+                <ScalarProperty Name="Enabled" ColumnName="Enabled" />
+                <ScalarProperty Name="OrderID" ColumnName="OrderID" />
+                <ScalarProperty Name="Comment" ColumnName="Comment" />
+                <ScalarProperty Name="DictValue" ColumnName="DictValue" />
+                <ScalarProperty Name="DictKey" ColumnName="DictKey" />
+                <ScalarProperty Name="PID" ColumnName="PID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>

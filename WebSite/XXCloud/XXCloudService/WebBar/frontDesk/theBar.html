@@ -11,7 +11,8 @@
 	<link href="css/iconfont.css" rel="stylesheet">
 	<link rel="stylesheet" href="css/swiper.min.css">
 	<link href="css/bootstrap-table.css" rel="stylesheet">
-	<style>
+    <link rel='icon' href='xinchen.ico ' type='image/x-ico'/>
+    <style>
 		[v-cloak] {
 			display: none;
 		}
@@ -252,6 +253,14 @@
 		.cardList h4{font-size: 1.3em;line-height: 2em;color: #333333;font-weight: 600;text-align: center;border-bottom: 1px dashed #00F7DE;}
 		.cardList p{font-size: 1.1em;line-height: 2em;color: #666;text-align: center;}
 		.input-group-addon{font-size: 1.1em;}
+
+        .dropup{display: flex;margin-top: 8px;}
+        .membershipDetails{height: 20em;overflow-y: auto;}
+		.dropChoosesty li{padding: 0 15px;font-size: 1.3em;line-height: 2.5em;}
+		.dropChoosesty li span{font-size: 1.6em;margin-right: 8px;position: relative;top: 4px;}
+		.dropChoosesty li:nth-child(1) span{color: #349ffd;}
+		.dropChoosesty li:nth-child(2) span{color: #00ffff;}
+		.dropChoosesty li:nth-child(3) span{color: #5b6270;}
 		@media (min-width: 1024px) and (max-width: 1400px) {
 			.navLeftS{display: none;}
 		}
@@ -335,15 +344,17 @@
 						<div class="col-lg-6 col-md-6">
 							<h4 class="col-lg-8 col-md-8 inputNtSty">当前快速售币：</h4><em class="inputNt inputNtSty col-lg-4 col-md-4">{{fastMoney}}元{{fastAmount}}币</em>
 							<div class="col-lg-12 col-md-12">
-								<input :autofocus="onFocus" class="FastSellSty form-control" v-model.number="inputMoney" @focus.once="inputFnc('that.inputMoney')" @keyup.enter="inputMoneySubmit" placeholder="输入购币金额"/>
-								<input class="FastSellSty form-control" v-model.number="inputAmount" @focus.once="inputFnc('that.inputAmount')" @keyup.enter="submit"  placeholder="购币数量"/>
+								<input :autofocus="onFocus" class="FastSellSty form-control" v-model.number="inputMoney" @focus.once="inputFnc('that.inputMoney')" @keyup.enter="inputMoneySubmit" placeholder="输入购币金额" maxlength="13"/>
+								<input class="FastSellSty form-control" v-model.number="inputAmount" @focus.once="inputFnc('that.inputAmount')" @keyup.enter="submit"  placeholder="购币数量" maxlength="13"/>
 							</div>
-							<div class="col-lg-12 col-md-12">
-								<div class="switchZdy addHeight col-lg-12 col-md-12">
-									<div class="col-lg-6 col-md-6 onSwitch">实物币</div>
-									<div class="col-lg-6 col-md-6">代币</div>
-								</div>
-							</div>
+                            <div class="input-group col-lg-12 col-md-12">
+                                <span class="input-group-addon onSwitchSty">出币方式：</span>
+                                <div class="input-group-addon switchZdy" @click="switchFnc('5')">
+                                    <div :class="[onSwitch5 ? 'onSwitch1' : 'onSwitch2','onSwitch']"></div>
+                                    <div class="col-lg-6 col-md-6">实物币</div>
+                                    <div class="col-lg-6 col-md-6">电子币</div>
+                                </div>
+                            </div>
 						</div>
 						<div class="formNum col-lg-6 col-md-6" id="formNum1">
 							<div class=" col-lg-3 col-md-3 pad_0"><a href="javascript:void(0);" class="num">1</a></div>
@@ -778,6 +789,34 @@
 			</div>
 		</div>
 	</div>
+    <!--查询获取卡列表-->
+    <div class="modal fade bs-example-modal-lg" id="cardList" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">温馨提示</h4>
+                </div>
+                <div class="modal-body row">
+                    <div class="col-lg-12 col-md-12 cardList">
+                        <table class="table table-bordered">
+                            <tr v-for="(item,index) in cardList">
+                                <td><input type="radio" name="optionsRadios" id="optionsRadios2" value="option2"></td>
+                                <td>
+                                    <h4>会员卡号</h4>
+                                    <p>{{item.ICCardId}}</p>
+                                </td>
+                                <td v-for="(items,index) in item.MemberBalances">
+                                    <h4>{{items.BalanceName}}</h4>
+                                    <p>{{items.Quantity}}</p>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 	<!-- Modal(通用提示框) -->
 	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="z-index: 99999">
 		<div class="modal-dialog" role="document">
@@ -910,9 +949,8 @@
 				<li @click="FastSell"><a href="javascript:void(0)">快速售币</a></li>
 				<li @click="salesAll" :class="{cur:saleShow}"><a id="sales" href="javascript:void(0)">产品销售</a></li>
 				<li @click="operationFnc" :class="{cur:operationShow}"><a href="javascript:void(0)">会员信息</a></li>
-				<li @click="cardLossFnc" :class="{cur:cardLossShow}"><a href="javascript:void(0)">会员操作</a></li>
 				<li><a href="other.html">其他业务</a></li>
-				<li @click="membershipReading"><a href="javascript:void(0)">读卡</a></li>
+				<!--<li @click="membershipReading"><a href="javascript:void(0)">读卡</a></li>-->
 			</ul>
 			<!--右边显示内容-->
 			<div class="heightKz">
@@ -932,7 +970,7 @@
 						<div class="swiper-button-next"></div>
 						<div class="swiper-button-prev"></div>
 					</div>
-					<div class="screeningTitle">
+					<div class="screeningTitle" v-if="screeningTitle">
 						<select class="form-control">
 							<option value="-1">全部</option>
 							<option v-for="(item,index) in saleTitle" :value="index">
@@ -1300,32 +1338,6 @@
                         </div>
                     </div>
 				</div>
-				<!--会员卡丢失-->
-				<div class="enrollment" v-if="cardLossShow">
-                    <div class="row">                  
-                        <h3 class="titleSty">用户信息</h3>
-
-						<div class="col-lg-12 col-md-12 cardList">
-							<table class="table table-bordered">
-								<tr v-for="(item,index) in cardList">
-									<td><input type="radio" name="optionsRadios" id="optionsRadios2" value="option2"></td>
-									<td>
-										<h4>会员卡号</h4>
-										<p>{{item.ICCardId}}</p>
-									</td>
-									<td v-for="(items,index) in item.MemberBalances">
-										<h4>{{items.BalanceName}}</h4>
-										<p>{{items.Quantity}}</p>
-									</td>
-								</tr>
-							</table>
-						</div>
-                        <div class="col-lg-12 col-md-12">
-                            <div class="col-lg-4 col-md-0"></div>
-
-                        </div>
-                    </div>
-				</div>
 			</div>
 		</div>
 	</div>
@@ -1340,12 +1352,21 @@
 			</tr>
 		</table>
 	</div>
-	<div class="footer" @click="membershipDetails" :class="{membershipDetails:footerShow}">
-		<div class="input-group col-lg-2 col-md-2">
-			<span class="input-group-addon">会员姓名：</span>
-			<input type="text" class="form-control" v-model="cardLossData.name" placeholder="请输入会员姓名"/>
-		</div>
-		<ul class="member col-lg-10 col-md-10">
+	<div class="footer" :class="{membershipDetails:footerShow}">
+        <div class="btn-group dropup col-lg-3 col-md-3">
+            <button type="button" class="btn btn-default">{{dropChooseTxt1}}</button>
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu dropChoosesty">
+                <li @click="dropChoose('0')"><span class="iconfont icon-duqiaqi"></span>读卡器</li>
+                <li @click="dropChoose('1')"><span class="iconfont icon-shenfenzhengrenzheng"></span>身份证</li>
+                <li @click="dropChoose('2')"><span class="iconfont icon-3"></span>手动输入</li>
+            </ul>
+            <input type="text" class="form-control" v-model="cardLossData.name" placeholder="请输入会员姓名"/>
+            <button type="button" class="btn btn-default">{{dropChooseTxt2}}</button>
+        </div>
+		<ul class="member col-lg-9 col-md-9" @click="membershipDetails">
 			<li><span>会员卡号：4444444444444454545454</span></li>
 			<li><span>代币：</span></li>
 			<li><span>会员姓名：</span></li>
@@ -1384,6 +1405,7 @@
         el: '#app',
         data:{
             salesIS: true,
+            screeningTitle: false,
             shopData:[],
             cardList:[],
 			dataObj:[],
@@ -1434,7 +1456,6 @@
             onFocus:false,
             fastAmountFocus:false,
             operationShow:false,
-			cardLossShow:false,
             saleShow:false,
             memberShow:false,
 			saleTitle:[],
@@ -1526,6 +1547,8 @@
             shopCheckOut:true,
             registerCheckOutData:null,
             operateType:"",
+            dropChooseTxt1:"读卡器",
+            dropChooseTxt2:"读卡",
            	msgEleven:""			// 0 开卡，1补卡换卡，2...
         },
         mounted: function () {
@@ -1786,8 +1809,22 @@
             },
 //			快速售币
             FastSell:function () {
+                var that = this;
                 $('#fastModal').modal('show');
-               	this.onFocus = true;
+                this.onFocus = true;
+                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,icCardId:that.icCardId,mobile:"15827149648"};
+                axios.post('/xccloud/foods?action=getQuickFood', obj).then(function (res) {	//获取会员等级
+                    console.log(res.data);
+                    that.msgPrompt(res.data);
+                    if (res.data.result_code === '1') {
+                        $('#fastModal').modal('show');
+                        that.onFocus = true;
+
+                    }
+                }).catch(function (err) {
+                    console.log(err);
+                });
+
             },
 //			回车提交事件
             inputMoneySubmit:function () {
@@ -2029,7 +2066,6 @@
                             }
                             that.memberLevel = memberLevel_;
                             that.operationShow = false;
-							that.cardLossShow = false;
                             that.saleShow = false;
                             that.memberShow = true;
                         }
@@ -2043,7 +2079,6 @@
             operationFnc:function () {
                 var that = this;
                 this.operationShow = true;
-				that.cardLossShow = false;
                 this.saleShow = false;
                 this.memberShow = false;
                 var columns1=[
@@ -2106,13 +2141,23 @@
                     createTable("#memberTable4",destroy,columns4);
                 }, 50);
             },
-// 			会员卡挂失
-			cardLossFnc:function(){
-				var that = this;
-                this.operationShow = false;
-				that.cardLossShow = true;
-                this.saleShow = false;
-                this.memberShow = false;
+//			选择读卡方式
+            dropChoose:function(index){
+                var that = this;
+				switch (index){
+					case "0":
+                        that.dropChooseTxt1 = "读卡器";
+                        that.dropChooseTxt2 = "读卡";
+					    break;
+                    case "1":
+                        that.dropChooseTxt1 = "身份证";
+                        that.dropChooseTxt2 = "读取";
+                        break;
+                    case "2":
+                        that.dropChooseTxt1 = "输入";
+                        that.dropChooseTxt2 = "查询";
+                        break;
+				}
 			},
 //			按手机号查询会员信息
             getMember:function () {
@@ -2146,7 +2191,6 @@
 //                            }
 //                            that.memberLevel = memberLevel_;
 //                            that.operationShow = false;
-//                            that.cardLossShow = false;
 //                            that.saleShow = false;
 //                            that.memberShow = true;
                         }
@@ -2193,7 +2237,6 @@
                 var that = this;
                 if(!this.saleShow){
                     this.operationShow = false;
-					that.cardLossShow = false;
                     this.saleShow = true;
                     this.memberShow = false;
                     var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken};
@@ -2221,6 +2264,7 @@
 //                                for(var i = -1;i<that.saleTitle.length-1;i++){
 //                                    foodTypeAll = foodTypeAll+","+i;
 //								}
+                                that.screeningTitle = true;
 								console.log(foodTypeAll);
                                 that.getMeal(that.customerType,foodTypeAll);
                             })
@@ -2623,12 +2667,15 @@
 //                        foodTypeAll = 0;
                         foodTypeAll = "-2";
                         console.log(that.saleTitle.length);
+                        that.screeningTitle = true;
                         for(var i = -1;i<that.saleTitle.length-1;i++){
                             foodTypeAll = foodTypeAll+","+i;
                         }
                         break;
                     case 0:
-                        that.treeShow = true;
+//                        that.treeShow = true;
+                        foodTypeAll = "0";
+                        console.log(index);
                         index++;
 //                        that.$nextTick(function () {
 //                            $('.tree li:has(ul)').addClass('parent_li').find(' > span').attr('title', 'Collapse this branch');
@@ -2646,7 +2693,9 @@
 //                        });
                         break;
                     case 1:
-//                        that.treeShow = true;
+                        that.treeShow = true;
+                        that.screeningTitle = true;
+                        console.log(index);
                         index++;
 //                        that.$nextTick(function () {
 //                            $('.tree li:has(ul)').addClass('parent_li').find(' > span').attr('title', 'Collapse this branch');
@@ -2809,6 +2858,10 @@
             },
 //			读取会员卡，更新会员消息
             membershipReading: function(){
+			},
+//          余额兑换
+            getExchangeList:function(){
+
 			},
 //			存币
             saveManual:function () {
@@ -3085,9 +3138,6 @@
             return value;
         }
     }
-
-
-
 </script>
 </body>
 </html>

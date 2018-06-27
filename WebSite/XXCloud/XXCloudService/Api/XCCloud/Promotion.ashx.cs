@@ -339,7 +339,7 @@ namespace XXCloudService.Api.XCCloud
                         {
                             if (storeIds.IsNull() || storeIds.Contains("|"))
                             {
-                                if (!Base_GoodsInfoService.I.Any(p => p.ID == containId && p.Status == 1 && (p.StoreID ?? "") == ""))
+                                if (Base_GoodsInfoService.I.Any(p => p.ID == containId && p.Status == 1 && (p.StoreID ?? "") != ""))
                                 {
                                     errMsg = "套餐不能包含多个门店的私有商品";
                                     return false;

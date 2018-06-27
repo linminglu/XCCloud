@@ -1949,7 +1949,7 @@ namespace XCCloudService.Api.XCCloud
                                 balanceChange.ScheduleID = schedule.ID;
                                 balanceChange.Workstation = workStation;
                                 balanceChange.CheckDate = schedule.CheckDate;
-                                balanceChange.ExitID = backSerialNo;///***主卡退卡记录ID***
+                                balanceChange.ExitID = backSerialNo;//***主卡退卡记录ID***
                                 balanceChange.Note = string.Format("{0}兑换{1}", exchange.TypeName, exchange.TargetTypeName);
                                 if (!Flw_MemberCard_BalanceChargeService.I.Add(balanceChange, false))
                                 {
@@ -2036,22 +2036,22 @@ namespace XCCloudService.Api.XCCloud
 
         #region 补卡、换卡、续期
 
-        #region 创建补卡/换卡订单
+        #region 创建补卡/换卡/续卡订单
         /// <summary>
-        /// 创建补卡/换卡订单
+        /// 创建补卡/换卡/续卡订单
         /// </summary>
         /// <param name="dicParas"></param>
         /// <returns></returns>
         [Authorize(Roles = "StoreUser")]
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
-        public object CreateRechangeCardOrder(Dictionary<string, object> dicParas)
+        public object createOperateCardOrder(Dictionary<string, object> dicParas)
         {
             try
             {
                 string errMsg = string.Empty;
-                string oldCardIndexId = dicParas.ContainsKey("oldCardIndexId") ? dicParas["oldCardIndexId"].ToString() : string.Empty;
+                string cardIndexId = dicParas.ContainsKey("cardIndexId") ? dicParas["cardIndexId"].ToString() : string.Empty;
                 string operateType = dicParas.ContainsKey("OperateType") ? dicParas["OperateType"].ToString() : string.Empty;
-                if (string.IsNullOrEmpty(oldCardIndexId))
+                if (string.IsNullOrEmpty(cardIndexId))
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员卡ID为空");
                 }
@@ -2064,6 +2064,10 @@ namespace XCCloudService.Api.XCCloud
                 {
                     operate = "补卡";
                 }
+                else if (operateType == "2")
+                {
+                    operate = "续卡";
+                }
                 else
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "操作无效");
@@ -2075,7 +2079,7 @@ namespace XCCloudService.Api.XCCloud
                 string workStation = (userTokenKeyModel.DataModel as TokenDataModel).WorkStation;
                 int userId = userTokenKeyModel.LogId.Toint(0);
 
-                Data_Member_Card oldCard = Data_Member_CardService.I.GetModels(t => t.ID == oldCardIndexId).FirstOrDefault();
+                Data_Member_Card oldCard = Data_Member_CardService.I.GetModels(t => t.ID == cardIndexId).FirstOrDefault();
                 if (oldCard == null)
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员卡不存在");
@@ -2105,7 +2109,13 @@ namespace XCCloudService.Api.XCCloud
                 }
                 Data_MemberLevel memberLevel = Data_MemberLevelService.I.GetModels(t => t.MemberLevelID == oldCard.MemberLevelID).FirstOrDefault();
 
-                decimal OpFree = operateType == "1" ? (memberLevel.RechargeFee.HasValue ? memberLevel.RechargeFee.Value : 0) : (memberLevel.ChangeFee.HasValue ? memberLevel.ChangeFee.Value : 0);
+                decimal OpFree = 0;
+                switch(operateType)
+                {
+                    case "0": OpFree = memberLevel.ChangeFee.HasValue ? memberLevel.ChangeFee.Value : 0; break;
+                    case "1": OpFree = memberLevel.RechargeFee.HasValue ? memberLevel.RechargeFee.Value : 0; break;
+                    case "2": OpFree = memberLevel.ContinueFee.HasValue ? memberLevel.ContinueFee.Value : 0; break;
+                }
                 string orderId = RedisCacheHelper.CreateStoreSerialNo(storeId);
                 int orderStatus = OpFree == 0 ? 2 : 1;
                 using (TransactionScope ts = new TransactionScope(TransactionScopeOption.RequiresNew))
@@ -2148,7 +2158,7 @@ namespace XCCloudService.Api.XCCloud
 
                 var result = new
                 {
-                    OrderNo = orderId,
+                    OrderId = orderId,
                     OrderStatus = orderStatus,
                     OpFree = OpFree.ToString("0.00")
                 };
@@ -2173,18 +2183,18 @@ namespace XCCloudService.Api.XCCloud
         /// <returns></returns>
         [Authorize(Roles = "StoreUser")]
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
-        public object SupplementCard(Dictionary<string, object> dicParas)
+        public object rechangeCard(Dictionary<string, object> dicParas)
         {
             try
             {
                 string errMsg = string.Empty;
-                string oldCardIndexId = dicParas.ContainsKey("oldCardIndexId") ? dicParas["oldCardIndexId"].ToString() : string.Empty;
+                string orderId = dicParas.ContainsKey("orderId") ? dicParas["orderId"].ToString() : string.Empty;
                 string newCardNo = dicParas.ContainsKey("newCardNo") ? dicParas["newCardNo"].ToString() : string.Empty;
                 string repeatCode = dicParas.ContainsKey("repeatCode") ? dicParas["repeatCode"].ToString() : string.Empty;
                 string operateType = dicParas.ContainsKey("OperateType") ? dicParas["OperateType"].ToString() : string.Empty;
-                if (string.IsNullOrEmpty(oldCardIndexId))
+                if (string.IsNullOrEmpty(orderId))
                 {
-                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员卡ID为空");
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "订单号无效");
                 }
                 if (string.IsNullOrEmpty(newCardNo))
                 {
@@ -2209,37 +2219,35 @@ namespace XCCloudService.Api.XCCloud
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "操作无效");
                 }
 
+                Flw_Order order = Flw_OrderService.I.GetModels(t => t.OrderID == orderId).FirstOrDefault();
+                if(order == null)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "订单不存在");
+                }
+                if(order.OrderStatus == 1)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "订单未支付");
+                }
+                else if (order.OrderStatus == 2)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "订单支付异常");
+                }
+                Flw_Order_Detail orderDetail = Flw_Order_DetailService.I.GetModels(t => t.OrderFlwID == order.OrderID).FirstOrDefault();
+                if(orderDetail == null)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "订单明细不存在");
+                }
+
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
                 string merchID = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
                 string workStation = (userTokenKeyModel.DataModel as TokenDataModel).WorkStation;
                 int userId = userTokenKeyModel.LogId.Toint(0);
 
-                Data_Member_Card oldCard = Data_Member_CardService.I.GetModels(t => t.ID == oldCardIndexId).FirstOrDefault();
+                Data_Member_Card oldCard = Data_Member_CardService.I.GetModels(t => t.ID == order.CardID).FirstOrDefault();
                 if (oldCard == null)
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员卡不存在");
-                }
-                ////判断密码
-                //if(!oldCard.CardPassword.Equals(cardPwd))
-                //{
-                //    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "卡密码错误");
-                //}
-                //判断状态
-                if(oldCard.CardStatus != 1)
-                {
-                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, string.Format("当前会员卡不可用，不能进行{0}操作", operate));
-                }
-                //判断是否为电子卡
-                if(oldCard.ICCardID.Length == 32)
-                {
-                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, string.Format("电子卡不能进行{0}操作", operate));
-                }
-                //判断当前卡能否在当前门店使用
-                var storeUseCards = Data_Member_Card_StoreService.I.GetModels(t => t.CardID == oldCard.ID && t.StoreID == storeId).FirstOrDefault();
-                if(storeUseCards == null)
-                {
-                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, string.Format("此会员卡不能在当前门店使用，不能进行{0}操作", operate));
                 }
 
                 //验证新卡号在当前门店是否存在
@@ -2259,7 +2267,7 @@ namespace XCCloudService.Api.XCCloud
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, string.Format("当前班次为空，不能进行{0}操作", operate));
                 }
-                decimal? OpFree = 0m; //总费用
+                decimal OpFree = order.PayCount.Value;
                 using (TransactionScope ts = new TransactionScope(TransactionScopeOption.RequiresNew))
                 {
                     //创建新卡
@@ -2276,6 +2284,7 @@ namespace XCCloudService.Api.XCCloud
                     newCard.CardName = oldCard.CardName;
                     newCard.CardSex = oldCard.CardSex;
                     newCard.CardBirthDay = oldCard.CardBirthDay;
+                    newCard.CardPhoto = oldCard.CardPhoto;
                     newCard.FaceReadID = oldCard.FaceReadID;
                     newCard.CardLimit = oldCard.CardLimit;
                     newCard.AllowIn = oldCard.AllowIn;
@@ -2309,12 +2318,13 @@ namespace XCCloudService.Api.XCCloud
                         }
                     }
 
-                    //如果旧卡是主卡：将旧卡余额的索引关联到新卡索引
+                    // 如果旧卡是主卡：将旧卡余额的索引关联到新卡索引
                     // 还要将此主卡的附属卡的ParentCard关联到新卡
+                    // 更新卡权限的CardId为新卡ID
                     if(oldCard.CardType == 0)
                     {
                         //当前主卡的附属卡
-                        var childs = Data_Member_CardService.I.GetModels(t => t.ParentCard == oldCard.ID);
+                        var childs = Data_Member_CardService.I.GetModels(t => t.ParentCard == oldCard.ID && t.CardType == 1);
                         foreach (var item in childs)
                         {
                             item.ParentCard = newCard.ID;
@@ -2344,6 +2354,16 @@ namespace XCCloudService.Api.XCCloud
                                 return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "更新卡余额失败");
                             }
                         }
+                        //更新卡权限CardId
+                        var cardRights = Data_Card_RightService.I.GetModels(t => t.CardID == oldCard.ID);
+                        foreach (var item in cardRights)
+                        {
+                            item.CardID = newCard.ID;
+                            if (!Data_Card_RightService.I.Update(item, false))
+                            {
+                                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "更新卡权限失败");
+                            }
+                        }
                     }
 
                     //旧卡状态改为不可用
@@ -2368,7 +2388,7 @@ namespace XCCloudService.Api.XCCloud
                     cardChange.OldCardID = oldCard.ICCardID;
                     cardChange.NewCardID = newCardNo;
                     cardChange.FoodSaleID = saleId;
-                    cardChange.OpFee = operateType == "1" ? (memberLevel.RechargeFee.HasValue ? memberLevel.RechargeFee : 0) : (memberLevel.ChangeFee.HasValue ? memberLevel.ChangeFee : 0);
+                    cardChange.OpFee = OpFree;
                     cardChange.OpStoreID = storeId;
                     cardChange.WorkStation = workStation;
                     cardChange.UserID = userId;
@@ -2379,8 +2399,6 @@ namespace XCCloudService.Api.XCCloud
                     {
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, string.Format("写入{0}记录失败", operate));
                     }
-
-                    OpFree = cardChange.OpFee;
 
                     //增加销售流水
                     Flw_Food_Sale sale = new Flw_Food_Sale();
@@ -2395,19 +2413,25 @@ namespace XCCloudService.Api.XCCloud
                     sale.Deposit = 0;
                     if (operateType == "1")
                     {
-                        sale.ReissueFee = cardChange.OpFee;
-                        sale.TotalMoney = sale.ReissueFee;
+                        sale.ReissueFee = OpFree;
                     }
                     else
                     {
-                        sale.ChangeFee = cardChange.OpFee;
-                        sale.TotalMoney = sale.ChangeFee;
+                        sale.ChangeFee = OpFree;
                     }
+                    sale.TotalMoney = OpFree;
                     sale.BuyFoodType = 0;
                     sale.Note = operate;
-                    if (!Flw_Food_SaleService.I.Add(sale))
+                    if (!Flw_Food_SaleService.I.Add(sale, false))
                     {
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, string.Format("创建{0}套餐销售记录失败", operate));
+                    }
+
+                    //更新订单详情
+                    orderDetail.FoodFlwID = saleId;
+                    if (!Flw_Order_DetailService.I.Update(orderDetail, false))
+                    {
+                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "更新订单明细失败");
                     }
 
                     ts.Complete();
@@ -2415,8 +2439,7 @@ namespace XCCloudService.Api.XCCloud
 
                 var result = new
                 {
-                    NewICCardId = newCardNo,
-                    OpFree = OpFree.Value.ToString("0.00")
+                    NewICCardId = newCardNo
                 };
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, result);
             }
@@ -2439,15 +2462,15 @@ namespace XCCloudService.Api.XCCloud
         /// <returns></returns>
         [Authorize(Roles = "StoreUser")]
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
-        public object RenewCard(Dictionary<string, object> dicParas)
+        public object renewCard(Dictionary<string, object> dicParas)
         {
             try
             {
                 string errMsg = string.Empty;
-                string ICCardId = dicParas.ContainsKey("ICCardId") ? dicParas["ICCardId"].ToString() : string.Empty;
-                if (string.IsNullOrEmpty(ICCardId))
+                string orderId = dicParas.ContainsKey("orderId") ? dicParas["orderId"].ToString() : string.Empty;
+                if (string.IsNullOrEmpty(orderId))
                 {
-                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员卡号无效");
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "订单号无效");
                 }
 
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
@@ -2456,7 +2479,26 @@ namespace XCCloudService.Api.XCCloud
                 string workStation = (userTokenKeyModel.DataModel as TokenDataModel).WorkStation;
                 int userId = userTokenKeyModel.LogId.Toint(0);
 
-                Data_Member_Card memberCard = Data_Member_CardService.I.GetModels(t => t.MerchID == merchID && t.ICCardID == ICCardId).FirstOrDefault();
+                Flw_Order order = Flw_OrderService.I.GetModels(t => t.OrderID == orderId).FirstOrDefault();
+                if (order == null)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "订单不存在");
+                }
+                if (order.OrderStatus == 1)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "订单未支付");
+                }
+                else if (order.OrderStatus == 2)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "订单支付异常");
+                }
+                Flw_Order_Detail orderDetail = Flw_Order_DetailService.I.GetModels(t => t.OrderFlwID == order.OrderID).FirstOrDefault();
+                if (orderDetail == null)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "订单明细不存在");
+                }
+
+                Data_Member_Card memberCard = Data_Member_CardService.I.GetModels(t => t.MerchID == merchID && t.ID == order.CardID).FirstOrDefault();
                 if (memberCard == null)
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员卡不存在");
@@ -2471,7 +2513,6 @@ namespace XCCloudService.Api.XCCloud
 
                 Data_MemberLevel memberLevel = Data_MemberLevelService.I.GetModels(t => t.MemberLevelID == memberCard.MemberLevelID).FirstOrDefault();
                 DateTime? oldEndDate = memberCard.EndDate;
-                decimal? OpFree = 0m;
                 using (TransactionScope ts = new TransactionScope(TransactionScopeOption.RequiresNew))
                 {
                     memberCard.LastStore = storeId;
@@ -2493,11 +2534,11 @@ namespace XCCloudService.Api.XCCloud
                     cardRenew.MerchID = merchID;
                     cardRenew.StoreID = storeId;
                     cardRenew.MemberID = memberCard.MemberID;
-                    cardRenew.CardID = ICCardId;
+                    cardRenew.CardID = memberCard.ICCardID;
                     cardRenew.OldEndDate = oldEndDate;
                     cardRenew.NewEndDate = memberCard.EndDate;
                     cardRenew.FoodSaleID = saleId;
-                    cardRenew.RenewFee = memberLevel.ContinueFee.HasValue ? memberLevel.ContinueFee.Value : 0;
+                    cardRenew.RenewFee = order.PayCount;
                     cardRenew.WorkStation = workStation;
                     cardRenew.UserID = userId;
                     cardRenew.ScheduldID = schedule.ID.ToString();
@@ -2507,8 +2548,6 @@ namespace XCCloudService.Api.XCCloud
                     {
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "续卡失败");
                     }
-
-                    OpFree = cardRenew.RenewFee;
 
                     //增加销售流水
                     Flw_Food_Sale sale = new Flw_Food_Sale();
@@ -2521,13 +2560,20 @@ namespace XCCloudService.Api.XCCloud
                     sale.SaleCount = 1;
                     sale.MemberLevelID = memberCard.MemberLevelID;
                     sale.Deposit = 0;
-                    sale.RenewFee = OpFree;
-                    sale.TotalMoney = sale.RenewFee;
+                    sale.RenewFee = order.PayCount;
+                    sale.TotalMoney = order.PayCount;
                     sale.BuyFoodType = 0;
                     sale.Note = "续卡";
-                    if (!Flw_Food_SaleService.I.Add(sale))
+                    if (!Flw_Food_SaleService.I.Add(sale, false))
                     {
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "续卡失败");
+                    }
+
+                    //更新订单详情
+                    orderDetail.FoodFlwID = saleId;
+                    if (!Flw_Order_DetailService.I.Update(orderDetail, false))
+                    {
+                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "更新订单明细失败");
                     }
 
                     ts.Complete();
@@ -2535,8 +2581,7 @@ namespace XCCloudService.Api.XCCloud
 
                 var result = new
                 {
-                    ICCardId = ICCardId,
-                    OpFree = OpFree.Value.ToString("0.00"),
+                    ICCardId = memberCard.ICCardID,
                     EndDate = memberCard.EndDate.Value.ToString("yyyy-MM-dd")
                 };
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, result);
@@ -2564,8 +2609,8 @@ namespace XCCloudService.Api.XCCloud
             try
             {
                 string errMsg = string.Empty;
-                string ICCardId = dicParas.ContainsKey("iccardId") ? dicParas["iccardId"].ToString() : string.Empty;
-                if (string.IsNullOrEmpty(ICCardId))
+                string icCardId = dicParas.ContainsKey("iccardId") ? dicParas["iccardId"].ToString() : string.Empty;
+                if (string.IsNullOrEmpty(icCardId))
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员卡号无效");
                 }
@@ -2576,7 +2621,13 @@ namespace XCCloudService.Api.XCCloud
                 string workStation = (userTokenKeyModel.DataModel as TokenDataModel).WorkStation;
                 int userId = userTokenKeyModel.LogId.Toint(0);
 
-                Data_Member_Card currCard = Data_Member_CardService.I.GetModels(t => t.ICCardID == ICCardId && t.MerchID == merchID).FirstOrDefault();
+                //判断会员卡是否存在或是否存在多张相同卡号的会员卡
+                if (!MemberBusiness.ExistsCardByICCardId(icCardId, merchID, storeId, out errMsg))
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
+                }
+
+                Data_Member_Card currCard = Data_Member_CardService.I.GetModels(t => t.ICCardID == icCardId && t.MerchID == merchID).FirstOrDefault();
                 if (currCard == null)
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员卡不存在");
@@ -2693,10 +2744,23 @@ namespace XCCloudService.Api.XCCloud
                 string workStation = (userTokenKeyModel.DataModel as TokenDataModel).WorkStation;
                 int userId = userTokenKeyModel.LogId.Toint(0);
 
+                //判断会员卡是否存在或是否存在多张相同卡号的会员卡
+                if (!MemberBusiness.ExistsCardByICCardId(ICCardId, merchID, storeId, out errMsg))
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
+                }
+
                 Data_Member_Card currCard = Data_Member_CardService.I.GetModels(t => t.ICCardID == ICCardId && t.MerchID == merchID).FirstOrDefault();
                 if (currCard == null)
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员卡不存在");
+                }
+
+                //当前班次
+                Flw_Schedule schedule = Flw_ScheduleService.I.GetModels(t => t.StoreID == storeId && t.State == 1).FirstOrDefault();
+                if (schedule == null)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "当前班次为空");
                 }
 
                 //判断源余额是否为当前门店合法余额
@@ -2791,18 +2855,44 @@ namespace XCCloudService.Api.XCCloud
                 //更新余额
                 using (TransactionScope ts = new TransactionScope(TransactionScopeOption.RequiresNew))
                 {
+                    decimal? sourceCount = sourceBalance.Balance;
                     //源余额减少
                     sourceBalance.Balance -= iExchangeQty;
                     if (!Data_Card_BalanceService.I.Update(sourceBalance, false))
                     {
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "操作失败，扣除余额不成功");
                     }
+
+                    decimal? targetCount = targetBalance.Balance;
                     //目标余额增加
                     targetBalance.Balance += exchangeVal;
                     if (!Data_Card_BalanceService.I.Update(targetBalance, false))
                     {
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "操作失败，增加余额不成功");
                     }
+                    //添加余额互转记录
+                    Flw_MemberCard_BalanceCharge change = new Flw_MemberCard_BalanceCharge();
+                    change.ID = RedisCacheHelper.CreateStoreSerialNo(storeId);
+                    change.MerchID = merchID;
+                    change.StoreID = storeId;
+                    change.MemberID = currCard.MemberID;
+                    change.SourceBalanceIndex = sourceBalance.BalanceIndex;
+                    change.SourceCount = sourceCount;
+                    change.SourceRemain = sourceBalance.Balance;
+                    change.TargetBalanceIndex = targetBalance.BalanceIndex;
+                    change.TargetCount = targetCount;
+                    change.TargetRemain = targetBalance.Balance;
+                    change.OpTime = DateTime.Now;
+                    change.OpUserID = userId;
+                    change.ScheduleID = schedule.ID;
+                    change.Workstation = workStation;
+                    change.CheckDate = schedule.CheckDate;
+                    change.Note = "余额兑换";
+                    if (!Flw_MemberCard_BalanceChargeService.I.Add(change, false))
+                    {
+                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "添加余额兑换记录失败");
+                    }
+
                     ts.Complete();
                 }
 
@@ -2815,6 +2905,143 @@ namespace XCCloudService.Api.XCCloud
         } 
         #endregion
 
+        #endregion
+
+        #region 手工补币
+
+        #region 获取补币币种
+        /// <summary>
+        /// 获取补币币种
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
+        [Authorize(Roles = "StoreUser")]
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object getRepairCoinBalanceType(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                string errMsg = string.Empty;
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+                string merchID = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+
+                var query = from a in Data_BalanceType_StoreListService.N.GetModels(t => t.StroeID == storeId && t.MerchID == merchID)
+                            join b in Dict_BalanceTypeService.N.GetModels(t => t.MerchID == merchID && t.MappingType == 1 && t.State == 1) on a.BalanceIndex equals b.ID
+                            select new
+                            {
+                                BalanceIndex = a.BalanceIndex,
+                                BalanceName = b.TypeName
+                            };
+
+                var result = query.ToList();
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, result);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+        
+        #endregion
+
+        #region 补币
+        /// <summary>
+        /// 手工补币
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
+        [Authorize(Roles = "StoreUser")]
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object repairCoin(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                string errMsg = string.Empty;
+                string iccardId = dicParas.ContainsKey("iccardId") ? dicParas["iccardId"].ToString() : string.Empty;
+                string strBalanceIndex = dicParas.ContainsKey("balanceIndex") ? dicParas["balanceIndex"].ToString() : string.Empty;
+                string qty = dicParas.ContainsKey("qty") ? dicParas["qty"].ToString() : string.Empty;
+                string repairType = dicParas.ContainsKey("repairType") ? dicParas["repairType"].ToString() : string.Empty;
+                if (string.IsNullOrEmpty(iccardId))
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员卡号无效");
+                }
+                int quantity = qty.Toint(0); //余额类别索引
+                if (quantity <= 0)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "补币数量错误");
+                }
+                int balanceIndex = strBalanceIndex.Toint(0); //余额类别索引
+                if (balanceIndex == 0)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "补币币种无效");
+                }
+
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+                string merchID = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string workStation = (userTokenKeyModel.DataModel as TokenDataModel).WorkStation;
+                int userId = userTokenKeyModel.LogId.Toint(0);
+
+                //判断币种是否为当前门店合法代币币种
+                var storeBalanceTypes = from a in Data_BalanceType_StoreListService.N.GetModels(t => t.StroeID == storeId && t.MerchID == merchID)
+                            join b in Dict_BalanceTypeService.N.GetModels(t => t.MerchID == merchID && t.MappingType == 1 && t.State == 1) on a.BalanceIndex equals b.ID
+                            where a.BalanceIndex == balanceIndex
+                            select a;
+                if (storeBalanceTypes.Count() == 0)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "补币币种无效");
+                }                
+
+                //判断会员卡是否存在或是否存在多张相同卡号的会员卡
+                if (!MemberBusiness.ExistsCardByICCardId(iccardId, merchID, storeId, out errMsg))
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
+                }
+
+                //当前会员卡
+                Data_Member_Card memberCard = Data_Member_CardService.I.GetModels(t => t.MerchID == merchID && t.ICCardID == iccardId).FirstOrDefault();
+
+                //当前班次
+                Flw_Schedule schedule = Flw_ScheduleService.I.GetModels(t => t.StoreID == storeId && t.State == 1).FirstOrDefault();
+                if (schedule == null)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "当前班次为空，不能进行续卡操作");
+                }
+
+                //using (TransactionScope ts = new TransactionScope(TransactionScopeOption.RequiresNew))
+                //{
+                //    //添加补币记录
+                //    Flw_MemberCard_Free mcf = new Flw_MemberCard_Free();
+
+
+                //    if (repairType == "2")
+                //    {
+                //        //补币的余额
+                //        Data_Card_Balance balance = Data_Card_BalanceService.I.GetModels(t => t.MerchID == merchID && t.CardIndex == memberCard.ID && t.BalanceIndex == balanceIndex).FirstOrDefault();
+                //        balance.Balance += quantity;
+                //        if(!Data_Card_BalanceService.I.Update(balance, false))
+                //        {
+                //            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "更新卡余额失败");
+                //        }
+                //    }                   
+
+                //    ts.Complete();
+                //}
+
+                var result = new
+                {
+                    ICCardId = memberCard.ICCardID,
+                    EndDate = memberCard.EndDate.Value.ToString("yyyy-MM-dd")
+                };
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, result);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        } 
+        #endregion
         #endregion
     }
 }

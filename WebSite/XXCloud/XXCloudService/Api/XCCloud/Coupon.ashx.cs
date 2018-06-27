@@ -206,7 +206,7 @@ namespace XXCloudService.Api.XCCloud
                         var containId = dicParas.Get("goodId").Toint();
                         if (dicParas.Get("storeIds").IsNull() || dicParas.Get("storeIds").Contains("|"))
                         {                            
-                            if (!Base_GoodsInfoService.I.Any(p => p.ID == containId && p.Status == 1 && (p.StoreID ?? "") == ""))
+                            if (Base_GoodsInfoService.I.Any(p => p.ID == containId && p.Status == 1 && (p.StoreID ?? "") != ""))
                             {
                                 errMsg = "兑换券不能包含多个门店的私有商品";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);

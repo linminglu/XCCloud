@@ -21,5 +21,11 @@ namespace XCCloudService.Model.CustomModel.XCCloud
 
         [DataMember(Name = "foodPrice", Order = 4)]
         public decimal Price { set; get; }
+
+        [DataMember(Name = "detailsCount", Order = 5)]
+        public int DetailsCount { get; set; }
+
+        [DataMember(Name = "detailInfoList", Order = 6)]
+        public List<FoodDetailInfoModel> DetailInfoList { set; get; }
     }
 }

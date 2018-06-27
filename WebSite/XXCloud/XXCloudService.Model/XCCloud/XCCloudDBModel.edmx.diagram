@@ -90,7 +90,6 @@
         <EntityTypeShape EntityType="XCCloudDBModel.Data_WorkFlowConfig" Width="1.5" PointX="32.75" PointY="4.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Dict_Area" Width="1.5" PointX="32.75" PointY="11.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Dict_FunctionMenu" Width="1.5" PointX="32.75" PointY="14.75" />
-        <EntityTypeShape EntityType="XCCloudDBModel.Dict_System" Width="1.5" PointX="14.75" PointY="32.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Divide_ProjectInfo" Width="1.5" PointX="32.75" PointY="18.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_485_Coin" Width="1.5" PointX="20.75" PointY="32.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_485_SaveCoin" Width="1.5" PointX="32.75" PointY="22.75" />
@@ -178,6 +177,7 @@
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_GroupVerity" Width="1.5" PointX="29.375" PointY="37.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_Order" Width="1.5" PointX="45.375" PointY="0.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Dict_BalanceType" Width="1.5" PointX="7.375" PointY="6.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.Dict_System" Width="1.5" PointX="25.375" PointY="23.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

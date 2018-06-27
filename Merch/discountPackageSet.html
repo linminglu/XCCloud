@@ -891,37 +891,39 @@
         });
         //门票
         $('#ticketBtn').on('click',()=>{
-           // xc.GetTicketProjectDic(token,layer,form,'ticketType');
-            let _obj={'storeIds':_storeId.length>0?_storeId.join('|'):'','userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
-            let parseJson = JSON.stringify(_obj);
-            $.ajax({
-                type:'post',
-                url:'/XCCloud/Promotion?action=GetProjectTicketList',
-                contentType: "application/json; charset=utf-8",
-                data:{parasJson: parseJson},
-                success: function (data) {
-                    data = JSON.parse(data);
-                    if (data.result_code == 1) {
-                        let arr=data.result_data;
-                        $('#ticketType').html('<option>-请选择-</option>');
-                        for(let i in arr){
-                            $('#ticketType').append('<option value="'+arr[i].ID+'" title="'+arr[i].TicketName+'">'+arr[i].TicketName+'</option>')
+            if(_storeId.length!=1){
+                layer.msg('必须只选则一个门店')
+            }else {
+                let _obj={'storeIds':_storeId.length>0?_storeId.join('|'):'','userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                let parseJson = JSON.stringify(_obj);
+                $.ajax({
+                    type:'post',
+                    url:'/XCCloud/Promotion?action=GetProjectTicketList',
+                    contentType: "application/json; charset=utf-8",
+                    data:{parasJson: parseJson},
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        if (data.result_code == 1) {
+                            let arr=data.result_data;
+                            $('#ticketType').html('<option>-请选择-</option>');
+                            for(let i in arr){
+                                $('#ticketType').append('<option value="'+arr[i].ID+'" title="'+arr[i].TicketName+'">'+arr[i].TicketName+'</option>')
+                            }
+                            form.render('select');
+                            ticketType=''; ticketTypeStr='';
+                            index=  layer.open({
+                                title:'新增套餐',
+                                shade:0.6,
+                                type:1,
+                                area:'500px',
+                                content:$('#openTicket')
+                            })
+                        } else {
+                            layer.msg(data.result_msg||data.return_msg);
                         }
-                        form.render('select');
-                        ticketType=''; ticketTypeStr='';
-                        index=  layer.open({
-                            title:'新增套餐',
-                            shade:0.6,
-                            type:1,
-                            area:'500px',
-                            content:$('#openTicket')
-                        })
-                    } else {
-                        layer.msg(data.result_msg||data.return_msg);
                     }
-                }
-            });
-
+                });
+            }
         });
         //数字币
         $('#digitBtn').on('click',()=>{

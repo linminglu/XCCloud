@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>登录</title>
     <link rel="stylesheet" href="css/layui.css">
-    <!-- <link href="css/bootstrap.min.css" rel="stylesheet"> -->
+    <link rel='icon' href='xinchen.ico ' type='image/x-ico'/>
     <link href="css/style.css" rel="stylesheet">
     <link href="css/iconfont.css" rel="stylesheet">
 </head>
@@ -169,13 +169,12 @@
         console.log(11111);
         var username=$('#username_login').val();
         var password=$('#password_login').val();
-//        var obj={'loginName':"lijunjie",'password':"123456",'workStation':'lijunjie','dogId':'22222222'};
+        var obj={'loginName':"lijunjie",'password':"123456",'workStation':'lijunjie','dogId':'22222222'};
 //        10004143
-        var obj={'loginName':"45",'password':"123456",'workStation':'lijunjie','dogId':'22222222'};
+//        var obj={'loginName':"45",'password':"123456",'workStation':'lijunjie','dogId':'22222222'};
 //        28801810;
         var url='/xccloud/UserInfo?action=barLogin';           //登录接口
         var parasJson = JSON.stringify(obj);
-
         if(username!=''&&password!=''){
             $.ajax({
                 type: "post",
