@@ -1101,7 +1101,7 @@ namespace XCCloudService.Common
                 string fileExt = Path.GetExtension(file.FileName) ?? "";
                 string fileName = Path.GetFileNameWithoutExtension(file.FileName) + Utils.ConvertDateTimeToLong(DateTime.Now) + fileExt;
                 var imageFileExt = System.Configuration.ConfigurationManager.AppSettings["ImageFileExt"].ToString();
-                if (imageFileExt.Contains(fileExt.ToLower()))
+                if (imageFileExt.Contains(fileExt.Replace(".", "").ToLower()))
                 {
                     if (file.ContentLength > int.Parse(System.Configuration.ConfigurationManager.AppSettings["MaxImageSize"].ToString()))
                     {

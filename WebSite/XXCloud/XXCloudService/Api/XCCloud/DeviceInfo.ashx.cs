@@ -519,8 +519,8 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 string errMsg = string.Empty;
-                int lastIndex = dicParas.Get("token").LastIndexOf('/');
-                var token = dicParas.Get("token").Substring(lastIndex <= 0 ? 0 : lastIndex);
+                int lastIndex = dicParas.Get("token").LastIndexOf('/') + 1;
+                var token = dicParas.Get("token").Substring(lastIndex);
                 if(!token.Nonempty("设备Token", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
@@ -563,8 +563,8 @@ namespace XXCloudService.Api.XCCloud
                 string merchId = storeId.Substring(0, 6);
 
                 string errMsg = string.Empty;
-                int lastIndex = dicParas.Get("token").LastIndexOf('/');
-                var token = dicParas.Get("token").Substring(lastIndex <= 0 ? 0 : lastIndex);
+                int lastIndex = dicParas.Get("token").LastIndexOf('/') + 1;
+                var token = dicParas.Get("token").Substring(lastIndex);
                 if (!token.Nonempty("设备Token", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
@@ -648,14 +648,14 @@ namespace XXCloudService.Api.XCCloud
                 var mediaURL1 = dicParas.Get("mediaURL1");
                 var mediaURL2 = dicParas.Get("mediaURL2");
                 var mediaURL3 = dicParas.Get("mediaURL3");
-                var lastIndexMediaURL1 = mediaURL1.LastIndexOf('.');
-                var lastIndexMediaURL2 = mediaURL2.LastIndexOf('.');
-                var lastIndexMediaURL3 = mediaURL3.LastIndexOf('.');
+                var lastIndexMediaURL1 = mediaURL1.LastIndexOf('.') + 1;
+                var lastIndexMediaURL2 = mediaURL2.LastIndexOf('.') + 1;
+                var lastIndexMediaURL3 = mediaURL3.LastIndexOf('.') + 1;
 
                 var suffix = new List<String>();
-                if (lastIndexMediaURL1 >= 0) suffix.Add(mediaURL1.Substring(lastIndexMediaURL1));
-                if (lastIndexMediaURL2 >= 0) suffix.Add(mediaURL2.Substring(lastIndexMediaURL2));
-                if (lastIndexMediaURL3 >= 0) suffix.Add(mediaURL3.Substring(lastIndexMediaURL3));
+                if (lastIndexMediaURL1 > 0) suffix.Add(mediaURL1.Substring(lastIndexMediaURL1));
+                if (lastIndexMediaURL2 > 0) suffix.Add(mediaURL2.Substring(lastIndexMediaURL2));
+                if (lastIndexMediaURL3 > 0) suffix.Add(mediaURL3.Substring(lastIndexMediaURL3));
                 var imageFileExt = System.Configuration.ConfigurationManager.AppSettings["ImageFileExt"].ToString();
                 if (suffix.Where(w => !imageFileExt.Contains((w ?? "").ToLower())).Count() > 1)
                 {
