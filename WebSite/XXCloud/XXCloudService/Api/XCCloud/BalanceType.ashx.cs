@@ -60,7 +60,8 @@ namespace XXCloudService.Api.XCCloud
                                DecimalNumber = g.FirstOrDefault().a.DecimalNumber,
                                HkTypeStr = g.FirstOrDefault().HkTypeStr,
                                //StoreNames = string.Join("|", g.OrderBy(o => o.StoreName).Select(o => o.StoreName))
-                               StoreNames = g.OrderBy(o => o.StoreName).Select(o => o.StoreName).FirstOrDefault() + (g.Count() > 1 ? "等多个" : string.Empty)
+                               StoreNames = g.OrderBy(o => o.StoreName).Select(o => o.StoreName).FirstOrDefault() + (g.Count() > 1 ? "等多个" : string.Empty),
+                               Unit = g.FirstOrDefault().a.Unit
                            };
                            
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, linq);
@@ -100,7 +101,8 @@ namespace XXCloudService.Api.XCCloud
                            select new
                            {
                                ID = a.ID,
-                               TypeName = a.TypeName
+                               TypeName = a.TypeName,
+                               Unit = a.Unit
                            };
 
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, linq);
@@ -140,7 +142,8 @@ namespace XXCloudService.Api.XCCloud
                            select new
                            {
                                ID = a.ID,
-                               TypeName = a.TypeName
+                               TypeName = a.TypeName,
+                               Unit = a.Unit
                            };
 
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, linq);
@@ -190,7 +193,8 @@ namespace XXCloudService.Api.XCCloud
                                AddingType = g.FirstOrDefault().a.AddingType,
                                AddingTypeStr = ((AddingType?)g.FirstOrDefault().a.AddingType).GetDescription(),
                                HKType = g.FirstOrDefault().a.MappingType,
-                               StoreIDs = string.Join("|", g.Select(o => o.StoreID))
+                               StoreIDs = string.Join("|", g.Select(o => o.StoreID)),
+                               Unit = g.FirstOrDefault().a.Unit
                            };
 
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, linq.FirstOrDefault());                
@@ -229,6 +233,13 @@ namespace XXCloudService.Api.XCCloud
                 var storeIds = dicParas.Get("storeIds");
                 var addingType = dicParas.Get("addingType").Toint();
                 var decimalNumber = dicParas.Get("decimalNumber").Toint();
+                var unit = dicParas.Get("unit");
+
+                if (unit.Length > 2)
+                {
+                    errMsg = "余额类别的单位不能超过2个字符";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
                 
                 //开启EF事务
                 using (TransactionScope ts = new TransactionScope())
@@ -256,6 +267,7 @@ namespace XXCloudService.Api.XCCloud
                         dict_BalanceType.Note = note;
                         dict_BalanceType.MerchID = merchId;
                         dict_BalanceType.MappingType = hkType;
+                        dict_BalanceType.Unit = unit;
                         if (id == 0)
                         {
                             //新增

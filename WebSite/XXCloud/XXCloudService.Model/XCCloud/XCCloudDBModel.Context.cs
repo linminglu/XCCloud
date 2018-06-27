@@ -109,7 +109,6 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Data_WorkFlow_Node> Data_WorkFlow_Node { get; set; }
         public virtual DbSet<Data_WorkFlowConfig> Data_WorkFlowConfig { get; set; }
         public virtual DbSet<Dict_Area> Dict_Area { get; set; }
-        public virtual DbSet<Dict_BalanceType> Dict_BalanceType { get; set; }
         public virtual DbSet<Dict_FunctionMenu> Dict_FunctionMenu { get; set; }
         public virtual DbSet<Dict_System> Dict_System { get; set; }
         public virtual DbSet<Divide_ProjectInfo> Divide_ProjectInfo { get; set; }
@@ -198,5 +197,6 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Base_MerchantInfo> Base_MerchantInfo { get; set; }
         public virtual DbSet<Flw_GroupVerity> Flw_GroupVerity { get; set; }
         public virtual DbSet<Flw_Order> Flw_Order { get; set; }
+        public virtual DbSet<Dict_BalanceType> Dict_BalanceType { get; set; }
     }
 }

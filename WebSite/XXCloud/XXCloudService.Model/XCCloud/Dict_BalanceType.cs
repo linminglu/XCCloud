@@ -19,6 +19,7 @@ namespace XCCloudService.Model.XCCloud
         public int TypeID { get; set; }
         public string TypeName { get; set; }
         public Nullable<int> MappingType { get; set; }
+        public string Unit { get; set; }
         public Nullable<int> State { get; set; }
         public Nullable<int> DecimalNumber { get; set; }
         public Nullable<int> AddingType { get; set; }

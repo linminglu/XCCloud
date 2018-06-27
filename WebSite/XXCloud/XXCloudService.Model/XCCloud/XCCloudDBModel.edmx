@@ -1935,6 +1935,7 @@
           <Property Name="TypeID" Type="int" Nullable="false" />
           <Property Name="TypeName" Type="varchar" MaxLength="50" />
           <Property Name="MappingType" Type="int" />
+          <Property Name="Unit" Type="varchar" MaxLength="2" />
           <Property Name="State" Type="int" />
           <Property Name="DecimalNumber" Type="int" />
           <Property Name="AddingType" Type="int" />
@@ -3358,7 +3359,6 @@
           <EntitySet Name="Data_WorkFlow_Node" EntityType="XCCloudDBModel.Data_WorkFlow_Node" />
           <EntitySet Name="Data_WorkFlowConfig" EntityType="XCCloudDBModel.Data_WorkFlowConfig" />
           <EntitySet Name="Dict_Area" EntityType="XCCloudDBModel.Dict_Area" />
-          <EntitySet Name="Dict_BalanceType" EntityType="XCCloudDBModel.Dict_BalanceType" />
           <EntitySet Name="Dict_FunctionMenu" EntityType="XCCloudDBModel.Dict_FunctionMenu" />
           <EntitySet Name="Dict_System" EntityType="XCCloudDBModel.Dict_System" />
           <EntitySet Name="Divide_ProjectInfo" EntityType="XCCloudDBModel.Divide_ProjectInfo" />
@@ -3447,6 +3447,7 @@
           <EntitySet Name="Base_MerchantInfo" EntityType="XCCloudDBModel.Base_MerchantInfo" />
           <EntitySet Name="Flw_GroupVerity" EntityType="XCCloudDBModel.Flw_GroupVerity" />
           <EntitySet Name="Flw_Order" EntityType="XCCloudDBModel.Flw_Order" />
+          <EntitySet Name="Dict_BalanceType" EntityType="XCCloudDBModel.Dict_BalanceType" />
         </EntityContainer>
         <EntityType Name="Base_ChainRule_Store">
           <Key>
@@ -4619,20 +4620,6 @@
           <Property Name="AreaType" Type="Int32" />
           <Property Name="AreaName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="ShortName" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-        </EntityType>
-        <EntityType Name="Dict_BalanceType">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="TypeID" Type="Int32" Nullable="false" />
-          <Property Name="TypeName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="MappingType" Type="Int32" />
-          <Property Name="State" Type="Int32" />
-          <Property Name="DecimalNumber" Type="Int32" />
-          <Property Name="AddingType" Type="Int32" />
-          <Property Name="Note" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="Dict_FunctionMenu">
           <Key>
@@ -6286,6 +6273,21 @@
           <Property Name="ExitTime" Type="DateTime" Precision="3" />
           <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
         </EntityType>
+        <EntityType Name="Dict_BalanceType">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="TypeID" Type="Int32" Nullable="false" />
+          <Property Name="TypeName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="MappingType" Type="Int32" />
+          <Property Name="Unit" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
+          <Property Name="State" Type="Int32" />
+          <Property Name="DecimalNumber" Type="Int32" />
+          <Property Name="AddingType" Type="Int32" />
+          <Property Name="Note" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -7543,21 +7545,6 @@
                 <ScalarProperty Name="AreaName" ColumnName="AreaName" />
                 <ScalarProperty Name="AreaType" ColumnName="AreaType" />
                 <ScalarProperty Name="PID" ColumnName="PID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Dict_BalanceType">
-            <EntityTypeMapping TypeName="XCCloudDBModel.Dict_BalanceType">
-              <MappingFragment StoreEntitySet="Dict_BalanceType">
-                <ScalarProperty Name="Note" ColumnName="Note" />
-                <ScalarProperty Name="AddingType" ColumnName="AddingType" />
-                <ScalarProperty Name="DecimalNumber" ColumnName="DecimalNumber" />
-                <ScalarProperty Name="State" ColumnName="State" />
-                <ScalarProperty Name="MappingType" ColumnName="MappingType" />
-                <ScalarProperty Name="TypeName" ColumnName="TypeName" />
-                <ScalarProperty Name="TypeID" ColumnName="TypeID" />
-                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -9299,6 +9286,22 @@
                 <ScalarProperty Name="StoreID" ColumnName="StoreID" />
                 <ScalarProperty Name="MerchID" ColumnName="MerchID" />
                 <ScalarProperty Name="OrderID" ColumnName="OrderID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Dict_BalanceType">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Dict_BalanceType">
+              <MappingFragment StoreEntitySet="Dict_BalanceType">
+                <ScalarProperty Name="Note" ColumnName="Note" />
+                <ScalarProperty Name="AddingType" ColumnName="AddingType" />
+                <ScalarProperty Name="DecimalNumber" ColumnName="DecimalNumber" />
+                <ScalarProperty Name="State" ColumnName="State" />
+                <ScalarProperty Name="Unit" ColumnName="Unit" />
+                <ScalarProperty Name="MappingType" ColumnName="MappingType" />
+                <ScalarProperty Name="TypeName" ColumnName="TypeName" />
+                <ScalarProperty Name="TypeID" ColumnName="TypeID" />
+                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
