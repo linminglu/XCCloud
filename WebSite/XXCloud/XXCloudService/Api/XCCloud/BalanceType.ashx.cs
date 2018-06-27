@@ -235,9 +235,9 @@ namespace XXCloudService.Api.XCCloud
                 var decimalNumber = dicParas.Get("decimalNumber").Toint();
                 var unit = dicParas.Get("unit");
 
-                if (unit.Length > 2)
+                if (unit.Length > 10)
                 {
-                    errMsg = "余额类别的单位不能超过2个字符";
+                    errMsg = "余额类别的单位不能超过10个字符";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
                 

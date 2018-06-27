@@ -1935,7 +1935,7 @@
           <Property Name="TypeID" Type="int" Nullable="false" />
           <Property Name="TypeName" Type="varchar" MaxLength="50" />
           <Property Name="MappingType" Type="int" />
-          <Property Name="Unit" Type="varchar" MaxLength="2" />
+          <Property Name="Unit" Type="varchar" MaxLength="10" />
           <Property Name="State" Type="int" />
           <Property Name="DecimalNumber" Type="int" />
           <Property Name="AddingType" Type="int" />
@@ -6282,7 +6282,7 @@
           <Property Name="TypeID" Type="Int32" Nullable="false" />
           <Property Name="TypeName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="MappingType" Type="Int32" />
-          <Property Name="Unit" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
+          <Property Name="Unit" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="State" Type="Int32" />
           <Property Name="DecimalNumber" Type="Int32" />
           <Property Name="AddingType" Type="Int32" />
