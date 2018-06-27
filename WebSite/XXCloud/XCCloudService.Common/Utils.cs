@@ -1089,13 +1089,7 @@ namespace XCCloudService.Common
                     errMsg = "未找到上传文件";
                     return false;
                 }
-
-                if (file.ContentLength > int.Parse(System.Configuration.ConfigurationManager.AppSettings["MaxImageSize"].ToString()))
-                {
-                    errMsg = "超过文件的最大限制为1M";
-                    return false;
-                }
-
+                
                 string picturePath = System.Configuration.ConfigurationManager.AppSettings["UploadImageUrl"].ToString() + savePath;
                 string path = System.Web.HttpContext.Current.Server.MapPath(picturePath);
                 //如果不存在就创建file文件夹
@@ -1104,7 +1098,25 @@ namespace XCCloudService.Common
                     Directory.CreateDirectory(path);
                 }
 
-                string fileName = Path.GetFileNameWithoutExtension(file.FileName) + Utils.ConvertDateTimeToLong(DateTime.Now) + Path.GetExtension(file.FileName);
+                string fileExt = Path.GetExtension(file.FileName) ?? "";
+                string fileName = Path.GetFileNameWithoutExtension(file.FileName) + Utils.ConvertDateTimeToLong(DateTime.Now) + fileExt;
+                var imageFileExt = System.Configuration.ConfigurationManager.AppSettings["ImageFileExt"].ToString();
+                if (imageFileExt.Contains(fileExt.ToLower()))
+                {
+                    if (file.ContentLength > int.Parse(System.Configuration.ConfigurationManager.AppSettings["MaxImageSize"].ToString()))
+                    {
+                        errMsg = "超过图片文件的最大限制为1M";
+                        return false;
+                    }
+                }
+                else
+                {
+                    if (file.ContentLength > int.Parse(System.Configuration.ConfigurationManager.AppSettings["MaxVideoSize"].ToString()))
+                    {
+                        errMsg = "超过视频文件的最大限制为10M";
+                        return false;
+                    }
+                }                
 
                 if (File.Exists(path + fileName))
                 {

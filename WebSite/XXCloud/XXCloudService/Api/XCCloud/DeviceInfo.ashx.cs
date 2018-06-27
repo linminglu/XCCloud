@@ -656,7 +656,8 @@ namespace XXCloudService.Api.XCCloud
                 if (lastIndexMediaURL1 >= 0) suffix.Add(mediaURL1.Substring(lastIndexMediaURL1));
                 if (lastIndexMediaURL2 >= 0) suffix.Add(mediaURL2.Substring(lastIndexMediaURL2));
                 if (lastIndexMediaURL3 >= 0) suffix.Add(mediaURL3.Substring(lastIndexMediaURL3));
-                if (suffix.Where(w => !"jpg,jpeg,gif,png,bmp".Contains((w ?? "").ToLower())).Count() > 1)
+                var imageFileExt = System.Configuration.ConfigurationManager.AppSettings["ImageFileExt"].ToString();
+                if (suffix.Where(w => !imageFileExt.Contains((w ?? "").ToLower())).Count() > 1)
                 {
                     errMsg = "非图片多媒体文件不能超过1个";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
