@@ -20,7 +20,6 @@ using System.IO;
 using XCCloudService.Business.XCCloud;
 using Microsoft.SqlServer.Server;
 using XCCloudService.BLL.CommonBLL;
-using XCCloudService.BLL.Extentions;
 
 namespace XXCloudService.Api.XCCloud
 {

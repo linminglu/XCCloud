@@ -2103,19 +2103,17 @@ namespace XCCloudService.Api.XCCloud
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, string.Format("当前班次为空，不能进行{0}操作", operate));
                 }
-                decimal? OpFree = 0m; //总费用
+                Data_MemberLevel memberLevel = Data_MemberLevelService.I.GetModels(t => t.MemberLevelID == oldCard.MemberLevelID).FirstOrDefault();
+
+                decimal OpFree = operateType == "1" ? (memberLevel.RechargeFee.HasValue ? memberLevel.RechargeFee.Value : 0) : (memberLevel.ChangeFee.HasValue ? memberLevel.ChangeFee.Value : 0);
                 string orderId = RedisCacheHelper.CreateStoreSerialNo(storeId);
+                int orderStatus = OpFree == 0 ? 2 : 1;
                 using (TransactionScope ts = new TransactionScope(TransactionScopeOption.RequiresNew))
-                {
-                    string saleId = RedisCacheHelper.CreateStoreSerialNo(storeId);
-
-                    Data_MemberLevel memberLevel = Data_MemberLevelService.I.GetModels(t => t.MemberLevelID == oldCard.MemberLevelID).FirstOrDefault();
-
-                    OpFree = operateType == "1" ? (memberLevel.RechargeFee.HasValue ? memberLevel.RechargeFee : 0) : (memberLevel.ChangeFee.HasValue ? memberLevel.ChangeFee : 0);
-
+                {           
                     //创建订单
                     Flw_Order order = new Flw_Order();
                     order.OrderID = orderId;
+                    order.MerchID = merchID;
                     order.StoreID = storeId;
                     order.FoodCount = 1;
                     order.GoodCount = 1;
@@ -2128,9 +2126,9 @@ namespace XCCloudService.Api.XCCloud
                     order.UserID = userId;
                     order.ScheduleID = schedule.ID;
                     order.WorkStation = workStation;
-                    order.OrderStatus = 1;
+                    order.OrderStatus = orderStatus;                 
                     order.Note = operate;
-                    if (!Flw_OrderService.I.Add(order))
+                    if (!Flw_OrderService.I.Add(order, false))
                     {
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, string.Format("创建{0}订单失败", operate));
                     }
@@ -2138,10 +2136,10 @@ namespace XCCloudService.Api.XCCloud
                     //创建订单明细
                     Flw_Order_Detail orderDetail = new Flw_Order_Detail();
                     orderDetail.ID = RedisCacheHelper.CreateStoreSerialNo(storeId);
-                    //orderDetail.mer
+                    orderDetail.MerchID = merchID;
                     orderDetail.OrderFlwID = orderId;
                     orderDetail.GoodsCount = 1;
-                    if (!Flw_Order_DetailService.I.Add(orderDetail))
+                    if (!Flw_Order_DetailService.I.Add(orderDetail, false))
                     {
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, string.Format("创建订单明细失败", operate));
                     }
@@ -2151,7 +2149,8 @@ namespace XCCloudService.Api.XCCloud
                 var result = new
                 {
                     OrderNo = orderId,
-                    OpFree = OpFree.Value.ToString("0.00")
+                    OrderStatus = orderStatus,
+                    OpFree = OpFree.ToString("0.00")
                 };
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, result);
             }

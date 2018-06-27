@@ -296,7 +296,7 @@
         </div>
     </form>
 </div>
-<!--存币机-->
+<!--碎票机-->
 <div id="brokenTicketModel" style="padding: 15px;display: none">
     <form lay-filter="broken" class="layui-form layui-form-pane goodIsAll">
         <div class="layui-form-item">
@@ -640,6 +640,51 @@ let motor1En_broken=1;let motor2En_broken=1;let balanceIndexbroken='';let toCard
                 }
             });
         });
+
+        //监听碎票机
+        form.on('switch(motor1En_broken)',function (data) {
+            if (data.elem.checked==true){
+                motor1En_broken=1;
+            }else {
+                motor1En_broken=0;
+            }
+        });
+        form.on('switch(motor2En_broken)',function (data) {
+            if (data.elem.checked==true){
+                motor2En_broken=1;
+            }else {
+                motor2En_broken=0;
+            }
+        });
+        form.on('select(balanceIndexbroken)',function (data) {
+            balanceIndexbroken=data.value;
+        });
+        $('#saveBrokenBtn').click(function () {
+            let _obj={'deviceId':_id,
+                'motor1En':motor1En_broken,
+                'motor2En':motor2En_broken,
+                'balanceIndex':balanceIndexbroken,
+                'toCard':$('input[name="toCardbroken"]').val(),
+                'fromDevice':$('input[name="fromDevicebroken"]').val(),
+                'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+            let parseJson = JSON.stringify(_obj);
+            $.ajax({
+                type:'post',
+                url:'/XCCloud/DeviceInfo?action=SaveLotteryBrokenInfo',
+                contentType: "application/json; charset=utf-8",
+                data:{parasJson: parseJson},
+                success: function (data) {
+                    data = JSON.parse(data);
+                    if (data.result_code == 1) {
+                        layer.msg('设置成功',{time:1500},function () {
+                            location.reload();
+                        });
+                    } else {
+                        layer.msg(data.result_msg);
+                    }
+                }
+            });
+        });
         //监听投币机
         form.on('switch(motor1En_push)',function (data) {
             if (data.elem.checked==true){
@@ -969,7 +1014,7 @@ let motor1En_broken=1;let motor2En_broken=1;let balanceIndexbroken='';let toCard
                                 balanceIndex=arr.BalanceIndex||'';
                                 toCard=arr.ToCard||'';
                                 fromDevice=arr.FromDevice||'';
-                                xc. getBalanceTypeDic('',token,layer,form,'balanceIndex',arr.BalanceIndex);
+                                xc. getBalanceTypeDic('1',token,layer,form,'balanceIndex',arr.BalanceIndex);
                             }
 
                             layer.open({
@@ -997,7 +1042,7 @@ let motor1En_broken=1;let motor2En_broken=1;let balanceIndexbroken='';let toCard
                             let arr = data.result_data;
                             if(arr.ID==0){
                                  motor1En_save=1; motor2En_save=1; balanceIndexSave="";
-                                xc. getBalanceTypeDic('',token,layer,form,'balanceIndexSave')
+                                xc. getBalanceTypeDic('1',token,layer,form,'balanceIndexSave')
                             }else {
                                 form.val("saveCoin",{
                                     'motor1En_save':arr.Motor1EN==1 ? true : false ,
@@ -1007,7 +1052,7 @@ let motor1En_broken=1;let motor2En_broken=1;let balanceIndexbroken='';let toCard
                                     'formDeviceSave':arr.FromDevice
                                 });
                                 motor1En_save=arr.Motor1EN||0; motor2En_save=arr.Motor2EN||0; balanceIndexSave=arr.BalanceIndex||"";
-                                xc. getBalanceTypeDic('',token,layer,form,'balanceIndexSave',arr.BalanceIndex)
+                                xc. getBalanceTypeDic('1',token,layer,form,'balanceIndexSave',arr.BalanceIndex)
                             }
 
                             layer.open({
@@ -1036,7 +1081,7 @@ let motor1En_broken=1;let motor2En_broken=1;let balanceIndexbroken='';let toCard
                             let arr = data.result_data;
                             if(arr.ID==0){
                                 motor1En_broken=1; motor2En_broken=1; balanceIndexbroken="";toCardbroken=1; fromDevicebroken=1;
-                                xc.getBalanceTypeDic('',token,layer,form,'balanceIndexSave')
+                                xc.getBalanceTypeDic('2',token,layer,form,'balanceIndexbroken')
                             }else {
                                 // let motor1En_broken=1;let motor2En_broken=1;let balanceIndexbroken='';let toCardbroken=1;let fromDevicebroken=1;
                                 form.val("broken",{
@@ -1050,7 +1095,7 @@ let motor1En_broken=1;let motor2En_broken=1;let balanceIndexbroken='';let toCard
                                 motor1En_broken=arr.Motor1EN||0;
                                 motor2En_broken=arr.Motor2EN||0;
                                 balanceIndexbroken=arr.BalanceIndex||"";
-                                xc. getBalanceTypeDic('',token,layer,form,'balanceIndexbroken',arr.BalanceIndex)
+                                xc. getBalanceTypeDic('2',token,layer,form,'balanceIndexbroken',arr.BalanceIndex)
                             }
 
                             layer.open({
@@ -1081,7 +1126,7 @@ let motor1En_broken=1;let motor2En_broken=1;let balanceIndexbroken='';let toCard
                             if(arr.ID==0){
                                  motor1En_push=1; motor2En_push=1; balanceIndexPush='';
                                  motor1CoinPush=1; motor2CoinPush=1;
-                                xc. getBalanceTypeDic('',token,layer,form,'balanceIndexPush')
+                                xc. getBalanceTypeDic('1',token,layer,form,'balanceIndexPush')
                             }else {
                                 form.val("pushCoin",{
                                     'motor1En_push':arr.Motor1EN==1 ? true : false ,
@@ -1095,7 +1140,7 @@ let motor1En_broken=1;let motor2En_broken=1;let balanceIndexbroken='';let toCard
                                 balanceIndexPush=arr.BalanceIndex;
                                 motor1CoinPush=arr.Motor1Coin;
                                 motor2CoinPush=arr.Motor2Coin;
-                                xc. getBalanceTypeDic('',token,layer,form,'balanceIndexPush',arr.BalanceIndex)
+                                xc. getBalanceTypeDic('1',token,layer,form,'balanceIndexPush',arr.BalanceIndex)
                             }
 
 

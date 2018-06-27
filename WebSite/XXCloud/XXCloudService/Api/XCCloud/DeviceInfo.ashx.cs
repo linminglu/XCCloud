@@ -520,7 +520,7 @@ namespace XXCloudService.Api.XCCloud
             {
                 string errMsg = string.Empty;
                 int lastIndex = dicParas.Get("token").LastIndexOf('/');
-                var token = dicParas.Get("token").Substring(lastIndex);
+                var token = dicParas.Get("token").Substring(lastIndex <= 0 ? 0 : lastIndex);
                 if(!token.Nonempty("设备Token", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
@@ -564,7 +564,7 @@ namespace XXCloudService.Api.XCCloud
 
                 string errMsg = string.Empty;
                 int lastIndex = dicParas.Get("token").LastIndexOf('/');
-                var token = dicParas.Get("token").Substring(lastIndex);
+                var token = dicParas.Get("token").Substring(lastIndex <= 0 ? 0 : lastIndex);
                 if (!token.Nonempty("设备Token", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
@@ -582,7 +582,7 @@ namespace XXCloudService.Api.XCCloud
                 {
                     GameIndex = gameIndex,
                     HeadIndex = headIndex,
-                    GameName = Data_GameInfoService.I.GetModels(p => p.ID == gameIndex).Select(o => o.GameName),
+                    GameName = Data_GameInfoService.I.GetModels(p => p.ID == gameIndex).Select(o => o.GameName).FirstOrDefault(),
                     CheckDate = checkDate
                 };
 

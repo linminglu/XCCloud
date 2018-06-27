@@ -24,6 +24,5 @@ namespace XCCloudService.BLL.IBLL
         int ExecuteSqlCommand(string sql,params object[] parameters);
         IQueryable<T> SqlQuery(string sql,params object[] parameters);
         IQueryable<TElement> SqlQuery<TElement>(string sql, params object[] parameters);
-        
     }
 }

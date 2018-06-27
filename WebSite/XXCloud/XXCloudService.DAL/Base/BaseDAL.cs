@@ -19,44 +19,10 @@ namespace XCCloudService.DAL.Base
     {
 
         protected string dbContextName;
-        private DbContext dbContext;
+        private DbContext dbContext;        
 
-        private string GetClearText(bool identity, T t, string merchSecret)
+        private void MakeVerifiction(bool identity, ref T t, T oldT = null)
         {
-            SortedDictionary<string, string> fields = new SortedDictionary<string, string>();
-            Type type = t.GetType();
-            foreach (PropertyInfo pi in type.GetProperties())
-            {
-                if (pi.Name.Equals("Verifiction", StringComparison.OrdinalIgnoreCase))
-                    continue;
-                if (identity && pi.Name.Equals("ID", StringComparison.OrdinalIgnoreCase))
-                    continue;
-                var value = t.GetPropertyValue(pi.Name);
-                if (!value.IsNull())
-                {
-                    if (Nullable.GetUnderlyingType(pi.PropertyType) == typeof(Decimal))
-                    {
-                        var val = value.ToString();
-                        var str = val.Contains('.') ? val.TrimEnd('0') : val;//去除小数点后尾部0
-                        value = Convert.ChangeType(str, typeof(Decimal));
-                    }
-                    else if (Nullable.GetUnderlyingType(pi.PropertyType) == typeof(DateTime))
-                    {
-                        value = Utils.ConvertFromDatetime(value.Todatetime(), "yyyy-MM-dd HH:mm:ss");
-                    }
-
-                    fields.Add(pi.Name, value.ToString());
-                }
-            }
-
-            var result = string.Join("", fields.Values) + merchSecret;
-            return result;
-        }
-
-        private void CheckVerifiction(EntityState state, bool identity, ref T t, object foundEntity = null)
-        {
-            var errMsg = string.Empty;
-
             try
             {
                 //检查该实体是否需要校验
@@ -80,29 +46,20 @@ namespace XCCloudService.DAL.Base
                     //先校验                    
                     var str = string.Empty;
                     var md5 = string.Empty;
-                    if (state == EntityState.Modified)
+                    if (oldT != null)
                     {
-                        //获取原对象
-                        if(foundEntity == null)
-                        {
-                            errMsg = "获取当前数据失败";
-                            throw new Exception(errMsg);
-                        }
-
-                        var oldT = (T)foundEntity;
-                        str = GetClearText(identity, oldT, merchSecret);
+                        str = oldT.GetClearText(identity, merchSecret);
                         md5 = Utils.MD5(str);                        
                         if (!verifiction.Equals(md5, StringComparison.OrdinalIgnoreCase))
                         {
                             LogHelper.SaveLog(str);
                             LogHelper.SaveLog(md5);
-                            errMsg = "数据校验失败";
-                            throw new Exception(errMsg);
+                            throw new Exception("数据校验失败");
                         }
                     }
 
                     //更新校验码                    
-                    str = GetClearText(identity, t, merchSecret);
+                    str = t.GetClearText(identity, merchSecret);
                     md5 = Utils.MD5(str);
                     //LogHelper.SaveLog(str);
                     //LogHelper.SaveLog(md5);
@@ -172,14 +129,14 @@ namespace XCCloudService.DAL.Base
 
         public void AddModel(T t, bool identity = true)
         {
-            CheckVerifiction(EntityState.Added, identity, ref t);
+            MakeVerifiction(identity, ref t);
 
             dbContext.Set<T>().Add(t);
         }
         
         public bool Add(T t, bool identity = true)
         {
-            CheckVerifiction(EntityState.Added, identity, ref t);
+            MakeVerifiction(identity, ref t);
 
             dbContext.Set<T>().Add(t);
             return dbContext.SaveChanges() > 0;
@@ -187,7 +144,7 @@ namespace XCCloudService.DAL.Base
 
         public bool Update(T t, bool identity = true)
         {
-            CheckVerifiction(EntityState.Modified, identity, ref t, GetEntityInDatabase(t));
+            MakeVerifiction(identity, ref t, (T)GetEntityInDatabase(t));
             RemoveHoldingEntityInContext(t);
             dbContext.Set<T>().Attach(t);
             dbContext.Entry<T>(t).State = EntityState.Modified;
@@ -197,7 +154,7 @@ namespace XCCloudService.DAL.Base
 
         public void UpdateModel(T t, bool identity = true)
         {
-            CheckVerifiction(EntityState.Modified, identity, ref t, GetEntityInDatabase(t));
+            MakeVerifiction(identity, ref t, (T)GetEntityInDatabase(t));
             RemoveHoldingEntityInContext(t);
             dbContext.Set<T>().Attach(t);
             dbContext.Entry<T>(t).State = EntityState.Modified;

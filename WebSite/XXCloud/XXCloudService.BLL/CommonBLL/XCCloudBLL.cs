@@ -27,7 +27,7 @@ namespace XCCloudService.BLL.CommonBLL
             new DataAccess(DataAccessDB.XCCloudDB).ExecuteStoredProcedureSentence(storedProcedureName, paramArr);
         }
 
-        public static System.Data.DataSet GetStoredProcedureSentence(string storedProcedureName, SqlParameter[] paramArr)
+        public static DataSet GetStoredProcedureSentence(string storedProcedureName, SqlParameter[] paramArr)
         {
             return new DataAccess(DataAccessDB.XCCloudDB).GetStoredProcedureSentence(storedProcedureName, paramArr);
         }

@@ -1805,6 +1805,47 @@ namespace XCCloudService.Common
 
         #endregion
 
+        #region "数据校验"
+        /// <summary>
+        /// 获取数据校验明文
+        /// </summary>
+        /// <param name="t"></param>
+        /// <param name="identity"></param>
+        /// <param name="merchSecret"></param>
+        /// <returns></returns>
+        public static string GetClearText(this object t, bool identity, string merchSecret)
+        {
+            SortedDictionary<string, string> fields = new SortedDictionary<string, string>();
+            Type type = t.GetType();
+            foreach (PropertyInfo pi in type.GetProperties())
+            {
+                if (pi.Name.Equals("Verifiction", StringComparison.OrdinalIgnoreCase))
+                    continue;
+                if (identity && pi.Name.Equals("ID", StringComparison.OrdinalIgnoreCase))
+                    continue;
+                var value = t.GetPropertyValue(pi.Name);
+                if (!value.IsNull())
+                {
+                    if (Nullable.GetUnderlyingType(pi.PropertyType) == typeof(Decimal))
+                    {
+                        var val = value.ToString();
+                        var str = val.Contains('.') ? val.TrimEnd('0') : val;//去除小数点后尾部0
+                        value = Convert.ChangeType(str, typeof(Decimal));
+                    }
+                    else if (Nullable.GetUnderlyingType(pi.PropertyType) == typeof(DateTime))
+                    {
+                        value = Utils.ConvertFromDatetime(value.Todatetime(), "yyyy-MM-dd HH:mm:ss");
+                    }
+
+                    fields.Add(pi.Name, value.ToString());
+                }
+            }
+
+            var result = string.Join("", fields.Values) + merchSecret;
+            return result;
+        }
+        #endregion
+
         #region "数据验证"
 
         public static bool CheckDate(string date)

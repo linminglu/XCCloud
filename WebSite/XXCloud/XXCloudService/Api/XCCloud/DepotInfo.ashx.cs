@@ -88,7 +88,7 @@ namespace XXCloudService.Api.XCCloud
 
                 IBase_DepotInfoService base_DepotInfoService = BLLContainer.Resolve<IBase_DepotInfoService>();
                 IQueryable<Base_DepotInfo> query = base_DepotInfoService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase));
-                
+
                 var result = from a in query
                              orderby a.ID
                              select new
