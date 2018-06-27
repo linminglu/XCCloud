@@ -644,7 +644,6 @@ namespace XXCloudService.Api.XCCloud
                 if (!dicParas.Get("headIndex").Validintnozero("机头ID", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-
                 var mediaURL1 = dicParas.Get("mediaURL1");
                 var mediaURL2 = dicParas.Get("mediaURL2");
                 var mediaURL3 = dicParas.Get("mediaURL3");
