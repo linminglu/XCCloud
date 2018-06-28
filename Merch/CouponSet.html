@@ -2034,8 +2034,9 @@
     {{#  } }}
     {{# if(d.EntryCouponFlag==1&&d.NotAssignedCount>0){ }}
     <a class="layui-btn layui-btn-xs layui-bg-orange" lay-event="transfers"><i class="layui-icon">&#xe642;</i>优惠券调拨</a>
-    {{#  } }}
     <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="send">实物券派发</a>
+    {{#  } }}
+
     {{# if(d.IsLock==1){ }}
     <a class="layui-btn layui-btn-xs layui-bg-green" lay-event="unlock"><i class="layui-icon layui-icon-zzunlock">解锁</i></a>
     {{# }else{ }}
