@@ -330,7 +330,7 @@ namespace XXCloudService.Api.XCCloud
                         {
                             if (!Data_ProjectTicketService.I.Any(p => p.ID == containId && (p.StoreID ?? "").Equals(storeIds, StringComparison.OrdinalIgnoreCase)))
                             {
-                                errMsg = "套餐不能包含多个门店的门票";
+                                errMsg = "套餐门票必须且只能选择单适用门店";
                                 return false;
                             }
                         }
@@ -341,7 +341,16 @@ namespace XXCloudService.Api.XCCloud
                             {
                                 if (Base_GoodsInfoService.I.Any(p => p.ID == containId && p.Status == 1 && (p.StoreID ?? "") != ""))
                                 {
-                                    errMsg = "套餐不能包含多个门店的私有商品";
+                                    if (storeIds.IsNull())
+                                    {
+                                        errMsg = "无适用门店的套餐只能选择公有商品";
+                                    }
+
+                                    if (storeIds.Contains("|"))
+                                    {
+                                        errMsg = "适用于多个门店的套餐只能选择公有商品";
+                                    }
+
                                     return false;
                                 }
                             }
@@ -349,7 +358,7 @@ namespace XXCloudService.Api.XCCloud
                             {
                                 if (!Base_GoodsInfoService.I.Any(p => p.ID == containId && p.Status == 1 && ((p.StoreID ?? "") == "" || p.StoreID.Equals(storeIds, StringComparison.OrdinalIgnoreCase))))
                                 {
-                                    errMsg = "套餐不能包含多个门店的私有商品";
+                                    errMsg = "兑换的商品不属于选定的适用门店";
                                     return false;
                                 }
                             }                            

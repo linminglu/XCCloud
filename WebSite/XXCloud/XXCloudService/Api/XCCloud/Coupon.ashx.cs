@@ -208,7 +208,15 @@ namespace XXCloudService.Api.XCCloud
                         {                            
                             if (Base_GoodsInfoService.I.Any(p => p.ID == containId && p.Status == 1 && (p.StoreID ?? "") != ""))
                             {
-                                errMsg = "兑换券不能包含多个门店的私有商品";
+                                if (dicParas.Get("storeIds").IsNull())
+                                {
+                                    errMsg = "无适用门店的兑换券只能选择公有商品";
+                                }
+
+                                if (dicParas.Get("storeIds").Contains("|"))
+                                {
+                                    errMsg = "适用于多个门店的兑换券只能选择公有商品";
+                                }                                
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                             }
                         }
@@ -216,7 +224,7 @@ namespace XXCloudService.Api.XCCloud
                         {
                             if (!Base_GoodsInfoService.I.Any(p => p.ID == containId && p.Status == 1 && ((p.StoreID ?? "") == "" || p.StoreID.Equals(storeIds, StringComparison.OrdinalIgnoreCase))))
                             {
-                                errMsg = "兑换券不能包含多个门店的私有商品";
+                                errMsg = "兑换的商品不属于选定的适用门店";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                             }
                         }
@@ -229,7 +237,7 @@ namespace XXCloudService.Api.XCCloud
                         var containId = dicParas.Get("projectId").Toint();
                         if (!Data_ProjectInfoService.I.Any(p => p.ID == containId && (p.StoreID ?? "").Equals(storeIds, StringComparison.OrdinalIgnoreCase)))
                         {
-                            errMsg = "兑换券不能包含多个门店的游乐项目";
+                            errMsg = "兑换游乐项目必须且只能选择单适用门店";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
                     }

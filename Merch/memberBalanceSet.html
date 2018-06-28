@@ -16,13 +16,19 @@
 </div>
 <div id="openModel" style="display:none;padding: 0 15px;max-height: 550px;overflow-y: auto">
     <form class="layui-form" lay-filter="formTest">
-        <div class="layui-col-md7" style="height: 400px;border: 1px dashed #aaa; padding: 15px;">
+        <div class="layui-col-md7" style="height: 435px;border: 1px dashed #aaa; padding: 15px;">
                 <div class="layui-form-item">
                     <label class="layui-form-label">类别名称</label>
                     <div class="layui-input-block">
                         <input type="text" class="layui-input" id="TypeName" name="unchange">
                     </div>
                 </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">类别单位</label>
+                <div class="layui-input-block">
+                    <input type="text" class="layui-input" id="unit" placeholder="最多2个汉字">
+                </div>
+            </div>
                 <div class="layui-form-item">
                     <label class="layui-form-label">映射类别</label>
                     <div class="layui-input-block">
@@ -61,7 +67,7 @@
                 </div>
             <!--</div>-->
         </div>
-        <div class="layui-col-md5" style="height: 400px;overflow-y: scroll;border: 1px dashed #aaa ;padding: 15px;border-left: none;">
+        <div class="layui-col-md5" style="height: 435px;overflow-y: scroll;border: 1px dashed #aaa ;padding: 15px;border-left: none;">
             <div class="layui-form-item">
                 <div class="layui-inline" style="">
                     <div class="layui-input-inline" id="balanceStoreList">
@@ -137,6 +143,7 @@
                 'hkType':HKType,
                 'storeIds':storeId==''?'':storeId.join('|'),
                 'note':$('#Note').val(),
+                'unit':$('#unit').val(),
                 'addingType':saveFloatRule,
                 'decimalNumber':$('#saveFloat').val(),
                 'userToken':token,
@@ -199,6 +206,7 @@
                                 $('#saveFloat').val(DecimalNumber_);
                                 $('#TypeName').val(data.result_data.TypeName);
                                 $('#Note').val(data.result_data.Note);
+                            $('#unit').val(data.result_data.Unit),
                                 setStore(form,token,data.result_data.StoreIDs);
                                 if(data.result_data.StoreIDs){
                                       storeId=data.result_data.StoreIDs.split("|");

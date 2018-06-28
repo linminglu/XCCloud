@@ -6,6 +6,18 @@
     <link rel="stylesheet" href="layui/css/layui.css">
     <link rel="stylesheet" href="layui/css/layui_font.css">
 </head>
+<style>
+    .addImg{
+        cursor: pointer;
+        width: 50px;
+        height: 50px;
+        margin-left: 70px;
+        margin-top: 5px;
+    }
+    #imgBox img{
+        width: 80px;height: 80px;margin: 5px;display: inline-block;cursor: pointer
+    }
+</style>
 <body>
 <div class="layui-row" style="padding: 15px;">
     <blockquote class="layui-elem-quote" style="text-align:right;padding-right: 50px;">
@@ -25,15 +37,15 @@
         </div>
         <div class="layui-form-item">
             <div class="layui-inline">
-                <label  class="layui-form-label">默认图标</label>
-                <div class="layui-input-inline" >
-                    <select name="" id="primaryIcon"></select>
+                <label  class="layui-form-label" style="height: 60px">默认图标</label>
+                <div class="layui-input-inline" style="height: 58px;border: 1px solid #e6e6e6;margin: 0 auto">
+                    <img class="addImg" src="./asset/addPrimary.png" alt="" id="primaryImg" >
                 </div>
             </div>
             <div class="layui-inline">
-                <label  class="layui-form-label">选中时图标</label>
-                <div class="layui-input-inline" >
-                    <select name="" id="checkedIcon"></select>
+                <label  class="layui-form-label" style="height: 60px">选中时图标</label>
+                <div class="layui-input-inline" style="height: 58px;border: 1px solid #e6e6e6;padding: 0 auto">
+                    <img  class="addImg" src="./asset/add.png" alt="" id="activeImg">
                 </div>
             </div>
         </div>
@@ -56,6 +68,10 @@
         <button type="button" class="layui-btn" id="save">确定</button>
     </div>
 </div>
+
+<div id="imgBox" style="display:none;">
+
+</div>
 </body>
 <script src="js/jquery-1.8.3-min.js"></script>
 <script src="layui/layui.js"></script>
@@ -77,6 +93,9 @@
     };
     xc.getInitData(parm);
     let id='';let enabled=1;
+    let imgArr=['box1.png','box.png','credit card-fill.png','credit card-fill1.png',
+    'manage.png','manage1.png','manage_fill1.png','manage_fill.png','message.png','message1.png'];
+    let imgStatus='';let indexImg;
     layui.use(['form','table','layer'],function () {
         let form=layui.form;
         let table=layui.table;
@@ -102,8 +121,10 @@
             'dictKey':$('input[name="dictKey"]').val(),
             'comment':$('input[name="comment"]').val(),
             'enabled':enabled,
+                'dictvalue':$('#primaryImg').attr('src'),
+                // '':$('#activeImg').attr('src'),
             'userToken':token,
-            'signkey':'1f626576304bf5d95b72ece2222e42c3'}
+            'signkey':'1f626576304bf5d95b72ece2222e42c3'};
             let parasJson = JSON.stringify(obj);
             $.ajax({
                 type: "post",
@@ -123,6 +144,23 @@
             })
         });
 
+        $('.addImg').click(function () {
+            imgStatus=$(this).attr('id');
+            $('#imgBox').html('');
+                for (let i in imgArr){
+                     $('#imgBox').append('<img src="asset/'+imgArr[i]+'" >')
+                }
+         indexImg=  layer.open({
+               title:"图片库",
+               area:'800px',
+               type:1,
+               content:$('#imgBox')
+           })
+        });
+        $('#imgBox').on('click','img',function () {
+            $('#'+imgStatus).attr('src',$(this).attr('src'));
+            layer.close(indexImg);
+        });
         table.on('tool(foodTypeTable)',function (obj) {
             let _data=obj.data;
             let layevent=obj.event;
