@@ -33,6 +33,19 @@
             color: #000;
             cursor: pointer;
             line-height: 36px;}
+        .header{
+            background-color: #eee!important;
+        }
+        .header .dayui-main{
+            background-color: #eff3f3;
+        }
+        #header_bar{
+            background-color: #eff3f3!important;
+
+        }
+        #header_bar li a{
+            color:#333!important;
+        }
     </style>
 </head>
 <!--
@@ -46,11 +59,11 @@
             <a href="#" class="logo"><img src="images/logo.png" alt=""></a>
             <a href="javascript:;" class="iconfont hideMenu icon-menu1"></a>
             <ul class="layui-nav layui-layout-left fsTopMenu" id="fsTopMenu" lay-filter="fsTopMenu">
-                <span class="layui-nav-bar" style="width: 0px; left: 0px; opacity: 0;"></span>
-                <li class="layui-nav-item" datapid="1"><a href="javascript:;"><i class="fa fa-cog"></i> <cite>控制台</cite></a></li>
-                <li class="layui-nav-item" lay-unselect=""><a href="javascript:;"> <cite>测试</cite></a></li>
+                <!--<span class="layui-nav-bar" style="width: 0px; left: 0px; opacity: 0;"></span>-->
+                <!--<li class="layui-nav-item" datapid="1"><a href="javascript:;"><i class="fa fa-cog"></i> <cite>控制台</cite></a></li>-->
+                <!--<li class="layui-nav-item" lay-unselect=""><a href="javascript:;"> <cite>测试</cite></a></li>-->
             </ul>
-            <ul class="layui-nav layui-layout-right" style="margin-right: 100px;" lay-shrink="all">
+            <ul id="header_bar" class="layui-nav layui-layout-right" style="margin-right: 100px;background-color: #eff3f3;!important;" lay-shrink="all">
                 <li class="layui-nav-item" lay-unselect=""><a href="javascript:;">上线时间: <span id="nowTime"></span></a></li>
                 <li class="layui-nav-item" lay-unselect="">
                     <a href="#"><i class="layui-icon" style="color:#fff;">&#xe715;</i>&nbsp;&nbsp;&nbsp;我的位置：<span id="myPlace"></span><span class="layui-badge-dot"></span></a>
@@ -100,7 +113,7 @@
     <!-- 右侧内容 -->
     <div class="layui-body layui-form">
         <div class="layui-tab layui-tab-card xcTab" lay-allowClose="true" lay-filter="demo"
-             style="position: absolute;top: 0;bottom: 0;left: 0;right: 0;overflow: hidden">
+             style="position: absolute;top: 0;bottom: 0;left: 0;right: 0;overflow: hidden;margin-top: 0;">
             <ul class="layui-tab-title" id="xcTabMenu" style="padding:0 15px;">
                 <li class="layui-this" id="today">
                     <cite>今日营收情况分析</cite>
@@ -140,7 +153,6 @@
     else if(logMsg.logType==3){
         $('#myPlace').text('商户后台/商户ID:'+logMsg.merchId)
     }
-
 
     layui.use(['element','form','layer'],function () {
         let element=layui.element;

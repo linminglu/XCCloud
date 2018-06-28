@@ -176,7 +176,10 @@ namespace XXCloudService.Api.XCCloud
 
                 var linq = new
                 {
-                    base_GoodsInfo = Base_GoodsInfoService.I.GetModels(p => p.ID == id).FirstOrDefault(),
+                    base_GoodsInfo = (from a in Base_GoodsInfoService.N.GetModels(p => p.ID == id)
+                                      join b in Base_StoreInfoService.N.GetModels() on a.StoreID equals b.StoreID into b1
+                                      from b in b1.DefaultIfEmpty()
+                                      select new { a = a, Source = b != null ? b.StoreName : "总店" }).FirstOrDefault().AsFlatDictionary(),
                     goodInfoPrice = goodInfoPrice
                 }.AsFlatDictionary();
 

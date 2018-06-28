@@ -2180,13 +2180,14 @@ namespace XCCloudService.Common
             var objlist = source.GetType().GetProperties(bindingAttr);
             foreach (var prop in objlist)
             {
-                if (IsBulitinType(prop.PropertyType))
+                var value = prop.GetValue(source, null);
+                if (IsBulitinType(prop.PropertyType) && !(value is IDictionary<string, object>)) //如果是IDictionary<string, object>集合，则AddRangeOverride
                 {
                     dic.Add(prop.Name, prop.GetValue(source, null));
                 }
                 else
                 {
-                    dic.AddRangeOverride(prop.GetValue(source, null).AsDictionary());
+                    dic.AddRangeOverride((value is IDictionary<string, object>) ? (IDictionary<string, object>)value : value.AsDictionary());
                 }
             }
 
