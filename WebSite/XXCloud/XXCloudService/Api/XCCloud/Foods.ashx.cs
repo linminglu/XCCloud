@@ -210,10 +210,11 @@ namespace XXCloudService.Api.XCCloud
                 return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员等级无效");
             }
 
-            String[] Ary = new String[] { "数据0", "数据1", "数据2", "数据3" };
+            String[] Ary = new String[] { "数据0", "数据1", "数据2", "数据3", "数据4" };
             List<SqlDataRecord> listSqlDataRecord = new List<SqlDataRecord>();
             SqlMetaData[] MetaDataArr = new SqlMetaData[] {
-                new SqlMetaData("Category", SqlDbType.Int), 
+                new SqlMetaData("Category", SqlDbType.Int),
+                new SqlMetaData("Title", SqlDbType.VarChar,50),
                 new SqlMetaData("BalanceIndex", SqlDbType.Int),  
                 new SqlMetaData("MinPrice", SqlDbType.Decimal,18,2),
                 new SqlMetaData("MaxPrice", SqlDbType.Decimal,18,2)
@@ -223,6 +224,7 @@ namespace XXCloudService.Api.XCCloud
             {
                 List<object> listParas = new List<object>();
                 listParas.Add(priceLimitModelList[i].Category);
+                listParas.Add(priceLimitModelList[i].Title);
                 listParas.Add(priceLimitModelList[i].BalanceIndex);
                 listParas.Add(priceLimitModelList[i].MinPrice);
                 listParas.Add(priceLimitModelList[i].MaxPrice);
@@ -245,12 +247,13 @@ namespace XXCloudService.Api.XCCloud
             parameters[4].Value = listSqlDataRecord;
 
             System.Data.DataSet ds = XCCloudBLL.GetStoredProcedureSentence(storedProcedure, parameters);
-
             List<FoodInfoModel> listFoodInfo = Utils.GetModelList<FoodInfoModel>(ds.Tables[0]).ToList();
-            List<GoodModel> listGoodInfo = Utils.GetModelList<GoodModel>(ds.Tables[1]).ToList();
+            List<FoodDetailInfoModel> listFoodDetailInfo = Utils.GetModelList<FoodDetailInfoModel>(ds.Tables[1]).ToList();
             List<TicketModel> listTicketInfo = Utils.GetModelList<TicketModel>(ds.Tables[2]).ToList();
-            List<FoodDetailInfoModel> listFoodDetailInfo1 = Utils.GetModelList<FoodDetailInfoModel>(ds.Tables[3]).ToList();
-            List<FoodDetailInfoModel> listFoodDetailInfo2 = Utils.GetModelList<FoodDetailInfoModel>(ds.Tables[4]).ToList();
+            List<FoodDetailInfoModel> listGoodDetailInfo = Utils.GetModelList<FoodDetailInfoModel>(ds.Tables[3]).ToList();
+            List<GoodModel> listGoodInfo = Utils.GetModelList<GoodModel>(ds.Tables[4]).ToList();
+            List<FoodDetailInfoModel> listTicketDetailInfo = Utils.GetModelList<FoodDetailInfoModel>(ds.Tables[5]).ToList();
+
             FoodSetModel foodSetModel = new FoodSetModel();
 
             if (listFoodInfo.Count > 0)
@@ -263,24 +266,10 @@ namespace XXCloudService.Api.XCCloud
                     }
                     else
                     {
-                        List<FoodDetailInfoModel> foodDetialInfo1 = listFoodDetailInfo1.Where<FoodDetailInfoModel>(p => p.FoodId == listFoodInfo[i].FoodID).ToList<FoodDetailInfoModel>().OrderBy(p => p.BalanceType).ToList<FoodDetailInfoModel>();
-                        FoodDetailInfoModel model = new FoodDetailInfoModel(listFoodInfo[i].FoodID, 0, "现金", listFoodInfo[i].FoodPrice);
-                        foodDetialInfo1.Insert(0, model);
-                        listFoodInfo[i].DetailInfoList = foodDetialInfo1;
+                        List<FoodDetailInfoModel> detail = listFoodDetailInfo.Where<FoodDetailInfoModel>(p => p.FoodId == listFoodInfo[i].FoodID).ToList<FoodDetailInfoModel>().OrderBy(p => p.BalanceType).ToList<FoodDetailInfoModel>();
+                        listFoodInfo[i].DetailInfoList = detail;
                         listFoodInfo[i].DetailsCount = listFoodInfo[i].DetailInfoList.Count();
                     }
-                }
-            }
-
-            if (listGoodInfo.Count > 0)
-            {
-                for (int i = 0; i < listGoodInfo.Count; i++)
-                {
-                    List<FoodDetailInfoModel> foodDetialInfo1 = listFoodDetailInfo1.Where<FoodDetailInfoModel>(p => p.FoodId == listGoodInfo[i].FoodId).ToList<FoodDetailInfoModel>().OrderBy(p => p.BalanceType).ToList<FoodDetailInfoModel>();
-                    FoodDetailInfoModel model = new FoodDetailInfoModel(listGoodInfo[i].FoodId, 0, "现金", listGoodInfo[i].Price);
-                    foodDetialInfo1.Insert(0, model);
-                    listGoodInfo[i].DetailInfoList = foodDetialInfo1;
-                    listGoodInfo[i].DetailsCount = listGoodInfo[i].DetailInfoList.Count();
                 }
             }
 
@@ -288,17 +277,25 @@ namespace XXCloudService.Api.XCCloud
             {
                 for (int i = 0; i < listTicketInfo.Count; i++)
                 {
-                    List<FoodDetailInfoModel> foodDetialInfo1 = new List<FoodDetailInfoModel>();
-                    FoodDetailInfoModel model = new FoodDetailInfoModel(listTicketInfo[i].FoodId, 0, "现金", listTicketInfo[i].Price);
-                    foodDetialInfo1.Insert(0, model);
-                    listTicketInfo[i].DetailInfoList = foodDetialInfo1;
-                    listTicketInfo[i].DetailsCount = listGoodInfo[i].DetailInfoList.Count();
+                    List<FoodDetailInfoModel> detail = listTicketDetailInfo.Where<FoodDetailInfoModel>(p => p.FoodId == listFoodInfo[i].FoodID).ToList<FoodDetailInfoModel>().OrderBy(p => p.BalanceType).ToList<FoodDetailInfoModel>();
+                    listTicketInfo[i].DetailInfoList = detail;
+                    listTicketInfo[i].DetailsCount = listTicketInfo[i].DetailInfoList.Count();
+                }
+            }
+
+            if (listGoodInfo.Count > 0)
+            {
+                for (int i = 0; i < listGoodInfo.Count; i++)
+                {
+                    List<FoodDetailInfoModel> detail = listGoodDetailInfo.Where<FoodDetailInfoModel>(p => p.FoodId == listGoodInfo[i].FoodId).ToList<FoodDetailInfoModel>().OrderBy(p => p.BalanceType).ToList<FoodDetailInfoModel>();
+                    listGoodInfo[i].DetailInfoList = detail;
+                    listGoodInfo[i].DetailsCount = listGoodInfo[i].DetailInfoList.Count();
                 }
             }
 
             foodSetModel.ListFoodInfo = listFoodInfo;
-            foodSetModel.ListGoodModel = listGoodInfo;
-            foodSetModel.ListTicketModel = listTicketInfo;
+            foodSetModel.ListTicketInfo = listTicketInfo;
+            foodSetModel.ListGoodInfo = listGoodInfo;
 
             return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, foodSetModel);
         }

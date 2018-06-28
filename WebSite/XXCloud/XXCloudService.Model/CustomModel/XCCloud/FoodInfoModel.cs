@@ -28,16 +28,13 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         [DataMember(Name = "foreAuthorize", Order = 6)]
         public int ForeAuthorize { get; set; }
 
-        [DataMember(Name = "foodPrice", Order = 7)]
-        public decimal FoodPrice { get; set; }
-
-        [DataMember(Name = "imageUrl", Order = 8)]
+        [DataMember(Name = "imageUrl", Order = 7)]
         public string ImageUrl { get; set; }
 
-        [DataMember(Name = "detailsCount", Order = 9)]
+        [DataMember(Name = "detailsCount", Order = 8)]
         public int DetailsCount { get; set; }
 
-        [DataMember(Name = "detailInfoList", Order = 10)]
+        [DataMember(Name = "detailInfoList", Order = 9)]
         public List<FoodDetailInfoModel> DetailInfoList { set; get; }
     }
 
@@ -155,11 +152,11 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         [DataMember(Name = "food", Order = 1)]
         public List<FoodInfoModel> ListFoodInfo { set; get; }
 
-        [DataMember(Name = "good", Order = 2)]
-        public List<GoodModel> ListGoodModel { set; get; }
+        [DataMember(Name = "ticket", Order = 2)]
+        public List<TicketModel> ListTicketInfo { set; get; }
 
-        [DataMember(Name = "ticket", Order = 3)]
-        public List<TicketModel> ListTicketModel { set; get; }
+        [DataMember(Name = "good", Order = 3)]
+        public List<GoodModel> ListGoodInfo { set; get; }
     }
 
     public class FoodInfoViewModel

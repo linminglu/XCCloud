@@ -13,13 +13,16 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         [DataMember(Name = "category", Order = 1)]
         public int Category { set; get; }
 
-        [DataMember(Name = "balanceIndex", Order = 2)]
+        [DataMember(Name = "title", Order = 2)]
+        public string  Title { set; get; }
+
+        [DataMember(Name = "balanceIndex", Order = 3)]
         public int BalanceIndex {set;get;}
 
-        [DataMember(Name = "minPrice", Order = 3)]
+        [DataMember(Name = "minPrice", Order = 4)]
         public decimal MinPrice {set;get;}
 
-        [DataMember(Name = "maxPrice", Order = 4)]
+        [DataMember(Name = "maxPrice", Order = 5)]
         public decimal MaxPrice { set; get; }
     }
 }

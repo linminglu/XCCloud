@@ -585,10 +585,11 @@
         'url': '/XCCloud/Member?action=QueryMemberLevel',
         'elem': '#memberLevelTb',
         'cols': [
-            {field: 'MemberLevelID', title: '级别编号', align: 'center', sort: true, width: 80}
-            , {field: 'MemberLevelName', title: '级别名称', align: 'center'}
-            , {field: 'OpenFee', title: '开户费', align: 'center'}
-            , {field: 'Deposit', title: '押金', align: 'center'}
+            // {field: 'MemberLevelID', title: '级别编号', align: 'center', sort: true, width: 80}
+            // ,
+            {field: 'MemberLevelName', title: '级别名称', align: 'center'}
+            , {field: 'OpenFee', title: '开户费(元)', align: 'center'}
+            , {field: 'Deposit', title: '押金(元)', align: 'center'}
             , {field: 'Validday', title: '有效天数', align: 'center', templet: '#changeLock', width: 140}
             , {field: 'ContinueFee', title: '续费期', align: 'center'}
             , {field: 'UpdateUsePoint', title: '升级销毁积分', align: 'center'}
@@ -666,8 +667,8 @@
         });
     };
     function setTransferLevel(arr,form,id,name) {
-        if(arr==[]){
-            $('#'+id).html('<option disabled>-没有选项-</option>');
+        if(arr.length==0){
+            $('#'+id).html('<option disabled value="">-没有选项-</option>');
         }else {
             $('#'+id).html('<option>-请选择转移会员级别-</option>');
 
@@ -1021,9 +1022,9 @@
                                 'allowGetCoin': arr.AllowGetCoin == 1 ? true : false,
 
                                 'AllowTransferOut': arr.AllowTransferOut == 1 ? true : false,
-                                'TransferOutLevelID': arr.TransferOutLevelID,
+                                // 'TransferOutLevelID': arr.TransferOutLevelID,
                                 'AllowTransferIn': arr.AllowTransferIn == 1 ? true : false,
-                                'TransferInLevelID': arr.TransferInLevelID,
+                                // 'TransferInLevelID': arr.TransferInLevelID,
                             });
                             freeBalanceIndex = arr.FreeBalanceIndex;
                             FoodID = arr.FoodID;
@@ -1034,10 +1035,17 @@
                             allowSaveCoin = arr.AllowSaveCoin;
                             allowGetCoin = arr.AllowGetCoin;
                             AllowTransferOut = arr.AllowTransferOut;
+                            if(AllowTransferOut==1){
+                                setTransferLevel(memberLevelList,form,'TransferOutLevelID',$('#MemberLevelName').val())
+                            }
                             TransferOutLevelID = arr.TransferOutLevelID;
+                            $('#TransferOutLevelID').find('option[value="'+arr.TransferOutLevelID+'"]').attr('selected',true)
                             AllowTransferIn = arr.AllowTransferIn;
+                            if(AllowTransferIn==1){
+                                setTransferLevel(memberLevelList,form,'TransferInLevelID',$('#MemberLevelName').val())
+                            }
                             TransferInLevelID = arr.TransferInLevelID;
-
+                            $('#TransferInLevelID').find('option[value="'+arr.TransferInLevelID+'"]').attr('selected',true)
                             $('#demo2').append('<div style="display: inline-block;position: relative" class="imgBox">' +
                                 '<button type="button" ><i class="layui-icon"><i class="layui-icon">&#xe640</i></i></button>' +
                                 '<img src="' + arr.CoverURL + '" class="layui-upload-img_md" ' +
@@ -1045,7 +1053,7 @@
                             $('.imgBox button').click(function () {
                                 $(this).parent('div').remove();
                             });
-
+                            form.render()
                             layer.open({
                                 type: 1,
                                 area: '1030px',
@@ -1324,6 +1332,9 @@
         form.on('switch(AllowTransferOut)', function (data) {
             if(data.elem.checked){
                 setTransferLevel(memberLevelList,form,'TransferOutLevelID',$('#MemberLevelName').val())
+            }else {
+                setTransferLevel([],form,'TransferOutLevelID',$('#MemberLevelName').val());
+                TransferOutLevelID='';
             }
             data.elem.checked === true ? AllowTransferOut = 1 : AllowTransferOut = 0;
         });
@@ -1333,6 +1344,9 @@
         form.on('switch(AllowTransferIn)', function (data) {
             if(data.elem.checked){
                 setTransferLevel(memberLevelList,form,'TransferInLevelID',$('#MemberLevelName').val())
+            }else {
+                setTransferLevel([],form,'TransferInLevelID',$('#MemberLevelName').val());
+                TransferInLevelID='';
             }
             data.elem.checked === true ? AllowTransferIn = 1 : AllowTransferIn = 0;
         });

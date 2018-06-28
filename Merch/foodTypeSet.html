@@ -25,7 +25,21 @@
         </div>
         <div class="layui-form-item">
             <div class="layui-inline">
-                <!--<label  class="layui-form-label">赠送类别</label>-->
+                <label  class="layui-form-label">默认图标</label>
+                <div class="layui-input-inline" >
+                    <select name="" id="primaryIcon"></select>
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label  class="layui-form-label">选中时图标</label>
+                <div class="layui-input-inline" >
+                    <select name="" id="checkedIcon"></select>
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <div class="layui-inline">
                 <div class="layui-input-inline">
                     <input type="checkbox" checked title="是否显示" name="enabled" lay-filter="enabled" lay-skin="primary">
                 </div>
@@ -79,7 +93,7 @@
             layer.open({
                 title:'新增套餐类型',
                 type:1,
-                area:'500px',
+                area:'700px',
                 content:$('#openModel')
             })
         });
