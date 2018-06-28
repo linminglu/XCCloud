@@ -62,7 +62,7 @@ namespace XXCloudService.Api.XCCloud
                 IBase_UserInfoService base_UserInfoService = BLLContainer.Resolve<IBase_UserInfoService>(resolveNew: true);
                 IBase_StoreWeightService base_StoreWeightService = BLLContainer.Resolve<IBase_StoreWeightService>(resolveNew: true);
                 var result = from a in base_UserInfoService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase) && p.UserType == (int)UserType.StoreBoss)
-                             join b in base_StoreWeightService.GetModels(p=>p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)) on a.UserID equals b.BossID into b1
+                             join b in base_StoreWeightService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)) on a.UserID equals b.BossID into b1
                              from b in b1.DefaultIfEmpty()
                              where b.BossID == (int?)null
                              select new

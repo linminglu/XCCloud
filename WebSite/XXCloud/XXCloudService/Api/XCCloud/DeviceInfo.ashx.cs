@@ -88,33 +88,34 @@ namespace XXCloudService.Api.XCCloud
                 }
 
                 var base_DeviceInfo = (from a in query
-                                           join b in Data_GameInfoService.N.GetModels() on a.GameIndexID equals b.ID into b1
-                                           from b in b1.DefaultIfEmpty()
-                                           join c in Dict_SystemService.N.GetModels() on b.GameType equals c.ID into c1
-                                           from c in c1.DefaultIfEmpty()
-                                           join d in Data_GroupAreaService.N.GetModels() on b.AreaID equals d.ID into d1
-                                           from d in d1.DefaultIfEmpty()
-                                           orderby a.MCUID
-                                           
-                                      select new Base_DeviceInfoList
-                                      {
-                                          ID = a.ID,
-                                          MCUID = a.MCUID,
-                                          DeviceName = a.DeviceName,
-                                          DeviceType = a.type,
-                                          GameType = b != null ? b.GameType : (int?)null,
-                                          GameTypeStr = c != null ? c.DictKey : string.Empty,
-                                          GameName = b != null ? b.GameName : string.Empty,
-                                          AreaName = d != null ? d.AreaName : string.Empty,
-                                          SiteName = a.SiteName,
-                                          segment = a.segment,
-                                          Address = a.Address,
-                                          DeviceRunning = string.Empty,
-                                          DeviceStatus = a.DeviceStatus,
-                                          DeviceStatusStr = a.DeviceStatus != null ? (a.DeviceStatus == 0 ? "停用" :
-                                                        a.DeviceStatus == 1 ? "正常" :
-                                                        a.DeviceStatus == 2 ? "锁定" : string.Empty) : string.Empty
-                                      }).ToList();
+                                       join b in
+                                           (
+                                               from b in Data_GameInfoService.N.GetModels()
+                                               join c in Dict_SystemService.N.GetModels() on b.GameType equals c.ID into c1
+                                               from c in c1.DefaultIfEmpty()
+                                               join d in Data_GroupAreaService.N.GetModels() on b.AreaID equals d.ID into d1
+                                               from d in d1.DefaultIfEmpty()
+                                               select new { b.ID, b.GameType, b.GameName, DictKey = c != null ? c.DictKey : string.Empty, AreaName = d != null ? d.AreaName : string.Empty }
+                                            ) on a.GameIndexID equals b.ID into b1
+                                       from b in b1.DefaultIfEmpty()
+                                       orderby a.MCUID
+                                       select new Base_DeviceInfoList
+                                       {
+                                           ID = a.ID,
+                                           MCUID = a.MCUID,
+                                           DeviceName = a.DeviceName,
+                                           DeviceType = a.type,
+                                           GameType = b != null ? b.GameType : (int?)null,
+                                           GameTypeStr = b != null ? b.DictKey : string.Empty,
+                                           GameName = b != null ? b.GameName : string.Empty,
+                                           AreaName = b != null ? b.AreaName : string.Empty,
+                                           SiteName = a.SiteName,
+                                           segment = a.segment,
+                                           Address = a.Address,
+                                           DeviceRunning = string.Empty,
+                                           DeviceStatus = a.DeviceStatus,
+                                           DeviceStatusStr = a.DeviceStatus != null ? (a.DeviceStatus == 0 ? "停用" : a.DeviceStatus == 1 ? "正常" : a.DeviceStatus == 2 ? "锁定" : string.Empty) : string.Empty
+                                       }).ToList();
 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, base_DeviceInfo);
             }
@@ -148,32 +149,34 @@ namespace XXCloudService.Api.XCCloud
                 }
 
                 var list = (from a in query
-                                       join b in Data_GameInfoService.N.GetModels() on a.GameIndexID equals b.ID into b1
-                                       from b in b1.DefaultIfEmpty()
-                                       join c in Dict_SystemService.N.GetModels() on b.GameType equals c.ID into c1
-                                       from c in c1.DefaultIfEmpty()
-                                       join d in Data_GroupAreaService.N.GetModels() on b.AreaID equals d.ID into d1
-                                       from d in d1.DefaultIfEmpty()
-                                       orderby a.MCUID
-                                       select new Base_DeviceInfoList
-                                       {
-                                           ID = a.ID,
-                                           MCUID = a.MCUID,
-                                           DeviceName = a.DeviceName,
-                                           DeviceType = a.type,
-                                           GameType = b != null ? b.GameType : (int?)null,
-                                           GameTypeStr = c != null ? c.DictKey : string.Empty,
-                                           GameName = b != null ? b.GameName : string.Empty,
-                                           AreaName = d != null ? d.AreaName : string.Empty,
-                                           SiteName = a.SiteName,
-                                           segment = a.segment,
-                                           Address = a.Address,
-                                           DeviceRunning = string.Empty,
-                                           DeviceStatus = a.DeviceStatus,
-                                           DeviceStatusStr = a.DeviceStatus != null ? (a.DeviceStatus == 0 ? "停用" :
-                                                         a.DeviceStatus == 1 ? "正常" :
-                                                         a.DeviceStatus == 2 ? "锁定" : string.Empty) : string.Empty
-                                       }).ToList();
+                            join b in
+                                (
+                                    from b in Data_GameInfoService.N.GetModels()
+                                    join c in Dict_SystemService.N.GetModels() on b.GameType equals c.ID into c1
+                                    from c in c1.DefaultIfEmpty()
+                                    join d in Data_GroupAreaService.N.GetModels() on b.AreaID equals d.ID into d1
+                                    from d in d1.DefaultIfEmpty()
+                                    select new { b.ID, b.GameType, b.GameName, DictKey = c != null ? c.DictKey : string.Empty, AreaName = d != null ? d.AreaName : string.Empty }
+                                ) on a.GameIndexID equals b.ID into b1
+                            from b in b1.DefaultIfEmpty()
+                            orderby a.MCUID
+                            select new Base_DeviceInfoList
+                            {
+                                ID = a.ID,
+                                MCUID = a.MCUID,
+                                DeviceName = a.DeviceName,
+                                DeviceType = a.type,
+                                GameType = b != null ? b.GameType : (int?)null,
+                                GameTypeStr = b != null ? b.DictKey : string.Empty,
+                                GameName = b != null ? b.GameName : string.Empty,
+                                AreaName = b != null ? b.AreaName : string.Empty,
+                                SiteName = a.SiteName,
+                                segment = a.segment,
+                                Address = a.Address,
+                                DeviceRunning = string.Empty,
+                                DeviceStatus = a.DeviceStatus,
+                                DeviceStatusStr = a.DeviceStatus != null ? (a.DeviceStatus == 0 ? "停用" : a.DeviceStatus == 1 ? "正常" : a.DeviceStatus == 2 ? "锁定" : string.Empty) : string.Empty
+                            }).ToList();
 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, list);
             }

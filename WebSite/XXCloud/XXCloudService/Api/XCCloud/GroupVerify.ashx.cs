@@ -47,12 +47,16 @@ namespace XXCloudService.Api.XCCloud
                     query = flw_GroupVerityService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase));
                 }
                 int GroupTypeId = dict_SystemService.GetModels(p => p.DictKey.Equals("团购渠道") && p.PID == 0).FirstOrDefault().ID;
-                var result = from a in query 
+                var result = from a in query
                              join b in dict_SystemService.GetModels() on (a.GroupType + "") equals b.DictValue into b1
                              from b in b1.DefaultIfEmpty()
                              join c in base_StoreInfoService.GetModels() on a.StoreID equals c.StoreID
-                             join d in flw_Schedule_UserInfoService.GetModels() on a.ScheduleID equals d.ScheduleID
-                             join e in base_UserInfoService.GetModels() on d.UserID equals e.UserID
+                             join d in
+                                 (
+                                      from d in flw_Schedule_UserInfoService.GetModels()
+                                      join e in base_UserInfoService.GetModels() on d.UserID equals e.UserID
+                                      select new { d.ScheduleID, e.LogName }
+                                 ) on a.ScheduleID equals d.ScheduleID
                              join f in data_WorkstationService.GetModels() on a.WorkStationID equals f.ID
                              orderby a.ID
                              select new
@@ -63,7 +67,7 @@ namespace XXCloudService.Api.XCCloud
                                  VerityTime = a.VerityTime,
                                  StoreName = c.StoreName,
                                  WorkStation = f.WorkStation,
-                                 LogName = e.LogName
+                                 LogName = d.LogName
                              };
 
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, result);

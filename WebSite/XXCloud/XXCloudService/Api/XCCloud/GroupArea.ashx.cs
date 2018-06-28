@@ -35,19 +35,18 @@ namespace XXCloudService.Api.XCCloud
                 string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
                 string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
 
-                var linq = from t in
-                               (from a in Data_GroupAreaService.N.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)
-                         && p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase))
+                var linq = from a in
+                               (from a in Data_GroupAreaService.N.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase))
                                 join b in Data_ProjectInfoService.N.GetModels(p => p.State == 1) on a.ID equals b.AreaType into b1
                                 from b in b1.DefaultIfEmpty()
-                                select new { a = a, ProjectID = b.ID })
-                           group t by t.a.ID into g
-                           orderby g.FirstOrDefault().a.AreaName
+                                select new { a.ID, a.AreaName, ProjectID = b != null ? b.ID : (int?)null })
+                           group a by a.ID into g
+                           orderby g.FirstOrDefault().AreaName
                            select new GroupAreaModel
                            {
                                ID = g.Key,
-                               AreaName = g.FirstOrDefault().a.AreaName,
-                               ProjectCount = g.Count(c=>c.ProjectID != null)
+                               AreaName = g.FirstOrDefault().AreaName,
+                               ProjectCount = g.Count(c => c.ProjectID != null)
                            };
 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, linq.ToList());
@@ -72,18 +71,17 @@ namespace XXCloudService.Api.XCCloud
                 string storeId = userTokenModel.StoreId;
                 string merchId = storeId.Substring(0, 6);
 
-                var linq = from t in
-                               (from a in Data_GroupAreaService.N.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)
-                         && p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase))
+                var linq = from a in
+                               (from a in Data_GroupAreaService.N.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase))
                                 join b in Data_ProjectInfoService.N.GetModels(p => p.State == 1) on a.ID equals b.AreaType into b1
                                 from b in b1.DefaultIfEmpty()
-                                select new { a = a, ProjectID = b.ID })
-                           group t by t.a.ID into g
-                           orderby g.FirstOrDefault().a.AreaName
+                                select new { a.ID, a.AreaName, ProjectID = b != null ? b.ID : (int?)null })
+                           group a by a.ID into g
+                           orderby g.FirstOrDefault().AreaName
                            select new GroupAreaModel
                            {
                                ID = g.Key,
-                               AreaName = g.FirstOrDefault().a.AreaName,
+                               AreaName = g.FirstOrDefault().AreaName,
                                ProjectCount = g.Count(c => c.ProjectID != null)
                            };
 

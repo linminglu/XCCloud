@@ -28,7 +28,7 @@ namespace XXCloudService.Api.XCCloud
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
 
-                var linq = from a in Data_DigitCoinFoodService.N.GetModels(p=>p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase))
+                var linq = from a in Data_DigitCoinFoodService.N.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase))
                            join b in Dict_BalanceTypeService.N.GetModels(p => p.State == 1) on a.BalanceIndex equals b.ID into b1
                            from b in b1.DefaultIfEmpty()
                            select new
@@ -38,7 +38,7 @@ namespace XXCloudService.Api.XCCloud
                                BalanceIndex = a.BalanceIndex,
                                BalanceIndexStr = b != null ? b.TypeName : string.Empty,
                                Coins = a.Coins,
-                               AuthorFlag = a.AuthorFlag == 0 ? "否" : a.AuthorFlag == 1 ? "是" : string.Empty,                               
+                               AuthorFlag = a.AuthorFlag == 0 ? "否" : a.AuthorFlag == 1 ? "是" : string.Empty,
                                Note = a.Note
                            };
 

@@ -30,24 +30,32 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;             
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
 
-                var linq = from d in
+                var linq = from t in
                                (from a in Dict_BalanceTypeService.N.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.State == 1)
-                                join d in Dict_SystemService.N.GetModels() on (a.MappingType + "") equals d.DictValue into d1
+                                join d in
+                                    (
+                                        from d in Dict_SystemService.N.GetModels()
+                                        join e in Dict_SystemService.N.GetModels() on d.PID equals e.ID
+                                        where e.DictKey == "关联类别"
+                                        select d
+                                        ) on (a.MappingType + "") equals d.DictValue into d1
                                 from d in d1.DefaultIfEmpty()
-                                join e in Dict_SystemService.N.GetModels() on d.PID equals e.ID
-                                where e.DictKey == "关联类别"
-                                join b in Data_BalanceType_StoreListService.N.GetModels() on a.ID equals b.BalanceIndex into b1
+                                join b in
+                                    (
+                                        from b in Data_BalanceType_StoreListService.N.GetModels()
+                                        join c in Base_StoreInfoService.N.GetModels() on b.StroeID equals c.StoreID
+                                        select new { b.BalanceIndex, c.StoreName }
+                                        ) on a.ID equals b.BalanceIndex into b1
                                 from b in b1.DefaultIfEmpty()
-                                join c in Base_StoreInfoService.N.GetModels() on b.StroeID equals c.StoreID
                                 select new
                                 {
                                     a = a,
                                     HkTypeStr = d != null ? d.DictKey : string.Empty,
-                                    StoreName = c != null ? c.StoreName : string.Empty
+                                    StoreName = b != null ? b.StoreName : string.Empty
                                 }).AsEnumerable()
-                           group d by d.a.ID into g
+                           group t by t.a.ID into g
                            orderby g.Key
                            select new
                            {

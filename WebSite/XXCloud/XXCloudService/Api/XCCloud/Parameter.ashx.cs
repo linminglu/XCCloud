@@ -391,21 +391,8 @@ namespace XXCloudService.Api.XCCloud
                                              {
                                                  a = a,
                                                  MemberLevelName = b != null ? b.MemberLevelName : string.Empty
-                                             }).ToList().AsFlatDictionaryList();
-                                            //select new {
-                                            //    ID = a.ID,
-                                            //    MemberLevelID = a.MemberLevelID,
-                                            //    MemberLevelName = b != null ? b.MemberLevelName : string.Empty,
-                                            //    AllowBackPrincipal = a.AllowBackPrincipal,
-                                            //    Backtype = a.Backtype,
-                                            //    AllowContainToday = a.AllowContainToday,
-                                            //    BackMin = a.BackMin,
-                                            //    BackMax = a.BackMax,
-                                            //    BackScale = a.BackScale,
-                                            //    ExitCardMin = a.ExitCardMin,
-                                            //    TotalDays = a.TotalDays
-                                            //};
-
+                                             }).AsEnumerable().AsFlatDictionaryList();
+                                            
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, data_GivebackRuleList);
             }
             catch (Exception e)

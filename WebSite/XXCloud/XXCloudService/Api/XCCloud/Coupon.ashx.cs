@@ -1315,10 +1315,14 @@ namespace XXCloudService.Api.XCCloud
 
                 var linq = from d in
                                (from a in Data_CouponInfoService.N.GetModels()
-                                join b in Data_CouponListService.N.GetModels(p => p.CouponID == couponId && (p.StoreID ?? "") != "") on a.ID equals b.CouponID
-                                join c in Base_StoreInfoService.N.GetModels() on b.StoreID equals c.StoreID into c1
-                                from c in c1.DefaultIfEmpty()
-                                select new { a = a, CouponID = b.CouponID, StoreID = b.StoreID, StoreName = (c != null ? c.StoreName : string.Empty), CouponIndex = b.CouponIndex, IsLock = b.IsLock }
+                                join b in
+                                    (
+                                        from b in Data_CouponListService.N.GetModels(p => p.CouponID == couponId && (p.StoreID ?? "") != "")
+                                        join c in Base_StoreInfoService.N.GetModels() on b.StoreID equals c.StoreID into c1
+                                        from c in c1.DefaultIfEmpty()
+                                        select new { b.CouponID, b.StoreID, b.CouponIndex, b.IsLock, StoreName = c != null ? c.StoreName : string.Empty }
+                                    ) on a.ID equals b.CouponID
+                                select new { a = a, CouponID = b.CouponID, StoreID = b.StoreID, StoreName = b.StoreName, CouponIndex = b.CouponIndex, IsLock = b.IsLock }
                                 ).AsEnumerable()
                            group d by new { d.CouponID, d.StoreID } into g
                            select new

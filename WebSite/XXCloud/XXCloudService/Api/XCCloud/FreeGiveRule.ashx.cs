@@ -103,9 +103,6 @@ namespace XXCloudService.Api.XCCloud
         {
             try
             {
-                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
-
                 string errMsg = string.Empty;
                 if (!dicParas.Get("id").Validintnozero("规则ID", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -113,16 +110,16 @@ namespace XXCloudService.Api.XCCloud
                 var id = dicParas.Get("id").Toint();
 
                 var freeGiveRules = (from c in
-                                        (from a in Data_FreeGiveRuleService.N.GetModels(p => p.ID == id)
-                                         join b in Data_FreeGiveRule_MemberlevelService.N.GetModels() on a.ID equals b.RuleID into b1
-                                         from b in b1.DefaultIfEmpty()
-                                         select new { a = a, b = b }).AsEnumerable()
-                                    group c by c.a.ID into g
-                                    select new
-                                    {
-                                        a = g.FirstOrDefault().a,
-                                        MemberLevelIDs = string.Join("|", g.Select(o => o.b.MemberLevelID))
-                                    }).AsFlatDictionary();
+                                         (from a in Data_FreeGiveRuleService.N.GetModels(p => p.ID == id)
+                                          join b in Data_FreeGiveRule_MemberlevelService.N.GetModels() on a.ID equals b.RuleID into b1
+                                          from b in b1.DefaultIfEmpty()
+                                          select new { a = a, MemberLevelID = b != null ? b.MemberLevelID : (int?)null }).AsEnumerable()
+                                     group c by c.a.ID into g
+                                     select new
+                                     {
+                                         a = g.FirstOrDefault().a,
+                                         MemberLevelIDs = string.Join("|", g.Select(o => o.MemberLevelID))
+                                     }).AsFlatDictionary();
 
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, freeGiveRules);
             }
