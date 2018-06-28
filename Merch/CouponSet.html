@@ -528,12 +528,12 @@
                 <div class="layui-form-item">
                     <div class="layui-inline">
                         <div class="layui-input-inline" style="width: 190px">
-                            <input type="checkbox" title="每月活跃次数" lay-skin="primary">
+                            <input type="checkbox" title="每月活跃次数" lay-skin="primary" lay-filter="isActivePreMonth">
                         </div>
                     </div>
                     <div class="layui-inline">
                         <div class="layui-input-inline">
-                            <input type="text" class="layui-input">
+                            <input type="text" class="layui-input" id="activePreMonth">
                         </div>
                         <div class="layui-form-mid">
 
@@ -543,23 +543,21 @@
                 <div class="layui-form-item">
                     <div class="layui-inline">
                         <div class="layui-input-inline">
-                            <select id="">
-                                <option>-请选择-</option>
-                                <option value="0">或者</option>
+                            <select id="relative_Cost">
+                                <option value="0" selected>或者</option>
                                 <option value="1">并且</option>
                             </select>
                         </div>
                     </div>
                     <div class="layui-inline">
                         <div class="layui-input-inline">
-                            <input type="checkbox" title="消费能力" lay-skin="primary">
+                            <input type="checkbox" title="消费能力" lay-skin="primary" lay-filter="isCost">
                         </div>
                     </div>
                     <div class="layui-inline">
                         <div class="layui-input-inline">
-                            <select id="">
-                                <option>-请选择-</option>
-                                <option value="0">天</option>
+                            <select id="perCost">
+                                <option value="0" selected>天</option>
                                 <option value="1">周</option>
                                 <option value="2">月</option>
                                 <option value="3">季</option>
@@ -570,7 +568,7 @@
                             消费
                         </div>
                         <div class="layui-input-inline">
-                            <input type="text" class="layui-input">
+                            <input type="text" class="layui-input" id="CostCount">
                         </div>
                         <div class="layui-form-mid">
                             元
@@ -580,23 +578,21 @@
                 <div class="layui-form-item">
                     <div class="layui-inline">
                         <div class="layui-input-inline">
-                            <select id="">
-                                <option>-请选择-</option>
-                                <option value="0">或者</option>
+                            <select id="relative_win">
+                                <option value="0" selected>或者</option>
                                 <option value="1">并且</option>
                             </select>
                         </div>
                     </div>
                     <div class="layui-inline">
                         <div class="layui-input-inline">
-                            <input type="checkbox" title="输赢能力" lay-skin="primary">
+                            <input type="checkbox" title="输赢能力" lay-skin="primary" lay-filter="isWin">
                         </div>
                     </div>
                     <div class="layui-inline">
                         <div class="layui-input-inline">
-                            <select id="">
-                                <option>-请选择-</option>
-                                <option value="0">天</option>
+                            <select id="preWin">
+                                <option value="0" selected>天</option>
                                 <option value="1">周</option>
                                 <option value="2">月</option>
                                 <option value="3">季</option>
@@ -607,7 +603,7 @@
                             输赢
                         </div>
                         <div class="layui-input-inline">
-                            <input type="text" class="layui-input">
+                            <input type="text" class="layui-input" id="winCost">
                         </div>
                         <div class="layui-form-mid">
                             元
@@ -617,24 +613,23 @@
                 <div class="layui-form-item">
                     <div class="layui-inline">
                         <div class="layui-input-inline">
-                            <select id="">
-                                <option>-请选择-</option>
-                                <option value="0">或者</option>
+                            <select id="relative_birth">
+                                <option value="0" selected>或者</option>
                                 <option value="1">并且</option>
                             </select>
                         </div>
                     </div>
                     <div class="layui-inline">
                         <div class="layui-input-inline">
-                            <input type="checkbox" title="生日" lay-skin="primary">
+                            <input type="checkbox" title="生日" lay-skin="primary" lay-filter="isBirth">
                         </div>
                     </div>
                     <div class="layui-inline">
                         <div class="layui-input-inline">
-                            <select id="">
-                                <option>-请选择-</option>
-                                <option value="0">或者</option>
-                                <option value="1">并且</option>
+                            <select id="preBirth">
+                                <option value="0" selected>当天</option>
+                                <option value="1">周内</option>
+                                <option value="2">月内</option>
                             </select>
                         </div>
 
@@ -643,24 +638,21 @@
                 <div class="layui-form-item">
                     <div class="layui-inline">
                         <div class="layui-input-inline">
-                            <select id="">
-                                <option>-请选择-</option>
-                                <option value="0">或者</option>
+                            <select id="relative_member">
+                                <option value="0" selected>或者</option>
                                 <option value="1">并且</option>
                             </select>
                         </div>
                     </div>
                     <div class="layui-inline">
                         <div class="layui-input-inline">
-                            <input type="checkbox" title="会员级别" lay-skin="primary">
+                            <input type="checkbox" title="会员级别" lay-skin="primary" lay-filter="isMember">
                         </div>
                     </div>
                     <div class="layui-inline">
                         <div class="layui-input-inline">
-                            <select id="">
-                                <option>-请选择-</option>
-                                <option value="0">普通会员</option>
-                                <option value="1">银卡</option>
+                            <select id="preMember">
+
                             </select>
                         </div>
 
@@ -669,36 +661,34 @@
                 <div class="layui-form-item">
                     <div class="layui-inline">
                         <div class="layui-input-inline">
-                            <select id="">
-                                <option>-请选择-</option>
-                                <option value="0">或者</option>
+                            <select id="relative_balance">
+                                <option value="0" selected>或者</option>
                                 <option value="1">并且</option>
                             </select>
                         </div>
                     </div>
                     <div class="layui-inline">
                         <div class="layui-input-inline">
-                            <input type="checkbox" title="会员余额" lay-skin="primary">
+                            <input type="checkbox" title="会员余额" lay-skin="primary" lay-filter="isBalance">
                         </div>
                     </div>
                     <div class="layui-inline">
                         <div class="layui-input-inline">
-                            <select id="">
-                                <option>-请选择-</option>
-                                <option value="0">积分</option>
+                            <select id="typeBalance">
+
+                                <option value="0" selected>积分</option>
                                 <option value="1">彩票</option>
                             </select>
                         </div>
                         <div class="layui-input-inline">
-                            <select id="">
-                                <option>-请选择-</option>
-                                <option value="0">大于</option>
+                            <select id="preBalance">
+                                <option value="0" selected>大于</option>
                                 <option value="1">小于</option>
                                 <option value="1">等于</option>
                             </select>
                         </div>
                         <div class="layui-input-inline">
-                            <input type="text" class="layui-input">
+                            <input type="text" class="layui-input" id="balanceCount">
                         </div>
                     </div>
                 </div>
@@ -1199,6 +1189,15 @@
         form.on('checkbox(chooseStore)',function (data) {
             if (data.elem.checked==true){
                 storeId.push(data.value);
+                if(chargeType==0){
+                    projectId='';
+                    balanceIndex='';
+                    xc.getChargeGood(token,form,layer,storeId.length>0?storeId.join('|'):'');
+                } else if(chargeType==1){
+                    goodId='';
+                    balanceIndex='';
+                    xc.getChargeProgect(token,form,layer,storeId.length>0?storeId.join('|'):'')
+                }
             }else if(data.elem.checked==false){
                 for (var i=0;i<storeId.length;i++){
                     if(storeId[i]==data.value){
@@ -1206,7 +1205,7 @@
                     }
                 }
             }
-            console.log(storeId);
+            // console.log(storeId);
         });
         form.on('checkbox(weeks)', function(data){
             if (data.elem.checked==true){
@@ -1731,9 +1730,9 @@
                         'AutoSendCycle':'',
                         'AutoSendValue':'',
                         'AutoSendCount':'',
-                        'couponConditions':[],
-                        'memberIds':[],
-                        // 'storeIds':storeId==''?'':storeId.join('|'),
+                        'couponConditions':[],//定向派发时的派发规则
+                        'memberIds':[],//定向派发时指定的会员
+
                         'context':$('#Note').val(),
                         'userToken':token,
                         'signkey':'1f626576304bf5d95b72ece2222e42c3'};

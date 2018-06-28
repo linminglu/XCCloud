@@ -658,7 +658,7 @@ namespace XXCloudService.Api.XCCloud
                 var imageFileExt = System.Configuration.ConfigurationManager.AppSettings["ImageFileExt"].ToString();
                 if (suffix.Where(w => !imageFileExt.Contains((w ?? "").ToLower())).Count() > 1)
                 {
-                    errMsg = "非图片多媒体文件不能超过1个";
+                    errMsg = "视频文件不能超过1个";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
@@ -926,6 +926,11 @@ namespace XXCloudService.Api.XCCloud
             }
         }
 
+        /// <summary>
+        /// 获取各类型设备参数信息
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object GetTypeDeviceInfo(Dictionary<string, object> dicParas)
         {
@@ -1472,6 +1477,11 @@ namespace XXCloudService.Api.XCCloud
             }
         }
 
+        /// <summary>
+        /// 路由器参数设置
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object SaveRoutineInfo(Dictionary<string, object> dicParas)
         {
@@ -1558,6 +1568,11 @@ namespace XXCloudService.Api.XCCloud
             }
         }
 
+        /// <summary>
+        /// 查询礼品安装
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object QueryReloadGifts(Dictionary<string, object> dicParas)
         {
