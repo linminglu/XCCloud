@@ -77,16 +77,17 @@ namespace XXCloudService.Api.XCCloud
 //                                WHERE 1=1
 //                            ";
                 string sql = @"SELECT
-                                    a.*, b.ProjectName + '等多个' as BindProjects
+                                    a.*, b.ProjectName + (case when b.Cnt > 1 then '等多个' else '' end) as BindProjects
                                 FROM
                                 	Data_ProjectTicket a
                                 LEFT JOIN (                                
                                 	SELECT 
-                                		b.ID, (case when CHARINDEX(CONVERT(varchar, c.ProjectType), @projectGameTypes)>0 then d.ProjectName else e.GameName end) AS ProjectName,
+                                		b.ID, f.Cnt, (case when CHARINDEX(CONVERT(varchar, c.ProjectType), @projectGameTypes)>0 then d.ProjectName else e.GameName end) AS ProjectName,
                                         ROW_NUMBER() over(partition by b.ID order by b.ID) as RowNum
                                 	FROM
                                 		Data_ProjectTicket b                                                        
                                 	inner join Data_ProjectTicket_Bind c on b.ID = c.ProjectTicketID
+                                    inner join (select ProjectTicketID, COUNT(ID) AS Cnt from Data_ProjectTicket_Bind group by ProjectTicketID) f on b.ID=f.ProjectTicketID
                                     left join Data_ProjectInfo d on c.ProjectID = d.ID and d.ChargeType = 0 and d.State = 1
                                     left join Data_GameInfo e on c.ProjectID = e.ID and e.State = 1                                          
                                 ) b ON a.ID = b.ID and b.RowNum <= 1

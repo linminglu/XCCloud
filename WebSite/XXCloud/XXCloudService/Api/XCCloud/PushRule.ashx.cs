@@ -54,25 +54,27 @@ namespace XXCloudService.Api.XCCloud
                                     a.ID, a.Week, a.PushCoin1, a.PushCoin2, a.Allow_In, a.Allow_Out, a.Level, a.StartTime, a.EndTime,
                                     (case when ISNULL(a.StartDate,'')='' then '' else convert(varchar,a.StartDate,23) end) AS StartDate,
                                     (case when ISNULL(a.EndDate,'')='' then '' else convert(varchar,a.EndDate,23) end) AS EndDate,
-                                    (b.GameName + '等多个') AS GameName,
-                                    (c.MemberLevelName + '等多个') AS MemberLevelName
+                                    (b.GameName + (case when b.Cnt > 1 then '等多个' else '' end)) AS GameName,
+                                    (c.MemberLevelName + (case when c.Cnt > 1 then '等多个' else '' end)) AS MemberLevelName
                                 FROM
                                 	Data_PushRule a
                                 LEFT JOIN (
                                 	SELECT
-                                		a.PushRuleID, b.GameName, ROW_NUMBER() over(partition by a.PushRuleID order by a.ID) as RowNum
+                                		a.PushRuleID, c.Cnt, b.GameName, ROW_NUMBER() over(partition by a.PushRuleID order by a.ID) as RowNum
                                 	FROM
-                                		Data_PushRule_GameList a   
+                                		Data_PushRule_GameList a 
+                                    INNER JOIN (SELECT PushRuleID, COUNT(PushRuleID) AS Cnt from Data_PushRule_GameList group by PushRuleID) c on a.PushRuleID=c.PushRuleID  
                                     INNER JOIN
-                                        Data_GameInfo b ON a.GameID = b.ID                                                      
+                                        Data_GameInfo b ON a.GameID = b.ID                                                                                          
                                 	WHERE
                                 		a.StoreID='" + storeId + "'" +
                               @") b ON a.ID = b.PushRuleID and b.RowNum <= 1
                                 LEFT JOIN (
                                 	SELECT
-                                		a.PushRuleID, b.MemberLevelName, ROW_NUMBER() over(partition by a.PushRuleID order by a.ID) as RowNum
+                                		a.PushRuleID, c.Cnt, b.MemberLevelName, ROW_NUMBER() over(partition by a.PushRuleID order by a.ID) as RowNum
                                 	FROM
                                 		Data_PushRule_MemberLevelList a 
+                                    INNER JOIN (SELECT PushRuleID, COUNT(PushRuleID) AS Cnt from Data_PushRule_MemberLevelList group by PushRuleID) c on a.PushRuleID=c.PushRuleID
                                     INNER JOIN 
                                         Data_MemberLevel b ON a.MemberLevelID = b.MemberLevelID                                                      
                                 	WHERE
@@ -149,10 +151,12 @@ namespace XXCloudService.Api.XCCloud
                 {
                     try
                     {
-                        var model = Data_PushRuleService.I.GetModels(p => p.ID == id).FirstOrDefault() ?? new Data_PushRule();
+                        var model = Data_PushRuleService.I.GetModels(p => p.ID == id).FirstOrDefault() ?? new Data_PushRule();                        
+                        Utils.GetModel(dicParas, ref model);
                         model.MerchID = merchId;
                         model.StoreID = storeId;
-                        Utils.GetModel(dicParas, ref model);
+                        model.StartDate = model.StartDate.Todate();
+                        model.EndDate = model.EndDate.Todate();
                         if (id == 0)
                         {
                             if (!Data_PushRuleService.I.Add(model))
