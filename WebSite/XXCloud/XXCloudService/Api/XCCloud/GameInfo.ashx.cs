@@ -1107,7 +1107,7 @@ namespace XXCloudService.Api.XCCloud
 
                 var data_GameAPP_MemberRule = Data_GameAPP_MemberRuleService.I.GetModels(p => p.ID == id).FirstOrDefault();
 
-                if (!Data_GameAPP_MemberRuleService.I.Update(data_GameAPP_MemberRule))
+                if (!Data_GameAPP_MemberRuleService.I.Delete(data_GameAPP_MemberRule))
                 {
                     errMsg = "删除会员扫码规则失败";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);

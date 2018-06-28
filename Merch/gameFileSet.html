@@ -2065,10 +2065,12 @@
 
         $('#addMore').click(function () {
             $('.saleGroupBox').append($('body').find($('.saleGroup')).eq(0).clone())
-            $('.saleGroupBox').find($('.saleGroup')).last().find('input').val('')
+            $('.saleGroupBox').find($('.saleGroup')).last().attr('id','').find('input').val('')
+            // $('.saleGroupBox').find($('.saleGroup')).last().find('input').val('')
         });
         // 保存
         $('.saleGroupBox').on('click', 'button.saveRuleBtn', function () {
+            let _this=$(this);
             let memberLevel = $(this).parents($('.saleGroup')).find('select[name="memberLevelId"] option:selected').val();
             let pushBalanceIndex1 = $(this).parents($('.saleGroup')).find('select[name="BalanceIndex1"] option:selected').val();
             let pushCoin1 = $(this).parents($('.saleGroup')).find('input[name="pCoin1"]').val();
@@ -2099,15 +2101,76 @@
                     console.log(data);
                     if (data.result_code == 1) {
                         layer.msg('新规则保存成功',{time:2000},function () {
-
-                            $(this).parents($('.saleGroup')).attr('id',data.result_data.ID)
-                            console.log( $(this).parents($('.saleGroup')))
+                            _this.parents('div.saleGroup').attr('id',data.result_data.ID);
                         })
                     } else {
                         layer.msg(data.result_msg || data.return_msg)
                     }
                 }
             })
+
+        });
+
+        //删除
+        $('.saleGroupBox').on('click', 'button.delRuleBtn', function () {
+            let _this=$(this);
+            let memLevID = $(this).parents('div.saleGroup').attr('id');
+            if($('.saleGroupBox').find('div.saleGroup').length>1){
+
+                if(memLevID==undefined||memLevID==''){
+                    _this.parents('div.saleGroup').remove()
+                }else {
+                    let obj = {
+                        'id': memLevID,
+                        'userToken': token,
+                        'signkey': '1f626576304bf5d95b72ece2222e42c3'
+                    };
+                    let parasJson = JSON.stringify(obj);
+                    $.ajax({
+                        type: "post",
+                        url: '/XCCloud/GameInfo?action=DelGameAppMemberRule',
+                        contentType: "application/json; charset=utf-8",
+                        data: {parasJson: parasJson},
+                        success: function (data) {
+                            data = JSON.parse(data);
+                            if (data.result_code == 1) {
+                                _this.parents('div.saleGroup').remove()
+                            } else {
+                                layer.msg(data.result_msg || data.return_msg)
+                            }
+                        }
+                    })
+                }
+            }else if($('.saleGroupBox').find('div.saleGroup').length==1){
+                if(memLevID==undefined||memLevID==''){
+
+                }else {
+                    let obj = {
+                        'id': memLevID,
+                        'userToken': token,
+                        'signkey': '1f626576304bf5d95b72ece2222e42c3'
+                    };
+                    let parasJson = JSON.stringify(obj);
+                    $.ajax({
+                        type: "post",
+                        url: '/XCCloud/GameInfo?action=DelGameAppMemberRule',
+                        contentType: "application/json; charset=utf-8",
+                        data: {parasJson: parasJson},
+                        success: function (data) {
+                            data = JSON.parse(data);
+
+                            if (data.result_code == 1) {
+                                _this.parents('div.saleGroup').find('input').val('')
+                                _this.parents('div.saleGroup').find('select').val('')
+                            } else {
+                                layer.msg(data.result_msg || data.return_msg)
+                            }
+                        }
+                    })
+            }
+
+            }
+
 
         });
 
@@ -2374,7 +2437,39 @@
                 console.log(data);
                 if (data.result_code == 1) {
                     let arr = data.result_data;
+                    if(arr.length==1){
+                        $('.saleGroup').attr('id',arr[0].ID);
+                        $('.saleGroup').find('select[name="memberLevelId"]').val(arr[0].MemberLevelID);
+                        $('.saleGroup').find('input[name="pCoin1"]').val(arr[0].PushCoin1);
+                        $('.saleGroup').find('select[name="BalanceIndex1"]').val(arr[0].PushBalanceIndex1);
+                        $('.saleGroup').find('input[name="pCoin2"]').val(arr[0].PushCoin2);
+                        $('.saleGroup').find('select[name="BalanceIndex2"]').val(arr[0].PushBalanceIndex2);
+                        $('.saleGroup').find('input[name="playCount"]').val(arr[0].PlayCount);
+                    }else if(arr.length>1){
+                        for(let i=0;i<arr.length-1;i++){
+                            $('.saleGroupBox').append($('body').find($('.saleGroup')).eq(0).clone());
 
+                        }
+                        $('.saleGroupBox').find($('.saleGroup')).attr('id','').find('input').val('');
+                        // for(let i in arr){
+                        //
+                        //     $('.saleGroupBox').find('div.saleGroup').eq(i).find('select[name="memberLevelId"]').val(arr[0].MemberLevelID);
+                        // }
+                        $('.saleGroupBox').find('div.saleGroup').each(function (e) {
+                            // console.log($(this));
+                            // console.log(e)
+                            $(this).attr('id',arr[e].ID);
+                            $(this).find('select[name="memberLevelId"]').val(arr[e].MemberLevelID);
+                            $(this).find('input[name="pCoin1"]').val(arr[e].PushCoin1);
+                            $(this).find('select[name="BalanceIndex1"]').val(arr[e].PushBalanceIndex1);
+                            $(this).find('input[name="pCoin2"]').val(arr[e].PushCoin2);
+                            $(this).find('select[name="BalanceIndex2"]').val(arr[e].PushBalanceIndex2);
+                            $(this).find('input[name="playCount"]').val(arr[e].PlayCount);
+                        })
+                    }
+                    for(let i in arr){
+
+                    }
                     if (t == null) {
                         index4 = layer.open({
                             title: '会员扫码优惠',
