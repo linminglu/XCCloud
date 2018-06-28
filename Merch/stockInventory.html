@@ -76,15 +76,15 @@
         xc.getDepotDic('','',token,layer,form,'depotList');
         //选择仓库后立即刷新
         form.on('select(depotType)',function (data) {
-            if (data.value != '-请选择-') {
+
                 stockType=data.value;
-            }
-        }
+
+        })
         form.on('select(depotList)',function (data) {
             if(data.value!='-请选择-'){
-                if(stockType!==''){
+                if(stockType!=''){
                     depotList=data.value;
-                    var  obj={"depotId":depotList,'stockType':stockType,"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
+                    var  obj={"stockIndex":depotList,'stockType':stockType,"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
                     var url="/XCCloud/GoodsInfo?action=QueryGoodsInventory";
                     var parasJson = JSON.stringify(obj);
                     $.ajax({
@@ -116,7 +116,7 @@
             }else {
                 if(stockType!==''){
                     depotList=data.value;
-                    var  obj={"depotId":depotList,'stockType':stockType,"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
+                    var  obj={"stockIndex":depotList,'stockType':stockType,"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
                     var url="/XCCloud/GoodsInfo?action=QueryGoodsInventory";
                     var parasJson = JSON.stringify(obj);
                     $.ajax({

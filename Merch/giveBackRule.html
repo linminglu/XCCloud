@@ -38,7 +38,7 @@
             <div class="layui-inline goodIsAll">
                 <label  class="layui-form-label">返还方式</label>
                 <div class="layui-input-inline">
-                    <input type="checkbox" checked lay-skin="switch" id="Backtype" lay-filter="Backtype" lay-text="按营业日期|按自然日期">
+                    <input type="checkbox" checked lay-skin="switch" id="Backtype" lay-filter="Backtype" lay-text="按自然日期|按营业日期">
                 </div>
             </div>
             <div class="layui-inline goodIsAll" style="margin-left: 10px;">
@@ -115,7 +115,7 @@
             ,{field:'BackScale', title: '返还比例', align: 'center',templet:'#changeLock',width:140}
             ,{field:'ExitCardMin', title: '退卡时最小币数', align: 'center'}
             ,{field:'AllowBackPrincipal', title: '是否扣除返还币', align: 'center',templet:'#desale'}
-            ,{field:'Backtype', title: '返还计算方式', align: 'center',templet:'#backType'}
+            ,{field:'Backtype', title: '返还计算方式', align: 'center',templet:'#backType1'}
             ,{field:'TotalDays', title: '累计天数', align: 'center'}
             ,{field:'AllowContainToday', title: '是否统计当天', align: 'center',templet:'#countToday'}
             ,{fixed: 'right', title: '操作', width:90, align:'center', toolbar: '#barDemo'}]
@@ -136,11 +136,18 @@
                 AllowBackPrincipal=0;
             }
         });
-        form.on('switch(Backtype)',function (data) {
+        form.on('switch(AllowContainToday)',function (data) {
             if(data.elem.checked==true){
                 AllowContainToday=1;
             }else {
                 AllowContainToday=0;
+            }
+        });
+        form.on('switch(Backtype)',function (data) {
+            if(data.elem.checked==true){
+                Backtype=1;
+            }else {
+                Backtype=0;
             }
         });
         //新增返还规则
@@ -188,7 +195,7 @@
                            location.href='giveBackRule.html'
                        })
                    }else {
-                       layer.msg(data.result_msg||return_msg);
+                       layer.msg(data.result_msg||data.return_msg);
                    }
                }
            })
@@ -206,23 +213,24 @@
                      $('#exitCardMin').val(data.ExitCardMin);
                      AllowBackPrincipal=data.AllowBackPrincipal;
                      if(data.AllowBackPrincipal==1){
-                         $('#AllowBackPrincipal').attr('ckecked',true)
+                         $('#AllowBackPrincipal').attr('checked',true)
                      }else {
-                         $('#AllowBackPrincipal').attr('ckecked',false)
+                         $('#AllowBackPrincipal').attr('checked',false)
                      }
                      Backtype=data.Backtype;
                      if(data.Backtype==1){
-                         $('#Backtype').attr('ckecked',true)
+                         $('#Backtype').attr('checked',true)
                      }else {
-                         $('#Backtype').attr('ckecked',false)
+                         $('#Backtype').attr('checked',false)
                      }
                      $('#totalDays').val(data.TotalDays);
                      AllowContainToday=data.AllowContainToday;
                      if(data.AllowContainToday==1){
-                         $('#AllowContainToday').attr('ckecked',true)
+                         $('#AllowContainToday').attr('checked',true)
                      }else {
-                         $('#AllowContainToday').attr('ckecked',false)
+                         $('#AllowContainToday').attr('checked',false)
                      }
+                     form.render()
                  layui.layer.open({
                      title:'修改返还规则',
                      type:1,
@@ -250,7 +258,7 @@
     否
     {{#  } }}
 </script>
-<script type="text/html" id="backType">
+<script type="text/html" id="backType1">
     {{# if(d.Backtype==1){ }}
     按自然日期
     {{# }else{ }}

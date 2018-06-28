@@ -1201,7 +1201,7 @@
                         data: {parasJson: parseJson},
                         success: function (data) {
                             data = JSON.parse(data);
-                            if (data.result_code === 1) {
+                            if (data.result_code == 1) {
                                 obj.del();
                                 layer.msg('删除成功', function () {
                                     location.reload();
@@ -1260,85 +1260,85 @@
         });
         //送币频率
         form.on('select(freeRate)', function (data) {
-            freeRate = data.value === '-请选择-' ? '' : data.value;
+            freeRate = data.value == '-请选择-' ? '' : data.value;
         });
         //送币方式
         form.on('select(freeType)', function (data) {
-            freeType = data.value === '-请选择-' ? '' : data.value;
+            freeType = data.value == '-请选择-' ? '' : data.value;
         });
         //生日送币方式
         form.on('select(birthdayFree)', function (data) {
-            BirthdayFree = data.value === '-请选择-' ? '' : data.value;
+            BirthdayFree = data.value == '-请选择-' ? '' : data.value;
         });
         form.on('switch(needAuthor)', function (data) {
-            data.elem.checked === true ? needAuthor = 1 : needAuthor = 0;
+            data.elem.checked == true ? needAuthor = 1 : needAuthor = 0;
         });
         form.on('switch(useReadID)', function (data) {
-            data.elem.checked === true ? useReadID = 1 : useReadID = 0;
+            data.elem.checked == true ? useReadID = 1 : useReadID = 0;
         });
         form.on('switch(mustPhone)', function (data) {
-            data.elem.checked === true ? mustPhone = 1 : mustPhone = 0;
+            data.elem.checked == true ? mustPhone = 1 : mustPhone = 0;
         });
         form.on('switch(mustIDCard)', function (data) {
-            data.elem.checked === true ? mustIDCard = 1 : mustIDCard = 0;
+            data.elem.checked == true ? mustIDCard = 1 : mustIDCard = 0;
         });
         form.on('checkbox(PhoneOnly)', function (data) {
-            data.elem.checked === true ? PhoneOnly = 1 : PhoneOnly = 0;
+            data.elem.checked == true ? PhoneOnly = 1 : PhoneOnly = 0;
         });
         form.on('checkbox(IDCardOnly)', function (data) {
-            data.elem.checked === true ? IDCardOnly = 1 : IDCardOnly = 0;
+            data.elem.checked == true ? IDCardOnly = 1 : IDCardOnly = 0;
         });
         form.on('switch(readFace)', function (data) {
-            data.elem.checked === true ? readFace = 1 : readFace = 0;
+            data.elem.checked == true ? readFace = 1 : readFace = 0;
         });
         form.on('switch(readPlam)', function (data) {
-            data.elem.checked === true ? readPlam = 1 : readPlam = 0;
+            data.elem.checked == true ? readPlam = 1 : readPlam = 0;
         });
         form.on('switch(allowExitCard)', function (data) {
-            data.elem.checked === true ? AllowExitCard = 1 : AllowExitCard = 0;
+            data.elem.checked == true ? AllowExitCard = 1 : AllowExitCard = 0;
         });
         form.on('switch(allowExitMoney)', function (data) {
-            data.elem.checked === true ? AllowExitMoney = 1 : AllowExitMoney = 0;
+            data.elem.checked == true ? AllowExitMoney = 1 : AllowExitMoney = 0;
         });
         form.on('switch(lockHead)', function (data) {
-            data.elem.checked === true ? LockHead = 1 : LockHead = 0;
+            data.elem.checked == true ? LockHead = 1 : LockHead = 0;
         });
         form.on('switch(allowExitCoinToCar)', function (data) {
-            data.elem.checked === true ? AllowExitCoinToCar = 1 : AllowExitCoinToCar = 0;
+            data.elem.checked == true ? AllowExitCoinToCar = 1 : AllowExitCoinToCar = 0;
         });
         form.on('switch(State)', function (data) {
-            data.elem.checked === true ? States = 1 : States = 0;
+            data.elem.checked == true ? States = 1 : States = 0;
         });
 
         form.on('switch(allowCharge)', function (data) {
-            data.elem.checked === true ? allowCharge = 1 : allowCharge = 0;
+            data.elem.checked == true ? allowCharge = 1 : allowCharge = 0;
         });
         form.on('switch(allowSaveLottery)', function (data) {
-            data.elem.checked === true ? allowSaveLottery = 1 : allowSaveLottery = 0;
+            data.elem.checked == true ? allowSaveLottery = 1 : allowSaveLottery = 0;
         });
         form.on('switch(allowSaveCoin)', function (data) {
-            data.elem.checked === true ? allowSaveCoin = 1 : allowSaveCoin = 0;
+            data.elem.checked == true ? allowSaveCoin = 1 : allowSaveCoin = 0;
         });
         form.on('switch(allowGetCoin)', function (data) {
-            data.elem.checked === true ? allowGetCoin = 1 : allowGetCoin = 0;
+            data.elem.checked == true ? allowGetCoin = 1 : allowGetCoin = 0;
         });
         // form.on('switch(allowTransfer)', function(data){
-        //     data.elem.checked===true ? allowTransfer=1:allowTransfer=0;
+        //     data.elem.checked==true ? allowTransfer=1:allowTransfer=0;
         // });
         form.on('select(freeBalanceType)', function (data) {
-            freeBalanceType = data.value === '-请选择-' ? '' : data.value;
+            freeBalanceType = data.value == '-请选择-' ? '' : data.value;
         });
         form.on('select(upML)', function (data) {
-            upML = data.value === '-请选择-' ? '' : data.value;
+            upML = data.value == '-请选择-' ? '' : data.value;
         });
         form.on('select(downML)', function (data) {
-            downML = data.value === '-请选择-' ? '' : data.value;
+            downML = data.value == '-请选择-' ? '' : data.value;
         });
         form.on('select(freeBalanceIndex)', function (data) {
-            freeBalanceIndex = data.value === '-请选择-' ? '' : data.value;
+            freeBalanceIndex = data.value == '-请选择-' ? '' : data.value;
         });
         form.on('select(FoodID)', function (data) {
-            FoodID = data.value === '-请选择-' ? '' : data.value;
+            FoodID = data.value == '-请选择-' ? '' : data.value;
         });
 
         form.on('switch(AllowTransferOut)', function (data) {
@@ -1348,10 +1348,10 @@
                 setTransferLevel([],form,'TransferOutLevelID',$('#MemberLevelName').val());
                 TransferOutLevelID='';
             }
-            data.elem.checked === true ? AllowTransferOut = 1 : AllowTransferOut = 0;
+            data.elem.checked == true ? AllowTransferOut = 1 : AllowTransferOut = 0;
         });
         form.on('select(TransferOutLevelID)', function (data) {
-            TransferOutLevelID = data.value === '-请选择-' ? '' : data.value;
+            TransferOutLevelID = data.value == '-请选择-' ? '' : data.value;
         });
         form.on('switch(AllowTransferIn)', function (data) {
             if(data.elem.checked){
@@ -1360,10 +1360,10 @@
                 setTransferLevel([],form,'TransferInLevelID',$('#MemberLevelName').val());
                 TransferInLevelID='';
             }
-            data.elem.checked === true ? AllowTransferIn = 1 : AllowTransferIn = 0;
+            data.elem.checked == true ? AllowTransferIn = 1 : AllowTransferIn = 0;
         });
         form.on('select(TransferInLevelID)', function (data) {
-            TransferInLevelID = data.value === '-请选择-' ? '' : data.value;
+            TransferInLevelID = data.value == '-请选择-' ? '' : data.value;
         });
 
     });
