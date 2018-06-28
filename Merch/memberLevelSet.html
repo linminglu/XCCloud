@@ -6,9 +6,7 @@
     <link rel="stylesheet" href="layui/css/layui.css">
 </head>
 <style>
-    .layui-colla-content1 .lfl1 {
-        width: 135px
-    }
+
 
     .layui-colla-title {
         line-height: 34px;
@@ -85,7 +83,7 @@
                                 <div class="layui-inline goodIsAll">
                                     <label class="layui-form-label" style="padding: 8px 0!important;">会员级别状态</label>
                                     <div class="layui-input-inline">
-                                        <input type="checkbox" name="zzz" lay-skin="switch" lay-text="启用|禁用" id="State"
+                                        <input type="checkbox" checked name="zzz" lay-skin="switch" lay-text="启用|禁用" id="State"
                                                lay-filter="State">
                                     </div>
                                 </div>
@@ -115,40 +113,48 @@
                     <div class="layui-form-item">
                         <div class="layui-inline">
                             <label class="layui-form-label ">开户费</label>
-                            <div class="layui-input-inline lfl1">
+                            <div class="layui-input-inline">
                                 <input type="text" class="layui-input" id="openFee">
+                                <span class="layui-unit">元</span>
                             </div>
-                            <div class="layui-form-mid" style="width: 68.45px">(元)</div>
+
                         </div>
                         <div class="layui-inline">
                             <label class="layui-form-label ">押金</label>
-                            <div class="layui-input-inline lfl1">
+                            <div class="layui-input-inline ">
                                 <input type="text" class="layui-input" id="deposit">
+                                <span class="layui-unit">元</span>
                             </div>
-                            <div class="layui-form-mid">(元)</div>
+
                         </div>
                         <div class="layui-inline">
                             <label class="layui-form-label" style="padding: 8px 0!important;">积分清零周期</label>
-                            <div class="layui-input-inline lfl1">
+                            <div class="layui-input-inline">
                                 <input type="text" class="layui-input" id="clearPointDays">
+                                <span class="layui-unit">天</span>
                             </div>
-                            <div class="layui-form-mid">(天)</div>
+
                         </div>
                         <div class="layui-inline">
                             <label class="layui-form-label ">有效天数</label>
-                            <div class="layui-input-inline lfl1">
+                            <div class="layui-input-inline">
                                 <input type="text" class="layui-input" id="validday">
+                                <span class="layui-unit">天</span>
                             </div>
-                            <div class="layui-form-mid">(天)</div>
                         </div>
                         <div class="layui-inline">
                             <label class="layui-form-label ">最小退币数</label>
-                            <div class="layui-input-inline lfl1">
+                            <div class="layui-input-inline">
                                 <input type="text" class="layui-input" id="minCoin">
+                                <span class="layui-unit">个</span>
                             </div>
-                            <div class="layui-form-mid">最大退币数</div>
-                            <div class="layui-input-inline lfl1">
+
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label ">最大退币数</label>
+                            <div class="layui-input-inline">
                                 <input type="text" class="layui-input" id="maxCoin">
+                                <span class="layui-unit">个</span>
                             </div>
                         </div>
                         <br>
@@ -347,7 +353,7 @@
                             <div class="layui-input-inline" style="width: 90px;">
                                 <input type="text" class="layui-input" name="maxSaveCount">
                             </div>
-                            <div class="layui-form-mid" style="width: 100px;">单词最大增加数</div>
+                            <div class="layui-form-mid" style="width: 100px;">单次最大增加数</div>
                             <div class="layui-input-inline" style="width: 88px;">
                                 <input type="text" class="layui-input" name="maxUplife">
                             </div>
@@ -596,7 +602,7 @@
             , {field: 'ConsumeTotle', title: '升级累计金额', align: 'center'}
             , {field: 'BirthdayFreeStr', title: '生日送币方式', align: 'center'}
             , {field: 'FreeTypeStr', title: '送币方式', align: 'center'}
-            , {field: 'LogName', title: '操作员', align: 'center'}
+            // , {field: 'LogName', title: '操作员', align: 'center'}
             , {fixed: 'right', title: '操作', width: 140, align: 'center', toolbar: '#barDemo'}
         ]
     };
@@ -621,7 +627,7 @@
     let freeBalanceIndex = '';
     let FoodID = '';
 
-    let AllowExitCard = 0, AllowExitMoney = 0, AllowExitCoinToCar = 0, LockHead = 0, States = 0;
+    let AllowExitCard = 0, AllowExitMoney = 0, AllowExitCoinToCar = 0, LockHead = 0, States = 1;
     let allowCharge = 0, allowSaveLottery = 0, allowSaveCoin = 0, allowGetCoin = 0;
 
     let AllowTransferOut = 0;
@@ -691,11 +697,6 @@
         let upload = layui.upload;
         getBalanceTypeDic(token, layer, form);
         xc.setSelect('生日送币方式', 'birthdayFree');
-        xc.setSelect('送币方式', 'freeType');
-        xc.getFoodInfoDic(token, layer, form, 'FoodID');
-        getUpDownLevel(token, form, layer, 'upML');
-        getUpDownLevel(token, form, layer, 'downML');
-
         let _objmem = {'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'};
         let parseJsonMem = JSON.stringify(_objmem);
         $.ajax({
@@ -714,6 +715,12 @@
                 }
             }
         });
+        xc.setSelect('送币方式', 'freeType');
+        xc.getFoodInfoDic(token, layer, form, 'FoodID');
+        getUpDownLevel(token, form, layer, 'upML');
+        getUpDownLevel(token, form, layer, 'downML');
+
+
 
         $('#addGoods').click(function () {
             $('.goodConvert').append($('body').find($('.goodRules')).eq(0).clone())
@@ -770,7 +777,7 @@
             AllowExitMoney = 0;
             AllowExitCoinToCar = 0;
             LockHead = 0;
-            States = 0;
+            States = 1;
             allowCharge = 0;
             allowSaveLottery = 0;
             allowSaveCoin = 0;
@@ -802,6 +809,11 @@
             if (memberLevelID == '') {
                 memberLevelFood = [];
                 getFoodList(token, form, layer);
+                index = layer.open({
+                    type: 1,
+                    area: '800px',
+                    content: $('#bindFood')
+                })
             } else {
                 let _obj = {
                     'memberLevelID': memberLevelID,
@@ -881,7 +893,7 @@
                             form.render('checkbox');
                             index = layer.open({
                                 type: 1,
-                                area: '400px',
+                                area: '800px',
                                 content: $('#bindFood')
                             })
                         } else {
@@ -1214,7 +1226,7 @@
             , done: function (res, index, upload) {
                 //上传完毕
                 // console.log(res);
-                if (res.result_code === 1) {
+                if (res.result_code == 1) {
                     $('#demo2').children('div[class="imgBox"]').remove();
                     $('#demo2 .loadTips').addClass('layui-hide');
                     $('#demo2').append('<div style="display: inline-block;position: relative" class="imgBox">' +

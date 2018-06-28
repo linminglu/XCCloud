@@ -61,8 +61,8 @@ namespace XCCloudService.DAL.Base
                     //更新校验码                    
                     str = t.GetClearText(identity, merchSecret);
                     md5 = Utils.MD5(str);
-                    //LogHelper.SaveLog(str);
-                    //LogHelper.SaveLog(md5);
+                    LogHelper.SaveLog(str);
+                    LogHelper.SaveLog(md5);
                     t.GetType().GetProperty("Verifiction").SetValue(t, md5, null);
                 }
             }

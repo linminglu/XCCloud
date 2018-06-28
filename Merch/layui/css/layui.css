@@ -1,4 +1,4 @@
-/** layui-v2.2.7 MIT License By https://www.layui.com */
+﻿/** layui-v2.2.7 MIT License By https://www.layui.com */
 .layui-inline,img {
     display: inline-block;
     vertical-align: middle
@@ -4479,4 +4479,14 @@ body .layui-util-face .layui-layer-content {
 
 .layui-card .layui-tab {
     margin: 0;
+} .layui-unit{
+    display: block;
+    width: 30px;
+    height: 38px;
+    line-height: 38px;
+    text-align: center;
+    position: absolute;
+    top: 0;
+    right: 0;
+    border-left: 1px solid #eee;
 }

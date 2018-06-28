@@ -1835,6 +1835,8 @@ namespace XCCloudService.Common
                     continue;
                 if (identity && pi.Name.Equals("ID", StringComparison.OrdinalIgnoreCase))
                     continue;
+                if (identity && type.Name.Equals("Data_MemberLevel", StringComparison.OrdinalIgnoreCase) && pi.Name.Equals("MemberLevelID", StringComparison.OrdinalIgnoreCase))
+                    continue;
                 var value = t.GetPropertyValue(pi.Name);
                 if (!value.IsNull())
                 {

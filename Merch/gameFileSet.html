@@ -935,7 +935,7 @@
 
         </div>
     </form>
-    <blockquote class="layui-elem-quote">tips:建议设置5条优惠规则最佳</blockquote>
+    <blockquote class="layui-elem-quote">tips:建议设置5条优惠规则最佳;新增一条需保存才有效</blockquote>
     <div style="text-align: center">
         <button class="layui-btn layui-btn-sm" type="button" id="addMore">
             增加一条
@@ -2404,16 +2404,13 @@
                     ExceptOutSpeed = arr[58].value;
                     GameType = arr[7].value;
                     eGameType = arr[7].value;
-                    // xc.getGameType(token,layer,form,'游戏机类型','GameType',arr[7].value);
                     FreeLotteryRules = arr[69].value;
                     newMemberElec(table, arr[69].value)
                     xc.openEasy(layer);
-
                     form.render();
                 }
             }
         })
-
     };
     xcActionSystem.prototype.setsel = (val, id, form) => {
         let _option = $('#' + id).find('option[value="' + val + '"]');
@@ -2448,16 +2445,11 @@
                     }else if(arr.length>1){
                         for(let i=0;i<arr.length-1;i++){
                             $('.saleGroupBox').append($('body').find($('.saleGroup')).eq(0).clone());
-
                         }
                         $('.saleGroupBox').find($('.saleGroup')).attr('id','').find('input').val('');
-                        // for(let i in arr){
-                        //
-                        //     $('.saleGroupBox').find('div.saleGroup').eq(i).find('select[name="memberLevelId"]').val(arr[0].MemberLevelID);
-                        // }
+
                         $('.saleGroupBox').find('div.saleGroup').each(function (e) {
-                            // console.log($(this));
-                            // console.log(e)
+
                             $(this).attr('id',arr[e].ID);
                             $(this).find('select[name="memberLevelId"]').val(arr[e].MemberLevelID);
                             $(this).find('input[name="pCoin1"]').val(arr[e].PushCoin1);
@@ -2475,7 +2467,10 @@
                             title: '会员扫码优惠',
                             type: 1,
                             area: '1100px',
-                            content: $('#memberCodeSetModel')
+                            content: $('#memberCodeSetModel'),
+                            cancel:function () {
+                                location.reload()
+                            }
                         })
                     }
 
