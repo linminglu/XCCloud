@@ -35,9 +35,11 @@
             line-height: 36px;}
         .header{
             background-color: #eee!important;
+            height: 70px;
         }
         .header .dayui-main{
             background-color: #eff3f3;
+            height: 60px;
         }
         #header_bar{
             background-color: #eff3f3!important;
@@ -56,7 +58,9 @@
     <!-- 顶部 -->
     <div class="layui-header header">
         <div class="dayui-main">
-            <a href="#" class="logo"><img src="images/logo.png" alt=""></a>
+            <a href="#" class="logo" style="display: inline-block;width: 200px;height: 60px;background-color: #2c2f39;">
+                <img src="images/logo.png" alt="" width="200" height="60">
+            </a>
             <a href="javascript:;" class="iconfont hideMenu icon-menu1"></a>
             <ul class="layui-nav layui-layout-left fsTopMenu" id="fsTopMenu" lay-filter="fsTopMenu">
                 <!--<span class="layui-nav-bar" style="width: 0px; left: 0px; opacity: 0;"></span>-->
@@ -92,18 +96,18 @@
                     <a href="#" id="reLogin">重新登录<span class="layui-badge-dot"></span></a>
                 </li>
                 <li class="layui-nav-item" lay-unselect="">
-                    <a href="javascript:;"><span id="_lang">国际化</span></a>
+                    <a href="javascript:;"><span id="_lang">中</span></a>
                     <dl class="layui-nav-child" id="languageBox">
-                        <dd><a href="javascript:;">简体中文</a></dd>
-                        <dd><a href="javascript:;">ENGLISH</a></dd>
-                        <dd><a href="javascript:;">francais</a></dd>
+                        <dd><a href="javascript:;">中</a></dd>
+                        <dd><a href="javascript:;">EN</a></dd>
+                        <dd><a href="javascript:;">fr</a></dd>
                     </dl>
                 </li>
             </ul>
         </div>
     </div>
     <!-- 左侧导航 -->
-    <div class="layui-side layui-bg-black">
+    <div class="layui-side layui-bg-black" style="top:70px;!important;">
         <div class="layui-side-scroll">
             <ul class="layui-nav layui-nav-tree xcLeftMenu" lay-filter="xcLeftMenu" id="xcLeftMenu" >
                 <li class="layui-nav-item"><a href="javascript:;">系统总览</a></li>
@@ -111,7 +115,7 @@
         </div>
     </div>
     <!-- 右侧内容 -->
-    <div class="layui-body layui-form">
+    <div class="layui-body layui-form" style="top:70px;!important;">
         <div class="layui-tab layui-tab-card xcTab" lay-allowClose="true" lay-filter="demo"
              style="position: absolute;top: 0;bottom: 0;left: 0;right: 0;overflow: hidden;margin-top: 0;">
             <ul class="layui-tab-title" id="xcTabMenu" style="padding:0 15px;">
