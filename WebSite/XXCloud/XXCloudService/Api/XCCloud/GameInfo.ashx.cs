@@ -1000,100 +1000,83 @@ namespace XXCloudService.Api.XCCloud
                 var memberLevelId = dicParas.Get("memberLevelId").Toint();
                 var gameAppMemberRule = dicParas.GetObject("gameAppMemberRule");
 
-                //开启EF事务
-                using (TransactionScope ts = new TransactionScope())
+                //保存会员扫码规则
+                if (gameAppMemberRule != null)
                 {
-                    try
+                    var dicPara = new Dictionary<string, object>((IDictionary<string, object>)gameAppMemberRule, StringComparer.OrdinalIgnoreCase);
+                    if (!dicPara.Get("pushBalanceIndex1").Validint("投币种1", out errMsg))
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    if (!dicPara.Get("pushCoin1").Validdecimal("投币数量1", out errMsg))
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    if (!dicPara.Get("pushBalanceIndex2").Validint("投币种2", out errMsg))
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    if (!dicPara.Get("pushCoin2").Validdecimal("投币数量2", out errMsg))
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    if (!dicPara.Get("playCount").Validint("启动局数", out errMsg))
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                    var id = dicPara.Get("id").Toint(0);
+                    var pushBalanceIndex1 = dicPara.Get("pushBalanceIndex1").Toint();
+                    var pushCoin1 = dicPara.Get("pushCoin1").Todecimal();
+                    var pushBalanceIndex2 = dicPara.Get("pushBalanceIndex2").Toint();
+                    var pushCoin2 = dicPara.Get("pushCoin2").Todecimal();
+                    var playCount = dicPara.Get("playCount").Toint();
+
+                    if (pushBalanceIndex1 == pushBalanceIndex2)
                     {
-                        //保存会员扫码规则
-                        if (gameAppMemberRule != null)
+                        errMsg = "投币种1、2不能相同";
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
+
+                    if (Data_GameAPP_MemberRuleService.I.Any(a => a.ID != id && a.GameID == gameId && a.MemberLevelID == memberLevelId && a.PushBalanceIndex1 == pushBalanceIndex1 && a.PushBalanceIndex2 == pushBalanceIndex2))
+                    {
+                        errMsg = "相同种类投币规则不能重复";
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
+
+                    var data_GameAPP_MemberRule = Data_GameAPP_MemberRuleService.I.GetModels(p => p.ID == id).FirstOrDefault() ?? new Data_GameAPP_MemberRule();
+                    data_GameAPP_MemberRule.MerchID = merchId;
+                    data_GameAPP_MemberRule.StoreID = storeId;
+                    data_GameAPP_MemberRule.GameID = gameId;
+                    data_GameAPP_MemberRule.MemberLevelID = memberLevelId;
+                    data_GameAPP_MemberRule.PushBalanceIndex1 = pushBalanceIndex1;
+                    data_GameAPP_MemberRule.PushCoin1 = pushCoin1;
+                    data_GameAPP_MemberRule.PushBalanceIndex2 = pushBalanceIndex2;
+                    data_GameAPP_MemberRule.PushCoin2 = pushCoin2;
+                    data_GameAPP_MemberRule.PlayCount = playCount;
+
+                    if (id == 0)
+                    {
+                        if (!Data_GameAPP_MemberRuleService.I.Add(data_GameAPP_MemberRule))
                         {
-                            var dicPara = new Dictionary<string, object>((IDictionary<string, object>)gameAppMemberRule, StringComparer.OrdinalIgnoreCase);
-                            if (!dicPara.Get("pushBalanceIndex1").Validint("投币种1", out errMsg))
-                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                            if (!dicPara.Get("pushCoin1").Validdecimal("投币数量1", out errMsg))
-                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                            if (!dicPara.Get("pushBalanceIndex2").Validint("投币种2", out errMsg))
-                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                            if (!dicPara.Get("pushCoin2").Validdecimal("投币数量2", out errMsg))
-                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                            if (!dicPara.Get("playCount").Validint("启动局数", out errMsg))
-                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-
-                            var id = dicPara.Get("id").Toint(0);
-                            var pushBalanceIndex1 = dicPara.Get("pushBalanceIndex1").Toint();
-                            var pushCoin1 = dicPara.Get("pushCoin1").Todecimal();
-                            var pushBalanceIndex2 = dicPara.Get("pushBalanceIndex2").Toint();
-                            var pushCoin2 = dicPara.Get("pushCoin2").Todecimal();
-                            var playCount = dicPara.Get("playCount").Toint();
-
-                            if (pushBalanceIndex1 == pushBalanceIndex2)
-                            {
-                                errMsg = "投币种1、2不能相同";
-                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                            }                            
-
-                            if (Data_GameAPP_MemberRuleService.I.Any(a => a.ID != id && a.GameID == gameId && a.MemberLevelID == memberLevelId && a.PushBalanceIndex1 == pushBalanceIndex1 && a.PushBalanceIndex2 == pushBalanceIndex2))
-                            {
-                                errMsg = "相同种类投币规则不能重复";
-                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                            }
-
-                            var data_GameAPP_MemberRule = Data_GameAPP_MemberRuleService.I.GetModels(p => p.ID == id).FirstOrDefault() ?? new Data_GameAPP_MemberRule();
-                            data_GameAPP_MemberRule.MerchID = merchId;
-                            data_GameAPP_MemberRule.StoreID = storeId;
-                            data_GameAPP_MemberRule.GameID = gameId;
-                            data_GameAPP_MemberRule.MemberLevelID = memberLevelId;
-                            data_GameAPP_MemberRule.PushBalanceIndex1 = pushBalanceIndex1;
-                            data_GameAPP_MemberRule.PushCoin1 = pushCoin1;
-                            data_GameAPP_MemberRule.PushBalanceIndex2 = pushBalanceIndex2;
-                            data_GameAPP_MemberRule.PushCoin2 = pushCoin2;
-                            data_GameAPP_MemberRule.PlayCount = playCount;
-
-                            if (id == 0)
-                            {
-                                if (!Data_GameAPP_MemberRuleService.I.Add(data_GameAPP_MemberRule))
-                                {
-                                    errMsg = "保存会员扫码规则失败";
-                                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                                }    
-                            }
-                            else
-                            {
-                                id = data_GameAPP_MemberRule.ID;
-                                if (!Data_GameAPP_MemberRuleService.I.Any(a => a.ID == id))
-                                {
-                                    errMsg = "该会员扫码规则信息不存在";
-                                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                                }
-
-                                if (!Data_GameAPP_MemberRuleService.I.Update(data_GameAPP_MemberRule))
-                                {
-                                    errMsg = "保存会员扫码规则失败";
-                                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                                }   
-                            }                                                                                
-                        }
-                        else
-                        {
-                            errMsg = "提交数据包含空对象";
+                            errMsg = "保存会员扫码规则失败";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 
-                        ts.Complete();
+                        id = data_GameAPP_MemberRule.ID;
                     }
-                    catch (DbEntityValidationException e)
+                    else
                     {
-                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, e.EntityValidationErrors.ToErrors());
-                    }
-                    catch (Exception ex)
-                    {
-                        errMsg = ex.Message;
-                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                    }
-                }
+                        if (data_GameAPP_MemberRule.ID == 0)
+                        {
+                            errMsg = "该会员扫码规则信息不存在";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
 
-                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
+                        if (!Data_GameAPP_MemberRuleService.I.Update(data_GameAPP_MemberRule))
+                        {
+                            errMsg = "保存会员扫码规则失败";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+                    }
+
+                    return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, new { ID = id });
+                }
+                else
+                {
+                    errMsg = "提交数据包含空对象";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }                
             }
             catch (Exception e)
             {

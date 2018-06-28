@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using XCCloudService.Common.Enum;
 
 namespace XCCloudService.Model.CustomModel.XCCloud
 {
@@ -19,29 +20,21 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         public int? NotAssignedCount { get; set; }
         public int? NotActivatedCount { get; set; }
         public int? ActivatedCount { get; set; }
-        private int? _assignedCount;
         public int? AssignedCount
         {
             get
             {
-                return PublishCount - NotAssignedCount;
+                return EntryCouponFlag == (int)CouponFlag.Entry ? (PublishCount - NotAssignedCount) : 0; //电子券直接派发，调拨数默认为0
             }
-            set
-            {
-                _assignedCount = value;
-            }
+            set { }
         }
-        private int? _sendCount;
         public int? SendCount
         {
             get
             {
                 return UseCount + ActivatedCount;
             }
-            set
-            {
-                _sendCount = value;
-            }
+            set { }
         }     
         public int? AuthorFlag { get; set; }
         public int? AllowOverOther { get; set; }

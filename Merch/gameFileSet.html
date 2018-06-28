@@ -6,17 +6,28 @@
     <link rel="stylesheet" href="layui/css/layui.css">
 </head>
 <style>
-    .typeModel{display: none;padding: 10px 15px}
-    .layui-form-pane .layui-form-label{padding: 8px 0;}
-    #hardForm .layui-form-item{margin-bottom: 0;}
+    .typeModel {
+        display: none;
+        padding: 10px 15px
+    }
+
+    .layui-form-pane .layui-form-label {
+        padding: 8px 0;
+    }
+
+    #hardForm .layui-form-item {
+        margin-bottom: 0;
+    }
 </style>
 <body>
- <div class="layui-row">
-     <blockquote style="text-align: right;padding-right: 150px;" class="layui-col-md12 layui-col-xs12 layui-col-lg12 layui-elem-quote">
-         <button type="button" class="layui-btn layui-btn-normal" id="addNew"><i class="layui-icon">&#xe654;</i>新增</button>
-     </blockquote>
-     <table class="layui-hide" lay-filter="gameFileTable" id="gameFileTable"></table>
- </div>
+<div class="layui-row">
+    <blockquote style="text-align: right;padding-right: 150px;"
+                class="layui-col-md12 layui-col-xs12 layui-col-lg12 layui-elem-quote">
+        <button type="button" class="layui-btn layui-btn-normal" id="addNew"><i class="layui-icon">&#xe654;</i>新增
+        </button>
+    </blockquote>
+    <table class="layui-hide" lay-filter="gameFileTable" id="gameFileTable"></table>
+</div>
 
 <!--简单模式-->
 <div id="easyType" class="typeModel" style="display: none">
@@ -36,39 +47,40 @@
                     </select>
                 </div>
             </div>
-            <div class="layui-inline GameCode" >
+            <div class="layui-inline GameCode">
                 <label class="layui-form-label">游戏机编号</label>
                 <div class="layui-input-inline">
-                    <input type="text"  class="layui-input" name="GameId1" id="GameId1">
+                    <input type="text" class="layui-input" name="GameId1" id="GameId1">
                 </div>
             </div>
             <br>
             <div class="layui-inline State goodIsAll">
                 <label class="layui-form-label">设备启用</label>
                 <div class="layui-input-inline">
-                    <input type="checkbox" checked lay-filter="StateLow" lay-skin="switch" lay-text="启用|禁用" id="StateLow" name="StateLow">
+                    <input type="checkbox" checked lay-filter="StateLow" lay-skin="switch" lay-text="启用|禁用"
+                           id="StateLow" name="StateLow">
                 </div>
             </div>
             <br>
-            <div class="layui-inline AreaID" >
+            <div class="layui-inline AreaID">
                 <label class="layui-form-label">区域</label>
                 <div class="layui-input-inline">
                     <select name="eAreaID" id="AreaID" lay-filter="eAreaID"></select>
                 </div>
             </div>
-            <div class="layui-inline DepotID" >
+            <div class="layui-inline DepotID">
                 <label class="layui-form-label">仓库</label>
                 <div class="layui-input-inline">
                     <select name="eDepotID" id="eDepotID" lay-filter="eDepotID"></select>
                 </div>
             </div>
-            <div class="layui-inline PushBalanceIndex1" >
+            <div class="layui-inline PushBalanceIndex1">
                 <label class="layui-form-label">扣币种类</label>
                 <div class="layui-input-inline">
                     <select name="ePushBalanceIndex1" id="PushBalanceIndex1" lay-filter="ePushBalanceIndex1"></select>
                 </div>
             </div>
-            <div class="layui-inline PushCoin1" >
+            <div class="layui-inline PushCoin1">
                 <label class="layui-form-label">单局扣币数</label>
                 <div class="layui-input-inline">
                     <input type="text" name="PushCoin1" class="layui-input" id="PushCoin1">
@@ -77,38 +89,43 @@
             <div class="layui-inline PushLevel">
                 <label class="layui-form-label">投币信号电平</label>
                 <div class="layui-input-inline">
-                    <input type="checkbox" lay-filter="PushLevel" name="PushLevel" lay-skin="switch" lay-text="高电平|低电平" id="PushLevel">
+                    <input type="checkbox" lay-filter="PushLevel" name="PushLevel" lay-skin="switch" lay-text="高电平|低电平"
+                           id="PushLevel">
                 </div>
             </div>
             <div class="layui-inline LotteryMode">
                 <label class="layui-form-label">退彩票到会员卡</label>
                 <div class="layui-input-inline">
-                    <input type="checkbox" name="LotteryModeLow" lay-filter="LotteryModeLow" lay-skin="switch" lay-text="启用|禁用" id="LotteryModeLow">
+                    <input type="checkbox" name="LotteryModeLow" lay-filter="LotteryModeLow" lay-skin="switch"
+                           lay-text="启用|禁用" id="LotteryModeLow">
                 </div>
             </div>
             <div class="layui-inline OnlyExitLottery goodIsAll">
                 <label class="layui-form-label">只退实物彩票</label>
                 <div class="layui-input-inline">
-                    <input type="checkbox" lay-filter="OnlyExitLottery" name="OnlyExitLottery" lay-skin="switch" lay-text="启用|禁用" id="OnlyExitLotteryLow">
+                    <input type="checkbox" lay-filter="OnlyExitLottery" name="OnlyExitLottery" lay-skin="switch"
+                           lay-text="启用|禁用" id="OnlyExitLotteryLow">
                 </div>
             </div>
             <div class="layui-inline ReadCat goodIsAll">
                 <label class="layui-form-label">刷卡即扣</label>
                 <div class="layui-input-inline">
-                    <input type="checkbox" lay-filter="ReadCat1" name="ReadCat" lay-skin="switch" lay-text="启用|禁用" id="ReadCat1">
+                    <input type="checkbox" lay-filter="ReadCat1" name="ReadCat" lay-skin="switch" lay-text="启用|禁用"
+                           id="ReadCat1">
                 </div>
             </div>
             <div class="layui-inline ReadCatTime1">
                 <label class="layui-form-label">刷卡即扣延时</label>
                 <div class="layui-input-inline">
-                    <input type="text"  name="ReadDelay1" class="layui-input" id="ReadCatTime1" value="0">
+                    <input type="text" name="ReadDelay1" class="layui-input" id="ReadCatTime1" value="0">
                 </div>
             </div>
 
             <div class="layui-inline chkCheckGift goodIsAll">
                 <label class="layui-form-label">礼品掉落检测</label>
                 <div class="layui-input-inline">
-                    <input type="checkbox" lay-filter="chkCheckGift" name="chkCheckGift" lay-skin="switch" lay-text="启用|禁用" id="chkCheckGift">
+                    <input type="checkbox" lay-filter="chkCheckGift" name="chkCheckGift" lay-skin="switch"
+                           lay-text="启用|禁用" id="chkCheckGift">
                 </div>
             </div>
         </div>
@@ -117,34 +134,35 @@
                 <h2 class="layui-colla-title">附加参数</h2>
                 <div class="layui-colla-content">
                     <div class="layui-form-item">
-                        <div class="layui-inline Area" >
+                        <div class="layui-inline Area">
                             <label class="layui-form-label">占地面积(m^2)</label>
                             <div class="layui-input-inline">
-                                <input type="text"  class="layui-input" placeholder="平方米" id="Area" name="Area">
+                                <input type="text" class="layui-input" placeholder="平方米" id="Area" name="Area">
                             </div>
                         </div>
-                        <div class="layui-inline ChangeTime" >
+                        <div class="layui-inline ChangeTime">
                             <label class="layui-form-label">采购时间</label>
                             <div class="layui-input-inline">
-                                <input type="text"  class="layui-input"  id="ChangeTime" name="ChangeTime">
+                                <input type="text" class="layui-input" id="ChangeTime" name="ChangeTime">
                             </div>
                         </div>
-                        <div class="layui-inline Price" >
+                        <div class="layui-inline Price">
                             <label class="layui-form-label">采购价格</label>
                             <div class="layui-input-inline">
-                                <input type="text"  class="layui-input" placeholder="元" id="Price" name="Price">
+                                <input type="text" class="layui-input" placeholder="元" id="Price" name="Price">
                             </div>
                         </div>
-                        <div class="layui-inline Evaluation" >
+                        <div class="layui-inline Evaluation">
                             <label class="layui-form-label" style="padding: 8px 0px!improtant">新旧程度(1-10)</label>
                             <div class="layui-input-inline">
-                                <input type="text"  class="layui-input" placeholder="1-10成新" id="Evaluation" name="Evaluation">
+                                <input type="text" class="layui-input" placeholder="1-10成新" id="Evaluation"
+                                       name="Evaluation">
                             </div>
                         </div>
-                        <div class="layui-inline GameCode" >
+                        <div class="layui-inline GameCode">
                             <label class="layui-form-label">出厂编号</label>
                             <div class="layui-input-inline">
-                                <input type="text"  class="layui-input" name="GameCode" id="GameCode">
+                                <input type="text" class="layui-input" name="GameCode" id="GameCode">
                             </div>
                         </div>
                     </div>
@@ -175,48 +193,52 @@
                         <div class="layui-card-body">
                             <div class="layui-form-item">
                                 <div class="layui-inline GameName">
-                                    <label  class="layui-form-label">游戏机名</label>
+                                    <label class="layui-form-label">游戏机名</label>
                                     <div class="layui-input-inline">
                                         <input type="text" name="GameName" class="layui-input" id="GameName">
                                     </div>
                                 </div>
                                 <div class="layui-inline GameType">
-                                    <label  class="layui-form-label">游戏机类型</label>
+                                    <label class="layui-form-label">游戏机类型</label>
                                     <div class="layui-input-inline">
                                         <select name="GameType" id="GameType" lay-filter="GameType">
 
                                         </select>
                                     </div>
                                 </div>
-                                <div class="layui-inline buyTimeEasy" >
+                                <div class="layui-inline buyTimeEasy">
                                     <label class="layui-form-label">游戏机编号</label>
                                     <div class="layui-input-inline">
-                                        <input type="text"  class="layui-input"  name="GameId2">
+                                        <input type="text" class="layui-input" name="GameId2">
                                     </div>
                                 </div>
                                 <div class="layui-inline State">
                                     <label class="layui-form-label">设备启用</label>
                                     <div class="layui-input-inline">
-                                        <input type="checkbox" checked lay-skin="switch" name="State" lay-text="启用|禁用" id="State"lay-filter="State">
+                                        <input type="checkbox" checked lay-skin="switch" name="State" lay-text="启用|禁用"
+                                               id="State" lay-filter="State">
                                     </div>
                                 </div>
                                 <br>
                                 <div class="layui-inline LotteryMode ">
                                     <label class="layui-form-label">退彩票到会员卡</label>
                                     <div class="layui-input-inline">
-                                        <input type="checkbox"  lay-skin="switch" name="LotteryMode" lay-text="启用|禁用" id="LotteryMode" lay-filter="LotteryMode">
+                                        <input type="checkbox" lay-skin="switch" name="LotteryMode" lay-text="启用|禁用"
+                                               id="LotteryMode" lay-filter="LotteryMode">
                                     </div>
                                 </div>
                                 <div class="layui-inline OnlyExitLottery ">
                                     <label class="layui-form-label">只退实物彩票</label>
                                     <div class="layui-input-inline">
-                                        <input type="checkbox"  lay-skin="switch"  name="OnlyExitLottery" lay-text="启用|禁用" id="OnlyExitLottery" lay-filter="OnlyExitLottery">
+                                        <input type="checkbox" lay-skin="switch" name="OnlyExitLottery" lay-text="启用|禁用"
+                                               id="OnlyExitLottery" lay-filter="OnlyExitLottery">
                                     </div>
                                 </div>
                                 <div class="layui-inline chkCheckGift">
                                     <label class="layui-form-label">礼品掉落检测</label>
                                     <div class="layui-input-inline">
-                                        <input type="checkbox"  lay-skin="switch" name="chkCheckGift1" lay-text="启用|禁用" lay-filter="chkCheckGift1">
+                                        <input type="checkbox" lay-skin="switch" name="chkCheckGift1" lay-text="启用|禁用"
+                                               lay-filter="chkCheckGift1">
                                     </div>
                                 </div>
                                 <div class="layui-inline">
@@ -237,7 +259,7 @@
                                         <select name="AreaID1" id="AreaID1" lay-filter="AreaID1"></select>
                                     </div>
                                 </div>
-                                <div class="layui-inline DepotID" >
+                                <div class="layui-inline DepotID">
                                     <label class="layui-form-label">仓库</label>
                                     <div class="layui-input-inline">
                                         <select name="DepotID" id="DepotID" lay-filter="DepotID"></select>
@@ -247,112 +269,118 @@
                         </div>
                     </div>
 
-                      <div class="layui-card">
-                          <div class="layui-card-header">会员电子存票赠送设置</div>
-                          <div class="layui-card-body">
-                              <div class="layui-form-item memberSendBox">
-                                  <div class="layui-inline memberSend">
-                                      <label class="layui-form-label">会员级别</label>
-                                      <div class="layui-input-inline">
-                                          <select name="BalanceIndex" lay-filter="memberLevels" id="memberLevels">
+                    <div class="layui-card">
+                        <div class="layui-card-header">会员电子存票赠送设置</div>
+                        <div class="layui-card-body">
+                            <div class="layui-form-item memberSendBox">
+                                <div class="layui-inline memberSend">
+                                    <label class="layui-form-label">会员级别</label>
+                                    <div class="layui-input-inline">
+                                        <select name="BalanceIndex" lay-filter="memberLevels" id="memberLevels">
 
-                                          </select>
-                                      </div>
-                                      <div class="layui-form-mid">每</div>
-                                      <div class="layui-input-inline" style="width: 130px">
-                                          <input type="text" class="layui-input" name="count">
-                                      </div>
-                                      <div class="layui-form-mid">张彩票额外赠送</div>
-                                      <div class="layui-input-inline" style="width: 130px">
-                                          <input type="text" class="layui-input" name="sendcount">
-                                      </div>
-                                      <div class="layui-form-mid">张</div>
-                                  </div>
-                                  <div class="layui-inline" style="width: 140px;">
-                                      <div class="layui-input-inline">
-                                          <div class="layui-btn-group">
-                                              <button type="button" class="layui-btn" id="addmemberElec"> <i class="layui-icon">&#xe654;</i></button>
-                                              <!--<button type="button" class="layui-btn" id="delCoin"><i class="layui-icon layui-icon-close"></i></button>-->
-                                          </div>
-                                      </div>
-                                  </div>
-                              </div>
-                                <table class="layui-hide" id="memberElec" lay-filter="memberElec"></table>
-                          </div>
-                      </div>
+                                        </select>
+                                    </div>
+                                    <div class="layui-form-mid">每</div>
+                                    <div class="layui-input-inline" style="width: 130px">
+                                        <input type="text" class="layui-input" name="count">
+                                    </div>
+                                    <div class="layui-form-mid">张彩票额外赠送</div>
+                                    <div class="layui-input-inline" style="width: 130px">
+                                        <input type="text" class="layui-input" name="sendcount">
+                                    </div>
+                                    <div class="layui-form-mid">张</div>
+                                </div>
+                                <div class="layui-inline" style="width: 140px;">
+                                    <div class="layui-input-inline">
+                                        <div class="layui-btn-group">
+                                            <button type="button" class="layui-btn" id="addmemberElec"><i
+                                                    class="layui-icon">&#xe654;</i></button>
+                                            <!--<button type="button" class="layui-btn" id="delCoin"><i class="layui-icon layui-icon-close"></i></button>-->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <table class="layui-hide" id="memberElec" lay-filter="memberElec"></table>
+                        </div>
+                    </div>
 
-                      <div class="layui-card">
-                          <div class="layui-card-header">附加属性</div>
-                          <div class="layui-card-body">
-                              <div class="layui-form-item">
-                                  <div class="layui-inline areaEasy" >
-                                      <label class="layui-form-label">占地面积(m^2)</label>
-                                      <div class="layui-input-inline">
-                                          <input type="text"  class="layui-input" placeholder="平方米" name="hArea">
-                                      </div>
-                                  </div>
-                                  <div class="layui-inline buyTimeEasy" >
-                                      <label class="layui-form-label">采购时间</label>
-                                      <div class="layui-input-inline">
-                                          <input type="text"  class="layui-input"  name="hChangeTime">
-                                      </div>
-                                  </div>
-                                  <div class="layui-inline buyPriceEasy" >
-                                      <label class="layui-form-label">采购价格</label>
-                                      <div class="layui-input-inline">
-                                          <input type="text"  class="layui-input" placeholder="元" name="hPrice">
-                                      </div>
-                                  </div>
-                                  <div class="layui-inline saleEasy" >
-                                      <label class="layui-form-label" style="padding: 8px 0!improtant">新旧程度(1-10)</label>
-                                      <div class="layui-input-inline">
-                                          <input type="text"  class="layui-input" placeholder="1-10成新" name="hEvaluation">
-                                      </div>
-                                  </div>
-                                  <div class="layui-inline buyTimeEasy" >
-                                      <label class="layui-form-label">出厂编号</label>
-                                      <div class="layui-input-inline">
-                                          <input type="text"  class="layui-input"  name="hGameCode">
-                                      </div>
-                                  </div>
-                              </div>
+                    <div class="layui-card">
+                        <div class="layui-card-header">附加属性</div>
+                        <div class="layui-card-body">
+                            <div class="layui-form-item">
+                                <div class="layui-inline areaEasy">
+                                    <label class="layui-form-label">占地面积(m^2)</label>
+                                    <div class="layui-input-inline">
+                                        <input type="text" class="layui-input" placeholder="平方米" name="hArea">
+                                    </div>
+                                </div>
+                                <div class="layui-inline buyTimeEasy">
+                                    <label class="layui-form-label">采购时间</label>
+                                    <div class="layui-input-inline">
+                                        <input type="text" class="layui-input" name="hChangeTime">
+                                    </div>
+                                </div>
+                                <div class="layui-inline buyPriceEasy">
+                                    <label class="layui-form-label">采购价格</label>
+                                    <div class="layui-input-inline">
+                                        <input type="text" class="layui-input" placeholder="元" name="hPrice">
+                                    </div>
+                                </div>
+                                <div class="layui-inline saleEasy">
+                                    <label class="layui-form-label" style="padding: 8px 0!improtant">新旧程度(1-10)</label>
+                                    <div class="layui-input-inline">
+                                        <input type="text" class="layui-input" placeholder="1-10成新" name="hEvaluation">
+                                    </div>
+                                </div>
+                                <div class="layui-inline buyTimeEasy">
+                                    <label class="layui-form-label">出厂编号</label>
+                                    <div class="layui-input-inline">
+                                        <input type="text" class="layui-input" name="hGameCode">
+                                    </div>
+                                </div>
+                            </div>
 
-                          </div>
-                      </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="layui-tab-item"style="padding-left: 10px">
+                <div class="layui-tab-item" style="padding-left: 10px">
                     <div class="layui-card">
                         <div class="layui-card-body">
                             <div class="layui-form-item">
                                 <div class="layui-inline AllowElecPush">
                                     <label class="layui-form-label">允许电子投币</label>
                                     <div class="layui-input-inline">
-                                        <input type="checkbox"  lay-skin="switch" lay-text="启用|禁用" name="AllowElecPush" lay-filter="AllowElecPush">
+                                        <input type="checkbox" lay-skin="switch" lay-text="启用|禁用" name="AllowElecPush"
+                                               lay-filter="AllowElecPush">
                                     </div>
                                 </div>
                                 <div class="layui-inline ReadCat">
                                     <label class="layui-form-label">刷卡即扣</label>
                                     <div class="layui-input-inline">
-                                        <input type="checkbox"  lay-skin="switch" lay-text="启用|禁用" name="ReadCat" lay-filter="ReadCat">
+                                        <input type="checkbox" lay-skin="switch" lay-text="启用|禁用" name="ReadCat"
+                                               lay-filter="ReadCat">
                                     </div>
                                 </div>
                                 <div class="layui-inline ReadCatTime">
                                     <label class="layui-form-label">刷卡即扣延时</label>
                                     <div class="layui-input-inline">
-                                        <input type="text"  name="ReadDelay" class="layui-input" id="ReadCatTime" value="0">
+                                        <input type="text" name="ReadDelay" class="layui-input" id="ReadCatTime"
+                                               value="0">
                                     </div>
                                 </div>
                                 <div class="layui-inline AllowRealPush">
                                     <label class="layui-form-label">允许实物投币</label>
                                     <div class="layui-input-inline">
-                                        <input type="checkbox"  lay-skin="switch" lay-text="启用|禁用" name="AllowRealPush" lay-filter="AllowRealPush">
+                                        <input type="checkbox" lay-skin="switch" lay-text="启用|禁用" name="AllowRealPush"
+                                               lay-filter="AllowRealPush">
                                     </div>
                                 </div>
                                 <br>
                                 <div class="layui-inline PushBalanceIndex1">
                                     <label class="layui-form-label">按钮一投币类别</label>
                                     <div class="layui-input-inline">
-                                        <select name="PushBalanceIndex11" lay-filter="PushBalanceIndex11" id="PushBalanceIndex11"></select>
+                                        <select name="PushBalanceIndex11" lay-filter="PushBalanceIndex11"
+                                                id="PushBalanceIndex11"></select>
                                     </div>
                                 </div>
                                 <div class="layui-inline PushCoin1">
@@ -365,7 +393,8 @@
                                 <div class="layui-inline PushBalanceIndex2">
                                     <label class="layui-form-label">按钮二投币类别</label>
                                     <div class="layui-input-inline">
-                                        <select name="PushBalanceIndex2" lay-filter="PushBalanceIndex2" id="PushBalanceIndex2"></select>
+                                        <select name="PushBalanceIndex2" lay-filter="PushBalanceIndex2"
+                                                id="PushBalanceIndex2"></select>
                                     </div>
                                 </div>
                                 <div class="layui-inline PushCoin2">
@@ -381,7 +410,8 @@
                         <div class="layui-inline UseSecondPush">
                             <label class="layui-form-label" style="padding: 0;white-space: normal;">启用从游戏机上分线上分</label>
                             <div class="layui-input-inline">
-                                <input type="checkbox" lay-skin="switch" lay-text="启用|禁用" name="UseSecondPush" lay-filter="UseSecondPush">
+                                <input type="checkbox" lay-skin="switch" lay-text="启用|禁用" name="UseSecondPush"
+                                       lay-filter="UseSecondPush">
                             </div>
                         </div>
                     </div>
@@ -390,13 +420,15 @@
                         <div class="layui-card-body">
                             <div class="layui-form-item">
                                 <div class="layui-inline PushAddToGame1">
-                                    <label class="layui-form-label" style="padding: 0;white-space: normal;">第一按键发脉冲数</label>
+                                    <label class="layui-form-label"
+                                           style="padding: 0;white-space: normal;">第一按键发脉冲数</label>
                                     <div class="layui-input-inline">
                                         <input type="text" class="layui-input" name="PushAddToGame1">
                                     </div>
                                 </div>
                                 <div class="layui-inline PushAddToGame2">
-                                    <label class="layui-form-label" style="padding: 0;white-space: normal;">第二按键发脉冲数</label>
+                                    <label class="layui-form-label"
+                                           style="padding: 0;white-space: normal;">第二按键发脉冲数</label>
                                     <div class="layui-input-inline">
                                         <input type="text" class="layui-input" name="PushAddToGame2">
                                     </div>
@@ -405,7 +437,7 @@
                                     <label class="layui-form-label">投币脉宽</label>
                                     <div class="layui-input-inline">
                                         <select name="PushPulse" id="PushPulse" lay-filter="PushPulse">
-                                            <option >-请选择-</option>
+                                            <option>-请选择-</option>
                                             <option value="10">10</option>
                                             <option value="25">25</option>
                                             <option value="35" selected>35</option>
@@ -423,7 +455,7 @@
                                     <label class="layui-form-label">投币速度</label>
                                     <div class="layui-input-inline">
                                         <select name="PushSpeed" id="PushSpeed" lay-filter="PushSpeed">
-                                            <option >-请选择-</option>
+                                            <option>-请选择-</option>
                                             <option value="10">10</option>
                                             <option value="25">25</option>
                                             <option value="35" selected>35</option>
@@ -442,14 +474,15 @@
                                 <div class="layui-inline PushLevel">
                                     <label class="layui-form-label">投币信号电平</label>
                                     <div class="layui-input-inline">
-                                        <input type="checkbox" lay-skin="switch" lay-text="高电平|低电平" name="PushLevel" lay-filter="PushLevel1">
+                                        <input type="checkbox" lay-skin="switch" lay-text="高电平|低电平" name="PushLevel"
+                                               lay-filter="PushLevel1">
                                     </div>
                                 </div>
                                 <div class="layui-inline PushStartInterval">
                                     <label class="layui-form-label">首次投币间隔(秒)</label>
                                     <div class="layui-input-inline">
                                         <select name="" name="PushStartInterval" lay-filter="PushStartInterval">
-                                            <option >-请选择-</option>
+                                            <option>-请选择-</option>
                                             <option value="0" selected>0</option>
                                             <option value="1">1</option>
                                             <option value="2">2</option>
@@ -466,13 +499,15 @@
                         <div class="layui-card-body">
                             <div class="layui-form-item">
                                 <div class="layui-inline SecondAddToGame1">
-                                    <label class="layui-form-label" style="padding: 0;white-space: normal;">第一按键发脉冲数</label>
+                                    <label class="layui-form-label"
+                                           style="padding: 0;white-space: normal;">第一按键发脉冲数</label>
                                     <div class="layui-input-inline">
                                         <input type="text" class="layui-input" name="SecondAddToGame1" value="1">
                                     </div>
                                 </div>
                                 <div class="layui-inline SecondAddToGame2">
-                                    <label class="layui-form-label" style="padding: 0;white-space: normal;">第一按键发脉冲数</label>
+                                    <label class="layui-form-label"
+                                           style="padding: 0;white-space: normal;">第一按键发脉冲数</label>
                                     <div class="layui-input-inline">
                                         <input type="text" class="layui-input" name="SecondAddToGame2" value="1">
                                     </div>
@@ -481,7 +516,7 @@
                                     <label class="layui-form-label">上分脉宽</label>
                                     <div class="layui-input-inline">
                                         <select name="SecondPulse" id="SecondPulse" lay-filter="SecondPulse">
-                                            <option >-请选择-</option>
+                                            <option>-请选择-</option>
                                             <option value="10">10</option>
                                             <option value="25">25</option>
                                             <option value="35">35</option>
@@ -498,7 +533,7 @@
                                     <label class="layui-form-label">上分速度</label>
                                     <div class="layui-input-inline">
                                         <select name="" id="SecondSpeed" lay-filter="SecondSpeed">
-                                            <option >-请选择-</option>
+                                            <option>-请选择-</option>
                                             <option value="10">10</option>
                                             <option value="25">25</option>
                                             <option value="35">35</option>
@@ -514,16 +549,18 @@
                                     </div>
                                 </div>
                                 <div class="layui-inline SecondLevel">
-                                <label class="layui-form-label">上分信号电平</label>
-                                <div class="layui-input-inline">
-                                    <input type="checkbox" name="SecondLevel" lay-skin="switch" lay-text="高电平|低电平" id="SecondLevel" lay-filter="SecondLevel">
+                                    <label class="layui-form-label">上分信号电平</label>
+                                    <div class="layui-input-inline">
+                                        <input type="checkbox" name="SecondLevel" lay-skin="switch" lay-text="高电平|低电平"
+                                               id="SecondLevel" lay-filter="SecondLevel">
+                                    </div>
                                 </div>
-                            </div>
                                 <div class="layui-inline SecondStartInterval">
                                     <label class="layui-form-label">首次上分间隔</label>
                                     <div class="layui-input-inline">
-                                        <select name="SecondStartInterval" id="SecondStartInterval" lay-filter="SecondStartInterval">
-                                            <option >-请选择-</option>
+                                        <select name="SecondStartInterval" id="SecondStartInterval"
+                                                lay-filter="SecondStartInterval">
+                                            <option>-请选择-</option>
                                             <option value="0" selected>0</option>
                                             <option value="1">1</option>
                                             <option value="2">2</option>
@@ -536,32 +573,36 @@
                         </div>
                     </div>
                 </div>
-                <div class="layui-tab-item"style="padding-left: 10px">
+                <div class="layui-tab-item" style="padding-left: 10px">
                     <div class="layui-card">
                         <div class="layui-card-body">
                             <div class="layui-form-item">
                                 <div class="layui-inline AllowElecPush">
                                     <label class="layui-form-label">允许电子投币</label>
                                     <div class="layui-input-inline">
-                                        <input type="checkbox"  lay-skin="switch" lay-text="启用|禁用" name="AllowElecPush" lay-filter="AllowElecPush">
+                                        <input type="checkbox" lay-skin="switch" lay-text="启用|禁用" name="AllowElecPush"
+                                               lay-filter="AllowElecPush">
                                     </div>
                                 </div>
                                 <div class="layui-inline AllowRealOut">
                                     <label class="layui-form-label">允许实物退币</label>
                                     <div class="layui-input-inline">
-                                        <input type="checkbox"  lay-skin="switch" lay-text="启用|禁用" id="AllowRealOut" lay-filter="AllowRealOut">
+                                        <input type="checkbox" lay-skin="switch" lay-text="启用|禁用" id="AllowRealOut"
+                                               lay-filter="AllowRealOut">
                                     </div>
                                 </div>
                                 <div class="layui-inline BOLock">
                                     <label class="layui-form-label">退币锁定</label>
                                     <div class="layui-input-inline">
-                                        <input type="checkbox"  lay-skin="switch" lay-text="启用|禁用" name="BOLock" lay-filter="BOLock">
+                                        <input type="checkbox" lay-skin="switch" lay-text="启用|禁用" name="BOLock"
+                                               lay-filter="BOLock">
                                     </div>
                                 </div>
                                 <div class="layui-inline NowExit">
                                     <label class="layui-form-label">即中即退</label>
                                     <div class="layui-input-inline">
-                                        <input type="checkbox"  lay-skin="switch" lay-text="启用|禁用" id="NowExit" lay-filter="NowExit">
+                                        <input type="checkbox" lay-skin="switch" lay-text="启用|禁用" id="NowExit"
+                                               lay-filter="NowExit">
                                     </div>
                                 </div>
                             </div>
@@ -573,11 +614,13 @@
                                 <div class="layui-inline BOKeep">
                                     <label class="layui-form-label">退币按钮保持</label>
                                     <div class="layui-input-inline">
-                                        <input type="checkbox"  lay-skin="switch" lay-text="启用|禁用" name="BOKeep" lay-filter="BOKeep">
+                                        <input type="checkbox" lay-skin="switch" lay-text="启用|禁用" name="BOKeep"
+                                               lay-filter="BOKeep">
                                     </div>
                                 </div>
                                 <div class="layui-inline BOPulse">
-                                    <label class="layui-form-label" style="padding: 0;white-space: normal;">退币按钮脉宽(ms)</label>
+                                    <label class="layui-form-label"
+                                           style="padding: 0;white-space: normal;">退币按钮脉宽(ms)</label>
                                     <div class="layui-input-inline">
                                         <select name="BOPulse" id="BOPulse" lay-filter="BOPulse">
                                             <option value="500" selected>500</option>
@@ -605,20 +648,22 @@
                                 <div class="layui-inline OutLevel">
                                     <label class="layui-form-label">出币电平(SSR)</label>
                                     <div class="layui-input-inline">
-                                        <input type="checkbox"  lay-skin="switch" lay-text="高电平|低电平" name="OutLevel" lay-filter="OutLevel">
+                                        <input type="checkbox" lay-skin="switch" lay-text="高电平|低电平" name="OutLevel"
+                                               lay-filter="OutLevel">
                                     </div>
                                 </div>
                                 <div class="layui-inline CountLevel">
                                     <label class="layui-form-label">数币电平(MD)</label>
                                     <div class="layui-input-inline">
-                                        <input type="checkbox" lay-skin="switch" lay-text="高电平|低电平" name="CountLevel" lay-filter="CountLevel">
+                                        <input type="checkbox" lay-skin="switch" lay-text="高电平|低电平" name="CountLevel"
+                                               lay-filter="CountLevel">
                                     </div>
                                 </div>
                                 <div class="layui-inline OutSpeed">
                                     <label class="layui-form-label">出币速度</label>
                                     <div class="layui-input-inline">
                                         <select name="OutSpeed" id="OutSpeed" lay-filter="OutSpeed">
-                                            <option >-请选择-</option>
+                                            <option>-请选择-</option>
                                             <option value="10">10</option>
                                             <option value="25">25</option>
                                             <option value="35" selected>35</option>
@@ -637,7 +682,7 @@
                                     <label class="layui-form-label">出币脉宽</label>
                                     <div class="layui-input-inline">
                                         <select name="OutPulse" id="OutPulse" lay-filter="OutPulse">
-                                            <option >-请选择-</option>
+                                            <option>-请选择-</option>
                                             <option value="10">10</option>
                                             <option value="25">25</option>
                                             <option value="35" selected>35</option>
@@ -671,7 +716,8 @@
                                 <div class="layui-inline">
                                     <label class="layui-form-label">退币余额类别</label>
                                     <div class="layui-input-inline">
-                                        <select name="OutBalanceIndex" id="OutBalanceIndex" lay-filter="OutBalanceIndex">
+                                        <select name="OutBalanceIndex" id="OutBalanceIndex"
+                                                lay-filter="OutBalanceIndex">
 
                                         </select>
                                     </div>
@@ -680,32 +726,36 @@
                         </div>
                     </div>
                 </div>
-                <div class="layui-tab-item"style="padding-left: 10px">
+                <div class="layui-tab-item" style="padding-left: 10px">
                     <div class="layui-card">
                         <div class="layui-card-body">
                             <div class="layui-form-item">
                                 <div class="layui-inline GuardConvertCard">
                                     <label class="layui-form-label">专卡专用</label>
                                     <div class="layui-input-inline">
-                                        <input type="checkbox" lay-skin="switch" lay-text="启用|禁用" name="GuardConvertCard" lay-filter="GuardConvertCard">
+                                        <input type="checkbox" lay-skin="switch" lay-text="启用|禁用"
+                                               name="GuardConvertCard" lay-filter="GuardConvertCard">
                                     </div>
                                 </div>
                                 <div class="layui-inline StrongGuardConvertCard">
                                     <label class="layui-form-label">增强专卡专用</label>
                                     <div class="layui-input-inline">
-                                        <input type="checkbox"  lay-skin="switch" lay-text="启用|禁用" name="StrongGuardConvertCard" lay-filter="StrongGuardConvertCard">
+                                        <input type="checkbox" lay-skin="switch" lay-text="启用|禁用"
+                                               name="StrongGuardConvertCard" lay-filter="StrongGuardConvertCard">
                                     </div>
                                 </div>
                                 <div class="layui-inline ReturnCheck">
                                     <label class="layui-form-label">遥控偷分检测</label>
                                     <div class="layui-input-inline">
-                                        <input type="checkbox"  lay-skin="switch" lay-text="启用|禁用" name="ReturnCheck" lay-filter="ReturnCheck">
+                                        <input type="checkbox" lay-skin="switch" lay-text="启用|禁用" name="ReturnCheck"
+                                               lay-filter="ReturnCheck">
                                     </div>
                                 </div>
                                 <div class="layui-inline OutsideAlertCheck">
                                     <label class="layui-form-label">偷分报警模块</label>
                                     <div class="layui-input-inline">
-                                        <input type="checkbox"  lay-skin="switch" lay-text="启用|禁用" name="OutsideAlertCheck" lay-filter="OutsideAlertCheck">
+                                        <input type="checkbox" lay-skin="switch" lay-text="启用|禁用"
+                                               name="OutsideAlertCheck" lay-filter="OutsideAlertCheck">
                                     </div>
                                 </div>
                             </div>
@@ -717,7 +767,8 @@
                                 <div class="layui-inline ExceptOutTest">
                                     <label class="layui-form-label">异常出币检测</label>
                                     <div class="layui-input-inline">
-                                        <input type="checkbox"  name="ExceptOutTest" lay-skin="switch" lay-text="启用|禁用" id="ExceptOutTest" lay-filter="ExceptOutTest">
+                                        <input type="checkbox" name="ExceptOutTest" lay-skin="switch" lay-text="启用|禁用"
+                                               id="ExceptOutTest" lay-filter="ExceptOutTest">
                                     </div>
                                 </div>
                                 <div class="layui-inline ExceptOutSpeed">
@@ -735,7 +786,8 @@
                                 <div class="layui-inline Frequency">
                                     <label class="layui-form-label">次数</label>
                                     <div class="layui-input-inline">
-                                        <input type="text" class="layui-input" id="Frequency" value="2" name="Frequency">
+                                        <input type="text" class="layui-input" id="Frequency" value="2"
+                                               name="Frequency">
                                     </div>
                                 </div>
 
@@ -748,31 +800,36 @@
                                 <div class="layui-inline OnceOutLimit">
                                     <label class="layui-form-label">单次退币限额</label>
                                     <div class="layui-input-inline">
-                                        <input type="text" class="layui-input" name="OnceOutLimit" id="OnceOutLimit" value="65000">
+                                        <input type="text" class="layui-input" name="OnceOutLimit" id="OnceOutLimit"
+                                               value="65000">
                                     </div>
                                 </div>
                                 <div class="layui-inline OncePureOutLimit">
                                     <label class="layui-form-label">每日净退币限额</label>
                                     <div class="layui-input-inline">
-                                        <input type="text" class="layui-input" name="OncePureOutLimit" id="OncePureOutLimit" value="650000">
+                                        <input type="text" class="layui-input" name="OncePureOutLimit"
+                                               id="OncePureOutLimit" value="650000">
                                     </div>
                                 </div>
                                 <div class="layui-inline NotGiveBack">
                                     <label class="layui-form-label">参与返还</label>
                                     <div class="layui-input-inline">
-                                        <input type="checkbox"  lay-skin="switch" lay-text="启用|禁用" name="NotGiveBack" lay-filter="NotGiveBack">
+                                        <input type="checkbox" lay-skin="switch" lay-text="启用|禁用" name="NotGiveBack"
+                                               lay-filter="NotGiveBack">
                                     </div>
                                 </div>
                                 <div class="layui-inline ICTicketOperation">
                                     <label class="layui-form-label">二合一模式</label>
                                     <div class="layui-input-inline">
-                                        <input type="checkbox"  lay-skin="switch" lay-text="启用|禁用" name="ICTicketOperation" lay-filter="ICTicketOperation">
+                                        <input type="checkbox" lay-skin="switch" lay-text="启用|禁用"
+                                               name="ICTicketOperation" lay-filter="ICTicketOperation">
                                     </div>
                                 </div>
                                 <div class="layui-inline BanOccupy">
                                     <label class="layui-form-label">霸位检测</label>
                                     <div class="layui-input-inline">
-                                        <input type="checkbox"  lay-skin="switch" lay-text="启用|禁用" name="BanOccupy" lay-filter="BanOccupy">
+                                        <input type="checkbox" lay-skin="switch" lay-text="启用|禁用" name="BanOccupy"
+                                               lay-filter="BanOccupy">
                                     </div>
                                 </div>
                             </div>
@@ -781,7 +838,7 @@
                 </div>
             </div>
         </div>
-        <div  style="padding: 15px;text-align:center;">
+        <div style="padding: 15px;text-align:center;">
             <button type="button" class="toEasyOpen layui-btn layui-btn-normal">简易设置</button>
             <button type="button" class="layui-btn layui-btn-normal saveBox" id="highSaveBtn">保存</button>
         </div>
@@ -806,8 +863,9 @@
             <div class="layui-inline" style="width: 140px;">
                 <div class="layui-input-inline">
                     <div class="layui-btn-group">
-                        <button type="button" class="layui-btn" id="addpay"> <i class="layui-icon">&#xe654;</i></button>
-                        <button type="button" class="layui-btn" id="delpay"><i class="layui-icon layui-icon-close"></i></button>
+                        <button type="button" class="layui-btn" id="addpay"><i class="layui-icon">&#xe654;</i></button>
+                        <button type="button" class="layui-btn" id="delpay"><i class="layui-icon layui-icon-close"></i>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -822,12 +880,14 @@
 <div id="gameHeadModel" style="padding: 15px;display: none">
     <table class="layui-hide" id="gameHeadTable" lay-filter="gameHeadTable"></table>
 </div>
- <!--会员扫码优惠-->
- <div id="memberCodeModel" style="padding: 15px;display: none">
-     <div style="text-align:right; padding-right:50px;"><button type="button" class="layui-btn layui-btn-normal" id="saveMemCode">新增</button></div>
-     <table class="layui-hide" id="memberCode" lay-filter="memberCode"></table>
- </div>
- <!--会员扫码优惠设置-->
+<!--会员扫码优惠-->
+<div id="memberCodeModel" style="padding: 15px;display: none">
+    <div style="text-align:right; padding-right:50px;">
+        <button type="button" class="layui-btn layui-btn-normal" id="saveMemCode">新增</button>
+    </div>
+    <table class="layui-hide" id="memberCode" lay-filter="memberCode"></table>
+</div>
+<!--会员扫码优惠设置-->
 <div id="memberCodeSetModel" style="padding: 15px;display: none">
     <form class="layui-form layui-form-pane">
 
@@ -836,7 +896,8 @@
 
                 <label class="layui-form-label">会员级别</label>
                 <div class="layui-input-inline" style="width: 105px;">
-                        <select name="memberLevelId" id="memberLevelId" lay-ignore style="height: 36px;width: 105px"></select>
+                    <select name="memberLevelId" id="memberLevelId" lay-ignore
+                            style="height: 36px;width: 105px"></select>
                 </div>
 
                 <label class="layui-form-mid">支付</label>
@@ -845,15 +906,17 @@
                 </div>
                 <label class="layui-form-mid">个</label>
                 <div class="layui-input-inline" style="width: 105px">
-                    <select name="BalanceIndex1" lay-ignore style="height: 36px;width: 105px" id="BalanceIndex1"></select>
+                    <select name="BalanceIndex1" lay-ignore style="height: 36px;width: 105px"
+                            id="BalanceIndex1"></select>
                 </div>
                 <label class="layui-form-mid">+支付</label>
                 <div class="layui-input-inline" style="width: 60px">
                     <input type="text" class="layui-input groupValue" name="pCoin2">
                 </div>
                 <label class="layui-form-mid">个</label>
-                <div class="layui-input-inline"  style="width: 105px">
-                    <select name="BalanceIndex2" lay-ignore style="height: 36px;width: 105px" id="BalanceIndex2"></select>
+                <div class="layui-input-inline" style="width: 105px">
+                    <select name="BalanceIndex2" lay-ignore style="height: 36px;width: 105px"
+                            id="BalanceIndex2"></select>
                 </div>
                 <label class="layui-form-mid">启动局数</label>
                 <div class="layui-input-inline" style="width: 100px">
@@ -862,7 +925,7 @@
                 <label class="layui-form-mid">局</label>
                 <div class="layui-btn-group">
                     <button class="layui-btn layui-btn-sm saveRuleBtn" type="button" name="saveRuleBtn">
-                       保存
+                        保存
                     </button>
                     <button class="layui-btn layui-btn-sm layui-btn-danger delRuleBtn" type="button" name="delRuleBtn">
                         删除
@@ -885,83 +948,89 @@
 <script src="js/storeSystem.js"></script>
 <script>
     let index;
-    let xc=xcActionSystem.prototype;
-    let token=xc.getStorage('token');
-    let parm={'obj':{'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'},
-        'url':'/XCCloud/GameInfo?action=GetGameInfoList',
-        'elem':'#gameFileTable',
-        'cols':[
-            {field:'ID', title:'游戏机编号', align: 'center', sort: true}
-            ,{field:'GameName',title: '游戏机名', align: 'center'} //width 支持：数字、百分比和不填写。
-            ,{field:'GameTypeStr', title: '游戏机类型', align: 'center'}
-            ,{field:'Area', title: '占地面积', align: 'center'}
-            ,{field:'AreaName', title: '区域名称', align: 'center'}
-            ,{field:'ChangeTime', title: '采购时间', align: 'center'}
-            ,{field:'Price', title: '采购价格', align: 'center'}
-            ,{field:'PushCoin1', title: '单局币数', align: 'center'}
-            ,{field:'AllowElecPushStr', title: '允许投币', align: 'center'}
-            ,{field:'LotteryModeStr', title: '彩票模式', align: 'center'}
-            ,{field:'ReadCatStr', title: '刷卡即扣', align: 'center'}
-            ,{field:'StateStr', title: '状态', align: 'center'}
-            ,{fixed: 'right', title: '操作', width:450, align:'center', toolbar: '#barDemo'}
+    let xc = xcActionSystem.prototype;
+    let token = xc.getStorage('token');
+    let parm = {
+        'obj': {'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'},
+        'url': '/XCCloud/GameInfo?action=GetGameInfoList',
+        'elem': '#gameFileTable',
+        'cols': [
+            {field: 'ID', title: '游戏机编号', align: 'center', sort: true}
+            , {field: 'GameName', title: '游戏机名', align: 'center'} //width 支持：数字、百分比和不填写。
+            , {field: 'GameTypeStr', title: '游戏机类型', align: 'center'}
+            , {field: 'Area', title: '占地面积', align: 'center'}
+            , {field: 'AreaName', title: '区域名称', align: 'center'}
+            , {field: 'ChangeTime', title: '采购时间', align: 'center'}
+            , {field: 'Price', title: '采购价格', align: 'center'}
+            , {field: 'PushCoin1', title: '单局币数', align: 'center'}
+            , {field: 'AllowElecPushStr', title: '允许投币', align: 'center'}
+            , {field: 'LotteryModeStr', title: '彩票模式', align: 'center'}
+            , {field: 'ReadCatStr', title: '刷卡即扣', align: 'center'}
+            , {field: 'StateStr', title: '状态', align: 'center'}
+            , {fixed: 'right', title: '操作', width: 450, align: 'center', toolbar: '#barDemo'}
         ]
     };
     xc.getInitData(parm);
-    let id='';
+    let id = '';
 
-//    余额类别
-    let balanceData=[];
+    //    余额类别
+    let balanceData = [];
 
 
     //简易模式参数
-    let eAreaID,ePushBalanceIndex1,eGameType,
-        ePushLevel=0,LotteryModeLow=0,eOnlyExitLottery=0,
-        eReadCat=0,echkCheckGift=0,StateLow=1;
-    let eDepotID='';
+    let eAreaID, ePushBalanceIndex1, eGameType,
+        ePushLevel = 0, LotteryModeLow = 0, eOnlyExitLottery = 0,
+        eReadCat = 0, echkCheckGift = 0, StateLow = 1;
+    let eDepotID = '';
     //高级模式参数
-    let AreaID1,State=1,PushBalanceIndex11=' ',PushBalanceIndex2,GameType,
-       OutBalanceIndex='',ReturnCheck=0,OutsideAlertCheck=0,
-        ICTicketOperation=0,NotGiveBack=0,LotteryMode=0,OnlyExitLottery=0,
-        chkCheckGift1=0,AllowElecPush=0,GuardConvertCard=0,ReadCat=0,
-        AllowRealPush=0,BanOccupy=0,StrongGuardConvertCard=0,
-        AllowElecOut=0,NowExit=0,BOLock=0,BOPulse=500,AllowRealOut=0,BOKeep=0,
-        PushSpeed=35,PushPulse=35,PushLevel=0,PushStartInterval=0,
-        UseSecondPush=0,SecondSpeed=150,SecondPulse=200,SecondLevel=0,
-        SecondStartInterval=0,
-        OutSpeed=35,OutMode=0,
-        OutPulse=35,CountLevel=0,OutLevel=0,ExceptOutTest=0,ExceptOutSpeed=45;
-    let DepotID='';
-    let FreeLotteryRules=[];
-    let memberLevelId='';let memberLevels='';let MemberLevelNames='';
+    let AreaID1, State = 1, PushBalanceIndex11 = ' ', PushBalanceIndex2, GameType,
+        OutBalanceIndex = '', ReturnCheck = 0, OutsideAlertCheck = 0,
+        ICTicketOperation = 0, NotGiveBack = 0, LotteryMode = 0, OnlyExitLottery = 0,
+        chkCheckGift1 = 0, AllowElecPush = 0, GuardConvertCard = 0, ReadCat = 0,
+        AllowRealPush = 0, BanOccupy = 0, StrongGuardConvertCard = 0,
+        AllowElecOut = 0, NowExit = 0, BOLock = 0, BOPulse = 500, AllowRealOut = 0, BOKeep = 0,
+        PushSpeed = 35, PushPulse = 35, PushLevel = 0, PushStartInterval = 0,
+        UseSecondPush = 0, SecondSpeed = 150, SecondPulse = 200, SecondLevel = 0,
+        SecondStartInterval = 0,
+        OutSpeed = 35, OutMode = 0,
+        OutPulse = 35, CountLevel = 0, OutLevel = 0, ExceptOutTest = 0, ExceptOutSpeed = 45;
+    let DepotID = '';
+    let FreeLotteryRules = [];
+    let memberLevelId = '';
+    let memberLevels = '';
+    let MemberLevelNames = '';
 
-    let storeId=JSON.parse(xc.getStorage('logMsg')).storeId;
+    let storeId = JSON.parse(xc.getStorage('logMsg')).storeId;
+
     //简易模式保存
-    function saveEasy(form,layer) {
-        let url='/XCCloud/GameInfo?action=SaveGameInfo';
-        let _obj={'ID':id,
+    function saveEasy(form, layer) {
+        let url = '/XCCloud/GameInfo?action=SaveGameInfo';
+        let _obj = {
+            'ID': id,
 
-            'GameId':$('input[name="GameId1"]').val(),
-            'gameMode':0,
-            'GameName':$('input[name="GameName"]').val(),
-            'GameType':eGameType,
-            'PushCoin1':$('#PushCoin1').val(),
-            'PushLevel':ePushLevel,
-            'LotteryMode':LotteryModeLow,
-            'AreaID':eAreaID,
-            'DepotID':eDepotID,
-            'PushBalanceIndex1':ePushBalanceIndex1,
-            'OnlyExitLottery':eOnlyExitLottery,
-            'ReadCat':eReadCat,
-            'readDelay':$('input[name="ReadDelay1"]').val(),
-            'chkCheckGift':echkCheckGift,
-            'State':StateLow,
+            'GameId': $('input[name="GameId1"]').val(),
+            'gameMode': 0,
+            'GameName': $('input[name="GameName"]').val(),
+            'GameType': eGameType,
+            'PushCoin1': $('#PushCoin1').val(),
+            'PushLevel': ePushLevel,
+            'LotteryMode': LotteryModeLow,
+            'AreaID': eAreaID,
+            'DepotID': eDepotID,
+            'PushBalanceIndex1': ePushBalanceIndex1,
+            'OnlyExitLottery': eOnlyExitLottery,
+            'ReadCat': eReadCat,
+            'readDelay': $('input[name="ReadDelay1"]').val(),
+            'chkCheckGift': echkCheckGift,
+            'State': StateLow,
 
-            'Area':$('#Area').val(),
-            'ChangeTime':$('#ChangeTime').val(),
-            'Price':$('#Price').val(),
-            'Evaluation':$('#Evaluation').val(),
-             'GameCode':$('#GameCode').val(),
-             'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+            'Area': $('#Area').val(),
+            'ChangeTime': $('#ChangeTime').val(),
+            'Price': $('#Price').val(),
+            'Evaluation': $('#Evaluation').val(),
+            'GameCode': $('#GameCode').val(),
+            'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'
+        };
         let parasJson = JSON.stringify(_obj);
         $.ajax({
             type: "post",
@@ -970,92 +1039,94 @@
             data: {parasJson: parasJson},
             success: function (data) {
                 data = JSON.parse(data);
-                if(data.result_code==1){
-                    layer.msg('保存成功！',{time:1500},function () {
-                        location.href='gameFileSet.html'
+                if (data.result_code == 1) {
+                    layer.msg('保存成功！', {time: 1500}, function () {
+                        location.href = 'gameFileSet.html'
                     })
-                }else {
+                } else {
                     layer.msg(data.result_msg)
                 }
             }
         })
     }
+
     //高级模式保存
-    function saveHigh(form,layer) {
-     let url='/XCCloud/GameInfo?action=SaveGameInfo';
-     let _obj={'ID':id,
-         'gameMode':1,
-         'GameId':$('input[name="GameId2"]').val(),
-         'GameName':$('#GameName').val(),
-         'GameType':GameType,
-         'State':State,
-         'LotteryMode':LotteryMode,
-         'OnlyExitLottery':OnlyExitLottery,
-         'chkCheckGift':chkCheckGift1,
-         'LowLimit':$('input[name="LowLimit"]').val(),
-         'HighLimit':$('input[name="HighLimit"]').val(),
-         'AreaID':AreaID1,
-         'DepotID':DepotID,
-         'FreeLotteryRules':FreeLotteryRules.length>0?FreeLotteryRules:'',
-         'Area':$('input[name="hArea"]').val(),
-         'ChangeTime':$('input[name="hChangeTime"]').val(),
-         'Price':$('input[name="hPrice"]').val(),
-         'Evaluation':$('input[name="hEvaluation"]').val(),
-         'GameCode':$('input[name="hGameCode"]').val(),
+    function saveHigh(form, layer) {
+        let url = '/XCCloud/GameInfo?action=SaveGameInfo';
+        let _obj = {
+            'ID': id,
+            'gameMode': 1,
+            'GameId': $('input[name="GameId2"]').val(),
+            'GameName': $('#GameName').val(),
+            'GameType': GameType,
+            'State': State,
+            'LotteryMode': LotteryMode,
+            'OnlyExitLottery': OnlyExitLottery,
+            'chkCheckGift': chkCheckGift1,
+            'LowLimit': $('input[name="LowLimit"]').val(),
+            'HighLimit': $('input[name="HighLimit"]').val(),
+            'AreaID': AreaID1,
+            'DepotID': DepotID,
+            'FreeLotteryRules': FreeLotteryRules.length > 0 ? FreeLotteryRules : '',
+            'Area': $('input[name="hArea"]').val(),
+            'ChangeTime': $('input[name="hChangeTime"]').val(),
+            'Price': $('input[name="hPrice"]').val(),
+            'Evaluation': $('input[name="hEvaluation"]').val(),
+            'GameCode': $('input[name="hGameCode"]').val(),
 
-         'AllowElecPush':AllowElecPush,
-         'ReadCat':ReadCat,
-         'readDelay':$('input[name="ReadDelay"]').val(),
-         'AllowRealPush':AllowRealPush,
-         'PushBalanceIndex1':PushBalanceIndex11,
-         'PushCoin1':$('input[name="PushCoin11"]').val(),
-         'PushBalanceIndex2':PushBalanceIndex2,
+            'AllowElecPush': AllowElecPush,
+            'ReadCat': ReadCat,
+            'readDelay': $('input[name="ReadDelay"]').val(),
+            'AllowRealPush': AllowRealPush,
+            'PushBalanceIndex1': PushBalanceIndex11,
+            'PushCoin1': $('input[name="PushCoin11"]').val(),
+            'PushBalanceIndex2': PushBalanceIndex2,
 
-         'PushCoin2':$('input[name="PushCoin2"]').val(),
-         'PushPulse':PushPulse,//35
-         'PushSpeed':PushSpeed,//35
-         'PushAddToGame1':$('input[name="PushAddToGame1"]').val(),
-         'PushAddToGame2':$('input[name="PushAddToGame2"]').val(),
-         'PushLevel':PushLevel,
-         'PushStartInterval':PushStartInterval,//0
-         'UseSecondPush':UseSecondPush,
-         'SecondAddToGame1':$('input[name="SecondAddToGame1"]').val(),
-         'SecondAddToGame2':$('input[name="SecondAddToGame2"]').val(),
-         'SecondLevel':SecondLevel,
-         'SecondStartInterval':SecondStartInterval,//0
-         'SecondPulse':SecondPulse,//200
-         'SecondSpeed':SecondSpeed,//150
-         'AllowElecOut':AllowElecOut,
-         'AllowRealOut':AllowRealOut,
-         'BOLock':BOLock,
-         'NowExit':NowExit,
-         'BOKeep':BOKeep,
-         'BOPulse':BOPulse,//500
-         'OutLevel':OutLevel,
-         'CountLevel':CountLevel,
-         'OutSpeed':OutSpeed,//35
-         'OutPulse':OutPulse,//35
-         'OutMode':OutMode,
-         'OutReduceFromGame':$('input[name="OutReduceFromGame"]').val(),
-         'OutAddToCard':$('input[name="OutAddToCard"]').val(),
-         'OutBalanceIndex':OutBalanceIndex,
+            'PushCoin2': $('input[name="PushCoin2"]').val(),
+            'PushPulse': PushPulse,//35
+            'PushSpeed': PushSpeed,//35
+            'PushAddToGame1': $('input[name="PushAddToGame1"]').val(),
+            'PushAddToGame2': $('input[name="PushAddToGame2"]').val(),
+            'PushLevel': PushLevel,
+            'PushStartInterval': PushStartInterval,//0
+            'UseSecondPush': UseSecondPush,
+            'SecondAddToGame1': $('input[name="SecondAddToGame1"]').val(),
+            'SecondAddToGame2': $('input[name="SecondAddToGame2"]').val(),
+            'SecondLevel': SecondLevel,
+            'SecondStartInterval': SecondStartInterval,//0
+            'SecondPulse': SecondPulse,//200
+            'SecondSpeed': SecondSpeed,//150
+            'AllowElecOut': AllowElecOut,
+            'AllowRealOut': AllowRealOut,
+            'BOLock': BOLock,
+            'NowExit': NowExit,
+            'BOKeep': BOKeep,
+            'BOPulse': BOPulse,//500
+            'OutLevel': OutLevel,
+            'CountLevel': CountLevel,
+            'OutSpeed': OutSpeed,//35
+            'OutPulse': OutPulse,//35
+            'OutMode': OutMode,
+            'OutReduceFromGame': $('input[name="OutReduceFromGame"]').val(),
+            'OutAddToCard': $('input[name="OutAddToCard"]').val(),
+            'OutBalanceIndex': OutBalanceIndex,
 
-         'GuardConvertCard':GuardConvertCard,
-         'StrongGuardConvertCard':StrongGuardConvertCard,
-         'ReturnCheck':ReturnCheck,
-         'OutsideAlertCheck':OutsideAlertCheck,
-         'ExceptOutTest':ExceptOutTest,
-         'ExceptOutSpeed':ExceptOutSpeed,//45
-         'Frequency':$('input[name="Frequency"]').val(),
-         'OnceOutLimit':$('#OnceOutLimit').val(),
-         'OncePureOutLimit':$('#OncePureOutLimit').val(),
-         'ICTicketOperation':ICTicketOperation,
-         'NotGiveBack':NotGiveBack,
-         'BanOccupy':BanOccupy,
+            'GuardConvertCard': GuardConvertCard,
+            'StrongGuardConvertCard': StrongGuardConvertCard,
+            'ReturnCheck': ReturnCheck,
+            'OutsideAlertCheck': OutsideAlertCheck,
+            'ExceptOutTest': ExceptOutTest,
+            'ExceptOutSpeed': ExceptOutSpeed,//45
+            'Frequency': $('input[name="Frequency"]').val(),
+            'OnceOutLimit': $('#OnceOutLimit').val(),
+            'OncePureOutLimit': $('#OncePureOutLimit').val(),
+            'ICTicketOperation': ICTicketOperation,
+            'NotGiveBack': NotGiveBack,
+            'BanOccupy': BanOccupy,
 
-         'userToken':token,
-         'signkey':'1f626576304bf5d95b72ece2222e42c3'
-     };
+            'userToken': token,
+            'signkey': '1f626576304bf5d95b72ece2222e42c3'
+        };
         let parasJson = JSON.stringify(_obj);
         $.ajax({
             type: "post",
@@ -1064,1199 +1135,1340 @@
             data: {parasJson: parasJson},
             success: function (data) {
                 data = JSON.parse(data);
-                if(data.result_code==1){
-                    layer.msg('保存成功！',{time:1500},function () {
-                        location.href='gameFileSet.html'
+                if (data.result_code == 1) {
+                    layer.msg('保存成功！', {time: 1500}, function () {
+                        location.href = 'gameFileSet.html'
                     })
-                }else {
+                } else {
                     layer.msg(data.result_msg)
                 }
             }
         })
     }
-    let index5,index4;
-    let memberLevelList=[];
-    function setTransferLevel(arr,form,id,name) {
-        if(arr.length==0){
-            $('#'+id).html('<option disabled value="">-没有选项-</option>');
-        }else {
-            $('#'+id).html('<option>-请选择-</option>');
 
-            for(let i in arr){
-                if(arr[i].MemberLevelID==name){
-                    $('#'+id).append('<option value="'+arr[i].MemberLevelID+'" selected>'+arr[i].MemberLevelName+'</option>')
-                }else {
-                    $('#'+id).append('<option value="'+arr[i].MemberLevelID+'">'+arr[i].MemberLevelName+'</option>')
+    let index5, index4;
+    let memberLevelList = [];
+
+    function setTransferLevel(arr, form, id, name) {
+        if (arr.length == 0) {
+            $('#' + id).html('<option disabled value="">-没有选项-</option>');
+        } else {
+            $('#' + id).html('<option>-请选择-</option>');
+
+            for (let i in arr) {
+                if (arr[i].MemberLevelID == name) {
+                    $('#' + id).append('<option value="' + arr[i].MemberLevelID + '" selected>' + arr[i].MemberLevelName + '</option>')
+                } else {
+                    $('#' + id).append('<option value="' + arr[i].MemberLevelID + '">' + arr[i].MemberLevelName + '</option>')
                 }
             }
         }
 
         form.render()
     }
-  layui.use(['form','element','layer','table','laydate'],function () {
-      let element=layui.element;
-      let form=layui.form;
-      let layer=layui.layer;
-      let table=layui.table;
-      let laydate=layui.laydate;
-      //用户余额类别
-      let __obj={'hkType':'','userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
-      let _parseJson = JSON.stringify(__obj);
-      $.ajax({
-          type:'post',
-          url:'/XCCloud/BalanceType?action=GetBalanceTypeDic',
-          contentType: "application/json; charset=utf-8",
-          data:{parasJson: _parseJson},
-          anysc:false,
-          success: function (data) {
-              data = JSON.parse(data);
-              if (data.result_code == 1) {
-                  balanceData=data.result_data;
-                  setBal(balanceData,form,'PushBalanceIndex1');
-                  setBal(balanceData,form,'PushBalanceIndex11');
-                  setBal(balanceData,form,'PushBalanceIndex2');
-                  setBal(balanceData,form,'OutBalanceIndex');
-                  setBal(balanceData,form,'BalanceIndex1');
-                  setBal(balanceData,form,'BalanceIndex2');
 
-                  // xc.getMemberTypeDic(token,layer,form,'memberLevelId');
-                  // xc.getBalanceTypeDic ('',token,layer,form,'BalanceIndex1');
-                  // xc.getBalanceTypeDic('',token,layer,form,'BalanceIndex2');
-              } else {
-                  layer.msg(data.result_msg);
-              }
-          }
-      });
-      //游戏机类型
-      var  obj1={"dictKey":'游戏机类型','enabled':1,'pDicKey':'',"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
-      var parasJson1 = JSON.stringify(obj1);
-      $.ajax({
-          type: "post",
-          url: "/XCCloud/Dictionary?action=GetNodes",
-          contentType: "application/json; charset=utf-8",
-          data: { parasJson: parasJson1 },
-          success: function (data) {
-              data=JSON.parse(data);
-              console.log(data);
-              if(data.result_code=="1"){
-                  var arr=data.result_data.children;
-                  setGameType(arr,form,'GameType');
-                  setGameType(arr,form,'GameTypeLow');
-              }else {
-                  layer.msg(data.result_msg||data.return_msg);
+    layui.use(['form', 'element', 'layer', 'table', 'laydate'], function () {
+        let element = layui.element;
+        let form = layui.form;
+        let layer = layui.layer;
+        let table = layui.table;
+        let laydate = layui.laydate;
+        //用户余额类别
+        let __obj = {'hkType': '', 'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'};
+        let _parseJson = JSON.stringify(__obj);
+        $.ajax({
+            type: 'post',
+            url: '/XCCloud/BalanceType?action=GetBalanceTypeDic',
+            contentType: "application/json; charset=utf-8",
+            data: {parasJson: _parseJson},
+            anysc: false,
+            success: function (data) {
+                data = JSON.parse(data);
+                if (data.result_code == 1) {
+                    balanceData = data.result_data;
+                    setBal(balanceData, form, 'PushBalanceIndex1');
+                    setBal(balanceData, form, 'PushBalanceIndex11');
+                    setBal(balanceData, form, 'PushBalanceIndex2');
+                    setBal(balanceData, form, 'OutBalanceIndex');
+                    setBal(balanceData, form, 'BalanceIndex1');
+                    setBal(balanceData, form, 'BalanceIndex2');
 
-              }
-          }
-      });
-      let _objmem = {'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'};
-      let parseJsonMem = JSON.stringify(_objmem);
-      $.ajax({
-          type: 'post',
-          url: '/XCCloud/Member?action=GetMemberLevelDic',
-          contentType: "application/json; charset=utf-8",
-          data: {parasJson: parseJsonMem},
-          anysc:false,
-          success: function (data) {
-              data = JSON.parse(data);
-              console.log(data);
-              if (data.result_code == 1) {
-                  memberLevelList=data.result_data;
-                  setTransferLevel(memberLevelList,form,'memberLevels');
-                  setTransferLevel(memberLevelList,form,'memberLevelId');
-              } else {
-                  layer.msg(data.result_msg || data.return_msg);
-              }
-          }
-      });
+                    // xc.getMemberTypeDic(token,layer,form,'memberLevelId');
+                    // xc.getBalanceTypeDic ('',token,layer,form,'BalanceIndex1');
+                    // xc.getBalanceTypeDic('',token,layer,form,'BalanceIndex2');
+                } else {
+                    layer.msg(data.result_msg);
+                }
+            }
+        });
+        //游戏机类型
+        var obj1 = {
+            "dictKey": '游戏机类型',
+            'enabled': 1,
+            'pDicKey': '',
+            "userToken": token,
+            "signkey": "1f626576304bf5d95b72ece2222e42c3"
+        };
+        var parasJson1 = JSON.stringify(obj1);
+        $.ajax({
+            type: "post",
+            url: "/XCCloud/Dictionary?action=GetNodes",
+            contentType: "application/json; charset=utf-8",
+            data: {parasJson: parasJson1},
+            success: function (data) {
+                data = JSON.parse(data);
+                console.log(data);
+                if (data.result_code == "1") {
+                    var arr = data.result_data.children;
+                    setGameType(arr, form, 'GameType');
+                    setGameType(arr, form, 'GameTypeLow');
+                } else {
+                    layer.msg(data.result_msg || data.return_msg);
 
-      // xc.getMemberTypeDic(token,layer,form,'memberLevels');
+                }
+            }
+        });
+        let _objmem = {'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'};
+        let parseJsonMem = JSON.stringify(_objmem);
+        $.ajax({
+            type: 'post',
+            url: '/XCCloud/Member?action=GetMemberLevelDic',
+            contentType: "application/json; charset=utf-8",
+            data: {parasJson: parseJsonMem},
+            anysc: false,
+            success: function (data) {
+                data = JSON.parse(data);
+                console.log(data);
+                if (data.result_code == 1) {
+                    memberLevelList = data.result_data;
+                    setTransferLevel(memberLevelList, form, 'memberLevels');
+                    setTransferLevel(memberLevelList, form, 'memberLevelId');
+                } else {
+                    layer.msg(data.result_msg || data.return_msg);
+                }
+            }
+        });
 
-      let _obj2={'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
-      let parseJson2 = JSON.stringify(_obj2);
-      $.ajax({
-          type:'post',
-          url:'/XCCloud/GroupArea?action=QueryGroupArea',
-          contentType: "application/json; charset=utf-8",
-          data:{parasJson: parseJson2},
-          success: function (data) {
-              data = JSON.parse(data);
-              if (data.result_code == 1) {
-                  let arr=data.result_data;
-                  setArec(arr,form,'AreaID');
-                  setArec(arr,form,'AreaID1');
-              } else {
-                  layer.msg(data.result_msg||data.return_msg);
-              }
-          }
-      });
+        // xc.getMemberTypeDic(token,layer,form,'memberLevels');
 
-      let _obj3={'merchId':'','storeId':storeId,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
-      let parseJson3 = JSON.stringify(_obj3);
-      $.ajax({
-          type:'post',
-          url:'/XCCloud/DepotInfo?action=GetDepotDic',
-          contentType: "application/json; charset=utf-8",
-          data:{parasJson: parseJson3},
-          success: function (data) {
-              data = JSON.parse(data);
-              if (data.result_code == 1) {
-                  let arr=data.result_data;
-                  setDepot(arr,form,'eDepotID');
-                  setDepot(arr,form,'DepotID');
-              } else {
-                  layer.msg(data.result_msg||data.return_msg);
-              }
-          }
-      });
+        let _obj2 = {'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'};
+        let parseJson2 = JSON.stringify(_obj2);
+        $.ajax({
+            type: 'post',
+            url: '/XCCloud/GroupArea?action=QueryGroupArea',
+            contentType: "application/json; charset=utf-8",
+            data: {parasJson: parseJson2},
+            success: function (data) {
+                data = JSON.parse(data);
+                if (data.result_code == 1) {
+                    let arr = data.result_data;
+                    setArec(arr, form, 'AreaID');
+                    setArec(arr, form, 'AreaID1');
+                } else {
+                    layer.msg(data.result_msg || data.return_msg);
+                }
+            }
+        });
 
-      //正价币增加 或者减少一条
-      $('#addCoin').on('click',function () {
-          $('.memberSendBox').append($('body').find($('.memberSend')).eq(0).clone())
-      });
-      $('#delCoin').click(function () {
-          if($('.memberSendBox').find($('.memberSend')).length>1){
-              $('.memberSendBox').find($('.memberSend')).last().remove();
-          }else {
-          }
-      });
-      //扫码优惠增加 或者减少一条
-      $('#addpay').on('click',function () {
+        let _obj3 = {
+            'merchId': '',
+            'storeId': storeId,
+            'userToken': token,
+            'signkey': '1f626576304bf5d95b72ece2222e42c3'
+        };
+        let parseJson3 = JSON.stringify(_obj3);
+        $.ajax({
+            type: 'post',
+            url: '/XCCloud/DepotInfo?action=GetDepotDic',
+            contentType: "application/json; charset=utf-8",
+            data: {parasJson: parseJson3},
+            success: function (data) {
+                data = JSON.parse(data);
+                if (data.result_code == 1) {
+                    let arr = data.result_data;
+                    setDepot(arr, form, 'eDepotID');
+                    setDepot(arr, form, 'DepotID');
+                } else {
+                    layer.msg(data.result_msg || data.return_msg);
+                }
+            }
+        });
 
-          $('.codeBox').append($('body').find($('.code')).eq(0).clone())
-      });
-      $('#delpay').click(function () {
+        //正价币增加 或者减少一条
+        $('#addCoin').on('click', function () {
+            $('.memberSendBox').append($('body').find($('.memberSend')).eq(0).clone())
+        });
+        $('#delCoin').click(function () {
+            if ($('.memberSendBox').find($('.memberSend')).length > 1) {
+                $('.memberSendBox').find($('.memberSend')).last().remove();
+            } else {
+            }
+        });
+        //扫码优惠增加 或者减少一条
+        $('#addpay').on('click', function () {
 
-          if($('.codeBox').find($('.code')).length>1){
-              $('.codeBox').find($('.code')).last().remove();
-          }else {
-          }
-      });
-      //保存扫码优惠规则
-      $('#saveCodeBtn').on('click',function () {
-          let StandardCoinPrice=[];
-          $('.codeBox .code').each(function () {
-              if($(this).find('input[name="paymoney"]').val()!=''&&
-                  $(this).find('input[name="times"]').val()!=''
-              ) {
-                  StandardCoinPrice.push({
-                      'PayCount': $(this).find('input[name="paymoney"]').val(),
-                      'PlayCount': $(this).find('input[name="times"]').val()
-                  })
-              }
-          });
-          let _obj={'gameId':id,'gameAppRules':StandardCoinPrice,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
-          let parasJson = JSON.stringify(_obj);
-          $.ajax({
-              type: "post",
-              url: '/XCCloud/GameInfo?action=SaveGameAppRule',
-              contentType: "application/json; charset=utf-8",
-              data: { parasJson: parasJson },
-              success: function (data) {
-                  data=JSON.parse(data);
-                  if(data.result_code==1){
-                                layer.msg('保存成功',{time:1500},function () {
-                                   location.reload();
-                                })
-                  }else {layer.msg(data.result_msg||data.return_msg)}
-              }
-          })
-      });
-      laydate.render({
-          elem: '#ChangeTime'
-          ,type: 'datetime'
-          ,value: new Date()
-      });
-      laydate.render({
-          elem: '#ChangeTime1'
-          ,type: 'datetime'
-          ,value: new Date()
-      });
-      //简易模式事件监听
-      form.on('select(GameTypeLow)',(data)=>{
-          eGameType=data.value;
-      });
-      form.on('select(eAreaID)',(data)=>{
-          eAreaID=data.value;
-      });
-      form.on('select(eDepotID)',(data)=>{
-          data.value=='-请选择-'?eDepotID='':eDepotID=data.value;
-      });
-      form.on('select(ePushBalanceIndex1)',(data)=>{
-          ePushBalanceIndex1=data.value;
-      });
-      form.on('switch(PushLevel)',(data)=>{if(data.elem.checked==true){ePushLevel=1;}else{ePushLevel=0;}});
-      form.on('switch(LotteryModeLow)',(data)=>{if(data.elem.checked==true){LotteryModeLow=1;}else{LotteryModeLow=0;}});
-      form.on('switch(OnlyExitLottery)',(data)=>{if(data.elem.checked==true){eOnlyExitLottery=1;}else{eOnlyExitLottery=0;}});
-      form.on('switch(ReadCat1)',(data)=>{if(data.elem.checked==true){
-          eReadCat=1;
-          $('.ReadCatTime1').removeClass('layui-hide')
-      }else{eReadCat=0;
-          $('.ReadCatTime1').addClass('layui-hide')
-      }
-          $('input[name="ReadDelay1"]').val('')
-      });
-      form.on('switch(chkCheckGift)',(data)=>{if(data.elem.checked==true){echkCheckGift=1;}else{echkCheckGift=0;}});
-      form.on('switch(StateLow)',(data)=>{if(data.elem.checked==true){StateLow=1;}else{StateLow=0;}});
+            $('.codeBox').append($('body').find($('.code')).eq(0).clone())
+        });
+        $('#delpay').click(function () {
 
-      //高级模式事件监听
-      form.on('select(GameType)',(data)=>{
-          GameType=data.value;
-      });
-      form.on('switch(State)',(data)=>{
-          if(data.elem.checked==true){
-              State=1
-          }else {
-              State=0
-          }
-      });
-      form.on('switch(LotteryMode)',(data)=>{
-          if(data.elem.checked==true){
-              LotteryMode=1
-          }else {
-              LotteryMode=0
-          }
-      });
-      form.on('switch(OnlyExitLottery)',(data)=>{
-          if(data.elem.checked==true){
-              OnlyExitLottery=1
-          }else {
-              OnlyExitLottery=0
-          }
-      });
-      form.on('switch(chkCheckGift1)',(data)=>{
-          if(data.elem.checked==true){
-              chkCheckGift1=1
-          }else {
-              chkCheckGift1=0
-          }
-      });
-      form.on('select(AreaID1)',(data)=>{
-          AreaID1=data.value;
-      });
-      form.on('switch(AllowElecPush)',(data)=>{
-          if(data.elem.checked==true){
-              AllowElecPush=1
-          }else {
-              AllowElecPush=0
-          }
-      });
-      form.on('switch(ReadCat)',(data)=>{
-          if(data.elem.checked==true){
-              ReadCat=1
-              $('.ReadCatTime').removeClass('layui-hide')
-          }else {
-              ReadCat=0
-              $('.ReadCatTime').removeClass('layui-hide')
-          }
-          $('input[name="ReadDelay"]').val('')
-      });
-      form.on('switch(AllowRealPush)',(data)=>{
-          if(data.elem.checked==true){
-              AllowRealPush=1
-          }else {
-              AllowRealPush=0
-          }
-      });
-      form.on('select(PushBalanceIndex11)',(data)=>{
+            if ($('.codeBox').find($('.code')).length > 1) {
+                $('.codeBox').find($('.code')).last().remove();
+            } else {
+            }
+        });
+        //保存扫码优惠规则
+        $('#saveCodeBtn').on('click', function () {
+            let StandardCoinPrice = [];
+            $('.codeBox .code').each(function () {
+                if ($(this).find('input[name="paymoney"]').val() != '' &&
+                    $(this).find('input[name="times"]').val() != ''
+                ) {
+                    StandardCoinPrice.push({
+                        'PayCount': $(this).find('input[name="paymoney"]').val(),
+                        'PlayCount': $(this).find('input[name="times"]').val()
+                    })
+                }
+            });
+            let _obj = {
+                'gameId': id,
+                'gameAppRules': StandardCoinPrice,
+                'userToken': token,
+                'signkey': '1f626576304bf5d95b72ece2222e42c3'
+            };
+            let parasJson = JSON.stringify(_obj);
+            $.ajax({
+                type: "post",
+                url: '/XCCloud/GameInfo?action=SaveGameAppRule',
+                contentType: "application/json; charset=utf-8",
+                data: {parasJson: parasJson},
+                success: function (data) {
+                    data = JSON.parse(data);
+                    if (data.result_code == 1) {
+                        layer.msg('保存成功', {time: 1500}, function () {
+                            location.reload();
+                        })
+                    } else {
+                        layer.msg(data.result_msg || data.return_msg)
+                    }
+                }
+            })
+        });
+        laydate.render({
+            elem: '#ChangeTime'
+            , type: 'datetime'
+            , value: new Date()
+        });
+        laydate.render({
+            elem: '#ChangeTime1'
+            , type: 'datetime'
+            , value: new Date()
+        });
+        //简易模式事件监听
+        form.on('select(GameTypeLow)', (data) => {
+            eGameType = data.value;
+        });
+        form.on('select(eAreaID)', (data) => {
+            eAreaID = data.value;
+        });
+        form.on('select(eDepotID)', (data) => {
+            data.value == '-请选择-' ? eDepotID = '' : eDepotID = data.value;
+        });
+        form.on('select(ePushBalanceIndex1)', (data) => {
+            ePushBalanceIndex1 = data.value;
+        });
+        form.on('switch(PushLevel)', (data) => {
+            if (data.elem.checked == true) {
+                ePushLevel = 1;
+            } else {
+                ePushLevel = 0;
+            }
+        });
+        form.on('switch(LotteryModeLow)', (data) => {
+            if (data.elem.checked == true) {
+                LotteryModeLow = 1;
+            } else {
+                LotteryModeLow = 0;
+            }
+        });
+        form.on('switch(OnlyExitLottery)', (data) => {
+            if (data.elem.checked == true) {
+                eOnlyExitLottery = 1;
+            } else {
+                eOnlyExitLottery = 0;
+            }
+        });
+        form.on('switch(ReadCat1)', (data) => {
+            if (data.elem.checked == true) {
+                eReadCat = 1;
+                $('.ReadCatTime1').removeClass('layui-hide')
+            } else {
+                eReadCat = 0;
+                $('.ReadCatTime1').addClass('layui-hide')
+            }
+            $('input[name="ReadDelay1"]').val('')
+        });
+        form.on('switch(chkCheckGift)', (data) => {
+            if (data.elem.checked == true) {
+                echkCheckGift = 1;
+            } else {
+                echkCheckGift = 0;
+            }
+        });
+        form.on('switch(StateLow)', (data) => {
+            if (data.elem.checked == true) {
+                StateLow = 1;
+            } else {
+                StateLow = 0;
+            }
+        });
 
-          if(data.value=='-请选择-'){
-              $('.cutCoin1').text('金币数')
-          }else {
-              PushBalanceIndex11=data.value;
-              $('.cutCoin1').text(data.elem[data.elem.selectedIndex].text)
-          }
+        //高级模式事件监听
+        form.on('select(GameType)', (data) => {
+            GameType = data.value;
+        });
+        form.on('switch(State)', (data) => {
+            if (data.elem.checked == true) {
+                State = 1
+            } else {
+                State = 0
+            }
+        });
+        form.on('switch(LotteryMode)', (data) => {
+            if (data.elem.checked == true) {
+                LotteryMode = 1
+            } else {
+                LotteryMode = 0
+            }
+        });
+        form.on('switch(OnlyExitLottery)', (data) => {
+            if (data.elem.checked == true) {
+                OnlyExitLottery = 1
+            } else {
+                OnlyExitLottery = 0
+            }
+        });
+        form.on('switch(chkCheckGift1)', (data) => {
+            if (data.elem.checked == true) {
+                chkCheckGift1 = 1
+            } else {
+                chkCheckGift1 = 0
+            }
+        });
+        form.on('select(AreaID1)', (data) => {
+            AreaID1 = data.value;
+        });
+        form.on('switch(AllowElecPush)', (data) => {
+            if (data.elem.checked == true) {
+                AllowElecPush = 1
+            } else {
+                AllowElecPush = 0
+            }
+        });
+        form.on('switch(ReadCat)', (data) => {
+            if (data.elem.checked == true) {
+                ReadCat = 1
+                $('.ReadCatTime').removeClass('layui-hide')
+            } else {
+                ReadCat = 0
+                $('.ReadCatTime').removeClass('layui-hide')
+            }
+            $('input[name="ReadDelay"]').val('')
+        });
+        form.on('switch(AllowRealPush)', (data) => {
+            if (data.elem.checked == true) {
+                AllowRealPush = 1
+            } else {
+                AllowRealPush = 0
+            }
+        });
+        form.on('select(PushBalanceIndex11)', (data) => {
 
-      });
-      form.on('select(PushBalanceIndex2)',(data)=>{
-          if(data.value=='-请选择-'){
-              $('.cutCoin2').text('金币数')
-          }else {
-              PushBalanceIndex12=data.value;
-              $('.cutCoin2').text(data.elem[data.elem.selectedIndex].text)
-          }
-      });
-      form.on('select(PushPulse)',(data)=>{
-          PushPulse=data.value;
-      });
-      form.on('select(PushSpeed)',(data)=>{
-          PushSpeed=data.value;
-      });
-      form.on('switch(PushLevel)',(data)=>{
-          if(data.elem.checked==true){
-              PushLevel=1
-          }else {
-              PushLevel=0
-          }
-      });
-      form.on('switch(UseSecondPush)',(data)=>{
-          if(data.elem.checked==true){
-              UseSecondPush=1;
-              $('.cardCore').removeClass('layui-hide');
-              $('.cardPush').addClass('layui-hide');
-          }else {
-              UseSecondPush=0;
-              $('.cardCore').addClass('layui-hide');
-              $('.cardPush').removeClass('layui-hide');
-          }
-      });
-      form.on('switch(SecondLevel)',(data)=>{
-          if(data.elem.checked==true){
-              SecondLevel=1
-          }else {
-              SecondLevel=0
-          }
-      });
-      form.on('select(SecondStartInterval)',(data)=>{
-          SecondStartInterval=data.value;
-      });
-      form.on('select(SecondPulse)',(data)=>{
-          SecondPulse=data.value;
-      });
-      form.on('select(SecondSpeed)',(data)=>{
-          SecondSpeed=data.value;
-      });
-      form.on('switch(AllowElecPush)',(data)=>{
-          if(data.elem.checked==true){
-              AllowElecPush=1
-          }else {
-              AllowElecPush=0
-          }
-      });
-      form.on('switch(AllowRealOut)',(data)=>{
-          if(data.elem.checked==true){
-              AllowRealOut=1
-          }else {
-              AllowRealOut=0
-          }
-      });
-      form.on('switch(BOLock)',(data)=>{
-          if(data.elem.checked==true){
-              BOLock=1
-          }else {
-              BOLock=0
-          }
-      });
-      form.on('switch(NowExit)',(data)=>{
-          if(data.elem.checked==true){
-              NowExit=1
-          }else {
-              NowExit=0
-          }
-      });
-      form.on('switch(BOKeep)',(data)=>{
-          if(data.elem.checked==true){
-              BOKeep=1
-          }else {
-              BOKeep=0
-          }
-      });
-      form.on('select(BOPulse)',(data)=>{
-          BOPulse=data.value;
-      });
-      form.on('switch(OutLevel)',(data)=>{
-          if(data.elem.checked==true){
-              OutLevel=1
-          }else {
-              OutLevel=0
-          }
-      });
-      form.on('switch(CountLevel)',(data)=>{
-          if(data.elem.checked==true){
-              CountLevel=1
-          }else {
-              CountLevel=0
-          }
-      });
-      form.on('select(OutSpeed)',(data)=>{
-          OutSpeed=data.value;
-      });
+            if (data.value == '-请选择-') {
+                $('.cutCoin1').text('金币数')
+            } else {
+                PushBalanceIndex11 = data.value;
+                $('.cutCoin1').text(data.elem[data.elem.selectedIndex].text)
+            }
 
-      form.on('select(OutMode)',(data)=>{
-          OutMode=data.value;
-      });
+        });
+        form.on('select(PushBalanceIndex2)', (data) => {
+            if (data.value == '-请选择-') {
+                $('.cutCoin2').text('金币数')
+            } else {
+                PushBalanceIndex12 = data.value;
+                $('.cutCoin2').text(data.elem[data.elem.selectedIndex].text)
+            }
+        });
+        form.on('select(PushPulse)', (data) => {
+            PushPulse = data.value;
+        });
+        form.on('select(PushSpeed)', (data) => {
+            PushSpeed = data.value;
+        });
+        form.on('switch(PushLevel)', (data) => {
+            if (data.elem.checked == true) {
+                PushLevel = 1
+            } else {
+                PushLevel = 0
+            }
+        });
+        form.on('switch(UseSecondPush)', (data) => {
+            if (data.elem.checked == true) {
+                UseSecondPush = 1;
+                $('.cardCore').removeClass('layui-hide');
+                $('.cardPush').addClass('layui-hide');
+            } else {
+                UseSecondPush = 0;
+                $('.cardCore').addClass('layui-hide');
+                $('.cardPush').removeClass('layui-hide');
+            }
+        });
+        form.on('switch(SecondLevel)', (data) => {
+            if (data.elem.checked == true) {
+                SecondLevel = 1
+            } else {
+                SecondLevel = 0
+            }
+        });
+        form.on('select(SecondStartInterval)', (data) => {
+            SecondStartInterval = data.value;
+        });
+        form.on('select(SecondPulse)', (data) => {
+            SecondPulse = data.value;
+        });
+        form.on('select(SecondSpeed)', (data) => {
+            SecondSpeed = data.value;
+        });
+        form.on('switch(AllowElecPush)', (data) => {
+            if (data.elem.checked == true) {
+                AllowElecPush = 1
+            } else {
+                AllowElecPush = 0
+            }
+        });
+        form.on('switch(AllowRealOut)', (data) => {
+            if (data.elem.checked == true) {
+                AllowRealOut = 1
+            } else {
+                AllowRealOut = 0
+            }
+        });
+        form.on('switch(BOLock)', (data) => {
+            if (data.elem.checked == true) {
+                BOLock = 1
+            } else {
+                BOLock = 0
+            }
+        });
+        form.on('switch(NowExit)', (data) => {
+            if (data.elem.checked == true) {
+                NowExit = 1
+            } else {
+                NowExit = 0
+            }
+        });
+        form.on('switch(BOKeep)', (data) => {
+            if (data.elem.checked == true) {
+                BOKeep = 1
+            } else {
+                BOKeep = 0
+            }
+        });
+        form.on('select(BOPulse)', (data) => {
+            BOPulse = data.value;
+        });
+        form.on('switch(OutLevel)', (data) => {
+            if (data.elem.checked == true) {
+                OutLevel = 1
+            } else {
+                OutLevel = 0
+            }
+        });
+        form.on('switch(CountLevel)', (data) => {
+            if (data.elem.checked == true) {
+                CountLevel = 1
+            } else {
+                CountLevel = 0
+            }
+        });
+        form.on('select(OutSpeed)', (data) => {
+            OutSpeed = data.value;
+        });
 
-      form.on('select(OutPulse)',(data)=>{
-          OutPulse=data.value;
-      });
-      form.on('select(OutBalanceIndex)',(data)=>{
-          OutBalanceIndex=data.value;
-      });
-      form.on('switch(GuardConvertCard)',(data)=>{
-          if(data.elem.checked==true){
-              GuardConvertCard=1
-          }else {
-              GuardConvertCard=0
-          }
-      });
-      form.on('switch(StrongGuardConvertCard)',(data)=>{
-          if(data.elem.checked==true){
-              StrongGuardConvertCard=1
-          }else {
-              StrongGuardConvertCard=0
-          }
-      });
-      form.on('switch(ReturnCheck)',(data)=>{
-          if(data.elem.checked==true){
-              ReturnCheck=1
-          }else {
-              ReturnCheck=0
-          }
-      });
-      form.on('switch(OutsideAlertCheck)',(data)=>{
-          if(data.elem.checked==true){
-              OutsideAlertCheck=1
-          }else {
-              OutsideAlertCheck=0
-          }
-      });
-      form.on('switch(ExceptOutTest)',(data)=>{
-          if(data.elem.checked==true){
-              ExceptOutTest=1
-          }else {
-              ExceptOutTest=0
-          }
-      });
-      form.on('select(ExceptOutSpeed)',(data)=>{
-          ExceptOutSpeed=data.value;
-      });
-      form.on('select(DepotID)',(data)=>{
-          data.value=='-请选择-'?DepotID='':DepotID=data.value;
-      });
-      form.on('switch(NotGiveBack)',(data)=>{
-          if(data.elem.checked==true){
-              NotGiveBack=1
-          }else {
-              NotGiveBack=0
-          }
-      });
-      form.on('switch(ICTicketOperation)',(data)=>{
-          if(data.elem.checked==true){
-              ICTicketOperation=1
-          }else {
-              ICTicketOperation=0
-          }
-      });
-      form.on('switch(BanOccupy)',(data)=>{
-          if(data.elem.checked==true){
-              BanOccupy=1
-          }else {
-              BanOccupy=0
-          }
-      });
-      form.on('select(PushStartInterval)',(data)=>{
-          PushStartInterval=data.value;
-      });
-      form.on('select(memberLevels)',(data)=>{
-          memberLevels=data.value;
-          MemberLevelNames=data.elem[data.elem.selectedIndex].text;
-      });
-      $('#easySaveBtn').click(function () {
-          saveEasy(form,layer);
-      });
-      $('.toEasyOpen').click(function (){
-          xc.openEasy(layer);
-      });
-       $('.toHighOpen').click(function () {
-          xc.openHigh(layer)
-      });
-       $('#highSaveBtn').click(function () {
-           saveHigh(form,layer);
-       });
-       $('#addNew').click(function (){
+        form.on('select(OutMode)', (data) => {
+            OutMode = data.value;
+        });
 
-       $('.saveBox').css('display','inline-block');
-       xc.getGameInfoByid('',token,form,layer,table);
+        form.on('select(OutPulse)', (data) => {
+            OutPulse = data.value;
+        });
+        form.on('select(OutBalanceIndex)', (data) => {
+            OutBalanceIndex = data.value;
+        });
+        form.on('switch(GuardConvertCard)', (data) => {
+            if (data.elem.checked == true) {
+                GuardConvertCard = 1
+            } else {
+                GuardConvertCard = 0
+            }
+        });
+        form.on('switch(StrongGuardConvertCard)', (data) => {
+            if (data.elem.checked == true) {
+                StrongGuardConvertCard = 1
+            } else {
+                StrongGuardConvertCard = 0
+            }
+        });
+        form.on('switch(ReturnCheck)', (data) => {
+            if (data.elem.checked == true) {
+                ReturnCheck = 1
+            } else {
+                ReturnCheck = 0
+            }
+        });
+        form.on('switch(OutsideAlertCheck)', (data) => {
+            if (data.elem.checked == true) {
+                OutsideAlertCheck = 1
+            } else {
+                OutsideAlertCheck = 0
+            }
+        });
+        form.on('switch(ExceptOutTest)', (data) => {
+            if (data.elem.checked == true) {
+                ExceptOutTest = 1
+            } else {
+                ExceptOutTest = 0
+            }
+        });
+        form.on('select(ExceptOutSpeed)', (data) => {
+            ExceptOutSpeed = data.value;
+        });
+        form.on('select(DepotID)', (data) => {
+            data.value == '-请选择-' ? DepotID = '' : DepotID = data.value;
+        });
+        form.on('switch(NotGiveBack)', (data) => {
+            if (data.elem.checked == true) {
+                NotGiveBack = 1
+            } else {
+                NotGiveBack = 0
+            }
+        });
+        form.on('switch(ICTicketOperation)', (data) => {
+            if (data.elem.checked == true) {
+                ICTicketOperation = 1
+            } else {
+                ICTicketOperation = 0
+            }
+        });
+        form.on('switch(BanOccupy)', (data) => {
+            if (data.elem.checked == true) {
+                BanOccupy = 1
+            } else {
+                BanOccupy = 0
+            }
+        });
+        form.on('select(PushStartInterval)', (data) => {
+            PushStartInterval = data.value;
+        });
+        form.on('select(memberLevels)', (data) => {
+            memberLevels = data.value;
+            MemberLevelNames = data.elem[data.elem.selectedIndex].text;
+        });
+        $('#easySaveBtn').click(function () {
+            saveEasy(form, layer);
+        });
+        $('.toEasyOpen').click(function () {
+            xc.openEasy(layer);
+        });
+        $('.toHighOpen').click(function () {
+            xc.openHigh(layer)
+        });
+        $('#highSaveBtn').click(function () {
+            saveHigh(form, layer);
+        });
+        $('#addNew').click(function () {
 
-   });
-      //监听表格tool事件
-      table.on('tool(gameFileTable)',function (obj) {
-          let data = obj.data; //获得当前行数据
-          let layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
-          let tr = obj.tr; //获得当前行 tr 的DOM对象
-          id=data.ID;
-          if(layEvent === 'detail'){ //查看
-              let _obj={'gameId':data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
-              let parasJson = JSON.stringify(_obj);
-              $.ajax({
-                  type: "post",
-                  url: '/XCCloud/GameInfo?action=GetGameAppRule',
-                  contentType: "application/json; charset=utf-8",
-                  data: { parasJson: parasJson },
-                  success: function (data) {
-                      data=JSON.parse(data);
-                      if(data.result_code==1){
-                          let arr=[];
-                           arr=data.result_data;
-                          if(arr.length==1){
-                              $('.code input[name="paymoney"]').val(arr[0].PayCount);
-                              $('.code input[name="times"]').val(arr[0].PlayCount);
-                          }else if(arr.length>1){
-                              for(let i=1;i<arr.length;i++){
-                                  $('.codeBox').append($('body').find($('.code')).eq(0).clone())
-                              }
-                              for(let i=0;i<arr.length;i++){
-                                  $('.codeBox').find($('.code')).eq(i).find('input[name="paymoney"]').val(arr[i].PayCount);
-                                  $('.codeBox').find($('.code')).eq(i).find('input[name="times"]').val(arr[i].PlayCount);
-                              }
-                          }
-                          layer.open({
-                              title:'扫码优惠规则',
-                              type:1,
-                              area:'800px',
-                              content:$('#codeSale'),
-                              cancel:function () {
-                                  location.reload()
-                              }
-                          })
-                      }else {layer.msg(data.result_msg||data.return_msg)}
-                  }
-              })
-          }else if(layEvent==='edit'){
-              xc.getGameInfoByid(data.ID,token,form,layer,table);
-              $('.saveBox').css('display','inline-block');
-          }else if(layEvent==='del'){
-              layer.confirm('真的删除行么', function(index){
-                  let _obj={'id':data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
-                  let url='/XCCloud/GameInfo?action=DelGameInfo';
-                  let parasJson = JSON.stringify(_obj);
-                  $.ajax({
-                      type: "post",
-                      url: url,
-                      contentType: "application/json; charset=utf-8",
-                      data: { parasJson: parasJson },
-                      success: function (data) {
-                          data=JSON.parse(data);
-                          if(data.result_code==1){
-                              obj.del();
-                              layer.close(index);
-                          }else {layer.msg('操作失败！')}
-                      }
-                  })
+            $('.saveBox').css('display', 'inline-block');
+            xc.getGameInfoByid('', token, form, layer, table);
 
-              });
-          }else if(layEvent==='GameHead'){
-              let _obj={'gameId':data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
-              let url='/XCCloud/DeviceInfo?action=QueryHeadDeviceInfo';
-              let parasJson = JSON.stringify(_obj);
-              $.ajax({
-                  type: "post",
-                  url: url,
-                  contentType: "application/json; charset=utf-8",
-                  data: { parasJson: parasJson },
-                  success: function (data) {
-                      data=JSON.parse(data);
-                      if(data.result_code==1){
-                     let  arr=data.result_data;
+        });
+        //监听表格tool事件
+        table.on('tool(gameFileTable)', function (obj) {
+            let data = obj.data; //获得当前行数据
+            let layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            let tr = obj.tr; //获得当前行 tr 的DOM对象
+            id = data.ID;
+            if (layEvent === 'detail') { //查看
+                let _obj = {'gameId': data.ID, 'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'};
+                let parasJson = JSON.stringify(_obj);
+                $.ajax({
+                    type: "post",
+                    url: '/XCCloud/GameInfo?action=GetGameAppRule',
+                    contentType: "application/json; charset=utf-8",
+                    data: {parasJson: parasJson},
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        if (data.result_code == 1) {
+                            let arr = [];
+                            arr = data.result_data;
+                            if (arr.length == 1) {
+                                $('.code input[name="paymoney"]').val(arr[0].PayCount);
+                                $('.code input[name="times"]').val(arr[0].PlayCount);
+                            } else if (arr.length > 1) {
+                                for (let i = 1; i < arr.length; i++) {
+                                    $('.codeBox').append($('body').find($('.code')).eq(0).clone())
+                                }
+                                for (let i = 0; i < arr.length; i++) {
+                                    $('.codeBox').find($('.code')).eq(i).find('input[name="paymoney"]').val(arr[i].PayCount);
+                                    $('.codeBox').find($('.code')).eq(i).find('input[name="times"]').val(arr[i].PlayCount);
+                                }
+                            }
+                            layer.open({
+                                title: '扫码优惠规则',
+                                type: 1,
+                                area: '800px',
+                                content: $('#codeSale'),
+                                cancel: function () {
+                                    location.reload()
+                                }
+                            })
+                        } else {
+                            layer.msg(data.result_msg || data.return_msg)
+                        }
+                    }
+                })
+            } else if (layEvent === 'edit') {
+                xc.getGameInfoByid(data.ID, token, form, layer, table);
+                $('.saveBox').css('display', 'inline-block');
+            } else if (layEvent === 'del') {
+                layer.confirm('真的删除行么', function (index) {
+                    let _obj = {'id': data.ID, 'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'};
+                    let url = '/XCCloud/GameInfo?action=DelGameInfo';
+                    let parasJson = JSON.stringify(_obj);
+                    $.ajax({
+                        type: "post",
+                        url: url,
+                        contentType: "application/json; charset=utf-8",
+                        data: {parasJson: parasJson},
+                        success: function (data) {
+                            data = JSON.parse(data);
+                            if (data.result_code == 1) {
+                                obj.del();
+                                layer.close(index);
+                            } else {
+                                layer.msg('操作失败！')
+                            }
+                        }
+                    })
+
+                });
+            } else if (layEvent === 'GameHead') {
+                let _obj = {'gameId': data.ID, 'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'};
+                let url = '/XCCloud/DeviceInfo?action=QueryHeadDeviceInfo';
+                let parasJson = JSON.stringify(_obj);
+                $.ajax({
+                    type: "post",
+                    url: url,
+                    contentType: "application/json; charset=utf-8",
+                    data: {parasJson: parasJson},
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        if (data.result_code == 1) {
+                            let arr = data.result_data;
                             table.render({
-                            elem: '#gameHeadTable'
-                            , height:'250px'
-                            , size:"sm"
-                            , data: arr
-                            , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
-                            , cols: [[
-                                    {field:'MCUID',title: '设备序列号', align: 'center',width:100}
-                                    ,{field:'DeviceName', title: '设备别名', align: 'center',width:100} //width 支持：数字、百分比和不填写。
-                                    ,{field:'SiteName', title: 'P位编号', align: 'center',width:100}
-                                    ,{field:'Address', title: '机头地址', align: 'center',width:100}
-                                    ,{field:'DeviceStatus', title: '工作状态', align: 'center',templet:'#changeLock',width:90}
-                                    ,{field:'DeviceRunning', title: '运行状态', align: 'center',width:90}
-                                ,{fixed: 'right',title:'操作', width:400, align:'center', toolbar: '#barDemo1'}]]
-                            , page: {page: true, limits: [10, 15, 20, 30, 50, 100]}
-                            , limit: 10
-                        });
-                        layer.open({title:'卡头信息',
-                        type:1,
-                        area:'1000px',
-                        content:$('#gameHeadModel')})
-                      }else {layer.msg(data.result_msg||data.return_msg)}
-                  }
-              })
-          }else if(layEvent==='memberCode'){//会员扫码优惠
-              newMem(data.ID,token,table,layer)
-          }
-      });
-      table.on('tool(gameHeadTable)',function (obj) {
-          var data = obj.data; //获得当前行数据
-          _id=data.ID;
-          var layEvent = obj.event;
-          if(layEvent === 'bindMachine'){ //机台绑定
-              xc.getGameInfoDic(token,layer,form,'gameIndexId');
-              xc.getRouteDevice(token,layer,form,'bindDeviceId');
-              _state=1;
-              $('#siteName').html('');
-              layer.open({
-                  title:'绑定游戏机和路由器',
-                  type:1,
-                  area:'400px',
-                  content:$('#deviceBindOpen')
-              });
-          } else if(layEvent === 'unBindMachine'){ //机台解绑
-              layer.confirm('确定解绑该设备吗？', function(index){
-                  Id=data.ID;
-                  let _obj={'id':data.ID,'state':0,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
-                  let parseJson = JSON.stringify(_obj);
-                  $.ajax({
-                      type:'post',
-                      url:'/XCCloud/DeviceInfo?action=BindDeviceInfo',
-                      contentType: "application/json; charset=utf-8",
-                      data:{parasJson: parseJson},
-                      success: function (data) {
-                          data = JSON.parse(data);
-                          if (data.result_code == 1) {
-                              location.reload();
-                          } else {
-                              layer.msg(data.result_msg);
-                          }
-                      }
-                  })
-              });
-          } else if(layEvent === 'lock'){ //锁定
-              layer.confirm('确定锁定该设备吗？', function(index){
-                  Id=data.ID;
-                  let _obj={'id':data.ID,'state':1,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
-                  let parseJson = JSON.stringify(_obj);
-                  $.ajax({
-                      type:'post',
-                      url:'/XCCloud/DeviceInfo?action=LockDeviceInfo',
-                      contentType: "application/json; charset=utf-8",
-                      data:{parasJson: parseJson},
-                      success: function (data) {
-                          data = JSON.parse(data);
-                          if (data.result_code == 1) {
-                              location.reload();
-                          } else {
-                              layer.msg(data.result_msg);
-                          }
-                      }
-                  })
-              });
-          }else if(layEvent === 'unLock'){ //解锁
-              layer.confirm('确定解锁该设备吗？', function(index){
-                  Id=data.ID;
-                  let _obj={'id':data.ID,'state':0,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
-                  let parseJson = JSON.stringify(_obj);
-                  $.ajax({
-                      type:'post',
-                      url:'/XCCloud/DeviceInfo?action=LockDeviceInfo',
-                      contentType: "application/json; charset=utf-8",
-                      data:{parasJson: parseJson},
-                      success: function (data) {
-                          data = JSON.parse(data);
-                          if (data.result_code == 1) {
-                              location.reload();
-                          } else {
-                              layer.msg(data.result_msg);
-                          }
-                      }
-                  })
-              });
-          }else if(layEvent === 'code'){ //查看二维码
-              Id=data.ID;
-              let _obj={'id':data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
-              let parseJson = JSON.stringify(_obj);
-              $.ajax({
-                  type:'post',
-                  url:'/XCCloud/DeviceInfo?action=GetDeviceQr',
-                  contentType: "application/json; charset=utf-8",
-                  data:{parasJson: parseJson},
-                  success: function (data) {
-                      data = JSON.parse(data);
-                      if (data.result_code == 1) {
-                          qrcode.makeCode( data.result_data);
-                          layer.open({
-                              title:'二维码',
-                              type:1,
-                              area:'260px',
-                              anim: 5, //0-6的选择，指定弹出图片动画类型，默认随机（请注意，3.0之前的版本用shift参数）
-                              content:$('#codeBox')
-                          });
-                      } else {
-                          layer.msg(data.result_msg);
-                      }
-                  }
-              })
-          }else if(layEvent==='bindTicket'){
-              bindType=0;
+                                elem: '#gameHeadTable'
+                                , height: '250px'
+                                , size: "sm"
+                                , data: arr
+                                , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+                                , cols: [[
+                                    {field: 'MCUID', title: '设备序列号', align: 'center', width: 100}
+                                    , {field: 'DeviceName', title: '设备别名', align: 'center', width: 100} //width 支持：数字、百分比和不填写。
+                                    , {field: 'SiteName', title: 'P位编号', align: 'center', width: 100}
+                                    , {field: 'Address', title: '机头地址', align: 'center', width: 100}
+                                    , {
+                                        field: 'DeviceStatus',
+                                        title: '工作状态',
+                                        align: 'center',
+                                        templet: '#changeLock',
+                                        width: 90
+                                    }
+                                    , {field: 'DeviceRunning', title: '运行状态', align: 'center', width: 90}
+                                    , {fixed: 'right', title: '操作', width: 400, align: 'center', toolbar: '#barDemo1'}]]
+                                , page: {page: true, limits: [10, 15, 20, 30, 50, 100]}
+                                , limit: 10
+                            });
+                            layer.open({
+                                title: '卡头信息',
+                                type: 1,
+                                area: '1000px',
+                                content: $('#gameHeadModel')
+                            })
+                        } else {
+                            layer.msg(data.result_msg || data.return_msg)
+                        }
+                    }
+                })
+            } else if (layEvent === 'memberCode') {//会员扫码优惠
+                newMem(data.ID, token, table, layer)
+            }
+        });
+        table.on('tool(gameHeadTable)', function (obj) {
+            var data = obj.data; //获得当前行数据
+            _id = data.ID;
+            var layEvent = obj.event;
+            if (layEvent === 'bindMachine') { //机台绑定
+                xc.getGameInfoDic(token, layer, form, 'gameIndexId');
+                xc.getRouteDevice(token, layer, form, 'bindDeviceId');
+                _state = 1;
+                $('#siteName').html('');
+                layer.open({
+                    title: '绑定游戏机和路由器',
+                    type: 1,
+                    area: '400px',
+                    content: $('#deviceBindOpen')
+                });
+            } else if (layEvent === 'unBindMachine') { //机台解绑
+                layer.confirm('确定解绑该设备吗？', function (index) {
+                    Id = data.ID;
+                    let _obj = {
+                        'id': data.ID,
+                        'state': 0,
+                        'userToken': token,
+                        'signkey': '1f626576304bf5d95b72ece2222e42c3'
+                    };
+                    let parseJson = JSON.stringify(_obj);
+                    $.ajax({
+                        type: 'post',
+                        url: '/XCCloud/DeviceInfo?action=BindDeviceInfo',
+                        contentType: "application/json; charset=utf-8",
+                        data: {parasJson: parseJson},
+                        success: function (data) {
+                            data = JSON.parse(data);
+                            if (data.result_code == 1) {
+                                location.reload();
+                            } else {
+                                layer.msg(data.result_msg);
+                            }
+                        }
+                    })
+                });
+            } else if (layEvent === 'lock') { //锁定
+                layer.confirm('确定锁定该设备吗？', function (index) {
+                    Id = data.ID;
+                    let _obj = {
+                        'id': data.ID,
+                        'state': 1,
+                        'userToken': token,
+                        'signkey': '1f626576304bf5d95b72ece2222e42c3'
+                    };
+                    let parseJson = JSON.stringify(_obj);
+                    $.ajax({
+                        type: 'post',
+                        url: '/XCCloud/DeviceInfo?action=LockDeviceInfo',
+                        contentType: "application/json; charset=utf-8",
+                        data: {parasJson: parseJson},
+                        success: function (data) {
+                            data = JSON.parse(data);
+                            if (data.result_code == 1) {
+                                location.reload();
+                            } else {
+                                layer.msg(data.result_msg);
+                            }
+                        }
+                    })
+                });
+            } else if (layEvent === 'unLock') { //解锁
+                layer.confirm('确定解锁该设备吗？', function (index) {
+                    Id = data.ID;
+                    let _obj = {
+                        'id': data.ID,
+                        'state': 0,
+                        'userToken': token,
+                        'signkey': '1f626576304bf5d95b72ece2222e42c3'
+                    };
+                    let parseJson = JSON.stringify(_obj);
+                    $.ajax({
+                        type: 'post',
+                        url: '/XCCloud/DeviceInfo?action=LockDeviceInfo',
+                        contentType: "application/json; charset=utf-8",
+                        data: {parasJson: parseJson},
+                        success: function (data) {
+                            data = JSON.parse(data);
+                            if (data.result_code == 1) {
+                                location.reload();
+                            } else {
+                                layer.msg(data.result_msg);
+                            }
+                        }
+                    })
+                });
+            } else if (layEvent === 'code') { //查看二维码
+                Id = data.ID;
+                let _obj = {'id': data.ID, 'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'};
+                let parseJson = JSON.stringify(_obj);
+                $.ajax({
+                    type: 'post',
+                    url: '/XCCloud/DeviceInfo?action=GetDeviceQr',
+                    contentType: "application/json; charset=utf-8",
+                    data: {parasJson: parseJson},
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        if (data.result_code == 1) {
+                            qrcode.makeCode(data.result_data);
+                            layer.open({
+                                title: '二维码',
+                                type: 1,
+                                area: '260px',
+                                anim: 5, //0-6的选择，指定弹出图片动画类型，默认随机（请注意，3.0之前的版本用shift参数）
+                                content: $('#codeBox')
+                            });
+                        } else {
+                            layer.msg(data.result_msg);
+                        }
+                    }
+                })
+            } else if (layEvent === 'bindTicket') {
+                bindType = 0;
 
-              let _obj={'id':data.ID,'joinType':0,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
-              let parseJson = JSON.stringify(_obj);
-              $.ajax({
-                  type:'post',
-                  url:'/XCCloud/DeviceInfo?action=GetBindProject',
-                  contentType: "application/json; charset=utf-8",
-                  data:{parasJson: parseJson},
-                  success: function (data) {
-                      data = JSON.parse(data);
-                      if (data.result_code == 1) {
-                          arrBindTable=data.result_data;
-                              table.render({
-                                  elem:'#bindTable',
-                                  data:arrBindTable,
-                                  size:'sm',
-                                  cols:[[
-                                      {field:'ProjectID', title:'门票ID', align: 'center', sort: true,width:120}
-                                      ,{field:'ProjectName',title: '门票名称', align: 'center',width:120} //width 支持：数字、百分比和不填写。
-                                      ,{field:'SignType', title: '验证类型', align: 'center',width:120,templet:'#SignType'}
-                                      ,{field:'LockMember', title: '入场锁定', align: 'center',width:120,templet:'#LockMember'}
-                                      ,{fixed: 'right', title: '操作', width:140, align:'center', toolbar: '#barDemo1'}
-                                  ]]
-                                  , page: {page: true, limits: [10, 15, 20]}
-                                  , limit: 5
-                              });
-                          layer.open({
-                              title:'门票绑定',
-                              type:1,
-                              area:'650px',
-                              anim: 5, //0-6的选择，指定弹出图片动画类型，默认随机（请注意，3.0之前的版本用shift参数）
-                              content:$('#bindTableBox')
-                          });
-                      } else {
-                          layer.msg(data.result_msg);
-                      }
-                  }
-              });
-          }else if(layEvent==='clockCook'){
-              let _obj={'id':data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
-              let parseJson = JSON.stringify(_obj);
-              $.ajax({
-                  type:'post',
-                  url:'/XCCloud/DeviceInfo?action=GetGameAlarm',
-                  contentType: "application/json; charset=utf-8",
-                  data:{parasJson: parseJson},
-                  success: function (data) {
-                      data = JSON.parse(data);
-                      if (data.result_code == 1) {
-                          let arr=data.result_data;
-                          if(arr.length>0){
-                              table.render({
-                                  elem:'#clockNoteTable',
-                                  data:arr,
-                                  size:'sm',
-                                  cols:[[
-                                      {field:'GameName', title:'游戏机名名称', align: 'center', sort: true,width:120}
-                                      ,{field:'SiteName',title: 'P位编号', align: 'center',width:120} //width 支持：数字、百分比和不填写。
-                                      ,{field:'Segment', title: '网络段号', align: 'center',width:120, sort: true}
-                                      ,{field:'Address', title: '机头地址', align: 'center',width:120}
-                                      ,{field:'AlertType', title: '报警类别', align: 'center'}
-                                      ,{field:'HappenTime', title: '触发时间', align: 'center',width:120, sort: true}
-                                      ,{field:'ICCardID', title: '关联卡号', align: 'center',width:120}
-                                      ,{field:'LockGameStr', title: '锁机头', align: 'center',width:120}
-                                      ,{field:'LockMemberStr', title: '锁会员', align: 'center',width:120}
-                                      ,{field:'EndTime', title: '处理时间', align: 'center',width:120}
-                                      ,{field:'StateStr', title: '状态', align: 'center',width:120}
-                                  ]]
-                                  , page: {page: true, limits: [10, 15, 20]}
-                                  , limit: 10
-                              });
-                              layer.open({
-                                  title:'报警日志',
-                                  type:1,
-                                  area:'1000px',
-                                  content:$('#clockNote')
-                              });
-                          }else {layer.msg('当前暂无日志信息')}
+                let _obj = {
+                    'id': data.ID,
+                    'joinType': 0,
+                    'userToken': token,
+                    'signkey': '1f626576304bf5d95b72ece2222e42c3'
+                };
+                let parseJson = JSON.stringify(_obj);
+                $.ajax({
+                    type: 'post',
+                    url: '/XCCloud/DeviceInfo?action=GetBindProject',
+                    contentType: "application/json; charset=utf-8",
+                    data: {parasJson: parseJson},
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        if (data.result_code == 1) {
+                            arrBindTable = data.result_data;
+                            table.render({
+                                elem: '#bindTable',
+                                data: arrBindTable,
+                                size: 'sm',
+                                cols: [[
+                                    {field: 'ProjectID', title: '门票ID', align: 'center', sort: true, width: 120}
+                                    , {field: 'ProjectName', title: '门票名称', align: 'center', width: 120} //width 支持：数字、百分比和不填写。
+                                    , {
+                                        field: 'SignType',
+                                        title: '验证类型',
+                                        align: 'center',
+                                        width: 120,
+                                        templet: '#SignType'
+                                    }
+                                    , {
+                                        field: 'LockMember',
+                                        title: '入场锁定',
+                                        align: 'center',
+                                        width: 120,
+                                        templet: '#LockMember'
+                                    }
+                                    , {fixed: 'right', title: '操作', width: 140, align: 'center', toolbar: '#barDemo1'}
+                                ]]
+                                , page: {page: true, limits: [10, 15, 20]}
+                                , limit: 5
+                            });
+                            layer.open({
+                                title: '门票绑定',
+                                type: 1,
+                                area: '650px',
+                                anim: 5, //0-6的选择，指定弹出图片动画类型，默认随机（请注意，3.0之前的版本用shift参数）
+                                content: $('#bindTableBox')
+                            });
+                        } else {
+                            layer.msg(data.result_msg);
+                        }
+                    }
+                });
+            } else if (layEvent === 'clockCook') {
+                let _obj = {'id': data.ID, 'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'};
+                let parseJson = JSON.stringify(_obj);
+                $.ajax({
+                    type: 'post',
+                    url: '/XCCloud/DeviceInfo?action=GetGameAlarm',
+                    contentType: "application/json; charset=utf-8",
+                    data: {parasJson: parseJson},
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        if (data.result_code == 1) {
+                            let arr = data.result_data;
+                            if (arr.length > 0) {
+                                table.render({
+                                    elem: '#clockNoteTable',
+                                    data: arr,
+                                    size: 'sm',
+                                    cols: [[
+                                        {field: 'GameName', title: '游戏机名名称', align: 'center', sort: true, width: 120}
+                                        , {field: 'SiteName', title: 'P位编号', align: 'center', width: 120} //width 支持：数字、百分比和不填写。
+                                        , {field: 'Segment', title: '网络段号', align: 'center', width: 120, sort: true}
+                                        , {field: 'Address', title: '机头地址', align: 'center', width: 120}
+                                        , {field: 'AlertType', title: '报警类别', align: 'center'}
+                                        , {field: 'HappenTime', title: '触发时间', align: 'center', width: 120, sort: true}
+                                        , {field: 'ICCardID', title: '关联卡号', align: 'center', width: 120}
+                                        , {field: 'LockGameStr', title: '锁机头', align: 'center', width: 120}
+                                        , {field: 'LockMemberStr', title: '锁会员', align: 'center', width: 120}
+                                        , {field: 'EndTime', title: '处理时间', align: 'center', width: 120}
+                                        , {field: 'StateStr', title: '状态', align: 'center', width: 120}
+                                    ]]
+                                    , page: {page: true, limits: [10, 15, 20]}
+                                    , limit: 10
+                                });
+                                layer.open({
+                                    title: '报警日志',
+                                    type: 1,
+                                    area: '1000px',
+                                    content: $('#clockNote')
+                                });
+                            } else {
+                                layer.msg('当前暂无日志信息')
+                            }
 
-                      } else {
-                          layer.msg(data.result_msg);
-                      }
-                  }
-              });
-          }
-      });
-      table.on('tool(memberElec)',function (obj) {
-          var data = obj.data; //获得当前行数据
-          var layEvent = obj.event;
-          if(layEvent==='del'){
-              for(let i in FreeLotteryRules){
-                  if(FreeLotteryRules[i].MemberLevelID==data.MemberLevelID&&
-                      FreeLotteryRules[i].BaseLottery==data.BaseLottery&&
-                  FreeLotteryRules[i].FreeCount==data.FreeCount){
-                      FreeLotteryRules.splice(i,1);
-                      obj.del();
-                  }
-              }
-          }
-      });
-      $('#saveMemCode').click(function () {
-            xc.getMemberTypeDic(token,layer,form,'memberLevelId');
-            xc.getBalanceTypeDic ('',token,layer,form,'BalanceIndex1');
-            xc.getBalanceTypeDic('',token,layer,form,'BalanceIndex2');
+                        } else {
+                            layer.msg(data.result_msg);
+                        }
+                    }
+                });
+            }
+        });
+        table.on('tool(memberElec)', function (obj) {
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event;
+            if (layEvent === 'del') {
+                for (let i in FreeLotteryRules) {
+                    if (FreeLotteryRules[i].MemberLevelID == data.MemberLevelID &&
+                        FreeLotteryRules[i].BaseLottery == data.BaseLottery &&
+                        FreeLotteryRules[i].FreeCount == data.FreeCount) {
+                        FreeLotteryRules.splice(i, 1);
+                        obj.del();
+                    }
+                }
+            }
+        });
+        $('#saveMemCode').click(function () {
+            xc.getMemberTypeDic(token, layer, form, 'memberLevelId');
+            xc.getBalanceTypeDic('', token, layer, form, 'BalanceIndex1');
+            xc.getBalanceTypeDic('', token, layer, form, 'BalanceIndex2');
             $('.groupValue').val('');
-            index5= layer.open({
-                title:'二维码',
-                type:1,
-                area:'1000px',
-                content:$('#memberCodeSetModel')
+            index5 = layer.open({
+                title: '二维码',
+                type: 1,
+                area: '1000px',
+                content: $('#memberCodeSetModel')
             });
         });
 
 
-      $('#addMore').click(function () {
-          $('.saleGroupBox').append($('body').find($('.saleGroup')).eq(0).clone())
-          $('.saleGroupBox').find($('.saleGroup')).last().find('input').val('')
-      });
-     // 保存
-      $('.saleGroupBox').on('click','button.saveRuleBtn',function () {
-          let memberLevel=$(this).parents($('.saleGroup')).find('select[name="memberLevelId"] option:selected').val();
-                  let pushBalanceIndex1=$(this).parents($('.saleGroup')).find('select[name="BalanceIndex1"] option:selected').val();
-                  let pushCoin1=$(this).parents($('.saleGroup')).find('input[name="pCoin1"]').val();
-                  let pushBalanceIndex2=$(this).parents($('.saleGroup')).find('select[name="BalanceIndex2"] option:selected').val();
-                  let pushCoin2=$(this).parents($('.saleGroup')).find('input[name="pCoin2"]').val();
-                  let playCount=$(this).parents($('.saleGroup')).find('input[name="playCount"]').val();
-          console.log(memberLevel)
-                  console.log(pushBalanceIndex1)
-          console.log(pushCoin1)
-          console.log(pushBalanceIndex2)
-          console.log(pushCoin2)
-          console.log(playCount)
+        $('#addMore').click(function () {
+            $('.saleGroupBox').append($('body').find($('.saleGroup')).eq(0).clone())
+            $('.saleGroupBox').find($('.saleGroup')).last().find('input').val('')
+        });
+        // 保存
+        $('.saleGroupBox').on('click', 'button.saveRuleBtn', function () {
+            let memberLevel = $(this).parents($('.saleGroup')).find('select[name="memberLevelId"] option:selected').val();
+            let pushBalanceIndex1 = $(this).parents($('.saleGroup')).find('select[name="BalanceIndex1"] option:selected').val();
+            let pushCoin1 = $(this).parents($('.saleGroup')).find('input[name="pCoin1"]').val();
+            let pushBalanceIndex2 = $(this).parents($('.saleGroup')).find('select[name="BalanceIndex2"] option:selected').val();
+            let pushCoin2 = $(this).parents($('.saleGroup')).find('input[name="pCoin2"]').val();
+            let playCount = $(this).parents($('.saleGroup')).find('input[name="playCount"]').val();
+            let obj = {
+                'gameID': id,
+                'memberLevelID': memberLevel,
+                'gameAppMemberRule': {
+                    'pushBalanceIndex1': pushBalanceIndex1,
+                    'pushCoin1': pushCoin1,
+                    'pushBalanceIndex2': pushBalanceIndex2,
+                    'pushCoin2': pushCoin2,
+                    'playCount': playCount
+                },
+                'userToken': token,
+                'signkey': '1f626576304bf5d95b72ece2222e42c3'
+            };
+            let parasJson = JSON.stringify(obj);
+            $.ajax({
+                type: "post",
+                url: '/XCCloud/GameInfo?action=SaveGameAppMemberRule',
+                contentType: "application/json; charset=utf-8",
+                data: {parasJson: parasJson},
+                success: function (data) {
+                    data = JSON.parse(data);
+                    console.log(data);
+                    if (data.result_code == 1) {
+                        layer.msg('新规则保存成功',{time:2000},function () {
 
-
-      });
-
-
-      $('#addmemberElec').click(function () {
-          if(memberLevels!=''&&$('input[name="count"]').val()!=''&&$('input[name="sendcount"]').val()!=''){
-              FreeLotteryRules.push({'MemberLevelID':memberLevels,
-                  'MemberLevelName':MemberLevelNames,
-                  'BaseLottery':$('input[name="count"]').val(),
-                  'FreeCount':$('input[name="sendcount"]').val()})
-          }else {layer.msg('必填项不能为空')}
-          newMemberElec(table,FreeLotteryRules);
-          memberLevels='';
-          $('input[name="count"]').val('');
-          $('input[name="sendcount"]').val('');
-          xc.getMemberTypeDic(token,layer,form,'memberLevels');
-      })
-  });
-
-  xcActionSystem.prototype.openEasy=(layer)=>{
-      layer.closeAll();
-      let index1=layer.open({
-          type:1,
-          title:'游戏机档案设置',
-          area:'1030px',
-          content:$('#easyType')
-      })
-  };
-  xcActionSystem.prototype.openHigh=(layer)=>{
-      xc.setStorage('easyOrHigh','high');
-      layer.closeAll();
-      let index2=layer.open({
-          type:1,
-          title:'游戏机档案设置',
-          area:'1060px',
-          content:$('#highType')
-      })
-  };
-  xcActionSystem.prototype.getGameInfoByid=(id,tokens,form,layer,table)=>{
-      let _obj={'id':id,'userToken':tokens,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
-      let url='/XCCloud/GameInfo?action=GetGameInfo';
-      let parasJson = JSON.stringify(_obj);
-      $.ajax({
-                  type: "post",
-                  url: url,
-                  contentType: "application/json; charset=utf-8",
-                  data: { parasJson: parasJson },
-                  success: function (data) {
-                      data=JSON.parse(data);
-                      console.log(data);
-                      if(data.result_code==1){
-                          let arr=data.result_data;
-                          let arr1=arr[65].value||[];
-                          if(arr1.length==1){
-                              $('.memberSend input[name="count"]').val(arr1[0].BaseLottery);
-                              $('.memberSend input[name="sendcount"]').val(arr1[0].FreeCount);
-                              $('.memberSend select[name="BalanceIndex"]').val(arr1[0].MemberLevelID);
-                          }else if(arr1.length>1){
-                              for(let i=1;i<arr1.length;i++){
-                                  $('.memberSendBox').append($('body').find($('.memberSend')).eq(0).clone())
-                              }
-                              for(let i=0;i<arr1.length;i++){
-                                  $('.memberSendBox').find($('.memberSend')).eq(i).find('input[name="count"]').val(arr1[i].BaseLottery);
-                                  $('.memberSendBox').find($('.memberSend')).eq(i).find('input[name="sendcount"]').val(arr1[i].FreeCount);
-                                  $('.memberSendBox').find($('.memberSend')).eq(i).find('select[name="BalanceIndex"]').val(arr1[i].MemberLevelID);
-                              }
-                          }
-
-                          for(var i in arr){
-                              $('body').find('div[class="layui-inline '+arr[i].name+'"]').attr('name',arr[i].comment);
-                          }
-                          form.val("easyForm",{
-                              'GameId1':arr[1].value,
-                              'eDepotID':arr[4].value,
-                              "GameName":arr[6].value,
-                              'GameType':arr[7].value,
-                              'GameCode':arr[61].value,
-                              'eAreaID':arr[5].value,
-                              'ePushBalanceIndex1':arr[9].value,
-                              'PushCoin1':arr[10].value,
-                              'PushLevel':arr[41].value==1?true:false,
-                              'LotteryModeLow':arr[23].value==1?true:false,
-                              'OnlyExitLottery':arr[24].value==1?true:false,
-                              'ReadCat':arr[28].value==1?true:false,
-                              'ReadDelay1':arr[29].value,
-                              'chkCheckGift':arr[25].value==1?true:false,
-                              'StateLow':arr[8].value==1?true:false,
-                              'Area':arr[62].value,
-                              'ChangeTime':arr[63].value,
-                              'Price':arr[65].value,
-                              'Evaluation':arr[64].value,
-                          });
-                          eAreaID=arr[5].value;
-                          ePushBalanceIndex1=arr[9].value;
-                          ePushCoin1=arr[10].value;
-                          ePushLevel=arr[41].value;
-                          LotteryModeLow=arr[23].value;
-                          eOnlyExitLottery=arr[24].value;
-                          eReadCat=arr[28].value;
-                          echkCheckGift=arr[25].value;
-                          StateLow=arr[8].value;
-                          // xc.getGameType (token,layer,form,'游戏机类型','GameTypeLow',arr[7].value);
-                          // xc.getDepotDic('',storeId,token,layer,form,'eDepotID',arr[4].value);
-                          // xc.getDepotDic('',storeId,token,layer,form,'DepotID',arr[4].value);
-                          eDepotID=arr[4].value;
-                          DepotID=arr[4].value;
-                          form.val("hardForm",{
-                              'GameId2':arr[1].value,
-                              'DepotID':arr[4].value,
-                              'AreaID1':arr[5].value,
-                              "GameName":arr[6].value,
-                              'GameType':arr[7].value,
-                              'State': arr[8].value==1?true:false,
-                              'PushBalanceIndex11': arr[9].value,
-                              'PushCoin11': arr[10].value,
-                              'PushAddToGame1': arr[11].value,
-                              "SecondAddToGame1": arr[12].value,
-                              'PushBalanceIndex2': arr[13].value,
-                              'PushCoin2': arr[14].value,
-                              'PushAddToGame2': arr[15].value,
-                              "SecondAddToGame2": arr[16].value,
-                              'OutBalanceIndex': arr[17].value,
-                              'ReturnCheck': arr[18].value==1?true:false,
-                              'OutsideAlertCheck':arr[19].value==1?true:false,
-                              'ICTicketOperation':arr[20].value==1?true:false,
-                              'OutMode':arr[21].value,
-                              'NotGiveBack':arr[22].value==1?true:false,
-                              'LotteryMode':arr[23].value==1?true:false,
-                              'OnlyExitLottery':arr[24].value==1?true:false,
-                              'chkCheckGift1':arr[25].value==1?true:false,
-                              'AllowElecPush':arr[26].value==1?true:false,
-                              'GuardConvertCard':arr[27].value==1?true:false,
-                              'ReadCat':arr[28].value==1?true:false,
-                              'ReadDelay':arr[29].value,
-                              'AllowRealPush':arr[30].value==1?true:false,
-                              'BanOccupy':arr[31].value==1?true:false,
-                              'StrongGuardConvertCard':arr[32].value==1?true:false,
-
-                              'AllowElecOut':arr[33].value==1?true:false,
-                              'NowExit':arr[34].value==1?true:false,
-                              'BOLock':arr[35].value==1?true:false,
-                              'BOPulse':arr[36].value,
-                              'AllowRealOut':arr[37].value==1?true:false,
-                              'BOKeep':arr[38].value==1?true:false,
-                              // 'PushAddToGame':arr[39].value,
-                              'PushSpeed':arr[39].value,
-                              'PushPulse':arr[40].value,
-                              'PushLevel':arr[41].value==1?true:false,
-                              'PushStartInterval':arr[42].value,
-                              'UseSecondPush':arr[43].value==1?true:false,
-                              // 'SecondAddToGame':arr[45].value,
-                              'SecondSpeed':arr[44].value,
-                              'SecondPulse':arr[45].value,
-                              'SecondLevel':arr[46].value==1?true:false,
-                              'SecondStartInterval':arr[47].value,
-                              'OutSpeed':arr[48].value,
-                              'OutPulse':arr[49].value,
-                              'CountLevel':arr[50].value==1?true:false,
-                              'OutLevel':arr[51].value==1?true:false,
-                              'OutReduceFromGame':arr[52].value,
-                              'OutAddToCard':arr[53].value,
-                              'OnceOutLimit':arr[54].value,
-                              'OncePureOutLimit':arr[55].value,
-                              'SSRTimeOut':arr[56].value,
-                              'ExceptOutTest':arr[57].value==1?true:false,
-                              'ExceptOutSpeed':arr[58].value,
-                              'Frequency':arr[59].value,
-
-                              'hGameCode':arr[61].value,
-                              'hArea':arr[62].value,
-                              'hChangeTime':arr[63].value,
-                              'hEvaluation':arr[64].value,
-                              'hPrice':arr[65].value,
-                              'LowLimit':arr[66].value,
-                              'HighLimit':arr[67].value,
-                          });
-                              AreaID1=arr[5].value;
-                              State= arr[8].value;
-                              PushBalanceIndex11= arr[9].value;
-                              PushBalanceIndex2= arr[13].value;
-                              OutBalanceIndex=arr[17].value;
-                              ReturnCheck= arr[18].value;
-                              OutsideAlertCheck=arr[19].value;
-                              ICTicketOperation=arr[20].value;
-                              OutMode=arr[21].value;
-                              NotGiveBack=arr[22].value;
-                              LotteryMode=arr[23].value;
-                              OnlyExitLottery=arr[24].value;
-                              chkCheckGift1=arr[25].value;
-                              AllowElecPush=arr[26].value;
-                              GuardConvertCard=arr[27].value;
-                              ReadCat=arr[28].value;
-                              AllowRealPush=arr[30].value;
-                              BanOccupy=arr[31].value;
-                              StrongGuardConvertCard=arr[32].value;
-
-                              AllowElecOut=arr[33].value;
-                              NowExit=arr[34].value;
-                              BOLock=arr[35].value;
-                              BOPulse=arr[36].value;
-                              AllowRealOut=arr[37].value;
-                              BOKeep=arr[38].value;
-                             
-                              PushSpeed=arr[39].value;
-                              PushPulse=arr[40].value;
-                              PushLevel=arr[41].value;
-                              PushStartInterval=arr[42].value;
-                              UseSecondPush=arr[43].value;
-                              if(arr[43].value==1){
-                                  $('.cardCore').removeClass('layui-hide');
-                                  $('.cardPush').addClass('layui-hide');
-                              }else {
-                                  $('.cardCore').addClass('layui-hide');
-                                  $('.cardPush').removeClass('layui-hide');
-                              }
-                            
-                              SecondSpeed=arr[44].value;
-                              SecondPulse=arr[45].value;
-                              SecondLevel=arr[46].value;
-                              SecondStartInterval=arr[47].value;
-                              OutSpeed=arr[48].value;
-                              OutPulse=arr[49].value;
-                              CountLevel=arr[50].value;
-                              OutLevel=arr[51].value;
-                              
-                              ExceptOutTest=arr[57].value;
-                              ExceptOutSpeed=arr[58].value;
-                          GameType=arr[7].value;
-                          eGameType=arr[7].value;
-                          // xc.getGameType(token,layer,form,'游戏机类型','GameType',arr[7].value);
-                          FreeLotteryRules=arr[69].value;
-                          newMemberElec(table,arr[69].value)
-                          xc.openEasy(layer);
-
-                          form.render();
-                      }
-                  }
-              })
-
-  };
-  xcActionSystem.prototype.setsel=(val,id,form)=>{
-      let _option=$('#'+id).find('option[value="'+val+'"]');
-      if(_option){
-          $('#'+id).find('option[value="'+val+'"]').attr('selected',true);
-      }
-      form.render();
-  };
-  function newMem(gameId,token,table,layer,t) {
-      let _obj={'gameId':gameId,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
-      let url='/XCCloud/GameInfo?action=GetGameAppMemberRule';
-      let parasJson = JSON.stringify(_obj);
-      $.ajax({
-          type: "post",
-          url: url,
-          contentType: "application/json; charset=utf-8",
-          data: { parasJson: parasJson },
-          success: function (data) {
-              data=JSON.parse(data);
-              console.log(data);
-              if(data.result_code==1){
-                  let  arr=data.result_data;
-
-                  if(t==null){
-                      index4=layer.open({title:'会员扫码优惠',
-                          type:1,
-                          area:'1100px',
-                          content:$('#memberCodeSetModel')})
-                  }
-
-              }else {layer.msg(data.result_msg||data.return_msg)}
-          }
-      })
-  };
-  function newMemberElec(table,arr) {
-      table.render({
-          elem: '#memberElec'
-          , height:'200px'
-          , size:"sm"
-          , data:arr
-          , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
-          , cols: [[
-              {field:'MemberLevelName',title: '会员级别', align: 'center',width:230} //width 支持：数字、百分比和不填写。
-              ,{field:'BaseLottery', title: '赠送彩票数', align: 'center',width:230}
-              ,{field:'FreeCount', title: '赠送彩票基数', align: 'center',width:230}
-              ,{fixed: 'right',title:'操作', width:240, align:'center', toolbar: '#barDemo2'}
-          ]]
-      });
-  }
-
-  function setBal(arr,form,id,selected){
-        $('#'+id).html('<option>-请选择-</option>');
-        for(let i in arr){
-            if(selected!=undefined){
-                if(arr[i].ID==selected){
-                    $('#'+id).append('<option value="'+arr[i].ID+'" selected>'+arr[i].TypeName+'</option>')
-                }else {
-                    $('#'+id).append('<option value="'+arr[i].ID+'">'+arr[i].TypeName+'</option>')
+                            $(this).parents($('.saleGroup')).attr('id',data.result_data.ID)
+                            console.log( $(this).parents($('.saleGroup')))
+                        })
+                    } else {
+                        layer.msg(data.result_msg || data.return_msg)
+                    }
                 }
-            }else {
-                $('#'+id).append('<option value="'+arr[i].ID+'">'+arr[i].TypeName+'</option>')
+            })
+
+        });
+
+
+        $('#addmemberElec').click(function () {
+            if (memberLevels != '' && $('input[name="count"]').val() != '' && $('input[name="sendcount"]').val() != '') {
+                FreeLotteryRules.push({
+                    'MemberLevelID': memberLevels,
+                    'MemberLevelName': MemberLevelNames,
+                    'BaseLottery': $('input[name="count"]').val(),
+                    'FreeCount': $('input[name="sendcount"]').val()
+                })
+            } else {
+                layer.msg('必填项不能为空')
+            }
+            newMemberElec(table, FreeLotteryRules);
+            memberLevels = '';
+            $('input[name="count"]').val('');
+            $('input[name="sendcount"]').val('');
+            xc.getMemberTypeDic(token, layer, form, 'memberLevels');
+        })
+    });
+
+    xcActionSystem.prototype.openEasy = (layer) => {
+        layer.closeAll();
+        let index1 = layer.open({
+            type: 1,
+            title: '游戏机档案设置',
+            area: '1030px',
+            content: $('#easyType')
+        })
+    };
+    xcActionSystem.prototype.openHigh = (layer) => {
+        xc.setStorage('easyOrHigh', 'high');
+        layer.closeAll();
+        let index2 = layer.open({
+            type: 1,
+            title: '游戏机档案设置',
+            area: '1060px',
+            content: $('#highType')
+        })
+    };
+    xcActionSystem.prototype.getGameInfoByid = (id, tokens, form, layer, table) => {
+        let _obj = {'id': id, 'userToken': tokens, 'signkey': '1f626576304bf5d95b72ece2222e42c3'};
+        let url = '/XCCloud/GameInfo?action=GetGameInfo';
+        let parasJson = JSON.stringify(_obj);
+        $.ajax({
+            type: "post",
+            url: url,
+            contentType: "application/json; charset=utf-8",
+            data: {parasJson: parasJson},
+            success: function (data) {
+                data = JSON.parse(data);
+                console.log(data);
+                if (data.result_code == 1) {
+                    let arr = data.result_data;
+                    let arr1 = arr[65].value || [];
+                    if (arr1.length == 1) {
+                        $('.memberSend input[name="count"]').val(arr1[0].BaseLottery);
+                        $('.memberSend input[name="sendcount"]').val(arr1[0].FreeCount);
+                        $('.memberSend select[name="BalanceIndex"]').val(arr1[0].MemberLevelID);
+                    } else if (arr1.length > 1) {
+                        for (let i = 1; i < arr1.length; i++) {
+                            $('.memberSendBox').append($('body').find($('.memberSend')).eq(0).clone())
+                        }
+                        for (let i = 0; i < arr1.length; i++) {
+                            $('.memberSendBox').find($('.memberSend')).eq(i).find('input[name="count"]').val(arr1[i].BaseLottery);
+                            $('.memberSendBox').find($('.memberSend')).eq(i).find('input[name="sendcount"]').val(arr1[i].FreeCount);
+                            $('.memberSendBox').find($('.memberSend')).eq(i).find('select[name="BalanceIndex"]').val(arr1[i].MemberLevelID);
+                        }
+                    }
+
+                    for (var i in arr) {
+                        $('body').find('div[class="layui-inline ' + arr[i].name + '"]').attr('name', arr[i].comment);
+                    }
+                    form.val("easyForm", {
+                        'GameId1': arr[1].value,
+                        'eDepotID': arr[4].value,
+                        "GameName": arr[6].value,
+                        'GameType': arr[7].value,
+                        'GameCode': arr[61].value,
+                        'eAreaID': arr[5].value,
+                        'ePushBalanceIndex1': arr[9].value,
+                        'PushCoin1': arr[10].value,
+                        'PushLevel': arr[41].value == 1 ? true : false,
+                        'LotteryModeLow': arr[23].value == 1 ? true : false,
+                        'OnlyExitLottery': arr[24].value == 1 ? true : false,
+                        'ReadCat': arr[28].value == 1 ? true : false,
+                        'ReadDelay1': arr[29].value,
+                        'chkCheckGift': arr[25].value == 1 ? true : false,
+                        'StateLow': arr[8].value == 1 ? true : false,
+                        'Area': arr[62].value,
+                        'ChangeTime': arr[63].value,
+                        'Price': arr[65].value,
+                        'Evaluation': arr[64].value,
+                    });
+                    eAreaID = arr[5].value;
+                    ePushBalanceIndex1 = arr[9].value;
+                    ePushCoin1 = arr[10].value;
+                    ePushLevel = arr[41].value;
+                    LotteryModeLow = arr[23].value;
+                    eOnlyExitLottery = arr[24].value;
+                    eReadCat = arr[28].value;
+                    echkCheckGift = arr[25].value;
+                    StateLow = arr[8].value;
+                    // xc.getGameType (token,layer,form,'游戏机类型','GameTypeLow',arr[7].value);
+                    // xc.getDepotDic('',storeId,token,layer,form,'eDepotID',arr[4].value);
+                    // xc.getDepotDic('',storeId,token,layer,form,'DepotID',arr[4].value);
+                    eDepotID = arr[4].value;
+                    DepotID = arr[4].value;
+                    form.val("hardForm", {
+                        'GameId2': arr[1].value,
+                        'DepotID': arr[4].value,
+                        'AreaID1': arr[5].value,
+                        "GameName": arr[6].value,
+                        'GameType': arr[7].value,
+                        'State': arr[8].value == 1 ? true : false,
+                        'PushBalanceIndex11': arr[9].value,
+                        'PushCoin11': arr[10].value,
+                        'PushAddToGame1': arr[11].value,
+                        "SecondAddToGame1": arr[12].value,
+                        'PushBalanceIndex2': arr[13].value,
+                        'PushCoin2': arr[14].value,
+                        'PushAddToGame2': arr[15].value,
+                        "SecondAddToGame2": arr[16].value,
+                        'OutBalanceIndex': arr[17].value,
+                        'ReturnCheck': arr[18].value == 1 ? true : false,
+                        'OutsideAlertCheck': arr[19].value == 1 ? true : false,
+                        'ICTicketOperation': arr[20].value == 1 ? true : false,
+                        'OutMode': arr[21].value,
+                        'NotGiveBack': arr[22].value == 1 ? true : false,
+                        'LotteryMode': arr[23].value == 1 ? true : false,
+                        'OnlyExitLottery': arr[24].value == 1 ? true : false,
+                        'chkCheckGift1': arr[25].value == 1 ? true : false,
+                        'AllowElecPush': arr[26].value == 1 ? true : false,
+                        'GuardConvertCard': arr[27].value == 1 ? true : false,
+                        'ReadCat': arr[28].value == 1 ? true : false,
+                        'ReadDelay': arr[29].value,
+                        'AllowRealPush': arr[30].value == 1 ? true : false,
+                        'BanOccupy': arr[31].value == 1 ? true : false,
+                        'StrongGuardConvertCard': arr[32].value == 1 ? true : false,
+
+                        'AllowElecOut': arr[33].value == 1 ? true : false,
+                        'NowExit': arr[34].value == 1 ? true : false,
+                        'BOLock': arr[35].value == 1 ? true : false,
+                        'BOPulse': arr[36].value,
+                        'AllowRealOut': arr[37].value == 1 ? true : false,
+                        'BOKeep': arr[38].value == 1 ? true : false,
+                        // 'PushAddToGame':arr[39].value,
+                        'PushSpeed': arr[39].value,
+                        'PushPulse': arr[40].value,
+                        'PushLevel': arr[41].value == 1 ? true : false,
+                        'PushStartInterval': arr[42].value,
+                        'UseSecondPush': arr[43].value == 1 ? true : false,
+                        // 'SecondAddToGame':arr[45].value,
+                        'SecondSpeed': arr[44].value,
+                        'SecondPulse': arr[45].value,
+                        'SecondLevel': arr[46].value == 1 ? true : false,
+                        'SecondStartInterval': arr[47].value,
+                        'OutSpeed': arr[48].value,
+                        'OutPulse': arr[49].value,
+                        'CountLevel': arr[50].value == 1 ? true : false,
+                        'OutLevel': arr[51].value == 1 ? true : false,
+                        'OutReduceFromGame': arr[52].value,
+                        'OutAddToCard': arr[53].value,
+                        'OnceOutLimit': arr[54].value,
+                        'OncePureOutLimit': arr[55].value,
+                        'SSRTimeOut': arr[56].value,
+                        'ExceptOutTest': arr[57].value == 1 ? true : false,
+                        'ExceptOutSpeed': arr[58].value,
+                        'Frequency': arr[59].value,
+
+                        'hGameCode': arr[61].value,
+                        'hArea': arr[62].value,
+                        'hChangeTime': arr[63].value,
+                        'hEvaluation': arr[64].value,
+                        'hPrice': arr[65].value,
+                        'LowLimit': arr[66].value,
+                        'HighLimit': arr[67].value,
+                    });
+                    AreaID1 = arr[5].value;
+                    State = arr[8].value;
+                    PushBalanceIndex11 = arr[9].value;
+                    PushBalanceIndex2 = arr[13].value;
+                    OutBalanceIndex = arr[17].value;
+                    ReturnCheck = arr[18].value;
+                    OutsideAlertCheck = arr[19].value;
+                    ICTicketOperation = arr[20].value;
+                    OutMode = arr[21].value;
+                    NotGiveBack = arr[22].value;
+                    LotteryMode = arr[23].value;
+                    OnlyExitLottery = arr[24].value;
+                    chkCheckGift1 = arr[25].value;
+                    AllowElecPush = arr[26].value;
+                    GuardConvertCard = arr[27].value;
+                    ReadCat = arr[28].value;
+                    AllowRealPush = arr[30].value;
+                    BanOccupy = arr[31].value;
+                    StrongGuardConvertCard = arr[32].value;
+
+                    AllowElecOut = arr[33].value;
+                    NowExit = arr[34].value;
+                    BOLock = arr[35].value;
+                    BOPulse = arr[36].value;
+                    AllowRealOut = arr[37].value;
+                    BOKeep = arr[38].value;
+
+                    PushSpeed = arr[39].value;
+                    PushPulse = arr[40].value;
+                    PushLevel = arr[41].value;
+                    PushStartInterval = arr[42].value;
+                    UseSecondPush = arr[43].value;
+                    if (arr[43].value == 1) {
+                        $('.cardCore').removeClass('layui-hide');
+                        $('.cardPush').addClass('layui-hide');
+                    } else {
+                        $('.cardCore').addClass('layui-hide');
+                        $('.cardPush').removeClass('layui-hide');
+                    }
+
+                    SecondSpeed = arr[44].value;
+                    SecondPulse = arr[45].value;
+                    SecondLevel = arr[46].value;
+                    SecondStartInterval = arr[47].value;
+                    OutSpeed = arr[48].value;
+                    OutPulse = arr[49].value;
+                    CountLevel = arr[50].value;
+                    OutLevel = arr[51].value;
+
+                    ExceptOutTest = arr[57].value;
+                    ExceptOutSpeed = arr[58].value;
+                    GameType = arr[7].value;
+                    eGameType = arr[7].value;
+                    // xc.getGameType(token,layer,form,'游戏机类型','GameType',arr[7].value);
+                    FreeLotteryRules = arr[69].value;
+                    newMemberElec(table, arr[69].value)
+                    xc.openEasy(layer);
+
+                    form.render();
+                }
+            }
+        })
+
+    };
+    xcActionSystem.prototype.setsel = (val, id, form) => {
+        let _option = $('#' + id).find('option[value="' + val + '"]');
+        if (_option) {
+            $('#' + id).find('option[value="' + val + '"]').attr('selected', true);
+        }
+        form.render();
+    };
+
+    function newMem(gameId, token, table, layer, t) {
+        let _obj = {'gameId': gameId, 'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'};
+        let url = '/XCCloud/GameInfo?action=GetGameAppMemberRule';
+        let parasJson = JSON.stringify(_obj);
+        $.ajax({
+            type: "post",
+            url: url,
+            contentType: "application/json; charset=utf-8",
+            data: {parasJson: parasJson},
+            success: function (data) {
+                data = JSON.parse(data);
+                console.log(data);
+                if (data.result_code == 1) {
+                    let arr = data.result_data;
+
+                    if (t == null) {
+                        index4 = layer.open({
+                            title: '会员扫码优惠',
+                            type: 1,
+                            area: '1100px',
+                            content: $('#memberCodeSetModel')
+                        })
+                    }
+
+                } else {
+                    layer.msg(data.result_msg || data.return_msg)
+                }
+            }
+        })
+    };
+
+    function newMemberElec(table, arr) {
+        table.render({
+            elem: '#memberElec'
+            , height: '200px'
+            , size: "sm"
+            , data: arr
+            , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+            , cols: [[
+                {field: 'MemberLevelName', title: '会员级别', align: 'center', width: 230} //width 支持：数字、百分比和不填写。
+                , {field: 'BaseLottery', title: '赠送彩票数', align: 'center', width: 230}
+                , {field: 'FreeCount', title: '赠送彩票基数', align: 'center', width: 230}
+                , {fixed: 'right', title: '操作', width: 240, align: 'center', toolbar: '#barDemo2'}
+            ]]
+        });
+    }
+
+    function setBal(arr, form, id, selected) {
+        $('#' + id).html('<option>-请选择-</option>');
+        for (let i in arr) {
+            if (selected != undefined) {
+                if (arr[i].ID == selected) {
+                    $('#' + id).append('<option value="' + arr[i].ID + '" selected>' + arr[i].TypeName + '</option>')
+                } else {
+                    $('#' + id).append('<option value="' + arr[i].ID + '">' + arr[i].TypeName + '</option>')
+                }
+            } else {
+                $('#' + id).append('<option value="' + arr[i].ID + '">' + arr[i].TypeName + '</option>')
             }
         }
         form.render('select');
     }
-    function setGameType(arr,form,id){
-        $('#'+id).html('<option>-请选择-</option>');
-        for(let i=1; i< arr.length;i++){
-            if(arr[i].children.length>0){
-                $('#'+id).append("<optgroup  label='"+arr[i].name+"'>");
-                for(let j in arr[i].children){
-                    $('#'+id).append('<option value="'+arr[i].children[j].id+'">'+arr[i].children[j].name+'</option>')
+
+    function setGameType(arr, form, id) {
+        $('#' + id).html('<option>-请选择-</option>');
+        for (let i = 1; i < arr.length; i++) {
+            if (arr[i].children.length > 0) {
+                $('#' + id).append("<optgroup  label='" + arr[i].name + "'>");
+                for (let j in arr[i].children) {
+                    $('#' + id).append('<option value="' + arr[i].children[j].id + '">' + arr[i].children[j].name + '</option>')
                 }
-                $('#'+id).append("</optgroup >");
-            }else {
-                $('#'+id).append('<option value="'+arr[i].id+'">'+arr[i].name+'</option>')
+                $('#' + id).append("</optgroup >");
+            } else {
+                $('#' + id).append('<option value="' + arr[i].id + '">' + arr[i].name + '</option>')
             }
 
         }
         form.render();
     }
-    function setArec(arr,form,id){
 
-        $('#'+id).html('<option>-请选择-</option><option value="0">全部</option>');
-        for(let i in arr){
-            $('#'+id).append('<option value="'+arr[i].id+'">'+arr[i].areaName+'</option>')
+    function setArec(arr, form, id) {
+
+        $('#' + id).html('<option>-请选择-</option><option value="0">全部</option>');
+        for (let i in arr) {
+            $('#' + id).append('<option value="' + arr[i].id + '">' + arr[i].areaName + '</option>')
         }
         form.render('select');
     }
-    function setDepot(arr,form,id){
 
-        $('#'+id).html('<option>-请选择-</option>');
-        for(let i in arr){
-           $('#'+id).append('<option value="'+arr[i].ID+'">'+arr[i].DepotName+'</option>')
+    function setDepot(arr, form, id) {
+
+        $('#' + id).html('<option>-请选择-</option>');
+        for (let i in arr) {
+            $('#' + id).append('<option value="' + arr[i].ID + '">' + arr[i].DepotName + '</option>')
         }
         form.render('select');
     }
-  $('body').find($('.layui-form-item>div')).on('mouseenter','label',function () {
-         let _this=$(this);
-         layui.use('layer',function () {
-             let layer=layui.layer;
-             if(_this.parent('div').attr('name')!=""&&_this.parent('div').attr('name')!=undefined){
-                 layer.tips(_this.parent('div').attr('name'), _this.parent('div'),{
-                     tips: [4, '#3595CC'],
-                     time: 2000
-                 });
-             }
-         })
+
+    $('body').find($('.layui-form-item>div')).on('mouseenter', 'label', function () {
+        let _this = $(this);
+        layui.use('layer', function () {
+            let layer = layui.layer;
+            if (_this.parent('div').attr('name') != "" && _this.parent('div').attr('name') != undefined) {
+                layer.tips(_this.parent('div').attr('name'), _this.parent('div'), {
+                    tips: [4, '#3595CC'],
+                    time: 2000
+                });
+            }
+        })
     })
 </script>
 <script type="text/html" id="barDemo">
@@ -2289,7 +2501,8 @@
 </script>
 <script type="text/html" id="changeLock">
     {{# if(d.DeviceStatus==2){ }}
-    <input type="checkbox" checked name="switch" lay-skin="switch" lay-text="锁定|正常" class="tb_check" lay-filter="test" disabled>
+    <input type="checkbox" checked name="switch" lay-skin="switch" lay-text="锁定|正常" class="tb_check" lay-filter="test"
+           disabled>
     {{# }else if(d.DeviceStatus==1){ }}
     <input type="checkbox" name="switch" lay-skin="switch" lay-text="锁定|正常" class="tb_check" lay-filter="test" disabled>
     {{#  } }}
