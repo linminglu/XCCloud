@@ -45,38 +45,34 @@
 		a:hover,a:active {text-decoration:none;cursor:pointer;}
 		/* common style */
 		.clearfix:after {content: ".";display: block;clear: both;visibility: hidden;line-height: 0;height: 0;}
-		.clearfix {display: inline-block;}
+		.clearfix {display: block;}
 		/*-----------------------------*/
 		.heightKz{overflow-y:auto;overflow-x:hidden;}
 		/*高度控制*/
-		.boxShadow{box-shadow: 0 0 2px #FF8C00;background-color: #3c8dbc;}
-		body{-moz-user-select: none;  -webkit-user-select: none;  -ms-user-select: none;  -khtml-user-select: none;  user-select: none;}
+		.boxShadow{background-color: #fff;}
+		body{-moz-user-select: none;  -webkit-user-select: none;  -ms-user-select: none;  -khtml-user-select: none;  user-select: none;background-color: #f6f7fb;padding: 8px;}
 		.navbar-header{height: 3em;padding-bottom: 5em;}
 		.navbar-header a img{height: 3em;}
-
-		.bbs{margin-bottom: 0.5em;}
-		.top{padding: 0!important;}
-		.navbar-nav a{margin-top:0.5em;font-size: 1.2em;color: #fff9ec;}
+		.navbar-nav a{margin-top:0.5em;font-size: 1.2em;color: #7d8184;}
 		.nav a:hover {color: #666666;}
-
-		.mag-_r1{margin-right: 0.5em;}
-		.bbs{color: #b63b4d}
+		.bbs{color: #b63b4d;margin-bottom: 0.5em;}
 		.hidden{display: none;}
 		.show{display: block;}
+        .navLeftS{width: 240px;height:5.6em;margin-top: 0.4em;background: url("images/navHeader.png") no-repeat left center;background-size: 100% 100%;display: flex;flex-direction: row;}
+        .navStyle{margin-top: 1.1em!important;padding: 2px 10px;margin-left: 2.1em; color: #7d8184;width: 160px;display: inline-block;}
+        .navStyle h4{font-size: 1.2em;line-height: 1.5em;text-indent: 12px;}
+        .navT{width: 80px;margin-top: 1.75em;padding-left: 0.75em;color: #7d8184;font-weight: 600;font-size: 1.3em}
+        .navbar-right{margin-right: 1em;}
 
-		.majorMenu{width: 100px; height: inherit;padding-top: 1em;margin-top: 1em;margin-left: 0.5em;margin-right: 0.5em;background: #3c8dbc;}
+        .mainBody{margin: 8px 0;}
+		.majorMenu{width: 100px; height: inherit;background: #fff;padding-top: 2em;}
+        .majorMenu li:nth-child(1){margin-top: 4em;}
 		.majorMenu li{width: 100%;height: 3.6em;margin: 5px 0;}
-		.majorMenu li a{display: block;width: 100%;height: 100%;line-height: 3em; font-size: 1.1em;text-align: center;color: #fff;padding: 0;font-weight: 500;}
-		.majorMenu li a:hover{background-color: #589dc6;color: #fff;}
-		.majorMenu .cur a{background-color: #589dc6;color: #fff;border-color: #000;}
+		.majorMenu li a{display: block;width: 100%;height: 100%;line-height: 3em; font-size: 1.1em;text-align: center;color: #333333;padding: 0;font-weight: 500;}
+		.majorMenu li a:hover{background-color: #DCDCDC;color: #333333;}
+		.majorMenu .cur a{background-color: #DCDCDC;color: #333333;border-color: #000;}
 
-		.navLeftS{width: 240px;height:5.6em;margin-top: 0.4em;background: url("images/navHeader.png") no-repeat left center;background-size: 100% 100%;display: flex;flex-direction: row;}
-		.navStyle{margin-top: 1.1em!important;padding: 2px 10px;margin-left: 2.1em; color: #fff;width: 160px;display: inline-block;}
-		.navStyle h4{font-size: 1.2em;line-height: 1.5em;text-indent: 12px;}
-		.navT{width: 80px;margin-top: 2.25em;padding-left: 0.2em;color: #fff;font-weight: 500;}
-		.navbar-right{margin-right: 1em;}
-
-		.shopCart{position: relative;width: 360px; padding: 1.5em 0.5em 0.5em 0.5em; background: #fff;overflow:hidden;margin-top: 5px;}
+		.shopCart{position: relative;width: 360px; padding: 1.5em 0.5em 0.5em 0.5em; background: #fff;overflow:hidden;margin-right: 8px;}
 		.shopCart ul{min-height: 5em;max-height: 30em; overflow-x: hidden;overflow-y:auto;padding: 0;}
 		.shopCart ul li{border: 1px solid #47aedc;height: 6.7em; margin-top: 0.5em;padding-top: 0.6em;padding-left: 0.8em;}
 		.shopCStyle{line-height: 1.8em;font-size: 1em;padding: 0;color: #666666;}
@@ -90,12 +86,20 @@
 		.CheckoutBtn .btn-danger{background-color: #f82806;border: 1px solid #f82806;}
 		.CheckoutBtn .btn-success{background-color: #5CB05A;border: 1px solid #5CB05A;}
 		/*产品销售*/
-		.salesTitle{padding: 0 50px;position: relative;margin-top: 5px;}
-		.salesTitle .swiper-container{width: 100%;height: 56px;}
-		.salesTitle ul li a{display: block;width: 90%;height: 40px;text-align: center;line-height: 40px;color: #fff;font-size: 1.2em;}
-		.salesTitle ul .on a{box-shadow:2px 4px 7px #564e4b, -2px 4px 7px #564e4b;}
-		.salesTitle .swiper-slide{text-align: center;font-size: 18px;margin-right: 10px!important;background: #fff;/* Center slide text vertically*/display: -webkit-box;display: -ms-flexbox;display: -webkit-flex;display: flex;-webkit-box-pack: center;-ms-flex-pack: center;-webkit-justify-content: center;justify-content: center;-webkit-box-align: center;-ms-flex-align: center;-webkit-align-items: center;align-items: center;}
-		.salesAll{background-color: #fff;padding: 1em 0;}
+        .salesTitle{background-color: #fff;padding:0 1em;}
+        .salesTitle ul li{padding: 1em;cursor: pointer;float: left;color: #c3c7ce;}
+        .salesTitle ul .on{border-bottom: 3px solid #0289f5;color: #0289f5;}
+        /*.salesTitle ul .on .txt{color: #96cdf9;}*/
+        /*.salesTitle ul .on .iconfont{color: #96cdf9;}*/
+
+        .salesTitle ul li .txt{font-size: 1.4em;font-weight: 500;line-height: 2em;}
+        .salesTitle ul li .iconfont{font-size: 1.5em;margin-right: 0.1em;}
+
+		/*.salesTitle{padding: 0 50px;position: relative;margin-top: 5px;}*/
+		/*.salesTitle .swiper-container{width: 100%;height: 56px;}*/
+		/*.salesTitle ul li a{display: block;width: 90%;height: 40px;text-align: center;line-height: 40px;color: #fff;font-size: 1.2em;}*/
+		/*.salesTitle ul .on a{box-shadow:2px 4px 7px #564e4b, -2px 4px 7px #564e4b;}*/
+		/*.salesTitle .swiper-slide{text-align: center;font-size: 18px;margin-right: 10px!important;background: #fff;!* Center slide text vertically*!display: -webkit-box;display: -ms-flexbox;display: -webkit-flex;display: flex;-webkit-box-pack: center;-ms-flex-pack: center;-webkit-justify-content: center;justify-content: center;-webkit-box-align: center;-ms-flex-align: center;-webkit-align-items: center;align-items: center;}*/
 		/*会员入会*/
 		.pad_0{padding: 0;}
 		/*标题样式*/
@@ -138,11 +142,9 @@
 		.formNum2 div:nth-last-child(3){border-bottom: 1px solid #444444;}
 
 		.payList li{margin: 0.5em 0;padding: 0.5em 0;}
-
 		.payment{margin-top: 1em;border-top: 1px solid #666666;padding-top: 1em!important;}
 		.payment h4{margin: 0.6em 0;text-align: center;}
 		.btn-danger{width: 100%}
-
 
 		/*卡片挂失*/
 		.btn-primary{width: 100%;font-size: 1em;background-color: #349ffd;border-color:#349ffd}
@@ -261,6 +263,7 @@
 		.dropChoosesty li:nth-child(1) span{color: #349ffd;}
 		.dropChoosesty li:nth-child(2) span{color: #00ffff;}
 		.dropChoosesty li:nth-child(3) span{color: #5b6270;}
+        .modal-bodySty{padding-bottom:2em;}
 		@media (min-width: 1024px) and (max-width: 1400px) {
 			.navLeftS{display: none;}
 		}
@@ -276,7 +279,7 @@
 </head>
 <body>
 <div id="app" v-cloak>
-	<div class="container-fluid top boxShadow">
+	<div class="container-fluid boxShadow">
 		<!--小屏幕导航按钮和logo-->
 		<!--小屏幕导航按钮和logo-->
 		<!--导航-->
@@ -286,13 +289,13 @@
 			</div>
 
 			<ul class="nav navbar-nav navbar-right">
-				<li><a class="boxBtn" href="javascript:void(0);"><span class="glyphicon glyphicon-menu-down"></span>&nbsp;&nbsp;现金:￥10500</a></li>
-				<li class="active"><a href="index.html"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;莘宸乐园【同城广场店】</a></li>
-				<li><a href="#"><span class="glyphicon glyphicon-user mag-_r1"></span><i>当前操作员：</i>&nbsp;&nbsp;张三</a></li>
+				<li><a class="boxBtn" href="javascript:void(0);"><!--<span class="glyphicon glyphicon-menu-down"></span>&nbsp;&nbsp;-->现金:￥10500</a></li>
+				<li class="active"><a href="index.html"><!--<span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;-->莘宸乐园【同城广场店】</a></li>
 				<li class="dropdown">
 					<a data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-						未读消息 (0)
-						<span class="caret"></span>
+						<!--未读消息 (0)-->
+						<span class="iconfont icon-btnMsg"></span>
+                        <!--<span class="badge">1</span>-->
 					</a>
 					<ul class="dropdown-menu">
 						<li><a href="index.html">1</a></li>
@@ -303,25 +306,25 @@
 				</li>
 				<li class="dropdown">
 					<a data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span class="iconfont icon-touxiang"></span>
 						admin
-						<span class="caret"></span>
+						<!--<span class="caret"></span>-->
 					</a>
 					<ul class="dropdown-menu" aria-labelledby="dLabel">
-						<li><a href="index.html"><span class="glyphicon glyphicon-screenshot"></span>&nbsp;&nbsp;前台首页</a></li>
-						<li><a href="index.html"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;个人主页</a></li>
-						<li><a href="index.html"><span class="glyphicon glyphicon-cog"></span>&nbsp;&nbsp;个人设置</a></li>
-						<li><a href="index.html"><span class="glyphicon glyphicon-credit-card"></span>&nbsp;&nbsp;账户中心</a></li>
-						<li><a href="index.html"><span class="glyphicon glyphicon-heart"></span>&nbsp;&nbsp;我的收藏</a></li>
+						<li><a href="index.html"><span class="glyphicon glyphicon-screenshot"></span>前台首页</a></li>
+						<li><a href="index.html"><span class="glyphicon glyphicon-user"></span>个人主页</a></li>
+						<li><a href="index.html"><span class="glyphicon glyphicon-cog"></span>个人设置</a></li>
+						<li><a href="index.html"><span class="glyphicon glyphicon-credit-card"></span>账户中心</a></li>
+						<li><a href="index.html"><span class="glyphicon glyphicon-heart"></span>我的收藏</a></li>
 					</ul>
 				</li>
-				<li><a href="#"><span class="glyphicon glyphicon-off"></span>&nbsp;&nbsp;退出</a></li>
+				<!--<li><a href="#"><span class="glyphicon glyphicon-off"></span>&nbsp;&nbsp;退出</a></li>-->
 				<div class="bbs text-right">
-					<p>开班时间：2017-08-23 15:38:12 <span>当前时间： <em id="oDiv"></em></span></p>
+					<p><span>当前班次：A</span><span>营业日期：2017-08-23 15:38:12 </span></p>
 				</div>
 			</ul>
 
 			<div class="navbar-right navLeftS">
-				<!--<div class="col-lg-6 col-md-6 navStyle">-->
 				<div class="navStyle">
 					<h4>售币机</h4>
 					<p>18000/30000</p>
@@ -437,6 +440,61 @@
 			</div>
 		</div>
 	</div>
+    <!--余额兑换-->
+    <div class="modal fade bs-example-modal-sm" id="balanceExchange" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-md" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">温馨提示</h4>
+                </div>
+                <div class="modal-body row">
+                    <div class="container-fluid modal-bodySty">
+                        <div class="input-group col-lg-6 col-md-6 tab-style">
+                            <span class="input-group-addon">可兑{{balanceExchangeData.selectBalanceName}}：</span>
+                            <input type="text" class="form-control" v-model="balanceExchangeData.balanceExchange" readonly/>
+                        </div>
+                        <div class="input-group col-lg-6 col-md-6 tab-style">
+                            <span class="input-group-addon">当前{{balanceExchangeData.selectBalanceName}}：</span>
+                            <input type="text" class="form-control" v-model="balanceExchangeData.balance" readonly/>
+                        </div>
+                        <div class="input-group col-lg-6 col-md-6 tab-style">
+                            <span class="input-group-addon">当前兑换比率：</span>
+                            <input type="text" class="form-control" v-model="balanceExchangeData.ExchangeRate" readonly/>
+                        </div>
+                        <div class="col-lg-12 col-md-12"></div>
+                        <div class="input-group col-lg-6 col-md-6 tab-style">
+                            <span class="input-group-addon">当前种类：</span>
+                            <select  class="form-control" v-model="balanceExchangeData.selectValue" @change="selectValue">
+                                <option v-for="(option,index) in balanceExchangeData.selectList" :value="index">
+                                    {{ option.SourceBalanceName}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="input-group col-lg-6 col-md-6 tab-style">
+                            <span class="input-group-addon">兑换数量：</span>
+                            <input type="text" class="form-control" placeholder="输入兑换数量" v-model="balanceExchangeData.inputExchange" @input="inputExchange"/>
+                        </div>
+                        <div class="input-group col-lg-6 col-md-6 tab-style">
+                            <span class="input-group-addon">兑换种类：</span>
+                            <select  class="form-control" v-model="balanceExchangeData.selectType" @change="selectType">
+                                <option v-for="(option,index) in balanceExchangeData.selectData" :value="index">
+                                    {{option.TargetBalanceName}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="input-group col-lg-6 col-md-6 tab-style">
+                            <input type="text" class="form-control" readonly v-model="balanceExchangeData.exchangeValue"/>
+                            <div class="input-group-btn">
+                                <button type="button" class="btn btn-default">兑换</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
 	<!--手工存币弹出层-->
 	<div class="modal fade bs-example-modal-sm" id="ManualSModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 		<div class="modal-dialog modal-md" role="document">
@@ -534,7 +592,7 @@
 							<span class="input-group-addon">提币方式：</span>
 							<div class="switchZdy col-lg-12 col-md-12">
 								<div class="col-lg-6 col-md-6 onSwitch">售币机</div>
-								<div class="col-lg-6 col-md-6">失效</div>
+								<div class="col-lg-6 col-md-6">人工</div>
 							</div>
 						</div>
 						<div class="input-group col-lg-12 col-md-12 tab-style">
@@ -887,20 +945,20 @@
 		</div>
 	</div>
 	<!--主体内容-->
-	<div class="container-fluid">
+	<div class="container-fluid mainBody">
 		<div class="row">
 			<!--左边购物车-->
-			<div class="shopCart col-lg-12 col-md-12 fl majorLeft heightKz">
+			<div class="shopCart col-lg-12 col-md-12 fl heightKz">
 				<div class="scanAdd col-lg-12 col-md-12">
 					<input class="form-control" type="text" placeholder="扫码添加购物">
 				</div>
 				<div class="shopTable col-lg-12 col-md-12">
 					<table class="table table-bordered col-lg-12 col-md-12" id="shopTable">
-						<thead style="background: #f5f5f5">
+						<thead style="background: #d6e6f6;">
 						<tr>
-							<th>商品名</th>
-							<th>数量</th>
-							<th>单价</th>
+							<th style="text-align: center;">商品名</th>
+							<th style="text-align: center;">数量</th>
+							<th style="text-align: center;">单价</th>
 						</tr>
 						</thead>
 						<tbody>
@@ -943,32 +1001,40 @@
 			</div>
 			<!--中间菜单-->
 			<ul class="majorMenu fl heightKz">
-				<li @click="addCount"><a class="iconfont icon-icon_jia" href="javascript:void(0)"></a></li>
-				<li @click="reduceCount"><a class="iconfont icon-jian" href="javascript:void(0)"></a></li>
+				<!--<li @click="addCount"><a class="iconfont icon-icon_jia" href="javascript:void(0)"></a></li>-->
+				<!--<li @click="reduceCount"><a class="iconfont icon-jian" href="javascript:void(0)"></a></li>-->
 				<li @click="membership" :class="{cur:memberShow}"><a href="javascript:void(0)">入会办卡</a></li>
 				<li @click="FastSell"><a href="javascript:void(0)">快速售币</a></li>
 				<li @click="salesAll" :class="{cur:saleShow}"><a id="sales" href="javascript:void(0)">产品销售</a></li>
 				<li @click="operationFnc" :class="{cur:operationShow}"><a href="javascript:void(0)">会员信息</a></li>
+                <li><a href="javascript:void(0)" @click="currency">会员提币</a></li>
 				<li><a href="other.html">其他业务</a></li>
-				<!--<li @click="membershipReading"><a href="javascript:void(0)">读卡</a></li>-->
 			</ul>
 			<!--右边显示内容-->
 			<div class="heightKz">
-				<!--产品销售-->
+				<!--产品销售/*产品销售*/-->
 				<div class="salesAll" v-if="saleShow">
 					<div class="salesTitle">
-						<div class="swiper-container swiperSalesTitle">
-							<ul class="swiper-wrapper saleTitleBg">
-								<li class="swiper-slide on" @click="screening('All')">
-									<a href="javascript:void(0)">全部</a>
-								</li>
-								<li v-for="(item,index) in saleTitle" class="swiper-slide" @click="screening(index)">
-									<a href="javascript:void(0)">{{item.foodTypeName}}</a>
-								</li>
-							</ul>
-						</div>
-						<div class="swiper-button-next"></div>
-						<div class="swiper-button-prev"></div>
+                        <ul class="clearfix">
+                            <li class="on" @click="screening('All')"><sapn class="iconfont icon-quanbu-copy"></sapn><span class="txt">全部</span></li>
+                            <li @click="screening(0)"><sapn class="iconfont icon-menpiao1"></sapn><span class="txt">门票</span></li>
+                            <li><sapn class="iconfont icon-2"></sapn><span class="txt">商品</span></li>
+							<!--<li v-for="(item,index) in saleTitle" @click="screening(index)">-->
+								<!--<a href="javascript:void(0)">{{item.foodTypeName}}</a>-->
+							<!--</li>-->
+                        </ul>
+						<!--<div class="swiper-container swiperSalesTitle">-->
+							<!--<ul class="swiper-wrapper saleTitleBg">-->
+								<!--<li class="swiper-slide on" @click="screening('All')">-->
+									<!--<a href="javascript:void(0)">全部</a>-->
+								<!--</li>-->
+								<!--<li v-for="(item,index) in saleTitle" class="swiper-slide" @click="screening(index)">-->
+									<!--<a href="javascript:void(0)">{{item.foodTypeName}}</a>-->
+								<!--</li>-->
+							<!--</ul>-->
+						<!--</div>-->
+						<!--<div class="swiper-button-next"></div>-->
+						<!--<div class="swiper-button-prev"></div>-->
 					</div>
 					<div class="screeningTitle" v-if="screeningTitle">
 						<select class="form-control">
@@ -983,8 +1049,8 @@
 								{{item.foodTypeName}}
 							</option>
 						</select>
-						<input class="form-control" type="text" placeholder="扫码添加购物">
-						<input class="form-control" type="text" placeholder="扫码添加购物">
+						<input class="form-control" type="text" placeholder="输入最小值">
+						<input class="form-control" type="text" placeholder="输入最大值">
 						<button type="button" class="btn btn-primary">查询</button>
 					</div>
 					<div class="saleContent">
@@ -998,31 +1064,14 @@
 								</li>
 							</ul>
 						</div>
-
-							<!--<ul>-->
-								<!--<li>-->
-									<!--<span><i class="glyphicon glyphicon-move"></i></span> <a href="javascript:void(0)" @click="singletonScreening('-1','all')">单品全部</a>-->
-									<!--<ul>-->
-										<!--<li>-->
-											<!--<span><i class="glyphicon glyphicon-minus"></i></span> <a href="javascript:void(0)" @click="singletonScreening('-1','ticket')">门票</a>-->
-											<!--<ul>&lt;!&ndash; @click="screening(index)"&ndash;&gt;-->
-												<!--<li v-for="(item,index) in foodTypeTicketList" @click="singletonScreening(index,'ticket')">-->
-													<!--<span><i class="glyphicon glyphicon-resize-horizontal"></i></span> <a href="javascript:void(0)">{{item.FoodTypeName}}</a>-->
-												<!--</li>-->
-											<!--</ul>-->
-										<!--</li>-->
-										<!--<li>-->
-											<!--<span><i class="glyphicon glyphicon-minus"></i></span> <a href="javascript:void(0)" @click="singletonScreening('-1','good')">商品</a>-->
-											<!--<ul>-->
-												<!--<li v-for="(item,index) in foodTypeGoodList" @click="singletonScreening(index,'good')">-->
-													<!--<span><i class="glyphicon glyphicon-resize-horizontal"></i></span> <a href="javascript:void(0)">{{item.FoodTypeName}}</a>-->
-												<!--</li>-->
-											<!--</ul>-->
-										<!--</li>-->
-									<!--</ul>-->
-								<!--</li>-->
-							<!--</ul>-->
 						<ul class="salesCoin">
+                            <!--<li class="salesLi">-->
+                                <!--<img src="images/salesPic1.png"/>-->
+                                <!--<div class="saleText">-->
+                                    <!--<a tabindex="0" class="btn btn-info saleDetails" role="button" data-toggle="popover">详情</a>-->
+                                    <!--<h3 ref="saleH3">{{item.foodName</h3>-->
+                                <!--</div>-->
+                            <!--</li>-->
 							<li v-for="(item,index) in saleData" class="salesLi" @click="deletePerson(index,'0')">
 								<img :src="item.imageUrl"/>
 								<div class="saleText">
@@ -1263,10 +1312,11 @@
 						<div class="btn-margin container-fluid">
 							<div class="row">
 								<div class="col-lg-3"></div>
-								<div class="col-lg-2 col-md-3"><button @click="saveManual" type="button" class="btn width100 btn-info">手工补币</button></div>
-								<div class="col-lg-2 col-md-3"><button @click="currency" type="button" class="btn width100 btn-info">提币</button></div>
-								<div class="col-lg-2 col-md-3"><button @click="sendCoin" type="button" class="btn width100 btn-info">送币</button></div>
-								<div class="col-lg-2 col-md-3"><button @click="backCard" type="button" class="btn width100 btn-info">退卡</button></div>
+                                <div class="col-lg-1 col-md-1"><button @click="getExchangeList" type="button" class="btn width100 btn-info">余额兑换</button></div>
+								<div class="col-lg-1 col-md-1"><button @click="saveManual" type="button" class="btn width100 btn-info">手工补币</button></div>
+								<div class="col-lg-1 col-md-1"><button @click="currency" type="button" class="btn width100 btn-info">提币</button></div>
+								<div class="col-lg-1 col-md-1"><button @click="sendCoin" type="button" class="btn width100 btn-info">送币</button></div>
+								<div class="col-lg-1 col-md-1"><button @click="backCard" type="button" class="btn width100 btn-info">退卡</button></div>
 							</div>
 						</div>
 				</div>
@@ -1411,7 +1461,7 @@
 			dataObj:[],
             userToken:'',
             storeId:'',
-            memberLevelId:21,
+            memberLevelId:1,
 			saleData:[],
 			saleGood:[],
 			saleTicket:[],
@@ -1432,6 +1482,18 @@
                 disabled: false,
                 membershipIndex:"",
                 foodSelectedIndex:""
+            },
+            balanceExchangeData:{
+                selectValue:"",
+                selectList:null,
+                selectData:null,
+                inputExchange :"",
+                selectType:"",
+                exchangeValue:"",
+                selectBalanceName:"",
+                balanceExchange:"",
+                balance:"",
+                ExchangeRate:""
             },
 			cardLossData:{
 				mobile :"13125008389",
@@ -1475,7 +1537,7 @@
             inputCashFocus:false,
             payCount:0,
 			detailNote:"",
-            icCardId:"10004143",
+            icCardId:"28801810",
             footerData:[],
             treeShow:false,
             givingShow:false,
@@ -2247,23 +2309,23 @@
                             that.saleTitle = res.data.result_data.foodTypeMainList;
                             that.foodTypeGoodList = res.data.result_data.foodTypeGoodList;
                             that.foodTypeTicketList = res.data.result_data.foodTypeTicketList;
-                            setTimeout(function () {
-                                var swiper = new Swiper('.swiperSalesTitle', {
-                                    /*pagination: '.swiper-pagination',*/
-                                    nextButton: '.swiper-button-next',
-                                    prevButton: '.swiper-button-prev',
-                                    slidesPerView: 6,
-                                    centeredSlides: false,
-                                    paginationClickable: true,
-                                    spaceBetween: 30
-                                });
-                            }, 200);
+//                            setTimeout(function () {
+//                                var swiper = new Swiper('.swiperSalesTitle', {
+//                                    /*pagination: '.swiper-pagination',*/
+//                                    nextButton: '.swiper-button-next',
+//                                    prevButton: '.swiper-button-prev',
+//                                    slidesPerView: 6,
+//                                    centeredSlides: false,
+//                                    paginationClickable: true,
+//                                    spaceBetween: 30
+//                                });
+//                            }, 200);
                             that.$nextTick(function () {
-                                var foodTypeAll = "-2,0";
+                                var foodTypeAll = "-2";
 //                                console.log(that.saleTitle.length);
-//                                for(var i = -1;i<that.saleTitle.length-1;i++){
-//                                    foodTypeAll = foodTypeAll+","+i;
-//								}
+                                for(var i = -1;i<that.saleTitle.length-1;i++){
+                                    foodTypeAll = foodTypeAll+","+i;
+								}
                                 that.screeningTitle = true;
 								console.log(foodTypeAll);
                                 that.getMeal(that.customerType,foodTypeAll);
@@ -2398,14 +2460,17 @@
 //			获取销售的函数
 			getMeal:function(customerType,foodType) {			//获取销售列表
 				var that = this;
-                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken ,customerType:customerType,memberLevelId:that.memberLevelId,foodTypeStr:foodType};
-                console.log(obj);
-                axios.post('/XCCloud/Foods?action=getFoodList', obj).then(function (res) {
+				var priceLimit =[{ category:"0", title:"", balanceIndex:"0", minPrice:"1", maxPrice:"32" }];
+                var priceLimitStr = JSON.stringify(priceLimit);
+                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken ,customerType:customerType,memberLevelId:that.memberLevelId,foodTypeStr:foodType,priceLimit:priceLimitStr};
+                var getFood = JSON.stringify(obj);
+                console.log(getFood);
+                axios.post('/XCCloud/Foods?action=getFoodList', getFood).then(function (res) {
                     console.log(res.data);
                     that.msgPrompt(res.data);
                     if (res.data.result_code === '1') {
                         that.saleAll = res.data.result_data;
-                        var saledata_ = res.data.result_data.food
+                        var saledata_ = res.data.result_data.food;
                         for (var i =0;i<saledata_.length;i++){
 							if(saledata_[i].foodName.length > 30){
                                 var foodname = saledata_[i].foodName;
@@ -2861,8 +2926,78 @@
 			},
 //          余额兑换
             getExchangeList:function(){
+                var that = this;
+                $('#balanceExchange').modal('show');
+                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,ICCardId:that.icCardId};
+                axios.post('/XCCloud/Member?action=getBalanceExchangeList', obj).then(function (res) {	//获取会员等级
+                    console.log(res.data);
+                    that.msgPrompt(res.data);
+                    if (res.data.result_code === '1') {
+                        $('#balanceExchange').modal('show');
+                            that.balanceExchangeData.selectList =res.data.result_data;
+                            that.balanceExchangeData.selectValue = 0;
+                            that.balanceExchangeData.selectData = res.data.result_data[0].TargetChargeList;
+                            that.balanceExchangeData.selectType = 0;
+                            that.balanceExchangeData.selectBalanceName = that.balanceExchangeData.selectList[0].SourceBalanceName;
+                            that.balanceExchangeData.balanceExchange = that.balanceExchangeData.selectList[0].Balance;
+                            that.balanceExchangeData.balance = that.balanceExchangeData.selectList[0].BalanceTotal;
+                            that.balanceExchangeData.ExchangeRate = that.balanceExchangeData.selectList[0].TargetChargeList[0].ExchangeRate;
 
+                    }
+                }).catch(function (err) {
+                    console.log(err);
+                });
 			},
+//          selectValue改变事件
+            selectValue:function () {
+                var that = this;
+                that.balanceExchangeData.selectData = that.balanceExchangeData.selectList[that.balanceExchangeData.selectValue].TargetChargeList;
+                that.balanceExchangeData.selectType = 0;
+                that.balanceExchangeData.selectBalanceName = that.balanceExchangeData.selectList[that.balanceExchangeData.selectValue].SourceBalanceName;
+                that.balanceExchangeData.balanceExchange = that.balanceExchangeData.selectList[that.balanceExchangeData.selectValue].Balance;
+                that.balanceExchangeData.balance = that.balanceExchangeData.selectList[that.balanceExchangeData.selectValue].BalanceTotal;
+                that.balanceExchangeData.ExchangeRate = that.balanceExchangeData.selectList[that.balanceExchangeData.selectValue].TargetChargeList[0].ExchangeRate;
+            },
+//          selectType改变事件
+            selectType:function () {
+                var that = this;
+                that.balanceExchangeData.ExchangeRate = that.balanceExchangeData.selectList[that.balanceExchangeData.selectValue].TargetChargeList[that.balanceExchangeData.selectType].ExchangeRate;
+            },
+//          inputExchange改变事件
+            inputExchange:function () {
+                var that = this;
+//                var AddingType= that.balanceExchangeData.ExchangeRate = that.balanceExchangeData.selectList[that.balanceExchangeData.selectValue].TargetChargeList[that.balanceExchangeData.selectType].;
+//                var amountTotal2_= 0;
+//                console.log(newValue);
+//                for(var i= 0;i<newValue.length;i++){
+//                    if(newValue[i].ExchangeQty > newValue[i].Balance){
+//                        that.msg = "请正确输入！";
+//                        $('#myModal').modal('show');
+//                        newValue[i].ExchangeQty = 0;
+//                    }else {
+//                        var value_ = newValue[i].ExchangeQty*newValue[i].ExchangeRate;
+//                        var decimal= Math.pow(10,newValue[i].DecimalNumber);
+//                        value_ = value_*decimal;
+//                        console.log(newValue[i].AddingType == 0);
+//                        switch (newValue[i].AddingType){
+//                            case 0:
+//                                value_= parseInt(value_);
+//                                break;
+//                            case 1:
+//                                value_= Math.ceil(value_);
+//                                break;
+//                            case 2:
+//                                value_= Math.round(value_);
+//                                break;
+//                            default:
+//                                break;
+//                        }
+//                        console.log(value_);
+//                        newValue[i].ExchangeValue =value_/decimal;
+//                        amountTotal1_=0+amountTotal1_ + newValue[i].ExchangeQty*1;
+//                        amountTotal2_=0+amountTotal2_ + newValue[i].ExchangeValue*1;
+//                    }
+            },
 //			存币
             saveManual:function () {
             	$('#ManualSModal').modal('show');

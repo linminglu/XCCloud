@@ -80,5 +80,60 @@ namespace XCCloudService.Business.XCCloud
                 return false;
             }  
         }
+
+        public static bool GetCurrentSchedule(string merchId, string storeId, int userId, string workStation, out string scheduleName, out string currentSchedule, out string openTime, out string checkDate, out string errMsg)
+        {
+            errMsg = string.Empty;
+            string flwSeedId = RedisCacheHelper.CreateCloudSerialNo(storeId, true);
+            string sql = "GetCurrentSchedule";
+            string seedId = RedisCacheHelper.CreateCloudSerialNo(storeId, true);
+
+            SqlParameter[] parameters = new SqlParameter[11];
+            parameters[0] = new SqlParameter("@MerchId", merchId);
+            parameters[1] = new SqlParameter("@StoreId", storeId);
+            parameters[2] = new SqlParameter("@SeedId", seedId);
+            parameters[3] = new SqlParameter("@UserId", userId);
+            parameters[4] = new SqlParameter("@WorkStation", workStation);
+
+            parameters[5] = new SqlParameter("@CurrentSchedule", System.Data.SqlDbType.VarChar,32);
+            parameters[5].Direction = System.Data.ParameterDirection.Output;
+
+            parameters[6] = new SqlParameter("@OpenTime", System.Data.SqlDbType.VarChar,20);
+            parameters[6].Direction = System.Data.ParameterDirection.Output;
+
+            parameters[7] = new SqlParameter("@ScheduleName", System.Data.SqlDbType.VarChar,50);
+            parameters[7].Direction = System.Data.ParameterDirection.Output;
+
+            parameters[8] = new SqlParameter("@CheckDate", System.Data.SqlDbType.VarChar, 10);
+            parameters[8].Direction = System.Data.ParameterDirection.Output;
+
+            parameters[9] = new SqlParameter("@ErrMsg", System.Data.SqlDbType.VarChar, 200);
+            parameters[9].Direction = System.Data.ParameterDirection.Output;
+
+            parameters[10] = new SqlParameter("@ReturnValue", 0);
+            parameters[10].Direction = System.Data.ParameterDirection.ReturnValue;
+
+            XCCloudBLL.ExecuteStoredProcedureSentence(sql, parameters);
+            int result = Convert.ToInt32(parameters[10].Value);
+
+            if (result >= 1)
+            {
+                currentSchedule = parameters[5].Value.ToString();
+                openTime = parameters[6].Value.ToString();
+                scheduleName = parameters[7].Value.ToString();
+                checkDate = parameters[8].Value.ToString();
+                return true;
+            }
+            else
+            {
+                errMsg = parameters[9].Value.ToString();
+                currentSchedule = string.Empty;
+                openTime = string.Empty;
+                scheduleName = string.Empty;
+                checkDate = string.Empty;
+                return false;
+            }
+        }
+    
     }
 }

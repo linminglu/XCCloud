@@ -54,7 +54,8 @@ namespace XCCloudService.Business.XCCloud
                             SELECT ID,Allow_In,Allow_Out,PushBalanceIndex1,PushBalanceName1,PushCoin1,PushBalanceIndex2,PushBalanceName2,PushCoin2 FROM   
 	                            (SELECT ID,Allow_In,Allow_Out,PushBalanceIndex1,PushCoin1,PushBalanceIndex2,PushCoin2,Level FROM Data_PushRule WHERE 
 	                            StoreID=@storeid 
-	                            AND GETDATE() BETWEEN CONVERT(VARCHAR(20), StartDate, 23) +' '+ CONVERT(VARCHAR(20), StartTime, 8) AND CONVERT(VARCHAR(20), EndDate, 23) +' '+ CONVERT(VARCHAR(20), EndTime, 8)	--判断日期是否可用
+                                AND GETDATE() BETWEEN StartDate AND EndDate --判断日期
+	                            AND CONVERT(varchar(100), GETDATE(), 108) BETWEEN StartTime AND EndTime	--判断时间段是否可用
 	                            AND (
 		                            (WeekType=0 AND CHARINDEX(CAST(DATEPART(WEEKDAY, CONVERT(DATETIME, GETDATE())) AS VARCHAR(1)),week)>0)	--自定义方法是否包含当前周，周一1 周日7
 		                            OR (WeekType=1 AND (SELECT COUNT(DayType) n from XC_HolidayList where CONVERT(varchar(20), WorkDay, 23)=CONVERT(varchar(20), GETDATE(), 23) AND DayType=0)>0) --工作日方法判断当前是否为工作日

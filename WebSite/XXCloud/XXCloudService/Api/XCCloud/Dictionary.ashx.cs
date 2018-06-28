@@ -481,11 +481,11 @@ namespace XXCloudService.Api.XCCloud
                         var dict_System = dbContext.Set<Dict_System>().Where(p => p.PID == id).ToList();
                         foreach (var item in dict_System)
                         {
-                            dbContext.Entry(item).State = EntityState.Deleted;
+                            dbContext.Entry(item).State = System.Data.Entity.EntityState.Deleted;
                         }
 
                         var dict_SystemModel = dbContext.Set<Dict_System>().Where(p => p.ID == id).FirstOrDefault();
-                        dbContext.Entry(dict_SystemModel).State = EntityState.Deleted;
+                        dbContext.Entry(dict_SystemModel).State = System.Data.Entity.EntityState.Deleted;
 
                         if (dbContext.SaveChanges() < 0)
                         {

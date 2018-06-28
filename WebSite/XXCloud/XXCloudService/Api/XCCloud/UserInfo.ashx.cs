@@ -196,9 +196,10 @@ namespace XCCloudService.Api.XCCloud
             {
                 try
                 {
+                    string scheduleName = string.Empty;
+                    string checkDate = string.Empty;
                     string errMsg = string.Empty;
                     string currentSchedule = string.Empty;
-                    int workStationId = 0;
                     string openTime = string.Empty; 
                     string loginName = dicParas.ContainsKey("loginName") ? dicParas["loginName"].ToString() : string.Empty;
                     string password = dicParas.ContainsKey("password") ? dicParas["password"].ToString() : string.Empty;
@@ -233,7 +234,7 @@ namespace XCCloudService.Api.XCCloud
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "用户名或密码错误");
                     }
                     //开班
-                    if (!ScheduleBusiness.OpenSchedule(userModel.MerchID,userModel.StoreID, userModel.UserID, "", workStation, out workStationId, out currentSchedule, out openTime, out errMsg))
+                    if (!ScheduleBusiness.GetCurrentSchedule(userModel.MerchID, userModel.StoreID, userModel.UserID, workStation, out scheduleName, out currentSchedule, out openTime,out checkDate, out errMsg))
                     {
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
                     }
@@ -256,7 +257,8 @@ namespace XCCloudService.Api.XCCloud
                         storeId = userModel.StoreID,
                         storeName = base_StoreInfoModel.StoreName,
                         scheduleId = currentSchedule,
-                        openTime = openTime
+                        checkDate = checkDate,
+                        scheduleName = scheduleName
                     };
                     return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, dataObj);
                 }

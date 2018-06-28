@@ -234,45 +234,45 @@ namespace XCCloudService.SocketService.UDP
                                 case TransmiteEnum.雷达通知指令:
                                     CommandHandler.RadarNotify(data, item);
                                     break;
-                                case TransmiteEnum.远程门店账目查询指令响应:
-                                    CommandHandler.StoreQuery(data, item);
-                                    break;
-                                case TransmiteEnum.远程门店账目应答通知指令:
-                                    CommandHandler.StoreQueryNotify(data, item, packId, packNum);
-                                    break;
-                                case TransmiteEnum.远程门店会员卡数据请求响应:
-                                    CommandHandler.MemberQueryNotify(data, item);
-                                    break;
-                                case TransmiteEnum.远程门店门票数据请求响应:
-                                    CommandHandler.TicketQueryNotify(data, item);
-                                    break;
-                                case TransmiteEnum.远程门店门票操作请求响应:
-                                    CommandHandler.TicketOperateNotify(data, item);
-                                    break;
-                                case TransmiteEnum.远程门店彩票数据请求响应:
-                                    CommandHandler.LotteryQueryNotify(data, item);
-                                    break;
-                                case TransmiteEnum.远程门店彩票操作请求响应:
-                                    CommandHandler.LotteryOperateNotify(data, item);
-                                    break;
-                                case TransmiteEnum.远程门店出票条码数据请求响应:
-                                    CommandHandler.OutTicketQueryNotify(data, item);
-                                    break;
-                                case TransmiteEnum.远程门店出票条码操作请求响应:
-                                    CommandHandler.OutTicketOperateNotify(data, item);
-                                    break;
-                                case TransmiteEnum.黄牛卡信息查询请求响应:
-                                    CommandHandler.CattleMemberCardQueryNotify(data, item);
-                                    break;
-                                case TransmiteEnum.远程门店会员转账操作请求响应:
-                                    CommandHandler.MemberTransOperateNotify(data, item);
-                                    break;
-                                case TransmiteEnum.远程门店运行参数数据请求响应:
-                                    CommandHandler.ParamQueryNotify(data, item);
-                                    break;
-                                case TransmiteEnum.远程门店员工手机号校验请求响应:
-                                    CommandHandler.UserPhoneQueryNotify(data, item);
-                                    break;
+                                //case TransmiteEnum.远程门店账目查询指令响应:
+                                //    CommandHandler.StoreQuery(data, item);
+                                //    break;
+                                //case TransmiteEnum.远程门店账目应答通知指令:
+                                //    CommandHandler.StoreQueryNotify(data, item, packId, packNum);
+                                //    break;
+                                //case TransmiteEnum.远程门店会员卡数据请求响应:
+                                //    CommandHandler.MemberQueryNotify(data, item);
+                                //    break;
+                                //case TransmiteEnum.远程门店门票数据请求响应:
+                                //    CommandHandler.TicketQueryNotify(data, item);
+                                //    break;
+                                //case TransmiteEnum.远程门店门票操作请求响应:
+                                //    CommandHandler.TicketOperateNotify(data, item);
+                                //    break;
+                                //case TransmiteEnum.远程门店彩票数据请求响应:
+                                //    CommandHandler.LotteryQueryNotify(data, item);
+                                //    break;
+                                //case TransmiteEnum.远程门店彩票操作请求响应:
+                                //    CommandHandler.LotteryOperateNotify(data, item);
+                                //    break;
+                                //case TransmiteEnum.远程门店出票条码数据请求响应:
+                                //    CommandHandler.OutTicketQueryNotify(data, item);
+                                //    break;
+                                //case TransmiteEnum.远程门店出票条码操作请求响应:
+                                //    CommandHandler.OutTicketOperateNotify(data, item);
+                                //    break;
+                                //case TransmiteEnum.黄牛卡信息查询请求响应:
+                                //    CommandHandler.CattleMemberCardQueryNotify(data, item);
+                                //    break;
+                                //case TransmiteEnum.远程门店会员转账操作请求响应:
+                                //    CommandHandler.MemberTransOperateNotify(data, item);
+                                //    break;
+                                //case TransmiteEnum.远程门店运行参数数据请求响应:
+                                //    CommandHandler.ParamQueryNotify(data, item);
+                                //    break;
+                                //case TransmiteEnum.远程门店员工手机号校验请求响应:
+                                //    CommandHandler.UserPhoneQueryNotify(data, item);
+                                //    break;
                                 default:
                                     break;
                             }

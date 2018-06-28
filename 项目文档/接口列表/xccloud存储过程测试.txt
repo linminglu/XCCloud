@@ -4,6 +4,26 @@
 ----------------------------------------------------------------------------------------------------------------------------------------
 
 ----------------------------------------------------------------------------------------------------------------------------------------
+
+declare @MerchId varchar(15) = '100025'
+declare @StoreId varchar(15) = '100025420106001'
+declare @SeedId varchar(29) = '100025420106001' + '20180628' + '921831'
+declare @UserId int = 3
+declare @ScheduleName varchar(50) = ''
+declare @WorkStation varchar(50) = ''
+declare @CheckDate varchar(10) = ''
+declare @CurrentSchedule varchar(32) = ''
+declare @OpenTime varchar(20) = ''
+declare @errMsg varchar(200) = ''
+declare @GetCurrentScheduleResult int = 0
+exec @GetCurrentScheduleResult = GetCurrentSchedule @MerchId,@StoreId,@SeedId,@UserId,@WorkStation,@CurrentSchedule output,@OpenTime output,@ScheduleName output,@CheckDate output,@errMsg output
+print '@GetCurrentScheduleResult:' + cast(@GetCurrentScheduleResult as varchar)
+print '@CurrentSchedule:' + cast(@CurrentSchedule as varchar(32))
+print '@CheckDate:' + cast(@CheckDate as varchar)
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------------------------------------------
 declare @PriceLimit as PriceLimitType
 insert @PriceLimit(Category,BalanceIndex,MinPrice,MaxPrice) values(0,0,0,0.30)
 insert @PriceLimit(Category,BalanceIndex,MinPrice,MaxPrice) values(0,98307,0,999)
@@ -26,13 +46,34 @@ print @ErrMsg
 
 ----------------------------------------------------------------------------------------------------------------------------------------
 
+declare @CheckDate date
 declare @CurrentSchedule varchar(32) = ''
 declare @OpenTime varchar(20) = ''
 declare @errMsg varchar(200) = ''
 declare @GetScheduleReturn int = 0
-exec @GetScheduleReturn = GetSchedule '100025420106001',3,'lijunjie',@CurrentSchedule output,@OpenTime output,@errMsg output
+exec @GetScheduleReturn = GetSchedule '100025420106001',3,'lijunjie',@CurrentSchedule output,@OpenTime output,@CheckDate output,@errMsg output
 print '@GetScheduleReturn:' + cast(@GetScheduleReturn as varchar)
 print '@CurrentSchedule:' + cast(@CurrentSchedule as varchar(32))
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+declare @MerchId varchar(15) = '100025'
+declare @StoreId varchar(15) = '100025420106001'
+declare @SeedId varchar(29) = '100025420106001' + '20180628' + '921831'
+declare @UserId int = 0
+declare @ScheduleName varchar(50) = ''
+declare @WorkStation varchar(50) = ''
+declare @CheckDate date
+declare @CurrentSchedule varchar(32) = ''
+declare @OpenTime varchar(20) = ''
+declare @errMsg varchar(200) = ''
+declare @GetCurrentScheduleResult int = 0
+exec @GetCurrentScheduleResult = GetCurrentSchedule @MerchId,@StoreId,@SeedId,@UserId,@WorkStation,@CurrentSchedule output,@OpenTime output,@ScheduleName output,@CheckDate output,@errMsg output
+print '@GetCurrentScheduleResult:' + cast(@GetCurrentScheduleResult as varchar)
+print '@CurrentSchedule:' + cast(@CurrentSchedule as varchar(32))
+print '@CheckDate:' + cast(@CheckDate as varchar)
 
 ----------------------------------------------------------------------------------------------------------------------------------------
 
@@ -131,7 +172,9 @@ declare @AllowInternet int
 declare @ErrMsg varchar(200)
 declare @GetQuickFood int = 0
 declare @MemberLevelId int = 0
-exec @GetQuickFood = GetQuickFood '100025','100025420106001',10004143,@MemberLevelId output,@FoodName output,@FoodSalePrice output,@Coins output,@AllowPrint output,@ForeAuthorize output,@AllowInternet output,@ErrMsg output
+declare @Mobile varchar(11) = ''
+declare @FoodId int = 0
+exec @GetQuickFood = GetQuickFood '100025','100025420106001',0,@Mobile,@FoodId output,@MemberLevelId output,@FoodName output,@FoodSalePrice output,@Coins output,@AllowPrint output,@ForeAuthorize output,@AllowInternet output,@ErrMsg output
 print @ErrMsg
 print @FoodSalePrice
 print @FoodName

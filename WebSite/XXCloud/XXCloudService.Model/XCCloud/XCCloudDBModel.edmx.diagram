@@ -179,6 +179,7 @@
         <EntityTypeShape EntityType="XCCloudDBModel.Dict_BalanceType" Width="1.5" PointX="7.375" PointY="6.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Dict_System" Width="1.5" PointX="25.375" PointY="23.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_MemberCard_Free" Width="1.5" PointX="11.375" PointY="30.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.Flw_DeviceData" Width="1.5" PointX="13.375" PointY="30.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

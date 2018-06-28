@@ -661,6 +661,9 @@
     <Compile Include="XCCloud\Flw_CouponUse.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
+    <Compile Include="XCCloud\Flw_DeviceData.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
     <Compile Include="XCCloud\Flw_Digite_Coin.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>

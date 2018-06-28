@@ -244,7 +244,7 @@ namespace XXCloudService.Api.XCCloud
             parameters[2] = new SqlParameter("@MemberLevelId", memberLevelId);
             parameters[3] = new SqlParameter("@FoodTypeStr", foodTypeStr);
             parameters[4] = new SqlParameter("@PriceLimit", SqlDbType.Structured);
-            parameters[4].Value = listSqlDataRecord;
+            parameters[4].Value = (listSqlDataRecord.Count == 0) ? null : listSqlDataRecord;
 
             System.Data.DataSet ds = XCCloudBLL.GetStoredProcedureSentence(storedProcedure, parameters);
             List<FoodInfoModel> listFoodInfo = Utils.GetModelList<FoodInfoModel>(ds.Tables[0]).ToList();
@@ -277,7 +277,7 @@ namespace XXCloudService.Api.XCCloud
             {
                 for (int i = 0; i < listTicketInfo.Count; i++)
                 {
-                    List<FoodDetailInfoModel> detail = listTicketDetailInfo.Where<FoodDetailInfoModel>(p => p.FoodId == listFoodInfo[i].FoodID).ToList<FoodDetailInfoModel>().OrderBy(p => p.BalanceType).ToList<FoodDetailInfoModel>();
+                    List<FoodDetailInfoModel> detail = listTicketDetailInfo.Where<FoodDetailInfoModel>(p => p.FoodId == listTicketInfo[i].FoodId).ToList<FoodDetailInfoModel>().OrderBy(p => p.BalanceType).ToList<FoodDetailInfoModel>();
                     listTicketInfo[i].DetailInfoList = detail;
                     listTicketInfo[i].DetailsCount = listTicketInfo[i].DetailInfoList.Count();
                 }
