@@ -20,8 +20,8 @@
 		/*XinChen--PC 2017-9-2*/
 		* {margin:0;padding:0;word-break:break-all;}
 		html,body{height:100%; font-size:100%;}
-		body{font:14px/1.5em "Arial","Microsoft YaHei",Verdana,Helvetica,sans-serif;text-align:left;background:#fff;color:#2d3e50;margin:0px;line-height:22px; }
-		table{font:14px/1.5em "Arial","Microsoft YaHei",Verdana,Helvetica,sans-serif;text-align:left;margin:0px;padding:0px;border:0px;color:#2d3e50;line-height:22px;}
+		body{font:14px/1.5em "Arial","Microsoft YaHei",Verdana,Helvetica,sans-serif;text-align:left;background:#fff;color:#2d3e50;margin:0;line-height:22px; }
+		table{font:14px/1.5em "Arial","Microsoft YaHei",Verdana,Helvetica,sans-serif;text-align:left;margin:0;padding:0;border:0;color:#2d3e50;line-height:22px;}
 		body,figure,h1,h2,h3,h4,h5,h6,p,pre,blockquote,form,fieldset,legend,input,button,select,textarea {margin:0;padding:0;font-family:"Arial","Microsoft YaHei";}
 		address,caption,cite,code,dfn,em,var,i{font-style:normal;font-weight:normal;}
 		ul,ol,li,dl,dt,dd{ margin:0px; padding:0px;border:0px;list-style:none;}
@@ -164,7 +164,7 @@
 		.tableTag .selectSty select{background-color: #00F7DE;}
 
 		/*销售列表样式修改*/
-		.salesLi{width: 20em;height: 7em;display: inline-flex;flex-direction: row;justify-content: space-between;margin: 0.2em;padding: 0.5em 0.2em;border: 1px solid #00F7DE;}
+		.salesLi{width: 20em;height: 7em;display: inline-flex;flex-direction: row;justify-content: space-between;margin: 0.5em;padding: 0.5em 0.2em;border: 1px solid #00F7DE;}
 		.saleText h3{font-size: 1.2em;margin-top: 0.5em;font-weight: 600;}
 		.saleText a.btn{padding: 0 6px;width: 50%;margin-left: 40%;}
 		.saleText{display: flex;flex-direction: column-reverse;width: 10.5em;justify-content: space-between;text-align: left;margin-left: 0.5em;}
@@ -204,8 +204,7 @@
 		.footerList li{padding: 0.5em 0;padding-left: 3em;border-bottom: 1px dashed #00F7DE;}
 		.member{color: #666;}
 		.member li{font-size: 1.3em;display: inline;margin-right: 10px;line-height:50px;font-weight: 700;}
-		.saleContent{display: flex;flex-direction: row;}
-
+		.saleContent{display: flex;flex-direction: row;padding:2em;}
 		/*商品二级套餐*/
 		.treeBox{margin:0.5em 0;background-color:#fbfbfb;min-width: 200px;display: inline-block;height: inherit;max-height: 40em;overflow-y: auto;}
 		.treeList{width:200px;}
@@ -280,8 +279,6 @@
 <body>
 <div id="app" v-cloak>
 	<div class="container-fluid boxShadow">
-		<!--小屏幕导航按钮和logo-->
-		<!--小屏幕导航按钮和logo-->
 		<!--导航-->
 		<div class="navbar-collapse collapse">
 			<div class="navbar-header">
@@ -292,7 +289,7 @@
 				<li><a class="boxBtn" href="javascript:void(0);"><!--<span class="glyphicon glyphicon-menu-down"></span>&nbsp;&nbsp;-->现金:￥10500</a></li>
 				<li class="active"><a href="index.html"><!--<span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;-->莘宸乐园【同城广场店】</a></li>
 				<li class="dropdown">
-					<a data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					<a data-toggle="dropdown"  aria-expanded="false">
 						<!--未读消息 (0)-->
 						<span class="iconfont icon-btnMsg"></span>
                         <!--<span class="badge">1</span>-->
@@ -305,7 +302,7 @@
 					</ul>
 				</li>
 				<li class="dropdown">
-					<a data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					<a data-toggle="dropdown"  aria-expanded="false">
                         <span class="iconfont icon-touxiang"></span>
 						admin
 						<!--<span class="caret"></span>-->
@@ -318,7 +315,6 @@
 						<li><a href="index.html"><span class="glyphicon glyphicon-heart"></span>我的收藏</a></li>
 					</ul>
 				</li>
-				<!--<li><a href="#"><span class="glyphicon glyphicon-off"></span>&nbsp;&nbsp;退出</a></li>-->
 				<div class="bbs text-right">
 					<p><span>当前班次：A</span><span>营业日期：2017-08-23 15:38:12 </span></p>
 				</div>
@@ -339,7 +335,7 @@
 		<div class="modal-dialog modal-lg" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span>&times;</span></button>
 					<h4 class="modal-title">快速售币</h4>
 				</div>
 				<div class="modal-body" v-if="onFocus">
@@ -385,7 +381,7 @@
 		<div class="modal-dialog modal-lg" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span>&times;</span></button>
 					<h4 class="modal-title">温馨提示</h4>
 				</div>
 				<div class="modal-body row" v-if="inputCashFocus">
@@ -398,19 +394,19 @@
 							<li>
 								<div class="inputNm col-lg-12 col-md-12 shopCStyle">
 									<span class="col-lg-5 col-md-5 shopCStyle">实收现金：</span>
-									<label class="col-lg-7 col-md-7"><input :autofocus="inputCashFocus" v-model.number="inputCash" @focus.once="sumPrice()" type="text" class="form-control"/></label>
+									<label class="col-lg-7 col-md-7"><input :autofocus="inputCashFocus" v-model.number="inputCash" @focus.once="sumPrice()"  class="form-control"/></label>
 								</div>
 								<div class="col-lg-12 col-md-12 shopCStyle">
 									<span class="col-lg-5 col-md-5 shopCStyle">找零：</span>
-									<label class="col-lg-7 col-md-7"><input class="form-control" type="text" v-model.number="cashChange"  placeholder="" readonly></label></div>
+									<label class="col-lg-7 col-md-7"><input class="form-control"  v-model.number="cashChange"  placeholder="" readonly></label></div>
 							</li>
 							<li class="hidden">
-								<div class="col-lg-12 col-md-12 shopCStyle"><span class="col-lg-5 col-md-5 pad_0">扣储值金：</span><label class="col-lg-7 col-md-7"><input id="input3" type="text" class="form-control" /></label></div>
-								<div class="col-lg-12 col-md-12 shopCStyle hidden"><span class="col-lg-5 col-md-5 pad_0">找零：</span><label class="col-lg-7 col-md-7"><input type="text" class="form-control" /></label></div>
+								<div class="col-lg-12 col-md-12 shopCStyle"><span class="col-lg-5 col-md-5 pad_0">扣储值金：</span><label class="col-lg-7 col-md-7"><input id="input3"  class="form-control" /></label></div>
+								<div class="col-lg-12 col-md-12 shopCStyle hidden"><span class="col-lg-5 col-md-5 pad_0">找零：</span><label class="col-lg-7 col-md-7"><input  class="form-control" /></label></div>
 							</li>
 							<li class="hidden">
 								<h4 class="">请扫描客户手机付款码</h4>
-								<label class="col-lg-12 col-md-12 pad_0"><input id="input5" type="text" class="form-control" /></label>
+								<label class="col-lg-12 col-md-12 pad_0"><input id="input5"  class="form-control" /></label>
 							</li>
 						</ul>
 						<div class="col-lg-12 col-md-12 shopCStyle" style="margin-top: 1em" v-if="shopCheckOut"><button type="button" class="btn btn-danger">结账</button></div>
@@ -445,22 +441,22 @@
         <div class="modal-dialog modal-md" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span>&times;</span></button>
                     <h4 class="modal-title">温馨提示</h4>
                 </div>
                 <div class="modal-body row">
                     <div class="container-fluid modal-bodySty">
                         <div class="input-group col-lg-6 col-md-6 tab-style">
                             <span class="input-group-addon">可兑{{balanceExchangeData.selectBalanceName}}：</span>
-                            <input type="text" class="form-control" v-model="balanceExchangeData.balanceExchange" readonly/>
+                            <input  class="form-control" v-model="balanceExchangeData.balanceExchange" readonly/>
                         </div>
                         <div class="input-group col-lg-6 col-md-6 tab-style">
                             <span class="input-group-addon">当前{{balanceExchangeData.selectBalanceName}}：</span>
-                            <input type="text" class="form-control" v-model="balanceExchangeData.balance" readonly/>
+                            <input  class="form-control" v-model="balanceExchangeData.balance" readonly/>
                         </div>
                         <div class="input-group col-lg-6 col-md-6 tab-style">
                             <span class="input-group-addon">当前兑换比率：</span>
-                            <input type="text" class="form-control" v-model="balanceExchangeData.ExchangeRate" readonly/>
+                            <input  class="form-control" v-model="balanceExchangeData.ExchangeRate" readonly/>
                         </div>
                         <div class="col-lg-12 col-md-12"></div>
                         <div class="input-group col-lg-6 col-md-6 tab-style">
@@ -473,7 +469,7 @@
                         </div>
                         <div class="input-group col-lg-6 col-md-6 tab-style">
                             <span class="input-group-addon">兑换数量：</span>
-                            <input type="text" class="form-control" placeholder="输入兑换数量" v-model="balanceExchangeData.inputExchange" @input="inputExchange"/>
+                            <input  class="form-control" placeholder="输入兑换数量" v-model="balanceExchangeData.inputExchange" @input="inputExchange"/>
                         </div>
                         <div class="input-group col-lg-6 col-md-6 tab-style">
                             <span class="input-group-addon">兑换种类：</span>
@@ -484,9 +480,9 @@
                             </select>
                         </div>
                         <div class="input-group col-lg-6 col-md-6 tab-style">
-                            <input type="text" class="form-control" readonly v-model="balanceExchangeData.exchangeValue"/>
+                            <input  class="form-control" readonly v-model="balanceExchangeData.exchangeValue"/>
                             <div class="input-group-btn">
-                                <button type="button" class="btn btn-default">兑换</button>
+                                <button type="button" class="btn btn-default" @click="balanceExchange">兑换</button>
                             </div>
                         </div>
                     </div>
@@ -495,40 +491,40 @@
             </div>
         </div>
     </div>
-	<!--手工存币弹出层-->
+	<!--手工补币弹出层-->
 	<div class="modal fade bs-example-modal-sm" id="ManualSModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 		<div class="modal-dialog modal-md" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span>&times;</span></button>
 					<h4 class="modal-title">温馨提示</h4>
 				</div>
 				<div class="modal-body row">
 					<div class="container-fluid">
 						<div class="input-group col-lg-6 col-md-6 tab-style">
 							<span class="input-group-addon">补币币种：</span>
-							<select  class="form-control">
-								<option value="0">代币</option>
-								<option value="1">积分</option>
-								<option value="1">储值金</option>
+							<select class="form-control" v-model="repairCoin.balanceIndex">
+								<option v-for="(option,index) in repairCoinData" :value="index">
+									{{ option.BalanceName}}
+								</option>
 							</select>
 						</div>
 						<div class="input-group col-lg-6 col-md-6 tab-style">
 							<span class="input-group-addon">存币数量：</span>
-							<input type="text" class="form-control" placeholder="请输入存币数量"/>
+							<input  class="form-control" placeholder="请输入存币数量" v-model.number="repairCoin.qty"/>
 						</div>
 						<div class="input-group col-lg-12 col-md-12 tab-style">
 							<span class="input-group-addon">补币方式：</span>
-							<select class="form-control">
-								<option value="0">实物币</option>
-								<option value="1">存入卡中</option>
+							<select class="form-control" v-model="repairCoin.repairType">
+								<option value="1">实物币</option>
+								<option value="2">存入卡中</option>
 							</select>
 						</div>
 						<div class="input-group col-lg-12 col-md-12 tab-style">
 							<span class="input-group-addon">备注：</span>
-							<textarea  class="form-control"></textarea>
+							<textarea  class="form-control" v-model="repairCoin.note"></textarea>
 						</div>
-						<div class="col-lg-12 tab-btn tab-style"><button type="button" class=" btn btn-info">补币</button></div>
+						<div class="col-lg-12 tab-btn tab-style"><button type="button" class=" btn btn-info" @click="repairCoinFnc">补币</button></div>
 					</div>
 				</div>
 			</div>
@@ -539,7 +535,7 @@
 		<div class="modal-dialog modal-md" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span>&times;</span></button>
 					<h4 class="modal-title">温馨提示</h4>
 				</div>
 				<div class="modal-body row">
@@ -553,7 +549,7 @@
 							<div role="tabpanel" class="tab-pane active" id="cardOperation">
 								<div class="input-group col-lg-6 col-md-6 tab-style">
 									<span class="input-group-addon">提币数：</span>
-									<input type="text" class="form-control" placeholder="请输入提币数量"/>
+									<input  class="form-control" placeholder="请输入提币数量"/>
 								</div>
 								<div class="input-group col-lg-6 col-md-6 tab-style">
 									<span class="input-group-addon">密码：</span>
@@ -563,17 +559,21 @@
 							<div role="tabpanel" class="tab-pane" id="WeChat">
 								<div class="input-group col-lg-12 col-md-12 tab-style">
 									<span class="input-group-addon">密码微信提币码：</span>
-									<input type="text" class="form-control"/>
+									<input  class="form-control"/>
 								</div>
 							</div>
 							<div role="tabpanel" class="tab-pane" id="mobileVerification">
 								<div class="input-group col-lg-6 col-md-6 tab-style">
 									<span class="input-group-addon">手机号码：</span>
-									<input type="text" class="form-control"/>
+									<input class="form-control"/>
 								</div>
 								<div class="input-group col-lg-6 col-md-6 tab-style">
 									<span class="input-group-addon">消费密码：</span>
 									<input type="password" class="form-control"/>
+								</div>
+								<div class="input-group col-lg-6 col-md-6 tab-style">
+									<span class="input-group-addon">提币数：</span>
+									<input class="form-control"/>
 								</div>
 							</div>
 						</div>
@@ -586,7 +586,7 @@
 						</div>
 						<div class="input-group col-lg-12 col-md-12 tab-style">
 							<span class="input-group-addon">余额：</span>
-							<input type="text" class="form-control" placeholder="请输入提币数量"/>
+							<input  class="form-control" placeholder="请输入提币数量"/>
 						</div>
 						<div class="input-group col-lg-12 col-md-12 tab-style">
 							<span class="input-group-addon">提币方式：</span>
@@ -611,7 +611,7 @@
 		<div class="modal-dialog modal-lg" role="document" v-if="givingShow">
 			<div class="modal-content row">
 				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span>&times;</span></button>
 					<h4 class="modal-title">温馨提示</h4>
 				</div>
 				<div class="givingList swiper-container">
@@ -673,7 +673,7 @@
 		<div class="modal-dialog modal-lg" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span>&times;</span></button>
 					<h4 class="modal-title">温馨提示</h4>
 				</div>
 				<div class="modal-body row">
@@ -697,7 +697,7 @@
 								<td>{{items.Balance}}</td>
 								<td>{{items.BalanceFree}}</td>
 								<td>{{items.Balance}}</td>
-								<td class="tdInput"><input v-model.number="items.ExchangeQty" maxlength="8" class="form-control" type="text" :disabled="items.disabled"></td>
+								<td class="tdInput"><input v-model.number="items.ExchangeQty" maxlength="8" class="form-control"  :disabled="items.disabled"></td>
 								<td>{{items.ExchangeValue}}</td>
 							</tr>
 							<tr>
@@ -724,22 +724,22 @@
 		<div class="modal-dialog modal-lg" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span>&times;</span></button>
 					<h4 class="modal-title">温馨提示</h4>
 				</div>
 				<div class="modal-body row">
 					<div class="col-lg-12 col-md-12">
 						<div class="col-lg-4 col-md-4 PopSty">
 							<span class="col-lg-6 col-md-6">订单号：</span>
-							<label class="col-lg-6 col-md-6"><input class="form-control" type="text"></label>
+							<label class="col-lg-6 col-md-6"><input class="form-control" ></label>
 						</div>
 						<div class="col-lg-4 col-md-4 PopSty">
 							<span class="col-lg-6 col-md-6">销售时间：</span>
-							<label class="col-lg-6 col-md-6"><input class="form-control" type="text"></label>
+							<label class="col-lg-6 col-md-6"><input class="form-control" ></label>
 						</div>
 						<div class="col-lg-4 col-md-4 PopSty">
 							<span class="col-lg-6 col-md-6">产生积分：</span>
-							<label class="col-lg-6 col-md-6"><input class="form-control" type="text"></label>
+							<label class="col-lg-6 col-md-6"><input class="form-control" ></label>
 						</div>
 						<div class="col-lg-12 col-md-12">
 							<table class="table table-bordered">
@@ -814,7 +814,7 @@
 		<div class="modal-dialog modal-lg" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span>&times;</span></button>
 					<h4 class="modal-title">温馨提示</h4>
 				</div>
 				<div class="modal-body row">
@@ -852,7 +852,7 @@
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span>&times;</span></button>
                     <h4 class="modal-title">温馨提示</h4>
                 </div>
                 <div class="modal-body row">
@@ -880,7 +880,7 @@
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span>&times;</span></button>
 					<h4 class="modal-title">温馨提示</h4>
 				</div>
 				<div class="modal-body">
@@ -897,7 +897,7 @@
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span>&times;</span></button>
 					<h4 class="modal-title">温馨提示</h4>
 				</div>
 				<div class="modal-body">
@@ -950,7 +950,7 @@
 			<!--左边购物车-->
 			<div class="shopCart col-lg-12 col-md-12 fl heightKz">
 				<div class="scanAdd col-lg-12 col-md-12">
-					<input class="form-control" type="text" placeholder="扫码添加购物">
+					<input class="form-control"   placeholder="扫码添加购物">
 				</div>
 				<div class="shopTable col-lg-12 col-md-12">
 					<table class="table table-bordered col-lg-12 col-md-12" id="shopTable">
@@ -1018,7 +1018,7 @@
                         <ul class="clearfix">
                             <li class="on" @click="screening('All')"><sapn class="iconfont icon-quanbu-copy"></sapn><span class="txt">全部</span></li>
                             <li @click="screening(0)"><sapn class="iconfont icon-menpiao1"></sapn><span class="txt">门票</span></li>
-                            <li><sapn class="iconfont icon-2"></sapn><span class="txt">商品</span></li>
+                            <li @click="screening(1)"><sapn class="iconfont icon-2"></sapn><span class="txt">商品</span></li>
 							<!--<li v-for="(item,index) in saleTitle" @click="screening(index)">-->
 								<!--<a href="javascript:void(0)">{{item.foodTypeName}}</a>-->
 							<!--</li>-->
@@ -1049,8 +1049,8 @@
 								{{item.foodTypeName}}
 							</option>
 						</select>
-						<input class="form-control" type="text" placeholder="输入最小值">
-						<input class="form-control" type="text" placeholder="输入最大值">
+						<input class="form-control"   placeholder="输入最小值">
+						<input class="form-control"   placeholder="输入最大值">
 						<button type="button" class="btn btn-primary">查询</button>
 					</div>
 					<div class="saleContent">
@@ -1113,11 +1113,11 @@
 											<div class="tab-text col-lg-12 col-md-12">
 												<div class="input-group col-lg-4 col-md-6">
 													<span class="input-group-addon">手机号码：</span>
-													<input type="text" class="form-control" v-model.number="cardLossData.mobile" maxlength="11" placeholder="请输入手机号"/>
+													<input   class="form-control" v-model.number="cardLossData.mobile" maxlength="11" placeholder="请输入手机号"/>
 												</div>
 												<div class="input-group col-lg-4 col-md-6">
 													<span class="input-group-addon">验证码：</span>
-													<input type="text" class="form-control" v-model="cardLossData.mobileCode"/>
+													<input   class="form-control" v-model="cardLossData.mobileCode"/>
 													<div class="input-group-btn">
 														<input class="form-control btnSendCode readCard" type="button" v-model="cardLossData.codeBtn" @click="sendCode('1')" :disabled="cardLossData.disabled"/>
 													</div>
@@ -1131,7 +1131,7 @@
 											<div class="tab-text col-lg-12 col-md-12">
 												<div class="input-group col-lg-4 col-md-6">
 													<span class="input-group-addon">证件号码：</span>
-													<input type="text" class="form-control" v-model="cardLossData.IdNumber" readonly/>
+													<input   class="form-control" v-model="cardLossData.IdNumber" readonly/>
 													<div class="input-group-btn">
 														<button type="button" class="btn btn-default readCard">读取</button>
 													</div>
@@ -1140,17 +1140,17 @@
 												</div>
 												<div class="input-group col-lg-4 col-md-6">
 													<span class="input-group-addon">微信：</span>
-													<input type="text" class="form-control" v-model="cardLossData.IdNumber" readonly/>
+													<input   class="form-control" v-model="cardLossData.IdNumber" readonly/>
 												</div>
 											</div>
 											<div class="tab-text col-lg-12 col-md-12">
 												<div class="input-group col-lg-4 col-md-6">
 													<span class="input-group-addon">会员姓名：</span>
-													<input type="text" class="form-control" v-model="cardLossData.name" placeholder="请输入会员姓名"/>
+													<input   class="form-control" v-model="cardLossData.name" placeholder="请输入会员姓名"/>
 												</div>
 												<div class="input-group col-lg-4 col-md-6">
 													<span class="input-group-addon">生日：</span>
-													<input type="text"  class="form-control" v-model="cardLossData.birthday" readonly/>
+													<input    class="form-control" v-model="cardLossData.birthday" readonly/>
 												</div>
 												<div class="input-group col-lg-4 col-md-6 marg1200">
 													<span class="input-group-addon">性别：</span>
@@ -1161,7 +1161,7 @@
 												</div>
 												<!--<div class="input-group col-lg-3 col-md-3">-->
 													<!--<span class="input-group-addon" readonly>微信：</span>-->
-													<!--<input type="text" class="form-control" readonly/>-->
+													<!--<input   class="form-control" readonly/>-->
 												<!--</div>-->
 											</div>
 											<div class="tab-text col-lg-12 col-md-12">
@@ -1342,15 +1342,15 @@
                         <div class="McText col-lg-12">
                             <div class="input-group col-lg-4 col-md-6">
                                 <span class="input-group-addon">手机号码：</span>
-                                <input type="text" class="form-control" v-model.number="memberForm.mobile" maxlength="11" placeholder="请输入手机号"/>
+                                <input   class="form-control" v-model.number="memberForm.mobile" maxlength="11" placeholder="请输入手机号"/>
                             </div>
                             <div class="input-group col-lg-3 col-md-6">
                                 <span class="input-group-addon">会员姓名：</span>
-                                <input type="text" class="form-control" v-model="memberForm.name" placeholder="请输入会员姓名"/>
+                                <input   class="form-control" v-model="memberForm.name" placeholder="请输入会员姓名"/>
                             </div>
                             <div class="input-group col-lg-3 col-md-6">
                                 <span class="input-group-addon">生日：</span>
-                                <input type="text"  class="form-control" v-model="memberForm.birthday" readonly/>
+                                <input    class="form-control" v-model="memberForm.birthday" readonly/>
                             </div>
                             <div class="input-group col-lg-2 col-md-6">
                                 <span class="input-group-addon">性别：</span>
@@ -1363,14 +1363,14 @@
                         <div class="McText col-lg-12">
                             <div class="input-group col-lg-5 col-md-6">
                                 <span class="input-group-addon">验证码：</span>
-                                <input type="text" class="form-control" v-model="memberForm.mobileCode"/>
+                                <input   class="form-control" v-model="memberForm.mobileCode"/>
                                 <div class="input-group-btn">
                                     <input class="form-control btnSendCode readCard" type="button" v-model="memberForm.codeBtn" @click="sendCode" :disabled="memberForm.disabled"/>
                                 </div>
                             </div>
                             <div class="input-group col-lg-7 col-md-12">
                                 <span class="input-group-addon">证件号码：</span>
-                                <input type="text" class="form-control" v-model="memberForm.IdNumber" readonly/>
+                                <input  class="form-control" v-model="memberForm.IdNumber" readonly/>
                                 <div class="input-group-btn">
                                     <button type="button" class="btn btn-default readCard">读取</button>
                                 </div>
@@ -1405,7 +1405,7 @@
 	<div class="footer" :class="{membershipDetails:footerShow}">
         <div class="btn-group dropup col-lg-3 col-md-3">
             <button type="button" class="btn btn-default">{{dropChooseTxt1}}</button>
-            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"  aria-expanded="false">
                 <span class="caret"></span>
             </button>
             <ul class="dropdown-menu dropChoosesty">
@@ -1413,7 +1413,7 @@
                 <li @click="dropChoose('1')"><span class="iconfont icon-shenfenzhengrenzheng"></span>身份证</li>
                 <li @click="dropChoose('2')"><span class="iconfont icon-3"></span>手动输入</li>
             </ul>
-            <input type="text" class="form-control" v-model="cardLossData.name" placeholder="请输入会员姓名"/>
+            <input  class="form-control" v-model="cardLossData.name" placeholder="请输入会员姓名"/>
             <button type="button" class="btn btn-default">{{dropChooseTxt2}}</button>
         </div>
 		<ul class="member col-lg-9 col-md-9" @click="membershipDetails">
@@ -1470,6 +1470,13 @@
             memberLevel :[],
             memberFood :[],
             buyDetails :[],
+            repairCoinData :[],
+            repairCoin:{
+                balanceIndex:"0",
+                qty:"",
+                repairType:"1",
+				note:""
+			},
             memberForm:{
                 name:"",
                 sex:"0",
@@ -1506,8 +1513,6 @@
 				codeBtn:"获取验证码",
 				IdNumber:""
             },
-            handle:{
-			},
             onSwitch0:false,
             onSwitch1:false,
             onSwitch2:false,
@@ -1608,6 +1613,7 @@
             registerCheckOut:false,
             shopCheckOut:true,
             registerCheckOutData:null,
+            deviceId:"",
             operateType:"",
             dropChooseTxt1:"读卡器",
             dropChooseTxt2:"读卡",
@@ -1881,7 +1887,6 @@
                     if (res.data.result_code === '1') {
                         $('#fastModal').modal('show');
                         that.onFocus = true;
-
                     }
                 }).catch(function (err) {
                     console.log(err);
@@ -1981,6 +1986,9 @@
                                         that.updateOrder = false;
                                         that.msg = "挂单成功！";
                                         $('#myModal').modal('show');
+                                        setTimeout(function () {
+                                            $('#myModal').modal('hide');
+                                        }, 1500);
                                     }
                                 }).catch(function (err) {
                                     console.log(err);
@@ -2026,6 +2034,9 @@
                                         that.flwOrderId = orderFlwId;
                                         that.msg = "挂单成功！";
                                         $('#myModal').modal('show');
+                                        setTimeout(function () {
+                                            $('#myModal').modal('hide');
+                                        }, 1500);
                                     }
                                 }).catch(function (err) {
                                     console.log(err);
@@ -2224,7 +2235,7 @@
 //			按手机号查询会员信息
             getMember:function () {
 			    var that = this;
-                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,mobile:that.cardLossData.mobile,smsCode:that.cardLossData.mobileCode};
+                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,mobile:that.cardLossData.mobile,code:that.cardLossData.mobileCode};
                 console.log(obj);
                 console.log(that.cardLossData.mobile != 11 || that.cardLossData.mobileCode == "");
 			    if(that.cardLossData.mobile.length != 11 || that.cardLossData.mobileCode == ""){
@@ -2234,33 +2245,17 @@
                         $('#myModal').modal('hide');
                     }, 1500);
 				}else{
-
-                    axios.post('/XCCloud/Member?action=GetMenberCardInfoByPhone', obj).then(function (res) {	//获取会员等级
+                    axios.post('/XCCloud/Member?action=getCardListByPhone', obj).then(function (res) {
                         console.log(res.data);
                         that.msgPrompt(res.data);
                         if (res.data.result_code === '1') {
                             that.cardList = res.data.result_data;
-//                            var memberLevel_ = [];
-//                            for(var i =0;i<res.data.result_data.length;i++){
-//                                memberLevel_.push({
-//                                    coverURL:res.data.result_data[i].coverURL,
-//                                    deposit: res.data.result_data[i].deposit,
-//                                    memberLevelId: res.data.result_data[i].memberLevelId,
-//                                    memberLevelName: res.data.result_data[i].memberLevelName,
-//                                    openFee: res.data.result_data[i].openFee,
-//                                    selected: false
-//                                });
-//                            }
-//                            that.memberLevel = memberLevel_;
-//                            that.operationShow = false;
-//                            that.saleShow = false;
-//                            that.memberShow = true;
+                            $('#cardList').modal('show');
                         }
                     }).catch(function (err) {
                         console.log(err);
                     });
 				}
-
             },
 //          补卡、换卡
             supplementCard:function(operateType){
@@ -2729,7 +2724,6 @@
                 switch(index){
                     case 'All':
                         index = 0;
-//                        foodTypeAll = 0;
                         foodTypeAll = "-2";
                         console.log(that.saleTitle.length);
                         that.screeningTitle = true;
@@ -2739,7 +2733,7 @@
                         break;
                     case 0:
 //                        that.treeShow = true;
-                        foodTypeAll = "0";
+                        foodTypeAll = "-1";
                         console.log(index);
                         index++;
 //                        that.$nextTick(function () {
@@ -2759,6 +2753,7 @@
                         break;
                     case 1:
                         that.treeShow = true;
+                        foodTypeAll = "-2";
                         that.screeningTitle = true;
                         console.log(index);
                         index++;
@@ -2785,7 +2780,7 @@
                 }
 
 				console.log(foodTypeAll);
-				$(".saleTitleBg").find("li").eq(index).addClass("on").siblings().removeClass("on");
+				$(".salesTitle").find("li").eq(index).addClass("on").siblings().removeClass("on");
                 that.getMeal(that.customerType,foodTypeAll);
             },
 //          单品标题筛选
@@ -2927,8 +2922,8 @@
 //          余额兑换
             getExchangeList:function(){
                 var that = this;
-                $('#balanceExchange').modal('show');
                 var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,ICCardId:that.icCardId};
+                console.log(obj);
                 axios.post('/XCCloud/Member?action=getBalanceExchangeList', obj).then(function (res) {	//获取会员等级
                     console.log(res.data);
                     that.msgPrompt(res.data);
@@ -2942,7 +2937,6 @@
                             that.balanceExchangeData.balanceExchange = that.balanceExchangeData.selectList[0].Balance;
                             that.balanceExchangeData.balance = that.balanceExchangeData.selectList[0].BalanceTotal;
                             that.balanceExchangeData.ExchangeRate = that.balanceExchangeData.selectList[0].TargetChargeList[0].ExchangeRate;
-
                     }
                 }).catch(function (err) {
                     console.log(err);
@@ -2957,51 +2951,111 @@
                 that.balanceExchangeData.balanceExchange = that.balanceExchangeData.selectList[that.balanceExchangeData.selectValue].Balance;
                 that.balanceExchangeData.balance = that.balanceExchangeData.selectList[that.balanceExchangeData.selectValue].BalanceTotal;
                 that.balanceExchangeData.ExchangeRate = that.balanceExchangeData.selectList[that.balanceExchangeData.selectValue].TargetChargeList[0].ExchangeRate;
+                that.balanceExchangeData.inputExchange = "";
+                that.balanceExchangeData.exchangeValue = "";
             },
 //          selectType改变事件
             selectType:function () {
                 var that = this;
                 that.balanceExchangeData.ExchangeRate = that.balanceExchangeData.selectList[that.balanceExchangeData.selectValue].TargetChargeList[that.balanceExchangeData.selectType].ExchangeRate;
+                that.balanceExchangeData.inputExchange = "";
+                that.balanceExchangeData.exchangeValue = "";
             },
 //          inputExchange改变事件
             inputExchange:function () {
                 var that = this;
-//                var AddingType= that.balanceExchangeData.ExchangeRate = that.balanceExchangeData.selectList[that.balanceExchangeData.selectValue].TargetChargeList[that.balanceExchangeData.selectType].;
-//                var amountTotal2_= 0;
-//                console.log(newValue);
-//                for(var i= 0;i<newValue.length;i++){
-//                    if(newValue[i].ExchangeQty > newValue[i].Balance){
-//                        that.msg = "请正确输入！";
-//                        $('#myModal').modal('show');
-//                        newValue[i].ExchangeQty = 0;
-//                    }else {
-//                        var value_ = newValue[i].ExchangeQty*newValue[i].ExchangeRate;
-//                        var decimal= Math.pow(10,newValue[i].DecimalNumber);
-//                        value_ = value_*decimal;
-//                        console.log(newValue[i].AddingType == 0);
-//                        switch (newValue[i].AddingType){
-//                            case 0:
-//                                value_= parseInt(value_);
-//                                break;
-//                            case 1:
-//                                value_= Math.ceil(value_);
-//                                break;
-//                            case 2:
-//                                value_= Math.round(value_);
-//                                break;
-//                            default:
-//                                break;
-//                        }
-//                        console.log(value_);
-//                        newValue[i].ExchangeValue =value_/decimal;
-//                        amountTotal1_=0+amountTotal1_ + newValue[i].ExchangeQty*1;
-//                        amountTotal2_=0+amountTotal2_ + newValue[i].ExchangeValue*1;
-//                    }
+				if(that.balanceExchangeData.inputExchange.length > 0){
+                    var decimal= Math.pow(10,that.balanceExchangeData.selectList[that.balanceExchangeData.selectValue].TargetChargeList[that.balanceExchangeData.selectType].DecimalNumber);
+				    var value = that.balanceExchangeData.inputExchange*that.balanceExchangeData.ExchangeRate*decimal;
+                    var AddingType = that.balanceExchangeData.selectList[that.balanceExchangeData.selectValue].TargetChargeList[that.balanceExchangeData.selectType].AddingType;
+                    switch (AddingType){
+                            case 0:
+                                value= parseInt(value);
+                                break;
+                            case 1:
+                                value= Math.ceil(value);
+                                break;
+                            case 2:
+                                value= Math.round(value);
+                                break;
+                            default:
+                                break;
+                        }
+					that.balanceExchangeData.exchangeValue = value/decimal
+				}
             },
-//			存币
+//          兑换事件
+			balanceExchange:function(){
+                var that = this;
+                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,ICCardId:that.icCardId,balanceId:that.balanceExchangeData.selectList[that.balanceExchangeData.selectValue].BalanceId,exchangeQty:that.balanceExchangeData.inputExchange,exchangeRuleId:that.balanceExchangeData.selectList[that.balanceExchangeData.selectValue].TargetChargeList[that.balanceExchangeData.selectType].ExchangeRuleId};
+                console.log(obj);
+                axios.post('/XCCloud/Member?action=balanceExchange', obj).then(function (res) {	//获取会员等级
+                    console.log(res.data);
+                    that.msgPrompt(res.data);
+                    if (res.data.result_code === '1') {
+                        $('#balanceExchange').modal('hide');
+                        that.msg = "兑换成功";
+                        $('#myModal').modal('show');
+                        that.balanceExchangeData.inputExchange = "";
+                        that.balanceExchangeData.exchangeValue = "";
+                        setTimeout(function () {
+                            $('#myModal').modal('hide');
+                        }, 1500);
+
+                    }
+                }).catch(function (err) {
+                    console.log(err);
+                });
+			},
+//			补币
             saveManual:function () {
-            	$('#ManualSModal').modal('show');
+                var that = this;
+                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken};
+                console.log(obj);
+                axios.post('/XCCloud/Member?action=getRepairCoinBalanceType', obj).then(function (res) {	//获取会员等级
+                    console.log(res.data);
+                    that.msgPrompt(res.data);
+                    if (res.data.result_code === '1') {
+                        $('#ManualSModal').modal('show');
+                        that.repairCoinData = res.data.result_data;
+//                        that.msg = "兑换成功";
+//                        $('#myModal').modal('show');
+
+//                        that.balanceExchangeData.exchangeValue = "";
+//                        setTimeout(function () {
+//                            $('#myModal').modal('hide');
+//                        }, 1500);
+                    }
+                }).catch(function (err) {
+                    console.log(err);
+                });
             },
+//			补币提交
+            repairCoinFnc:function(){
+                var that = this;
+                console.log(that.repairCoin.balanceIndex);
+                console.log(that.repairCoin.qty);
+                console.log(that.repairCoin.repairType);
+                console.log(that.repairCoin.note);
+                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,iccardId:that.icCardId,balanceIndex:that.repairCoinData[that.repairCoin.balanceIndex].BalanceIndex,qty:that.repairCoin.qty,repairType:that.repairCoin.repairType,note:that.repairCoin.note};
+                console.log(obj);
+                axios.post('/XCCloud/Member?action=repairCoin', obj).then(function (res) {	//获取会员等级
+                    console.log(res.data);
+                    that.msgPrompt(res.data);
+                    if (res.data.result_code === '1') {
+                        $('#ManualSModal').modal('hide');
+
+                        that.msg = "补币成功";
+                        $('#myModal').modal('show');
+                        setTimeout(function () {
+                            $('#myModal').modal('hide');
+                        }, 1500);
+                        that.repairCoin.qty = "";
+                    }
+                }).catch(function (err) {
+                    console.log(err);
+                });
+			},
 //			提币
 			currency:function () {
                 $('#currencySModal').modal('show');

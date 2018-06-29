@@ -24,7 +24,6 @@ using XCCloudService.Business.Common;
 using Newtonsoft.Json;
 using XCCloudService.CacheService;
 using XCCloudService.Business.XCCloud;
-using System.Data.Objects;
 
 namespace XCCloudService.Api.XCCloud
 {    
@@ -1479,14 +1478,14 @@ namespace XCCloudService.Api.XCCloud
                 purview.CardStatus = card.CardStatus.Value;
 
                 var cardRight = from a in Data_Card_RightService.N.GetModels(t => t.CardID == card.ID)
-                                  join b in Data_Card_Right_StoreListService.N.GetModels(t => t.StoreID == storeId) on a.ID equals b.CardRightID
-                                  select new
-                                  {
-                                      AllowExitCoin = a.AllowExitCoin,
-                                      AllowSaleCoin = a.AllowSaleCoin,
-                                      AllowSaveCoin = a.AllowSaveCoin,
-                                      AllowFreeCoin = a.AllowFreeCoin
-                                  };
+                                join b in Data_Card_Right_StoreListService.N.GetModels(t => t.StoreID == storeId) on a.ID equals b.CardRightID
+                                select new
+                                {
+                                    AllowExitCoin = a.AllowExitCoin,
+                                    AllowSaleCoin = a.AllowSaleCoin,
+                                    AllowSaveCoin = a.AllowSaveCoin,
+                                    AllowFreeCoin = a.AllowFreeCoin
+                                };
 
                 var cardPurview = cardRight.ToList().FirstOrDefault();
 
@@ -2956,7 +2955,7 @@ namespace XCCloudService.Api.XCCloud
         
         #endregion
 
-        #region 补币（雷达出币待完成）
+        #region 补币
         /// <summary>
         /// 手工补币
         /// </summary>
@@ -2973,6 +2972,7 @@ namespace XCCloudService.Api.XCCloud
                 string strBalanceIndex = dicParas.ContainsKey("balanceIndex") ? dicParas["balanceIndex"].ToString() : string.Empty;
                 string qty = dicParas.ContainsKey("qty") ? dicParas["qty"].ToString() : string.Empty;
                 string repairType = dicParas.ContainsKey("repairType") ? dicParas["repairType"].ToString() : string.Empty;
+                string strDeviceId = dicParas.ContainsKey("deviceId") ? dicParas["deviceId"].ToString() : string.Empty;
                 string note = dicParas.ContainsKey("note") ? dicParas["note"].ToString() : string.Empty;
                 if (string.IsNullOrEmpty(iccardId))
                 {
@@ -3035,15 +3035,12 @@ namespace XCCloudService.Api.XCCloud
                 {
                     isRealCoin = 1;
                 }
-                int deviceId = 0;
+                int deviceId = strDeviceId.Toint(0);
                 using (TransactionScope ts = new TransactionScope(TransactionScopeOption.RequiresNew))
                 {
-                    if (repairType == "1")
-                    {
-                        //实物币  -- 发送出币指令
-                        
-                    }
-                    else if (repairType == "2")
+                    //如果 repairType == "1"， 实物出币，由前端发送出币指令
+                    //如果 repairType == "2"， 存入卡中，需要更新卡余额
+                    if (repairType == "2")
                     {
                         //存入卡中 -- 补币的余额
                         Data_Card_Balance balance = Data_Card_BalanceService.I.GetModels(t => t.MerchID == merchID && t.CardIndex == memberCard.ID && t.BalanceIndex == balanceIndex).FirstOrDefault();
@@ -3231,12 +3228,12 @@ namespace XCCloudService.Api.XCCloud
             try
             {
                 string errMsg = string.Empty;
-                string operateType = dicParas.ContainsKey("OperateType") ? dicParas["OperateType"].ToString() : string.Empty;
+                string operateType = dicParas.ContainsKey("operateType") ? dicParas["operateType"].ToString() : string.Empty;
                 //卡号(卡操作、手机操作)、提币数（公共）、提币密码、提币方式、余额类别、备注
                 string iccardId = dicParas.ContainsKey("iccardId") ? dicParas["iccardId"].ToString() : string.Empty;
                 string qty = dicParas.ContainsKey("qty") ? dicParas["qty"].ToString() : string.Empty;
                 string outCoinCode = dicParas.ContainsKey("outCoinCode") ? dicParas["outCoinCode"].ToString() : string.Empty;
-                string outCoinType = dicParas.ContainsKey("outCoinType") ? dicParas["outCoinType"].ToString() : string.Empty;
+                string strDeviceId = dicParas.ContainsKey("deviceId") ? dicParas["deviceId"].ToString() : string.Empty;
                 string strBalanceIndex = dicParas.ContainsKey("balanceIndex") ? dicParas["balanceIndex"].ToString() : string.Empty;
                 string note = dicParas.ContainsKey("note") ? dicParas["note"].ToString() : string.Empty;
 
@@ -3253,6 +3250,8 @@ namespace XCCloudService.Api.XCCloud
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "当前班次为空，不能进行续卡操作");
                 }
 
+                int deviceId = strDeviceId.Toint(0);
+
                 decimal quantity;
                 int balanceIndex;
                 //主卡
@@ -3262,12 +3261,12 @@ namespace XCCloudService.Api.XCCloud
                     quantity = qty.Todecimal(0); //余额类别索引
                     if (quantity <= 0)
                     {
-                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "补币数量错误");
+                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "提币数量错误");
                     }
                     balanceIndex = strBalanceIndex.Toint(0); //余额类别索引
                     if (balanceIndex == 0)
                     {
-                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "补币币种无效");
+                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "提币币种无效");
                     }
 
                     //卡操作 或 手机操作
@@ -3294,8 +3293,8 @@ namespace XCCloudService.Api.XCCloud
                         }
                         //判断附属卡是否达到限额
                         //EntityFunctions.DiffDays(DateTime.Now, e.ExpirationDate) 
-                        var consumeCoins = Flw_DeviceDataService.I.GetModels(t => t.ICCardID == memberCard.ICCardID && (t.BusinessType == 2 || t.BusinessType == 3) && EntityFunctions.DiffDays(t.CheckDate, schedule.CheckDate) == 0)
-                                        .Select(t => t.Coin).Sum().Value;
+                        var consumeCoins = Flw_DeviceDataService.I.GetModels(t => t.StoreID == storeId && t.ICCardID == memberCard.ICCardID && (t.BusinessType == 2 || t.BusinessType == 3) && t.CheckDate == schedule.CheckDate)
+                                        .Select(t => t.Coin).ToList().Sum().Value;
                         if(consumeCoins + quantity > memberCard.CardLimit)
                         {
                             return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "提币数量超出附属卡限额");
@@ -3304,12 +3303,6 @@ namespace XCCloudService.Api.XCCloud
                     else
                     {
                         parentCard = memberCard;
-                    }
-
-                    Base_MemberInfo member = Base_MemberInfoService.I.GetModels(t => t.ID == memberCard.MemberID).FirstOrDefault();
-                    if(member == null)
-                    {
-                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "持卡会员不存在");
                     }
 
                     //当前卡在当前门店的余额ID集合
@@ -3329,6 +3322,11 @@ namespace XCCloudService.Api.XCCloud
                     string targetBalanceId = targetBalanceIds.FirstOrDefault().BalanceId;
                     //余额实体
                     Data_Card_Balance balance = Data_Card_BalanceService.I.GetModels(t => t.ID == targetBalanceId).FirstOrDefault();
+                    if(quantity > balance.Balance)
+                    {
+                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "余额不足，提币数量超出余额数量");
+                    }
+
                     using (TransactionScope ts = new TransactionScope(TransactionScopeOption.RequiresNew))
                     {
                         balance.Balance -= quantity;
@@ -3341,20 +3339,24 @@ namespace XCCloudService.Api.XCCloud
                         fdd.ID = RedisCacheHelper.CreateStoreSerialNo(storeId);
                         fdd.MerchID = merchID;
                         fdd.StoreID = storeId;
-                        fdd.DeviceID = 0;
+                        fdd.DeviceID = deviceId;
+                        fdd.GameIndexID = 0;
+                        fdd.SiteName = "";
+                        fdd.SN = 0;
                         fdd.BusinessType = 2;
                         fdd.State = 1;
                         fdd.RealTime = DateTime.Now;
                         fdd.MemberID = memberCard.MemberID;
                         fdd.CreateStoreID = memberCard.StoreID;
-                        fdd.MemberName = "";
+                        fdd.MemberName = memberCard.CardName;
                         fdd.ICCardID = memberCard.ICCardID;
                         fdd.BalanceIndex = balanceIndex;
                         fdd.Coin = quantity;
                         fdd.RemainBalance = balance.Balance;
+                        fdd.OrderID = "";
                         fdd.Note = note;
                         fdd.CheckDate = schedule.CheckDate;
-                        if (!Flw_DeviceDataService.I.Update(fdd, false))
+                        if (!Flw_DeviceDataService.I.Add(fdd, false))
                         {
                             return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建提币记录失败");
                         }
@@ -3380,7 +3382,11 @@ namespace XCCloudService.Api.XCCloud
                     }
                     quantity = fdd.Coin.Value;
                     balanceIndex = fdd.BalanceIndex.Value;
-                    //出币
+                    fdd.State = 1;
+                    if(!Flw_DeviceDataService.I.Update(fdd, false))
+                    {
+                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "提币核销失败");
+                    }
                 }
                 else
                 {
@@ -3401,6 +3407,80 @@ namespace XCCloudService.Api.XCCloud
             }
         }
         #endregion
+        #endregion
+
+        #region 送币
+
+        #region 获取当前可送币列表
+        /// <summary>
+        /// 获取当前可送币列表
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
+        [Authorize(Roles = "StoreUser")]
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object getGiveCoinInfoList(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                string errMsg = string.Empty;
+                string iccardId = dicParas.ContainsKey("iccardId") ? dicParas["iccardId"].ToString() : string.Empty;
+                string strDeviceId = dicParas.ContainsKey("deviceId") ? dicParas["deviceId"].ToString() : string.Empty;
+                if (string.IsNullOrEmpty(iccardId))
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员卡号无效");
+                }
+
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+                string merchID = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+
+                //判断会员卡是否存在或是否存在多张相同卡号的会员卡
+                if (!MemberBusiness.ExistsCardByICCardId(iccardId, merchID, storeId, out errMsg))
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
+                }
+                //当前会员卡
+                Data_Member_Card memberCard = Data_Member_CardService.I.GetModels(t => t.MerchID == merchID && t.ICCardID == iccardId).FirstOrDefault();
+                //判断是否为附属卡
+                if (memberCard.CardType == 1)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "不支持附属卡");
+                }
+
+                //预赠币
+                //var queryGiveCoins = Flw_MemberLevelFree_Detail
+                //生日赠币
+
+                //输赢赠币
+
+
+
+
+
+
+
+                var queryBalance = from a in Data_Card_BalanceService.N.GetModels(t => t.MerchID == merchID && t.CardIndex == memberCard.ID)
+                                   join b in Data_Card_Balance_StoreListService.N.GetModels(t => t.StoreID == storeId) on a.ID equals b.CardBalanceID
+                                   join c in Dict_BalanceTypeService.N.GetModels(t => t.MerchID == merchID && t.MappingType == 1 && t.State == 1) on a.BalanceIndex equals c.ID
+                                   select new
+                                   {
+                                       BalanceIndex = a.BalanceIndex,
+                                       BalanceQty = a.Balance,
+                                       BalanceName = c.TypeName
+                                   };
+
+                var result = queryBalance.ToList();
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, result);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        #endregion
+
         #endregion
 
         [Authorize(Roles = "StoreUser")]

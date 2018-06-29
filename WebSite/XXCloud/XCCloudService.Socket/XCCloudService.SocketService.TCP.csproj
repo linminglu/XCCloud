@@ -60,6 +60,7 @@
     <Compile Include="Common\TcpConfig.cs" />
     <Compile Include="Common\TcpHelper.cs" />
     <Compile Include="HubService\XCGameClientHub.cs" />
+    <Compile Include="HubService\XCCloudUDPHub.cs" />
     <Compile Include="HubService\XCGameUDPHub.cs" />
     <Compile Include="Model\SocketDataModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

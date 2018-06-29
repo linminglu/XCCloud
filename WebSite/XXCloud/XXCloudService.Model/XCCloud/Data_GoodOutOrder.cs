@@ -21,6 +21,8 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> OrderType { get; set; }
         public Nullable<int> DepotID { get; set; }
         public Nullable<System.DateTime> CreateTime { get; set; }
+        public Nullable<int> LogistType { get; set; }
+        public string LogistOrderID { get; set; }
         public Nullable<int> OPUserID { get; set; }
         public Nullable<int> AuthorID { get; set; }
         public Nullable<System.DateTime> AuthorTime { get; set; }
@@ -29,6 +31,7 @@ namespace XCCloudService.Model.XCCloud
         public string WorkStation { get; set; }
         public Nullable<System.DateTime> CheckDate { get; set; }
         public Nullable<int> State { get; set; }
+        public string Note { get; set; }
         public string Verifiction { get; set; }
     }
 }

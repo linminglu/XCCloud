@@ -72,6 +72,12 @@
             </div>
         </div>
         <table class="layui-hide" id="goodsStorage" lay-filter="goodsStorage"></table>
+        <div class="layui-form-item">
+            <label class="layui-form-label">出库总额</label>
+            <div class="layui-input-block">
+                <input name="note" id="note" class="layui-input">
+            </div>
+        </div>
         <div style="text-align:center;">
             <button type="button" class="layui-btn" id="save">确定</button>
         </div>
@@ -187,25 +193,7 @@
             let _data=obj.data;
             let layevent=obj.event;
             id=_data.ID;
-//            if(layevent==='edit'){
-//                let _obj={'id':_data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
-//                let parseJson = JSON.stringify(_obj);
-//                $.ajax({
-//                    type:'post',
-//                    url:'/XCCloud/GoodsInfo?action=GetGoodOutOrder',
-//                    contentType: "application/json; charset=utf-8",
-//                    data:{parasJson: parseJson},
-//                    success: function (data) {
-//                        data = JSON.parse(data);
-//                        console.log(data);
-//                        if (data.result_code == 1) {
-//
-//                        } else {
-//                            layer.msg(data.result_msg);
-//                        }
-//                    }
-//                })
-//            }else
+
             if(layevent==='del'){      //删除
                 layer.confirm('确定删除此出库信息吗？', function(index){
                     let _obj={'id':_data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
@@ -273,6 +261,7 @@
                 'depotId':DepotID,
                 'GoodOutOrderDetail':storageGood,
                 'userToken':token,
+                'note':$('#note').val(),
                 'signkey':'1f626576304bf5d95b72ece2222e42c3'};
             let parseJson = JSON.stringify(_obj);
             $.ajax({

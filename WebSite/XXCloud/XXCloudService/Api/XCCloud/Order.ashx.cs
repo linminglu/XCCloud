@@ -675,7 +675,7 @@ namespace XXCloudService.Api.XCCloud
         {
             string errMsg = string.Empty;
             string registerMemberJson = dicParas.ContainsKey("registerMemberJson") ? dicParas["registerMemberJson"].ToString() : string.Empty;
-            string flwSeedId = dicParas.ContainsKey("flwSeedId") ? dicParas["flwSeedId"].ToString() : string.Empty;
+            //string flwSeedId = dicParas.ContainsKey("flwSeedId") ? dicParas["flwSeedId"].ToString() : string.Empty;
             string workStationId = dicParas.ContainsKey("workStationId") ? dicParas["workStationId"].ToString() : string.Empty;
             string flwOrderId = dicParas.ContainsKey("flwOrderId") ? dicParas["flwOrderId"].ToString() : string.Empty;
             string mobile = dicParas.ContainsKey("mobile") ? dicParas["mobile"].ToString() : string.Empty;

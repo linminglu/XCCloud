@@ -2014,6 +2014,12 @@ namespace XXCloudService.Api.XCCloud
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                             }
 
+                            if (model.AuthorFlag != (int)GoodOutInState.Pending)
+                            {
+                                errMsg = "已审核或已撤销的入库单不能修改";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+
                             if (!Data_GoodStorageService.I.Update(model))
                             {
                                 errMsg = "保存商品入库信息失败";
@@ -2115,9 +2121,9 @@ namespace XXCloudService.Api.XCCloud
                         }
 
                         var model = Data_GoodStorageService.I.GetModels(p => p.ID == id).FirstOrDefault();
-                        if (model.AuthorFlag == (int)GoodOutInState.Done)
+                        if (model.AuthorFlag != (int)GoodOutInState.Pending)
                         {
-                            errMsg = "已审核的入库信息不能删除";
+                            errMsg = "已审核或已撤销的入库信息不能删除";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 
@@ -2281,6 +2287,12 @@ namespace XXCloudService.Api.XCCloud
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 
+                        if (model.AuthorFlag != (int)GoodOutInState.Done)
+                        {
+                            errMsg = "未审核的入库单不能撤销";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
                         model.AuthorFlag = (int)GoodOutInState.Cancel;
                         model.AuthorID = logId;
                         if (!Data_GoodStorageService.I.Update(model))
@@ -2347,7 +2359,13 @@ namespace XXCloudService.Api.XCCloud
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 if (!dicParas.GetArray("exitDetails").Validarray("退货明细", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (!dicParas.Get("logistType").Validint("物流类别", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (!dicParas.Get("logistOrderId").Nonempty("物流单号", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
+                var logistType = dicParas.Get("logistType").Toint();
+                var logistOrderId = dicParas.Get("logistOrderId");
                 var storageOrderIndex = dicParas.Get("storageOrderIndex").Toint();
                 var exitCount = dicParas.Get("exitCount").Toint();
                 var exitCost = dicParas.Get("exitCost").Todecimal();
@@ -2368,7 +2386,7 @@ namespace XXCloudService.Api.XCCloud
                         }
 
                         var model = Data_GoodStorageService.I.GetModels(p => p.ID == storageOrderIndex).FirstOrDefault();
-                        if (model.AuthorFlag != 1)
+                        if (model.AuthorFlag != (int)GoodOutInState.Done)
                         {
                             errMsg = "未审核或已撤销的入库单不能退货";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -2386,6 +2404,8 @@ namespace XXCloudService.Api.XCCloud
                         exitModel.ExitTime = DateTime.Now;
                         exitModel.CheckDate = DateTime.Now.Todate();
                         exitModel.UserID = logId;
+                        exitModel.LogistType = logistType;
+                        exitModel.LogistOrderID = logistOrderId;
                         if (!Data_GoodExitInfoService.I.Add(exitModel))
                         {
                             errMsg = "保存退货信息失败";
@@ -2633,11 +2653,28 @@ namespace XXCloudService.Api.XCCloud
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 if (!dicParas.GetArray("goodOutOrderDetail").Validarray("出库明细", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (!dicParas.Get("logistType").Validint("物流类别", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (!dicParas.Get("logistOrderId").Nonempty("物流单号", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (dicParas.Get("orderType").Toint() == (int)GoodOutOrderType.Transfer) //转仓出库
+                {
+                    if (!dicParas.Get("inDepotId").Validintnozero("入库仓库ID", out errMsg))
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
+                    if (dicParas.Get("inDepotId").Toint() == dicParas.Get("depotId").Toint())
+                    {
+                        errMsg = "转仓时出库仓库不能与入库仓库相同";
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
+                }
+                    
                 var id = dicParas.Get("id").Toint(0);
                 var goodOutOrderDetail = dicParas.GetArray("goodOutOrderDetail");
                 var depotId = dicParas.Get("depotId").Toint();
-
+                var orderType = dicParas.Get("orderType").Toint();
+                var inDepotId = dicParas.Get("inDepotId").Toint();
+                
                 //开启EF事务
                 using (TransactionScope ts = new TransactionScope())
                 {
@@ -2651,7 +2688,7 @@ namespace XXCloudService.Api.XCCloud
                             model.MerchID = merchId;
                             model.StoreID = storeId;
                             model.OPUserID = logId;
-                            model.State = (int)GoodOutInState.Pending;
+                            model.State = (orderType == (int)GoodOutOrderType.Transfer) ? (int)GoodOutInState.Done : (int)GoodOutInState.Pending; //转仓出库无需审核
                             model.CreateTime = DateTime.Now;
                             model.CheckDate = Store_CheckDateService.I.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)).OrderByDescending(or => or.CheckDate).Select(o => o.CheckDate).FirstOrDefault() ?? DateTime.Now.Todate();  //获取当前营业日期
                             if (!Data_GoodOutOrderService.I.Add(model))
@@ -2665,6 +2702,12 @@ namespace XXCloudService.Api.XCCloud
                             if (model.ID == 0)
                             {
                                 errMsg = "该出库单不存在";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+
+                            if (model.State != (int)GoodOutInState.Pending)
+                            {
+                                errMsg = "已审核或已撤销的出库单不能修改";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                             }
 
@@ -2725,6 +2768,16 @@ namespace XXCloudService.Api.XCCloud
                             }
                         }
 
+                        //转仓出库修改库存信息
+                        if (orderType == (int)GoodOutOrderType.Transfer) //转仓出库
+                        {
+                            //更新商品出库存
+
+                            //创建入库单
+
+                            //更新商品入库存
+                        }
+
                         ts.Complete();
                     }
                     catch (DbEntityValidationException e)
@@ -2774,9 +2827,9 @@ namespace XXCloudService.Api.XCCloud
                         }
 
                         var model = Data_GoodOutOrderService.I.GetModels(p => p.ID == id).FirstOrDefault();
-                        if (model.State == (int)GoodOutInState.Done)
+                        if (model.State != (int)GoodOutInState.Pending)
                         {
-                            errMsg = "已审核的出库信息不能删除";
+                            errMsg = "已审核或已撤销的出库信息不能删除";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 
@@ -2940,6 +2993,11 @@ namespace XXCloudService.Api.XCCloud
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 
+                        if (model.State != (int)GoodOutInState.Done)
+                        {
+                            errMsg = "未审核的出库单不能撤销";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
                         model.State = (int)GoodOutInState.Cancel;
                         model.CancelUserID = logId;
                         model.CancelTime = DateTime.Now;

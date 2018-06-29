@@ -91,10 +91,6 @@
             }
         });
         //导出
-        // table.on('tool(stockManage)',function (obj) {
-        //     let _data=obj.data;
-        //     let layEvent=obj.event;
-        //     if(layEvent==='export'){
         $('#exportBtn').on('click',function () {
             var  obj={"depotId":depotList,"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
             var url="/XCCloud/GoodsInfo?action=ExportGoodsUnderWarning";
@@ -115,8 +111,6 @@
             })
         })
 
-        //     }
-        // })
     });
     function initTable(table,arr) {
         table.render({
@@ -138,7 +132,13 @@
                 , {field: 'InitialTotal', title: '期初库存金额', align: 'center'}
                 , {field: 'RemainCount', title: '当前库存', align: 'center'}
                 , {field: 'RemainTotal', title: '当前库存金额', align: 'center'}
-                , {field: 'AvailableCount', title: '可调拨数', align: 'center'}
+                , {field: 'AvailableCount', title: '可调拨数', align: 'center',templet:function (d) {
+                        if(d.AvailableCount>d.MaxValue||d.AvailableCount>d.RemainCount){
+                            return '<p style="color: red">'+d.AvailableCount+'</p>'
+                        }else {
+                            return d.AvailableCount
+                        }
+                    }}
                 // ,{fixed: 'right',title: '操作', width:140, align:'center', toolbar: '#barDemo'}
                 ]]
             , page: {page: true, limits: [10, 15, 20, 30, 50, 100]}

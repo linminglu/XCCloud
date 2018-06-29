@@ -20,7 +20,7 @@
     }
 </style>
 <body>
-<div class="layui-row">
+<div class="layui-row" style="padding: 10px">
     <blockquote style="text-align: right;padding-right: 150px;"
                 class="layui-col-md12 layui-col-xs12 layui-col-lg12 layui-elem-quote">
         <button type="button" class="layui-btn layui-btn-normal" id="addNew"><i class="layui-icon">&#xe654;</i>新增
@@ -84,6 +84,7 @@
                 <label class="layui-form-label">单局扣币数</label>
                 <div class="layui-input-inline">
                     <input type="text" name="PushCoin1" class="layui-input" id="PushCoin1">
+                    <span class="layui-unit">个</span>
                 </div>
             </div>
             <div class="layui-inline PushLevel">
@@ -118,6 +119,7 @@
                 <label class="layui-form-label">刷卡即扣延时</label>
                 <div class="layui-input-inline">
                     <input type="text" name="ReadDelay1" class="layui-input" id="ReadCatTime1" value="0">
+                    <span class="layui-unit">秒</span>
                 </div>
             </div>
 
@@ -137,7 +139,8 @@
                         <div class="layui-inline Area">
                             <label class="layui-form-label">占地面积(m^2)</label>
                             <div class="layui-input-inline">
-                                <input type="text" class="layui-input" placeholder="平方米" id="Area" name="Area">
+                                <input type="text" class="layui-input" id="Area" name="Area">
+                                <span class="layui-unit">平米</span>
                             </div>
                         </div>
                         <div class="layui-inline ChangeTime">
@@ -149,7 +152,8 @@
                         <div class="layui-inline Price">
                             <label class="layui-form-label">采购价格</label>
                             <div class="layui-input-inline">
-                                <input type="text" class="layui-input" placeholder="元" id="Price" name="Price">
+                                <input type="text" class="layui-input"  id="Price" name="Price">
+                                <span class="layui-unit">元</span>
                             </div>
                         </div>
                         <div class="layui-inline Evaluation">
@@ -242,15 +246,17 @@
                                     </div>
                                 </div>
                                 <div class="layui-inline">
-                                    <label class="layui-form-label">出奖概率下限(%)</label>
+                                    <label class="layui-form-label">出奖概率下限</label>
                                     <div class="layui-input-inline">
                                         <input type="text" class="layui-input" name="LowLimit">
+                                        <span class="layui-unit">%</span>
                                     </div>
                                 </div>
                                 <div class="layui-inline">
-                                    <label class="layui-form-label">出奖概率上限(%)</label>
+                                    <label class="layui-form-label">出奖概率上限</label>
                                     <div class="layui-input-inline">
                                         <input type="text" class="layui-input" name="HighLimit">
+                                        <span class="layui-unit">%</span>
                                     </div>
                                 </div>
                                 <div class="layui-inline">
@@ -287,8 +293,9 @@
                                     <div class="layui-form-mid">张彩票额外赠送</div>
                                     <div class="layui-input-inline" style="width: 130px">
                                         <input type="text" class="layui-input" name="sendcount">
+                                        <span class="layui-unit">张</span>
                                     </div>
-                                    <div class="layui-form-mid">张</div>
+                                    <!--<div class="layui-form-mid">张</div>-->
                                 </div>
                                 <div class="layui-inline" style="width: 140px;">
                                     <div class="layui-input-inline">
@@ -311,7 +318,8 @@
                                 <div class="layui-inline areaEasy">
                                     <label class="layui-form-label">占地面积(m^2)</label>
                                     <div class="layui-input-inline">
-                                        <input type="text" class="layui-input" placeholder="平方米" name="hArea">
+                                        <input type="text" class="layui-input" placeholder="" name="hArea">
+                                        <span class="layui-unit">平米</span>
                                     </div>
                                 </div>
                                 <div class="layui-inline buyTimeEasy">
@@ -323,7 +331,8 @@
                                 <div class="layui-inline buyPriceEasy">
                                     <label class="layui-form-label">采购价格</label>
                                     <div class="layui-input-inline">
-                                        <input type="text" class="layui-input" placeholder="元" name="hPrice">
+                                        <input type="text" class="layui-input" placeholder="" name="hPrice">
+                                        <span class="layui-unit">元</span>
                                     </div>
                                 </div>
                                 <div class="layui-inline saleEasy">
@@ -366,6 +375,7 @@
                                     <div class="layui-input-inline">
                                         <input type="text" name="ReadDelay" class="layui-input" id="ReadCatTime"
                                                value="0">
+                                        <span class="layui-unit">秒</span>
                                     </div>
                                 </div>
                                 <div class="layui-inline AllowRealPush">

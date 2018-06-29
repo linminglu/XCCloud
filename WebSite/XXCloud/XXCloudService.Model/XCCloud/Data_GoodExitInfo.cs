@@ -26,6 +26,8 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> ExitCount { get; set; }
         public Nullable<decimal> ExitCost { get; set; }
         public Nullable<decimal> ExitTotal { get; set; }
+        public Nullable<int> LogistType { get; set; }
+        public string LogistOrderID { get; set; }
         public string Note { get; set; }
         public string Verifiction { get; set; }
     }

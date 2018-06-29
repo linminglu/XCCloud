@@ -150,9 +150,7 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Flw_MemberCard_Exit> Flw_MemberCard_Exit { get; set; }
         public virtual DbSet<Data_GameFreeLotteryRule> Data_GameFreeLotteryRule { get; set; }
         public virtual DbSet<Base_DeviceInfo_Ext> Base_DeviceInfo_Ext { get; set; }
-        public virtual DbSet<Data_GoodOutOrder> Data_GoodOutOrder { get; set; }
         public virtual DbSet<Data_GameInfo> Data_GameInfo { get; set; }
-        public virtual DbSet<Data_GoodExitInfo> Data_GoodExitInfo { get; set; }
         public virtual DbSet<Data_Card_Balance_StoreList> Data_Card_Balance_StoreList { get; set; }
         public virtual DbSet<Data_Card_Right> Data_Card_Right { get; set; }
         public virtual DbSet<Data_Card_Right_StoreList> Data_Card_Right_StoreList { get; set; }
@@ -190,7 +188,6 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Store_CheckDate> Store_CheckDate { get; set; }
         public virtual DbSet<Flw_MemberCard_BalanceCharge> Flw_MemberCard_BalanceCharge { get; set; }
         public virtual DbSet<Flw_Order_Detail> Flw_Order_Detail { get; set; }
-        public virtual DbSet<Flw_Food_Exit> Flw_Food_Exit { get; set; }
         public virtual DbSet<Flw_Game_Watch> Flw_Game_Watch { get; set; }
         public virtual DbSet<Data_Member_Card> Data_Member_Card { get; set; }
         public virtual DbSet<Base_MerchantInfo> Base_MerchantInfo { get; set; }
@@ -198,7 +195,12 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Flw_Order> Flw_Order { get; set; }
         public virtual DbSet<Dict_BalanceType> Dict_BalanceType { get; set; }
         public virtual DbSet<Dict_System> Dict_System { get; set; }
-        public virtual DbSet<Flw_MemberCard_Free> Flw_MemberCard_Free { get; set; }
         public virtual DbSet<Flw_DeviceData> Flw_DeviceData { get; set; }
+        public virtual DbSet<Flw_MemberCard_Free> Flw_MemberCard_Free { get; set; }
+        public virtual DbSet<Flw_Food_Exit> Flw_Food_Exit { get; set; }
+        public virtual DbSet<Flw_MemberLevelFree> Flw_MemberLevelFree { get; set; }
+        public virtual DbSet<Flw_MemberLevelFree_Detail> Flw_MemberLevelFree_Detail { get; set; }
+        public virtual DbSet<Data_GoodExitInfo> Data_GoodExitInfo { get; set; }
+        public virtual DbSet<Data_GoodOutOrder> Data_GoodOutOrder { get; set; }
     }
 }

@@ -361,5 +361,106 @@ namespace XXCloudService.Api.XCCloud
                 return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "无数据");
             }
         }
+
+
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object exitFood(Dictionary<string, object> dicParas)
+        {
+            XCCloudUserTokenModel userTokenModel = (XCCloudUserTokenModel)(dicParas[Constant.XCCloudUserTokenModel]);
+            TokenDataModel userTokenDataModel = (TokenDataModel)(userTokenModel.DataModel);
+
+            string flwOrderId = dicParas.ContainsKey("flwOrderId") ? dicParas["flwOrderId"].ToString() : string.Empty;
+            string note = dicParas.ContainsKey("note") ? dicParas["note"].ToString() : string.Empty;
+            string authorId = dicParas.ContainsKey("authorId") ? dicParas["authorId"].ToString() : string.Empty;
+            string exitFoodJson = dicParas.ContainsKey("exitFoodJson") ? dicParas["exitFoodJson"].ToString() : string.Empty;
+            string flwSendId = RedisCacheHelper.CreateCloudSerialNo(userTokenDataModel.StoreID, true);
+
+            List<Base_ExitFood> buyDetailList = Utils.DataContractJsonDeserializer<List<Base_ExitFood>>(exitFoodJson);
+            
+            if (string.IsNullOrEmpty(flwOrderId))
+            {
+                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "订单号不能为空");
+            }
+
+            if (string.IsNullOrEmpty(note))
+            {
+                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "注释不能为空");
+            }
+
+            string storedProcedure = "ExistFood";
+            SqlParameter[] sqlParameter = new SqlParameter[12];
+            sqlParameter[0] = new SqlParameter("@MerchId", SqlDbType.VarChar);
+            sqlParameter[0].Value = userTokenDataModel.MerchID;
+
+            sqlParameter[1] = new SqlParameter("@StoreId", SqlDbType.VarChar);
+            sqlParameter[1].Value = userTokenDataModel.StoreID;
+
+            sqlParameter[2] = new SqlParameter("@FlwOrderId", SqlDbType.Int);
+            sqlParameter[2].Value = flwOrderId;
+
+            sqlParameter[3] = new SqlParameter("@AuthorID", SqlDbType.Int);
+            sqlParameter[3].Value = authorId;
+
+            sqlParameter[4] = new SqlParameter("@UserID", SqlDbType.Int);
+            sqlParameter[4].Value = userTokenDataModel.CreateUserID;
+
+            sqlParameter[5] = new SqlParameter("@WorkStation", SqlDbType.VarChar,50);
+            sqlParameter[5].Value = userTokenDataModel.WorkStation;
+
+            String[] Ary = new String[] { "数据0", "数据1", "数据2" };
+            List<SqlDataRecord> listSqlDataRecord = new List<SqlDataRecord>();
+            SqlMetaData[] MetaDataArr = new SqlMetaData[] {
+                new SqlMetaData("category", SqlDbType.Int), 
+                new SqlMetaData("foodId", SqlDbType.Int),  
+                new SqlMetaData("foodCount", SqlDbType.Int)
+            };
+
+            for (int i = 0; i < buyDetailList.Count; i++)
+            {
+                List<object> listParas = new List<object>();
+                listParas.Add(buyDetailList[i].Category);
+                listParas.Add(buyDetailList[i].FoodId);
+                listParas.Add(buyDetailList[i].FoodCount);
+
+                var record = new SqlDataRecord(MetaDataArr);
+                for (int j = 0; j < Ary.Length; j++)
+                {
+                    record.SetValue(j, listParas[j]);
+                }
+                listSqlDataRecord.Add(record);
+            }
+
+            sqlParameter[6] = new SqlParameter("@ExistFood", SqlDbType.Structured);
+            sqlParameter[6].Value = listSqlDataRecord;
+
+            sqlParameter[7] = new SqlParameter("@FlwSeedId", SqlDbType.VarChar, 29);
+            sqlParameter[7].Value = flwSendId;
+
+            sqlParameter[8] = new SqlParameter("@Note", SqlDbType.VarChar, 200);
+            sqlParameter[8].Value = note;
+
+            sqlParameter[9] = new SqlParameter("@ExitFoodFlwId", SqlDbType.VarChar, 32);
+            sqlParameter[9].Direction = ParameterDirection.Output;
+
+            sqlParameter[10] = new SqlParameter("@ErrMsg", SqlDbType.VarChar, 200);
+            sqlParameter[10].Direction = ParameterDirection.Output;
+
+            sqlParameter[11] = new SqlParameter("@Return", SqlDbType.Int);
+            sqlParameter[11].Direction = ParameterDirection.ReturnValue;
+
+            XCCloudBLL.ExecuteStoredProcedureSentence(storedProcedure, sqlParameter);
+
+            if (sqlParameter[11].Value.ToString() == "1")
+            {
+                var obj = new {
+                    exitFoodFlwId = sqlParameter[9].Value.ToString()
+                };
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, obj);
+            }
+            else
+            {
+                return new ResponseModel(Return_Code.T, "", Result_Code.F, sqlParameter[10].Value.ToString());
+            }
+        }
     }
 }

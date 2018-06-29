@@ -161,10 +161,12 @@
         'obj': {'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'},
         'url': '/XCCloud/PushRule?action=QueryPushRule',
         'elem': '#pushCoinRule',
-        'cols': [{field: 'ID', title: '流水号', align: 'center'}
-            , {field: 'GameName', title: '游戏机名称', align: 'center'}
+        'cols': [
+            // {field: 'ID', title: '流水号', align: 'center'}
+            // ,
+            {field: 'GameName', title: '游戏机名称', align: 'center'}
             , {field: 'MemberLevelName', title: '会员级别', align: 'center'}
-            , {field: 'Week', title: '周数', align: 'center'}
+            // , {field: 'Week', title: '周数', align: 'center'}
             , {field: 'Allow_In', title: '允许投币', align: 'center',templet:'#allowIn'}
             , {field: 'Allow_Out', title: '允许退币', align: 'center',templet:'#allowOut'}
             , {field: 'Level', title: '优先级', align: 'center'}
@@ -204,6 +206,7 @@
                         , ckall: true    //启用全选功能，默认值：false
                         , ckallback: function () { } //全选框状态改变后执行的回调函数
                         ,checkedArr:checkedArr
+                        ,single:false
                     });
                 }
             }

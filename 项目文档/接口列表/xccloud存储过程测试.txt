@@ -33,15 +33,23 @@ exec GetFoodListInfo @StoreId,2,1,'-1,-2,0,1,2,3,4,5,6',@PriceLimit
 ----------------------------------------------------------------------------------------------------------------------------------------
 
 ----------------------------------------------------------------------------------------------------------------------------------------
+
+declare @MerchId varchar(15) = '100025'
 declare @WorkStation varchar(50) = 'lijunjie'
 declare @UserID int = 3
+declare @AuthorID int = 0
 declare @StoreId varchar(15) = '100025420106001'
-declare @FlwOrderId varchar(32) = '10002542010600120180625100110001'
+declare @FlwOrderId varchar(32) = '20180628284640413100025420106001'
+declare @FlwSeedId varchar(29) = '100025420106001' + '20180628' + '245555'
+declare @ExitFoodFlwId varchar(32) = ''
 declare @ExitFood as ExitFoodType
 insert @ExitFood(Category,FoodId,FoodCount) values(0,1,1)
 declare @ErrMsg varchar(200) = ''
-exec ExistFood @StoreId,@FlwOrderId,@UserID,@WorkStation,@ExitFood,@ErrMsg output
+declare @Note varchar(200) = ''
+exec ExistFood @MerchId,@StoreId,@FlwOrderId,@AuthorID,@UserID,@WorkStation,@ExitFood,@FlwSeedId,@Note,@ExitFoodFlwId output,@ErrMsg output
 print @ErrMsg
+print @ExitFoodFlwId
+
 ----------------------------------------------------------------------------------------------------------------------------------------
 
 ----------------------------------------------------------------------------------------------------------------------------------------
@@ -283,8 +291,9 @@ exec AddMemberCard @NewFlwSaleId,@RegisterMember,'100025420106001',21,'lijunjie'
 -----------------------------------------------------------------------------------------------------------------------------------------
 
 -----------------------------------------------------------------------------------------------------------------------------------------
+
 declare @StoreID varchar(15) = '100025420106001'
-declare @FlwOrderId varchar(32) = '10002542010600120180517000010001'
+declare @FlwOrderId varchar(32) = '20180628285750220100025420106001'
 declare @CustomerType int
 declare @ICCardId int
 declare @UserId int
@@ -302,11 +311,14 @@ declare @ChangeFee decimal(18,2)
 declare @CreateTime datetime
 declare @ErrMsg varchar(200)
 declare @ContainByIdResult int 
+declare @OrderStatus int = 0
 declare @Result int 
-exec @ContainByIdResult = [GetOrderContainById] @StoreID,@FlwOrderId,0,@CustomerType output,@ICCardId output,@UserId output,@PayCount output,@RealPay output,@FreePay output,@FoodCount output,
+exec @ContainByIdResult = [GetOrderContainById] @StoreID,@FlwOrderId,0,@OrderStatus output,@CustomerType output,@ICCardId output,@UserId output,@PayCount output,@RealPay output,@FreePay output,@FoodCount output,
   @DetailsGoodsCount output,@MemberLevelId output,@MemberLevelName output,@OpenFee output,@Deposit output,@RenewFee output,@ChangeFee output,@CreateTime output,
   @ErrMsg output,@ContainByIdResult output
-print @DetailsGoodsCount
+print @ContainByIdResult
+print @ErrMsg
+
 -----------------------------------------------------------------------------------------------------------------------------------------
 
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -639,7 +651,7 @@ insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values
 insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(3,0,2,0,10/2.0)
 insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(1,1,1,0,20)
 insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(4,2,1,0,30)
-declare @FlwSeedId varchar(29) = '100025420106001' + '20180517' + '100010'
+declare @FlwSeedId varchar(29) = '100025420106001' + '20180517' + '322222'
 exec @Return = CreateOrder @FoodSaleDetailList,@StoreId,@CustomerType,@Mobile,@MemberLevelId,@ICCardId,@PayCount,@FreePay,@OpenFee,@Deposit,
 @UserID,@WorkStation,@AuthorID,@Note,@OrderSource,@SaleCoinType,@FlwSeedId,@OrderFlwId output,@ErrMsg output
 print @Return 

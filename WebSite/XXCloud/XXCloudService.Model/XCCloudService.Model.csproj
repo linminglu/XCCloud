@@ -71,6 +71,7 @@
     <Compile Include="CustomModel\XCCloud\BaiduMapModel.cs" />
     <Compile Include="CustomModel\XCCloud\BaseGoodModel.cs" />
     <Compile Include="CustomModel\XCCloud\BaseMemberModel.cs" />
+    <Compile Include="CustomModel\XCCloud\Base_ExitFood.cs" />
     <Compile Include="CustomModel\XCCloud\Base_FoodType.cs" />
     <Compile Include="CustomModel\XCCloud\Base_DeviceInfoModel.cs" />
     <Compile Include="CustomModel\XCCloud\Data_FoodTypeListModel.cs" />
@@ -728,6 +729,12 @@
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Flw_MemberCard_Renew.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Flw_MemberLevelFree.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Flw_MemberLevelFree_Detail.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Flw_Order.cs">

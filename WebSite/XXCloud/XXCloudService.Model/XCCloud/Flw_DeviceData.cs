@@ -20,6 +20,7 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> DeviceID { get; set; }
         public Nullable<int> GameIndexID { get; set; }
         public string SiteName { get; set; }
+        public Nullable<int> SN { get; set; }
         public Nullable<int> BusinessType { get; set; }
         public Nullable<int> State { get; set; }
         public Nullable<System.DateTime> RealTime { get; set; }

@@ -167,8 +167,8 @@ namespace XCCloudService.WorkFlow
                     (_requestType == (int)RequestType.RequestMerch && IsStoreUser())
                    ) && (_merchId == _targetMerchId && _storeId == _inStoreId), "门店或总店申请")
                 .PermitIf(Trigger.SendDeal, State.SendDealed, () => 
-                    _requestType == (int)RequestType.MerchSend && IsMerchUser() 
-                    && (_merchId == _targetMerchId && _storeId == _outStoreId), "总店配送");
+                    _requestType == (int)RequestType.MerchSend && IsMerchUser()
+                    && (_merchId == _targetMerchId && _storeId == _outStoreId), "总部派发");
 
             _machine.Configure(State.Requested)
                 .PermitDynamicIf(_setRequestVerifyTrigger, s =>
@@ -193,7 +193,8 @@ namespace XCCloudService.WorkFlow
                 .PermitReentryIf(Trigger.SendDeal, () =>
                     (
                      (_requestType == (int)RequestType.MerchRequest && IsStoreUser()) ||
-                     (_requestType == (int)RequestType.MerchSend && IsMerchUser()) ||
+                     //总部是一次性派发
+                     //(_requestType == (int)RequestType.MerchSend && IsMerchUser()) ||
                      (_requestType == (int)RequestType.RequestMerch && IsMerchUser()) ||
                      (_requestType == (int)RequestType.RequestStore && IsStoreUser())
                     ) && (_merchId == _targetMerchId && _storeId == _outStoreId))
