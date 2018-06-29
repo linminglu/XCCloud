@@ -506,6 +506,8 @@ namespace XXCloudService.Api.XCCloud
                                     data_GameFreeLotteryRule.BaseLottery = baseLottery;
                                     data_GameFreeLotteryRule.FreeCount = freeCount;
                                     data_GameFreeLotteryRule.GameIndex = iId;
+                                    data_GameFreeLotteryRule.MerchID = merchId;
+                                    data_GameFreeLotteryRule.StoreID = storeId;
                                     Data_GameFreeLotteryRuleService.I.AddModel(data_GameFreeLotteryRule);
                                 }
                                 else

@@ -5,17 +5,32 @@
     <title>套餐类别设定</title>
     <link rel="stylesheet" href="layui/css/layui.css">
     <link rel="stylesheet" href="layui/css/layui_font.css">
+    <link rel="stylesheet" href="css/demo.css">
+    <link rel="stylesheet" href="css/iconfont.css">
 </head>
 <style>
-    .addImg{
-        cursor: pointer;
-        width: 50px;
-        height: 50px;
-        margin-left: 70px;
-        margin-top: 5px;
+    .name, .fontclass{
+        display: none;
     }
-    #imgBox img{
-        width: 80px;height: 80px;margin: 5px;display: inline-block;cursor: pointer
+    .main .clear li{
+        cursor: pointer;
+        width: 60px;
+        height: 60px;
+        margin: 8px;
+        background-color: #93D1FF;
+    }
+    .main .clear li i{
+        display: block;vertical-align: top;
+        margin: 0;
+        line-height: 60px;
+    }
+    .addImg{
+        display: block;
+        width: 60px;
+        height: 60px;
+        margin-left: 65px;
+        font-size: 40px;
+        color: #9F9F9F;
     }
 </style>
 <body>
@@ -39,13 +54,17 @@
             <div class="layui-inline">
                 <label  class="layui-form-label" style="height: 60px">默认图标</label>
                 <div class="layui-input-inline" style="height: 58px;border: 1px solid #e6e6e6;margin: 0 auto">
-                    <img class="addImg" src="./asset/addPrimary.png" alt="" id="primaryImg" >
+                    <i class="addImg icon iconfont icon-icon_jia"id="primaryImg" >
+
+                    </i>
                 </div>
             </div>
             <div class="layui-inline">
                 <label  class="layui-form-label" style="height: 60px">选中时图标</label>
                 <div class="layui-input-inline" style="height: 58px;border: 1px solid #e6e6e6;padding: 0 auto">
-                    <img  class="addImg" src="./asset/add.png" alt="" id="activeImg">
+                    <i  class="addImg icon iconfont icon-icon_jia"  id="activeImg">
+
+                    </i>
                 </div>
             </div>
         </div>
@@ -69,7 +88,312 @@
     </div>
 </div>
 
-<div id="imgBox" style="display:none;">
+<div id="imgBox" class="main markdown" style="display: none">
+    <h1>选择图标</h1>
+    <ul class="icon_lists clear">
+
+        <li>
+            <i class="icon iconfont icon-icon2"></i>
+            <div class="name">全部</div>
+            <div class="fontclass">.icon-icon2</div>
+        </li>
+
+        <li>
+            <i class="icon iconfont icon-dingdanchaxun"></i>
+            <div class="name">订单查询</div>
+            <div class="fontclass">.icon-dingdanchaxun</div>
+        </li>
+
+        <li>
+            <i class="icon iconfont icon-icon3"></i>
+            <div class="name">商品</div>
+            <div class="fontclass">.icon-icon3</div>
+        </li>
+
+        <li>
+            <i class="icon iconfont icon-jian"></i>
+            <div class="name">jian</div>
+            <div class="fontclass">.icon-jian</div>
+        </li>
+
+        <li>
+            <i class="icon iconfont icon-duqiaqi"></i>
+            <div class="name">读卡器</div>
+            <div class="fontclass">.icon-duqiaqi</div>
+        </li>
+
+        <li>
+            <i class="icon iconfont icon-quanbu-copy"></i>
+            <div class="name">全部</div>
+            <div class="fontclass">.icon-quanbu-copy</div>
+        </li>
+
+        <li>
+            <i class="icon iconfont icon-3"></i>
+            <div class="name">键盘</div>
+            <div class="fontclass">.icon-3</div>
+        </li>
+
+        <li>
+            <i class="icon iconfont icon-2"></i>
+            <div class="name">商品</div>
+            <div class="fontclass">.icon-2</div>
+        </li>
+
+        <li>
+            <i class="icon iconfont icon-iconjia"></i>
+            <div class="name">icon_jia</div>
+            <div class="fontclass">.icon-iconjia</div>
+        </li>
+
+        <li>
+            <i class="icon iconfont icon-libao"></i>
+            <div class="name">礼包</div>
+            <div class="fontclass">.icon-libao</div>
+        </li>
+
+        <li>
+            <i class="icon iconfont icon-touxiang"></i>
+            <div class="name">头像</div>
+            <div class="fontclass">.icon-touxiang</div>
+        </li>
+
+        <li>
+            <i class="icon iconfont icon-wodedaibi"></i>
+            <div class="name">我的代币</div>
+            <div class="fontclass">.icon-wodedaibi</div>
+        </li>
+
+        <li>
+            <i class="icon iconfont icon-ticket"></i>
+            <div class="name">门票</div>
+            <div class="fontclass">.icon-ticket</div>
+        </li>
+
+        <li>
+            <i class="icon iconfont icon-peitongruxue"></i>
+            <div class="name">陪同入学</div>
+            <div class="fontclass">.icon-peitongruxue</div>
+        </li>
+
+        <li>
+            <i class="icon iconfont icon-menpiao"></i>
+            <div class="name">门票</div>
+            <div class="fontclass">.icon-menpiao</div>
+        </li>
+
+        <li>
+            <i class="icon iconfont icon-shenfenzhengrenzheng"></i>
+            <div class="name">身份证认证</div>
+            <div class="fontclass">.icon-shenfenzhengrenzheng</div>
+        </li>
+
+        <li>
+            <i class="icon iconfont icon-huiyuanqia"></i>
+            <div class="name">会员卡</div>
+            <div class="fontclass">.icon-huiyuanqia</div>
+        </li>
+
+        <li>
+            <i class="icon iconfont icon-jingdianmenpiao"></i>
+            <div class="name">景点门票</div>
+            <div class="fontclass">.icon-jingdianmenpiao</div>
+        </li>
+
+        <li>
+            <i class="icon iconfont icon-youxi"></i>
+            <div class="name">游戏</div>
+            <div class="fontclass">.icon-youxi</div>
+        </li>
+
+        <li>
+            <i class="icon iconfont icon-lipinhuigou"></i>
+            <div class="name">礼品回购</div>
+            <div class="fontclass">.icon-lipinhuigou</div>
+        </li>
+
+        <li>
+            <i class="icon iconfont icon-icon"></i>
+            <div class="name">过户</div>
+            <div class="fontclass">.icon-icon</div>
+        </li>
+
+        <li>
+            <i class="icon iconfont icon-icon1"></i>
+            <div class="name">等级</div>
+            <div class="fontclass">.icon-icon1</div>
+        </li>
+
+        <li>
+            <i class="icon iconfont icon-youxi1"></i>
+            <div class="name">游戏</div>
+            <div class="fontclass">.icon-youxi1</div>
+        </li>
+
+        <li>
+            <i class="icon iconfont icon-touxiang1"></i>
+            <div class="name">头像</div>
+            <div class="fontclass">.icon-touxiang1</div>
+        </li>
+
+        <li>
+            <i class="icon iconfont icon-jishi"></i>
+            <div class="name">计时</div>
+            <div class="fontclass">.icon-jishi</div>
+        </li>
+
+        <li>
+            <i class="icon iconfont icon-huaban"></i>
+            <div class="name">门票首页</div>
+            <div class="fontclass">.icon-huaban</div>
+        </li>
+
+        <li>
+            <i class="icon iconfont icon-dingdanchaxun1"></i>
+            <div class="name">订单查询</div>
+            <div class="fontclass">.icon-dingdanchaxun1</div>
+        </li>
+
+        <li>
+            <i class="icon iconfont icon-libao1"></i>
+            <div class="name">礼包</div>
+            <div class="fontclass">.icon-libao1</div>
+        </li>
+
+        <li>
+            <i class="icon iconfont icon-jiabi"></i>
+            <div class="name">加币</div>
+            <div class="fontclass">.icon-jiabi</div>
+        </li>
+
+        <li>
+            <i class="icon iconfont icon-icon_jia"></i>
+            <div class="name">icon_jia</div>
+            <div class="fontclass">.icon-icon_jia</div>
+        </li>
+
+        <li>
+            <i class="icon iconfont icon-ziyuan"></i>
+            <div class="name">吧台服务</div>
+            <div class="fontclass">.icon-ziyuan</div>
+        </li>
+
+        <li>
+            <i class="icon iconfont icon-shangpin"></i>
+            <div class="name">商品</div>
+            <div class="fontclass">.icon-shangpin</div>
+        </li>
+
+        <li>
+            <i class="icon iconfont icon-menpiaohexiaomingxi"></i>
+            <div class="name">门票核销明细</div>
+            <div class="fontclass">.icon-menpiaohexiaomingxi</div>
+        </li>
+
+        <li>
+            <i class="icon iconfont icon-tuijian"></i>
+            <div class="name">游戏</div>
+            <div class="fontclass">.icon-tuijian</div>
+        </li>
+
+        <li>
+            <i class="icon iconfont icon-menpiao1"></i>
+            <div class="name">门票</div>
+            <div class="fontclass">.icon-menpiao1</div>
+        </li>
+
+        <li>
+            <i class="icon iconfont icon-libao2"></i>
+            <div class="name">礼包</div>
+            <div class="fontclass">.icon-libao2</div>
+        </li>
+
+        <li>
+            <i class="icon iconfont icon-touxiang2"></i>
+            <div class="name">头像</div>
+            <div class="fontclass">.icon-touxiang2</div>
+        </li>
+
+        <li>
+            <i class="icon iconfont icon-jiaobanguanli"></i>
+            <div class="name">交班管理</div>
+            <div class="fontclass">.icon-jiaobanguanli</div>
+        </li>
+
+        <li>
+            <i class="icon iconfont icon-jiaobanbaobiao"></i>
+            <div class="name">交班报表</div>
+            <div class="fontclass">.icon-jiaobanbaobiao</div>
+        </li>
+
+        <li>
+            <i class="icon iconfont icon-huiyuanqia1"></i>
+            <div class="name">会员卡</div>
+            <div class="fontclass">.icon-huiyuanqia1</div>
+        </li>
+
+        <li>
+            <i class="icon iconfont icon-neishiqingli"></i>
+            <div class="name">内饰清理</div>
+            <div class="fontclass">.icon-neishiqingli</div>
+        </li>
+
+        <li>
+            <i class="icon iconfont icon-sousuo"></i>
+            <div class="name">搜索</div>
+            <div class="fontclass">.icon-sousuo</div>
+        </li>
+
+        <li>
+            <i class="icon iconfont icon-dengji"></i>
+            <div class="name">等级</div>
+            <div class="fontclass">.icon-dengji</div>
+        </li>
+
+        <li>
+            <i class="icon iconfont icon-btnMsg"></i>
+            <div class="name">消息</div>
+            <div class="fontclass">.icon-btnMsg</div>
+        </li>
+
+        <li>
+            <i class="icon iconfont icon-chongzhi"></i>
+            <div class="name">充值</div>
+            <div class="fontclass">.icon-chongzhi</div>
+        </li>
+
+        <li>
+            <i class="icon iconfont icon-batai"></i>
+            <div class="name">吧台</div>
+            <div class="fontclass">.icon-batai</div>
+        </li>
+
+        <li>
+            <i class="icon iconfont icon-shouye-xinyongqiaguashi"></i>
+            <div class="name">首页-信用卡挂失</div>
+            <div class="fontclass">.icon-shouye-xinyongqiaguashi</div>
+        </li>
+
+        <li>
+            <i class="icon iconfont icon-shuzibi_jiaoyiguanli"></i>
+            <div class="name">数字币_交易管理</div>
+            <div class="fontclass">.icon-shuzibi_jiaoyiguanli</div>
+        </li>
+
+        <li>
+            <i class="icon iconfont icon-qinglikehu"></i>
+            <div class="name">清理客户</div>
+            <div class="fontclass">.icon-qinglikehu</div>
+        </li>
+
+        <li>
+            <i class="icon iconfont icon-guquandaibi"></i>
+            <div class="name">股权代币</div>
+            <div class="fontclass">.icon-guquandaibi</div>
+        </li>
+
+    </ul>
+</div>
 
 </div>
 </body>
@@ -121,7 +445,7 @@
             'dictKey':$('input[name="dictKey"]').val(),
             'comment':$('input[name="comment"]').val(),
             'enabled':enabled,
-                'dictvalue':$('#primaryImg').attr('src'),
+                'dictvalue':$('#primaryImg').text(),
                 // '':$('#activeImg').attr('src'),
             'userToken':token,
             'signkey':'1f626576304bf5d95b72ece2222e42c3'};
@@ -146,10 +470,7 @@
 
         $('.addImg').click(function () {
             imgStatus=$(this).attr('id');
-            $('#imgBox').html('');
-                for (let i in imgArr){
-                     $('#imgBox').append('<img src="asset/'+imgArr[i]+'" >')
-                }
+
          indexImg=  layer.open({
                title:"图片库",
                area:'800px',
@@ -157,8 +478,11 @@
                content:$('#imgBox')
            })
         });
-        $('#imgBox').on('click','img',function () {
-            $('#'+imgStatus).attr('src',$(this).attr('src'));
+        $('#imgBox').on('click','ul li',function () {
+            let str=$(this).find('div.fontclass').text();
+            str=str.substring(1,str.length);
+
+            $('#'+imgStatus).removeClass('icon-icon_jia').addClass(str);
             layer.close(indexImg);
         });
         table.on('tool(foodTypeTable)',function (obj) {

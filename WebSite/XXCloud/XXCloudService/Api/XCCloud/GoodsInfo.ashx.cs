@@ -1999,6 +1999,7 @@ namespace XXCloudService.Api.XCCloud
                             model.StoreID = storeId;
                             model.UserID = logId;
                             model.AuthorFlag = (int)GoodOutInState.Pending;
+                            model.RealTime = DateTime.Now;
                             model.CheckDate = Store_CheckDateService.I.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)).OrderByDescending(or => or.CheckDate).Select(o => o.CheckDate).FirstOrDefault() ?? DateTime.Now.Todate();  //获取当前营业日期
                             if (!Data_GoodStorageService.I.Add(model))
                             {
@@ -2054,7 +2055,7 @@ namespace XXCloudService.Api.XCCloud
                                     Utils.GetModel(dicPara, ref detailModel);
                                     detailModel.StorageOrderID = model.StorageOrderID;
                                     detailModel.DepotID = model.DepotID;
-                                    detailModel.MerchID = merchId;                                   
+                                    detailModel.MerchID = merchId;   
                                     detailModel.TotalPrice = Math.Round(taxPrice * storageCount, 2, MidpointRounding.AwayFromZero);
                                     Data_GoodStorage_DetailService.I.AddModel(detailModel);
                                 }
@@ -2674,23 +2675,33 @@ namespace XXCloudService.Api.XCCloud
                 var depotId = dicParas.Get("depotId").Toint();
                 var orderType = dicParas.Get("orderType").Toint();
                 var inDepotId = dicParas.Get("inDepotId").Toint();
+                var storageOrderId = string.Empty; //转仓出库时创建入库单号
                 
                 //开启EF事务
                 using (TransactionScope ts = new TransactionScope())
                 {
                     try
                     {
+                        var checkDate = Store_CheckDateService.I.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)).OrderByDescending(or => or.CheckDate).Select(o => o.CheckDate).FirstOrDefault() ?? DateTime.Now.Todate();  //获取当前营业日期
                         var model = Data_GoodOutOrderService.I.GetModels(p => p.ID == id).FirstOrDefault() ?? new Data_GoodOutOrder();
                         Utils.GetModel(dicParas, ref model);
                         if (id == 0)
                         {
                             model.OrderID = RedisCacheHelper.CreateCloudSerialNo(storeId.IsNull() ? merchId.ToExtStoreID() : storeId);
+                            
                             model.MerchID = merchId;
                             model.StoreID = storeId;
                             model.OPUserID = logId;
-                            model.State = (orderType == (int)GoodOutOrderType.Transfer) ? (int)GoodOutInState.Done : (int)GoodOutInState.Pending; //转仓出库无需审核
+                            model.State = (int)GoodOutInState.Pending; 
+                            if (orderType == (int)GoodOutOrderType.Transfer)
+                            {
+                                storageOrderId = RedisCacheHelper.CreateCloudSerialNo(storeId.IsNull() ? merchId.ToExtStoreID() : storeId);
+                                model.State = (int)GoodOutInState.Done; //转仓出库无需审核
+                                model.Note = "转仓出库 入库单号：" + storageOrderId + Environment.NewLine + model.Note;
+                            }
+                            
                             model.CreateTime = DateTime.Now;
-                            model.CheckDate = Store_CheckDateService.I.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)).OrderByDescending(or => or.CheckDate).Select(o => o.CheckDate).FirstOrDefault() ?? DateTime.Now.Todate();  //获取当前营业日期
+                            model.CheckDate = checkDate;
                             if (!Data_GoodOutOrderService.I.Add(model))
                             {
                                 errMsg = "保存商品出库信息失败";
@@ -2771,11 +2782,69 @@ namespace XXCloudService.Api.XCCloud
                         //转仓出库修改库存信息
                         if (orderType == (int)GoodOutOrderType.Transfer) //转仓出库
                         {
-                            //更新商品出库存
+                            //更新出库存记录
+                            var orderId = model.OrderID;
+                            var detailList = Data_GoodOutOrder_DetailService.I.GetModels(p => p.OrderID == orderId).ToList();
+                            foreach (var detailModel in detailList)
+                            {
+                                //更新当前库存
+                                if (!updateGoodsStock(model.DepotID, detailModel.GoodID, (int)SourceType.GoodOut, id, detailModel.OutPrice, (int)StockFlag.Out, detailModel.OutCount, merchId, storeId, out errMsg))
+                                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+
+                            if (!Data_GoodStock_RecordService.I.SaveChanges())
+                            {
+                                errMsg = "添加出库存异动信息失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
 
                             //创建入库单
+                            var storageModel = new Data_GoodStorage();
+                            storageModel.DepotID = inDepotId;
+                            storageModel.StorageOrderID = storageOrderId;
+                            storageModel.MerchID = merchId;
+                            storageModel.StoreID = storeId;
+                            storageModel.UserID = logId;                            
+                            storageModel.AuthorFlag = (int)GoodOutInState.Done;
+                            storageModel.CheckDate = checkDate;
+                            storageModel.Note = "转仓入库 出库单号：" + model.OrderID;
+                            if (!Data_GoodStorageService.I.Add(storageModel))
+                            {
+                                errMsg = "保存商品入库信息失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
 
-                            //更新商品入库存
+                            //更新入库存记录
+                            foreach (var detailModel in detailList)
+                            {
+                                var storageDetailModel = new Data_GoodStorage_Detail();
+                                storageDetailModel.StorageOrderID = storageOrderId;
+                                storageDetailModel.DepotID = inDepotId;
+                                storageDetailModel.MerchID = merchId;
+                                storageDetailModel.Tax = 0;
+                                storageDetailModel.GoodID = detailModel.GoodID;                                
+                                storageDetailModel.TaxPrice = detailModel.OutPrice;
+                                storageDetailModel.Price = detailModel.OutPrice;
+                                storageDetailModel.StorageCount = detailModel.OutCount;
+                                storageDetailModel.TotalPrice = detailModel.OutTotal;
+                                Data_GoodStorage_DetailService.I.AddModel(storageDetailModel);
+
+                                //更新当前库存
+                                if (!updateGoodsStock(inDepotId, detailModel.GoodID, (int)SourceType.GoodStorage, storageModel.ID, detailModel.OutPrice, (int)StockFlag.In, detailModel.OutCount, merchId, storeId, out errMsg))
+                                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+
+                            if (!Data_GoodStorage_DetailService.I.SaveChanges())
+                            {
+                                errMsg = "保存商品入库明细信息失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+
+                            if (!Data_GoodStock_RecordService.I.SaveChanges())
+                            {
+                                errMsg = "添加入库存异动信息失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
                         }
 
                         ts.Complete();
@@ -2912,7 +2981,7 @@ namespace XXCloudService.Api.XCCloud
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 
-                        //审核通过出库存记录
+                        //更新出库存记录
                         var orderId = model.OrderID;
                         var detailList = Data_GoodOutOrder_DetailService.I.GetModels(p => p.OrderID == orderId).ToList();
                         foreach (var detailModel in detailList)
