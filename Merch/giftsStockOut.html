@@ -46,6 +46,13 @@
                     </select>
                 </div>
             </div>
+            <div class="layui-inline layui-hide" id="inDepotIDBox">
+                <label class="layui-form-label">转入仓库</label>
+                <div class="layui-input-inline">
+                    <select name="inDepotID" id="inDepotID" lay-filter="inDepotID">
+                    </select>
+                </div>
+            </div>
         </div>
         <div class="layui-form-item">
             <div class="layui-inline">
@@ -61,6 +68,20 @@
                 </div>
             </div>
         </div>
+        <div class="layui-form-item  logisBox">
+            <div class="layui-inline">
+                <label class="layui-form-label">物流公司</label>
+                <div class="layui-input-inline">
+                    <select name="logisticsCompany1" id="logisticsCompany1" lay-filter="logisticsCompany1"></select>
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">物流单号</label>
+                <div class="layui-input-inline">
+                    <input type="text" class="layui-input" id="logisticsNote1">
+                </div>
+            </div>
+        </div>
         <div class="layui-form-item">
             <div class="layui-inline">
                 <div class="layui-input-inline" style="width: 400px;">
@@ -73,7 +94,7 @@
         </div>
         <table class="layui-hide" id="goodsStorage" lay-filter="goodsStorage"></table>
         <div class="layui-form-item">
-            <label class="layui-form-label">出库总额</label>
+            <label class="layui-form-label">备注</label>
             <div class="layui-input-block">
                 <input name="note" id="note" class="layui-input">
             </div>
@@ -108,7 +129,7 @@
         ,{field:'OrderTypeStr',title: '出库类别', align: 'center', templet: '#changeTime'} //width 支持：数字、百分比和不填写。
         ,{field:'OutCount', title: '出库数量', align: 'center'}
         ,{field:'OutTotal', title: '出库金额', align: 'center'}
-        ,{field:'DepotName', title: '出库仓库', align: 'center'}
+        ,{field:'LogName', title: '出库仓库', align: 'center'}
         ,{field:'OPUserName', title: '出库人', align: 'center'}
         ,{field:'StateStr', title: '状态', align: 'center'}
         ,{field:'CheckDate', title: '营业日期', align: 'center'}
@@ -122,6 +143,8 @@
 
     let storageGood=[];let index;
     let DepotID='';let OrderType='';
+    let logisticsCompany='';
+    let inDepotID='';
     layui.use(['form','layer','table'],function () {
         let form=layui.form;
         let layer=layui.layer;
@@ -129,8 +152,19 @@
         form.on('select(DepotID)',function (data) {
             DepotID=data.value;
         });
+        form.on('select(inDepotID)',function (data) {
+            inDepotID=data.value;
+        });
+        form.on('select(logisticsCompany1)',function (data){
+            logisticsCompany1=data.value;
+        });
         form.on('select(OrderType)',function (data) {
             OrderType=data.value;
+            if(data.value==1){
+                inDepotID='';
+                $('#inDepotIDBox').removeClass('layui-hide');
+                xc.getDepotDic(merchId,storeId,token,layer,form,'inDepotID');
+            }
         });
         table.on('edit(goodsStorage)', function(obj){ //注：edit是固定事件名，test是table原始容器的属性 lay-filter="对应的值"
             let value= obj.value; //得到修改后的值
@@ -142,10 +176,10 @@
                 let sumExit=0;let sunTotal=0;
                 for(let i in storageGood){
                     sumExit=parseInt(sumExit)+parseInt(storageGood[i].OutCount);
-                    sunTotal=parseInt(sunTotal)+parseInt(storageGood[i].OutCount)*parseInt(storageGood[i].OutPrice)
+                    sunTotal=parseInt(sunTotal)+parseInt(storageGood[i].OutCount)*parseInt(storageGood[i].OutPrice*100)
                 }
                 $('#OutCount').val(parseInt(sumExit));
-                $('#OutTotal').val(parseInt(sunTotal));
+                $('#OutTotal').val(parseInt(sunTotal)/100);
             }
             newFoodLevelTable(table,storageGood,layer,form);
         });
@@ -227,7 +261,28 @@
                         success: function (data) {
                             data = JSON.parse(data);
                             if (data.result_code == 1) {
-                                layer.msg('删除成功',{time:1500},function () {
+                                layer.msg('审核成功',{time:1500},function () {
+                                    location.reload()
+                                })
+                            } else {
+                                layer.msg(data.result_msg);
+                            }
+                        }
+                    })
+                })
+            }else if(layevent==='cancelcheck'){//撤销审核
+                layer.confirm('确定撤销审核此出库信息吗？', function(index){
+                    let _obj={'id':_data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                    let parseJson = JSON.stringify(_obj);
+                    $.ajax({
+                        type:'post',
+                        url:'/XCCloud/GoodsInfo?action=CanGoodOutOrder',
+                        contentType: "application/json; charset=utf-8",
+                        data:{parasJson: parseJson},
+                        success: function (data) {
+                            data = JSON.parse(data);
+                            if (data.result_code == 1) {
+                                layer.msg('撤销审核成功',{time:1500},function () {
                                     location.reload()
                                 })
                             } else {
@@ -239,14 +294,15 @@
             }
         });
         $('#add').on('click',function () {
-            id='';storageGood=[];DepotID=''; OrderType='';
+            id='';storageGood=[];DepotID=''; OrderType='';logisticsCompany='';
+            xc.setSelect('物流公司','logisticsCompany1');
             $('.OrderIDBox').addClass('layui-hide').val('');
             xc.getDepotDic(merchId,storeId,token,layer,form,'DepotID');
             newFoodLevelTable(table,storageGood,layer,form);
             layer.open({
                 title:'商品出库',
                 type:1,
-                area:['1000px','600px'],
+                area:['1000px','655px'],
                 content:$('#openModel')
             })
         });
@@ -259,6 +315,9 @@
                 'orderID':$('#OrderID').val(),
                 'orderType':OrderType,
                 'depotId':DepotID,
+                'inDepotID':inDepotID,
+                'logistType':logisticsCompany1,
+                'logistOrderId':$('#logisticsNote1').val(),
                 'GoodOutOrderDetail':storageGood,
                 'userToken':token,
                 'note':$('#note').val(),
@@ -339,10 +398,11 @@
     }
 </script>
 <script type="text/html" id="barDemo">
-    {{# if(d.OrderType!=3){ }}
-    <!--<a class="layui-btn layui-btn-xs" lay-event="edit"> <i class="layui-icon">&#xe642;</i>编辑</a>-->
+    {{# if(d.State==0){ }}
     <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del"> <i class="layui-icon">&#xe642;</i>删除</a>
     <a class="layui-btn layui-btn-xs layui-bg-orange" lay-event="check"> <i class="layui-icon">&#xe642;</i>审核</a>
+    {{# }else if(d.State==1){ }}
+    <a class="layui-btn layui-btn-xs layui-bg-orange" lay-event="cancelcheck"> <i class="layui-icon">&#xe642;</i>撤销审核</a>
     {{# } }}
 </script>
 <script type="text/html" id="barDemo2">
