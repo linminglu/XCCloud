@@ -90,8 +90,6 @@ namespace XXCloudService.Api.XCCloudH5
                         card.CardSex = member.Gender;
                         card.CardBirthDay = member.Birthday;
                         card.CardLimit = 0;
-                        card.AllowIn = 1;
-                        card.AllowOut = 1;
                         card.MemberID = member.ID;
                         card.MemberLevelID = defaultMemberLevelId != null ? Convert.ToInt32(defaultMemberLevelId.ParameterValue) : 0;
                         card.CreateTime = DateTime.Now;
@@ -187,6 +185,34 @@ namespace XXCloudService.Api.XCCloudH5
                                 }
                             }
                         }
+                        //添加卡权限
+                        Data_Card_Right right = new Data_Card_Right();
+                        right.ID = RedisCacheHelper.CreateCloudSerialNo(storeId);
+                        right.CardID = card.ID;
+                        right.AllowPush = 1;
+                        right.AllowOut = 1;
+                        right.AllowExitCoin = 1;
+                        right.AllowSaleCoin = 1;
+                        right.AllowSaveCoin = 1;
+                        right.AllowFreeCoin = 1;
+                        right.AllowRenew = 1;
+                        if (!Data_Card_RightService.I.Add(right, false))
+                        {
+                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "初始化会员卡权限失败");
+                        }
+                        //卡权限关联门店
+                        foreach (var item in cardStores)
+                        {
+                            Data_Card_Right_StoreList rightStore = new Data_Card_Right_StoreList();
+                            rightStore.ID = RedisCacheHelper.CreateCloudSerialNo(storeId);
+                            rightStore.CardRightID = right.ID;
+                            rightStore.StoreID = item.storeId;
+                            if (!Data_Card_Right_StoreListService.I.Add(rightStore, false))
+                            {
+                                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "初始化会员卡权限失败");
+                            }
+                        }
+
                         ts.Complete();
                     }
                 }

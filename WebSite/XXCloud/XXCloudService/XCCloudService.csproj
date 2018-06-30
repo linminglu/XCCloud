@@ -444,7 +444,6 @@
     <Content Include="Test\WorkFlowTest\StockHandle.aspx" />
     <Content Include="Test\WorkFlowTest\StockRequest.aspx" />
     <Content Include="Test\Test.aspx" />
-    <Content Include="Test\WorkFlowTest\WorkFlowTest.aspx" />
     <Content Include="Test\wxRedirectUrl.aspx" />
     <Content Include="Test\XCCloudBar.html" />
     <Content Include="Test\XCGuanJia.html" />
@@ -1723,16 +1722,6 @@
     <Compile Include="Test\Test.aspx.designer.cs">
       <DependentUpon>Test.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Test\WorkFlowTest\WorkFlowHandler.ashx.cs">
-      <DependentUpon>WorkFlowHandler.ashx</DependentUpon>
-    </Compile>
-    <Compile Include="Test\WorkFlowTest\WorkFlowTest.aspx.cs">
-      <DependentUpon>WorkFlowTest.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Test\WorkFlowTest\WorkFlowTest.aspx.designer.cs">
-      <DependentUpon>WorkFlowTest.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Test\wxRedirectUrl.aspx.cs">
       <DependentUpon>wxRedirectUrl.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -1892,7 +1881,6 @@
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\配置文件1.pubxml" />
     <Content Include="Test\SocketTest.ashx" />
-    <Content Include="Test\WorkFlowTest\WorkFlowHandler.ashx" />
     <Content Include="WebBar\.idea\WebBar.iml" />
     <Content Include="WebBar\frontDesk\.idea\frontDesk.iml" />
     <Content Include="WebBar\frontDesk\css\bootstrap-theme.css.map" />

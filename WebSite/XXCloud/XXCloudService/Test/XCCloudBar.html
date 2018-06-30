@@ -585,10 +585,37 @@
             common(url, parasJson);
         }
 
-        function do_exitFood() {
+        function do_getDeviceSetupInfo() {
             var icCardId = $("#txt_do_GetQuickFoodICCardId").val();
-            var parasObj = { "sysId": "0", "versionNo": "0.0.0.1", "userToken": userToken, "icCardId": icCardId };
-            var url = "/XCCloud/foods?action=getQuickFood";
+            var parasObj = { "sysId": "0", "versionNo": "0.0.0.1", "userToken": userToken, "type": 4, "workStation":"lijunjie" };
+            var url = "/XCCloud/deviceinfo?action=getDeviceSetupInfo";
+            var parasJson = JSON.stringify(parasObj);
+            common(url, parasJson);
+        }
+
+        function do_getDeviceInfo() {
+            var icCardId = $("#txt_do_GetQuickFoodICCardId").val();
+            var parasObj = { "sysId": "0", "versionNo": "0.0.0.1", "userToken": userToken, "type": 4, "workStation": "lijunjie" };
+            var url = "/XCCloud/deviceinfo?action=getDeviceInfo";
+            var parasJson = JSON.stringify(parasObj);
+            common(url, parasJson);
+        }
+
+        function do_ExitFood() {
+            var foodSaleDetailList = { category:0, foodId:1, foodCount:1 };
+            var foodSaleDetailListArray = new Array();
+            foodSaleDetailListArray.push(foodSaleDetailList);
+
+            var parasObj = {
+                "sysId": "0",
+                "versionNo": "0.0.0.1",
+                "userToken": userToken,
+                "flwOrderId": $("#txt_do_ExitFoodFlwOrderId").val(),
+                "note": "lijunjie",
+                "authorId":0,
+                "exitFoodJson": JSON.stringify(foodSaleDetailListArray)
+            };
+            var url = "/XCCloud/foods?action=exitFood";
             var parasJson = JSON.stringify(parasObj);
             common(url, parasJson);
         }
@@ -629,7 +656,10 @@
         &nbsp;&nbsp;&nbsp;&nbsp;
         ICCardId：<input id="txt_do_GetQuickFoodICCardId" type="text" value="10004143" /><input id="Button_Food_3" type="button" value="do_GetQuickFood(获取快速套餐)" onclick="do_GetQuickFood()" />
         &nbsp;&nbsp;&nbsp;&nbsp;
-        ICCardId：<input id="txt_do_GetQuickFoodICCardId" type="text" value="10004143" /><input id="Button_Food_3" type="button" value="do_GetQuickFood(获取快速套餐)" onclick="do_GetQuickFood()" />
+        订单Id：<input id="txt_do_ExitFoodFlwOrderId" style="width:250px" type="text" value="10001636010300120180615500020000" />
+        note：<input id="txt_do_ExitFoodNote" type="text" value="" />
+        authorId:<input id="txt_do_ExitFoodAuthorId" type="text" value="0" />
+        <input id="Button_Food_3" type="button" value="do_ExitFood(退餐)" onclick="do_ExitFood()" />
     </div>
     <br />
 
@@ -690,9 +720,7 @@
         <input id="Buttonorder_do_saveRegisterMember" type="button" value="do_saveRegisterMember(保存注册会员)" onclick="do_saveRegisterMember()" />
         &nbsp;&nbsp;&nbsp;&nbsp;
         订单号:<input id="txt_FlwOrderId_do_updateOrder placeholder="支付订单" style="width:250px" value="0" />
-        <input id="Buttonorder_do_updateOrder" type="button" value="do_payOrder(支付订单)" onclick="do_payOrder()" />
-        
-    
+        <input id="Buttonorder_do_updateOrder" type="button" value="do_payOrder(支付订单)" onclick="do_payOrder()" /> 
     </div>
 
     <div title="discount" style="font-size:14px;color:#F00;border:1px solid #ccc;">
@@ -704,6 +732,11 @@
         审核订单号:<input id="txtAuditOrderId" placeholder="审核订单号" value="" style="width:250px" />
         <input id="Buttonorder_do_getOrderAuditQR" type="button" value="do_getOrderAuditQR(添加订单)" onclick="do_getOrderAuditQR()" />
         <img id="imgOrderAuditQR" />
+    </div>
+
+    <div title="设备">
+        <input id="Button_getDeviceSetupInfo" type="button" value="do_getDeviceSetupInfo(获取设备配置信息)" onclick="do_getDeviceSetupInfo()" />
+        <input id="Button_getDeviceInfo" type="button" value="do_getDeviceInfo(获取设备信息)" onclick="do_getDeviceInfo()" />
     </div>
 
     <div title="do_UserToken" style="font-size:14px;color:#F00;border:1px solid #ccc;">

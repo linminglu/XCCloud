@@ -895,6 +895,7 @@ namespace XCCloudService.Api.XCCloud
                                     data_MemberLevelFree.MinSpaceDays = ObjectExt.Toint(minSpaceDays);
                                     data_MemberLevelFree.OnceFreeCount = ObjectExt.Toint(onceFreeCount);
                                     data_MemberLevelFree.ExpireDays = ObjectExt.Toint(expireDays);
+                                    data_MemberLevelFree.CanGetCount = (data_MemberLevelFree.OnceFreeCount ?? 0) > 0 ? ((data_MemberLevelFree.FreeCount ?? 0) / data_MemberLevelFree.OnceFreeCount) : 0;
                                     data_MemberLevelFreeService.AddModel(data_MemberLevelFree);
                                 }
                                 else
@@ -1405,6 +1406,9 @@ namespace XCCloudService.Api.XCCloud
         #region 按会员卡查询会员及卡信息
         /// <summary>
         /// 按会员卡查询会员及卡信息
+        /// 附属卡：显示限额及剩余限额，
+        /// 锁定状态：主卡、附属卡各种锁定状态列表
+        /// 会员资料修改
         /// </summary>
         /// <param name="dicParas"></param>
         /// <returns></returns>
@@ -1448,6 +1452,10 @@ namespace XCCloudService.Api.XCCloud
                 MemberCardInfoViewModel model = new MemberCardInfoViewModel();
                 model.CardId = card.ID;
                 model.ICCardId = card.ICCardID;
+                model.LevelName = Data_MemberLevelService.I.GetModels(m => m.MemberLevelID == card.MemberLevelID).FirstOrDefault().MemberLevelName;
+                model.Deposit = card.Deposit.Value;
+                model.EndDate = card.EndDate.HasValue ? card.EndDate.Value.ToString("yyyy-MM-dd") : "";
+                model.CardAvatar = card.CardPhoto ?? "";
                 //会员信息
                 model.MemberInfo = new CardMemberInfoModel()
                 {
@@ -1455,8 +1463,9 @@ namespace XCCloudService.Api.XCCloud
                     Birthday = member.Birthday.HasValue ? member.Birthday.Value.ToString("yyyy-MM-dd") : "",
                     IDCardNo = member.IDCard ?? "",
                     Mobile = member.Mobile ?? "",
-                    Gender = member.Gender.HasValue ? member.Gender.Value == 0 ? "男" : "女" : "",
-                    Avatar = member.Photo ?? ""
+                    Gender = member.Gender.HasValue ? member.Gender.Value : 0,
+                    Avatar = member.Photo ?? "",
+                    Note = member.Note ?? ""
                 };
 
                 //余额
@@ -1471,32 +1480,20 @@ namespace XCCloudService.Api.XCCloud
                     }).ToList();
                 }
 
-                //卡权限
-                CardPurviewModel purview = new CardPurviewModel();
-                purview.AllowIn = card.AllowIn.Value;
-                purview.AllowOut = card.AllowOut.Value;
-                purview.CardStatus = card.CardStatus.Value;
-
                 var cardRight = from a in Data_Card_RightService.N.GetModels(t => t.CardID == card.ID)
                                 join b in Data_Card_Right_StoreListService.N.GetModels(t => t.StoreID == storeId) on a.ID equals b.CardRightID
-                                select new
+                                select new CardPurviewModel
                                 {
-                                    AllowExitCoin = a.AllowExitCoin,
-                                    AllowSaleCoin = a.AllowSaleCoin,
-                                    AllowSaveCoin = a.AllowSaveCoin,
-                                    AllowFreeCoin = a.AllowFreeCoin
+                                    AllowIn = a.AllowPush.Value,
+                                    AllowOut = a.AllowOut.Value,
+                                    AllowExitCoin = a.AllowExitCoin.Value,
+                                    AllowSaleCoin = a.AllowSaleCoin.Value,
+                                    AllowSaveCoin = a.AllowSaveCoin.Value,
+                                    AllowFreeCoin = a.AllowFreeCoin.Value,
+                                    AllowRenew = a.AllowRenew.Value
                                 };
 
-                var cardPurview = cardRight.ToList().FirstOrDefault();
-
-                if (cardPurview != null)
-                {
-                    purview.AllowExitCoin = cardPurview.AllowExitCoin.Value;
-                    purview.AllowSaleCoin = cardPurview.AllowSaleCoin.Value;
-                    purview.AllowSaveCoin = cardPurview.AllowSaveCoin.Value;
-                    purview.AllowFreeCoin = cardPurview.AllowFreeCoin.Value;
-                }
-                model.CardPurview = purview;
+                model.CardPurview = cardRight.ToList().FirstOrDefault();
 
                 //附属卡
                 model.ChildCardList = Data_Member_CardService.I.GetModels(t => t.ParentCard == card.ID && t.CardType == 1).Select(t => new
@@ -1505,7 +1502,7 @@ namespace XCCloudService.Api.XCCloud
                     ChildICCardId = t.ICCardID,
                     CardShape = t.CardShape,
                     Deposit = t.Deposit,
-                    //EndDate = t.EndDate,
+                    EndDate = t.EndDate,
                     UserName = t.CardName,
                     Birthday = t.CardBirthDay,
                     Gender = t.CardSex
@@ -1515,7 +1512,7 @@ namespace XCCloudService.Api.XCCloud
                     ChildICCardId = t.ChildICCardId,
                     CardShape = "普通卡",
                     Deposit = t.Deposit.Value.ToString(),
-                    //EndDate = t.EndDate.Value.ToString("yyyy-MM-dd"),
+                    EndDate = t.EndDate.HasValue ? t.EndDate.Value.ToString("yyyy-MM-dd") : "",
                     ChildCardMemberInfo = new ChildCardMemberInfoModel()
                     {
                         UserName = t.UserName,
@@ -2287,8 +2284,6 @@ namespace XCCloudService.Api.XCCloud
                     newCard.CardPhoto = oldCard.CardPhoto;
                     newCard.FaceReadID = oldCard.FaceReadID;
                     newCard.CardLimit = oldCard.CardLimit;
-                    newCard.AllowIn = oldCard.AllowIn;
-                    newCard.AllowOut = oldCard.AllowOut;
                     newCard.MemberID = oldCard.MemberID;
                     newCard.MemberLevelID = oldCard.MemberLevelID;
                     newCard.CreateTime = oldCard.CreateTime;
@@ -3449,18 +3444,92 @@ namespace XCCloudService.Api.XCCloud
                 }
 
                 //预赠币
-                //var queryGiveCoins = Flw_MemberLevelFree_Detail
+                DateTime now = DateTime.Now.Date;
+                //当前用户所有可赠币规则
+                var memberFreeQuery = Flw_MemberLevelFreeService.I.GetModels(t => t.MerchID == merchID && t.StoreID == storeId && t.MemberID == memberCard.MemberID && t.EndDate >= now)
+                                      .Select(t => new
+                                      {
+                                          Id = t.ID,
+                                          ChargeTotal = t.ChargeTotal,
+                                          FreeBalanceIndex = t.FreeBalanceType,
+                                          FreeCount = t.FreeCount,
+                                          MinSpaceDays = t.MinSpaceDays,
+                                          OnceFreeCount = t.OnceFreeCount,
+                                          EndDate = t.EndDate
+                                      }).ToList();
+
+                //赠币明细集合，按MemberFreeID分组，取最后赠送时间及最小剩余数量
+                var freeDetailQuery = Flw_MemberLevelFree_DetailService.I.GetModels(t => t.MerchID == merchID && t.StoreID == storeId && memberFreeQuery.Any(f => f.Id == t.MemberFreeID))
+                                      .GroupBy(t => t.MemberFreeID).Select(t => new
+                                      {
+                                          MemberFreeId = t.Key,
+                                          RealTime = t.Max(m => m.RealTime),
+                                          Remain = t.Min(m => m.Remain)
+                                      }).ToList();
+
+                var freeTempQuery = from a in memberFreeQuery
+                                join b in freeDetailQuery on a.Id equals b.MemberFreeId into b1
+                                from tt in b1.DefaultIfEmpty()
+                                select new
+                                {
+                                    Id = a.Id,
+                                    ChargeTotal = a.ChargeTotal,
+                                    FreeBalanceIndex = a.FreeBalanceIndex,
+                                    FreeCount = a.FreeCount,
+                                    MinSpaceDays = a.MinSpaceDays,
+                                    OnceFreeCount = a.OnceFreeCount,
+                                    EndDate = a.EndDate,
+                                    RealTime = tt != null ? tt.RealTime : null,
+                                    Remain = tt != null ? tt.Remain : 1
+                                };
+
+                //
+                var freeQuery = freeTempQuery.Where(t => t.Remain > 0).ToList().Where(t => !t.RealTime.HasValue || t.RealTime.Value.AddDays(t.MinSpaceDays.Value) > now).ToList();
+
+
+                                     //join b in Flw_MemberLevelFree_DetailService.N.GetModels(t=>t.MerchID == merchID && t.StoreID == storeId) on a.ID equals b.MemberFreeID
+                                     //select new {
+                                     //    MemberFreeId = a.ID,
+                                     //    ChargeTotal = a.ChargeTotal,
+                                     //    FreeBalanceIndex = a.FreeBalanceType,
+                                     //    FreeCount = a.FreeCount,
+                                     //    MinSpaceDays = a.MinSpaceDays,
+                                     //    OnceFreeCount = a.OnceFreeCount,
+                                     //    EndDate = a.EndDate,
+                                     //    RealTime = b.
+                                     //};
                 //生日赠币
 
                 //输赢赠币
 
 
+                //string merchId = "100016";
+                //string cardId = "10001642011100120180525000056001";
+                //string storeId = "100016420111001";
+                ////当前会员卡可用余额列表
+                //var cardBalances = from a in Data_Card_BalanceService.N.GetModels(t => t.CardIndex == cardId)
+                //                   join c in Data_Card_Balance_StoreListService.N.GetModels(t => t.StoreID == storeId) on a.ID equals c.CardBalanceID
+                //                   join b in
+                //                       (
+                //                           from b in Data_Card_Balance_FreeService.N.GetModels(t => t.CardIndex == cardId)
+                //                           join d in Data_Card_Balance_StoreListService.N.GetModels(t => t.StoreID == storeId) on b.ID equals d.CardBalanceID
+                //                           select b
+                //                           ) on a.BalanceIndex equals b.BalanceIndex into b1
+                //                   from b in b1.DefaultIfEmpty()
+                //                   join e in Dict_BalanceTypeService.N.GetModels(t => t.State == 1 && t.MerchID == merchId) on a.BalanceIndex equals e.ID
+                //                   select new SourceBalanceModel
+                //                   {
+                //                       BalanceId = a.ID,
+                //                       BalanceIndex = a.BalanceIndex.Value,
+                //                       BalanceName = e.TypeName,
+                //                       Balance = a.Balance,
+                //                       BalanceFree = b == null ? 0 : b.Balance,
+                //                       BalanceTotal = a.Balance + (b == null ? 0 : b.Balance)
+                //                   };
 
 
 
-
-
-                var queryBalance = from a in Data_Card_BalanceService.N.GetModels(t => t.MerchID == merchID && t.CardIndex == memberCard.ID)
+                var queryBalance111 = from a in Data_Card_BalanceService.N.GetModels(t => t.MerchID == merchID && t.CardIndex == memberCard.ID)
                                    join b in Data_Card_Balance_StoreListService.N.GetModels(t => t.StoreID == storeId) on a.ID equals b.CardBalanceID
                                    join c in Dict_BalanceTypeService.N.GetModels(t => t.MerchID == merchID && t.MappingType == 1 && t.State == 1) on a.BalanceIndex equals c.ID
                                    select new
@@ -3470,7 +3539,7 @@ namespace XCCloudService.Api.XCCloud
                                        BalanceName = c.TypeName
                                    };
 
-                var result = queryBalance.ToList();
+                var result = queryBalance111.ToList();
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, result);
             }
             catch (Exception e)

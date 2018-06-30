@@ -17,6 +17,7 @@ namespace XCCloudService.Model.XCCloud
         public string ID { get; set; }
         public Nullable<int> FreeID { get; set; }
         public string MerchID { get; set; }
+        public string StoreID { get; set; }
         public string MemberID { get; set; }
         public Nullable<decimal> ChargeTotal { get; set; }
         public Nullable<int> FreeBalanceType { get; set; }
@@ -26,5 +27,6 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<System.DateTime> EndDate { get; set; }
         public Nullable<System.DateTime> GetFreeTime { get; set; }
         public string Verifiction { get; set; }
+        public Nullable<int> CanGetCount { get; set; }
     }
 }

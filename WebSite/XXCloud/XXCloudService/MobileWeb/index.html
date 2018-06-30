@@ -131,11 +131,12 @@
         methods: {
             Load:function () {
                 var that =this;
-                var deviceToken = "86A8AFBDB2E84B8E95BF52C052E8BA7C";
+//                var deviceToken = "86A8AFBDB2E84B8E95BF52C052E8BA7C";
 //                var userThirdId = "oNWocwSC_GFO8n_8mtZ0iV9tL0WI";
                 var ifScanCode = getStorage("ifScanCode");        //是否是扫码进入
-//                var deviceToken = getStorage("deviceNo")||"";       //获取设备令牌
+                var deviceToken = getStorage("deviceNo")||"";       //获取设备令牌
                 var userThirdId = getStorage("userThirdId")||"";     //获取第三方令牌
+                alert(deviceToken);
                 that.userThirdId = userThirdId;
                 that.deviceToken = deviceToken;
                 if(ifScanCode == "1"){

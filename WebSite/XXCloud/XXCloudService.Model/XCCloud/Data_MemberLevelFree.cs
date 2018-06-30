@@ -22,6 +22,7 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> FreeCount { get; set; }
         public Nullable<int> MinSpaceDays { get; set; }
         public Nullable<int> OnceFreeCount { get; set; }
+        public Nullable<int> CanGetCount { get; set; }
         public Nullable<int> ExpireDays { get; set; }
         public string Verifiction { get; set; }
     }

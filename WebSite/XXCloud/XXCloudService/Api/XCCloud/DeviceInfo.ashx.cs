@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Entity.Validation;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Transactions;
 using System.Web;
 using XCCloudService.Base;
+using XCCloudService.BLL.CommonBLL;
 using XCCloudService.BLL.Container;
 using XCCloudService.BLL.IBLL.XCCloud;
 using XCCloudService.BLL.XCCloud;
@@ -25,7 +27,127 @@ namespace XXCloudService.Api.XCCloud
     /// Gift 的摘要说明
     /// </summary>
     public class DeviceInfo : ApiBase
-    {    
+    {
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object getDeviceSetupInfo(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                XCCloudUserTokenModel userTokenModel = (XCCloudUserTokenModel)(dicParas[Constant.XCCloudUserTokenModel]);
+                TokenDataModel userTokenDataModel = (TokenDataModel)(userTokenModel.DataModel);
+
+                string type = dicParas.ContainsKey("type") ? dicParas["type"].ToString() : string.Empty;
+                string workStation = dicParas.ContainsKey("workStation") ? dicParas["workStation"].ToString() : string.Empty;
+
+                string storedProcedure = "GetDeviceSetupInfo";
+                SqlParameter[] sqlParameter = new SqlParameter[6];
+                sqlParameter[0] = new SqlParameter("@MerchId", SqlDbType.VarChar);
+                sqlParameter[0].Value = userTokenDataModel.MerchID;
+
+                sqlParameter[1] = new SqlParameter("@StoreId", SqlDbType.VarChar);
+                sqlParameter[1].Value = userTokenDataModel.StoreID;
+
+                sqlParameter[2] = new SqlParameter("@Type", SqlDbType.Int);
+                sqlParameter[2].Value = type;
+
+                sqlParameter[3] = new SqlParameter("@WorkStation", SqlDbType.VarChar);
+                sqlParameter[3].Value = workStation;
+
+                sqlParameter[4] = new SqlParameter("@Result", SqlDbType.Int);
+                sqlParameter[4].Direction = ParameterDirection.Output;
+
+                sqlParameter[5] = new SqlParameter("@ErrMsg", SqlDbType.VarChar,200);
+                sqlParameter[5].Direction = ParameterDirection.Output;
+
+                System.Data.DataSet ds = XCCloudBLL.GetStoredProcedureSentence(storedProcedure, sqlParameter);
+
+                if (sqlParameter[4].Value.ToString() == "1")
+                {
+                    var obj = new
+                    {
+                        deviceID = ds.Tables[0].Rows[0]["DeviceID"].ToString(),
+                        motor1EN = ds.Tables[0].Rows[0]["Motor1EN"].ToString(),
+                        motor2EN = ds.Tables[0].Rows[0]["Motor2EN"].ToString(),
+                        motor1Coin = ds.Tables[0].Rows[0]["Motor1Coin"].ToString(),
+                        motor2Coin = ds.Tables[0].Rows[0]["Motor2Coin"].ToString(),
+                        maxSaveCount = ds.Tables[0].Rows[0]["MaxSaveCount"].ToString(),
+                        fromDevice = ds.Tables[0].Rows[0]["FromDevice"].ToString(),
+                        toCard = ds.Tables[0].Rows[0]["ToCard"].ToString(),
+                        balanceIndex = ds.Tables[0].Rows[0]["BalanceIndex"].ToString(),
+                        ssrLevel = ds.Tables[0].Rows[0]["SSRLevel"].ToString(),
+                        digitCoinEN = ds.Tables[0].Rows[0]["DigitCoinEN"].ToString(),
+                        dubleCheck = ds.Tables[0].Rows[0]["DubleCheck"].ToString()
+                    };
+                    return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, obj);
+                }
+                else
+                {
+                    return new ResponseModel(Return_Code.T, "", Result_Code.F, sqlParameter[16].Value.ToString());
+                }
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object getDeviceInfo(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                XCCloudUserTokenModel userTokenModel = (XCCloudUserTokenModel)(dicParas[Constant.XCCloudUserTokenModel]);
+                TokenDataModel userTokenDataModel = (TokenDataModel)(userTokenModel.DataModel);
+
+                string type = dicParas.ContainsKey("type") ? dicParas["type"].ToString() : string.Empty;
+                string workStation = dicParas.ContainsKey("workStation") ? dicParas["workStation"].ToString() : string.Empty;
+
+                string storedProcedure = "GetDeviceInfo";
+                SqlParameter[] sqlParameter = new SqlParameter[7];
+                sqlParameter[0] = new SqlParameter("@MerchId", SqlDbType.VarChar);
+                sqlParameter[0].Value = userTokenDataModel.MerchID;
+
+                sqlParameter[1] = new SqlParameter("@StoreId", SqlDbType.VarChar);
+                sqlParameter[1].Value = userTokenDataModel.StoreID;
+
+                sqlParameter[2] = new SqlParameter("@Type", SqlDbType.Int);
+                sqlParameter[2].Value = type;
+
+                sqlParameter[3] = new SqlParameter("@WorkStation", SqlDbType.VarChar);
+                sqlParameter[3].Value = workStation;
+
+                sqlParameter[4] = new SqlParameter("@Result", SqlDbType.Int);
+                sqlParameter[4].Direction = ParameterDirection.Output;
+
+                sqlParameter[5] = new SqlParameter("@MCUId", SqlDbType.VarChar,20);
+                sqlParameter[5].Direction = ParameterDirection.Output;
+
+                sqlParameter[6] = new SqlParameter("@ErrMsg", SqlDbType.VarChar, 200);
+                sqlParameter[6].Direction = ParameterDirection.Output;
+
+                XCCloudBLL.ExecuteStoredProcedureSentence(storedProcedure, sqlParameter);
+
+                if (sqlParameter[4].Value.ToString() == "1")
+                {
+                    var obj = new
+                    {
+                        mcuId = sqlParameter[5].Value.ToString()
+                    };
+                    return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, obj);
+                }
+                else
+                {
+                    return new ResponseModel(Return_Code.T, "", Result_Code.F, sqlParameter[6].Value.ToString());
+                }
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object GetDeviceHeadDict(Dictionary<string, object> dicParas)
         {

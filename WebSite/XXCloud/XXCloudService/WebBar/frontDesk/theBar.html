@@ -348,8 +348,8 @@
 							</div>
                             <div class="input-group col-lg-12 col-md-12">
                                 <span class="input-group-addon onSwitchSty">出币方式：</span>
-                                <div class="input-group-addon switchZdy" @click="switchFnc('5')">
-                                    <div :class="[onSwitch5 ? 'onSwitch1' : 'onSwitch2','onSwitch']"></div>
+                                <div class="input-group-addon switchZdy" @click="switchFnc('7')">
+                                    <div :class="[onSwitch7 ? 'onSwitch1' : 'onSwitch2','onSwitch']"></div>
                                     <div class="col-lg-6 col-md-6">实物币</div>
                                     <div class="col-lg-6 col-md-6">电子币</div>
                                 </div>
@@ -653,7 +653,7 @@
 									<td>{{item.balanceType}}</td>
 									<td>{{item.balance}}</td>
 									<td>
-										<select  name="select" class="form-control">
+										<select class="form-control">
 											<option value="男">实物</option>
 											<option value="女">存入卡</option>
 										</select>
@@ -848,8 +848,8 @@
 		</div>
 	</div>
     <!--查询获取卡列表-->
-    <div class="modal fade bs-example-modal-lg" id="cardList" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-        <div class="modal-dialog modal-lg" role="document">
+    <div class="modal fade bs-example-modal-md" id="cardList" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-md" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span>&times;</span></button>
@@ -858,16 +858,20 @@
                 <div class="modal-body row">
                     <div class="col-lg-12 col-md-12 cardList">
                         <table class="table table-bordered">
-                            <tr v-for="(item,index) in cardList">
-                                <td><input type="radio" name="optionsRadios" id="optionsRadios2" value="option2"></td>
+                            <tr v-for="(item,index) in cardList" @click="radioCard(index)">
+                                <td><input type="radio" name="optionsRadios" :value="index" v-model="radioValue"></td>
                                 <td>
                                     <h4>会员卡号</h4>
-                                    <p>{{item.ICCardId}}</p>
+                                    <p>{{item.ICCardNo}}</p>
                                 </td>
-                                <td v-for="(items,index) in item.MemberBalances">
-                                    <h4>{{items.BalanceName}}</h4>
-                                    <p>{{items.Quantity}}</p>
-                                </td>
+								<td>
+									<h4>到期日期</h4>
+									<p>{{item.EndDate}}</p>
+								</td>
+								<td>
+									<h4>会员等级</h4>
+									<p>{{item.LevelName}}</p>
+								</td>
                             </tr>
                         </table>
                     </div>
@@ -1016,9 +1020,9 @@
 				<div class="salesAll" v-if="saleShow">
 					<div class="salesTitle">
                         <ul class="clearfix">
-                            <li class="on" @click="screening('All')"><sapn class="iconfont icon-quanbu-copy"></sapn><span class="txt">全部</span></li>
-                            <li @click="screening(0)"><sapn class="iconfont icon-menpiao1"></sapn><span class="txt">门票</span></li>
-                            <li @click="screening(1)"><sapn class="iconfont icon-2"></sapn><span class="txt">商品</span></li>
+                            <li class="on" @click="screening('All')"><span class="iconfont icon-quanbu-copy"></span><span class="txt">全部</span></li>
+                            <li @click="screening(0)"><span class="iconfont icon-menpiao1"></span><span class="txt">门票</span></li>
+                            <li @click="screening(1)"><span class="iconfont icon-2"></span><span class="txt">商品</span></li>
 							<!--<li v-for="(item,index) in saleTitle" @click="screening(index)">-->
 								<!--<a href="javascript:void(0)">{{item.foodTypeName}}</a>-->
 							<!--</li>-->
@@ -1113,13 +1117,13 @@
 											<div class="tab-text col-lg-12 col-md-12">
 												<div class="input-group col-lg-4 col-md-6">
 													<span class="input-group-addon">手机号码：</span>
-													<input   class="form-control" v-model.number="cardLossData.mobile" maxlength="11" placeholder="请输入手机号"/>
+													<input   class="form-control" v-model="memberInfo.Mobile" maxlength="11" placeholder="请输入手机号"/>
 												</div>
 												<div class="input-group col-lg-4 col-md-6">
 													<span class="input-group-addon">验证码：</span>
-													<input   class="form-control" v-model="cardLossData.mobileCode"/>
+													<input   class="form-control" v-model="memberInput.mobileCode"/>
 													<div class="input-group-btn">
-														<input class="form-control btnSendCode readCard" type="button" v-model="cardLossData.codeBtn" @click="sendCode('1')" :disabled="cardLossData.disabled"/>
+														<input class="form-control btnSendCode readCard" type="button" v-model="memberInput.codeBtn" @click="sendCode('1')" :disabled="memberInput.disabled"/>
 													</div>
 												</div>
 												<div class="input-group col-lg-4 col-md-6">
@@ -1131,7 +1135,7 @@
 											<div class="tab-text col-lg-12 col-md-12">
 												<div class="input-group col-lg-4 col-md-6">
 													<span class="input-group-addon">证件号码：</span>
-													<input   class="form-control" v-model="cardLossData.IdNumber" readonly/>
+													<input   class="form-control" v-model="memberInfo.IDCardNo"/>
 													<div class="input-group-btn">
 														<button type="button" class="btn btn-default readCard">读取</button>
 													</div>
@@ -1140,21 +1144,21 @@
 												</div>
 												<div class="input-group col-lg-4 col-md-6">
 													<span class="input-group-addon">微信：</span>
-													<input   class="form-control" v-model="cardLossData.IdNumber" readonly/>
+													<input   class="form-control" v-model="memberInfo.wxId"/>
 												</div>
 											</div>
 											<div class="tab-text col-lg-12 col-md-12">
 												<div class="input-group col-lg-4 col-md-6">
 													<span class="input-group-addon">会员姓名：</span>
-													<input   class="form-control" v-model="cardLossData.name" placeholder="请输入会员姓名"/>
+													<input   class="form-control" v-model="memberInfo.UserName" placeholder="请输入会员姓名"/>
 												</div>
 												<div class="input-group col-lg-4 col-md-6">
 													<span class="input-group-addon">生日：</span>
-													<input    class="form-control" v-model="cardLossData.birthday" readonly/>
+													<input    class="form-control" v-model="memberInfo.Birthday" readonly/>
 												</div>
 												<div class="input-group col-lg-4 col-md-6 marg1200">
 													<span class="input-group-addon">性别：</span>
-													<select  class="form-control" v-model="memberForm.sex">
+													<select  class="form-control" v-model="memberInfo.Gender">
 														<option value="0">男</option>
 														<option value="1">女</option>
 													</select>
@@ -1167,48 +1171,64 @@
 											<div class="tab-text col-lg-12 col-md-12">
 												<div class="input-group col-lg-12 col-md-12">
 													<span class="input-group-addon">备注：</span>
-													<textarea class="form-control" v-model="memberForm.remark"></textarea>
+													<textarea class="form-control" v-model="memberInfo.Note"></textarea>
 												</div>
 											</div>
 											<div class="tab-text col-lg-12 col-md-12">
-												<div class="input-group col-lg-4 col-md-6">
-													<span class="input-group-addon onSwitchSty">允许投退币：</span>
+												<div class="input-group col-lg-3 col-md-4">
+													<span class="input-group-addon onSwitchSty">允许投币：</span>
 													<div class="input-group-addon switchZdy" @click="switchFnc('0')">
 														<div :class="[onSwitch0 ? 'onSwitch1' : 'onSwitch2','onSwitch']"></div>
 														<div class="col-lg-6 col-md-6">允许</div>
 														<div class="col-lg-6 col-md-6">禁止</div>
 													</div>
 												</div>
-												<div class="input-group col-lg-4 col-md-6">
-													<span class="input-group-addon onSwitchSty">允许兑币：</span>
+												<div class="input-group col-lg-3 col-md-4">
+													<span class="input-group-addon onSwitchSty">允许退币：</span>
 													<div class="input-group-addon switchZdy" @click="switchFnc('1')">
 														<div :class="[onSwitch1 ? 'onSwitch1' : 'onSwitch2','onSwitch']"></div>
 														<div class="col-lg-6 col-md-6">允许</div>
 														<div class="col-lg-6 col-md-6">禁止</div>
 													</div>
 												</div>
-												<div class="input-group col-lg-4 col-md-6">
-													<span class="input-group-addon onSwitchSty">允许购买实物币：</span>
+												<div class="input-group col-lg-3 col-md-4">
+													<span class="input-group-addon onSwitchSty">允许售币：</span>
 													<div class="input-group-addon switchZdy" @click="switchFnc('2')">
 														<div :class="[onSwitch2 ? 'onSwitch1' : 'onSwitch2','onSwitch']"></div>
 														<div class="col-lg-6 col-md-6">允许</div>
 														<div class="col-lg-6 col-md-6">禁止</div>
 													</div>
 												</div>
-											</div>
-											<div class="tab-text col-lg-12 col-md-12">
-												<div class="input-group col-lg-4 col-md-6">
-													<span class="input-group-addon onSwitchSty">允许手工存币：</span>
+												<div class="input-group col-lg-3 col-md-4">
+													<span class="input-group-addon onSwitchSty">允许存币：</span>
 													<div class="input-group-addon switchZdy" @click="switchFnc('3')">
 														<div :class="[onSwitch3 ? 'onSwitch1' : 'onSwitch2','onSwitch']"></div>
 														<div class="col-lg-6 col-md-6">允许</div>
 														<div class="col-lg-6 col-md-6">禁止</div>
 													</div>
 												</div>
-												<div class="input-group col-lg-4 col-md-6">
-													<span class="input-group-addon onSwitchSty">允许手工送币：</span>
+											</div>
+											<div class="tab-text col-lg-12 col-md-12">
+												<div class="input-group col-lg-3 col-md-4">
+													<span class="input-group-addon onSwitchSty">允许送币：</span>
 													<div class="input-group-addon switchZdy" @click="switchFnc('4')">
 														<div :class="[onSwitch4 ? 'onSwitch1' : 'onSwitch2','onSwitch']"></div>
+														<div class="col-lg-6 col-md-6">允许</div>
+														<div class="col-lg-6 col-md-6">禁止</div>
+													</div>
+												</div>
+												<div class="input-group col-lg-3 col-md-4">
+													<span class="input-group-addon onSwitchSty">允许兑币：</span>
+													<div class="input-group-addon switchZdy" @click="switchFnc('5')">
+														<div :class="[onSwitch5 ? 'onSwitch1' : 'onSwitch2','onSwitch']"></div>
+														<div class="col-lg-6 col-md-6">允许</div>
+														<div class="col-lg-6 col-md-6">禁止</div>
+													</div>
+												</div>
+												<div class="input-group col-lg-3 col-md-4">
+													<span class="input-group-addon onSwitchSty">允许续卡：</span>
+													<div class="input-group-addon switchZdy" @click="switchFnc('6')">
+														<div :class="[onSwitch6 ? 'onSwitch1' : 'onSwitch2','onSwitch']"></div>
 														<div class="col-lg-6 col-md-6">允许</div>
 														<div class="col-lg-6 col-md-6">禁止</div>
 													</div>
@@ -1216,7 +1236,7 @@
 											</div>
 										</div>
 										<div class="mcImg col-lg-2 col-md-2">
-											<img src="images/ticketBg.png" alt="会员头像">
+											<img :src="memberInfo.Avatar" alt="会员头像">
 										</div>
 									</div>
 									<div class="row" style="margin-top: 1em;">
@@ -1229,9 +1249,9 @@
 												</tr>
 												</thead>
 												<tbody>
-												<tr v-for="(items,index) in balanceData" :key="index">
-													<td>{{items.balanceType}}</td>
-													<td @click="billingRecord(index)">{{items.balance}}</td>
+												<tr v-for="(item,index) in balanceData" :key="index">
+													<td>{{item.BalanceName}}</td>
+													<td @click="billingRecord(index)">{{item.Quantity}}</td>
 												</tr>
 												</tbody>
 											</table>
@@ -1240,8 +1260,10 @@
 											<div class="col-lg-9 col-md-9">
 												<ul class="nav nav-tabs" role="tablist">
 													<li role="presentation" class="active"><a href="#ViceCard" aria-controls="ViceCard" role="tab" data-toggle="tab">主卡信息</a></li>
-													<li role="presentation"><a href="#ViceCard1" aria-controls="ViceCard1" role="tab" data-toggle="tab">副卡1</a></li>
-													<li role="presentation"><a href="#ViceCard2" aria-controls="ViceCard2" role="tab" data-toggle="tab">副卡2</a></li>
+
+													<li role="presentation" v-for="(item,index) in childCardList" :key="index">
+														<a :href="item.titleHref" :aria-controls="item.titleIndex" role="tab" data-toggle="tab">{{item.indexTxt}}</a>
+													</li>
 												</ul>
 												<div class="tab-content">
                                                     <div role="tabpanel" class="tab-pane active" id="ViceCard">
@@ -1253,24 +1275,18 @@
                                                             <p>期限：2020-04-26</p>
                                                         </div>
                                                     </div>
-													<div role="tabpanel" class="tab-pane" id="ViceCard1">
+													<div role="tabpanel" class="tab-pane" v-for="(item,index) in childCardList" :key="index" :id="item.titleIndex" >
 														<div class="tab-style">
-															<h4>主卡信息</h4>
-															<p>卡号：123456</p>
-															<p>等级：普通卡</p>
-															<p>押金：10元</p>
-															<p>期限：2020-04-26</p>
+															<p>卡号：{{item.ChildICCardId}}</p>
+															<p>类别：{{item.CardShape}}</p>
+															<p>押金：{{item.Deposit}}元</p>
+															<p>姓名：{{item.UserName}}</p>
+															<p>性别：{{item.Gender}}</p>
+															<p>生日：{{item.Birthday}}</p>
+															<img :src="item.Avatar" alt="会员头像">
 														</div>
 													</div>
-													<div role="tabpanel" class="tab-pane" id="ViceCard2">
-														<div class="tab-style">
-															<h4>卡信息</h4>
-															<p>卡号：123456</p>
-															<p>等级：普通卡</p>
-															<p>押金：10元</p>
-															<p>期限：2020-04-26</p>
-														</div>
-													</div>
+
 												</div>
 											</div>
 											<div class="col-lg-3 col-md-3 cardSettings">
@@ -1413,7 +1429,7 @@
                 <li @click="dropChoose('1')"><span class="iconfont icon-shenfenzhengrenzheng"></span>身份证</li>
                 <li @click="dropChoose('2')"><span class="iconfont icon-3"></span>手动输入</li>
             </ul>
-            <input  class="form-control" v-model="cardLossData.name" placeholder="请输入会员姓名"/>
+            <input  class="form-control" placeholder="请输入会员姓名"/>
             <button type="button" class="btn btn-default">{{dropChooseTxt2}}</button>
         </div>
 		<ul class="member col-lg-9 col-md-9" @click="membershipDetails">
@@ -1480,7 +1496,7 @@
             memberForm:{
                 name:"",
                 sex:"0",
-                mobile :"13125008389",
+                mobile :"",
                 IdNumber:"",
                 birthday:"",
                 mobileCode:"",
@@ -1502,16 +1518,19 @@
                 balance:"",
                 ExchangeRate:""
             },
-			cardLossData:{
-				mobile :"13125008389",
-                name:"",
-                sex:"0",
-                birthday:"",
+            memberInput:{
                 mobileCode:"",
-                note:"",
-				disabled: false,
-				codeBtn:"获取验证码",
-				IdNumber:""
+                disabled: false,
+                codeBtn:"获取验证码"
+			},
+			memberInfo:{
+				Avatar:"images/salesPic1.png",
+				Birthday:"",
+				Gender:"",
+				IDCardNo:"",
+				Mobile:"",
+				UserName: "",
+                Note:""
             },
             onSwitch0:false,
             onSwitch1:false,
@@ -1519,6 +1538,8 @@
             onSwitch3:false,
             onSwitch4:false,
             onSwitch5:false,
+            onSwitch6:false,
+			childCardList:[],
             msg:"",
             onFocus:false,
             fastAmountFocus:false,
@@ -1546,19 +1567,7 @@
             footerData:[],
             treeShow:false,
             givingShow:false,
-            balanceData:[{
-                balanceType:"No.1",
-                balance:"555454"
-            },{
-                balanceType:"No.2",
-                balance:"555454"
-            },{
-                balanceType:"No.3",
-                balance:"555454"
-            },{
-                balanceType:"No.4",
-                balance:"555454"
-            }],
+            balanceData:[],
             canGet:[{
                 balanceType:"代币",
                 balance:"10"
@@ -1615,6 +1624,7 @@
             registerCheckOutData:null,
             deviceId:"",
             operateType:"",
+            radioValue:"",
             dropChooseTxt1:"读卡器",
             dropChooseTxt2:"读卡",
            	msgEleven:""			// 0 开卡，1补卡换卡，2...
@@ -2235,10 +2245,11 @@
 //			按手机号查询会员信息
             getMember:function () {
 			    var that = this;
-                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,mobile:that.cardLossData.mobile,code:that.cardLossData.mobileCode};
+                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,mobile:that.memberInfo.Mobile,code:that.memberInput.mobileCode};
                 console.log(obj);
-                console.log(that.cardLossData.mobile != 11 || that.cardLossData.mobileCode == "");
-			    if(that.cardLossData.mobile.length != 11 || that.cardLossData.mobileCode == ""){
+                console.log(that.memberInfo.Mobile.length);
+                console.log(that.memberInput.mobileCode == "");
+			    if(that.memberInfo.Mobile.length != 11 || that.memberInput.mobileCode == ""){
                     that.msg = "请先确认手机号和验证码填写正确";
                     $('#myModal').modal('show');
                     setTimeout(function () {
@@ -2250,6 +2261,8 @@
                         that.msgPrompt(res.data);
                         if (res.data.result_code === '1') {
                             that.cardList = res.data.result_data;
+                            console.log(that.cardList);
+//                            that.cardList =[{CardId:"10001642011100120180622000177000",EndDate:"2019-06-13",ICCardNo:"21110024",LevelName: "贵宾卡"},{CardId:"10001642011100120180622000177000",EndDate:"2019-06-13",ICCardNo:"21110024",LevelName: "贵宾卡"},{CardId:"10001642011100120180622000177000",EndDate:"2019-06-13",ICCardNo:"21110024",LevelName: "贵宾卡"},{CardId:"10001642011100120180622000177000",EndDate:"2019-06-13",ICCardNo:"21110024",LevelName: "贵宾卡"}];
                             $('#cardList').modal('show');
                         }
                     }).catch(function (err) {
@@ -2257,6 +2270,56 @@
                     });
 				}
             },
+//			选择会员卡
+            radioCard:function(index){
+                var that = this;
+                console.log(index);
+                that.radioValue = index;
+                that.icCardId = that.cardList[that.radioValue].ICCardNo;
+                $('#cardList').modal('hide');
+                that.radioValue = "";
+                that.getMenberCardInfo()
+			},
+//          按会员卡查询会员及卡信息
+            getMenberCardInfo:function(){
+                var that = this;
+                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,icCardId:that.icCardId};
+                console.log(obj);
+                axios.post('/XCCloud/Member?action=getMenberCardInfoByICCardId', obj).then(function (res) {
+                    console.log(res.data);
+                    that.msgPrompt(res.data);
+                    if (res.data.result_code === '1') {
+                        that.memberInfo = res.data.result_data.MemberInfo;
+                        that.balanceData = res.data.result_data.MemberBalances;
+                        that.onSwitch0 = res.data.result_data.CardPurview.AllowIn;
+                        that.onSwitch1 = res.data.result_data.CardPurview.AllowOut;
+                        that.onSwitch2 = res.data.result_data.CardPurview.AllowSaleCoin;
+                        that.onSwitch3 = res.data.result_data.CardPurview.AllowSaveCoin;
+                        that.onSwitch4 = res.data.result_data.CardPurview.AllowFreeCoin;
+                        that.onSwitch5 = res.data.result_data.CardPurview.AllowExitCoin;
+                        that.onSwitch6 = res.data.result_data.CardPurview.AllowRenew;
+                        var TitleCardList =[];
+                        var childCardList =res.data.result_data.ChildCardList;
+                        for(var i = 0;i<childCardList.length;i++){
+                            TitleCardList.push({
+                                CardShape: childCardList[i].CardShape,
+                                ChildICCardId: childCardList[i].ChildICCardId,
+                                Deposit: childCardList[i].Deposit,
+                                Avatar: childCardList[i].ChildCardMemberInfo.Avatar,
+                                Birthday: childCardList[i].ChildCardMemberInfo.Birthday,
+                                Gender: childCardList[i].ChildCardMemberInfo.Gender,
+                                UserName: childCardList[i].ChildCardMemberInfo.UserName,
+                                titleIndex:"childCard"+i,
+                                titleHref:"#childCard"+i,
+                                indexTxt:"副卡"+i
+							})
+						}
+                        that.childCardList= TitleCardList;
+                    }
+                }).catch(function (err) {
+                    console.log(err);
+                });
+			},
 //          补卡、换卡
             supplementCard:function(operateType){
                 var that = this;
@@ -2356,7 +2419,7 @@
 					}, 1000)
 					switch(type){
 						case "1":
-						var mobileNo = that.cardLossData.mobile;
+						var mobileNo = that.memberInfo.mobile;
 						break;
 						
 					}
@@ -2893,8 +2956,11 @@
 					case '5':
 						that.onSwitch5 = !that.onSwitch5;
 						break;
-                    default:
+                    case '6':
                         that.onSwitch6 = !that.onSwitch6;
+                        break;
+                    default:
+                        that.onSwitch7 = !that.onSwitch7;
                         break;
                 }
 //                this.onSwitch1 = !this.onSwitch1;
@@ -2914,6 +2980,7 @@
                 this.onSwitch3 = false;
                 this.onSwitch4 = false;
                 this.onSwitch5 = false;
+                this.onSwitch6 = false;
 
             },
 //			读取会员卡，更新会员消息

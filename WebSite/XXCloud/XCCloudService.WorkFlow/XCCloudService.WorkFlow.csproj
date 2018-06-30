@@ -46,7 +46,6 @@
   <ItemGroup>
     <Compile Include="Base\BaseWorkFlow.cs" />
     <Compile Include="GoodReqWorkFlow.cs" />
-    <Compile Include="StockWorkFlow.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

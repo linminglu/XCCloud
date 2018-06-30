@@ -4,6 +4,14 @@
 ----------------------------------------------------------------------------------------------------------------------------------------
 
 ----------------------------------------------------------------------------------------------------------------------------------------
+declare @Result int
+declare @ErrMsg varchar(200) = ''
+declare @MCUId varchar(20) = ''  
+exec GetDeviceInfo '100025','100025420106001',4,'lijunjie',@Result output,@MCUId output,@ErrMsg output
+print @MCUId
+----------------------------------------------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------------------------------------------
 
 declare @MerchId varchar(15) = '100025'
 declare @StoreId varchar(15) = '100025420106001'
@@ -46,7 +54,7 @@ declare @ExitFood as ExitFoodType
 insert @ExitFood(Category,FoodId,FoodCount) values(0,1,1)
 declare @ErrMsg varchar(200) = ''
 declare @Note varchar(200) = ''
-exec ExistFood @MerchId,@StoreId,@FlwOrderId,@AuthorID,@UserID,@WorkStation,@ExitFood,@FlwSeedId,@Note,@ExitFoodFlwId output,@ErrMsg output
+exec ExitFood @MerchId,@StoreId,@FlwOrderId,@AuthorID,@UserID,@WorkStation,@ExitFood,@FlwSeedId,@Note,@ExitFoodFlwId output,@ErrMsg output
 print @ErrMsg
 print @ExitFoodFlwId
 

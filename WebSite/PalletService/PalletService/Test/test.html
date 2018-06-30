@@ -11,7 +11,7 @@
         var isRegister = false;
         var mobileToken = "68f1f2f3d8f54a4eb31c2e997456cd01";
         var memberToken = "dd87aa623dd44f27b2081fc00f4d1ee7";
-        var websocketUrl = "ws://192.168.1.145:12880";
+        var websocketUrl = "ws://192.168.1.148:12880";
         
         function common(url, parasJson) {
             $.ajax({
@@ -182,9 +182,9 @@
             dataObject.coins = "10";
             sendObject.token = "15618920033";
             var obj = new Object();
-            obj.msgType = 6;
+            obj.msgType = 9;
             obj.sObj = sendObject;
-            obj.data = dataObject;
+            obj.dataObj = dataObject;
             return obj;
         };
 
@@ -202,6 +202,15 @@
             sendObject.userToken = $("#userToken").val();
             var obj = new Object();
             obj.msgType = 11;
+            obj.sObj = sendObject;
+            return obj;
+        }
+
+        function do_GetMachine() {
+            var sendObject = new Object();
+            sendObject.userToken = $("#userToken").val();
+            var obj = new Object();
+            obj.msgType = 1;
             obj.sObj = sendObject;
             return obj;
         }
@@ -273,6 +282,11 @@
                 var str = JSON.stringify(do_IsNewCard());
                 ws.send(str);
             });
+
+            document.getElementById("button12").addEventListener("click", function () {
+                var str = JSON.stringify(do_GetMachine());
+                ws.send(str);
+            });
         }
         window.onload = start;
     </script>
@@ -292,8 +306,8 @@
         <input id="button05" type="button" value="打印小票"  />
         <input id="button06" type="button" value="出币" />
         <input id="button07" type="button" value="用户登录" onclick="do_login()"/>
-        <input id="button08" type="button" value="出币" />
         <input id="button11" type="button" value="是否新卡" />
+        <input id="button12" type="button" value="读取机器名" />
     </form>
     <pre id="incomming"></pre>
 </body>

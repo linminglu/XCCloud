@@ -118,27 +118,51 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         public string ICCardId { get; set; }
 
         /// <summary>
-        /// 会员信息
+        /// 等级
         /// </summary>
         [DataMember(Order = 2)]
+        public string LevelName { get; set; }
+
+        /// <summary>
+        /// 押金
+        /// </summary>
+        [DataMember(Order = 2)]
+        public int Deposit { get; set; }
+
+        /// <summary>
+        /// 期限
+        /// </summary>
+        [DataMember(Order = 2)]
+        public string EndDate { get; set; }
+
+        /// <summary>
+        /// 主卡头像
+        /// </summary>
+        [DataMember(Order = 2)]
+        public string CardAvatar { get; set; }
+
+        /// <summary>
+        /// 会员信息
+        /// </summary>
+        [DataMember(Order = 3)]
         public CardMemberInfoModel MemberInfo { get; set; }
 
         /// <summary>
         /// 卡权限
         /// </summary>
-        [DataMember(Order = 3)]
+        [DataMember(Order = 4)]
         public CardPurviewModel CardPurview { get; set; }
 
         /// <summary>
         /// 余额列表
         /// </summary>
-        [DataMember(Order = 4)]
+        [DataMember(Order = 5)]
         public List<BalanceModel> MemberBalances { get; set; }
 
         /// <summary>
         /// 附属卡列表
         /// </summary>
-        [DataMember(Order = 5)]
+        [DataMember(Order = 6)]
         public List<ChildCardModel> ChildCardList { get; set; }
     }
 
@@ -148,8 +172,9 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         public string Birthday { get; set; }
         public string IDCardNo { get; set; }
         public string Mobile { get; set; }
-        public string Gender { get; set; }
+        public int Gender { get; set; }
         public string Avatar { get; set; }
+        public string Note { get; set; }
     }
     public class CardPurviewModel
     {
@@ -184,9 +209,9 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         public int AllowFreeCoin { get; set; }
 
         /// <summary>
-        /// 卡状态
+        /// 允许续卡
         /// </summary>
-        public int CardStatus { get; set; }
+        public int AllowRenew { get; set; }
     }
 
     public class BalanceModel

@@ -211,11 +211,11 @@
         methods: {
             Load:function () {
                 var that =this;
-//                var deviceToken = getStorage("deviceNo")||"";       //获取设备令牌
+                var deviceToken = getStorage("deviceNo")||"";       //获取设备令牌
                 var userThirdId = getStorage("userThirdId")||"";       //获取第三方令牌
                 that.headimgurl = getStorage("headimgurl")||"";       //获取第三方令牌{{}}
                 console.log(that.headimgurl);
-//                that.deviceToken = deviceToken;
+                that.deviceToken = deviceToken;
                 that.userThirdId = userThirdId;
                 this.$dialog.loading.open('');
                 var getDeviceInfo ={sysId: sysId,versionNo: versionNo,token:that.userThirdId,deviceToken:that.deviceToken};

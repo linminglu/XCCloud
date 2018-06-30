@@ -87,7 +87,6 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Data_MemberLevel_Balance> Data_MemberLevel_Balance { get; set; }
         public virtual DbSet<Data_MemberLevel_BalanceCharge> Data_MemberLevel_BalanceCharge { get; set; }
         public virtual DbSet<Data_MemberLevel_Food> Data_MemberLevel_Food { get; set; }
-        public virtual DbSet<Data_MemberLevelFree> Data_MemberLevelFree { get; set; }
         public virtual DbSet<Data_MerchAlipay_Shop> Data_MerchAlipay_Shop { get; set; }
         public virtual DbSet<Data_MerchWechatConfig> Data_MerchWechatConfig { get; set; }
         public virtual DbSet<Data_MerchWechatMenu> Data_MerchWechatMenu { get; set; }
@@ -189,7 +188,6 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Flw_MemberCard_BalanceCharge> Flw_MemberCard_BalanceCharge { get; set; }
         public virtual DbSet<Flw_Order_Detail> Flw_Order_Detail { get; set; }
         public virtual DbSet<Flw_Game_Watch> Flw_Game_Watch { get; set; }
-        public virtual DbSet<Data_Member_Card> Data_Member_Card { get; set; }
         public virtual DbSet<Base_MerchantInfo> Base_MerchantInfo { get; set; }
         public virtual DbSet<Flw_GroupVerity> Flw_GroupVerity { get; set; }
         public virtual DbSet<Flw_Order> Flw_Order { get; set; }
@@ -198,9 +196,11 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Flw_DeviceData> Flw_DeviceData { get; set; }
         public virtual DbSet<Flw_MemberCard_Free> Flw_MemberCard_Free { get; set; }
         public virtual DbSet<Flw_Food_Exit> Flw_Food_Exit { get; set; }
-        public virtual DbSet<Flw_MemberLevelFree> Flw_MemberLevelFree { get; set; }
         public virtual DbSet<Flw_MemberLevelFree_Detail> Flw_MemberLevelFree_Detail { get; set; }
         public virtual DbSet<Data_GoodExitInfo> Data_GoodExitInfo { get; set; }
         public virtual DbSet<Data_GoodOutOrder> Data_GoodOutOrder { get; set; }
+        public virtual DbSet<Data_Member_Card> Data_Member_Card { get; set; }
+        public virtual DbSet<Flw_MemberLevelFree> Flw_MemberLevelFree { get; set; }
+        public virtual DbSet<Data_MemberLevelFree> Data_MemberLevelFree { get; set; }
     }
 }

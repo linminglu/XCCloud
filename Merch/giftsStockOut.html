@@ -172,7 +172,7 @@
             let index=obj.data.LAY_TABLE_INDEX; //所在行的所有相关数据
             storageGood[index][key]=value;
             if(key=='OutCount'){
-                storageGood[index].OutTotal=value*storageGood[index].OutPrice;
+                storageGood[index].OutTotal=value*(storageGood[index].OutPrice*100)/100;
                 let sumExit=0;let sunTotal=0;
                 for(let i in storageGood){
                     sumExit=parseInt(sumExit)+parseInt(storageGood[i].OutCount);
@@ -402,7 +402,7 @@
     <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del"> <i class="layui-icon">&#xe642;</i>删除</a>
     <a class="layui-btn layui-btn-xs layui-bg-orange" lay-event="check"> <i class="layui-icon">&#xe642;</i>审核</a>
     {{# }else if(d.State==1){ }}
-    <a class="layui-btn layui-btn-xs layui-bg-orange" lay-event="cancelcheck"> <i class="layui-icon">&#xe642;</i>撤销审核</a>
+    <a class="layui-btn layui-btn-xs layui-bg-orange layui-btn-warm" lay-event="" > <i class="layui-icon">&#xe642;</i>无</a>
     {{# } }}
 </script>
 <script type="text/html" id="barDemo2">

@@ -387,7 +387,7 @@ namespace XXCloudService.Api.XCCloud
                 return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "注释不能为空");
             }
 
-            string storedProcedure = "ExistFood";
+            string storedProcedure = "ExitFood";
             SqlParameter[] sqlParameter = new SqlParameter[12];
             sqlParameter[0] = new SqlParameter("@MerchId", SqlDbType.VarChar);
             sqlParameter[0].Value = userTokenDataModel.MerchID;
@@ -395,7 +395,7 @@ namespace XXCloudService.Api.XCCloud
             sqlParameter[1] = new SqlParameter("@StoreId", SqlDbType.VarChar);
             sqlParameter[1].Value = userTokenDataModel.StoreID;
 
-            sqlParameter[2] = new SqlParameter("@FlwOrderId", SqlDbType.Int);
+            sqlParameter[2] = new SqlParameter("@FlwOrderId", SqlDbType.VarChar);
             sqlParameter[2].Value = flwOrderId;
 
             sqlParameter[3] = new SqlParameter("@AuthorID", SqlDbType.Int);
@@ -430,7 +430,7 @@ namespace XXCloudService.Api.XCCloud
                 listSqlDataRecord.Add(record);
             }
 
-            sqlParameter[6] = new SqlParameter("@ExistFood", SqlDbType.Structured);
+            sqlParameter[6] = new SqlParameter("@ExitFood", SqlDbType.Structured);
             sqlParameter[6].Value = listSqlDataRecord;
 
             sqlParameter[7] = new SqlParameter("@FlwSeedId", SqlDbType.VarChar, 29);
@@ -455,7 +455,7 @@ namespace XXCloudService.Api.XCCloud
                 var obj = new {
                     exitFoodFlwId = sqlParameter[9].Value.ToString()
                 };
-                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, obj);
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, obj);
             }
             else
             {

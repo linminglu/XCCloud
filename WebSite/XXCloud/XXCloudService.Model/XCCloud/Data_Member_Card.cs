@@ -29,8 +29,6 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<System.DateTime> CardBirthDay { get; set; }
         public string FaceReadID { get; set; }
         public Nullable<int> CardLimit { get; set; }
-        public Nullable<int> AllowIn { get; set; }
-        public Nullable<int> AllowOut { get; set; }
         public string MemberID { get; set; }
         public Nullable<int> MemberLevelID { get; set; }
         public Nullable<System.DateTime> CreateTime { get; set; }

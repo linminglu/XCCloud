@@ -1771,7 +1771,7 @@ namespace XXCloudService.Api.XCCloud
                 var errMsg = string.Empty;
                 if (!dicParas.Get("requestId").Validintnozero("调拨单ID", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                
+
                 var requestId = dicParas.Get("requestId").Toint(0);
 
                 if (!Data_GoodRequestService.I.Any(a => a.ID == requestId))
@@ -2281,6 +2281,7 @@ namespace XXCloudService.Api.XCCloud
                         var checkDate = model.CheckDate;
                         var modelMerchId = model.MerchID;
                         var modelStoreId = model.StoreID;
+
                         //判断Store_CheckDate营业日期为已结算状态的, 出入库不能撤销
                         if (Store_CheckDateService.I.Any(a => a.MerchID.Equals(modelMerchId, StringComparison.OrdinalIgnoreCase) && a.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase) && a.CheckDate == checkDate && a.AuthorID > 0))
                         {
@@ -3071,12 +3072,6 @@ namespace XXCloudService.Api.XCCloud
                         var checkDate = model.CheckDate;
                         var modelMerchId = model.MerchID;
                         var modelStoreId = model.StoreID;
-                        //判断Store_CheckDate营业日期为已结算状态的, 出入库不能撤销
-                        if (Store_CheckDateService.I.Any(a => a.MerchID.Equals(modelMerchId, StringComparison.OrdinalIgnoreCase) && a.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase) && a.CheckDate == checkDate && a.AuthorID > 0))
-                        {
-                            errMsg = "营业日期为已结算状态的, 出入库不能撤销";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
 
                         //废品、转仓、退货出库无需审核, 不能撤销
                         if (model.OrderType == (int)GoodOutOrderType.Discard || model.OrderType == (int)GoodOutOrderType.Transfer || model.OrderType == (int)GoodOutOrderType.Exit)
@@ -3085,6 +3080,13 @@ namespace XXCloudService.Api.XCCloud
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 
+                        //判断Store_CheckDate营业日期为已结算状态的, 出入库不能撤销
+                        if (Store_CheckDateService.I.Any(a => a.MerchID.Equals(modelMerchId, StringComparison.OrdinalIgnoreCase) && a.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase) && a.CheckDate == checkDate && a.AuthorID > 0))
+                        {
+                            errMsg = "营业日期为已结算状态的, 出入库不能撤销";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+                        
                         if (model.State != (int)GoodOutInState.Done)
                         {
                             errMsg = "未审核的出库单不能撤销";

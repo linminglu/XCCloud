@@ -67,7 +67,6 @@
         <EntityTypeShape EntityType="XCCloudDBModel.Data_MemberLevel_Balance" Width="1.5" PointX="16.75" PointY="27.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_MemberLevel_BalanceCharge" Width="1.5" PointX="28.75" PointY="0.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_MemberLevel_Food" Width="1.5" PointX="2.75" PointY="28.75" />
-        <EntityTypeShape EntityType="XCCloudDBModel.Data_MemberLevelFree" Width="1.5" PointX="28.75" PointY="4.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_MerchAlipay_Shop" Width="1.5" PointX="4.75" PointY="28.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_MerchWechatConfig" Width="1.5" PointX="28.75" PointY="8.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_MerchWechatMenu" Width="1.5" PointX="28.75" PointY="12.75" />
@@ -169,7 +168,6 @@
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_MemberCard_BalanceCharge" Width="1.5" PointX="43.375" PointY="35.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_Order_Detail" Width="1.5" PointX="17.375" PointY="24.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_Game_Watch" Width="1.5" PointX="43.375" PointY="41.75" />
-        <EntityTypeShape EntityType="XCCloudDBModel.Data_Member_Card" Width="1.5" PointX="43.375" PointY="6.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Base_MerchantInfo" Width="1.5" PointX="45.375" PointY="8.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_GroupVerity" Width="1.5" PointX="29.375" PointY="37.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_Order" Width="1.5" PointX="45.375" PointY="0.75" />
@@ -178,10 +176,12 @@
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_DeviceData" Width="1.5" PointX="13.375" PointY="30.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_MemberCard_Free" Width="1.5" PointX="45.375" PointY="14.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_Food_Exit" Width="1.5" PointX="43.375" PointY="19.75" />
-        <EntityTypeShape EntityType="XCCloudDBModel.Flw_MemberLevelFree" Width="1.5" PointX="45.375" PointY="19.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_MemberLevelFree_Detail" Width="1.5" PointX="31.375" PointY="33.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_GoodExitInfo" Width="1.5" PointX="45.375" PointY="24.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_GoodOutOrder" Width="1.5" PointX="45.375" PointY="29.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.Data_Member_Card" Width="1.5" PointX="45.375" PointY="35.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.Flw_MemberLevelFree" Width="1.5" PointX="45.375" PointY="19.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.Data_MemberLevelFree" Width="1.5" PointX="41.375" PointY="9.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
