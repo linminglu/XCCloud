@@ -1211,7 +1211,7 @@ namespace XCCloudService.Common.Enum
         /// 调拨已退货
         /// </summary>
         [Description("调拨已退货")]
-        RequestExited = 11,
+        RequestExited = 11
     }
 
     /// <summary>
