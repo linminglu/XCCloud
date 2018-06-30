@@ -135,6 +135,15 @@ namespace XCCloudService.Base
         }        
 
         /// <summary>
+        /// 获取当前营业日期
+        /// </summary>
+        /// <returns></returns>
+        protected DateTime? getCurrCheckDate(string merchId, string storeId)
+        {
+            return Store_CheckDateService.I.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)).OrderByDescending(or => or.CheckDate).Select(o => o.CheckDate).FirstOrDefault() ?? DateTime.Now.Todate();  //获取当前营业日期
+        }
+
+        /// <summary>
         /// 获取班次数参数
         /// </summary>
         /// <param name="storeId"></param>

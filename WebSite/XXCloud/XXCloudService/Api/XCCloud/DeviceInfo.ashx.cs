@@ -702,7 +702,7 @@ namespace XXCloudService.Api.XCCloud
                 var base_DeviceInfo = Base_DeviceInfoService.I.GetModels(p => p.Token.Equals(token, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
                 var gameIndex = base_DeviceInfo.GameIndexID;
                 var headIndex = base_DeviceInfo.ID;
-                var checkDate = Store_CheckDateService.I.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)).OrderByDescending(or => or.CheckDate).Select(o => o.CheckDate).FirstOrDefault();
+                var checkDate = getCurrCheckDate(merchId, storeId);
                 var linq = new
                 {
                     GameIndex = gameIndex,

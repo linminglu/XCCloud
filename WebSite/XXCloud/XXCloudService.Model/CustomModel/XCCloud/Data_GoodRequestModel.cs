@@ -148,4 +148,20 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         public decimal? CostPrice { get; set; }
         public decimal? Tax { get; set; }
     }
+
+    public class Data_GoodRequestExitList
+    {
+        public int ID { get; set; }
+        public int RequestID { get; set; }
+        public int? GoodID { get; set; }
+        public string Barcode { get; set; }
+        public string GoodName { get; set; }
+        public string GoodTypeStr { get; set; }
+        public int? RequestCount { get; set; }
+        public int? SendCount { get; set; }
+        public int? StorageCount { get; set; }
+        public int? ExitedCount { get; set; }
+        public decimal? CostPrice { get; set; }
+        public decimal? Tax { get; set; }
+    }
 }

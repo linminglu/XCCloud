@@ -64,7 +64,7 @@ namespace XXCloudService.Api.XCCloud
                 var flw_OrderService = Flw_OrderService.I;
 
                 //获取当前营业日期
-                var currCheckDate = store_CheckDateService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)).OrderByDescending(or => or.CheckDate).Select(o => o.CheckDate).FirstOrDefault();
+                var currCheckDate = store_CheckDateService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)).OrderByDescending(or => or.CheckDate).Select(o => o.CheckDate).FirstOrDefault();
                 if (currCheckDate == null)
                 {
                     errMsg = "无法找到当前营业日期";

@@ -16,7 +16,7 @@
     </div>
 </div>
 <div id="openModel" style="display: none;padding: 15px">
-    <form action="" class="layui-form layui-form-pane">
+    <form action="" class="layui-form layui-form-pane goodIsAll">
         <div class="layui-form-item">
             <div class="layui-inline">
                 <label class="layui-form-label">会员级别</label>
@@ -35,13 +35,13 @@
             </div>
         </div>
         <div class="layui-form-item">
-            <div class="layui-inline goodIsAll">
+            <div class="layui-inline ">
                 <label  class="layui-form-label">返还方式</label>
                 <div class="layui-input-inline">
                     <input type="checkbox" checked lay-skin="switch" id="Backtype" lay-filter="Backtype" lay-text="按自然日期|按营业日期">
                 </div>
             </div>
-            <div class="layui-inline goodIsAll" style="margin-left: 10px;">
+            <div class="layui-inline " style="margin-left: 10px;">
                 <label  class="layui-form-label">统计方式</label>
                 <div class="layui-input-inline">
                     <input type="checkbox" checked lay-skin="switch" id="AllowContainToday" lay-filter="AllowContainToday" lay-text="包含当天|不包含当天">
@@ -66,9 +66,12 @@
                 <label class="layui-form-label">返还比例</label>
                 <div class="layui-input-inline">
                     <input type="text" class="layui-input" id="backScale">
+                    <span class="layui-unit">%</span>
                 </div>
             </div>
-            <div class="layui-inline" style="margin-left: 10px;">
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline" >
                 <label  class="layui-form-label">返还卡少于</label>
                 <div class="layui-input-inline">
                     <input type="text" class="layui-input" id="exitCardMin">

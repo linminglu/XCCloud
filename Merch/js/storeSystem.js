@@ -861,7 +861,8 @@ xcActionSystem.prototype= {
                     if (data.result_code == 1) {
                       let  tableData = data.result_data;
                         for (var i in tableData){
-                            $('#'+id).append('<input type="checkbox" name="like[write]" lay-skin="primary" lay-filter="ml" value="'+tableData[i].MemberLevelID+'" title="'+tableData[i].MemberLevelName+'"><br>')
+                            $('#'+id).append('<input type="checkbox" name="like[write]" lay-skin="primary" lay-filter="ml" value="'+tableData[i].MemberLevelID+'" title="'+tableData[i].MemberLevelName+'">')
+
                         }
                         layui.use('form',function () {
                             var form=layui.form;
@@ -1574,12 +1575,12 @@ xcActionSystem.prototype= {
                     for(let i in arr){
                         if(selected!=undefined){
                             if(arr[i].ID==selected){
-                                $('#'+id).append('<option value="'+arr[i].ID+'" selected>'+arr[i].TypeName+'</option>')
+                                $('#'+id).append('<option value="'+arr[i].ID+'" selected title="'+arr[i].Unit+'">'+arr[i].TypeName+'</option>')
                             }else {
-                                $('#'+id).append('<option value="'+arr[i].ID+'">'+arr[i].TypeName+'</option>')
+                                $('#'+id).append('<option value="'+arr[i].ID+'" title="'+arr[i].Unit+'">'+arr[i].TypeName+'</option>')
                             }
                         }else {
-                            $('#'+id).append('<option value="'+arr[i].ID+'">'+arr[i].TypeName+'</option>')
+                            $('#'+id).append('<option value="'+arr[i].ID+'" title="'+arr[i].Unit+'">'+arr[i].TypeName+'</option>')
                         }
                     }
                     form.render('select');
@@ -1690,7 +1691,7 @@ xcActionSystem.prototype= {
         $.ajax({
             type:'post',
             // url:'/XCCloud/Member?action=QueryMemberLevel',
-            url:'  /XCCloud/Member?action=GetMemberLevelDic',
+            url:'/XCCloud/Member?action=GetMemberLevelDic',
             contentType: "application/json; charset=utf-8",
             data:{parasJson: parseJson},
             success: function (data) {

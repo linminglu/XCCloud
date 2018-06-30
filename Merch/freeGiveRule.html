@@ -63,6 +63,7 @@
                 <label  class="layui-form-label">赠送数量</label>
                 <div class="layui-input-inline">
                     <input type="text"class="layui-input" name="FreeCount" lay-filter="FreeCount">
+                    <span class="layui-unit" id="freeCountUnit">个</span>
                 </div>
             </div>
         </div>
@@ -124,7 +125,7 @@
             </div>
         </div>
     </form>
-    <div class="layui-col-md12" style="text-align:center;">
+    <div class="layui-col-md12" style="text-align:center;margin-bottom: 15px">
         <button type="button" class="layui-btn" id="save">确定</button>
     </div>
 </div>
@@ -194,6 +195,7 @@
         });
         form.on('select(FreeBalanceIndex)',function (data) {
             FreeBalanceIndex=data.value=='-请选择-'?'':data.value;
+            $('#freeCountUnit').text(data.elem[data.elem.selectedIndex].title||'')
         });
         form.on('checkbox(AllowGuest)',function (data) {
             if(data.elem.checked==true){
@@ -202,9 +204,9 @@
                 AllowGuest=0;
             }
         });
-        form.on('select(FreeBalanceIndex)',function (data) {
-            FreeBalanceIndex=data.value=='-请选择-'?'':data.value;
-        });
+        // form.on('select(FreeBalanceIndex)',function (data) {
+        //     FreeBalanceIndex=data.value=='-请选择-'?'':data.value;
+        // });
         form.on('select(IDReadType)',function (data) {
             IDReadType=data.value=='-请选择-'?'':data.value;
         });

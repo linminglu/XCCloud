@@ -18,7 +18,8 @@ namespace XCCloudService.Model.XCCloud
         public string MerchID { get; set; }
         public string StoreID { get; set; }
         public string ExitOrderID { get; set; }
-        public Nullable<int> StorageOrderIndex { get; set; }
+        public Nullable<int> SourceType { get; set; }
+        public string SourceOrderID { get; set; }
         public Nullable<System.DateTime> ExitTime { get; set; }
         public Nullable<int> UserID { get; set; }
         public Nullable<System.DateTime> CheckDate { get; set; }

@@ -1061,7 +1061,7 @@ namespace XXCloudService.Api.XCCloud
                         data_GoodRequest.RequestInDepotID = inDepotId;
                         data_GoodRequest.RequestOutStoreID = outStoreId;
                         data_GoodRequest.RequestOutDepotID = outDepotId;
-                        data_GoodRequest.CheckDate = DateTime.Now.Todate();
+                        data_GoodRequest.CheckDate = getCurrCheckDate(merchId, storeId);
 
                         if (!Data_GoodRequestService.I.Add(data_GoodRequest))
                         {
@@ -1258,165 +1258,165 @@ namespace XXCloudService.Api.XCCloud
             }
         }
 
-        /// <summary>
-        /// 调拨出库审核
-        /// </summary>
-        /// <param name="dicParas"></param>
-        /// <returns></returns>
-        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
-        public object GoodSendDealVerify(Dictionary<string, object> dicParas)
-        {
-            try
-            {
-                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                var storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
-                var merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
-                var userId = userTokenKeyModel.LogId.Toint(0);
-                var logType = userTokenKeyModel.LogType;
+        ///// <summary>
+        ///// 调拨出库审核
+        ///// </summary>
+        ///// <param name="dicParas"></param>
+        ///// <returns></returns>
+        //[ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        //public object GoodSendDealVerify(Dictionary<string, object> dicParas)
+        //{
+        //    try
+        //    {
+        //        XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+        //        var storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+        //        var merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+        //        var userId = userTokenKeyModel.LogId.Toint(0);
+        //        var logType = userTokenKeyModel.LogType;
 
-                var errMsg = string.Empty;
-                var requestId = dicParas.Get("requestId").Toint(0);
-                if (requestId == 0)
-                {
-                    errMsg = "调拨单ID不能为空";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
-                if (!dicParas.Get("state").Validint("调拨出库审核状态", out errMsg))
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+        //        var errMsg = string.Empty;
+        //        var requestId = dicParas.Get("requestId").Toint(0);
+        //        if (requestId == 0)
+        //        {
+        //            errMsg = "调拨单ID不能为空";
+        //            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+        //        }
+        //        if (!dicParas.Get("state").Validint("调拨出库审核状态", out errMsg))
+        //            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-                var state = dicParas.Get("state").Toint(0);
-                var note = dicParas.Get("note");
+        //        var state = dicParas.Get("state").Toint(0);
+        //        var note = dicParas.Get("note");
 
-                //开启EF事务
-                using (TransactionScope ts = new TransactionScope())
-                {
-                    try
-                    {
-                        if (!Data_GoodRequestService.I.Any(a => a.ID == requestId))
-                        {
-                            errMsg = "该调拨单不存在";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
+        //        //开启EF事务
+        //        using (TransactionScope ts = new TransactionScope())
+        //        {
+        //            try
+        //            {
+        //                if (!Data_GoodRequestService.I.Any(a => a.ID == requestId))
+        //                {
+        //                    errMsg = "该调拨单不存在";
+        //                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+        //                }
 
-                        //工作流更新
-                        var wf = new GoodReqWorkFlow(requestId, userId, logType, storeId);
-                        if (!wf.SendDealVerify(state, note, out errMsg))
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+        //                //工作流更新
+        //                var wf = new GoodReqWorkFlow(requestId, userId, logType, storeId);
+        //                if (!wf.SendDealVerify(state, note, out errMsg))
+        //                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-                        var data_GoodRequest_List = Data_GoodRequest_ListService.I;
-                        foreach (var requestListModel in data_GoodRequest_List.GetModels(p => p.RequestID == requestId))
-                        {
-                            //更新当前库存
-                            if (!updateGoodsStock(requestListModel.OutDepotID, requestListModel.GoodID, (int)SourceType.GoodRequest, requestId, requestListModel.CostPrice, (int)StockFlag.Out, requestListModel.SendCount, merchId, storeId, out errMsg))
-                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
+        //                var data_GoodRequest_List = Data_GoodRequest_ListService.I;
+        //                foreach (var requestListModel in data_GoodRequest_List.GetModels(p => p.RequestID == requestId))
+        //                {
+        //                    //更新当前库存
+        //                    if (!updateGoodsStock(requestListModel.OutDepotID, requestListModel.GoodID, (int)SourceType.GoodRequest, requestId, requestListModel.CostPrice, (int)StockFlag.Out, requestListModel.SendCount, merchId, storeId, out errMsg))
+        //                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+        //                }
 
-                        if (!Data_GoodStock_RecordService.I.SaveChanges())
-                        {
-                            errMsg = "添加出库存异动信息失败";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
+        //                if (!Data_GoodStock_RecordService.I.SaveChanges())
+        //                {
+        //                    errMsg = "添加出库存异动信息失败";
+        //                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+        //                }
 
-                        ts.Complete();
-                    }
-                    catch (DbEntityValidationException e)
-                    {
-                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, e.EntityValidationErrors.ToErrors());
-                    }
-                    catch (Exception e)
-                    {
-                        errMsg = e.Message;
-                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                    }
-                }
+        //                ts.Complete();
+        //            }
+        //            catch (DbEntityValidationException e)
+        //            {
+        //                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, e.EntityValidationErrors.ToErrors());
+        //            }
+        //            catch (Exception e)
+        //            {
+        //                errMsg = e.Message;
+        //                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+        //            }
+        //        }
 
-                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
-            }
-            catch (Exception e)
-            {
-                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
-            }
-        }
+        //        return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+        //    }
+        //}
 
-        /// <summary>
-        /// 调拨入库审核
-        /// </summary>
-        /// <param name="dicParas"></param>
-        /// <returns></returns>
-        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
-        public object GoodRequestDealVerify(Dictionary<string, object> dicParas)
-        {
-            try
-            {
-                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                var storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
-                var merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
-                var userId = userTokenKeyModel.LogId.Toint(0);
-                var logType = userTokenKeyModel.LogType;
+        ///// <summary>
+        ///// 调拨入库审核
+        ///// </summary>
+        ///// <param name="dicParas"></param>
+        ///// <returns></returns>
+        //[ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        //public object GoodRequestDealVerify(Dictionary<string, object> dicParas)
+        //{
+        //    try
+        //    {
+        //        XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+        //        var storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+        //        var merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+        //        var userId = userTokenKeyModel.LogId.Toint(0);
+        //        var logType = userTokenKeyModel.LogType;
 
-                var errMsg = string.Empty;
-                var requestId = dicParas.Get("requestId").Toint(0);
-                if (requestId == 0)
-                {
-                    errMsg = "调拨单ID不能为空";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
-                if (!dicParas.Get("state").Validint("调拨入库审核状态", out errMsg))
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+        //        var errMsg = string.Empty;
+        //        var requestId = dicParas.Get("requestId").Toint(0);
+        //        if (requestId == 0)
+        //        {
+        //            errMsg = "调拨单ID不能为空";
+        //            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+        //        }
+        //        if (!dicParas.Get("state").Validint("调拨入库审核状态", out errMsg))
+        //            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-                var state = dicParas.Get("state").Toint(0);
-                var note = dicParas.Get("note");
+        //        var state = dicParas.Get("state").Toint(0);
+        //        var note = dicParas.Get("note");
 
-                //开启EF事务
-                using (TransactionScope ts = new TransactionScope())
-                {
-                    try
-                    {
-                        if (!Data_GoodRequestService.I.Any(a => a.ID == requestId))
-                        {
-                            errMsg = "该调拨单不存在";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
+        //        //开启EF事务
+        //        using (TransactionScope ts = new TransactionScope())
+        //        {
+        //            try
+        //            {
+        //                if (!Data_GoodRequestService.I.Any(a => a.ID == requestId))
+        //                {
+        //                    errMsg = "该调拨单不存在";
+        //                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+        //                }
 
-                        //工作流更新
-                        var wf = new GoodReqWorkFlow(requestId, userId, logType, storeId);
-                        if (!wf.RequestDealVerify(state, note, out errMsg))
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+        //                //工作流更新
+        //                var wf = new GoodReqWorkFlow(requestId, userId, logType, storeId);
+        //                if (!wf.RequestDealVerify(state, note, out errMsg))
+        //                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-                        var data_GoodRequest_List = Data_GoodRequest_ListService.I;
-                        foreach (var requestListModel in data_GoodRequest_List.GetModels(p => p.RequestID == requestId))
-                        {
-                            //更新当前库存
-                            if (!updateGoodsStock(requestListModel.InDeportID, requestListModel.GoodID, (int)SourceType.GoodRequest, requestId, requestListModel.CostPrice, (int)StockFlag.In, requestListModel.StorageCount, merchId, storeId, out errMsg))
-                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
+        //                var data_GoodRequest_List = Data_GoodRequest_ListService.I;
+        //                foreach (var requestListModel in data_GoodRequest_List.GetModels(p => p.RequestID == requestId))
+        //                {
+        //                    //更新当前库存
+        //                    if (!updateGoodsStock(requestListModel.InDeportID, requestListModel.GoodID, (int)SourceType.GoodRequest, requestId, requestListModel.CostPrice, (int)StockFlag.In, requestListModel.StorageCount, merchId, storeId, out errMsg))
+        //                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+        //                }
 
-                        if (!Data_GoodStock_RecordService.I.SaveChanges())
-                        {
-                            errMsg = "添加入库存异动信息失败";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
+        //                if (!Data_GoodStock_RecordService.I.SaveChanges())
+        //                {
+        //                    errMsg = "添加入库存异动信息失败";
+        //                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+        //                }
 
-                        ts.Complete();
-                    }
-                    catch (DbEntityValidationException e)
-                    {
-                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, e.EntityValidationErrors.ToErrors());
-                    }
-                    catch (Exception e)
-                    {
-                        errMsg = e.Message;
-                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                    }
-                }
+        //                ts.Complete();
+        //            }
+        //            catch (DbEntityValidationException e)
+        //            {
+        //                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, e.EntityValidationErrors.ToErrors());
+        //            }
+        //            catch (Exception e)
+        //            {
+        //                errMsg = e.Message;
+        //                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+        //            }
+        //        }
 
-                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
-            }
-            catch (Exception e)
-            {
-                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
-            }
-        }
+        //        return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+        //    }
+        //}
 
         /// <summary>
         /// 调拨出库
@@ -1793,6 +1793,316 @@ namespace XXCloudService.Api.XCCloud
             }
         }
 
+        /// <summary>
+        /// 获取调拨退货信息
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object GetGoodRequestExitInfo(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+
+                string errMsg = string.Empty;
+
+                var requestId = dicParas.Get("requestId").Toint(0);
+                if (requestId == 0)
+                {
+                    errMsg = "调拨单ID不能为空";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
+                if (!Data_GoodRequestService.I.Any(p => p.ID == requestId))
+                {
+                    errMsg = "该调拨单信息不存在";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
+                var requestCode = Data_GoodRequestService.I.GetModels(p => p.ID == requestId).Select(o => o.RequestCode).FirstOrDefault();
+
+                #region Sql语句
+                string sql = @"SELECT
+                                    /*调拨明细ID*/
+                                    a.ID,
+                                    /*调拨单ID*/
+                                    a.RequestID,
+                                    /*商品ID*/
+                                	a.GoodID,
+                                    /*商品条码*/
+                                	b.Barcode,
+                                    /*商品名称*/
+                                	b.GoodName,
+                                    /*商品类别*/
+                                    c.DictKey AS GoodTypeStr,
+                                    /*申请数量*/
+                                    a.RequestCount,
+                                    /*实发数量*/
+                                    a.SendCount,
+                                    /*入库数量*/
+                                    a.StorageCount,
+                                    /*已退货数量*/
+                                    d.ExitedCount,
+                                    /*含税单价*/
+                                    a.CostPrice,
+                                    /*税率*/
+                                    a.Tax
+                                FROM (
+                                    SELECT
+                                		*
+                                	FROM
+                                		Data_GoodRequest_List 
+                                    WHERE StorageCount > 0 /*已入库记录*/                                
+                                ) a                                
+                                INNER JOIN Base_GoodsInfo b ON a.GoodID = b.ID
+                                INNER JOIN Dict_System c ON b.GoodType = c.ID 
+                                INNER JOIN (
+                                    SELECT 
+                                        b.GoodID, SUM(ISNULL(b.ExitCount,0)) AS ExitedCount
+                                    FROM 
+                                        Data_GoodExitInfo a
+                                    INNER JOIN Data_GoodExit_Detail b ON a.ExitOrderID = b.ExitOrderID 
+                                    WHERE a.SourceType = 1 AND a.SourceOrderID = " + requestCode +
+                                @"  GROUP BY b.GoodID
+                                ) d ON a.GoodID = d.GoodID                             
+                                WHERE b.Status = 1                                
+                            ";
+                sql += " AND a.RequestID=" + requestId;
+                sql += " ORDER BY a.SendTime";
+
+                #endregion
+
+                var list = Data_GoodRequest_ListService.I.SqlQuery<Data_GoodRequestExitList>(sql);
+
+                sql = @"SELECT
+                                    /*调拨单ID*/
+                                	a.ID,
+                                    /*调拨单号*/
+                                	a.RequestCode,
+                                	/*创建时间*/
+                                	(case when ISNULL(a.CreateTime,'')='' then '' else convert(varchar,a.CreateTime,20) end) AS CreateTime,
+                                	/*创建门店*/
+                                	createstore.StoreName AS CreateStore,
+                                	/*创建人*/
+                                	u.LogName AS CreateUser,                                	
+                                	/*调拨方式*/
+                                	a.RequstType,
+                                    /*调拨出库门店*/
+                                    requestoutstore.StoreID AS OutStoreID,
+                                    requestoutstore.StoreName AS OutStoreName,
+                                    /*调拨出库仓库*/
+                                    requestoutdepot.ID AS OutDepotID,
+                                	requestoutdepot.DepotName AS OutDepotName,                                    
+                                	/*调拨入库门店*/
+                                    requestinstore.StoreID AS InStoreID,
+                                	requestinstore.StoreName AS InStoreName,
+                                	/*调拨入库仓库*/
+                                    requestindepot.ID AS InDepotID,
+                                	requestindepot.DepotName AS InDepotName,
+                                    /*调拨原因*/
+                                    a.RequestReason AS RequestReason
+                                FROM
+                                	Data_GoodRequest a
+                                LEFT JOIN Base_StoreInfo createstore ON a.CreateStoreID = createstore.StoreID
+                                LEFT JOIN Base_UserInfo u ON a.CreateUserID = u.UserID                                
+                                LEFT JOIN Base_StoreInfo requestoutstore ON a.RequestOutStoreID = requestoutstore.StoreID
+                                LEFT JOIN Base_StoreInfo requestinstore ON a.RequestInStoreID = requestinstore.StoreID
+                                LEFT JOIN Base_DepotInfo requestoutdepot ON a.RequestOutDepotID = requestoutdepot.ID
+                                LEFT JOIN Base_DepotInfo requestindepot ON a.RequestInDepotID = requestindepot.ID 
+                                WHERE a.ID = " + requestId;
+                var data_GoodRequest = Data_GoodRequestService.I.SqlQuery<Data_GoodRequestList>(sql).FirstOrDefault();
+
+                var linq = new
+                {
+                    data_GoodRequest = data_GoodRequest,
+                    GoodRequestDetails = list
+                }.AsFlatDictionary();
+
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, linq);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        /// <summary>
+        /// 调拨退货
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object GoodRequestExit(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                var storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+                var merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                var userId = userTokenKeyModel.LogId.Toint(0);
+                var logType = userTokenKeyModel.LogType;
+
+                var errMsg = string.Empty;
+                if (!dicParas.Get("requestId").Validintnozero("调拨单ID", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (!dicParas.Get("inDepotId").Validintnozero("入库仓库ID", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (!dicParas.Get("exitCount").Validintnozero("退货总数", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (!dicParas.Get("exitCost").Validdecimal("退货杂费", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (!dicParas.Get("exitTotal").Validdecimalnozero("实退总额", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (!dicParas.Get("logistType").Validint("物流类别", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (!dicParas.Get("logistOrderId").Nonempty("物流单号", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);                
+                if (!dicParas.GetArray("goodRequestDetails").Validarray("调拨明细", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                var requestId = dicParas.Get("requestId").Toint();
+                var inDepotId = dicParas.Get("inDepotId").Toint();
+                var exitCount = dicParas.Get("exitCount").Toint();
+                var exitCost = dicParas.Get("exitCost").Todecimal();
+                var exitTotal = dicParas.Get("exitTotal").Todecimal();
+                var logistType = dicParas.Get("logistType").Toint();
+                var logistOrderId = dicParas.Get("logistOrderId");
+                var note = dicParas.Get("note");
+                var goodRequestDetails = dicParas.GetArray("goodRequestDetails");
+
+                //开启EF事务
+                using (TransactionScope ts = new TransactionScope())
+                {
+                    try
+                    {
+                        if (!Data_GoodRequestService.I.Any(a => a.ID == requestId))
+                        {
+                            errMsg = "该调拨单不存在";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
+                        var requestCode = Data_GoodRequestService.I.GetModels(p => p.ID == requestId).Select(o => o.RequestCode).FirstOrDefault();
+
+                        //工作流更新
+                        var wf = new GoodReqWorkFlow(requestId ?? 0, userId, logType, storeId);
+                        if (!wf.RequestExit(out errMsg))
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                        //添加退货单
+                        var exitModel = new Data_GoodExitInfo();
+                        exitModel.DepotID = inDepotId;
+                        exitModel.ExitCost = exitCost;
+                        exitModel.ExitCount = exitCount;
+                        exitModel.ExitOrderID = RedisCacheHelper.CreateCloudSerialNo(storeId.IsNull() ? merchId.ToExtStoreID() : storeId);
+                        exitModel.ExitTotal = exitTotal;
+                        exitModel.Note = note;
+                        exitModel.MerchID = merchId;
+                        exitModel.StoreID = storeId;
+                        exitModel.ExitTime = DateTime.Now;
+                        exitModel.CheckDate = getCurrCheckDate(merchId, storeId);
+                        exitModel.UserID = userId;
+                        exitModel.SourceType = (int)GoodExitSourceType.GoodRequest;
+                        exitModel.SourceOrderID = requestCode;
+                        exitModel.LogistType = logistType;
+                        exitModel.LogistOrderID = logistOrderId;
+                        if (!Data_GoodExitInfoService.I.Add(exitModel))
+                        {
+                            errMsg = "保存退货信息失败";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
+                        //添加退货明细
+                        if (goodRequestDetails != null && goodRequestDetails.Count() >= 0)
+                        {
+                            //获取已退货信息
+                            var exitedList = from a in Data_GoodExitInfoService.N.GetModels(p => p.SourceType == (int)GoodExitSourceType.GoodRequest && p.SourceOrderID.Equals(requestCode, StringComparison.OrdinalIgnoreCase))
+                                             join b in Data_GoodExit_DetailService.N.GetModels() on a.ExitOrderID equals b.ExitOrderID
+                                             group b by b.GoodID into g
+                                             select new { GoodID = g.Key, ExitedCount = g.Sum(s => s.ExitCount) };
+                            //获取入库信息
+                            var storageList = Data_GoodRequest_ListService.I.GetModels(p => p.RequestID == requestId && p.StorageCount > 0).Select(o => new { GoodID = o.GoodID, StorageCount = o.StorageCount });
+
+                            foreach (IDictionary<string, object> el in goodRequestDetails)
+                            {
+                                if (el != null)
+                                {
+                                    //获取调拨明细
+                                    var dicPara = new Dictionary<string, object>(el, StringComparer.OrdinalIgnoreCase);
+                                    if (!dicPara.Get("id").Validintnozero("调拨明细ID", out errMsg))
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    if (!dicPara.Get("exitCount").Validintnozero("退货数量", out errMsg))
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                                    var id = dicPara.Get("id").Toint();
+                                    var goodExitCount = dicPara.Get("exitCount").Toint();                                    
+                                    var data_GoodRequest_List = Data_GoodRequest_ListService.I.GetModels(p => p.ID == id).FirstOrDefault();
+                                    var goodId = data_GoodRequest_List.GoodID;
+                                    var exitedCount = exitedList.Where(w => w.GoodID == goodId).Select(o => o.ExitedCount).FirstOrDefault() ?? 0;
+                                    var storageCount = storageList.Where(w => w.GoodID == goodId).Select(o => o.StorageCount).FirstOrDefault() ?? 0;
+                                    var leftCount = storageCount - exitedCount;
+                                    if (leftCount < goodExitCount)
+                                    {
+                                        errMsg = "退货数量不能超过入库数量";
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    }
+
+                                    var detailModel = new Data_GoodExit_Detail();
+                                    detailModel.ExitCount = goodExitCount;
+                                    detailModel.ExitOrderID = exitModel.ExitOrderID;
+                                    detailModel.DepotID = exitModel.DepotID;
+                                    detailModel.ExitPrice = data_GoodRequest_List.CostPrice;
+                                    detailModel.GoodID = goodId;
+                                    detailModel.MerchID = merchId;
+                                    Data_GoodExit_DetailService.I.AddModel(detailModel);
+
+                                    //更新当前库存
+                                    if (!updateGoodsStock(detailModel.DepotID, detailModel.GoodID, (int)SourceType.GoodExit, exitModel.ID, detailModel.ExitPrice, (int)StockFlag.Out, detailModel.ExitCount, merchId, storeId, out errMsg))
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                }
+                                else
+                                {
+                                    errMsg = "提交数据包含空对象";
+                                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                }
+                            }
+
+                            if (!Data_GoodExit_DetailService.I.SaveChanges())
+                            {
+                                errMsg = "保存退货明细信息失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+
+                            if (!Data_GoodStock_RecordService.I.SaveChanges())
+                            {
+                                errMsg = "添加出库存异动信息失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+                        }
+
+                        ts.Complete();
+                    }
+                    catch (DbEntityValidationException e)
+                    {
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, e.EntityValidationErrors.ToErrors());
+                    }
+                    catch (Exception e)
+                    {
+                        errMsg = e.Message;
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
+                }
+
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object DownloadGoodRequestTemplate(Dictionary<string, object> dicParas)
         {
@@ -1924,12 +2234,30 @@ namespace XXCloudService.Api.XCCloud
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
                 var id = dicParas.Get("id").Toint();
+                var data_GoodStorage = Data_GoodStorageService.I.GetModels(p => p.ID == id).FirstOrDefault();
+                if(data_GoodStorage == null)
+                {
+                    errMsg = "该入库单信息不存在";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
 
-                var GoodStorageDetail = from a in Data_GoodStorage_DetailService.N.GetModels()
+                var storageOrderId = data_GoodStorage.StorageOrderID;
+                var GoodStorageDetail = from a in Data_GoodStorage_DetailService.N.GetModels(p => p.StorageOrderID.Equals(storageOrderId, StringComparison.OrdinalIgnoreCase))
                                         join b in Base_GoodsInfoService.N.GetModels() on a.GoodID equals b.ID
                                         join c in Dict_SystemService.N.GetModels() on b.GoodType equals c.ID
                                         join d in Data_GoodStorageService.N.GetModels(p => p.ID == id) on a.StorageOrderID equals d.StorageOrderID
                                         join e in Data_GoodsStockService.N.GetModels(p => p.StockType == (int)StockType.Depot) on new { DepotID = d.DepotID, a.GoodID } equals new { DepotID = e.StockIndex, e.GoodID }
+                                        join f in
+                                            (
+                                                from a in Data_GoodExitInfoService.N.GetModels(p => p.SourceType == (int)GoodExitSourceType.GoodStorage && p.SourceOrderID.Equals(storageOrderId, StringComparison.OrdinalIgnoreCase))
+                                                join b in Data_GoodExit_DetailService.N.GetModels() on a.ExitOrderID equals b.ExitOrderID
+                                                group b by b.GoodID into g
+                                                select new
+                                                {
+                                                    GoodID = g.Key,
+                                                    ExitedCount = g.Sum(s => s.ExitCount)
+                                                }
+                                            ) on a.GoodID equals f.GoodID
                                         select new
                                         {
                                             GoodID = a.GoodID,
@@ -1938,6 +2266,7 @@ namespace XXCloudService.Api.XCCloud
                                             GoodTypeStr = c.DictKey,
                                             RemainCount = e.RemainCount ?? 0,
                                             StorageCount = a.StorageCount,
+                                            ExitedCount = f.ExitedCount ?? 0,
                                             Price = a.Price,
                                             Tax = a.Tax,
                                             TaxPrice = a.TaxPrice
@@ -2000,7 +2329,7 @@ namespace XXCloudService.Api.XCCloud
                             model.UserID = logId;
                             model.AuthorFlag = (int)GoodOutInState.Pending;
                             model.RealTime = DateTime.Now;
-                            model.CheckDate = Store_CheckDateService.I.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)).OrderByDescending(or => or.CheckDate).Select(o => o.CheckDate).FirstOrDefault() ?? DateTime.Now.Todate();  //获取当前营业日期
+                            model.CheckDate = getCurrCheckDate(merchId, storeId);
                             if (!Data_GoodStorageService.I.Add(model))
                             {
                                 errMsg = "保存商品入库信息失败";
@@ -2351,7 +2680,7 @@ namespace XXCloudService.Api.XCCloud
                 var logId = userTokenKeyModel.LogId.Toint();
 
                 string errMsg = string.Empty;
-                if (!dicParas.Get("storageOrderIndex").Validintnozero("入库单ID", out errMsg))
+                if (!dicParas.Get("sourceOrderId").Nonempty("入库单号", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 if (!dicParas.Get("exitCount").Validintnozero("退货总数", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -2368,7 +2697,7 @@ namespace XXCloudService.Api.XCCloud
 
                 var logistType = dicParas.Get("logistType").Toint();
                 var logistOrderId = dicParas.Get("logistOrderId");
-                var storageOrderIndex = dicParas.Get("storageOrderIndex").Toint();
+                var sourceOrderId = dicParas.Get("sourceOrderId");
                 var exitCount = dicParas.Get("exitCount").Toint();
                 var exitCost = dicParas.Get("exitCost").Todecimal();
                 var exitTotal = dicParas.Get("exitTotal").Todecimal();
@@ -2381,18 +2710,18 @@ namespace XXCloudService.Api.XCCloud
                 {
                     try
                     {
-                        if (!Data_GoodStorageService.I.Any(a => a.ID == storageOrderIndex))
+                        if (!Data_GoodStorageService.I.Any(a => a.StorageOrderID == sourceOrderId))
                         {
                             errMsg = "该入库单不存在";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 
-                        var model = Data_GoodStorageService.I.GetModels(p => p.ID == storageOrderIndex).FirstOrDefault();
+                        var model = Data_GoodStorageService.I.GetModels(p => p.StorageOrderID == sourceOrderId).FirstOrDefault();
                         if (model.AuthorFlag != (int)GoodOutInState.Done)
                         {
                             errMsg = "未审核或已撤销的入库单不能退货";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
+                        }                       
 
                         var exitModel = new Data_GoodExitInfo();
                         exitModel.DepotID = model.DepotID;
@@ -2404,8 +2733,10 @@ namespace XXCloudService.Api.XCCloud
                         exitModel.MerchID = merchId;
                         exitModel.StoreID = storeId;
                         exitModel.ExitTime = DateTime.Now;
-                        exitModel.CheckDate = DateTime.Now.Todate();
+                        exitModel.CheckDate = getCurrCheckDate(merchId, storeId);
                         exitModel.UserID = logId;
+                        exitModel.SourceType = (int)GoodExitSourceType.GoodStorage;
+                        exitModel.SourceOrderID = sourceOrderId;
                         exitModel.LogistType = logistType;
                         exitModel.LogistOrderID = logistOrderId;
                         if (!Data_GoodExitInfoService.I.Add(exitModel))
@@ -2419,6 +2750,14 @@ namespace XXCloudService.Api.XCCloud
                         //保存退货明细信息
                         if (exitDetails != null && exitDetails.Count() >= 0)
                         {
+                            //获取已退货信息
+                            var exitedList = from a in Data_GoodExitInfoService.N.GetModels(p => p.SourceType == (int)GoodExitSourceType.GoodStorage && p.SourceOrderID.Equals(sourceOrderId, StringComparison.OrdinalIgnoreCase))
+                                             join b in Data_GoodExit_DetailService.N.GetModels() on a.ExitOrderID equals b.ExitOrderID                                             
+                                             group b by b.GoodID into g
+                                             select new { GoodID = g.Key, ExitedCount = g.Sum(s => s.ExitCount) };
+                            //获取入库信息
+                            var storageList = Data_GoodStorage_DetailService.I.GetModels(p => p.StorageOrderID.Equals(sourceOrderId, StringComparison.OrdinalIgnoreCase)).Select(o => new { GoodID = o.GoodID, StorageCount = o.StorageCount });
+
                             foreach (IDictionary<string, object> el in exitDetails)
                             {
                                 if (el != null)
@@ -2431,12 +2770,24 @@ namespace XXCloudService.Api.XCCloud
                                     if (!dicPara.Get("exitPrice").Validdecimalnozero("退货单价", out errMsg))
                                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
+                                    var goodId = dicPara.Get("goodId").Toint();
+                                    var goodExitCount = dicPara.Get("exitCount").Toint() ?? 0;
+                                    var exitPrice = dicPara.Get("exitPrice").Todecimal();
+                                    var exitedCount = exitedList.Where(w => w.GoodID == goodId).Select(o => o.ExitedCount).FirstOrDefault() ?? 0;
+                                    var storageCount = storageList.Where(w => w.GoodID == goodId).Select(o => o.StorageCount).FirstOrDefault() ?? 0;
+                                    var leftCount = storageCount - exitedCount;
+                                    if (leftCount < goodExitCount)
+                                    {
+                                        errMsg = "退货数量不能超过入库数量";
+                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    }
+
                                     var detailModel = new Data_GoodExit_Detail();
-                                    detailModel.ExitCount = dicPara.Get("exitCount").Toint();
+                                    detailModel.ExitCount = goodExitCount;
                                     detailModel.ExitOrderID = exitModel.ExitOrderID;
                                     detailModel.DepotID = exitModel.DepotID;
-                                    detailModel.ExitPrice = dicPara.Get("exitPrice").Todecimal();
-                                    detailModel.GoodID = dicPara.Get("goodId").Toint();                                    
+                                    detailModel.ExitPrice = exitPrice;
+                                    detailModel.GoodID = goodId;                                    
                                     detailModel.MerchID = merchId;                                    
                                     Data_GoodExit_DetailService.I.AddModel(detailModel);
 
@@ -2683,7 +3034,7 @@ namespace XXCloudService.Api.XCCloud
                 {
                     try
                     {
-                        var checkDate = Store_CheckDateService.I.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)).OrderByDescending(or => or.CheckDate).Select(o => o.CheckDate).FirstOrDefault() ?? DateTime.Now.Todate();  //获取当前营业日期
+                        var checkDate = getCurrCheckDate(merchId, storeId);
                         var model = Data_GoodOutOrderService.I.GetModels(p => p.ID == id).FirstOrDefault() ?? new Data_GoodOutOrder();
                         Utils.GetModel(dicParas, ref model);
                         if (id == 0)

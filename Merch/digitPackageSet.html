@@ -34,6 +34,7 @@
             <label class="layui-form-label" i18n-content="数量"></label>
             <div class="layui-input-block">
                 <input name="" id="FoodCount" class="layui-input">
+                <span class="layui-unit" id="FoodCountUnit">个</span>
             </div>
         </div>
         <div class="layui-form-item goodIsAll">
@@ -113,6 +114,7 @@
 
         form.on('select(BalanceType)',function (data) {
             BalanceType=data.value=='-请选择-'?'':data.value;
+            $('#FoodCountUnit').text(data.elem[data.elem.selectedIndex].title)
         });
         form.on('switch(AuthorFlag)',function (data) {
             if(data.elem.checked==true){

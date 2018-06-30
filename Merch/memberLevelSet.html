@@ -230,29 +230,36 @@
                             <label class="layui-form-label">换卡费</label>
                             <div class="layui-input-inline">
                                 <input type="text" class="layui-input" id="changeFee">
+                                <span class="layui-unit">元</span>
                             </div>
                         </div>
                         <div class="layui-inline">
                             <label class="layui-form-label">补卡费</label>
                             <div class="layui-input-inline">
                                 <input type="text" class="layui-input" id="rechangeFee">
+                                <span class="layui-unit">元</span>
                             </div>
                         </div>
                         <div class="layui-inline">
                             <label class="layui-form-label">续期费</label>
                             <div class="layui-input-inline">
                                 <input type="text" class="layui-input" id="continueFee">
+                                <span class="layui-unit">元</span>
                             </div>
                         </div>
                         <div class="layui-inline"><label class="layui-form-label">续期扣积分</label>
                             <div class="layui-input-inline">
-                                <input type="text" class="layui-input" id="continueUsePoint"></div>
+                                <input type="text" class="layui-input" id="continueUsePoint">
+                                <span class="layui-unit">分</span>
+                            </div>
+
                         </div>
                     </div>
                     <div class="layui-form-item">
                         <div class="layui-inline">
                             <label class="layui-form-label">升级扣积分</label>
                             <div class="layui-input-inline"><input type="text" class="layui-input" id="updateUsePoint">
+                                <span class="layui-unit">分</span>
                             </div>
                         </div>
                         <div class="layui-inline"><label class="layui-form-label" style="padding: 8px 0!important;">升级累计消费</label>
@@ -312,6 +319,7 @@
                             <label class="layui-form-label">送币数</label>
                             <div class="layui-input-inline">
                                 <input type="text" class="layui-input" id="freeCoin">
+                                <span class="layui-unit" id="freeCoinUnit">个</span>
                             </div>
                         </div>
                         <div class="layui-inline">
@@ -380,18 +388,19 @@
                     <div class="layui-form-item freeLast">
 
                         <div class="layui-inline reduceBox" style="margin-right: 0">
-                            <label class="layui-form-label" style="width: 90px">单次结账满</label>
-                            <div class="layui-input-inline" style="width: 60px">
+                            <label class="layui-form-label" style="width: 90px">充值满</label>
+                            <div class="layui-input-inline" style="width: 110px">
                                 <input type="text" class="layui-input" id="chargeTotal" name="chargeTotal">
+                                <span class="layui-unit">元</span>
                             </div>
-                            <div class="layui-form-mid">元，预赠方式</div>
+                            <div class="layui-form-mid">预赠</div>
                             <div class="layui-input-inline" style="width: 100px">
                                 <select name="freeBalanceType" lay-ignore style="height: 36px;width: 100px"
                                         id="freeBalanceType" lay-filter="freeBalanceType"></select>
                             </div>
-                            <div class="layui-form-mid">元，预赠币</div>
-                            <div class="layui-input-inline" style="width: 55px">
+                            <div class="layui-input-inline" style="width: 120px">
                                 <input type="text" class="layui-input" id="freeCount" name="freeCount">
+                                <span class="layui-unit">个</span>
                             </div>
                             <div class="layui-form-mid">最小间隔</div>
                             <div class="layui-input-inline" style="width: 55px">
@@ -646,6 +655,7 @@
             data: {parasJson: parseJson},
             success: function (data) {
                 data = JSON.parse(data);
+                console.log(data)
                 if (data.result_code == 1) {
                     let arr = data.result_data;
                     $('#freeRates').html('<option>-请选择-</option>');
@@ -657,11 +667,11 @@
                     // $('#TransferInLevelID').html('<option>-请选择-</option>');
 
                     for (let i in arr) {
-                        $('#freeRates').append('<option value="' + arr[i].ID + '">' + arr[i].TypeName + '</option>');
-                        $('#freeBalanceType').append('<option value="' + arr[i].ID + '">' + arr[i].TypeName + '</option>');
-                        $('#sourceBalanceType').append('<option value="' + arr[i].ID + '">' + arr[i].TypeName + '</option>');
-                        $('#targetBalanceIndex').append('<option value="' + arr[i].ID + '">' + arr[i].TypeName + '</option>');
-                        $('#freeBalanceIndex').append('<option value="' + arr[i].ID + '">' + arr[i].TypeName + '</option>');
+                        $('#freeRates').append('<option value="' + arr[i].ID + '" title="'+arr.Unit+'">' + arr[i].TypeName + '</option>');
+                        $('#freeBalanceType').append('<option value="' + arr[i].ID + '" title="'+arr[i].Unit+'">' + arr[i].TypeName + '</option>');
+                        $('#sourceBalanceType').append('<option value="' + arr[i].ID + '" title="'+arr[i].Unit+'">' + arr[i].TypeName + '</option>');
+                        $('#targetBalanceIndex').append('<option value="' + arr[i].ID + '" title="'+arr[i].Unit+'">' + arr[i].TypeName + '</option>');
+                        $('#freeBalanceIndex').append('<option value="' + arr[i].ID + '" title="'+arr[i].Unit+'">' + arr[i].TypeName + '</option>');
                         // $('#TransferOutLevelID').append('<option value="'+arr[i].ID+'">'+arr[i].TypeName+'</option>');
                         // $('#TransferInLevelID').append('<option value="'+arr[i].ID+'">'+arr[i].TypeName+'</option>');
                     }
@@ -1336,6 +1346,7 @@
         });
         form.on('select(freeBalanceIndex)', function (data) {
             freeBalanceIndex = data.value == '-请选择-' ? '' : data.value;
+            $('#freeCoinUnit').text(data.elem[data.elem.selectedIndex].title)
         });
         form.on('select(FoodID)', function (data) {
             FoodID = data.value == '-请选择-' ? '' : data.value;

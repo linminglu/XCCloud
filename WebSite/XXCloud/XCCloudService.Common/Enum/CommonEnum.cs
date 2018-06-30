@@ -1016,15 +1016,26 @@ namespace XCCloudService.Common.Enum
     public enum SourceType
     {
         [Description("入库单")]
-        GoodStorage = 0,    //入库单
+        GoodStorage = 0,    
         [Description("调拨单")]
-        GoodRequest = 1,    //调拨单
+        GoodRequest = 1,    
         [Description("安装记录")]
-        GoodReload = 2,     //安装记录
+        GoodReload = 2,    
         [Description("出库单")]
-        GoodOut = 3,        //出库单
+        GoodOut = 3,       
         [Description("退货单")]
-        GoodExit = 4        //退货单
+        GoodExit = 4        
+    }
+
+    /// <summary>
+    /// 退货来源类别
+    /// </summary>
+    public enum GoodExitSourceType
+    {
+        [Description("入库单")]
+        GoodStorage = 0,    
+        [Description("调拨单")]
+        GoodRequest = 1,   
     }
 
     /// <summary>
@@ -1129,7 +1140,12 @@ namespace XCCloudService.Common.Enum
         /// 流程关闭
         /// </summary>
         [Description("流程关闭")]
-        Close = 8
+        Close = 8,
+        /// <summary>
+        /// 调拨退货
+        /// </summary>
+        [Description("调拨退货")]
+        RequestExit = 9,
     }
     /// <summary>
     /// 工作流状态
@@ -1175,7 +1191,7 @@ namespace XCCloudService.Common.Enum
         /// 调拨已入库
         /// </summary>
         [Description("调拨已入库")]
-        RequestDealed = 7,
+        RequestDealed = 7,        
         /// <summary>
         /// 调拨入库审核已通过
         /// </summary>
@@ -1190,7 +1206,12 @@ namespace XCCloudService.Common.Enum
         /// 结束
         /// </summary>
         [Description("结束")]
-        Closed = 10
+        Closed = 10,
+        /// <summary>
+        /// 调拨已退货
+        /// </summary>
+        [Description("调拨已退货")]
+        RequestExited = 11,
     }
 
     /// <summary>

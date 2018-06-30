@@ -197,10 +197,10 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Flw_MemberCard_Free> Flw_MemberCard_Free { get; set; }
         public virtual DbSet<Flw_Food_Exit> Flw_Food_Exit { get; set; }
         public virtual DbSet<Flw_MemberLevelFree_Detail> Flw_MemberLevelFree_Detail { get; set; }
-        public virtual DbSet<Data_GoodExitInfo> Data_GoodExitInfo { get; set; }
         public virtual DbSet<Data_GoodOutOrder> Data_GoodOutOrder { get; set; }
         public virtual DbSet<Data_Member_Card> Data_Member_Card { get; set; }
         public virtual DbSet<Flw_MemberLevelFree> Flw_MemberLevelFree { get; set; }
         public virtual DbSet<Data_MemberLevelFree> Data_MemberLevelFree { get; set; }
+        public virtual DbSet<Data_GoodExitInfo> Data_GoodExitInfo { get; set; }
     }
 }

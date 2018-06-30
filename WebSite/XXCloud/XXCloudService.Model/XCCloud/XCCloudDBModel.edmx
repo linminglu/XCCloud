@@ -1135,7 +1135,8 @@
           <Property Name="MerchID" Type="varchar" MaxLength="15" />
           <Property Name="StoreID" Type="varchar" MaxLength="15" />
           <Property Name="ExitOrderID" Type="varchar" MaxLength="32" />
-          <Property Name="StorageOrderIndex" Type="int" />
+          <Property Name="SourceType" Type="int" />
+          <Property Name="SourceOrderID" Type="varchar" MaxLength="32" />
           <Property Name="ExitTime" Type="datetime" />
           <Property Name="UserID" Type="int" />
           <Property Name="CheckDate" Type="date" />
@@ -3534,11 +3535,11 @@
           <EntitySet Name="Flw_MemberCard_Free" EntityType="XCCloudDBModel.Flw_MemberCard_Free" />
           <EntitySet Name="Flw_Food_Exit" EntityType="XCCloudDBModel.Flw_Food_Exit" />
           <EntitySet Name="Flw_MemberLevelFree_Detail" EntityType="XCCloudDBModel.Flw_MemberLevelFree_Detail" />
-          <EntitySet Name="Data_GoodExitInfo" EntityType="XCCloudDBModel.Data_GoodExitInfo" />
           <EntitySet Name="Data_GoodOutOrder" EntityType="XCCloudDBModel.Data_GoodOutOrder" />
           <EntitySet Name="Data_Member_Card" EntityType="XCCloudDBModel.Data_Member_Card" />
           <EntitySet Name="Flw_MemberLevelFree" EntityType="XCCloudDBModel.Flw_MemberLevelFree" />
           <EntitySet Name="Data_MemberLevelFree" EntityType="XCCloudDBModel.Data_MemberLevelFree" />
+          <EntitySet Name="Data_GoodExitInfo" EntityType="XCCloudDBModel.Data_GoodExitInfo" />
         </EntityContainer>
         <EntityType Name="Base_ChainRule_Store">
           <Key>
@@ -6348,27 +6349,6 @@
           <Property Name="GetCount" Type="Decimal" Precision="10" Scale="2" />
           <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
         </EntityType>
-        <EntityType Name="Data_GoodExitInfo">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="ExitOrderID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
-          <Property Name="StorageOrderIndex" Type="Int32" />
-          <Property Name="ExitTime" Type="DateTime" Precision="3" />
-          <Property Name="UserID" Type="Int32" />
-          <Property Name="CheckDate" Type="DateTime" Precision="0" />
-          <Property Name="DepotID" Type="Int32" />
-          <Property Name="ExitCount" Type="Int32" />
-          <Property Name="ExitCost" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="ExitTotal" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="LogistType" Type="Int32" />
-          <Property Name="LogistOrderID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
-          <Property Name="Note" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
-          <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
-        </EntityType>
         <EntityType Name="Data_GoodOutOrder">
           <Key>
             <PropertyRef Name="ID" />
@@ -6460,6 +6440,28 @@
           <Property Name="OnceFreeCount" Type="Int32" />
           <Property Name="CanGetCount" Type="Int32" />
           <Property Name="ExpireDays" Type="Int32" />
+          <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Data_GoodExitInfo">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="ExitOrderID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="SourceType" Type="Int32" />
+          <Property Name="SourceOrderID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="ExitTime" Type="DateTime" Precision="3" />
+          <Property Name="UserID" Type="Int32" />
+          <Property Name="CheckDate" Type="DateTime" Precision="0" />
+          <Property Name="DepotID" Type="Int32" />
+          <Property Name="ExitCount" Type="Int32" />
+          <Property Name="ExitCost" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="ExitTotal" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="LogistType" Type="Int32" />
+          <Property Name="LogistOrderID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="Note" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
           <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
         </EntityType>
         </Schema>
@@ -9447,28 +9449,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Data_GoodExitInfo">
-            <EntityTypeMapping TypeName="XCCloudDBModel.Data_GoodExitInfo">
-              <MappingFragment StoreEntitySet="Data_GoodExitInfo">
-                <ScalarProperty Name="Verifiction" ColumnName="Verifiction" />
-                <ScalarProperty Name="Note" ColumnName="Note" />
-                <ScalarProperty Name="LogistOrderID" ColumnName="LogistOrderID" />
-                <ScalarProperty Name="LogistType" ColumnName="LogistType" />
-                <ScalarProperty Name="ExitTotal" ColumnName="ExitTotal" />
-                <ScalarProperty Name="ExitCost" ColumnName="ExitCost" />
-                <ScalarProperty Name="ExitCount" ColumnName="ExitCount" />
-                <ScalarProperty Name="DepotID" ColumnName="DepotID" />
-                <ScalarProperty Name="CheckDate" ColumnName="CheckDate" />
-                <ScalarProperty Name="UserID" ColumnName="UserID" />
-                <ScalarProperty Name="ExitTime" ColumnName="ExitTime" />
-                <ScalarProperty Name="StorageOrderIndex" ColumnName="StorageOrderIndex" />
-                <ScalarProperty Name="ExitOrderID" ColumnName="ExitOrderID" />
-                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
-                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Data_GoodOutOrder">
             <EntityTypeMapping TypeName="XCCloudDBModel.Data_GoodOutOrder">
               <MappingFragment StoreEntitySet="Data_GoodOutOrder">
@@ -9561,6 +9541,29 @@
                 <ScalarProperty Name="FreeBalanceType" ColumnName="FreeBalanceType" />
                 <ScalarProperty Name="ChargeTotal" ColumnName="ChargeTotal" />
                 <ScalarProperty Name="MemberLevelID" ColumnName="MemberLevelID" />
+                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Data_GoodExitInfo">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Data_GoodExitInfo">
+              <MappingFragment StoreEntitySet="Data_GoodExitInfo">
+                <ScalarProperty Name="Verifiction" ColumnName="Verifiction" />
+                <ScalarProperty Name="Note" ColumnName="Note" />
+                <ScalarProperty Name="LogistOrderID" ColumnName="LogistOrderID" />
+                <ScalarProperty Name="LogistType" ColumnName="LogistType" />
+                <ScalarProperty Name="ExitTotal" ColumnName="ExitTotal" />
+                <ScalarProperty Name="ExitCost" ColumnName="ExitCost" />
+                <ScalarProperty Name="ExitCount" ColumnName="ExitCount" />
+                <ScalarProperty Name="DepotID" ColumnName="DepotID" />
+                <ScalarProperty Name="CheckDate" ColumnName="CheckDate" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="ExitTime" ColumnName="ExitTime" />
+                <ScalarProperty Name="SourceOrderID" ColumnName="SourceOrderID" />
+                <ScalarProperty Name="SourceType" ColumnName="SourceType" />
+                <ScalarProperty Name="ExitOrderID" ColumnName="ExitOrderID" />
+                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
                 <ScalarProperty Name="MerchID" ColumnName="MerchID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>

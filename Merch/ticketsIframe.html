@@ -41,6 +41,7 @@
                             <label class="layui-form-label">允许离场时间</label>
                             <div class="layui-input-inline">
                                 <input type="text" class="layui-input" id="AllowExitTimes" name="AllowExitTimes">
+                                <span class="layui-unit">分钟</span>
                             </div>
                         </div>
                     </div>
@@ -49,18 +50,21 @@
                             <label class="layui-form-label">核销期</label>
                             <div class="layui-input-inline">
                                 <input type="text" class="layui-input" id="WriteOffDays" name="WriteOffDays">
+                                <span class="layui-unit">天</span>
                             </div>
                         </div>
                         <div class="layui-inline">
                             <label class="layui-form-label">售价</label>
                             <div class="layui-input-inline">
                                 <input type="text" class="layui-input" id="Price" name="Price">
+                                <span class="layui-unit">元</span>
                             </div>
                         </div>
                         <div class="layui-inline">
                             <label class="layui-form-label">税率</label>
                             <div class="layui-input-inline">
                                 <input type="text" class="layui-input" id="Tax" name="Tax">
+                                <span class="layui-unit">%</span>
                             </div>
                         </div>
                     </div>
@@ -79,6 +83,7 @@
                             <label class="layui-form-label">起购人数</label>
                             <div class="layui-input-inline">
                                 <input type="text" class="layui-input" id="GroupStartupCount" name="GroupStartupCount">
+                                <span class="layui-unit">人</span>
                             </div>
                         </div>
                     </div>
@@ -237,6 +242,7 @@
                             <label for="" class="layui-form-label">现金</label>
                             <div class="layui-input-inline">
                                 <input type="text" class="layui-input" name="AccompanyCash">
+                                <span class="layui-unit">元</span>
                             </div>
                         </div>
 
@@ -250,6 +256,7 @@
                             <label for="" class="layui-form-label">扣除数量</label>
                             <div class="layui-input-inline">
                                 <input type="text" class="layui-input" name="BalanceValue">
+                                <span class="layui-unit" id="BalanceValueUnit">个</span>
                             </div>
                         </div>
                     </div>
@@ -347,8 +354,9 @@
                         <div class="layui-inline bindTimesBox">
                             <div class="layui-input-inline">
                                 <input type="text" class="layui-input" id="shareTimes" disabled>
+                                <span class="layui-unit">次</span>
                             </div>
-                            <div class="layui-form-mid">次</div>
+                            <!--<div class="layui-form-mid">次</div>-->
                         </div>
                     </div>
                 </div>
@@ -479,7 +487,8 @@
                 week=[];
             }
         });
-        form.on('select(BalanceIndex)',function (data){BalanceIndex=data.value;});
+        form.on('select(BalanceIndex)',function (data){BalanceIndex=data.value;
+        $('#BalanceValueUnit').text(data.elem[data.elem.selectedIndex].title)});
         form.on('checkbox(AllowExitTicket)',function (data){
             if(data.elem.checked){
                 AllowExitTicket=1;

@@ -46,15 +46,15 @@ namespace XCCloudService.WorkFlow
         {
             int result = 0;
 
-            if (!Data_GoodRequestService.I.Any(a => a.ID == _eventId && (a.MerchID ?? "") != "")) return result;
-
-            var merchId = Data_GoodRequestService.I.GetModels(p => p.ID == _eventId && (p.MerchID ?? "") != "").Select(o => o.MerchID).FirstOrDefault() ?? "";
-            if (!Data_WorkFlowConfigService.I.Any(a => a.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && a.WorkType == (int)WorkflowType.GoodRequest))
+            //开启EF事务
+            using (TransactionScope ts = new TransactionScope())
             {
-                //开启EF事务
-                using (TransactionScope ts = new TransactionScope())
+                try
                 {
-                    try
+                    if (!Data_GoodRequestService.I.Any(a => a.ID == _eventId && (a.MerchID ?? "") != "")) return result;
+
+                    var merchId = Data_GoodRequestService.I.GetModels(p => p.ID == _eventId && (p.MerchID ?? "") != "").Select(o => o.MerchID).FirstOrDefault() ?? "";
+                    if (!Data_WorkFlowConfigService.I.Any(a => a.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && a.WorkType == (int)WorkflowType.GoodRequest))
                     {
                         var configModel = new Data_WorkFlowConfig { MerchID = merchId, WorkType = (int)WorkflowType.GoodRequest, State = 1 };
 
@@ -71,19 +71,30 @@ namespace XCCloudService.WorkFlow
                         if (!Data_WorkFlow_NodeService.I.SaveChanges()) return result;
 
                         result = configModel.ID;
-                        ts.Complete();
                     }
-                    catch
+                    else
                     {
-                        return result;
-                    }
-                }
-            }
-            else
-            {
-                result = Data_WorkFlowConfigService.I.GetModels(a => a.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && a.WorkType == (int)WorkflowType.GoodRequest).FirstOrDefault().ID;
-            }
+                        result = Data_WorkFlowConfigService.I.GetModels(a => a.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && a.WorkType == (int)WorkflowType.GoodRequest).FirstOrDefault().ID;
+                        foreach (Trigger t in Enum.GetValues(typeof(Trigger)))
+                        {
+                            if (!Data_WorkFlow_NodeService.I.Any(a => a.WorkID == result && a.OrderNumber == (int)t))
+                            {
+                                var nodeModel = new Data_WorkFlow_Node();
+                                nodeModel.WorkID = result;
+                                nodeModel.OrderNumber = (int)t;
+                                Data_WorkFlow_NodeService.I.AddModel(nodeModel);
+                            }
+                        }
 
+                        if (!Data_WorkFlow_NodeService.I.SaveChanges()) return result;
+                    }
+
+                    ts.Complete();
+                }
+                catch
+                { }
+            }
+            
             return result;
         }
 
@@ -189,13 +200,19 @@ namespace XCCloudService.WorkFlow
                 .PermitReentryIf(Trigger.SendDeal, () =>
                     (
                      (_requestType == (int)RequestType.MerchRequest && IsStoreUser()) ||
-                     //(_requestType == (int)RequestType.MerchSend && IsMerchUser()) ||  //总部是一次性派发
+                        //(_requestType == (int)RequestType.MerchSend && IsMerchUser()) ||  //总部是一次性派发
                      (_requestType == (int)RequestType.RequestMerch && IsMerchUser()) ||
                      (_requestType == (int)RequestType.RequestStore && IsStoreUser())
                     ) && (_merchId == _targetMerchId && _storeId == _outStoreId))
                 .PermitIf(Trigger.Cancel, State.Closed, () =>
                     _requestType == (int)RequestType.MerchSend && IsMerchUser() && (_merchId == _targetMerchId && _storeId == _outStoreId), "总部派货撤销, 流程结束")
-                .PermitIf(Trigger.RequestDeal, State.RequestDealed, () => 
+                .PermitIf(Trigger.RequestDeal, State.RequestDealed, () =>
+                    (
+                     (_requestType == (int)RequestType.MerchRequest && IsMerchUser()) ||
+                        //(_requestType == (int)RequestType.MerchSend && IsStoreUser()) || //总部是一次性派发
+                     (_requestType == (int)RequestType.RequestMerch && IsStoreUser())
+                    ) && (_merchId == _targetMerchId && _storeId == _inStoreId))
+                .PermitIf(Trigger.RequestExit, State.RequestExited, () =>
                     (
                      (_requestType == (int)RequestType.MerchRequest && IsMerchUser()) ||
                      (_requestType == (int)RequestType.MerchSend && IsStoreUser()) ||
@@ -214,7 +231,7 @@ namespace XCCloudService.WorkFlow
                 .PermitReentryIf(Trigger.RequestDeal, () =>
                     (
                      (_requestType == (int)RequestType.MerchRequest && IsMerchUser()) ||
-                     //(_requestType == (int)RequestType.MerchSend && IsStoreUser()) || //总部是一次性派发
+                        //(_requestType == (int)RequestType.MerchSend && IsStoreUser()) || //总部是一次性派发
                      (_requestType == (int)RequestType.RequestMerch && IsStoreUser()) ||
                      (_requestType == (int)RequestType.RequestStore && IsStoreUser())
                     ) && (_merchId == _targetMerchId && _storeId == _inStoreId))
@@ -234,12 +251,45 @@ namespace XCCloudService.WorkFlow
                      (_requestType == (int)RequestType.MerchSend && IsMerchUser() && (_merchId == _targetMerchId && _storeId == _outStoreId)) ||
                      (_requestType == (int)RequestType.RequestMerch && IsStoreUser() && (_merchId == _targetMerchId && _storeId == _inStoreId))
                     ))
-                .PermitIf(Trigger.SendDeal, State.SendDealed, () => 
+                .PermitIf(Trigger.SendDeal, State.SendDealed, () =>
                     (
                      (_requestType == (int)RequestType.MerchRequest && IsStoreUser()) ||
-                     //(_requestType == (int)RequestType.MerchSend && IsMerchUser()) ||//总部是一次性派发
+                        //(_requestType == (int)RequestType.MerchSend && IsMerchUser()) || //总部是一次性派发
                      (_requestType == (int)RequestType.RequestMerch && IsMerchUser())
-                    ) && (_merchId == _targetMerchId && _storeId == _outStoreId));
+                    ) && (_merchId == _targetMerchId && _storeId == _outStoreId))
+                .PermitIf(Trigger.RequestExit, State.RequestExited, () =>
+                    (
+                     (_requestType == (int)RequestType.MerchRequest && IsMerchUser()) ||
+                     (_requestType == (int)RequestType.MerchSend && IsStoreUser()) ||
+                     (_requestType == (int)RequestType.RequestMerch && IsStoreUser())
+                    ) && (_merchId == _targetMerchId && _storeId == _inStoreId));
+
+            _machine.Configure(State.RequestExited)
+                .PermitReentryIf(Trigger.RequestExit, () =>
+                    (
+                     (_requestType == (int)RequestType.MerchRequest && IsMerchUser()) ||
+                     (_requestType == (int)RequestType.MerchSend && IsStoreUser()) ||
+                     (_requestType == (int)RequestType.RequestMerch && IsStoreUser()) ||
+                     (_requestType == (int)RequestType.RequestStore && IsStoreUser())
+                    ) && (_merchId == _targetMerchId && _storeId == _inStoreId))
+                .PermitIf(Trigger.Close, State.Closed, () =>
+                    (
+                     (_requestType == (int)RequestType.MerchRequest && IsMerchUser() && (_merchId == _targetMerchId && _storeId == _inStoreId)) ||
+                     (_requestType == (int)RequestType.MerchSend && IsMerchUser() && (_merchId == _targetMerchId && _storeId == _outStoreId)) ||
+                     (_requestType == (int)RequestType.RequestMerch && IsStoreUser() && (_merchId == _targetMerchId && _storeId == _inStoreId))
+                    ))
+                .PermitIf(Trigger.SendDeal, State.SendDealed, () =>
+                    (
+                     (_requestType == (int)RequestType.MerchRequest && IsStoreUser()) ||
+                        //(_requestType == (int)RequestType.MerchSend && IsMerchUser()) ||//总部是一次性派发
+                     (_requestType == (int)RequestType.RequestMerch && IsMerchUser())
+                    ) && (_merchId == _targetMerchId && _storeId == _outStoreId))
+                .PermitIf(Trigger.RequestDeal, State.RequestDealed, () =>
+                    (
+                     (_requestType == (int)RequestType.MerchRequest && IsMerchUser()) ||
+                        //(_requestType == (int)RequestType.MerchSend && IsStoreUser()) || //总部是一次性派发
+                     (_requestType == (int)RequestType.RequestMerch && IsStoreUser())
+                    ) && (_merchId == _targetMerchId && _storeId == _inStoreId));
 
             //_machine.Configure(State.RequestDealVerifiedPass)
             //    //.PermitIf(Trigger.Cancel, State.RequestDealed, () => IsMerchUser() && (_merchId == _targetMerchId && _storeId == ""))
@@ -513,7 +563,7 @@ namespace XCCloudService.WorkFlow
             return false;
         }
 
-        public bool Cancel(out string errMsg)
+        public bool Cancel(State state, out string errMsg)
         {
             errMsg = string.Empty;
 
@@ -521,19 +571,22 @@ namespace XCCloudService.WorkFlow
             {
                 if (_machine.CanFire(Trigger.Cancel))
                 {                                           
-                    //获取待撤销工作记录
-                    var entry = Data_WorkFlow_EntryService.I.GetModels(p => p.EventType == (int)WorkflowEventType.GoodRequest && p.WorkID == _workId
-                        && p.EventID == _eventId && p.State == (int)_state).FirstOrDefault();
-                    if (entry != null)
-                    {                        
-                        if (!Data_WorkFlow_EntryService.I.Delete(entry))
-                        {
-                            errMsg = "撤销工作失败";
-                            return false;
-                        }
-                    }
+                    ////获取待撤销工作记录
+                    //var entry = Data_WorkFlow_EntryService.I.GetModels(p => p.EventType == (int)WorkflowEventType.GoodRequest && p.WorkID == _workId
+                    //    && p.EventID == _eventId && p.State == (int)_state).FirstOrDefault();
+                    //if (entry != null)
+                    //{                        
+                    //    if (!Data_WorkFlow_EntryService.I.Delete(entry))
+                    //    {
+                    //        errMsg = "撤销工作失败";
+                    //        return false;
+                    //    }
+                    //}
+
+                    if (!AddWorkEntry(_eventId, _workId, _userId, Trigger.Cancel, state, out errMsg)) return false;
                     
                     _machine.Fire(Trigger.Cancel);
+
                     return true;
                 }
                 else
@@ -547,7 +600,34 @@ namespace XCCloudService.WorkFlow
             }
 
             return false;
-        }        
+        }
+
+        public bool RequestExit(out string errMsg)
+        {
+            errMsg = string.Empty;
+
+            try
+            {
+                if (_machine.CanFire(Trigger.RequestDeal))
+                {
+                    if (!AddWorkEntry(_eventId, _workId, _userId, Trigger.RequestExit, State.RequestExited, out errMsg)) return false;
+
+                    _machine.Fire(Trigger.RequestDeal);
+
+                    return true;
+                }
+                else
+                {
+                    errMsg = "当前状态不能操作";
+                }
+            }
+            catch (Exception e)
+            {
+                errMsg = e.Message;
+            }
+
+            return false;
+        }
 
         #endregion
 
