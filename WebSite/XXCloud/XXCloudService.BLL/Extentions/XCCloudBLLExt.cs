@@ -8,6 +8,7 @@ using XCCloudService.DAL;
 using XCCloudService.Common;
 using XCCloudService.Common.Extensions;
 using XCCloudService.Model.XCCloud;
+using XCCloudService.Common.Enum;
 
 namespace XCCloudService.BLL.XCCloud
 {
@@ -63,6 +64,45 @@ namespace XCCloudService.BLL.XCCloud
             catch (Exception e)
             {
                 throw e;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// 更新库存
+        /// </summary>
+        public static bool UpdateGoodsStock(int? depotId, int? goodId, int? sourceType, int? sourceId, decimal? goodCost, int? stockFlag, int? stockCount, string merchId, string storeId, out string errMsg)
+        {
+            errMsg = string.Empty;
+
+            //添加库存异动信息
+            var data_GoodStock_Record = new Data_GoodStock_Record();
+            data_GoodStock_Record.DepotID = depotId;
+            data_GoodStock_Record.GoodID = goodId;
+            data_GoodStock_Record.SourceType = sourceType;
+            data_GoodStock_Record.SourceID = sourceId;
+            data_GoodStock_Record.GoodCost = goodCost;
+            data_GoodStock_Record.StockFlag = stockFlag;
+            data_GoodStock_Record.StockCount = stockCount;
+            data_GoodStock_Record.CreateTime = DateTime.Now;
+            data_GoodStock_Record.MerchID = merchId;
+            data_GoodStock_Record.StoreID = storeId;
+            Data_GoodStock_RecordService.I.AddModel(data_GoodStock_Record);
+
+            //更新当前库存
+            var stockModel = Data_GoodsStockService.I.GetModels(p => p.StockType == (int)StockType.Depot && p.StockIndex == depotId && p.GoodID == goodId).OrderByDescending(or => or.InitialTime).FirstOrDefault();
+            if (stockModel == null)
+            {
+                errMsg = "仓库未绑定该商品信息";
+                return false;
+            }
+
+            stockModel.RemainCount = (stockModel.RemainCount ?? 0) + (stockFlag == (int)StockFlag.Out ? -stockCount : stockFlag == (int)StockFlag.In ? stockCount : 0) ?? 0;
+            if (!Data_GoodsStockService.I.Update(stockModel))
+            {
+                errMsg = "更新当前库存信息失败";
+                return false;
             }
 
             return true;

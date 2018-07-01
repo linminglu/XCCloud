@@ -1134,7 +1134,7 @@ namespace XXCloudService.Api.XCCloud
                                     if (requstType == 2)
                                     {
                                         //更新当前库存
-                                        if (!updateGoodsStock(outDepotId, goodId, (int)SourceType.GoodRequest, requestId, costPrice, (int)StockFlag.Out, sendCount, merchId, storeId, out errMsg))
+                                        if (!XCCloudBLLExt.UpdateGoodsStock(outDepotId, goodId, (int)SourceType.GoodRequest, requestId, costPrice, (int)StockFlag.Out, sendCount, merchId, storeId, out errMsg))
                                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                                     }
                                 }
@@ -1307,7 +1307,7 @@ namespace XXCloudService.Api.XCCloud
         //                foreach (var requestListModel in data_GoodRequest_List.GetModels(p => p.RequestID == requestId))
         //                {
         //                    //更新当前库存
-        //                    if (!updateGoodsStock(requestListModel.OutDepotID, requestListModel.GoodID, (int)SourceType.GoodRequest, requestId, requestListModel.CostPrice, (int)StockFlag.Out, requestListModel.SendCount, merchId, storeId, out errMsg))
+        //                    if (!XCCloudBLLExt.UpdateGoodsStock(requestListModel.OutDepotID, requestListModel.GoodID, (int)SourceType.GoodRequest, requestId, requestListModel.CostPrice, (int)StockFlag.Out, requestListModel.SendCount, merchId, storeId, out errMsg))
         //                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
         //                }
 
@@ -1387,7 +1387,7 @@ namespace XXCloudService.Api.XCCloud
         //                foreach (var requestListModel in data_GoodRequest_List.GetModels(p => p.RequestID == requestId))
         //                {
         //                    //更新当前库存
-        //                    if (!updateGoodsStock(requestListModel.InDeportID, requestListModel.GoodID, (int)SourceType.GoodRequest, requestId, requestListModel.CostPrice, (int)StockFlag.In, requestListModel.StorageCount, merchId, storeId, out errMsg))
+        //                    if (!XCCloudBLLExt.UpdateGoodsStock(requestListModel.InDeportID, requestListModel.GoodID, (int)SourceType.GoodRequest, requestId, requestListModel.CostPrice, (int)StockFlag.In, requestListModel.StorageCount, merchId, storeId, out errMsg))
         //                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
         //                }
 
@@ -1537,7 +1537,7 @@ namespace XXCloudService.Api.XCCloud
                                     if (!wf.CanFire(Trigger.SendDealVerify))
                                     {
                                         //更新当前库存
-                                        if (!updateGoodsStock(outDepotId, goodId, (int)SourceType.GoodRequest, requestId, costPrice, (int)StockFlag.Out, sendCount, merchId, storeId, out errMsg))
+                                        if (!XCCloudBLLExt.UpdateGoodsStock(outDepotId, goodId, (int)SourceType.GoodRequest, requestId, costPrice, (int)StockFlag.Out, sendCount, merchId, storeId, out errMsg))
                                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                                     }                                                                        
                                 }
@@ -1586,46 +1586,7 @@ namespace XXCloudService.Api.XCCloud
             {
                 return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
             }
-        }
-
-        /// <summary>
-        /// 更新库存
-        /// </summary>
-        private bool updateGoodsStock(int? depotId, int? goodId, int? sourceType, int? sourceId, decimal? goodCost, int? stockFlag, int? stockCount, string merchId, string storeId, out string errMsg)
-        {
-            errMsg = string.Empty;
-
-            //添加库存异动信息
-            var data_GoodStock_Record = new Data_GoodStock_Record();
-            data_GoodStock_Record.DepotID = depotId;
-            data_GoodStock_Record.GoodID = goodId;
-            data_GoodStock_Record.SourceType = sourceType;
-            data_GoodStock_Record.SourceID = sourceId;
-            data_GoodStock_Record.GoodCost = goodCost;
-            data_GoodStock_Record.StockFlag = stockFlag;
-            data_GoodStock_Record.StockCount = stockCount;
-            data_GoodStock_Record.CreateTime = DateTime.Now;
-            data_GoodStock_Record.MerchID = merchId;
-            data_GoodStock_Record.StoreID = storeId;
-            Data_GoodStock_RecordService.I.AddModel(data_GoodStock_Record);
-
-            //更新当前库存
-            var stockModel = Data_GoodsStockService.I.GetModels(p => p.StockType == (int)StockType.Depot && p.StockIndex == depotId && p.GoodID == goodId).OrderByDescending(or => or.InitialTime).FirstOrDefault();
-            if (stockModel == null)
-            {
-                errMsg = "仓库未绑定该商品信息";
-                return false;
-            }
-
-            stockModel.RemainCount = (stockModel.RemainCount ?? 0) + (stockFlag == (int)StockFlag.Out ? -stockCount : stockFlag == (int)StockFlag.In ? stockCount : 0) ?? 0;
-            if (!Data_GoodsStockService.I.Update(stockModel))
-            {
-                errMsg = "更新当前库存信息失败";
-                return false;
-            }
-
-            return true;
-        }
+        }        
 
         /// <summary>
         /// 调拨入库
@@ -1701,7 +1662,7 @@ namespace XXCloudService.Api.XCCloud
                                     if (!wf.CanFire(Trigger.RequestDealVerify))
                                     {
                                         //更新当前库存
-                                        if (!updateGoodsStock(inDepotId, data_GoodRequest_List.GoodID, (int)SourceType.GoodRequest, requestId, data_GoodRequest_List.CostPrice, (int)StockFlag.In, storageCount, merchId, storeId, out errMsg))
+                                        if (!XCCloudBLLExt.UpdateGoodsStock(inDepotId, data_GoodRequest_List.GoodID, (int)SourceType.GoodRequest, requestId, data_GoodRequest_List.CostPrice, (int)StockFlag.In, storageCount, merchId, storeId, out errMsg))
                                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);                                        
                                     }                                    
                                 }
@@ -1794,6 +1755,47 @@ namespace XXCloudService.Api.XCCloud
         }
 
         /// <summary>
+        /// 流程撤销
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object GoodRequestCancel(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                var storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+                var merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                var userId = userTokenKeyModel.LogId.Toint(0);
+                var logType = userTokenKeyModel.LogType;
+
+                var errMsg = string.Empty;
+                if (!dicParas.Get("requestId").Validintnozero("调拨单ID", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                var requestId = dicParas.Get("requestId").Toint(0);
+
+                if (!Data_GoodRequestService.I.Any(a => a.ID == requestId))
+                {
+                    errMsg = "该调拨单不存在";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
+                //工作流更新
+                var wf = new GoodReqWorkFlow(requestId, userId, logType, storeId);
+                if (!wf.Cancel(out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        /// <summary>
         /// 获取调拨退货信息
         /// </summary>
         /// <param name="dicParas"></param>
@@ -1845,7 +1847,7 @@ namespace XXCloudService.Api.XCCloud
                                     /*入库数量*/
                                     a.StorageCount,
                                     /*已退货数量*/
-                                    d.ExitedCount,
+                                    ISNULL(d.ExitedCount,0) AS ExitedCount,
                                     /*含税单价*/
                                     a.CostPrice,
                                     /*税率*/
@@ -1859,7 +1861,7 @@ namespace XXCloudService.Api.XCCloud
                                 ) a                                
                                 INNER JOIN Base_GoodsInfo b ON a.GoodID = b.ID
                                 INNER JOIN Dict_System c ON b.GoodType = c.ID 
-                                INNER JOIN (
+                                LEFT JOIN (
                                     SELECT 
                                         b.GoodID, SUM(ISNULL(b.ExitCount,0)) AS ExitedCount
                                     FROM 
@@ -2059,7 +2061,7 @@ namespace XXCloudService.Api.XCCloud
                                     Data_GoodExit_DetailService.I.AddModel(detailModel);
 
                                     //更新当前库存
-                                    if (!updateGoodsStock(detailModel.DepotID, detailModel.GoodID, (int)SourceType.GoodExit, exitModel.ID, detailModel.ExitPrice, (int)StockFlag.Out, detailModel.ExitCount, merchId, storeId, out errMsg))
+                                    if (!XCCloudBLLExt.UpdateGoodsStock(detailModel.DepotID, detailModel.GoodID, (int)SourceType.GoodExit, exitModel.ID, detailModel.ExitPrice, (int)StockFlag.Out, detailModel.ExitCount, merchId, storeId, out errMsg))
                                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                                 }
                                 else
@@ -2082,6 +2084,97 @@ namespace XXCloudService.Api.XCCloud
                             }
                         }
 
+                        ts.Complete();
+                    }
+                    catch (DbEntityValidationException e)
+                    {
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, e.EntityValidationErrors.ToErrors());
+                    }
+                    catch (Exception e)
+                    {
+                        errMsg = e.Message;
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
+                }
+
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        /// <summary>
+        /// 删除调拨单
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object DelGoodRequest(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                var storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+                var merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                var userId = userTokenKeyModel.LogId.Toint(0);
+                var logType = userTokenKeyModel.LogType;
+
+                var errMsg = string.Empty;
+                var requestId = dicParas.Get("requestId").Toint(0);
+                if (requestId == 0)
+                {
+                    errMsg = "调拨单ID不能为空";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
+                //开启EF事务
+                using (TransactionScope ts = new TransactionScope())
+                {
+                    try
+                    {
+                        if (!Data_GoodRequestService.I.Any(a => a.ID == requestId))
+                        {
+                            errMsg = "该调拨单不存在";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
+                        //工作流更新
+                        var wf = new GoodReqWorkFlow(requestId, userId, logType, storeId);
+                        if (wf.State != State.Requested)
+                        {
+                            errMsg = "该调拨单不能删除，只有调拨申请未审核的调拨单才能删除";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
+                        if (Data_GoodStock_RecordService.I.Any(a => a.SourceType == (int)SourceType.GoodRequest && a.SourceID == requestId))
+                        {
+                            errMsg = "该调拨单存在出入库信息不能删除";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
+                        //删除调拨明细
+                        var requestModel = Data_GoodRequestService.I.GetModels(p => p.ID == requestId).FirstOrDefault();
+                        Data_GoodRequestService.I.DeleteModel(requestModel);
+
+                        foreach (var detailModel in Data_GoodRequest_ListService.I.GetModels(p => p.RequestID == requestId))
+                        {
+                            Data_GoodRequest_ListService.I.DeleteModel(detailModel);
+                        }
+
+                        if (!Data_GoodRequest_ListService.I.SaveChanges())
+                        {
+                            errMsg = "更新调拨明细失败";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
+                        if (!Data_GoodRequestService.I.SaveChanges())
+                        {
+                            errMsg = "更新调拨单失败";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+                                                
                         ts.Complete();
                     }
                     catch (DbEntityValidationException e)
@@ -2255,9 +2348,10 @@ namespace XXCloudService.Api.XCCloud
                                                 select new
                                                 {
                                                     GoodID = g.Key,
-                                                    ExitedCount = g.Sum(s => s.ExitCount)
+                                                    ExitedCount = g.Sum(s => s.ExitCount ?? 0)
                                                 }
-                                            ) on a.GoodID equals f.GoodID
+                                            ) on a.GoodID equals f.GoodID into f1
+                                        from f in f1.DefaultIfEmpty()
                                         select new
                                         {
                                             GoodID = a.GoodID,
@@ -2266,7 +2360,7 @@ namespace XXCloudService.Api.XCCloud
                                             GoodTypeStr = c.DictKey,
                                             RemainCount = e.RemainCount ?? 0,
                                             StorageCount = a.StorageCount,
-                                            ExitedCount = f.ExitedCount ?? 0,
+                                            ExitedCount = f != null ? f.ExitedCount : 0,
                                             Price = a.Price,
                                             Tax = a.Tax,
                                             TaxPrice = a.TaxPrice
@@ -2542,7 +2636,7 @@ namespace XXCloudService.Api.XCCloud
                         foreach (var detailModel in detailList)
                         {
                             //更新当前库存
-                            if (!updateGoodsStock(model.DepotID, detailModel.GoodID, (int)SourceType.GoodStorage, id, detailModel.TaxPrice, (int)StockFlag.In, detailModel.StorageCount, merchId, storeId, out errMsg))
+                            if (!XCCloudBLLExt.UpdateGoodsStock(model.DepotID, detailModel.GoodID, (int)SourceType.GoodStorage, id, detailModel.TaxPrice, (int)StockFlag.In, detailModel.StorageCount, merchId, storeId, out errMsg))
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);                             
                         }
                         
@@ -2637,7 +2731,7 @@ namespace XXCloudService.Api.XCCloud
                         foreach (var record in recordList)
                         {
                             //更新当前库存
-                            if (!updateGoodsStock(record.DepotID, record.GoodID, (int)SourceType.GoodStorage, id, record.GoodCost, (int)StockFlag.Out, record.StockCount, merchId, storeId, out errMsg))
+                            if (!XCCloudBLLExt.UpdateGoodsStock(record.DepotID, record.GoodID, (int)SourceType.GoodStorage, id, record.GoodCost, (int)StockFlag.Out, record.StockCount, merchId, storeId, out errMsg))
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);                            
                         }
 
@@ -2792,7 +2886,7 @@ namespace XXCloudService.Api.XCCloud
                                     Data_GoodExit_DetailService.I.AddModel(detailModel);
 
                                     //更新当前库存
-                                    if (!updateGoodsStock(detailModel.DepotID, detailModel.GoodID, (int)SourceType.GoodExit, id, detailModel.ExitPrice, (int)StockFlag.Out, detailModel.ExitCount, merchId, storeId, out errMsg))
+                                    if (!XCCloudBLLExt.UpdateGoodsStock(detailModel.DepotID, detailModel.GoodID, (int)SourceType.GoodExit, id, detailModel.ExitPrice, (int)StockFlag.Out, detailModel.ExitCount, merchId, storeId, out errMsg))
                                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);                                                                       
                                 }
                                 else
@@ -3144,7 +3238,7 @@ namespace XXCloudService.Api.XCCloud
                             foreach (var detailModel in detailList)
                             {
                                 //更新当前库存
-                                if (!updateGoodsStock(model.DepotID, detailModel.GoodID, (int)SourceType.GoodOut, id, detailModel.OutPrice, (int)StockFlag.Out, detailModel.OutCount, merchId, storeId, out errMsg))
+                                if (!XCCloudBLLExt.UpdateGoodsStock(model.DepotID, detailModel.GoodID, (int)SourceType.GoodOut, id, detailModel.OutPrice, (int)StockFlag.Out, detailModel.OutCount, merchId, storeId, out errMsg))
                                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                             }
 
@@ -3190,7 +3284,7 @@ namespace XXCloudService.Api.XCCloud
                                 Data_GoodStorage_DetailService.I.AddModel(storageDetailModel);
 
                                 //更新当前库存
-                                if (!updateGoodsStock(inDepotId, detailModel.GoodID, (int)SourceType.GoodStorage, storageModel.ID, detailModel.OutPrice, (int)StockFlag.In, detailModel.OutCount, merchId, storeId, out errMsg))
+                                if (!XCCloudBLLExt.UpdateGoodsStock(inDepotId, detailModel.GoodID, (int)SourceType.GoodStorage, storageModel.ID, detailModel.OutPrice, (int)StockFlag.In, detailModel.OutCount, merchId, storeId, out errMsg))
                                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                             }
 
@@ -3355,7 +3449,7 @@ namespace XXCloudService.Api.XCCloud
                         foreach (var detailModel in detailList)
                         {
                             //更新当前库存
-                            if (!updateGoodsStock(model.DepotID, detailModel.GoodID, (int)SourceType.GoodOut, id, detailModel.OutPrice, (int)StockFlag.Out, detailModel.OutCount, merchId, storeId, out errMsg))
+                            if (!XCCloudBLLExt.UpdateGoodsStock(model.DepotID, detailModel.GoodID, (int)SourceType.GoodOut, id, detailModel.OutPrice, (int)StockFlag.Out, detailModel.OutCount, merchId, storeId, out errMsg))
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);                               
                         }
 
@@ -3458,7 +3552,7 @@ namespace XXCloudService.Api.XCCloud
                         foreach (var record in recordList)
                         {
                             //更新当前库存
-                            if (!updateGoodsStock(record.DepotID, record.GoodID, (int)SourceType.GoodOut, id, record.GoodCost, (int)StockFlag.In, record.StockCount, merchId, storeId, out errMsg))
+                            if (!XCCloudBLLExt.UpdateGoodsStock(record.DepotID, record.GoodID, (int)SourceType.GoodOut, id, record.GoodCost, (int)StockFlag.In, record.StockCount, merchId, storeId, out errMsg))
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);                            
                         }
 

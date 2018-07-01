@@ -37,6 +37,8 @@ namespace XCCloudService.WorkFlow
         private string _outStoreId;
         private string _storeId;
         private string _merchId;
+        private bool _result;
+        private string _errMsg;
         
         /// <summary>
         /// 获取工作流ID
@@ -205,8 +207,8 @@ namespace XCCloudService.WorkFlow
                      (_requestType == (int)RequestType.RequestMerch && IsMerchUser()) ||
                      (_requestType == (int)RequestType.RequestStore && IsStoreUser())
                     ) && (_merchId == _targetMerchId && _storeId == _outStoreId))
-                //.PermitIf(Trigger.Cancel, State.Closed, () =>
-                //    _requestType == (int)RequestType.MerchSend && IsMerchUser() && (_merchId == _targetMerchId && _storeId == _outStoreId), "总部派货撤销")
+                .PermitIf(Trigger.Cancel, State.Closed, () =>
+                    _requestType == (int)RequestType.MerchSend && IsMerchUser() && (_merchId == _targetMerchId && _storeId == _outStoreId), "总部派货撤销")
                 .PermitIf(Trigger.RequestDeal, State.RequestDealed, () =>
                     (
                      (_requestType == (int)RequestType.MerchRequest && IsMerchUser()) ||
@@ -307,7 +309,7 @@ namespace XCCloudService.WorkFlow
         }
 
         #region 属性
-        protected new State State
+        public new State State
         {
             get
             {
@@ -334,14 +336,47 @@ namespace XCCloudService.WorkFlow
 
         private void requestVerifyCancel()
         {
-            string errMsg = string.Empty;
-            addWorkEntry(_eventId, _workId, _userId, Trigger.RequestVerify, _state, out errMsg);
+            _errMsg = string.Empty;
+            _result = addWorkEntry(_eventId, _workId, _userId, Trigger.Cancel, _state, out _errMsg);
         }
 
         private void sendDealCancel()
         {
-            string errMsg = string.Empty;
-            addWorkEntry(_eventId, _workId, _userId, Trigger.SendDeal, _state, out errMsg);
+            _errMsg = string.Empty;
+
+            //开启EF事务
+            using (TransactionScope ts = new TransactionScope())
+            {
+                try
+                {
+                    var data_GoodRequest_ListService = Data_GoodRequest_ListService.I;
+                    foreach (var model in data_GoodRequest_ListService.GetModels(p => p.RequestID == _eventId))
+                    {
+                        //撤销冲红
+                        if (!XCCloudBLLExt.UpdateGoodsStock(model.OutDepotID, model.GoodID, (int)SourceType.GoodRequest, model.RequestID, model.CostPrice, (int)StockFlag.In, model.SendCount, model.MerchID, model.OutStoreID, out _errMsg))
+                        {
+                            _result = false;
+                            return;
+                        }
+                    }
+
+                    if (!Data_GoodStock_RecordService.I.SaveChanges())
+                    {
+                        _errMsg = "添加入库存异动信息失败";
+                        _result = false;
+                        return;
+                    }
+
+                    _result = addWorkEntry(_eventId, _workId, _userId, Trigger.Cancel, _state, out _errMsg);
+
+                    ts.Complete();
+                }                
+                catch (Exception e)
+                {
+                    _errMsg = e.Message;
+                    _result = false;
+                }
+            }            
         }
 
         private bool addWorkEntry(int eventId, int workId, int userId, Trigger t, State s, out string errMsg, string note = "")
@@ -580,12 +615,18 @@ namespace XCCloudService.WorkFlow
         public bool Cancel(out string errMsg)
         {
             errMsg = string.Empty;
-
+            
             try
             {
                 if (_machine.CanFire(Trigger.Cancel))
                 {                                                                                                      
                     _machine.Fire(Trigger.Cancel);
+
+                    if (!_result)
+                    {
+                        errMsg = this._errMsg;
+                        return _result;
+                    } 
 
                     return true;
                 }
