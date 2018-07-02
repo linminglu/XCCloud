@@ -479,7 +479,8 @@
             }
         }
     });
-
+    //调拨退货
+    let backInDepot='';let logisticsCompanyBack='';
     layui.addcss('layui_font.css');
     layui.use(['form','table','layer'],function () {
         let form=layui.form;
@@ -787,6 +788,11 @@
                         data=JSON.parse(data);
                         console.log(data)
                         if(data.result_code==1){
+                            xc.setSelect('物流公司','logisticsCompanyBack');
+                            $('#backInDepot').html('<option value="">-请选择-</option>');
+                            for(let i in depotList){
+                                $('#backInDepot').append('<option value="'+depotList[i].ID+'" selected>'+depotList[i].DepotName+'</option>')
+                            }
                             let arr=data.result_data.GoodRequestDetails;
                             table.render({
                                 elem: '#backDetails'
@@ -806,7 +812,7 @@
                                     ,{field:'SendCount', title: '实发数量', align: 'center',width:100}
                                     ,{field:'StorageCount', title: '入库数量', align: 'center',edit:true,width:100}
                                     ,{field:'ExitedCount', title: '已退货数量', align: 'center',width:100}
-                                    ,{field:'ExitCount', title: '退货数量', align: 'center',width:100}
+                                    ,{field:'ExitCount', title: '退货数量', align: 'center',width:100,edit:true}
                                     ,{field:'CostPrice', title: '含税单价', align: 'center'}
                                     ,{field:'Tax', title: '税率', align: 'center'}
                                 ]]
@@ -815,13 +821,9 @@
                             });
                             form.val('back',{
                                 'backInDepot':data.result_data.InDepotId,
-                                'exitCount':data.result_data.exitCount,
-                                'exitCost':data.result_data.exitCost,
-                                'exitTotal':data.result_data.exitTotal,
-                                'logisticsCompanyBack':data.result_data.InDepotId,
-                                'logisticsNoteBack':data.result_data.InDepotId,
                                 'backNote':data.result_data.Note,
-                            })
+                            });
+                            form.render();
                             layer.open({
                                 title:'调拨退货',
                                 type:1,

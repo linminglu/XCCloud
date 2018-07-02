@@ -1208,7 +1208,7 @@ namespace XCCloudService.Common.Enum
         [Description("入库审核拒绝")]
         RequestDealVerifiedRefuse = 9,
         /// <summary>
-        /// 结束
+        /// 流程结束
         /// </summary>
         [Description("结束")]
         Closed = 10,
