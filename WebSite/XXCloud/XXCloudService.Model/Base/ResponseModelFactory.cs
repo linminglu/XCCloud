@@ -84,7 +84,7 @@ namespace XCCloudService.Base
             throw new NotImplementedException();
         }
 
-        public static object CreateAnonymousSuccessModel(bool isSignKeyReturn, object obj)
+        public static object CreateAnonymousSuccessModel(bool isSignKeyReturn, object obj, string result_msg = "")
         {
             if (!isSignKeyReturn)
             {
@@ -93,7 +93,7 @@ namespace XCCloudService.Base
                     return_code = "1",
                     return_msg = string.Empty,
                     result_code = "1",
-                    result_msg = string.Empty,
+                    result_msg = result_msg,
                     result_data = obj
                 };
                 return resObj;
@@ -105,13 +105,13 @@ namespace XCCloudService.Base
                     return_code = "1",
                     return_msg = string.Empty,
                     result_code = "1",
-                    result_msg = string.Empty,
+                    result_msg = result_msg,
                     result_data = obj,
                     signkey = string.Empty
                 };
                 return resObj;
             }
-        }
+        }       
        
         public static object CreateAnonymousFailModel(bool isSignKeyReturn,string errMsg)
         {

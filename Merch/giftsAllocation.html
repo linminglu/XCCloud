@@ -753,7 +753,7 @@
             }else if(layevent==='RequestExit'){//调拨退货
                 let _obj={
                     'requestId':requestId, 'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
-                let url='/XCCloud/GoodsInfo?action=GoodRequestExit';
+                let url='/XCCloud/GoodsInfo?action=GetGoodRequestExitInfo';
                 let parasJson = JSON.stringify(_obj);
                 $.ajax({
                     type: "post",
@@ -762,7 +762,7 @@
                     data: { parasJson: parasJson },
                     success: function (data) {
                         data=JSON.parse(data);
-                        console.log('weew')
+                        console.log(data)
                         if(data.result_code==1){
                             // let arr=data.result_data.GoodRequestDetails;
                             // table.render({

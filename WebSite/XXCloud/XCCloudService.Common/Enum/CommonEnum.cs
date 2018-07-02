@@ -1170,42 +1170,42 @@ namespace XCCloudService.Common.Enum
         /// <summary>
         /// 申请审核已通过
         /// </summary>
-        [Description("申请审核已通过")]
+        [Description("审核通过")]
         RequestVerifiedPass = 2,
         /// <summary>
         /// 申请审核已拒绝
         /// </summary>
-        [Description("申请审核已拒绝")]
+        [Description("审核拒绝")]
         RequestVerifiedRefuse = 3,
         /// <summary>
         /// 调拨已出库
         /// </summary>
-        [Description("调拨已出库")]
+        [Description("已出库")]
         SendDealed = 4,
         /// <summary>
         /// 调拨出库审核已通过
         /// </summary>
-        [Description("调拨出库审核已通过")]
+        [Description("出库审核通过")]
         SendDealVerifiedPass = 5,
         /// <summary>
         /// 调拨出库审核已拒绝
         /// </summary>
-        [Description("调拨出库审核已拒绝")]
+        [Description("出库审核拒绝")]
         SendDealVerifiedRefuse = 6,
         /// <summary>
         /// 调拨已入库
         /// </summary>
-        [Description("调拨已入库")]
+        [Description("已入库")]
         RequestDealed = 7,        
         /// <summary>
         /// 调拨入库审核已通过
         /// </summary>
-        [Description("调拨入库审核已通过")]
+        [Description("入库审核通过")]
         RequestDealVerifiedPass = 8,
         /// <summary>
         /// 调拨入库审核已拒绝
         /// </summary>
-        [Description("调拨入库审核已拒绝")]
+        [Description("入库审核拒绝")]
         RequestDealVerifiedRefuse = 9,
         /// <summary>
         /// 结束
@@ -1215,12 +1215,12 @@ namespace XCCloudService.Common.Enum
         /// <summary>
         /// 调拨已退货
         /// </summary>
-        [Description("调拨已退货")]
+        [Description("已退货")]
         RequestExited = 11,
         /// <summary>
         /// 调拨申请单已删除
         /// </summary>
-        [Description("调拨申请单已删除")]
+        [Description("已删除")]
         RequestDeleted = 12
     }
 

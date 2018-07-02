@@ -1050,7 +1050,7 @@
             success: function (data) {
                 data = JSON.parse(data);
                 if (data.result_code == 1) {
-                    layer.msg('保存成功！', {time: 1500}, function () {
+                    layer.msg(data.result_msg==''?'保存成功！':data.result_msg, {time: 1500}, function () {
                         location.href = 'gameFileSet.html'
                     })
                 } else {
@@ -1090,7 +1090,7 @@
             'AllowRealPush': AllowRealPush,
             'PushBalanceIndex1': PushBalanceIndex11,
             'PushCoin1': $('input[name="PushCoin11"]').val(),
-            'PushBalanceIndex2': PushBalanceIndex2,
+            'PushBalanceIndex2': PushBalanceIndex12,
 
             'PushCoin2': $('input[name="PushCoin2"]').val(),
             'PushPulse': PushPulse,//35
@@ -1146,7 +1146,7 @@
             success: function (data) {
                 data = JSON.parse(data);
                 if (data.result_code == 1) {
-                    layer.msg('保存成功！', {time: 1500}, function () {
+                    layer.msg(data.result_msg==''?'保存成功！':data.result_msg, {time: 1500}, function () {
                         location.href = 'gameFileSet.html'
                     })
                 } else {
@@ -1511,7 +1511,7 @@
         });
         form.on('select(PushBalanceIndex2)', (data) => {
             if (data.value == '-请选择-') {
-                $('.cutCoin2').text('金币数')
+                $('.cutCoin2').text('金币数');
                 PushBalanceIndex12=''
             } else {
                 PushBalanceIndex12 = data.value;
@@ -2355,13 +2355,11 @@
                         'BOPulse': arr[36].value,
                         'AllowRealOut': arr[37].value == 1 ? true : false,
                         'BOKeep': arr[38].value == 1 ? true : false,
-                        // 'PushAddToGame':arr[39].value,
                         'PushSpeed': arr[39].value,
                         'PushPulse': arr[40].value,
                         'PushLevel': arr[41].value == 1 ? true : false,
                         'PushStartInterval': arr[42].value,
                         'UseSecondPush': arr[43].value == 1 ? true : false,
-                        // 'SecondAddToGame':arr[45].value,
                         'SecondSpeed': arr[44].value,
                         'SecondPulse': arr[45].value,
                         'SecondLevel': arr[46].value == 1 ? true : false,
@@ -2390,7 +2388,7 @@
                     AreaID1 = arr[5].value;
                     State = arr[8].value;
                     PushBalanceIndex11 = arr[9].value;
-                    PushBalanceIndex2 = arr[13].value;
+                    PushBalanceIndex12 = arr[13].value;
                     OutBalanceIndex = arr[17].value;
                     ReturnCheck = arr[18].value;
                     OutsideAlertCheck = arr[19].value;

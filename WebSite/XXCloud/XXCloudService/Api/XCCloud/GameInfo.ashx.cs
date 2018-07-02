@@ -278,6 +278,7 @@ namespace XXCloudService.Api.XCCloud
                 string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
 
                 string errMsg = string.Empty;
+                string resultMsg = string.Empty;
                 string id = dicParas.ContainsKey("ID") ? (dicParas["ID"] + "") : string.Empty;
                 string gameId = dicParas.ContainsKey("gameId") ? (dicParas["gameId"] + "") : string.Empty;
                 string gameName = dicParas.ContainsKey("GameName") ? (dicParas["GameName"] + "") : string.Empty;
@@ -289,6 +290,7 @@ namespace XXCloudService.Api.XCCloud
                 string lowLimit = dicParas.ContainsKey("lowLimit") ? (dicParas["lowLimit"] + "") : string.Empty;
                 string highLimit = dicParas.ContainsKey("highLimit") ? (dicParas["highLimit"] + "") : string.Empty;
                 string[] photoURLs = dicParas.ContainsKey("photoURLs") ? (string[])dicParas["photoURLs"]: null;
+                var readCat = dicParas.Get("ReadCat").Toint();
 
                 var freeLotteryRules = dicParas.GetArray("freeLotteryRules");
 
@@ -452,6 +454,11 @@ namespace XXCloudService.Api.XCCloud
                         if (data_GameInfo.PushBalanceIndex2 > 0)
                         {
                             data_GameInfo.ReadCat = 0;
+
+                            if (readCat != 0)
+                            {
+                                resultMsg = "存在第二投币项, 自动关闭“刷卡即扣”";
+                            }                            
                         }
 
                         if (iId == 0)
@@ -574,7 +581,7 @@ namespace XXCloudService.Api.XCCloud
                         
                         ts.Complete();
 
-                        return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, new { ID = iId, GameName = data_GameInfo.GameName });
+                        return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, new { ID = iId, GameName = data_GameInfo.GameName }, resultMsg);
                     }
                     catch (DbEntityValidationException e)
                     {
@@ -603,9 +610,11 @@ namespace XXCloudService.Api.XCCloud
                 string merchId = storeId.Substring(0, 6);
 
                 string errMsg = string.Empty;
+                string resultMsg = string.Empty;
                 string id = dicParas.ContainsKey("ID") ? (dicParas["ID"] + "") : string.Empty;
                 string gameId = dicParas.ContainsKey("gameId") ? (dicParas["gameId"] + "") : string.Empty;
                 string gameName = dicParas.ContainsKey("GameName") ? (dicParas["GameName"] + "") : string.Empty;
+                var readCat = dicParas.Get("ReadCat").Toint();
 
                 #region 参数验证
                 if (string.IsNullOrEmpty(gameName))
@@ -639,7 +648,7 @@ namespace XXCloudService.Api.XCCloud
                 {
                     List<string> gameSimpleParameters = new List<string> { 
                     "PushBalanceIndex1","PushCoin1",
-                    "PushLevel", "LotteryMode", "OnlyExitLottery", "ReadCat", "ReadDelay", "chkCheckGift"
+                    "PushLevel", "LotteryMode", "OnlyExitLottery", "ReadCat", /*"ReadDelay",*/ "chkCheckGift"
                     };
 
                     foreach (var parameter in gameSimpleParameters)
@@ -652,7 +661,7 @@ namespace XXCloudService.Api.XCCloud
                 {
                     List<string> gameAdvancedParameters = new List<string> { 
                     "PushBalanceIndex1","PushCoin1", "OutMode",
-                    "ReturnCheck","OutsideAlertCheck","ICTicketOperation","NotGiveBack","LotteryMode","OnlyExitLottery","chkCheckGift","AllowElecPush","GuardConvertCard","ReadCat","ReadDelay","AllowRealPush","BanOccupy","StrongGuardConvertCard",
+                    "ReturnCheck","OutsideAlertCheck","ICTicketOperation","NotGiveBack","LotteryMode","OnlyExitLottery","chkCheckGift","AllowElecPush","GuardConvertCard","ReadCat",/*"ReadDelay",*/"AllowRealPush","BanOccupy","StrongGuardConvertCard",
                     "AllowElecOut","NowExit","BOLock","AllowRealOut","BOKeep","PushSpeed","PushPulse","PushLevel","PushStartInterval","UseSecondPush","SecondSpeed","OutBalanceIndex",
                     "SecondPulse","SecondLevel","SecondStartInterval","OutSpeed","OutPulse","CountLevel","OutLevel","OutReduceFromGame","OutAddToCard","OnceOutLimit","OncePureOutLimit","ExceptOutTest","ExceptOutSpeed","Frequency"
                     };
@@ -733,6 +742,11 @@ namespace XXCloudService.Api.XCCloud
                         if (data_GameInfo.PushBalanceIndex2 > 0)
                         {
                             data_GameInfo.ReadCat = 0;
+
+                            if (readCat != 0)
+                            {
+                                resultMsg = "存在第二投币项, 自动关闭“刷卡即扣”";
+                            }
                         }
 
                         if (iId == 0)
@@ -763,7 +777,7 @@ namespace XXCloudService.Api.XCCloud
 
                         ts.Complete();
 
-                        return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, new { ID = iId, GameName = data_GameInfo.GameName });
+                        return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, new { ID = iId, GameName = data_GameInfo.GameName }, resultMsg);
                     }
                     catch (DbEntityValidationException e)
                     {
