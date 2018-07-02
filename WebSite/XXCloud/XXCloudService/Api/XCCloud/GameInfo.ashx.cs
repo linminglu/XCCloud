@@ -348,7 +348,9 @@ namespace XXCloudService.Api.XCCloud
                 {
                     List<string> gameSimpleParameters = new List<string> { 
                     "PushBalanceIndex1","PushCoin1",
-                    "PushLevel", "LotteryMode", "OnlyExitLottery", "ReadCat", "ReadDelay", "chkCheckGift"
+                    "PushLevel", "LotteryMode", "OnlyExitLottery", "ReadCat", 
+                    //"ReadDelay", 
+                    "chkCheckGift"
                     };
 
                     foreach (var parameter in gameSimpleParameters)
@@ -361,7 +363,9 @@ namespace XXCloudService.Api.XCCloud
                 {
                     List<string> gameAdvancedParameters = new List<string> { 
                     "PushBalanceIndex1","PushCoin1", "OutMode",
-                    "ReturnCheck","OutsideAlertCheck","ICTicketOperation","NotGiveBack","LotteryMode","OnlyExitLottery","chkCheckGift","AllowElecPush","GuardConvertCard","ReadCat","ReadDelay","AllowRealPush","BanOccupy","StrongGuardConvertCard",
+                    "ReturnCheck","OutsideAlertCheck","ICTicketOperation","NotGiveBack","LotteryMode","OnlyExitLottery","chkCheckGift","AllowElecPush","GuardConvertCard","ReadCat",
+                    //"ReadDelay",
+                    "AllowRealPush","BanOccupy","StrongGuardConvertCard",
                     "AllowElecOut","NowExit","BOLock","AllowRealOut","BOKeep","PushSpeed","PushPulse","PushLevel","PushStartInterval","UseSecondPush","SecondSpeed","OutBalanceIndex",
                     "SecondPulse","SecondLevel","SecondStartInterval","OutSpeed","OutPulse","CountLevel","OutLevel","OutReduceFromGame","OutAddToCard","OnceOutLimit","OncePureOutLimit","ExceptOutTest","ExceptOutSpeed","Frequency"
                     };

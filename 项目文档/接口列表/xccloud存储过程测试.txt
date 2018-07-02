@@ -4,6 +4,56 @@
 ----------------------------------------------------------------------------------------------------------------------------------------
 
 ----------------------------------------------------------------------------------------------------------------------------------------
+
+declare @ExitFee decimal(18,2) = 0
+declare @ErrMsg varchar(200)
+declare @GetQuickFood int = 0
+declare @MemberLevelId int = 0
+declare @Mobile varchar(11) = ''
+declare @FoodId int = 0
+declare @FlwOrderId varchar(32) = '20180630300635577100025420106001'
+declare @OrderFoodSaleDetailList [FoodSaleDetailListType]
+insert into @OrderFoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(1,0,1,0,1/2.0)
+insert into @OrderFoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(3,0,2,0,10/2.0)
+insert into @OrderFoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(1,1,1,0,20)
+insert into @OrderFoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(4,2,1,0,30)
+declare @ExitFood ExitFoodType
+insert @ExitFood(Category,FoodId,FoodCount) values(0,1,1)
+declare @GetExitFood int = 0
+exec @GetExitFood = GetExitFood '100025','100025420106001',@FlwOrderId,@ExitFood,@ExitFee output,@ErrMsg output
+print @GetExitFood
+print @ExitFee
+print @ErrMsg
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+declare @ExitFee decimal(18,2) = 0
+declare @ErrMsg varchar(200)
+declare @GetQuickFood int = 0
+declare @MemberLevelId int = 0
+declare @Mobile varchar(11) = ''
+declare @FoodId int = 0
+
+declare @OrderFoodSaleDetailList [FoodSaleDetailListType]
+insert into @OrderFoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(1,0,1,0,1/2.0)
+insert into @OrderFoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(3,0,2,0,10/2.0)
+insert into @OrderFoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(1,1,1,0,20)
+insert into @OrderFoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(4,2,1,0,30)
+
+declare @ExitFood ExitFoodType
+insert @ExitFood(Category,FoodId,FoodCount) values(0,1,1)
+
+declare @GetExitFood int = 0
+exec @GetExitFood = GetExitFood '100025','100025420106001',10,@OrderFoodSaleDetailList,@ExitFood,@ExitFee output,@ErrMsg output
+print @GetExitFood
+print @ExitFee
+print @ErrMsg
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------------------------------------------
 declare @Result int
 declare @ErrMsg varchar(200) = ''
 declare @MCUId varchar(20) = ''  

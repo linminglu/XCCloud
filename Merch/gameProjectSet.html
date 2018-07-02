@@ -543,7 +543,10 @@
         });
        
         $('#setRuleBtn').on('click',function(){
-            PushBalanceIndex1=''; PushBalanceIndex2=''; ReadCat=1; PushLevel=1;
+            if(id==''){
+                PushBalanceIndex1=''; PushBalanceIndex2=''; ReadCat=1; PushLevel=1;
+            }
+console.log(ReadCat)
            index3=layer.open({
                title:'计次规则',
                type:1,
@@ -606,6 +609,7 @@
                     data: {parasJson: parseJson},
                     success: function (data) {
                         data = JSON.parse(data);
+                        console.log(data)
                         if (data.result_code == 1) {
                             // addOrModi=false;
                             let arr;
@@ -637,12 +641,28 @@
                             $('input[name="PushCoin1"]').val(arr.PushCoin1);
 
                             $('input[name="PushCoin2"]').val(arr.PushCoin2);
+                            if(arr.AdjOrder==1){
+                                $('input[name="AdjOrder"]').attr({'checked':true})
+                            }else {
+                                $('input[name="AdjOrder"]').attr({'checked':false})
+                                  }
+                            if(arr.ForceUse==1){
+                                $('input[name="ForceUse"]').attr({'checked':true})
+                            }else {
+                                $('input[name="ForceUse"]').attr({'checked':false})
+                            }
+                            if(arr.LockCard==1){
+                                $('input[name="LockCard"]').attr({'checked':true})
+                            }else {
+                                $('input[name="LockCard"]').attr({'checked':false})
+                            }
 
                             if(arr.ReadCat==1){
                                 $('input[name="ReadCat"]').attr({'checked':true})
                             }else {
                                 $('input[name="ReadCat"]').attr({'checked':false})
                             }
+
                             if(arr.PushLevel==1){
                                 $('input[name="PushLevel"]').attr({'checked':true})
                             }else {

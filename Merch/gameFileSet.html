@@ -1386,11 +1386,11 @@
         form.on('select(ePushBalanceIndex1)', (data) => {
             ePushBalanceIndex1 = data.value;
         });
-        form.on('switch(PushLevel)', (data) => {
+        form.on('switch(PushLevel1)', (data) => {
             if (data.elem.checked == true) {
-                ePushLevel = 1;
+                PushLevel = 1;
             } else {
-                ePushLevel = 0;
+                PushLevel = 0;
             }
         });
         form.on('switch(LotteryModeLow)', (data) => {
@@ -1517,9 +1517,9 @@
         });
         form.on('switch(PushLevel)', (data) => {
             if (data.elem.checked == true) {
-                PushLevel = 1
+                ePushLevel = 1
             } else {
-                PushLevel = 0
+                ePushLevel = 0
             }
         });
         form.on('switch(UseSecondPush)', (data) => {

@@ -239,6 +239,13 @@ namespace XCCloudService.Api.XCCloud
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
                     }
 
+                    int workStationId = 0;
+                    if (!WorkStationBusiness.GetWorkStation(userModel.MerchID, userModel.StoreID, workStation, out workStationId, out errMsg))
+                    {
+                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
+                    }
+                    
+
                     var storeId = userModel.StoreID;
                     IBase_StoreInfoService base_StoreInfoService = BLLContainer.Resolve<IBase_StoreInfoService>();
                     if (!base_StoreInfoService.Any(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)))
@@ -248,7 +255,7 @@ namespace XCCloudService.Api.XCCloud
                     var base_StoreInfoModel = base_StoreInfoService.GetModels(p => p.StoreID.Equals(userModel.StoreID, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
 
                     //设置用户token
-                    TokenDataModel TokenDataModel = new TokenDataModel(userModel.MerchID,userModel.StoreID, password, workStation,userModel.UserID);
+                    TokenDataModel TokenDataModel = new TokenDataModel(userModel.MerchID, userModel.StoreID, password, workStation, userModel.UserID, workStationId);
                     XCCloudUserTokenBusiness.RemoveStoreUserTokenByWorkStaion(userModel.UserID.ToString(), workStation);
                     string userToken = XCCloudUserTokenBusiness.SetUserToken(userModel.UserID.ToString(), (int)RoleType.StoreUser, TokenDataModel);
 

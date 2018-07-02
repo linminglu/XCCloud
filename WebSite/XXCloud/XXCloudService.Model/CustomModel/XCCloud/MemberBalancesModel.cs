@@ -285,4 +285,34 @@ namespace XCCloudService.Model.CustomModel.XCCloud
             }
         } }
     }
+
+    [DataContract]
+    public class MemberFreeModel
+    {
+        public MemberFreeModel()
+        {
+            this.RemainFrees = string.Empty;
+            this.FreeDetails = new List<FreeDetailModel>();
+        }
+        [DataMember(Order = 1)]
+        public string Title { get; set; }
+        [DataMember(Order = 2)]
+        public string FreeCoinName { get; set; }
+        [DataMember(Order = 3)]
+        public string Content { get; set; }
+        [DataMember(Order = 3)]
+        public int RemainCount { get; set; }
+        [DataMember(Order = 3)]
+        public string RemainFrees { get; set; }
+        [DataMember(Order = 4)]
+        public string EndDate { get; set; }
+        public List<FreeDetailModel> FreeDetails { get; set; }
+    }
+    public class FreeDetailModel
+    {
+        public int BalanceIndex { get; set; }
+        public string BalanceName { get; set; }
+        public int Quantity { get; set; }
+        public int IsDeviceOut { get; set; }
+    }
 }

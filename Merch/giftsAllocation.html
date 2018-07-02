@@ -48,6 +48,11 @@
     /*.tableWithoutHead .layui-table-header {*/
     /*display: none;*/
     /*}*/
+    .layui-table td{
+        border-width:6px;
+        border-left: none;
+        border-right: none;
+    }
 </style>
 <body>
     <div class="layui-row">
@@ -296,35 +301,88 @@
         </form>
         <table id="detailTable" lay-filter="detailTable" class="layui-hide"></table>
     </div>
+    <!--调拨退货-->
+    <div id="backGoods" style="display: none;padding: 15px">
+        <form action="" class="layui-form layui-form-pane">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">入库仓库</label>
+                    <div class="layui-input-inline" id="backBox">
+                        <select name="inDepot" lay-filter="inDepot"  id="backDepot"></select>
+                    </div>
+                    <div class="layui-input-inline" id="backBox1">
+                        <input type="text" class="layui-input" readonly id="backDepot1">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">调拨方式</label>
+                    <div class="layui-input-inline">
+                        <input type="text" class="layui-input" readonly id="backWay">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">调配门店</label>
+                    <div class="layui-input-inline">
+                        <input type="text" class="layui-input" readonly id="backStore">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">调配原因</label>
+                <div class="layui-input-block">
+                    <input type="text" class="layui-input" readonly id="backReason">
+                </div>
+            </div>
+        </form>
+        <table id="backTable" lay-filter="inDealTable" class="layui-hide"></table>
+        <div style="text-align:center;">
+            <button type="button" class="layui-btn layui-btn-normal" id="saveBack">确定</button>
+        </div>
+
+    </div>
 </body>
 <script src="js/jquery-1.8.3-min.js"></script>
 <script src="layui/layui.js"></script>
 <script src="js/storeSystem.js"></script>
 <script type="text/html" id="barDemo">
-    {{# if(JSON.stringify(d.PermittedTriggers).indexOf('1')!=-1){ }}
+    {{# let arr=d.PermittedTriggers }}
+    {{# for(let i in arr){ }}
+
+    {{# if(arr[i]==1){ }}
     <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="Request">调拨申请</a>
     {{#  } }}
-    {{# if(JSON.stringify(d.PermittedTriggers).indexOf('2')!=-1){ }}
+    {{# if(arr[i]==2){ }}
     <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="RequestVerify">申请审核</a>
     {{#  } }}
-    {{# if(JSON.stringify(d.PermittedTriggers).indexOf('3')!=-1){ }}
+    {{# if(arr[i]==3){ }}
     <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="SendDeal">调拨出库</a>
     {{#  } }}
-    {{# if(JSON.stringify(d.PermittedTriggers).indexOf('4')!=-1){ }}
+    {{# if(arr[i]==4){ }}
     <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="SendDealVerify">出库审核</a>
     {{#  } }}
-    {{# if(JSON.stringify(d.PermittedTriggers).indexOf('5')!=-1){ }}
+    {{# if(arr[i]==5){ }}
     <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="RequestDeal">调拨入库</a>
     {{#  } }}
-    {{# if(JSON.stringify(d.PermittedTriggers).indexOf('6')!=-1){ }}
-    <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="RequestDealVerify">入库审核</a>
+    {{# if(arr[i]==6){ }}
+    <a class="layui-btn layui-btn-xs  layui-btn-warm" lay-event="RequestDealVerify">入库审核</a>
     {{#  } }}
-    {{# if(JSON.stringify(d.PermittedTriggers).indexOf('7')!=-1){ }}
+    {{# if(arr[i]==7){ }}
     <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="Cancel">撤销</a>
     {{#  } }}
-    {{# if(JSON.stringify(d.PermittedTriggers).indexOf('8')!=-1){ }}
+    {{# if(arr[i]==8){ }}
     <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="Close">流程关闭</a>
     {{#  } }}
+    {{# if(arr[i]==9){ }}
+    <a class="layui-btn layui-btn-xs layui-btn-warm" lay-event="RequestExit">调拨退货</a>
+    {{#  } }}
+    {{# if(arr[i]==10){ }}
+    <a class="layui-btn layui-btn-xs  layui-btn-danger" lay-event="del">删除</a>
+    {{#  } }}
+
+    {{# } }}
+
+
+
     <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="details">详情</a>
 
 </script>
@@ -670,15 +728,15 @@
                                     form.render();
                                 }
                             });
-                            $('#applyDepot').val(_data.InStoreName);
+                            $('#applyDepot').val(_data.InDepotName);
                             $('#applyWay').val(_data.RequstTypeStr);
                             $('#applyStore').val(_data.OutStoreName);
                             $('#applyReason').val(_data.RequestReason);
                              OutDepotId=data.result_data.OutDepotID||'';
-                              InDepotId=data.result_data.InDepotID||'';
+                             InDepotId=data.result_data.InDepotID||'';
                              OutStoreId=data.result_data.OutStoreID||'';
                              InStoreId=data.result_data.InStoreID||'';
-                            requestId=data.result_data.ID;
+                             requestId=data.result_data.ID;
                             xc.setSelect('物流公司','logisticsCompany');
                             layer.open({
                                 title:'调拨出库',
@@ -692,17 +750,72 @@
                     }
 
                 });
-            }else if(layevent==='SendDealVerify'){//调拨出库审核
-                checkStatus='out';
-                checkState=0;
-                $('#checkState').attr({'checked':false});
-                form.render();
-                layer.open({
-                    title:'调拨出库审核',
-                    type:1,
-                    area:'700px',
-                    content:$('#checkModel')
-                })
+            }else if(layevent==='RequestExit'){//调拨退货
+                let _obj={
+                    'requestId':requestId, 'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                let url='/XCCloud/GoodsInfo?action=GoodRequestExit';
+                let parasJson = JSON.stringify(_obj);
+                $.ajax({
+                    type: "post",
+                    url: url,
+                    contentType: "application/json; charset=utf-8",
+                    data: { parasJson: parasJson },
+                    success: function (data) {
+                        data=JSON.parse(data);
+                        console.log('weew')
+                        if(data.result_code==1){
+                            // let arr=data.result_data.GoodRequestDetails;
+                            // table.render({
+                            //     elem: '#inDealTable'
+                            //     , height:'300px'
+                            //     , size:"sm"
+                            //     , data: arr
+                            //     , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+                            //     , cols: [[
+                            //         {type:'checkbox',fixed: 'left'} ,
+                            //         {field:'ID', title: '调拨ID', align: 'center',width:100}
+                            //         ,{field:'GoodID', title: '商品ID', align: 'center',width:100}
+                            //         , {field:'Barcode', title:'商品条码', align: 'center',width:170}
+                            //         ,{field:'GoodName',title: '商品类别', align: 'center',width:120} //width 支持：数字、百分比和不填写。
+                            //         ,{field:'GoodTypeStr', title: '商品类别', align: 'center',width:100}
+                            //         ,{field:'RequestCount', title: '申请数量', align: 'center',width:100}
+                            //         ,{field:'SendCount', title: '实发数量', align: 'center',width:100}
+                            //         ,{field:'StorageCount', title: '入库数量', align: 'center',edit:true,width:100}
+                            //         ,{field:'CostPrice', title: '含税单价', align: 'center'}
+                            //         ,{field:'Tax', title: '税率', align: 'center'}
+                            //     ]]
+                            //     , page: {page: true, limits: [10, 15, 20, 30, 50, 100]}
+                            //     , limit: 10
+                            // });
+                            // OutDepotId=data.result_data.OutDepotID||'';
+                            // InDepotId=data.result_data.InDepotID||'';
+                            // OutStoreId=data.result_data.OutStoreID||'';
+                            // InStoreId=data.result_data.InStoreID||'';
+                            // if(data.result_data.RequstType==2){
+                            //     $('#inDepotBox').removeClass('layui-hide');
+                            //     $('#inDepot1Box').addClass('layui-hide');
+                            //     xc.getDepotDic('','',token,layer,form,'inDepot');
+                            //     inDepot='';
+                            // }else {
+                            //     $('#inDepot1').val(_data.InDepotName);
+                            //     $('#inDepot1Box').removeClass('layui-hide');
+                            //     $('#inDepotBox').addClass('layui-hide');
+                            //     inDepot=InDepotId;
+                            // }
+                            // $('#inWay').val(_data.RequstTypeStr);
+                            // $('#inStore').val(_data.InStoreName);
+                            // $('#inReason').val(_data.RequestReason);
+                            // layer.open({
+                            //     title:'调拨入库',
+                            //     type:1,
+                            //     area:'1000px',
+                            //     content:$('#inModel')
+                            // })
+                        }else {
+                            layer.msg(data.result_msg||data.return_msg)
+                        }
+                    }
+                });
             }else if(layevent==='RequestDeal'){//调拨入库
                 let _obj={
                     'requestId':requestId, 'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
@@ -769,18 +882,39 @@
                     }
                 });
             }else if(layevent==='RequestDealVerify'){//调拨入库审核
-                checkStatus='in';
-                checkState=0;
-                $('#checkState').attr({'checked':false});
-                form.render();
-                layer.open({
-                    title:'调拨入库审核',
-                    type:1,
-                    area:'700px',
-                    content:$('#checkModel')
-                })
+                // checkStatus='in';
+                // checkState=0;
+                // $('#checkState').attr({'checked':false});
+                // form.render();
+                // layer.open({
+                //     title:'调拨入库审核',
+                //     type:1,
+                //     area:'700px',
+                //     content:$('#checkModel')
+                // })
             }else if(layevent==='Cancel'){//撤销
-
+                layer.confirm('是否确定撤销该流程', function(index){
+                    var _obj={'requestID':requestId,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                    var url='/XCCloud/GoodsInfo?action=GoodRequestCancel';
+                    let parseJson = JSON.stringify(_obj);
+                    $.ajax({
+                        type: "post",
+                        url: url,
+                        contentType: "application/json; charset=utf-8",
+                        data: {parasJson: parseJson},
+                        success: function (data) {
+                            data = JSON.parse(data);
+                            console.log(data);
+                            if (data.result_code == 1) {
+                                layer.msg('撤销成功！',{time:1500},function () {
+                                    location.reload()
+                                });
+                            } else {
+                                layer.msg(data.result_msg||data.return_msg);
+                            }
+                        }
+                    })
+                });
             }else if(layevent==='Close'){//调拨流程关闭
                 layer.confirm('是否确定关闭该流程', function(index){
                     var _obj={'requestID':requestId,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
@@ -860,6 +994,29 @@
                             layer.msg(data.result_msg||data.return_msg)
                         }
                     }
+                });
+            }else if(layevent==='del'){
+                layer.confirm('是否确定删除该流程', function(index){
+                    var _obj={'requestID':requestId,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                    var url='/XCCloud/GoodsInfo?action=DelGoodRequest';
+                    let parseJson = JSON.stringify(_obj);
+                    $.ajax({
+                        type: "post",
+                        url: url,
+                        contentType: "application/json; charset=utf-8",
+                        data: {parasJson: parseJson},
+                        success: function (data) {
+                            data = JSON.parse(data);
+                            console.log(data);
+                            if (data.result_code == 1) {
+                                layer.msg('删除成功！',{time:1500},function () {
+                                    location.reload()
+                                });
+                            } else {
+                                layer.msg(data.result_msg||data.return_msg);
+                            }
+                        }
+                    })
                 });
             }
         });

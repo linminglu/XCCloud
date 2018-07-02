@@ -140,20 +140,20 @@
             }
         });
         //导出
-        table.on('tool(stockInventory)',function (obj) {
-            let _data=obj.data;
-            let layEvent=obj.event;
-            goodId=_data.GoodID;
-            id=_data.ID;
-            if(layEvent==='check'){
-                layer.open({
-                    title:"商品:"+_data.GoodName+"盘点",
-                    type:1,
-                    area:'600px',
-                    content:$('#openModel')
-                })
-            }
-        });
+        // table.on('tool(stockInventory)',function (obj) {
+        //     let _data=obj.data;
+        //     let layEvent=obj.event;
+        //     goodId=_data.GoodID;
+        //     id=_data.ID;
+        //     if(layEvent==='check'){
+        //         layer.open({
+        //             title:"商品:"+_data.GoodName+"盘点",
+        //             type:1,
+        //             area:'600px',
+        //             content:$('#openModel')
+        //         })
+        //     }
+        // });
         table.on('checkbox(stockInventory)', function(obj){
             if (obj.type == "all") {
 
@@ -195,28 +195,28 @@
             }
 
         })
-        $('#saveInventory').on('click',function(){
-            var  obj={"goodsInventoryList":[{'id':id,'goodId':goodId,'depotId':depotList,'inventoryCount':$('#inventoryCount').val()}],
-                "userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
-            var url="/XCCloud/GoodsInfo?action=SaveGoodsInventory";
-            var parasJson = JSON.stringify(obj);
-            $.ajax({
-                type: "post",
-                url: url,
-                contentType: "application/json; charset=utf-8",
-                data: {parasJson: parasJson},
-                success: function (data) {
-                    data = JSON.parse(data);
-                    if (data.result_code == "1") {
-                        layer.msg('盘点完成',{time:1500},function(){
-                            location.reload();
-                        })
-                    } else {
-                        layer.msg(data.result_msg || data.return_msg);
-                    }
-                }
-            })
-        })
+        // $('#saveInventory').on('click',function(){
+        //     var  obj={"goodsInventoryList":[{'id':id,'goodId':goodId,'depotId':depotList,'inventoryCount':$('#inventoryCount').val()}],
+        //         "userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
+        //     var url="/XCCloud/GoodsInfo?action=SaveGoodsInventory";
+        //     var parasJson = JSON.stringify(obj);
+        //     $.ajax({
+        //         type: "post",
+        //         url: url,
+        //         contentType: "application/json; charset=utf-8",
+        //         data: {parasJson: parasJson},
+        //         success: function (data) {
+        //             data = JSON.parse(data);
+        //             if (data.result_code == "1") {
+        //                 layer.msg('盘点完成',{time:1500},function(){
+        //                     location.reload();
+        //                 })
+        //             } else {
+        //                 layer.msg(data.result_msg || data.return_msg);
+        //             }
+        //         }
+        //     })
+        // })
     });
     function initTable(table,arr) {
         table.render({
@@ -225,9 +225,10 @@
             , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
             , cols: [[
                  {type:'checkbox'} ,
-                {field: 'ID', title: '流水号', align: 'center'}
-                , {field: 'GoodID', title: '商品ID', align: 'center'}
-                , {field: 'Barcode', title: '商品条码', align: 'center'}
+                // {field: 'ID', title: '流水号', align: 'center'}
+                // , {field: 'GoodID', title: '商品ID', align: 'center'}
+                // ,
+                {field: 'Barcode', title: '商品条码', align: 'center'}
                 , {field: 'GoodTypeStr', title: '商品类型', align: 'center'}
                 , {field: 'GoodName', title: '商品名称', align: 'center'}
                 , {field: 'Source', title: '添加来源', align: 'center',templet:'#charge'}
@@ -245,17 +246,15 @@
                 , {field: 'ErrorCount', title: '误差数量', align: 'center'}
                 , {field: 'ErrorTotal', title: '误差金额', align: 'center'}
                 , {field: 'ErrorRate', title: '误差率', align: 'center'}
-                ,{fixed: 'right',title: '操作', width:140, align:'center', toolbar: '#barDemo'}]]
+                // ,{fixed: 'right',title: '操作', width:140, align:'center', toolbar: '#barDemo'}
+                ]]
             , page: {page: true, limits: [10, 15, 20, 30, 50, 100]}
             , limit: 10
-            ,done:function(){
-                $('thead th[data-field="GoodID"]').css({'display':'none'});
-                $('tbody td[data-field="GoodID"]').css({'display':'none'});
-            }
+
         })
     }
 </script>
 <script type="text/html" id="barDemo">
-    <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="check">盘点</a>
+    <!--<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="check">盘点</a>-->
 </script>
 </html>

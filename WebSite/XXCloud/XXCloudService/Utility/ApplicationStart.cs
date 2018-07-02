@@ -32,14 +32,14 @@ namespace XCCloudService.Utility
                 //TestInit();
                 //TCPSocketInit(); 
                 UDPSocketInit(); 
-                //StoreInit(); //redis
+                StoreInit(); //redis
                 //StoreDogInit();
                 //MibleTokenInit(); //redis
                 //MemberTokenInit();//redis
                 //RS232MibleTokenInit();//redis
                 XCCloudUserInit();//redis
                 //XCGameManaDeviceInit();
-                //XCCloudManaUserInit();//redis
+                XCCloudManaUserInit();//redis
                 FilterMobileInit();
                 //XinchenPayInit(); 
             }

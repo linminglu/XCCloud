@@ -49,5 +49,23 @@ namespace XCCloudService.Business.XCCloud
                 return true;
             }
         }
+
+
+        public static bool GetWorkStation(string merchId, string storeId, string workStation, out int workStationId, out string errMsg)
+        {
+            errMsg = string.Empty;
+            workStationId = 0;
+            IData_WorkstationService workstationService = BLLContainer.Resolve<IData_WorkstationService>();
+            var model = workstationService.GetModels(p => p.MerchID.Equals(merchId) && p.StoreID.Equals(storeId) && p.WorkStation.Equals(workStation) && p.State == 1).ToList<Data_Workstation>()[0];
+            if (model == null)
+            {
+                workStationId = model.ID;
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
     }
 }

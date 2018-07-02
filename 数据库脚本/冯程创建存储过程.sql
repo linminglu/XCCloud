@@ -168,12 +168,14 @@ begin
 		insert into #MENU
 		select distinct a.FunctionID
 		from Dict_FunctionMenu a 
-		left join (select b.MerchID,c.FunctionID,c.FunctionEN from Base_MerchantInfo a 
-					inner join Base_MerchantInfo b on a.MerchID=b.CreateUserID
-					inner join Base_MerchFunction c on a.MerchID=c.MerchID where a.MerchType=3
-					) b on a.FunctionID=b.FunctionID and b.MerchID=@MerchID
-		left join Base_MerchFunction c on a.FunctionID=c.FunctionID and c.MerchID=@MerchID 
-		where a.MenuType = 1 and a.UseType in (0, @StoreTag) and (c.FunctionEN=1 or b.FunctionEN=1)
+		--left join (select b.MerchID,c.FunctionID,c.FunctionEN from Base_MerchantInfo a 
+		--			inner join Base_MerchantInfo b on a.MerchID=b.CreateUserID
+		--			inner join Base_MerchFunction c on a.MerchID=c.MerchID where a.MerchType=3
+		--			) b on a.FunctionID=b.FunctionID and b.MerchID=@MerchID
+		--left join Base_MerchFunction c on a.FunctionID=c.FunctionID and c.MerchID=@MerchID 
+		left join Base_UserGroup_Grant b on a.FunctionID=b.FunctionID
+		left join Base_UserInfo c on b.GroupID=c.UserGroupID
+		where a.MenuType = 1 and a.UseType in (0, @StoreTag) and c.UserID=@LogID and b.IsAllow=1 --(c.FunctionEN=1 or b.FunctionEN=1)
 	end
 					
 	;WITH 

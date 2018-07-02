@@ -620,6 +620,21 @@
             common(url, parasJson);
         }
 
+        function do_getOrders() {
+            var parasObj = {
+                "sysId": "0",
+                "versionNo": "0.0.0.1",
+                "userToken": userToken,
+                "flwOrderId": $("#txt_FlwOrderId_do_getOrders").val(),
+                "icCardId": $("#txt_FlwOrderId_do_icCardId").val(),
+                "startDate": $("#txt_FlwOrderId_do_startDate").val(),
+                "endDate": $("#txt_FlwOrderId_do_endDate").val()
+            };
+            var url = "/XCCloud/Order?action=getOrders";
+            var parasJson = JSON.stringify(parasObj);
+            common(url, parasJson);
+        }
+
     </script>
         
 </head>
@@ -721,6 +736,12 @@
         &nbsp;&nbsp;&nbsp;&nbsp;
         订单号:<input id="txt_FlwOrderId_do_updateOrder placeholder="支付订单" style="width:250px" value="0" />
         <input id="Buttonorder_do_updateOrder" type="button" value="do_payOrder(支付订单)" onclick="do_payOrder()" /> 
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        订单号:<input id="txt_FlwOrderId_do_getOrders" placeholder="订单号" style="width:250px" value="0" />
+        ICCardId:<input id="txt_FlwOrderId_do_icCardId" placeholder=" 订单号" style="width:100px" value="10004130" />
+        开始日期:<input id="txt_FlwOrderId_do_startDate" placeholder="开始日期" style="width:100px" value="2016-01-01" />
+        结束日期:<input id="txt_FlwOrderId_do_endDate" placeholder="结束日期" style="width:100px" value="2019-01-01" />
+        <input id="Buttonorder_do_getOrders" type="button" value="do_getOrders(支付订单)" onclick="do_getOrders()" /> 
     </div>
 
     <div title="discount" style="font-size:14px;color:#F00;border:1px solid #ccc;">

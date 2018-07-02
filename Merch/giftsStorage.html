@@ -145,6 +145,7 @@
     let token = xc.getStorage('token');
     let merchId = JSON.parse(xc.getStorage('logMsg')).MerchID;
     let storeId = JSON.parse(xc.getStorage('logMsg')).StoreID;
+    let LogType=JSON.parse(xc.getStorage('logMsg')).logType;
     let cols = [
         {field: 'ID', title: '入库流水号', align: 'center', sort: true}
         , {field: 'StoreName', title: '入库门店', align: 'center', sort: true}
@@ -186,6 +187,14 @@
         });
         //新增入库记录
         $('#add').on('click', function () {
+             storageGood = [];
+             index;
+             id = '';
+             inDepot = '';
+            //退货申请单
+             arrBack = [];
+             exitDetails = [];
+             _sourceOrderIndex='';
             xc.getDepotDic(merchId, storeId, token, layer, form, 'inDepot');
             xc.getGoodSupplierDic(token, layer, form, 'Supplier');
             newFoodLevelTable(table, storageGood, layer, form);
@@ -356,13 +365,14 @@
                                     'GoodTypeStr': arr[i].GoodTypeStr,
                                     'RemainCount': arr[i].RemainCount,
                                     'StorageCount': arr[i].StorageCount,
+                                    'ExitedCount':arr[i].ExitedCount,
                                     'ExitPrice': arr[i].Price,
                                     'ExitCount': '',
                                     'ExitAll': ''
                                 })
                             }
                             newBackGoodTable(table, arrBack);
-                            $('#backGood .layui-input').find('input').val('')
+                            $('#backGood .layui-input').find('input').val('');
                             index = layer.open({
                                 title: '退货信息',
                                 type: 1,
@@ -567,6 +577,7 @@
                 , {field: 'RemainCount', title: '当前库存', align: 'center', width: 90}
                 , {field: 'StorageCount', title: '入库数量', align: 'center', width: 90}
                 , {field: 'ExitPrice', title: '入库单价', align: 'center', width: 90}
+                , {field: 'ExitedCount', title: '已退货', align: 'center', width: 90}
                 , {field: 'ExitCount', title: '退货数量', align: 'center', edit: true, width: 90}
                 , {field: 'ExitAll', title: '退货金额', align: 'center', width: 90}
                 , {fixed: 'right', title: '操作', width: 140, align: 'center', toolbar: '#barDemo2'}
@@ -581,9 +592,9 @@
     <a class="layui-btn layui-btn-xs" lay-event="check"> <i class="layui-icon">&#xe642;</i>审核</a>
     {{#  } else if(d.AuthorFlag==1){ }}
     <a class="layui-btn layui-btn-xs" lay-event="back"> <i class="layui-icon">&#xe642;</i>退货</a>
-    <a class="layui-btn layui-btn-xs" lay-event="cancel"> <i class="layui-icon">&#xe642;</i>撤销</a>
+    <a class="layui-btn layui-btn-xs layui-btn-warm" lay-event="cancel"> <i class="layui-icon">&#xe642;</i>撤销</a>
     {{# } }}
-    <a class="layui-btn layui-btn-xs" lay-event="del"> <i class="layui-icon">&#xe642;</i>删除</a>
+    <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del"> <i class="layui-icon">&#xe642;</i>删除</a>
 
 </script>
 <script type="text/html" id="barDemo1">

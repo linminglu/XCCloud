@@ -1146,6 +1146,11 @@ namespace XCCloudService.Common.Enum
         /// </summary>
         [Description("调拨退货")]
         RequestExit = 9,
+        /// <summary>
+        /// 删除
+        /// </summary>
+        [Description("删除")]
+        Delete = 10,
     }
     /// <summary>
     /// 工作流状态
@@ -1211,7 +1216,12 @@ namespace XCCloudService.Common.Enum
         /// 调拨已退货
         /// </summary>
         [Description("调拨已退货")]
-        RequestExited = 11
+        RequestExited = 11,
+        /// <summary>
+        /// 调拨申请单已删除
+        /// </summary>
+        [Description("调拨申请单已删除")]
+        RequestDeleted = 12
     }
 
     /// <summary>

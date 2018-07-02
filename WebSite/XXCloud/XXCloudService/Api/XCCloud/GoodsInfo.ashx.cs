@@ -313,7 +313,7 @@ namespace XXCloudService.Api.XCCloud
                                     //    (operateTypei == 0 && Base_Goodinfo_PriceService.I.Any(a => a.OperateTypei == 1 && a.BalanceIndex == balanceIndex && a.Count > count)))
                                     if (count0 <= count1)
                                     {
-                                        errMsg = "同一余额类别，回购价不能大于兑换价";
+                                        errMsg = "回购价必须小于兑换价";
                                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                                     }
 
@@ -2140,19 +2140,16 @@ namespace XXCloudService.Api.XCCloud
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 
-                        //工作流更新
-                        var wf = new GoodReqWorkFlow(requestId, userId, logType, storeId);
-                        if (wf.State != State.Requested)
-                        {
-                            errMsg = "该调拨单不能删除，只有调拨申请未审核的调拨单才能删除";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
-
                         if (Data_GoodStock_RecordService.I.Any(a => a.SourceType == (int)SourceType.GoodRequest && a.SourceID == requestId))
                         {
                             errMsg = "该调拨单存在出入库信息不能删除";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
+                        
+                        //工作流更新
+                        var wf = new GoodReqWorkFlow(requestId, userId, logType, storeId);
+                        if (!wf.Delete(out errMsg))
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
                         //删除调拨明细
                         var requestModel = Data_GoodRequestService.I.GetModels(p => p.ID == requestId).FirstOrDefault();
@@ -2339,7 +2336,17 @@ namespace XXCloudService.Api.XCCloud
                                         join b in Base_GoodsInfoService.N.GetModels() on a.GoodID equals b.ID
                                         join c in Dict_SystemService.N.GetModels() on b.GoodType equals c.ID
                                         join d in Data_GoodStorageService.N.GetModels(p => p.ID == id) on a.StorageOrderID equals d.StorageOrderID
-                                        join e in Data_GoodsStockService.N.GetModels(p => p.StockType == (int)StockType.Depot) on new { DepotID = d.DepotID, a.GoodID } equals new { DepotID = e.StockIndex, e.GoodID }
+                                        join e in
+                                            (
+                                                from a in Data_GoodsStockService.N.GetModels(p => p.StockType == (int)StockType.Depot)
+                                                group a by new { a.StockIndex, a.GoodID } into g
+                                                select new
+                                                {
+                                                    DepotID = g.Key.StockIndex,
+                                                    GoodID = g.Key.GoodID,
+                                                    RemainCount = g.OrderByDescending(or => or.InitialTime).FirstOrDefault().RemainCount ?? 0
+                                                }
+                                            ) on new { d.DepotID, a.GoodID } equals new { e.DepotID, e.GoodID }
                                         join f in
                                             (
                                                 from a in Data_GoodExitInfoService.N.GetModels(p => p.SourceType == (int)GoodExitSourceType.GoodStorage && p.SourceOrderID.Equals(storageOrderId, StringComparison.OrdinalIgnoreCase))
@@ -2358,7 +2365,7 @@ namespace XXCloudService.Api.XCCloud
                                             BarCode = b.Barcode,
                                             GoodName = b.GoodName,
                                             GoodTypeStr = c.DictKey,
-                                            RemainCount = e.RemainCount ?? 0,
+                                            RemainCount = e.RemainCount,
                                             StorageCount = a.StorageCount,
                                             ExitedCount = f != null ? f.ExitedCount : 0,
                                             Price = a.Price,
@@ -4330,7 +4337,7 @@ namespace XXCloudService.Api.XCCloud
                                 	/*商品名称*/
                                 	c.GoodName,   
                                     /*商品来源*/
-                                    ISNULL(e.StoreName, '总店') AS Source,                             	
+                                    ISNULL(s.StoreName, '总店') AS Source,                             	
                                 	/*商品类别*/
                                 	c.GoodType AS GoodType,
                                 	/*商品类别[字符串]*/

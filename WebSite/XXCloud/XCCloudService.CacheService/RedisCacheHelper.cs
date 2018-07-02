@@ -43,7 +43,7 @@ namespace XCCloudService.CacheService
                 }
 
                 int currIndex = Convert.ToInt32(currNo);
-                currIndex += 500000;                
+                currIndex += 500000;
 
                 string serialNo = storeId + date + currIndex.ToString().PadLeft(6, '0');
                 if (!isProc)

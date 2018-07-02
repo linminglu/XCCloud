@@ -32,6 +32,71 @@ namespace XXCloudService.Api.XCCloud
     /// </summary>
     public class Order : ApiBase
     {
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object getOrders(Dictionary<string, object> dicParas)
+        {
+            XCCloudUserTokenModel userTokenModel = (XCCloudUserTokenModel)(dicParas[Constant.XCCloudUserTokenModel]);
+            TokenDataModel userTokenDataModel = (TokenDataModel)(userTokenModel.DataModel);
+
+            string storedProcedure = "GetOrders";
+            string orderId = dicParas.ContainsKey("orderId") ? dicParas["orderId"].ToString() : string.Empty;
+            string icCardId = dicParas.ContainsKey("icCardId") ? dicParas["icCardId"].ToString() : string.Empty;
+            string startDate = dicParas.ContainsKey("startDate") ? dicParas["startDate"].ToString() : string.Empty;
+            string endDate = dicParas.ContainsKey("endDate") ? dicParas["endDate"].ToString() : string.Empty;
+
+            SqlParameter[] sqlParameter = new SqlParameter[8];
+            sqlParameter[0] = new SqlParameter("@MerchId", SqlDbType.VarChar);
+            sqlParameter[0].Value = userTokenDataModel.MerchID;
+
+            sqlParameter[1] = new SqlParameter("@StoreID", SqlDbType.VarChar);
+            sqlParameter[1].Value = userTokenDataModel.StoreID;
+
+            sqlParameter[2] = new SqlParameter("@OrderId", SqlDbType.VarChar);
+            sqlParameter[2].Value = orderId;
+
+            sqlParameter[3] = new SqlParameter("@ICCardId", SqlDbType.Int);
+            sqlParameter[3].Value = icCardId;
+
+            sqlParameter[4] = new SqlParameter("@StartDate", SqlDbType.VarChar);
+            sqlParameter[4].Value = startDate;
+
+            sqlParameter[5] = new SqlParameter("@EndDate", SqlDbType.VarChar);
+            sqlParameter[5].Value = endDate;
+
+            sqlParameter[6] = new SqlParameter("@ErrMsg", SqlDbType.VarChar,200);
+            sqlParameter[6].Direction = ParameterDirection.Output;
+
+            sqlParameter[7] = new SqlParameter("@Return", SqlDbType.Int);
+            sqlParameter[7].Direction = ParameterDirection.ReturnValue;
+
+            System.Data.DataSet ds = XCCloudBLL.GetStoredProcedureSentence(storedProcedure, sqlParameter);
+
+            if (sqlParameter[7].Value.ToString() == "1")
+            {
+                List<object> listObj = new List<object>();
+                for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                {
+                    var obj = new {
+                        orderId = ds.Tables[0].Rows[i]["OrderID"].ToString(),
+                        icCardId = ds.Tables[0].Rows[i]["ICCardID"].ToString(),
+                        orderStatus = ds.Tables[0].Rows[i]["OrderStatus"].ToString(),
+                        orderStatusName = ds.Tables[0].Rows[i]["orderStatusName"].ToString(),
+                        realPay = Convert.ToDecimal(ds.Tables[0].Rows[i]["RealPay"]).ToString("#.00"),
+                        freePay = Convert.ToDecimal(ds.Tables[0].Rows[i]["FreePay"]).ToString("#.00"),
+                        payCount = Convert.ToDecimal(ds.Tables[0].Rows[i]["PayCount"]).ToString("#.00"),
+                        createTime = Convert.ToDateTime(ds.Tables[0].Rows[i]["CreateTime"]).ToString("yyyy-MM-dd HH:mm:ss"),
+                        userName = ds.Tables[0].Rows[i]["UseName"].ToString()
+                    };
+                    listObj.Add(obj);
+                }
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, listObj);
+            }
+            else
+            {
+                return new ResponseModel(Return_Code.T, "", Result_Code.F, sqlParameter[6].Value.ToString());
+            }
+        }
+
         /// <summary>
         /// 获取订单流水号
         /// </summary>

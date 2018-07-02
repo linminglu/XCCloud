@@ -52,6 +52,7 @@ namespace XCCloudService.DAL.Base
                         md5 = Utils.MD5(str);                        
                         if (!verifiction.Equals(md5, StringComparison.OrdinalIgnoreCase))
                         {
+                            LogHelper.SaveLog(t.GetType().Name);
                             LogHelper.SaveLog(str);
                             LogHelper.SaveLog(md5);
                             throw new Exception("数据校验失败");

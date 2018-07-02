@@ -105,8 +105,8 @@ namespace XXCloudService.Api.XCCloud
                     PushCoin1 = data_GameInfo.PushCoin1,
                     PushBalanceIndex2 = data_GameInfo.PushBalanceIndex2,
                     PushCoin2 = data_GameInfo.PushCoin2,
-                    ReadCat = data_GameInfo.ReadCat,
-                    PushLevel = data_GameInfo.PushLevel
+                    ReadCat = data_GameInfo.ReadCat ?? 0,
+                    PushLevel = data_GameInfo.PushLevel ?? 0
                 }.AsFlatDictionary();
 
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, model);
@@ -152,6 +152,8 @@ namespace XXCloudService.Api.XCCloud
                 string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
 
                 string errMsg = string.Empty;
+                if (!dicParas.Get("projectName").Nonempty("项目名称", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 if (!dicParas.Get("chargeType").Validint("扣费类型", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 if (!dicParas.Get("projectType").Validintnozero("项目类型", out errMsg))

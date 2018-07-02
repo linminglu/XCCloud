@@ -263,6 +263,12 @@
 		.dropChoosesty li:nth-child(2) span{color: #00ffff;}
 		.dropChoosesty li:nth-child(3) span{color: #5b6270;}
         .modal-bodySty{padding-bottom:2em;}
+		.saveTheData{margin-top:5em;margin-left:1.6em;}
+		.cardListSty{margin: 1em 0;border-bottom: 1px dashed #00ffff;background-color: #fffefe;}
+		.cardListSpan{display:inline-block;width: 8em;text-align: left;padding: 4px 10px;font-size: 1em;color: #333}
+		.cardListTxt{padding: 4px 10px;font-size: 1em;color: #333}
+		.cardListImg{margin-top: 2em;width: 3em;height: 3em;}
+		.viceSty{display:inline-block;width: 5em;text-align: left;padding: 4px 10px;font-size: 0.9em;color: #333}
 		@media (min-width: 1024px) and (max-width: 1400px) {
 			.navLeftS{display: none;}
 		}
@@ -411,6 +417,7 @@
 						</ul>
 						<div class="col-lg-12 col-md-12 shopCStyle" style="margin-top: 1em" v-if="shopCheckOut"><button type="button" class="btn btn-danger">结账</button></div>
 						<div class="col-lg-12 col-md-12 shopCStyle" style="margin-top: 1em" v-if="registerCheckOut"><button type="button" class="btn btn-danger" @click="registerCheckBtn">结账</button></div>
+						<div class="col-lg-12 col-md-12 shopCStyle" style="margin-top: 1em" v-if="cardCheckOut"><button type="button" class="btn btn-danger" @click="cardCheckBtn">结账</button></div>
 					</div>
 					<div class="formNum formNum2 col-lg-4 col-md-4">
 						<div class=" col-lg-4 col-md-4 pad_0"><a href="javascript:void(0);" class="num">1</a></div>
@@ -579,10 +586,11 @@
 						</div>
 						<div class="input-group col-lg-12 col-md-12 tab-style">
 							<span class="input-group-addon">余额种类：</span>
-							<select class="form-control">
-								<option value="0">代币</option>
-								<option value="1">储值金</option>
-							</select>
+                            <select  class="form-control" v-model="outCoinData.balanceTypeValue">
+                                <option v-for="(option,index) in outCoinData.balanceType" :value="index">
+                                    {{option.BalanceName}}
+                                </option>
+                            </select>
 						</div>
 						<div class="input-group col-lg-12 col-md-12 tab-style">
 							<span class="input-group-addon">余额：</span>
@@ -599,7 +607,7 @@
 							<span class="input-group-addon">备注：</span>
 							<textarea  class="form-control"></textarea>
 						</div>
-						<div class="col-lg-12 tab-btn tab-style"><button type="button" class="btn btn-info">提币</button></div>
+						<div class="col-lg-12 tab-btn tab-style"><div>duka</div><button type="button" class="btn btn-info">提币</button></div>
 					</div>
 
 				</div>
@@ -1140,12 +1148,12 @@
 														<button type="button" class="btn btn-default readCard">读取</button>
 													</div>
 												</div>
-												<div class="input-group col-lg-4 col-md-0">
-												</div>
-												<div class="input-group col-lg-4 col-md-6">
-													<span class="input-group-addon">微信：</span>
-													<input   class="form-control" v-model="memberInfo.wxId"/>
-												</div>
+												<!--<div class="input-group col-lg-4 col-md-0">-->
+												<!--</div>-->
+												<!--<div class="input-group col-lg-4 col-md-6">-->
+													<!--<span class="input-group-addon">微信：</span>-->
+													<!--<input   class="form-control" v-model="memberInfo.wxId"/>-->
+												<!--</div>-->
 											</div>
 											<div class="tab-text col-lg-12 col-md-12">
 												<div class="input-group col-lg-4 col-md-6">
@@ -1163,10 +1171,6 @@
 														<option value="1">女</option>
 													</select>
 												</div>
-												<!--<div class="input-group col-lg-3 col-md-3">-->
-													<!--<span class="input-group-addon" readonly>微信：</span>-->
-													<!--<input   class="form-control" readonly/>-->
-												<!--</div>-->
 											</div>
 											<div class="tab-text col-lg-12 col-md-12">
 												<div class="input-group col-lg-12 col-md-12">
@@ -1237,6 +1241,7 @@
 										</div>
 										<div class="mcImg col-lg-2 col-md-2">
 											<img :src="memberInfo.Avatar" alt="会员头像">
+											<button type="button" class="btn btn-info saveTheData">保存会员资料</button>
 										</div>
 									</div>
 									<div class="row" style="margin-top: 1em;">
@@ -1267,30 +1272,36 @@
 												</ul>
 												<div class="tab-content">
                                                     <div role="tabpanel" class="tab-pane active" id="ViceCard">
-                                                        <div class="tab-style">
-                                                            <h4>主卡信息</h4>
-                                                            <p>卡号：123456</p>
-                                                            <p>等级：普通卡</p>
-                                                            <p>押金：10元</p>
-                                                            <p>期限：2020-04-26</p>
+                                                        <div class="col-lg-6 col-md-6">
+															<p class="cardListSty"><span class="cardListSpan">卡号：</span><span class="cardListTxt">{{memberInput.ICCardId}}</span></p>
+															<p class="cardListSty"><span class="cardListSpan">到期日期：</span><span class="cardListTxt">{{memberInput.EndDate}}</span></p>
+															<p class="cardListSty"><span class="cardListSpan">押金：</span><span class="cardListTxt">{{memberInput.Deposit}}</span></p>
+															<p class="cardListSty"><span class="cardListSpan">级别：</span><span class="cardListTxt">{{memberInput.LevelName}}</span></p>
                                                         </div>
+														<div class="col-lg-3 col-md-3">
+															<img class="cardListImg" :src="memberInput.CardAvatar" alt="会员头像">
+														</div>
                                                     </div>
 													<div role="tabpanel" class="tab-pane" v-for="(item,index) in childCardList" :key="index" :id="item.titleIndex" >
-														<div class="tab-style">
-															<p>卡号：{{item.ChildICCardId}}</p>
-															<p>类别：{{item.CardShape}}</p>
-															<p>押金：{{item.Deposit}}元</p>
-															<p>姓名：{{item.UserName}}</p>
-															<p>性别：{{item.Gender}}</p>
-															<p>生日：{{item.Birthday}}</p>
-															<img :src="item.Avatar" alt="会员头像">
+														<div class="col-lg-4 col-md-4">
+															<p class="cardListSty"><span class="viceSty">卡号：</span><span class="cardListTxt">{{item.ChildICCardId}}</span></p>
+															<p class="cardListSty"><span class="viceSty">类别：</span><span class="cardListTxt">{{item.CardShape}}</span></p>
+															<p class="cardListSty"><span class="viceSty">押金：</span><span class="cardListTxt">{{item.Deposit}}元</span></p>
+														</div>
+														<div class="col-lg-4 col-md-4">
+															<p class="cardListSty"><span class="viceSty">姓名：</span><span class="cardListTxt">{{item.UserName}}</span></p>
+															<p class="cardListSty"><span class="viceSty">性别：</span><span class="cardListTxt">{{item.Gender}}</span></p>
+															<p class="cardListSty"><span class="viceSty">生日：</span><span class="cardListTxt">{{item.Birthday}}元</span></p>
+														</div>
+														<div class="col-lg-3 col-md-3">
+															<img class="cardListImg" :src="item.Avatar" alt="会员头像">
 														</div>
 													</div>
 
 												</div>
 											</div>
 											<div class="col-lg-3 col-md-3 cardSettings">
-												<button type="button" class="btn btn-success">续卡</button>
+												<button @click="supplementCard('2')" type="button" class="btn btn-success">续卡</button>
 												<button @click="supplementCard('0')" type="button" class="btn btn-success">换卡</button>
 												<button @click="supplementCard('1')" type="button" class="btn btn-success">补卡</button>
 												<button type="button" class="btn btn-success">锁定</button>
@@ -1521,7 +1532,12 @@
             memberInput:{
                 mobileCode:"",
                 disabled: false,
-                codeBtn:"获取验证码"
+                codeBtn:"获取验证码",
+				CardAvatar: "",
+                ICCardId: "",
+                Deposit: "",
+                EndDate: "",
+                LevelName: ""
 			},
 			memberInfo:{
 				Avatar:"images/salesPic1.png",
@@ -1563,7 +1579,8 @@
             inputCashFocus:false,
             payCount:0,
 			detailNote:"",
-            icCardId:"28801810",
+            icCardId:"",
+            cardId:"",
             footerData:[],
             treeShow:false,
             givingShow:false,
@@ -1618,8 +1635,14 @@
             updateOrder:false,
             flwOrderId:"",
             orderIf:false,
+            OrderIdData:[],
             orderList:[],
+            outCoinData:{
+                balanceType:[],
+                balanceTypeValue:''
+            },
             registerCheckOut:false,
+            cardCheckOut:false,
             shopCheckOut:true,
             registerCheckOutData:null,
             deviceId:"",
@@ -1816,6 +1839,7 @@
                                         that.inputCashFocus = true;
                                         that.registerCheckOut = true;
                                         that.shopCheckOut = false;
+                                        that.cardCheckOut = false;
                                         that.registerFnc();
 									}else if(that.msgEleven === "1"){
                                         that.dataObj =receivedMsg.dataObj;
@@ -2276,6 +2300,7 @@
                 console.log(index);
                 that.radioValue = index;
                 that.icCardId = that.cardList[that.radioValue].ICCardNo;
+                that.cardId = that.cardList[that.radioValue].CardId;
                 $('#cardList').modal('hide');
                 that.radioValue = "";
                 that.getMenberCardInfo()
@@ -2298,6 +2323,12 @@
                         that.onSwitch4 = res.data.result_data.CardPurview.AllowFreeCoin;
                         that.onSwitch5 = res.data.result_data.CardPurview.AllowExitCoin;
                         that.onSwitch6 = res.data.result_data.CardPurview.AllowRenew;
+
+                        that.memberInput.ICCardId = res.data.result_data.ICCardId;
+                        that.memberInput.EndDate = res.data.result_data.EndDate;
+                        that.memberInput.Deposit = res.data.result_data.Deposit+"元";
+                        that.memberInput.LevelName = res.data.result_data.LevelName;
+                        that.memberInput.CardAvatar = res.data.result_data.CardAvatar;
                         var TitleCardList =[];
                         var childCardList =res.data.result_data.ChildCardList;
                         for(var i = 0;i<childCardList.length;i++){
@@ -2309,9 +2340,9 @@
                                 Birthday: childCardList[i].ChildCardMemberInfo.Birthday,
                                 Gender: childCardList[i].ChildCardMemberInfo.Gender,
                                 UserName: childCardList[i].ChildCardMemberInfo.UserName,
-                                titleIndex:"childCard"+i,
-                                titleHref:"#childCard"+i,
-                                indexTxt:"副卡"+i
+                                titleIndex:"childCard"+(i+1),
+                                titleHref:"#childCard"+(i+1),
+                                indexTxt:"副卡"+(i+1)
 							})
 						}
                         that.childCardList= TitleCardList;
@@ -2323,22 +2354,81 @@
 //          补卡、换卡
             supplementCard:function(operateType){
                 var that = this;
-                var msgType11 =JSON.stringify({"msgType":"11", "sObj": {"userToken": that.userToken}});
-                that.msgEleven = "1";
-                that.operateType =operateType;
-                ws.send(msgType11);
-			},
-//          补卡、换卡函数
-            supplementCardFnc:function(){
-				var that = this;
-//                that.operateType
-                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken};
+                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,cardIndexId:that.cardId,OperateType:operateType};
                 console.log(obj);
-                axios.post('/XCCloudH5/Member?action=getSMSCode', obj).then(function (res) {	//获取入会套餐
+                axios.post('/XCCloud/Member?action=createOperateCardOrder', obj).then(function (res) {	//获取入会套餐
                     console.log(res.data);
                     that.msgPrompt(res.data);
                     if (res.data.result_code === '1') {
-                        that.msg = "发送成功";
+                        $('#checkoutModal').modal('show');
+                        that.inputCashFocus = true;
+                        that.registerCheckOut = false;
+                        that.shopCheckOut = false;
+                        that.cardCheckOut = true;
+                        that.OrderIdData =res.data.result_data;
+                        that.shopping = [{typeName:"现金",payNum:res.data.result_data.OpFree}];
+                        that.operateType =operateType;
+                    }
+                }).catch(function (err) {
+                    console.log(err);
+                });
+
+			},
+//			卡操作结账
+            cardCheckBtn:function () {
+                var that = this;
+                var ojb = [{
+                    userToken:that.userToken,
+                    registerMemberJson:"",
+                    workStationId:"3",
+                    flwOrderId:that.OrderIdData.OrderId,
+                    mobile:"",
+                    realPay:that.OrderIdData.OpFree,
+                    payType:"0"
+                }];
+                console.log(ojb);
+                axios.post('/xccloud/order?action=payOrder', ojb).then(function (res) {
+                    console.log(res.data);
+                    that.msgPrompt(res.data);
+                    if (res.data.result_code === '1') {
+                        $('#checkoutModal').modal('hide');
+                        if(that.operateType == "2"){
+                            var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,orderId:that.OrderIdData.OrderId};
+                            console.log(obj);
+                            axios.post('/XCCloud/Member?action=renewCard', obj).then(function (res) {	//获取入会套餐
+                                console.log(res.data);
+                                that.msgPrompt(res.data);
+                                if (res.data.result_code === '1') {
+                                    that.msg = "续卡成功";
+                                    $('#myModal').modal('show');
+                                    setTimeout(function () {
+                                        $('#myModal').modal('hide');
+                                    }, 1500);
+                                }
+                            }).catch(function (err) {
+                                console.log(err);
+                            });
+                        }else{
+                            var msgType11 =JSON.stringify({"msgType":"11", "sObj": {"userToken": that.userToken}});
+                            that.msgEleven = "1";
+                            ws.send(msgType11);
+                        }
+                    }
+                }).catch(function (err) {
+                    console.log(err);
+                })
+            },
+//          补卡、换卡函数
+            supplementCardFnc:function(){
+				var that = this;
+                console.log(obj);
+                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,orderId:that.OrderIdData.OrderId,newCardNo:that.dataObj.icCardId,repeatCode:that.dataObj.repeatCode,OperateType:that.operateType};
+                console.log(obj);
+                axios.post('/XCCloud/Member?action=rechangeCard', obj).then(function (res) {	//获取入会套餐
+                    console.log(res.data);
+                    that.msgPrompt(res.data);
+                    if (res.data.result_code === '1') {
+                        that.msg = "换卡成功";
                         $('#myModal').modal('show');
                         setTimeout(function () {
                             $('#myModal').modal('hide');
@@ -3125,7 +3215,31 @@
 			},
 //			提币
 			currency:function () {
-                $('#currencySModal').modal('show');
+                var that = this;
+                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,type:"4", workStation:"lijunjie"};
+                console.log(obj);
+                axios.post('/XCCloud/coupon?action=getDeviceInfo', obj).then(function (res) {	//获取会员等级
+                    console.log(res.data);
+                    that.msgPrompt(res.data);
+                    if (res.data.result_code === '1') {
+                        $('#currencySModal').modal('show');
+                    }
+                }).catch(function (err) {
+                    console.log(err);
+                });
+//                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,iccardId:"20110013",deviceId:"21"};
+//                console.log(obj);
+//                axios.post('/XCCloud/Member?action=getBalanceTypeByDevice', obj).then(function (res) {	//获取会员等级
+//                    console.log(res.data);
+//                    that.msgPrompt(res.data);
+//                    if (res.data.result_code === '1') {
+//                        that.outCoinData.balanceType = res.data.result_data;
+//                        $('#currencySModal').modal('show');
+//                    }
+//                }).catch(function (err) {
+//                    console.log(err);
+//                });
+
             },
 //			送币
 			sendCoin:function () {
@@ -3184,6 +3298,7 @@
                     console.log(err);
                 });
 			},
+//			退卡函数
             btnBackCard:function (backType) {
                 var that = this;
                 if(that.amountTotal1 == 0 && that.amountTotal1 == 0 && backType =="1"){
