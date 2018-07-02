@@ -104,7 +104,7 @@
             <div class="layui-inline OnlyExitLottery goodIsAll">
                 <label class="layui-form-label">只退实物彩票</label>
                 <div class="layui-input-inline">
-                    <input type="checkbox" lay-filter="OnlyExitLottery" name="OnlyExitLottery" lay-skin="switch"
+                    <input type="checkbox" lay-filter="eOnlyExitLottery" name="OnlyExitLottery" lay-skin="switch"
                            lay-text="启用|禁用" id="OnlyExitLotteryLow">
                 </div>
             </div>
@@ -587,17 +587,17 @@
                     <div class="layui-card">
                         <div class="layui-card-body">
                             <div class="layui-form-item">
-                                <div class="layui-inline AllowElecPush">
-                                    <label class="layui-form-label">允许电子投币</label>
+                                <div class="layui-inline AllowElecOut">
+                                    <label class="layui-form-label">允许电子退币</label>
                                     <div class="layui-input-inline">
-                                        <input type="checkbox" lay-skin="switch" lay-text="启用|禁用" name="AllowElecPush"
-                                               lay-filter="AllowElecPush">
+                                        <input type="checkbox" lay-skin="switch" lay-text="启用|禁用" name="AllowElecOut"
+                                               lay-filter="AllowElecOut">
                                     </div>
                                 </div>
                                 <div class="layui-inline AllowRealOut">
                                     <label class="layui-form-label">允许实物退币</label>
                                     <div class="layui-input-inline">
-                                        <input type="checkbox" lay-skin="switch" lay-text="启用|禁用" id="AllowRealOut"
+                                        <input type="checkbox" lay-skin="switch" lay-text="启用|禁用" id="AllowRealOut" name="AllowRealOut"
                                                lay-filter="AllowRealOut">
                                     </div>
                                 </div>
@@ -611,7 +611,7 @@
                                 <div class="layui-inline NowExit">
                                     <label class="layui-form-label">即中即退</label>
                                     <div class="layui-input-inline">
-                                        <input type="checkbox" lay-skin="switch" lay-text="启用|禁用" id="NowExit"
+                                        <input type="checkbox" lay-skin="switch" lay-text="启用|禁用" id="NowExit" name="NowExit"
                                                lay-filter="NowExit">
                                     </div>
                                 </div>
@@ -1400,7 +1400,7 @@
                 LotteryModeLow = 0;
             }
         });
-        form.on('switch(OnlyExitLottery)', (data) => {
+        form.on('switch(eOnlyExitLottery)', (data) => {
             if (data.elem.checked == true) {
                 eOnlyExitLottery = 1;
             } else {
@@ -1472,6 +1472,13 @@
                 AllowElecPush = 1
             } else {
                 AllowElecPush = 0
+            }
+        });
+        form.on('switch(AllowElecOut)', (data) => {
+            if (data.elem.checked == true) {
+                AllowElecOut = 1
+            } else {
+                AllowElecOut = 0
             }
         });
         form.on('switch(ReadCat)', (data) => {
@@ -1549,13 +1556,13 @@
         form.on('select(SecondSpeed)', (data) => {
             SecondSpeed = data.value;
         });
-        form.on('switch(AllowElecPush)', (data) => {
-            if (data.elem.checked == true) {
-                AllowElecPush = 1
-            } else {
-                AllowElecPush = 0
-            }
-        });
+        // form.on('switch(AllowElecPush)', (data) => {
+        //     if (data.elem.checked == true) {
+        //         AllowElecPush = 1
+        //     } else {
+        //         AllowElecPush = 0
+        //     }
+        // });
         form.on('switch(AllowRealOut)', (data) => {
             if (data.elem.checked == true) {
                 AllowRealOut = 1
@@ -2284,6 +2291,13 @@
                     LotteryModeLow = arr[23].value;
                     eOnlyExitLottery = arr[24].value;
                     eReadCat = arr[28].value;
+                    if(arr[28].value!=1){
+                        $('.ReadCatTime1').addClass('layui-hide');
+                        $('.ReadCatTime').addClass('layui-hide')
+                    }else {
+                        $('.ReadCatTime1').removeClass('layui-hide');
+                        $('.ReadCatTime').removeClass('layui-hide')
+                    }
                     echkCheckGift = arr[25].value;
                     StateLow = arr[8].value;
                     // xc.getGameType (token,layer,form,'游戏机类型','GameTypeLow',arr[7].value);
