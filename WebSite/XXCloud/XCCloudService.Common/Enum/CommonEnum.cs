@@ -1221,7 +1221,12 @@ namespace XCCloudService.Common.Enum
         /// 调拨申请单已删除
         /// </summary>
         [Description("已删除")]
-        RequestDeleted = 12
+        RequestDeleted = 12,
+        /// <summary>
+        /// 总部派货已撤销
+        /// </summary>
+        [Description("已撤销")]
+        Canceled = 13
     }
 
     /// <summary>

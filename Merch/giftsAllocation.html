@@ -303,38 +303,59 @@
     </div>
     <!--调拨退货-->
     <div id="backGoods" style="display: none;padding: 15px">
-        <form action="" class="layui-form layui-form-pane">
+        <form action="" class="layui-form layui-form-pane" lay-filter="back">
             <div class="layui-form-item">
                 <div class="layui-inline">
                     <label class="layui-form-label">入库仓库</label>
                     <div class="layui-input-inline" id="backBox">
-                        <select name="inDepot" lay-filter="inDepot"  id="backDepot"></select>
-                    </div>
-                    <div class="layui-input-inline" id="backBox1">
-                        <input type="text" class="layui-input" readonly id="backDepot1">
-                    </div>
-                </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label">调拨方式</label>
-                    <div class="layui-input-inline">
-                        <input type="text" class="layui-input" readonly id="backWay">
-                    </div>
-                </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label">调配门店</label>
-                    <div class="layui-input-inline">
-                        <input type="text" class="layui-input" readonly id="backStore">
+                        <select name="backInDepot" lay-filter="backInDepot"  id="backInDepot"></select>
                     </div>
                 </div>
             </div>
             <div class="layui-form-item">
-                <label class="layui-form-label">调配原因</label>
+                <div class="layui-inline">
+                    <label class="layui-form-label">物流公司</label>
+                    <div class="layui-input-inline">
+                        <select name="logisticsCompanyBack" id="logisticsCompanyBack" lay-filter="logisticsCompany"></select>
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">物流单号</label>
+                    <div class="layui-input-inline">
+                        <input type="text" class="layui-input" name="logisticsNoteBack" id="logisticsNoteBack">
+                    </div>
+                </div>
+            </div>
+            <table class="layui-hide" id="backDetails" lay-filter="backDetails"></table>
+
+            <div class="layui-form-item">
+
+                <div class="layui-inline">
+                    <label class="layui-form-label">退货总数</label>
+                    <div class="layui-input-inline">
+                        <input type="text" class="layui-input" name="exitCount" id="exitCount">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">退货杂费</label>
+                    <div class="layui-input-inline">
+                        <input type="text" class="layui-input" name="exitCost" id="exitCost">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">实退总额</label>
+                    <div class="layui-input-inline">
+                        <input type="text" class="layui-input" name="exitTotal" id="exitTotal">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">退货说明</label>
                 <div class="layui-input-block">
-                    <input type="text" class="layui-input" readonly id="backReason">
+                    <input type="text" class="layui-input" name="backNote" id="backNote">
                 </div>
             </div>
         </form>
-        <table id="backTable" lay-filter="inDealTable" class="layui-hide"></table>
         <div style="text-align:center;">
             <button type="button" class="layui-btn layui-btn-normal" id="saveBack">确定</button>
         </div>
@@ -381,9 +402,11 @@
 
     {{# } }}
 
-
-
+    {{# if(d.State==10){ }}
     <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="details">详情</a>
+    {{# } }}
+
+
 
 </script>
 <script type="text/html" id="barDemo1">
@@ -764,53 +787,47 @@
                         data=JSON.parse(data);
                         console.log(data)
                         if(data.result_code==1){
-                            // let arr=data.result_data.GoodRequestDetails;
-                            // table.render({
-                            //     elem: '#inDealTable'
-                            //     , height:'300px'
-                            //     , size:"sm"
-                            //     , data: arr
-                            //     , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
-                            //     , cols: [[
-                            //         {type:'checkbox',fixed: 'left'} ,
-                            //         {field:'ID', title: '调拨ID', align: 'center',width:100}
-                            //         ,{field:'GoodID', title: '商品ID', align: 'center',width:100}
-                            //         , {field:'Barcode', title:'商品条码', align: 'center',width:170}
-                            //         ,{field:'GoodName',title: '商品类别', align: 'center',width:120} //width 支持：数字、百分比和不填写。
-                            //         ,{field:'GoodTypeStr', title: '商品类别', align: 'center',width:100}
-                            //         ,{field:'RequestCount', title: '申请数量', align: 'center',width:100}
-                            //         ,{field:'SendCount', title: '实发数量', align: 'center',width:100}
-                            //         ,{field:'StorageCount', title: '入库数量', align: 'center',edit:true,width:100}
-                            //         ,{field:'CostPrice', title: '含税单价', align: 'center'}
-                            //         ,{field:'Tax', title: '税率', align: 'center'}
-                            //     ]]
-                            //     , page: {page: true, limits: [10, 15, 20, 30, 50, 100]}
-                            //     , limit: 10
-                            // });
-                            // OutDepotId=data.result_data.OutDepotID||'';
-                            // InDepotId=data.result_data.InDepotID||'';
-                            // OutStoreId=data.result_data.OutStoreID||'';
-                            // InStoreId=data.result_data.InStoreID||'';
-                            // if(data.result_data.RequstType==2){
-                            //     $('#inDepotBox').removeClass('layui-hide');
-                            //     $('#inDepot1Box').addClass('layui-hide');
-                            //     xc.getDepotDic('','',token,layer,form,'inDepot');
-                            //     inDepot='';
-                            // }else {
-                            //     $('#inDepot1').val(_data.InDepotName);
-                            //     $('#inDepot1Box').removeClass('layui-hide');
-                            //     $('#inDepotBox').addClass('layui-hide');
-                            //     inDepot=InDepotId;
-                            // }
-                            // $('#inWay').val(_data.RequstTypeStr);
-                            // $('#inStore').val(_data.InStoreName);
-                            // $('#inReason').val(_data.RequestReason);
-                            // layer.open({
-                            //     title:'调拨入库',
-                            //     type:1,
-                            //     area:'1000px',
-                            //     content:$('#inModel')
-                            // })
+                            let arr=data.result_data.GoodRequestDetails;
+                            table.render({
+                                elem: '#backDetails'
+                                , height:'300px'
+                                , size:"sm"
+                                , data: arr
+                                , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+                                , cols: [[
+                                    {type:'checkbox',fixed: 'left'} ,
+                                    // {field:'ID', title: '调拨ID', align: 'center',width:100}
+                                    // ,{field:'GoodID', title: '商品ID', align: 'center',width:100}
+                                    // ,
+                                    {field:'Barcode', title:'商品条码', align: 'center',width:170}
+                                    ,{field:'GoodName',title: '商品名称', align: 'center',width:120} //width 支持：数字、百分比和不填写。
+                                    ,{field:'GoodTypeStr', title: '商品类别', align: 'center',width:100}
+                                    ,{field:'RequestCount', title: '申请数量', align: 'center',width:100}
+                                    ,{field:'SendCount', title: '实发数量', align: 'center',width:100}
+                                    ,{field:'StorageCount', title: '入库数量', align: 'center',edit:true,width:100}
+                                    ,{field:'ExitedCount', title: '已退货数量', align: 'center',width:100}
+                                    ,{field:'ExitCount', title: '退货数量', align: 'center',width:100}
+                                    ,{field:'CostPrice', title: '含税单价', align: 'center'}
+                                    ,{field:'Tax', title: '税率', align: 'center'}
+                                ]]
+                                , page: {page: true, limits: [10, 15, 20, 30, 50, 100]}
+                                , limit: 10
+                            });
+                            form.val('back',{
+                                'backInDepot':data.result_data.InDepotId,
+                                'exitCount':data.result_data.exitCount,
+                                'exitCost':data.result_data.exitCost,
+                                'exitTotal':data.result_data.exitTotal,
+                                'logisticsCompanyBack':data.result_data.InDepotId,
+                                'logisticsNoteBack':data.result_data.InDepotId,
+                                'backNote':data.result_data.Note,
+                            })
+                            layer.open({
+                                title:'调拨退货',
+                                type:1,
+                                area:'1000px',
+                                content:$('#backGoods')
+                            })
                         }else {
                             layer.msg(data.result_msg||data.return_msg)
                         }

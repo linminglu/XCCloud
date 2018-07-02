@@ -259,6 +259,7 @@ namespace XCCloudService.WorkFlow
                     (
                      (_requestType == (int)RequestType.MerchRequest && IsMerchUser() && (_merchId == _targetMerchId && _storeId == _inStoreId)) ||
                      (_requestType == (int)RequestType.MerchSend && IsMerchUser() && (_merchId == _targetMerchId && _storeId == _outStoreId)) ||
+                     (_requestType == (int)RequestType.RequestStore && IsStoreUser() && (_merchId == _targetMerchId && _storeId == _inStoreId)) ||
                      (_requestType == (int)RequestType.RequestMerch && IsStoreUser() && (_merchId == _targetMerchId && _storeId == _inStoreId))
                     ))
                 .PermitIf(Trigger.SendDeal, State.SendDealed, () =>
@@ -288,6 +289,7 @@ namespace XCCloudService.WorkFlow
                     (
                      (_requestType == (int)RequestType.MerchRequest && IsMerchUser() && (_merchId == _targetMerchId && _storeId == _inStoreId)) ||
                      (_requestType == (int)RequestType.MerchSend && IsMerchUser() && (_merchId == _targetMerchId && _storeId == _outStoreId)) ||
+                     (_requestType == (int)RequestType.RequestStore && IsStoreUser() && (_merchId == _targetMerchId && _storeId == _inStoreId)) ||
                      (_requestType == (int)RequestType.RequestMerch && IsStoreUser() && (_merchId == _targetMerchId && _storeId == _inStoreId))
                     ))
                 .PermitIf(Trigger.SendDeal, State.SendDealed, () =>
@@ -315,8 +317,11 @@ namespace XCCloudService.WorkFlow
             //    .PermitIf(Trigger.Close, State.Closed, () => IsStoreUser() && (_merchId == _targetMerchId && _storeId == _inStoreId));
 
             _machine.Configure(State.Closed)
-                //.OnEntryFrom(Trigger.SendDeal, sendDealCancel, "总部派货撤销")
                 .OnEntry(t => OnClosed(), "流程结束");
+            _machine.Configure(State.Canceled)
+                .OnEntryFrom(Trigger.Cancel, sendDealCancel, "总部派货撤销")
+                .PermitIf(Trigger.RequestExit, State.RequestExited, () =>
+                    (_requestType == (int)RequestType.MerchSend && IsStoreUser()) && (_merchId == _targetMerchId && _storeId == _inStoreId));
         }
 
         #region 属性
