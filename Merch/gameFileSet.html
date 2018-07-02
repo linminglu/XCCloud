@@ -1375,16 +1375,16 @@
         });
         //简易模式事件监听
         form.on('select(GameTypeLow)', (data) => {
-            eGameType = data.value;
+            data.value=='-请选择-'?eGameType='': eGameType = data.value;
         });
         form.on('select(eAreaID)', (data) => {
-            eAreaID = data.value;
+            data.value=='-请选择-'?eAreaID='':eAreaID = data.value;
         });
         form.on('select(eDepotID)', (data) => {
             data.value == '-请选择-' ? eDepotID = '' : eDepotID = data.value;
         });
         form.on('select(ePushBalanceIndex1)', (data) => {
-            ePushBalanceIndex1 = data.value;
+            data.value=='-请选择-'?ePushBalanceIndex1='':ePushBalanceIndex1 = data.value;
         });
         form.on('switch(PushLevel1)', (data) => {
             if (data.elem.checked == true) {
@@ -1410,12 +1410,12 @@
         form.on('switch(ReadCat1)', (data) => {
             if (data.elem.checked == true) {
                 eReadCat = 1;
-                $('.ReadCatTime1').removeClass('layui-hide')
+                $('#ReadCatTime1').attr('disabled',false)
             } else {
                 eReadCat = 0;
-                $('.ReadCatTime1').addClass('layui-hide')
+                $('#ReadCatTime1').attr('disabled',true)
             }
-            $('input[name="ReadDelay1"]').val('')
+            form.render()
         });
         form.on('switch(chkCheckGift)', (data) => {
             if (data.elem.checked == true) {
@@ -1434,7 +1434,7 @@
 
         //高级模式事件监听
         form.on('select(GameType)', (data) => {
-            GameType = data.value;
+            data.value=='-请选择-'?GameType='':GameType = data.value;
         });
         form.on('switch(State)', (data) => {
             if (data.elem.checked == true) {
@@ -1465,7 +1465,7 @@
             }
         });
         form.on('select(AreaID1)', (data) => {
-            AreaID1 = data.value;
+            data.value=='-请选择-'?AreaID1='':AreaID1 = data.value;
         });
         form.on('switch(AllowElecPush)', (data) => {
             if (data.elem.checked == true) {
@@ -1484,12 +1484,12 @@
         form.on('switch(ReadCat)', (data) => {
             if (data.elem.checked == true) {
                 ReadCat = 1
-                $('.ReadCatTime').removeClass('layui-hide')
+                $('#ReadCatTime').attr('disabled',false)
             } else {
                 ReadCat = 0
-                $('.ReadCatTime').removeClass('layui-hide')
+                $('#ReadCatTime').attr('disabled',true)
             }
-            $('input[name="ReadDelay"]').val('')
+           form.render()
         });
         form.on('switch(AllowRealPush)', (data) => {
             if (data.elem.checked == true) {
@@ -1502,6 +1502,7 @@
 
             if (data.value == '-请选择-') {
                 $('.cutCoin1').text('金币数')
+                PushBalanceIndex11=''
             } else {
                 PushBalanceIndex11 = data.value;
                 $('.cutCoin1').text(data.elem[data.elem.selectedIndex].text)
@@ -1511,16 +1512,17 @@
         form.on('select(PushBalanceIndex2)', (data) => {
             if (data.value == '-请选择-') {
                 $('.cutCoin2').text('金币数')
+                PushBalanceIndex12=''
             } else {
                 PushBalanceIndex12 = data.value;
                 $('.cutCoin2').text(data.elem[data.elem.selectedIndex].text)
             }
         });
         form.on('select(PushPulse)', (data) => {
-            PushPulse = data.value;
+            data.value=='-请选择-'?PushPulse='':PushPulse = data.value;
         });
         form.on('select(PushSpeed)', (data) => {
-            PushSpeed = data.value;
+            data.value=='-请选择-'?PushSpeed='':PushSpeed = data.value;
         });
         form.on('switch(PushLevel)', (data) => {
             if (data.elem.checked == true) {
@@ -1548,13 +1550,13 @@
             }
         });
         form.on('select(SecondStartInterval)', (data) => {
-            SecondStartInterval = data.value;
+            data.value=='-请选择-'?SecondStartInterval='':SecondStartInterval = data.value;
         });
         form.on('select(SecondPulse)', (data) => {
-            SecondPulse = data.value;
+            data.value=='-请选择-'?SecondPulse='':SecondPulse = data.value;
         });
         form.on('select(SecondSpeed)', (data) => {
-            SecondSpeed = data.value;
+            data.value=='-请选择-'?SecondSpeed='': SecondSpeed = data.value;
         });
         // form.on('switch(AllowElecPush)', (data) => {
         //     if (data.elem.checked == true) {
@@ -1592,7 +1594,7 @@
             }
         });
         form.on('select(BOPulse)', (data) => {
-            BOPulse = data.value;
+            data.value=='-请选择-'?BOPulse='':BOPulse = data.value;
         });
         form.on('switch(OutLevel)', (data) => {
             if (data.elem.checked == true) {
@@ -1609,18 +1611,23 @@
             }
         });
         form.on('select(OutSpeed)', (data) => {
-            OutSpeed = data.value;
+            data.value=='-请选择-'?OutSpeed='':OutSpeed = data.value;
         });
 
         form.on('select(OutMode)', (data) => {
-            OutMode = data.value;
+            data.value=='-请选择-'?OutMode='': OutMode = data.value;
         });
 
         form.on('select(OutPulse)', (data) => {
-            OutPulse = data.value;
+            data.value=='-请选择-'?OutPulse='':OutPulse = data.value;
         });
         form.on('select(OutBalanceIndex)', (data) => {
-            OutBalanceIndex = data.value;
+            if(data.value=='-请选择-'){
+                OutBalanceIndex = '';
+            }else {
+                OutBalanceIndex = data.value;
+            }
+
         });
         form.on('switch(GuardConvertCard)', (data) => {
             if (data.elem.checked == true) {
@@ -1685,7 +1692,12 @@
             }
         });
         form.on('select(PushStartInterval)', (data) => {
-            PushStartInterval = data.value;
+            if(data.value=='-请选择-'){
+                PushStartInterval = '';
+            }else {
+                PushStartInterval = data.value;
+            }
+
         });
         form.on('select(memberLevels)', (data) => {
             memberLevels = data.value;
@@ -2292,11 +2304,11 @@
                     eOnlyExitLottery = arr[24].value;
                     eReadCat = arr[28].value;
                     if(arr[28].value!=1){
-                        $('.ReadCatTime1').addClass('layui-hide');
-                        $('.ReadCatTime').addClass('layui-hide')
+                        $('#ReadCatTime1').attr('disabled',true)
+                        $('#ReadCatTime').attr('disabled',true)
                     }else {
-                        $('.ReadCatTime1').removeClass('layui-hide');
-                        $('.ReadCatTime').removeClass('layui-hide')
+                        $('#ReadCatTime1').attr('disabled',false)
+                        $('#ReadCatTime').attr('disabled',false)
                     }
                     echkCheckGift = arr[25].value;
                     StateLow = arr[8].value;
@@ -2571,17 +2583,22 @@
         }
         form.render('select');
     }
-
+let layerIndex;
     $('body').find($('.layui-form-item>div')).on('mouseenter', 'label', function () {
         let _this = $(this);
         layui.use('layer', function () {
             let layer = layui.layer;
             if (_this.parent('div').attr('name') != "" && _this.parent('div').attr('name') != undefined) {
-                layer.tips(_this.parent('div').attr('name'), _this.parent('div'), {
-                    tips: [4, '#3595CC'],
+             layerIndex=   layer.tips(_this.parent('div').attr('name'), _this.parent('div'), {
+                    tips: [3, '#3595CC'],
                     time: 2000
                 });
             }
+        })
+    }).on('mouseout','label',function () {
+        layui.use('layer', function () {
+            let layer = layui.layer;
+            layer.close(layerIndex)
         })
     })
 </script>

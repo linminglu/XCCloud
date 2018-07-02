@@ -441,10 +441,10 @@
           })
       });
         form.on('select(projectType)',function (data) {
-            projectType=data.value;
+            data.value=='-请选择-'?projectType='':projectType=data.value;
         });
         form.on('select(Area)',function (data) {
-            Area=data.value;
+            data.value=='-请选择-'?Area='':Area=data.value;
         });
         form.on('select(chargeType)',function (data) {
             chargeType=data.value;
@@ -459,6 +459,7 @@
 
             if(data.value=='-请选择-'){
                 $('.cutCoin1').text('金币数')
+                PushBalanceIndex1=''
             }else {
                 PushBalanceIndex1=data.value;
                 $('.cutCoin1').text(data.elem[data.elem.selectedIndex].text)
@@ -467,6 +468,7 @@
         form.on('select(PushBalanceIndex2)',function (data) {
             if(data.value=='-请选择-'){
                 $('.cutCoin2').text('金币数')
+                PushBalanceIndex2=''
             }else {
                 PushBalanceIndex2=data.value;
                 $('.cutCoin2').text(data.elem[data.elem.selectedIndex].text)
