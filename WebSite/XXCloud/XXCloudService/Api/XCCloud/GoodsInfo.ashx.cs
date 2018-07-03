@@ -2447,7 +2447,7 @@ namespace XXCloudService.Api.XCCloud
 
                             if (model.AuthorFlag != (int)GoodOutInState.Pending)
                             {
-                                errMsg = "已审核或已撤销的入库单不能修改";
+                                errMsg = "已审核的入库单不能修改";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                             }
 
@@ -2554,7 +2554,7 @@ namespace XXCloudService.Api.XCCloud
                         var model = Data_GoodStorageService.I.GetModels(p => p.ID == id).FirstOrDefault();
                         if (model.AuthorFlag != (int)GoodOutInState.Pending)
                         {
-                            errMsg = "已审核或已撤销的入库信息不能删除";
+                            errMsg = "已审核的入库信息不能删除";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 
@@ -3175,7 +3175,7 @@ namespace XXCloudService.Api.XCCloud
 
                             if (model.State != (int)GoodOutInState.Pending)
                             {
-                                errMsg = "已审核或已撤销的出库单不能修改";
+                                errMsg = "已审核的出库单不能修改";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                             }
 
@@ -3359,7 +3359,7 @@ namespace XXCloudService.Api.XCCloud
                         var model = Data_GoodOutOrderService.I.GetModels(p => p.ID == id).FirstOrDefault();
                         if (model.State != (int)GoodOutInState.Pending)
                         {
-                            errMsg = "已审核或已撤销的出库信息不能删除";
+                            errMsg = "已审核的出库信息不能删除";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 

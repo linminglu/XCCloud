@@ -295,7 +295,7 @@ namespace XCCloudService.Api.XCCloud
                 }
             }
 
-        #endregion
+        #endregion        
 
         #region "后台用户管理"
 
@@ -1259,6 +1259,62 @@ namespace XCCloudService.Api.XCCloud
                 var list = Utils.GetModelList<UserGrantModel>(ds.Tables[0]);
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, list);
             }
+
+        #endregion
+
+        #region "雷达用户登录"
+
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.MethodToken, SysIdAndVersionNo = false)]
+        public object radarLogin(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                string scheduleName = string.Empty;
+                string checkDate = string.Empty;
+                string errMsg = string.Empty;
+                string currentSchedule = string.Empty;
+                string openTime = string.Empty;
+                string loginName = dicParas.ContainsKey("loginName") ? dicParas["loginName"].ToString() : string.Empty;
+                string password = dicParas.ContainsKey("password") ? dicParas["password"].ToString() : string.Empty;
+
+                if (string.IsNullOrEmpty(loginName))
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.F, "", Result_Code.T, "用户名不能为空");
+                }
+
+                if (string.IsNullOrEmpty(password))
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.F, "", Result_Code.T, "密码不能为空");
+                }
+              
+                //验证用户信息
+                IBase_UserInfoService userService = BLLContainer.Resolve<IBase_UserInfoService>();
+                var userModel = userService.GetModels(p => p.LogName.Equals(loginName, StringComparison.OrdinalIgnoreCase)).FirstOrDefault<Base_UserInfo>();
+                if (userModel == null)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "用户名不存在");
+                }
+                //验证密码
+                if (!userModel.LogPassword.Equals(Utils.MD5(password), StringComparison.OrdinalIgnoreCase))
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "用户名或密码错误");
+                }
+
+                //验证雷达登录权限
+                if (!CheckUserGrant("路由器登录", userModel.UserID, out errMsg))
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
+                }
+
+                HttpContext.Current.Session["UserID"] = userModel.UserID;
+
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
 
         #endregion
      

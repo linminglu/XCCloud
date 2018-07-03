@@ -21,10 +21,11 @@ using System.Data.SqlClient;
 using XCCloudService.BLL.CommonBLL;
 using System.Data;
 using XCCloudService.Model.XCCloud;
+using System.Web.SessionState;
 
 namespace XCCloudService.Base
-{ 
-    public class ApiBase : IHttpHandler
+{
+    public class ApiBase : IHttpHandler, IRequiresSessionState
     {
         protected System.Web.Script.Serialization.JavaScriptSerializer jss = new System.Web.Script.Serialization.JavaScriptSerializer();
         protected bool isSignKeyReturn = false;

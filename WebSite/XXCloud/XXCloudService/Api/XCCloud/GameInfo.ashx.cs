@@ -20,7 +20,6 @@ using XCCloudService.Common.Extensions;
 using XCCloudService.Model.CustomModel.XCCloud;
 using XCCloudService.Model.XCCloud;
 using XXCloudService.Api.XCCloud.Common;
-using XCCloudService.Common.Extensions;
 
 namespace XXCloudService.Api.XCCloud
 {

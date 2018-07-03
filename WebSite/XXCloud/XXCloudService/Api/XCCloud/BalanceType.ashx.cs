@@ -69,7 +69,7 @@ namespace XXCloudService.Api.XCCloud
                                HkTypeStr = g.FirstOrDefault().HkTypeStr,
                                //StoreNames = string.Join("|", g.OrderBy(o => o.StoreName).Select(o => o.StoreName))
                                StoreNames = g.OrderBy(o => o.StoreName).Select(o => o.StoreName).FirstOrDefault() + (g.Count() > 1 ? "等多个" : string.Empty),
-                               Unit = g.FirstOrDefault().a.Unit
+                               Unit = g.FirstOrDefault().a.Unit ?? string.Empty
                            };
                            
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, linq);
@@ -110,7 +110,7 @@ namespace XXCloudService.Api.XCCloud
                            {
                                ID = a.ID,
                                TypeName = a.TypeName,
-                               Unit = a.Unit
+                               Unit = a.Unit ?? string.Empty
                            };
 
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, linq);
@@ -151,7 +151,7 @@ namespace XXCloudService.Api.XCCloud
                            {
                                ID = a.ID,
                                TypeName = a.TypeName,
-                               Unit = a.Unit
+                               Unit = a.Unit ?? string.Empty
                            };
 
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, linq);
@@ -202,7 +202,7 @@ namespace XXCloudService.Api.XCCloud
                                AddingTypeStr = ((AddingType?)g.FirstOrDefault().a.AddingType).GetDescription(),
                                HKType = g.FirstOrDefault().a.MappingType,
                                StoreIDs = string.Join("|", g.Select(o => o.StoreID)),
-                               Unit = g.FirstOrDefault().a.Unit
+                               Unit = g.FirstOrDefault().a.Unit ?? string.Empty
                            };
 
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, linq.FirstOrDefault());                

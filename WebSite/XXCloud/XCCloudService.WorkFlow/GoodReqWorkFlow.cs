@@ -220,14 +220,14 @@ namespace XCCloudService.WorkFlow
                      (_requestType == (int)RequestType.MerchSend && IsStoreUser()) ||
                      (_requestType == (int)RequestType.RequestStore && IsStoreUser()) ||
                      (_requestType == (int)RequestType.RequestMerch && IsStoreUser())
-                    ) && (_merchId == _targetMerchId && _storeId == _inStoreId))
-                .PermitIf(Trigger.RequestExit, State.RequestExited, () =>
-                    (
-                     (_requestType == (int)RequestType.MerchRequest && IsMerchUser()) ||
-                     (_requestType == (int)RequestType.MerchSend && IsStoreUser()) ||
-                     (_requestType == (int)RequestType.RequestStore && IsStoreUser()) ||
-                     (_requestType == (int)RequestType.RequestMerch && IsStoreUser())
                     ) && (_merchId == _targetMerchId && _storeId == _inStoreId));
+                //.PermitIf(Trigger.RequestExit, State.RequestExited, () =>
+                //    (
+                //     (_requestType == (int)RequestType.MerchRequest && IsMerchUser()) ||
+                //     (_requestType == (int)RequestType.MerchSend && IsStoreUser()) ||
+                //     (_requestType == (int)RequestType.RequestStore && IsStoreUser()) ||
+                //     (_requestType == (int)RequestType.RequestMerch && IsStoreUser())
+                //    ) && (_merchId == _targetMerchId && _storeId == _inStoreId));
 
             //_machine.Configure(State.SendDealVerifiedPass)
             //    //.PermitIf(Trigger.Cancel, State.SendDealed, () => IsMerchUser() && (_merchId == _targetMerchId && _storeId == ""))
@@ -268,44 +268,44 @@ namespace XCCloudService.WorkFlow
                         //(_requestType == (int)RequestType.MerchSend && IsMerchUser()) || //总部是一次性派发
                      (_requestType == (int)RequestType.RequestStore && IsStoreUser()) ||
                      (_requestType == (int)RequestType.RequestMerch && IsMerchUser())
-                    ) && (_merchId == _targetMerchId && _storeId == _outStoreId))
-                .PermitIf(Trigger.RequestExit, State.RequestExited, () =>
-                    (
-                     (_requestType == (int)RequestType.MerchRequest && IsMerchUser()) ||
-                     (_requestType == (int)RequestType.MerchSend && IsStoreUser()) ||
-                     (_requestType == (int)RequestType.RequestStore && IsStoreUser()) ||
-                     (_requestType == (int)RequestType.RequestMerch && IsStoreUser())
-                    ) && (_merchId == _targetMerchId && _storeId == _inStoreId));
+                    ) && (_merchId == _targetMerchId && _storeId == _outStoreId));
+                //.PermitIf(Trigger.RequestExit, State.RequestExited, () =>
+                //    (
+                //     (_requestType == (int)RequestType.MerchRequest && IsMerchUser()) ||
+                //     (_requestType == (int)RequestType.MerchSend && IsStoreUser()) ||
+                //     (_requestType == (int)RequestType.RequestStore && IsStoreUser()) ||
+                //     (_requestType == (int)RequestType.RequestMerch && IsStoreUser())
+                //    ) && (_merchId == _targetMerchId && _storeId == _inStoreId));
 
-            _machine.Configure(State.RequestExited)
-                .PermitReentryIf(Trigger.RequestExit, () =>
-                    (
-                     (_requestType == (int)RequestType.MerchRequest && IsMerchUser()) ||
-                     (_requestType == (int)RequestType.MerchSend && IsStoreUser()) ||
-                     (_requestType == (int)RequestType.RequestMerch && IsStoreUser()) ||
-                     (_requestType == (int)RequestType.RequestStore && IsStoreUser())
-                    ) && (_merchId == _targetMerchId && _storeId == _inStoreId))
-                .PermitIf(Trigger.Close, State.Closed, () =>
-                    (
-                     (_requestType == (int)RequestType.MerchRequest && IsMerchUser() && (_merchId == _targetMerchId && _storeId == _inStoreId)) ||
-                     (_requestType == (int)RequestType.MerchSend && IsMerchUser() && (_merchId == _targetMerchId && _storeId == _outStoreId)) ||
-                     (_requestType == (int)RequestType.RequestStore && IsStoreUser() && (_merchId == _targetMerchId && _storeId == _inStoreId)) ||
-                     (_requestType == (int)RequestType.RequestMerch && IsStoreUser() && (_merchId == _targetMerchId && _storeId == _inStoreId))
-                    ))
-                .PermitIf(Trigger.SendDeal, State.SendDealed, () =>
-                    (
-                     (_requestType == (int)RequestType.MerchRequest && IsStoreUser()) ||
-                        //(_requestType == (int)RequestType.MerchSend && IsMerchUser()) ||//总部是一次性派发
-                     (_requestType == (int)RequestType.RequestStore && IsStoreUser()) ||
-                     (_requestType == (int)RequestType.RequestMerch && IsMerchUser())
-                    ) && (_merchId == _targetMerchId && _storeId == _outStoreId))
-                .PermitIf(Trigger.RequestDeal, State.RequestDealed, () =>
-                    (
-                     (_requestType == (int)RequestType.MerchRequest && IsMerchUser()) ||
-                        //(_requestType == (int)RequestType.MerchSend && IsStoreUser()) || //总部是一次性派发
-                     (_requestType == (int)RequestType.RequestStore && IsStoreUser()) ||
-                     (_requestType == (int)RequestType.RequestMerch && IsStoreUser())
-                    ) && (_merchId == _targetMerchId && _storeId == _inStoreId));
+            //_machine.Configure(State.RequestExited)
+            //    .PermitReentryIf(Trigger.RequestExit, () =>
+            //        (
+            //         (_requestType == (int)RequestType.MerchRequest && IsMerchUser()) ||
+            //         (_requestType == (int)RequestType.MerchSend && IsStoreUser()) ||
+            //         (_requestType == (int)RequestType.RequestMerch && IsStoreUser()) ||
+            //         (_requestType == (int)RequestType.RequestStore && IsStoreUser())
+            //        ) && (_merchId == _targetMerchId && _storeId == _inStoreId))
+            //    .PermitIf(Trigger.Close, State.Closed, () =>
+            //        (
+            //         (_requestType == (int)RequestType.MerchRequest && IsMerchUser() && (_merchId == _targetMerchId && _storeId == _inStoreId)) ||
+            //         (_requestType == (int)RequestType.MerchSend && IsMerchUser() && (_merchId == _targetMerchId && _storeId == _outStoreId)) ||
+            //         (_requestType == (int)RequestType.RequestStore && IsStoreUser() && (_merchId == _targetMerchId && _storeId == _inStoreId)) ||
+            //         (_requestType == (int)RequestType.RequestMerch && IsStoreUser() && (_merchId == _targetMerchId && _storeId == _inStoreId))
+            //        ))
+            //    .PermitIf(Trigger.SendDeal, State.SendDealed, () =>
+            //        (
+            //         (_requestType == (int)RequestType.MerchRequest && IsStoreUser()) ||
+            //            //(_requestType == (int)RequestType.MerchSend && IsMerchUser()) ||//总部是一次性派发
+            //         (_requestType == (int)RequestType.RequestStore && IsStoreUser()) ||
+            //         (_requestType == (int)RequestType.RequestMerch && IsMerchUser())
+            //        ) && (_merchId == _targetMerchId && _storeId == _outStoreId))
+            //    .PermitIf(Trigger.RequestDeal, State.RequestDealed, () =>
+            //        (
+            //         (_requestType == (int)RequestType.MerchRequest && IsMerchUser()) ||
+            //            //(_requestType == (int)RequestType.MerchSend && IsStoreUser()) || //总部是一次性派发
+            //         (_requestType == (int)RequestType.RequestStore && IsStoreUser()) ||
+            //         (_requestType == (int)RequestType.RequestMerch && IsStoreUser())
+            //        ) && (_merchId == _targetMerchId && _storeId == _inStoreId));
 
             //_machine.Configure(State.RequestDealVerifiedPass)
             //    //.PermitIf(Trigger.Cancel, State.RequestDealed, () => IsMerchUser() && (_merchId == _targetMerchId && _storeId == ""))
@@ -319,9 +319,9 @@ namespace XCCloudService.WorkFlow
             _machine.Configure(State.Closed)
                 .OnEntry(t => OnClosed(), "流程结束");
             _machine.Configure(State.Canceled)
-                .OnEntryFrom(Trigger.Cancel, sendDealCancel, "总部派货撤销")
-                .PermitIf(Trigger.RequestExit, State.RequestExited, () =>
-                    (_requestType == (int)RequestType.MerchSend && IsStoreUser()) && (_merchId == _targetMerchId && _storeId == _inStoreId));
+                .OnEntryFrom(Trigger.Cancel, sendDealCancel, "总部派货撤销");
+                //.PermitIf(Trigger.RequestExit, State.RequestExited, () =>
+                //    (_requestType == (int)RequestType.MerchSend && IsStoreUser()) && (_merchId == _targetMerchId && _storeId == _inStoreId));
         }
 
         #region 属性

@@ -59,7 +59,7 @@
             <div class="layui-inline">
                 <label class="layui-form-label">应付金额</label>
                 <div class="layui-input-inline">
-                    <input type="text" class="layui-input" id="Payable">
+                    <input type="text" class="layui-input" id="Payable" readonly>
                     <span class="layui-unit">元</span>
                 </div>
             </div>
@@ -73,7 +73,7 @@
             <div class="layui-inline">
                 <label class="layui-form-label">优惠金额</label>
                 <div class="layui-input-inline">
-                    <input type="text" class="layui-input" id="Discount">
+                    <input type="text" class="layui-input" id="Discount" readonly>
                     <span class="layui-unit">元</span>
                 </div>
             </div>
@@ -103,6 +103,22 @@
     <form action="" class="layui-form layui-form-pane">
         <div class="layui-form-item">
             <div class="layui-inline">
+                <label class="layui-form-label">物流公司</label>
+                <div class="layui-input-inline">
+                    <select name="logisticsCompanyBack" id="logisticsCompanyBack"
+                            lay-filter="logisticsCompanyBack"></select>
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">物流单号</label>
+                <div class="layui-input-inline">
+                    <input type="text" class="layui-input" name="logisticsNoteBack" id="logisticsNoteBack">
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <div class="layui-inline">
                 <label class="layui-form-label">应退总额</label>
                 <div class="layui-input-inline">
                     <input type="text" class="layui-input" readonly id="shouldExit" style="color: red">
@@ -127,7 +143,7 @@
         <div class="layui-form-item">
             <label class="layui-form-label">备注</label>
             <div class="layui-input-block">
-                <input type="text" class="layui-input" id="exitNote">
+                <input type="text" class="layui-input" id="backNote">
             </div>
         </div>
     </form>
@@ -139,13 +155,14 @@
 <script src="js/jquery-1.8.3-min.js"></script>
 <script src="layui/layui.js"></script>
 <script src="js/storeSystem.js"></script>
+<script src="js/commonXC.js"></script>
 <script>
 
     let xc = xcActionSystem.prototype;
     let token = xc.getStorage('token');
     let merchId = JSON.parse(xc.getStorage('logMsg')).MerchID;
     let storeId = JSON.parse(xc.getStorage('logMsg')).StoreID;
-    let LogType=JSON.parse(xc.getStorage('logMsg')).logType;
+    let LogType = JSON.parse(xc.getStorage('logMsg')).logType;
     let cols = [
         {field: 'ID', title: '入库流水号', align: 'center', sort: true}
         , {field: 'StoreName', title: '入库门店', align: 'center', sort: true}
@@ -174,7 +191,8 @@
     //退货申请单
     let arrBack = [];
     let exitDetails = [];
-    let _sourceOrderIndex='';
+    let _sourceOrderIndex = '';
+    let logisticsCompanyBack = '';
     layui.use(['form', 'layer', 'table'], function () {
         let form = layui.form;
         let layer = layui.layer;
@@ -185,16 +203,19 @@
         form.on('select(Supplier)', function (data) {
             $('#SupplierVal').val(data.value)
         });
+        form.on('select(logisticsCompanyBack)', function (data) {
+            data.value == '-请选择-' ? logisticsCompanyBack = '' : logisticsCompanyBack = data.value;
+        });
         //新增入库记录
         $('#add').on('click', function () {
-             storageGood = [];
-             index;
-             id = '';
-             inDepot = '';
+            storageGood = [];
+            index;
+            id = '';
+            inDepot = '';
             //退货申请单
-             arrBack = [];
-             exitDetails = [];
-             _sourceOrderIndex='';
+            arrBack = [];
+            exitDetails = [];
+            _sourceOrderIndex = '';
             xc.getDepotDic(merchId, storeId, token, layer, form, 'inDepot');
             xc.getGoodSupplierDic(token, layer, form, 'Supplier');
             newFoodLevelTable(table, storageGood, layer, form);
@@ -242,15 +263,30 @@
             let value = obj.value; //得到修改后的值
             let key = obj.field; //当前编辑的字段名
             let index = obj.data.LAY_TABLE_INDEX; //所在行的所有相关数据
-            storageGood[index][key] = value;
+            this.value = (this.value.match(/\d+(\.\d{0,2})?/) || [''])[0] == '' ? 0 : (this.value.match(/\d+(\.\d{0,2})?/) || [''])[0];
+            storageGood[index][key] = (this.value.match(/\d+(\.\d{0,2})?/) || [''])[0] == '' ? 0 : (this.value.match(/\d+(\.\d{0,2})?/) || [''])[0];
+            let sumMoney = 0;
+            for (let i in storageGood) {
+                sumMoney = parseFloat(sumMoney) +
+                    parseFloat(storageGood[i].StorageCount == '' ? 0 : storageGood[i].StorageCount) * parseFloat(storageGood[i].TaxPrice == '' ? 0 : storageGood[i].TaxPrice);
+            }
+
+            $('#Payable').val(parseFloat(sumMoney));
+            $('#exitTotal').val(parseFloat(sumMoney) - parseFloat($('#Payment').val() == '' ? 0 : $('#Discount').val()));
+            $('#Discount').val(parseFloat(sumMoney) - parseFloat($('#Payment').val() == '' ? 0 : $('#Payment').val()));
+
         });
+        $('#Payment').on('keyup', function () {
+            $('#Discount').val(parseFloat($('#exitTotal').val()) - parseFloat($(this).val()));
+        })
         //监听退货列表
         table.on('edit(backGoodTable)', function (obj) { //注：edit是固定事件名，test是table原始容器的属性 lay-filter="对应的值"
             let value = obj.value; //得到修改后的值
             let key = obj.field; //当前编辑的字段名
             let index = obj.data.LAY_TABLE_INDEX; //所在行的所有相关数据
-            arrBack[index][key] = value;
-            arrBack[index].ExitAll = value * arrBack[index].ExitPrice;
+            this.value = (this.value.match(/\d+(\.\d{0,2})?/) || [''])[0] == '' ? 0 : (this.value.match(/\d+(\.\d{0,2})?/) || [''])[0];
+            arrBack[index][key] = (this.value.match(/\d+(\.\d{0,2})?/) || [''])[0] == '' ? 0 : (this.value.match(/\d+(\.\d{0,2})?/) || [''])[0];
+            arrBack[index].ExitAll = this.value * arrBack[index].ExitPrice;
             //已经勾选了 需要改变值
             if (exitDetails.length > 0) {
                 for (let i in exitDetails) {
@@ -262,15 +298,16 @@
             }
             let sumExit = 0;
             for (let i in exitDetails) {
-                sumExit = parseInt(sumExit) + parseInt(exitDetails[i].ExitCount);
+                sumExit = parseFloat(sumExit) + parseFloat(exitDetails[i].ExitCount == '' ? 0 : exitDetails[i].ExitCount) * parseFloat(exitDetails[i].ExitPrice);
             }
-            $('#shouldExit').val(parseInt(sumExit) * obj.data.ExitPrice);
-            $('#exitTotal').val(parseInt(sumExit) * obj.data.ExitPrice - parseInt($('#exitCost').val() == '' ? 0 : $('#exitCost').val()));
+            $('#shouldExit').val(parseFloat(sumExit));
+            $('#exitTotal').val(parseFloat(sumExit) - parseFloat($('#exitCost').val() == '' ? 0 : $('#exitCost').val()));
             newBackGoodTable(table, arrBack);
         });
         table.on('checkbox(backGoodTable)', function (obj) {
             if (obj.checked) {
                 exitDetails.push({
+                    'ID': obj.data.ID,
                     'GoodID': obj.data.GoodID,
                     'ExitCount': obj.data.ExitCount,
                     'ExitPrice': obj.data.ExitPrice
@@ -292,10 +329,10 @@
             }
             let sumExit = 0;
             for (let i in exitDetails) {
-                sumExit += parseInt(exitDetails[i].ExitCount);
+                sumExit += parseFloat(exitDetails[i].ExitCount);
             }
-            $('#shouldExit').val(parseInt(sumExit) * obj.data.ExitPrice || '');
-            $('#exitTotal').val(parseInt(sumExit) * obj.data.ExitPrice - parseInt($('#exitCost').val() == '' ? 0 : $('#exitCost').val()) || '');
+            $('#shouldExit').val(parseFloat(sumExit) * obj.data.ExitPrice || '');
+            $('#exitTotal').val(parseFloat(sumExit) * obj.data.ExitPrice - parseFloat($('#exitCost').val() == '' ? 0 : $('#exitCost').val()) || '');
         });
         //保存退货
 
@@ -305,14 +342,17 @@
                 layer.msg('请选择需要退掉的商品')
             } else {
                 for (let i in exitDetails) {
-                    sumExit += parseInt(exitDetails[i].ExitCount);
+                    sumExit += parseFloat(exitDetails[i].ExitCount);
                 }
                 let _obj = {
-                    'sourceOrderIndex': _sourceOrderIndex,
+                    'sourceOrderID': _sourceOrderIndex,
                     'exitCount': sumExit,
                     'exitCost': $('#exitCost').val(),
                     'exitTotal': $('#exitTotal').val(),
                     'exitDetails': exitDetails,
+                    'logistType': logisticsCompanyBack,
+                    'logistOrderId': $('#logisticsNoteBack').val(),
+                    'note': $('#backNote').val(),
                     'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'
                 };
                 let parseJson = JSON.stringify(_obj);
@@ -329,7 +369,7 @@
                                 location.reload()
                             })
                         } else {
-                            layer.msg(data.result_msg);
+                            layer.msg(data.result_msg || data.return_msg);
                         }
                     }
                 })
@@ -341,7 +381,7 @@
             let _data = obj.data;
             let layevent = obj.event;
             id = _data.ID;
-            _sourceOrderIndex=_data.StorageOrderID;
+
             if (layevent === 'back') {
                 let _obj = {'id': _data.ID, 'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'};
                 let parseJson = JSON.stringify(_obj);
@@ -354,6 +394,8 @@
                         data = JSON.parse(data);
                         console.log(data);
                         if (data.result_code == 1) {
+                            _sourceOrderIndex = data.result_data.StorageOrderID;
+                            xc.setSelect('物流公司', 'logisticsCompanyBack');
                             arrBack = [];
                             exitDetails = [];
                             let arr = data.result_data.GoodStorageDetail;
@@ -365,7 +407,7 @@
                                     'GoodTypeStr': arr[i].GoodTypeStr,
                                     'RemainCount': arr[i].RemainCount,
                                     'StorageCount': arr[i].StorageCount,
-                                    'ExitedCount':arr[i].ExitedCount,
+                                    'ExitedCount': arr[i].ExitedCount,
                                     'ExitPrice': arr[i].Price,
                                     'ExitCount': '',
                                     'ExitAll': ''
@@ -380,7 +422,7 @@
                                 content: $('#backGood')
                             })
                         } else {
-                            layer.msg(data.result_msg);
+                            layer.msg(data.result_msg || data.return_msg);
                         }
                     }
                 })
@@ -400,7 +442,7 @@
                                     location.reload()
                                 })
                             } else {
-                                layer.msg(data.result_msg);
+                                layer.msg(data.result_msg || data.return_msg);
                             }
                         }
                     })
@@ -421,7 +463,7 @@
                                     location.reload()
                                 })
                             } else {
-                                layer.msg(data.result_msg);
+                                layer.msg(data.result_msg || data.return_msg);
                             }
                         }
                     })
@@ -442,7 +484,7 @@
                                     location.reload()
                                 })
                             } else {
-                                layer.msg(data.result_msg);
+                                layer.msg(data.result_msg || data.return_msg);
                             }
                         }
                     })
@@ -466,10 +508,10 @@
             newFoodLevelTable(table, storageGood, layer, form);
             layer.close(index);
         });
-        $('#exitCost').blur(function () {
-            let a = parseInt($('#shouldExit').val());
-            let b = parseInt($('#exitCost').val());
-            $('#exitTotal').val(parseInt(a - b));
+        $('#exitCost').keyup(function () {
+            let a = parseFloat($('#shouldExit').val());
+            let b = parseFloat($('#exitCost').val());
+            $('#exitTotal').val(parseFloat(a - b));
         });
         //保存入库记录
         $('#save').on('click', function () {
@@ -580,7 +622,6 @@
                 , {field: 'ExitedCount', title: '已退货', align: 'center', width: 90}
                 , {field: 'ExitCount', title: '退货数量', align: 'center', edit: true, width: 90}
                 , {field: 'ExitAll', title: '退货金额', align: 'center', width: 90}
-                , {fixed: 'right', title: '操作', width: 140, align: 'center', toolbar: '#barDemo2'}
             ]]
             , page: {page: true, limits: [5, 10, 15, 20]}
             , limit: 5
