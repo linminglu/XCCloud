@@ -121,12 +121,10 @@
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_DiscountRule" Width="1.5" PointX="17.375" PointY="33.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Base_StoreDogList" Width="1.5" PointX="23.375" PointY="39.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_WorkStation_GoodList" Width="1.5" PointX="11.375" PointY="40.75" />
-        <EntityTypeShape EntityType="XCCloudDBModel.Log_GameAlarm" Width="1.5" PointX="39.375" PointY="33.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Base_DeviceInfo" Width="1.5" PointX="7.375" PointY="26.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_GameAPP_MemberRule" Width="1.5" PointX="0.75" PointY="6.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_GoodInventory" Width="1.5" PointX="0.75" PointY="41.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_GoodStock_Record" Width="1.5" PointX="25.375" PointY="38.75" />
-        <EntityTypeShape EntityType="XCCloudDBModel.Flw_MemberCard_Exit" Width="1.5" PointX="41.375" PointY="13.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_GameFreeLotteryRule" Width="1.5" PointX="41.375" PointY="18.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Base_DeviceInfo_Ext" Width="1.5" PointX="41.375" PointY="22.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_GameInfo" Width="1.5" PointX="17.375" PointY="41.75" />
@@ -182,6 +180,9 @@
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_MemberLevelFree" Width="1.5" PointX="45.375" PointY="19.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_MemberLevelFree" Width="1.5" PointX="41.375" PointY="9.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Data_GoodExitInfo" Width="1.5" PointX="45.375" PointY="43.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.Flw_MemberCard_Exit" Width="1.5" PointX="39.375" PointY="13.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.Log_GameAlarm" Width="1.5" PointX="0.75" PointY="46.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.Flw_MemberCard_LevelChange" Width="1.5" PointX="45.375" PointY="24.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

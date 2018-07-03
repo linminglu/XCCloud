@@ -217,7 +217,7 @@ namespace XCCloudService.WorkFlow
                 .PermitIf(Trigger.RequestDeal, State.RequestDealed, () =>
                     (
                      (_requestType == (int)RequestType.MerchRequest && IsMerchUser()) ||
-                        //(_requestType == (int)RequestType.MerchSend && IsStoreUser()) || //总部是一次性派发
+                     (_requestType == (int)RequestType.MerchSend && IsStoreUser()) ||
                      (_requestType == (int)RequestType.RequestStore && IsStoreUser()) ||
                      (_requestType == (int)RequestType.RequestMerch && IsStoreUser())
                     ) && (_merchId == _targetMerchId && _storeId == _inStoreId))

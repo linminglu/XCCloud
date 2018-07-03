@@ -1456,6 +1456,7 @@ namespace XCCloudService.Api.XCCloud
                 model.Deposit = card.Deposit.Value;
                 model.EndDate = card.EndDate.HasValue ? card.EndDate.Value.ToString("yyyy-MM-dd") : "";
                 model.CardAvatar = card.CardPhoto ?? "";
+                model.LockList = MemberBusiness.GetMemberCardLockState(card.IsLock.Value);
                 //会员信息
                 model.MemberInfo = new CardMemberInfoModel()
                 {
@@ -1505,13 +1506,15 @@ namespace XCCloudService.Api.XCCloud
                     EndDate = t.EndDate,
                     UserName = t.CardName,
                     Birthday = t.CardBirthDay,
-                    Gender = t.CardSex
+                    Gender = t.CardSex,
+                    IsLock = t.IsLock
                 }).ToList().Select(t => new ChildCardModel()
                 {
                     ChildCardId = t.ChildCardId,
                     ChildICCardId = t.ChildICCardId,
                     CardShape = "普通卡",
                     Deposit = t.Deposit.Value.ToString(),
+                    LockList = MemberBusiness.GetMemberCardLockState(t.IsLock.Value),
                     EndDate = t.EndDate.HasValue ? t.EndDate.Value.ToString("yyyy-MM-dd") : "",
                     ChildCardMemberInfo = new ChildCardMemberInfoModel()
                     {
@@ -1531,6 +1534,178 @@ namespace XCCloudService.Api.XCCloud
         }
         #endregion 
 
+        #region 会员卡解锁
+        /// <summary>
+        /// 会员卡解锁
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
+        [Authorize(Roles = "StoreUser")]
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object cardUnLock(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                string errMsg = string.Empty;
+                string icCardId = dicParas.ContainsKey("icCardId") ? dicParas["icCardId"].ToString() : string.Empty;
+                string strLockType = dicParas.ContainsKey("lockType") ? dicParas["lockType"].ToString() : string.Empty;
+                if (string.IsNullOrEmpty(icCardId))
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员卡无效");
+                }
+
+                int lockType = strLockType.Toint(-1);
+                if (lockType == -1)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "无效的解锁参数");
+                }
+
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+                string merchID = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+
+                //判断会员卡是否存在或是否存在多张相同卡号的会员卡
+                if (!MemberBusiness.ExistsCardByICCardId(icCardId, merchID, storeId, out errMsg))
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
+                }
+
+                //查询卡实体信息
+                Data_Member_Card card = Data_Member_CardService.I.GetModels(t => t.ICCardID == icCardId).FirstOrDefault();
+                if (card == null)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员卡不存在");
+                }
+
+                List<char> strLockBinary = Convert.ToString(card.IsLock.Value, 2).PadLeft(8, '0').ToCharArray().Reverse().ToList();
+                if (strLockBinary[lockType] == '1')
+                {
+                    strLockBinary[lockType] = '0';
+
+                    strLockBinary.Reverse();
+
+                    string strLock = string.Join("", strLockBinary);
+
+                    int lockState = Convert.ToInt32(strLock, 2);
+
+                    card.IsLock = lockState;
+                    card.LastStore = storeId;
+                    card.UpdateTime = DateTime.Now;
+                    if (!Data_Member_CardService.I.Update(card, false))
+                    {
+                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "解锁失败");
+                    }
+                }       
+
+                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.T, "");
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+        #endregion 
+
+        #region 会员卡解锁
+        /// <summary>
+        /// 会员卡解锁
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
+        [Authorize(Roles = "StoreUser")]
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object cardLevelChange(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                string errMsg = string.Empty;
+                string icCardId = dicParas.ContainsKey("icCardId") ? dicParas["icCardId"].ToString() : string.Empty;
+                string strLevelId = dicParas.ContainsKey("levelId") ? dicParas["levelId"].ToString() : string.Empty;
+                if (string.IsNullOrEmpty(icCardId))
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员卡无效");
+                }
+
+                int memberLevelId = strLevelId.Toint(-1);
+                if (memberLevelId == -1)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "新会员级别参数无效");
+                }
+                Data_MemberLevel level = Data_MemberLevelService.I.GetModels(t => t.MemberLevelID == memberLevelId).FirstOrDefault();
+                if(level == null)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员级别无效");
+                }
+
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+                string merchID = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string workStation = (userTokenKeyModel.DataModel as TokenDataModel).WorkStation;
+                int userId = userTokenKeyModel.LogId.Toint(0);
+
+                //判断会员卡是否存在或是否存在多张相同卡号的会员卡
+                if (!MemberBusiness.ExistsCardByICCardId(icCardId, merchID, storeId, out errMsg))
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
+                }
+
+                //查询卡实体信息
+                Data_Member_Card card = Data_Member_CardService.I.GetModels(t => t.ICCardID == icCardId).FirstOrDefault();
+                if (card == null)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员卡不存在");
+                }
+                int oldLevel = card.MemberLevelID.Value;
+
+                //当前班次
+                Flw_Schedule schedule = Flw_ScheduleService.I.GetModels(t => t.StoreID == storeId && t.State == 1).FirstOrDefault();
+                if (schedule == null)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "当前班次为空，不能进行赠币操作");
+                }
+
+                using (TransactionScope ts = new TransactionScope(TransactionScopeOption.RequiresNew))
+                {
+                    card.MemberLevelID = level.MemberLevelID;
+                    card.LastStore = storeId;
+                    card.UpdateTime = DateTime.Now;
+                    if (!Data_Member_CardService.I.Update(card, false))
+                    {
+                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员卡等级更新失败");
+                    }
+
+                    Flw_MemberCard_LevelChange levelChange = new Flw_MemberCard_LevelChange();
+                    levelChange.ID = RedisCacheHelper.CreateStoreSerialNo(storeId);
+                    levelChange.MerchID = merchID;
+                    levelChange.StoreID = storeId;
+                    levelChange.MemberID = card.MemberID;
+                    levelChange.ICCardID = card.ICCardID;
+                    levelChange.OldMemberLevelID = card.MemberLevelID;
+                    levelChange.NewMemberLevleID = level.MemberLevelID;
+                    levelChange.ChangeType = 0;
+                    levelChange.OrderID = string.Empty;
+                    levelChange.OpTime = DateTime.Now;
+                    levelChange.OpUserID = userId;
+                    levelChange.ScheduleID = schedule.ID;
+                    levelChange.Workstation = workStation;
+                    levelChange.CheckDate = schedule.CheckDate;
+                    levelChange.Note = "手动变更会员卡等级";
+                    if (!Flw_MemberCard_LevelChangeService.I.Add(levelChange, false))
+                    {
+                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "添加会员卡等级变更记录失败");
+                    }
+
+                    ts.Complete();
+                }
+
+                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.T, "");
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+        #endregion 
         #endregion
 
         #region 退款/退卡
@@ -3414,7 +3589,7 @@ namespace XCCloudService.Api.XCCloud
         /// <returns></returns>
         [Authorize(Roles = "StoreUser")]
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
-        public object getGiveCoinInfoList(Dictionary<string, object> dicParas)
+        public object getMemberFreeCoinInfoList(Dictionary<string, object> dicParas)
         {
             try
             {
@@ -3424,6 +3599,17 @@ namespace XCCloudService.Api.XCCloud
                 if (string.IsNullOrEmpty(iccardId))
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员卡号无效");
+                }
+                //获取吧台售币机处别类别
+                int? deviceBalanceIndex = null;
+                int deviceId = strDeviceId.Toint(0);
+                if (deviceId > 0)
+                {
+                    Base_DeviceInfo_Ext deviceExt = Base_DeviceInfo_ExtService.I.GetModels(t => t.DeviceID == deviceId).FirstOrDefault();
+                    if(deviceExt != null)
+                    {
+                        deviceBalanceIndex = deviceExt.BalanceIndex;
+                    }
                 }
 
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
@@ -3462,259 +3648,7 @@ namespace XCCloudService.Api.XCCloud
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "当前班次为空，不能进行赠币操作");
                 }
 
-                //当前商户余额类别
-                var balanceTypeList = Dict_BalanceTypeService.I.GetModels(t=> t.MerchID == merchID).Select(t=> new {
-                    Id = t.ID,
-                    Unit = t.Unit,
-                    TypeName = t.TypeName,
-                    MappingType = t.MappingType
-                }).ToList();
-
-                //预赠币
-                DateTime now = DateTime.Now.Date;
-                //当前用户所有可赠币规则
-                var memberFreeQuery = Flw_MemberLevelFreeService.I.GetModels(t => t.MerchID == merchID && t.StoreID == storeId && t.MemberID == member.ID && t.EndDate >= now)
-                                      .Select(t => new
-                                      {
-                                          Id = t.ID,
-                                          FreeID = t.FreeID,
-                                          ChargeTotal = t.ChargeTotal,
-                                          FreeBalanceIndex = t.FreeBalanceType,
-                                          FreeCount = t.FreeCount,
-                                          MinSpaceDays = t.MinSpaceDays,
-                                          OnceFreeCount = t.OnceFreeCount,
-                                          EndDate = t.EndDate
-                                      }).ToList();
-
-                //赠币明细集合，按MemberFreeID分组，取最后赠送时间及最小剩余数量
-                var freeDetailQuery = Flw_MemberLevelFree_DetailService.I.GetModels(t => t.MerchID == merchID && t.StoreID == storeId && t.Remain > 0).Select(t => new
-                                      {
-                                          MemberFreeId = t.MemberFreeID,
-                                          RealTime = t.RealTime,
-                                          Remain = t.Remain
-                                      }).ToList()
-                                      .Where(t => memberFreeQuery.Any(f => f.Id == t.MemberFreeId))
-                                      .GroupBy(t => t.MemberFreeId).Select(t => new
-                                      {
-                                          MemberFreeId = t.Key,
-                                          RealTime = t.Max(m => m.RealTime),
-                                          Remain = t.Min(m => m.Remain)
-                                      }).ToList();
-
-                var freeTempQuery = from a in memberFreeQuery
-                                    //join c in Data_MemberLevelFreeService.I.GetModels(t=>t.MerchID == merchID && t.MemberLevelID == memberCard.MemberLevelID).ToList() on a.FreeID equals c.ID
-                                    join b in freeDetailQuery on a.Id equals b.MemberFreeId into b1
-                                    from tt in b1.DefaultIfEmpty()
-                                    select new
-                                    {
-                                        Id = a.Id,
-                                        //ExpireDays = c.ExpireDays,
-                                        ChargeTotal = a.ChargeTotal,
-                                        FreeBalanceIndex = a.FreeBalanceIndex,
-                                        FreeCount = a.FreeCount,
-                                        MinSpaceDays = a.MinSpaceDays,
-                                        OnceFreeCount = a.OnceFreeCount,
-                                        EndDate = a.EndDate,
-                                        RealTime = tt != null ? tt.RealTime : null,
-                                        Remain = tt != null ? tt.Remain.Value : a.FreeCount / a.OnceFreeCount
-                                    };
-
-                //预赠币详情
-                var freeQuery = freeTempQuery.Where(t => t.Remain > 0).ToList();
-                
-                //赠币集合
-                List<MemberFreeModel> list = new List<MemberFreeModel>();
-                foreach (var item in freeQuery)
-                {
-                    var balanceTypeModel = balanceTypeList.FirstOrDefault(t => t.Id == item.FreeBalanceIndex);
-                    int canGetCount = 1;
-                    if(item.OnceFreeCount != 0)
-                    {
-                        canGetCount = item.FreeCount.Value / item.OnceFreeCount.Value;
-                    }
-                    MemberFreeModel mf = new MemberFreeModel();
-                    mf.Title = "消费预赠币";
-                    mf.FreeCoinName = item.OnceFreeCount + balanceTypeModel.Unit;
-                    mf.Content = string.Format("单笔消费满{0}元送{1}{2}，每次间隔{3}天，共分{4}次领", item.ChargeTotal, item.FreeCount, balanceTypeModel.TypeName, item.MinSpaceDays, canGetCount);
-                    mf.RemainCount = item.Remain.Value;
-                    mf.RemainFrees = (item.Remain.Value * item.OnceFreeCount.Value).ToString() + balanceTypeModel.Unit;
-                    mf.EndDate = item.EndDate.HasValue ? item.EndDate.Value.ToString("yyyy-MM-dd") : now.ToString("yyyy-MM-dd");
-                    FreeDetailModel detail = new FreeDetailModel();
-                    detail.BalanceIndex = item.FreeBalanceIndex.Value;
-                    detail.BalanceName = balanceTypeModel.TypeName;
-                    detail.Quantity = item.OnceFreeCount.Value;
-                    detail.IsDeviceOut = balanceTypeModel.MappingType == 1 ? 1 : 0; //如果映射为代币(MappingType = 1)的，可以通过设备出实物币
-                    mf.FreeDetails.Add(detail);
-                    list.Add(mf);
-                }
-
-                //生日赠币
-                if (level.FoodID.HasValue && level.FoodID.Value > 0)
-                {
-                    //取最后一条生日赠币记录
-                    Flw_MemberCard_Free birthdayFree = Flw_MemberCard_FreeService.I.GetModels(t => t.MerchID == merchID && t.StoreID == storeId && t.MemberID == member.ID && t.FreeType == 2)
-                                                        .OrderByDescending(t => t.CheckDate).FirstOrDefault();
-                    //判断最后的生日赠币记录是否小于当前年份
-                    if (member.Birthday.HasValue && (birthdayFree == null || birthdayFree.CheckDate.Value.Year < now.Year))
-                    {
-                        var foodDetail = Data_Food_DetialService.I.GetModels(t => t.FoodID == level.FoodID).Select(t => new
-                        {
-                            BalanceIndex = t.ContainID,
-                            Qty = t.ContainCount
-                        }).ToList();
-
-                        string endDate = string.Empty;
-                        bool isBirthdayFree = false;
-                        string freeType = string.Empty;
-                        DateTime birthday = member.Birthday.Value;
-                        switch (level.BirthdayFree)
-                        {
-                            //1生日当月 2生日周内 3生日当天
-                            case 1:
-                                if (member.Birthday.Value.Month == now.Month)
-                                {
-                                    freeType = "生日当月";
-                                    DateTime firstDay = new DateTime(now.Year, now.Month, 1);//当前月第一天
-                                    DateTime lastDay = firstDay.AddMonths(1).AddDays(-1);//当前月最后一天
-                                    endDate = lastDay.ToString("yyyy-MM-dd");
-                                    isBirthdayFree = true;
-                                }
-                                break;
-                            case 2:
-                                //获取当前星期几
-                                int week = Convert.ToInt32(DateTime.Now.DayOfWeek.ToString("d"));
-                                //获取本周的周一和周日
-                                DateTime mondayDate = now.AddDays(0 - (week - 1));
-                                DateTime sundayDate = now.AddDays(7 - week);
-                                //获取会员今年的生日当前
-                                DateTime theDay = birthday.AddYears(now.Year - birthday.Year);
-                                //判断生日是否在本周
-                                if (theDay >= mondayDate && theDay <= sundayDate)
-                                {
-                                    freeType = "生日周内";
-                                    endDate = sundayDate.ToString("yyyy-MM-dd");
-                                    isBirthdayFree = true;
-                                }
-                                break;
-                            case 3:
-                                if (member.Birthday.Value.Day == now.Day)
-                                {
-                                    freeType = "生日当天";
-                                    endDate = now.ToString("yyyy-MM-dd");
-                                    isBirthdayFree = true;
-                                }
-                                break;
-                        }
-                        if(isBirthdayFree)
-                        {
-                            string strFreeContent = string.Empty;
-                            MemberFreeModel mf = new MemberFreeModel();
-                            mf.Title = "生日送币";
-                            foreach (var item in foodDetail)
-                            {
-                                var balanceTypeModel = balanceTypeList.FirstOrDefault(t => t.Id == item.BalanceIndex);
-                                FreeDetailModel detail = new FreeDetailModel();
-                                detail.BalanceIndex = item.BalanceIndex.Value;
-                                detail.BalanceName = balanceTypeModel.TypeName;
-                                detail.Quantity = item.Qty.Value;
-                                detail.IsDeviceOut = balanceTypeModel.MappingType == 1 ? 1 : 0; //如果映射为代币(MappingType = 1)的，可以通过设备出实物币
-                                mf.FreeDetails.Add(detail);
-                                strFreeContent += item.Qty + balanceTypeModel.TypeName + "、";                                
-                            }
-                            strFreeContent = strFreeContent.Trim("、".ToCharArray());
-                            mf.FreeCoinName = strFreeContent;
-                            mf.Content = string.Format("{0}送{1}", freeType, strFreeContent);
-                            mf.EndDate = endDate;
-                            list.Add(mf);
-                        }
-                    }
-                }
-                
-                //输赢赠币
-                if (level.FreeType.HasValue && level.FreeType.Value != 3 && level.FreeNeedWin.HasValue && level.FreeCoin.HasValue)
-                {
-                    //取最后输赢赠币记录
-                    Flw_MemberCard_Free winOrLoseFree = Flw_MemberCard_FreeService.I.GetModels(t => t.MerchID == merchID && t.StoreID == storeId && t.MemberID == member.ID && t.FreeType == 3)
-                                                        .OrderByDescending(t => t.CheckDate).FirstOrDefault();
-
-                    if (winOrLoseFree == null || winOrLoseFree.CheckDate < schedule.CheckDate)
-                    {
-                        //上一个营业日期
-                        DateTime checkDate = schedule.CheckDate.Value.AddDays(-1);
-                        //获取上一个营业日期当前客户的投币、退币总数集合
-                        var deviceData = Flw_DeviceDataService.I.GetModels(t => t.MerchID == merchID && t.StoreID == storeId && t.MemberID == member.ID && t.State == 1 && t.BalanceIndex == level.WinBalanceIndex && (t.BusinessType == 3 || t.BusinessType == 5)).Select(t => new
-                        {
-                            BusinessType = t.BusinessType,
-                            BalanceIndex = t.BalanceIndex,
-                            Coin = t.Coin,
-                            CheckDate = t.CheckDate
-                        }).ToList().Where(t => t.CheckDate.Value == checkDate).GroupBy(t => new { type = t.BusinessType })
-                        .Select(t => new
-                        {
-                            BusinessType = t.Key.type,
-                            Count = t.Sum(d => d.Coin)
-                        }).ToList();
-
-                        //上一个营业日期投币、退步总数
-                        decimal inCoins = 0, outCoins = 0;
-                        var inCoinData = deviceData.FirstOrDefault(t => t.BusinessType == 3);
-                        if (inCoinData != null)
-                        {
-                            inCoins = inCoinData.Count.HasValue ? inCoinData.Count.Value : 0;
-                        }
-                        var outCoinData = deviceData.FirstOrDefault(t => t.BusinessType == 5);
-                        if (outCoinData != null)
-                        {
-                            outCoins = outCoinData.Count.HasValue ? outCoinData.Count.Value : 0;
-                        }
-
-                        string freeType = string.Empty;
-                        bool isFree = false;
-                        decimal difference = inCoins - outCoins;
-                        int needQty = level.FreeNeedWin.Value;//需要到达的输赢数
-                        switch (level.FreeType.Value)
-                        {
-                            case 0://输
-                                if (difference < 0 && Math.Abs(difference) >= needQty)
-                                {
-                                    freeType = "输";
-                                    isFree = true;
-                                }
-                                break;
-                            case 1://赢
-                                if (difference > 0 && difference >= needQty)
-                                {
-                                    freeType = "赢";
-                                    isFree = true;
-                                }
-                                break;
-                            case 2://输或赢
-                                if (Math.Abs(difference) >= needQty)
-                                {
-                                    freeType = "输或赢";
-                                    isFree = true;
-                                }
-                                break;
-                        }
-                        if (isFree)
-                        {
-                            var balanceTypeModel = balanceTypeList.FirstOrDefault(t => t.Id == level.WinBalanceIndex);
-
-                            MemberFreeModel mf = new MemberFreeModel();
-                            mf.Title = "输赢送币";
-                            mf.FreeCoinName = level.FreeCoin + balanceTypeModel.TypeName;
-                            mf.Content = string.Format("上一营业日{0}{1}{2}送{3}", freeType, needQty, balanceTypeModel.TypeName, mf.FreeCoinName);
-                            mf.EndDate = now.ToString("yyyy-MM-dd");
-                            FreeDetailModel detail = new FreeDetailModel();
-                            detail.BalanceIndex = level.WinBalanceIndex.Value;
-                            detail.BalanceName = balanceTypeModel.TypeName;
-                            detail.Quantity = level.FreeCoin.Value;
-                            detail.IsDeviceOut = balanceTypeModel.MappingType == 1 ? 1 : 0; //如果映射为代币(MappingType = 1)的，可以通过设备出实物币
-                            mf.FreeDetails.Add(detail);
-                            list.Add(mf);
-                        }
-                    }
-                }
+                List<MemberFreeModel> list = GetFreeCoinList(merchID, storeId, member, level, schedule, deviceBalanceIndex);
 
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, list);
             }
@@ -3723,9 +3657,496 @@ namespace XCCloudService.Api.XCCloud
                 return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
             }
         }
-
         #endregion
 
+        #region 确认送币
+        /// <summary>
+        /// 确认送币
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
+        [Authorize(Roles = "StoreUser")]
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object confirmFreeCoin(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                string errMsg = string.Empty;
+                string iccardId = dicParas.ContainsKey("iccardId") ? dicParas["iccardId"].ToString() : string.Empty;
+                string strDeviceId = dicParas.ContainsKey("deviceId") ? dicParas["deviceId"].ToString() : string.Empty;
+                string strFreeRuleList = dicParas.ContainsKey("freeRuleList") ? dicParas["freeRuleList"].ToString() : string.Empty;
+                string strFreeCoinList = dicParas.ContainsKey("freeCoinList") ? dicParas["freeCoinList"].ToString() : string.Empty;
+                if (string.IsNullOrEmpty(iccardId))
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员卡号无效");
+                }
+
+                //赠币集合
+                List<ConfirmFreeModel> confirmFreeList = new List<ConfirmFreeModel>();
+                if (!string.IsNullOrEmpty(strFreeRuleList))
+                {
+                    confirmFreeList = JsonConvert.DeserializeObject<List<ConfirmFreeModel>>(strFreeRuleList);
+                }
+                else
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "请选择赠币信息");
+                }
+                if(confirmFreeList.Count == 0)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "提交的赠币信息无效");
+                }
+
+                //赠币集合
+                List<FreeCoinModel> confirmFreeCoinList = new List<FreeCoinModel>();
+                if (!string.IsNullOrEmpty(strFreeRuleList))
+                {
+                    confirmFreeCoinList = JsonConvert.DeserializeObject<List<FreeCoinModel>>(strFreeCoinList);
+                }
+                else
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "领取明细无效");
+                }
+                if (confirmFreeCoinList.Count == 0)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "赠币明细无效");
+                }
+
+                //获取吧台售币机处别类别
+                int? deviceBalanceIndex = null;
+                int deviceId = strDeviceId.Toint(0);
+                if (deviceId > 0)
+                {
+                    Base_DeviceInfo_Ext deviceExt = Base_DeviceInfo_ExtService.I.GetModels(t => t.DeviceID == deviceId).FirstOrDefault();
+                    if (deviceExt != null)
+                    {
+                        deviceBalanceIndex = deviceExt.BalanceIndex;
+                    }
+                }
+
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+                string merchID = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string workStation = (userTokenKeyModel.DataModel as TokenDataModel).WorkStation;
+                int userId = userTokenKeyModel.LogId.Toint(0);
+
+                //判断会员卡是否存在或是否存在多张相同卡号的会员卡
+                if (!MemberBusiness.ExistsCardByICCardId(iccardId, merchID, storeId, out errMsg))
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
+                }
+                //当前会员卡
+                Data_Member_Card memberCard = Data_Member_CardService.I.GetModels(t => t.MerchID == merchID && t.ICCardID == iccardId).FirstOrDefault();
+                //判断是否为附属卡
+                if (memberCard.CardType == 1)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "不支持附属卡");
+                }
+
+                Base_MemberInfo member = Base_MemberInfoService.I.GetModels(t => t.ID == memberCard.MemberID).FirstOrDefault();
+                if (member == null)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员信息无效");
+                }
+                //会员级别实体
+                Data_MemberLevel level = Data_MemberLevelService.I.GetModels(t => t.MemberLevelID == memberCard.MemberLevelID).FirstOrDefault();
+                if (level == null)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员卡级别无效");
+                }
+
+                //当前班次
+                Flw_Schedule schedule = Flw_ScheduleService.I.GetModels(t => t.StoreID == storeId && t.State == 1).FirstOrDefault();
+                if (schedule == null)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "当前班次为空，不能进行赠币操作");
+                }
+
+                List<MemberFreeModel> list = GetFreeCoinList(merchID, storeId, member, level, schedule, deviceBalanceIndex);
+
+                using (TransactionScope ts = new TransactionScope(TransactionScopeOption.RequiresNew))
+                {
+                    //更新赠送区余额
+                    foreach (var item in confirmFreeCoinList)
+                    {
+                        //赠币方式为存入卡时，更新余额
+                        if (item.freeCoinType == 2)
+                        {
+                            Data_Card_Balance_Free balanceFree = Data_Card_Balance_FreeService.I.GetModels(t => t.MerchID == merchID && t.CardIndex == memberCard.ID && t.BalanceIndex == item.balanceIndex).FirstOrDefault();
+                            if (deviceBalanceIndex == null && !MemberBusiness.UpdateBalanceFree(merchID, storeId, memberCard.ID, item))
+                            {
+                                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "更新余额失败");
+                            }
+                        }
+                    }
+
+                    //吧台提交的赠币规则列表
+                    var MemberFreeList = list.Where(t => confirmFreeList.Any(f => f.freeId == t.FreeId && f.freeType == f.freeType)).ToList();
+
+                    DateTime now = DateTime.Now;
+                    //添加赠币记录
+                    foreach (var item in MemberFreeList)
+                    {
+                        if (item.FreeType == 1)//预赠币
+                        {
+                            var details = Flw_MemberLevelFree_DetailService.I.GetModels(t => t.MemberFreeID == item.FreeId).ToList();
+                            if (details.Count == 0)
+                            {
+                                Flw_MemberLevelFree levelFree = Flw_MemberLevelFreeService.I.GetModels(t => t.ID == item.FreeId).FirstOrDefault();
+                                levelFree.GetFreeTime = now;
+                                if (!Flw_MemberLevelFreeService.I.Update(levelFree, false))
+                                {
+                                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "更新预赠币领取时间失败");
+                                }
+                            }
+                            //当前赠币详情
+                            var currFreeDetail = item.FreeDetails.FirstOrDefault();
+                            //添加预赠币领取记录
+                            Flw_MemberLevelFree_Detail freeDetail = new Flw_MemberLevelFree_Detail();
+                            freeDetail.ID = RedisCacheHelper.CreateStoreSerialNo(storeId);
+                            freeDetail.MerchID = merchID;
+                            freeDetail.StoreID = storeId;
+                            freeDetail.MemberFreeID = item.FreeId;
+                            freeDetail.RealTime = now;
+                            freeDetail.Remain = item.RemainCount - 1;
+                            freeDetail.GetCount = currFreeDetail.Quantity;
+                            if (!Flw_MemberLevelFree_DetailService.I.Add(freeDetail, false))
+                            {
+                                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "添加预赠币领取记录失败");
+                            }
+                        }
+                        else if (item.FreeType == 2 && level.MemberLevelID.ToString() == item.FreeId)
+                        {
+                            Data_FoodInfo food = Data_FoodInfoService.I.GetModels(t => t.FoodID == level.FoodID).FirstOrDefault();
+                            foreach (var detail in item.FreeDetails)
+                            {
+                                //添加生日赠币记录
+                                Flw_MemberCard_Free mcf = new Flw_MemberCard_Free();
+                                mcf.ID = RedisCacheHelper.CreateStoreSerialNo(storeId);
+                                mcf.MerchID = merchID;
+                                mcf.StoreID = storeId;
+                                mcf.MemberID = member.ID;
+                                mcf.CardIndex = memberCard.ID;
+                                mcf.FreeType = 2;
+                                mcf.IsRealCoin = deviceBalanceIndex == null ? 1 : 0;
+                                mcf.BalanceIndex = detail.BalanceIndex;
+                                mcf.FreeCount = detail.Quantity;
+                                mcf.DeviceID = deviceId;
+                                mcf.Note = string.Format("生日赠币，赠送套餐：{0}，套餐ID：{1}", food.FoodName, level.FoodID);
+                                mcf.UserID = userId;
+                                mcf.ScheduleID = schedule.ID;
+                                mcf.WorkStation = workStation;
+                                mcf.CheckDate = schedule.CheckDate;
+                                if (!Flw_MemberCard_FreeService.I.Add(mcf, false))
+                                {
+                                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "添加生日赠币记录失败");
+                                }
+                            }
+                        }
+                        else if (item.FreeType == 3 && level.MemberLevelID.ToString() == item.FreeId)
+                        {
+                            //当前赠币详情
+                            var currFreeDetail = item.FreeDetails.FirstOrDefault();
+                            //添加输赢赠币记录
+                            Flw_MemberCard_Free mcf = new Flw_MemberCard_Free();
+                            mcf.ID = RedisCacheHelper.CreateStoreSerialNo(storeId);
+                            mcf.MerchID = merchID;
+                            mcf.StoreID = storeId;
+                            mcf.MemberID = member.ID;
+                            mcf.CardIndex = memberCard.ID;
+                            mcf.FreeType = 3;
+                            mcf.IsRealCoin = deviceBalanceIndex == null ? 1 : 0;
+                            mcf.BalanceIndex = currFreeDetail.BalanceIndex;
+                            mcf.FreeCount = currFreeDetail.Quantity;
+                            mcf.DeviceID = deviceId;
+                            mcf.Note = item.Content;
+                            mcf.UserID = userId;
+                            mcf.ScheduleID = schedule.ID;
+                            mcf.WorkStation = workStation;
+                            mcf.CheckDate = schedule.CheckDate;
+                            if (!Flw_MemberCard_FreeService.I.Add(mcf, false))
+                            {
+                                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "添加输赢赠币记录失败");
+                            }
+                        }
+                    }
+                    ts.Complete();
+                }
+
+                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.T, "");
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+        #endregion
+
+        #region 获取可赠币集合方法
+        private List<MemberFreeModel> GetFreeCoinList(string merchID, string storeId, Base_MemberInfo member, Data_MemberLevel level, Flw_Schedule schedule, int? deviceBalanceIndex)
+        {
+            //当前商户余额类别
+            var balanceTypeList = Dict_BalanceTypeService.I.GetModels(t => t.MerchID == merchID).Select(t => new
+            {
+                Id = t.ID,
+                Unit = t.Unit,
+                TypeName = t.TypeName,
+                MappingType = t.MappingType
+            }).ToList();
+
+            //预赠币
+            DateTime now = DateTime.Now.Date;
+            //当前用户所有可赠币规则
+            var memberFreeQuery = Flw_MemberLevelFreeService.I.GetModels(t => t.MerchID == merchID && t.StoreID == storeId && t.MemberID == member.ID && t.EndDate >= now)
+                                  .Select(t => new
+                                  {
+                                      Id = t.ID,
+                                      FreeID = t.FreeID,
+                                      ChargeTotal = t.ChargeTotal,
+                                      FreeBalanceIndex = t.FreeBalanceType,
+                                      FreeCount = t.FreeCount,
+                                      MinSpaceDays = t.MinSpaceDays,
+                                      OnceFreeCount = t.OnceFreeCount,
+                                      EndDate = t.EndDate
+                                  }).ToList();
+
+            //赠币明细集合，按MemberFreeID分组，取最后赠送时间及最小剩余数量
+            var freeDetailQuery = Flw_MemberLevelFree_DetailService.I.GetModels(t => t.MerchID == merchID && t.StoreID == storeId && t.Remain > 0).Select(t => new
+            {
+                MemberFreeId = t.MemberFreeID,
+                RealTime = t.RealTime,
+                Remain = t.Remain
+            }).ToList()
+                                  .Where(t => memberFreeQuery.Any(f => f.Id == t.MemberFreeId))
+                                  .GroupBy(t => t.MemberFreeId).Select(t => new
+                                  {
+                                      MemberFreeId = t.Key,
+                                      RealTime = t.Max(m => m.RealTime),
+                                      Remain = t.Min(m => m.Remain)
+                                  }).ToList();
+
+            var freeTempQuery = from a in memberFreeQuery
+                                //join c in Data_MemberLevelFreeService.I.GetModels(t=>t.MerchID == merchID && t.MemberLevelID == memberCard.MemberLevelID).ToList() on a.FreeID equals c.ID
+                                join b in freeDetailQuery on a.Id equals b.MemberFreeId into b1
+                                from tt in b1.DefaultIfEmpty()
+                                select new
+                                {
+                                    Id = a.Id,
+                                    //ExpireDays = c.ExpireDays,
+                                    ChargeTotal = a.ChargeTotal,
+                                    FreeBalanceIndex = a.FreeBalanceIndex,
+                                    FreeCount = a.FreeCount,
+                                    MinSpaceDays = a.MinSpaceDays,
+                                    OnceFreeCount = a.OnceFreeCount,
+                                    EndDate = a.EndDate,
+                                    RealTime = tt != null ? tt.RealTime : null,
+                                    Remain = tt != null ? tt.Remain.Value : a.FreeCount / a.OnceFreeCount
+                                };
+
+            //预赠币详情，剩余可领次数大于0，并且当前时间距离最后领取时间大于间隔时间，并且过期时间大于当前时间
+            var freeQuery = freeTempQuery.Where(t => t.Remain > 0 && (t.RealTime.HasValue && t.RealTime.Value.AddDays(t.MinSpaceDays.Value) <= now) && t.EndDate > now).ToList();
+
+            //赠币集合
+            List<MemberFreeModel> list = new List<MemberFreeModel>();
+            foreach (var item in freeQuery)
+            {
+                var balanceTypeModel = balanceTypeList.FirstOrDefault(t => t.Id == item.FreeBalanceIndex);
+                int canGetCount = 1;
+                if (item.OnceFreeCount != 0)
+                {
+                    canGetCount = item.FreeCount.Value / item.OnceFreeCount.Value;
+                }
+                MemberFreeModel mf = new MemberFreeModel();
+                mf.FreeType = 1;
+                mf.FreeId = item.Id;
+                mf.Title = "消费预赠币";
+                mf.FreeCoinName = item.OnceFreeCount + balanceTypeModel.Unit;
+                mf.Content = string.Format("单笔消费满{0}元送{1}{2}，每次间隔{3}天，共分{4}次领", item.ChargeTotal, item.FreeCount, balanceTypeModel.TypeName, item.MinSpaceDays, canGetCount);
+                mf.RemainCount = item.Remain.Value;
+                mf.RemainFrees = (item.Remain.Value * item.OnceFreeCount.Value).ToString() + balanceTypeModel.Unit;
+                mf.EndDate = item.EndDate.HasValue ? item.EndDate.Value.ToString("yyyy-MM-dd") : now.ToString("yyyy-MM-dd");
+                FreeDetailModel detail = new FreeDetailModel();
+                detail.BalanceIndex = item.FreeBalanceIndex.Value;
+                detail.BalanceName = balanceTypeModel.TypeName;
+                detail.Quantity = item.OnceFreeCount.Value;
+                detail.IsDeviceOut = (deviceBalanceIndex.HasValue && item.FreeBalanceIndex == deviceBalanceIndex) ? 1 : 0;
+                mf.FreeDetails.Add(detail);
+                list.Add(mf);
+            }
+
+            //生日赠币
+            if (level.FoodID.HasValue && level.FoodID.Value > 0)
+            {
+                //取最后一条生日赠币记录
+                Flw_MemberCard_Free birthdayFree = Flw_MemberCard_FreeService.I.GetModels(t => t.MerchID == merchID && t.StoreID == storeId && t.MemberID == member.ID && t.FreeType == 2)
+                                                    .OrderByDescending(t => t.CheckDate).FirstOrDefault();
+                //判断最后的生日赠币记录是否小于当前年份
+                if (member.Birthday.HasValue && (birthdayFree == null || birthdayFree.CheckDate.Value.Year < now.Year))
+                {
+                    var foodDetail = Data_Food_DetialService.I.GetModels(t => t.FoodID == level.FoodID).Select(t => new
+                    {
+                        BalanceIndex = t.ContainID,
+                        Qty = t.ContainCount
+                    }).ToList();
+
+                    string endDate = string.Empty;
+                    bool isBirthdayFree = false;
+                    string freeType = string.Empty;
+                    DateTime birthday = member.Birthday.Value;
+                    switch (level.BirthdayFree)
+                    {
+                        //1生日当月 2生日周内 3生日当天
+                        case 1:
+                            if (member.Birthday.Value.Month == now.Month)
+                            {
+                                freeType = "生日当月";
+                                DateTime firstDay = new DateTime(now.Year, now.Month, 1);//当前月第一天
+                                DateTime lastDay = firstDay.AddMonths(1).AddDays(-1);//当前月最后一天
+                                endDate = lastDay.ToString("yyyy-MM-dd");
+                                isBirthdayFree = true;
+                            }
+                            break;
+                        case 2:
+                            //获取当前星期几
+                            int week = Convert.ToInt32(DateTime.Now.DayOfWeek.ToString("d"));
+                            //获取本周的周一和周日
+                            DateTime mondayDate = now.AddDays(0 - (week - 1));
+                            DateTime sundayDate = now.AddDays(7 - week);
+                            //获取会员今年的生日当前
+                            DateTime theDay = birthday.AddYears(now.Year - birthday.Year);
+                            //判断生日是否在本周
+                            if (theDay >= mondayDate && theDay <= sundayDate)
+                            {
+                                freeType = "生日周内";
+                                endDate = sundayDate.ToString("yyyy-MM-dd");
+                                isBirthdayFree = true;
+                            }
+                            break;
+                        case 3:
+                            if (member.Birthday.Value.Day == now.Day)
+                            {
+                                freeType = "生日当天";
+                                endDate = now.ToString("yyyy-MM-dd");
+                                isBirthdayFree = true;
+                            }
+                            break;
+                    }
+                    if (isBirthdayFree)
+                    {
+                        string strFreeContent = string.Empty;
+                        MemberFreeModel mf = new MemberFreeModel();
+                        mf.FreeType = 2;
+                        mf.FreeId = level.MemberLevelID.ToString();
+                        mf.Title = "生日送币";
+                        foreach (var item in foodDetail)
+                        {
+                            var balanceTypeModel = balanceTypeList.FirstOrDefault(t => t.Id == item.BalanceIndex);
+                            FreeDetailModel detail = new FreeDetailModel();
+                            detail.BalanceIndex = item.BalanceIndex.Value;
+                            detail.BalanceName = balanceTypeModel.TypeName;
+                            detail.Quantity = item.Qty.Value;
+                            detail.IsDeviceOut = (deviceBalanceIndex.HasValue && item.BalanceIndex == deviceBalanceIndex) ? 1 : 0;
+                            mf.FreeDetails.Add(detail);
+                            strFreeContent += item.Qty + balanceTypeModel.TypeName + "、";
+                        }
+                        strFreeContent = strFreeContent.Trim("、".ToCharArray());
+                        mf.FreeCoinName = strFreeContent;
+                        mf.Content = string.Format("{0}送{1}", freeType, strFreeContent);
+                        mf.EndDate = endDate;
+                        list.Add(mf);
+                    }
+                }
+            }
+
+            //输赢赠币
+            if (level.FreeType.HasValue && level.FreeType.Value != 3 && level.FreeNeedWin.HasValue && level.FreeCoin.HasValue)
+            {
+                //取最后输赢赠币记录
+                Flw_MemberCard_Free winOrLoseFree = Flw_MemberCard_FreeService.I.GetModels(t => t.MerchID == merchID && t.StoreID == storeId && t.MemberID == member.ID && t.FreeType == 3)
+                                                    .OrderByDescending(t => t.CheckDate).FirstOrDefault();
+
+                if (winOrLoseFree == null || winOrLoseFree.CheckDate < schedule.CheckDate)
+                {
+                    //上一个营业日期
+                    DateTime checkDate = schedule.CheckDate.Value.AddDays(-1);
+                    //获取上一个营业日期当前客户的投币、退币总数集合
+                    var deviceData = Flw_DeviceDataService.I.GetModels(t => t.MerchID == merchID && t.StoreID == storeId && t.MemberID == member.ID && t.State == 1 && t.BalanceIndex == level.WinBalanceIndex && (t.BusinessType == 3 || t.BusinessType == 5)).Select(t => new
+                    {
+                        BusinessType = t.BusinessType,
+                        BalanceIndex = t.BalanceIndex,
+                        Coin = t.Coin,
+                        CheckDate = t.CheckDate
+                    }).ToList().Where(t => t.CheckDate.Value == checkDate).GroupBy(t => new { type = t.BusinessType })
+                    .Select(t => new
+                    {
+                        BusinessType = t.Key.type,
+                        Count = t.Sum(d => d.Coin)
+                    }).ToList();
+
+                    //上一个营业日期投币、退步总数
+                    decimal inCoins = 0, outCoins = 0;
+                    var inCoinData = deviceData.FirstOrDefault(t => t.BusinessType == 3);
+                    if (inCoinData != null)
+                    {
+                        inCoins = inCoinData.Count.HasValue ? inCoinData.Count.Value : 0;
+                    }
+                    var outCoinData = deviceData.FirstOrDefault(t => t.BusinessType == 5);
+                    if (outCoinData != null)
+                    {
+                        outCoins = outCoinData.Count.HasValue ? outCoinData.Count.Value : 0;
+                    }
+
+                    string freeType = string.Empty;
+                    bool isFree = false;
+                    decimal difference = inCoins - outCoins;
+                    int needQty = level.FreeNeedWin.Value;//需要到达的输赢数
+                    switch (level.FreeType.Value)
+                    {
+                        case 0://输
+                            if (difference < 0 && Math.Abs(difference) >= needQty)
+                            {
+                                freeType = "输";
+                                isFree = true;
+                            }
+                            break;
+                        case 1://赢
+                            if (difference > 0 && difference >= needQty)
+                            {
+                                freeType = "赢";
+                                isFree = true;
+                            }
+                            break;
+                        case 2://输或赢
+                            if (Math.Abs(difference) >= needQty)
+                            {
+                                freeType = "输或赢";
+                                isFree = true;
+                            }
+                            break;
+                    }
+                    if (isFree)
+                    {
+                        var balanceTypeModel = balanceTypeList.FirstOrDefault(t => t.Id == level.WinBalanceIndex);
+
+                        MemberFreeModel mf = new MemberFreeModel();
+                        mf.FreeType = 3;
+                        mf.FreeId = level.MemberLevelID.ToString();
+                        mf.Title = "输赢送币";
+                        mf.FreeCoinName = level.FreeCoin + balanceTypeModel.TypeName;
+                        mf.Content = string.Format("上一营业日{0}{1}{2}送{3}", freeType, needQty, balanceTypeModel.TypeName, mf.FreeCoinName);
+                        mf.EndDate = now.ToString("yyyy-MM-dd");
+                        FreeDetailModel detail = new FreeDetailModel();
+                        detail.BalanceIndex = level.WinBalanceIndex.Value;
+                        detail.BalanceName = balanceTypeModel.TypeName;
+                        detail.Quantity = level.FreeCoin.Value;
+                        detail.IsDeviceOut = (deviceBalanceIndex.HasValue && level.WinBalanceIndex == deviceBalanceIndex) ? 1 : 0;
+                        mf.FreeDetails.Add(detail);
+                        list.Add(mf);
+                    }
+                }
+            }
+            return list;
+        } 
+        #endregion
         #endregion
 
         #region MyRegion

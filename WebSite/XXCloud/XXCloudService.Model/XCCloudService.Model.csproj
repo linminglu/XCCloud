@@ -97,6 +97,7 @@
     <Compile Include="CustomModel\XCCloud\Data_WorkstationModel.cs" />
     <Compile Include="CustomModel\XCCloud\Data_Push_RuleModel.cs" />
     <Compile Include="CustomModel\XCCloud\Data_ReloadModel.cs" />
+    <Compile Include="CustomModel\XCCloud\DeviceWorkInfoModel.cs" />
     <Compile Include="CustomModel\XCCloud\DictionaryResponseModel.cs" />
     <Compile Include="CustomModel\XCCloud\Flw_OrderModel.cs" />
     <Compile Include="CustomModel\XCCloud\FoodInfoModel.cs" />
@@ -726,6 +727,9 @@
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Flw_MemberCard_Free.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Flw_MemberCard_LevelChange.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Flw_MemberCard_Renew.cs">

@@ -12,24 +12,23 @@ namespace XCCloudService.Model.XCCloud
     using System;
     using System.Collections.Generic;
     
-    public partial class Log_GameAlarm
+    public partial class Flw_MemberCard_LevelChange
     {
         public string ID { get; set; }
         public string MerchID { get; set; }
         public string StoreID { get; set; }
+        public string MemberID { get; set; }
         public string ICCardID { get; set; }
-        public string Segment { get; set; }
-        public string HeadAddress { get; set; }
-        public Nullable<int> AlertType { get; set; }
-        public Nullable<int> GameIndex { get; set; }
-        public string SiteName { get; set; }
-        public Nullable<int> DeviceID { get; set; }
-        public Nullable<System.DateTime> HappenTime { get; set; }
-        public Nullable<System.DateTime> EndTime { get; set; }
-        public Nullable<int> State { get; set; }
-        public Nullable<int> LockGame { get; set; }
-        public Nullable<int> LockMember { get; set; }
-        public string AlertContent { get; set; }
+        public Nullable<int> OldMemberLevelID { get; set; }
+        public Nullable<int> NewMemberLevleID { get; set; }
+        public Nullable<int> ChangeType { get; set; }
+        public string OrderID { get; set; }
+        public Nullable<System.DateTime> OpTime { get; set; }
+        public Nullable<int> OpUserID { get; set; }
+        public string ScheduleID { get; set; }
+        public string Workstation { get; set; }
+        public Nullable<System.DateTime> CheckDate { get; set; }
+        public string Note { get; set; }
         public string Verifiction { get; set; }
     }
 }

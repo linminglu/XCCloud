@@ -11,6 +11,7 @@ using XCCloudService.BLL.CommonBLL;
 using XCCloudService.BLL.Container;
 using XCCloudService.BLL.IBLL.XCCloud;
 using XCCloudService.BLL.XCCloud;
+using XCCloudService.Business.XCCloud;
 using XCCloudService.CacheService;
 using XCCloudService.Common;
 using XCCloudService.Common.Enum;
@@ -104,7 +105,7 @@ namespace XXCloudService.Api.XCCloud
                 string workStation = dicParas.ContainsKey("workStation") ? dicParas["workStation"].ToString() : string.Empty;
 
                 string storedProcedure = "GetDeviceInfo";
-                SqlParameter[] sqlParameter = new SqlParameter[7];
+                SqlParameter[] sqlParameter = new SqlParameter[9];
                 sqlParameter[0] = new SqlParameter("@MerchId", SqlDbType.VarChar);
                 sqlParameter[0].Value = userTokenDataModel.MerchID;
 
@@ -123,8 +124,14 @@ namespace XXCloudService.Api.XCCloud
                 sqlParameter[5] = new SqlParameter("@MCUId", SqlDbType.VarChar,20);
                 sqlParameter[5].Direction = ParameterDirection.Output;
 
-                sqlParameter[6] = new SqlParameter("@ErrMsg", SqlDbType.VarChar, 200);
+                sqlParameter[6] = new SqlParameter("@Status", SqlDbType.Int);
                 sqlParameter[6].Direction = ParameterDirection.Output;
+
+                sqlParameter[7] = new SqlParameter("@StatusName", SqlDbType.VarChar, 50);
+                sqlParameter[7].Direction = ParameterDirection.Output;
+
+                sqlParameter[8] = new SqlParameter("@ErrMsg", SqlDbType.VarChar, 200);
+                sqlParameter[8].Direction = ParameterDirection.Output;
 
                 XCCloudBLL.ExecuteStoredProcedureSentence(storedProcedure, sqlParameter);
 
@@ -132,7 +139,9 @@ namespace XXCloudService.Api.XCCloud
                 {
                     var obj = new
                     {
-                        mcuId = sqlParameter[5].Value.ToString()
+                        mcuId = sqlParameter[5].Value.ToString(),
+                        status = sqlParameter[6].Value.ToString(),
+                        statusName = sqlParameter[7].Value.ToString()
                     };
                     return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, obj);
                 }
@@ -144,6 +153,28 @@ namespace XXCloudService.Api.XCCloud
             catch (Exception e)
             {
                 return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object getDeviceWorkInfo(Dictionary<string, object> dicParas)
+        {
+            string workStation = dicParas.ContainsKey("workStation") ? dicParas["workStation"].ToString() : string.Empty;
+            List<DeviceWorkInfoModel> list = DeviceWorkInfoBusiness.GetDevice(workStation);
+
+            DeviceWorkInfoModel model1 = new DeviceWorkInfoModel("100016420111001", 0, System.DateTime.Now, "lijunjie");
+            list.Add(model1);
+            DeviceWorkInfoModel model2 = new DeviceWorkInfoModel("100016360103001", 0, System.DateTime.Now, "lijunjie");
+            list.Add(model2);
+
+            if (list == null && list.Count > 0)
+            {
+                return new ResponseModel(Return_Code.T, "", Result_Code.F, "设备信息无效");
+            }
+            else
+            {
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, list);
             }
         }
 

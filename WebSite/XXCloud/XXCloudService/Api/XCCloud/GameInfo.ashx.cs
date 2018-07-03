@@ -290,7 +290,7 @@ namespace XXCloudService.Api.XCCloud
                 string lowLimit = dicParas.ContainsKey("lowLimit") ? (dicParas["lowLimit"] + "") : string.Empty;
                 string highLimit = dicParas.ContainsKey("highLimit") ? (dicParas["highLimit"] + "") : string.Empty;
                 string[] photoURLs = dicParas.ContainsKey("photoURLs") ? (string[])dicParas["photoURLs"]: null;
-                var readCat = dicParas.Get("ReadCat").Toint();
+                var readCat = dicParas.Get("readCat").Toint();
 
                 var freeLotteryRules = dicParas.GetArray("freeLotteryRules");
 
@@ -415,9 +415,9 @@ namespace XXCloudService.Api.XCCloud
                         {
                             errMsg = "该游戏机编号已使用";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }   
-                  
-                        if (data_GameInfo_ExtService.Any(b => b.GameID != iId && b.GameCode.Equals(gameCode, StringComparison.OrdinalIgnoreCase)))
+                        }
+
+                        if (!gameCode.IsNull() && data_GameInfo_ExtService.Any(b => b.GameID != iId && b.GameCode.Equals(gameCode, StringComparison.OrdinalIgnoreCase)))
                         {
                             errMsg = "该游戏机出厂编号已使用";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -622,16 +622,19 @@ namespace XXCloudService.Api.XCCloud
                     errMsg = "游戏机名称GameName不能为空";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
+
                 if (!string.IsNullOrEmpty(id) && !Utils.isNumber(id))
                 {
                     errMsg = "游戏机参数ID格式不正确";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
+
                 if (string.IsNullOrEmpty(gameId))
                 {
                     errMsg = "游戏机编号gameId不能为空";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
+
                 if (gameId.Length > 4)
                 {
                     errMsg = "游戏机编号长度不能超过4个字符";

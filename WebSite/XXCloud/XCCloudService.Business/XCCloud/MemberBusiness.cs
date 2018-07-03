@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using XCCloudService.BLL.CommonBLL;
 using XCCloudService.BLL.Container;
 using XCCloudService.BLL.XCCloud;
+using XCCloudService.CacheService;
 using XCCloudService.Common;
 using XCCloudService.Model.CustomModel.XCCloud;
 using XCCloudService.Model.XCCloud;
@@ -76,6 +77,80 @@ namespace XCCloudService.Business.XCCloud
                 return false;
             }
             return true;
+        }
+
+        public static List<string> GetBalanceChainStoreList(string merchId, int balanceIndex)
+        {
+            //获取当前商户余额互通规则列表
+            var balanceChainList = from a in Base_ChainRuleService.I.GetModels(t => t.MerchID == merchId && t.RuleType == balanceIndex)
+                                   join b in Base_ChainRule_StoreService.I.GetModels(t => t.MerchID == merchId) on a.ID equals b.RuleGroupID
+                                   select new
+                                   {
+                                       BalanceIndex = a.RuleType,
+                                       StoreId = b.StoreID
+                                   };
+            //所有余额互通门店
+            var storeIds = balanceChainList.GroupBy(t => t.StoreId).Select(t => t.Key).ToList();
+            return storeIds;
+        }
+
+        public static bool UpdateBalanceFree(string merchId, string storeId, string cardIndex, FreeCoinModel currFreeDetail)
+        {
+            Data_Card_Balance_Free balanceFree = Data_Card_Balance_FreeService.I.GetModels(t => t.MerchID == merchId && t.CardIndex == cardIndex && t.BalanceIndex == currFreeDetail.balanceIndex).FirstOrDefault();
+            if (balanceFree == null)
+            {
+                balanceFree.Balance += currFreeDetail.qty;
+                if (!Data_Card_Balance_FreeService.I.Update(balanceFree, false))
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                //如果没有该币种余额就添加
+                balanceFree = new Data_Card_Balance_Free();
+                balanceFree.ID = RedisCacheHelper.CreateStoreSerialNo(storeId);
+                balanceFree.MerchID = merchId;
+                balanceFree.CardIndex = cardIndex;
+                balanceFree.BalanceIndex = currFreeDetail.balanceIndex;
+                balanceFree.Balance = currFreeDetail.qty;
+                balanceFree.UpdateTime = DateTime.Now;
+                if (!Data_Card_Balance_FreeService.I.Add(balanceFree, false))
+                {
+                    return false;
+                }
+                var storeIds = GetBalanceChainStoreList(merchId, currFreeDetail.balanceIndex);
+                foreach (var sid in storeIds)
+                {
+                    Data_Card_Balance_StoreList sl = new Data_Card_Balance_StoreList();
+                    sl.ID = RedisCacheHelper.CreateStoreSerialNo(storeId);
+                    sl.CardBalanceID = balanceFree.ID;
+                    sl.StoreID = sid;
+                    if (!Data_Card_Balance_StoreListService.I.Add(sl, false))
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        public static List<CardLockStateModel> GetMemberCardLockState(int lockState)
+        {
+            List<CardLockStateModel> list = new List<CardLockStateModel>();
+            var strLockBinary = Convert.ToString(lockState, 2).PadLeft(8, '0').ToCharArray().Reverse().ToList();
+            int index = 0;
+            foreach (var item in strLockBinary)
+            {
+                if(item == '1')
+                {
+                    CardLockStateModel lockModel = new CardLockStateModel();
+                    lockModel.LockType = index;
+                    list.Add(lockModel);
+                }
+                index++;
+            }
+            return list;
         }
     }
 }

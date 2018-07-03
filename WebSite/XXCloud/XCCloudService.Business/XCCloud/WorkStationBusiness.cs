@@ -56,14 +56,14 @@ namespace XCCloudService.Business.XCCloud
             errMsg = string.Empty;
             workStationId = 0;
             IData_WorkstationService workstationService = BLLContainer.Resolve<IData_WorkstationService>();
-            var model = workstationService.GetModels(p => p.MerchID.Equals(merchId) && p.StoreID.Equals(storeId) && p.WorkStation.Equals(workStation) && p.State == 1).ToList<Data_Workstation>()[0];
+            var model = workstationService.GetModels(p => p.MerchID.Equals(merchId) && p.StoreID.Equals(storeId) && p.WorkStation.Equals(workStation) && p.State == 1).FirstOrDefault<Data_Workstation>();
             if (model == null)
-            {
-                workStationId = model.ID;
+            {  
                 return false;
             }
             else
             {
+                workStationId = model.ID;
                 return true;
             }
         }

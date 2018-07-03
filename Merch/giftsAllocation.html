@@ -480,7 +480,7 @@
         }
     });
     //调拨退货
-    let backInDepot='';let logisticsCompanyBack='';
+    let backInDepot='';let logisticsCompanyBack='';let arrBack=[];
     layui.addcss('layui_font.css');
     layui.use(['form','table','layer'],function () {
         let form=layui.form;
@@ -793,12 +793,12 @@
                             for(let i in depotList){
                                 $('#backInDepot').append('<option value="'+depotList[i].ID+'" selected>'+depotList[i].DepotName+'</option>')
                             }
-                            let arr=data.result_data.GoodRequestDetails;
+                             arrBack=data.result_data.GoodRequestDetails;
                             table.render({
                                 elem: '#backDetails'
                                 , height:'300px'
                                 , size:"sm"
-                                , data: arr
+                                , data: arrBack
                                 , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
                                 , cols: [[
                                     {type:'checkbox',fixed: 'left'} ,
@@ -813,8 +813,8 @@
                                     ,{field:'StorageCount', title: '入库数量', align: 'center',edit:true,width:100}
                                     ,{field:'ExitedCount', title: '已退货数量', align: 'center',width:100}
                                     ,{field:'ExitCount', title: '退货数量', align: 'center',width:100,edit:true}
-                                    ,{field:'CostPrice', title: '含税单价', align: 'center'}
-                                    ,{field:'Tax', title: '税率', align: 'center'}
+                                    ,{field:'CostPrice', title: '含税单价', align: 'center',width:100}
+                                    ,{field:'Tax', title: '税率', align: 'center',width:100}
                                 ]]
                                 , page: {page: true, limits: [10, 15, 20, 30, 50, 100]}
                                 , limit: 10
@@ -1083,6 +1083,79 @@
                     });
                 }
             }
+        });
+        //监听选中退货商品
+        table.on('checkbox(backDetails)', function(obj){
+            if (obj.type == "all") {
+                console.log(obj)
+            } else {
+                if(arrBack.length>0){
+                    if(obj.checked==true){
+                        let flag=false;
+                        for(let i in arrBack){
+                            if(arrBack[i].ID==obj.data.ID){
+                                flag=true;
+                                break;
+                            }
+                        }
+                        if(flag==false){
+                            arrBack.push({
+                                'GoodID':obj.data.GoodID,
+                                'ID':obj.data.ID,
+                                'ExitCount':obj.data.StorageCount,
+                            });
+                        }
+                    }else {
+                        for(let i in arrBack){
+                            if(arrBack[i].ID==obj.data.ID){
+                                arrBack.splice(i,1);
+                                break;
+                            }
+                        }
+                    }
+                }else {
+                    arrBack.push({
+                        'GoodID':obj.data.GoodID,
+                        'ID':obj.data.ID,
+                        'ExitCount':obj.data.ExitCount,
+                    });
+                }
+            }
+        });
+        //编辑退货数据信息
+        table.on('edit(backDetails)', function(obj){ //注：edit是固定事件名，test是table原始容器的属性 lay-filter="对应的值"
+            // let value= obj.value; //得到修改后的值
+            // let key=obj.field; //当前编辑的字段名
+            // let index=obj.data.LAY_TABLE_INDEX; //所在行的所有相关数据
+            // checkListGoods[index][key]=value;
+            //
+            // for(let i in arrBack){
+            //     if(arrBack[i].GoodID==obj.data.GoodID){
+            //         arrBack[i][obj.field]=obj.value
+            //     }
+            // }
+            let value = obj.value; //得到修改后的值
+            let key = obj.field; //当前编辑的字段名
+            let index = obj.data.LAY_TABLE_INDEX; //所在行的所有相关数据
+            arrBack[index][key] = value;
+            arrBack[index].ExitAll = value * arrBack[index].ExitPrice;
+            //已经勾选了 需要改变值
+            if (arrBack.length > 0) {
+                for (let i in arrBack) {
+                    if (arrBack[i].GoodID == obj.data.GoodID) {
+                        arrBack[i].ExitCount = obj.data.ExitCount;
+                        arrBack[i].ExitPrice = obj.data.ExitPrice
+                    }
+                }
+            }
+            let sumExit = 0;let sumMoney=0;
+            for (let i in arrBack) {
+                sumExit = parseInt(sumExit) + parseInt(arrBack[i].ExitCount);
+                sumMoney=parseInt(sumMoney) + parseInt(arrBack[i].ExitCount)*parseInt(arrBack[i].CostPrice);
+            }
+            $('#exitCount').val(parseInt(sumExit));
+            $('#exitTotal').val(parseInt(sumMoney) - parseInt($('#exitCost').val() == '' ? 0 : $('#exitCost').val()));
+
         });
         form.on('select(inDepot)',function (data){
             inDepot=data.value;

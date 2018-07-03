@@ -2458,7 +2458,7 @@
           <Property Name="StoreID" Type="varchar" MaxLength="15" />
           <Property Name="MemberID" Type="varchar" MaxLength="32" />
           <Property Name="OperateType" Type="int" />
-          <Property Name="CardID" Type="varchar" MaxLength="20" />
+          <Property Name="CardID" Type="varchar" MaxLength="32" />
           <Property Name="Deposit" Type="numeric" Precision="10" Scale="2" />
           <Property Name="ExitMoney" Type="numeric" Precision="10" Scale="2" />
           <Property Name="RemainMoney" Type="numeric" Precision="10" Scale="2" />
@@ -2466,7 +2466,7 @@
           <Property Name="UserID" Type="int" />
           <Property Name="ScheduldID" Type="varchar" MaxLength="32" />
           <Property Name="CheckDate" Type="date" />
-          <Property Name="Note" Type="varchar" MaxLength="200" />
+          <Property Name="Note" Type="varchar" MaxLength="500" />
           <Property Name="Verifiction" Type="varchar" MaxLength="32" />
         </EntityType>
         <EntityType Name="Flw_MemberCard_Free">
@@ -2488,6 +2488,27 @@
           <Property Name="ScheduleID" Type="varchar" MaxLength="32" />
           <Property Name="WorkStation" Type="varchar" MaxLength="50" />
           <Property Name="CheckDate" Type="date" />
+          <Property Name="Verifiction" Type="varchar" MaxLength="32" />
+        </EntityType>
+        <EntityType Name="Flw_MemberCard_LevelChange">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="varchar" MaxLength="32" Nullable="false" />
+          <Property Name="MerchID" Type="varchar" MaxLength="15" />
+          <Property Name="StoreID" Type="varchar" MaxLength="15" />
+          <Property Name="MemberID" Type="varchar" MaxLength="32" />
+          <Property Name="ICCardID" Type="varchar" MaxLength="32" />
+          <Property Name="OldMemberLevelID" Type="int" />
+          <Property Name="NewMemberLevleID" Type="int" />
+          <Property Name="ChangeType" Type="int" />
+          <Property Name="OrderID" Type="varchar" MaxLength="32" />
+          <Property Name="OpTime" Type="datetime" />
+          <Property Name="OpUserID" Type="int" />
+          <Property Name="ScheduleID" Type="varchar" MaxLength="32" />
+          <Property Name="Workstation" Type="varchar" MaxLength="50" />
+          <Property Name="CheckDate" Type="date" />
+          <Property Name="Note" Type="varchar" MaxLength="200" />
           <Property Name="Verifiction" Type="varchar" MaxLength="32" />
         </EntityType>
         <EntityType Name="Flw_MemberCard_Renew">
@@ -2817,26 +2838,27 @@
           <Property Name="WorkStation" Type="varchar" MaxLength="255" />
           <Property Name="ScheduleID" Type="int" />
         </EntityType>
-        <!--生成过程中发现错误:
-警告 6002: 表/视图“XCCloud.dbo.Log_GameAlarm”未定义主键。已推断出该键，并将定义创建为只读的表/视图。-->
         <EntityType Name="Log_GameAlarm">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ID" Type="varchar" MaxLength="32" Nullable="false" />
           <Property Name="MerchID" Type="varchar" MaxLength="15" />
           <Property Name="StoreID" Type="varchar" MaxLength="15" />
-          <Property Name="DeviceID" Type="int" />
-          <Property Name="ICCardID" Type="int" />
+          <Property Name="ICCardID" Type="varchar" MaxLength="20" />
           <Property Name="Segment" Type="varchar" MaxLength="4" />
           <Property Name="HeadAddress" Type="varchar" MaxLength="2" />
           <Property Name="AlertType" Type="int" />
+          <Property Name="GameIndex" Type="int" />
+          <Property Name="SiteName" Type="varchar" MaxLength="20" />
+          <Property Name="DeviceID" Type="int" />
           <Property Name="HappenTime" Type="datetime" />
           <Property Name="EndTime" Type="datetime" />
           <Property Name="State" Type="int" />
           <Property Name="LockGame" Type="int" />
           <Property Name="LockMember" Type="int" />
           <Property Name="AlertContent" Type="varchar" MaxLength="500" />
+          <Property Name="Verifiction" Type="varchar" MaxLength="32" />
         </EntityType>
         <EntityType Name="Log_Operation">
           <Key>
@@ -3099,6 +3121,7 @@
           <EntitySet Name="Flw_MemberCard_Change" EntityType="Self.Flw_MemberCard_Change" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Flw_MemberCard_Exit" EntityType="Self.Flw_MemberCard_Exit" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Flw_MemberCard_Free" EntityType="Self.Flw_MemberCard_Free" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Flw_MemberCard_LevelChange" EntityType="Self.Flw_MemberCard_LevelChange" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Flw_MemberCard_Renew" EntityType="Self.Flw_MemberCard_Renew" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Flw_MemberLevelFree" EntityType="Self.Flw_MemberLevelFree" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Flw_MemberLevelFree_Detail" EntityType="Self.Flw_MemberLevelFree_Detail" Schema="dbo" store:Type="Tables" />
@@ -3111,6 +3134,7 @@
           <EntitySet Name="Flw_Schedule" EntityType="Self.Flw_Schedule" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Flw_Schedule_UserInfo" EntityType="Self.Flw_Schedule_UserInfo" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Flw_Ticket_Exit" EntityType="Self.Flw_Ticket_Exit" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Log_GameAlarm" EntityType="Self.Log_GameAlarm" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Log_Operation" EntityType="Self.Log_Operation" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Search_Template" EntityType="Self.Search_Template" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Search_Template_Detail" EntityType="Self.Search_Template_Detail" Schema="dbo" store:Type="Tables" />
@@ -3318,24 +3342,6 @@
     [Flw_Transfer].[ScheduleID] AS [ScheduleID]
     FROM [dbo].[Flw_Transfer] AS [Flw_Transfer]</DefiningQuery>
           </EntitySet>
-          <EntitySet Name="Log_GameAlarm" EntityType="Self.Log_GameAlarm" store:Type="Tables" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [Log_GameAlarm].[ID] AS [ID], 
-    [Log_GameAlarm].[MerchID] AS [MerchID], 
-    [Log_GameAlarm].[StoreID] AS [StoreID], 
-    [Log_GameAlarm].[DeviceID] AS [DeviceID], 
-    [Log_GameAlarm].[ICCardID] AS [ICCardID], 
-    [Log_GameAlarm].[Segment] AS [Segment], 
-    [Log_GameAlarm].[HeadAddress] AS [HeadAddress], 
-    [Log_GameAlarm].[AlertType] AS [AlertType], 
-    [Log_GameAlarm].[HappenTime] AS [HappenTime], 
-    [Log_GameAlarm].[EndTime] AS [EndTime], 
-    [Log_GameAlarm].[State] AS [State], 
-    [Log_GameAlarm].[LockGame] AS [LockGame], 
-    [Log_GameAlarm].[LockMember] AS [LockMember], 
-    [Log_GameAlarm].[AlertContent] AS [AlertContent]
-    FROM [dbo].[Log_GameAlarm] AS [Log_GameAlarm]</DefiningQuery>
-          </EntitySet>
           <EntitySet Name="Store_CheckDate" EntityType="Self.Store_CheckDate" store:Type="Tables" store:Schema="dbo">
             <DefiningQuery>SELECT 
     [Store_CheckDate].[ID] AS [ID], 
@@ -3479,12 +3485,10 @@
           <EntitySet Name="Flw_DiscountRule" EntityType="XCCloudDBModel.Flw_DiscountRule" />
           <EntitySet Name="Base_StoreDogList" EntityType="XCCloudDBModel.Base_StoreDogList" />
           <EntitySet Name="Data_WorkStation_GoodList" EntityType="XCCloudDBModel.Data_WorkStation_GoodList" />
-          <EntitySet Name="Log_GameAlarm" EntityType="XCCloudDBModel.Log_GameAlarm" />
           <EntitySet Name="Base_DeviceInfo" EntityType="XCCloudDBModel.Base_DeviceInfo" />
           <EntitySet Name="Data_GameAPP_MemberRule" EntityType="XCCloudDBModel.Data_GameAPP_MemberRule" />
           <EntitySet Name="Data_GoodInventory" EntityType="XCCloudDBModel.Data_GoodInventory" />
           <EntitySet Name="Data_GoodStock_Record" EntityType="XCCloudDBModel.Data_GoodStock_Record" />
-          <EntitySet Name="Flw_MemberCard_Exit" EntityType="XCCloudDBModel.Flw_MemberCard_Exit" />
           <EntitySet Name="Data_GameFreeLotteryRule" EntityType="XCCloudDBModel.Data_GameFreeLotteryRule" />
           <EntitySet Name="Base_DeviceInfo_Ext" EntityType="XCCloudDBModel.Base_DeviceInfo_Ext" />
           <EntitySet Name="Data_GameInfo" EntityType="XCCloudDBModel.Data_GameInfo" />
@@ -3540,6 +3544,9 @@
           <EntitySet Name="Flw_MemberLevelFree" EntityType="XCCloudDBModel.Flw_MemberLevelFree" />
           <EntitySet Name="Data_MemberLevelFree" EntityType="XCCloudDBModel.Data_MemberLevelFree" />
           <EntitySet Name="Data_GoodExitInfo" EntityType="XCCloudDBModel.Data_GoodExitInfo" />
+          <EntitySet Name="Flw_MemberCard_Exit" EntityType="XCCloudDBModel.Flw_MemberCard_Exit" />
+          <EntitySet Name="Log_GameAlarm" EntityType="XCCloudDBModel.Log_GameAlarm" />
+          <EntitySet Name="Flw_MemberCard_LevelChange" EntityType="XCCloudDBModel.Flw_MemberCard_LevelChange" />
         </EntityContainer>
         <EntityType Name="Base_ChainRule_Store">
           <Key>
@@ -5216,25 +5223,6 @@
           <Property Name="GoodID" Type="Int32" />
           <Property Name="WorkStationID" Type="Int32" />
         </EntityType>
-        <EntityType Name="Log_GameAlarm">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="DeviceID" Type="Int32" />
-          <Property Name="ICCardID" Type="Int32" />
-          <Property Name="Segment" Type="String" MaxLength="4" FixedLength="false" Unicode="false" />
-          <Property Name="HeadAddress" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
-          <Property Name="AlertType" Type="Int32" />
-          <Property Name="HappenTime" Type="DateTime" Precision="3" />
-          <Property Name="EndTime" Type="DateTime" Precision="3" />
-          <Property Name="State" Type="Int32" />
-          <Property Name="LockGame" Type="Int32" />
-          <Property Name="LockMember" Type="Int32" />
-          <Property Name="AlertContent" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
-        </EntityType>
         <EntityType Name="Base_DeviceInfo">
           <Key>
             <PropertyRef Name="ID" />
@@ -5315,26 +5303,6 @@
           <Property Name="StockCount" Type="Int32" />
           <Property Name="GoodCost" Type="Decimal" Precision="10" Scale="2" />
           <Property Name="CreateTime" Type="DateTime" Precision="3" />
-          <Property Name="Note" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
-          <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
-        </EntityType>
-        <EntityType Name="Flw_MemberCard_Exit">
-          <Key>
-            <PropertyRef Name="OrderID" />
-          </Key>
-          <Property Name="OrderID" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="false" />
-          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="MemberID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
-          <Property Name="OperateType" Type="Int32" />
-          <Property Name="CardID" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="Deposit" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="ExitMoney" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="RemainMoney" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="WorkStation" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="UserID" Type="Int32" />
-          <Property Name="ScheduldID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
-          <Property Name="CheckDate" Type="DateTime" Precision="0" />
           <Property Name="Note" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
           <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
         </EntityType>
@@ -6461,6 +6429,69 @@
           <Property Name="ExitTotal" Type="Decimal" Precision="10" Scale="2" />
           <Property Name="LogistType" Type="Int32" />
           <Property Name="LogistOrderID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="Note" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Flw_MemberCard_Exit">
+          <Key>
+            <PropertyRef Name="OrderID" />
+          </Key>
+          <Property Name="OrderID" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="MemberID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="OperateType" Type="Int32" />
+          <Property Name="CardID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="Deposit" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="ExitMoney" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="RemainMoney" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="WorkStation" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="UserID" Type="Int32" />
+          <Property Name="ScheduldID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="CheckDate" Type="DateTime" Precision="0" />
+          <Property Name="Note" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Log_GameAlarm">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="ICCardID" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Segment" Type="String" MaxLength="4" FixedLength="false" Unicode="false" />
+          <Property Name="HeadAddress" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
+          <Property Name="AlertType" Type="Int32" />
+          <Property Name="GameIndex" Type="Int32" />
+          <Property Name="SiteName" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="DeviceID" Type="Int32" />
+          <Property Name="HappenTime" Type="DateTime" Precision="3" />
+          <Property Name="EndTime" Type="DateTime" Precision="3" />
+          <Property Name="State" Type="Int32" />
+          <Property Name="LockGame" Type="Int32" />
+          <Property Name="LockMember" Type="Int32" />
+          <Property Name="AlertContent" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Flw_MemberCard_LevelChange">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="MemberID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="ICCardID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="OldMemberLevelID" Type="Int32" />
+          <Property Name="NewMemberLevleID" Type="Int32" />
+          <Property Name="ChangeType" Type="Int32" />
+          <Property Name="OrderID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="OpTime" Type="DateTime" Precision="3" />
+          <Property Name="OpUserID" Type="Int32" />
+          <Property Name="ScheduleID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="Workstation" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CheckDate" Type="DateTime" Precision="0" />
           <Property Name="Note" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
           <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
         </EntityType>
@@ -8260,26 +8291,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Log_GameAlarm">
-            <EntityTypeMapping TypeName="XCCloudDBModel.Log_GameAlarm">
-              <MappingFragment StoreEntitySet="Log_GameAlarm">
-                <ScalarProperty Name="AlertContent" ColumnName="AlertContent" />
-                <ScalarProperty Name="LockMember" ColumnName="LockMember" />
-                <ScalarProperty Name="LockGame" ColumnName="LockGame" />
-                <ScalarProperty Name="State" ColumnName="State" />
-                <ScalarProperty Name="EndTime" ColumnName="EndTime" />
-                <ScalarProperty Name="HappenTime" ColumnName="HappenTime" />
-                <ScalarProperty Name="AlertType" ColumnName="AlertType" />
-                <ScalarProperty Name="HeadAddress" ColumnName="HeadAddress" />
-                <ScalarProperty Name="Segment" ColumnName="Segment" />
-                <ScalarProperty Name="ICCardID" ColumnName="ICCardID" />
-                <ScalarProperty Name="DeviceID" ColumnName="DeviceID" />
-                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
-                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Base_DeviceInfo">
             <EntityTypeMapping TypeName="XCCloudDBModel.Base_DeviceInfo">
               <MappingFragment StoreEntitySet="Base_DeviceInfo">
@@ -8364,27 +8375,6 @@
                 <ScalarProperty Name="StoreID" ColumnName="StoreID" />
                 <ScalarProperty Name="MerchID" ColumnName="MerchID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Flw_MemberCard_Exit">
-            <EntityTypeMapping TypeName="XCCloudDBModel.Flw_MemberCard_Exit">
-              <MappingFragment StoreEntitySet="Flw_MemberCard_Exit">
-                <ScalarProperty Name="Verifiction" ColumnName="Verifiction" />
-                <ScalarProperty Name="Note" ColumnName="Note" />
-                <ScalarProperty Name="CheckDate" ColumnName="CheckDate" />
-                <ScalarProperty Name="ScheduldID" ColumnName="ScheduldID" />
-                <ScalarProperty Name="UserID" ColumnName="UserID" />
-                <ScalarProperty Name="WorkStation" ColumnName="WorkStation" />
-                <ScalarProperty Name="RemainMoney" ColumnName="RemainMoney" />
-                <ScalarProperty Name="ExitMoney" ColumnName="ExitMoney" />
-                <ScalarProperty Name="Deposit" ColumnName="Deposit" />
-                <ScalarProperty Name="CardID" ColumnName="CardID" />
-                <ScalarProperty Name="OperateType" ColumnName="OperateType" />
-                <ScalarProperty Name="MemberID" ColumnName="MemberID" />
-                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
-                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
-                <ScalarProperty Name="OrderID" ColumnName="OrderID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -9563,6 +9553,72 @@
                 <ScalarProperty Name="SourceOrderID" ColumnName="SourceOrderID" />
                 <ScalarProperty Name="SourceType" ColumnName="SourceType" />
                 <ScalarProperty Name="ExitOrderID" ColumnName="ExitOrderID" />
+                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
+                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Flw_MemberCard_Exit">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Flw_MemberCard_Exit">
+              <MappingFragment StoreEntitySet="Flw_MemberCard_Exit">
+                <ScalarProperty Name="Verifiction" ColumnName="Verifiction" />
+                <ScalarProperty Name="Note" ColumnName="Note" />
+                <ScalarProperty Name="CheckDate" ColumnName="CheckDate" />
+                <ScalarProperty Name="ScheduldID" ColumnName="ScheduldID" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="WorkStation" ColumnName="WorkStation" />
+                <ScalarProperty Name="RemainMoney" ColumnName="RemainMoney" />
+                <ScalarProperty Name="ExitMoney" ColumnName="ExitMoney" />
+                <ScalarProperty Name="Deposit" ColumnName="Deposit" />
+                <ScalarProperty Name="CardID" ColumnName="CardID" />
+                <ScalarProperty Name="OperateType" ColumnName="OperateType" />
+                <ScalarProperty Name="MemberID" ColumnName="MemberID" />
+                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
+                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
+                <ScalarProperty Name="OrderID" ColumnName="OrderID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Log_GameAlarm">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Log_GameAlarm">
+              <MappingFragment StoreEntitySet="Log_GameAlarm">
+                <ScalarProperty Name="Verifiction" ColumnName="Verifiction" />
+                <ScalarProperty Name="AlertContent" ColumnName="AlertContent" />
+                <ScalarProperty Name="LockMember" ColumnName="LockMember" />
+                <ScalarProperty Name="LockGame" ColumnName="LockGame" />
+                <ScalarProperty Name="State" ColumnName="State" />
+                <ScalarProperty Name="EndTime" ColumnName="EndTime" />
+                <ScalarProperty Name="HappenTime" ColumnName="HappenTime" />
+                <ScalarProperty Name="DeviceID" ColumnName="DeviceID" />
+                <ScalarProperty Name="SiteName" ColumnName="SiteName" />
+                <ScalarProperty Name="GameIndex" ColumnName="GameIndex" />
+                <ScalarProperty Name="AlertType" ColumnName="AlertType" />
+                <ScalarProperty Name="HeadAddress" ColumnName="HeadAddress" />
+                <ScalarProperty Name="Segment" ColumnName="Segment" />
+                <ScalarProperty Name="ICCardID" ColumnName="ICCardID" />
+                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
+                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Flw_MemberCard_LevelChange">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Flw_MemberCard_LevelChange">
+              <MappingFragment StoreEntitySet="Flw_MemberCard_LevelChange">
+                <ScalarProperty Name="Verifiction" ColumnName="Verifiction" />
+                <ScalarProperty Name="Note" ColumnName="Note" />
+                <ScalarProperty Name="CheckDate" ColumnName="CheckDate" />
+                <ScalarProperty Name="Workstation" ColumnName="Workstation" />
+                <ScalarProperty Name="ScheduleID" ColumnName="ScheduleID" />
+                <ScalarProperty Name="OpUserID" ColumnName="OpUserID" />
+                <ScalarProperty Name="OpTime" ColumnName="OpTime" />
+                <ScalarProperty Name="OrderID" ColumnName="OrderID" />
+                <ScalarProperty Name="ChangeType" ColumnName="ChangeType" />
+                <ScalarProperty Name="NewMemberLevleID" ColumnName="NewMemberLevleID" />
+                <ScalarProperty Name="OldMemberLevelID" ColumnName="OldMemberLevelID" />
+                <ScalarProperty Name="ICCardID" ColumnName="ICCardID" />
+                <ScalarProperty Name="MemberID" ColumnName="MemberID" />
                 <ScalarProperty Name="StoreID" ColumnName="StoreID" />
                 <ScalarProperty Name="MerchID" ColumnName="MerchID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />

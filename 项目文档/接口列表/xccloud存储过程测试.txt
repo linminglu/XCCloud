@@ -5,6 +5,25 @@
 
 ----------------------------------------------------------------------------------------------------------------------------------------
 
+declare @ErrMsg varchar(200)
+declare @CheckEffectiveFoodReturn int = 0
+declare @FoodSaleSinglePriceList as FoodSaleSinglePriceListType
+declare @FoodSaleDetailList [FoodSaleDetailListType]
+insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(9991,0,1,0,1/2.0)
+insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(3,0,2,0,10/2.0)
+insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(6,0,1,98306,100)
+insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(4,0,1,98307,100)
+insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(1,1,1,0,20)
+insert into @FoodSaleDetailList(FoodId,Category,FoodCount,PayType,PayNum) values(4,2,1,0,30)
+
+insert @FoodSaleSinglePriceList(Category,FoodId,SinglePrice)
+exec @CheckEffectiveFoodReturn = GetFoodSinglePrice @FoodSaleDetailList
+select * from @FoodSaleSinglePriceList
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
 declare @ExitFee decimal(18,2) = 0
 declare @ErrMsg varchar(200)
 declare @GetQuickFood int = 0

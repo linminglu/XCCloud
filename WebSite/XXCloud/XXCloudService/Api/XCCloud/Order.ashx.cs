@@ -33,6 +33,58 @@ namespace XXCloudService.Api.XCCloud
     public class Order : ApiBase
     {
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object getOrderDetailContain(Dictionary<string, object> dicParas)
+        {
+            XCCloudUserTokenModel userTokenModel = (XCCloudUserTokenModel)(dicParas[Constant.XCCloudUserTokenModel]);
+            TokenDataModel userTokenDataModel = (TokenDataModel)(userTokenModel.DataModel);
+
+            string storedProcedure = "GetOrderDetail";
+            string orderId = dicParas.ContainsKey("orderId") ? dicParas["orderId"].ToString() : string.Empty;
+
+            SqlParameter[] sqlParameter = new SqlParameter[1];
+            sqlParameter[0] = new SqlParameter("@MerchId", SqlDbType.VarChar);
+            sqlParameter[0].Value = userTokenDataModel.MerchID;
+
+            sqlParameter[1] = new SqlParameter("@StoreId", SqlDbType.VarChar);
+            sqlParameter[1].Value = userTokenDataModel.StoreID;
+
+            sqlParameter[2] = new SqlParameter("@FlwOrderId", SqlDbType.VarChar);
+            sqlParameter[2].Value = orderId;
+
+            sqlParameter[3] = new SqlParameter("@Return", SqlDbType.Int);
+            sqlParameter[3].Direction = ParameterDirection.ReturnValue;
+
+            sqlParameter[4] = new SqlParameter("@ErrMsg", SqlDbType.VarChar,200);
+            sqlParameter[4].Direction = ParameterDirection.Output;
+
+            System.Data.DataSet ds = XCCloudBLL.GetStoredProcedureSentence(storedProcedure, sqlParameter);
+
+            if (sqlParameter[3].Value.ToString() == "1")
+            {
+                List<object> listObj = new List<object>();
+                for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                {
+                    var obj = new
+                    {
+                        categoryName = ds.Tables[0].Rows[i]["CategoryName"].ToString(),
+                        foodName = ds.Tables[0].Rows[i]["FoodName"].ToString(),
+                        saleCount = ds.Tables[0].Rows[i]["SaleCount"].ToString(),
+                        singlePrice = Convert.ToDecimal(ds.Tables[0].Rows[i]["SinglePrice"]).ToString("#.00"),
+                        salePrice = Convert.ToDecimal(ds.Tables[0].Rows[i]["SalePrice"]).ToString("#.00"),
+                        taxFee = Convert.ToDecimal(ds.Tables[0].Rows[i]["TaxFee"]).ToString("#.00"),
+                        taxTotal = Convert.ToDecimal(ds.Tables[0].Rows[i]["TaxTotal"]).ToString("#.00")
+                    };
+                    listObj.Add(obj);
+                }
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, listObj);
+            }
+            else
+            {
+                return new ResponseModel(Return_Code.T, "", Result_Code.F, sqlParameter[4].Value.ToString());
+            }
+        }
+
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object getOrders(Dictionary<string, object> dicParas)
         {
             XCCloudUserTokenModel userTokenModel = (XCCloudUserTokenModel)(dicParas[Constant.XCCloudUserTokenModel]);

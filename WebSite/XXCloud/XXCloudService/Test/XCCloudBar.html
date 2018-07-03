@@ -635,6 +635,14 @@
             common(url, parasJson);
         }
 
+        function do_getDeviceWorkInfo() {
+            var workStation = "lijunjie";
+            var parasObj = { "sysId": "0", "versionNo": "0.0.0.1", "userToken": userToken, "workStation": workStation };
+            var url = "/XCCloud/DeviceInfo?action=getDeviceWorkInfo";
+            var parasJson = JSON.stringify(parasObj);
+            common(url, parasJson);
+        }
+
     </script>
         
 </head>
@@ -675,6 +683,7 @@
         note：<input id="txt_do_ExitFoodNote" type="text" value="" />
         authorId:<input id="txt_do_ExitFoodAuthorId" type="text" value="0" />
         <input id="Button_Food_3" type="button" value="do_ExitFood(退餐)" onclick="do_ExitFood()" />
+
     </div>
     <br />
 
@@ -758,6 +767,7 @@
     <div title="设备">
         <input id="Button_getDeviceSetupInfo" type="button" value="do_getDeviceSetupInfo(获取设备配置信息)" onclick="do_getDeviceSetupInfo()" />
         <input id="Button_getDeviceInfo" type="button" value="do_getDeviceInfo(获取设备信息)" onclick="do_getDeviceInfo()" />
+        <input id="Button_getDeviceWorkInfo" type="button" value="do_getDeviceWorkInfo(获取设备工作信息)" onclick="do_getDeviceWorkInfo()" />
     </div>
 
     <div title="do_UserToken" style="font-size:14px;color:#F00;border:1px solid #ccc;">

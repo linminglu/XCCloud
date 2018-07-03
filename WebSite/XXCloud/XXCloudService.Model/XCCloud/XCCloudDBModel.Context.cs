@@ -141,12 +141,10 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Flw_DiscountRule> Flw_DiscountRule { get; set; }
         public virtual DbSet<Base_StoreDogList> Base_StoreDogList { get; set; }
         public virtual DbSet<Data_WorkStation_GoodList> Data_WorkStation_GoodList { get; set; }
-        public virtual DbSet<Log_GameAlarm> Log_GameAlarm { get; set; }
         public virtual DbSet<Base_DeviceInfo> Base_DeviceInfo { get; set; }
         public virtual DbSet<Data_GameAPP_MemberRule> Data_GameAPP_MemberRule { get; set; }
         public virtual DbSet<Data_GoodInventory> Data_GoodInventory { get; set; }
         public virtual DbSet<Data_GoodStock_Record> Data_GoodStock_Record { get; set; }
-        public virtual DbSet<Flw_MemberCard_Exit> Flw_MemberCard_Exit { get; set; }
         public virtual DbSet<Data_GameFreeLotteryRule> Data_GameFreeLotteryRule { get; set; }
         public virtual DbSet<Base_DeviceInfo_Ext> Base_DeviceInfo_Ext { get; set; }
         public virtual DbSet<Data_GameInfo> Data_GameInfo { get; set; }
@@ -202,5 +200,8 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Flw_MemberLevelFree> Flw_MemberLevelFree { get; set; }
         public virtual DbSet<Data_MemberLevelFree> Data_MemberLevelFree { get; set; }
         public virtual DbSet<Data_GoodExitInfo> Data_GoodExitInfo { get; set; }
+        public virtual DbSet<Flw_MemberCard_Exit> Flw_MemberCard_Exit { get; set; }
+        public virtual DbSet<Log_GameAlarm> Log_GameAlarm { get; set; }
+        public virtual DbSet<Flw_MemberCard_LevelChange> Flw_MemberCard_LevelChange { get; set; }
     }
 }

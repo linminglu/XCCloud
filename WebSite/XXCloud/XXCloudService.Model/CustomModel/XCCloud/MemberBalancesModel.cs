@@ -142,6 +142,12 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         public string CardAvatar { get; set; }
 
         /// <summary>
+        /// 会员卡锁定详情列表
+        /// </summary>
+        [DataMember(Order = 2)]
+        public List<CardLockStateModel> LockList { get; set; }
+
+        /// <summary>
         /// 会员信息
         /// </summary>
         [DataMember(Order = 3)]
@@ -166,6 +172,31 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         public List<ChildCardModel> ChildCardList { get; set; }
     }
 
+    public class CardLockStateModel
+    {
+        /// <summary>
+        /// 锁定类别
+        /// </summary>
+        public int LockType { get; set; }
+        /// <summary>
+        /// 锁定说明
+        /// </summary>
+        public string LockExplain
+        {
+            get
+            {
+                switch (LockType)
+                {
+                    case 0: return "机台退分限额锁定";
+                    case 1: return "机台非法操作锁定";
+                    case 2: return "人工锁定";
+                    case 3: return "游乐项目入场锁定";
+                    default: return "";
+                }
+            }
+            set { }
+        }
+    }
     public class CardMemberInfoModel
     {
         public string UserName { get; set; }
@@ -230,6 +261,7 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         public string CardShape { get; set; }
         public string Deposit { get; set; }
         public string EndDate { get; set; }
+        public List<CardLockStateModel> LockList { get; set; }
         public ChildCardMemberInfoModel ChildCardMemberInfo { get; set; }
     }
 
@@ -294,6 +326,10 @@ namespace XCCloudService.Model.CustomModel.XCCloud
             this.RemainFrees = string.Empty;
             this.FreeDetails = new List<FreeDetailModel>();
         }
+        [DataMember(Order = 0)]
+        public int FreeType { get; set; }
+        [DataMember(Order = 1)]
+        public string FreeId { get; set; }
         [DataMember(Order = 1)]
         public string Title { get; set; }
         [DataMember(Order = 2)]
@@ -314,5 +350,21 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         public string BalanceName { get; set; }
         public int Quantity { get; set; }
         public int IsDeviceOut { get; set; }
+    }
+
+    public class ConfirmFreeModel
+    {
+        public int freeType { get; set; }
+        public string freeId { get; set; }
+    }
+
+    public class FreeCoinModel
+    {
+        public int balanceIndex { get; set; }
+        public int qty { get; set; }
+        /// <summary>
+        /// 赠币方式： 1 实物币 2 存入卡
+        /// </summary>
+        public int freeCoinType { get; set; }
     }
 }
