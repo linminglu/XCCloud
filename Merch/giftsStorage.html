@@ -201,7 +201,7 @@
             inDepot = data.value;
         });
         form.on('select(Supplier)', function (data) {
-            $('#SupplierVal').val(data.value)
+            $('#SupplierVal').val(data.value=='-请选择-'?"":data.value)
         });
         form.on('select(logisticsCompanyBack)', function (data) {
             data.value == '-请选择-' ? logisticsCompanyBack = '' : logisticsCompanyBack = data.value;

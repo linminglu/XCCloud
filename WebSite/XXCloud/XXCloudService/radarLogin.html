@@ -1,0 +1,265 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录</title>
+    <link rel="stylesheet" href="assets/css/layui.css">
+    <link href="assets/css/style.css" rel="stylesheet" />
+    <link href="assets/css/iconfont.css" rel="stylesheet">
+</head>
+<style>
+    body {
+        min-width: 670px;
+    }
+
+    body {
+        background-color: #68cce9;
+    }
+
+    .bg-image {
+        width: 100%;
+        height: 600px;
+        position: absolute;
+        left: 0;
+        top: 50%;
+        margin-top: -300px;
+        background: url("assets/img/bgImg.png")no-repeat left center;
+        background-size: 100% 100%;
+    }
+
+    .registerBox, .loginBox {
+        width: 400px;
+        margin-top: 90px;
+        border-radius: 5px;
+        border: 1px solid #999;
+        margin-right: 20%;
+        float: right;
+        background-color: #fef2f8;
+    }
+
+    .loginBox {
+        width: 350px;
+        height: 350px;
+        position: relative;
+    }
+
+    .tips-img {
+        width: 52px;
+        height: 52px;
+        position: absolute;
+        right: 10px;
+        top: 10px;
+        cursor: pointer;
+    }
+
+    .registerBox form, .loginBox form {
+        width: 100%;
+        height: 100%;
+    }
+
+    .loginBox form {
+        width: 300px;
+        height: 300px;
+        margin: 25px;
+    }
+
+        .loginBox form label {
+            width: 108px;
+        }
+
+    .regTitle {
+        width: 100%;
+        height: 50px;
+        line-height: 50px;
+        font-size: 16px;
+        ;
+    }
+
+    .loginBox .layui-form-item {
+        padding: 0 auto;
+    }
+
+    #password_login, #password_login_hide {
+        margin-right: 0;
+        width: 150px;
+        display: inline-block;
+        !important;
+    }
+
+    .password_login_show {
+        margin-right: 0;
+        width: 40px;
+        display: inline-block;
+        padding-left: 0;
+        !important;
+        cursor: pointer;
+    }
+</style>
+<body>
+    <div class="container-fluid">
+        <div class="bg-image">
+            <div class="loginBox" style="display: block">
+
+                <div class="tips-img" onclick="changeLoginWay()">
+                    <img src="assets/img/code.png" alt="">
+                </div>
+                <!-- 密码登录 -->
+                <form action="" class="layui-form layui-form-pane login-pwd">
+                    <div class="regTitle" style="margin:15px 0;">登录账号</div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label"><span class="glyphicon glyphicon-user" aria-hidden="true"></span>用户名</label>
+                        <div class="layui-input-inline" style="margin-right:0;">
+                            <input type="text" name="username" lay-verify="required" placeholder="请输入用户名" autocomplete="off" class="layui-input" id="username_login">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label"><span class="glyphicon glyphicon-star" aria-hidden="true"></span>密码</label>
+                        <div class="layui-input-inline" style="margin-right:0;width: 190px">
+                            <input type="password" name="username" lay-verify="required" placeholder="请输入密码" autocomplete="off"
+                                   class="layui-input" id="password_login"><input type="text" name="username" lay-verify="required"
+                                                                                  placeholder="password" autocomplete="off" class="layui-input layui-hide" id="password_login_hide"><button type="button" class="layui-input password_login_show " onclick="ifShowPassword()">
+                                <img src="assets/img/browse.svg" alt="">
+                            </button>
+                        </div>
+
+                    </div>
+                    <div class="layui-form-item" style="text-align:center;">
+                        <button class="layui-btn layui-btn-danger" btnalign="center" type="button" style="width:298px;" onclick="login_merch()">登录</button>
+                    </div>
+                    <div class="layui-form-item">
+                        <a href="#" onclick="toLoginCode1()"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>扫码登录</a>
+                    </div>
+
+                </form>
+                <!-- 扫码登录 -->
+                <form action="" class="layui-hide login-code">
+                    <div class="code-msg">
+                        <div class="msg-ok">
+                            <div id="codeBox">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+
+    </div>
+    <script src="assets/js/jquery.min.js"></script>
+    <script type="text/javascript">
+        //存储session
+        function setStorage(key, value) {
+            if (window.localStorage) {
+                value = JSON.stringify(value); //转化为JSON字符串
+                var storage = window.localStorage;
+                storage.setItem(key, value);
+            }
+        }
+        //删除session
+        function removeStorage(key) {
+            if (window.localStorage) {
+                var storage = window.localStorage;
+                storage.removeItem(key);
+            }
+        }
+        //获取session
+        function getStorage(key) {
+            if (window.localStorage) {
+                value = JSON.parse(localStorage.getItem(key));
+                return value;
+            }
+        }
+        var machineName = "";
+        var dogIdToken = "";
+
+        //登陆页面--login.html
+        function login_merch() {
+            var username = $('#username_login').val();
+            var password = $('#password_login').val();
+            var obj = { 'loginName': "45", 'password': "123456"};
+            console.log(obj);
+            var url = '/xccloud/UserInfo?action=radarLogin';           //登录接口
+            var parasJson = JSON.stringify(obj);
+            if (username != '' && password != '') {
+                $.ajax({
+                    type: "post",
+                    url: url,
+                    contentType: "application/json; charset=utf-8",
+                    data: parasJson,
+                    success: function (res) {
+                        res = JSON.parse(res);
+                        console.log(res)
+                        if (res.result_code === "1") {
+//                            var userToken = res.result_data.userToken;
+//                            var storeId = res.result_data.storeId;
+//                            setStorage('userToken', userToken);
+//                            setStorage('storeId', storeId);
+                            window.location.href = "default.aspx"
+                        }
+                    }
+                })
+            }
+        }
+    </script>
+    <script>
+        //    console.log(dogIdToken);
+        //    console.log(machineName );
+        var ifshow = 1;
+        var clickCounts = "";
+        function ifShowPassword() {
+
+            if (ifshow % 2 == 1) {
+                $('#password_login').addClass('layui-hide');
+                $('#password_login_hide').removeClass('layui-hide');
+            } else {
+                $('#password_login_hide').addClass('layui-hide');
+                $('#password_login').removeClass('layui-hide');
+            }
+            ifshow++;
+        }
+        function changeLoginWay() {
+            if (clickCounts % 2 == 0) {
+                $('.tips-img img').attr('src', 'images/password.png');
+                $('.login-code').removeClass('layui-hide').siblings('form').addClass('layui-hide');
+            } else {
+                $('.tips-img img').attr('src', 'images/code.png');
+                $('.login-pwd').removeClass('layui-hide').siblings('form').addClass('layui-hide');
+            }
+            clickCounts++;
+        }
+        $(function () {
+            $('#codeBox').find('iframe').css({ 'height': '300px' });
+
+            console.log(ifshow);
+
+
+        });
+        //    var obj = new WxLogin({
+        //        id:"codeBox",
+        //        appid: "wx643b076d171ecb3c",
+        //        scope: "snsapi_login",
+        //        redirect_uri: "ws://192.168.1.145:12880",
+        //        // state: "<{$state}>",
+        //        style: "black",
+        //        href: "hws://192.168.1.145:12880"
+        //    });
+
+
+
+        //    var clickCounts=0,ifshow=0;
+        $("body").keydown(function () {
+            if (event.keyCode == "13") {//keyCode=13是回车键
+                login_merch();
+            }
+        });
+        $('#password_login').on('change', function () {
+            $('#password_login_hide').val($(this).val());
+        });
+        $('#password_login_hide').on('change', function () {
+            $('#password_login').val($(this).val());
+        });
+    </script>
+</body>
+</html>

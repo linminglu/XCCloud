@@ -1307,6 +1307,7 @@ namespace XCCloudService.Api.XCCloud
                 }
 
                 HttpContext.Current.Session["UserID"] = userModel.UserID;
+                HttpContext.Current.Session.Timeout = 30;
 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
             }

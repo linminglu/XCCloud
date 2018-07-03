@@ -39,7 +39,7 @@ namespace XXCloudService.Api.XCCloud
             TokenDataModel userTokenDataModel = (TokenDataModel)(userTokenModel.DataModel);
 
             string storedProcedure = "GetOrderDetail";
-            string orderId = dicParas.ContainsKey("orderId") ? dicParas["orderId"].ToString() : string.Empty;
+            string flwOrderId = dicParas.ContainsKey("flwOrderId") ? dicParas["flwOrderId"].ToString() : string.Empty;
 
             SqlParameter[] sqlParameter = new SqlParameter[1];
             sqlParameter[0] = new SqlParameter("@MerchId", SqlDbType.VarChar);
@@ -49,7 +49,7 @@ namespace XXCloudService.Api.XCCloud
             sqlParameter[1].Value = userTokenDataModel.StoreID;
 
             sqlParameter[2] = new SqlParameter("@FlwOrderId", SqlDbType.VarChar);
-            sqlParameter[2].Value = orderId;
+            sqlParameter[2].Value = flwOrderId;
 
             sqlParameter[3] = new SqlParameter("@Return", SqlDbType.Int);
             sqlParameter[3].Direction = ParameterDirection.ReturnValue;

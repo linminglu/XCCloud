@@ -43,7 +43,7 @@ namespace XCCloudService.WeiXin.Common
 
         public static string RedirectMainPage = System.Configuration.ConfigurationManager.AppSettings["RedirectMainPage"].ToString();
 
-        public static string RedirectBarLoginPage = System.Configuration.ConfigurationManager.AppSettings["RedirectBarLoginPage"].ToString();
+        public static string RedirectRadarLoginPage = System.Configuration.ConfigurationManager.AppSettings["RedirectRadarLoginPage"].ToString();
 
         public static string RedirectSelectUserPage = System.Configuration.ConfigurationManager.AppSettings["RedirectSelectUserPage"].ToString();
 

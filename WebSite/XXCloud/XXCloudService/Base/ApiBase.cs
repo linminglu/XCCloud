@@ -838,16 +838,16 @@ namespace XCCloudService.Base
                 SqlParameter[] parameters = new SqlParameter[1];
                 parameters[0] = new SqlParameter("@UserID", userId);
                 System.Data.DataSet ds = XCCloudBLL.ExecuteQuerySentence(sql, parameters);
-                if (ds.Tables[0].Rows.Count <= 0)
+                if (ds.Tables[0].Rows.Count == 0)
                 {
-                    errMsg = "当前用户无权操作";
+                    errMsg = "用户没有权限";
                     return false;
                 }
 
                 var list = Utils.GetModelList<UserGrantModel>(ds.Tables[0]);
                 if (!list.Any(a => a.GrantEN == 1 && grants.Contains(a.DictKey)))
                 {
-                    errMsg = "当前用户无权操作";
+                    errMsg = "用户没有权限";
                     return false;
                 }
             }            

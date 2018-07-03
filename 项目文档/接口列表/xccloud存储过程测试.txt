@@ -5,6 +5,30 @@
 
 ----------------------------------------------------------------------------------------------------------------------------------------
 
+declare @Return int = 0
+declare @ErrMsg varchar(200) = ''
+exec GetOrderDetail '100025','100025420106001','10002542010600120180517108010001',@Return output,@ErrMsg output
+print @Return
+print @ErrMsg
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+ declare @MerchId varchar(15) = '100025'
+ declare @StoreId varchar(15) = '100025420106001' 
+ declare @FlwOrderId varchar(32) = ''
+ declare @Return int = 0
+ declare @ErrMsg varchar(200) = ''
+ declare @GetOrderDetailReturn int = 0
+ exec @GetOrderDetailReturn = GetOrderDetail @MerchId,@StoreId,'10002542010600120180517100010001',@Return output,@ErrMsg output
+ print @Return
+ print @ErrMsg
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
 declare @ErrMsg varchar(200)
 declare @CheckEffectiveFoodReturn int = 0
 declare @FoodSaleSinglePriceList as FoodSaleSinglePriceListType

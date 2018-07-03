@@ -211,7 +211,7 @@
 		.tab-min{margin-top: 1em;padding: 0;}
 		.tab-text{margin: 0.8em 0;}
 		.width100{width: 100%;background-color: #349ffd;}
-		.tab-style{margin-top: 1.5em;line-height: 2em;font-size: 1.2em;}
+		.tab-style{margin-top: 1.2em;line-height: 2em;font-size: 1.2em;}
 
 		.mcImg img{width: 10em;height: 13em;margin-top: 1em;}
 		.inquire{text-align: right;margin-right: 2em;margin-bottom: 1em;margin-top: 1em;}
@@ -518,7 +518,7 @@
 						<div class="input-group col-lg-12 col-md-12 tab-style">
 							<span class="input-group-addon">补币方式：</span>
 							<select class="form-control" v-model="repairCoin.repairType">
-								<option value="1">实物币</option>
+								<option value="1" v-if="repairCoin.allowDevice">实物币</option>
 								<option value="2">存入卡中</option>
 							</select>
 						</div>
@@ -546,7 +546,9 @@
 							<li role="presentation" class="active"><a href="#cardOperation" aria-controls="cardOperation" role="tab" data-toggle="tab" @click="operateTypeChoose('1')">卡操作</a></li>
 							<li role="presentation"><a href="#WeChat" aria-controls="WeChat" role="tab" data-toggle="tab" @click="operateTypeChoose('2')">微信</a></li>
 							<li role="presentation"><a href="#mobileVerification" aria-controls="mobileVerification" role="tab" data-toggle="tab" @click="operateTypeChoose('3')">手机验证</a></li>
+							<li role="presentation"><a href="#idVerification" aria-controls="idVerification" role="tab" data-toggle="tab" @click="operateTypeChoose('4')">身份证验证</a></li>
 						</ul>
+						<!--outCoinData:-->
 						<div class="tab-content">
 							<div role="tabpanel" class="tab-pane active" id="cardOperation">
 								<div class="input-group col-lg-6 col-md-6 tab-style">
@@ -570,13 +572,45 @@
 									<input class="form-control" v-model="outCoinData.mobile"/>
 								</div>
 								<div class="input-group col-lg-6 col-md-6 tab-style">
+									<span class="input-group-addon">验证码：</span>
+									<input   class="form-control" v-model="outCoinData.mobileCode"/>
+									<div class="input-group-btn">
+										<input class="form-control btnSendCode readCard" type="button" v-model="outCoinData.codeBtn" @click="sendCode('1')" :disabled="outCoinData.disabled"/>
+									</div>
+								</div>
+								<div class="input-group col-lg-6 col-md-6 tab-style"></div>
+								<div class="input-group col-lg-6 col-md-6 tab-style">
+									<input class="form-control" v-model="outCoinData.icCardId" readonly/>
+									<div class="input-group-btn">
+										<button type="button" class="btn btn-default readCard" @click="getMember('0')">查询卡号</button>
+									</div>
+								</div>
+								<div class="input-group col-lg-6 col-md-6 tab-style">
 									<span class="input-group-addon addonWidth">消费密码：</span>
 									<input type="password" class="form-control" v-model="outCoinData.mobilePassword"/>
 								</div>
 								<div class="input-group col-lg-6 col-md-6 tab-style">
 									<span class="input-group-addon addonWidth">提币数：</span>
-									<input class="form-control" v-model="outCoinData.mobileInput"/>
+									<input class="form-control" v-model.number="outCoinData.mobileInput" maxlength="6"/>
 								</div>
+							</div>
+							<div role="tabpanel" class="tab-pane" id="idVerification">
+								<div class="input-group col-lg-8 col-md-8 tab-style">
+									<span class="input-group-addon addonWidth">证件号码：</span>
+									<input   class="form-control" v-model="outCoinData.IDCardNo"/>
+									<div class="input-group-btn">
+										<button type="button" class="btn btn-default readCard">读取</button>
+									</div>
+								</div>
+								<div class="input-group col-lg-6 col-md-6 tab-style">
+									<span class="input-group-addon addonWidth">提币数：</span>
+									<input class="form-control" v-model.number="outCoinData.IDCardInput" maxlength="6"/>
+								</div>
+								<div class="input-group col-lg-6 col-md-6 tab-style">
+									<span class="input-group-addon addonWidth">消费密码：</span>
+									<input type="password" class="form-control" v-model="outCoinData.IDCardPassword"/>
+								</div>
+
 							</div>
 						</div>
 						<div class="input-group col-lg-12 col-md-12 tab-style">
@@ -604,8 +638,8 @@
 							<textarea  class="form-control" v-model="outCoinData.note"></textarea>
 						</div>
 						<div class="input-group col-lg-6 col-md-6 tab-style">
-							<span class="input-group-addon addonWidth outCoinReadCard" @click="getBalanceTypeByICCardId">读卡：</span>
-							<input  class="form-control" readonly/>
+							<span class="input-group-addon addonWidth outCoinReadCard" @click="outCoinReadCard">读卡：</span>
+							<input  class="form-control" v-model="outCoinData.icCardId"/>
 						</div>
 						<div class="col-lg-2 col-md-2 tab-style"></div>
 						<div class="col-lg-3 col-md-3 tab-style">
@@ -1131,14 +1165,14 @@
 												</div>
 												<div class="input-group col-lg-4 col-md-6">
 													<span class="input-group-addon">验证码：</span>
-													<input   class="form-control" v-model="memberInput.mobileCode"/>
+													<input class="form-control" v-model="memberInput.mobileCode"/>
 													<div class="input-group-btn">
 														<input class="form-control btnSendCode readCard" type="button" v-model="memberInput.codeBtn" @click="sendCode('1')" :disabled="memberInput.disabled"/>
 													</div>
 												</div>
 												<div class="input-group col-lg-4 col-md-6">
 													<div class="input-group-btn">
-														<button type="button" class="btn btn-default readCard" @click="getMember">按手机号查询</button>
+														<button type="button" class="btn btn-default readCard" @click="getMember('1')">按手机号查询</button>
 													</div>
 												</div>
 											</div>
@@ -1342,7 +1376,7 @@
 							<div class="row">
 								<div class="col-lg-3"></div>
                                 <div class="col-lg-1 col-md-1"><button @click="getExchangeList" type="button" class="btn width100 btn-info">余额兑换</button></div>
-								<div class="col-lg-1 col-md-1"><button @click="saveManual" type="button" class="btn width100 btn-info">手工补币</button></div>
+								<div class="col-lg-1 col-md-1"><button @click="saveManual" type="button" class="btn width100 btn-info">补币</button></div>
 								<div class="col-lg-1 col-md-1"><button @click="currency" type="button" class="btn width100 btn-info">提币</button></div>
 								<div class="col-lg-1 col-md-1"><button @click="sendCoin" type="button" class="btn width100 btn-info">送币</button></div>
 								<div class="col-lg-1 col-md-1"><button @click="backCard" type="button" class="btn width100 btn-info">退卡</button></div>
@@ -1504,6 +1538,7 @@
                 balanceIndex:"0",
                 qty:"",
                 repairType:"1",
+                allowDevice:true,
 				note:""
 			},
             memberForm:{
@@ -1559,6 +1594,7 @@
             onSwitch6:false,
             onSwitch7:false,
             onSwitch8:false,
+            switchDisabled8:true,
 			childCardList:[],
             msg:"",
             onFocus:false,
@@ -1583,7 +1619,7 @@
             inputCashFocus:false,
             payCount:0,
 			detailNote:"",
-            icCardId:"",
+            icCardId:"20110013",
             cardId:"",
             footerData:[],
             treeShow:false,
@@ -1638,6 +1674,7 @@
             BackTotal:'0',
             updateOrder:false,
             flwOrderId:"",
+            deviceId:"",
             orderIf:false,
             OrderIdData:[],
             orderList:[],
@@ -1653,9 +1690,20 @@
                 password:"",
                 wxCode:"",
                 mobile:"",
-                deviceId:"",
                 mobilePassword:"",
-                mobileInput:""
+                mobileInput:"",
+                codeBtn:"获取验证码",
+                disabled:false,
+                icCardId:"20110013",
+                IDCardNo:"",
+                IDCardInput:"",
+                outCoinCard:"",
+                IDCardPassword:"",
+                mobileCode:""
+            },
+            FreeCoinData:{
+
+
             },
             registerCheckOut:false,
             cardCheckOut:false,
@@ -2178,7 +2226,7 @@
                 var that = this;
                 if(!this.memberShow){
                     var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken};
-                    axios.post('/XCCloud/Member?action=getMemberLevel', obj).then(function (res) {	//获取会员等级
+                    axios.post('/XCCloud/Member?action=getMemberLevel', obj).then(function (res) {
                         console.log(res.data);
                         that.msgPrompt(res.data);
                         if (res.data.result_code === '1') {
@@ -2289,13 +2337,25 @@
 				}
 			},
 //			按手机号查询会员信息
-            getMember:function () {
+            getMember:function (type) {
 			    var that = this;
-                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,mobile:that.memberInfo.Mobile,code:that.memberInput.mobileCode};
+                switch (type){
+                    case 0 :
+                        var mobile = that.outCoinData.mobile;
+                        var code = that.outCoinData.mobileCode;
+                        that.outCoinData.outCoinCard = "1";
+                        break;
+                    case 1 :
+						var mobile = that.memberInfo.Mobile;
+						var code = that.memberInput.mobileCode;
+                        that.outCoinData.outCoinCard = "";
+                        break;
+                    default:
+                        break;
+                }
+                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,mobile:mobile,code:code};
                 console.log(obj);
-                console.log(that.memberInfo.Mobile.length);
-                console.log(that.memberInput.mobileCode == "");
-			    if(that.memberInfo.Mobile.length != 11 || that.memberInput.mobileCode == ""){
+			    if(mobile.length != 11 || code == ""){
                     that.msg = "请先确认手机号和验证码填写正确";
                     $('#myModal').modal('show');
                     setTimeout(function () {
@@ -2307,8 +2367,6 @@
                         that.msgPrompt(res.data);
                         if (res.data.result_code === '1') {
                             that.cardList = res.data.result_data;
-                            console.log(that.cardList);
-//                            that.cardList =[{CardId:"10001642011100120180622000177000",EndDate:"2019-06-13",ICCardNo:"21110024",LevelName: "贵宾卡"},{CardId:"10001642011100120180622000177000",EndDate:"2019-06-13",ICCardNo:"21110024",LevelName: "贵宾卡"},{CardId:"10001642011100120180622000177000",EndDate:"2019-06-13",ICCardNo:"21110024",LevelName: "贵宾卡"},{CardId:"10001642011100120180622000177000",EndDate:"2019-06-13",ICCardNo:"21110024",LevelName: "贵宾卡"}];
                             $('#cardList').modal('show');
                         }
                     }).catch(function (err) {
@@ -2321,8 +2379,13 @@
                 var that = this;
                 console.log(index);
                 that.radioValue = index;
-                that.icCardId = that.cardList[that.radioValue].ICCardNo;
-                that.cardId = that.cardList[that.radioValue].CardId;
+                if(that.outCoinData.outCoinCard == "1"){
+                    that.outCoinData.icCardId = that.cardList[that.radioValue].ICCardNo;
+                    that.outCoinData.outCoinCard == ""
+				}else {
+                    that.icCardId = that.cardList[that.radioValue].ICCardNo;
+                    that.cardId = that.cardList[that.radioValue].CardId;
+				}
                 $('#cardList').modal('hide');
                 that.radioValue = "";
                 that.getMenberCardInfo()
@@ -3046,13 +3109,13 @@
                 }
 
             },
-//			会员操作开关参数
+//			开关参数
             switchFnc:function (switchIndex) {
                 var that = this;
                 switch(switchIndex){
                     case '0':
                         that.onSwitch0 = !that.onSwitch0;
-                    	break;
+                        break;
                     case '1':
                         that.onSwitch1 = !that.onSwitch1;
                         break;
@@ -3065,9 +3128,9 @@
                     case '4':
                         that.onSwitch4 = !that.onSwitch4;
                         break;
-					case '5':
-						that.onSwitch5 = !that.onSwitch5;
-						break;
+                    case '5':
+                        that.onSwitch5 = !that.onSwitch5;
+                        break;
                     case '6':
                         that.onSwitch6 = !that.onSwitch6;
                         break;
@@ -3075,20 +3138,21 @@
                         that.onSwitch7 = !that.onSwitch7;
                         break;
                     case '8':
-                        that.onSwitch8 = !that.onSwitch8;
-                        if(that.onSwitch8){
-                            that.outCoinData.balanceType = that.outCoinData.balanceTypeByICCardId;
-                            that.outCoinData.balance = that.outCoinData.balanceTypeByICCardId[0].BalanceQty||"";
-						}else {
-                            that.outCoinData.balanceType = that.outCoinData.balanceTypeByDevice;
-                            that.outCoinData.balance = that.outCoinData.balanceTypeByDevice[0].BalanceQty||"";
-						}
+                        if(that.switchDisabled8){
+                            that.onSwitch8 = !that.onSwitch8;
+                            if(that.onSwitch8){
+                                that.outCoinData.balanceType = that.outCoinData.balanceTypeByICCardId;
+                                that.outCoinData.balance = that.outCoinData.balanceTypeByICCardId[0].BalanceQty||"";
+                            }else {
+                                that.outCoinData.balanceType = that.outCoinData.balanceTypeByDevice;
+                                that.outCoinData.balance = that.outCoinData.balanceTypeByDevice[0].BalanceQty||"";
+                            }
+                        }
                         break;
                     default:
                         that.onSwitch9 = !that.onSwitch9;
                         break;
                 }
-//                this.onSwitch1 = !this.onSwitch1;
             },
 //			会员操作送币
             givingFnc:function(index){
@@ -3202,41 +3266,64 @@
 //			补币
             saveManual:function () {
                 var that = this;
-                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken};
+                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,type:"4", workStation:"lijunjie"};
                 console.log(obj);
-                axios.post('/XCCloud/Member?action=getRepairCoinBalanceType', obj).then(function (res) {	//获取会员等级
+                axios.post('/XCCloud/DeviceInfo?action=getDeviceWorkInfo', obj).then(function (res) {
                     console.log(res.data);
                     that.msgPrompt(res.data);
                     if (res.data.result_code === '1') {
-                        $('#ManualSModal').modal('show');
-                        that.repairCoinData = res.data.result_data;
-//                        that.msg = "兑换成功";
-//                        $('#myModal').modal('show');
-
-//                        that.balanceExchangeData.exchangeValue = "";
-//                        setTimeout(function () {
-//                            $('#myModal').modal('hide');
-//                        }, 1500);
+                        if(res.data.result_data[0].statusName == "正常待机"){
+                            that.repairCoin.allowDevice = true;
+                            that.repairCoin.repairType = "1";
+                            that.deviceId = res.data.result_data[0].mcuId;
+                        }else{
+                            that.msg = res.data.result_data[0].statusName;
+                            $('#myModal').modal('show');
+                            that.repairCoin.allowDevice = false;
+                            that.repairCoin.repairType = "2";
+                            that.deviceId = "";
+                            setTimeout(function () {
+                                $('#myModal').modal('hide');
+                            }, 1500);
+                        }
+                        var BalanceType={sysId: sysId,versionNo: versionNo,userToken:that.userToken};
+                        console.log(BalanceType);
+                        axios.post('/XCCloud/Member?action=getRepairCoinBalanceType', BalanceType).then(function (res) {
+                            console.log(res.data);
+                            that.msgPrompt(res.data);
+                            if (res.data.result_code === '1') {
+                                $('#ManualSModal').modal('show');
+                                that.repairCoinData = res.data.result_data;
+                            }
+                        }).catch(function (err) {
+                            console.log(err);
+                        });
                     }
                 }).catch(function (err) {
                     console.log(err);
                 });
+
             },
 //			补币提交
             repairCoinFnc:function(){
                 var that = this;
-                console.log(that.repairCoin.balanceIndex);
-                console.log(that.repairCoin.qty);
-                console.log(that.repairCoin.repairType);
-                console.log(that.repairCoin.note);
-                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,iccardId:that.icCardId,balanceIndex:that.repairCoinData[that.repairCoin.balanceIndex].BalanceIndex,qty:that.repairCoin.qty,repairType:that.repairCoin.repairType,note:that.repairCoin.note};
+                var obj={
+                    sysId: sysId,
+					versionNo: versionNo,
+					userToken:that.userToken,
+					iccardId:that.icCardId,
+					balanceIndex:that.repairCoinData[that.repairCoin.balanceIndex].BalanceIndex,
+					qty:that.repairCoin.qty,
+					repairType:that.repairCoin.repairType,
+                    deviceId:that.deviceId,
+					note:that.repairCoin.note
+                };
                 console.log(obj);
-                axios.post('/XCCloud/Member?action=repairCoin', obj).then(function (res) {	//获取会员等级
+                axios.post('/XCCloud/Member?action=repairCoin', obj).then(function (res) {
                     console.log(res.data);
                     that.msgPrompt(res.data);
                     if (res.data.result_code === '1') {
                         $('#ManualSModal').modal('hide');
-
                         that.msg = "补币成功";
                         $('#myModal').modal('show');
                         setTimeout(function () {
@@ -3253,18 +3340,34 @@
                 var that = this;
                 var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,type:"4", workStation:"lijunjie"};
                 console.log(obj);
-                axios.post('/XCCloud/DeviceInfo?action=getDeviceInfo', obj).then(function (res) {
+                axios.post('/XCCloud/DeviceInfo?action=getDeviceWorkInfo', obj).then(function (res) {
                     console.log(res.data);
                     that.msgPrompt(res.data);
                     if (res.data.result_code === '1') {
-                        $('#currencySModal').modal('show');
-                        that.getBalanceTypeByDevice();
+                        if(res.data.result_data[0].statusName == "正常待机"){
+                            $('#currencySModal').modal('show');
+                            that.outCoinData = res.data.result_data[0].mcuId;
+                            that.onSwitch8 = false;
+                            that.switchDisabled8 = true;
+//                            that.getBalanceTypeByDevice();
+//                            that.getBalanceTypeByICCardId();
+						}else{
+                            that.msg = res.data.result_data[0].statusName;
+                            that.onSwitch8 = true;
+                            that.switchDisabled8 = false;
+                            $('#myModal').modal('show');
+                            $('#currencySModal').modal('show');
+                            that.deviceId = "";
+                                setTimeout(function () {
+                                $('#myModal').modal('hide');
+                            }, 1500);
+						}
                     }
                 }).catch(function (err) {
                     console.log(err);
                 });
             },
-//			退币读卡
+//			提币读卡
             outCoinReadCard:function(){
                 var that = this;
                 var msgType4 =JSON.stringify({"msgType":"4", "sObj": {"userToken": that.userToken}});
@@ -3274,7 +3377,7 @@
 //          按售币机ID获取代币余额
             getBalanceTypeByDevice:function () {
                 var that = this;
-                var byDeviceData={sysId: sysId,versionNo: versionNo,userToken:that.userToken,iccardId:"20110013",deviceId:"21"};
+                var byDeviceData={sysId: sysId,versionNo: versionNo,userToken:that.userToken,iccardId:that.outCoinData.icCardId,deviceId:"21"};
                 console.log(byDeviceData);
                 axios.post('/XCCloud/Member?action=getBalanceTypeByDevice', byDeviceData).then(function (res) {
                     console.log(res.data);
@@ -3296,7 +3399,7 @@
 //			按卡号获取提币币种及余额
             getBalanceTypeByICCardId:function () {
 				var that = this;
-                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,iccardId:"20110013"};
+                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,iccardId:that.outCoinData.icCardId};
                 console.log(obj);
                 axios.post('/XCCloud/Member?action=getBalanceTypeByICCardId', obj).then(function (res) {
                     console.log(res.data);
@@ -3327,6 +3430,12 @@
                 that.outCoinData.mobile = "";
                 that.outCoinData.mobilePassword = "";
                 that.outCoinData.mobileInput = "";
+                that.outCoinData.codeBtn = "获取验证码";
+                that.outCoinData.disabled = false;
+                that.outCoinData.IDCardNo = "";
+                that.outCoinData.IDCardInput = "";
+                that.outCoinData.IDCardPassword = "";
+                that.outCoinData.mobileCode = "";
     		},
 //			确认提币
             confirmOutCoin:function(){
@@ -3335,7 +3444,7 @@
                 if(that.onSwitch8){
                    var deviceId =""
 				}else {
-                    var deviceId =that.outCoinData.deviceId
+                    var deviceId =that.deviceId
 				}
 				switch (that.outCoinData.operateType){
 					case 1 :
@@ -3377,11 +3486,23 @@
                             var outCoinCode = that.outCoinData.mobilePassword;
                         }
                         break;
+                    case 4 :
+                        if(that.outCoinData.IDCardInput =="" || that.outCoinData.IDCardPassword == ""){
+                            that.msg = "请先输入必填项！";
+                            $('#myModal').modal('show');
+                            setTimeout(function () {
+                                $('#myModal').modal('hide');
+                            }, 1500);
+                        }else{
+                            confirm = true;
+                            var qty = that.outCoinData.IDCardInput;
+                            var outCoinCode = that.outCoinData.IDCardPassword;
+                        }
+                        break;
 					default:
 					    break;
 				}
                 that.$nextTick(function () {
-
 					if(confirm){
                         var obj={
                             sysId: sysId,
@@ -3415,18 +3536,40 @@
 			},
 //			送币
 			sendCoin:function () {
+                var that = this;
                 this.givingShow = false;
-                $('#SendSModal').modal('show');
-                this.givingShow = true;
-                setTimeout(function () {
-                    var  mySwiper = new Swiper('.givingList', {
-                        autoplay: false,//可选选项，自动滑动
-                        slidesPerView: 5,
-                        centeredSlides: false,
-                        paginationClickable: true,
-                        spaceBetween: 20
-                    });
-                }, 200);
+                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,type:"4", workStation:"lijunjie"};
+                console.log(obj);
+                axios.post('/XCCloud/DeviceInfo?action=getDeviceWorkInfo', obj).then(function (res) {
+                    console.log(res.data);
+                    that.msgPrompt(res.data);
+                    that.givingShow = true;
+                    if (res.data.result_code === '1') {
+                        if(res.data.result_data[0].statusName == "正常待机"){
+                            that.deviceId = res.data.result_data[0].mcuId;
+                        }else{
+                            that.msg = res.data.result_data[0].statusName;
+                            $('#myModal').modal('show');
+                            that.deviceId = "";
+                            setTimeout(function () {
+                                $('#myModal').modal('hide');
+                            }, 1000);
+                        }
+                        var FreeCoinInfoList={sysId: sysId,versionNo: versionNo,userToken:that.userToken,iccardId:that.icCardId,deviceId:that.deviceId};
+                        console.log(FreeCoinInfoList);
+                        axios.post('/XCCloud/Member?action=getMemberFreeCoinInfoList', FreeCoinInfoList).then(function (res) {
+                            console.log(res.data);
+                            that.msgPrompt(res.data);
+                            if (res.data.result_code === '1') {
+                                $('#SendSModal').modal('show');
+                            }
+                        }).catch(function (err) {
+                            console.log(err);
+                        });
+                    }
+                }).catch(function (err) {
+                    console.log(err);
+                });
             },
 //			退卡
 			backCard:function(){

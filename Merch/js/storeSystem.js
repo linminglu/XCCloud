@@ -618,7 +618,7 @@ xcActionSystem.prototype= {
         let obj = {'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'};
         let url = '/XCCloud/Member?action=GetMemberLevelDic';
         let parseJson = JSON.stringify(obj);
-        $('#digitLevel').html("<option >-请选择-</option>");
+        $('#digitLevel').html("<option value=''>-请选择-</option>");
         form.render();
         $.ajax({
             type: "post",
@@ -1403,7 +1403,7 @@ xcActionSystem.prototype= {
                 data = JSON.parse(data);
                 if (data.result_code == 1){
                     let arr=data.result_data;
-                    $('#'+id).html('<option>-请选择-</option>');
+                    $('#'+id).html('<option value="">-请选择-</option>');
                     for(let i in arr){
                         $('#'+id).append('<option value="'+arr[i].StoreID+'">'+arr[i].StoreName+'</option>')
                     }
@@ -1427,7 +1427,7 @@ xcActionSystem.prototype= {
                 data = JSON.parse(data);
                 if (data.result_code == 1){
                     let arr=data.result_data;
-                    $('#'+id).html('<option>-请选择-</option>');
+                    $('#'+id).html('<option value="">-请选择-</option>');
                     for(let i in arr){
                         // if(curStore!=undefined){
                         //     if(arr[i].Key!=curStore){
@@ -1462,7 +1462,7 @@ xcActionSystem.prototype= {
                     data = JSON.parse(data);
                     console.log(data);
                     if (data.result_code == 1) {
-                        $('#memberLevel').html('<option>-请选择-</option>');
+                        $('#memberLevel').html('<option value="">-请选择-</option>');
                         let arr=data.result_data;
                         for(var i in arr){
                             $('#memberLevel').append('<option value="'+arr[i].Key+'" title="'+arr[i].Value+'">'+arr[i].Value+'</option>')
@@ -1489,7 +1489,7 @@ xcActionSystem.prototype= {
                 data = JSON.parse(data);
                 if (data.result_code == 1) {
                     let arr=data.result_data;
-                    $('#'+id).html('<option>-请选择-</option>');
+                    $('#'+id).html('<option value="">-请选择-</option>');
                     for(let i in arr){
                         $('#'+id).append('<option value="'+arr[i].ID+'">'+arr[i].DeviceName+'</option>')
                     }
@@ -1513,7 +1513,7 @@ xcActionSystem.prototype= {
                 data = JSON.parse(data);
                 if (data.result_code == 1) {
                     let arr=data.result_data;
-                    $('#'+id).html('<option>-请选择-</option>');
+                    $('#'+id).html('<option value="">-请选择-</option>');
                     for(let i in arr){
                         $('#'+id).append('<option value="'+arr[i].Key+'">'+arr[i].Value+'</option>')
                     }
@@ -1538,7 +1538,7 @@ xcActionSystem.prototype= {
                 data = JSON.parse(data);
                 if (data.result_code == 1) {
                     let arr=data.result_data;
-                    $('#'+id).html('<option>-请选择-</option>');
+                    $('#'+id).html('<option value="">-请选择-</option>');
                     for(let i in arr){
                         // $('#'+id).append('<option value="'+arr[i].ID+'" title="'+arr[i].ExpireDays+'">'+arr[i].ProjectName+'</option>')
                         if(selected!=undefined){
@@ -1571,7 +1571,7 @@ xcActionSystem.prototype= {
                 data = JSON.parse(data);
                 if (data.result_code == 1) {
                     let arr=data.result_data;
-                    $('#'+id).html('<option>-请选择-</option>');
+                    $('#'+id).html('<option value="">-请选择-</option>');
                     for(let i in arr){
                         if(selected!=undefined){
                             if(arr[i].ID==selected){
@@ -1602,7 +1602,7 @@ xcActionSystem.prototype= {
                 data = JSON.parse(data);
                 if (data.result_code == 1) {
                     let arr=data.result_data;
-                    $('select[name="'+name+'"]').html('<option>-请选择-</option>');
+                    $('select[name="'+name+'"]').html('<option value="">-请选择-</option>');
                     for(let i in arr){
                         if(selected!=undefined){
                             if(arr[i].ID==selected){
@@ -1633,7 +1633,7 @@ xcActionSystem.prototype= {
                 data = JSON.parse(data);
                 if (data.result_code == 1) {
                     let arr=data.result_data;
-                    node.html('<option>-请选择-</option>');
+                    node.html('<option value="">-请选择-</option>');
                     for(let i in arr){
                         if(selected!=undefined){
                             if(arr[i].ID==selected){
@@ -1665,7 +1665,7 @@ xcActionSystem.prototype= {
                 data = JSON.parse(data);
                 if (data.result_code == 1) {
                     let arr=data.result_data;
-                    $('#'+id).html('<option>-请选择-</option>');
+                    $('#'+id).html('<option value="">-请选择-</option>');
                     for(let i in arr){
                         if(selected!=undefined){
                             if(arr[i].MemberLevelID==selected){
@@ -1736,7 +1736,7 @@ xcActionSystem.prototype= {
                 data = JSON.parse(data);
                 if (data.result_code == 1) {
                     let arr=data.result_data;
-                    $('#'+id).html('<option>-请选择-</option>');
+                    $('#'+id).html('<option value="">-请选择-</option>');
                     for(let i in arr){
                         if(selected!=undefined){
                             if(arr[i].ID==selected){
@@ -1768,7 +1768,7 @@ xcActionSystem.prototype= {
                 data = JSON.parse(data);
                 if (data.result_code == 1) {
                     let arr=data.result_data;
-                    $('#'+id).html('<option>-请选择-</option>');
+                    $('#'+id).html('<option value="">-请选择-</option>');
                     for(let i in arr){
                         if(selected!=undefined){
                             if(arr[i].ID==selected){
@@ -1841,7 +1841,7 @@ xcActionSystem.prototype= {
                 console.log(data)
                 if (data.result_code == 1) {
                     let arr=data.result_data;
-                    $('#'+id).html('<option>-请选择-</option>');
+                    $('#'+id).html('<option value="">-请选择-</option>');
                     for(let i in arr){
                          $('#'+id).append('<option value="'+arr[i].ID+'" lay-filter="project" title="'+arr[i].ProjectTypeStr+'">'+arr[i].ProjectName+'</option>')
                     }
@@ -1933,7 +1933,7 @@ xcActionSystem.prototype= {
                 data = JSON.parse(data);
                 if (data.result_code == 1) {
                     let arr=data.result_data;
-                    $('#'+id).html('<option>-请选择-</option>');
+                    $('#'+id).html('<option value="">-请选择-</option>');
                     for(let i in arr){
                         if(selected){
                             if(arr[i].ID==selected){
@@ -1966,9 +1966,9 @@ xcActionSystem.prototype= {
                 if (data.result_code == 1) {
                     let arr=data.result_data;
                     if(tree==1){
-                        $('#'+id).html('<option>-请选择-</option><option value="0">全部</option>');
+                        $('#'+id).html('<option value="">-请选择-</option><option value="0">全部</option>');
                     }else {
-                        $('#'+id).html('<option>-请选择-</option>');
+                        $('#'+id).html('<option value="">-请选择-</option>');
                     }
 
                     for(let i in arr){
@@ -2002,7 +2002,7 @@ xcActionSystem.prototype= {
                 data = JSON.parse(data);
                 if (data.result_code == 1) {
                     let arr=data.result_data;
-                    $('#'+id).html('<option>-请选择-</option>');
+                    $('#'+id).html('<option value="">-请选择-</option>');
                     for(let i in arr){
                         if(selected){
                             if(arr[i].ID==selected){
@@ -2034,7 +2034,7 @@ xcActionSystem.prototype= {
                 data = JSON.parse(data);
                 if (data.result_code == 1) {
                     let arr=data.result_data;
-                    $('#'+id).html('<option>-请选择-</option>');
+                    $('#'+id).html('<option value="">-请选择-</option>');
                     for(let i in arr){
                         if(selected){
                             if(arr[i].FoodID==selected){
@@ -2124,7 +2124,7 @@ xcActionSystem.prototype= {
                 data = JSON.parse(data);
                 if (data.result_code == 1) {
                     let arr=data.result_data;
-                    $('#'+id).html('<option>-请选择-</option>');
+                    $('#'+id).html('<option value="">-请选择-</option>');
                     for(let i in arr){
                         if(selected){
                             if(arr[i].Supplier==selected){
@@ -2157,7 +2157,7 @@ xcActionSystem.prototype= {
                 console.log(data);
                 if (data.result_code == 1) {
                     let arr=data.result_data.children;
-                    $('#'+id).html('<option>-请选择-</option>');
+                    $('#'+id).html('<option value="">-请选择-</option>');
                     if(selected!=undefined){
                         for(let i=1; i< arr.length;i++){
                             if(arr[i].children.length>0){
@@ -2213,7 +2213,7 @@ xcActionSystem.prototype= {
                 data = JSON.parse(data);
                 if (data.result_code == 1) {
                     let arr = data.result_data;
-                    $('#' + id).html('<option>-请选择-</option>');
+                    $('#' + id).html('<option value="">-请选择-</option>');
                     for (let i in arr) {
                         if (selected!=undefined) {
                             if (arr[i].ID == selected) {
