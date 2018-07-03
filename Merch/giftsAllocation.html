@@ -308,7 +308,7 @@
                 <div class="layui-inline">
                     <label class="layui-form-label">入库仓库</label>
                     <div class="layui-input-inline" id="backBox">
-                        <select name="backInDepot" lay-filter="backInDepot"  id="backInDepot"></select>
+                        <input name="backInDepot"  class="layui-input" id="backInDepot"/>
                     </div>
                 </div>
             </div>
@@ -316,7 +316,7 @@
                 <div class="layui-inline">
                     <label class="layui-form-label">物流公司</label>
                     <div class="layui-input-inline">
-                        <select name="logisticsCompanyBack" id="logisticsCompanyBack" lay-filter="logisticsCompany"></select>
+                        <select name="logisticsCompanyBack" id="logisticsCompanyBack" lay-filter="logisticsCompanyBack"></select>
                     </div>
                 </div>
                 <div class="layui-inline">
@@ -339,6 +339,7 @@
                 <div class="layui-inline">
                     <label class="layui-form-label">退货杂费</label>
                     <div class="layui-input-inline">
+                        <input type="text" class="layui-hide layui-input" name="" id="AllCost">
                         <input type="text" class="layui-input" name="exitCost" id="exitCost">
                     </div>
                 </div>
@@ -480,7 +481,7 @@
         }
     });
     //调拨退货
-    let backInDepot='';let logisticsCompanyBack='';let arrBack=[];
+    let backInDepot='';let logisticsCompanyBack='';let arrBack=[];let arrBackSel=[];let backInDepotId='';
     layui.addcss('layui_font.css');
     layui.use(['form','table','layer'],function () {
         let form=layui.form;
@@ -663,7 +664,10 @@
             }
         });
         form.on('select(logisticsCompany)',function (data){
-            logisticsCompany=data.value;
+            data.value=='-请选择-'?logisticsCompany='':logisticsCompany=data.value;
+        });
+        form.on('select(logisticsCompanyBack)',function (data){
+            data.value=='-请选择-'?logisticsCompanyBack='':logisticsCompanyBack=data.value;
         });
         //主表
         table.on('tool(giftAllocationTB)', function(obj){
@@ -789,38 +793,12 @@
                         console.log(data)
                         if(data.result_code==1){
                             xc.setSelect('物流公司','logisticsCompanyBack');
-                            $('#backInDepot').html('<option value="">-请选择-</option>');
-                            for(let i in depotList){
-                                $('#backInDepot').append('<option value="'+depotList[i].ID+'" selected>'+depotList[i].DepotName+'</option>')
-                            }
+                            $('#backInDepot').val(_data.InDepotName);
+                            backInDepotId=_data.InDepotID;
                              arrBack=data.result_data.GoodRequestDetails;
-                            table.render({
-                                elem: '#backDetails'
-                                , height:'300px'
-                                , size:"sm"
-                                , data: arrBack
-                                , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
-                                , cols: [[
-                                    {type:'checkbox',fixed: 'left'} ,
-                                    // {field:'ID', title: '调拨ID', align: 'center',width:100}
-                                    // ,{field:'GoodID', title: '商品ID', align: 'center',width:100}
-                                    // ,
-                                    {field:'Barcode', title:'商品条码', align: 'center',width:170}
-                                    ,{field:'GoodName',title: '商品名称', align: 'center',width:120} //width 支持：数字、百分比和不填写。
-                                    ,{field:'GoodTypeStr', title: '商品类别', align: 'center',width:100}
-                                    ,{field:'RequestCount', title: '申请数量', align: 'center',width:100}
-                                    ,{field:'SendCount', title: '实发数量', align: 'center',width:100}
-                                    ,{field:'StorageCount', title: '入库数量', align: 'center',edit:true,width:100}
-                                    ,{field:'ExitedCount', title: '已退货数量', align: 'center',width:100}
-                                    ,{field:'ExitCount', title: '退货数量', align: 'center',width:100,edit:true}
-                                    ,{field:'CostPrice', title: '含税单价', align: 'center',width:100}
-                                    ,{field:'Tax', title: '税率', align: 'center',width:100}
-                                ]]
-                                , page: {page: true, limits: [10, 15, 20, 30, 50, 100]}
-                                , limit: 10
-                            });
+                            initBackTab(table,arrBack);
                             form.val('back',{
-                                'backInDepot':data.result_data.InDepotId,
+                                // 'backInDepot':data.result_data.InDepotId,
                                 'backNote':data.result_data.Note,
                             });
                             form.render();
@@ -1089,72 +1067,86 @@
             if (obj.type == "all") {
                 console.log(obj)
             } else {
-                if(arrBack.length>0){
+                if(arrBackSel.length>0){
                     if(obj.checked==true){
                         let flag=false;
-                        for(let i in arrBack){
-                            if(arrBack[i].ID==obj.data.ID){
+                        for(let i in arrBackSel){
+                            if(arrBackSel[i].ID==obj.data.ID){
                                 flag=true;
                                 break;
                             }
                         }
                         if(flag==false){
-                            arrBack.push({
+                            arrBackSel.push({
                                 'GoodID':obj.data.GoodID,
                                 'ID':obj.data.ID,
-                                'ExitCount':obj.data.StorageCount,
+                                'ExitCount':obj.data.ExitCount,
+                                'CostPrice':obj.data.CostPrice,
                             });
                         }
                     }else {
-                        for(let i in arrBack){
-                            if(arrBack[i].ID==obj.data.ID){
-                                arrBack.splice(i,1);
+                        for(let i in arrBackSel){
+                            if(arrBackSel[i].ID==obj.data.ID){
+                                arrBackSel.splice(i,1);
                                 break;
                             }
                         }
                     }
                 }else {
-                    arrBack.push({
+                    arrBackSel.push({
                         'GoodID':obj.data.GoodID,
                         'ID':obj.data.ID,
                         'ExitCount':obj.data.ExitCount,
+                        'CostPrice':obj.data.CostPrice,
                     });
                 }
+                let sumExit = 0;let sumMoney=0;
+                for (let i in arrBackSel) {
+                    sumExit = parseInt(sumExit) + parseInt(arrBackSel[i].ExitCount==''?0:arrBackSel[i].ExitCount);
+                    sumMoney=parseInt(sumMoney) + parseInt(arrBackSel[i].ExitCount==''?0:arrBackSel[i].ExitCount)*parseInt(arrBackSel[i].CostPrice);
+                }
+                $('#exitCount').val(parseInt(sumExit));
+                $('#AllCost').val(parseInt(sumMoney))
+                $('#exitTotal').val(parseInt(sumMoney) - parseInt($('#exitCost').val() == '' ? 0 : $('#exitCost').val()));
             }
+            // }
         });
         //编辑退货数据信息
         table.on('edit(backDetails)', function(obj){ //注：edit是固定事件名，test是table原始容器的属性 lay-filter="对应的值"
-            // let value= obj.value; //得到修改后的值
-            // let key=obj.field; //当前编辑的字段名
-            // let index=obj.data.LAY_TABLE_INDEX; //所在行的所有相关数据
-            // checkListGoods[index][key]=value;
-            //
-            // for(let i in arrBack){
-            //     if(arrBack[i].GoodID==obj.data.GoodID){
-            //         arrBack[i][obj.field]=obj.value
-            //     }
-            // }
             let value = obj.value; //得到修改后的值
             let key = obj.field; //当前编辑的字段名
-            let index = obj.data.LAY_TABLE_INDEX; //所在行的所有相关数据
-            arrBack[index][key] = value;
-            arrBack[index].ExitAll = value * arrBack[index].ExitPrice;
-            //已经勾选了 需要改变值
-            if (arrBack.length > 0) {
-                for (let i in arrBack) {
-                    if (arrBack[i].GoodID == obj.data.GoodID) {
-                        arrBack[i].ExitCount = obj.data.ExitCount;
-                        arrBack[i].ExitPrice = obj.data.ExitPrice
+            let index = obj.data.LAY_TABLE_INDEX; //所在行的所有相关数据()
+            console.log(this)
+            let _this=this;
+            if(obj.value<obj.data.StorageCount+1){
+                arrBack[index][key] = value;
+
+                //已经勾选了 需要改变值
+                if (arrBackSel.length > 0) {
+                    for (let i in arrBackSel) {
+                        if (arrBackSel[i].ID == obj.data.ID) {
+                            arrBackSel[i].ExitCount = obj.data.ExitCount;
+                        }
                     }
+
+                    let sumExit = 0;let sumMoney=0;
+                    for (let i in arrBackSel) {
+                        sumExit = parseInt(sumExit) + parseInt(arrBackSel[i].ExitCount);
+                        sumMoney=parseInt(sumMoney) + parseInt(arrBackSel[i].ExitCount)*parseInt(arrBackSel[i].CostPrice);
+                    }
+                    $('#exitCount').val(parseInt(sumExit));
+                    $('#AllCost').val(parseInt(sumMoney))
+                    $('#exitTotal').val(parseInt(sumMoney) - parseInt($('#exitCost').val() == '' ? 0 : $('#exitCost').val()));
                 }
+            }else {
+                obj.data.key=0;
+
+                    _this.value=0;
+
+
+                arrBack[index][key] = 0;
+                console.log(arrBack)
             }
-            let sumExit = 0;let sumMoney=0;
-            for (let i in arrBack) {
-                sumExit = parseInt(sumExit) + parseInt(arrBack[i].ExitCount);
-                sumMoney=parseInt(sumMoney) + parseInt(arrBack[i].ExitCount)*parseInt(arrBack[i].CostPrice);
-            }
-            $('#exitCount').val(parseInt(sumExit));
-            $('#exitTotal').val(parseInt(sumMoney) - parseInt($('#exitCost').val() == '' ? 0 : $('#exitCost').val()));
 
         });
         form.on('select(inDepot)',function (data){
@@ -1346,6 +1338,41 @@
 
             })
         });
+        $('#exitCost').on('blur',function () {
+            $('#exitTotal').val(parseInt( $('#AllCost').val()) - parseInt($('#exitCost').val() == '' ? 0 : $('#exitCost').val()));
+        })
+            $('#saveBack').on('click',function () {
+                let _obj={
+                    'requestId':requestId,
+                    'inDepotId':backInDepotId,
+                    'exitCount':$('#exitCount').val(),
+                    'exitCost':$('#exitCost').val(),
+                    'exitTotal':$('#exitTotal').val(),
+                    'logistType':logisticsCompanyBack,
+                    'logistOrderId':$('#logisticsNoteBack').val(),
+                    'note':$('#backNote').val(),
+                    'goodRequestDetails':arrBackSel,
+                    'userToken':token,
+                    'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                let url='/XCCloud/GoodsInfo?action=GoodRequestExit';
+                let parasJson = JSON.stringify(_obj);
+                $.ajax({
+                    type: "post",
+                    url: url,
+                    contentType: "application/json; charset=utf-8",
+                    data: { parasJson: parasJson },
+                    success: function (data) {
+                        data=JSON.parse(data);
+                        if(data.result_code==1){
+                            layer.msg('退货成功',{time:1800},function () {
+                                location.reload();
+                            });
+                        }else {
+                            layer.msg(data.result_msg||data.return_msg)
+                        }
+                    }
+                })
+            })
     });
     function initGoodsTb(requestType,a,b,c,table,merchId,storeID) {
         let obj;
@@ -1453,6 +1480,33 @@
             , size:'sm'
             , cellMinWidth: 90 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
             , cols: [cols]
+        });
+    }
+    function initBackTab(table,arrBack) {
+        table.render({
+            elem: '#backDetails'
+            , height:'300px'
+            , size:"sm"
+            , data: arrBack
+            , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+            , cols: [[
+                {type:'checkbox',fixed: 'left'} ,
+                // {field:'ID', title: '调拨ID', align: 'center',width:100}
+                // ,{field:'GoodID', title: '商品ID', align: 'center',width:100}
+                // ,
+                {field:'Barcode', title:'商品条码', align: 'center',width:170}
+                ,{field:'GoodName',title: '商品名称', align: 'center',width:120} //width 支持：数字、百分比和不填写。
+                ,{field:'GoodTypeStr', title: '商品类别', align: 'center',width:100}
+                ,{field:'RequestCount', title: '申请数量', align: 'center',width:100}
+                ,{field:'SendCount', title: '实发数量', align: 'center',width:100}
+                ,{field:'StorageCount', title: '入库数量', align: 'center',edit:true,width:100}
+                ,{field:'ExitedCount', title: '已退货数量', align: 'center',width:100}
+                ,{field:'ExitCount', title: '退货数量', align: 'center',width:100,edit:true}
+                ,{field:'CostPrice', title: '含税单价', align: 'center',width:100}
+                ,{field:'Tax', title: '税率', align: 'center',width:100}
+            ]]
+            , page: {page: true, limits: [10, 15, 20, 30, 50, 100]}
+            , limit: 10
         });
     }
 </script>

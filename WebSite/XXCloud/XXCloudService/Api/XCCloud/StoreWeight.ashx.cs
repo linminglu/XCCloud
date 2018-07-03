@@ -272,7 +272,7 @@ namespace XXCloudService.Api.XCCloud
                 var result = from a in data_GameInfoService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase))
                              join b in base_StoreWeight_GameService.GetModels() on a.ID equals b.GameID into b1
                              from b in b1.DefaultIfEmpty()
-                             where b.GameID == (int?)null && !projectGameTypes.Contains(a.ID + "")
+                             where b.GameID == (int?)null && !projectGameTypes.Contains(a.GameType ?? 0)
                              select new
                              {
                                  GameName = a.GameName,

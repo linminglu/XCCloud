@@ -33,9 +33,9 @@ namespace XCCloudService.Base
         protected string versionNo = string.Empty;  
 
         //获取游乐项目的游戏机类型
-        protected string getProjectGameTypes(out string errMsg)
+        protected List<int> getProjectGameTypes(out string errMsg)
         {
-            string projectGameTypes = string.Empty; 
+            var projectGameTypes = new List<int>();
             errMsg = string.Empty;
 
             string sql = " exec  SP_DictionaryNodes @MerchID,@DictKey,@PDictKey,@RootID output ";
@@ -51,8 +51,8 @@ namespace XCCloudService.Base
                 errMsg = "没有找到节点信息";
                 return projectGameTypes;
             }
-            var dictionaryResponse = Utils.GetModelList<DictionaryResponseModel>(ds.Tables[0]).Where(w => w.Enabled == 1).ToList();
-            projectGameTypes = string.Join(",", dictionaryResponse.Select(o => o.ID)).Trim(',');
+            var dictionaryResponse = Utils.GetModelList<DictionaryResponseModel>(ds.Tables[0]).Where(w => w.Enabled == 1);
+            projectGameTypes = dictionaryResponse.Select(o => o.ID).ToList();
 
             return projectGameTypes;
         }

@@ -965,8 +965,10 @@
         'url': '/XCCloud/GameInfo?action=GetGameInfoList',
         'elem': '#gameFileTable',
         'cols': [
-            {field: 'ID', title: '游戏机编号', align: 'center', sort: true}
-            , {field: 'GameName', title: '游戏机名', align: 'center'} //width 支持：数字、百分比和不填写。
+            // {field: 'ID', title: '游戏机编号', align: 'center', sort: true}
+            // ,
+            {field: 'GameName', title: '游戏机名', align: 'center'} //width 支持：数字、百分比和不填写。
+            ,{field: 'GameID', title: '游戏机编号', align: 'center', sort: true}
             , {field: 'GameTypeStr', title: '游戏机类型', align: 'center'}
             , {field: 'Area', title: '占地面积', align: 'center'}
             , {field: 'AreaName', title: '区域名称', align: 'center'}
@@ -1716,7 +1718,28 @@
             saveHigh(form, layer);
         });
         $('#addNew').click(function () {
-
+id='';
+             eAreaID='' ;ePushBalanceIndex1=''; eGameType='';
+                ePushLevel = 0; LotteryModeLow = 0; eOnlyExitLottery = 0;
+                eReadCat = 0;echkCheckGift = 0; StateLow = 1;
+             eDepotID = '';
+            //高级模式参数
+             AreaID1=''; State = 1; PushBalanceIndex11 = ' '; PushBalanceIndex2=''; GameType='';
+                OutBalanceIndex = ''; ReturnCheck = 0; OutsideAlertCheck = 0;
+                ICTicketOperation = 0; NotGiveBack = 0; LotteryMode = 0; OnlyExitLottery = 0;
+                chkCheckGift1 = 0; AllowElecPush = 0; GuardConvertCard = 0; ReadCat = 0;
+                AllowRealPush = 0; BanOccupy = 0; StrongGuardConvertCard = 0;
+                AllowElecOut = 0; NowExit = 0;BOLock = 0;BOPulse = 500; AllowRealOut = 0; BOKeep = 0;
+                PushSpeed = 35; PushPulse = 35; PushLevel = 0; PushStartInterval = 0;
+                UseSecondPush = 0; SecondSpeed = 150; SecondPulse = 200; SecondLevel = 0;
+                SecondStartInterval = 0;
+                OutSpeed = 35; OutMode = 0;
+                OutPulse = 35; CountLevel = 0; OutLevel = 0; ExceptOutTest = 0; ExceptOutSpeed = 45;
+             DepotID = '';
+             FreeLotteryRules = [];
+             memberLevelId = '';
+             memberLevels = '';
+             MemberLevelNames = '';
             $('.saveBox').css('display', 'inline-block');
             xc.getGameInfoByid('', token, form, layer, table);
 
@@ -2229,7 +2252,10 @@
             type: 1,
             title: '游戏机档案设置',
             area: '1030px',
-            content: $('#easyType')
+            content: $('#easyType'),
+            cancel:function () {
+                location.reload()
+            }
         })
     };
     xcActionSystem.prototype.openHigh = (layer) => {
@@ -2239,7 +2265,10 @@
             type: 1,
             title: '游戏机档案设置',
             area: '1060px',
-            content: $('#highType')
+            content: $('#highType'),
+            cancel:function () {
+                location.reload()
+            }
         })
     };
     xcActionSystem.prototype.getGameInfoByid = (id, tokens, form, layer, table) => {

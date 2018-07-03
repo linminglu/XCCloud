@@ -20,6 +20,7 @@ using XCCloudService.Common.Extensions;
 using XCCloudService.Model.CustomModel.XCCloud;
 using XCCloudService.Model.XCCloud;
 using XXCloudService.Api.XCCloud.Common;
+using XCCloudService.Common.Extensions;
 
 namespace XXCloudService.Api.XCCloud
 {
@@ -51,14 +52,15 @@ namespace XXCloudService.Api.XCCloud
                                     join c in Data_GameInfo_ExtService.N.GetModels(p => p.ValidFlag == 1) on a.ID equals c.GameID into c1
                                     from c in c1.DefaultIfEmpty()
                                     join d in Data_GroupAreaService.N.GetModels() on a.AreaID equals d.ID into d1
-                                    from d in d1.DefaultIfEmpty()                                    
-                                    where !projectGameTypes.Contains(a.GameType + "")
+                                    from d in d1.DefaultIfEmpty()
+                                    where !projectGameTypes.Contains(a.GameType ?? 0)
                                     orderby a.ID
                                     select new
                                     {
                                         ID = a.ID,
                                         GameID = a.GameID,
                                         GameName = a.GameName,
+                                        GameType = a.GameType,
                                         GameTypeStr = b != null ? b.DictKey : string.Empty,
                                         AreaName = d != null ? d.AreaName : string.Empty,
                                         Area = c != null ? c.Area : (decimal?)null,
@@ -102,8 +104,8 @@ namespace XXCloudService.Api.XCCloud
                 if (!errMsg.IsNull())
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-                Dictionary<int, string> gameInfo = Data_GameInfoService.I.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase) && p.State == 1
-                    && !projectGameTypes.Contains(p.GameType + "")).Select(o => new
+                Dictionary<int, string> gameInfo = Data_GameInfoService.I.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase) && p.State == 1 && !projectGameTypes.Contains(p.GameType ?? 0))
+                .Select(o => new
                 {
                     ID = o.ID,
                     GameName = o.GameName
@@ -137,8 +139,8 @@ namespace XXCloudService.Api.XCCloud
                 if (!errMsg.IsNull())
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-                Dictionary<int, string> gameInfo = Data_GameInfoService.I.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase) && p.State == 1
-                    && !projectGameTypes.Contains(p.GameType + "")).Select(o => new
+                Dictionary<int, string> gameInfo = Data_GameInfoService.I.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase) && p.State == 1 && !projectGameTypes.Contains(p.GameType ?? 0))
+                    .Select(o => new
                     {
                         ID = o.ID,
                         GameName = o.GameName
@@ -281,6 +283,7 @@ namespace XXCloudService.Api.XCCloud
                 string resultMsg = string.Empty;
                 string id = dicParas.ContainsKey("ID") ? (dicParas["ID"] + "") : string.Empty;
                 string gameId = dicParas.ContainsKey("gameId") ? (dicParas["gameId"] + "") : string.Empty;
+                string gameType = dicParas.ContainsKey("gameType") ? (dicParas["gameType"] + "") : string.Empty;
                 string gameName = dicParas.ContainsKey("GameName") ? (dicParas["GameName"] + "") : string.Empty;
                 string area = dicParas.ContainsKey("area") ? (dicParas["area"] + "") : string.Empty;
                 string changeTime = dicParas.ContainsKey("changeTime") ? (dicParas["changeTime"] + "") : string.Empty;
@@ -302,7 +305,12 @@ namespace XXCloudService.Api.XCCloud
                 }
                 if (!string.IsNullOrEmpty(id) && !Utils.isNumber(id))
                 {
-                    errMsg = "游戏机参数ID格式不正确";
+                    errMsg = "游戏机ID格式不正确";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+                if (gameType.Toint(0) == 0)
+                {
+                    errMsg = "游戏机类型gameType不能为空";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
                 if (string.IsNullOrEmpty(gameId))
@@ -613,6 +621,7 @@ namespace XXCloudService.Api.XCCloud
                 string resultMsg = string.Empty;
                 string id = dicParas.ContainsKey("ID") ? (dicParas["ID"] + "") : string.Empty;
                 string gameId = dicParas.ContainsKey("gameId") ? (dicParas["gameId"] + "") : string.Empty;
+                string gameType = dicParas.ContainsKey("gameType") ? (dicParas["gameType"] + "") : string.Empty;
                 string gameName = dicParas.ContainsKey("GameName") ? (dicParas["GameName"] + "") : string.Empty;
                 var readCat = dicParas.Get("ReadCat").Toint();
 
@@ -626,6 +635,12 @@ namespace XXCloudService.Api.XCCloud
                 if (!string.IsNullOrEmpty(id) && !Utils.isNumber(id))
                 {
                     errMsg = "游戏机参数ID格式不正确";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
+                if (gameType.Toint(0) == 0)
+                {
+                    errMsg = "游戏机类型gameType不能为空";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
