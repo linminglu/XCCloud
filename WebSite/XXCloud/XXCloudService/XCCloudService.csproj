@@ -292,7 +292,6 @@
     <Content Include="default.aspx" />
     <Content Include="Excel.xlsx" />
     <Content Include="Imgs\masterEmv.jpg" />
-    <Content Include="login.html" />
     <Content Include="MobileWeb\about.html" />
     <Content Include="MobileWeb\accredit.html" />
     <Content Include="MobileWeb\billList.html" />
@@ -416,6 +415,7 @@
     <None Include="Properties\PublishProfiles\qqq.pubxml" />
     <None Include="Properties\PublishProfiles\rrr.pubxml" />
     <None Include="Scripts\jquery-1.6.4-vsdoc.js" />
+    <Content Include="radarLogin.html" />
     <Content Include="Report\DownloadTemplate.aspx" />
     <Content Include="Report\ToExcel.aspx" />
     <Content Include="Scripts\jquery-1.6.4.js" />

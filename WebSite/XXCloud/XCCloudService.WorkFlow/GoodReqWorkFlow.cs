@@ -374,6 +374,16 @@ namespace XCCloudService.WorkFlow
                             _result = false;
                             return;
                         }
+
+                        //已入库的出库
+                        if (model.StorageCount > 0)
+                        {
+                            if (!XCCloudBLLExt.UpdateGoodsStock(model.InDeportID, model.GoodID, (int)SourceType.GoodRequest, model.RequestID, model.CostPrice, (int)StockFlag.Out, model.StorageCount, model.MerchID, model.InStoreID, out _errMsg))
+                            {
+                                _result = false;
+                                return;
+                            }
+                        }
                     }
 
                     if (!Data_GoodStock_RecordService.I.SaveChanges())
