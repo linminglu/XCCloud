@@ -46,9 +46,9 @@ GO
 CREATE Proc [dbo].[SelectUserGroup](@UserID int)
 as
  begin
-	select a.ID, a.MerchID, a.GroupName, a.Note
-	from Base_UserGroup a inner join Base_StoreInfo c on a.MerchID=c.MerchID inner join Base_UserInfo b on c.StoreID=b.StoreID 	
-	union
+	--select a.ID, a.MerchID, a.GroupName, a.Note
+	--from Base_UserGroup a inner join Base_StoreInfo c on a.MerchID=c.MerchID inner join Base_UserInfo b on c.StoreID=b.StoreID 	
+	--union
 	select a.ID, a.MerchID, a.GroupName, a.Note
 	from Base_UserGroup a inner join Base_UserInfo b on a.MerchID=b.MerchID
 	where b.UserID=@UserID

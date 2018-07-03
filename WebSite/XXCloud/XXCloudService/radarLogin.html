@@ -178,7 +178,7 @@
         function login_merch() {
             var username = $('#username_login').val();
             var password = $('#password_login').val();
-            var obj = { 'loginName': "45", 'password': "123456"};
+            var obj = { 'loginName': username, 'password': password };
             console.log(obj);
             var url = '/xccloud/UserInfo?action=radarLogin';           //登录接口
             var parasJson = JSON.stringify(obj);
