@@ -63,7 +63,7 @@
                         <div class="layui-inline">
                             <label class="layui-form-label" style="padding: 8px 0;">销售方式</label>
                             <div class="layui-input-inline">
-                                <input type="checkbox" name="chkTaxInSale" lay-skin="switch" lay-text="含税|不含税" id="chkTaxInSale " lay-filter="chkTaxInSale ">
+                                <input type="checkbox" name="chkTaxInSale" lay-skin="switch" lay-text="含税|不含税" id="chkTaxInSale " lay-filter="chkTaxInSale">
                             </div>
                         </div>
                         <div class="layui-inline">
@@ -74,17 +74,17 @@
                                 </select>
                             </div>
                         </div>
-
+                        <div class="layui-inline">
+                            <label class="layui-form-label" style="padding: 8px 0;">是否开启赠送区</label>
+                            <div class="layui-input-inline">
+                                <input type="checkbox" name="chkGiftArea" lay-skin="switch" lay-text="是|否" id="chkGiftArea" lay-filter="chkGiftArea">
+                            </div>
+                        </div>
                     </div>
                     <div class="layui-form-item">
                         <label class="layui-form-label">授权通道</label>
                         <div class="layui-input-block" id="cmbAuthChannelBox">
-                            <!--<select  id="cmbAuthChannel" name="cmbAuthChannel" lay-filter="cmbAuthChannel">-->
-                                <!--<option>-请选择-</option>-->
-                                <!--<option value="0">授权卡</option>-->
-                                <!--<option value="1">公众号通知</option>-->
-                                <!--<option value="2">扫码授权</option>-->
-                            <!--</select>-->
+
                             <input type="checkbox" lay-filter="cmbAuthChannel" title="授权卡" value="0" lay-skin="primary">
                             <input type="checkbox" lay-filter="cmbAuthChannel" title="公众号通知" value="1" lay-skin="primary">
                             <input type="checkbox" lay-filter="cmbAuthChannel" title="扫码授权" value="2" lay-skin="primary">
@@ -469,7 +469,7 @@
     let _storeId=getStorage('storeId_merch');
     // //运营参数设定
     let  chkPrintBarcode=0;let chkBarSendCoinAuthorize=0;let txtBusinessClass;
-    let cmbAuthChannel=[] ;let chkShift=0;let chkTaxInSale=0;let  cmbCardOpenLevel='';
+    let cmbAuthChannel=[] ;let chkShift=0;let chkTaxInSale=0;let  cmbCardOpenLevel='';let chkGiftArea=0;
     //会员设定
     let cmbBirthdaySendSms;let chkPhotograph=0;let chkExitCardCatch=0;
     let chkExitFoodCatch=0; let chkForceClearBalanceOnExitCard=0;
@@ -543,7 +543,8 @@
                         ,"txtCreditEveryday": arr[18].ParameterValue
                         ,"txtMaxSendCard": arr[19].ParameterValue
                         // ,"cmbAuthChannel": arr[21].ParameterValue
-                        ,"chkTaxInSale": arr[22].ParameterValue
+                        ,"chkTaxInSale": arr[22].ParameterValue,
+                        'chkGiftArea':arr[25].ParameterValue==1?true:false
                         ,"chkForceClearBalanceOnExitCard": arr[23].ParameterValue==1?true:false
                     });
 
@@ -711,6 +712,9 @@
         form.on('switch(chkTaxInSale)',(data)=>{
             data.elem.checked==true ?chkTaxInSale=1 :chkTaxInSale=0
         });
+        form.on('switch(chkGiftArea)',(data)=>{
+            data.elem.checked==true ?chkGiftArea=1 :chkGiftArea=0
+    });
         //会员设定
         form.on('select(cmbBirthdaySendSms)',function (data) {
             cmbBirthdaySendSms=data.value;
@@ -863,7 +867,8 @@
             { "storeId":storeIds, "system":"txtClientBuyTicketInfo", "isAllow":1, "pValue":cmbAutoJoinMemberLevels.length>0?cmbAutoJoinMemberLevels.join('|'):'', "note":""},
             { "storeId":storeIds, "system":"txtCreditEveryday", "isAllow":1, "pValue":$('input[name="txtCreditEveryday"]').val(), "note":""},
             { "storeId":storeIds, "system":"txtMaxSendCard", "isAllow":"1", "pValue":$('input[name="txtMaxSendCard"]').val(), "note":""},
-            { "storeId":storeIds, "system":"cmbCardOpenLevel", "isAllow":"1", "pValue":cmbCardOpenLevel, "note":""}
+            { "storeId":storeIds, "system":"cmbCardOpenLevel", "isAllow":"1", "pValue":cmbCardOpenLevel, "note":""},
+            { "storeId":storeIds, "system":"chkGiftArea", "isAllow":1, "pValue":chkGiftArea, "note":""},
         ];
         let obj={"submitData":submitData, "userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
         let parasJson = JSON.stringify(obj);

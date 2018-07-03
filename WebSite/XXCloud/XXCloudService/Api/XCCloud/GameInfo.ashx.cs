@@ -431,7 +431,7 @@ namespace XXCloudService.Api.XCCloud
                         }
 
                         //获取参数默认值
-                        IDict_SystemService dict_SystemService = BLLContainer.Resolve<IDict_SystemService>(resolveNew: true);
+                        IDict_SystemService dict_SystemService = BLLContainer.Resolve<IDict_SystemService>();
                         int GameInfoId = dict_SystemService.GetModels(p => p.DictKey.Equals("游戏机档案维护")).FirstOrDefault().ID;
                         var result = dict_SystemService.GetModels(p => p.PID == GameInfoId && p.Enabled == 1).ToList();
                         foreach (var dict in result)
@@ -729,7 +729,7 @@ namespace XXCloudService.Api.XCCloud
                         }
 
                         //获取参数默认值
-                        IDict_SystemService dict_SystemService = BLLContainer.Resolve<IDict_SystemService>(resolveNew: true);
+                        IDict_SystemService dict_SystemService = BLLContainer.Resolve<IDict_SystemService>();
                         int GameInfoId = dict_SystemService.GetModels(p => p.DictKey.Equals("游戏机档案维护")).FirstOrDefault().ID;
                         var result = dict_SystemService.GetModels(p => p.PID == GameInfoId && p.Enabled == 1).ToList();
                         foreach (var dict in result)
