@@ -614,7 +614,8 @@ namespace XXCloudService.Api.XCCloud
                            select new
                            {
                                ID = a.ID,
-                               DeviceName = a.DeviceName
+                               DeviceName = a.DeviceName,
+                               MCUID = a.MCUID
                            };
 
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, linq);

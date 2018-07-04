@@ -312,7 +312,7 @@ namespace XXCloudService.Api.XCCloud
                                     select new { b.ID, b.GameType, b.GameName, DictKey = c != null ? c.DictKey : string.Empty, AreaName = d != null ? d.AreaName : string.Empty }
                                 ) on a.GameIndexID equals b.ID into b1
                             from b in b1.DefaultIfEmpty()
-                            orderby a.MCUID
+                            orderby b.GameName, a.Address, a.segment, a.SiteName, a.MCUID
                             select new Base_DeviceInfoList
                             {
                                 ID = a.ID,
