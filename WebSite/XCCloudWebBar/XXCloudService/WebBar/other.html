@@ -1,0 +1,869 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>吧台</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 引入样式 -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/swiper.min.css">
+    <link href="css/bootstrap-table.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/iconfont.css">
+    <style>
+        [v-cloak] {
+            display: none;
+        }
+        /*style*/
+        /*XinChen--PC 2017-9-2*/
+        * {margin:0;padding:0;word-break:break-all;}
+        html,body{height:100%; font-size:100%;}
+        body{font:14px/1.5em "Arial","Microsoft YaHei",Verdana,Helvetica,sans-serif;text-align:left;background:#fff;color:#2d3e50;margin:0px;line-height:22px; }
+        table{font:14px/1.5em "Arial","Microsoft YaHei",Verdana,Helvetica,sans-serif;text-align:left;margin:0px;padding:0px;border:0px;color:#2d3e50;line-height:22px;}
+        body,figure,h1,h2,h3,h4,h5,h6,p,pre,blockquote,form,fieldset,legend,input,button,select,textarea {margin:0;padding:0;font-family:"Arial","Microsoft YaHei";}
+        address,caption,cite,code,dfn,em,var,i{font-style:normal;font-weight:normal;}
+        ul,ol,li,dl,dt,dd{ margin:0px; padding:0px;border:0px;list-style:none;}
+        article,aside,details,figcaption,figure,footer,header,hgroup,nav,section{display: block;}
+        abbr[title],dfn[title] {border-bottom:1px dotted;cursor:help;}
+        pre,code,kbd,samp{font-family:monospace,sans-serif;_font-family:'Courier New',monospace,sans-serif;font-size: 1em;}
+        pre{white-space: pre;/*CSS2*/white-space:pre-wrap;/*CSS2.1*/white-space:pre-line;/*CSS3*/word-wrap:break-word;/*IE*/}
+        blockquote,q{quotes:none;}
+        blockquote:before,blockquote:after,q:before,q:after{content:'';content:none;}
+        audio[controls],canvas,video{display:inline-block;*display:inline;*zoom:1;}
+        input,textarea{outline:none;}
+        textarea{resize:none;overflow:auto;}
+        input[type="checkbox"],input[type="radio"]{vertical-align:middle;}
+        input[type="button"],input[type="submit"]{ cursor:pointer;}
+        input::-ms-clear{display:none;}
+        input::-ms-reveal{display:none;}
+        img{border:none;}
+        .fl{float: left;}.fr{float: right;}
+        a:link,a:visited{text-decoration:none;cursor:pointer;outline:none;}
+        a:hover,a:active {text-decoration:none;cursor:pointer;}
+        /* common style */
+        .clearfix:after {content: ".";display: block;clear: both;visibility: hidden;line-height: 0;height: 0;}
+        .clearfix {display: inline-block;}
+        /*-----------------------------*/
+        .heightKz{overflow-y:auto;overflow-x:hidden;}
+        /*高度控制*/
+        .boxShadow{box-shadow: 0 0 2px #FF8C00;background-color: #3c8dbc;padding: 0!important;}
+        .navbar-header{height: 3em;padding-bottom: 5em;}
+        .navbar-header a img{height: 3em;}
+        .bbs{margin-bottom: 0.5em;color: #b63b4d}
+        .navbar-nav a{margin-top:0.5em;font-size: 1.2em;color: #fff9ec;}
+        .nav a:hover {color: #666666;}
+        .mag-_r1{margin-right: 0.5em;}
+        .navLeftS{width: 240px;height:5.6em;margin-top: 0.4em;background: url("images/navHeader.png") no-repeat left center;background-size: 100% 100%;display: flex;flex-direction: row;}
+        .navStyle{margin-top: 1.1em!important;padding: 2px 10px;margin-left: 2.1em; color: #fff;width: 160px;display: inline-block;}
+        .navStyle h4{font-size: 1.2em;line-height: 1.5em;text-indent: 12px;}
+        .navT{width: 80px;margin-top: 2.25em;padding-left: 0.2em;color: #fff;font-weight: 500;}
+        .navbar-right{margin-right: 1em;}
+        /*新style*/
+        .menu{width: 840px;margin: 100px auto;/*padding: 15px;*/list-style: none;counter-reset: li;/*background: #eee;*//*-moz-box-shadow: 0 1px 2px rgba(0, 0, 0, .1) inset;*//*-webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, .1) inset;*//*box-shadow: 0 1px 2px rgba(0, 0, 0, .1) inset;*//*-moz-border-radius: 10px;*//*-webkit-border-radius: 10px;*//*border-radius: 10px;*/}
+        .menu:before, .menu:after{content: "";display: table;}
+        .menu:after{clear: both;}
+        .menu{zoom:1;}
+        .menu li{position: relative;float: left;cursor: pointer;height: 120px;width: 200px;margin: 10px 0 0 10px;color: #fff;}
+        .menu li:hover, .menu li:focus{background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 255, .2)), to(rgba(255, 255, 255, 0)));background-image: -webkit-linear-gradient(top, rgba(255, 255, 255, .2), rgba(255, 255, 255, 0));background-image: -moz-linear-gradient(top, rgba(255, 255, 255, .2), rgba(255, 255, 255, 0));background-image: -ms-linear-gradient(top, rgba(255, 255, 255, .2), rgba(255, 255, 255, 0));background-image: -o-linear-gradient(top, rgba(255, 255, 255, .2), rgba(255, 255, 255, 0));background-image: linear-gradient(top, rgba(255, 255, 255, .2), rgba(255, 255, 255, 0));}
+        .menu .cover{z-index: 2;}
+        .menu .cover:focus{outline: 0;}
+        .menu li::after{content: counter(li);counter-increment: li;font: italic bold 10px serif, georgia;position: absolute;color: rgba(255, 255, 255, .1);opacity: 0;/*-webkit-transition: all .2s ease-out;-moz-transition: all .2s ease-out;-ms-transition: all .2s ease-out;-o-transition: all .2s ease-out;*/transition: all 0.5s ease-out;}
+        .menu li:hover::after, .menu li:focus::after{font-size: 100px;opacity: 1;}
+        .menu .cover::after{z-index: -1;}
+        .menu li:nth-child(1), .menu li:nth-child(1) .content, .menu li:nth-child(1) .close{background-color: #DA70D6;}
+        .menu li:nth-child(2), .menu li:nth-child(2) .content, .menu li:nth-child(2) .close{background-color: #349ffd;}
+        .menu li:nth-child(3), .menu li:nth-child(3) .content, .menu li:nth-child(3) .close{background-color: #349ffd;}
+        .menu li:nth-child(4), .menu li:nth-child(4) .content, .menu li:nth-child(4) .close{background-color: #349ffd;}
+        .menu li:nth-child(5), .menu li:nth-child(5) .content, .menu li:nth-child(5) .close{background-color: #349ffd;}
+        .menu li:nth-child(6), .menu li:nth-child(6) .content, .menu li:nth-child(6) .close{background-color: #BC8F8F;}
+        .menu li:nth-child(7), .menu li:nth-child(7) .content, .menu li:nth-child(7) .close{background-color: #BC8F8F;}
+        .menu li:nth-child(8), .menu li:nth-child(8) .content, .menu li:nth-child(8) .close{background-color: #BC8F8F;}
+        .menu li:nth-child(9), .menu li:nth-child(9) .content, .menu li:nth-child(9) .close{background-color: #808080;}
+        .menu li:nth-child(10), .menu li:nth-child(10) .content, .menu li:nth-child(10) .close{background-color: #808080;}
+        .menu li:nth-child(11), .menu li:nth-child(11) .content, .menu li:nth-child(11) .close{background-color: #808080;}
+        .menu li:nth-child(12), .menu li:nth-child(12) .content, .menu li:nth-child(12) .close{background-color: #808080;}
+        .menu .content{opacity: 0;display: none;overflow:visible;font: 12px Arial, Helvetica;position: fixed;height: 120px;width: 200px; left: 50%;margin-left: -100px;top: 40%;margin-top: -40px; /*-webkit-transition: all .3s ease-out;-moz-transition: all .3s ease-out;-ms-transition: all .3s ease-out;-o-transition: all .3s ease-out;transition: all .3s ease-out;*/}
+        .menu .expanded{opacity: .95;display: block;overflow: visible;padding: 40px;height: 300px;width: 540px;transition: all 3s ease-out;}
+        .menu li:nth-child(3n) .content{/* 3,6,9*/right: 0;}
+        .menu li:nth-child(3n-1) .expanded{/* 2,5,8*/left: 50%;margin-left: -310px;}
+        .menu li:nth-child(7) .content,
+        .menu li:nth-child(8) .content, .menu li:nth-child(9) .content, .menu li:nth-child(10) .content{bottom: 0;}
+        .menu li:nth-child(4) .expanded,
+        .menu li:nth-child(5) .expanded, .menu li:nth-child(6) .expanded{margin-top: -190px;top: 50%;}
+        .menu .title{position: absolute;height: 100%;width: 100%;text-align: center;font: italic bold 1.3em/120px 'trebuchet MS', Arial, helvetica;opacity: .3;}
+        .menu .title i{font-size: 40px;}
+        .menu li:hover .title{opacity: .7;}
+        .menu .close{display: none;border: 5px solid #fff;color: #fff;cursor: pointer;height: 50px;width: 50px;font: bold 20px/40px arial, helvetica;position: absolute;text-align: center;top: -20px;right: -20px;-moz-border-radius: 40px;-webkit-border-radius: 40px;border-radius: 40px;z-index: 99999;}
+        .menu .cover .close{display: block;}
+
+        .menu-marginTop{margin-top: 1.5em;}
+        .menu-style{margin-top: 1em;line-height: 2em;font-size: 1.1em;}
+        /*.menu-style input{height: 2em;width: 100%;line-height:2em;padding-left: 0.5em;}*/
+        /*.menu-style button{height: 2em;width: 100%;line-height:2em;padding: 0 10px;}*/
+        /*.menu-style select{height: 2em;width: 100%;line-height:2em; padding: 0 0 0 0.5em;}*/
+        .pad_0{padding-left: 0;padding-right: 0;}
+        .menu-radio{margin:0 0.5em;}
+        .menu-radio input{height: 1.2em;width: 1.2em;}
+        .margin1{margin-top: 1em;}
+        .menu-btn{display: flex; flex-direction: row;justify-content: space-between;margin-top: 2em;padding: 0 2em;}
+        .menu-btn button{width: 36%;}
+        .menu-r-btn{text-align: right;padding-right: 3em;margin-bottom: 1em;margin-top: 2em;}
+        .margin-02 input{margin-top: -0.3em}
+        .width50 button{width: 50%}
+        .order-style{margin-top: 0.5em;line-height: 1.6em;font-size: 1em;padding-left: 10px!important;padding-right: 10px!important;}
+        /*.order-style input{height: 1.6em;width: 100%;line-height:2em;padding-left: 0.5em;}*/
+        /*.order-style label{padding-left: 10px;padding-right: 0;}*/
+        /*.order-style textarea{height: 3.2em;font-size: 0.8em;line-height: 1em;}*/
+        .heightOver{overflow-y: auto;overflow-x: hidden;height: 430px;padding: 0;}
+        .order-btn{display: flex; flex-direction: row;justify-content: space-between;margin-top: 2em;padding: 0 1em;}
+        .menu-btn button{width: 30%;margin: 0 1em;}
+        .input-group[class*=col-]{float: left;}
+        .table{font-size: 1em;}
+        .input-group-addon{border: none;}
+        .cardLoss{ border-top:1px solid #fefefe; border-bottom:1px solid #fefefe;font-size: 1.8em;height: 2.4em;line-height: 2.4em;color: #fefefe;margin-top: 1em;}
+        .sendMessage{line-height: 0!important;}
+        .onSwitch{background-color: #349ffd;border-radius: 5px;text-align: center;}
+        .switchZdy {border-radius: 4px;background-color: #FFFFFF;padding:0;font-size: 1em;}
+        .pad_10{padding-right: 5px;}
+        .cardLoss-btn{margin-top: 2.5em;}
+        .cardLoss-btn button{width: 100%;}
+        /*谷歌滚动条样式修改*/
+        .scrollbar{  width: 5px;  height: 100px;  margin: 0 auto;  }
+        ::-webkit-scrollbar {/*滚动条整体样式*/  width: 5px;  /*高宽分别对应横竖滚动条的尺寸*/  height: 1px;}
+        ::-webkit-scrollbar-thumb {/*滚动条里面小方块*/ border-radius: 10px; -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2); background: #535353;}
+        ::-webkit-scrollbar-track {/*滚动条里面轨道*/-webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);border-radius: 10px;background: #EDEDED;}
+    </style>
+</head>
+<body>
+<div id="app" v-cloak>
+    <!--header-->
+    <div class="container-fluid boxShadow">
+        <!--导航-->
+        <div class="navbar-collapse collapse">
+            <div class="navbar-header">
+                <a href="index.html" class="navbar-brand"><img src="images/logo.png"></a>
+            </div>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a class="boxBtn" href="javascript:void(0);"><span class="glyphicon glyphicon-menu-down"></span>&nbsp;&nbsp;现金:￥10500</a></li>
+                <li class="active"><a href="index.html"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;莘宸乐园【同城广场店】</a></li>
+                <li><a href="#"><span class="glyphicon glyphicon-user mag-_r1"></span><i>当前操作员：</i>&nbsp;&nbsp;张三</a></li>
+                <li class="dropdown">
+                    <a data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        未读消息 (0)
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="index.html">1</a></li>
+                        <li><a href="index.html">1</a></li>
+                        <li><a href="index.html">1</a></li>
+                        <li><a href="index.html">1</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        admin
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="dLabel">
+                        <li><a href="index.html"><span class="glyphicon glyphicon-screenshot"></span>&nbsp;&nbsp;前台首页</a></li>
+                        <li><a href="index.html"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;个人主页</a></li>
+                        <li><a href="index.html"><span class="glyphicon glyphicon-cog"></span>&nbsp;&nbsp;个人设置</a></li>
+                        <li><a href="index.html"><span class="glyphicon glyphicon-credit-card"></span>&nbsp;&nbsp;账户中心</a></li>
+                        <li><a href="index.html"><span class="glyphicon glyphicon-heart"></span>&nbsp;&nbsp;我的收藏</a></li>
+                    </ul>
+                </li>
+                <li><a href="#"><span class="glyphicon glyphicon-off"></span>&nbsp;&nbsp;退出</a></li>
+                <div class="bbs text-right">
+                    <p>开班时间：2017-08-23 15:38:12 <span>当前时间： <em id="oDiv"></em></span></p>
+                </div>
+            </ul>
+            <div class="navbar-right navLeftS">
+                <!--<div class="col-md-6 col-sm-6 navStyle">-->
+                <div class="navStyle">
+                    <h4>售币机</h4>
+                    <p>18000/30000</p>
+                </div>
+                <div class="navT">60%</div>
+            </div>
+        </div>
+        <!--导航-->
+    </div>
+    <!-- Modal(通用提示框) -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">温馨提示</h4>
+                </div>
+                <div class="modal-body">
+                    {{ msg }}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row">
+            <ul class="menu">
+                <li tabindex="1">
+                    <span class="title"><i class="icon iconfont icon-batai"></i>收银台</span>
+                    <div class="content">
+                    </div>
+                </li>
+                <li tabindex="1">
+                    <span class="title"><i class="icon iconfont icon-jingdianmenpiao"></i>终端扣门票</span>
+                    <div class="content"><span class="close">x</span>
+                        <div class="menu-main container-fluid">
+                            <div class="row">
+                                <div class="col-md-12 col-sm-12">
+                                    <div class="col-md-4 col-sm-4 menu-style">
+                                        <div class="input-group col-lg-12 col-md-12 menu-style">
+                                            <span class="input-group-addon">扣费项目：</span>
+                                            <input type="text" class="form-control" placeholder="扣费项目"/>
+                                        </div>
+                                        <div class="input-group col-lg-12 col-md-12 menu-style">
+                                            <span class="input-group-addon">会员卡号：</span>
+                                            <input type="text" class="form-control" placeholder="门票票码"/>
+                                            <div class="input-group-btn">
+                                                <button type="button" class="btn btn-default">读卡</button>
+                                            </div>
+                                        </div>
+                                        <div class="input-group col-lg-12 col-md-12 menu-style">
+                                            <span class="input-group-addon">门票票码：</span>
+                                            <input type="text" class="form-control" placeholder="门票票码"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 menu-style">
+                                        <div class="radio col-md-12 col-sm-12 menu-style">
+                                            <label class="menu-radio">
+                                                <input type="radio" name="optionsRadios" value="option1" checked>
+                                                入闸
+                                            </label>
+                                            <label class="menu-radio">
+                                                <input type="radio" name="optionsRadios" value="option2">
+                                                出闸
+                                            </label>
+                                        </div>
+                                        <div class="input-group col-lg-12 col-md-12 menu-style">
+                                            <span class="input-group-addon">验票次数：</span>
+                                            <input type="text" class="form-control" placeholder="次数"/>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-md-5 col-sm-5 menu-style">
+                                        <label class="col-sm-12 control-label menu-style">使用说明</label>
+                                        <div class="col-sm-12 menu-style">
+                                            <textarea class="form-control" rows="3"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 col-sm-12 margin1">
+                                    <table class="table table-bordered">
+                                        <thead style="background: #f5f5f5">
+                                        <tr>
+                                            <th>门票</th>
+                                            <th>类型</th>
+                                            <th>购买时间</th>
+                                            <th>过期时间</th>
+                                            <th> 总次数</th>
+                                            <th>已使用</th>
+                                            <th>剩余次数</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr v-for="items in refundData">
+                                            <td>{{items.balanceType}}</td>
+                                            <td>{{items.balance}}</td>
+                                            <td>{{items.balance1}}</td>
+                                            <td>{{items.balance2}}</td>
+                                            <td>{{items.balance3}}</td>
+                                            <td>{{items.balance4}}</td>
+                                            <td>{{items.balance5}}</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li tabindex="1">
+                    <span class="title"><i class="icon iconfont icon-peitongruxue"></i>陪同票</span>
+                    <div class="content"><span class="close">x</span>
+                        <div class="menu-main container-fluid">
+                            <div class="row menu-marginTop">
+                                <div class="col-md-5 col-sm-5 menu-style">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">会员卡号：</span>
+                                        <input type="text" class="form-control" placeholder="门票票码"/>
+                                        <div class="input-group-btn">
+                                            <button type="button" class="btn btn-default">读卡</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-7 col-sm-7 menu-style">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">门票票码：</span>
+                                        <input type="text" class="form-control" placeholder="门票票码"/>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 col-sm-12 margin1">
+                                    <table class="table table-bordered">
+                                        <thead style="background: #f5f5f5">
+                                        <tr>
+                                            <th></th>
+                                            <th>门票</th>
+                                            <th>类型</th>
+                                            <th>购买时间</th>
+                                            <th>过期时间</th>
+                                            <th> 总次数</th>
+                                            <th>已使用</th>
+                                            <th>剩余次数</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr v-for="items in refundData">
+                                            <td><input type="radio" name="optionsRadios"></td>
+                                            <td>{{items.balanceType}}</td>
+                                            <td>{{items.balance}}</td>
+                                            <td>{{items.balance1}}</td>
+                                            <td>{{items.balance2}}</td>
+                                            <td>{{items.balance3}}</td>
+                                            <td>{{items.balance4}}</td>
+                                            <td>{{items.balance5}}</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="col-md-4 col-sm-4 menu-style">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">陪同票单价：</span>
+                                        <input type="text" class="form-control" placeholder="陪同票单价"/>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-4 menu-style">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">购买数量：</span>
+                                        <input type="text" class="form-control" placeholder="购买数量"/>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-4 menu-style">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">支付方式：</span>
+                                        <select  class="form-control">
+                                            <option value="0">现金</option>
+                                            <option value="1">代币</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-8 col-sm-8"></div>
+                                <div class="col-md-3 col-sm-3 menu-r-btn"><button type="button" class="btn">购买</button></div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li tabindex="1">
+                    <span class="title"> <i class="icon iconfont icon-jishi"></i>计时票补、退款</span>
+                    <div class="content"><span class="close">x</span>
+                        <div class="menu-main container-fluid">
+                            <div class="row menu-marginTop">
+                                <div class="col-md-3 col-sm-3"></div>
+                                <div class="col-md-6 col-sm-6 menu-style">
+                                    <div class="input-group col-md-12 col-sm-12 menu-style">
+                                        <span class="input-group-addon">门票票码：</span>
+                                        <input type="text" class="form-control" placeholder="门票票码"/>
+                                    </div>
+                                    <div class="input-group col-md-12 col-sm-12 menu-style">
+                                        <span class="input-group-addon">门票名称：</span>
+                                        <input type="text" class="form-control" placeholder="门票名称"/>
+                                    </div>
+                                    <div class="input-group col-md-12 col-sm-12 menu-style">
+                                        <span class="input-group-addon">入闸时间：</span>
+                                        <input type="text" class="form-control" placeholder="入闸时间"/>
+                                    </div>
+                                    <div class="input-group col-md-12 col-sm-12 menu-style">
+                                        <span class="input-group-addon">已缴费：</span>
+                                        <input type="text" class="form-control" placeholder="已缴费"/>
+                                    </div>
+                                    <div class="input-group col-md-12 col-sm-12 menu-style">
+                                        <span class="input-group-addon">入闸消费：</span>
+                                        <input type="text" class="form-control" placeholder="入闸消费"/>
+                                    </div>
+                                    <div class="input-group col-md-12 col-sm-12 menu-style">
+                                        <span class="input-group-addon">出闸缴费：</span>
+                                        <input type="text" class="form-control" placeholder="出闸缴费"/>
+                                    </div>
+                                    <div class="col-md-12 col-sm-12 menu-btn">
+                                        <button type="button" class="btn btn-primary">退费</button>
+                                        <button type="button" class="btn btn-primary">补交</button>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-sm-3"></div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li tabindex="1">
+                    <span class="title"><i class="icon iconfont icon-qinglikehu"></i>手工清场</span>
+                    <div class="content"><span class="close">x</span>
+                        <div class="content"><span class="close">x</span>
+                            <div class="menu-main container-fluid">
+                                <div class="row menu-marginTop">
+                                    <div class="col-md-12 col-sm-12 menu-style">
+                                        <div class="input-group col-md-5 col-sm-5 menu-style">
+                                            <span class="input-group-addon">扣费项目：</span>
+                                            <input type="text" class="form-control" placeholder="扣费项目"/>
+                                        </div>
+                                        <div class="col-md-4 col-sm-3 menu-style">
+                                            <label class="menu-radio margin-02">
+                                                <input type="radio" name="optionsRadios" value="option1" checked>
+                                                今天
+                                            </label>
+                                            <label class="menu-radio margin-02">
+                                                <input type="radio" name="optionsRadios" value="option2">
+                                                全部日期
+                                            </label>
+                                        </div>
+                                        <div class="col-md-3 col-sm-2 menu-style width50">
+                                            <button type="button" class="btn btn-info">刷新</button>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12 col-sm-12 margin1">
+                                        <table class="table table-bordered">
+                                            <thead style="background: #f5f5f5">
+                                            <tr>
+                                                <th>项目名称</th>
+                                                <th>扣费方式</th>
+                                                <th>会员</th>
+                                                <th>进场时间</th>
+                                                <th>入闸扣费</th>
+                                                <th>待缴场内消费</th>
+                                                <th>总费用</th>
+                                                <th>清场</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr v-for="items in refundData">
+                                                <td>{{items.balanceType}}</td>
+                                                <td>{{items.balance}}</td>
+                                                <td>{{items.balance1}}</td>
+                                                <td>{{items.balance2}}</td>
+                                                <td>{{items.balance3}}</td>
+                                                <td>{{items.balance4}}</td>
+                                                <td>{{items.balance5}}</td>
+                                                <td><button type="button" class="btn btn-info">清场</button></td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="col-md-12 col-sm-12 menu-r-btn"><button type="button" class="btn btn-primary">批量清场</button></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li tabindex="1">
+                    <span class="title"><i class="icon iconfont icon-dingdanchaxun1"></i>订单查询</span>
+                    <div class="content"><span class="close">x</span>
+                        <div class="menu-main container-fluid">
+                            <div class="row menu-marginTop">
+                                <div class="col-md-3 col-sm-3 menu-style">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">订单号：</span>
+                                        <input type="text" class="form-control" placeholder="订单号"/>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-sm-3 menu-style">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">卡号：</span>
+                                        <input type="text" class="form-control" placeholder="卡号"/>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-sm-3 menu-style">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">销售日期：</span>
+                                        <input type="text" class="form-control" placeholder="销售日期"/>
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-sm-2 menu-style">
+                                    <button type="button" class="btn btn-primary">查询</button>
+                                </div>
+
+                                <div class="col-md-12 col-sm-12 heightOver">
+                                    <div class="col-md-5 col-sm-5 menu-style">
+                                        <table class="table table-bordered">
+                                            <thead style="background: #f5f5f5">
+                                            <tr>
+                                                <th>订单号</th>
+                                                <th>销售日期</th>
+                                                <th>会员</th>
+                                                <th>支付金额</th>
+                                                <th> 状态</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr v-for="items in refundData">
+                                                <td>{{items.balanceType}}</td>
+                                                <td>{{items.balance}}</td>
+                                                <td>{{items.balance1}}</td>
+                                                <td>{{items.balance2}}</td>
+                                                <td>{{items.balance3}}</td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="col-md-7 col-sm-7 order-style">
+                                        <div class="input-group col-md-6 col-sm-6 order-style">
+                                            <span class="input-group-addon">订单号：</span>
+                                            <input type="text" class="form-control" placeholder="订单号"/>
+                                        </div>
+                                        <div class="input-group col-md-6 col-sm-6 order-style">
+                                            <span class="input-group-addon">销售日期：</span>
+                                            <input type="text" class="form-control" placeholder="销售日期"/>
+                                        </div>
+                                        <div class="input-group col-md-6 col-sm-6 order-style">
+                                            <span class="input-group-addon">应付金额：</span>
+                                            <input type="text" class="form-control" placeholder="应付金额"/>
+                                        </div>
+                                        <div class="input-group col-md-6 col-sm-6 order-style">
+                                            <span class="input-group-addon">优惠金额：</span>
+                                            <input type="text" class="form-control" placeholder="优惠金额"/>
+                                        </div>
+                                        <div class="input-group col-md-6 col-sm-6 order-style">
+                                            <span class="input-group-addon">实付金额：</span>
+                                            <input type="text" class="form-control" placeholder="实付金额"/>
+                                        </div>
+                                        <div class="input-group col-md-6 col-sm-6 order-style">
+                                            <span class="input-group-addon">收银员：</span>
+                                            <input type="text" class="form-control" placeholder="收银员"/>
+                                        </div>
+                                        <div class="input-group col-md-12 col-sm-12 order-style">
+                                            <span class="input-group-addon">备注：</span>
+                                            <textarea class="form-control" rows="2"></textarea>
+                                        </div>
+                                        <div class="col-md-12 col-sm-12 order-style">
+                                            <table class="table table-bordered">
+                                                <thead style="background: #f5f5f5">
+                                                <tr>
+                                                    <th>商品名称</th>
+                                                    <th>商品类别</th>
+                                                    <th>购买数量</th>
+                                                    <th>单价</th>
+                                                    <th>小计</th>
+                                                    <th>税率（%）</th>
+                                                    <th>税费</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr v-for="items in refundData">
+                                                    <td>{{items.balanceType}}</td>
+                                                    <td>{{items.balance}}</td>
+                                                    <td>{{items.balance1}}</td>
+                                                    <td>{{items.balance2}}</td>
+                                                    <td>{{items.balance3}}</td>
+                                                    <td>{{items.balance3}}</td>
+                                                    <td>{{items.balance3}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>合计</td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                            <table class="table table-bordered">
+                                                <thead style="background: #f5f5f5">
+                                                <tr>
+                                                    <th>支付渠道</th>
+                                                    <th>支付类别</th>
+                                                    <th>支付</th>
+                                                    <th>优惠</th>
+                                                    <th>流水号</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr v-for="items in refundData">
+                                                    <td>{{items.balanceType}}</td>
+                                                    <td>{{items.balance}}</td>
+                                                    <td>{{items.balance1}}</td>
+                                                    <td>{{items.balance2}}</td>
+                                                    <td>{{items.balance3}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>合计</td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="col-md-12 col-sm-12 order-btn">
+                                            <button type="button" class="btn btn-primary">退货</button>
+                                            <button type="button" class="btn btn-primary">重打小票</button>
+                                            <button type="button" class="btn btn-primary">重打门票</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li tabindex="1">
+                    <span class="title"><i class="icon iconfont icon-lipinhuigou"></i>礼品回购</span>
+                    <div class="content">
+                        <span class="close">x</span>
+                        <div class="menu-main container-fluid">
+                            <div class="row menu-marginTop">
+                                <div class="col-md-12 col-sm-12 margin1">
+                                    <div class="input-group col-md-6 col-sm-6 menu-style">
+                                        <input type="text" class="form-control" placeholder="条码号/商品名称..." aria-describedby="basic-addon2">
+                                        <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-search"></span></span>
+                                    </div>
+                                    <div class="col-md-2 col-sm-2"></div>
+                                    <div class="input-group col-md-3 col-sm-3 menu-style">
+                                        <input type="text" class="form-control" placeholder="会员卡号" aria-describedby="basic-addon2">
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-default" type="button">读卡</button>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="col-md-7 col-sm-7 margin1">
+                                    <table class="table table-bordered">
+                                        <thead style="background: #f5f5f5">
+                                        <tr>
+                                            <th>商品条码</th>
+                                            <th>商品名称</th>
+                                            <th>零售价</th>
+                                            <th>回购代币数</th>
+                                            <th>回购彩票数</th>
+                                            <th>回购积分数</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr v-for="items in refundData">
+                                            <td>{{items.balanceType}}</td>
+                                            <td>{{items.balance}}</td>
+                                            <td>{{items.balance1}}</td>
+                                            <td>{{items.balance2}}</td>
+                                            <td>{{items.balance3}}</td>
+                                            <td>{{items.balance4}}</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="col-md-5 col-sm-5 margin1">
+                                    <div class="col-md-12 col-sm-12 menu-style">
+                                        <div class="input-group">
+                                            <span class="input-group-addon">会员姓名：</span>
+                                            <input type="text" class="form-control" placeholder="会员姓名"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 col-sm-12 menu-style">
+                                        <div class="input-group">
+                                            <span class="input-group-addon">会员级别：</span>
+                                            <input type="text" class="form-control" placeholder="会员级别"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 col-sm-12 margin1">
+                                        <table class="table table-bordered">
+                                            <thead style="background: #f5f5f5">
+                                            <tr>
+                                                <th>余额种类</th>
+                                                <th>余额</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr v-for="items in refundData">
+                                                <td>{{items.balanceType}}</td>
+                                                <td>{{items.balance}}</td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 col-sm-12 margin1">
+                                    <div class="col-md-4 col-sm-4 menu-style">
+                                        <div class="input-group">
+                                            <span class="input-group-addon">兑换种类：</span>
+                                            <input type="text" class="form-control" placeholder="兑换种类"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-sm-4 menu-style">
+                                        <div class="input-group">
+                                            <span class="input-group-addon">兑换数量：</span>
+                                            <input type="text" class="form-control" placeholder="兑换种类"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-sm-4 menu-style">
+                                        <div class="input-group">
+                                            <span class="input-group-addon">兑换价值：</span>
+                                            <input type="text" class="form-control" placeholder="兑换种类"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 col-sm-12 menu-r-btn"><button type="button" class="btn btn-primary">兑换</button></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li tabindex="1">
+                    <span class="title"><i class="icon iconfont icon-icon"></i>会员过户操作</span>
+                    <div class="content"><span class="close">x</span></div>
+                </li>
+                <li tabindex="1">
+                    <span class="title"><i class="icon iconfont icon-icon1"></i>会员等级变更</span>
+                    <div class="content"><span class="close">x</span></div>
+                </li>
+                <li tabindex="1">
+                    <span class="title"><i class="icon iconfont icon-jiaobanguanli"></i>交班总结</span>
+                    <div class="content"><span class="close">x</span></div>
+                </li>
+                <li tabindex="1">
+                    <span class="title"><i class="icon iconfont icon-jiabi"></i>吧台加币</span>
+                    <div class="content"><span class="close">x</span>
+
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script src="js/jquery-2.1.3.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/swiper.min.js"></script>
+<!-- 引入 Vue -->
+<script src="js/vue.js"></script>
+<script src="js/axios.min.js"></script>
+<!-- 引入 bootstrap-table -->
+<script src="js/bootstrap-table.js"></script>
+<script src="js/bootstrap-table-zh-CN.js"></script>
+<script>
+    var sysId = 0; //调用方应用Id
+    var versionNo= "0.01"; //版本号
+    var vm = new Vue({
+        el: '#app',
+        data:{
+            userToken:'',
+            storeId:'',
+            memberLevelId:21,
+            refundData:[{
+                balanceType:"代币",
+                balance:"2000",
+                balance1:"1600",
+                balance2:"400",
+                balance3:"1600",
+                balance4:"1000",
+                balance5:"500"
+            },{
+                balanceType:"积分",
+                balance:"200000",
+                balance1:"200000",
+                balance2:"0",
+                balance3:"0",
+                balance4:"0",
+                balance5:"0"
+            },{
+                balanceType:"合计",
+                balance:"",
+                balance1:"",
+                balance2:"",
+                balance3:"",
+                balance4:"1000",
+                balance5:"500"
+            }],
+            msg:""
+        },
+        mounted: function () {
+            this.Initialize()
+        },
+        watch: {
+
+        },
+        methods: {
+            Initialize:function () {
+
+            },
+//			通用消息提示
+            msgPrompt:function (res) {
+                var that = this;
+                if(res.return_code == 0){
+                    that.msg = res.return_msg;
+                    $('#myModal').modal('show');
+                }else if(res.result_code == 0){
+                    that.msg = res.result_msg;
+                    $('#myModal').modal('show');
+                }
+            }
+        }
+    });
+//    全部jq函数
+    (function(){
+        $('.menu .content').append('<span class="close">x</span>');
+        function showContent(elem){
+            elem.find('.content').stop(true,true).animate({"opacity": 1,"width": "840px","height":"500px","margin-left": "-420px","margin-top": "-200px"},800);
+            elem.addClass('cover');
+        }
+
+        $('.menu li').click(function() {
+            console.log($(this).index());
+            if($(this).index() == 0){
+                window.location.href='theBar.html';
+            }else {
+                $(this).find('.content').css("display","block");
+                showContent($(this));
+            }
+        });
+        $('.menu li').keypress(function(e) {
+            if (e.keyCode == 13) {
+                showContent($(this));
+            }
+        });
+
+        $('.menu .close').click(function(e) {
+            e.stopPropagation();
+            $(this).parent().stop(true,true).animate({"opacity": 0,"width": "200px","height":"120px","margin-left": "-100px","margin-top": "-40px"});
+            $(this).parent().css("display","none");
+//            $('.menu .content').removeClass('expanded');
+            $('.menu li').removeClass('cover');
+        });
+    })();
+
+    //存储session
+    function setStorage(key,value) {
+        if(window.localStorage){
+            value = JSON.stringify(value); //转化为JSON字符串
+            var storage=window.localStorage;
+            storage.setItem(key,value);
+        }
+    }
+    //删除session
+    function removeStorage(key) {
+        if(window.localStorage){
+            var storage=window.localStorage;
+            storage.removeItem(key);
+        }
+    }
+    //获取session
+    function getStorage(key) {
+        if(window.localStorage){
+            value = JSON.parse(localStorage.getItem(key));
+            return value;
+        }
+    }
+</script>
+</body>
+</html>

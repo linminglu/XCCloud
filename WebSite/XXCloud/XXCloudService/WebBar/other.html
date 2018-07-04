@@ -10,54 +10,9 @@
     <link rel="stylesheet" href="css/swiper.min.css">
     <link href="css/bootstrap-table.css" rel="stylesheet">
     <link rel="stylesheet" href="css/iconfont.css">
+    <link href="css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/bootstrap-datetimepicker.min.css" rel="external nofollow" >
     <style>
-        [v-cloak] {
-            display: none;
-        }
-        /*style*/
-        /*XinChen--PC 2017-9-2*/
-        * {margin:0;padding:0;word-break:break-all;}
-        html,body{height:100%; font-size:100%;}
-        body{font:14px/1.5em "Arial","Microsoft YaHei",Verdana,Helvetica,sans-serif;text-align:left;background:#fff;color:#2d3e50;margin:0px;line-height:22px; }
-        table{font:14px/1.5em "Arial","Microsoft YaHei",Verdana,Helvetica,sans-serif;text-align:left;margin:0px;padding:0px;border:0px;color:#2d3e50;line-height:22px;}
-        body,figure,h1,h2,h3,h4,h5,h6,p,pre,blockquote,form,fieldset,legend,input,button,select,textarea {margin:0;padding:0;font-family:"Arial","Microsoft YaHei";}
-        address,caption,cite,code,dfn,em,var,i{font-style:normal;font-weight:normal;}
-        ul,ol,li,dl,dt,dd{ margin:0px; padding:0px;border:0px;list-style:none;}
-        article,aside,details,figcaption,figure,footer,header,hgroup,nav,section{display: block;}
-        abbr[title],dfn[title] {border-bottom:1px dotted;cursor:help;}
-        pre,code,kbd,samp{font-family:monospace,sans-serif;_font-family:'Courier New',monospace,sans-serif;font-size: 1em;}
-        pre{white-space: pre;/*CSS2*/white-space:pre-wrap;/*CSS2.1*/white-space:pre-line;/*CSS3*/word-wrap:break-word;/*IE*/}
-        blockquote,q{quotes:none;}
-        blockquote:before,blockquote:after,q:before,q:after{content:'';content:none;}
-        audio[controls],canvas,video{display:inline-block;*display:inline;*zoom:1;}
-        input,textarea{outline:none;}
-        textarea{resize:none;overflow:auto;}
-        input[type="checkbox"],input[type="radio"]{vertical-align:middle;}
-        input[type="button"],input[type="submit"]{ cursor:pointer;}
-        input::-ms-clear{display:none;}
-        input::-ms-reveal{display:none;}
-        img{border:none;}
-        .fl{float: left;}.fr{float: right;}
-        a:link,a:visited{text-decoration:none;cursor:pointer;outline:none;}
-        a:hover,a:active {text-decoration:none;cursor:pointer;}
-        /* common style */
-        .clearfix:after {content: ".";display: block;clear: both;visibility: hidden;line-height: 0;height: 0;}
-        .clearfix {display: inline-block;}
-        /*-----------------------------*/
-        .heightKz{overflow-y:auto;overflow-x:hidden;}
-        /*高度控制*/
-        .boxShadow{box-shadow: 0 0 2px #FF8C00;background-color: #3c8dbc;padding: 0!important;}
-        .navbar-header{height: 3em;padding-bottom: 5em;}
-        .navbar-header a img{height: 3em;}
-        .bbs{margin-bottom: 0.5em;color: #b63b4d}
-        .navbar-nav a{margin-top:0.5em;font-size: 1.2em;color: #fff9ec;}
-        .nav a:hover {color: #666666;}
-        .mag-_r1{margin-right: 0.5em;}
-        .navLeftS{width: 240px;height:5.6em;margin-top: 0.4em;background: url("images/navHeader.png") no-repeat left center;background-size: 100% 100%;display: flex;flex-direction: row;}
-        .navStyle{margin-top: 1.1em!important;padding: 2px 10px;margin-left: 2.1em; color: #fff;width: 160px;display: inline-block;}
-        .navStyle h4{font-size: 1.2em;line-height: 1.5em;text-indent: 12px;}
-        .navT{width: 80px;margin-top: 2.25em;padding-left: 0.2em;color: #fff;font-weight: 500;}
-        .navbar-right{margin-right: 1em;}
         /*新style*/
         .menu{width: 840px;margin: 100px auto;/*padding: 15px;*/list-style: none;counter-reset: li;/*background: #eee;*//*-moz-box-shadow: 0 1px 2px rgba(0, 0, 0, .1) inset;*//*-webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, .1) inset;*//*box-shadow: 0 1px 2px rgba(0, 0, 0, .1) inset;*//*-moz-border-radius: 10px;*//*-webkit-border-radius: 10px;*//*border-radius: 10px;*/}
         .menu:before, .menu:after{content: "";display: table;}
@@ -75,9 +30,9 @@
         .menu li:nth-child(3), .menu li:nth-child(3) .content, .menu li:nth-child(3) .close{background-color: #349ffd;}
         .menu li:nth-child(4), .menu li:nth-child(4) .content, .menu li:nth-child(4) .close{background-color: #349ffd;}
         .menu li:nth-child(5), .menu li:nth-child(5) .content, .menu li:nth-child(5) .close{background-color: #349ffd;}
-        .menu li:nth-child(6), .menu li:nth-child(6) .content, .menu li:nth-child(6) .close{background-color: #BC8F8F;}
-        .menu li:nth-child(7), .menu li:nth-child(7) .content, .menu li:nth-child(7) .close{background-color: #BC8F8F;}
-        .menu li:nth-child(8), .menu li:nth-child(8) .content, .menu li:nth-child(8) .close{background-color: #BC8F8F;}
+        .menu li:nth-child(6), .menu li:nth-child(6) .content, .menu li:nth-child(6) .close{background-color: rgb(190, 178, 178);}
+        .menu li:nth-child(7), .menu li:nth-child(7) .content, .menu li:nth-child(7) .close{background-color: rgb(190, 178, 178);}
+        .menu li:nth-child(8), .menu li:nth-child(8) .content, .menu li:nth-child(8) .close{background-color: rgb(190, 178, 178);}
         .menu li:nth-child(9), .menu li:nth-child(9) .content, .menu li:nth-child(9) .close{background-color: #808080;}
         .menu li:nth-child(10), .menu li:nth-child(10) .content, .menu li:nth-child(10) .close{background-color: #808080;}
         .menu li:nth-child(11), .menu li:nth-child(11) .content, .menu li:nth-child(11) .close{background-color: #808080;}
@@ -114,7 +69,7 @@
         /*.order-style input{height: 1.6em;width: 100%;line-height:2em;padding-left: 0.5em;}*/
         /*.order-style label{padding-left: 10px;padding-right: 0;}*/
         /*.order-style textarea{height: 3.2em;font-size: 0.8em;line-height: 1em;}*/
-        .heightOver{overflow-y: auto;overflow-x: hidden;height: 430px;padding: 0;}
+        .heightOver{overflow-y: auto;overflow-x: hidden;height: 500px;padding: 0;}
         .order-btn{display: flex; flex-direction: row;justify-content: space-between;margin-top: 2em;padding: 0 1em;}
         .menu-btn button{width: 30%;margin: 0 1em;}
         .input-group[class*=col-]{float: left;}
@@ -132,6 +87,9 @@
         ::-webkit-scrollbar {/*滚动条整体样式*/  width: 5px;  /*高宽分别对应横竖滚动条的尺寸*/  height: 1px;}
         ::-webkit-scrollbar-thumb {/*滚动条里面小方块*/ border-radius: 10px; -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2); background: #535353;}
         ::-webkit-scrollbar-track {/*滚动条里面轨道*/-webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);border-radius: 10px;background: #EDEDED;}
+        .otherAddon{width: 7em;}
+        .padding_right{padding-right:0!important;}
+        .padding_left{padding-left:0!important;}
     </style>
 </head>
 <body>
@@ -188,6 +146,52 @@
         </div>
         <!--导航-->
     </div>
+    <!--查询获取卡列表-->
+    <div class="modal fade bs-example-modal-md" id="cardList" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog modal-md" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span>&times;</span></button>
+                        <h4 class="modal-title">温馨提示</h4>
+                    </div>
+                    <div class="modal-body row">
+                        <div class="tab-text col-lg-12 col-md-12" v-if="inquireCard.show">
+                            <div class="input-group col-lg-7 col-md-7">
+                                <span class="input-group-addon">验证码：</span>
+                                <input class="form-control" v-model="inquireCard.mobileCode"/>
+                                <div class="input-group-btn">
+                                    <input class="form-control btnSendCode readCard" type="button" v-model="inquireCard.codeBtn" @click="sendCode('1')" :disabled="inquireCard.disabled"/>
+                                </div>
+                            </div>
+                            <div class="input-group col-lg-5 col-md-5">
+                                <div class="input-group-btn">
+                                    <button type="button" class="btn btn-default readCard" @click="getMember('2')">按手机号查询</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-12 col-md-12 cardList">
+                            <table class="table table-bordered">
+                                <tr v-for="(item,index) in cardList" @click="radioCard(index)">
+                                    <td><input type="radio" name="optionsRadios" :value="index" v-model="radioValue"></td>
+                                    <td>
+                                        <h4>会员卡号</h4>
+                                        <p>{{item.ICCardNo}}</p>
+                                    </td>
+                                    <td>
+                                        <h4>到期日期</h4>
+                                        <p>{{item.EndDate}}</p>
+                                    </td>
+                                    <td>
+                                        <h4>会员等级</h4>
+                                        <p>{{item.LevelName}}</p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     <!-- Modal(通用提示框) -->
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog" role="document">
@@ -471,26 +475,25 @@
                     <div class="content"><span class="close">x</span>
                         <div class="menu-main container-fluid">
                             <div class="row menu-marginTop">
-                                <div class="col-md-3 col-sm-3 menu-style">
+                                <div class="col-md-4 col-sm-4 menu-style">
                                     <div class="input-group">
                                         <span class="input-group-addon">订单号：</span>
-                                        <input type="text" class="form-control" placeholder="订单号"/>
+                                        <input type="text" class="form-control" placeholder="订单号" v-model="orderInquiry.orderNo"/>
                                     </div>
                                 </div>
-                                <div class="col-md-3 col-sm-3 menu-style">
-                                    <div class="input-group">
-                                        <span class="input-group-addon">卡号：</span>
-                                        <input type="text" class="form-control" placeholder="卡号"/>
-                                    </div>
+                               
+                                <div class="input-group date form_date col-md-4 menu-style padding_right" data-date="2018-07-04" data-link-format="yyyy-mm-dd">
+                                    <span class="input-group-addon">销售日期：</span>
+                                    <input class="form-control"  type="text" v-model="orderInquiry.stratTime" readonly>
+                                    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
                                 </div>
-                                <div class="col-md-3 col-sm-3 menu-style">
-                                    <div class="input-group">
-                                        <span class="input-group-addon">销售日期：</span>
-                                        <input type="text" class="form-control" placeholder="销售日期"/>
+                                <div class="input-group date form_date col-md-3 menu-style padding_left" data-date="2018-07-04" data-link-format="yyyy-mm-dd">
+                                        <span class="input-group-addon">至</span>
+                                        <input class="form-control"  type="text" v-model="orderInquiry.endTime" readonly>
+                                        <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
                                     </div>
-                                </div>
-                                <div class="col-md-2 col-sm-2 menu-style">
-                                    <button type="button" class="btn btn-primary">查询</button>
+                                <div class="col-md-1 col-sm-1 menu-style">
+                                    <button type="button" class="btn btn-primary" @click="getOrders">查询</button>
                                 </div>
 
                                 <div class="col-md-12 col-sm-12 heightOver">
@@ -506,44 +509,71 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr v-for="items in refundData">
-                                                <td>{{items.balanceType}}</td>
-                                                <td>{{items.balance}}</td>
-                                                <td>{{items.balance1}}</td>
-                                                <td>{{items.balance2}}</td>
-                                                <td>{{items.balance3}}</td>
+                                            <tr v-for="(item,index) in orderInquiry.orderListData">
+                                                <td>{{item.balanceType}}</td>
+                                                <td>{{item.balance}}</td>
+                                                <td>{{item.balance1}}</td>
+                                                <td>{{item.balance2}}</td>
+                                                <td>{{item.balance3}}</td>
                                             </tr>
                                             </tbody>
                                         </table>
+                                        <table class="table table-bordered">
+                                                <thead style="background: #f5f5f5">
+                                                <tr>
+                                                    <th>支付渠道</th>
+                                                    <th>支付类别</th>
+                                                    <th>支付</th>
+                                                    <th>优惠</th>
+                                                    <th>流水号</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr v-for="(item,index) in orderInquiry.orderPayData">
+                                                    <td>{{item.balanceType}}</td>
+                                                    <td>{{item.balance}}</td>
+                                                    <td>{{item.balance1}}</td>
+                                                    <td>{{item.balance2}}</td>
+                                                    <td>{{item.balance3}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>合计</td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
                                     </div>
                                     <div class="col-md-7 col-sm-7 order-style">
                                         <div class="input-group col-md-6 col-sm-6 order-style">
-                                            <span class="input-group-addon">订单号：</span>
-                                            <input type="text" class="form-control" placeholder="订单号"/>
+                                            <span class="input-group-addon otherAddon">订单号：</span>
+                                            <input type="text" class="form-control" placeholder="订单号" v-model="orderInquiry.orderNo"/>
                                         </div>
                                         <div class="input-group col-md-6 col-sm-6 order-style">
-                                            <span class="input-group-addon">销售日期：</span>
-                                            <input type="text" class="form-control" placeholder="销售日期"/>
+                                            <span class="input-group-addon otherAddon">销售日期：</span>
+                                            <input type="text" class="form-control" placeholder="销售日期" v-model="orderInquiry.theData"/>
                                         </div>
                                         <div class="input-group col-md-6 col-sm-6 order-style">
-                                            <span class="input-group-addon">应付金额：</span>
-                                            <input type="text" class="form-control" placeholder="应付金额"/>
+                                            <span class="input-group-addon otherAddon">应付金额：</span>
+                                            <input type="text" class="form-control" placeholder="应付金额" v-model="orderInquiry.payable"/>
                                         </div>
                                         <div class="input-group col-md-6 col-sm-6 order-style">
-                                            <span class="input-group-addon">优惠金额：</span>
-                                            <input type="text" class="form-control" placeholder="优惠金额"/>
+                                            <span class="input-group-addon otherAddon">优惠金额：</span>
+                                            <input type="text" class="form-control" placeholder="优惠金额" v-model="orderInquiry.preferential"/>
                                         </div>
                                         <div class="input-group col-md-6 col-sm-6 order-style">
-                                            <span class="input-group-addon">实付金额：</span>
-                                            <input type="text" class="form-control" placeholder="实付金额"/>
+                                            <span class="input-group-addon otherAddon">实付金额：</span>
+                                            <input type="text" class="form-control" placeholder="实付金额" v-model="orderInquiry.realPay"/>
                                         </div>
                                         <div class="input-group col-md-6 col-sm-6 order-style">
-                                            <span class="input-group-addon">收银员：</span>
-                                            <input type="text" class="form-control" placeholder="收银员"/>
+                                            <span class="input-group-addon otherAddon">收银员：</span>
+                                            <input type="text" class="form-control" placeholder="收银员" v-model="orderInquiry.cashier"/>
                                         </div>
                                         <div class="input-group col-md-12 col-sm-12 order-style">
-                                            <span class="input-group-addon">备注：</span>
-                                            <textarea class="form-control" rows="2"></textarea>
+                                            <span class="input-group-addon otherAddon">备注：</span>
+                                            <textarea class="form-control" rows="2" v-model="orderInquiry.note"></textarea>
                                         </div>
                                         <div class="col-md-12 col-sm-12 order-style">
                                             <table class="table table-bordered">
@@ -559,7 +589,7 @@
                                                 </tr>
                                                 </thead>
                                                 <tbody>
-                                                <tr v-for="items in refundData">
+                                                <tr v-for="items in orderInquiry.goodsData">
                                                     <td>{{items.balanceType}}</td>
                                                     <td>{{items.balance}}</td>
                                                     <td>{{items.balance1}}</td>
@@ -579,33 +609,7 @@
                                                 </tr>
                                                 </tbody>
                                             </table>
-                                            <table class="table table-bordered">
-                                                <thead style="background: #f5f5f5">
-                                                <tr>
-                                                    <th>支付渠道</th>
-                                                    <th>支付类别</th>
-                                                    <th>支付</th>
-                                                    <th>优惠</th>
-                                                    <th>流水号</th>
-                                                </tr>
-                                                </thead>
-                                                <tbody>
-                                                <tr v-for="items in refundData">
-                                                    <td>{{items.balanceType}}</td>
-                                                    <td>{{items.balance}}</td>
-                                                    <td>{{items.balance1}}</td>
-                                                    <td>{{items.balance2}}</td>
-                                                    <td>{{items.balance3}}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>合计</td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                </tr>
-                                                </tbody>
-                                            </table>
+                                            
                                         </div>
                                         <div class="col-md-12 col-sm-12 order-btn">
                                             <button type="button" class="btn btn-primary">退货</button>
@@ -614,9 +618,6 @@
                                         </div>
                                     </div>
                                 </div>
-
-
-
                             </div>
                         </div>
                     </div>
@@ -740,17 +741,32 @@
             </ul>
         </div>
     </div>
+    <div class="footer">
+        <div class="btn-group dropup col-lg-3 col-md-3">
+            <button type="button" class="btn btn-default">{{inquireCard.dropChooseTxt1}}</button>
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"  aria-expanded="false">
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu dropChoosesty">
+                <li @click="dropChoose('0')"><span class="iconfont icon-duqiaqi"></span>读卡器</li>
+                <li @click="dropChoose('1')"><span class="iconfont icon-shenfenzhengrenzheng"></span>身份证</li>
+                <li @click="dropChoose('2')"><span class="iconfont icon-3"></span>手动输入</li>
+            </ul>
+            <input  class="form-control" placeholder="请输入会员姓名" v-model="inquireCard.keyInput"/>
+            <button type="button" class="btn btn-default">{{inquireCard.dropChooseTxt2}}</button>
+        </div>       
+    </div>
 </div>
 
 <script src="js/jquery-2.1.3.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
-<script src="js/swiper.min.js"></script>
 <!-- 引入 Vue -->
 <script src="js/vue.js"></script>
 <script src="js/axios.min.js"></script>
 <!-- 引入 bootstrap-table -->
-<script src="js/bootstrap-table.js"></script>
-<script src="js/bootstrap-table-zh-CN.js"></script>
+<script type="text/javascript" src="js/bootstrap-datetimepicker.min.js" charset="UTF-8"></script>
+<script type="text/javascript" src="js/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+
 <script>
     var sysId = 0; //调用方应用Id
     var versionNo= "0.01"; //版本号
@@ -758,8 +774,6 @@
         el: '#app',
         data:{
             userToken:'',
-            storeId:'',
-            memberLevelId:21,
             refundData:[{
                 balanceType:"代币",
                 balance:"2000",
@@ -784,7 +798,33 @@
                 balance3:"",
                 balance4:"1000",
                 balance5:"500"
-            }],
+            }],       
+            inquireCard:{
+                show:false,
+                mobileCode:"",
+                keyInput:"",
+                codeBtn:"获取验证码",
+                dropChooseTxt1:"读卡器",
+                dropChooseTxt2:"读卡",
+                disabled:""
+            },
+            orderInquiry:{
+                goodsData:"",
+                orderNo:"",
+                stratTime:"",
+                endTime:"",
+                theData:"",
+                payable:"",
+                preferential:"",
+                realPay:"",
+                cashier:"",
+                note:"",
+                orderListData:[],
+                orderPayData:[],
+                goodsData:[]
+            },
+            cardList:[],
+            radioValue:"",
             msg:""
         },
         mounted: function () {
@@ -795,7 +835,101 @@
         },
         methods: {
             Initialize:function () {
-
+                var that =this;
+                var userToken = getStorage("userToken");      	//获取userToken
+                that.userToken = userToken;
+            },
+//			按手机号查询会员信息
+            getMember:function (type) {getMember
+			    var that = this;
+                switch (type){
+                    case "0" :
+                        var mobile = that.outCoinData.mobile;
+                        var code = that.outCoinData.mobileCode;
+                        // that.outCoinData.outCoinCard = "1";
+                        break;
+                    case "1" :
+						var mobile = that.memberInfo.Mobile;
+						var code = that.memberInput.mobileCode;
+                        // that.outCoinData.outCoinCard = "";
+                        break;
+                    case "2" :
+						var mobile = that.inquireCard.keyInput;
+						var code = that.inquireCard.mobileCode;
+                        that.outCoinData.outCoinCard = "";
+                        break;
+                    default:
+                        break;
+                }
+                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,mobile:mobile,code:code};
+                console.log(obj);
+			    if(mobile.length != 11 || code == ""){
+                    that.msg = "请先确认手机号和验证码填写正确";
+                    $('#myModal').modal('show');
+                    setTimeout(function () {
+                        $('#myModal').modal('hide');
+                    }, 1500);
+				}else{
+                    axios.post('/XCCloud/Member?action=getCardListByPhone', obj).then(function (res) {
+                        console.log(res.data);
+                        that.msgPrompt(res.data);
+                        if (res.data.result_code === '1') {
+                            that.cardList = res.data.result_data;
+                            $('#cardList').modal('show');
+                        }
+                    }).catch(function (err) {
+                        console.log(err);
+                    });
+				}
+            },
+//			选择读卡方式
+            dropChoose:function(index){
+                var that = this;
+				switch (index){
+					case "0":
+                        that.dropChooseTxt1 = "读卡器";
+                        that.dropChooseTxt2 = "读卡";
+					    break;
+                    case "1":
+                        that.dropChooseTxt1 = "身份证";
+                        that.dropChooseTxt2 = "读取";
+                        break;
+                    case "2":
+                        that.dropChooseTxt1 = "输入";
+                        that.dropChooseTxt2 = "查询";
+                        break;
+				}
+			},
+//			选择会员卡
+            radioCard:function(index){
+                var that = this;
+                console.log(index);
+                that.radioValue = index;
+                if(that.outCoinData.outCoinCard == "1"){
+                    that.outCoinData.icCardId = that.cardList[that.radioValue].ICCardNo;
+                    that.outCoinData.outCoinCard == ""
+				}else {
+                    that.icCardId = that.cardList[that.radioValue].ICCardNo;
+                    that.cardId = that.cardList[that.radioValue].CardId;
+				}
+                $('#cardList').modal('hide');
+                that.radioValue = "";
+                that.getMenberCardInfo()
+			},
+//          订单查询接口
+            getOrders:function(){
+                var that = this;
+                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,orderId:"",icCardId:that.icCardId,startDate:"",endDate:""};
+                console.log(obj);
+                axios.post('/xccloud/order?action=getOrders', obj).then(function (res) {
+                    console.log(res.data);
+                    that.msgPrompt(res.data);
+                    if (res.data.result_code === '1') {
+                        
+                    }
+                }).catch(function (err) {
+                    console.log(err);
+                });
             },
 //			通用消息提示
             msgPrompt:function (res) {
@@ -811,10 +945,21 @@
         }
     });
 //    全部jq函数
+    $('.form_date').datetimepicker({
+		language:  'zh-CN',
+		weekStart: 1,
+		todayBtn:  1,
+		autoclose: 1,
+		todayHighlight: 1,
+		startView: 2,
+		minView: 2,
+        pickerPosition: "bottom-left",
+        format: 'yyyy-mm-dd'
+    });
     (function(){
         $('.menu .content').append('<span class="close">x</span>');
         function showContent(elem){
-            elem.find('.content').stop(true,true).animate({"opacity": 1,"width": "840px","height":"500px","margin-left": "-420px","margin-top": "-200px"},800);
+            elem.find('.content').stop(true,true).animate({"opacity": 1,"width": "1200px","height":"600px","margin-left": "-600px","margin-top": "-200px"},800);
             elem.addClass('cover');
         }
 

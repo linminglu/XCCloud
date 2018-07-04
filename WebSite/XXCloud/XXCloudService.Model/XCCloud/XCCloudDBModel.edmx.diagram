@@ -106,7 +106,6 @@
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_Ticket_Exit" Width="1.5" PointX="36.75" PointY="10.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Log_Operation" Width="1.5" PointX="10.75" PointY="36.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Search_Template" Width="1.5" PointX="12.75" PointY="36.75" />
-        <EntityTypeShape EntityType="XCCloudDBModel.Search_Template_Detail" Width="1.5" PointX="36.75" PointY="16.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Store_GameTotal" Width="1.5" PointX="36.75" PointY="20.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Store_HeadTotal" Width="1.5" PointX="36.75" PointY="24.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.XC_WorkInfo" Width="1.5" PointX="36.75" PointY="28.75" />
@@ -183,6 +182,7 @@
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_MemberCard_Exit" Width="1.5" PointX="39.375" PointY="13.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Log_GameAlarm" Width="1.5" PointX="0.75" PointY="46.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_MemberCard_LevelChange" Width="1.5" PointX="45.375" PointY="24.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.Search_Template_Detail" Width="1.5" PointX="11.375" PointY="46.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

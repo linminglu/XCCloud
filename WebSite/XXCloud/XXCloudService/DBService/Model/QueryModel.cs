@@ -19,6 +19,12 @@ namespace XCCloudService.DBService.Model
         public int ID {set;get;}
 
         /// <summary>
+        /// 顺序号从0开始
+        /// </summary>
+        [DataMember(Name = "tempId", Order = 2)]
+        public int TempID { set; get; }
+
+        /// <summary>
         /// 标题
         /// </summary>
         [DataMember(Name = "title", Order = 2)]
@@ -61,8 +67,20 @@ namespace XCCloudService.DBService.Model
         public List<string> List {set;get;}
 
         /// <summary>
-        /// 支付信息字典ID 
+        /// 查询条件
         /// </summary>
+        [DataMember(Name = "condition", Order = 8)]
+        public int Condition { set; get; }
+
+        /// <summary>
+        /// 字典表ID 
+        /// </summary>
+        [DataMember(Name = "dictId", Order = 9)]
         public int DictID { set; get; }
+        /// <summary>
+        /// 用户ID 
+        /// </summary>
+        [DataMember(Name = "userId", Order = 10)]
+        public int UserID { set; get; }
     }
 }

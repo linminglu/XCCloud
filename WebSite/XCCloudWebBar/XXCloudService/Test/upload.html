@@ -1,0 +1,70 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="/website/uploadify/uploadify.css"> 
+    <script src="/website/js/jquery-1.8.3-min.js"></script>
+    <script type="text/javascript" src="/website/uploadify/jquery.uploadify.min.js"></script>
+       
+    <script>
+        var userToken = "107f7a833bab498a9a819867bc95d6c4";
+        var clientType = "1";
+        var headIndex = 8;
+        var inCoin = 10;
+        var prizeCount = 100;
+        var outCoin = 70;
+        var outLottery = 90;
+        var goodPrice = 65;
+        //function getUrl() {
+        //    var url = "/api/xccloud/gamewatch.ashx?action=addGameWatch&userToken=107f7a833bab498a9a819867bc95d6c4&clientType=1";
+        //    url = url + "&inCoin=10&prizeCount100&outCoin=70&outLottery=90&goodPrice=65";
+        //    return url;
+        //}
+        $(function () {
+            $('#file_upload').uploadify({
+                'swf': "/website/uploadify/uploadify.swf",
+                'uploader': getUrl(),
+                'formData': {
+                    'userToken': userToken, 'clientType': clientType, 'inCoin': inCoin, 'prizeCount': prizeCount,
+                    'outCoin': outCoin, 'outLottery': outLottery, 'headIndex': headIndex
+                },
+                'cancelImg': "/website/uploadify/uploadify-cancel.png",
+                'buttonText': '选择照片',
+                'method': 'post',
+                'queueID': 'fileQueue',//与下面的id对应 
+                'buttonClass': 'upload_button',
+                'fileTypeDesc': '图片文件',
+                'fileTypeExts': '*.gif;*.jpg;*.png;*.bmp',
+                'multi': false,
+
+                'onUploadComplete': function (file) {
+
+                },
+
+                /** 
+                 * 上传成功后触发事件 
+                 */
+                'onUploadSuccess': function (file, data, response) {
+                    console.log(data);
+                }
+            });
+
+            function getUrl() {
+                var url = "/api/xccloud/gamewatch.ashx?action=addGameWatch";
+                return url;
+            }
+
+        });
+
+
+
+
+    </script>
+</head>
+<body>
+    <div id="fileQueue"></div>
+    <input type="file" name="file_upload" id="file_upload" />
+    <a href="javascript:$('#file_upload').uploadify('upload')">上传</a>   
+</body>
+</html>

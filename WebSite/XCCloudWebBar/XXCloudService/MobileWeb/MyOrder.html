@@ -1,0 +1,424 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>莘拍档</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="css/ydui.rem.css">
+    <!-- 引入rem自适应类库 -->
+
+    <style>
+        .closeIcon{background: none;margin: 0!important;}
+        .closeIcon1{background: none;margin: 0!important;padding-top: 0.16rem;color: #FF685D;}
+        .top_main{background: #F0F8FF;height: 1.3rem;color: #666;display:flex;flex-direction: row;justify-content: space-between;}
+        .top_mc{display:flex;flex-direction: column;font-size: 0.32rem;margin-left: 0.4rem;padding-top: 0.2rem;text-align: center;line-height: 0.5rem;}
+        .yd-list-img{display: none;}
+        .section_c1{display: flex;flex-direction: row;font-size: 0.32rem;padding: 0.1rem;color: #015581;border-bottom: 1px dashed #eee;}
+        .section_c3{display: flex;flex-direction: row-reverse;font-size: 0.24rem;}
+        .section_T{width: 35%;font-size: 0.26rem;}
+        .section_c{color: #FB7C58;padding: 0.1rem;}
+        .section_r{width: 50%;}
+
+        .background1{background: #fff;}
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div id="app" v-cloak>
+    <div class="page-bottom">
+        <div class='top_main'>
+            <div class='top_mc'><span>总共</span><span class='color11'>{{Count}}条</span></div>
+            <div class='top_mc'><span>购币</span><span class='color11'>{{Buycoins}}个</span></div>
+            <div class='top_mc'><span>总币数：</span><span class='color11'>{{Totalcoins}}个</span></div>
+            <div class='top_mc'><span>总金额：</span><span class='color11'>{{Totalmoney}}元</span></div>
+            <yd-button class="closeIcon1" size="small" type="danger" @click.native="show4 = true">
+                <yd-icon color="#FF685D" name="search"></yd-icon>
+                <p>筛选</p>
+            </yd-button>
+        </div>
+
+        <yd-popup v-model="show4" position="right">
+            <yd-button class="closeIcon" type="warning" style="margin: 30px;" @click.native="show4 = false"><yd-icon color="#FF685D" name="error-outline"></yd-icon></yd-button>
+            <yd-cell-item>
+                <span slot="left">金额：</span>
+                <input slot="right" type="number" placeholder="最低金额" oninput="if(value.length>9)value=value.slice(0,9)" v-model="dateInput0">
+                <input slot="right" type="number" placeholder="最高金额" oninput="if(value.length>9)value=value.slice(0,9)"  v-model="dateInput1">
+            </yd-cell-item>
+            <yd-cell-item>
+                <span slot="left">币数：</span>
+                <input slot="right" type="number" placeholder="最低币数" oninput="if(value.length>9)value=value.slice(0,9)"  v-model="dateInput2">
+                <input slot="right" type="number" placeholder="最高币数" oninput="if(value.length>9)value=value.slice(0,9)"  v-model="dateInput3">
+            </yd-cell-item>
+            <yd-cell-item>
+                <span slot="left">查询日期：</span>
+                <yd-datetime type="date" v-model="datetime4" slot="right"></yd-datetime>
+                <yd-datetime type="date" v-model="datetime5" slot="right"></yd-datetime>
+            </yd-cell-item>
+            <yd-cell-item arrow type="label">
+                <span slot="left">选择方式：</span>
+                <select slot="right" v-model="dataSelected1">
+                    <option value="">请选择</option>
+                    <option v-for="option in BuyTypelist" v-bind:value="option.BuyTypelist">
+                        {{option.BuyTypelist}}
+                    </option>
+                </select>
+            </yd-cell-item>
+            <yd-cell-item arrow type="label">
+                <span slot="left">店名：</span>
+                <select slot="right" v-model="dataSelected2">
+                    <option value="">请选择店名</option>
+                    <option v-for="option in StoreNamelist" v-bind:value="option.StoreNamelist">
+                        {{option.StoreNamelist}}
+                    </option>
+                </select>
+            </yd-cell-item>
+            <yd-button size="large" type="primary" @click.native="confirm">primary</yd-button>
+            <yd-button size="large" type="hollow" @click.native="cancel">hollow</yd-button>
+        </yd-popup>
+        <yd-infinitescroll :callback="loadList" ref="infinitescrollDemo">
+            <yd-list theme="4" slot="list">
+                <yd-list-item v-for="(item,key) in orderList" :key="item.index">
+                    <div class="section_c1" slot="title">
+                        <div class='section_T'>{{item.StoreName}}</div>
+                        <div class='section_r'>{{item.Descript}}</div>
+                        <div>{{item.PayStatus}}</div>
+                    </div>
+                    <yd-list-other slot="other">
+                        <div class="section_c2">
+                            <div>{{item.CreateTime}}</div>
+                        </div>
+                        <div class="section_c3">
+                            <div class='section_c'>￥{{item.Price}}元</div>
+                            <div class='section_c'>{{item.OrderType}}</div>
+                            <div class='section_c'>{{item.Coins}}个</div>
+                            <div class='section_c'>{{item.BuyType}}</div>
+                        </div>
+                    </yd-list-other>
+                </yd-list-item>
+            </yd-list>
+            <!-- 数据全部加载完毕显示 -->
+            <span slot="doneTip">啦啦啦，啦啦啦，没有数据啦~~</span>
+            <!-- 加载中提示，不指定，将显示默认加载中图标 -->
+            <img slot="loadingTip" src="http://static.ydcss.com/uploads/ydui/loading/loading10.svg"/>
+        </yd-infinitescroll>
+    </div>
+    <yd-tabbar fixed=true active-color="#000000">
+        <yd-tabbar-item title="首页" @click.native="register1">
+            <yd-icon name="home" slot="icon" size="0.54rem"></yd-icon>
+        </yd-tabbar-item>
+        <yd-tabbar-item title="我的订单" active>
+            <yd-icon name="shopcart" slot="icon" size="0.54rem"></yd-icon>
+        </yd-tabbar-item>
+        <yd-tabbar-item title="个人中心" @click.native="register2">
+            <yd-icon name="ucenter-outline" slot="icon" size="0.54rem"></yd-icon>
+        </yd-tabbar-item>
+    </yd-tabbar>
+</div>
+<script src="js/ydui.flexible.js"></script>
+<!-- 引入 Vue -->
+<script src="js/vue.js"></script>
+<script src="js/jquery-1.8.3-min.js"></script>
+<!-- 引入组件库 -->
+<script src="js/ydui.rem.js"></script>
+<script src="js/axios.min.js"></script>
+<script>
+    var sysId = 0; //调用方应用Id
+    var versionNo= "0.89"; //版本号
+    var url_getDataOrder = '/XCGameMana/DataOrder?action=getDataOrder';//获取分页订单列表
+    var htmlfnc = new Vue({
+        el: '#app',
+        data:{
+            orderList:[],
+            BuyTypelist:[],
+            StoreNamelist:[],
+            Count:"0",
+            Buycoins:"0",
+            Totalcoins:"0",
+            Totalmoney:"0",
+            dateInput0:"",
+            dateInput1:"",
+            dateInput2:"",
+            dateInput3:"",
+            datetime4: '2018-02-21',
+            datetime5: '2019-01-21',
+            dataSelected1:"",
+            dataSelected2:"",
+            show4: false,
+            today: "",
+            allover:"",
+            mobileToken:'',
+            orderPage:'',
+            orderData:""
+        },
+        mounted: function () {
+            this.newTimes();
+            this.Load();
+        },
+        methods: {
+            newTimes:function () {
+                var myDate = new Date();
+                var yy = myDate.getFullYear(); //获取完整的年份(4位,1970-????)
+                var mm = myDate.getMonth()+1; //获取当前月份(0-11,0代表1月)         // 所以获取当前月份是myDate.getMonth()+1;
+                if(mm<10){
+                    mm = "0"+mm
+                }
+                var dd = myDate.getDate(); //获取当前日(1-31)
+                this.today =yy+"-"+mm+"-"+dd;
+                this.datetime4 =yy+"-"+mm+"-"+dd;
+                this.datetime5 =yy+"-"+mm+"-"+dd;
+            },
+            register1:function () {
+                window.location.href = "home.html"
+            },
+            register2:function () {
+                window.location.href = "mine.html"
+            },
+            confirm:function () {
+                var that =this;
+                this.$dialog.loading.open('');
+                if (parseInt(that.dateInput0) <= parseInt(that.dateInput1) || that.dateInput0 == "" || that.dateInput1 == ""){
+                    var startMoney = that.dateInput0;
+                    var endMoney = that.dateInput1;
+                }else{
+                    var startMoney = that.dateInput1;
+                    var endMoney = that.dateInput0;
+                }
+                if (parseInt(that.dateInput2) <= parseInt(that.dateInput3) || that.dateInput2 == "" || that.dateInput3 == ""){
+                    var startCoins = that.dateInput2;
+                    var endCoins = that.dateInput3;
+                }else{
+                    var startCoins = that.dateInput3;
+                    var endCoins = that.dateInput2;
+                }
+                if (that.datetime4 != that.today) {
+                    var startTime = that.datetime4.split("-").join("")
+                }else{
+                    var startTime = ""
+                }
+                if (that.datetime5 != that.today) {
+                    var endTime = that.datetime4.split("-").join("")
+                }else{
+                    var endTime = ""
+                }
+                if (parseInt(startTime) <= parseInt(endTime) || startTime == "" || endTime == "") {
+                    var startcreatetime = that.datetime4;
+                    var endcreatetime = that.datetime5;
+                } else {
+                    var startcreatetime = that.datetime5;
+                    var endcreatetime = that.datetime4;
+                }
+                var obj={
+                    sysId: sysId,
+                    versionNo: versionNo,
+                    mobileToken: that.mobileToken,
+                    pageIndex: 0,
+                    storename: that.dataSelected2,
+                    startcoins: startCoins,
+                    buytype: that.dataSelected1,
+                    startcreatetime: startcreatetime,
+                    startprice: startMoney,
+                    endcreatetime: endcreatetime,
+                    endcoins: endCoins,
+                    endprice: endMoney
+                };
+                console.log(obj);
+                axios.post(url_getDataOrder, obj).then(function (res) {
+                    that.$dialog.loading.close();
+                    that.msgPrompt(res.data);
+                    console.log(res.data);
+                    if (res.data.result_code === '1') {
+                        var orderListData = [];
+                        for (var i = 0; i < res.data.result_data.Lists.length; i++) {
+                            orderListData.push({
+                                CreateTime: res.data.result_data.Lists[i].CreateTimes,
+                                Price: res.data.result_data.Lists[i].Price,
+                                Descript: res.data.result_data.Lists[i].Descript,
+                                StoreName: res.data.result_data.Lists[i].StoreName,
+                                Coins: res.data.result_data.Lists[i].Coins,
+                                BuyType: res.data.result_data.Lists[i].BuyType,
+                                OrderType: res.data.result_data.Lists[i].OrderType,
+                                PayStatus: res.data.result_data.Lists[i].PayStatus
+                            })
+                        }
+                        that.orderList =orderListData;
+                        that.orderPage =res.data.result_data.Page;
+                        that.Count =res.data.result_data.Count;
+                        that.Buycoins =res.data.result_data.Buycoins;
+                        that.Totalcoins =res.data.result_data.Buycoins;
+                        that.Totalmoney =res.data.result_data.Totalmoney;
+                        that.BuyTypelist =res.data.result_data.BuyTypelist;
+                        that.StoreNamelist =res.data.result_data.StoreNamelist;
+                        that.show4 =false;
+                        that.orderData =obj;
+                    }
+                }).catch(function (err) {
+                    that.$dialog.loading.close();
+                    console.log(err);
+                })
+
+            },
+            cancel: function () {
+                var that =this;
+                that.Count="";
+                that.Buycoins="";
+                that.Totalcoins="";
+                that.Totalmoney="";
+                that.dateInput0="";
+                that.dateInput1="";
+                that.dateInput2="";
+                that.dateInput3="";
+                that.datetime4=that.today;
+                that.datetime5=that.today;
+                that.dataSelected1="";
+                that.dataSelected2="";
+            },
+            Load: function () {
+                var that =this;
+                var mobileToken =  getStorage("mobileToken");//获取手机令牌
+                that.mobileToken = mobileToken;
+                console.log(mobileToken);
+                this.$dialog.loading.open('');
+                var obj={
+                    sysId: sysId,
+                    versionNo: versionNo,
+                    mobileToken: that.mobileToken,
+                    pageIndex: "0",
+                    storename: "",
+                    startcoins: "",
+                    buytype: "",
+                    startcreatetime: "",
+                    startprice: "",
+                    endcreatetime: "",
+                    endcoins: "",
+                    endprice: ""
+                };
+                axios.post(url_getDataOrder, obj).then(function (res) {
+                    that.$dialog.loading.close();
+                    that.msgPrompt(res.data);
+                    console.log(res.data);
+                    if (res.data.result_code === '1') {
+                        var orderListData = [];
+                        for (var i = 0; i < res.data.result_data.Lists.length; i++) {
+                            orderListData.push({
+                                CreateTime: res.data.result_data.Lists[i].CreateTimes,
+                                Price: res.data.result_data.Lists[i].Price,
+                                Descript: res.data.result_data.Lists[i].Descript,
+                                StoreName: res.data.result_data.Lists[i].StoreName,
+                                Coins: res.data.result_data.Lists[i].Coins,
+                                BuyType: res.data.result_data.Lists[i].BuyType,
+                                OrderType: res.data.result_data.Lists[i].OrderType,
+                                PayStatus: res.data.result_data.Lists[i].PayStatus
+                            })
+                        }
+                        that.orderData =obj;
+                        that.orderList =orderListData;
+                        that.orderPage =res.data.result_data.Page;
+                        that.Count =res.data.result_data.Count;
+                        that.Buycoins =res.data.result_data.Buycoins;
+                        that.Totalcoins =res.data.result_data.Buycoins;
+                        that.Totalmoney =res.data.result_data.Totalmoney;
+                        that.BuyTypelist =res.data.result_data.BuyTypelist;
+                        that.StoreNamelist =res.data.result_data.StoreNamelist;
+                    }
+                }).catch(function (err) {
+                    that.$dialog.loading.close();
+                    console.log(err);
+                })
+            },
+            loadList: function (){
+                var that = this;
+                console.log(that.orderData.pageIndex);
+                var pageIndex = parseInt(that.orderData.pageIndex) + 1;
+                if (pageIndex <that.orderPage){
+                    that.that.orderData.pageIndex =pageIndex;
+                    this.$dialog.loading.open('');
+                    axios.post(url_getDataOrder, that.orderData).then(function (res) {
+                        that.$dialog.loading.close();
+                        that.msgPrompt(res.data);
+                        console.log(res.data);
+                        if (res.data.result_code === '1') {
+                            var orderListData = [];
+                            for (var i = 0; i < res.data.result_data.Lists.length; i++) {
+                                orderListData.push({
+                                    CreateTime: res.data.result_data.Lists[i].CreateTimes,
+                                    Price: res.data.result_data.Lists[i].Price,
+                                    Descript: res.data.result_data.Lists[i].Descript,
+                                    StoreName: res.data.result_data.Lists[i].StoreName,
+                                    Coins: res.data.result_data.Lists[i].Coins,
+                                    BuyType: res.data.result_data.Lists[i].BuyType,
+                                    OrderType: res.data.result_data.Lists[i].OrderType,
+                                    PayStatus: res.data.result_data.Lists[i].PayStatus
+                                })
+                            }
+                            that.orderList =orderListData;
+                            that.orderPage =res.data.result_data.Page;
+                            that.Count =res.data.result_data.Count;
+                            that.Buycoins =res.data.result_data.Buycoins;
+                            that.Totalcoins =res.data.result_data.Buycoins;
+                            that.Totalmoney =res.data.result_data.Totalmoney;
+                            that.BuyTypelist =res.data.result_data.BuyTypelist;
+                            that.StoreNamelist =res.data.result_data.StoreNamelist;
+                            that.$refs.infinitescrollDemo.$emit('ydui.infinitescroll.reInit');
+                        }
+
+                    }).catch(function (err) {
+                        that.$dialog.loading.close();
+                        console.log(err);
+                    })
+                }else {
+                    this.$refs.infinitescrollDemo.$emit('ydui.infinitescroll.loadedDone');
+                }
+
+            },
+            msgPrompt:function (res) {
+                if(res.return_code == 0){
+                    this.$dialog.toast({
+                        mes: res.return_msg,
+                        timeout: 1500,
+                        icon: 'error'
+                    });
+                }else if(res.result_code == 0){
+                    this.$dialog.toast({
+                        mes: res.result_msg,
+                        timeout: 1500,
+                        icon: 'error'
+                    });
+                }
+            }
+        }
+    });
+
+
+    //存储session
+    function setStorage(key,value) {
+        if(window.localStorage){
+            value = JSON.stringify(value); //转化为JSON字符串
+            var storage=window.localStorage;
+            storage.setItem(key,value);
+        }
+    }
+    //删除session
+    function removeStorage(key) {
+        if(window.localStorage){
+            var storage=window.localStorage;
+            storage.removeItem(key);
+        }
+    }
+    //获取session
+    function getStorage(key,value) {
+        if(window.localStorage){
+            var storage=window.localStorage;
+            value = JSON.parse(localStorage.getItem(key));
+            return value;
+        }
+    }
+
+
+</script>
+
+</body>
+</html>

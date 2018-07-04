@@ -263,7 +263,7 @@ xcActionSystem.prototype= {
                                     table.render({
                                             elem: parm.elem
                                             , data: tableData
-                                            // , height:'full-125'
+                                            // , height:'full-150'
                                             , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
                                             , cols: [parm.cols]
                                             , page: {page: true, limits: [10, 15, 20, 30, 50, 100]}

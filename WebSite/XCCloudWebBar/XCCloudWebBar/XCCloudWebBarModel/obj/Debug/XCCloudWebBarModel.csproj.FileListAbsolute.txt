@@ -1,0 +1,5 @@
+D:\lijunjiework\项目\XCCloud\WebSite\XCCloudWebBar\XCCloudWebBar\XCCloudWebBarModel\bin\Debug\XCCloudWebBarModel.dll
+D:\lijunjiework\项目\XCCloud\WebSite\XCCloudWebBar\XCCloudWebBar\XCCloudWebBarModel\bin\Debug\XCCloudWebBarModel.pdb
+D:\lijunjiework\项目\XCCloud\WebSite\XCCloudWebBar\XCCloudWebBar\XCCloudWebBarModel\obj\Debug\XCCloudWebBarModel.csprojResolveAssemblyReference.cache
+D:\lijunjiework\项目\XCCloud\WebSite\XCCloudWebBar\XCCloudWebBar\XCCloudWebBarModel\obj\Debug\XCCloudWebBarModel.dll
+D:\lijunjiework\项目\XCCloud\WebSite\XCCloudWebBar\XCCloudWebBar\XCCloudWebBarModel\obj\Debug\XCCloudWebBarModel.pdb

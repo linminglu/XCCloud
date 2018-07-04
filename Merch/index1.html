@@ -115,7 +115,7 @@
         </div>
     </div>
     <!-- 右侧内容 -->
-    <div class="layui-body layui-form" style="top:70px;!important;">
+    <div class="layui-body layui-form" style="top:70px;bottom: 0;!important;background-color: #d9dcde">
         <div class="layui-tab layui-tab-card xcTab" lay-allowClose="true" lay-filter="demo"
              style="position: absolute;top: 0;bottom: 0;left: 0;right: 0;overflow: hidden;margin-top: 0;">
             <ul class="layui-tab-title" id="xcTabMenu" style="padding:0 15px;">
@@ -124,16 +124,16 @@
                 </li>
             </ul>
             <div class="layui-tab-content iframeBox">
-                <div class="layui-tab-item layui-show">
-                    <iframe src="home.html" frameborder="0" style="width: 100%;height: 100%"></iframe>
+                <div class="layui-tab-item layui-show" style="background-color: #d9dcde">
+                    <iframe src="home.html" frameborder="0" style="width: 100%;height: 100%;background-color: #d9dcde"></iframe>
                 </div>
             </div>
         </div>
     </div>
-    <!-- 底部 -->
-    <div class="layui-footer footer" style="text-align:center;";>
-        "©2017-2018 莘宸科技"
-    </div>
+    <!--&lt;!&ndash; 底部 &ndash;&gt;-->
+    <!--<div class="layui-footer footer" style="text-align:center;";>-->
+        <!--"©2017-2018 莘宸科技"-->
+    <!--</div>-->
 </div>
 </body>
 <script src="js/jquery-1.8.3-min.js"></script>
@@ -194,7 +194,7 @@
                         element.tabDelete('demo', _id);
                         element.tabAdd('demo', {
                             title: _text
-                            , content: '<iframe src="' + _id + '" style="width: 100%;height: 100%"></iframe>'	 //支持传入html
+                            , content: '<iframe src="' + _id + '" style="width: 100%;height: 100%;background-color: #d9dcde"></iframe>'	 //支持传入html
                             , id: _id
                         });
                         element.tabChange('demo', _id);
@@ -206,7 +206,7 @@
                             element.tabDelete('demo', thisId);
                             element.tabAdd('demo', {
                                 title: _text
-                                , content: '<iframe src="' + _id + '" style="width: 100%;height: 100%"></iframe>'	 //支持传入html
+                                , content: '<iframe src="' + _id + '" style="width: 100%;height: 100%;background-color: #d9dcde"></iframe>'	 //支持传入html
                                 , id: _id
                             });
                             element.tabChange('demo', _id);
@@ -214,7 +214,7 @@
 
                             element.tabAdd('demo',{
                                 title: _text
-                                , content: '<iframe src="' + _id + '" style="width: 100%;height: 100%"></iframe>'	 //支持传入html
+                                , content: '<iframe src="' + _id + '" style="width: 100%;height: 100%;background-color: #d9dcde"></iframe>'	 //支持传入html
                                 , id: _id
                             });
                             element.tabChange('demo', _id);

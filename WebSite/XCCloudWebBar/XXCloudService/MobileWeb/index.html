@@ -1,0 +1,480 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>莘拍档</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="css/ydui.rem.css">
+    <style>
+        .wx-img{min-width: 1.3rem;min-height:1.3rem;width: 1.2rem;height: 1.2rem;margin-right: 0.5rem;background-color: #eeeeee;padding: 0.1rem;margin-top: 0.1rem;}
+        .index-header{background-color: #393a3f;border-top: 0.1rem solid #eeeeee;border-bottom: 0.15rem solid #eeeeee;}
+        .iconSty{color: #eeeeee; line-height: 0.4rem;display: flex;flex-direction: row;}
+        .margin_top{margin-top: 0.2rem;}
+        .index-change{border-bottom: 0.02rem solid #eeeeee; color: #ff3030;margin-right: 0.1rem;}
+        .cardIcon{width: 0.4rem;height: 0.4rem;margin-right: 0.1rem;}
+        .iconRight{justify-content:flex-end;margin-top: 0.1rem;margin-right: 0.6rem;color: #ff3030;margin-bottom: 0.1rem;}
+        .vipCard{display:flex;flex-direction: row;padding-left:1rem;border-radius: 10px;position: relative;width: 100%;height: 1.5rem;background-image: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%);}
+        .section_image{width: 1rem;height: 0.7rem;display: inline-block;margin-top: 0.16rem;min-width: 1rem;max-width: 1rem;margin-right: 0.2rem;}
+        .section_cont{font-size:0.26rem;color:#666;line-height: 0.4rem;}
+        .stored{font-size: 0.36rem;font-weight: 700;color: #666;margin-top: 0.08rem;}
+        .MemberLevel{margin-left: 0.3rem;margin-top: 0.1rem;font-size: 0.3rem;font-weight: 700;color: #ffb400;}
+        .ICCard{color: goldenrod;margin-top: 0.1rem;}
+        .addCard{width: 5rem;height: 1.5rem;margin: 0.1rem auto;text-align: center;}
+        .addCard img{width: 1rem;height: 1rem;}
+        .addCard p{margin-top: 0.1rem;font-size: 0.26rem;line-height: 0.3rem;}
+        /*.yd-gridstitle{font-size: 0.16rem;padding-top: 0.1rem;}*/
+        .yd-grids-txt span{display: block;}
+        .yd-grids-txt .spanSty{font-weight: 600;margin-top: 0.15rem;}
+        /*.yd-grids-3{background-color: #10aeff}*/
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="app" v-cloak>
+        <yd-layout>
+            <yd-cell-item class="index-header">
+                <img slot="icon" class="wx-img" :src="headimgurl">
+                <div slot="left" class="index-div">
+                    <p class="iconSty"><img slot="icon" class="cardIcon" src="images/user.png"><span>你好，{{nickname}}</span></p>
+                    <p class="iconSty margin_top"><img slot="icon" class="cardIcon" src="images/member.png"><span class="index-change" @click="loginFnc">完善信息</span><span>享受更多优惠</span></p>
+                </div>
+            </yd-cell-item>
+            <yd-grids-group title="绑定的会员卡">
+                <div class="iconSty iconRight" @click="mineCard"><img slot="icon" class="cardIcon" src="images/switch.png"><span>切换会员卡</span></div>
+                <div class="vipCard" v-if="tiedCard">
+                    <!--<img class="section_image" slot="img" src="images/vipCard.png">-->
+                    <div class="section_cont">
+                        <p class='stored'>开卡门店</p>
+                        <p class="MemberLevel">{{MemberLevelName}}</p>
+                        <p class="ICCard">{{ICCardId}}</p>
+                    </div>
+                </div>
+                <div class="addCard" v-if="!tiedCard" @click="mineCard">
+                    <img src="images/addpic.png">
+                    <p>请添加卡</p>
+                </div>
+                <yd-grids-group :rows="3">
+                    <yd-grids-item v-for="item in cardBalanceList" v-if="tiedCard">
+                        <span slot="text">{{item.BalanceName}}：</span>
+                        <span slot="text" class="spanSty">{{item.Quantity}}</span>
+                    </yd-grids-item>
+                </yd-grids-group>
+            </yd-grids-group>
+
+            <yd-grids-group :rows="3" title="开心玩">
+                <yd-grids-item v-for="(item,index) in playData" @click.native="playFnc(index)">
+                    <img :src="item.imgUrl" slot="icon"/>
+                    <span slot="text">{{item.playName}}</span>
+                </yd-grids-item>
+            </yd-grids-group>
+            <yd-grids-group :rows="3" title="快乐购">
+                <yd-grids-item v-for="(item,index) in buyData" @click.native="recharge(index)">
+                    <img :src="item.imgUrl" slot="icon"/>
+                    <span slot="text">{{item.playName}}</span>
+                </yd-grids-item>
+            </yd-grids-group>
+        </yd-layout>
+        <yd-backtop></yd-backtop>
+        <!--<yd-button size="large" type="primary" @click.native="jumpFnc">扫码</yd-button>-->
+        <!--<yd-navbar title="莘拍档">-->
+            <!--<router-link to="h" slot="left">-->
+                <!--<yd-navbar-back-icon>返回</yd-navbar-back-icon>-->
+            <!--</router-link>-->
+            <!--<router-link to="#" slot="right">-->
+                <!--<yd-navbar-next-icon></yd-navbar-next-icon>-->
+            <!--</router-link>-->
+        <!--</yd-navbar>-->
+        <!--微信头部颜色393a3f{{【】}}-->
+    </div>
+<script src="js/jquery-1.8.3-min.js"></script>
+<!-- 引入 Vue -->
+<script src="js/vue.js"></script>
+<!-- 引入rem自适应类库 -->
+<script src="js/ydui.rem.js"></script>
+<!-- 引入组件库 -->
+<script src="js/ydui.rem.js"></script>
+<script src="js/ydui.flexible.js"></script>
+<script src="js/axios.min.js"></script>
+<script src="js/alipayjsapi.min.js"></script>
+<script src="https://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+<script>
+    var sysId = 0; //调用方应用Id
+    var versionNo= "0.89"; //版本号
+    var chatHub;//定义TCP对象
+    var vm = new Vue({
+        el: '#app',
+        data:{
+            playData:[{imgUrl:"images/billQuery.png",playName:"账单查询"},{imgUrl:"images/scanCode.png",playName:"扫一扫"},{imgUrl:"images/surrounding.png",playName:"周边推荐"},{imgUrl:"images/giftExchange.png",playName:"礼品兑换"}],
+            buyData:[{imgUrl:"images/recharge.png",playName:"充值"},{imgUrl:"images/buyCoin.png",playName:"购币"}],
+            headimgurl : "",
+            nickname : "",
+            CurrentCardInfo : "",
+            MemberId : "",
+            MemberLevelName : "",
+            ICCardId : "",
+            cardBalanceList : null,
+            deviceToken : "",
+            userThirdId : "",
+            tiedCard:true
+        },
+        mounted: function () {
+            var that = this;
+            this.Load();
+            setTimeout(function () {
+                that.getLocationFnc();
+            },2000)
+        },
+        methods: {
+            Load:function () {
+                var that =this;
+//                var deviceToken = "86A8AFBDB2E84B8E95BF52C052E8BA7C";
+//                var userThirdId = "oNWocwSC_GFO8n_8mtZ0iV9tL0WI";
+                var ifScanCode = getStorage("ifScanCode");        //是否是扫码进入
+                var deviceToken = getStorage("deviceNo")||"";       //获取设备令牌
+                var userThirdId = getStorage("userThirdId")||"";     //获取第三方令牌
+                alert(deviceToken);
+                that.userThirdId = userThirdId;
+                that.deviceToken = deviceToken;
+                if(ifScanCode == "1"){
+                    var getDeviceInfo ={sysId: sysId,versionNo: versionNo,token:that.userThirdId,deviceToken:that.deviceToken};
+                    axios.post('/XCCloudH5/Amusement?action=getDeviceInfo', getDeviceInfo).then(function (res) {
+                        that.$dialog.loading.close();
+                        that.msgPrompt(res.data);
+                        console.log(res.data);
+                        if (res.data.result_code === '1') {
+                            if(res.data.result_data == ""){
+                                setStorage("ifScanCode","0");
+                                that.jumpFnc(deviceToken);
+                            }
+                        }
+                    }).catch(function (err) {
+                        that.$dialog.loading.close();
+                        console.log(err);
+                    });
+                }else {
+                    if (/MicroMessenger/.test(window.navigator.userAgent)){
+                        var coordinates = getStorage("coordinates")||"";
+                        if(coordinates == ""){
+                            this.$dialog.loading.open('');
+                            this.signatureNew();
+                        }else {
+                            wx.config({
+                                debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+                                appId: coordinates.AppId, // 必填，公众号的唯一标识
+                                timestamp: coordinates.TimeStamp, // 必填，生成签名的时间戳
+                                nonceStr: coordinates.NonceStr, // 必填，生成签名的随机串
+                                signature: coordinates.Signature,// 必填，签名
+                                jsApiList: ["scanQRCode","getLocation"] // 必填，需要使用的JS接口列表
+                            });
+                            wx.error(function(res){
+//                              alert(JSON.stringify(res));
+                                that.signatureNew();
+                            });
+                        }
+                    }
+                }
+                var obj={sysId: sysId,versionNo: versionNo,token:that.userThirdId};
+                axios.post('/XCCloudH5/Member?action=getMemberInfo', obj).then(function (res) {
+                    that.$dialog.loading.close();
+                    that.msgPrompt(res.data);
+                    console.log(res.data);
+                    if (res.data.result_code === '1') {
+                        that.CurrentCardInfo =res.data.result_data.CurrentCardInfo;
+                        if(that.CurrentCardInfo != null){
+                            that.MemberLevelName = res.data.result_data.CurrentCardInfo.MemberLevelName;
+                            var ICCardId = res.data.result_data.CurrentCardInfo.ICCardId;
+                            ICCardId = ICCardId.substring(0,6)+"****"+ICCardId.substring(ICCardId.length-6);
+                            that.ICCardId = ICCardId;
+                            that.cardBalanceList =res.data.result_data.CurrentCardInfo.CardBalanceList;
+                        }else {
+                            that.tiedCard = false;
+                        }
+                        that.MemberId =res.data.result_data.MemberId;
+                        that.headimgurl =res.data.result_data.Info.headimgurl;
+                        that.nickname =res.data.result_data.Info.nickname;
+                        setStorage("headimgurl",that.headimgurl);
+                        console.log(that.headimgurl);
+
+                    }
+                }).catch(function (err) {
+                    that.$dialog.loading.close();
+                    console.log(err);
+                });
+            },
+//            调用微信功能
+            signatureNew:function () {
+                var that =this;
+                var obj={sysId: sysId,versionNo: versionNo, fileName:"index"};
+                axios.post('/XCGameMana/WxCommon?action=getWxH5Config', obj).then(function (res) {
+                    that.$dialog.loading.close();
+                    that.msgPrompt(res.data);
+                    console.log(res.data);
+                    JSON.stringify(res.data);
+                    if (res.data.result_code === '1') {
+//                        alert(JSON.stringify(res.data.result_data));
+                        var coordinates =res.data.result_data;
+                        setStorage("coordinates",coordinates);
+                        wx.config({
+                            debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+                            appId: coordinates.AppId, // 必填，公众号的唯一标识
+                            timestamp: coordinates.TimeStamp, // 必填，生成签名的时间戳
+                            nonceStr: coordinates.NonceStr, // 必填，生成签名的随机串
+                            signature: coordinates.Signature,// 必填，签名
+                            jsApiList: ["scanQRCode","getLocation"] // 必填，需要使用的JS接口列表
+                        });
+                    }
+                }).catch(function (err) {
+                    that.$dialog.loading.close();
+                    console.log(err);
+                })
+            },
+//          获取地理坐标
+            getLocationFnc:function () {
+                if (/MicroMessenger/.test(window.navigator.userAgent)) {
+                    wx.getLocation({
+                        type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
+                        success: function (res) {
+                            alert(JSON.stringify(res));
+                            var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
+                            var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
+                            var speed = res.speed; // 速度，以米/每秒计
+                            var accuracy = res.accuracy; // 位置精度
+                        }
+                    });
+                }else if (/AlipayClient/.test(window.navigator.userAgent)) {
+                    AlipayJSBridge.call('getCurrentLocation', {}, function (result) {
+                        alert(JSON.stringify(result));
+                    });
+                }
+            },
+//          登录跳转
+            loginFnc:function () {
+                var that = this;
+                window.location.href = "login.html";
+//                that.$dialog.confirm({
+//                    title: '温馨提示!',
+//                    mes: "即将前往登录或注册页面？",
+//                    opts: (function () {
+//
+//                    })
+//                });
+            },
+//          play功能
+            playFnc:function (index) {
+                var that = this;
+                console.log(index);
+                if(that.CurrentCardInfo != null || index == 1){
+                    switch (index){
+                        case 0:
+                            window.location.href = "MyOrder.html";
+                            break;
+                        case 1:
+                           that.scanCode();
+                           break;
+                        case 2:
+                            window.location.href = "home.html";
+                            break;
+                        case 3:
+                            this.$dialog.toast({
+                                mes: "功能暂未开放",
+                                timeout: 1500,
+                                icon: 'error'
+                            });
+                            break;
+                        default:
+                            break;
+                    }
+                }else {
+                    that.$dialog.confirm({
+                        title: '温馨提示!',
+                        mes: "前往绑定会员卡",
+                        opts: (function () {
+                            window.location.href = "mineCard.html"
+                        })
+                    });
+                }
+            },
+//          扫码函数
+            scanCode:function () {
+                var that =this;
+                if (/MicroMessenger/.test(window.navigator.userAgent)) {
+                    wx.scanQRCode({
+                        needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
+                        scanType: ["qrCode","barCode"], // 可以指定扫二维码还是一维码，默认二者都有
+                        success: function (res) {
+                            var result = res.resultStr; // 当needResult 为 1 时，扫码返回的结果
+                            console.log(result);
+//                            alert(JSON.stringify(result));
+                            var str = result.toString();
+                            strSplit = str.split("/");
+                            var strCode = strSplit[strSplit.length - 2];
+                            if (strCode=="m"){
+                                var deviceToken = strSplit[strSplit.length - 1];//扫码获得终端号解析
+                                that.jumpFnc(deviceToken);
+                            }else {
+                                this.$dialog.toast({
+                                    mes: "二维码错误！",
+                                    timeout: 1500,
+                                    icon: 'error'
+                                });
+                            }
+                        }
+                    });
+                } else if (/AlipayClient/.test(window.navigator.userAgent)) {
+                    AlipayJSBridge.call('scan', {
+                        type: 'qr',
+                        actionType: 'scan'
+                    }, function(result) {
+//                        alert(JSON.stringify(result));
+                        var qrCode = result.qrCode;
+                        var str = qrCode.toString();
+                        strSplit = str.split("/");
+                        var strCode = strSplit[strSplit.length - 2];
+                        if (strCode=="m"){
+                            var deviceToken = strSplit[strSplit.length - 1];//扫码获得终端号解析
+                            that.jumpFnc(deviceToken);
+                        }else {
+                            this.$dialog.toast({
+                                mes: "二维码错误！",
+                                timeout: 1500,
+                                icon: 'error'
+                            });
+                        }
+
+                    });
+                } else {
+                    that.$dialog.toast({
+                        mes: "暂不支持此浏览器!",
+                        timeout:1500,
+                        icon: 'error'
+                    });
+                }
+
+            },
+//          扫码之后跳转函数
+            jumpFnc:function (deviceToken) {
+                var that =this;
+                this.$dialog.loading.open('');
+                var obj={sysId: sysId, versionNo: versionNo,token:that.userThirdId, deviceToken:that.deviceToken};
+                axios.post('/XCCloudH5/Amusement?action=getDeviceInfo', obj).then(function (res) {
+                    that.$dialog.loading.close();
+                    that.msgPrompt(res.data);
+                    console.log(res.data);
+                    if (res.data.result_code === '1') {
+//                        setStorage("deviceToken",deviceToken);
+                        switch (res.data.result_data.DeviceType) {
+                            case 0:
+                                window.location.href = "games.html";
+                                break;
+                            case 2:
+                                window.location.href = "CurrencyOperation.html";
+                                break;
+                            case 3:
+                                window.location.href = "CurrencyOperation.html";
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }).catch(function (err) {
+                    that.$dialog.loading.close();
+                    console.log(err);
+                });
+            },
+//          切换会员卡或绑卡
+            mineCard:function () {
+                var that = this;
+                that.$dialog.confirm({
+                    title: '温馨提示!',
+                    mes: "是否前往绑卡或换卡？",
+                    opts: (function () {
+                        window.location.href ="mineCard.html"
+                    })
+                });
+            },
+//          充值
+            recharge:function(index){
+                var that = this;
+                console.log(index);
+                if(that.CurrentCardInfo != null || index == 1){
+                    switch (index){
+                        case 0:
+//                            window.location.href = "MyOrder.html";
+                            break;
+                        case 1:
+                            this.$dialog.toast({
+                                mes: "请使用扫一扫，在购币机上购币",
+                                timeout: 1500,
+                                icon: 'error'
+                            });
+                            break;
+                        case 2:
+
+                            break;
+                        case 3:
+
+                            break;
+                        default:
+                            break;
+                    }
+                }else {
+                    that.$dialog.confirm({
+                        title: '温馨提示!',
+                        mes: "请先选择会员卡",
+                        opts: (function () {
+                            window.location.href = "mineCard.html"
+                        })
+                    });
+                }
+            },
+//          通用提示
+            msgPrompt:function (res) {
+                if(res.return_code == 0){
+                    this.$dialog.toast({
+                        mes: res.return_msg,
+                        timeout: 1500,
+                        icon: 'error'
+                    });
+                }else if(res.result_code == 0){
+                    this.$dialog.toast({
+                        mes: res.result_msg,
+                        timeout: 1500,
+                        icon: 'error'
+                    });
+                }
+            }
+        }
+    });
+    //存储session
+    function setStorage(key,value) {
+        if(window.localStorage){
+            value = JSON.stringify(value); //转化为JSON字符串
+            var storage=window.localStorage;
+            storage.setItem(key,value);
+        }
+    }
+    //删除session
+    function removeStorage(key) {
+        if(window.localStorage){
+            var storage=window.localStorage;
+            storage.removeItem(key);
+        }
+    }
+    //获取session
+    function getStorage(key) {
+        if(window.localStorage){
+            value = JSON.parse(localStorage.getItem(key));
+            return value;
+        }
+    }
+    $(function () {
+        // Declare a proxy to reference the hub
+    });
+</script>
+
+</body>
+</html>

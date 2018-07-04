@@ -323,6 +323,7 @@ namespace XCCloudService.Model.CustomModel.XCCloud
     {
         public MemberFreeModel()
         {
+            this.BalanceName = string.Empty;
             this.RemainFrees = string.Empty;
             this.FreeDetails = new List<FreeDetailModel>();
         }
@@ -332,6 +333,8 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         public string FreeId { get; set; }
         [DataMember(Order = 1)]
         public string Title { get; set; }
+        [DataMember(Order = 2)]
+        public string BalanceName { get; set; }
         [DataMember(Order = 2)]
         public string FreeCoinName { get; set; }
         [DataMember(Order = 3)]

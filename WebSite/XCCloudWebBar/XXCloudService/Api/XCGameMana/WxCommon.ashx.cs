@@ -1,0 +1,81 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using XCCloudWebBar.Base;
+using XCCloudWebBar.Model.CustomModel.XCGameManager;
+using XCCloudWebBar.Pay.WeiXinPay.Lib;
+using XCCloudWebBar.WeiXin.Common;
+using XCCloudWebBar.WeiXin.WeixinOAuth;
+using XCCloudWebBar.WeiXin.WeixinPub;
+
+namespace XXCloudService.Api.XCGameMana
+{
+    /// <summary>
+    /// WxCommon 的摘要说明
+    /// </summary>
+    public class WxCommon : ApiBase
+    {
+        #region 获取微信H5配置
+        /// <summary>
+        /// 获取微信H5配置
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.MethodToken)]
+        public object getWxH5Config(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                string errMsg = string.Empty;
+                string fileName = dicParas.ContainsKey("fileName") ? dicParas["fileName"].ToString() : string.Empty;
+                if (string.IsNullOrWhiteSpace(fileName))
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "请求微信签名的url错误");
+                }
+
+                string url = string.Format(WeiXinConfig.WxJSSDK_Url, fileName).ToLower();
+
+                WxConfigModel model = CommonHelper.GetSignature(url);
+                if(model == null)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "请求微信SDK错误");
+                }
+
+                return ResponseModelFactory<WxConfigModel>.CreateModel(isSignKeyReturn, model);
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+        #endregion
+
+        #region 获取微信access_token配置
+        /// <summary>
+        /// 获取微信access_token
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.MethodToken)]
+        public object getAccessToken(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                string accessToken = string.Empty;
+                TokenMana.GetAccessToken(out accessToken);
+
+
+                WxConfigModel model = new WxConfigModel();
+                model.AppId = accessToken;
+
+                return ResponseModelFactory<WxConfigModel>.CreateModel(isSignKeyReturn, model);
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+        #endregion
+    }
+}

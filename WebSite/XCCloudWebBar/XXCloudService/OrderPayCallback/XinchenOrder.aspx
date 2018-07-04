@@ -1,0 +1,1 @@
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="XinchenOrder.aspx.cs" Inherits="XXCloudService.OrderPayCallback.XinchenOrder" %>

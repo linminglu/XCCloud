@@ -1,0 +1,272 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>莘拍档</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="css/ydui.rem.css">
+    <!-- 引入rem自适应类库 -->
+    <script src="js/ydui.flexible.js"></script>
+    <style>
+        body{
+            height: 100%;
+            width: 100%;
+        }
+        .itemImg{width: 0.45rem;height: 0.8rem;}
+        .codeDiv{width: 4rem;display: flex;flex-direction: row;}
+        .codeImg{width: 1.4rem;height: 0.6rem;margin-top: 0.1rem;}
+        .codeText{line-height: 0.8rem;margin-left: 0.2rem;}
+        .margin1{line-height: 0.3rem;}
+        .prompt{color: #666666;margin-top: 0.1rem;text-align: center;}
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div id="app" v-cloak>
+    <yd-navbar title="莘拍档">
+        <router-link to="index.html" slot="left">
+            <yd-navbar-back-icon @click.native="goBack">返回</yd-navbar-back-icon>
+        </router-link>
+    </yd-navbar>
+    <yd-cell-group>
+        <yd-cell-item>
+            <img class="itemImg" slot="icon" src="images/account.png">
+            <yd-input slot="right" type="number" placeholder="请输入手机号" v-model="mobile" :on-blur="inputPrompt" :disabled="mobileReadOnly"></yd-input>
+        </yd-cell-item>
+    </yd-cell-group>
+    <yd-cell-group>
+        <yd-cell-item arrow>
+            <img class="itemImg" slot="icon" src="images/birthday.png">
+            <span slot="left" class="margin1">生日：</span>
+            <yd-datetime start-date="1900-03-16" end-date="2200-10-21" type="date" v-model="datetime" slot="right" :readonly="birthdayReadOnly"></yd-datetime>
+        </yd-cell-item>
+    </yd-cell-group>
+    <yd-cell-group>
+        <yd-cell-item>
+            <img class="itemImg" slot="icon" src="images/IdCard.png">
+            <yd-input slot="right" type="number" placeholder="身份证号" v-model="IdCard" :on-blur="inputIdCard" :disabled="IdCardReadOnly"></yd-input>
+            <!-- oninput="if(value.length>11)value=value.slice(0,11)" -->
+        </yd-cell-item>
+    </yd-cell-group>
+    <yd-cell-group>
+        <yd-cell-item arrow>
+            <img class="itemImg" slot="icon" src="images/Gender.png">
+            <span slot="left">性别：</span>
+            <select slot="right" v-model="gender" :disabled="genderReadOnly">
+                <option value="">请选择性别</option>
+                <option value="0">男</option>
+                <option value="1">女</option>
+            </select>
+        </yd-cell-item>
+    </yd-cell-group>
+    <yd-button size="large" type="primary" @click.native="setMemberInfo">提交</yd-button>
+    <p class="prompt">（一旦提交无法修改，如有需要，请到吧台修改。）</p>
+</div>
+<!-- 引入 Vue -->
+<script src="js/vue.js"></script>
+<script src="js/jquery-1.8.3-min.js"></script>
+<!-- 引入组件库 -->
+<script src="js/ydui.rem.js"></script>
+<script src="js/axios.min.js"></script>
+<script>
+    var sysId = 0; //调用方应用Id
+    var versionNo= "0.89"; //版本号
+    var vm = new Vue({
+        el: '#app',
+        data:{
+            userThirdId: "",
+            mobile: '',
+            datetime: '',
+            IdCard: '',
+            gender: '',
+            birthdayReadOnly: false,
+            mobileReadOnly: false,
+            IdCardReadOnly: false,
+            genderReadOnly: false
+        },
+        created:function(){
+            var that =this;
+//            var userThirdId = "oNWocwSC_GFO8n_8mtZ0iV9tL0WI";
+            var userThirdId = getStorage("userThirdId")||"";     //获取第三方令牌
+            that.userThirdId = userThirdId;
+            var obj={"sysId": sysId,"versionNo": versionNo,token:that.userThirdId};
+            axios.post("/XCCloudH5/Member?action=getMemberDetail", obj).then(function (res) {
+                console.log(res.data);
+                that.$dialog.loading.close();
+                if (res.data.result_code === '1') {
+                    if(res.data.result_data.Birthday.length != 0){
+                        that.datetime =res.data.result_data.Birthday;
+                        that.birthdayReadOnly = true;
+                    }else {
+                        var myDate = new Date();
+                        var yy = myDate.getFullYear();
+                        var mm = myDate.getMonth();
+                        var dd = myDate.getDate();
+                        mm ++;
+                        if(mm<10){
+                            mm =0+""+mm;
+                        }
+                        that.datetime= yy + "-" + mm + "-" + dd;
+                    }
+                    if(res.data.result_data.Gender.length != 0){
+                        that.gender =res.data.result_data.Gender;
+                        that.genderReadOnly = true;
+                    }
+                    if(res.data.result_data.Mobile.length != 0){
+                        that.mobile =res.data.result_data.Mobile;
+                        that.mobileReadOnly = true;
+                    }
+                    if(res.data.result_data.IdCard.length != 0){
+                        that.IdCard =res.data.result_data.IdCard;
+                        that.IdCardReadOnly = true;
+                    }
+                }
+            }).catch(function (err) {
+                console.log(err);
+                that.$dialog.loading.close();
+                that.$dialog.toast({
+                    mes: "请求失败!",
+                    timeout: 1500,
+                    icon: 'error'
+                });
+            });
+        },
+        mounted: function () {
+//            this.Load();
+        },
+        methods: {
+            goBack:function () {
+              window.location.href = "index.html";
+            },
+            inputIdCard:function () {
+                var that = this;
+                var myreg =/^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/;
+                var IdCard = this.IdCard;
+                if (!myreg.test(IdCard) || IdCard.length == 0 || IdCard.length != 18) {
+                    this.$dialog.toast({
+                        mes: '请输入正确身份证号！',
+                        timeout: 1500,
+                        icon: 'error'
+                    });
+                    that.IdCard = ""
+                }
+            },
+            inputPrompt:function () {
+                var mobile =this.mobile;
+                var myreg = /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1})|(17[0-9]{1}))+\d{8})$/;
+                if (!myreg.test(mobile) || mobile.length == 0 || mobile.length != 11) {
+                    this.$dialog.toast({
+                        mes: '请输入正确手机号！',
+                        timeout: 1500,
+                        icon: 'error'
+                    });
+                    this.mobile =""
+                }
+            },
+//            smsCode:"",
+//            start:false,
+//            sendCode:function () {
+//                var that=this;
+//                if(that.mobile ==""){
+//                    that.$dialog.toast({
+//                        mes: '请先填入手机号！',
+//                        icon: 'error',
+//                        timeout: 1500
+//                    });
+//                }else {
+//                    that.$dialog.loading.open('发送中....');
+//                    this.start = true;
+//                    console.log(that.mobile);
+//                    var obj={"sysId": sysId,"versionNo": versionNo,mobile:that.mobile};
+//                    axios.post("/XCCloudH5/Member?action=getSMSCode", obj).then(function (res) {
+//                        console.log(res.data);
+//                        that.$dialog.loading.close();
+//                        if (res.data.result_code === '1') {
+//                            that.$dialog.toast({
+//                                mes: '已发送',
+//                                icon: 'success',
+//                                timeout: 1500
+//                            });
+//                        }
+//                    }).catch(function (err) {
+//                        console.log(err);
+//                        that.$dialog.loading.close();
+//                        that.$dialog.toast({
+//                            mes: "请求失败!",
+//                            timeout: 1500,
+//                            icon: 'error'
+//                        });
+//                    });
+//                }
+//            },
+            setMemberInfo:function () {
+                var that = this;
+                var obj={
+                    sysId: sysId,
+                    versionNo: versionNo,
+                    token: that.userThirdId,
+                    mobile: that.mobile,
+                    gender: that.gender,
+                    birthday: that.datetime,
+                    idCard: that.IdCard
+                };
+                console.log(obj);
+                axios.post("/XCCloudH5/Member?action=setMemberInfo", obj).then(function (res) {
+                    that.$dialog.loading.close();
+                    console.log(res.data);
+                    that.msgPrompt(res.data);
+                    if (res.data.result_code === '1') {
+                        window.location.href = "index.html"
+                    }
+                }).catch(function (err) {
+                    that.$dialog.loading.close();
+                    console.log(err);
+                })
+            },
+            msgPrompt:function (res) {
+                if(res.return_code == 0){
+                    this.$dialog.toast({
+                        mes: res.return_msg,
+                        timeout: 1500,
+                        icon: 'error'
+                    });
+                }else if(res.result_code == 0){
+                    this.$dialog.toast({
+                        mes: res.result_msg,
+                        timeout: 1500,
+                        icon: 'error'
+                    });
+                }
+            }
+        }
+    });
+
+    //存储session
+    function setStorage(key,value) {
+        if(window.localStorage){
+            value = JSON.stringify(value); //转化为JSON字符串
+            var storage=window.localStorage;
+            storage.setItem(key,value);
+        }
+    }
+    //删除session
+    function removeStorage(key) {
+        if(window.localStorage){
+            var storage=window.localStorage;
+            storage.removeItem(key);
+        }
+    }
+    //获取session
+    function getStorage(key) {
+        if(window.localStorage){
+            value = JSON.parse(localStorage.getItem(key));
+            return value;
+        }
+    }
+</script>
+</body>
+</html>

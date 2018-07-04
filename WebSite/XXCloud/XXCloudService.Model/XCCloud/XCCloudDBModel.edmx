@@ -2893,6 +2893,7 @@
           <Property Name="FieldName" Type="varchar" MaxLength="50" />
           <Property Name="Title" Type="varchar" MaxLength="50" />
           <Property Name="Datatype" Type="varchar" MaxLength="50" />
+          <Property Name="Condition" Type="int" />
           <Property Name="Width" Type="int" />
           <Property Name="ShowColume" Type="int" />
           <Property Name="ShowSearch" Type="int" />
@@ -3470,7 +3471,6 @@
           <EntitySet Name="Flw_Ticket_Exit" EntityType="XCCloudDBModel.Flw_Ticket_Exit" />
           <EntitySet Name="Log_Operation" EntityType="XCCloudDBModel.Log_Operation" />
           <EntitySet Name="Search_Template" EntityType="XCCloudDBModel.Search_Template" />
-          <EntitySet Name="Search_Template_Detail" EntityType="XCCloudDBModel.Search_Template_Detail" />
           <EntitySet Name="Store_GameTotal" EntityType="XCCloudDBModel.Store_GameTotal" />
           <EntitySet Name="Store_HeadTotal" EntityType="XCCloudDBModel.Store_HeadTotal" />
           <EntitySet Name="XC_WorkInfo" EntityType="XCCloudDBModel.XC_WorkInfo" />
@@ -3547,6 +3547,7 @@
           <EntitySet Name="Flw_MemberCard_Exit" EntityType="XCCloudDBModel.Flw_MemberCard_Exit" />
           <EntitySet Name="Log_GameAlarm" EntityType="XCCloudDBModel.Log_GameAlarm" />
           <EntitySet Name="Flw_MemberCard_LevelChange" EntityType="XCCloudDBModel.Flw_MemberCard_LevelChange" />
+          <EntitySet Name="Search_Template_Detail" EntityType="XCCloudDBModel.Search_Template_Detail" />
         </EntityContainer>
         <EntityType Name="Base_ChainRule_Store">
           <Key>
@@ -4986,20 +4987,6 @@
           <Property Name="UserID" Type="Int32" />
           <Property Name="PageName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="ProcessName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-        </EntityType>
-        <EntityType Name="Search_Template_Detail">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="TempID" Type="Int32" />
-          <Property Name="FieldName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Datatype" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Width" Type="Int32" />
-          <Property Name="ShowColume" Type="Int32" />
-          <Property Name="ShowSearch" Type="Int32" />
-          <Property Name="DictID" Type="Int32" />
         </EntityType>
         <EntityType Name="Store_GameTotal">
           <Key>
@@ -6494,6 +6481,21 @@
           <Property Name="CheckDate" Type="DateTime" Precision="0" />
           <Property Name="Note" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
           <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Search_Template_Detail">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TempID" Type="Int32" />
+          <Property Name="FieldName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Datatype" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Condition" Type="Int32" />
+          <Property Name="Width" Type="Int32" />
+          <Property Name="ShowColume" Type="Int32" />
+          <Property Name="ShowSearch" Type="Int32" />
+          <Property Name="DictID" Type="Int32" />
         </EntityType>
         </Schema>
     </edmx:ConceptualModels>
@@ -8036,21 +8038,6 @@
                 <ScalarProperty Name="ProcessName" ColumnName="ProcessName" />
                 <ScalarProperty Name="PageName" ColumnName="PageName" />
                 <ScalarProperty Name="UserID" ColumnName="UserID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Search_Template_Detail">
-            <EntityTypeMapping TypeName="XCCloudDBModel.Search_Template_Detail">
-              <MappingFragment StoreEntitySet="Search_Template_Detail">
-                <ScalarProperty Name="DictID" ColumnName="DictID" />
-                <ScalarProperty Name="ShowSearch" ColumnName="ShowSearch" />
-                <ScalarProperty Name="ShowColume" ColumnName="ShowColume" />
-                <ScalarProperty Name="Width" ColumnName="Width" />
-                <ScalarProperty Name="Datatype" ColumnName="Datatype" />
-                <ScalarProperty Name="Title" ColumnName="Title" />
-                <ScalarProperty Name="FieldName" ColumnName="FieldName" />
-                <ScalarProperty Name="TempID" ColumnName="TempID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -9621,6 +9608,22 @@
                 <ScalarProperty Name="MemberID" ColumnName="MemberID" />
                 <ScalarProperty Name="StoreID" ColumnName="StoreID" />
                 <ScalarProperty Name="MerchID" ColumnName="MerchID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Search_Template_Detail">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Search_Template_Detail">
+              <MappingFragment StoreEntitySet="Search_Template_Detail">
+                <ScalarProperty Name="DictID" ColumnName="DictID" />
+                <ScalarProperty Name="ShowSearch" ColumnName="ShowSearch" />
+                <ScalarProperty Name="ShowColume" ColumnName="ShowColume" />
+                <ScalarProperty Name="Width" ColumnName="Width" />
+                <ScalarProperty Name="Condition" ColumnName="Condition" />
+                <ScalarProperty Name="Datatype" ColumnName="Datatype" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="FieldName" ColumnName="FieldName" />
+                <ScalarProperty Name="TempID" ColumnName="TempID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>

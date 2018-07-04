@@ -19,6 +19,7 @@ namespace XCCloudService.Model.XCCloud
         public string FieldName { get; set; }
         public string Title { get; set; }
         public string Datatype { get; set; }
+        public Nullable<int> Condition { get; set; }
         public Nullable<int> Width { get; set; }
         public Nullable<int> ShowColume { get; set; }
         public Nullable<int> ShowSearch { get; set; }

@@ -45,7 +45,7 @@ namespace XXCloudService.Api.XCCloud
                 if (!errMsg.IsNull())
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-                var data_GameInfo = from a in Data_GameInfoService.N.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase) && p.State == 1)
+                var data_GameInfo = from a in Data_GameInfoService.N.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase))
                                     join b in Dict_SystemService.N.GetModels() on a.GameType equals b.ID into b1
                                     from b in b1.DefaultIfEmpty()
                                     join c in Data_GameInfo_ExtService.N.GetModels(p => p.ValidFlag == 1) on a.ID equals c.GameID into c1
@@ -835,8 +835,8 @@ namespace XXCloudService.Api.XCCloud
                 }
 
                 var data_GameInfo = data_GameInfoService.GetModels(p => p.ID == iId).FirstOrDefault();
-                data_GameInfo.State = 0;
-                if (!data_GameInfoService.Update(data_GameInfo))
+                //data_GameInfo.State = 0;
+                if (!data_GameInfoService.Delete(data_GameInfo))
                 {
                     errMsg = "删除游戏机信息失败";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);

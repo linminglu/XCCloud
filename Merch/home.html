@@ -3,93 +3,141 @@
 <head>
     <meta charset="utf-8">
     <title>商户后台主页</title>
-    <link rel="shortcut  icon" type="image/x-icon" href="images/xinchen.ico" media="screen"  />
-    <!--<link rel="stylesheet" href="layui/font">-->
+    <link rel="shortcut  icon" type="image/x-icon" href="images/xinchen.ico" media="screen"/>
     <link rel="stylesheet" href="layui/css/layui.css" media="all">
-    <link rel="stylesheet" href="css/xinChen.css">
+    <link rel="stylesheet" href="css/myxc.css">
+    <script src="js/jquery-1.8.3-min.js"></script>
+    <script src="https://img.hcharts.cn/highcharts/highcharts.js"></script>
+    <script src="https://img.hcharts.cn/highcharts/modules/exporting.js"></script>
+    <script src="https://img.hcharts.cn/highcharts-plugins/highcharts-zh_CN.js"></script>
+    <!--<script src="https://img.hcharts.cn/highcharts/themes/dark-unica.js"></script>-->
 </head>
 <body>
-<!--<div class="layui-carousel" id="test1">-->
-    <!--<div carousel-item>-->
-        <div class="layui-row" style="padding: 15px;background-color: #f1f1f1">
-            <div class="layui-col-lg4 layui-col-md6 layui-col-sm12" id="loopContainer" style="padding:0 10px;">
-                <div class="layui-card" style="margin-bottom: 15px;">
-                    <div class="layui-card-header">今日营收总览</div>
-                    <div class="layui-card-body">
-                        <div id="news" >
-                            <ul>
-                                <li><span class="sellTime"></span><span class="sellValue"></span></li>
-                                <li><span class="sellTime"></span><span class="sellValue"></span></li>
-                                <li><span class="sellTime">当前已完成：</span><span class="sellValue"></span></li>
-                            </ul>
-                        </div>
-                        <div id="loop" style="min-width:350px;height: 350px">
+<div class="layui-row settingPage xc-home">
+    <div class="layui-col-lg12 layui-col-md12 layui-col-sm12" >
+        <div class="layui-col-md3 xc-title" >
+            <div class="layui-card">
+                <div class="layui-card-body">
+                    <div class="xc-title-img">
+                        <img src="asset/member.png" alt="会员">
+                    </div>
 
-                        </div>
+                    <div class="xc-title-text">
+                        <span>新增会员(人)</span>
+                        <span>299</span>
                     </div>
                 </div>
-            </div >
-            <div class="layui-col-lg4 layui-col-md6 layui-col-sm12" style="padding:0 10px;">
-                <div class="layui-card" style="margin-bottom: 15px;">
-                    <div class="layui-card-header">今日营收分析</div>
-                    <div class="layui-card-body">
-                        <div id="circle" style="min-width:400px;height: 350px"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="layui-col-lg4 layui-col-md12 layui-col-sm12" style="padding:0 10px;">
-                <div class="layui-card" style="margin-bottom: 15px;">
-                    <div class="layui-card-header">吧台营收</div>
-                    <div class="layui-card-body">
-                        <div id="histogram" style="min-width:350px;height: 350px"class="homeChart"></div>
-                    </div>
-                </div>
-            </div>
-        <!--</div>-->
-        <!--<div class="layui-row" style="padding: 15px;background-color: #f1f1f1">-->
-            <div class="layui-col-lg6 layui-col-md12 layui-col-sm12" style="padding:0 10px;">
-                <div class="layui-card" style="margin-bottom: 15px;">
-                    <div class="layui-card-header">客流量分析</div>
-                    <div class="layui-card-body">
-                        <div id="homeLine" style="min-width:400px;"class="homeChart">
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-            <div class="layui-col-md12 layui-col-lg6 layui-col-sm12" style="padding:0 10px;">
-                <div class="layui-card" style="margin-bottom: 15px;">
-                    <div class="layui-card-header">游戏机台盈亏排行</div>
-                    <div class="layui-card-body">
-                        <div id="profitLoss" style="min-width:350px;"class="homeChart"></div>
-                    </div>
-                </div>
-
             </div>
         </div>
-    <!--</div>-->
-<!--</div>-->
-<!-- 条目中可以是任意内容，如：<img src=""> -->
+        <div class="layui-col-md3 xc-title" >
+            <div class="layui-card">
+                <div class="layui-card-body">
+                    <div class="xc-title-img">
+                        <img src="asset/money.png" alt="今日收入">
+                    </div>
+
+                    <div class="xc-title-text">
+                        <span>今日收入</span>
+                        <span>￥5588.00</span>
+                    </div></div>
+            </div>
+        </div>
+        <div class="layui-col-md3 xc-title" >
+            <div class="layui-card">
+                <div class="layui-card-body">
+                    <div class="xc-title-img">
+                        <img src="asset/coin.png" alt="币消耗">
+                    </div>
+                    <div class="xc-title-text">
+                        <span>币消耗</span>
+                        <span>4999</span>
+                    </div></div>
+            </div>
+        </div>
+        <div class="layui-col-md3 xc-title" >
+            <div class="layui-card">
+                <div class="layui-card-body">
+                    <div class="xc-title-img">
+                        <img src="asset/internet.png" alt="网络渠道收入">
+                    </div>
+
+                    <div class="xc-title-text">
+                        <span>网络渠道收入</span>
+                        <span>3999.00</span>
+                    </div></div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="layui-col-lg12 layui-col-md12 layui-col-sm12" >
+
+        <div class="layui-col-lg6 layui-col-md6 layui-col-sm12 xc-pad-right" >
+            <div class="layui-card" >
+                <div class="layui-card-header">游戏机台盈亏排行</div>
+                <div class="layui-card-body" style="height: 260px">
+                    <div id="container" style="min-width:400px;height: 250px"></div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-lg6 layui-col-md6 layui-col-sm12 xc-pad-right" >
+            <div class="layui-card">
+                <div class="layui-card-header">今日营收总览</div>
+                <div class="layui-card-body" style="height: 260px">
+                    <div class="layui-col-md12 layui-col-sm12 layui-col-xs12">
+                        <div class="layui-col-md4 layui-col-sm4 layui-col-xs4" style="text-align: center;padding-top: 25px">
+                            <canvas id="allPresent" width="150" height="150"></canvas>
+                            <div>营收总额任务百分比</div>
+                        </div>
+                        <div class="layui-col-md4 layui-col-sm4 layui-col-xs4" style="text-align: center;padding-top: 25px">
+                            <canvas id="coinPresent" width="150" height="150"></canvas>
+                            <div>代币营收总额占比</div>
+                        </div>
+                        <div class="layui-col-md4 layui-col-sm4 layui-col-xs4" style="text-align: center;padding-top: 25px">
+                            <canvas id="tiacketPresent" width="150" height="150"></canvas>
+                            <div>门票营收总额占比</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="layui-col-lg12 layui-col-md12 layui-col-sm12" >
+
+        <div class="layui-col-lg8 layui-col-md8 layui-col-sm8 xc-pad-right" >
+            <div class="layui-card" style="margin-bottom: 15px;">
+                <div class="layui-card-header">客流量分析</div>
+                <div class="layui-card-body">
+                    <div id="homeLine" style="min-width:400px;min-height: 300px" class="homeChart">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="layui-col-md4 layui-col-lg4 layui-col-sm4 xc-pad-right" >
+            <div class="layui-card" style="margin-bottom: 15px;">
+                <div class="layui-card-header">游戏机台盈亏排行</div>
+                <div class="layui-card-body">
+                    <div id="profitLoss" style="min-width:350px;min-height: 300px" class="homeChart"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+</div>
 
 <script src="layui/layui.js"></script>
-<script>
-    // layui.use('carousel', function(){
-    //     var carousel = layui.carousel;
-    //     //建造实例
-    //     carousel.render({
-    //         elem: '#test1'
-    //         ,width: '100%' //设置容器宽度
-    //         ,height:'800px'
-    //         ,arrow: 'always' //始终显示箭头
-    //         //,anim: 'updown' //切换动画方式
-    //     });
-    // });
-</script>
-<script src="js/jquery-1.8.3-min.js"></script>
-<script src="js/heightCharts.js"></script>
-<script src="js/hchart-more.js"></script>
-<script src="js/solid-gauge.js"></script>
-<script src="js/hChart3D.js"></script>
+<!--<script src="js/heightCharts.js"></script>-->
+<!--<script src="js/hchart-more.js"></script>-->
+<!--<script src="js/solid-gauge.js"></script>-->
+<!--<script src="js/hChart3D.js"></script>-->
 <script src="js/home.js"></script>
+<script>
+    drawCricle('allPresent','0.58','58%','#ff774e');
+    drawCricle('coinPresent','0.75','75%','#a4ebd9');
+    drawCricle('tiacketPresent','0.28','28%','#e169be');
+</script>
 </body>
 </html>

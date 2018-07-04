@@ -1,0 +1,219 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>莘拍档</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="css/ydui.rem.css">
+    <!-- 引入rem自适应类库 -->
+    <script src="js/ydui.flexible.js"></script>
+    <style>
+        .yd-list-img{display: none;}
+        .itemCenter{font-size: 0.3rem;text-align: center;}
+        .list-price{color: #555555;margin: 0.2rem 0;}
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div id="app" v-cloak>
+    <yd-infinitescroll :callback="loadList" ref="infinitescrollDemo">
+        <yd-list theme="4" slot="list">
+            <yd-list-item v-for="item, key in billList" :key="key">
+                <yd-list-other slot="other">
+                    <div>{{item.other_info}}</div>
+                    <div class="itemCenter">
+                        <p class="list-price">{{item.type}}</p>
+                        <p class="list-del-price">{{item.RealTimes}}</p>
+                    </div>
+                    <div>
+                        <div class='section_T'>
+                            <p class='section_Tc'>{{item.used_coins}}</p>
+                            <p class='section_Tc'>{{item.save_coins}}</p>
+                        </div>
+                        <p>币余额：{{item.now_coins}}</p>
+                    </div>
+                </yd-list-other>
+            </yd-list-item>
+        </yd-list>
+
+        <!-- 数据全部加载完毕显示 -->
+        <span slot="doneTip">啦啦啦，啦啦啦，没有数据啦~~</span>
+
+        <!-- 加载中提示，不指定，将显示默认加载中图标 -->
+        <img slot="loadingTip" src="http://static.ydcss.com/uploads/ydui/loading/loading10.svg"/>
+
+    </yd-infinitescroll>
+</div>
+
+<!-- 引入 Vue -->
+<script src="js/vue.js"></script>
+<script src="js/jquery-1.8.3-min.js"></script>
+<!-- 引入组件库 -->
+<script src="js/ydui.rem.js"></script>
+<script src="js/axios.min.js"></script>
+<script>
+    var sysId = 0; //调用方应用Id
+    var versionNo= "0.89"; //版本号
+    var htmlfnc = new Vue({
+        el: '#app',
+        data:{
+            billList: [],
+            listPage: 0,
+            pageIndex:0
+        },
+        mounted: function () {
+            this.Load()
+        },
+        methods: {
+            Load:function () {
+                var that =this;
+                var billListmemberToken = getStorage("billListmemberToken");
+                console.log(billListmemberToken);
+                this.$dialog.loading.open('');
+                var obj={
+                    sysId: sysId,
+                    versionNo: versionNo,
+                    memberToken: billListmemberToken,
+                    pageIndex: "0"
+                };
+                axios.post('/XCGame/Member?action=getMemberCardBill', obj).then(function (res) {
+                    that.$dialog.loading.close();
+                    that.msgPrompt(res.data);
+                    console.log(res.data);
+                    if (res.data.result_code === '1') {
+                        var billListData = [];
+                        for (var i = 0; i < res.data.result_data.Lists.length; i++) {
+                            if (res.data.result_data.Lists[i].save_coins == "0") {
+                                res.data.result_data.Lists[i].save_coins =""
+                            }else{
+                                res.data.result_data.Lists[i].save_coins = "+" + res.data.result_data.Lists[i].save_coins
+                            }
+                            if (res.data.result_data.Lists[i].used_coins == "0") {
+                                res.data.result_data.Lists[i].used_coins = ""
+                            } else {
+                                res.data.result_data.Lists[i].used_coins = "-" + res.data.result_data.Lists[i].used_coins
+                            }
+                            billListData.push({
+                                ICCardID: res.data.result_data.Lists[i].ICCardID,
+                                NO: res.data.result_data.Lists[i].NO,
+                                RealTimes: res.data.result_data.Lists[i].RealTimes,
+                                other_info: res.data.result_data.Lists[i].other_info,
+                                save_coins: res.data.result_data.Lists[i].save_coins,
+                                type: res.data.result_data.Lists[i].type,
+                                now_coins: res.data.result_data.Lists[i].now_coins,
+                                used_coins: res.data.result_data.Lists[i].used_coins,
+                                last_coins: res.data.result_data.Lists[i].last_coins
+                            })
+                        }
+                        that.billList = billListData;
+                        that.listPage = res.data.result_data.Page-1;
+                    }
+                }).catch(function (err) {
+                    that.$dialog.loading.close();
+                    console.log(err);
+                })
+            },
+            loadList:function () {
+                var that = this;
+                var billListmemberToken = getStorage("billListmemberToken");
+                console.log(that.pageIndex);
+                if (that.pageIndex <that.listPage){
+                    var pageIndex = that.pageIndex + 1;
+                    that.pageIndex =pageIndex;
+                    this.$dialog.loading.open('');
+                    var obj={
+                        sysId: sysId,
+                        versionNo: versionNo,
+                        memberToken: billListmemberToken,
+                        pageIndex: pageIndex
+                    };
+                    axios.post('/XCGame/Member?action=getMemberCardBill', obj).then(function (res) {
+                        that.$dialog.loading.close();
+                        that.msgPrompt(res.data);
+                        console.log(res.data);
+                        if (res.data.result_code === '1') {
+                            var newData= that.billList;
+                            for (var i = 0; i < res.data.result_data.Lists.length; i++) {
+                                if (res.data.result_data.Lists[i].save_coins == "0") {
+                                    res.data.result_data.Lists[i].save_coins =""
+                                }else{
+                                    res.data.result_data.Lists[i].save_coins = "+" + res.data.result_data.Lists[i].save_coins
+                                }
+                                if (res.data.result_data.Lists[i].used_coins == "0") {
+                                    res.data.result_data.Lists[i].used_coins = ""
+                                } else {
+                                    res.data.result_data.Lists[i].used_coins = "-" + res.data.result_data.Lists[i].used_coins
+                                }
+                                newData.push({
+                                    ICCardID: res.data.result_data.Lists[i].ICCardID,
+                                    NO: res.data.result_data.Lists[i].NO,
+                                    RealTimes: res.data.result_data.Lists[i].RealTimes,
+                                    other_info: res.data.result_data.Lists[i].other_info,
+                                    save_coins: res.data.result_data.Lists[i].save_coins,
+                                    type: res.data.result_data.Lists[i].type,
+                                    now_coins: res.data.result_data.Lists[i].now_coins,
+                                    used_coins: res.data.result_data.Lists[i].used_coins,
+                                    last_coins: res.data.result_data.Lists[i].last_coins
+                                })
+                            }
+                            that.billList = newData;
+                            that.listPage = res.data.result_data.Page-1;
+                            that.$refs.infinitescrollDemo.$emit('ydui.infinitescroll.reInit');
+                        }
+                    }).catch(function (err) {
+                        that.$dialog.loading.close();
+                        console.log(err);
+                    })
+                }else {
+                    this.$refs.infinitescrollDemo.$emit('ydui.infinitescroll.loadedDone');
+                }
+
+            },
+            msgPrompt:function (res) {
+                if(res.return_code == 0){
+                    this.$dialog.toast({
+                        mes: res.return_msg,
+                        timeout: 1500,
+                        icon: 'error'
+                    });
+                }else if(res.result_code == 0){
+                    this.$dialog.toast({
+                        mes: res.result_msg,
+                        timeout: 1500,
+                        icon: 'error'
+                    });
+                }
+            }
+        }
+    });
+    //存储session
+    function setStorage(key,value) {
+        if(window.localStorage){
+            value = JSON.stringify(value); //转化为JSON字符串
+            var storage=window.localStorage;
+            storage.setItem(key,value);
+        }
+    }
+    //删除session
+    function removeStorage(key) {
+        if(window.localStorage){
+            var storage=window.localStorage;
+            storage.removeItem(key);
+        }
+    }
+    //获取session
+    function getStorage(key) {
+        if(window.localStorage){
+            value = JSON.parse(localStorage.getItem(key));
+            return value;
+        }
+    }
+
+</script>
+</body>
+</html>

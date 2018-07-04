@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>iview example</title>
+</head>
+<body>
+<div id="app">
+	<input type="text" v-model="inputValue" @keyup.enter="inputEnter(this)">
+	<button @click="handleSubmit">提交</button>
+	<ul>
+		<list v-for="(item,index) in testList" :key="index" :content="item" :index="index" @delete="handleDelete"></list>
+	</ul>
+</div>
+<script src="js/vue.js"></script>
+<script>
+//    var code = "";
+//    window.onload = function(e){
+//
+//        var lastTime,nextTime;
+//        var lastCode,nextCode;
+//        document.onkeypress = function(e) {
+//            nextCode = e.which;
+//            nextTime = new Date().getTime();
+//            if(lastCode == null && lastTime == null) {
+//                // 此处应该怎么判断
+//            }
+//            if(lastCode != null && lastTime != null && nextTime - lastTime <= 30) {
+//                code += String.fromCharCode(nextCode);
+//            } else if(lastCode != null && lastTime != null && nextTime - lastTime > 100){
+//                code = "";
+//            }
+//            lastCode = nextCode;
+//            lastTime = nextTime;
+//        };
+////        this.onkeypress = function(e){
+////            if(e.which == 13){
+////                console.log(code);
+////                code = "";
+////            }
+////        }
+//    };
+    Vue.component('list', {
+        props:["content","index"],
+        template:"<li @click='handleClick'>{{content}}</li>",
+		methods:{
+            handleClick:function () {
+				this.$emit("delete",this.index)
+            }
+		}
+    });
+    new Vue({
+        el: '#app',
+        data: {
+            inputValue:"",
+            testList:[],
+            code:""
+        },
+		mounted:function () {
+			this.loading()
+        },
+        methods: {
+            loading:function () {
+                var that = this;
+                var lastTime,nextTime;
+				var lastCode,nextCode;
+				document.onkeypress = function(e) {
+					nextCode = e.which;
+					nextTime = new Date().getTime();
+					if(lastCode == null && lastTime == null) {
+						// 此处应该怎么判断
+					}
+					if(lastCode != null && lastTime != null && nextTime - lastTime <= 30) {
+                        that.code += String.fromCharCode(nextCode);
+					} else if(lastCode != null && lastTime != null && nextTime - lastTime > 100){
+                        that.code = "";
+					}
+					lastCode = nextCode;
+					lastTime = nextTime;
+				};
+            },
+            handleSubmit:function () {
+				this.testList.push(this.inputValue);
+				this.inputValue = "";
+            },
+            handleDelete:function (index) {
+                this.testList.splice(index,1)
+            },
+            inputEnter:function () {
+                console.log(this.code)
+            }
+        }
+    })
+</script>
+</body>
+</html>

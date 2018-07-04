@@ -126,7 +126,6 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Flw_Ticket_Exit> Flw_Ticket_Exit { get; set; }
         public virtual DbSet<Log_Operation> Log_Operation { get; set; }
         public virtual DbSet<Search_Template> Search_Template { get; set; }
-        public virtual DbSet<Search_Template_Detail> Search_Template_Detail { get; set; }
         public virtual DbSet<Store_GameTotal> Store_GameTotal { get; set; }
         public virtual DbSet<Store_HeadTotal> Store_HeadTotal { get; set; }
         public virtual DbSet<XC_WorkInfo> XC_WorkInfo { get; set; }
@@ -203,5 +202,6 @@ namespace XCCloudService.Model.XCCloud
         public virtual DbSet<Flw_MemberCard_Exit> Flw_MemberCard_Exit { get; set; }
         public virtual DbSet<Log_GameAlarm> Log_GameAlarm { get; set; }
         public virtual DbSet<Flw_MemberCard_LevelChange> Flw_MemberCard_LevelChange { get; set; }
+        public virtual DbSet<Search_Template_Detail> Search_Template_Detail { get; set; }
     }
 }

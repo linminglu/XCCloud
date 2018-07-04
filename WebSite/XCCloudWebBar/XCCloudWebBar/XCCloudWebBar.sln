@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30501.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XCCloudWebBar", "XCCloudWebBar\XCCloudWebBar.csproj", "{0154B072-18AD-4F99-A0A9-73A078EA4234}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XCCloudWebBarAPI", "XCCloudWebBarAPI\XCCloudWebBarAPI.csproj", "{0426FB45-13FA-4416-B863-C46099693ECE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XCCloudWebBar.Common", "F:\XXCloud\XCCloudService.Common\XCCloudWebBar.Common.csproj", "{ADCE73D3-04FF-4D98-846F-C8026A3B6396}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0154B072-18AD-4F99-A0A9-73A078EA4234}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0154B072-18AD-4F99-A0A9-73A078EA4234}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0154B072-18AD-4F99-A0A9-73A078EA4234}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0154B072-18AD-4F99-A0A9-73A078EA4234}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0426FB45-13FA-4416-B863-C46099693ECE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0426FB45-13FA-4416-B863-C46099693ECE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0426FB45-13FA-4416-B863-C46099693ECE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0426FB45-13FA-4416-B863-C46099693ECE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ADCE73D3-04FF-4D98-846F-C8026A3B6396}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ADCE73D3-04FF-4D98-846F-C8026A3B6396}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ADCE73D3-04FF-4D98-846F-C8026A3B6396}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ADCE73D3-04FF-4D98-846F-C8026A3B6396}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

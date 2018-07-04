@@ -3193,7 +3193,6 @@ namespace XCCloudService.Api.XCCloud
                 //更新余额
                 using (TransactionScope ts = new TransactionScope(TransactionScopeOption.RequiresNew))
                 {
-                    decimal? sourceCount = sourceBalance.Balance;
                     //源余额减少
                     sourceBalance.Balance -= iExchangeQty;
                     if (!Data_Card_BalanceService.I.Update(sourceBalance, false))
@@ -3201,7 +3200,6 @@ namespace XCCloudService.Api.XCCloud
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "操作失败，扣除余额不成功");
                     }
 
-                    decimal? targetCount = targetBalance.Balance;
                     //目标余额增加
                     targetBalance.Balance += exchangeVal;
                     if (!Data_Card_BalanceService.I.Update(targetBalance, false))
@@ -3215,10 +3213,10 @@ namespace XCCloudService.Api.XCCloud
                     change.StoreID = storeId;
                     change.MemberID = currCard.MemberID;
                     change.SourceBalanceIndex = sourceBalance.BalanceIndex;
-                    change.SourceCount = sourceCount;
+                    change.SourceCount = iExchangeQty;
                     change.SourceRemain = sourceBalance.Balance;
                     change.TargetBalanceIndex = targetBalance.BalanceIndex;
-                    change.TargetCount = targetCount;
+                    change.TargetCount = exchangeVal;
                     change.TargetRemain = targetBalance.Balance;
                     change.OpTime = DateTime.Now;
                     change.OpUserID = userId;
@@ -4101,7 +4099,7 @@ namespace XCCloudService.Api.XCCloud
                                 };
 
             //预赠币详情，剩余可领次数大于0，并且当前时间距离最后领取时间大于间隔时间，并且过期时间大于当前时间
-            var freeQuery = freeTempQuery.Where(t => t.Remain > 0 && (t.RealTime.HasValue && t.RealTime.Value.AddDays(t.MinSpaceDays.Value) <= now) && t.EndDate > now).ToList();
+            var freeQuery = freeTempQuery.Where(t => t.Remain > 0 && (t.RealTime.HasValue && t.RealTime.Value.AddDays(t.MinSpaceDays.Value) <= now) && t.EndDate >= now).ToList();
 
             //赠币集合
             List<MemberFreeModel> list = new List<MemberFreeModel>();
@@ -4118,6 +4116,7 @@ namespace XCCloudService.Api.XCCloud
                 mf.FreeId = item.Id;
                 mf.Title = "消费预赠币";
                 mf.FreeCoinName = item.OnceFreeCount + balanceTypeModel.Unit;
+                mf.BalanceName = balanceTypeModel.TypeName;
                 mf.Content = string.Format("单笔消费满{0}元送{1}{2}，每次间隔{3}天，共分{4}次领", item.ChargeTotal, item.FreeCount, balanceTypeModel.TypeName, item.MinSpaceDays, canGetCount);
                 mf.RemainCount = item.Remain.Value;
                 mf.RemainFrees = (item.Remain.Value * item.OnceFreeCount.Value).ToString() + balanceTypeModel.Unit;
@@ -4290,6 +4289,7 @@ namespace XCCloudService.Api.XCCloud
                         mf.FreeId = level.MemberLevelID.ToString();
                         mf.Title = "输赢送币";
                         mf.FreeCoinName = level.FreeCoin + balanceTypeModel.TypeName;
+                        mf.BalanceName = balanceTypeModel.TypeName;
                         mf.Content = string.Format("上一营业日{0}{1}{2}送{3}", freeType, needQty, balanceTypeModel.TypeName, mf.FreeCoinName);
                         mf.EndDate = now.ToString("yyyy-MM-dd");
                         FreeDetailModel detail = new FreeDetailModel();

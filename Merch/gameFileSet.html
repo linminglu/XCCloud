@@ -985,8 +985,7 @@
     xc.getInitData(parm);
     let id = '';
 
-    //    余额类别
-    let balanceData = [];
+
 
 
     //简易模式参数
@@ -1160,6 +1159,12 @@
 
     let index5, index4;
     let memberLevelList = [];
+    //    余额类别
+    let balanceData = [];
+
+    let arrGameType=[];
+    let arrArea=[];
+    let arrDepot=[];
 
     function setTransferLevel(arr, form, id, name) {
         if (arr.length == 0) {
@@ -1185,6 +1190,7 @@
         let layer = layui.layer;
         let table = layui.table;
         let laydate = layui.laydate;
+
         //用户余额类别
         let __obj = {'hkType': '', 'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'};
         let _parseJson = JSON.stringify(__obj);
@@ -1193,21 +1199,17 @@
             url: '/XCCloud/BalanceType?action=GetBalanceTypeDic',
             contentType: "application/json; charset=utf-8",
             data: {parasJson: _parseJson},
-            anysc: false,
+            async: false,
             success: function (data) {
                 data = JSON.parse(data);
                 if (data.result_code == 1) {
                     balanceData = data.result_data;
-                    setBal(balanceData, form, 'PushBalanceIndex1');
-                    setBal(balanceData, form, 'PushBalanceIndex11');
-                    setBal(balanceData, form, 'PushBalanceIndex2');
-                    setBal(balanceData, form, 'OutBalanceIndex');
-                    setBal(balanceData, form, 'BalanceIndex1');
-                    setBal(balanceData, form, 'BalanceIndex2');
-
-                    // xc.getMemberTypeDic(token,layer,form,'memberLevelId');
-                    // xc.getBalanceTypeDic ('',token,layer,form,'BalanceIndex1');
-                    // xc.getBalanceTypeDic('',token,layer,form,'BalanceIndex2');
+                    // setBal(balanceData, form, 'PushBalanceIndex1');
+                    // setBal(balanceData, form, 'PushBalanceIndex11');
+                    // setBal(balanceData, form, 'PushBalanceIndex2');
+                    // setBal(balanceData, form, 'OutBalanceIndex');
+                    // setBal(balanceData, form, 'BalanceIndex1');
+                    // setBal(balanceData, form, 'BalanceIndex2');
                 } else {
                     layer.msg(data.result_msg);
                 }
@@ -1227,13 +1229,14 @@
             url: "/XCCloud/Dictionary?action=GetNodes",
             contentType: "application/json; charset=utf-8",
             data: {parasJson: parasJson1},
+            async:false,
             success: function (data) {
                 data = JSON.parse(data);
                 console.log(data);
                 if (data.result_code == "1") {
-                    var arr = data.result_data.children;
-                    setGameType(arr, form, 'GameType');
-                    setGameType(arr, form, 'GameTypeLow');
+                    arrGameType = data.result_data.children;
+                    // setGameType(arrGameType, form, 'GameType');
+                    // setGameType(arrGameType, form, 'GameTypeLow');
                 } else {
                     layer.msg(data.result_msg || data.return_msg);
 
@@ -1247,14 +1250,14 @@
             url: '/XCCloud/Member?action=GetMemberLevelDic',
             contentType: "application/json; charset=utf-8",
             data: {parasJson: parseJsonMem},
-            anysc: false,
+            async: false,
             success: function (data) {
                 data = JSON.parse(data);
                 console.log(data);
                 if (data.result_code == 1) {
                     memberLevelList = data.result_data;
-                    setTransferLevel(memberLevelList, form, 'memberLevels');
-                    setTransferLevel(memberLevelList, form, 'memberLevelId');
+                    // setTransferLevel(memberLevelList, form, 'memberLevels');
+                    // setTransferLevel(memberLevelList, form, 'memberLevelId');
                 } else {
                     layer.msg(data.result_msg || data.return_msg);
                 }
@@ -1270,12 +1273,13 @@
             url: '/XCCloud/GroupArea?action=QueryGroupArea',
             contentType: "application/json; charset=utf-8",
             data: {parasJson: parseJson2},
+            async:false,
             success: function (data) {
                 data = JSON.parse(data);
                 if (data.result_code == 1) {
-                    let arr = data.result_data;
-                    setArec(arr, form, 'AreaID');
-                    setArec(arr, form, 'AreaID1');
+                    arrArea= data.result_data;
+                    // setArec(arrArea, form, 'AreaID');
+                    // setArec(arrArea, form, 'AreaID1');
                 } else {
                     layer.msg(data.result_msg || data.return_msg);
                 }
@@ -1294,17 +1298,19 @@
             url: '/XCCloud/DepotInfo?action=GetDepotDic',
             contentType: "application/json; charset=utf-8",
             data: {parasJson: parseJson3},
+            async:false,
             success: function (data) {
                 data = JSON.parse(data);
                 if (data.result_code == 1) {
-                    let arr = data.result_data;
-                    setDepot(arr, form, 'eDepotID');
-                    setDepot(arr, form, 'DepotID');
+                    arrDepot = data.result_data;
+                    // setDepot(arrDepot, form, 'eDepotID');
+                    // setDepot(arrDepot, form, 'DepotID');
                 } else {
                     layer.msg(data.result_msg || data.return_msg);
                 }
             }
         });
+
 
         //正价币增加 或者减少一条
         $('#addCoin').on('click', function () {
@@ -1560,13 +1566,7 @@
         form.on('select(SecondSpeed)', (data) => {
             data.value=='-请选择-'?SecondSpeed='': SecondSpeed = data.value;
         });
-        // form.on('switch(AllowElecPush)', (data) => {
-        //     if (data.elem.checked == true) {
-        //         AllowElecPush = 1
-        //     } else {
-        //         AllowElecPush = 0
-        //     }
-        // });
+
         form.on('switch(AllowRealOut)', (data) => {
             if (data.elem.checked == true) {
                 AllowRealOut = 1
@@ -1718,29 +1718,46 @@
             saveHigh(form, layer);
         });
         $('#addNew').click(function () {
-id='';
-             eAreaID='' ;ePushBalanceIndex1=''; eGameType='';
-                ePushLevel = 0; LotteryModeLow = 0; eOnlyExitLottery = 0;
-                eReadCat = 0;echkCheckGift = 0; StateLow = 1;
-             eDepotID = '';
-            //高级模式参数
-             AreaID1=''; State = 1; PushBalanceIndex11 = ' '; PushBalanceIndex2=''; GameType='';
-                OutBalanceIndex = ''; ReturnCheck = 0; OutsideAlertCheck = 0;
-                ICTicketOperation = 0; NotGiveBack = 0; LotteryMode = 0; OnlyExitLottery = 0;
-                chkCheckGift1 = 0; AllowElecPush = 0; GuardConvertCard = 0; ReadCat = 0;
-                AllowRealPush = 0; BanOccupy = 0; StrongGuardConvertCard = 0;
-                AllowElecOut = 0; NowExit = 0;BOLock = 0;BOPulse = 500; AllowRealOut = 0; BOKeep = 0;
-                PushSpeed = 35; PushPulse = 35; PushLevel = 0; PushStartInterval = 0;
-                UseSecondPush = 0; SecondSpeed = 150; SecondPulse = 200; SecondLevel = 0;
-                SecondStartInterval = 0;
-                OutSpeed = 35; OutMode = 0;
-                OutPulse = 35; CountLevel = 0; OutLevel = 0; ExceptOutTest = 0; ExceptOutSpeed = 45;
+        id='';
+        $('#hardForm')[0].reset();
+        $('#easyForm')[0].reset();
+            //  eAreaID='' ;ePushBalanceIndex1=''; eGameType='';
+            //     ePushLevel = 0; LotteryModeLow = 0; eOnlyExitLottery = 0;
+            //     eReadCat = 0;echkCheckGift = 0; StateLow = 1;
+            //  eDepotID = '';
+            // //高级模式参数
+            //  AreaID1=''; State = 1; PushBalanceIndex11 = ' '; PushBalanceIndex2=''; GameType='';
+            //     OutBalanceIndex = ''; ReturnCheck = 0; OutsideAlertCheck = 0;
+            //     ICTicketOperation = 0; NotGiveBack = 0; LotteryMode = 0; OnlyExitLottery = 0;
+            //     chkCheckGift1 = 0; AllowElecPush = 0; GuardConvertCard = 0; ReadCat = 0;
+            //     AllowRealPush = 0; BanOccupy = 0; StrongGuardConvertCard = 0;
+            //     AllowElecOut = 0; NowExit = 0;BOLock = 0;BOPulse = 500; AllowRealOut = 0; BOKeep = 0;
+            //     PushSpeed = 35; PushPulse = 35; PushLevel = 0; PushStartInterval = 0;
+            //     UseSecondPush = 0; SecondSpeed = 150; SecondPulse = 200; SecondLevel = 0;
+            //     SecondStartInterval = 0;
+            //     OutSpeed = 35; OutMode = 0;
+            //     OutPulse = 35; CountLevel = 0; OutLevel = 0; ExceptOutTest = 0; ExceptOutSpeed = 45;
              DepotID = '';
              FreeLotteryRules = [];
              memberLevelId = '';
              memberLevels = '';
              MemberLevelNames = '';
             $('.saveBox').css('display', 'inline-block');
+            xc.openEasy(layer);
+            setBal(balanceData, form, 'PushBalanceIndex1');
+            setBal(balanceData, form, 'PushBalanceIndex11');
+            setBal(balanceData, form, 'PushBalanceIndex2');
+            setBal(balanceData, form, 'OutBalanceIndex');
+            setBal(balanceData, form, 'BalanceIndex1');
+            setBal(balanceData, form, 'BalanceIndex2');
+            setGameType(arrGameType, form, 'GameType');
+            setGameType(arrGameType, form, 'GameTypeLow');
+            setTransferLevel(memberLevelList, form, 'memberLevels');
+            setTransferLevel(memberLevelList, form, 'memberLevelId');
+            setArec(arrArea, form, 'AreaID');
+            setArec(arrArea, form, 'AreaID1');
+            setDepot(arrDepot, form, 'eDepotID');
+            setDepot(arrDepot, form, 'DepotID');
             xc.getGameInfoByid('', token, form, layer, table);
 
         });
@@ -1779,10 +1796,7 @@ id='';
                                 title: '扫码优惠规则',
                                 type: 1,
                                 area: '800px',
-                                content: $('#codeSale'),
-                                cancel: function () {
-                                    location.reload()
-                                }
+                                content: $('#codeSale')
                             })
                         } else {
                             layer.msg(data.result_msg || data.return_msg)
@@ -1790,6 +1804,21 @@ id='';
                     }
                 })
             } else if (layEvent === 'edit') {
+                xc.openEasy(layer);
+                setBal(balanceData, form, 'PushBalanceIndex1');
+                setBal(balanceData, form, 'PushBalanceIndex11');
+                setBal(balanceData, form, 'PushBalanceIndex2');
+                setBal(balanceData, form, 'OutBalanceIndex');
+                setBal(balanceData, form, 'BalanceIndex1');
+                setBal(balanceData, form, 'BalanceIndex2');
+                setGameType(arrGameType, form, 'GameType');
+                setGameType(arrGameType, form, 'GameTypeLow');
+                setTransferLevel(memberLevelList, form, 'memberLevels');
+                setTransferLevel(memberLevelList, form, 'memberLevelId');
+                setArec(arrArea, form, 'AreaID');
+                setArec(arrArea, form, 'AreaID1');
+                setDepot(arrDepot, form, 'eDepotID');
+                setDepot(arrDepot, form, 'DepotID');
                 xc.getGameInfoByid(data.ID, token, form, layer, table);
                 $('.saveBox').css('display', 'inline-block');
             } else if (layEvent === 'del') {
@@ -2252,10 +2281,8 @@ id='';
             type: 1,
             title: '游戏机档案设置',
             area: '1030px',
-            content: $('#easyType'),
-            cancel:function () {
-                location.reload()
-            }
+            content: $('#easyType')
+
         })
     };
     xcActionSystem.prototype.openHigh = (layer) => {
@@ -2265,13 +2292,12 @@ id='';
             type: 1,
             title: '游戏机档案设置',
             area: '1060px',
-            content: $('#highType'),
-            cancel:function () {
-                location.reload()
-            }
+            content: $('#highType')
+
         })
     };
     xcActionSystem.prototype.getGameInfoByid = (id, tokens, form, layer, table) => {
+        // xc.openEasy(layer);
         let _obj = {'id': id, 'userToken': tokens, 'signkey': '1f626576304bf5d95b72ece2222e42c3'};
         let url = '/XCCloud/GameInfo?action=GetGameInfo';
         let parasJson = JSON.stringify(_obj);
@@ -2280,6 +2306,7 @@ id='';
             url: url,
             contentType: "application/json; charset=utf-8",
             data: {parasJson: parasJson},
+            // async:false,
             success: function (data) {
                 data = JSON.parse(data);
                 console.log(data);
@@ -2346,6 +2373,7 @@ id='';
                     // xc.getDepotDic('',storeId,token,layer,form,'DepotID',arr[4].value);
                     eDepotID = arr[4].value;
                     DepotID = arr[4].value;
+                    form.render();
                     form.val("hardForm", {
                         'GameId2': arr[1].value,
                         'DepotID': arr[4].value,
@@ -2469,7 +2497,7 @@ id='';
                     eGameType = arr[7].value;
                     FreeLotteryRules = arr[69].value;
                     newMemberElec(table, arr[69].value)
-                    xc.openEasy(layer);
+
                     form.render();
                 }
             }
@@ -2530,10 +2558,7 @@ id='';
                             title: '会员扫码优惠',
                             type: 1,
                             area: '1100px',
-                            content: $('#memberCodeSetModel'),
-                            cancel:function () {
-                                location.reload()
-                            }
+                            content: $('#memberCodeSetModel')
                         })
                     }
 

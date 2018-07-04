@@ -2790,7 +2790,8 @@ a cite {
 
 .layui-table th {
     text-align: left;
-    font-weight: 400
+    font-weight: 550;
+    color:#333;
 }
 
 .layui-table tbody tr:hover,.layui-table thead tr,.layui-table-click,.layui-table-header,.layui-table-hover,.layui-table-mend,.layui-table-patch,.layui-table-tool,.layui-table[lay-even] tr:nth-child(even) {
@@ -3711,7 +3712,7 @@ body .layui-table-tips .layui-layer-content {
 }
 
 .layui-tab-card>.layui-tab-title {
-    background-color: #f2f2f2
+    background-color: #d9dcde
 }
 
 .layui-tab-card>.layui-tab-title li {

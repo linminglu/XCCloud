@@ -1,0 +1,119 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>莘拍档</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="css/ydui.rem.css">
+    <!-- 引入rem自适应类库 -->
+    <style>
+        .qrcode{width: 5rem;height: auto;margin: 0 auto;padding-top: 2rem;text-align: center;}
+        .qrcode img{width: 5rem;height: 5rem;}
+        .qrcode p{color: #ff3030;margin-top: 0.5rem;font-size: 0.25rem;}
+        .qrcode a{color: #1E90FF;font-size: 0.3rem;border-bottom: 0.01rem solid #1E90FF;line-height: 0.4rem;padding-bottom: 0.1rem;}
+    </style>
+</head>
+<body>
+<div id="app">
+    <div v-if="qrcodeShow" class="qrcode">
+        <img src="images/qrcode.jpg">
+        <p>点击长按关注公众号，您将获得更好的体验！</p>
+        <p><a href="/index.html">无情跳过</a></p>
+    </div>
+</div>
+<script src="js/ydui.flexible.js"></script>
+<!-- 引入 Vue -->
+<script src="js/vue.js"></script>
+<script src="js/jquery-1.8.3-min.js"></script>
+<!-- 引入组件库 -->
+<script src="js/ydui.rem.js"></script>
+<script src="js/axios.min.js"></script>
+<script src="js/alipayjsapi.min.js"></script>
+<script>
+    var sysId = 0; //调用方应用Id
+    var versionNo= "0.89"; //版本号
+    var vm = new Vue({
+        el: '#app',
+        data:{
+            userThirdId:"",
+            qrcodeShow:true
+        },
+        mounted: function () {
+            this.Load()
+        },
+        methods: {
+            Load:function () {
+                var that =this;
+                var isReg = getQueryString("isReg");
+                var isSubscribe = getQueryString("isSubscribe");
+                if(isSubscribe == 1){
+                    that.qrcodeShow =false;
+                    window.location.href = "index.html"
+                }
+                setStorage("isReg",isReg);
+                if (/MicroMessenger/.test(window.navigator.userAgent)) {
+                    var openId = getQueryString("openId");
+                    that.userThirdId =openId;
+//                    alert(openId);
+                    setStorage("userThirdId",openId);
+                } else if (/AlipayClient/.test(window.navigator.userAgent)) {
+                    var userid = getQueryString("userId");
+                    that.userThirdId =userid;
+//                    alert(userid);
+                    setStorage("userThirdId",userid);
+                } else {
+                    console.log("暂不支持此浏览器")
+                }
+            },
+            msgPrompt:function (res) {
+                if(res.return_code == 0){
+                    this.$dialog.toast({
+                        mes: res.return_msg,
+                        timeout: 1500,
+                        icon: 'error'
+                    });
+                }else if(res.result_code == 0){
+                    this.$dialog.toast({
+                        mes: res.result_msg,
+                        timeout: 1500,
+                        icon: 'error'
+                    });
+                }
+            }
+        }
+    });
+    function setStorage(key,value) {
+        if(window.localStorage){
+            value = JSON.stringify(value); //转化为JSON字符串
+            var storage=window.localStorage;
+            storage.setItem(key,value);
+        }
+    }
+    //删除session
+    function removeStorage(key) {
+        if(window.localStorage){
+            var storage=window.localStorage;
+            storage.removeItem(key);
+        }
+    }
+    //获取session
+    function getStorage(key,value) {
+        if(window.localStorage){
+            var storage=window.localStorage;
+            value = JSON.parse(localStorage.getItem(key));
+            return value;
+        }
+    }
+    function getQueryString(name) {
+        var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) {
+            return unescape(r[2]);
+        }
+        return null;
+    }
+</script>
+</body>
+</html>

@@ -383,7 +383,28 @@ namespace XCCloudService.Common.Enum
         /// </summary>
         [Description("工作中")]
         工作中 = 7
-    }    
+    }
+
+    /// <summary>
+    /// 查询模板条件
+    /// </summary>
+    public enum QueryTemplateCondition
+    {
+        [Description("=")]
+        Equal = 0,
+        [Description(">")]
+        Larger = 1,
+        [Description("<")]
+        Less = 2,
+        [Description(">=")]
+        LargerOrEqual = 3,
+        [Description("<=")]
+        LessOrEqual = 4,
+        [Description("介于")]
+        Between = 5,
+        [Description("包含")]
+        Like = 6,
+    }
 
     public enum SettleType
     {

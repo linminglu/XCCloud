@@ -1,0 +1,1 @@
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="getMemberInfo.aspx.cs" Inherits="XXCloudService.Api.HHZ.getMemberInfo" %>

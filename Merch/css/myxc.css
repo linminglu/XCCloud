@@ -1,0 +1,111 @@
+html,body{height:100%; font-size:100px;}
+body{font:0.16rem "Arial","Microsoft YaHei",Verdana,Helvetica,sans-serif;text-align:left;background:#fff;color:#2d3e50;margin:0px;line-height:22px; box-sizing: border-box}
+table{font:0.18rem "Arial","Microsoft YaHei",Verdana,Helvetica,sans-serif;text-align:left;margin:0px;padding:0px;border:0px;color:#2d3e50;line-height:22px;}
+body,figure,h1,h2,h3,h4,h5,h6,p,pre,blockquote,form,fieldset,legend,input,button,select,textarea {margin:0;padding:0;font-family:"Arial","Microsoft YaHei";}
+address,caption,cite,code,dfn,em,var,i{font-style:normal;font-weight:normal;}
+ul,ol,li,dl,dt,dd{ margin:0px; padding:0px;border:0px;list-style:none;}
+article,aside,details,figcaption,figure,footer,header,hgroup,nav,section{display: block;}
+abbr[title],dfn[title] {border-bottom:1px dotted;cursor:help;}
+pre,code,kbd,samp{font-family:monospace,sans-serif;_font-family:'Courier New',monospace,sans-serif;font-size: 1em;}
+pre{white-space: pre;/*CSS2*/white-space:pre-wrap;/*CSS2.1*/white-space:pre-line;/*CSS3*/word-wrap:break-word;/*IE*/}
+blockquote,q{quotes:none;}
+blockquote:before,blockquote:after,q:before,q:after{content:'';content:none;}
+audio[controls],canvas,video{display:inline-block;*display:inline;*zoom:1;}
+input,textarea{outline:none;}
+textarea{resize:none;overflow:auto;}
+input[type="checkbox"],input[type="radio"]{vertical-align:middle;}
+input[type="button"],input[type="submit"]{ cursor:pointer;}
+input::-ms-clear{display:none;}
+input::-ms-reveal{display:none;}
+img{border:none;}
+
+.settingPage{
+    background-color: #d9dcde!important;
+    /*padding: 30px 60px!important;*/
+    position: relative;
+    height: 100%;
+}
+.settingPage .layui-table td,.settingPage .layui-table th{
+    border-width: 8px;
+    border-left: none;
+    border-right: none;
+    border-color: #f2f5f7;
+}
+.settingPage .layui-border-box {
+    border-color: #f2f5f7;
+}
+.settingPage .layui-table-body .layui-table-main{
+    border: none;
+}
+.settingPage .row-box{
+    position: absolute;
+    top:30px;
+    left: 30px;
+    right: 60px;
+    bottom: 60px;
+    background-color: #f2f5f7;
+    box-shadow: 2px 2px 2px 2px #d9dcde inset;
+    padding: 25px;
+    overflow-y: auto;
+    /*height: 100%*/
+}
+.settingPage .row-box .layui-table-page{
+    background-color: #fff;
+}
+/*home.page*/
+.xc-title{
+    padding: 0 10px;
+    /*min-height: 100px;*/
+}
+.xc-home .layui-card{
+    margin-bottom: 20px;
+}
+.xc-title .layui-card{
+    height: 150px;
+
+}
+.xc-title .layui-card .layui-card-body{
+    padding: 25px;
+}
+.xc-title .xc-title-img{
+    box-sizing: border-box;
+    vertical-align: top;
+    display: inline-block;
+    width: 100px;
+    height: 100px;
+    padding: 19px;
+}
+.xc-title:first-child .xc-title-img{
+    background-color: #ffc76c;
+}
+.xc-title:nth-child(2) .xc-title-img{
+    background-color: #cb93dd;
+}
+.xc-title:nth-child(3) .xc-title-img{
+    background-color: #84c0eb;
+}
+.xc-title:nth-child(4) .xc-title-img{
+    background-color: #64decf;
+}
+
+.xc-title .xc-title-text{
+    display: inline-block;
+    /*width: 100px;*/
+    height: 100px;
+}
+.xc-title-text span{
+    display: block;
+    height: 50px;
+    line-height: 50px;
+    padding-left: 20px;
+}
+.xc-title-text span:first-child{
+    font-size: 16px;
+}
+.xc-title-text span:last-child{
+    font-size: 28px;
+}
+.xc-pad-right{
+    padding: 0 10px;
+}
+.homeChart{display: inline-block}

@@ -4,13 +4,27 @@
     <meta charset="UTF-8">
     <title>设备信息</title>
     <link rel="stylesheet" href="layui/css/layui.css">
+    <link rel="stylesheet" href="css/myxc.css">
 </head>
 <body>
-<div class="layui-row">
-    <blockquote style="text-align: right;padding-right: 150px;" class="layui-col-md12 layui-col-xs12 layui-col-lg12 layui-elem-quote">
-        <!--<button type="button" class="layui-btn layui-btn-normal toEasyOpen" id="addNew"><i class="layui-icon">&#xe654;</i>新增</button>-->
-    </blockquote>
-    <table class="layui-hide" lay-filter="gameDeviceTable" id="gameDeviceTable"></table>
+<div class="layui-row settingPage">
+    <div class="row-box" style="">
+        <blockquote style="text-align: right;padding-right: 150px;"
+                    class="layui-col-md12 layui-col-xs12 layui-col-lg12 layui-elem-quote">
+            <!--<button type="button" class="layui-btn layui-btn-normal toEasyOpen" id="addNew"><i class="layui-icon">&#xe654;</i>新增</button>-->
+        </blockquote>
+        <table class="layui-hide" lay-filter="gameDeviceTable" id="gameDeviceTable"></table>
+        <!--<div class="layui-col-md12 layui-col-lg12 layui-col-sm12">-->
+
+        <!--<button type="button" class="layui-btn layui-btn-primary" id="delBtn">删除</button>-->
+        <button type="button" class="layui-btn layui-btn-sm layui-btn-primary " id="codeBtn">二维码</button>
+        <button type="button" class="layui-btn layui-btn-sm layui-btn-primary layui-hide" id="clockCookBtn">报警日志</button>
+        <button type="button" class="layui-btn layui-btn-sm layui-btn-primary layui-hide" id="parmBtn">参数设置</button>
+        <button type="button" class="layui-btn layui-btn-sm layui-btn-primary layui-hide" id="RouterBtn">路由</button>
+        <button type="button" class="layui-btn layui-btn-sm layui-btn-primary layui-hide" id="bindBtn">绑定</button>
+        <!--</div>-->
+    </div>
+
 </div>
 <!--设备绑定、设备解绑-->
 <div id="deviceBindOpen" style="padding: 15px;display: none;" class="goodIsAll">
@@ -37,7 +51,7 @@
 </div>
 <!--二维码展示区-->
 <div id="codeBox" class="layer-photos-demo" style="display: none;padding: 15px;">
-   <div id="qrcode" style="width:180px; height:180px;margin: 10px 25px;"></div>
+    <div id="qrcode" style="width:180px; height:180px;margin: 10px 25px;"></div>
 </div>
 <!--关联方式/门票/计时-->
 <div id="bindTableBox" style="padding: 15px;display: none;width: 630px">
@@ -50,14 +64,14 @@
 </div>
 <div id="joinWay" style="padding: 15px;display: none;" class="goodIsAll">
     <form action="" class="layui-form layui-form-pane">
-        <div class="layui-form-item" >
-            <label for="" class="layui-form-label">门票类别</label>
+        <div class="layui-form-item">
+            <label class="layui-form-label">门票类别</label>
             <div class="layui-input-inline">
                 <select class="layui-input" id="ProjectID" lay-filter="ProjectID"></select>
             </div>
         </div>
         <div class="layui-form-item">
-            <label for="" class="layui-form-label">验证方式</label>
+            <label class="layui-form-label">验证方式</label>
             <div class="layui-input-inline">
                 <select class="layui-input" id="SignType" lay-filter="SignType">
                     <option value="0" selected>签入</option>
@@ -67,7 +81,7 @@
             </div>
         </div>
         <div class="layui-form-item " id="goodIsAll">
-            <label for="" class="layui-form-label">入场锁定</label>
+            <label class="layui-form-label">入场锁定</label>
             <div class="layui-input-inline">
                 <input type="checkbox" lay-skin="switch" lay-text="启用|禁用" id="LockMember" lay-filter="LockMember">
             </div>
@@ -89,19 +103,21 @@
             <div class="layui-inline">
                 <label class="layui-form-label">1号马达</label>
                 <div class="layui-input-inline">
-                    <input type="checkbox" checked  name="motor1En" lay-filter="motor1En" lay-skin="switch" lay-text="启用|禁用">
+                    <input type="checkbox" checked name="motor1En" lay-filter="motor1En" lay-skin="switch"
+                           lay-text="启用|禁用">
                 </div>
             </div>
             <div class="layui-inline">
-                <label  class="layui-form-label">2号马达</label>
+                <label class="layui-form-label">2号马达</label>
                 <div class="layui-input-inline">
-                    <input type="checkbox"  checked name="motor2En" lay-filter="motor2En" lay-skin="switch" lay-text="启用|禁用">
+                    <input type="checkbox" checked name="motor2En" lay-filter="motor2En" lay-skin="switch"
+                           lay-text="启用|禁用">
                 </div>
             </div>
         </div>
         <div class="layui-form-item">
             <div class="layui-inline">
-                <label  class="layui-form-label">马达1出币比例</label>
+                <label class="layui-form-label">马达1出币比例</label>
                 <div class="layui-input-inline">
                     <select name="motor1Coin" lay-filter="motor1Coin" id="motor1Coin">
                         <option>-请选择-</option>
@@ -114,7 +130,7 @@
                 </div>
             </div>
             <div class="layui-inline">
-                <label  class="layui-form-label">马达2出币比例</label>
+                <label class="layui-form-label">马达2出币比例</label>
                 <div class="layui-input-inline">
                     <select name="motor2Coin" lay-filter="motor2Coin" id="motor2Coin">
                         <option>-请选择-</option>
@@ -129,15 +145,17 @@
         </div>
         <div class="layui-form-item">
             <div class="layui-inline">
-                <label  class="layui-form-label">双光眼检测</label>
+                <label class="layui-form-label">双光眼检测</label>
                 <div class="layui-input-inline">
-                    <input type="checkbox" checked name="dubleCheck" lay-filter="dubleCheck" lay-skin="switch" lay-text="启用|禁用">
+                    <input type="checkbox" checked name="dubleCheck" lay-filter="dubleCheck" lay-skin="switch"
+                           lay-text="启用|禁用">
                 </div>
             </div>
             <div class="layui-inline">
-                <label  class="layui-form-label">数字币销售模式</label>
+                <label class="layui-form-label">数字币销售模式</label>
                 <div class="layui-input-inline">
-                    <input type="checkbox" checked name="digitCoinEn" lay-filter="digitCoinEn" lay-skin="switch" lay-text="启用|禁用">
+                    <input type="checkbox" checked name="digitCoinEn" lay-filter="digitCoinEn" lay-skin="switch"
+                           lay-text="启用|禁用">
                 </div>
             </div>
         </div>
@@ -151,21 +169,23 @@
     <form lay-filter="getCoin" class="layui-form layui-form-pane goodIsAll">
         <div class="layui-form-item">
             <div class="layui-inline">
-                <label  class="layui-form-label">1号马达</label>
+                <label class="layui-form-label">1号马达</label>
                 <div class="layui-input-inline">
-                    <input type="checkbox" checked name="motor1En_get" lay-filter="motor1En_get" lay-skin="switch" lay-text="启用|禁用">
+                    <input type="checkbox" checked name="motor1En_get" lay-filter="motor1En_get" lay-skin="switch"
+                           lay-text="启用|禁用">
                 </div>
             </div>
             <div class="layui-inline">
-                <label  class="layui-form-label">2号马达</label>
+                <label class="layui-form-label">2号马达</label>
                 <div class="layui-input-inline">
-                    <input type="checkbox" checked name="motor2En_get" lay-filter="motor2En_get" lay-skin="switch" lay-text="启用|禁用">
+                    <input type="checkbox" checked name="motor2En_get" lay-filter="motor2En_get" lay-skin="switch"
+                           lay-text="启用|禁用">
                 </div>
             </div>
         </div>
         <div class="layui-form-item">
             <div class="layui-inline">
-                <label  class="layui-form-label">马达1出币比例</label>
+                <label class="layui-form-label">马达1出币比例</label>
                 <div class="layui-input-inline">
                     <select name="motor1Coin_get" lay-filter="motor1Coin_get" id="motor1Coin_get">
                         <option>-请选择-</option>
@@ -193,7 +213,7 @@
         </div>
         <div class="layui-form-item">
             <div class="layui-inline">
-                <label  class="layui-form-label">会员卡提币类型</label>
+                <label class="layui-form-label">会员卡提币类型</label>
                 <div class="layui-input-inline">
                     <select name="balanceIndex" lay-filter="balanceIndex" id="balanceIndex">
 
@@ -221,7 +241,7 @@
         </div>
         <div class="layui-form-item">
             <div class="layui-inline">
-                <label  class="layui-form-label">提币机出币数</label>
+                <label class="layui-form-label">提币机出币数</label>
                 <div class="layui-input-inline">
                     <select name="fromDevice" lay-filter="fromDevice" id="fromDevice">
                         <option>-请选择-</option>
@@ -249,21 +269,23 @@
     <form lay-filter="saveCoin" class="layui-form layui-form-pane goodIsAll">
         <div class="layui-form-item">
             <div class="layui-inline">
-                <label  class="layui-form-label">1号马达</label>
+                <label class="layui-form-label">1号马达</label>
                 <div class="layui-input-inline">
-                    <input type="checkbox" checked name="motor1En_save" lay-filter="motor1En_save" lay-skin="switch" lay-text="启用|禁用">
+                    <input type="checkbox" checked name="motor1En_save" lay-filter="motor1En_save" lay-skin="switch"
+                           lay-text="启用|禁用">
                 </div>
             </div>
             <div class="layui-inline">
-                <label  class="layui-form-label">2号马达</label>
+                <label class="layui-form-label">2号马达</label>
                 <div class="layui-input-inline">
-                    <input type="checkbox" checked name="motor2En_save" lay-filter="motor2En_save" lay-skin="switch" lay-text="启用|禁用">
+                    <input type="checkbox" checked name="motor2En_save" lay-filter="motor2En_save" lay-skin="switch"
+                           lay-text="启用|禁用">
                 </div>
             </div>
         </div>
         <div class="layui-form-item">
             <div class="layui-inline">
-                <label  class="layui-form-label">存币机存币数</label>
+                <label class="layui-form-label">存币机存币数</label>
                 <div class="layui-input-inline">
                     <input type="text" class="layui-input" name="formDeviceSave">
                 </div>
@@ -279,7 +301,7 @@
         </div>
         <div class="layui-form-item">
             <div class="layui-inline">
-                <label  class="layui-form-label">会员卡余额增加数</label>
+                <label class="layui-form-label">会员卡余额增加数</label>
                 <div class="layui-input-inline">
                     <input type="text" class="layui-input" name="toCardsave">
                 </div>
@@ -301,21 +323,23 @@
     <form lay-filter="broken" class="layui-form layui-form-pane goodIsAll">
         <div class="layui-form-item">
             <div class="layui-inline">
-                <label  class="layui-form-label">1号马达</label>
+                <label class="layui-form-label">1号马达</label>
                 <div class="layui-input-inline">
-                    <input type="checkbox" checked name="motor1En_broken" lay-filter="motor1En_broken" lay-skin="switch" lay-text="启用|禁用">
+                    <input type="checkbox" checked name="motor1En_broken" lay-filter="motor1En_broken" lay-skin="switch"
+                           lay-text="启用|禁用">
                 </div>
             </div>
             <div class="layui-inline">
-                <label  class="layui-form-label">2号马达</label>
+                <label class="layui-form-label">2号马达</label>
                 <div class="layui-input-inline">
-                    <input type="checkbox" checked name="motor2En_broken" lay-filter="motor2En_broken" lay-skin="switch" lay-text="启用|禁用">
+                    <input type="checkbox" checked name="motor2En_broken" lay-filter="motor2En_broken" lay-skin="switch"
+                           lay-text="启用|禁用">
                 </div>
             </div>
         </div>
         <div class="layui-form-item">
             <div class="layui-inline">
-                <label  class="layui-form-label">碎票机碎票数</label>
+                <label class="layui-form-label">碎票机碎票数</label>
                 <div class="layui-input-inline">
                     <input type="text" class="layui-input" name="fromDevicebroken">
                 </div>
@@ -331,7 +355,7 @@
         </div>
         <div class="layui-form-item">
             <div class="layui-inline">
-                <label  class="layui-form-label">会员卡余额增加数</label>
+                <label class="layui-form-label">会员卡余额增加数</label>
                 <div class="layui-input-inline">
                     <input type="text" class="layui-input" name="toCardbroken">
                 </div>
@@ -347,15 +371,17 @@
     <form lay-filter="pushCoin" class="layui-form layui-form-pane goodIsAll">
         <div class="layui-form-item">
             <div class="layui-inline">
-                <label  class="layui-form-label">1号马达</label>
+                <label class="layui-form-label">1号马达</label>
                 <div class="layui-input-inline">
-                    <input type="checkbox" checked name="motor1En_push" lay-filter="motor1En_push" lay-skin="switch" lay-text="启用|禁用">
+                    <input type="checkbox" checked name="motor1En_push" lay-filter="motor1En_push" lay-skin="switch"
+                           lay-text="启用|禁用">
                 </div>
             </div>
             <div class="layui-inline">
-                <label  class="layui-form-label">2号马达</label>
+                <label class="layui-form-label">2号马达</label>
                 <div class="layui-input-inline">
-                    <input type="checkbox" checked name="motor2En_push" lay-filter="motor2En_push" lay-skin="switch" lay-text="启用|禁用">
+                    <input type="checkbox" checked name="motor2En_push" lay-filter="motor2En_push" lay-skin="switch"
+                           lay-text="启用|禁用">
                 </div>
             </div>
         </div>
@@ -371,15 +397,17 @@
         </div>
         <div class="layui-form-item">
             <div class="layui-inline">
-                <label  class="layui-form-label">允许实物币投币</label>
+                <label class="layui-form-label">允许实物币投币</label>
                 <div class="layui-input-inline">
-                    <input type="checkbox" checked name="motor1CoinPush" lay-filter="motor1CoinPush" lay-skin="switch" lay-text="启用|禁用">
+                    <input type="checkbox" checked name="motor1CoinPush" lay-filter="motor1CoinPush" lay-skin="switch"
+                           lay-text="启用|禁用">
                 </div>
             </div>
             <div class="layui-inline">
-                <label  class="layui-form-label">允许会员卡投币</label>
+                <label class="layui-form-label">允许会员卡投币</label>
                 <div class="layui-input-inline">
-                    <input type="checkbox" checked name="motor2CoinPush" lay-filter="motor2CoinPush" lay-skin="switch" lay-text="启用|禁用">
+                    <input type="checkbox" checked name="motor2CoinPush" lay-filter="motor2CoinPush" lay-skin="switch"
+                           lay-text="启用|禁用">
                 </div>
             </div>
         </div>
@@ -394,10 +422,10 @@
 
         <div class="layui-form-item">
 
-                <label class="layui-form-label">路由器段号</label>
-                <div class="layui-input-block">
-                    <input type="text" class="layui-input" name="router">
-                </div>
+            <label class="layui-form-label">路由器段号</label>
+            <div class="layui-input-block">
+                <input type="text" class="layui-input" name="router">
+            </div>
         </div>
         <div style="text-align:center;">
             <button type="button" class="layui-btn layui-btn-normal" id="saveRouterBtn"> 确定</button>
@@ -410,125 +438,158 @@
 <script src="js/storeSystem.js"></script>
 <script src="js/qrcode.min.js"></script>
 <script>
-let index;
-    let xc=xcActionSystem.prototype;
-    let token=xc.getStorage('token');
+    let index;
+    let xc = xcActionSystem.prototype;
+    let token = xc.getStorage('token');
     let _state;
     let _id;
-    let gameIndexId='';
-    let bindDeviceId='';
-    let ProjectID='';let ProjectName='';let SignType=0;let LockMember=0; let bindType=0;let arrBindTable=[];
+    let gameIndexId = '';
+    let bindDeviceId = '';
+    let ProjectID = '';
+    let ProjectName = '';
+    let SignType = 0;
+    let LockMember = 0;
+    let bindType = 0;
+    let arrBindTable = [];
 
-   //售币机
-let motor1En=1;let motor2En=1; let motor1Coin=1;let motor2Coin=1;let dubleCheck=1;let digitCoinEn=0;
-//提币机
-let motor1En_get=1;let motor2En_get=1;let motor1Coin_get=1;let motor2Coin_get=1;let balanceIndex="";let toCard=1;let fromDevice=1;
-//存币机
-let motor1En_save=1;let motor2En_save=1;let balanceIndexSave='';
-//投币机
-let motor1En_push=1;let motor2En_push=1;let balanceIndexPush='';let motor1CoinPush=1;let motor2CoinPush=1;
+    let checkedArr=[];
 
-//碎票机
-let motor1En_broken=1;let motor2En_broken=1;let balanceIndexbroken='';let toCardbroken=1;let fromDevicebroken=1;
-    let parm={'obj':{'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'},
-        'url':'/XCCloud/DeviceInfo?action=QueryDeviceInfo',
-        'elem':'#gameDeviceTable',
-        'cols':[
-            {field:'ID', title:'设备流水号', align: 'center', sort: true,width:80}
-            ,{field:'MCUID',title: '设备序列号', align: 'center'}
-            ,{field:'DeviceName', title: '设备别名', align: 'center'}
+    //售币机
+    let motor1En = 1;
+    let motor2En = 1;
+    let motor1Coin = 1;
+    let motor2Coin = 1;
+    let dubleCheck = 1;
+    let digitCoinEn = 0;
+    //提币机
+    let motor1En_get = 1;
+    let motor2En_get = 1;
+    let motor1Coin_get = 1;
+    let motor2Coin_get = 1;
+    let balanceIndex = "";
+    let toCard = 1;
+    let fromDevice = 1;
+    //存币机
+    let motor1En_save = 1;
+    let motor2En_save = 1;
+    let balanceIndexSave = '';
+    //投币机
+    let motor1En_push = 1;
+    let motor2En_push = 1;
+    let balanceIndexPush = '';
+    let motor1CoinPush = 1;
+    let motor2CoinPush = 1;
+
+    //碎票机
+    let motor1En_broken = 1;
+    let motor2En_broken = 1;
+    let balanceIndexbroken = '';
+    let toCardbroken = 1;
+    let fromDevicebroken = 1;
+    let parm = {
+        'obj': {'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'},
+        'url': '/XCCloud/DeviceInfo?action=QueryDeviceInfo',
+        'elem': '#gameDeviceTable',
+        'cols': [
+            {type: 'checkbox'}
+            , {field: 'ID', title: '设备流水号', align: 'center', sort: true}
+            , {field: 'MCUID', title: '设备序列号', align: 'center'}
+            , {field: 'DeviceName', title: '设备别名', align: 'center'}
             // ,{field:'GameTypeStr', title: '游戏机类型', align: 'center'}
             // ,{field:'GameName', title: '游戏机名', align: 'center'}
-            ,{field:'DeviceType', title: '设备类型', align: 'center'}
-            ,{field:'segment', title: '网络段号', align: 'center'}
-            ,{field:'Address', title: '机头地址', align: 'center'}
-            ,{field:'AreaName', title: '区域名称', align: 'center'}
-            ,{field:'DeviceStatus',fixed: 'right', title: '工作状态', align: 'center',templet:'#changeLock',width:90}
-            ,{field:'DeviceRunning',fixed: 'right', title: '运行状态', align: 'center',width:90}
-            ,{fixed: 'right', title: '操作', width:350, align:'right', toolbar: '#barDemo'}]
+            , {field: 'DeviceType', title: '设备类型', align: 'center'}
+            , {field: 'segment', title: '网络段号', align: 'center'}
+            , {field: 'Address', title: '机头地址', align: 'center'}
+            , {field: 'AreaName', title: '区域名称', align: 'center'}
+            , {field: 'DeviceStatus', fixed: 'right', title: '工作状态', align: 'center', templet: '#changeLock', width: 90}
+            , {field: 'DeviceRunning', fixed: 'right', title: '运行状态', align: 'center', width: 90}
+            // ,{fixed: 'right', title: '操作', width:350, align:'right', toolbar: '#barDemo'}
+        ]
     };
     xc.getInitData(parm);
     var qrcode = new QRCode(document.getElementById("qrcode"), {
-        width : 180,
-        height : 180
+        width: 180,
+        height: 180
     });
-    layui.use(['form','table','layer'],function () {
-          let form=layui.form;
-          let table=layui.table;
-          let layer=layui.layer;
-          form.on('select(gameIndexId)',function (data) {
-              gameIndexId=data.value;
-          });
-          form.on('select(bindDeviceId)',function (data) {
-                bindDeviceId=data.value;
-          });
-          form.on('select(ProjectID)',function (data) {
-            ProjectID=data.value;
-            ProjectName=data.elem[data.elem.selectedIndex].text;
-           });
-          form.on('select(SignType)',function (data) {
-                SignType=data.value;
-            });
-          form.on('switch(LockMember)',function (data) {
-              if (data.elem.checked==true){
-                  LockMember=1;
-              }else {
-                  LockMember=0;
-              }
-          });
+    layui.use(['form', 'table', 'layer'], function () {
+        let form = layui.form;
+        let table = layui.table;
+        let layer = layui.layer;
+        form.on('select(gameIndexId)', function (data) {
+            gameIndexId = data.value;
+        });
+        form.on('select(bindDeviceId)', function (data) {
+            bindDeviceId = data.value;
+        });
+        form.on('select(ProjectID)', function (data) {
+            ProjectID = data.value;
+            ProjectName = data.elem[data.elem.selectedIndex].text;
+        });
+        form.on('select(SignType)', function (data) {
+            SignType = data.value;
+        });
+        form.on('switch(LockMember)', function (data) {
+            if (data.elem.checked == true) {
+                LockMember = 1;
+            } else {
+                LockMember = 0;
+            }
+        });
 
-          //监听售币机
-        form.on('switch(motor1En)',function (data) {
-            if (data.elem.checked==true){
-                motor1En=1;
-            }else {
-                motor1En=0;
+        //监听售币机
+        form.on('switch(motor1En)', function (data) {
+            if (data.elem.checked == true) {
+                motor1En = 1;
+            } else {
+                motor1En = 0;
             }
         });
-        form.on('switch(motor2En)',function (data) {
-            if (data.elem.checked==true){
-                motor2En=1;
-            }else {
-                motor2En=0;
+        form.on('switch(motor2En)', function (data) {
+            if (data.elem.checked == true) {
+                motor2En = 1;
+            } else {
+                motor2En = 0;
             }
         });
-        form.on('select(motor1Coin)',function (data) {
-            motor1Coin=data.value;
+        form.on('select(motor1Coin)', function (data) {
+            motor1Coin = data.value;
         });
-        form.on('select(motor2Coin)',function (data) {
-            motor2Coin=data.value;
+        form.on('select(motor2Coin)', function (data) {
+            motor2Coin = data.value;
         });
-        form.on('switch(dubleCheck)',function (data) {
-            if (data.elem.checked==true){
-                dubleCheck=1;
-            }else {
-                dubleCheck=0;
+        form.on('switch(dubleCheck)', function (data) {
+            if (data.elem.checked == true) {
+                dubleCheck = 1;
+            } else {
+                dubleCheck = 0;
             }
         });
-        form.on('switch(digitCoinEn)',function (data) {
-            if (data.elem.checked==true){
-                digitCoinEn=1;
-            }else {
-                digitCoinEn=0;
+        form.on('switch(digitCoinEn)', function (data) {
+            if (data.elem.checked == true) {
+                digitCoinEn = 1;
+            } else {
+                digitCoinEn = 0;
             }
         });
         $('#saveSaleBtn').click(function () {
-            let _obj={'deviceId':_id,'motor1En':motor1En,
-                'motor2En':motor2En,
-                'motor1Coin':motor1Coin,
-                'motor2Coin':motor2Coin,
-                'dubleCheck':dubleCheck,
-                'digitCoinEn':digitCoinEn,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+            let _obj = {
+                'deviceId': _id, 'motor1En': motor1En,
+                'motor2En': motor2En,
+                'motor1Coin': motor1Coin,
+                'motor2Coin': motor2Coin,
+                'dubleCheck': dubleCheck,
+                'digitCoinEn': digitCoinEn, 'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'
+            };
             let parseJson = JSON.stringify(_obj);
             $.ajax({
-                type:'post',
-                url:'/XCCloud/DeviceInfo?action=SaveCoinSalerInfo',
+                type: 'post',
+                url: '/XCCloud/DeviceInfo?action=SaveCoinSalerInfo',
                 contentType: "application/json; charset=utf-8",
-                data:{parasJson: parseJson},
+                data: {parasJson: parseJson},
                 success: function (data) {
                     data = JSON.parse(data);
                     if (data.result_code == 1) {
-                        layer.msg('设置成功',{time:1500},function () {
+                        layer.msg('设置成功', {time: 1500}, function () {
                             location.reload();
                         });
                     } else {
@@ -538,54 +599,57 @@ let motor1En_broken=1;let motor2En_broken=1;let balanceIndexbroken='';let toCard
             });
         });
         //监听提币机
-        form.on('switch(motor1En_get)',function (data) {
-            if (data.elem.checked==true){
-                motor1En_get=1;
-            }else {
-                motor1En_get=0;
+        form.on('switch(motor1En_get)', function (data) {
+            if (data.elem.checked == true) {
+                motor1En_get = 1;
+            } else {
+                motor1En_get = 0;
             }
         });
-        form.on('switch(motor2En_get)',function (data) {
-            if (data.elem.checked==true){
-                motor2En_get=1;
-            }else {
-                motor2En_get=0;
+        form.on('switch(motor2En_get)', function (data) {
+            if (data.elem.checked == true) {
+                motor2En_get = 1;
+            } else {
+                motor2En_get = 0;
             }
         });
-        form.on('select(motor1Coin_get)',function (data) {
-            motor1Coin_get=data.value;
+        form.on('select(motor1Coin_get)', function (data) {
+            motor1Coin_get = data.value;
         });
-        form.on('select(motor2Coin_get)',function (data) {
-            motor2Coin_get=data.value;
+        form.on('select(motor2Coin_get)', function (data) {
+            motor2Coin_get = data.value;
         });
-        form.on('select(balanceIndex)',function (data) {
-            balanceIndex=data.value;
+        form.on('select(balanceIndex)', function (data) {
+            balanceIndex = data.value;
         });
-        form.on('select(toCard)',function (data) {
-            toCard=data.value;
+        form.on('select(toCard)', function (data) {
+            toCard = data.value;
         });
-        form.on('select(fromDevice)',function (data) {
-            fromDevice=data.value;
+        form.on('select(fromDevice)', function (data) {
+            fromDevice = data.value;
         });
         $('#saveGetBtn').click(function () {
-            let _obj={'deviceId':_id,'motor1En':motor1En_get,
-                'motor2En':motor2En_get,
-                'motor1Coin':motor1Coin_get,
-                'motor2Coin':motor2Coin_get,
-                'fromDevice':fromDevice,
-                'balanceIndex':balanceIndex,
-                'toCard':toCard,
-                'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+            let _obj = {
+                'deviceId': _id, 'motor1En': motor1En_get,
+                'motor2En': motor2En_get,
+                'motor1Coin': motor1Coin_get,
+                'motor2Coin': motor2Coin_get,
+                'fromDevice': fromDevice,
+                'balanceIndex': balanceIndex,
+                'toCard': toCard,
+                'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'
+            };
             let parseJson = JSON.stringify(_obj);
             $.ajax({
-                type:'post',
-                url:'/XCCloud/DeviceInfo?action=SaveCoinFetcherInfo',
+                type: 'post',
+                url: '/XCCloud/DeviceInfo?action=SaveCoinFetcherInfo',
                 contentType: "application/json; charset=utf-8",
-                data:{parasJson: parseJson},
+                data: {parasJson: parseJson},
                 success: function (data) {
                     data = JSON.parse(data);
-                    if (data.result_code == 1) {6
-                        layer.msg('设置成功',{time:1500},function () {
+                    if (data.result_code == 1) {
+                        6
+                        layer.msg('设置成功', {time: 1500}, function () {
                             location.reload();
                         });
                     } else {
@@ -596,42 +660,44 @@ let motor1En_broken=1;let motor2En_broken=1;let balanceIndexbroken='';let toCard
         });
 
         //监听存币机
-        form.on('switch(motor1En_save)',function (data) {
-            if (data.elem.checked==true){
-                motor1En_save=1;
-            }else {
-                motor1En_save=0;
+        form.on('switch(motor1En_save)', function (data) {
+            if (data.elem.checked == true) {
+                motor1En_save = 1;
+            } else {
+                motor1En_save = 0;
             }
         });
-        form.on('switch(motor2En_save)',function (data) {
-            if (data.elem.checked==true){
-                motor2En_save=1;
-            }else {
-                motor2En_save=0;
+        form.on('switch(motor2En_save)', function (data) {
+            if (data.elem.checked == true) {
+                motor2En_save = 1;
+            } else {
+                motor2En_save = 0;
             }
         });
-        form.on('select(balanceIndexSave)',function (data) {
-            balanceIndexSave=data.value;
+        form.on('select(balanceIndexSave)', function (data) {
+            balanceIndexSave = data.value;
         });
         $('#saveSaveBtn').click(function () {
-            let _obj={'deviceId':_id,
-                'motor1En':motor1En_save,
-                'motor2En':motor2En_save,
-                'balanceIndex':balanceIndexSave,
-                'toCard':$('input[name="toCardsave"]').val(),
-                'fromDevice':$('input[name="formDeviceSave"]').val(),
-                'maxSaveCount':$('input[name="maxSaveCount"]').val(),
-                'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+            let _obj = {
+                'deviceId': _id,
+                'motor1En': motor1En_save,
+                'motor2En': motor2En_save,
+                'balanceIndex': balanceIndexSave,
+                'toCard': $('input[name="toCardsave"]').val(),
+                'fromDevice': $('input[name="formDeviceSave"]').val(),
+                'maxSaveCount': $('input[name="maxSaveCount"]').val(),
+                'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'
+            };
             let parseJson = JSON.stringify(_obj);
             $.ajax({
-                type:'post',
-                url:'/XCCloud/DeviceInfo?action=SaveCoinSaverInfo',
+                type: 'post',
+                url: '/XCCloud/DeviceInfo?action=SaveCoinSaverInfo',
                 contentType: "application/json; charset=utf-8",
-                data:{parasJson: parseJson},
+                data: {parasJson: parseJson},
                 success: function (data) {
                     data = JSON.parse(data);
                     if (data.result_code == 1) {
-                        layer.msg('设置成功',{time:1500},function () {
+                        layer.msg('设置成功', {time: 1500}, function () {
                             location.reload();
                         });
                     } else {
@@ -642,41 +708,43 @@ let motor1En_broken=1;let motor2En_broken=1;let balanceIndexbroken='';let toCard
         });
 
         //监听碎票机
-        form.on('switch(motor1En_broken)',function (data) {
-            if (data.elem.checked==true){
-                motor1En_broken=1;
-            }else {
-                motor1En_broken=0;
+        form.on('switch(motor1En_broken)', function (data) {
+            if (data.elem.checked == true) {
+                motor1En_broken = 1;
+            } else {
+                motor1En_broken = 0;
             }
         });
-        form.on('switch(motor2En_broken)',function (data) {
-            if (data.elem.checked==true){
-                motor2En_broken=1;
-            }else {
-                motor2En_broken=0;
+        form.on('switch(motor2En_broken)', function (data) {
+            if (data.elem.checked == true) {
+                motor2En_broken = 1;
+            } else {
+                motor2En_broken = 0;
             }
         });
-        form.on('select(balanceIndexbroken)',function (data) {
-            balanceIndexbroken=data.value;
+        form.on('select(balanceIndexbroken)', function (data) {
+            balanceIndexbroken = data.value;
         });
         $('#saveBrokenBtn').click(function () {
-            let _obj={'deviceId':_id,
-                'motor1En':motor1En_broken,
-                'motor2En':motor2En_broken,
-                'balanceIndex':balanceIndexbroken,
-                'toCard':$('input[name="toCardbroken"]').val(),
-                'fromDevice':$('input[name="fromDevicebroken"]').val(),
-                'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+            let _obj = {
+                'deviceId': _id,
+                'motor1En': motor1En_broken,
+                'motor2En': motor2En_broken,
+                'balanceIndex': balanceIndexbroken,
+                'toCard': $('input[name="toCardbroken"]').val(),
+                'fromDevice': $('input[name="fromDevicebroken"]').val(),
+                'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'
+            };
             let parseJson = JSON.stringify(_obj);
             $.ajax({
-                type:'post',
-                url:'/XCCloud/DeviceInfo?action=SaveLotteryBrokenInfo',
+                type: 'post',
+                url: '/XCCloud/DeviceInfo?action=SaveLotteryBrokenInfo',
                 contentType: "application/json; charset=utf-8",
-                data:{parasJson: parseJson},
+                data: {parasJson: parseJson},
                 success: function (data) {
                     data = JSON.parse(data);
                     if (data.result_code == 1) {
-                        layer.msg('设置成功',{time:1500},function () {
+                        layer.msg('设置成功', {time: 1500}, function () {
                             location.reload();
                         });
                     } else {
@@ -686,56 +754,58 @@ let motor1En_broken=1;let motor2En_broken=1;let balanceIndexbroken='';let toCard
             });
         });
         //监听投币机
-        form.on('switch(motor1En_push)',function (data) {
-            if (data.elem.checked==true){
-                motor1En_push=1;
-            }else {
-                motor1En_push=0;
+        form.on('switch(motor1En_push)', function (data) {
+            if (data.elem.checked == true) {
+                motor1En_push = 1;
+            } else {
+                motor1En_push = 0;
             }
         });
-        form.on('switch(motor2En_push)',function (data) {
-            if (data.elem.checked==true){
-                motor2En_push=1;
-            }else {
-                motor2En_push=0;
+        form.on('switch(motor2En_push)', function (data) {
+            if (data.elem.checked == true) {
+                motor2En_push = 1;
+            } else {
+                motor2En_push = 0;
             }
         });
-        form.on('switch(motor1CoinPush)',function (data) {
-            if (data.elem.checked==true){
-                motor1CoinPush=1;
-            }else {
-                motor1CoinPush=0;
+        form.on('switch(motor1CoinPush)', function (data) {
+            if (data.elem.checked == true) {
+                motor1CoinPush = 1;
+            } else {
+                motor1CoinPush = 0;
             }
         });
-        form.on('switch(motor2CoinPush)',function (data) {
-            if (data.elem.checked==true){
-                motor2CoinPush=1;
-            }else {
-                motor2CoinPush=0;
+        form.on('switch(motor2CoinPush)', function (data) {
+            if (data.elem.checked == true) {
+                motor2CoinPush = 1;
+            } else {
+                motor2CoinPush = 0;
             }
         });
-        form.on('select(balanceIndexPush)',function (data) {
-            balanceIndexPush=data.value;
+        form.on('select(balanceIndexPush)', function (data) {
+            balanceIndexPush = data.value;
         });
 
         $('#savePushBtn').click(function () {
-            let _obj={'deviceId':_id,
-                'motor1En':motor1En_push,
-                'motor2En':motor2En_push,
-                'motor1Coin':motor1CoinPush,
-                'motor2Coin':motor2CoinPush,
-                'balanceIndex':balanceIndexPush,
-                'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+            let _obj = {
+                'deviceId': _id,
+                'motor1En': motor1En_push,
+                'motor2En': motor2En_push,
+                'motor1Coin': motor1CoinPush,
+                'motor2Coin': motor2CoinPush,
+                'balanceIndex': balanceIndexPush,
+                'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'
+            };
             let parseJson = JSON.stringify(_obj);
             $.ajax({
-                type:'post',
-                url:'/XCCloud/DeviceInfo?action=SaveCoinPusherInfo',
+                type: 'post',
+                url: '/XCCloud/DeviceInfo?action=SaveCoinPusherInfo',
                 contentType: "application/json; charset=utf-8",
-                data:{parasJson: parseJson},
+                data: {parasJson: parseJson},
                 success: function (data) {
                     data = JSON.parse(data);
                     if (data.result_code == 1) {
-                        layer.msg('设置成功',{time:1500},function () {
+                        layer.msg('设置成功', {time: 1500}, function () {
                             location.reload();
                         });
                     } else {
@@ -744,428 +814,580 @@ let motor1En_broken=1;let motor2En_broken=1;let balanceIndexbroken='';let toCard
                 }
             });
         });
-          //删除绑定的门票或者计时
-          table.on('tool(bindTable)',function (obj) {
-              var data = obj.data; //获得当前行数据
-              var layEvent = obj.event;
-              if(layEvent === 'del'){ //机台绑定
-                  for (let i in arrBindTable){
-                      if(arrBindTable[i].ProjectID==data.ProjectID){
-                          arrBindTable.splice(i,1);
-                          obj.del();
-                      }
-                  }
-              }
-          });
+        table.on('checkbox(gameDeviceTable)', function (obj) {
+            console.log(obj.data);
+            // checkedArr.push(obj.data)
+            let d=obj.data;
+            if (obj.checked) {
+                checkedArr.push(obj.data)
+                if (d.DeviceType == 8) {
+                $('#RouterBtn').removeClass('layui-hide');
+                    $('#clockCookBtn').addClass('layui-hide');
+                    $('#parmBtn').addClass('layui-hide');
+                    $('#bindBtn').addClass('layui-hide');
+                } else {
+                    $('#clockCookBtn').removeClass('layui-hide');
+                    $('#parmBtn').removeClass('layui-hide');
+                    $('#bindBtn').removeClass('layui-hide');
+                    $('#RouterBtn').addClass('layui-hide');
+                }
+            } else {
+                for(let i in checkedArr){
+                    if (checkedArr[i].ID==d.ID){
+                        checkedArr.splice(i,1)
+                    }
+                }
+                if(checkedArr.length>0){
+                    if (checkedArr[checkedArr.length-1].DeviceType == 8) {
+                        $('#RouterBtn').removeClass('layui-hide');
+                        $('#clockCookBtn').addClass('layui-hide');
+                        $('#parmBtn').addClass('layui-hide');
+                        $('#bindBtn').addClass('layui-hide');
+                    } else {
+                        $('#clockCookBtn').removeClass('layui-hide');
+                        $('#parmBtn').removeClass('layui-hide');
+                        $('#bindBtn').removeClass('layui-hide');
+                        $('#RouterBtn').addClass('layui-hide');
+                    }
+                }else {
+                    $('#clockCookBtn').addClass('layui-hide');
+                    $('#parmBtn').addClass('layui-hide');
+                    $('#bindBtn').addClass('layui-hide');
+                    $('#RouterBtn').addClass('layui-hide');
+                }
 
-          table.on('tool(gameDeviceTable)',function (obj) {
-            var data = obj.data; //获得当前行数据
-            _id=data.ID;
-            var layEvent = obj.event;
-            if(layEvent === 'bindMachine'){ //机台绑定
-                xc.getGameInfoDic(token,layer,form,'gameIndexId');
-                xc.getRouteDevice(token,layer,form,'bindDeviceId');
-                _state=1;
-                $('#siteName').html('');
-                layer.open({
-                    title:'通讯绑定',
-                    type:1,
-                    area:'400px',
-                    content:$('#deviceBindOpen')
-                });
-            } else if(layEvent === 'unBindMachine'){ //机台解绑
-                layer.confirm('确定解绑该设备吗？', function(index){
-                    Id=data.ID;
-                    let _obj={'id':data.ID,'state':0,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
-                    let parseJson = JSON.stringify(_obj);
-                    $.ajax({
-                        type:'post',
-                        url:'/XCCloud/DeviceInfo?action=BindRoutineInfo',
-                        contentType: "application/json; charset=utf-8",
-                        data:{parasJson: parseJson},
-                        success: function (data) {
-                            data = JSON.parse(data);
-                            if (data.result_code == 1) {
-                               location.reload();
-                            } else {
-                                layer.msg(data.result_msg);
-                            }
-                        }
-                    })
-                });
-            } else if(layEvent === 'lock'){ //锁定
-                layer.confirm('确定锁定该设备吗？', function(index){
-                    Id=data.ID;
-                    let _obj={'id':data.ID,'state':1,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
-                    let parseJson = JSON.stringify(_obj);
-                    $.ajax({
-                        type:'post',
-                        url:'/XCCloud/DeviceInfo?action=LockDeviceInfo',
-                        contentType: "application/json; charset=utf-8",
-                        data:{parasJson: parseJson},
-                        success: function (data) {
-                            data = JSON.parse(data);
-                            if (data.result_code == 1) {
-                                location.reload();
-                            } else {
-                                layer.msg(data.result_msg);
-                            }
-                        }
-                    })
-                });
-            }else if(layEvent === 'unLock'){ //解锁
-                layer.confirm('确定解锁该设备吗？', function(index){
-                    Id=data.ID;
-                    let _obj={'id':data.ID,'state':0,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
-                    let parseJson = JSON.stringify(_obj);
-                    $.ajax({
-                        type:'post',
-                        url:'/XCCloud/DeviceInfo?action=LockDeviceInfo',
-                        contentType: "application/json; charset=utf-8",
-                        data:{parasJson: parseJson},
-                        success: function (data) {
-                            data = JSON.parse(data);
-                            if (data.result_code == 1) {
-                                location.reload();
-                            } else {
-                                layer.msg(data.result_msg);
-                            }
-                        }
-                    })
-                });
-            }else if(layEvent === 'code'){ //查看二维码
-                Id=data.ID;
-                let _obj={'id':data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+            }
+        })
+        //二维码信息按钮
+        $('#codeBtn').on('click', function () {
+            let checkStatus = table.checkStatus('gameDeviceTable'); //test即为基础参数id对应的值
+            let len = checkStatus.data.length;
+            if (len == 1) {
+                // let ids = '';
+                // ids = checkStatus.data[0].ID;
+                let _obj = {'id': checkStatus.data[0].ID, 'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'};
                 let parseJson = JSON.stringify(_obj);
                 $.ajax({
-                    type:'post',
-                    url:'/XCCloud/DeviceInfo?action=GetDeviceQr',
+                    type: 'post',
+                    url: '/XCCloud/DeviceInfo?action=GetDeviceQr',
                     contentType: "application/json; charset=utf-8",
-                    data:{parasJson: parseJson},
+                    data: {parasJson: parseJson},
                     success: function (data) {
                         data = JSON.parse(data);
                         if (data.result_code == 1) {
-                            qrcode.makeCode( data.result_data);
+                            qrcode.makeCode(data.result_data);
                             layer.open({
-                                title:'二维码',
-                                type:1,
-                                area:'260px',
-                                anim: 5, //0-6的选择，指定弹出图片动画类型，默认随机（请注意，3.0之前的版本用shift参数）
-                                content:$('#codeBox')
+                                title: '二维码',
+                                type: 1,
+                                area: '260px',
+                                anim: 5,
+                                content: $('#codeBox')
                             });
                         } else {
                             layer.msg(data.result_msg);
                         }
                     }
                 })
-            }else if(layEvent==='bindTicket'){
-                bindType=0;
 
-                let _obj={'id':data.ID,'joinType':0,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+            } else {
+                layer.msg('请且只勾选一条数据！')
+            }
+        });
+        //报警日志按钮
+        $('#clockCookBtn').on('click', function () {
+            let checkStatus = table.checkStatus('gameDeviceTable'); //test即为基础参数id对应的值
+            let len = checkStatus.data.length;
+            if (len == 1) {
+                // let ids = '';
+                // ids = checkStatus.data[0].ID;
+                let _obj = {'id': checkStatus.data[0].ID, 'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'};
                 let parseJson = JSON.stringify(_obj);
                 $.ajax({
-                    type:'post',
-                    url:'/XCCloud/DeviceInfo?action=GetBindProject',
+                    type: 'post',
+                    url: '/XCCloud/DeviceInfo?action=GetGameAlarm',
                     contentType: "application/json; charset=utf-8",
-                    data:{parasJson: parseJson},
+                    data: {parasJson: parseJson},
                     success: function (data) {
                         data = JSON.parse(data);
                         if (data.result_code == 1) {
-                            arrBindTable=data.result_data,
+                            let arr = data.result_data;
+                            if (arr.length > 0) {
                                 table.render({
-                                    elem:'#bindTable',
-                                    data:arrBindTable,
-                                    size:'sm',
-                                    cols:[[
-                                        {field:'ProjectID', title:'门票ID', align: 'center', sort: true,width:120}
-                                        ,{field:'ProjectName',title: '门票名称', align: 'center',width:120} //width 支持：数字、百分比和不填写。
-                                        ,{field:'SignType', title: '验证类型', align: 'center',width:120,templet:'#SignType'}
-                                        ,{field:'LockMember', title: '入场锁定', align: 'center',width:120,templet:'#LockMember'}
-                                        ,{fixed: 'right', title: '操作', width:140, align:'center', toolbar: '#barDemo1'}
-                                    ]]
-                                    , page: {page: true, limits: [10, 15, 20]}
-                                    , limit: 5
-                                });
-                            layer.open({
-                                title:'门票绑定',
-                                type:1,
-                                area:'650px',
-                                anim: 5, //0-6的选择，指定弹出图片动画类型，默认随机（请注意，3.0之前的版本用shift参数）
-                                content:$('#bindTableBox')
-                            });
-                        } else {
-                            layer.msg(data.result_msg);
-                        }
-                    }
-                });
-            }else if(layEvent==='clockCook'){
-                let _obj={'id':data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
-                let parseJson = JSON.stringify(_obj);
-                $.ajax({
-                    type:'post',
-                    url:'/XCCloud/DeviceInfo?action=GetGameAlarm',
-                    contentType: "application/json; charset=utf-8",
-                    data:{parasJson: parseJson},
-                    success: function (data) {
-                        data = JSON.parse(data);
-                        if (data.result_code == 1) {
-                            let arr=data.result_data;
-                            if(arr.length>0){
-                                table.render({
-                                    elem:'#clockNoteTable',
-                                    data:arr,
-                                    size:'sm',
-                                    cols:[[
-                                        {field:'GameName', title:'游戏机名名称', align: 'center', sort: true,width:120}
-                                        ,{field:'SiteName',title: 'P位编号', align: 'center',width:120} //width 支持：数字、百分比和不填写。
-                                        ,{field:'Segment', title: '网络段号', align: 'center',width:120, sort: true}
-                                        ,{field:'Address', title: '机头地址', align: 'center',width:120}
-                                        ,{field:'AlertType', title: '报警类别', align: 'center'}
-                                        ,{field:'HappenTime', title: '触发时间', align: 'center',width:120, sort: true}
-                                        ,{field:'ICCardID', title: '关联卡号', align: 'center',width:120}
-                                        ,{field:'LockGameStr', title: '锁机头', align: 'center',width:120}
-                                        ,{field:'LockMemberStr', title: '锁会员', align: 'center',width:120}
-                                        ,{field:'EndTime', title: '处理时间', align: 'center',width:120}
-                                        ,{field:'StateStr', title: '状态', align: 'center',width:120}
+                                    elem: '#clockNoteTable',
+                                    data: arr,
+                                    size: 'sm',
+                                    cols: [[
+                                        {field: 'GameName', title: '游戏机名名称', align: 'center', sort: true, width: 120}
+                                        , {field: 'SiteName', title: 'P位编号', align: 'center', width: 120} //width 支持：数字、百分比和不填写。
+                                        , {field: 'Segment', title: '网络段号', align: 'center', width: 120, sort: true}
+                                        , {field: 'Address', title: '机头地址', align: 'center', width: 120}
+                                        , {field: 'AlertType', title: '报警类别', align: 'center'}
+                                        , {field: 'HappenTime', title: '触发时间', align: 'center', width: 120, sort: true}
+                                        , {field: 'ICCardID', title: '关联卡号', align: 'center', width: 120}
+                                        , {field: 'LockGameStr', title: '锁机头', align: 'center', width: 120}
+                                        , {field: 'LockMemberStr', title: '锁会员', align: 'center', width: 120}
+                                        , {field: 'EndTime', title: '处理时间', align: 'center', width: 120}
+                                        , {field: 'StateStr', title: '状态', align: 'center', width: 120}
                                     ]]
                                     , page: {page: true, limits: [10, 15, 20]}
                                     , limit: 10
                                 });
                                 layer.open({
-                                    title:'报警日志',
-                                    type:1,
-                                    area:'1000px',
-                                    content:$('#clockNote')
+                                    title: '报警日志',
+                                    type: 1,
+                                    area: '1000px',
+                                    content: $('#clockNote')
                                 });
-                            }else {layer.msg('当前暂无日志信息')}
+                            } else {
+                                layer.msg('当前暂无日志信息')
+                            }
 
                         } else {
                             layer.msg(data.result_msg);
                         }
                     }
                 });
-            }else if(layEvent==='saleCoin'){//售币机
-                let _obj={'deviceId':data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
-                let parseJson = JSON.stringify(_obj);
-                $.ajax({
-                    type: 'post',
-                    url: '/XCCloud/DeviceInfo?action=GetTypeDeviceInfo',
-                    contentType: "application/json; charset=utf-8",
-                    data: {parasJson: parseJson},
-                    success: function (data) {
-                        data = JSON.parse(data);
-                        console.log(data);
-                        if (data.result_code == 1) {
-                            let arr = data.result_data;
-                            if(arr.ID==0){
-                                 motor1En=1; motor2En=1;  motor1Coin=1;
-                                 motor2Coin=1; dubleCheck=1; digitCoinEn=0;
-                            }else {
-                                form.val("saleCoin",{
-                                    'motor1En':arr.Motor1EN==1 ? true : false ,
-                                    'motor2En':arr.Motor2EN==1 ? true : false ,
-                                    'motor1Coin':arr.Motor1Coin ,
-                                    'motor2Coin':arr.Motor2Coin ,
-                                    'dubleCheck':arr.DubleCheck==1?true:false,
-                                    'digitCoinEn':arr.DigitCoinEn==1?true:false,
-                                });
-                                motor1En=arr.Motor1EN; motor2En=arr.Motor2EN;  motor1Coin=arr.Motor1Coin;
-                                motor2Coin=arr.Motor2Coin; dubleCheck=arr.DubleCheck||0; digitCoinEn=arr.DigitCoinEn||0;
-                            }
-                            layer.open({
-                                title:'售币机参数设置' ,
-                                type:1,
-                                area:'800px',
-                                content:$('#saleCoinModel')
-                            })
-                        }
-                    }
-                })
 
-            }else if(layEvent==='getCoin'){//提币机
-                let _obj={'deviceId':data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
-                let parseJson = JSON.stringify(_obj);
-                $.ajax({
-                    type: 'post',
-                    url: '/XCCloud/DeviceInfo?action=GetTypeDeviceInfo',
-                    contentType: "application/json; charset=utf-8",
-                    data: {parasJson: parseJson},
-                    success: function (data) {
-                        data = JSON.parse(data);
-                        console.log(data);
-                        if (data.result_code == 1) {
-                            let arr = data.result_data;
-                            if(arr.ID==0){
-                                 motor1En_get=1; motor2En_get=1; motor1Coin_get=1;
-                                 motor2Coin_get=1; balanceIndex=""; toCard=0; fromDevice=0;
-                                xc. getBalanceTypeDic('',token,layer,form,'balanceIndex');
-                            }else {
-                                form.val("getCoin",{
-                                    'motor1En_get':arr.Motor1EN==1 ? true : false ,
-                                    'motor2En_get':arr.Motor2EN==1 ? true : false ,
-                                    'motor1Coin_get':arr.Motor1Coin ,
-                                    'motor2Coin_get':arr.Motor2Coin ,
-                                    'toCard':arr.ToCard,
-                                    'fromDevice':arr.FromDevice
-                                });
-                                motor1En_get=arr.Motor1EN||0; motor2En_get=arr.Motor2EN||0;
-                                motor1Coin_get=arr.Motor1Coin||'';
-                                motor2Coin_get=arr.Motor2Coin||'';
-                                balanceIndex=arr.BalanceIndex||'';
-                                toCard=arr.ToCard||'';
-                                fromDevice=arr.FromDevice||'';
-                                xc. getBalanceTypeDic('1',token,layer,form,'balanceIndex',arr.BalanceIndex);
-                            }
-
-                            layer.open({
-                                title:'提币机参数设置' ,
-                                type:1,
-                                area:'800px',
-                                content:$('#getCoinModel')
-                            })
-                        }
-                    }
-                })
-            }else if(layEvent==='saveCoin'){//存币机
-
-                let _obj={'deviceId':data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
-                let parseJson = JSON.stringify(_obj);
-                $.ajax({
-                    type: 'post',
-                    url: '/XCCloud/DeviceInfo?action=GetTypeDeviceInfo',
-                    contentType: "application/json; charset=utf-8",
-                    data: {parasJson: parseJson},
-                    success: function (data) {
-                        data = JSON.parse(data);
-                        console.log(data);
-                        if (data.result_code == 1) {
-                            let arr = data.result_data;
-                            if(arr.ID==0){
-                                 motor1En_save=1; motor2En_save=1; balanceIndexSave="";
-                                xc. getBalanceTypeDic('1',token,layer,form,'balanceIndexSave')
-                            }else {
-                                form.val("saveCoin",{
-                                    'motor1En_save':arr.Motor1EN==1 ? true : false ,
-                                    'motor2En_save':arr.Motor2EN==1 ? true : false ,
-                                    'maxSaveCount':arr.MaxSaveCount ,
-                                    'toCardsave':arr.ToCard,
-                                    'formDeviceSave':arr.FromDevice
-                                });
-                                motor1En_save=arr.Motor1EN||0; motor2En_save=arr.Motor2EN||0; balanceIndexSave=arr.BalanceIndex||"";
-                                xc. getBalanceTypeDic('1',token,layer,form,'balanceIndexSave',arr.BalanceIndex)
-                            }
-
-                            layer.open({
-                                title:'存币机参数设置' ,
-                                type:1,
-                                area:'800px',
-                                content:$('#saveCoinModel')
-                            })
-                        }
-                    }
-                })
-
-            }else if(layEvent==='brokenTicket'){//碎票机
-
-                let _obj={'deviceId':data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
-                let parseJson = JSON.stringify(_obj);
-                $.ajax({
-                    type: 'post',
-                    url: '/XCCloud/DeviceInfo?action=GetTypeDeviceInfo',
-                    contentType: "application/json; charset=utf-8",
-                    data: {parasJson: parseJson},
-                    success: function (data) {
-                        data = JSON.parse(data);
-                        console.log(data);
-                        if (data.result_code == 1) {
-                            let arr = data.result_data;
-                            if(arr.ID==0){
-                                motor1En_broken=1; motor2En_broken=1; balanceIndexbroken="";toCardbroken=1; fromDevicebroken=1;
-                                xc.getBalanceTypeDic('2',token,layer,form,'balanceIndexbroken')
-                            }else {
-                                // let motor1En_broken=1;let motor2En_broken=1;let balanceIndexbroken='';let toCardbroken=1;let fromDevicebroken=1;
-                                form.val("broken",{
-                                    'motor1En_broken':arr.Motor1EN==1 ? true : false ,
-                                    'motor2En_broken':arr.Motor2EN==1 ? true : false ,
-                                    'maxSaveCount':arr.MaxSaveCount ,
-                                    'toCardbroken':arr.ToCard,
-                                    'fromDevicebroken':arr.FromDevice
-                                });
-
-                                motor1En_broken=arr.Motor1EN||0;
-                                motor2En_broken=arr.Motor2EN||0;
-                                balanceIndexbroken=arr.BalanceIndex||"";
-                                xc. getBalanceTypeDic('2',token,layer,form,'balanceIndexbroken',arr.BalanceIndex)
-                            }
-
-                            layer.open({
-                                title:'碎票机参数设置' ,
-                                type:1,
-                                area:'800px',
-                                content:$('#brokenTicketModel')
-                            })
-                        }
-                    }
-                })
-
-            }else if(layEvent==='pushCoin'){
-                 // motor1En_push=1; motor2En_push=1; balanceIndexPush=1; motor1CoinPush=1; motor2CoinPush=1;
-
-                let _obj={'deviceId':data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
-                let parseJson = JSON.stringify(_obj);
-                $.ajax({
-                    type: 'post',
-                    url: '/XCCloud/DeviceInfo?action=GetTypeDeviceInfo',
-                    contentType: "application/json; charset=utf-8",
-                    data: {parasJson: parseJson},
-                    success: function (data) {
-                        data = JSON.parse(data);
-                        console.log(data);
-                        if (data.result_code == 1) {
-                            let arr = data.result_data;
-                            if(arr.ID==0){
-                                 motor1En_push=1; motor2En_push=1; balanceIndexPush='';
-                                 motor1CoinPush=1; motor2CoinPush=1;
-                                xc. getBalanceTypeDic('1',token,layer,form,'balanceIndexPush')
-                            }else {
-                                form.val("pushCoin",{
-                                    'motor1En_push':arr.Motor1EN==1 ? true : false ,
-                                    'motor2En_push':arr.Motor2EN==1 ? true : false ,
-
-                                    'motor1CoinPush':arr.Motor1Coin==1 ? true : false,
-                                    'motor2CoinPush':arr.Motor2Coin==1 ? true : false
-                                });
-                                motor1En_push=arr.Motor1EN||0;
-                                motor2En_push=arr.Motor2EN||0;
-                                balanceIndexPush=arr.BalanceIndex;
-                                motor1CoinPush=arr.Motor1Coin;
-                                motor2CoinPush=arr.Motor2Coin;
-                                xc. getBalanceTypeDic('1',token,layer,form,'balanceIndexPush',arr.BalanceIndex)
-                            }
-
-
-                            layer.open({
-                                title:'投币机参数设置' ,
-                                type:1,
-                                area:'800px',
-                                content:$('#pushCoinModel')
-                            })
-                        }
-                    }
-                })
-            }else if(layEvent==='router'){
-                $('input[name="router"]').val(data.segment);
-                layer.open({
-                    title:'路由器段号设置' ,
-                    type:1,
-                    area:'400px',
-                    content:$('#routerModel')
-                })
+            } else {
+                layer.msg('请且只勾选一条数据！')
             }
         });
-          //保存路由器段号
+        //参数设置按钮
+        $('#parmBtn').on('click', function () {
+            let checkStatus = table.checkStatus('gameDeviceTable'); //test即为基础参数id对应的值
+            let len = checkStatus.data.length;
+            if (len == 1) {
+
+                if(checkStatus.data[0].DeviceType==1){
+                let _obj = {'deviceId': checkStatus.data[0].ID, 'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'};
+                let parseJson = JSON.stringify(_obj);
+                $.ajax({
+                    type: 'post',
+                    url: '/XCCloud/DeviceInfo?action=GetTypeDeviceInfo',
+                    contentType: "application/json; charset=utf-8",
+                    data: {parasJson: parseJson},
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        console.log(data);
+                        if (data.result_code == 1) {
+                            let arr = data.result_data;
+                            if (arr.ID == 0) {
+                                motor1En_broken = 1;
+                                motor2En_broken = 1;
+                                balanceIndexbroken = "";
+                                toCardbroken = 1;
+                                fromDevicebroken = 1;
+                                xc.getBalanceTypeDic('2', token, layer, form, 'balanceIndexbroken')
+                            } else {
+                                // let motor1En_broken=1;let motor2En_broken=1;let balanceIndexbroken='';let toCardbroken=1;let fromDevicebroken=1;
+                                form.val("broken", {
+                                    'motor1En_broken': arr.Motor1EN == 1 ? true : false,
+                                    'motor2En_broken': arr.Motor2EN == 1 ? true : false,
+                                    'maxSaveCount': arr.MaxSaveCount,
+                                    'toCardbroken': arr.ToCard,
+                                    'fromDevicebroken': arr.FromDevice
+                                });
+
+                                motor1En_broken = arr.Motor1EN || 0;
+                                motor2En_broken = arr.Motor2EN || 0;
+                                balanceIndexbroken = arr.BalanceIndex || "";
+                                xc.getBalanceTypeDic('2', token, layer, form, 'balanceIndexbroken', arr.BalanceIndex)
+                            }
+
+                            layer.open({
+                                title: '碎票机参数设置',
+                                type: 1,
+                                area: '800px',
+                                content: $('#brokenTicketModel')
+                            })
+                        }
+                    }
+                })
+                }else if(checkStatus.data[0].DeviceType==2){
+                    let _obj = {'deviceId': checkStatus.data[0].ID, 'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'};
+                    let parseJson = JSON.stringify(_obj);
+                    $.ajax({
+                        type: 'post',
+                        url: '/XCCloud/DeviceInfo?action=GetTypeDeviceInfo',
+                        contentType: "application/json; charset=utf-8",
+                        data: {parasJson: parseJson},
+                        success: function (data) {
+                            data = JSON.parse(data);
+                            console.log(data);
+                            if (data.result_code == 1) {
+                                let arr = data.result_data;
+                                if (arr.ID == 0) {
+                                    motor1En_save = 1;
+                                    motor2En_save = 1;
+                                    balanceIndexSave = "";
+                                    xc.getBalanceTypeDic('1', token, layer, form, 'balanceIndexSave')
+                                } else {
+                                    form.val("saveCoin", {
+                                        'motor1En_save': arr.Motor1EN == 1 ? true : false,
+                                        'motor2En_save': arr.Motor2EN == 1 ? true : false,
+                                        'maxSaveCount': arr.MaxSaveCount,
+                                        'toCardsave': arr.ToCard,
+                                        'formDeviceSave': arr.FromDevice
+                                    });
+                                    motor1En_save = arr.Motor1EN || 0;
+                                    motor2En_save = arr.Motor2EN || 0;
+                                    balanceIndexSave = arr.BalanceIndex || "";
+                                    xc.getBalanceTypeDic('1', token, layer, form, 'balanceIndexSave', arr.BalanceIndex)
+                                }
+
+                                layer.open({
+                                    title: '存币机参数设置',
+                                    type: 1,
+                                    area: '800px',
+                                    content: $('#saveCoinModel')
+                                })
+                            }
+                        }
+                    })
+                }else if(checkStatus.data[0].DeviceType==3){
+                    let _obj = {'deviceId': checkStatus.data[0].ID, 'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'};
+                    let parseJson = JSON.stringify(_obj);
+                    $.ajax({
+                        type: 'post',
+                        url: '/XCCloud/DeviceInfo?action=GetTypeDeviceInfo',
+                        contentType: "application/json; charset=utf-8",
+                        data: {parasJson: parseJson},
+                        success: function (data) {
+                            data = JSON.parse(data);
+                            console.log(data);
+                            if (data.result_code == 1) {
+                                let arr = data.result_data;
+                                if (arr.ID == 0) {
+                                    motor1En_get = 1;
+                                    motor2En_get = 1;
+                                    motor1Coin_get = 1;
+                                    motor2Coin_get = 1;
+                                    balanceIndex = "";
+                                    toCard = 0;
+                                    fromDevice = 0;
+                                    xc.getBalanceTypeDic('', token, layer, form, 'balanceIndex');
+                                } else {
+                                    form.val("getCoin", {
+                                        'motor1En_get': arr.Motor1EN == 1 ? true : false,
+                                        'motor2En_get': arr.Motor2EN == 1 ? true : false,
+                                        'motor1Coin_get': arr.Motor1Coin,
+                                        'motor2Coin_get': arr.Motor2Coin,
+                                        'toCard': arr.ToCard,
+                                        'fromDevice': arr.FromDevice
+                                    });
+                                    motor1En_get = arr.Motor1EN || 0;
+                                    motor2En_get = arr.Motor2EN || 0;
+                                    motor1Coin_get = arr.Motor1Coin || '';
+                                    motor2Coin_get = arr.Motor2Coin || '';
+                                    balanceIndex = arr.BalanceIndex || '';
+                                    toCard = arr.ToCard || '';
+                                    fromDevice = arr.FromDevice || '';
+                                    xc.getBalanceTypeDic('1', token, layer, form, 'balanceIndex', arr.BalanceIndex);
+                                }
+
+                                layer.open({
+                                    title: '提币机参数设置',
+                                    type: 1,
+                                    area: '800px',
+                                    content: $('#getCoinModel')
+                                })
+                            }
+                        }
+                    })
+                }else if(checkStatus.data[0].DeviceType==4){
+                    let _obj = {'deviceId': checkStatus.data[0].ID, 'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'};
+                    let parseJson = JSON.stringify(_obj);
+                    $.ajax({
+                        type: 'post',
+                        url: '/XCCloud/DeviceInfo?action=GetTypeDeviceInfo',
+                        contentType: "application/json; charset=utf-8",
+                        data: {parasJson: parseJson},
+                        success: function (data) {
+                            data = JSON.parse(data);
+                            console.log(data);
+                            if (data.result_code == 1) {
+                                let arr = data.result_data;
+                                if (arr.ID == 0) {
+                                    motor1En = 1;
+                                    motor2En = 1;
+                                    motor1Coin = 1;
+                                    motor2Coin = 1;
+                                    dubleCheck = 1;
+                                    digitCoinEn = 0;
+                                } else {
+                                    form.val("saleCoin", {
+                                        'motor1En': arr.Motor1EN == 1 ? true : false,
+                                        'motor2En': arr.Motor2EN == 1 ? true : false,
+                                        'motor1Coin': arr.Motor1Coin,
+                                        'motor2Coin': arr.Motor2Coin,
+                                        'dubleCheck': arr.DubleCheck == 1 ? true : false,
+                                        'digitCoinEn': arr.DigitCoinEn == 1 ? true : false,
+                                    });
+                                    motor1En = arr.Motor1EN;
+                                    motor2En = arr.Motor2EN;
+                                    motor1Coin = arr.Motor1Coin;
+                                    motor2Coin = arr.Motor2Coin;
+                                    dubleCheck = arr.DubleCheck || 0;
+                                    digitCoinEn = arr.DigitCoinEn || 0;
+                                }
+                                layer.open({
+                                    title: '售币机参数设置',
+                                    type: 1,
+                                    area: '800px',
+                                    content: $('#saleCoinModel')
+                                })
+                            }
+                        }
+                    })
+                }else if(checkStatus.data[0].DeviceType==5){
+                    let _obj = {'deviceId': checkStatus.data[0].ID, 'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'};
+                    let parseJson = JSON.stringify(_obj);
+                    $.ajax({
+                        type: 'post',
+                        url: '/XCCloud/DeviceInfo?action=GetTypeDeviceInfo',
+                        contentType: "application/json; charset=utf-8",
+                        data: {parasJson: parseJson},
+                        success: function (data) {
+                            data = JSON.parse(data);
+                            console.log(data);
+                            if (data.result_code == 1) {
+                                let arr = data.result_data;
+                                if (arr.ID == 0) {
+                                    motor1En_push = 1;
+                                    motor2En_push = 1;
+                                    balanceIndexPush = '';
+                                    motor1CoinPush = 1;
+                                    motor2CoinPush = 1;
+                                    xc.getBalanceTypeDic('1', token, layer, form, 'balanceIndexPush')
+                                } else {
+                                    form.val("pushCoin", {
+                                        'motor1En_push': arr.Motor1EN == 1 ? true : false,
+                                        'motor2En_push': arr.Motor2EN == 1 ? true : false,
+
+                                        'motor1CoinPush': arr.Motor1Coin == 1 ? true : false,
+                                        'motor2CoinPush': arr.Motor2Coin == 1 ? true : false
+                                    });
+                                    motor1En_push = arr.Motor1EN || 0;
+                                    motor2En_push = arr.Motor2EN || 0;
+                                    balanceIndexPush = arr.BalanceIndex;
+                                    motor1CoinPush = arr.Motor1Coin;
+                                    motor2CoinPush = arr.Motor2Coin;
+                                    xc.getBalanceTypeDic('1', token, layer, form, 'balanceIndexPush', arr.BalanceIndex)
+                                }
+
+
+                                layer.open({
+                                    title: '投币机参数设置',
+                                    type: 1,
+                                    area: '800px',
+                                    content: $('#pushCoinModel')
+                                })
+                            }
+                        }
+                    })
+                }
+
+            } else {
+                layer.msg('请且只勾选一条数据！')
+            }
+        });
+        //路由按钮
+        $('#RouterBtn').on('click', function () {
+            let checkStatus = table.checkStatus('gameDeviceTable'); //test即为基础参数id对应的值
+            let len = checkStatus.data.length;
+            if (len == 1) {
+                $('input[name="router"]').val(data.segment);
+                layer.open({
+                    title: '路由器段号设置',
+                    type: 1,
+                    area: '400px',
+                    content: $('#routerModel')
+                })
+
+            } else {
+                layer.msg('请且只勾选一条数据！')
+            }
+        });
+        //删除绑定的门票或者计时
+        table.on('tool(bindTable)', function (obj) {
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event;
+            if (layEvent === 'del') { //机台绑定
+                for (let i in arrBindTable) {
+                    if (arrBindTable[i].ProjectID == data.ProjectID) {
+                        arrBindTable.splice(i, 1);
+                        obj.del();
+                    }
+                }
+            }
+        });
+
+        table.on('tool(gameDeviceTable)', function (obj) {
+            var data = obj.data; //获得当前行数据
+            _id = data.ID;
+            var layEvent = obj.event;
+            if (layEvent === 'bindMachine') { //机台绑定
+                xc.getGameInfoDic(token, layer, form, 'gameIndexId');
+                xc.getRouteDevice(token, layer, form, 'bindDeviceId');
+                _state = 1;
+                $('#siteName').html('');
+                layer.open({
+                    title: '通讯绑定',
+                    type: 1,
+                    area: '400px',
+                    content: $('#deviceBindOpen')
+                });
+            } else if (layEvent === 'unBindMachine') { //机台解绑
+                layer.confirm('确定解绑该设备吗？', function (index) {
+                    Id = data.ID;
+                    let _obj = {
+                        'id': data.ID,
+                        'state': 0,
+                        'userToken': token,
+                        'signkey': '1f626576304bf5d95b72ece2222e42c3'
+                    };
+                    let parseJson = JSON.stringify(_obj);
+                    $.ajax({
+                        type: 'post',
+                        url: '/XCCloud/DeviceInfo?action=BindRoutineInfo',
+                        contentType: "application/json; charset=utf-8",
+                        data: {parasJson: parseJson},
+                        success: function (data) {
+                            data = JSON.parse(data);
+                            if (data.result_code == 1) {
+                                location.reload();
+                            } else {
+                                layer.msg(data.result_msg);
+                            }
+                        }
+                    })
+                });
+            } else if (layEvent === 'lock') { //锁定
+                layer.confirm('确定锁定该设备吗？', function (index) {
+                    Id = data.ID;
+                    let _obj = {
+                        'id': data.ID,
+                        'state': 1,
+                        'userToken': token,
+                        'signkey': '1f626576304bf5d95b72ece2222e42c3'
+                    };
+                    let parseJson = JSON.stringify(_obj);
+                    $.ajax({
+                        type: 'post',
+                        url: '/XCCloud/DeviceInfo?action=LockDeviceInfo',
+                        contentType: "application/json; charset=utf-8",
+                        data: {parasJson: parseJson},
+                        success: function (data) {
+                            data = JSON.parse(data);
+                            if (data.result_code == 1) {
+                                location.reload();
+                            } else {
+                                layer.msg(data.result_msg);
+                            }
+                        }
+                    })
+                });
+            } else if (layEvent === 'unLock') { //解锁
+                layer.confirm('确定解锁该设备吗？', function (index) {
+                    Id = data.ID;
+                    let _obj = {
+                        'id': data.ID,
+                        'state': 0,
+                        'userToken': token,
+                        'signkey': '1f626576304bf5d95b72ece2222e42c3'
+                    };
+                    let parseJson = JSON.stringify(_obj);
+                    $.ajax({
+                        type: 'post',
+                        url: '/XCCloud/DeviceInfo?action=LockDeviceInfo',
+                        contentType: "application/json; charset=utf-8",
+                        data: {parasJson: parseJson},
+                        success: function (data) {
+                            data = JSON.parse(data);
+                            if (data.result_code == 1) {
+                                location.reload();
+                            } else {
+                                layer.msg(data.result_msg);
+                            }
+                        }
+                    })
+                });
+            } else if (layEvent === 'code') { //查看二维码
+                Id = data.ID;
+
+            } else if (layEvent === 'bindTicket') {
+                bindType = 0;
+
+                let _obj = {
+                    'id': data.ID,
+                    'joinType': 0,
+                    'userToken': token,
+                    'signkey': '1f626576304bf5d95b72ece2222e42c3'
+                };
+                let parseJson = JSON.stringify(_obj);
+                $.ajax({
+                    type: 'post',
+                    url: '/XCCloud/DeviceInfo?action=GetBindProject',
+                    contentType: "application/json; charset=utf-8",
+                    data: {parasJson: parseJson},
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        if (data.result_code == 1) {
+                            arrBindTable = data.result_data,
+                                table.render({
+                                    elem: '#bindTable',
+                                    data: arrBindTable,
+                                    size: 'sm',
+                                    cols: [[
+                                        {field: 'ProjectID', title: '门票ID', align: 'center', sort: true, width: 120}
+                                        , {field: 'ProjectName', title: '门票名称', align: 'center', width: 120} //width 支持：数字、百分比和不填写。
+                                        , {
+                                            field: 'SignType',
+                                            title: '验证类型',
+                                            align: 'center',
+                                            width: 120,
+                                            templet: '#SignType'
+                                        }
+                                        , {
+                                            field: 'LockMember',
+                                            title: '入场锁定',
+                                            align: 'center',
+                                            width: 120,
+                                            templet: '#LockMember'
+                                        }
+                                        , {
+                                            fixed: 'right',
+                                            title: '操作',
+                                            width: 140,
+                                            align: 'center',
+                                            toolbar: '#barDemo1'
+                                        }
+                                    ]]
+                                    , page: {page: true, limits: [10, 15, 20]}
+                                    , limit: 5
+                                });
+                            layer.open({
+                                title: '门票绑定',
+                                type: 1,
+                                area: '650px',
+                                anim: 5, //0-6的选择，指定弹出图片动画类型，默认随机（请注意，3.0之前的版本用shift参数）
+                                content: $('#bindTableBox')
+                            });
+                        } else {
+                            layer.msg(data.result_msg);
+                        }
+                    }
+                });
+            }
+        });
+        //保存路由器段号
         $('#saveRouterBtn').click(function () {
-            let _obj={'deviceId':_id,'segment': $('input[name="router"]').val(),'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+            let _obj = {
+                'deviceId': _id,
+                'segment': $('input[name="router"]').val(),
+                'userToken': token,
+                'signkey': '1f626576304bf5d95b72ece2222e42c3'
+            };
             let parseJson = JSON.stringify(_obj);
             $.ajax({
                 type: 'post',
@@ -1175,62 +1397,69 @@ let motor1En_broken=1;let motor2En_broken=1;let balanceIndexbroken='';let toCard
                 success: function (data) {
                     data = JSON.parse(data);
                     if (data.result_code == 1) {
-                        layer.msg('设置成功',{time:1500},function () {
+                        layer.msg('设置成功', {time: 1500}, function () {
                             location.reload();
                         })
                     }
                 }
             })
         })
-        $('#saveBtn').on('click',function () {
-            xc.BindDeviceInfo(_id,token,layer,_state)
+        $('#saveBtn').on('click', function () {
+            xc.BindDeviceInfo(_id, token, layer, _state)
         });
-        $('#cancel').on('click',function () {
-           layer.closeAll();
-             _state;
-             _id;
-             gameIndexId='';
-             bindDeviceId='';
-             $('#gameIndexId').html('');
+        $('#cancel').on('click', function () {
+            layer.closeAll();
+            _state;
+            _id;
+            gameIndexId = '';
+            bindDeviceId = '';
+            $('#gameIndexId').html('');
             $('#bindDeviceId').html('');
             form.render('select');
         });
-        $('#saveAddBind').on('click',function () {
+        $('#saveAddBind').on('click', function () {
             layer.close(index);
-            arrBindTable.push({'ProjectID':ProjectID,'ProjectName':ProjectName,'SignType':SignType,'LockMember':LockMember});
-                table.render({
-                    elem:'#bindTable',
-                    data:arrBindTable,
-                    size:'sm',
-                    cols:[[
-                        {field:'ProjectID', title:'门票ID', align: 'center', sort: true}
-                        ,{field:'ProjectName',title: '门票名称', align: 'center'} //width 支持：数字、百分比和不填写。
-                        ,{field:'SignType', title: '验证类型', align: 'center',templet:'#SignType'}
-                        ,{field:'LockMember', title: '入场锁定', align: 'center',templet:'#LockMember'}
-                        ,{fixed: 'right', title: '操作', width:140, align:'center', toolbar: '#barDemo1'}
-                    ]]
-                    , page: {page: true, limits: [10, 15, 20]}
-                    , limit: 5
-                });
+            arrBindTable.push({
+                'ProjectID': ProjectID,
+                'ProjectName': ProjectName,
+                'SignType': SignType,
+                'LockMember': LockMember
+            });
+            table.render({
+                elem: '#bindTable',
+                data: arrBindTable,
+                size: 'sm',
+                cols: [[
+                    {field: 'ProjectID', title: '门票ID', align: 'center', sort: true}
+                    , {field: 'ProjectName', title: '门票名称', align: 'center'} //width 支持：数字、百分比和不填写。
+                    , {field: 'SignType', title: '验证类型', align: 'center', templet: '#SignType'}
+                    , {field: 'LockMember', title: '入场锁定', align: 'center', templet: '#LockMember'}
+                    , {fixed: 'right', title: '操作', width: 140, align: 'center', toolbar: '#barDemo1'}
+                ]]
+                , page: {page: true, limits: [10, 15, 20]}
+                , limit: 5
+            });
         });
-        $('#saveBind').on('click',function () {
-            let _obj={'id':_id,
-                'joinType':bindType,
-                'deviceProjects':arrBindTable,
-                'userToken':token,
-                'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+        $('#saveBind').on('click', function () {
+            let _obj = {
+                'id': _id,
+                'joinType': bindType,
+                'deviceProjects': arrBindTable,
+                'userToken': token,
+                'signkey': '1f626576304bf5d95b72ece2222e42c3'
+            };
             let parseJson = JSON.stringify(_obj);
             $.ajax({
-                type:'post',
-                url:'/XCCloud/DeviceInfo?action=BindProject',
+                type: 'post',
+                url: '/XCCloud/DeviceInfo?action=BindProject',
                 contentType: "application/json; charset=utf-8",
-                data:{parasJson: parseJson},
+                data: {parasJson: parseJson},
                 success: function (data) {
                     data = JSON.parse(data);
                     if (data.result_code == 1) {
-                         layer.msg('绑定成功！',{time:1500},function () {
-                             location.reload();
-                         });
+                        layer.msg('绑定成功！', {time: 1500}, function () {
+                            location.reload();
+                        });
                     } else {
                         layer.msg(data.result_msg);
                     }
@@ -1239,33 +1468,36 @@ let motor1En_broken=1;let motor2En_broken=1;let balanceIndexbroken='';let toCard
         });
     });
 
-    xcActionSystem.prototype.BindDeviceInfo=function (id,token,layer,state) {
-        let _obj={'id':id,
-            'state':state,
+    xcActionSystem.prototype.BindDeviceInfo = function (id, token, layer, state) {
+        let _obj = {
+            'id': id,
+            'state': state,
             // 'gameIndexId':gameIndexId,
-            'bindDeviceId':bindDeviceId,
-            'ADDRESS':$('#siteName').val(),
-            'userToken':token,
-            'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+            'bindDeviceId': bindDeviceId,
+            'ADDRESS': $('#siteName').val(),
+            'userToken': token,
+            'signkey': '1f626576304bf5d95b72ece2222e42c3'
+        };
         let parseJson = JSON.stringify(_obj);
         $.ajax({
-            type:'post',
-            url:'/XCCloud/DeviceInfo?action=BindRoutineInfo',
+            type: 'post',
+            url: '/XCCloud/DeviceInfo?action=BindRoutineInfo',
             contentType: "application/json; charset=utf-8",
-            data:{parasJson: parseJson},
+            data: {parasJson: parseJson},
             success: function (data) {
                 data = JSON.parse(data);
                 if (data.result_code == 1) {
-                    if(id==1){
-                        layer.msg('通讯设备绑定成功！',{time:1500},function () {
+                    if (id == 1) {
+                        layer.msg('通讯设备绑定成功！', {time: 1500}, function () {
                             location.reload()
                         })
-                    }else {
-                        layer.msg('通讯设备解绑成功！',{time:1500},function () {
+                    } else {
+                        layer.msg('通讯设备解绑成功！', {time: 1500}, function () {
                             location.reload()
                         })
                     }
-                    xc.getInitData(parm); layer.closeAll();
+                    xc.getInitData(parm);
+                    layer.closeAll();
                 } else {
                     layer.msg(data.result_msg);
                 }
@@ -1324,7 +1556,8 @@ let motor1En_broken=1;let motor2En_broken=1;let balanceIndexbroken='';let toCard
 </script>
 <script type="text/html" id="LockMember">
     {{# if(d.LockMember==1){ }}
-    <input type="checkbox" checked name="switch" lay-skin="switch" lay-text="是|否" class="tb_check" lay-filter="test" disabled>
+    <input type="checkbox" checked name="switch" lay-skin="switch" lay-text="是|否" class="tb_check" lay-filter="test"
+           disabled>
     {{# }else{ }}
     <input type="checkbox" name="switch" lay-skin="switch" lay-text="是|否" class="tb_check" lay-filter="test" disabled>
     {{#  } }}

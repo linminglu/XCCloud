@@ -26,7 +26,7 @@ namespace XCCloudService.DBService.DAL
             sb.Append(string.Format(" declare @UserID int = {0} ",userId));
             sb.Append(string.Format(" if not exists (select 0 from Search_Template where UserID = @UserID ) "));
             sb.Append(string.Format("   set @UserID = 0 "));
-            sb.Append(@" select * from Search_Template a inner join Search_Template_Detail b on a.ID = b.TempID  
+            sb.Append(@" select a.UserID,a.PageName,a.ProcessName,b.* from Search_Template a inner join Search_Template_Detail b on a.ID = b.TempID  
                          where UserID = @UserID and PageName = @PageName and ProcessName = @ProcessName ");
             sb.Append(@" select * from Dict_System ");
             DataAccess ac = new DataAccess(DataAccessDB.XCCloudDB);
