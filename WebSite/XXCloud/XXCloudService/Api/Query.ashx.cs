@@ -12,6 +12,7 @@ using XXCloudService.Api.XCCloud.Common;
 using System.Transactions;
 using XCCloudService.BLL.XCCloud;
 using XCCloudService.Model.XCCloud;
+using XCCloudService.Model.CustomModel.XCCloud;
 
 namespace XCCloudService.Api
 {
@@ -20,8 +21,11 @@ namespace XCCloudService.Api
     /// </summary>
     public class Query : ApiBase
     {
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object init(Dictionary<string, object> dicParas)
         {
+            XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+
             string pageName = string.Empty;
             string processName = string.Empty;
             int userId = 0;
@@ -38,7 +42,7 @@ namespace XCCloudService.Api
 
             if (dicParas.ContainsKey("userid"))
             {
-                int.TryParse(dicParas["userid"].ToString(),out userId);
+                int.TryParse(userTokenKeyModel.LogId, out userId);
             }
 
             string errMsg = string.Empty;
@@ -69,17 +73,18 @@ namespace XCCloudService.Api
             }
         }
 
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object save(Dictionary<string, object> dicParas)
         {                       
             try
             {
-                string errMsg = string.Empty;
-                if (dicParas.Get("userId").Validintnozero("用户ID", out errMsg))
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+
+                string errMsg = string.Empty;                
                 if (dicParas.GetArray("templateDetails").Validarray("模板条件列表", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-                var userId = dicParas.Get("userId").Toint();
+                var userId = userTokenKeyModel.LogId.Toint(0);
                 var templateDetails = dicParas.GetArray("templateDetails");                
 
                 //开启EF事务
