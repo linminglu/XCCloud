@@ -91,10 +91,11 @@ namespace XXCloudService.Api.XCCloud
                                 ) b ON a.ID = b.ID and b.RowNum <= 1
                                 WHERE 1=1
                             ";
-                sql += " AND a.StoreID=" + storeId; 
-                sql += " AND a.TicketType=" + ticketType;
-                sql += " AND a.BusinessType=" + businessType;
-
+                sql = sql + " AND a.StoreID=" + storeId; 
+                sql = sql + " AND a.TicketType=" + ticketType;
+                sql = sql + " AND a.BusinessType=" + businessType;
+                sql = sql + sqlWhere;
+                    
                 #endregion
 
                 var list = Data_ProjectTicketService.I.SqlQuery<Data_ProjectTicketList>(sql, parameters).ToList();

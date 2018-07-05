@@ -522,6 +522,9 @@
     <Compile Include="IBLL\IFlw_MemberCard_RenewService.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
+    <Compile Include="IBLL\IFlw_MemberDataService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
     <Compile Include="IBLL\IFlw_MemberLevelFreeService.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
@@ -1122,6 +1125,9 @@
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Flw_MemberCard_RenewService.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Flw_MemberDataService.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Flw_MemberLevelFreeService.cs">

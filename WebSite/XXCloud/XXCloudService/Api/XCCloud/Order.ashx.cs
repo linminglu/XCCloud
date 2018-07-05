@@ -171,14 +171,10 @@ namespace XXCloudService.Api.XCCloud
                 {
                     var obj = new {
                         orderId = ds.Tables[0].Rows[i]["OrderID"].ToString(),
+                        saleTime = Convert.ToDateTime(ds.Tables[0].Rows[i]["CreateTime"]).ToString("yyyy-MM-dd HH:mm:ss"),
                         icCardId = ds.Tables[0].Rows[i]["ICCardID"].ToString(),
-                        orderStatus = ds.Tables[0].Rows[i]["OrderStatus"].ToString(),
-                        orderStatusName = ds.Tables[0].Rows[i]["orderStatusName"].ToString(),
-                        realPay = Convert.ToDecimal(ds.Tables[0].Rows[i]["RealPay"]).ToString("#.00"),
-                        freePay = Convert.ToDecimal(ds.Tables[0].Rows[i]["FreePay"]).ToString("#.00"),
-                        payCount = Convert.ToDecimal(ds.Tables[0].Rows[i]["PayCount"]).ToString("#.00"),
-                        createTime = Convert.ToDateTime(ds.Tables[0].Rows[i]["CreateTime"]).ToString("yyyy-MM-dd HH:mm:ss"),
-                        userName = ds.Tables[0].Rows[i]["UseName"].ToString()
+                        payCount = Convert.ToDecimal(ds.Tables[0].Rows[i]["PayCount"].ToString()),
+                        orderStatusName = ds.Tables[0].Rows[i]["orderStatusName"].ToString()
                     };
                     listObj.Add(obj);
                 }

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using XCCloudService.Common;
+using XCCloudWebBar.Common;
 
-namespace XCCloudService.SocketService.UDP.Security
+namespace XCCloudWebBar.SocketService.UDP.Security
 {
     public class SignKeyHelper
     {

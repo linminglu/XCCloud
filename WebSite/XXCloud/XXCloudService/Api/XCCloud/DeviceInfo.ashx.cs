@@ -1755,9 +1755,9 @@ namespace XXCloudService.Api.XCCloud
                     " left join Base_UserInfo b on a.UserID=b.UserID " +
                     " left join Data_Head c on a.DeviceID=c.ID " +
                     " left join (select b.* from Dict_System a inner join Dict_System b on a.ID=b.PID where a.DictKey='安装类别' and a.PID=0) d on convert(varchar, a.ReloadType)=d.DictValue " +
-                    " where b.StoreID='" + storeId + "' and deviceType=2 and ReloadType=3 " + 
+                    " where b.StoreID='" + storeId + "' and deviceType=2 and ReloadType=3 " + sqlWhere +
                     " order by c.HeadName, a.RealTime desc";
-                sql = sql + sqlWhere;
+                
                 IData_ReloadService data_ReloadService = BLLContainer.Resolve<IData_ReloadService>();
                 var data_Reload = data_ReloadService.SqlQuery<Data_ReloadModelList>(sql, parameters).ToList();
 

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
-using XCCloudService.DAL.IDAL;
+using XCCloudWebBar.DAL.IDAL;
 
-namespace XCCloudService.BLL.Base
+namespace XCCloudWebBar.BLL.Base
 {
     public abstract partial class BaseService<T> where T : class, new()
     {

@@ -10,10 +10,9 @@ using XCCloudWebBar.Business.Common;
 using XCCloudWebBar.Common;
 using XCCloudWebBar.Business.XCGame;
 using XCCloudWebBar.Utility;
-using XXCloudService.Utility;
 using XCCloudWebBar.Model.CustomModel.XCCloud;
 
-namespace XCCloudService
+namespace XCCloudWebBar
 {
     public class Global : System.Web.HttpApplication
     {

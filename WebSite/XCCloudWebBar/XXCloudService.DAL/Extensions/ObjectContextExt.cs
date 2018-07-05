@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace XCCloudService.DAL
+namespace XCCloudWebBar.DAL
 {
     public static class ObjectContextExt
     {

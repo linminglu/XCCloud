@@ -12,7 +12,9 @@
 	<link rel="stylesheet" href="css/swiper.min.css">
 	<link href="css/bootstrap-table.css" rel="stylesheet">
     <link rel='icon' href='xinchen.ico ' type='image/x-ico'/>
-    
+    <style>
+    .cardLevelList{margin-bottom:3em;}
+    </style>
 </head>
 <body>
 <div id="app" v-cloak>
@@ -666,6 +668,31 @@
             </div>
         </div>
     </div>
+    <!--会员等级变更-->
+    <div class="modal fade bs-example-modal-md" id="cardLevelChange" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-md" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span>&times;</span></button>
+                    <h4 class="modal-title">温馨提示</h4>
+                </div>
+                <div class="modal-body row">
+                    <div class="input-group col-lg-12 col-md-12 cardLevelList tab-style">                
+                        <span class="input-group-addon addonWidth">选择等级：</span>
+                        <select  class="form-control" v-model="cardLevelList.levelId">
+                            <option v-for="(option,index) in (cardLevelList.levelData)" :value="index">
+                                {{option.MemberLevelName}}
+                            </option>
+                        </select>
+                        <div class="input-group-btn">
+                            <button type="button" class="btn btn-default readCard" @click="comfirmLevelChange">更改</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+	
 	<!-- Modal(通用提示框) -->
 	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="z-index: 99999">
 		<div class="modal-dialog" role="document">
@@ -1020,7 +1047,7 @@
 										</div>
 										<div class="mcImg col-lg-2 col-md-2">
 											<img :src="memberInfo.Avatar" alt="会员头像">
-											<button type="button" class="btn btn-info saveTheData">保存会员资料</button>
+											<button type="button" class="btn btn-info saveTheData" @click="memberCardModify">保存会员资料</button>
 										</div>
 									</div>
 									<div class="row" style="margin-top: 1em;">
@@ -1044,7 +1071,6 @@
 											<div class="col-lg-9 col-md-9">
 												<ul class="nav nav-tabs" role="tablist">
 													<li role="presentation" class="active"><a href="#ViceCard" aria-controls="ViceCard" role="tab" data-toggle="tab">主卡信息</a></li>
-
 													<li role="presentation" v-for="(item,index) in childCardList" :key="index">
 														<a :href="item.titleHref" :aria-controls="item.titleIndex" role="tab" data-toggle="tab">{{item.indexTxt}}</a>
 													</li>
@@ -1085,8 +1111,8 @@
 												<button @click="supplementCard('2')" type="button" class="btn btn-success">续卡</button>
 												<button @click="supplementCard('0')" type="button" class="btn btn-success">换卡</button>
 												<button @click="supplementCard('1')" type="button" class="btn btn-success">补卡</button>
-												<button type="button" class="btn btn-success">锁定</button>
-												<button type="button" class="btn btn-info">等级变更</button>
+												<button type="button" class="btn btn-success" @click="cardManualLock">锁定</button>
+												<button type="button" class="btn btn-info" @click="cardLevelChange">等级变更</button>
 											</div>
 										</div>
 									</div>
@@ -1330,6 +1356,10 @@
 				Mobile:"",
 				UserName: "",
                 Note:""
+            },
+            cardLevelList:{
+                levelId:"0",
+                levelData:[],
             },
             onSwitch0:false,
             onSwitch1:false,
@@ -2080,7 +2110,7 @@
 				}
 			},
 //			按手机号查询会员信息
-            getMember:function (type) {getMember
+            getMember:function (type) {
 			    var that = this;
                 switch (type){
                     case "0" :
@@ -2151,7 +2181,6 @@
                         that.onSwitch4 = res.data.result_data.CardPurview.AllowFreeCoin;
                         that.onSwitch5 = res.data.result_data.CardPurview.AllowExitCoin;
                         that.onSwitch6 = res.data.result_data.CardPurview.AllowRenew;
-
                         that.memberInput.LockList = res.data.result_data.LockList;
                         that.memberInput.ICCardId = res.data.result_data.ICCardId;
                         that.memberInput.EndDate = res.data.result_data.EndDate;
@@ -2180,6 +2209,34 @@
                     console.log(err);
                 });
 			},
+//          会员卡吧台人工锁定
+            cardManualLock:function(){
+                var that = this;
+                if(that.icCardId == ""){
+                    that.msg = "请先读卡，会员卡号为空！";
+                    $('#myModal').modal('show');
+                    setTimeout(function () {
+                        $('#myModal').modal('hide');
+                    }, 1500);
+                }else{
+                    var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,iccardId:that.icCardId};
+                    console.log(obj);
+                    axios.post('/XCCloud/Member?action=cardManualLock', obj).then(function (res) {	
+                        console.log(res.data);
+                        that.msgPrompt(res.data);
+                        if (res.data.result_code === '1') {
+                            that.msg = "锁定成功！";
+                            $('#myModal').modal('show');
+                            that.getMenberCardInfo();
+                            setTimeout(function () {
+                                $('#myModal').modal('hide');
+                            }, 1500);
+                        }
+                    }).catch(function (err) {
+                        console.log(err);
+                    });
+                }              
+            },
 //          会员卡解锁
             cardUnLock:function(index){
                 var that = this;
@@ -2190,10 +2247,87 @@
                     that.msgPrompt(res.data);
                     if (res.data.result_code === '1') {
                         that.msg = "解锁成功！";
-                            $('#myModal').modal('show');
-                            setTimeout(function () {
-                                $('#myModal').modal('hide');
-                            }, 1500);
+                        that.getMenberCardInfo();
+                        $('#myModal').modal('show');
+                        setTimeout(function () {
+                            $('#myModal').modal('hide');
+                        }, 1500);
+                    }
+                }).catch(function (err) {
+                    console.log(err);
+                });
+            },
+//          会员等级变更按钮
+            cardLevelChange:function(){
+                var that = this;
+                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken};
+                console.log(obj);
+                axios.post('/XCCloud/Member?action=GetMemberLevelDic', obj).then(function (res) {	
+                    console.log(res.data);
+                    that.msgPrompt(res.data);
+                    if (res.data.result_code === '1') {
+                        that.cardLevelList.levelData =res.data.result_data;
+                        $('#cardLevelChange').modal('show');
+                        
+                    }
+                }).catch(function (err) {
+                    console.log(err);
+                });
+                
+            },
+//          确认等级变更
+            comfirmLevelChange:function(){
+                var that = this;
+                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,iccardId:that.icCardId,levelId:that.cardLevelList.levelData[that.cardLevelList.levelId].MemberLevelID};
+                console.log(obj);
+                axios.post('/XCCloud/Member?action=cardLevelChange', obj).then(function (res) {	
+                    console.log(res.data);
+                    that.msgPrompt(res.data);
+                    if (res.data.result_code === '1') {
+                        $('#cardLevelChange').modal('hide');
+                        that.cardLevelList.levelData = "0"
+                        that.msg = "等级变更成功！";
+                        that.getMenberCardInfo();
+                    	$('#myModal').modal('show');
+						setTimeout(function () {
+							$('#myModal').modal('hide');
+                        }, 1500);                       
+                    }
+                }).catch(function (err) {
+                    console.log(err);
+                });
+            },
+//          会员卡信息修改
+            memberCardModify:function(){
+                var that = this;
+                var obj={
+                    sysId: sysId,
+                    versionNo: versionNo,
+                    userToken:that.userToken,
+                    iccardId:that.icCardId,
+                    userName:that.memberInfo.UserName,
+                    gender:that.memberInfo.Gender,
+                    note:that.memberInfo.Note,
+                    allowIn:that.onSwitch0,
+                    allowOut:that.onSwitch1,
+                    allowSaleCoin:that.onSwitch2,
+                    allowSaveCoin:that.onSwitch3,
+                    allowFreeCoin:that.onSwitch4,
+                    allowExitCoin:that.onSwitch5,
+                    allowRenew:that.onSwitch6
+                };
+            
+                console.log(obj);
+                axios.post('/XCCloud/Member?action=memberCardModify', obj).then(function (res) {	
+                    console.log(res.data);
+                    that.msgPrompt(res.data);
+                    if (res.data.result_code === '1') {
+                        that.msg = "会员信息修改成功！";
+                        that.getMenberCardInfo();
+                    	$('#myModal').modal('show');
+						setTimeout(function () {
+							$('#myModal').modal('hide');
+                        }, 1500);                       
                     }
                 }).catch(function (err) {
                     console.log(err);

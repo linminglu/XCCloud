@@ -2083,6 +2083,9 @@
           <Property Name="GameIndexID" Type="int" />
           <Property Name="SiteName" Type="varchar" MaxLength="20" />
           <Property Name="SN" Type="int" />
+          <Property Name="ACKControlValue" Type="int" />
+          <Property Name="ACKFreeCoin" Type="int" />
+          <Property Name="ACKPulesCount" Type="int" />
           <Property Name="BusinessType" Type="int" />
           <Property Name="State" Type="int" />
           <Property Name="RealTime" Type="datetime" />
@@ -2531,6 +2534,39 @@
           <Property Name="Note" Type="varchar" MaxLength="200" />
           <Property Name="Verifiction" Type="varchar" MaxLength="32" />
         </EntityType>
+        <EntityType Name="Flw_MemberData">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="varchar" MaxLength="32" Nullable="false" />
+          <Property Name="MerchID" Type="varchar" MaxLength="15" />
+          <Property Name="StoreID" Type="varchar" MaxLength="15" />
+          <Property Name="MemberID" Type="varchar" MaxLength="15" />
+          <Property Name="MemberName" Type="varchar" MaxLength="50" />
+          <Property Name="CardIndex" Type="varchar" MaxLength="15" />
+          <Property Name="ICCardID" Type="varchar" MaxLength="20" />
+          <Property Name="MemberLevelName" Type="varchar" MaxLength="20" />
+          <Property Name="ChannelType" Type="int" />
+          <Property Name="OperationType" Type="int" />
+          <Property Name="OPTime" Type="datetime" />
+          <Property Name="SourceType" Type="int" />
+          <Property Name="SourceID" Type="varchar" MaxLength="32" />
+          <Property Name="BalanceIndex" Type="int" />
+          <Property Name="ChangeValue" Type="numeric" Precision="10" Scale="2" />
+          <Property Name="Balance" Type="numeric" Precision="10" Scale="2" />
+          <Property Name="FreeChangeValue" Type="numeric" Precision="10" Scale="2" />
+          <Property Name="FreeBalance" Type="numeric" Precision="10" Scale="2" />
+          <Property Name="BalanceTotal" Type="numeric" Precision="10" Scale="2" />
+          <Property Name="Note" Type="varchar" MaxLength="200" />
+          <Property Name="UserID" Type="int" />
+          <Property Name="DeviceID" Type="int" />
+          <Property Name="ScheduleID" Type="varchar" MaxLength="32" />
+          <Property Name="AuthorID" Type="int" />
+          <Property Name="WorkStation" Type="varchar" MaxLength="50" />
+          <Property Name="CheckDate" Type="date" />
+          <Property Name="SyncFlag" Type="int" />
+          <Property Name="Verifiction" Type="varchar" MaxLength="32" />
+        </EntityType>
         <EntityType Name="Flw_MemberLevelFree">
           <Key>
             <PropertyRef Name="ID" />
@@ -2893,6 +2929,7 @@
           <Property Name="FieldName" Type="varchar" MaxLength="50" />
           <Property Name="Title" Type="varchar" MaxLength="50" />
           <Property Name="Datatype" Type="varchar" MaxLength="50" />
+          <Property Name="Condition" Type="int" />
           <Property Name="Width" Type="int" />
           <Property Name="ShowColume" Type="int" />
           <Property Name="ShowSearch" Type="int" />
@@ -3123,6 +3160,7 @@
           <EntitySet Name="Flw_MemberCard_Free" EntityType="Self.Flw_MemberCard_Free" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Flw_MemberCard_LevelChange" EntityType="Self.Flw_MemberCard_LevelChange" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Flw_MemberCard_Renew" EntityType="Self.Flw_MemberCard_Renew" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Flw_MemberData" EntityType="Self.Flw_MemberData" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Flw_MemberLevelFree" EntityType="Self.Flw_MemberLevelFree" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Flw_MemberLevelFree_Detail" EntityType="Self.Flw_MemberLevelFree_Detail" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Flw_Order" EntityType="Self.Flw_Order" Schema="dbo" store:Type="Tables" />
@@ -3547,6 +3585,7 @@
           <EntitySet Name="Flw_MemberCard_Exit" EntityType="XCCloudDBModel.Flw_MemberCard_Exit" />
           <EntitySet Name="Log_GameAlarm" EntityType="XCCloudDBModel.Log_GameAlarm" />
           <EntitySet Name="Flw_MemberCard_LevelChange" EntityType="XCCloudDBModel.Flw_MemberCard_LevelChange" />
+          <EntitySet Name="Flw_MemberData" EntityType="XCCloudDBModel.Flw_MemberData" />
         </EntityContainer>
         <EntityType Name="Base_ChainRule_Store">
           <Key>
@@ -5000,6 +5039,7 @@
           <Property Name="ShowColume" Type="Int32" />
           <Property Name="ShowSearch" Type="Int32" />
           <Property Name="DictID" Type="Int32" />
+          <Property Name="Condition" Type="Int32" />
         </EntityType>
         <EntityType Name="Store_GameTotal">
           <Key>
@@ -6259,6 +6299,9 @@
           <Property Name="Note" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
           <Property Name="CheckDate" Type="DateTime" Precision="0" />
           <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="ACKControlValue" Type="Int32" />
+          <Property Name="ACKFreeCoin" Type="Int32" />
+          <Property Name="ACKPulesCount" Type="Int32" />
         </EntityType>
         <EntityType Name="Flw_MemberCard_Free">
           <Key>
@@ -6493,6 +6536,39 @@
           <Property Name="Workstation" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="CheckDate" Type="DateTime" Precision="0" />
           <Property Name="Note" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Flw_MemberData">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="MemberID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="MemberName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CardIndex" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="ICCardID" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="MemberLevelName" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="ChannelType" Type="Int32" />
+          <Property Name="OperationType" Type="Int32" />
+          <Property Name="OPTime" Type="DateTime" Precision="3" />
+          <Property Name="SourceType" Type="Int32" />
+          <Property Name="SourceID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="BalanceIndex" Type="Int32" />
+          <Property Name="ChangeValue" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="Balance" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="FreeChangeValue" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="FreeBalance" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="BalanceTotal" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="Note" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="UserID" Type="Int32" />
+          <Property Name="DeviceID" Type="Int32" />
+          <Property Name="ScheduleID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="AuthorID" Type="Int32" />
+          <Property Name="WorkStation" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CheckDate" Type="DateTime" Precision="0" />
+          <Property Name="SyncFlag" Type="Int32" />
           <Property Name="Verifiction" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
         </EntityType>
         </Schema>
@@ -8043,6 +8119,7 @@
           <EntitySetMapping Name="Search_Template_Detail">
             <EntityTypeMapping TypeName="XCCloudDBModel.Search_Template_Detail">
               <MappingFragment StoreEntitySet="Search_Template_Detail">
+                <ScalarProperty Name="Condition" ColumnName="Condition" />
                 <ScalarProperty Name="DictID" ColumnName="DictID" />
                 <ScalarProperty Name="ShowSearch" ColumnName="ShowSearch" />
                 <ScalarProperty Name="ShowColume" ColumnName="ShowColume" />
@@ -9355,6 +9432,9 @@
           <EntitySetMapping Name="Flw_DeviceData">
             <EntityTypeMapping TypeName="XCCloudDBModel.Flw_DeviceData">
               <MappingFragment StoreEntitySet="Flw_DeviceData">
+                <ScalarProperty Name="ACKPulesCount" ColumnName="ACKPulesCount" />
+                <ScalarProperty Name="ACKFreeCoin" ColumnName="ACKFreeCoin" />
+                <ScalarProperty Name="ACKControlValue" ColumnName="ACKControlValue" />
                 <ScalarProperty Name="Verifiction" ColumnName="Verifiction" />
                 <ScalarProperty Name="CheckDate" ColumnName="CheckDate" />
                 <ScalarProperty Name="Note" ColumnName="Note" />
@@ -9618,6 +9698,40 @@
                 <ScalarProperty Name="NewMemberLevleID" ColumnName="NewMemberLevleID" />
                 <ScalarProperty Name="OldMemberLevelID" ColumnName="OldMemberLevelID" />
                 <ScalarProperty Name="ICCardID" ColumnName="ICCardID" />
+                <ScalarProperty Name="MemberID" ColumnName="MemberID" />
+                <ScalarProperty Name="StoreID" ColumnName="StoreID" />
+                <ScalarProperty Name="MerchID" ColumnName="MerchID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Flw_MemberData">
+            <EntityTypeMapping TypeName="XCCloudDBModel.Flw_MemberData">
+              <MappingFragment StoreEntitySet="Flw_MemberData">
+                <ScalarProperty Name="Verifiction" ColumnName="Verifiction" />
+                <ScalarProperty Name="SyncFlag" ColumnName="SyncFlag" />
+                <ScalarProperty Name="CheckDate" ColumnName="CheckDate" />
+                <ScalarProperty Name="WorkStation" ColumnName="WorkStation" />
+                <ScalarProperty Name="AuthorID" ColumnName="AuthorID" />
+                <ScalarProperty Name="ScheduleID" ColumnName="ScheduleID" />
+                <ScalarProperty Name="DeviceID" ColumnName="DeviceID" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="Note" ColumnName="Note" />
+                <ScalarProperty Name="BalanceTotal" ColumnName="BalanceTotal" />
+                <ScalarProperty Name="FreeBalance" ColumnName="FreeBalance" />
+                <ScalarProperty Name="FreeChangeValue" ColumnName="FreeChangeValue" />
+                <ScalarProperty Name="Balance" ColumnName="Balance" />
+                <ScalarProperty Name="ChangeValue" ColumnName="ChangeValue" />
+                <ScalarProperty Name="BalanceIndex" ColumnName="BalanceIndex" />
+                <ScalarProperty Name="SourceID" ColumnName="SourceID" />
+                <ScalarProperty Name="SourceType" ColumnName="SourceType" />
+                <ScalarProperty Name="OPTime" ColumnName="OPTime" />
+                <ScalarProperty Name="OperationType" ColumnName="OperationType" />
+                <ScalarProperty Name="ChannelType" ColumnName="ChannelType" />
+                <ScalarProperty Name="MemberLevelName" ColumnName="MemberLevelName" />
+                <ScalarProperty Name="ICCardID" ColumnName="ICCardID" />
+                <ScalarProperty Name="CardIndex" ColumnName="CardIndex" />
+                <ScalarProperty Name="MemberName" ColumnName="MemberName" />
                 <ScalarProperty Name="MemberID" ColumnName="MemberID" />
                 <ScalarProperty Name="StoreID" ColumnName="StoreID" />
                 <ScalarProperty Name="MerchID" ColumnName="MerchID" />

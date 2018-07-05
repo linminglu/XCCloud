@@ -3,22 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using XCCloudService.Base;
-using XCCloudService.Business.Common;
-using XCCloudService.Business.XCGame;
-using XCCloudService.Business.XCGameMana;
-using XCCloudService.Common;
-using XCCloudService.Common.Enum;
-using XCCloudService.Model.CustomModel.Common;
-using XCCloudService.Model.CustomModel.XCGame;
-using XCCloudService.Model.CustomModel.XCGameManager;
-using XCCloudService.Model.Socket.UDP;
-using XCCloudService.SocketService.TCP.HubService;
-using XCCloudService.SocketService.UDP.Common;
-using XCCloudService.SocketService.UDP.Security;
+using XCCloudWebBar.Base;
+using XCCloudWebBar.Business.Common;
+using XCCloudWebBar.Business.XCGame;
+using XCCloudWebBar.Business.XCGameMana;
+using XCCloudWebBar.Common;
+using XCCloudWebBar.Common.Enum;
+using XCCloudWebBar.Model.CustomModel.Common;
+using XCCloudWebBar.Model.CustomModel.XCGame;
+using XCCloudWebBar.Model.CustomModel.XCGameManager;
+using XCCloudWebBar.Model.Socket.UDP;
+using XCCloudWebBar.SocketService.TCP.HubService;
+using XCCloudWebBar.SocketService.UDP.Common;
+using XCCloudWebBar.SocketService.UDP.Security;
 
 
-namespace XCCloudService.SocketService.UDP.Factory
+namespace XCCloudWebBar.SocketService.UDP.Factory
 {
     public class DataFactory
     {
@@ -304,7 +304,7 @@ namespace XCCloudService.SocketService.UDP.Factory
                 requestDataModel = JsonHelper.DataContractJsonDeserializer<DeviceStateRequestDataModel>(data);
                 requestDataModel.StoreId = "invalidstore";
                 //验证mcuId
-                XCCloudService.Model.XCGameManager.t_device manadeviceModel = null;
+                XCCloudWebBar.Model.XCGameManager.t_device manadeviceModel = null;
                 if (!DeviceManaBusiness.CheckDevice(requestDataModel.MCUId, ref manadeviceModel))
                 {
                     return new ComonErrorResponseModel(Result_Code.F, "mcuId无效", "");
@@ -579,7 +579,7 @@ namespace XCCloudService.SocketService.UDP.Factory
                 UDPSocketAnswerModel answerModel = new UDPSocketAnswerModel(ip, port, requestPackages, controlModel.OrderId,System.DateTime.Now, controlModel.Mobile, controlModel.StoreId, controlModel.Segment, controlModel.MCUId, controlModel.Coins, controlModel.SN);
                 UDPSocketAnswerBusiness.SetAnswer(answerModel);
                 //服务端发送数据
-                XCCloudService.SocketService.UDP.Server.Send(ip, port, requestPackages);
+                XCCloudWebBar.SocketService.UDP.Server.Send(ip, port, requestPackages);
                 //记录日志
                 string requestJson = JsonHelper.DataContractJsonSerializer(radarModel);
                 //UDPLogHelper.SaveUDPSendDeviceControlLog(controlModel.StoreId, controlModel.Mobile, controlModel.MCUId, controlModel.OrderId, controlModel.Segment, controlModel.SN, controlModel.Coins, int.Parse(controlModel.Action), requestJson);
@@ -649,7 +649,7 @@ namespace XCCloudService.SocketService.UDP.Factory
                 //UDPSocketAnswerModel answerModel = new UDPSocketAnswerModel(ip, port, requestPackages, controlModel.OrderId, System.DateTime.Now, controlModel.Mobile, controlModel.StoreId, controlModel.Segment, controlModel.MCUId, controlModel.Coins, controlModel.SN);
                 //UDPSocketAnswerBusiness.SetAnswer(answerModel);
                 //服务端发送数据
-                XCCloudService.SocketService.UDP.Server.Send(ip, port, requestPackages);
+                XCCloudWebBar.SocketService.UDP.Server.Send(ip, port, requestPackages);
                 string requestJson = JsonHelper.DataContractJsonSerializer(dataModel);
                 XCGameUDPMsgHub.SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.远程门店账目查询指令), "远程门店账目查询指令", radarToken, requestJson);
                 return true;
@@ -827,7 +827,7 @@ namespace XCCloudService.SocketService.UDP.Factory
                 byte[] requestPackages = CreateResponseProtocolData(TransmiteEnum.远程门店会员卡数据请求, dataByteArr);
 
                 //服务端发送数据
-                XCCloudService.SocketService.UDP.Server.Send(ip, port, requestPackages);
+                XCCloudWebBar.SocketService.UDP.Server.Send(ip, port, requestPackages);
                 string requestJson = JsonHelper.DataContractJsonSerializer(dataModel);
                 XCGameUDPMsgHub.SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.远程门店会员卡数据请求), "远程门店会员卡数据请求", radarToken, requestJson);
                 return true;
@@ -866,7 +866,7 @@ namespace XCCloudService.SocketService.UDP.Factory
                 byte[] requestPackages = CreateResponseProtocolData(TransmiteEnum.远程门店门票数据请求, dataByteArr);
 
                 //服务端发送数据
-                XCCloudService.SocketService.UDP.Server.Send(ip, port, requestPackages);
+                XCCloudWebBar.SocketService.UDP.Server.Send(ip, port, requestPackages);
                 string requestJson = JsonHelper.DataContractJsonSerializer(dataModel);
                 XCGameUDPMsgHub.SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.远程门店门票数据请求), "远程门店门票数据请求", radarToken, requestJson);
                 return true;
@@ -905,7 +905,7 @@ namespace XCCloudService.SocketService.UDP.Factory
                 byte[] requestPackages = CreateResponseProtocolData(TransmiteEnum.远程门店门票操作请求, dataByteArr);
 
                 //服务端发送数据
-                XCCloudService.SocketService.UDP.Server.Send(ip, port, requestPackages);
+                XCCloudWebBar.SocketService.UDP.Server.Send(ip, port, requestPackages);
                 string requestJson = JsonHelper.DataContractJsonSerializer(dataModel);
                 XCGameUDPMsgHub.SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.远程门店门票操作请求), "远程门店门票操作请求", radarToken, requestJson);
                 return true;
@@ -944,7 +944,7 @@ namespace XCCloudService.SocketService.UDP.Factory
                 byte[] requestPackages = CreateResponseProtocolData(TransmiteEnum.远程门店彩票数据请求, dataByteArr);
 
                 //服务端发送数据
-                XCCloudService.SocketService.UDP.Server.Send(ip, port, requestPackages);
+                XCCloudWebBar.SocketService.UDP.Server.Send(ip, port, requestPackages);
                 string requestJson = JsonHelper.DataContractJsonSerializer(dataModel);
                 XCGameUDPMsgHub.SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.远程门店彩票数据请求), "远程门店彩票数据请求", radarToken, requestJson);
                 return true;
@@ -983,7 +983,7 @@ namespace XCCloudService.SocketService.UDP.Factory
                 byte[] requestPackages = CreateResponseProtocolData(TransmiteEnum.远程门店彩票操作请求, dataByteArr);
 
                 //服务端发送数据
-                XCCloudService.SocketService.UDP.Server.Send(ip, port, requestPackages);
+                XCCloudWebBar.SocketService.UDP.Server.Send(ip, port, requestPackages);
                 string requestJson = JsonHelper.DataContractJsonSerializer(dataModel);
                 XCGameUDPMsgHub.SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.远程门店彩票操作请求), "远程门店彩票操作请求", radarToken, requestJson);
                 return true;
@@ -1022,7 +1022,7 @@ namespace XCCloudService.SocketService.UDP.Factory
                 byte[] requestPackages = CreateResponseProtocolData(TransmiteEnum.远程门店出票条码数据请求, dataByteArr);
 
                 //服务端发送数据
-                XCCloudService.SocketService.UDP.Server.Send(ip, port, requestPackages);
+                XCCloudWebBar.SocketService.UDP.Server.Send(ip, port, requestPackages);
                 string requestJson = JsonHelper.DataContractJsonSerializer(dataModel);
                 XCGameUDPMsgHub.SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.远程门店出票条码数据请求), "远程门店出票条码数据请求", radarToken, requestJson);
                 return true;
@@ -1061,7 +1061,7 @@ namespace XCCloudService.SocketService.UDP.Factory
                 byte[] requestPackages = CreateResponseProtocolData(TransmiteEnum.远程门店出票条码操作请求, dataByteArr);
 
                 //服务端发送数据
-                XCCloudService.SocketService.UDP.Server.Send(ip, port, requestPackages);
+                XCCloudWebBar.SocketService.UDP.Server.Send(ip, port, requestPackages);
                 string requestJson = JsonHelper.DataContractJsonSerializer(dataModel);
                 XCGameUDPMsgHub.SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.远程门店出票条码操作请求), "远程门店出票条码操作请求", radarToken, requestJson);
                 return true;
@@ -1100,7 +1100,7 @@ namespace XCCloudService.SocketService.UDP.Factory
                 byte[] requestPackages = CreateResponseProtocolData(TransmiteEnum.远程门店运行参数数据请求, dataByteArr);
 
                 //服务端发送数据
-                XCCloudService.SocketService.UDP.Server.Send(ip, port, requestPackages);
+                XCCloudWebBar.SocketService.UDP.Server.Send(ip, port, requestPackages);
                 string requestJson = JsonHelper.DataContractJsonSerializer(dataModel);
                 XCGameUDPMsgHub.SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.远程门店运行参数数据请求), "远程门店运行参数数据请求", radarToken, requestJson);
                 return true;
@@ -1139,7 +1139,7 @@ namespace XCCloudService.SocketService.UDP.Factory
                 byte[] requestPackages = CreateResponseProtocolData(TransmiteEnum.远程门店会员转账操作请求, dataByteArr);
 
                 //服务端发送数据
-                XCCloudService.SocketService.UDP.Server.Send(ip, port, requestPackages);
+                XCCloudWebBar.SocketService.UDP.Server.Send(ip, port, requestPackages);
                 string requestJson = JsonHelper.DataContractJsonSerializer(dataModel);
                 XCGameUDPMsgHub.SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.远程门店会员转账操作请求), "远程门店会员转账操作请求", radarToken, requestJson);
                 return true;
@@ -1178,7 +1178,7 @@ namespace XCCloudService.SocketService.UDP.Factory
                 byte[] requestPackages = CreateResponseProtocolData(TransmiteEnum.远程门店员工手机号校验请求, dataByteArr);
 
                 //服务端发送数据
-                XCCloudService.SocketService.UDP.Server.Send(ip, port, requestPackages);
+                XCCloudWebBar.SocketService.UDP.Server.Send(ip, port, requestPackages);
                 string requestJson = JsonHelper.DataContractJsonSerializer(dataModel);
                 XCGameUDPMsgHub.SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.远程门店员工手机号校验请求), "远程门店员工手机号校验请求", radarToken, requestJson);
                 return true;
@@ -1217,7 +1217,7 @@ namespace XCCloudService.SocketService.UDP.Factory
                 byte[] requestPackages = CreateResponseProtocolData(TransmiteEnum.黄牛卡信息查询请求, dataByteArr);
 
                 //服务端发送数据
-                XCCloudService.SocketService.UDP.Server.Send(ip, port, requestPackages);
+                XCCloudWebBar.SocketService.UDP.Server.Send(ip, port, requestPackages);
                 string requestJson = JsonHelper.DataContractJsonSerializer(dataModel);
                 XCGameUDPMsgHub.SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.黄牛卡信息查询请求), "黄牛卡信息查询请求", radarToken, requestJson);
                 return true;

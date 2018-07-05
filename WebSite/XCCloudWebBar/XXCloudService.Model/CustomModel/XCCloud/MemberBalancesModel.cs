@@ -26,6 +26,11 @@ namespace XCCloudWebBar.Model.CustomModel.XCCloud
             this.DecimalNumber = 0;
             this.TargetTypeName = string.Empty;
         }
+        //[DataMember(Name = "BalanceId", Order = 0)]
+        //public string BalanceId { get; set; }
+        //[DataMember(Name = "BalanceFreeId", Order = 0)]
+        //public string BalanceFreeId { get; set; }
+
         [DataMember(Name = "BalanceIndex", Order = 0)]
         public int BalanceIndex { get; set; }
 
@@ -122,6 +127,12 @@ namespace XCCloudWebBar.Model.CustomModel.XCCloud
         /// </summary>
         [DataMember(Order = 2)]
         public string LevelName { get; set; }
+
+        /// <summary>
+        /// 级别
+        /// </summary>
+        [DataMember(Order = 2)]
+        public int MemberLevelId { get; set; }
 
         /// <summary>
         /// 押金

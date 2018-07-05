@@ -34,7 +34,7 @@ var fileProperties = new FileProperties()
 //------------------------------------------------------------------------------
 //XCCloudWebBar.Model.XCCloud
 //------------------------------------------------------------------------------
-destPath = solutionsPath + @"\\XXCloudService.Model\\XCCloud\\";
+destPath = solutionsPath + @"\\XCCloudWebBar.Model\\XCCloud\\";
 if(!Directory.Exists(destPath))
 {
     Directory.CreateDirectory(destPath);
@@ -235,7 +235,7 @@ foreach (var enumType in typeMapper.GetEnumItemsToGenerate(itemCollection))
 //------------------------------------------------------------------------------
 //XCCloudWebBar.BLL.IBLL.XCCloud
 //------------------------------------------------------------------------------
-destPath = solutionsPath + @"\\XXCloudService.BLL\\IBLL\\XCCloud\\";
+destPath = solutionsPath + @"\\XCCloudWebBar.BLL\\IBLL\\XCCloud\\";
 if(!Directory.Exists(destPath))
 {
     Directory.CreateDirectory(destPath);
@@ -268,7 +268,7 @@ public interface I<#=entity.Name#>Service : IBaseService<<#=entity.Name#>>
 //------------------------------------------------------------------------------
 //XCCloudWebBar.BLL.XCCloud
 //------------------------------------------------------------------------------
-destPath = solutionsPath + @"\\XXCloudService.BLL\\XCCloud\\";
+destPath = solutionsPath + @"\\XCCloudWebBar.BLL\\XCCloud\\";
 if(!Directory.Exists(destPath))
 {
     Directory.CreateDirectory(destPath);
@@ -336,7 +336,7 @@ public partial class <#=entity.Name#>Service : BaseService<<#=entity.Name#>>, I<
 //------------------------------------------------------------------------------
 //XCCloudWebBar.DAL.IDAL.XCCloud
 //------------------------------------------------------------------------------
-destPath = solutionsPath + @"\\XXCloudService.DAL\\IDAL\\XCCloud\\";
+destPath = solutionsPath + @"\\XCCloudWebBar.DAL\\IDAL\\XCCloud\\";
 if(!Directory.Exists(destPath))
 {
     Directory.CreateDirectory(destPath);
@@ -367,7 +367,7 @@ public interface I<#=entity.Name#>DAL : IBaseDAL<<#=entity.Name#>>
 //------------------------------------------------------------------------------
 //XCCloudWebBar.DAL.XCCloud
 //------------------------------------------------------------------------------
-destPath = solutionsPath + @"\\XXCloudService.DAL\\XCCloud\\";
+destPath = solutionsPath + @"\\XCCloudWebBar.DAL\\XCCloud\\";
 if(!Directory.Exists(destPath))
 {
     Directory.CreateDirectory(destPath);

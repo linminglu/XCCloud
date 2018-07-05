@@ -23,5 +23,6 @@ namespace XCCloudWebBar.Model.XCCloud
         public Nullable<int> ShowColume { get; set; }
         public Nullable<int> ShowSearch { get; set; }
         public Nullable<int> DictID { get; set; }
+        public Nullable<int> Condition { get; set; }
     }
 }

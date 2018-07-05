@@ -11,7 +11,7 @@ namespace XCCloudWebBar.Model.XCCloudRS232
 {
     using System;
     using System.Collections.Generic;
-
+    
     public partial class Data_GameInfo
     {
         public int GroupID { get; set; }

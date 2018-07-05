@@ -87,10 +87,10 @@ namespace XXCloudService.Api.XCCloud
                                 LEFT JOIN Dict_System c ON a.GoodType = c.ID
                                 WHERE
                                 	a.Status = 1";
-                sql += " AND a.MerchID='" + merchId + "'";
+                sql = sql + " AND a.MerchID='" + merchId + "'";
                 if (!storeId.IsNull())
-                    sql += " AND a.StoreID='" + storeId + "'";
-
+                    sql = sql + " AND a.StoreID='" + storeId + "'";
+                sql = sql + sqlWhere;
                 #endregion
 
                 var list = Base_GoodsInfoService.I.SqlQuery<Base_GoodsInfoList>(sql, parameters).ToList();
@@ -585,11 +585,11 @@ namespace XXCloudService.Api.XCCloud
                                 ) d ON a.ID = d.EventID and d.RowNum <= 1
                                 WHERE 1=1
                             ";
-                sql += " AND a.MerchID='" + merchId + "'";
+                sql = sql + " AND a.MerchID='" + merchId + "'";
                 if (!storeId.IsNull())
-                    sql += " AND (a.CreateStoreID='" + storeId + "' or a.RequestOutStoreID='" + storeId + "' or a.RequestInStoreID='" + storeId + "')";
-
-                sql += " ORDER BY a.CreateTime desc";
+                    sql = sql + " AND (a.CreateStoreID='" + storeId + "' or a.RequestOutStoreID='" + storeId + "' or a.RequestInStoreID='" + storeId + "')";
+                sql = sql + sqlWhere;
+                sql = sql + " ORDER BY a.CreateTime desc";
                 #endregion
 
                 var list = Data_GoodRequestService.I.SqlQuery<Data_GoodRequestList>(sql, parameters).ToList();
@@ -2298,6 +2298,7 @@ namespace XXCloudService.Api.XCCloud
                 sql = sql + " AND a.merchId='" + merchId + "'";
                 if (!storeId.IsNull())
                     sql = sql + " AND a.storeId='" + storeId + "'";
+                sql = sql + sqlWhere;
 
                 var data_GoodStorage = Data_GoodStorageService.I.SqlQuery<Data_GoodStorageList>(sql, parameters).ToList();
 
@@ -2999,6 +3000,7 @@ namespace XXCloudService.Api.XCCloud
                 sql = sql + " AND a.merchId='" + merchId + "'";
                 if (!storeId.IsNull())
                     sql = sql + " AND a.storeId='" + storeId + "'";
+                sql = sql + sqlWhere;
                 sql = sql + " ORDER BY a.ID DESC";
 
                 //查询退货信息
@@ -3663,14 +3665,14 @@ namespace XXCloudService.Api.XCCloud
                                 LEFT JOIN Base_StoreInfo d ON a.StoreID = d.StoreID
                                 WHERE
                                 	b.Status = 1 AND a.RowNum <= 1 AND a.StockIndex = " + depotId;
-                sql += " AND a.MerchID='" + merchId + "' AND b.MerchID='" + merchId + "'";
+                sql = sql + " AND a.MerchID='" + merchId + "' AND b.MerchID='" + merchId + "'";
                 if (!storeId.IsNull())
-                    sql += " AND a.StoreID='" + storeId + "'";
+                    sql = sql + " AND a.StoreID='" + storeId + "'";
                 if (!goodId.IsNull())
-                    sql += sql + " AND a.GoodID=" + goodId;
+                    sql = sql + " AND a.GoodID=" + goodId;
                 if (!goodNameOrBarCode.IsNull())
-                    sql += sql + " AND (b.GoodName like '%" + goodNameOrBarCode + "%' OR b.Barcode like '%" + goodNameOrBarCode + "%')";
-
+                    sql = sql + " AND (b.GoodName like '%" + goodNameOrBarCode + "%' OR b.Barcode like '%" + goodNameOrBarCode + "%')";
+                sql = sql + sqlWhere;
                 #endregion
 
                 var list = Data_GoodsStockService.I.SqlQuery<Data_GoodsStockList>(sql, parameters).ToList();
@@ -3935,14 +3937,14 @@ namespace XXCloudService.Api.XCCloud
                                 LEFT JOIN Base_StoreInfo d ON a.StoreID = d.StoreID
                                 WHERE
                                 	b.Status = 1 AND a.RowNum <= 1 AND a.StockIndex = " + depotId;
-                sql += " AND a.MerchID='" + merchId + "'";
+                sql = sql + " AND a.MerchID='" + merchId + "'";
                 if (!storeId.IsNull())
-                    sql += " AND a.StoreID='" + storeId + "'";
+                    sql = sql + " AND a.StoreID='" + storeId + "'";
                 if (!goodId.IsNull())
-                    sql += sql + " AND a.GoodID=" + goodId;
+                    sql = sql + " AND a.GoodID=" + goodId;
                 if (!goodNameOrBarCode.IsNull())
-                    sql += sql + " AND (b.GoodName like '%" + goodNameOrBarCode + "%' OR b.Barcode like '%" + goodNameOrBarCode + "%')";
-
+                    sql = sql + " AND (b.GoodName like '%" + goodNameOrBarCode + "%' OR b.Barcode like '%" + goodNameOrBarCode + "%')";
+                sql = sql + sqlWhere;
                 #endregion
 
                 var list = Data_GoodsStockService.I.SqlQuery<Data_GoodsStockList>(sql, parameters).Where(w => w.AvailableCount <= 0).ToList();
@@ -4364,6 +4366,7 @@ namespace XXCloudService.Api.XCCloud
                                 LEFT JOIN Base_StoreInfo s ON c.StoreID = s.StoreID
                                 WHERE
                                 	c.Status = 1 AND b.RowNum <= 1 AND ISNULL(a.AuthorID,'')='' AND a.InventoryIndex = " + stockIndex + " AND a.InventoryType = " + stockType;    //查询未盘点审核的记录
+                sql = sql + sqlWhere;
 
                 #endregion
 

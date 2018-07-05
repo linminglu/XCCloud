@@ -11,7 +11,7 @@ namespace XCCloudWebBar.Model.XCCloudRS232
 {
     using System;
     using System.Collections.Generic;
-
+    
     public partial class Base_DeviceInfo
     {
         public int ID { get; set; }

@@ -83,8 +83,9 @@ namespace XXCloudService.Api.XCCloud
                                 LEFT JOIN Dict_BalanceType b ON a.FreeBalanceIndex = b.ID                                
                                 WHERE 1=1
                             ";
-                sql += " AND a.MerchID='" + merchId + "'";
-                sql += " ORDER BY a.RuleLevel ";
+                sql = sql + " AND a.MerchID='" + merchId + "'";
+                sql = sql + sqlWhere; 
+                sql = sql + " ORDER BY a.RuleLevel ";
                 
                 #endregion
 

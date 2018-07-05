@@ -18,8 +18,10 @@
 <body>
   <div class="layui-row settingPage" >
       <div class="row-box" style="">
-          <blockquote class="layui-elem-quote" style="text-align: right">
+          <blockquote class="layui-elem-quote">
               <div class="layui-form" id="serchMode">
+              </div>
+              <div id="tantion">
 
               </div>
               <button type="button" class="layui-btn layui-btn-normal" i18n-content="查询模板">查询</button>
@@ -375,6 +377,7 @@
 </body>
 <script src="js/jquery-1.8.3-min.js"></script>
 <script src="layui/layui.js"></script>
+<script src="js/searchModel.js"></script>
 <script src="js/storeSystem.js"></script>
 <script>
     let xc=xcActionSystem.prototype;
@@ -408,36 +411,72 @@
     //计时规则
     let feeType='';let feeBalance='';let feekinds='';let feeWays='';let Lock=0;
     let checkedArr=[];
-    function getSearchList(form,layer,pagename,processname,token,id) {
-        let obj={
-            'pagename':pagename,
-            'processname':processname,
-            'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'
-        }
-        let _parseJson = JSON.stringify(obj);
-        $.ajax({
-            type:'post',
-            url:'/Query?action=init',
-            contentType: "application/json; charset=utf-8",
-            data:{parasJson: _parseJson},
-            // async:false,
-            success: function (data) {
-                data = JSON.parse(data);
-                if (data.result_code == 1) {
-                    console.log(data);
 
-                } else {
-                    layer.msg(data.result_msg||data.return_msg);
-                }
-            }
-        });
-    }
+    // function getSearchList(form,layer,pagename,processname,token,id1,id2) {
+    //     let obj={
+    //         'pagename':pagename,
+    //         'processname':processname,
+    //         'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'
+    //     }
+    //     let _parseJson = JSON.stringify(obj);
+    //     $.ajax({
+    //         type:'post',
+    //         url:'/Query?action=init',
+    //         contentType: "application/json; charset=utf-8",
+    //         data:{parasJson: _parseJson},
+    //         // async:false,
+    //         success: function (data) {
+    //             data = JSON.parse(data);
+    //             if (data.result_code == 1) {
+    //                 console.log(data);
+    //                 let arr=data.result_data;
+    //                 for(let i in arr){
+    //                     $('#'+id2).append('<input type="checkbox" lay-skin="primary" lay-filter="searchList" title="'+arr[i].title+'"/>');
+    //                     // $('#'+id1).append('<div class="layui-inline">' +
+    //                     //     '<label class="layui-form-label">'+arr[i].title+'</label>' +
+    //                     //     '<div class="layui-input-inline"><select name="" id="'+arr[i].filed+'-sel">'+setOption(arr[i].condition)+'</select></div>' +
+    //                     //     '</div>');
+    //                 }
+    //                 form.render()
+    //             } else {
+    //                 layer.msg(data.result_msg||data.return_msg);
+    //             }
+    //         }
+    //     });
+    // }
+//     function setOption(j) {
+//         let options=[{'value':'=','key':'0'},
+//             {'value':'>','key':'1'},
+//             {'value':'<','key':'2'},
+//             {'value':'>=','key':'3'},
+//             {'value':'<=','key':'4'},
+//             {'value':'介于','key':'5'},
+//             {'value':'包含','key':'6'}]
+//         let html='';
+//         for(let i in options){
+//             if(options[i].key==j){
+//                 html+='<option value="'+options[i].key+' selected">'+options[i].value+'</option>'
+//             }else {
+//                 html+='<option value="'+options[i].key+'">'+options[i].value+'</option>'
+//             }
+//         }
+// return html;
+//     }
     layui.use(['form','layer','table'],()=>{
         const form=layui.form;
         const layer=layui.layer;
         const table=layui.table;
 
-        getSearchList(form,layer,'projectInfoSearch','projectInfoSearch',token,'serchMode')
+       // var seachModel=new seachModel({
+       //      'elem1':'tantion',
+       //      'elem2':'serchMode',
+       //      'pagename':'projectInfoSearch',
+       //      'processname':'projectInfoSearch',
+       //      'token':token,
+       //      'form':form,
+       //      'layer':layer
+       //  })
+        // getSearchList(form,layer,'projectInfoSearch','projectInfoSearch',token,'serchMode','tantion')
         //用户余额类别
         let __obj={'hkType':'','userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
         let _parseJson = JSON.stringify(__obj);
@@ -460,6 +499,7 @@
         });
       $('.add').on('click',()=>{  //弹窗
           $('.layreset').trigger('click');
+          $('#openModel form')[0].reset();
             id='';guestIndex='';
           // addOrModi=true;
            feeType=''; feeBalance=''; feekinds=''; feeWays=''; Lock=0;
@@ -764,10 +804,7 @@
                                 title:'新增',
                                 type:1,
                                 area:'900px',
-                                content:$('#openModel'),
-                                cancel:function () {
-                                    location.reload()
-                                }
+                                content:$('#openModel')
                             })
                             form.render()
                         } else {
@@ -890,225 +927,13 @@
                 layer.msg('请且勾选一条数据！')
             }
         });
-        //页面table 删除、修改事件监听
-        table.on('tool(ProjectList)', function(obj){
-            var data = obj.data;
-            var layEvent = obj.event;
-             id=data.ID;
-            if(layEvent === 'del'){ //删除
-                layer.confirm('真的删除行么', function(index){
-                   var _obj={'id':id,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
-                var url='/XCCloud/Project?action=DelProjectInfo';
-                let parseJson = JSON.stringify(_obj);
-                $.ajax({
-                    type: "post",
-                    url: url,
-                    contentType: "application/json; charset=utf-8",
-                    data: {parasJson: parseJson},
-                    success: function (data) {
-                        data = JSON.parse(data);
-                        console.log(data);
-                        if (data.result_code == 1) {
-                            layer.msg('删除成功！',{time:1500},function () {
-                                obj.del();
-                            });
-                        } else {
-                            layer.msg(data.result_msg||data.return_msg);
-                        }
-                    }
-                })
-            });
-            } else if(layEvent === 'edit'){ //编辑
-                let _obj={'id':id,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
-                let url='/XCCloud/Project?action=GetProjectInfo';
-                let parseJson = JSON.stringify(_obj);
-                $.ajax({
-                    type: "post",
-                    url: url,
-                    contentType: "application/json; charset=utf-8",
-                    data: {parasJson: parseJson},
-                    success: function (data) {
-                        data = JSON.parse(data);
-                        console.log(data)
-                        if (data.result_code == 1) {
-                            // addOrModi=false;
-                            let arr;
-                            arr=data.result_data;
-                            xc.getGroupAreaDic(0,token,layer,form,'Area',arr.AreaType);
-                            setPlayMenu(form,'projectType',arr.ProjectType);
-                            form.val('formtest',{
-                                'projectName':arr.ProjectName,
-                                'chargeType':arr.ChargeType,
-                                'Note':arr.Note,
-                            });
-                            form.val('chargeTimes',{
-                                'PushBalanceIndex1':arr.PushBalanceIndex1,
-                                'PushBalanceIndex2':arr.PushBalanceIndex2
-                            });
 
-                            projectType=arr.ProjectType;
-                            Area=arr.AreaType;
-                            chargeType=arr.ChargeType;
-                            guestIndex=arr.GameIndex;
-                            // xc.getBalanceTypeDic('',token,layer,form,'PushBalanceIndex1',arr.PushBalanceIndex1);
-                            // xc.getBalanceTypeDic('',token,layer,form,'PushBalanceIndex2',arr.PushBalanceIndex2);
-                            PushBalanceIndex1=arr.PushBalanceIndex1;
-                            PushBalanceIndex2=arr.PushBalanceIndex2;
-                            ReadCat=arr.ReadCat;
-                            PushLevel=arr.PushLevel;
-                            $('input[name="GuestPrice"]').val(arr.GuestPrice);
-
-                            $('input[name="PushCoin1"]').val(arr.PushCoin1);
-
-                            $('input[name="PushCoin2"]').val(arr.PushCoin2);
-                            if(arr.AdjOrder==1){
-                                $('input[name="AdjOrder"]').attr({'checked':true})
-                            }else {
-                                $('input[name="AdjOrder"]').attr({'checked':false})
-                                  }
-                            if(arr.ForceUse==1){
-                                $('input[name="ForceUse"]').attr({'checked':true})
-                            }else {
-                                $('input[name="ForceUse"]').attr({'checked':false})
-                            }
-                            if(arr.LockCard==1){
-                                $('input[name="LockCard"]').attr({'checked':true})
-                            }else {
-                                $('input[name="LockCard"]').attr({'checked':false})
-                            }
-
-                            if(arr.ReadCat==1){
-                                $('input[name="ReadCat"]').attr({'checked':true})
-                            }else {
-                                $('input[name="ReadCat"]').attr({'checked':false})
-                            }
-
-                            if(arr.PushLevel==1){
-                                $('input[name="PushLevel"]').attr({'checked':true})
-                            }else {
-                                $('input[name="PushLevel"]').attr({'checked':false})
-                            }
-                             if(arr.ChargeType==0){
-                                 $('#setRuleBtn').removeClass('layui-hide');
-
-                             }else {
-                                 $('#setRuleBtn').addClass('layui-hide')
-                             }
-                            index1=layer.open({
-                                title:'新增',
-                                type:1,
-                                area:'900px',
-                                content:$('#openModel'),
-                                cancel:function () {
-                                    location.reload()
-                                }
-                            })
-                            form.render()
-                        } else {
-                            layer.msg(data.result_msg||data.return_msg);
-                        }
-                    }
-                })
-            }else if(layEvent === 'bind'){ //设备绑定
-                let _obj={'projectId':id,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
-                let url='/XCCloud/Project?action=QueryBindDevice';
-                let parseJson = JSON.stringify(_obj);
-                $.ajax({
-                    type: "post",
-                    url: url,
-                    contentType: "application/json; charset=utf-8",
-                    data: {parasJson: parseJson},
-                    success: function (data) {
-                        data = JSON.parse(data);
-                        console.log(data);
-                        if (data.result_code == 1) {
-                            setDeviceTable(table,data.result_data);
-                            DeviceList=data.result_data;
-                            index1=layer.open({
-                                title:'新增',
-                                type:1,
-                                area:'900px',
-                                content:$('#bindModel')
-                            })
-                        } else {
-                            layer.msg(data.result_msg||data.return_msg);
-                        }
-                    }
-                })
-            }else if(layEvent === 'setTime'){
-                let _obj={'id':id,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
-                let url='/XCCloud/Project?action=GetProjectTimeInfo';
-                let parseJson = JSON.stringify(_obj);
-                $.ajax({
-                    type: "post",
-                    url: url,
-                    contentType: "application/json; charset=utf-8",
-                    data: {parasJson: parseJson},
-                    success: function (data) {
-                        data = JSON.parse(data);
-                        console.log(data);
-                        if (data.result_code == 1) {
-                            let arr;
-                            arr=data.result_data;
-                            form.val('chargeTime',{
-                                'feeType':arr.ChargeType==null?'':arr.ChargeType,
-                                'FreeMinute':arr.FreeMinute||'',
-                                'AccompanyCash':arr.AccompanyCash||'',
-                                'Coins':arr.Coins||'',
-                                'BasePrice':arr.BasePrice||'',
-                                'CycleTimes':arr.CycleTimes||'',
-                                'TopPrice':arr.TopPrice||'',
-                                'feeWays':arr.CycleType==null?'':arr.CycleType,
-                                'lock':arr.LockMember==1?true:false
-                            });
-                            if(arr.ProjectBandPrices.length==1){
-                                $('.reduceBox input[name="limitCount"]').val(arr.ProjectBandPrices[0].UseTimeCount);
-                                $('.reduceBox select[name="limitType"]').val(arr.ProjectBandPrices[0].UseType);
-                                $('.reduceBox input[name="consumeCount"]').val(arr.ProjectBandPrices[0].CycleTime);
-                                $('.reduceBox input[name="discountCount"]').val(arr.ProjectBandPrices[0].Count);
-
-                            }else if(arr.ProjectBandPrices.length>1){
-                                for(let i=1;i<arr.ProjectBandPrices.length;i++){
-                                    $('.reduceBox-item').append($('body').find($('.reduceBox')).eq(0).clone())
-                                }
-                                for(let i=0;i<arr.ProjectBandPrices.length;i++){
-                                    $('.reduceBox-item').find($('.reduceBox')).eq(i).find('input[name="limitCount"]').val(arr.ProjectBandPrices[i].UseTimeCount);
-                                    $('.reduceBox-item').find($('.reduceBox')).eq(i).find('select[name="limitType"]').val(arr.ProjectBandPrices[i].UseType);
-                                    $('.reduceBox-item').find($('.reduceBox')).eq(i).find('input[name="consumeCount"]').val(arr.ProjectBandPrices[i].CycleTime);
-                                    $('.reduceBox-item').find($('.reduceBox')).eq(i).find('input[name="discountCount"]').val(arr.ProjectBandPrices[i].Count);
-                                }
-                            }
-                            xc.getBalanceTypeDic('',token,layer,form,'feeBalance',arr.ChargeBalanceIndex==null?'':arr.ChargeBalanceIndex);
-                            xc.getBalanceTypeDic('',token,layer,form,'feekinds',arr.BalanceIndex==null?'':arr.BalanceIndex);
-                            feeType=arr.ChargeType==null?'':arr.ChargeType;
-                            feeBalance=arr.ChargeBalanceIndex==null?'':arr.ChargeBalanceIndex;
-                            feeWays=arr.CycleType==null?'':arr.CycleType;
-                            feekinds=arr.BalanceIndex==null?'':arr.BalanceIndex;
-                            Lock=arr.LockMember==1?1:0;
-
-                        } else {
-                            layer.msg(data.result_msg||data.return_msg);
-                        }
-                    }
-                });
-
-                index1= layer.open({
-                    title:'计时规则设定',
-                    type:1,
-                    area:'840px',
-                    content:$('#chargeModel'),
-                    cancel:function () {
-                        location.reload()
-                    }
-                })
-            }
-            });
         table.on('tool(bindTable)', function(obj){
             var data = obj.data;
             var layEvent = obj.event;
             if(layEvent === 'del'){ //删除
                 layer.confirm('真的删除行么', function(index){
-                    if(AdjOrder==0){
+                    // if(AdjOrder==0){
                         var _obj={'id':data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
                         var url='/XCCloud/Project?action=DelBindDevice';
                         let parseJson = JSON.stringify(_obj);
@@ -1121,6 +946,11 @@
                                 data = JSON.parse(data);
                                 console.log(data);
                                 if (data.result_code == 1) {
+                                    for(let i in DeviceList){
+                                        if(DeviceList[i].DeviceID==obj.data.DeviceID){
+                                            DeviceList.splice(i,1);
+                                        }
+                                    }
                                     layer.msg('删除成功！',{time:1500},function () {
                                         obj.del();
                                     });
@@ -1129,15 +959,9 @@
                                 }
                             }
                         })
-                    }else {
-                        for(let i in DeviceList){
-                            if(DeviceList[i].DeviceID==data.DeviceID){
-                                DeviceList.splice(i,1);
-                                obj.del();
-                                layer.clone(index)
-                            }
-                        }
-                    }
+                    // }else {
+
+                    // }
 
                 });
             }

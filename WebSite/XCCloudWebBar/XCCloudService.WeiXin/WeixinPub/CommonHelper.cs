@@ -4,20 +4,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using XCCloudService.Common;
-using XCCloudService.WeiXin.Common;
-using XCCloudService.Common.Extensions;
-using XCCloudService.Common.Redis;
+using XCCloudWebBar.Common;
+using XCCloudWebBar.WeiXin.Common;
+using XCCloudWebBar.Common.Extensions;
+using XCCloudWebBar.Common.Redis;
 using System.Reflection;
 using System.Security.Cryptography;
-using XCCloudService.Model.CustomModel.XCGameManager;
+using XCCloudWebBar.Model.CustomModel.XCGameManager;
 using StackExchange.Redis;
-using XCCloudService.Common.Enum;
-using XCCloudService.WeiXin.WeixinOAuth;
-using XCCloudService.Business.WeiXin;
-using XCCloudService.Model.WeiXin;
+using XCCloudWebBar.Common.Enum;
+using XCCloudWebBar.WeiXin.WeixinOAuth;
+using XCCloudWebBar.Business.WeiXin;
+using XCCloudWebBar.Model.WeiXin;
 
-namespace XCCloudService.WeiXin.WeixinPub
+namespace XCCloudWebBar.WeiXin.WeixinPub
 {
     public class CommonHelper
     {

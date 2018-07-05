@@ -497,7 +497,7 @@
                                 </div>
 
                                 <div class="col-md-12 col-sm-12 heightOver">
-                                    <div class="col-md-5 col-sm-5 menu-style">
+                                    <div class="col-md-6 col-sm-6 menu-style">
                                         <table class="table table-bordered">
                                             <thead style="background: #f5f5f5">
                                             <tr>
@@ -509,12 +509,12 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr v-for="(item,index) in orderInquiry.orderListData">
-                                                <td>{{item.balanceType}}</td>
-                                                <td>{{item.balance}}</td>
-                                                <td>{{item.balance1}}</td>
-                                                <td>{{item.balance2}}</td>
-                                                <td>{{item.balance3}}</td>
+                                            <tr v-for="(item,index) in orderInquiry.orderListData" @click.stop="orderDetails(index)">
+                                                <td>{{item.orderId}}</td>
+                                                <td>{{item.createTime}}</td>
+                                                <td>{{item.userName}}</td>
+                                                <td>{{item.realPay}}</td>
+                                                <td>{{item.orderStatusName}}</td>
                                             </tr>
                                             </tbody>
                                         </table>
@@ -546,7 +546,7 @@
                                                 </tbody>
                                             </table>
                                     </div>
-                                    <div class="col-md-7 col-sm-7 order-style">
+                                    <div class="col-md-6 col-sm-6 order-style">
                                         <div class="input-group col-md-6 col-sm-6 order-style">
                                             <span class="input-group-addon otherAddon">订单号：</span>
                                             <input type="text" class="form-control" placeholder="订单号" v-model="orderInquiry.orderNo"/>
@@ -810,7 +810,7 @@
             },
             orderInquiry:{
                 goodsData:"",
-                orderNo:"",
+                orderNo:"10002542010600120180517226810001",
                 stratTime:"",
                 endTime:"",
                 theData:"",
@@ -825,6 +825,7 @@
             },
             cardList:[],
             radioValue:"",
+            icCardId:"0",
             msg:""
         },
         mounted: function () {
@@ -919,13 +920,31 @@
 //          订单查询接口
             getOrders:function(){
                 var that = this;
-                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,orderId:"",icCardId:that.icCardId,startDate:"",endDate:""};
+                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,orderId:that.orderInquiry.orderNo,icCardId:that.icCardId,startDate:"2017-07-04",endDate:"2018-07-04"};
                 console.log(obj);
                 axios.post('/xccloud/order?action=getOrders', obj).then(function (res) {
                     console.log(res.data);
                     that.msgPrompt(res.data);
                     if (res.data.result_code === '1') {
-                        
+                        that.orderInquiry.orderListData=res.data.result_data;
+                    }
+                }).catch(function (err) {
+                    console.log(err);
+                });
+            },
+//          查询订单详情
+            orderDetails:function(index){
+               console.log(index);
+                var that = this;
+                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,flwOrderId:that.orderInquiry.orderListData[index].orderId};
+                console.log(obj);
+                axios.post('/xccloud/order?action=getOrderDetailContain', obj).then(function (res) {
+                    console.log(res.data);
+                    that.msgPrompt(res.data);
+                    if (res.data.result_code === '1') {
+                        that.orderInquiry.orderPayData=res.data.result_data;
+                        that.orderInquiry.goodsData=res.data.result_data;
+                    
                     }
                 }).catch(function (err) {
                     console.log(err);
@@ -959,7 +978,7 @@
     (function(){
         $('.menu .content').append('<span class="close">x</span>');
         function showContent(elem){
-            elem.find('.content').stop(true,true).animate({"opacity": 1,"width": "1200px","height":"600px","margin-left": "-600px","margin-top": "-200px"},800);
+            elem.find('.content').stop(true,true).animate({"opacity": 1,"width": "1400px","height":"600px","margin-left": "-700px","margin-top": "-200px"},800);
             elem.addClass('cover');
         }
 

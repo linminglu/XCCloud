@@ -203,5 +203,6 @@ namespace XCCloudWebBar.Model.XCCloud
         public virtual DbSet<Flw_MemberCard_Exit> Flw_MemberCard_Exit { get; set; }
         public virtual DbSet<Log_GameAlarm> Log_GameAlarm { get; set; }
         public virtual DbSet<Flw_MemberCard_LevelChange> Flw_MemberCard_LevelChange { get; set; }
+        public virtual DbSet<Flw_MemberData> Flw_MemberData { get; set; }
     }
 }

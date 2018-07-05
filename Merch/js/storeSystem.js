@@ -2006,12 +2006,12 @@ xcActionSystem.prototype= {
                     for(let i in arr){
                         if(selected){
                             if(arr[i].ID==selected){
-                                $('#'+id).append('<option value="'+arr[i].ID+'" selected>'+arr[i].DeviceName+'</option>')
+                                $('#'+id).append('<option value="'+arr[i].ID+'" selected>'+arr[i].DeviceName+'('+arr[i].MCUID+')</option>')
                             }else {
-                                $('#'+id).append('<option value="'+arr[i].ID+'">'+arr[i].DeviceName+'</option>')
+                                $('#'+id).append('<option value="'+arr[i].ID+'">'+arr[i].DeviceName+'('+arr[i].MCUID+')</option>')
                             }
                         }else {
-                            $('#'+id).append('<option value="'+arr[i].ID+'">'+arr[i].DeviceName+'</option>')
+                            $('#'+id).append('<option value="'+arr[i].ID+'">'+arr[i].DeviceName+'('+arr[i].MCUID+')</option>')
                         }
                     }
                     form.render('select');

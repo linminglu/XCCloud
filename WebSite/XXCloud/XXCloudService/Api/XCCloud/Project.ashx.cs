@@ -62,7 +62,8 @@ namespace XXCloudService.Api.XCCloud
                                 LEFT JOIN Data_GroupArea b ON a.AreaType = b.ID  
                                 LEFT JOIN Dict_System c ON a.ProjectType = c.ID                                
                                 WHERE a.State=1 ";
-                sql += " AND a.StoreID=" + storeId;
+                sql = sql + " AND a.StoreID=" + storeId;
+                sql = sql + sqlWhere;
 
                 #endregion
 
@@ -606,7 +607,7 @@ namespace XXCloudService.Api.XCCloud
                 string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
                 string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
 
-                var bindDeviceIds = Data_Project_BindDeviceService.I.GetModels().Select(o => o.DeviceID);
+                var bindDeviceIds = Data_Project_BindDeviceService.I.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)).Select(o => o.DeviceID);
                 var linq = from a in Base_DeviceInfoService.I.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)
                                && (p.GameIndexID ?? 0) == 0 && p.DeviceStatus == 1 && (p.type == (int)DeviceType.卡头 || p.type == (int)DeviceType.闸机 || p.type == (int)DeviceType.自助机)).ToList()
                            where !bindDeviceIds.Contains(a.ID)
@@ -657,7 +658,8 @@ namespace XXCloudService.Api.XCCloud
                                 INNER JOIN Dict_System d ON c.PID=d.ID and d.DictKey='设备类型'                             
                                 WHERE 1=1
                             ";
-                sql += " AND a.ProjectID=" + projectId;
+                sql = sql + " AND a.ProjectID=" + projectId;
+                sql = sql + sqlWhere;
 
                 #endregion
 

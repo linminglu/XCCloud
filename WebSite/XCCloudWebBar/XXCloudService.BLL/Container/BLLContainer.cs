@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using XCCloudService.BLL.XCGame;
-using XCCloudService.BLL.IBLL.XCGame;
-using XCCloudService.DAL.Base;
+using XCCloudWebBar.BLL.XCGame;
+using XCCloudWebBar.BLL.IBLL.XCGame;
+using XCCloudWebBar.DAL.Base;
 
-namespace XCCloudService.BLL.Container
+namespace XCCloudWebBar.BLL.Container
 {
     public class BLLContainer
     {
@@ -96,59 +96,59 @@ namespace XCCloudService.BLL.Container
             if(containerName.Equals(ContainerConstant.XCGameManaIOCContainer))
             {
                 //XCGameMana注册
-                containerNamespace = "XCCloudService.BLL.XCGameManager";
-                //builder.RegisterType<XCCloudService.BLL.XCGameManager.DeviceService>().As<XCCloudService.BLL.IBLL.XCGameManager.IDeviceService>().InstancePerLifetimeScope();
-                //builder.RegisterType<XCCloudService.BLL.XCGameManager.StoreService>().As<XCCloudService.BLL.IBLL.XCGameManager.IStoreService>().InstancePerLifetimeScope();
-                //builder.RegisterType<XCCloudService.BLL.XCGameManager.ApiRequestLogService>().As<XCCloudService.BLL.IBLL.XCGameManager.IApiRequestLogService>().InstancePerLifetimeScope();
-                //builder.RegisterType<XCCloudService.BLL.XCGameManager.MemberTokenService>().As<XCCloudService.BLL.IBLL.XCGameManager.IMemberTokenService>().InstancePerLifetimeScope();
-                //builder.RegisterType<XCCloudService.BLL.XCGameManager.MobileTokenService>().As<XCCloudService.BLL.IBLL.XCGameManager.IMobileTokenService>().InstancePerLifetimeScope();
-                //builder.RegisterType<XCCloudService.BLL.XCGameManager.MPorderService>().As<XCCloudService.BLL.IBLL.XCGameManager.IMPorderService>().InstancePerLifetimeScope();
-                //builder.RegisterType<XCCloudService.BLL.XCGameManager.DataMessageService>().As<XCCloudService.BLL.IBLL.XCGameManager.IDataMessageService>().InstancePerLifetimeScope();
-                //builder.RegisterType<XCCloudService.BLL.XCGameManager.UserRegisterService>().As<XCCloudService.BLL.IBLL.XCGameManager.IUserRegisterService>().InstancePerLifetimeScope();
-                //builder.RegisterType<XCCloudService.BLL.XCGameManager.TFoodsaleService>().As<XCCloudService.BLL.IBLL.XCGameManager.ITFoodsaleService>().InstancePerLifetimeScope();
-                //builder.RegisterType<XCCloudService.BLL.XCGameManager.PromotionService>().As<XCCloudService.BLL.IBLL.XCGameManager.IPromotionService>().InstancePerLifetimeScope();
-                //builder.RegisterType<XCCloudService.BLL.XCGameManager.DataOrderService>().As<XCCloudService.BLL.IBLL.XCGameManager.IDataOrderService>().InstancePerLifetimeScope();
-                //builder.RegisterType<XCCloudService.BLL.XCGameManager.TicketService>().As<XCCloudService.BLL.IBLL.XCGameManager.ITicketService>().InstancePerLifetimeScope();
-                //builder.RegisterType<XCCloudService.BLL.XCGameManager.UserService>().As<XCCloudService.BLL.IBLL.XCGameManager.IUserService>().InstancePerLifetimeScope();
-                //builder.RegisterType<XCCloudService.BLL.XCGameManager.UserTokenService>().As<XCCloudService.BLL.IBLL.XCGameManager.IUserTokenService>().InstancePerLifetimeScope();
-                //builder.RegisterType<XCCloudService.BLL.XCGameManager.AdminUserService>().As<XCCloudService.BLL.IBLL.XCGameManager.IAdminUserService>().InstancePerLifetimeScope();
+                containerNamespace = "XCCloudWebBar.BLL.XCGameManager";
+                //builder.RegisterType<XCCloudWebBar.BLL.XCGameManager.DeviceService>().As<XCCloudWebBar.BLL.IBLL.XCGameManager.IDeviceService>().InstancePerLifetimeScope();
+                //builder.RegisterType<XCCloudWebBar.BLL.XCGameManager.StoreService>().As<XCCloudWebBar.BLL.IBLL.XCGameManager.IStoreService>().InstancePerLifetimeScope();
+                //builder.RegisterType<XCCloudWebBar.BLL.XCGameManager.ApiRequestLogService>().As<XCCloudWebBar.BLL.IBLL.XCGameManager.IApiRequestLogService>().InstancePerLifetimeScope();
+                //builder.RegisterType<XCCloudWebBar.BLL.XCGameManager.MemberTokenService>().As<XCCloudWebBar.BLL.IBLL.XCGameManager.IMemberTokenService>().InstancePerLifetimeScope();
+                //builder.RegisterType<XCCloudWebBar.BLL.XCGameManager.MobileTokenService>().As<XCCloudWebBar.BLL.IBLL.XCGameManager.IMobileTokenService>().InstancePerLifetimeScope();
+                //builder.RegisterType<XCCloudWebBar.BLL.XCGameManager.MPorderService>().As<XCCloudWebBar.BLL.IBLL.XCGameManager.IMPorderService>().InstancePerLifetimeScope();
+                //builder.RegisterType<XCCloudWebBar.BLL.XCGameManager.DataMessageService>().As<XCCloudWebBar.BLL.IBLL.XCGameManager.IDataMessageService>().InstancePerLifetimeScope();
+                //builder.RegisterType<XCCloudWebBar.BLL.XCGameManager.UserRegisterService>().As<XCCloudWebBar.BLL.IBLL.XCGameManager.IUserRegisterService>().InstancePerLifetimeScope();
+                //builder.RegisterType<XCCloudWebBar.BLL.XCGameManager.TFoodsaleService>().As<XCCloudWebBar.BLL.IBLL.XCGameManager.ITFoodsaleService>().InstancePerLifetimeScope();
+                //builder.RegisterType<XCCloudWebBar.BLL.XCGameManager.PromotionService>().As<XCCloudWebBar.BLL.IBLL.XCGameManager.IPromotionService>().InstancePerLifetimeScope();
+                //builder.RegisterType<XCCloudWebBar.BLL.XCGameManager.DataOrderService>().As<XCCloudWebBar.BLL.IBLL.XCGameManager.IDataOrderService>().InstancePerLifetimeScope();
+                //builder.RegisterType<XCCloudWebBar.BLL.XCGameManager.TicketService>().As<XCCloudWebBar.BLL.IBLL.XCGameManager.ITicketService>().InstancePerLifetimeScope();
+                //builder.RegisterType<XCCloudWebBar.BLL.XCGameManager.UserService>().As<XCCloudWebBar.BLL.IBLL.XCGameManager.IUserService>().InstancePerLifetimeScope();
+                //builder.RegisterType<XCCloudWebBar.BLL.XCGameManager.UserTokenService>().As<XCCloudWebBar.BLL.IBLL.XCGameManager.IUserTokenService>().InstancePerLifetimeScope();
+                //builder.RegisterType<XCCloudWebBar.BLL.XCGameManager.AdminUserService>().As<XCCloudWebBar.BLL.IBLL.XCGameManager.IAdminUserService>().InstancePerLifetimeScope();
             }
             else if (containerName.Equals(ContainerConstant.XCGameManaLogIOCContainer))
             {
                 //XCGameManaLog注册
-                containerNamespace = "XCCloudService.BLL.XCGameManagerLog";
-                //builder.RegisterType<XCCloudService.BLL.XCGameManagerLog.UDPRadarRegisterLogService>().As<XCCloudService.BLL.IBLL.XCGameManagerLog.IUDPRadarRegisterLogService>().InstancePerLifetimeScope();
-                //builder.RegisterType<XCCloudService.BLL.XCGameManagerLog.UDPRadarHeatLogService>().As<XCCloudService.BLL.IBLL.XCGameManagerLog.IUDPRadarHeatLogService>().InstancePerLifetimeScope();
-                //builder.RegisterType<XCCloudService.BLL.XCGameManagerLog.UDPDeviceStateChangeLogService>().As<XCCloudService.BLL.IBLL.XCGameManagerLog.IUDPDeviceStateChangeLogService>().InstancePerLifetimeScope();
-                //builder.RegisterType<XCCloudService.BLL.XCGameManagerLog.UDPSendDeviceControlLogService>().As<XCCloudService.BLL.IBLL.XCGameManagerLog.IUDPSendDeviceControlLogService>().InstancePerLifetimeScope();
-                //builder.RegisterType<XCCloudService.BLL.XCGameManagerLog.UDPIndexLogService>().As<XCCloudService.BLL.IBLL.XCGameManagerLog.IUDPIndexLogService>().InstancePerLifetimeScope();
-                //builder.RegisterType<XCCloudService.BLL.XCGameManagerLog.UDPRadarNotifyLogService>().As<XCCloudService.BLL.IBLL.XCGameManagerLog.IUDPRadarNotifyLogService>().InstancePerLifetimeScope();
-                //builder.RegisterType<XCCloudService.BLL.XCGameManagerLog.UDPDeviceControlLogService>().As<XCCloudService.BLL.IBLL.XCGameManagerLog.IUDPDeviceControlLogService>().InstancePerLifetimeScope();
+                containerNamespace = "XCCloudWebBar.BLL.XCGameManagerLog";
+                //builder.RegisterType<XCCloudWebBar.BLL.XCGameManagerLog.UDPRadarRegisterLogService>().As<XCCloudWebBar.BLL.IBLL.XCGameManagerLog.IUDPRadarRegisterLogService>().InstancePerLifetimeScope();
+                //builder.RegisterType<XCCloudWebBar.BLL.XCGameManagerLog.UDPRadarHeatLogService>().As<XCCloudWebBar.BLL.IBLL.XCGameManagerLog.IUDPRadarHeatLogService>().InstancePerLifetimeScope();
+                //builder.RegisterType<XCCloudWebBar.BLL.XCGameManagerLog.UDPDeviceStateChangeLogService>().As<XCCloudWebBar.BLL.IBLL.XCGameManagerLog.IUDPDeviceStateChangeLogService>().InstancePerLifetimeScope();
+                //builder.RegisterType<XCCloudWebBar.BLL.XCGameManagerLog.UDPSendDeviceControlLogService>().As<XCCloudWebBar.BLL.IBLL.XCGameManagerLog.IUDPSendDeviceControlLogService>().InstancePerLifetimeScope();
+                //builder.RegisterType<XCCloudWebBar.BLL.XCGameManagerLog.UDPIndexLogService>().As<XCCloudWebBar.BLL.IBLL.XCGameManagerLog.IUDPIndexLogService>().InstancePerLifetimeScope();
+                //builder.RegisterType<XCCloudWebBar.BLL.XCGameManagerLog.UDPRadarNotifyLogService>().As<XCCloudWebBar.BLL.IBLL.XCGameManagerLog.IUDPRadarNotifyLogService>().InstancePerLifetimeScope();
+                //builder.RegisterType<XCCloudWebBar.BLL.XCGameManagerLog.UDPDeviceControlLogService>().As<XCCloudWebBar.BLL.IBLL.XCGameManagerLog.IUDPDeviceControlLogService>().InstancePerLifetimeScope();
             }
             else if (containerName.Equals(ContainerConstant.XCCloudGameManaIOCContainer))
             {
                 //XCCloud注册    
-                containerNamespace = "XCCloudService.BLL.XCCloud";                
+                containerNamespace = "XCCloudWebBar.BLL.XCCloud";                
             }
             else if (containerName.Equals(ContainerConstant.XCCloudRS232IOCContainer))
             {
                 //XCCloudRS232注册
-                containerNamespace = "XCCloudService.BLL.XCCloudRS232";
-                //builder.RegisterType<XCCloudService.BLL.XCCloudRS232.MerchService>().As<XCCloudService.BLL.IBLL.XCCloudRS232.IMerchService>().InstancePerLifetimeScope();
-                //builder.RegisterType<XCCloudService.BLL.XCCloudRS232.DeviceService>().As<XCCloudService.BLL.IBLL.XCCloudRS232.IDeviceService>().InstancePerLifetimeScope();
-                //builder.RegisterType<XCCloudService.BLL.XCCloudRS232.DataGameInfoService>().As<XCCloudService.BLL.IBLL.XCCloudRS232.IDataGameInfoService>().InstancePerLifetimeScope();
-                //builder.RegisterType<XCCloudService.BLL.XCCloudRS232.MerchDeviceService>().As<XCCloudService.BLL.IBLL.XCCloudRS232.IMerchDeviceService>().InstancePerLifetimeScope();
-                //builder.RegisterType<XCCloudService.BLL.XCCloudRS232.MerchSegmentService>().As<XCCloudService.BLL.IBLL.XCCloudRS232.IMerchSegmentService>().InstancePerLifetimeScope();
-                //builder.RegisterType<XCCloudService.BLL.XCCloudRS232.EnumService>().As<XCCloudService.BLL.IBLL.XCCloudRS232.IEnumService>().InstancePerLifetimeScope();
-                //builder.RegisterType<XCCloudService.BLL.XCCloudRS232.FoodsService>().As<XCCloudService.BLL.IBLL.XCCloudRS232.IFoodsService>().InstancePerLifetimeScope();
-                //builder.RegisterType<XCCloudService.BLL.XCCloudRS232.MemberService>().As<XCCloudService.BLL.IBLL.XCCloudRS232.IMemberService>().InstancePerLifetimeScope();
-                //builder.RegisterType<XCCloudService.BLL.XCCloudRS232.Base_DeviceInfoService>().As<XCCloudService.BLL.IBLL.XCCloudRS232.IBase_DeviceInfoService>().InstancePerLifetimeScope();
-                //builder.RegisterType<XCCloudService.BLL.XCCloudRS232.FoodSaleService>().As<XCCloudService.BLL.IBLL.XCCloudRS232.IFoodSaleService>().InstancePerLifetimeScope();
+                containerNamespace = "XCCloudWebBar.BLL.XCCloudRS232";
+                //builder.RegisterType<XCCloudWebBar.BLL.XCCloudRS232.MerchService>().As<XCCloudWebBar.BLL.IBLL.XCCloudRS232.IMerchService>().InstancePerLifetimeScope();
+                //builder.RegisterType<XCCloudWebBar.BLL.XCCloudRS232.DeviceService>().As<XCCloudWebBar.BLL.IBLL.XCCloudRS232.IDeviceService>().InstancePerLifetimeScope();
+                //builder.RegisterType<XCCloudWebBar.BLL.XCCloudRS232.DataGameInfoService>().As<XCCloudWebBar.BLL.IBLL.XCCloudRS232.IDataGameInfoService>().InstancePerLifetimeScope();
+                //builder.RegisterType<XCCloudWebBar.BLL.XCCloudRS232.MerchDeviceService>().As<XCCloudWebBar.BLL.IBLL.XCCloudRS232.IMerchDeviceService>().InstancePerLifetimeScope();
+                //builder.RegisterType<XCCloudWebBar.BLL.XCCloudRS232.MerchSegmentService>().As<XCCloudWebBar.BLL.IBLL.XCCloudRS232.IMerchSegmentService>().InstancePerLifetimeScope();
+                //builder.RegisterType<XCCloudWebBar.BLL.XCCloudRS232.EnumService>().As<XCCloudWebBar.BLL.IBLL.XCCloudRS232.IEnumService>().InstancePerLifetimeScope();
+                //builder.RegisterType<XCCloudWebBar.BLL.XCCloudRS232.FoodsService>().As<XCCloudWebBar.BLL.IBLL.XCCloudRS232.IFoodsService>().InstancePerLifetimeScope();
+                //builder.RegisterType<XCCloudWebBar.BLL.XCCloudRS232.MemberService>().As<XCCloudWebBar.BLL.IBLL.XCCloudRS232.IMemberService>().InstancePerLifetimeScope();
+                //builder.RegisterType<XCCloudWebBar.BLL.XCCloudRS232.Base_DeviceInfoService>().As<XCCloudWebBar.BLL.IBLL.XCCloudRS232.IBase_DeviceInfoService>().InstancePerLifetimeScope();
+                //builder.RegisterType<XCCloudWebBar.BLL.XCCloudRS232.FoodSaleService>().As<XCCloudWebBar.BLL.IBLL.XCCloudRS232.IFoodSaleService>().InstancePerLifetimeScope();
             }
             else
             {
                 //XCGame注册
-                containerNamespace = "XCCloudService.BLL.XCGame";
+                containerNamespace = "XCCloudWebBar.BLL.XCGame";
                 //builder.RegisterType<MemberService>().As<IMemberService>().InstancePerLifetimeScope();
                 //builder.RegisterType<GoodsService>().As<IGoodsService>().InstancePerLifetimeScope();
                 //builder.RegisterType<DeviceService>().As<IDeviceService>().InstancePerLifetimeScope();

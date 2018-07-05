@@ -1452,6 +1452,7 @@ namespace XCCloudWebBar.Api.XCCloud
                 MemberCardInfoViewModel model = new MemberCardInfoViewModel();
                 model.CardId = card.ID;
                 model.ICCardId = card.ICCardID;
+                model.MemberLevelId = card.MemberLevelID.Value;
                 model.LevelName = Data_MemberLevelService.I.GetModels(m => m.MemberLevelID == card.MemberLevelID).FirstOrDefault().MemberLevelName;
                 model.Deposit = card.Deposit.Value;
                 model.EndDate = card.EndDate.HasValue ? card.EndDate.Value.ToString("yyyy-MM-dd") : "";
@@ -2144,6 +2145,12 @@ namespace XCCloudWebBar.Api.XCCloud
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员卡号无效");
                 }
 
+                Base_MemberInfo member = Base_MemberInfoService.I.GetModels(t=>t.ID == memberCard.MemberID).FirstOrDefault();
+                if(member == null)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员信息无效");
+                }
+
                 if (backType == "1" && memberCard.CardType == 1)
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "附属卡不能退款");
@@ -2232,10 +2239,23 @@ namespace XCCloudWebBar.Api.XCCloud
                     if (backList.Count > 0)
                     {
                         foreach (var item in backList)
-                        {
-                            //源余额种类实体
-                            Data_Card_Balance cardBalance = Data_Card_BalanceService.I.GetModels(b => b.BalanceIndex == item.BalanceIndex && b.CardIndex == memberCard.ID).FirstOrDefault();
+                        {                            
                             MemberBalanceExchangeRateModel exchange = memberBalanceExchange.FirstOrDefault(t => t.BalanceIndex == item.BalanceIndex);
+                            //源余额ID
+                            var querySourceBalanceId = from a in Data_Card_BalanceService.N.GetModels(t => t.BalanceIndex == item.BalanceIndex && t.CardIndex == memberCard.ID)
+                                                         join b in Data_Card_Balance_StoreListService.N.GetModels(t => t.StoreID == storeId) on a.ID equals b.CardBalanceID 
+                                                         select new
+                                                         {
+                                                             BalanceId = a.ID
+                                                         };
+                            var sourceBalanceId = querySourceBalanceId.FirstOrDefault();
+                            if(sourceBalanceId == null)
+                            {
+                                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "退款失败");
+                            }
+
+                            //源余额种类实体
+                            Data_Card_Balance cardBalance = Data_Card_BalanceService.I.GetModels(b => b.ID == sourceBalanceId.BalanceId).FirstOrDefault();
 
                             //其他余额种类兑换储值金
                             if (exchange.BalanceIndex != exchange.TargetBalanceIndex)
@@ -2253,8 +2273,20 @@ namespace XCCloudWebBar.Api.XCCloud
                                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "余额更新失败");
                                 }
 
+                                //目标余额ID
+                                var queryTargetBalanceId = from a in Data_Card_BalanceService.N.GetModels(t => t.BalanceIndex == exchange.TargetBalanceIndex && t.CardIndex == memberCard.ID)
+                                                           join b in Data_Card_Balance_StoreListService.N.GetModels(t => t.StoreID == storeId) on a.ID equals b.CardBalanceID
+                                                           select new
+                                                           {
+                                                               BalanceId = a.ID
+                                                           };
+                                var targetBalanceId = queryTargetBalanceId.FirstOrDefault();
+                                if (targetBalanceId == null)
+                                {
+                                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "退款失败");
+                                }
                                 //目标余额种类实体(储值金)
-                                Data_Card_Balance targetBalance = Data_Card_BalanceService.I.GetModels(b => b.BalanceIndex == exchange.TargetBalanceIndex && b.CardIndex == memberCard.ID).FirstOrDefault();
+                                Data_Card_Balance targetBalance = Data_Card_BalanceService.I.GetModels(b => b.ID == targetBalanceId.BalanceId).FirstOrDefault();
                                 //储值金增加
                                 targetBalance.Balance += item.ExchangeValue;
                                 if (!Data_Card_BalanceService.I.Update(targetBalance, false))
@@ -2286,6 +2318,97 @@ namespace XCCloudWebBar.Api.XCCloud
                                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, string.Format("{0}兑换{1}失败", exchange.TypeName, exchange.TargetTypeName));
                                 }
                                 strCardExitNote += string.Format("退{0}：{1}，价值{2}：{3}；" + Environment.NewLine, exchange.TypeName, item.ExchangeQty, exchange.TargetTypeName, item.ExchangeValue);
+
+                                //源余额类别赠送区余额
+                                var querySourceBalanceFree = from a in Data_Card_Balance_FreeService.N.GetModels(t => t.BalanceIndex == item.BalanceIndex && t.CardIndex == memberCard.ID)
+                                                        join b in Data_Card_Balance_StoreListService.N.GetModels(t => t.StoreID == storeId) on a.ID equals b.CardBalanceID into b1
+                                                        from b in b1.DefaultIfEmpty()
+                                                        select new
+                                                        {
+                                                            Balance = b == null ? 0 : a.Balance
+                                                        };
+
+                                var sourceBalanceFree = querySourceBalanceFree.FirstOrDefault();
+
+
+                                //记录余额变化流水
+                                //1、源余额变化 减少
+                                Flw_MemberData fmd = new Flw_MemberData();
+                                fmd.ID = RedisCacheHelper.CreateStoreSerialNo(storeId);
+                                fmd.MerchID = merchID;
+                                fmd.StoreID = storeId;
+                                fmd.MemberID = member.ID;
+                                fmd.MemberName = member.UserName;
+                                fmd.CardIndex = memberCard.ID;
+                                fmd.ICCardID = memberCard.ICCardID;
+                                fmd.MemberLevelName = Data_MemberLevelService.I.GetModels(m => m.MemberLevelID == memberCard.MemberLevelID).FirstOrDefault().MemberLevelName;
+                                fmd.ChannelType = 0;
+                                fmd.OperationType = 10;
+                                fmd.OPTime = DateTime.Now;
+                                fmd.SourceType = 5;
+                                fmd.SourceID = balanceChange.ID;
+                                fmd.BalanceIndex = item.BalanceIndex;
+                                fmd.ChangeValue = item.ExchangeQty;
+                                fmd.Balance = cardBalance.Balance;
+                                fmd.FreeChangeValue = 0;
+                                fmd.FreeBalance = sourceBalanceFree.Balance;
+                                fmd.BalanceTotal = fmd.Balance + fmd.FreeBalance;
+                                fmd.Note = balanceChange.Note;
+                                fmd.UserID = userId;
+                                fmd.DeviceID = 0;
+                                fmd.ScheduleID = schedule.ID;
+                                fmd.AuthorID = 0;
+                                fmd.WorkStation = workStation;
+                                fmd.CheckDate = schedule.CheckDate;
+                                fmd.SyncFlag = 0;
+                                if(!Flw_MemberDataService.I.Add(fmd, false))
+                                {
+                                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建余额流水记录失败");
+                                }
+
+                                //目标余额类别赠送区余额
+                                var queryTargetBalanceFree = from a in Data_Card_Balance_FreeService.N.GetModels(t => t.BalanceIndex == exchange.TargetBalanceIndex && t.CardIndex == memberCard.ID)
+                                                             join b in Data_Card_Balance_StoreListService.N.GetModels(t => t.StoreID == storeId) on a.ID equals b.CardBalanceID into b1
+                                                             from b in b1.DefaultIfEmpty()
+                                                             select new
+                                                             {
+                                                                 Balance = b == null ? 0 : a.Balance
+                                                             };
+
+                                var targetBalanceFree = queryTargetBalanceFree.FirstOrDefault();
+                                //2、目标余额变化 增加
+                                Flw_MemberData fmd2 = new Flw_MemberData();
+                                fmd2.ID = RedisCacheHelper.CreateStoreSerialNo(storeId);
+                                fmd2.MerchID = merchID;
+                                fmd2.StoreID = storeId;
+                                fmd2.MemberID = member.ID;
+                                fmd2.MemberName = member.UserName;
+                                fmd2.CardIndex = memberCard.ID;
+                                fmd2.ICCardID = memberCard.ICCardID;
+                                fmd2.MemberLevelName = Data_MemberLevelService.I.GetModels(m => m.MemberLevelID == memberCard.MemberLevelID).FirstOrDefault().MemberLevelName;
+                                fmd2.ChannelType = 0;
+                                fmd2.OperationType = 9;
+                                fmd2.OPTime = DateTime.Now;
+                                fmd2.SourceType = 5;
+                                fmd2.SourceID = balanceChange.ID;
+                                fmd2.BalanceIndex = exchange.TargetBalanceIndex;
+                                fmd2.ChangeValue = item.ExchangeValue;
+                                fmd2.Balance = targetBalance.Balance;
+                                fmd2.FreeChangeValue = 0;
+                                fmd2.FreeBalance = targetBalanceFree.Balance;
+                                fmd2.BalanceTotal = fmd2.Balance + fmd2.FreeBalance;
+                                fmd2.Note = balanceChange.Note;
+                                fmd2.UserID = userId;
+                                fmd2.DeviceID = 0;
+                                fmd2.ScheduleID = schedule.ID;
+                                fmd2.AuthorID = 0;
+                                fmd2.WorkStation = workStation;
+                                fmd2.CheckDate = schedule.CheckDate;
+                                fmd2.SyncFlag = 0;
+                                if (!Flw_MemberDataService.I.Add(fmd2, false))
+                                {
+                                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "创建余额流水记录失败");
+                                }
                             }
                             else
                             {

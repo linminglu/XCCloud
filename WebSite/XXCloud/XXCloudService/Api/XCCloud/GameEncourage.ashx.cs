@@ -58,7 +58,8 @@ namespace XXCloudService.Api.XCCloud
                                     Data_GameInfo b ON a.GameIndex = b.ID                                
                                 WHERE 1=1
                             ";
-                sql += " AND a.StoreID=" + storeId;
+                sql = sql + " AND a.StoreID=" + storeId;
+                sql = sql + sqlWhere;
 
                 var list = Data_PushRuleService.I.SqlQuery<Data_GameEncourageList>(sql, parameters).ToList();
 

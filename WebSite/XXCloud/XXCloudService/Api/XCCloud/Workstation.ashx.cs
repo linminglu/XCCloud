@@ -95,7 +95,8 @@ namespace XXCloudService.Api.XCCloud
                                 LEFT JOIN Base_DepotInfo b ON a.DepotID = b.ID                                
                                 WHERE 1=1
                             ";
-                sql += " AND a.StoreID=" + storeId;
+                sql = sql + " AND a.StoreID=" + storeId;
+                sql = sql + sqlWhere;
 
                 var list = Data_WorkstationService.I.SqlQuery<Data_WorkstationList>(sql, parameters).ToList();
 

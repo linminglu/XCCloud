@@ -17,6 +17,7 @@ using XCCloudService.BLL.XCCloud;
 using XCCloudService.CacheService;
 using XCCloudService.Common;
 using XCCloudService.Common.Extensions;
+using XCCloudService.DBService.BLL;
 using XCCloudService.Model.CustomModel.XCCloud;
 using XCCloudService.Model.XCCloud;
 using XXCloudService.Api.XCCloud.Common;
@@ -36,46 +37,83 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
                 string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
 
-                var errMsg = string.Empty;
-                
+                string errMsg = string.Empty;
+                object[] conditions = dicParas.ContainsKey("conditions") ? (object[])dicParas["conditions"] : null;
+
+                SqlParameter[] parameters = new SqlParameter[0];
+                string sqlWhere = string.Empty;
+
+                if (conditions != null && conditions.Length > 0)
+                    if (!QueryBLL.GenDynamicSql(conditions, "a.", ref sqlWhere, ref parameters, out errMsg))
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
                 //排除游乐项目类型的游戏机
                 var projectGameTypes = getProjectGameTypes(out errMsg);
                 if (!errMsg.IsNull())
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);                
 
-                var data_GameInfo = from a in Data_GameInfoService.N.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase))
-                                    join b in Dict_SystemService.N.GetModels() on a.GameType equals b.ID into b1
-                                    from b in b1.DefaultIfEmpty()
-                                    join c in Data_GameInfo_ExtService.N.GetModels(p => p.ValidFlag == 1) on a.ID equals c.GameID into c1
-                                    from c in c1.DefaultIfEmpty()
-                                    join d in Data_GroupAreaService.N.GetModels() on a.AreaID equals d.ID into d1
-                                    from d in d1.DefaultIfEmpty()
-                                    where !projectGameTypes.Contains(a.GameType ?? 0)
-                                    orderby a.ID
-                                    select new
-                                    {
-                                        ID = a.ID,
-                                        GameID = a.GameID,
-                                        GameName = a.GameName,
-                                        GameType = a.GameType,
-                                        GameTypeStr = b != null ? b.DictKey : string.Empty,
-                                        AreaName = d != null ? d.AreaName : string.Empty,
-                                        Area = c != null ? c.Area : (decimal?)null,
-                                        //ChangeTime = c != null ? SqlFunctions.DateName("yyyy", c.ChangeTime) + "-" + SqlFunctions.DateName("mm", c.ChangeTime) + "-" + SqlFunctions.DateName("dd", c.ChangeTime) + " " + 
-                                        //                        SqlFunctions.DateName("hh", c.ChangeTime) + ":" + SqlFunctions.DateName("n", c.ChangeTime) + ":" + SqlFunctions.DateName("ss", c.ChangeTime) : string.Empty,
-                                        ChangeTime = c != null ? c.ChangeTime : (DateTime?)null,
-                                        Price = c != null ? c.Price : (int?)null,
-                                        //PushReduceFromCard = a.PushReduceFromCard,
-                                        PushCoin1 = a.PushCoin1,
-                                        AllowElecPushStr = a.AllowElecPush != null ? (a.AllowElecPush == 1 ? "启用" : "禁用") : "",
-                                        LotteryModeStr = a.LotteryMode != null ? (a.LotteryMode == 1 ? "启用" : "禁用") : "",
-                                        ReadCatStr = a.ReadCat != null ? (a.ReadCat == 1 ? "启用" : "禁用") : "",
-                                        StateStr = a.State != null ? (a.State == 1 ? "启用" : "禁用") : ""
-                                    };
+                string sql = @"SELECT
+                                    a.ID, a.GameID, a.GameName, a.GameType, b.DictKey AS GameTypeStr, (case when a.AreaID=0 then '全部' else d.AreaName end) AS AreaName,
+                                    c.Area, c.ChangeTime, c.Price, a.PushCoin1, (case a.AllowElecPush when 1 then '启用' when 0 then '禁用' else '' end) AS AllowElecPushStr,
+                                    (case a.LotteryMode when 1 then '启用' when 0 then '禁用' else '' end) AS LotteryModeStr, (case a.ReadCat when 1 then '启用' when 0 then '禁用' else '' end) AS ReadCatStr,
+                                    (case a.State when 1 then '启用' when 0 then '禁用' else '' end) AS StateStr
+                                FROM
+                                	Data_GameInfo a
+                                LEFT JOIN Dict_System b ON a.GameType=b.ID
+                                LEFT JOIN Data_GameInfo_Ext c ON a.ID=c.GameID
+                                LEFT JOIN Data_GroupArea d ON a.AreaID=d.ID
+                                WHERE c.ValidFlag=1 AND a.GameType NOT IN (" + string.Join(",", projectGameTypes) + @") AND a.StoreID='" + storeId + @"'
+                            ";
+                sql = sql + sqlWhere;
+                sql = sql + " ORDER BY a.ID";
+
+                var list = Data_GameInfoService.I.SqlQuery<Data_GameInfoList>(sql, parameters).ToList();
+
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, list);
+                //XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                //string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+
+                //var errMsg = string.Empty;
+                
+                ////排除游乐项目类型的游戏机
+                //var projectGameTypes = getProjectGameTypes(out errMsg);
+                //if (!errMsg.IsNull())
+                //    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                //var data_GameInfo = from a in Data_GameInfoService.N.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase))
+                //                    join b in Dict_SystemService.N.GetModels() on a.GameType equals b.ID into b1
+                //                    from b in b1.DefaultIfEmpty()
+                //                    join c in Data_GameInfo_ExtService.N.GetModels(p => p.ValidFlag == 1) on a.ID equals c.GameID into c1
+                //                    from c in c1.DefaultIfEmpty()
+                //                    join d in Data_GroupAreaService.N.GetModels() on a.AreaID equals d.ID into d1
+                //                    from d in d1.DefaultIfEmpty()
+                //                    where !projectGameTypes.Contains(a.GameType ?? 0)
+                //                    orderby a.ID
+                //                    select new
+                //                    {
+                //                        ID = a.ID,
+                //                        GameID = a.GameID,
+                //                        GameName = a.GameName,
+                //                        GameType = a.GameType,
+                //                        GameTypeStr = b != null ? b.DictKey : string.Empty,
+                //                        AreaName = a.AreaID == 0 ? "全部" : (d != null ? d.AreaName : string.Empty),
+                //                        Area = c != null ? c.Area : (decimal?)null,
+                //                        //ChangeTime = c != null ? SqlFunctions.DateName("yyyy", c.ChangeTime) + "-" + SqlFunctions.DateName("mm", c.ChangeTime) + "-" + SqlFunctions.DateName("dd", c.ChangeTime) + " " + 
+                //                        //                        SqlFunctions.DateName("hh", c.ChangeTime) + ":" + SqlFunctions.DateName("n", c.ChangeTime) + ":" + SqlFunctions.DateName("ss", c.ChangeTime) : string.Empty,
+                //                        ChangeTime = c != null ? c.ChangeTime : (DateTime?)null,
+                //                        Price = c != null ? c.Price : (int?)null,
+                //                        //PushReduceFromCard = a.PushReduceFromCard,
+                //                        PushCoin1 = a.PushCoin1,
+                //                        AllowElecPushStr = a.AllowElecPush != null ? (a.AllowElecPush == 1 ? "启用" : "禁用") : "",
+                //                        LotteryModeStr = a.LotteryMode != null ? (a.LotteryMode == 1 ? "启用" : "禁用") : "",
+                //                        ReadCatStr = a.ReadCat != null ? (a.ReadCat == 1 ? "启用" : "禁用") : "",
+                //                        StateStr = a.State != null ? (a.State == 1 ? "启用" : "禁用") : ""
+                //                    };
                                     
-                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, data_GameInfo);
+                //return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, data_GameInfo);
             }
             catch (Exception e)
             {

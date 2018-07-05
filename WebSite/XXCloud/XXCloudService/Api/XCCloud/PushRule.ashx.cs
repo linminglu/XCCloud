@@ -82,7 +82,8 @@ namespace XXCloudService.Api.XCCloud
                               @") c ON a.ID = c.PushRuleID and c.RowNum <= 1
                                 WHERE 1=1
                             ";
-                sql += " AND a.StoreID='" + storeId + "'";
+                sql = sql + " AND a.StoreID='" + storeId + "'";
+                sql = sql + sqlWhere;
 
                 var list = Data_PushRuleService.I.SqlQuery<Data_Push_RuleList>(sql, parameters).ToList();
 

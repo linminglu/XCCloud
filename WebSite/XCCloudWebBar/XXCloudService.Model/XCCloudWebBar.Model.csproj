@@ -7,8 +7,8 @@
     <ProjectGuid>{1E38EC5A-0A89-4D9E-9CDF-6F79C580B6A1}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>XCCloudService.Model</RootNamespace>
-    <AssemblyName>XXCloudService.Model</AssemblyName>
+    <RootNamespace>XCCloudWebBar.Model</RootNamespace>
+    <AssemblyName>XCCloudWebBar.Model</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -733,6 +733,9 @@
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Flw_MemberCard_Renew.cs">
+      <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
+    </Compile>
+    <Compile Include="XCCloud\Flw_MemberData.cs">
       <DependentUpon>XCCloudDBModel.txt4</DependentUpon>
     </Compile>
     <Compile Include="XCCloud\Flw_MemberLevelFree.cs">
