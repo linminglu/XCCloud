@@ -18,20 +18,32 @@
 <body>
   <div class="layui-row settingPage" >
       <div class="row-box" style="">
-          <blockquote class="layui-elem-quote">
-              <div class="layui-form" id="serchMode">
-              </div>
-              <div id="tantion">
+          <div class="layui-col-md12 layui-col-sm12 layui-col-lg12">
+              <blockquote class="layui-elem-quote layui-col-md12 layui-col-sm12 layui-col-lg12">
+                  <div class="layui-form layui-form-pane layui-col-md9" id="form1">
+                      <div class="layui-form-item" id="serchMode"></div>
+                  </div>
 
-              </div>
-              <button type="button" class="layui-btn layui-btn-normal" i18n-content="查询模板">查询</button>
-          </blockquote>
-          <table class="layui-hide" id="ProjectList" lay-filter="ProjectList"></table>
-          <button type="button" class="layui-btn layui-btn-sm layui-btn-primary layui-hide" id="timeBtn">计时项目</button>
-          <button type="button" class="layui-btn layui-btn-sm layui-btn-primary" id="bindBtn">设备绑定</button>
-          <button type="button" class="layui-btn layui-btn-sm layui-btn-primary" id="editBtn">编辑</button>
-          <button type="button" class="layui-btn layui-btn-sm layui-btn-normal add" i18n-content="新增">新增</button>
-          <button type="button" class="layui-btn layui-btn-sm layui-btn-danger " id="delBtn">删除</button>
+                  <div class="layui-col-md2" id="form2Box" style="position: relative;height: 38px;border: 1px #999 solid">
+                      <div class="layui-form layui-form-pane" id="form2" style="position: absolute; display: none;top: 38px;border:1px #999 solid ;z-index: 9999999999999999999">
+                          <div id="tantion" class="layui-form-item">
+                          </div>
+                      </div>
+                  </div>
+
+                  <button type="button" class="layui-btn layui-btn-normal layui-col-md1" i18n-content="查询模板">查询</button>
+              </blockquote>
+          </div>
+
+          <div class="layui-col-md12 layui-col-sm12 layui-col-lg12">
+              <table class="layui-hide" id="ProjectList" lay-filter="ProjectList"></table>
+              <button type="button" class="layui-btn layui-btn-sm layui-btn-primary layui-hide" id="timeBtn">计时项目</button>
+              <button type="button" class="layui-btn layui-btn-sm layui-btn-primary" id="bindBtn">设备绑定</button>
+              <button type="button" class="layui-btn layui-btn-sm layui-btn-primary" id="editBtn">编辑</button>
+              <button type="button" class="layui-btn layui-btn-sm layui-btn-normal add" i18n-content="新增">新增</button>
+              <button type="button" class="layui-btn layui-btn-sm layui-btn-danger " id="delBtn">删除</button>
+          </div>
+
       </div>
 
   </div>
@@ -377,8 +389,9 @@
 </body>
 <script src="js/jquery-1.8.3-min.js"></script>
 <script src="layui/layui.js"></script>
-<script src="js/searchModel.js"></script>
+
 <script src="js/storeSystem.js"></script>
+<script src="js/searchModel.js"></script>
 <script>
     let xc=xcActionSystem.prototype;
     let token=xc.getStorage('token');
@@ -412,71 +425,11 @@
     let feeType='';let feeBalance='';let feekinds='';let feeWays='';let Lock=0;
     let checkedArr=[];
 
-    // function getSearchList(form,layer,pagename,processname,token,id1,id2) {
-    //     let obj={
-    //         'pagename':pagename,
-    //         'processname':processname,
-    //         'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'
-    //     }
-    //     let _parseJson = JSON.stringify(obj);
-    //     $.ajax({
-    //         type:'post',
-    //         url:'/Query?action=init',
-    //         contentType: "application/json; charset=utf-8",
-    //         data:{parasJson: _parseJson},
-    //         // async:false,
-    //         success: function (data) {
-    //             data = JSON.parse(data);
-    //             if (data.result_code == 1) {
-    //                 console.log(data);
-    //                 let arr=data.result_data;
-    //                 for(let i in arr){
-    //                     $('#'+id2).append('<input type="checkbox" lay-skin="primary" lay-filter="searchList" title="'+arr[i].title+'"/>');
-    //                     // $('#'+id1).append('<div class="layui-inline">' +
-    //                     //     '<label class="layui-form-label">'+arr[i].title+'</label>' +
-    //                     //     '<div class="layui-input-inline"><select name="" id="'+arr[i].filed+'-sel">'+setOption(arr[i].condition)+'</select></div>' +
-    //                     //     '</div>');
-    //                 }
-    //                 form.render()
-    //             } else {
-    //                 layer.msg(data.result_msg||data.return_msg);
-    //             }
-    //         }
-    //     });
-    // }
-//     function setOption(j) {
-//         let options=[{'value':'=','key':'0'},
-//             {'value':'>','key':'1'},
-//             {'value':'<','key':'2'},
-//             {'value':'>=','key':'3'},
-//             {'value':'<=','key':'4'},
-//             {'value':'介于','key':'5'},
-//             {'value':'包含','key':'6'}]
-//         let html='';
-//         for(let i in options){
-//             if(options[i].key==j){
-//                 html+='<option value="'+options[i].key+' selected">'+options[i].value+'</option>'
-//             }else {
-//                 html+='<option value="'+options[i].key+'">'+options[i].value+'</option>'
-//             }
-//         }
-// return html;
-//     }
     layui.use(['form','layer','table'],()=>{
         const form=layui.form;
         const layer=layui.layer;
         const table=layui.table;
 
-       // var seachModel=new seachModel({
-       //      'elem1':'tantion',
-       //      'elem2':'serchMode',
-       //      'pagename':'projectInfoSearch',
-       //      'processname':'projectInfoSearch',
-       //      'token':token,
-       //      'form':form,
-       //      'layer':layer
-       //  })
-        // getSearchList(form,layer,'projectInfoSearch','projectInfoSearch',token,'serchMode','tantion')
         //用户余额类别
         let __obj={'hkType':'','userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
         let _parseJson = JSON.stringify(__obj);

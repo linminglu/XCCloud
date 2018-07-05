@@ -657,7 +657,7 @@ namespace XCCloudService.Api.XCCloud
 
 
                 IData_MemberLevelService data_MemberLevelService = Data_MemberLevelService.I;
-                var query = data_MemberLevelService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.State == 1);
+                var query = data_MemberLevelService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase));
                 if (!string.IsNullOrEmpty(memberLevelID))
                 {
                     var iMemberLevelID = Convert.ToInt32(memberLevelID);
@@ -1239,36 +1239,58 @@ namespace XCCloudService.Api.XCCloud
                         }
 
                         var data_MemberLevel = data_MemberLevelService.GetModels(p => p.MemberLevelID == iMemberLevelID).FirstOrDefault();
-                        data_MemberLevel.State = 0;
-                        if (!data_MemberLevelService.Update(data_MemberLevel))
+                        //data_MemberLevel.State = 0;
+                        if (!data_MemberLevelService.Delete(data_MemberLevel))
                         {
                             errMsg = "删除会员级别失败";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 
-                        //IData_MemberLevel_FoodService data_MemberLevel_FoodService = Data_MemberLevel_FoodService.I;
-                        //foreach (var model in data_MemberLevel_FoodService.GetModels(p => p.MemberLevelID == iMemberLevelID))
-                        //{
-                        //    data_MemberLevel_FoodService.DeleteModel(model);
-                        //}
+                        IData_MemberLevel_FoodService data_MemberLevel_FoodService = Data_MemberLevel_FoodService.I;
+                        foreach (var model in data_MemberLevel_FoodService.GetModels(p => p.MemberLevelID == iMemberLevelID))
+                        {
+                            data_MemberLevel_FoodService.DeleteModel(model);
+                        }
 
-                        //if (!data_MemberLevel_FoodService.SaveChanges())
-                        //{
-                        //    errMsg = "删除会员级别开卡套餐信息失败";
-                        //    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        //}
+                        if (!data_MemberLevel_FoodService.SaveChanges())
+                        {
+                            errMsg = "删除开卡套餐信息失败";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
 
-                        //IData_MemberLevelFreeService data_MemberLevelFreeService = Data_MemberLevelFreeService.I;
-                        //foreach (var model in data_MemberLevelFreeService.GetModels(p => p.MemberLevelID == iMemberLevelID))
-                        //{
-                        //    data_MemberLevelFreeService.DeleteModel(model);
-                        //}
+                        IData_MemberLevelFreeService data_MemberLevelFreeService = Data_MemberLevelFreeService.I;
+                        foreach (var model in data_MemberLevelFreeService.GetModels(p => p.MemberLevelID == iMemberLevelID))
+                        {
+                            data_MemberLevelFreeService.DeleteModel(model);
+                        }
 
-                        //if (!data_MemberLevelFreeService.SaveChanges())
-                        //{
-                        //    errMsg = "删除会员级别预赠币规则信息失败";
-                        //    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        //}
+                        if (!data_MemberLevelFreeService.SaveChanges())
+                        {
+                            errMsg = "删除预赠币规则信息失败";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
+                        foreach (var model in Data_MemberLevel_BalanceService.I.GetModels(p => p.MemberLevelID == iMemberLevelID))
+                        {
+                            Data_MemberLevel_BalanceService.I.DeleteModel(model);
+                        }
+
+                        if (!Data_MemberLevel_BalanceService.I.SaveChanges())
+                        {
+                            errMsg = "删除商品兑换折扣规则信息失败";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
+
+                        foreach (var model in Data_MemberLevel_BalanceChargeService.I.GetModels(p => p.MemberLevelID == iMemberLevelID))
+                        {
+                            Data_MemberLevel_BalanceChargeService.I.DeleteModel(model);
+                        }
+
+                        if (!Data_MemberLevel_BalanceChargeService.I.SaveChanges())
+                        {
+                            errMsg = "删除会员余额互换规则信息失败";
+                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                        }
 
                         ts.Complete();
                     }
