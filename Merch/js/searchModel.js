@@ -13,39 +13,42 @@ let _this=this;
         _this._data=[];
         _this._domStr1 = "";  //结构字符串
         _this._domStr2 = "";  //结构字符串
-        _this.getData(_this._data);
+        // this.getData(_this._data);
+        aa();
         _this.initCheckBox(_this._data);
         _this.initSerach(_this._data);
         _this.rendering(_this._data);
         console.log(this)
     }
-//获取参数
-    seachModel.prototype.getData=function (d) {
-        var _this=this;
-        let obj={
-            'pagename':_this.pagename,
-            'processname':_this.processname,
-            'userToken':_this.token,'signkey':'1f626576304bf5d95b72ece2222e42c3'
-        }
-        let _parseJson = JSON.stringify(obj);
-        $.ajax({
-            type:'post',
-            url:'/Query?action=init',
-            contentType: "application/json; charset=utf-8",
-            data:{parasJson: _parseJson},
-            async:false,
-            success: function (data) {
-                data = JSON.parse(data);
-                if (data.result_code == 1) {
-
-                    d=data.result_data;
-
-                } else {
-                    _this.layer.msg(data.result_msg||data.return_msg);
-                }
-            }
-        });
+    function aa() {
+        console.log(11)
     }
+//获取参数
+//     seachModel.prototype.getData=function (d) {
+//         var _this=this;
+//         let obj={
+//             'pagename':_this.pagename,
+//             'processname':_this.processname,
+//             'userToken':_this.token,'signkey':'1f626576304bf5d95b72ece2222e42c3'
+//         }
+//         let _parseJson = JSON.stringify(obj);
+//         $.ajax({
+//             type:'post',
+//             url:'/Query?action=init',
+//             contentType: "application/json; charset=utf-8",
+//             data:{parasJson: _parseJson},
+//             async:false,
+//             success: function (data) {
+//                 data = JSON.parse(data);
+//                 if (data.result_code == 1) {
+//                     d=data.result_data;
+//
+//                 } else {
+//                     _this.layer.msg(data.result_msg||data.return_msg);
+//                 }
+//             }
+//         });
+//     }
 //生成下拉复选框
     seachModel.prototype.initCheckBox=function (d) {
         var _this=this;

@@ -262,7 +262,7 @@ namespace XXCloudService.Api.XCCloud
 
                         if (Dict_BalanceTypeService.I.Any(p => p.ID != id && p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.MappingType == (int)HKType.Money && p.MappingType == hkType))
                         {
-                            errMsg = "同一商户下余额类别的储值金关联类别不能重复";
+                            errMsg = "储值金类别不能重复";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 
