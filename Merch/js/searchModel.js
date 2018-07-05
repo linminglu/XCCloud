@@ -1,7 +1,7 @@
-// (function () {
-    //构造
-    function seachModel(options) {
-let _this=this;
+var aa=(function () {
+    // 构造
+   var seachModel =function (options) {
+        let _this=this;
         _this.container1 = document.getElementById(options.elem1); //容器
         _this.container2 = document.getElementById(options.elem2); //容器
         _this.pagename = options.pagename;  //数据
@@ -20,35 +20,32 @@ let _this=this;
         _this.rendering(_this._data);
         console.log(this)
     }
-    function aa() {
-        console.log(11)
-    }
 //获取参数
-//     seachModel.prototype.getData=function (d) {
-//         var _this=this;
-//         let obj={
-//             'pagename':_this.pagename,
-//             'processname':_this.processname,
-//             'userToken':_this.token,'signkey':'1f626576304bf5d95b72ece2222e42c3'
-//         }
-//         let _parseJson = JSON.stringify(obj);
-//         $.ajax({
-//             type:'post',
-//             url:'/Query?action=init',
-//             contentType: "application/json; charset=utf-8",
-//             data:{parasJson: _parseJson},
-//             async:false,
-//             success: function (data) {
-//                 data = JSON.parse(data);
-//                 if (data.result_code == 1) {
-//                     d=data.result_data;
-//
-//                 } else {
-//                     _this.layer.msg(data.result_msg||data.return_msg);
-//                 }
-//             }
-//         });
-//     }
+    seachModel.prototype.getData=function (d) {
+        var _this=this;
+        let obj={
+            'pagename':_this.pagename,
+            'processname':_this.processname,
+            'userToken':_this.token,'signkey':'1f626576304bf5d95b72ece2222e42c3'
+        }
+        let _parseJson = JSON.stringify(obj);
+        $.ajax({
+            type:'post',
+            url:'/Query?action=init',
+            contentType: "application/json; charset=utf-8",
+            data:{parasJson: _parseJson},
+            async:false,
+            success: function (data) {
+                data = JSON.parse(data);
+                if (data.result_code == 1) {
+                    d=data.result_data;
+
+                } else {
+                    _this.layer.msg(data.result_msg||data.return_msg);
+                }
+            }
+        });
+    }
 //生成下拉复选框
     seachModel.prototype.initCheckBox=function (d) {
         var _this=this;
@@ -200,23 +197,23 @@ let _this=this;
         }
         return html;
     }
-//     window.seachModel=seachModel;
-// })(window)
+    // window.seachModel=seachModel;window
+})()
 
-
-let token1=window.localStorage.getItem('token');
-layui.use(['form','layer','table'],()=> {
-    const form = layui.form;
-    const layer = layui.layer;
-    const table = layui.table;
-
-    var searchM=  seachModel({
-        'elem1': 'tantion',
-        'elem2': 'serchMode',
-        'pagename': 'projectInfoSearch',
-        'processname': 'projectInfoSearch',
-        'token': token1,
-        'form': form,
-        'layer': layer
-    })
-})
+aa()
+// let token1=window.localStorage.getItem('token');
+// layui.use(['form','layer','table'],()=> {
+//     const form = layui.form;
+//     const layer = layui.layer;
+//     const table = layui.table;
+//
+//     var searchM= new seachModel({
+//         'elem1': 'tantion',
+//         'elem2': 'serchMode',
+//         'pagename': 'projectInfoSearch',
+//         'processname': 'projectInfoSearch',
+//         'token': token1,
+//         'form': form,
+//         'layer': layer
+//     })
+// })
