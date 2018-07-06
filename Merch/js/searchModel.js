@@ -60,69 +60,67 @@ var seachModel = function (options) {
                                 '<input type="radio" name="' + d[i].field + 'sh" value="0" title="否" lay-filter="' + d[i].field + 'sh">' +
                                 '</div></div>'
                         } else if (d[i].type == 'string') {
-                            _domStr2 += ' <div class="layui-inline ' + d[i].field + '">' +
+                            _domStr2 += ' <div class="layui-inline ' + d[i].field + 'sh">' +
                                 '<label class="layui-form-label">' + d[i].title + '</label>' +
                                 '<div class="layui-input-inline">' +
                                 '<input type="text" id="' + d[i].field + 'sh" class="layui-input">' +
                                 '</div></div>'
                         } else if (d[i].type == 'number') {
-                            if (d[i].condition == 5) {
-                                _domStr2 += ' <div class="layui-inline ' + d[i].field + '"><label class="layui-form-label">' + d[i].title + '</label>' +
-                                    '<div class="layui-input-inline"><select id="' + d[i].field + 'cond">' + setOption(d[i].condition) + '</select></div>' +
-                                    '<div class="layui-input-inline" style="width: 100px">' +
-                                    '<input type="text" id="' + d[i].field + 'sh1" class="layui-input">' +
-                                    '</div>' +
-                                    '<div class="layui-form-mid">至</div>' +
-                                    '<div class="layui-input-inline" style="width: 100px">' +
-                                    '<input type="text" id="' + d[i].field + 'sh2" class="layui-input">' +
-                                    '</div>' +
-                                    '</div>'
-                            } else {
-                                _domStr2 += ' <div class="layui-inline ' + d[i].field + 'sh "><label class="layui-form-label">' + d[i].title + '</label>' +
-                                    '<div class="layui-input-inline"><select id="' + d[i].field + 'cond">' + setOption(d[i].condition) + '</select></div>' +
-                                    '<div class="layui-input-inline">' +
-                                    '<input type="text" id="' + d[i].field + 'sh1" class="layui-input">' +
-                                    '</div></div>'
-                            }
+                            _domStr2 += ' <div class="layui-inline ' + d[i].field + 'sh">' +
+                                            '<label class="layui-form-label">' + d[i].title + '</label>' +
+                                            '<div class="layui-input-inline" style="width: 60px">' +
+                                                 '<select id="' + d[i].field + 'cond">' + setOption(d[i].condition) + '</select>' +
+                                            '</div>'+
+                                            '<div class="layui-input-inline layui-hide" style="width: 100px">' +
+                                                '<input type="text" id="' + d[i].field + 'sh1" class="layui-input">' +
+                                            '</div>' +
+                                            '<div class="layui-form-mid ' + d[i].field + 'mid">至</div>' +
+                                            '<div class="layui-input-inline layui-hide" style="width: 100px">' +
+                                                '<input type="text" id="' + d[i].field + 'sh2" class="layui-input">' +
+                                            '</div>'+
+                                            '<div class="layui-input-inline layui-hide" style="width: 130px">' +
+                                                 '<input type="text" id="' + d[i].field + 'sh11" class="layui-input">' +
+                                            '</div>' +
+                                        '</div>'
 
                         } else if (d[i].type == 'time') {
-                            if (d[i].condition == 5) {
-                                _domStr2 += ' <div class="layui-inline ' + d[i].field + 'sh"><label class="layui-form-label">' + d[i].title + '</label>' +
-                                    '<div class="layui-input-inline"><select id="' + d[i].field + 'cond">' + setOption(d[i].condition) + '</select></div>' +
-                                    '<div class="layui-input-inline" style="width: 100px">' +
-                                    '<input type="text" id="' + d[i].field + 'sh1" class="layui-input">' +
-                                    '</div>' +
-                                    '<div class="layui-form-mid">至</div>' +
-                                    '<div class="layui-input-inline" style="width: 100px">' +
-                                    '<input type="text" id="' + d[i].field + 'sh2" class="layui-input">' +
-                                    '</div>' +
-                                    '</div>'
-                            } else {
-                                _domStr2 += ' <div class="layui-inline ' + d[i].field + 'sh"><label class="layui-form-label">' + d[i].title + '</label>' +
-                                    '<div class="layui-input-inline"><select id="' + d[i].field + 'cond">' + setOption(d[i].condition) + '</select></div>' +
-                                    '<div class="layui-input-inline">' +
-                                    '<input type="text" id="' + d[i].field + 'sh1" class="layui-input">' +
-                                    '</div></div>'
-                            }
+                            _domStr2 += ' <div class="layui-inline ' + d[i].field + 'sh">' +
+                                '<label class="layui-form-label">' + d[i].title + '</label>' +
+                                '<div class="layui-input-inline" style="width: 60px"><select id="' + d[i].field + 'cond">' + setOption(d[i].condition) + '</select></div>';
+
+                            _domStr2 +=
+                                '<div class="layui-input-inline layui-hide" style="width: 100px">' +
+                                '<input type="text" id="' + d[i].field + 'sh1" class="layui-input">' +
+                                '</div>' +
+                                '<div class="layui-form-mid ' + d[i].field + 'mid">至</div>' +
+                                '<div class="layui-input-inline layui-hide" style="width: 100px">' +
+                                '<input type="text" id="' + d[i].field + 'sh2" class="layui-input">' +
+                                '</div>'
+
+
+                            _domStr2 +=
+                                '<div class="layui-input-inline layui-hide" style="width: 130px">' +
+                                '<input type="text" id="' + d[i].field + 'sh11" class="layui-input">' +
+                                '</div></div>'
                         } else if (d[i].type == 'date') {
-                            if (d[i].condition == 5) {
-                                _domStr2 += ' <div class="layui-inline" ' + d[i].field + 'sh><label class="layui-form-label">' + d[i].title + '</label>' +
-                                    '<div class="layui-input-inline"><select id="' + d[i].field + 'cond">' + setOption(d[i].condition) + '</select></div>' +
-                                    '<div class="layui-input-inline" style="width: 100px">' +
+                            _domStr2 += ' <div class="layui-inline ' + d[i].field + 'sh">' +
+                                '<label class="layui-form-label">' + d[i].title + '</label>' +
+                                '<div class="layui-input-inline" style="width: 60px"><select id="' + d[i].field + 'cond">' + setOption(d[i].condition) + '</select></div>';
+
+                                _domStr2 +=
+                                    '<div class="layui-input-inline layui-hide" style="width: 100px">' +
                                     '<input type="text" id="' + d[i].field + 'sh1" class="layui-input">' +
                                     '</div>' +
-                                    '<div class="layui-form-mid">至</div>' +
-                                    '<div class="layui-input-inline" style="width: 100px">' +
+                                    '<div class="layui-form-mid ' + d[i].field + 'mid">至</div>' +
+                                    '<div class="layui-input-inline layui-hide" style="width: 100px">' +
                                     '<input type="text" id="' + d[i].field + 'sh2" class="layui-input">' +
-                                    '</div>' +
                                     '</div>'
-                            } else {
-                                _domStr2 += ' <div class="layui-inline" ' + d[i].field + 'sh><label class="layui-form-label">' + d[i].title + '</label>' +
-                                    '<div class="layui-input-inline"><select id="' + d[i].field + 'cond">' + setOption(d[i].condition) + '</select></div>' +
-                                    '<div class="layui-input-inline">' +
-                                    '<input type="text" id="' + d[i].field + 'sh1" class="layui-input">' +
+
+                                _domStr2 +=
+                                    '<div class="layui-input-inline layui-hide" style="width: 130px">' +
+                                    '<input type="text" id="' + d[i].field + 'sh11" class="layui-input">' +
                                     '</div></div>'
-                            }
+
                         }
 
                     }
@@ -144,7 +142,19 @@ var seachModel = function (options) {
                             }
 
                         }
-
+                        // if(d[i].type == 'number' || d[i].type == 'date' || d[i].type == 'time') {
+                        //     if(d[i].condition==5){
+                        //         $('#'+d[i].field+'sh1').parent('div').removeClass('layui-hide')
+                        //         $('#'+d[i].field+'mid').removeClass('layui-hide')
+                        //         $('#'+d[i].field+'sh2').parent('div').removeClass('layui-hide')
+                        //         $('#'+d[i].field+'sh11').parent('div').addClass('layui-hide')
+                        //     }else {
+                        //         $('#'+d[i].field+'sh1').parent('div').addClass('layui-hide')
+                        //         $('#'+d[i].field+'mid').addClass('layui-hide')
+                        //         $('#'+d[i].field+'sh2').parent('div').addClass('layui-hide')
+                        //         $('#'+d[i].field+'sh11').parent('div').removeClass('layui-hide')
+                        //     }
+                        // }
                     }
                     form.render();
 
@@ -178,11 +188,29 @@ var seachModel = function (options) {
     form.on("radio()", function (data) {
         console.log(data.elem)
         for (j in conditions) {
-            if (conditions[j].field +'sh'== data.elem.name) {
-
+            if (conditions[j].field + 'sh' == data.elem.name) {
                 conditions[j].values = data.value;
+            }
 
-
+        }
+    })
+    form.on("select()", function (data) {
+        console.log(data.elem);
+        for (j in d) {
+            if (d[j].field + 'cond' == data.elem.id) {
+                console.log(data.value);
+                d[j].condition = data.value;
+                if (data.value == 5) {
+                    $('#'+d[j].field+'sh1').parent('div').removeClass('layui-hide')
+                    $('#'+d[j].field+'mid').removeClass('layui-hide')
+                    $('#'+d[j].field+'sh2').parent('div').removeClass('layui-hide')
+                    $('#'+d[j].field+'sh11').parent('div').addClass('layui-hide')
+                }else {
+                    $('#'+d[j].field+'sh1').parent('div').addClass('layui-hide')
+                    $('#'+d[j].field+'mid').addClass('layui-hide')
+                    $('#'+d[j].field+'sh2').parent('div').addClass('layui-hide')
+                    $('#'+d[j].field+'sh11').parent('div').removeClass('layui-hide')
+                }
             }
 
         }
