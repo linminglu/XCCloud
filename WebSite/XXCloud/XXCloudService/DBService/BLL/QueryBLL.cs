@@ -52,7 +52,7 @@ namespace XCCloudService.DBService.BLL
                     var condition = dicPara.Get("condition").Toint();
                     if (string.IsNullOrEmpty(field))
                     {
-                        errMsg = "查询条件字段不明确";
+                        errMsg = "查询字段不明确";
                         return false;
                     }
 
@@ -122,9 +122,12 @@ namespace XCCloudService.DBService.BLL
                         else
                         {
                             var values = (dicPara.ContainsKey("values") && dicPara["values"] != null) ? dicPara["values"].ToString() : string.Empty;
-                            sb.Append(string.Format(" and {1}{0} {2} @{0} ", field, alias, ((QueryTemplateCondition?)condition).GetDescription()));
-                            Array.Resize(ref parameters, parameters.Length + 1);
-                            parameters[parameters.Length - 1] = new SqlParameter("@" + field, values);
+                            if (!values.IsNull())
+                            {
+                                sb.Append(string.Format(" and {1}{0} {2} @{0} ", field, alias, ((QueryTemplateCondition?)condition).GetDescription()));
+                                Array.Resize(ref parameters, parameters.Length + 1);
+                                parameters[parameters.Length - 1] = new SqlParameter("@" + field, values);
+                            }                            
                         }
                     }
                     

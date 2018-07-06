@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>游戏档案维护</title>
     <link rel="stylesheet" href="layui/css/layui.css">
+    <link rel="stylesheet" href="css/myxc.css">
 </head>
 <style>
     .typeModel {
@@ -20,13 +21,35 @@
     }
 </style>
 <body>
-<div class="layui-row" style="padding: 10px">
-    <blockquote style="text-align: right;padding-right: 150px;"
-                class="layui-col-md12 layui-col-xs12 layui-col-lg12 layui-elem-quote">
-        <button type="button" class="layui-btn layui-btn-normal" id="addNew"><i class="layui-icon">&#xe654;</i>新增
-        </button>
-    </blockquote>
-    <table class="layui-hide" lay-filter="gameFileTable" id="gameFileTable"></table>
+<div class="layui-row settingPage">
+    <div class="row-box">
+        <div class="layui-col-md12 layui-col-sm12 layui-col-lg12">
+            <blockquote class="layui-elem-quote layui-col-md12 layui-col-sm12 layui-col-lg12">
+                <div class="layui-form layui-form-pane layui-col-md9" id="form1">
+                    <div class="layui-form-item" id="serchMode"></div>
+                </div>
+
+                <div class="layui-col-md2" id="form2Box" style="position: relative;height: 38px;border: 1px #999 solid">
+                    <div class="layui-form layui-form-pane" id="form2" style="position: absolute; display: none;top: 38px;border:1px #999 solid ;z-index: 9999999999999999999">
+                        <div id="tantion" class="layui-form-item" style="height: 200px;border-color: #333;overflow-y: auto">
+                        </div>
+                    </div>
+                </div>
+
+                <button type="button" class="layui-btn layui-btn-normal layui-col-md1" i18n-content="查询模板" id="searchBtn">查询</button>
+            </blockquote>
+        </div>
+        <!--<blockquote style="text-align: right;padding-right: 150px;"-->
+        <!--class="layui-col-md12 layui-col-xs12 layui-col-lg12 layui-elem-quote">-->
+        <!--<button type="button" class="layui-btn layui-btn-normal" id="addNew"><i class="layui-icon">&#xe654;</i>新增-->
+        <!--</button>-->
+        <!--</blockquote>-->
+        <div class="layui-col-md12 layui-col-sm12 layui-col-lg12">
+            <table class="layui-hide" lay-filter="gameFileTable" id="gameFileTable"></table>
+        </div>
+    </div>
+
+
 </div>
 
 <!--简单模式-->
@@ -958,12 +981,13 @@
 <script src="js/jquery-1.8.3-min.js"></script>
 <script src="layui/layui.js"></script>
 <script src="js/storeSystem.js"></script>
+<script src="js/searchModel.js"></script>
 <script>
     let index;
     let xc = xcActionSystem.prototype;
     let token = xc.getStorage('token');
     let parm = {
-        'obj': {'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'},
+        'obj': {'conditions':[],'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'},
         'url': '/XCCloud/GameInfo?action=GetGameInfoList',
         'elem': '#gameFileTable',
         'cols': [
@@ -1190,6 +1214,18 @@
         let layer = layui.layer;
         let table = layui.table;
         let laydate = layui.laydate;
+        seachModel({
+            'elem1': 'tantion',
+            'elem2': 'serchMode',
+            'pagename': 'gameInfoSearch',
+            'processname': 'gameInfoSearch',
+            'token': token1,
+            'form': form,
+            'layer': layer,
+            'searchBtn': 'searchBtn',
+            'xc':xc,
+            'parm':parm
+        })
 
         //用户余额类别
         let __obj = {'hkType': '', 'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'};
@@ -2088,8 +2124,8 @@
                                         , {field: 'SiteName', title: 'P位编号', align: 'center', width: 120} //width 支持：数字、百分比和不填写。
                                         , {field: 'Segment', title: '网络段号', align: 'center', width: 120, sort: true}
                                         , {field: 'Address', title: '机头地址', align: 'center', width: 120}
-                                        ,{field:'AlertTypeStr', title: '报警类别', align: 'center'}
-                                        ,{field:'AlertContent', title: '报警内容', align: 'center'}
+                                        , {field: 'AlertTypeStr', title: '报警类别', align: 'center'}
+                                        , {field: 'AlertContent', title: '报警内容', align: 'center'}
                                         , {field: 'HappenTime', title: '触发时间', align: 'center', width: 120, sort: true}
                                         , {field: 'ICCardID', title: '关联卡号', align: 'center', width: 120}
                                         , {field: 'LockGameStr', title: '锁机头', align: 'center', width: 120}

@@ -70,7 +70,7 @@ var seachModel = function (options) {
                         } else if (d[i].type == 'number') {
                             _domStr2 += ' <div class="layui-inline ' + d[i].field + 'sh">' +
                                             '<label class="layui-form-label">' + d[i].title + '</label>' +
-                                            '<div class="layui-input-inline" style="width: 60px">' +
+                                            '<div class="layui-input-inline" style="width: 60px;margin-right: 0">' +
                                                  '<select id="' + d[i].field + 'cond">' + setOption(d[i].condition) + '</select>' +
                                             '</div>'+
                                             '<div class="layui-input-inline layui-hide" style="width: 100px">' +
@@ -88,7 +88,7 @@ var seachModel = function (options) {
                         } else if (d[i].type == 'time') {
                             _domStr2 += ' <div class="layui-inline ' + d[i].field + 'sh">' +
                                 '<label class="layui-form-label">' + d[i].title + '</label>' +
-                                '<div class="layui-input-inline" style="width: 60px"><select id="' + d[i].field + 'cond">' + setOption(d[i].condition) + '</select></div>';
+                                '<div class="layui-input-inline" style="width: 60px;margin-right: 0"><select id="' + d[i].field + 'cond">' + setOption(d[i].condition) + '</select></div>';
 
                             _domStr2 +=
                                 '<div class="layui-input-inline layui-hide" style="width: 100px">' +
@@ -107,7 +107,7 @@ var seachModel = function (options) {
                         } else if (d[i].type == 'date') {
                             _domStr2 += ' <div class="layui-inline ' + d[i].field + 'sh">' +
                                 '<label class="layui-form-label">' + d[i].title + '</label>' +
-                                '<div class="layui-input-inline" style="width: 60px"><select id="' + d[i].field + 'cond">' + setOption(d[i].condition) + '</select></div>';
+                                '<div class="layui-input-inline" style="width: 60px;margin-right: 0"><select id="' + d[i].field + 'cond">' + setOption(d[i].condition) + '</select></div>';
 
                                 _domStr2 +=
                                     '<div class="layui-input-inline layui-hide" style="width: 100px">' +
@@ -140,7 +140,7 @@ var seachModel = function (options) {
                             } else if (d[i].type == 'literals') {
                                 conditions.push({'id': d[i].tempId,'condition':'6', 'field': d[i].field, 'values': ''});
                             } else {
-                                conditions.push({'id': d[i].tempId,'condition':'', 'field': d[i].field, 'values': []});
+                                conditions.push({'id': d[i].tempId,'condition':d[i].condition, 'field': d[i].field, 'values': []});
                             }
 
                         }
@@ -181,7 +181,7 @@ var seachModel = function (options) {
                     } else if (d[i].type == 'literals') {
                         conditions.push({'id': d[i].tempId, 'condition':'6','field': d[i].field, 'values': ''});
                     } else {
-                        conditions.push({'id': d[i].tempId,'condition':'', 'field': d[i].field, 'values': []});
+                        conditions.push({'id': d[i].tempId,'condition':d[i].condition, 'field': d[i].field, 'values': []});
                     }
                 }
             }
@@ -250,7 +250,7 @@ var seachModel = function (options) {
                             if ($('#' + d[i].field + 'cond').val() == 5) {
                                 conditions[j].values = [$('#' + d[i].field + 'sh1').val(), $('#' + d[i].field + 'sh2').val()];
                             }else {
-                                conditions[j].values = [$('#' + d[i].field + 'sh11').val()];
+                                conditions[j].values = $('#' + d[i].field + 'sh11').val();
                             }
                         }
                     }
@@ -276,7 +276,7 @@ function setOption(j) {
     let html = '';
     for (let i in options) {
         if (options[i].key == j) {
-            html += '<option value="' + options[i].key + ' selected">' + options[i].value + '</option>'
+            html += '<option value="' + options[i].key + '" selected>' + options[i].value + '</option>'
         } else {
             html += '<option value="' + options[i].key + '">' + options[i].value + '</option>'
         }
@@ -294,18 +294,7 @@ layui.use(['form', 'layer', 'table'], () => {
     const layer = layui.layer;
     const table = layui.table;
 
-    seachModel({
-        'elem1': 'tantion',
-        'elem2': 'serchMode',
-        'pagename': 'projectInfoSearch',
-        'processname': 'projectInfoSearch',
-        'token': token1,
-        'form': form,
-        'layer': layer,
-        'searchBtn': 'searchBtn',
-        'xc':xc,
-        'parm':parm
-    })
+
     $('#form2Box').click(function () {
         $('#form2').slideDown();
     })
