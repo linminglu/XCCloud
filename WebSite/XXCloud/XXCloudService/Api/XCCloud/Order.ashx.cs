@@ -100,24 +100,58 @@ namespace XXCloudService.Api.XCCloud
 
             System.Data.DataSet ds = XCCloudBLL.GetStoredProcedureSentence(storedProcedure, sqlParameter);
 
+            List<object> listObj1 = new List<object>();
+            List<object> listObj2 = new List<object>();
+            List<object> listObj3 = new List<object>();
+
             if (sqlParameter[3].Value.ToString() == "1")
-            {
-                List<object> listObj = new List<object>();
+            {    
                 for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
                 {
                     var obj = new
                     {
-                        categoryName = ds.Tables[0].Rows[i]["CategoryName"].ToString(),
-                        foodName = ds.Tables[0].Rows[i]["FoodName"].ToString(),
-                        saleCount = ds.Tables[0].Rows[i]["SaleCount"].ToString(),
-                        singlePrice = Convert.ToDecimal(ds.Tables[0].Rows[i]["SinglePrice"]).ToString("#.00"),
-                        salePrice = Convert.ToDecimal(ds.Tables[0].Rows[i]["SalePrice"]).ToString("#.00"),
-                        taxFee = Convert.ToDecimal(ds.Tables[0].Rows[i]["TaxFee"]).ToString("#.00"),
-                        taxTotal = Convert.ToDecimal(ds.Tables[0].Rows[i]["TaxTotal"]).ToString("#.00")
+                        orderId = ds.Tables[0].Rows[i]["OrderId"].ToString(),
+                        icCardId = ds.Tables[0].Rows[i]["ICCardId"].ToString(),
+                        saleTime = ds.Tables[0].Rows[i]["SaleTime"].ToString(),
+                        payCount = Convert.ToDecimal(ds.Tables[0].Rows[i]["PayCount"]).ToString("#.00"),
+                        orderStatusName = ds.Tables[0].Rows[i]["OrderStatusName"].ToString(),
+                        note = ds.Tables[0].Rows[i]["note"].ToString()    
                     };
-                    listObj.Add(obj);
+                    listObj1.Add(obj);
                 }
-                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, listObj);
+
+                for (int i = 0; i < ds.Tables[1].Rows.Count; i++)
+                {
+                    var obj = new
+                    {
+                        categoryName = ds.Tables[1].Rows[i]["CategoryName"].ToString(),
+                        foodName = ds.Tables[1].Rows[i]["FoodName"].ToString(),
+                        saleCount = ds.Tables[1].Rows[i]["SaleCount"].ToString(),
+                        singlePrice = Convert.ToDecimal(ds.Tables[1].Rows[i]["SinglePrice"]).ToString("#.00"),
+                        salePrice = Convert.ToDecimal(ds.Tables[1].Rows[i]["SalePrice"]).ToString("#.00"),
+                        taxFee = Convert.ToDecimal(ds.Tables[1].Rows[i]["TaxFee"]).ToString("#.00"),
+                        taxTotal = Convert.ToDecimal(ds.Tables[1].Rows[i]["TaxTotal"]).ToString("#.00")
+                    };
+                    listObj2.Add(obj);
+                }
+
+                for (int i = 0; i < ds.Tables[2].Rows.Count; i++)
+                {
+                    var obj = new
+                    {
+                        id = ds.Tables[2].Rows[i]["ID"].ToString(),
+                        balanceIndex = ds.Tables[2].Rows[i]["BalanceIndex"].ToString(),
+                        payCount = ds.Tables[2].Rows[i]["PayCount"].ToString()
+                    };
+                    listObj3.Add(obj);
+                }
+
+                List<object> list = new List<object>();
+                list.Add(listObj1);
+                list.Add(listObj2);
+                list.Add(listObj3);
+
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, list);
             }
             else
             {
@@ -166,19 +200,27 @@ namespace XXCloudService.Api.XCCloud
 
             if (sqlParameter[7].Value.ToString() == "1")
             {
-                List<object> listObj = new List<object>();
-                for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                List<object> list = new List<object>();
+                if (ds.Tables[0].Rows.Count > 0)
                 {
-                    var obj = new {
-                        orderId = ds.Tables[0].Rows[i]["OrderID"].ToString(),
-                        saleTime = Convert.ToDateTime(ds.Tables[0].Rows[i]["CreateTime"]).ToString("yyyy-MM-dd HH:mm:ss"),
-                        icCardId = ds.Tables[0].Rows[i]["ICCardID"].ToString(),
-                        payCount = Convert.ToDecimal(ds.Tables[0].Rows[i]["PayCount"].ToString()),
-                        orderStatusName = ds.Tables[0].Rows[i]["orderStatusName"].ToString()
-                    };
-                    listObj.Add(obj);
+                    for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                    { 
+                        var obj = new
+                        {
+                            orderId = ds.Tables[0].Rows[i]["OrderID"].ToString(),
+                            saleTime = Convert.ToDateTime(ds.Tables[0].Rows[i]["CreateTime"]).ToString("yyyy-MM-dd HH:mm:ss"),
+                            icCardId = ds.Tables[0].Rows[i]["ICCardID"].ToString(),
+                            payCount = Convert.ToDecimal(ds.Tables[0].Rows[i]["PayCount"]).ToString("#.00"),
+                            orderStatusName = ds.Tables[0].Rows[i]["OrderStatusName"].ToString()
+                        };
+                        list.Add(obj);                        
+                    }
+                    return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, list);
                 }
-                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, listObj);
+                else
+                {
+                    return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, list);
+                }
             }
             else
             {

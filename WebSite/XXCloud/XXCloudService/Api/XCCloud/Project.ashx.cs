@@ -153,6 +153,7 @@ namespace XXCloudService.Api.XCCloud
                 string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
 
                 string errMsg = string.Empty;
+                string resultMsg = string.Empty;
                 if (!dicParas.Get("projectName").Nonempty("项目名称", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 if (!dicParas.Get("chargeType").Validint("扣费类型", out errMsg))
@@ -165,6 +166,7 @@ namespace XXCloudService.Api.XCCloud
                 var id = dicParas.Get("id").Toint(0);
                 var chargeType = dicParas.Get("chargeType").Toint();
                 var adjOrder = dicParas.Get("adjOrder").Toint();
+                var readCat = dicParas.Get("readCat").Toint();
                 var projectBindDevices = dicParas.GetArray("projectBindDevices");
                       
                 //开启EF事务
@@ -221,6 +223,10 @@ namespace XXCloudService.Api.XCCloud
                             if (data_GameInfo.PushBalanceIndex2 > 0)
                             {
                                 data_GameInfo.ReadCat = 0;
+                                if (readCat != 0)
+                                {
+                                    resultMsg = "存在第二投币项, 自动关闭“刷卡即扣”";
+                                }   
                             }
 
                             if (gameIndex == 0)
@@ -297,7 +303,7 @@ namespace XXCloudService.Api.XCCloud
                     }
                 }
                 
-                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, resultMsg);
             }
             catch (Exception e)
             {

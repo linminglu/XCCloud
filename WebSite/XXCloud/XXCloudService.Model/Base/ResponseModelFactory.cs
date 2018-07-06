@@ -19,15 +19,15 @@ namespace XCCloudService.Base
             }
         }
 
-        public static object CreateSuccessModel(bool isSignKeyReturn)
+        public static object CreateSuccessModel(bool isSignKeyReturn, string result_msg = "")
         {
             if (!isSignKeyReturn)
             {
-                return new NoSignKeyResponseModel("1", string.Empty, "1", string.Empty);
+                return new NoSignKeyResponseModel("1", string.Empty, "1", result_msg);
             }
             else
             {
-                return new ResponseModel("1", string.Empty, "1", string.Empty);
+                return new ResponseModel("1", string.Empty, "1", result_msg);
             }
         }
 

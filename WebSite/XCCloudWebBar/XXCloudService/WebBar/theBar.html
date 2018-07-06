@@ -109,7 +109,7 @@
 							<div class=" col-lg-3 col-md-3 pad_0"><a href="javascript:void(0);" class="num">0</a></div>
 							<div class=" col-lg-3 col-md-3 pad_0"><a href="javascript:void(0);" class="remove">删除</a></div>
 							<div class="col-lg-6 col-md-6 pad_0"><a href="javascript:void(0);" class="removeAll">清空</a></div>
-							<div class="col-lg-6 col-md-6 pad_0"><button type="button" class="btn btn-c1">确定</button></div>
+							<div class="col-lg-6 col-md-6 pad_0"><button type="button" class="btn btn-c1" :disabled="loading">确定</button></div>
 						</div>
 					</div>
 				</div>
@@ -149,9 +149,9 @@
 								<label class="col-lg-12 col-md-12 pad_0"><input id="input5"  class="form-control" /></label>
 							</li>
 						</ul>
-						<div class="col-lg-12 col-md-12 shopCStyle" style="margin-top: 1em" v-if="shopCheckOut"><button type="button" class="btn btn-danger">结账</button></div>
-						<div class="col-lg-12 col-md-12 shopCStyle" style="margin-top: 1em" v-if="registerCheckOut"><button type="button" class="btn btn-danger" @click="registerCheckBtn">结账</button></div>
-						<div class="col-lg-12 col-md-12 shopCStyle" style="margin-top: 1em" v-if="cardCheckOut"><button type="button" class="btn btn-danger" @click="cardCheckBtn">结账</button></div>
+						<div class="col-lg-12 col-md-12 shopCStyle" style="margin-top: 1em" v-if="shopCheckOut"><button type="button" class="btn btn-danger" :disabled="loading">结账</button></div>
+						<div class="col-lg-12 col-md-12 shopCStyle" style="margin-top: 1em" v-if="registerCheckOut"><button type="button" class="btn btn-danger" @click="registerCheckBtn" :disabled="loading">结账</button></div>
+						<div class="col-lg-12 col-md-12 shopCStyle" style="margin-top: 1em" v-if="cardCheckOut"><button type="button" class="btn btn-danger" @click="cardCheckBtn" :disabled="loading">结账</button></div>
 					</div>
 					<div class="formNum formNum2 col-lg-4 col-md-4">
 						<div class=" col-lg-4 col-md-4 pad_0"><a href="javascript:void(0);" class="num">1</a></div>
@@ -223,7 +223,7 @@
                         <div class="input-group col-lg-6 col-md-6 tab-style">
                             <input  class="form-control" readonly v-model="balanceExchangeData.exchangeValue"/>
                             <div class="input-group-btn">
-                                <button type="button" class="btn btn-default" @click="balanceExchange">兑换</button>
+                                <button type="button" class="btn btn-default" @click="balanceExchange" :disabled="loading">兑换</button>
                             </div>
                         </div>
                     </div>
@@ -265,7 +265,7 @@
 							<span class="input-group-addon">备注：</span>
 							<textarea  class="form-control" v-model="repairCoin.note"></textarea>
 						</div>
-						<div class="col-lg-12 tab-btn tab-style"><button type="button" class=" btn btn-info" @click="repairCoinFnc">补币</button></div>
+						<div class="col-lg-12 tab-btn tab-style"><button type="button" class=" btn btn-info" @click="repairCoinFnc" :disabled="loading">补币</button></div>
 					</div>
 				</div>
 			</div>
@@ -321,7 +321,7 @@
 								<div class="input-group col-lg-6 col-md-6 tab-style">
 									<input class="form-control" v-model="outCoinData.icCardId" readonly/>
 									<div class="input-group-btn">
-										<button type="button" class="btn btn-default readCard" @click="getMember('0')">查询卡号</button>
+										<button type="button" class="btn btn-default readCard" @click="getMember('0')" :disabled="loading">查询卡号</button>
 									</div>
 								</div>
 								<div class="input-group col-lg-6 col-md-6 tab-style">
@@ -338,7 +338,7 @@
 									<span class="input-group-addon addonWidth">证件号码：</span>
 									<input   class="form-control" v-model="outCoinData.IDCardNo"/>
 									<div class="input-group-btn">
-										<button type="button" class="btn btn-default readCard">读取</button>
+										<button type="button" class="btn btn-default readCard" :disabled="loading">读取</button>
 									</div>
 								</div>
 								<div class="input-group col-lg-6 col-md-6 tab-style">
@@ -382,7 +382,7 @@
 						</div>
 						<div class="col-lg-2 col-md-2 tab-style"></div>
 						<div class="col-lg-3 col-md-3 tab-style">
-							<button type="button" class="btn width100 btn-info">提币</button>
+							<button type="button" class="btn width100 btn-info" :disabled="loading">提币</button>
 						</div>
 					</div>
 				</div>
@@ -449,7 +449,7 @@
                                     </select>
                                 </div>
                                 <div class="col-lg-1 col-md-1 tab-style"></div>
-                                <div class="input-group col-lg-3 col-md-3 tab-style"><button @click="confirmFreeCoin" type="button" class="btn width100 btn-info">送币</button></div>
+                                <div class="input-group col-lg-3 col-md-3 tab-style"><button @click="confirmFreeCoin" type="button" class="btn width100 btn-info" :disabled="loading">送币</button></div>
                             </div>                                    
                         </div>
                     </div>
@@ -503,7 +503,7 @@
 					</div>
 					<p class="modal-p">备注：只有在会员级别中设定余额类别与储值金项目有对应关系才可以退款</p>
 					<div class="col-lg-12 col-md-12 tab-style"><span class="col-lg-3 col-md-3">备注：</span><label class="col-lg-9 col-md-9"><textarea  class="form-control"></textarea></label></div>
-					<div class="col-lg-12 col-md-12 modal-btn"><button type="button" class="btn btn-info" @click="btnBackCard('2')">退款又退卡</button><button type="button" class="btn btn-info" @click="btnBackCard('1')">仅退款</button></div>
+					<div class="col-lg-12 col-md-12 modal-btn"><button type="button" class="btn btn-info" @click="btnBackCard('2')" :disabled="loading">退款又退卡</button><button type="button" class="btn btn-info" @click="btnBackCard('1')" :disabled="loading">仅退款</button></div>
 				</div>
 			</div>
 		</div>
@@ -607,7 +607,7 @@
 					<h4 class="modal-title">温馨提示</h4>
 				</div>
 				<div class="modal-body row">
-					<div class="inquire"><button type="button" class="btn btn-warning">查询</button></div>
+					<div class="inquire"><button type="button" class="btn btn-warning" :disabled="loading">查询</button></div>
 					<div class="col-lg-12 col-md-12">
 						<table class="table table-bordered">
 							<thead style="background: #f5f5f5">
@@ -685,7 +685,7 @@
                             </option>
                         </select>
                         <div class="input-group-btn">
-                            <button type="button" class="btn btn-default readCard" @click="comfirmLevelChange">更改</button>
+                            <button type="button" class="btn btn-default readCard" @click="comfirmLevelChange" :disabled="loading">更改</button>
                         </div>
                     </div>
                 </div>
@@ -756,8 +756,8 @@
 					</div>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-					<button type="button" class="btn btn-primary" style="width: 20%" @click="confirmBackCard">确认</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal" :disabled="loading">取消</button>
+					<button type="button" class="btn btn-primary" style="width: 20%" @click="confirmBackCard" :disabled="loading">确认</button>
 				</div>
 			</div>
 		</div>
@@ -812,8 +812,8 @@
 						<div class="col-lg-5 col-md-5 text-right shopCStyle">{{item.payNum}}</div>
 					</div>
 					<div class="CheckoutBtn col-lg-12 col-md-12 shopCStyle">
-						<button type="button" class="btn btn-danger" @click="cancelled">挂单</button>
-						<button type="button" class="btn btn-success" @click="closeAccounts">结账</button>
+						<button type="button" class="btn btn-danger" @click="cancelled" :disabled="loading">挂单</button>
+						<button type="button" class="btn btn-success" @click="closeAccounts" :disabled="loading">结账</button>
 					</div>
 				</div>
 			</div>
@@ -869,7 +869,7 @@
 						</select>
 						<input class="form-control"   placeholder="输入最小值">
 						<input class="form-control"   placeholder="输入最大值">
-						<button type="button" class="btn btn-primary">查询</button>
+						<button type="button" class="btn btn-primary" :disabled="loading">查询</button>
 					</div>
 					<div class="saleContent">
 						<div class="treeBox" v-if="treeShow">
@@ -942,7 +942,7 @@
 												</div>
 												<div class="input-group col-lg-4 col-md-6">
 													<div class="input-group-btn">
-														<button type="button" class="btn btn-default readCard" @click="getMember('1')">按手机号查询</button>
+														<button type="button" class="btn btn-default readCard" @click="getMember('1')" :disabled="loading">按手机号查询</button>
 													</div>
 												</div>
 											</div>
@@ -951,7 +951,7 @@
 													<span class="input-group-addon">证件号码：</span>
 													<input   class="form-control" v-model="memberInfo.IDCardNo"/>
 													<div class="input-group-btn">
-														<button type="button" class="btn btn-default readCard">读取</button>
+														<button type="button" class="btn btn-default readCard" :disabled="loading">读取</button>
 													</div>
 												</div>
 												<!--<div class="input-group col-lg-4 col-md-0">-->
@@ -1047,7 +1047,7 @@
 										</div>
 										<div class="mcImg col-lg-2 col-md-2">
 											<img :src="memberInfo.Avatar" alt="会员头像">
-											<button type="button" class="btn btn-info saveTheData" @click="memberCardModify">保存会员资料</button>
+											<button type="button" class="btn btn-info saveTheData" @click="memberCardModify" :disabled="loading">保存会员资料</button>
 										</div>
 									</div>
 									<div class="row" style="margin-top: 1em;">
@@ -1108,35 +1108,35 @@
 												</div>
 											</div>
 											<div class="col-lg-3 col-md-3 cardSettings">
-												<button @click="supplementCard('2')" type="button" class="btn btn-success">续卡</button>
-												<button @click="supplementCard('0')" type="button" class="btn btn-success">换卡</button>
-												<button @click="supplementCard('1')" type="button" class="btn btn-success">补卡</button>
-												<button type="button" class="btn btn-success" @click="cardManualLock">锁定</button>
-												<button type="button" class="btn btn-info" @click="cardLevelChange">等级变更</button>
+												<button @click="supplementCard('2')" type="button" class="btn btn-success" :disabled="loading">续卡</button>
+												<button @click="supplementCard('0')" type="button" class="btn btn-success" :disabled="loading">换卡</button>
+												<button @click="supplementCard('1')" type="button" class="btn btn-success" :disabled="loading">补卡</button>
+												<button type="button" class="btn btn-success" @click="cardManualLock" :disabled="loading">锁定</button>
+												<button type="button" class="btn btn-info" @click="cardLevelChange" :disabled="loading">等级变更</button>
 											</div>
 										</div>
 									</div>
 								</div>
 								<div role="tabpanel" class="tab-pane" id="salesRecord">
-									<div class="inquire"><button type="button" class="btn btn-warning">查询</button></div>
+									<div class="inquire"><button type="button" class="btn btn-warning" :disabled="loading">查询</button></div>
 									<div class="col-lg-12 col-md-12">
 										<table id="memberTable1"></table>
 									</div>
 								</div>
 								<div role="tabpanel" class="tab-pane" id="playRecording">
-									<div class="inquire"><button type="button" class="btn btn-warning">查询</button></div>
+									<div class="inquire"><button type="button" class="btn btn-warning" :disabled="loading">查询</button></div>
 									<div class="col-lg-12 col-md-12">
 										<table id="memberTable2"></table>
 									</div>
 								</div>
 								<div role="tabpanel" class="tab-pane" id="forRecord">
-									<div class="inquire"><button type="button" class="btn btn-warning">查询</button></div>
+									<div class="inquire"><button type="button" class="btn btn-warning" :disabled="loading">查询</button></div>
 									<div class="col-lg-12 col-md-12">
 										<table id="memberTable3"></table>
 									</div>
 								</div>
 								<div role="tabpanel" class="tab-pane" id="ticketInformation">
-									<div class="inquire"><button type="button" class="btn btn-warning">查询</button></div>
+									<div class="inquire"><button type="button" class="btn btn-warning" :disabled="loading">查询</button></div>
 									<div class="col-lg-12 col-md-12">
 										<table id="memberTable4"></table>
 									</div>
@@ -1146,11 +1146,11 @@
 						<div class="btn-margin container-fluid">
 							<div class="row">
 								<div class="col-lg-3"></div>
-                                <div class="col-lg-1 col-md-1"><button @click="getExchangeList" type="button" class="btn width100 btn-info">余额兑换</button></div>
-								<div class="col-lg-1 col-md-1"><button @click="saveManual" type="button" class="btn width100 btn-info">补币</button></div>
-								<div class="col-lg-1 col-md-1"><button @click="currency" type="button" class="btn width100 btn-info">提币</button></div>
-								<div class="col-lg-1 col-md-1"><button @click="sendCoin" type="button" class="btn width100 btn-info">送币</button></div>
-								<div class="col-lg-1 col-md-1"><button @click="backCard" type="button" class="btn width100 btn-info">退卡</button></div>
+                                <div class="col-lg-1 col-md-1"><button @click="getExchangeList" type="button" class="btn width100 btn-info" :disabled="loading">余额兑换</button></div>
+								<div class="col-lg-1 col-md-1"><button @click="saveManual" type="button" class="btn width100 btn-info" :disabled="loading">补币</button></div>
+								<div class="col-lg-1 col-md-1"><button @click="currency" type="button" class="btn width100 btn-info" :disabled="loading">提币</button></div>
+								<div class="col-lg-1 col-md-1"><button @click="sendCoin" type="button" class="btn width100 btn-info" :disabled="loading">送币</button></div>
+								<div class="col-lg-1 col-md-1"><button @click="backCard" type="button" class="btn width100 btn-info" :disabled="loading">退卡</button></div>
 							</div>
 						</div>
 				</div>
@@ -1206,7 +1206,7 @@
                                 <span class="input-group-addon">证件号码：</span>
                                 <input  class="form-control" v-model="memberForm.IdNumber" readonly/>
                                 <div class="input-group-btn">
-                                    <button type="button" class="btn btn-default readCard">读取</button>
+                                    <button type="button" class="btn btn-default readCard" :disabled="loading">读取</button>
                                 </div>
                             </div>
                         </div>
@@ -1218,7 +1218,7 @@
                         </div>
                         <div class="col-lg-12 col-md-12">
                             <div class="col-lg-10 col-md-8"></div>
-                            <div class="col-lg-2 text-center col-md-4" ><button type="button" class="btn btn-success" @click="registerMember">发卡</button></div>
+                            <div class="col-lg-2 text-center col-md-4" ><button type="button" class="btn btn-success" @click="registerMember" :disabled="loading">发卡</button></div>
                         </div>
                     </div>
 				</div>
@@ -1238,7 +1238,7 @@
 	</div>
 	<div class="footer" :class="{membershipDetails:footerShow}">
         <div class="btn-group dropup col-lg-3 col-md-3">
-            <button type="button" class="btn btn-default">{{dropChooseTxt1}}</button>
+            <button type="button" class="btn btn-default" :disabled="loading">{{dropChooseTxt1}}</button>
             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"  aria-expanded="false">
                 <span class="caret"></span>
             </button>
@@ -1248,7 +1248,7 @@
                 <li @click="dropChoose('2')"><span class="iconfont icon-3"></span>手动输入</li>
             </ul>
             <input  class="form-control" placeholder="请输入会员姓名"/>
-            <button type="button" class="btn btn-default">{{dropChooseTxt2}}</button>
+            <button type="button" class="btn btn-default" :disabled="loading">{{dropChooseTxt2}}</button>
         </div>
 		<ul class="member col-lg-9 col-md-9" @click="membershipDetails">
 			<li><span>会员卡号：4444444444444454545454</span></li>
@@ -1288,6 +1288,7 @@
     var vm = new Vue({
         el: '#app',
         data:{
+            loading:false,
             salesIS: true,
             screeningTitle: false,
             shopData:[],
@@ -2814,7 +2815,10 @@
 //			产品详情
             details:function(index,category){
                 var that = this;
-				switch (category) {
+                console.log(that.loading == false)
+                if(that.loading == false){
+                    that.loading = true;
+                    switch (category) {
                       case "0":
                         var saleData_ = that.saleData;
 						var index_ =0+index
@@ -2829,26 +2833,31 @@
                         break;
                       default:
                         break;
+                    }
+                    console.log(that.saleData[index]);
+                    console.log(that.saleData);
+                    console.log(index);
+                    var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken ,foodId:saleData_[index].foodId,category:category};
+                    axios.post('/XCCloud/Foods?action=getFoodDetail', obj).then(function (res) {
+                        console.log(res.data);
+                        that.msgPrompt(res.data);
+                        that.loading = false;
+                        if (res.data.result_code === '1') {
+                            if (typeof(res.data.result_data.note) === "undefined"){ 
+                                that.detailData = res.data.result_data;
+                                that.detailNote = "";
+                            }else{
+                                that.detailData =[];
+                                that.detailNote = res.data.result_data.note
+                            }
+                            
+                            setTimeout("detailTime("+index_+")",10);
+                        }
+                    }).catch(function (err) {
+                        console.log(err);
+                    });
                 }
-                console.log(that.saleData[index]);
-              	var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken ,foodId:saleData_[index].foodId,category:category};
-              	axios.post('/XCCloud/Foods?action=getFoodDetail', obj).then(function (res) {
-				  console.log(res.data);
-				  that.msgPrompt(res.data);
-				  if (res.data.result_code === '1') {
-					if (typeof(res.data.result_data.note) === "undefined"){ 
-						that.detailData = res.data.result_data;
-						that.detailNote = "";
-					}else{
-						that.detailData =[];
-						that.detailNote = res.data.result_data.note
-					}
-					 
-                      setTimeout("detailTime("+index_+")",10);
-				  }
-                }).catch(function (err) {
-                    console.log(err);
-                });
+				
 			},
 //			产品标题筛选
             screening:function (index) {		//saleTitle(标题函数)

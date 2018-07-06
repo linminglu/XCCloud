@@ -6,6 +6,7 @@ var seachModel = function (options) {
     let container2 = document.getElementById(options.elem2); //容器
     let pagename = options.pagename;  //数据
     let processname = options.processname;  //数据
+    let searchBtn=document.getElementById(options.searchBtn);
 
     let token = options.token;//选中的子节点  [{ID:GameID}]
     let form = options.form; //layui from对象
@@ -13,15 +14,9 @@ var seachModel = function (options) {
     let d = [];
     let _domStr1 = "";  //结构字符串
     let _domStr2 = "";  //结构字符串
-//         getData(options,_data);
-//         initCheckBox(_data,_domStr1);
-//         initSerach(_data,_domStr2);
-//         rendering(options,_data,_domStr1,_domStr2,container1,container2);
-//
-//     }
-// //获取参数
-//     var getData=function (_this,d) {
-    // var _this=this;
+
+    let templateDetails=[];//保存模板条件
+    let conditions=[];//查询条件
     let obj = {
         'pagename': pagename,
         'processname': processname,
@@ -38,7 +33,9 @@ var seachModel = function (options) {
             data = JSON.parse(data);
             if (data.result_code == 1) {
                 d = data.result_data;
+                console.log(d);
                 if (d.length > 0) {
+
                     for (i in d) {
                         if (d[i].issearch == 1) {
                             _domStr1 += '<input type="checkbox" checked lay-skin="primary" value="' + d[i].id + '" title="' + d[i].title + '" lay-filter="checkList"/><br>'
@@ -46,11 +43,8 @@ var seachModel = function (options) {
                             _domStr1 += '<input type="checkbox" lay-skin="primary" value="' + d[i].id + '" title="' + d[i].title + '" lay-filter="checkList"/><br>'
                         }
 
-                    }
-                    if (d.length > 0) {
-                        for (i in d) {
                             if (d[i].type == 'literals') {
-                                _domStr2 += '<div class="layui-inline ' + d[i].field + d[i].issearch==1?"layui-hide":"" +'">' +
+                                _domStr2 += '<div class="layui-inline ' + d[i].field + '">' +
                                     '<label class="layui-form-label">' + d[i].title + '</label>';
                                 _domStr2 += '<div class="layui-input-inline"><select id="' + d[i].field + '" lay-filter="' + d[i].field + '">';
                                 let html = '<option value="">-请选择-</option>';
@@ -60,19 +54,20 @@ var seachModel = function (options) {
                                 __domStr2 += html;
                                 _domStr2 += '</select></div></div>';
                             } else if (d[i].type == 'bit') {
-                                _domStr2 += ' <div class="layui-inline ' + d[i].field + d[i].issearch==1?"layui-hide":"" +'"><label class="layui-form-label">' + d[i].title + '</label>' +
-                                    '<div class="layui-input-inline">' +
+                                _domStr2 += ' <div class="layui-inline ' + d[i].field + '"><label class="layui-form-label">' + d[i].title + '</label>' +
+                                    '<div class="layui-input-inline" style="width: 188px;height: 36px;border: 1px solid #eee;background-color: #fff;">' +
                                     '<input type="radio" name="' + d[i].field + '" value="1" title="是" checked="" lay-filter="' + d[i].field + '">' +
                                     '<input type="radio" name="' + d[i].field + '" value="0" title="否" lay-filter="' + d[i].field + '">' +
                                     '</div></div>'
                             } else if (d[i].type == 'string') {
-                                _domStr2 += ' <div class="layui-inline ' + d[i].field + d[i].issearch==1?"layui-hide":"" +'"><label class="layui-form-label">' + d[i].title + '</label>' +
+                                _domStr2 += ' <div class="layui-inline ' + d[i].field +'">' +
+                                    '<label class="layui-form-label">' + d[i].title + '</label>' +
                                     '<div class="layui-input-inline">' +
                                     '<input type="text" id="' + d[i].field + '" class="layui-input">' +
                                     '</div></div>'
                             } else if (d[i].type == 'number') {
                                 if (d[i].condition == 5) {
-                                    _domStr2 += ' <div class="layui-inline ' + d[i].field + d[i].issearch==1?"layui-hide":"" +'"><label class="layui-form-label">' + d[i].title + '</label>' +
+                                    _domStr2 += ' <div class="layui-inline ' + d[i].field +'"><label class="layui-form-label">' + d[i].title + '</label>' +
                                         '<div class="layui-input-inline"><select>' + setOption(d[i].condition) + '</select></div>' +
                                         '<div class="layui-input-inline" style="width: 100px">' +
                                         '<input type="text" id="' + d[i].field + '1" class="layui-input">' +
@@ -83,7 +78,7 @@ var seachModel = function (options) {
                                         '</div>' +
                                         '</div>'
                                 } else {
-                                    _domStr2 += ' <div class="layui-inline ' + d[i].field + d[i].issearch==1?"layui-hide":"" +' "><label class="layui-form-label">' + d[i].title + '</label>' +
+                                    _domStr2 += ' <div class="layui-inline ' + d[i].field + ' "><label class="layui-form-label">' + d[i].title + '</label>' +
                                         '<div class="layui-input-inline"><select>' + setOption(d[i].condition) + '</select></div>' +
                                         '<div class="layui-input-inline">' +
                                         '<input type="text" id="' + d[i].field + '1" class="layui-input">' +
@@ -92,7 +87,7 @@ var seachModel = function (options) {
 
                             } else if (d[i].type == 'time') {
                                 if (d[i].condition == 5) {
-                                    _domStr2 += ' <div class="layui-inline ' + d[i].field + d[i].issearch==1?"layui-hide":"" +'"><label class="layui-form-label">' + d[i].title + '</label>' +
+                                    _domStr2 += ' <div class="layui-inline ' + d[i].field + '"><label class="layui-form-label">' + d[i].title + '</label>' +
                                         '<div class="layui-input-inline"><select>' + setOption(d[i].condition) + '</select></div>' +
                                         '<div class="layui-input-inline" style="width: 100px">' +
                                         '<input type="text" id="' + d[i].field + '1" class="layui-input">' +
@@ -103,7 +98,7 @@ var seachModel = function (options) {
                                         '</div>' +
                                         '</div>'
                                 } else {
-                                    _domStr2 += ' <div class="layui-inline ' + d[i].field + d[i].issearch==1?"layui-hide":"" +'"><label class="layui-form-label">' + d[i].title + '</label>' +
+                                    _domStr2 += ' <div class="layui-inline ' + d[i].field + '"><label class="layui-form-label">' + d[i].title + '</label>' +
                                         '<div class="layui-input-inline"><select>' + setOption(d[i].condition) + '</select></div>' +
                                         '<div class="layui-input-inline">' +
                                         '<input type="text" id="' + d[i].field + '1" class="layui-input">' +
@@ -111,7 +106,7 @@ var seachModel = function (options) {
                                 }
                             } else if (d[i].type == 'date') {
                                 if (d[i].condition == 5) {
-                                    _domStr2 += ' <div class="layui-inline" ' + d[i].field + d[i].issearch==1?"layui-hide":"" +'><label class="layui-form-label">' + d[i].title + '</label>' +
+                                    _domStr2 += ' <div class="layui-inline" ' + d[i].field + '><label class="layui-form-label">' + d[i].title + '</label>' +
                                         '<div class="layui-input-inline"><select>' + setOption(d[i].condition) + '</select></div>' +
                                         '<div class="layui-input-inline" style="width: 100px">' +
                                         '<input type="text" id="' + d[i].field + '1" class="layui-input">' +
@@ -122,7 +117,7 @@ var seachModel = function (options) {
                                         '</div>' +
                                         '</div>'
                                 } else {
-                                    _domStr2 += ' <div class="layui-inline" ' + d[i].field + d[i].issearch==1?"layui-hide":"" +'><label class="layui-form-label">' + d[i].title + '</label>' +
+                                    _domStr2 += ' <div class="layui-inline" ' + d[i].field + '><label class="layui-form-label">' + d[i].title + '</label>' +
                                         '<div class="layui-input-inline"><select>' + setOption(d[i].condition) + '</select></div>' +
                                         '<div class="layui-input-inline">' +
                                         '<input type="text" id="' + d[i].field + '1" class="layui-input">' +
@@ -131,9 +126,15 @@ var seachModel = function (options) {
                             }
 
                         }
-                    }
+
                     container1.innerHTML = _domStr1;
                     container2.innerHTML = _domStr2;
+                    for (i in d) {
+                    if(d[i].issearch==0){
+                        $('.'+d[i].field).addClass('layui-hide')
+                    }
+
+                    }
                     form.render();
 
                 }
@@ -161,6 +162,16 @@ var seachModel = function (options) {
 
             }
         }
+    });
+    searchBtn.addEventListener('click',function () {
+        for(i in d){
+            if(d[i].issearch==1){
+                if(d[i].type=='string'){
+                    conditions.push({'id':'','field':d[i].field,'values':$('#'+d[i].field).val()})
+                }
+            }
+        }
+        console.log(conditions)
     })
 }
 
@@ -200,7 +211,8 @@ layui.use(['form', 'layer', 'table'], () => {
         'processname': 'projectInfoSearch',
         'token': token1,
         'form': form,
-        'layer': layer
+        'layer': layer,
+        'searchBtn':'searchBtn'
     })
     $('#form2Box').click(function () {
         $('#form2').slideDown();

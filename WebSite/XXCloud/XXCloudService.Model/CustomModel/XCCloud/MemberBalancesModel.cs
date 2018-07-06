@@ -124,6 +124,12 @@ namespace XCCloudService.Model.CustomModel.XCCloud
         public string LevelName { get; set; }
 
         /// <summary>
+        /// 级别
+        /// </summary>
+        [DataMember(Order = 2)]
+        public int MemberLevelId { get; set; }
+
+        /// <summary>
         /// 押金
         /// </summary>
         [DataMember(Order = 2)]

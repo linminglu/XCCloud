@@ -31,7 +31,7 @@
                       </div>
                   </div>
 
-                  <button type="button" class="layui-btn layui-btn-normal layui-col-md1" i18n-content="查询模板">查询</button>
+                  <button type="button" class="layui-btn layui-btn-normal layui-col-md1" i18n-content="查询模板" id="searchBtn">查询</button>
               </blockquote>
           </div>
 
@@ -53,7 +53,7 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">游乐项目</label>
                 <div class="layui-input-block">
-                    <input type="text" class="layui-input" id="projectName" name="projectName">
+                    <input type="text" class="layui-input" id="projectName1" name="projectName1">
                 </div>
             </div>
             <div class="layui-form-item">
@@ -537,8 +537,9 @@
         });
         //save
         $('#save').click(function () {
+            console.log($('#projectName1').val())
             let obj={'id':id,
-                'projectName':$('#projectName').val(),
+                'projectName':$('#projectName1').val(),
                 'areaType':Area,
                 'projectType':projectType,
                 'chargeType':chargeType,
@@ -696,7 +697,7 @@
                             xc.getGroupAreaDic(0,token,layer,form,'Area',arr.AreaType);
                             setPlayMenu(form,'projectType',arr.ProjectType);
                             form.val('formtest',{
-                                'projectName':arr.ProjectName,
+                                'projectName1':arr.ProjectName,
                                 'chargeType':arr.ChargeType,
                                 'Note':arr.Note,
                             });

@@ -2541,10 +2541,10 @@
           <Property Name="ID" Type="varchar" MaxLength="32" Nullable="false" />
           <Property Name="MerchID" Type="varchar" MaxLength="15" />
           <Property Name="StoreID" Type="varchar" MaxLength="15" />
-          <Property Name="MemberID" Type="varchar" MaxLength="15" />
+          <Property Name="MemberID" Type="varchar" MaxLength="32" />
           <Property Name="MemberName" Type="varchar" MaxLength="50" />
-          <Property Name="CardIndex" Type="varchar" MaxLength="15" />
-          <Property Name="ICCardID" Type="varchar" MaxLength="20" />
+          <Property Name="CardIndex" Type="varchar" MaxLength="32" />
+          <Property Name="ICCardID" Type="varchar" MaxLength="32" />
           <Property Name="MemberLevelName" Type="varchar" MaxLength="20" />
           <Property Name="ChannelType" Type="int" />
           <Property Name="OperationType" Type="int" />
@@ -6545,10 +6545,10 @@
           <Property Name="ID" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="false" />
           <Property Name="MerchID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
           <Property Name="StoreID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="MemberID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="MemberID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
           <Property Name="MemberName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="CardIndex" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="ICCardID" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="CardIndex" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="ICCardID" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
           <Property Name="MemberLevelName" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="ChannelType" Type="Int32" />
           <Property Name="OperationType" Type="Int32" />

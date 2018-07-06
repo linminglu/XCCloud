@@ -152,5 +152,10 @@ namespace XCCloudWebBar.Business.XCCloud
             }
             return list;
         }
+
+        public static Dict_BalanceType GetBalanceTypeModel(int id)
+        {
+            return Dict_BalanceTypeService.I.GetModels(t => t.ID == id).FirstOrDefault();
+        }
     }
 }

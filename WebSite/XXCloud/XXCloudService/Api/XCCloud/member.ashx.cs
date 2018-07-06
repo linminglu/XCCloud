@@ -1474,6 +1474,7 @@ namespace XCCloudService.Api.XCCloud
                 MemberCardInfoViewModel model = new MemberCardInfoViewModel();
                 model.CardId = card.ID;
                 model.ICCardId = card.ICCardID;
+                model.MemberLevelId = card.MemberLevelID.Value;
                 model.LevelName = Data_MemberLevelService.I.GetModels(m => m.MemberLevelID == card.MemberLevelID).FirstOrDefault().MemberLevelName;
                 model.Deposit = card.Deposit.Value;
                 model.EndDate = card.EndDate.HasValue ? card.EndDate.Value.ToString("yyyy-MM-dd") : "";
@@ -4093,14 +4094,17 @@ namespace XCCloudService.Api.XCCloud
                 MemberFreeId = t.MemberFreeID,
                 RealTime = t.RealTime,
                 Remain = t.Remain
-            }).ToList()
-                                  .Where(t => memberFreeQuery.Any(f => f.Id == t.MemberFreeId))
-                                  .GroupBy(t => t.MemberFreeId).Select(t => new
-                                  {
-                                      MemberFreeId = t.Key,
-                                      RealTime = t.Max(m => m.RealTime),
-                                      Remain = t.Min(m => m.Remain)
-                                  }).ToList();
+            })
+            .ToList()
+            .Where(t => memberFreeQuery.Any(f => f.Id == t.MemberFreeId))
+            .GroupBy(t => t.MemberFreeId)
+            .Select(t => new
+            {
+                MemberFreeId = t.Key,
+                RealTime = t.Max(m => m.RealTime),
+                Remain = t.Min(m => m.Remain)
+            })
+            .ToList();
 
             var freeTempQuery = from a in memberFreeQuery
                                 //join c in Data_MemberLevelFreeService.I.GetModels(t=>t.MerchID == merchID && t.MemberLevelID == memberCard.MemberLevelID).ToList() on a.FreeID equals c.ID
@@ -4327,6 +4331,10 @@ namespace XCCloudService.Api.XCCloud
             return list;
         } 
         #endregion
+        #endregion
+
+        #region 余额变化查询
+
         #endregion
 
         #region MyRegion

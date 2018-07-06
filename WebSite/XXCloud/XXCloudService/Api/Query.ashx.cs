@@ -49,28 +49,21 @@ namespace XCCloudService.Api
             if (string.IsNullOrEmpty(pageName))
             {
                 errMsg = "页面名参数不存在";
-            }
-            else if (string.IsNullOrEmpty(processName))
-            {
-                errMsg = "功能名参数不存在";
+                return new ResponseModel { Result_Code = Result_Code.F, Result_Msg = errMsg }; 
             }
 
-            if (!string.IsNullOrEmpty(errMsg))
+            if (string.IsNullOrEmpty(processName))
             {
-                ResponseModel<List<InitModel>> responseModel = new ResponseModel<List<InitModel>>();
-                responseModel.Result_Code = Result_Code.F;
-                responseModel.Result_Msg = errMsg;
-                return responseModel;        
+                errMsg = "功能名参数不存在";                
+                return new ResponseModel { Result_Code = Result_Code.F, Result_Msg = errMsg }; 
             }
-            else
-            { 
-                List<InitModel> listInitModel = null;
-                List<Dict_SystemModel> listDict_SystemModel = null;
-                QueryBLL.GetInit(pageName, processName, userId, ref listInitModel, ref listDict_SystemModel);
-                ResponseModel<List<InitModel>> responseModel = new ResponseModel<List<InitModel>>();
-                responseModel.Result_Data = listInitModel;
-                return responseModel;                
-            }
+
+            List<InitModel> listInitModel = null;
+            List<Dict_SystemModel> listDict_SystemModel = null;
+            QueryBLL.GetInit(pageName, processName, userId, ref listInitModel, ref listDict_SystemModel);
+            ResponseModel<List<InitModel>> responseModel = new ResponseModel<List<InitModel>>();
+            responseModel.Result_Data = listInitModel;
+            return responseModel;     
         }
 
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
