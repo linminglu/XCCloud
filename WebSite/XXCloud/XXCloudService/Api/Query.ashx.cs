@@ -29,6 +29,7 @@ namespace XCCloudService.Api
             string pageName = string.Empty;
             string processName = string.Empty;
             int userId = 0;
+            int.TryParse(userTokenKeyModel.LogId, out userId);
 
             if (dicParas.ContainsKey("pagename"))
             {
@@ -42,7 +43,7 @@ namespace XCCloudService.Api
 
             if (dicParas.ContainsKey("userid"))
             {
-                int.TryParse(userTokenKeyModel.LogId, out userId);
+                int.TryParse(dicParas["userid"].ToString(), out userId);
             }
 
             string errMsg = string.Empty;

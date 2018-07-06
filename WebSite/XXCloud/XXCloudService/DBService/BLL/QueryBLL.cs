@@ -55,6 +55,18 @@ namespace XCCloudService.DBService.BLL
                         errMsg = "查询条件字段不明确";
                         return false;
                     }
+
+                    if (condition.IsNull())
+                    {
+                        errMsg = "查询条件不明确";
+                        return false;
+                    }
+
+                    if (!Enum.IsDefined(typeof(QueryTemplateCondition), condition ?? 0))
+                    {
+                        errMsg = "查询条件为不支持的类型";
+                        return false;
+                    }
                     
                     QueryDAL.GetInitModel(id, field, ref initModel, ref listDict_SystemModel);
                     if (initModel.DataType.Equals("literals") || initModel.DataType.Equals("bit"))
@@ -69,21 +81,9 @@ namespace XCCloudService.DBService.BLL
                         sb.Append(string.Format(" and {1}{0} = @{0} ", field, alias));
                         Array.Resize(ref parameters, parameters.Length + 1);
                         parameters[parameters.Length - 1] = new SqlParameter("@" + field, values);
-                    }
+                    }                   
                     else
-                    {
-                        if (condition.IsNull())
-                        {
-                            errMsg = "查询条件不明确";
-                            return false;
-                        }
-
-                        if (!Enum.IsDefined(typeof(QueryTemplateCondition), condition ?? 0))
-                        {
-                            errMsg = "查询条件为不支持的类型";
-                            return false;
-                        }
-
+                    {                        
                         if (condition == (int)QueryTemplateCondition.Between)
                         {
                             var values = dicPara.ContainsKey("values") ? (object[])dicPara["values"] : null;

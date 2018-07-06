@@ -11,6 +11,8 @@ var seachModel = function (options) {
     let token = options.token;//选中的子节点  [{ID:GameID}]
     let form = options.form; //layui from对象
     let layer = options.layer; //layui from对象
+    let xc=options.xc;
+    let parm=options.parm;
     let d = [];
     let _domStr1 = "";  //结构字符串
     let _domStr2 = "";  //结构字符串
@@ -74,7 +76,7 @@ var seachModel = function (options) {
                                             '<div class="layui-input-inline layui-hide" style="width: 100px">' +
                                                 '<input type="text" id="' + d[i].field + 'sh1" class="layui-input">' +
                                             '</div>' +
-                                            '<div class="layui-form-mid ' + d[i].field + 'mid">至</div>' +
+                                            '<div class="layui-form-mid  ' + d[i].field + 'mid">至</div>' +
                                             '<div class="layui-input-inline layui-hide" style="width: 100px">' +
                                                 '<input type="text" id="' + d[i].field + 'sh2" class="layui-input">' +
                                             '</div>'+
@@ -132,29 +134,29 @@ var seachModel = function (options) {
                             $('.' + d[i].field + 'sh').addClass('layui-hide')
                         } else {
                             if (d[i].type == 'string') {
-                                conditions.push({'id': d[i].tempId, 'field': d[i].field, 'values': ''});
+                                conditions.push({'id': d[i].tempId,'condition':'6', 'field': d[i].field, 'values': ''});
                             } else if (d[i].type == 'bit') {
-                                conditions.push({'id': d[i].tempId, 'field': d[i].field, 'values': '1'});
+                                conditions.push({'id': d[i].tempId, 'condition':'6','field': d[i].field, 'values': '1'});
                             } else if (d[i].type == 'literals') {
-                                conditions.push({'id': d[i].tempId, 'field': d[i].field, 'values': ''});
+                                conditions.push({'id': d[i].tempId,'condition':'6', 'field': d[i].field, 'values': ''});
                             } else {
-                                conditions.push({'id': d[i].tempId, 'field': d[i].field, 'values': []});
+                                conditions.push({'id': d[i].tempId,'condition':'', 'field': d[i].field, 'values': []});
                             }
 
                         }
-                        // if(d[i].type == 'number' || d[i].type == 'date' || d[i].type == 'time') {
-                        //     if(d[i].condition==5){
-                        //         $('#'+d[i].field+'sh1').parent('div').removeClass('layui-hide')
-                        //         $('#'+d[i].field+'mid').removeClass('layui-hide')
-                        //         $('#'+d[i].field+'sh2').parent('div').removeClass('layui-hide')
-                        //         $('#'+d[i].field+'sh11').parent('div').addClass('layui-hide')
-                        //     }else {
-                        //         $('#'+d[i].field+'sh1').parent('div').addClass('layui-hide')
-                        //         $('#'+d[i].field+'mid').addClass('layui-hide')
-                        //         $('#'+d[i].field+'sh2').parent('div').addClass('layui-hide')
-                        //         $('#'+d[i].field+'sh11').parent('div').removeClass('layui-hide')
-                        //     }
-                        // }
+                        if(d[i].type == 'number' || d[i].type == 'date' || d[i].type == 'time') {
+                            if(d[i].condition==5){
+                                $('#'+d[i].field+'sh1').parent('div').removeClass('layui-hide')
+                                $('.'+d[i].field+'mid').removeClass('layui-hide')
+                                $('#'+d[i].field+'sh2').parent('div').removeClass('layui-hide')
+                                $('#'+d[i].field+'sh11').parent('div').addClass('layui-hide')
+                            }else {
+                                $('#'+d[i].field+'sh1').parent('div').addClass('layui-hide')
+                                $('.'+d[i].field+'mid').addClass('layui-hide')
+                                $('#'+d[i].field+'sh2').parent('div').addClass('layui-hide')
+                                $('#'+d[i].field+'sh11').parent('div').removeClass('layui-hide')
+                            }
+                        }
                     }
                     form.render();
 
@@ -171,16 +173,32 @@ var seachModel = function (options) {
             for (i in d) {
                 if (d[i].id == _val) {
                     d[i].issearch = 1;
-                    container2.getElementsByClassName(d[i].field + 'sh')[0].classList.remove('layui-hide')
+                    container2.getElementsByClassName(d[i].field + 'sh')[0].classList.remove('layui-hide');
+                    if (d[i].type == 'string') {
+                        conditions.push({'id': d[i].tempId, 'condition':'6','field': d[i].field, 'values': ''});
+                    } else if (d[i].type == 'bit') {
+                        conditions.push({'id': d[i].tempId,'condition':'6', 'field': d[i].field, 'values': '1'});
+                    } else if (d[i].type == 'literals') {
+                        conditions.push({'id': d[i].tempId, 'condition':'6','field': d[i].field, 'values': ''});
+                    } else {
+                        conditions.push({'id': d[i].tempId,'condition':'', 'field': d[i].field, 'values': []});
+                    }
                 }
             }
+
         } else {
+            let index;
             for (i in d) {
                 if (d[i].id == _val) {
+                    index=i;
                     d[i].issearch = 0;
                     container2.getElementsByClassName(d[i].field + 'sh')[0].classList.add('layui-hide')
                 }
-
+            }
+            for(i in conditions){
+                if(conditions[i].id==d[index].tempId){
+                    conditions.splice(i,1);
+                }
             }
         }
     });
@@ -191,28 +209,32 @@ var seachModel = function (options) {
             if (conditions[j].field + 'sh' == data.elem.name) {
                 conditions[j].values = data.value;
             }
-
         }
+        console.log(conditions)
     })
     form.on("select()", function (data) {
         console.log(data.elem);
         for (j in d) {
             if (d[j].field + 'cond' == data.elem.id) {
-                console.log(data.value);
+
                 d[j].condition = data.value;
                 if (data.value == 5) {
                     $('#'+d[j].field+'sh1').parent('div').removeClass('layui-hide')
-                    $('#'+d[j].field+'mid').removeClass('layui-hide')
+                    $('.'+d[j].field+'mid').removeClass('layui-hide')
                     $('#'+d[j].field+'sh2').parent('div').removeClass('layui-hide')
                     $('#'+d[j].field+'sh11').parent('div').addClass('layui-hide')
                 }else {
                     $('#'+d[j].field+'sh1').parent('div').addClass('layui-hide')
-                    $('#'+d[j].field+'mid').addClass('layui-hide')
+                    $('.'+d[j].field+'mid').addClass('layui-hide')
                     $('#'+d[j].field+'sh2').parent('div').addClass('layui-hide')
                     $('#'+d[j].field+'sh11').parent('div').removeClass('layui-hide')
                 }
             }
-
+        }
+        for(i in conditions){
+            if(conditions[i].field+'cond'==data.elem.id){
+                conditions[i].condition=data.value
+            }
         }
     })
 
@@ -221,21 +243,25 @@ var seachModel = function (options) {
             if (d[i].issearch == 1) {
                 for (j in conditions) {
                     if (conditions[j].field == d[i].field) {
+
                         if (d[i].type == 'string') {
                             conditions[j].values = $('#' + d[i].field + 'sh').val();
                         } else if (d[i].type == 'number' || d[i].type == 'date' || d[i].type == 'time') {
                             if ($('#' + d[i].field + 'cond').val() == 5) {
                                 conditions[j].values = [$('#' + d[i].field + 'sh1').val(), $('#' + d[i].field + 'sh2').val()];
+                            }else {
+                                conditions[j].values = [$('#' + d[i].field + 'sh11').val()];
                             }
                         }
                     }
                 }
-                if (d[i].type == 'number' || d[i].type == 'date' || d[i].type == 'time') {
-                    templateDetails[i].condition = $('#' + d[i].field + 'cond').val();
-                }
             }
         }
         console.log(conditions)
+        parm.obj.conditions=conditions;
+        console.log(parm)
+        xc.getInitData(parm)
+        // let _obj={'conditions':conditions,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'}
     })
 }
 
@@ -276,7 +302,9 @@ layui.use(['form', 'layer', 'table'], () => {
         'token': token1,
         'form': form,
         'layer': layer,
-        'searchBtn': 'searchBtn'
+        'searchBtn': 'searchBtn',
+        'xc':xc,
+        'parm':parm
     })
     $('#form2Box').click(function () {
         $('#form2').slideDown();

@@ -60,8 +60,13 @@ namespace XXCloudService.Api.XCCloud
                 {
                     errMsg = "您所访问的门店不存在";
                     return false;
-                }
+                }                
                 var base_StoreInfoModel = base_StoreInfoService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                if (base_StoreInfoModel.AuthorExpireDate < DateTime.Now)
+                {
+                    errMsg = "您所访问的门店已到期";
+                    return false;
+                }
                 userLogResponseModel.Token = XCCloudUserTokenBusiness.SetUserToken(userId.ToString(), logType, dataModel);
                 userLogResponseModel.Tag = base_StoreInfoModel.StoreTag;
                 userLogResponseModel.MerchID = merchId;

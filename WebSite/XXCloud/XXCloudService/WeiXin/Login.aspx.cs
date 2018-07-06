@@ -103,6 +103,11 @@ namespace XXCloudService.WeiXin
                                 Response.Redirect(WeiXinConfig.RedirectErrorPage + "?title=" + HttpUtility.UrlEncode("登录失败") + "&message=" + HttpUtility.UrlEncode(errMsg), false);
                             }
                             var base_StoreInfoModel = base_StoreInfoService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                            if (base_StoreInfoModel.AuthorExpireDate < DateTime.Now)
+                            {
+                                errMsg = "您所访问的门店已到期";
+                                Response.Redirect(WeiXinConfig.RedirectErrorPage + "?title=" + HttpUtility.UrlEncode("登录失败") + "&message=" + HttpUtility.UrlEncode(errMsg), false);
+                            }
                             tag = base_StoreInfoModel.StoreTag;
                             isSingle = XCCloudStoreBusiness.IsSingleStore(merchId) ? 1 : 0;                            
                         }
