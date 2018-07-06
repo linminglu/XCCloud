@@ -365,30 +365,33 @@ namespace XXCloudService.Api.XCCloud
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
-                var base_DeviceInfo = from a in Base_DeviceInfoService.N.GetModels(p=>p.ID == id)
-                                      join b in Log_GameAlarmService.N.GetModels() on a.ID equals b.DeviceID 
-                                      join c in Data_GameInfoService.N.GetModels() on a.GameIndexID equals c.ID
-                                      orderby c.GameName
-                                      select new
+                var base_DeviceInfo = from a in Base_DeviceInfoService.N.GetModels(p => p.ID == id)
+                                      join b in
+                                          (
+                                                from b in Log_GameAlarmService.N.GetModels()
+                                                join c in Data_GameInfoService.N.GetModels() on b.GameIndex equals c.ID into c1
+                                                from c in c1.DefaultIfEmpty()
+                                                select new { DeviceID = b.DeviceID, AlertType = b.AlertType, AlertContent = b.AlertContent, HappenTime = b.HappenTime, ICCardID = b.ICCardID, LockGame = b.LockGame, LockMember = b.LockMember, EndTime = b.EndTime, State = b.State, GameName = c.GameName }
+                                          ) on a.ID equals b.DeviceID
+                                      orderby b.GameName
+                                      select new Log_GameAlarmModel
                                       {
-                                          GameName = c.GameName,
+                                          GameName = b.GameName,
                                           SiteName = a.SiteName,
-                                          DeviceName = a.DeviceName,                                          
+                                          DeviceName = a.DeviceName,
                                           segment = a.segment,
                                           Address = a.Address,
                                           AlertType = b.AlertType,
+                                          AlertContent = b.AlertContent,
                                           HappenTime = b.HappenTime,
                                           ICCardID = b.ICCardID,
                                           LockGame = b.LockGame,
-                                          LockGameStr = b.LockGame == 1 ? "是" : b.LockGame == 0 ? "否" : string.Empty,
                                           LockMember = b.LockMember,
-                                          LockMemberStr = b.LockMember == 1 ? "是" : b.LockMember == 0 ? "否" : string.Empty,
                                           EndTime = b.EndTime,
                                           State = b.State,
-                                          StateStr = b.State == 0 ? "活动" : b.State == 1 ? "确认" : b.State == 2 ? "解决" : string.Empty
                                       };
 
-                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, base_DeviceInfo);
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, base_DeviceInfo.ToList());
             }
             catch (Exception e)
             {

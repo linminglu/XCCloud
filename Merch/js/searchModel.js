@@ -44,9 +44,9 @@ var seachModel = function (options) {
                         }
 
                             if (d[i].type == 'literals') {
-                                _domStr2 += '<div class="layui-inline ' + d[i].field + '">' +
+                                _domStr2 += '<div class="layui-inline '+d[i].field+'sh">' +
                                     '<label class="layui-form-label">' + d[i].title + '</label>';
-                                _domStr2 += '<div class="layui-input-inline"><select id="' + d[i].field + '" lay-filter="' + d[i].field + '">';
+                                _domStr2 += '<div class="layui-input-inline"><select id="'+d[i].field+'sh" lay-filter="'+d[i].field+'sh">';
                                 let html = '<option value="">-请选择-</option>';
                                 for (j in d[i].list) {
                                     html += '<option value="' + j + '">' + d[i].list[j] + '</option>'
@@ -54,73 +54,73 @@ var seachModel = function (options) {
                                 __domStr2 += html;
                                 _domStr2 += '</select></div></div>';
                             } else if (d[i].type == 'bit') {
-                                _domStr2 += ' <div class="layui-inline ' + d[i].field + '"><label class="layui-form-label">' + d[i].title + '</label>' +
+                                _domStr2 += ' <div class="layui-inline '+d[i].field+'sh"><label class="layui-form-label">' + d[i].title + '</label>' +
                                     '<div class="layui-input-inline" style="width: 188px;height: 36px;border: 1px solid #eee;background-color: #fff;">' +
-                                    '<input type="radio" name="' + d[i].field + '" value="1" title="是" checked="" lay-filter="' + d[i].field + '">' +
-                                    '<input type="radio" name="' + d[i].field + '" value="0" title="否" lay-filter="' + d[i].field + '">' +
+                                    '<input type="radio" name="'+d[i].field+'sh" value="1" title="是" checked="" lay-filter="'+d[i].field+'sh">' +
+                                    '<input type="radio" name="'+d[i].field+'sh" value="0" title="否" lay-filter="'+d[i].field+'sh">' +
                                     '</div></div>'
                             } else if (d[i].type == 'string') {
                                 _domStr2 += ' <div class="layui-inline ' + d[i].field +'">' +
                                     '<label class="layui-form-label">' + d[i].title + '</label>' +
                                     '<div class="layui-input-inline">' +
-                                    '<input type="text" id="' + d[i].field + '" class="layui-input">' +
+                                    '<input type="text" id="'+d[i].field+'sh" class="layui-input">' +
                                     '</div></div>'
                             } else if (d[i].type == 'number') {
                                 if (d[i].condition == 5) {
                                     _domStr2 += ' <div class="layui-inline ' + d[i].field +'"><label class="layui-form-label">' + d[i].title + '</label>' +
-                                        '<div class="layui-input-inline"><select>' + setOption(d[i].condition) + '</select></div>' +
+                                        '<div class="layui-input-inline"><select id="'+d[i].field+'cond">' + setOption(d[i].condition) + '</select></div>' +
                                         '<div class="layui-input-inline" style="width: 100px">' +
-                                        '<input type="text" id="' + d[i].field + '1" class="layui-input">' +
+                                        '<input type="text" id="'+d[i].field+'sh1" class="layui-input">' +
                                         '</div>' +
                                         '<div class="layui-form-mid">至</div>' +
                                         '<div class="layui-input-inline" style="width: 100px">' +
-                                        '<input type="text" id="' + d[i].field + '2" class="layui-input">' +
+                                        '<input type="text" id="'+d[i].field+'sh2" class="layui-input">' +
                                         '</div>' +
                                         '</div>'
                                 } else {
-                                    _domStr2 += ' <div class="layui-inline ' + d[i].field + ' "><label class="layui-form-label">' + d[i].title + '</label>' +
-                                        '<div class="layui-input-inline"><select>' + setOption(d[i].condition) + '</select></div>' +
+                                    _domStr2 += ' <div class="layui-inline '+d[i].field+'sh "><label class="layui-form-label">' + d[i].title + '</label>' +
+                                        '<div class="layui-input-inline"><select id="'+d[i].field+'cond">' + setOption(d[i].condition) + '</select></div>' +
                                         '<div class="layui-input-inline">' +
-                                        '<input type="text" id="' + d[i].field + '1" class="layui-input">' +
+                                        '<input type="text" id="'+d[i].field+'sh1" class="layui-input">' +
                                         '</div></div>'
                                 }
 
                             } else if (d[i].type == 'time') {
                                 if (d[i].condition == 5) {
-                                    _domStr2 += ' <div class="layui-inline ' + d[i].field + '"><label class="layui-form-label">' + d[i].title + '</label>' +
-                                        '<div class="layui-input-inline"><select>' + setOption(d[i].condition) + '</select></div>' +
+                                    _domStr2 += ' <div class="layui-inline '+d[i].field+'sh"><label class="layui-form-label">' + d[i].title + '</label>' +
+                                        '<div class="layui-input-inline"><select id="'+d[i].field+'cond">' + setOption(d[i].condition) + '</select></div>' +
                                         '<div class="layui-input-inline" style="width: 100px">' +
-                                        '<input type="text" id="' + d[i].field + '1" class="layui-input">' +
+                                        '<input type="text" id="'+d[i].field+'sh1" class="layui-input">' +
                                         '</div>' +
                                         '<div class="layui-form-mid">至</div>' +
                                         '<div class="layui-input-inline" style="width: 100px">' +
-                                        '<input type="text" id="' + d[i].field + '2" class="layui-input">' +
+                                        '<input type="text" id="'+d[i].field+'sh2" class="layui-input">' +
                                         '</div>' +
                                         '</div>'
                                 } else {
-                                    _domStr2 += ' <div class="layui-inline ' + d[i].field + '"><label class="layui-form-label">' + d[i].title + '</label>' +
-                                        '<div class="layui-input-inline"><select>' + setOption(d[i].condition) + '</select></div>' +
+                                    _domStr2 += ' <div class="layui-inline '+d[i].field+'sh"><label class="layui-form-label">' + d[i].title + '</label>' +
+                                        '<div class="layui-input-inline"><select id="'+d[i].field+'cond">' + setOption(d[i].condition) + '</select></div>' +
                                         '<div class="layui-input-inline">' +
-                                        '<input type="text" id="' + d[i].field + '1" class="layui-input">' +
+                                        '<input type="text" id="'+d[i].field+'sh1" class="layui-input">' +
                                         '</div></div>'
                                 }
                             } else if (d[i].type == 'date') {
                                 if (d[i].condition == 5) {
-                                    _domStr2 += ' <div class="layui-inline" ' + d[i].field + '><label class="layui-form-label">' + d[i].title + '</label>' +
-                                        '<div class="layui-input-inline"><select>' + setOption(d[i].condition) + '</select></div>' +
+                                    _domStr2 += ' <div class="layui-inline" '+d[i].field+'sh><label class="layui-form-label">' + d[i].title + '</label>' +
+                                        '<div class="layui-input-inline"><select id="'+d[i].field+'cond">' + setOption(d[i].condition) + '</select></div>' +
                                         '<div class="layui-input-inline" style="width: 100px">' +
-                                        '<input type="text" id="' + d[i].field + '1" class="layui-input">' +
+                                        '<input type="text" id="'+d[i].field+'sh1" class="layui-input">' +
                                         '</div>' +
                                         '<div class="layui-form-mid">至</div>' +
                                         '<div class="layui-input-inline" style="width: 100px">' +
-                                        '<input type="text" id="' + d[i].field + '2" class="layui-input">' +
+                                        '<input type="text" id="'+d[i].field+'sh2" class="layui-input">' +
                                         '</div>' +
                                         '</div>'
                                 } else {
-                                    _domStr2 += ' <div class="layui-inline" ' + d[i].field + '><label class="layui-form-label">' + d[i].title + '</label>' +
-                                        '<div class="layui-input-inline"><select>' + setOption(d[i].condition) + '</select></div>' +
+                                    _domStr2 += ' <div class="layui-inline" '+d[i].field+'sh><label class="layui-form-label">' + d[i].title + '</label>' +
+                                        '<div class="layui-input-inline"><select id="'+d[i].field+'cond">' + setOption(d[i].condition) + '</select></div>' +
                                         '<div class="layui-input-inline">' +
-                                        '<input type="text" id="' + d[i].field + '1" class="layui-input">' +
+                                        '<input type="text" id="'+d[i].field+'sh1" class="layui-input">' +
                                         '</div></div>'
                                 }
                             }
@@ -131,7 +131,18 @@ var seachModel = function (options) {
                     container2.innerHTML = _domStr2;
                     for (i in d) {
                     if(d[i].issearch==0){
-                        $('.'+d[i].field).addClass('layui-hide')
+                        $('.'+d[i].field+'sh').addClass('layui-hide')
+                    }else {
+                        if(d[i].type=='string'){
+                            conditions.push({'id':d[i].tempId,'field':d[i].field,'values':''});
+                        }else if(d[i].type=='bit'){
+                            conditions.push({'id':d[i].tempId,'field':d[i].field,'values':'1'});
+                        }else if(d[i].type=='literals'){
+                            conditions.push({'id':d[i].tempId,'field':d[i].field,'values':''});
+                        }else {
+                            conditions.push({'id':d[i].tempId,'field':d[i].field,'values':[]});
+                        }
+
                     }
 
                     }
@@ -150,24 +161,51 @@ var seachModel = function (options) {
             for (i in d) {
                 if (d[i].id == _val) {
                     d[i].issearch = 1;
-                    container2.getElementsByClassName(d[i].field)[0].classList.remove('layui-hide')
+                    container2.getElementsByClassName(d[i].field+'sh')[0].classList.remove('layui-hide')
                 }
             }
         } else {
             for (i in d) {
                 if (d[i].id == _val) {
                     d[i].issearch = 0;
-                    container2.getElementsByClassName(d[i].field)[0].classList.add('layui-hide')
+                    container2.getElementsByClassName(d[i].field+'sh')[0].classList.add('layui-hide')
                 }
 
             }
         }
     });
+    for(i in d){
+        if(d[i].type=='bit'){
+            form.on("radio("+d[i].field+"sh)",function (data) {
+            for( j in conditions){
+                if(conditions[j].field==d[i].field){
+
+                      conditions[j].values=data.value;
+
+
+                }
+
+            }
+    })
+        }
+
+    }
     searchBtn.addEventListener('click',function () {
         for(i in d){
             if(d[i].issearch==1){
-                if(d[i].type=='string'){
-                    conditions.push({'id':'','field':d[i].field,'values':$('#'+d[i].field).val()})
+                for(j in conditions){
+                    if(conditions[j].field==d[i].field){
+                        if(d[i].type=='string'){
+                            conditions[j].values=$('#'+d[i].field+'sh').val();
+                        }else if(d[i].type=='number'||d[i].type=='date'||d[i].type=='time'){
+                            if($('#'+d[i].field+'cond').val()==5){
+                                conditions[j].values=[$('#'+d[i].field+'sh1').val(),$('#'+d[i].field+'sh2').val()];
+                            }
+                        }
+                    }
+                }
+                if(d[i].type=='number'||d[i].type=='date'||d[i].type=='time'){
+                    templateDetails[i].condition=$('#'+d[i].field+'cond').val();
                 }
             }
         }

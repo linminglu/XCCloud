@@ -386,6 +386,33 @@ namespace XCCloudService.Common.Enum
     }
 
     /// <summary>
+    /// 报警类别
+    /// </summary>
+    public enum AlertType : int
+    {       
+        [Description("打印机故障")]
+        打印机故障 = 0,
+        [Description("打印设置故障")]
+        打印设置故障 = 1,
+        [Description("卡头读卡故障")]
+        卡头读卡故障 = 2,
+        [Description("高频干扰报障")]
+        高频干扰报障 = 3,
+        [Description("高压干扰报警")]
+        高压干扰报警 = 4,
+        [Description("SSR信号异常")]
+        SSR信号异常 = 5,
+        [Description("CO信号异常")]
+        CO信号异常 = 6,
+        [Description("CO2信号异常")]
+        CO2信号异常 = 7,
+        [Description("存币箱满报警")]
+        存币箱满报警 = 8,
+        [Description("退币保护盾报警")]
+        退币保护盾报警 = 9,
+    }
+
+    /// <summary>
     /// 查询模板条件
     /// </summary>
     public enum QueryTemplateCondition

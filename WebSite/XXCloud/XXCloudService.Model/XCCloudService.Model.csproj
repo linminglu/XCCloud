@@ -88,6 +88,7 @@
     <Compile Include="CustomModel\XCCloud\Data_GameFreeRuleModel.cs" />
     <Compile Include="CustomModel\XCCloud\Data_GoodInventoryModel.cs" />
     <Compile Include="CustomModel\XCCloud\Data_GoodOutOrderModel.cs" />
+    <Compile Include="CustomModel\XCCloud\Log_GameAlarmModel.cs" />
     <Compile Include="CustomModel\XCCloud\Data_GoodStorageModel.cs" />
     <Compile Include="CustomModel\XCCloud\Data_MemberLevelModel.cs" />
     <Compile Include="CustomModel\XCCloud\Data_GameInfoModel.cs" />
