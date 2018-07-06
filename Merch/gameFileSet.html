@@ -152,12 +152,12 @@
                         <div class="layui-inline Price">
                             <label class="layui-form-label">采购价格</label>
                             <div class="layui-input-inline">
-                                <input type="text" class="layui-input"  id="Price" name="Price">
+                                <input type="text" class="layui-input" id="Price" name="Price">
                                 <span class="layui-unit">元</span>
                             </div>
                         </div>
                         <div class="layui-inline Evaluation">
-                            <label class="layui-form-label" style="padding: 8px 0px!improtant">新旧程度(1-10)</label>
+                            <label class="layui-form-label" style="padding: 8px 0">新旧程度(1-10)</label>
                             <div class="layui-input-inline">
                                 <input type="text" class="layui-input" placeholder="1-10成新" id="Evaluation"
                                        name="Evaluation">
@@ -597,7 +597,8 @@
                                 <div class="layui-inline AllowRealOut">
                                     <label class="layui-form-label">允许实物退币</label>
                                     <div class="layui-input-inline">
-                                        <input type="checkbox" lay-skin="switch" lay-text="启用|禁用" id="AllowRealOut" name="AllowRealOut"
+                                        <input type="checkbox" lay-skin="switch" lay-text="启用|禁用" id="AllowRealOut"
+                                               name="AllowRealOut"
                                                lay-filter="AllowRealOut">
                                     </div>
                                 </div>
@@ -611,7 +612,8 @@
                                 <div class="layui-inline NowExit">
                                     <label class="layui-form-label">即中即退</label>
                                     <div class="layui-input-inline">
-                                        <input type="checkbox" lay-skin="switch" lay-text="启用|禁用" id="NowExit" name="NowExit"
+                                        <input type="checkbox" lay-skin="switch" lay-text="启用|禁用" id="NowExit"
+                                               name="NowExit"
                                                lay-filter="NowExit">
                                     </div>
                                 </div>
@@ -968,7 +970,7 @@
             {field: 'ID', title: 'ID', align: 'center', sort: true}
             ,
             {field: 'GameName', title: '游戏机名', align: 'center'} //width 支持：数字、百分比和不填写。
-            ,{field: 'GameID', title: '游戏机编号', align: 'center', sort: true}
+            , {field: 'GameID', title: '游戏机编号', align: 'center', sort: true}
             , {field: 'GameTypeStr', title: '游戏机类型', align: 'center'}
             , {field: 'Area', title: '占地面积', align: 'center'}
             , {field: 'AreaName', title: '区域名称', align: 'center'}
@@ -984,8 +986,6 @@
     };
     xc.getInitData(parm);
     let id = '';
-
-
 
 
     //简易模式参数
@@ -1051,7 +1051,7 @@
             success: function (data) {
                 data = JSON.parse(data);
                 if (data.result_code == 1) {
-                    layer.msg(data.result_msg==''?'保存成功！':data.result_msg, {time: 1500}, function () {
+                    layer.msg(data.result_msg == '' ? '保存成功！' : data.result_msg, {time: 1500}, function () {
                         location.href = 'gameFileSet.html'
                     })
                 } else {
@@ -1147,7 +1147,7 @@
             success: function (data) {
                 data = JSON.parse(data);
                 if (data.result_code == 1) {
-                    layer.msg(data.result_msg==''?'保存成功！':data.result_msg, {time: 1500}, function () {
+                    layer.msg(data.result_msg == '' ? '保存成功！' : data.result_msg, {time: 1500}, function () {
                         location.href = 'gameFileSet.html'
                     })
                 } else {
@@ -1162,9 +1162,9 @@
     //    余额类别
     let balanceData = [];
 
-    let arrGameType=[];
-    let arrArea=[];
-    let arrDepot=[];
+    let arrGameType = [];
+    let arrArea = [];
+    let arrDepot = [];
 
     function setTransferLevel(arr, form, id, name) {
         if (arr.length == 0) {
@@ -1229,7 +1229,7 @@
             url: "/XCCloud/Dictionary?action=GetNodes",
             contentType: "application/json; charset=utf-8",
             data: {parasJson: parasJson1},
-            async:false,
+            async: false,
             success: function (data) {
                 data = JSON.parse(data);
                 console.log(data);
@@ -1273,11 +1273,11 @@
             url: '/XCCloud/GroupArea?action=QueryGroupArea',
             contentType: "application/json; charset=utf-8",
             data: {parasJson: parseJson2},
-            async:false,
+            async: false,
             success: function (data) {
                 data = JSON.parse(data);
                 if (data.result_code == 1) {
-                    arrArea= data.result_data;
+                    arrArea = data.result_data;
                     // setArec(arrArea, form, 'AreaID');
                     // setArec(arrArea, form, 'AreaID1');
                 } else {
@@ -1298,7 +1298,7 @@
             url: '/XCCloud/DepotInfo?action=GetDepotDic',
             contentType: "application/json; charset=utf-8",
             data: {parasJson: parseJson3},
-            async:false,
+            async: false,
             success: function (data) {
                 data = JSON.parse(data);
                 if (data.result_code == 1) {
@@ -1383,16 +1383,16 @@
         });
         //简易模式事件监听
         form.on('select(GameTypeLow)', (data) => {
-            data.value=='-请选择-'?eGameType='': eGameType = data.value;
+            data.value == '-请选择-' ? eGameType = '' : eGameType = data.value;
         });
         form.on('select(eAreaID)', (data) => {
-            data.value=='-请选择-'?eAreaID='':eAreaID = data.value;
+            data.value == '-请选择-' ? eAreaID = '' : eAreaID = data.value;
         });
         form.on('select(eDepotID)', (data) => {
             data.value == '-请选择-' ? eDepotID = '' : eDepotID = data.value;
         });
         form.on('select(ePushBalanceIndex1)', (data) => {
-            data.value=='-请选择-'?ePushBalanceIndex1='':ePushBalanceIndex1 = data.value;
+            data.value == '-请选择-' ? ePushBalanceIndex1 = '' : ePushBalanceIndex1 = data.value;
         });
         form.on('switch(PushLevel1)', (data) => {
             if (data.elem.checked == true) {
@@ -1418,10 +1418,10 @@
         form.on('switch(ReadCat1)', (data) => {
             if (data.elem.checked == true) {
                 eReadCat = 1;
-                $('#ReadCatTime1').attr('disabled',false)
+                $('#ReadCatTime1').attr('disabled', false)
             } else {
                 eReadCat = 0;
-                $('#ReadCatTime1').attr('disabled',true)
+                $('#ReadCatTime1').attr('disabled', true)
             }
             form.render()
         });
@@ -1442,7 +1442,7 @@
 
         //高级模式事件监听
         form.on('select(GameType)', (data) => {
-            data.value=='-请选择-'?GameType='':GameType = data.value;
+            data.value == '-请选择-' ? GameType = '' : GameType = data.value;
         });
         form.on('switch(State)', (data) => {
             if (data.elem.checked == true) {
@@ -1473,7 +1473,7 @@
             }
         });
         form.on('select(AreaID1)', (data) => {
-            data.value=='-请选择-'?AreaID1='':AreaID1 = data.value;
+            data.value == '-请选择-' ? AreaID1 = '' : AreaID1 = data.value;
         });
         form.on('switch(AllowElecPush)', (data) => {
             if (data.elem.checked == true) {
@@ -1492,12 +1492,12 @@
         form.on('switch(ReadCat)', (data) => {
             if (data.elem.checked == true) {
                 ReadCat = 1
-                $('#ReadCatTime').attr('disabled',false)
+                $('#ReadCatTime').attr('disabled', false)
             } else {
                 ReadCat = 0
-                $('#ReadCatTime').attr('disabled',true)
+                $('#ReadCatTime').attr('disabled', true)
             }
-           form.render()
+            form.render()
         });
         form.on('switch(AllowRealPush)', (data) => {
             if (data.elem.checked == true) {
@@ -1510,7 +1510,7 @@
 
             if (data.value == '-请选择-') {
                 $('.cutCoin1').text('金币数')
-                PushBalanceIndex11=''
+                PushBalanceIndex11 = ''
             } else {
                 PushBalanceIndex11 = data.value;
                 $('.cutCoin1').text(data.elem[data.elem.selectedIndex].text)
@@ -1520,17 +1520,17 @@
         form.on('select(PushBalanceIndex2)', (data) => {
             if (data.value == '-请选择-') {
                 $('.cutCoin2').text('金币数');
-                PushBalanceIndex12=''
+                PushBalanceIndex12 = ''
             } else {
                 PushBalanceIndex12 = data.value;
                 $('.cutCoin2').text(data.elem[data.elem.selectedIndex].text)
             }
         });
         form.on('select(PushPulse)', (data) => {
-            data.value=='-请选择-'?PushPulse='':PushPulse = data.value;
+            data.value == '-请选择-' ? PushPulse = '' : PushPulse = data.value;
         });
         form.on('select(PushSpeed)', (data) => {
-            data.value=='-请选择-'?PushSpeed='':PushSpeed = data.value;
+            data.value == '-请选择-' ? PushSpeed = '' : PushSpeed = data.value;
         });
         form.on('switch(PushLevel)', (data) => {
             if (data.elem.checked == true) {
@@ -1558,13 +1558,13 @@
             }
         });
         form.on('select(SecondStartInterval)', (data) => {
-            data.value=='-请选择-'?SecondStartInterval='':SecondStartInterval = data.value;
+            data.value == '-请选择-' ? SecondStartInterval = '' : SecondStartInterval = data.value;
         });
         form.on('select(SecondPulse)', (data) => {
-            data.value=='-请选择-'?SecondPulse='':SecondPulse = data.value;
+            data.value == '-请选择-' ? SecondPulse = '' : SecondPulse = data.value;
         });
         form.on('select(SecondSpeed)', (data) => {
-            data.value=='-请选择-'?SecondSpeed='': SecondSpeed = data.value;
+            data.value == '-请选择-' ? SecondSpeed = '' : SecondSpeed = data.value;
         });
 
         form.on('switch(AllowRealOut)', (data) => {
@@ -1596,7 +1596,7 @@
             }
         });
         form.on('select(BOPulse)', (data) => {
-            data.value=='-请选择-'?BOPulse='':BOPulse = data.value;
+            data.value == '-请选择-' ? BOPulse = '' : BOPulse = data.value;
         });
         form.on('switch(OutLevel)', (data) => {
             if (data.elem.checked == true) {
@@ -1613,20 +1613,20 @@
             }
         });
         form.on('select(OutSpeed)', (data) => {
-            data.value=='-请选择-'?OutSpeed='':OutSpeed = data.value;
+            data.value == '-请选择-' ? OutSpeed = '' : OutSpeed = data.value;
         });
 
         form.on('select(OutMode)', (data) => {
-            data.value=='-请选择-'?OutMode='': OutMode = data.value;
+            data.value == '-请选择-' ? OutMode = '' : OutMode = data.value;
         });
 
         form.on('select(OutPulse)', (data) => {
-            data.value=='-请选择-'?OutPulse='':OutPulse = data.value;
+            data.value == '-请选择-' ? OutPulse = '' : OutPulse = data.value;
         });
         form.on('select(OutBalanceIndex)', (data) => {
-            if(data.value=='-请选择-'){
+            if (data.value == '-请选择-') {
                 OutBalanceIndex = '';
-            }else {
+            } else {
                 OutBalanceIndex = data.value;
             }
 
@@ -1694,9 +1694,9 @@
             }
         });
         form.on('select(PushStartInterval)', (data) => {
-            if(data.value=='-请选择-'){
+            if (data.value == '-请选择-') {
                 PushStartInterval = '';
-            }else {
+            } else {
                 PushStartInterval = data.value;
             }
 
@@ -1718,9 +1718,9 @@
             saveHigh(form, layer);
         });
         $('#addNew').click(function () {
-        id='';
-        $('#hardForm')[0].reset();
-        $('#easyForm')[0].reset();
+            id = '';
+            $('#hardForm')[0].reset();
+            $('#easyForm')[0].reset();
             //  eAreaID='' ;ePushBalanceIndex1=''; eGameType='';
             //     ePushLevel = 0; LotteryModeLow = 0; eOnlyExitLottery = 0;
             //     eReadCat = 0;echkCheckGift = 0; StateLow = 1;
@@ -1737,11 +1737,11 @@
             //     SecondStartInterval = 0;
             //     OutSpeed = 35; OutMode = 0;
             //     OutPulse = 35; CountLevel = 0; OutLevel = 0; ExceptOutTest = 0; ExceptOutSpeed = 45;
-             DepotID = '';
-             FreeLotteryRules = [];
-             memberLevelId = '';
-             memberLevels = '';
-             MemberLevelNames = '';
+            DepotID = '';
+            FreeLotteryRules = [];
+            memberLevelId = '';
+            memberLevels = '';
+            MemberLevelNames = '';
             $('.saveBox').css('display', 'inline-block');
             xc.openEasy(layer);
             setBal(balanceData, form, 'PushBalanceIndex1');
@@ -2088,7 +2088,8 @@
                                         , {field: 'SiteName', title: 'P位编号', align: 'center', width: 120} //width 支持：数字、百分比和不填写。
                                         , {field: 'Segment', title: '网络段号', align: 'center', width: 120, sort: true}
                                         , {field: 'Address', title: '机头地址', align: 'center', width: 120}
-                                        , {field: 'AlertType', title: '报警类别', align: 'center'}
+                                        ,{field:'AlertTypeStr', title: '报警类别', align: 'center'}
+                                        ,{field:'AlertContent', title: '报警内容', align: 'center'}
                                         , {field: 'HappenTime', title: '触发时间', align: 'center', width: 120, sort: true}
                                         , {field: 'ICCardID', title: '关联卡号', align: 'center', width: 120}
                                         , {field: 'LockGameStr', title: '锁机头', align: 'center', width: 120}
@@ -2146,12 +2147,12 @@
 
         $('#addMore').click(function () {
             $('.saleGroupBox').append($('body').find($('.saleGroup')).eq(0).clone())
-            $('.saleGroupBox').find($('.saleGroup')).last().attr('id','').find('input').val('')
+            $('.saleGroupBox').find($('.saleGroup')).last().attr('id', '').find('input').val('')
             // $('.saleGroupBox').find($('.saleGroup')).last().find('input').val('')
         });
         // 保存
         $('.saleGroupBox').on('click', 'button.saveRuleBtn', function () {
-            let _this=$(this);
+            let _this = $(this);
             let memberLevel = $(this).parents($('.saleGroup')).find('select[name="memberLevelId"] option:selected').val();
             let pushBalanceIndex1 = $(this).parents($('.saleGroup')).find('select[name="BalanceIndex1"] option:selected').val();
             let pushCoin1 = $(this).parents($('.saleGroup')).find('input[name="pCoin1"]').val();
@@ -2181,8 +2182,8 @@
                     data = JSON.parse(data);
                     console.log(data);
                     if (data.result_code == 1) {
-                        layer.msg('新规则保存成功',{time:2000},function () {
-                            _this.parents('div.saleGroup').attr('id',data.result_data.ID);
+                        layer.msg('新规则保存成功', {time: 2000}, function () {
+                            _this.parents('div.saleGroup').attr('id', data.result_data.ID);
                         })
                     } else {
                         layer.msg(data.result_msg || data.return_msg)
@@ -2194,13 +2195,13 @@
 
         //删除
         $('.saleGroupBox').on('click', 'button.delRuleBtn', function () {
-            let _this=$(this);
+            let _this = $(this);
             let memLevID = $(this).parents('div.saleGroup').attr('id');
-            if($('.saleGroupBox').find('div.saleGroup').length>1){
+            if ($('.saleGroupBox').find('div.saleGroup').length > 1) {
 
-                if(memLevID==undefined||memLevID==''){
+                if (memLevID == undefined || memLevID == '') {
                     _this.parents('div.saleGroup').remove()
-                }else {
+                } else {
                     let obj = {
                         'id': memLevID,
                         'userToken': token,
@@ -2222,10 +2223,10 @@
                         }
                     })
                 }
-            }else if($('.saleGroupBox').find('div.saleGroup').length==1){
-                if(memLevID==undefined||memLevID==''){
+            } else if ($('.saleGroupBox').find('div.saleGroup').length == 1) {
+                if (memLevID == undefined || memLevID == '') {
 
-                }else {
+                } else {
                     let obj = {
                         'id': memLevID,
                         'userToken': token,
@@ -2248,7 +2249,7 @@
                             }
                         }
                     })
-            }
+                }
 
             }
 
@@ -2359,12 +2360,12 @@
                     LotteryModeLow = arr[23].value;
                     eOnlyExitLottery = arr[24].value;
                     eReadCat = arr[28].value;
-                    if(arr[28].value!=1){
-                        $('#ReadCatTime1').attr('disabled',true)
-                        $('#ReadCatTime').attr('disabled',true)
-                    }else {
-                        $('#ReadCatTime1').attr('disabled',false)
-                        $('#ReadCatTime').attr('disabled',false)
+                    if (arr[28].value != 1) {
+                        $('#ReadCatTime1').attr('disabled', true)
+                        $('#ReadCatTime').attr('disabled', true)
+                    } else {
+                        $('#ReadCatTime1').attr('disabled', false)
+                        $('#ReadCatTime').attr('disabled', false)
                     }
                     echkCheckGift = arr[25].value;
                     StateLow = arr[8].value;
@@ -2525,23 +2526,23 @@
                 console.log(data);
                 if (data.result_code == 1) {
                     let arr = data.result_data;
-                    if(arr.length==1){
-                        $('.saleGroup').attr('id',arr[0].ID);
+                    if (arr.length == 1) {
+                        $('.saleGroup').attr('id', arr[0].ID);
                         $('.saleGroup').find('select[name="memberLevelId"]').val(arr[0].MemberLevelID);
                         $('.saleGroup').find('input[name="pCoin1"]').val(arr[0].PushCoin1);
                         $('.saleGroup').find('select[name="BalanceIndex1"]').val(arr[0].PushBalanceIndex1);
                         $('.saleGroup').find('input[name="pCoin2"]').val(arr[0].PushCoin2);
                         $('.saleGroup').find('select[name="BalanceIndex2"]').val(arr[0].PushBalanceIndex2);
                         $('.saleGroup').find('input[name="playCount"]').val(arr[0].PlayCount);
-                    }else if(arr.length>1){
-                        for(let i=0;i<arr.length-1;i++){
+                    } else if (arr.length > 1) {
+                        for (let i = 0; i < arr.length - 1; i++) {
                             $('.saleGroupBox').append($('body').find($('.saleGroup')).eq(0).clone());
                         }
-                        $('.saleGroupBox').find($('.saleGroup')).attr('id','').find('input').val('');
+                        $('.saleGroupBox').find($('.saleGroup')).attr('id', '').find('input').val('');
 
                         $('.saleGroupBox').find('div.saleGroup').each(function (e) {
 
-                            $(this).attr('id',arr[e].ID);
+                            $(this).attr('id', arr[e].ID);
                             $(this).find('select[name="memberLevelId"]').val(arr[e].MemberLevelID);
                             $(this).find('input[name="pCoin1"]').val(arr[e].PushCoin1);
                             $(this).find('select[name="BalanceIndex1"]').val(arr[e].PushBalanceIndex1);
@@ -2550,7 +2551,7 @@
                             $(this).find('input[name="playCount"]').val(arr[e].PlayCount);
                         })
                     }
-                    for(let i in arr){
+                    for (let i in arr) {
 
                     }
                     if (t == null) {
@@ -2635,19 +2636,20 @@
         }
         form.render('select');
     }
-let layerIndex;
+
+    let layerIndex;
     $('body').find($('.layui-form-item>div')).on('mouseenter', 'label', function () {
         let _this = $(this);
         layui.use('layer', function () {
             let layer = layui.layer;
             if (_this.parent('div').attr('name') != "" && _this.parent('div').attr('name') != undefined) {
-             layerIndex=   layer.tips(_this.parent('div').attr('name'), _this.parent('div'), {
+                layerIndex = layer.tips(_this.parent('div').attr('name'), _this.parent('div'), {
                     tips: [3, '#3595CC'],
                     time: 2000
                 });
             }
         })
-    }).on('mouseout','label',function () {
+    }).on('mouseout', 'label', function () {
         layui.use('layer', function () {
             let layer = layui.layer;
             layer.close(layerIndex)
