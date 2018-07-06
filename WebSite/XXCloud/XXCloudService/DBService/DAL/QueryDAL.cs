@@ -26,8 +26,15 @@ namespace XCCloudService.DBService.DAL
             sb.Append(string.Format(" declare @UserID int = {0} ",userId));
             sb.Append(string.Format(" if not exists (select 0 from Search_Template where UserID = @UserID ) "));
             sb.Append(string.Format("   set @UserID = 0 "));
+            sb.Append(@" select ISNULL(b.UserID,0) as UserID,a.PageName,a.ProcessName,a.TempID,a.FieldName,a.Title,a.Datatype,a.DictID,
+                            ISNULL(b.Condition,a.Condition) as Condition, ISNULL(b.Width,a.Width) as Width,
+                            ISNULL(b.ShowColume,a.ShowColume) as ShowColume, ISNULL(b.ShowSearch,a.ShowSearch) as ShowSearch from (");
+            sb.Append(@" select a.UserID,a.PageName,a.ProcessName,b.* from Search_Template a inner join Search_Template_Detail b on a.ID = b.TempID  
+                         where UserID = 0 and PageName = @PageName and ProcessName = @ProcessName ");
+            sb.Append(@" ) a left join (");
             sb.Append(@" select a.UserID,a.PageName,a.ProcessName,b.* from Search_Template a inner join Search_Template_Detail b on a.ID = b.TempID  
                          where UserID = @UserID and PageName = @PageName and ProcessName = @ProcessName ");
+            sb.Append(@" ) b on a.PageName=b.PageName and a.ProcessName=b.ProcessName and a.FieldName=b.FieldName");
             sb.Append(@" select * from Dict_System ");
             DataAccess ac = new DataAccess(DataAccessDB.XCCloudDB);
             DataSet ds = ac.ExecuteQuery(sb.ToString());

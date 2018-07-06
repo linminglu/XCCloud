@@ -201,6 +201,7 @@ var seachModel = function (options) {
                 }
             }
         }
+        event.stopPropagation();
     });
 
     form.on("radio()", function (data) {
@@ -261,7 +262,11 @@ var seachModel = function (options) {
         parm.obj.conditions=conditions;
         console.log(parm)
         xc.getInitData(parm)
-        // let _obj={'conditions':conditions,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'}
+        $('#'+options.elem1).parent().slideUp();
+        for (i in conditions){
+            conditions[i].values='';
+        }
+        // templateDetails=[];
     })
 }
 
@@ -295,7 +300,11 @@ layui.use(['form', 'layer', 'table'], () => {
     const table = layui.table;
 
 
-    $('#form2Box').click(function () {
+    $('#form2Box').toggle(function () {
+        event.stopPropagation();
         $('#form2').slideDown();
+    },function () {
+        $('#form2').slideUp();
+        event.stopPropagation();
     })
 })

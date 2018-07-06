@@ -108,4 +108,19 @@ img{border:none;}
 .xc-pad-right{
     padding: 0 10px;
 }
+/*查询模板*/
+.row-box #form2Box{
+    position: relative;height: 38px;border: 1px #999 solid;!important;
+}
+.row-box #form2Box #form2{
+    position: absolute; display: none;top: 36px;border:1px #999 solid ;z-index: 9999999999999999999;!important;
+}
+.row-box #tantion{
+    height: 200px;
+    margin-bottom: 0;
+    padding-bottom: 15px;
+    background-color:#f1f1f1;
+    overflow-y: auto;
+    border-radius: 0 10px 10px 0;
+}
 .homeChart{display: inline-block}

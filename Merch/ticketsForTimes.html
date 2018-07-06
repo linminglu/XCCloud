@@ -16,15 +16,30 @@
 <div class="layui-row settingPage">
     <div class="row-box">
 
-        <blockquote class="layui-elem-quote" style="text-align: right">
-            <button type="button" class="layui-btn layui-btn-sm layui-btn-normal" i18n-content="查询模板">查询模板</button>
-            <!--<button type="button" class="layui-btn layui-btn-normal add" i18n-content="新增">新增</button>-->
-        </blockquote>
-        <table class="layui-hide" id="timesTickets" lay-filter="timesTickets"></table>
+        <div class="layui-col-md12 layui-col-sm12 layui-col-lg12">
+            <blockquote class="layui-elem-quote layui-col-md12 layui-col-sm12 layui-col-lg12">
+                <div class="layui-form layui-form-pane layui-col-md9" id="form1">
+                    <div class="layui-form-item" id="serchMode"></div>
+                </div>
 
-        <button type="button" class="layui-btn layui-btn-sm layui-btn-primary" id="editBtn">编辑</button>
-        <button type="button" class="layui-btn layui-btn-sm layui-btn-normal add" i18n-content="新增">新增</button>
-        <button type="button" class="layui-btn layui-btn-sm layui-btn-danger " id="delBtn">删除</button>
+                <div class="layui-col-md2" id="form2Box" >
+                    <div class="layui-form layui-form-pane" id="form2">
+                        <div id="tantion" class="layui-form-item">
+                        </div>
+                    </div>
+                </div>
+
+                <button type="button" class="layui-btn layui-btn-normal layui-col-md1" i18n-content="查询模板" id="searchBtn">查询</button>
+            </blockquote>
+        </div>
+        <div class="layui-col-lg12 layui-col-md12 layui-col-sm12">
+            <table class="layui-hide" id="timesTickets" lay-filter="timesTickets"></table>
+
+            <button type="button" class="layui-btn layui-btn-sm layui-btn-primary" id="editBtn">编辑</button>
+            <button type="button" class="layui-btn layui-btn-sm layui-btn-normal add" i18n-content="新增">新增</button>
+            <button type="button" class="layui-btn layui-btn-sm layui-btn-danger " id="delBtn">删除</button>
+        </div>
+
     </div>
 
 </div>
@@ -34,11 +49,12 @@
 <script src="js/jquery-1.8.3-min.js"></script>
 <script src="layui/layui.js"></script>
 <script src="js/storeSystem.js"></script>
+<script src="js/searchModel.js"></script>
 <script>
     var xc = xcActionSystem.prototype;
     var token = xc.getStorage('token');
     var parm = {
-        'obj': {'ticketType': 0, 'businessType': 0, 'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'},
+        'obj': {'ticketType': 0,'conditions':[], 'businessType': 0, 'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'},
         'url': '/XCCloud/ProjectTicket?action=QueryProjectTicket',
         'elem': '#timesTickets',
         'cols': [
@@ -101,6 +117,19 @@
         let table = layui.table;
         let form = layui.form;
         let layer = layui.layer;
+
+        seachModel({
+            'elem1': 'tantion',
+            'elem2': 'serchMode',
+            'pagename': 'projectTicketSearch',
+            'processname': 'projectTicketSearch',
+            'token': token1,
+            'form': form,
+            'layer': layer,
+            'searchBtn': 'searchBtn',
+            'xc':xc,
+            'parm':parm
+        })
         //新增，存入一个cook
         $('.add').on('click', function () {
             layer.open({
