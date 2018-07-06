@@ -272,7 +272,9 @@
                             logMsg.storeId=_storeID;
                             xc.setStorage('logMsg',JSON.stringify(logMsg));
                             xc.setStorage('token',data.result_data.Token);
-                            // window.location.href='/merch/index1.html';
+                            window.location.href='/merch/index1.html';
+                        }else{
+                            layer.msg(data.result_msg||data.return_msg)
                         }
                     }
                 })
@@ -300,6 +302,8 @@
                                     }
                                     $('#storeListToGo').css({'display':'block'})
                                 }
+                            }else{
+                                layer.msg(data.result_msg||data.return_msg)
                             }
                         }
                     });
@@ -322,6 +326,8 @@
                                 xc.setStorage('logMsg',JSON.stringify(logMsg));
                                 xc.setStorage('token',data.result_data.Token);
                                 window.location.href='/merch/index1.html';
+                            }else{
+                                layer.msg(data.result_msg||data.return_msg)
                             }
                         }
                     })
@@ -353,6 +359,8 @@
                                 xc.setStorage('logMsg',JSON.stringify(logMsg));
                                 xc.setStorage('token',data.result_data.Token);
                                 window.location.href='/merch/index1.html';
+                            }else{
+                                layer.msg(data.result_msg||data.return_msg)
                             }
                         }
                     })
@@ -383,6 +391,8 @@
                                 xc.setStorage('logMsg',JSON.stringify(logMsg));
                                 xc.setStorage('token',data.result_data.Token);
                                 window.location.href='/merch/index1.html';
+                            }else{
+                                layer.msg(data.result_msg||data.return_msg)
                             }
                         }
                     })

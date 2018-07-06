@@ -255,6 +255,7 @@ xcActionSystem.prototype= {
                             type: "post", url: url,
                             contentType: "application/json; charset=utf-8",
                             data: {parasJson: JSON.stringify(obj)},
+                            async:false,
                             success: function (data) {
                                 data = JSON.parse(data);
                                 console.log(data);

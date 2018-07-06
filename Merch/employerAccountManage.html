@@ -476,11 +476,12 @@ console.log(checkBoxArr);
         content:$('.groupManage')
     });
 }
+
 </script>
 <script type="text/html" id="barDemo">
-    {{#  if(d.UserStatusStr =='在职'||d.UserStatusStr =='离职'||d.UserStatusStr =='休假'||d.UserStatusStr =='锁定'){ }}
+
     <a class="layui-btn layui-btn-xs" lay-event="edit" href="#" style="height: 25px;line-height: 25px;padding: 0 9px">编辑</a>
-    {{#  } }}
+
     {{#  if(d.UserStatusStr =='未审核'){ }}
     <a class="layui-btn layui-btn-xs" lay-event="check" style="height: 25px;line-height: 25px;padding: 0 9px">审核</a>
     {{#  } }}

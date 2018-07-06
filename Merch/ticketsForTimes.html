@@ -113,10 +113,11 @@
     xc.getInitData(parm);
     let id = '';
 
-    layui.use(['table', 'form', 'layer'], function () {
+    layui.use(['table', 'form', 'layer','laydate'], function () {
         let table = layui.table;
         let form = layui.form;
         let layer = layui.layer;
+        let laydate=layui.laydate;
 
         seachModel({
             'elem1': 'tantion',
@@ -126,6 +127,7 @@
             'token': token1,
             'form': form,
             'layer': layer,
+            'laydate':laydate,
             'searchBtn': 'searchBtn',
             'xc':xc,
             'parm':parm

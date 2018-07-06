@@ -11,6 +11,7 @@ var seachModel = function (options) {
     let token = options.token;//选中的子节点  [{ID:GameID}]
     let form = options.form; //layui from对象
     let layer = options.layer; //layui from对象
+
     let xc=options.xc;
     let parm=options.parm;
     let d = [];
@@ -88,40 +89,37 @@ var seachModel = function (options) {
                         } else if (d[i].type == 'time') {
                             _domStr2 += ' <div class="layui-inline ' + d[i].field + 'sh">' +
                                 '<label class="layui-form-label">' + d[i].title + '</label>' +
-                                '<div class="layui-input-inline" style="width: 60px;margin-right: 0"><select id="' + d[i].field + 'cond">' + setOption(d[i].condition) + '</select></div>';
-
-                            _domStr2 +=
+                                '<div class="layui-input-inline" style="width: 60px;margin-right: 0">' +
+                                '<select id="' + d[i].field + 'cond">' + setOption(d[i].condition) + '</select>' +
+                                '</div>'+
                                 '<div class="layui-input-inline layui-hide" style="width: 100px">' +
                                 '<input type="text" id="' + d[i].field + 'sh1" class="layui-input">' +
                                 '</div>' +
-                                '<div class="layui-form-mid ' + d[i].field + 'mid">至</div>' +
+                                '<div class="layui-form-mid  ' + d[i].field + 'mid">至</div>' +
                                 '<div class="layui-input-inline layui-hide" style="width: 100px">' +
                                 '<input type="text" id="' + d[i].field + 'sh2" class="layui-input">' +
-                                '</div>'
-
-
-                            _domStr2 +=
+                                '</div>'+
                                 '<div class="layui-input-inline layui-hide" style="width: 130px">' +
                                 '<input type="text" id="' + d[i].field + 'sh11" class="layui-input">' +
-                                '</div></div>'
+                                '</div>' +
+                                '</div>'
                         } else if (d[i].type == 'date') {
                             _domStr2 += ' <div class="layui-inline ' + d[i].field + 'sh">' +
                                 '<label class="layui-form-label">' + d[i].title + '</label>' +
-                                '<div class="layui-input-inline" style="width: 60px;margin-right: 0"><select id="' + d[i].field + 'cond">' + setOption(d[i].condition) + '</select></div>';
-
-                                _domStr2 +=
-                                    '<div class="layui-input-inline layui-hide" style="width: 100px">' +
-                                    '<input type="text" id="' + d[i].field + 'sh1" class="layui-input">' +
-                                    '</div>' +
-                                    '<div class="layui-form-mid ' + d[i].field + 'mid">至</div>' +
-                                    '<div class="layui-input-inline layui-hide" style="width: 100px">' +
-                                    '<input type="text" id="' + d[i].field + 'sh2" class="layui-input">' +
-                                    '</div>'
-
-                                _domStr2 +=
-                                    '<div class="layui-input-inline layui-hide" style="width: 130px">' +
-                                    '<input type="text" id="' + d[i].field + 'sh11" class="layui-input">' +
-                                    '</div></div>'
+                                '<div class="layui-input-inline" style="width: 60px;margin-right: 0">' +
+                                '<select id="' + d[i].field + 'cond">' + setOption(d[i].condition) + '</select>' +
+                                '</div>'+
+                                '<div class="layui-input-inline layui-hide" style="width: 100px">' +
+                                '<input type="text" id="' + d[i].field + 'sh1" class="layui-input">' +
+                                '</div>' +
+                                '<div class="layui-form-mid  ' + d[i].field + 'mid">至</div>' +
+                                '<div class="layui-input-inline layui-hide" style="width: 100px">' +
+                                '<input type="text" id="' + d[i].field + 'sh2" class="layui-input">' +
+                                '</div>'+
+                                '<div class="layui-input-inline layui-hide" style="width: 130px">' +
+                                '<input type="text" id="' + d[i].field + 'sh11" class="layui-input">' +
+                                '</div>' +
+                                '</div>'
 
                         }
 
@@ -167,6 +165,38 @@ var seachModel = function (options) {
             }
         }
     });
+    for(i in d){
+        if(d[i].type == 'date' ) {
+            options.laydate.render({
+                elem: '#'+d[i].field+'sh1'
+                ,type: 'date'
+            })
+            options.laydate.render({
+                elem: '#'+d[i].field+'sh2'
+                ,type: 'date'
+            })
+            options.laydate.render({
+                elem: '#'+d[i].field+'sh11'
+                ,type: 'date'
+            })
+
+
+        }
+        if( d[i].type == 'time') {
+            options.laydate.render({
+                elem: '#'+d[i].field+'sh1'
+                ,type: 'time'
+            })
+            options.laydate.render({
+                elem: '#'+d[i].field+'sh2'
+                ,type: 'time'
+            })
+            options.laydate.render({
+                elem: '#'+d[i].field+'sh11'
+                ,type: 'time'
+            })
+        }
+    }
     form.on('checkbox(checkList)', function (data) {
         let _val = data.value;
         if (data.elem.checked) {
@@ -212,7 +242,7 @@ var seachModel = function (options) {
             }
         }
         console.log(conditions)
-    })
+    });
     form.on("select()", function (data) {
         console.log(data.elem);
         for (j in d) {
@@ -237,7 +267,7 @@ var seachModel = function (options) {
                 conditions[i].condition=data.value
             }
         }
-    })
+    });
 
     searchBtn.addEventListener('click', function () {
         for (i in d) {

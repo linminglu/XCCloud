@@ -196,6 +196,11 @@ namespace XXCloudService.Api.XCCloud
                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                     }
                     var base_StoreInfoModel = base_StoreInfoService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                    if (base_StoreInfoModel.AuthorExpireDate < DateTime.Now)
+                    {
+                        errMsg = "您所访问的门店已到期";
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
                     tag = base_StoreInfoModel.StoreTag;
                     var TokenDataModel = new TokenDataModel { WorkStationID = workStationId.Toint(), StoreID = storeId, MerchID = merchId };
                     userTokenKeyModel.DataModel = TokenDataModel;
