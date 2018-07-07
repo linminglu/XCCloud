@@ -20,6 +20,8 @@ var seachModel = function (options) {
 
     let templateDetails = [];//保存模板条件
     let conditions = [];//查询条件
+
+    let _falg=false;//条件框的显示影藏
     let obj = {
         'pagename': pagename,
         'processname': processname,
@@ -315,7 +317,17 @@ var seachModel = function (options) {
             }
         }
     });
+    $('#form2Box').click(function () {
+        if(_falg){
+            $('#form2').slideUp(100);
+            _falg=false;
+        }else {
+            $('#form2').slideDown(100);
+            _falg=true
+        }
+            event.stopPropagation();
 
+    })
     searchBtn.addEventListener('click', function () {
         for (i in d) {
             if (d[i].issearch == 1) {
@@ -338,10 +350,10 @@ var seachModel = function (options) {
         // console.log(conditions)
         parm.obj.conditions=conditions;
         // console.log(parm)
-        xc.getInitData(parm)
-        $('#'+options.elem1).parent().slideUp();
+        xc.getInitData(parm);
+        _falg=false;
+        $('#'+options.elem1).parent().slideUp(100);
 
-        console.log(templateDetails)
         let obj = {
             'pagename': pagename,
             'processname':processname,
@@ -374,6 +386,7 @@ var seachModel = function (options) {
                             'showSearch':ds[i].issearch,
                             'dictId':ds[i].dictId})
                     }
+                    console.log(templateDetails)
                 }else {
                     layer.msg(data.result_msg||data.return_msg)
                 }
@@ -412,11 +425,5 @@ layui.use(['form', 'layer', 'table'], () => {
     const table = layui.table;
 
 
-    $('#form2Box').toggle(function () {
-        event.stopPropagation();
-        $('#form2').slideDown();
-    },function () {
-        $('#form2').slideUp();
-        event.stopPropagation();
-    })
+
 })
