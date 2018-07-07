@@ -353,43 +353,46 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 string errMsg = string.Empty;
-                int id = dicParas.Get("id").Toint(0);
+                var idArr = dicParas.GetArray("id");
 
-                if (id == 0)
-                {
-                    errMsg = "余额类别ID不能为空";
+                if (!idArr.Validarray("余额类别ID列表", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }                
                 
                 //开启EF事务
                 using (TransactionScope ts = new TransactionScope())
                 {
                     try
                     {
-                        if (!Dict_BalanceTypeService.I.Any(p => p.ID == id))
+                        foreach (var id in idArr)
                         {
-                            errMsg = "该余额类别不存在";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
+                            if(!id.Validintnozero("余额类别ID", out errMsg))
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-                        var dict_BalanceType = Dict_BalanceTypeService.I.GetModels(p => p.ID == id).FirstOrDefault();
-                        dict_BalanceType.State = 0;
-                        if (!Dict_BalanceTypeService.I.Update(dict_BalanceType))
-                        {
-                            errMsg = "删除余额类别失败";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
+                            if (!Dict_BalanceTypeService.I.Any(p => p.ID == (int)id))
+                            {
+                                errMsg = "该余额类别不存在";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
 
-                        foreach (var model in Data_BalanceType_StoreListService.I.GetModels(p => p.BalanceIndex == id))
-                        {
-                            Data_BalanceType_StoreListService.I.DeleteModel(model);
-                        }
-                        
-                        if (!Data_BalanceType_StoreListService.I.SaveChanges())
-                        {
-                            errMsg = "删除余额类别适用门店信息失败";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
+                            var dict_BalanceType = Dict_BalanceTypeService.I.GetModels(p => p.ID == (int)id).FirstOrDefault();
+                            dict_BalanceType.State = 0;
+                            if (!Dict_BalanceTypeService.I.Update(dict_BalanceType))
+                            {
+                                errMsg = "删除余额类别失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+
+                            foreach (var model in Data_BalanceType_StoreListService.I.GetModels(p => p.BalanceIndex == (int)id))
+                            {
+                                Data_BalanceType_StoreListService.I.DeleteModel(model);
+                            }
+
+                            if (!Data_BalanceType_StoreListService.I.SaveChanges())
+                            {
+                                errMsg = "删除余额类别适用门店信息失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+                        }                        
 
                         ts.Complete();
                     }

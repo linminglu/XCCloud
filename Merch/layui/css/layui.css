@@ -2441,8 +2441,8 @@ a cite {
 }
 
 .layui-form-pane .layui-form-radio,.layui-form-pane .layui-form-switch {
-    margin-top: 7px;
-    margin-left: 10px
+    /*margin-top: 7px;*/
+    /*margin-left: 10px*/
 }
 
 .layui-form-pane .layui-form-item[pane] {

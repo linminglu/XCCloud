@@ -4,27 +4,55 @@
     <meta charset="UTF-8">
     <title>团体票设置</title>
     <link rel="stylesheet" href="layui/css/layui.css">
+    <link rel="stylesheet" href="css/myxc.css">
 </head>
 <body>
-<div class="layui-row" style="padding:15px">
-    <blockquote class="layui-elem-quote" style="text-align: right">
-        <button type="button" class="layui-btn layui-btn-normal" i18n-content="查询模板">查询模板</button>
-        <button type="button" class="layui-btn layui-btn-normal add" i18n-content="新增">新增</button>
-    </blockquote>
-    <table class="layui-hide" id="groupTickets" lay-filter="groupTickets"></table>
+
+<div class="layui-row settingPage">
+    <div class="row-box">
+
+        <div class="layui-col-md12 layui-col-sm12 layui-col-lg12">
+            <blockquote class="layui-elem-quote layui-col-md12 layui-col-sm12 layui-col-lg12">
+                <div class="layui-form layui-form-pane layui-col-md9" id="form1">
+                    <div class="layui-form-item" id="serchMode"></div>
+                </div>
+
+                <div class="layui-col-md2" id="form2Box" >
+                    <div class="layui-form layui-form-pane" id="form2">
+                        <div id="tantion" class="layui-form-item">
+                        </div>
+                    </div>
+                </div>
+
+                <button type="button" class="layui-btn layui-btn-normal layui-col-md1" i18n-content="查询模板" id="searchBtn">查询</button>
+            </blockquote>
+        </div>
+        <div class="layui-col-lg12 layui-col-md12 layui-col-sm12">
+            <table class="layui-hide" id="groupTickets" lay-filter="groupTickets"></table>
+
+            <button type="button" class="layui-btn layui-btn-sm layui-btn-primary" id="editBtn">编辑</button>
+            <button type="button" class="layui-btn layui-btn-sm layui-btn-normal add" i18n-content="新增">新增</button>
+            <button type="button" class="layui-btn layui-btn-sm layui-btn-danger " id="delBtn">删除</button>
+        </div>
+
+    </div>
+
 </div>
 </body>
 <script src="js/jquery-1.8.3-min.js"></script>
 <script src="layui/layui.js"></script>
 <script src="js/storeSystem.js"></script>
+<script src="js/searchModel.js"></script>
 <script>
     var xc=xcActionSystem.prototype;
     var token=xc.getStorage('token');
     var parm = {
-        'obj': {'ticketType':1,'businessType':0,'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'},
+        'obj': {'ticketType':1,'businessType':0,'conditions':[],'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'},
         'url': '/XCCloud/ProjectTicket?action=QueryProjectTicket',
         'elem': '#groupTickets',
-        'cols': [{field: 'ID', title: '项目ID', align: 'center',fixed:'left'}
+        'cols': [
+            {type:'checkbox', fixed: 'left'}
+            ,{field: 'ID', title: '项目ID', align: 'center',fixed:'left'}
             , {field: 'TicketName', title: '门票名称', align: 'center',fixed:'left'}
             , {field: 'Price', title: '售价', align: 'center'}
             , {field: 'ValidDate', title: '有效期', align: 'center'}
@@ -66,39 +94,62 @@
             , {field: 'ExitLimit', title: '退票信息', align: 'center'}
             , {field: 'BindProjects', title: '项目信息', align: 'center'}
             , {field: 'AllowExitTimes', title: '离场时间', align: 'center'}
-            ,{fixed: 'right',title: '操作', width:240, align:'center', toolbar: '#barDemo'}]
+
+            ]
     };
     xc.getInitData(parm);
     let id='';
-    layui.use(['table','form','layer'],function () {
-        let table=layui.table;let form=layui.form;let layer=layui.layer;
+    layui.use(['table','form','layer','laydate'],function () {
+        let table=layui.table;let form=layui.form;let layer=layui.layer;let laydate=layui.laydate;
+
+        seachModel({
+            'elem1': 'tantion',
+            'elem2': 'serchMode',
+            'pagename': 'projectTicketSearch',
+            'processname': 'projectTicketSearch',
+            'token': token1,
+            'form': form,
+            'layer': layer,
+            'laydate':laydate,
+            'searchBtn': 'searchBtn',
+            'xc':xc,
+            'parm':parm
+        })
         //新增，存入一个cook
         $('.add').on('click',function (){
             layer.open({
-                title:'新增',
+                title: '新增>>'+'<span style="font-size: 14px">次票</span> ',
                 type:2,
-                area:['1045px','650px'],
+                area:['1100px','650px'],
                 content:'ticketsIframe.html'
             });
             xc.setStorage('ticketSet',JSON.stringify({'way':'add','name':'group','id':''}))
 
         });
-        table.on('tool(groupTickets)',function (obj) {
-            let data=obj.data;
-            let layEvent=obj.event;
-            if(layEvent==='del'){
-                layer.confirm('确定停用此设置吗？', function(index){
-                    let _obj={'id':data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+        //删除按钮
+        $('#delBtn').on('click', function () {
+            let checkStatus = table.checkStatus('groupTickets'); //test即为基础参数id对应的值
+            let len = checkStatus.data.length;
+            if (len == 1) {
+                // let ids = '';
+                // ids = checkStatus.data[0].ID;
+                layer.confirm('FBI warming：停用可联系莘宸管理员恢复，是否确定停用?', function (index) {
+                    var _obj = {
+                        'id': checkStatus.data[0].ID,
+                        'userToken': token,
+                        'signkey': '1f626576304bf5d95b72ece2222e42c3'
+                    };
+                    var url = '/XCCloud/Project?action=DelProjectTicket';
                     let parseJson = JSON.stringify(_obj);
                     $.ajax({
-                        type:'post',
-                        url:'/XCCloud/ProjectTicket?action=DelProjectTicket',
+                        type: 'post',
+                        url: '/XCCloud/ProjectTicket?action=DelProjectTicket',
                         contentType: "application/json; charset=utf-8",
-                        data:{parasJson: parseJson},
+                        data: {parasJson: parseJson},
                         success: function (data) {
                             data = JSON.parse(data);
                             if (data.result_code == 1) {
-                                layer.msg('本套餐停用成功',{time:1500},function () {
+                                layer.msg('本套餐停用成功', {time: 1500}, function () {
                                     layer.close(index);
                                     location.reload()
                                 })
@@ -108,16 +159,34 @@
                         }
                     })
                 });
-            }else if(layEvent==='modify'){
-                layer.open({
-                    title:'修改设置',
-                    type:2,
-                    area:['1045px','650px'],
-                    content:'ticketsIframe.html'
-                });
-                xc.setStorage('ticketSet',JSON.stringify({'way':'modify','name':'group','id':data.ID}))
+
+            } else {
+                layer.msg('请至少勾选一条数据！')
             }
-        })
+        });
+        //编辑按钮
+        $('#editBtn').on('click', function () {
+            let checkStatus = table.checkStatus('groupTickets'); //test即为基础参数id对应的值
+            let len = checkStatus.data.length;
+            if (len == 1) {
+
+                layer.open({
+                    title: '修改设置',
+                    type: 2,
+                    area: ['1100px', '650px'],
+                    content: 'ticketsIframe.html'
+                });
+                xc.setStorage('ticketSet', JSON.stringify({
+                    'way': 'modify',
+                    'name': 'group',
+                    'id': checkStatus.data[0].ID
+                }))
+
+            } else {
+                layer.msg('请且勾选一条数据！')
+            }
+        });
+
     })
 </script>
 <script type="text/html" id="barDemo">

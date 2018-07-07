@@ -71,7 +71,7 @@ var seachModel = function (options) {
                         } else if (d[i].type == 'number') {
                             _domStr2 += ' <div class="layui-inline ' + d[i].field + 'sh">' +
                                             '<label class="layui-form-label">' + d[i].title + '</label>' +
-                                            '<div class="layui-input-inline" style="width: 60px;margin-right: 0">' +
+                                            '<div class="layui-input-inline" style="width: 75px;margin-right: 0">' +
                                                  '<select id="' + d[i].field + 'cond">' + setOption(d[i].condition) + '</select>' +
                                             '</div>'+
                                             '<div class="layui-input-inline layui-hide" style="width: 100px">' +
@@ -81,7 +81,7 @@ var seachModel = function (options) {
                                             '<div class="layui-input-inline layui-hide" style="width: 100px">' +
                                                 '<input type="text" id="' + d[i].field + 'sh2" class="layui-input">' +
                                             '</div>'+
-                                            '<div class="layui-input-inline layui-hide" style="width: 130px">' +
+                                            '<div class="layui-input-inline layui-hide" style="width: 115px">' +
                                                  '<input type="text" id="' + d[i].field + 'sh11" class="layui-input">' +
                                             '</div>' +
                                         '</div>'
@@ -89,7 +89,7 @@ var seachModel = function (options) {
                         } else if (d[i].type == 'time') {
                             _domStr2 += ' <div class="layui-inline ' + d[i].field + 'sh">' +
                                 '<label class="layui-form-label">' + d[i].title + '</label>' +
-                                '<div class="layui-input-inline" style="width: 60px;margin-right: 0">' +
+                                '<div class="layui-input-inline" style="width: 75px;margin-right: 0">' +
                                 '<select id="' + d[i].field + 'cond">' + setOption(d[i].condition) + '</select>' +
                                 '</div>'+
                                 '<div class="layui-input-inline layui-hide" style="width: 100px">' +
@@ -99,14 +99,14 @@ var seachModel = function (options) {
                                 '<div class="layui-input-inline layui-hide" style="width: 100px">' +
                                 '<input type="text" id="' + d[i].field + 'sh2" class="layui-input">' +
                                 '</div>'+
-                                '<div class="layui-input-inline layui-hide" style="width: 130px">' +
+                                '<div class="layui-input-inline layui-hide" style="width: 115px">' +
                                 '<input type="text" id="' + d[i].field + 'sh11" class="layui-input">' +
                                 '</div>' +
                                 '</div>'
                         } else if (d[i].type == 'date') {
                             _domStr2 += ' <div class="layui-inline ' + d[i].field + 'sh">' +
                                 '<label class="layui-form-label">' + d[i].title + '</label>' +
-                                '<div class="layui-input-inline" style="width: 60px;margin-right: 0">' +
+                                '<div class="layui-input-inline" style="width: 75px;margin-right: 0">' +
                                 '<select id="' + d[i].field + 'cond">' + setOption(d[i].condition) + '</select>' +
                                 '</div>'+
                                 '<div class="layui-input-inline layui-hide" style="width: 100px">' +
@@ -116,7 +116,7 @@ var seachModel = function (options) {
                                 '<div class="layui-input-inline layui-hide" style="width: 100px">' +
                                 '<input type="text" id="' + d[i].field + 'sh2" class="layui-input">' +
                                 '</div>'+
-                                '<div class="layui-input-inline layui-hide" style="width: 130px">' +
+                                '<div class="layui-input-inline layui-hide" style="width: 115px">' +
                                 '<input type="text" id="' + d[i].field + 'sh11" class="layui-input">' +
                                 '</div>' +
                                 '</div>'

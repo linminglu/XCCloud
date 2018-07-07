@@ -28,7 +28,7 @@ namespace XCCloudService.DAL
         }
 
         /// <summary>
-        /// 获取主键名称
+        /// 获取主键组
         /// </summary>
         /// <param name="context"></param>
         /// <param name="entityType"></param>
