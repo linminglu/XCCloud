@@ -77,8 +77,14 @@ namespace XCCloudService.Api
                 string errMsg = string.Empty;                
                 if (!dicParas.GetArray("templateDetails").Validarray("模板条件列表", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (!dicParas.Get("pageName").Nonempty("查询页名", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                if (!dicParas.Get("processName").Nonempty("查询模块名", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
                 var userId = userTokenKeyModel.LogId.Toint(0);
+                var pageName = dicParas.Get("pageName");
+                var processName = dicParas.Get("processName");   
                 var templateDetails = dicParas.GetArray("templateDetails");                
 
                 //开启EF事务
@@ -94,11 +100,7 @@ namespace XCCloudService.Api
                             {
                                 if (el != null)
                                 {
-                                    var dicPara = new Dictionary<string, object>(el, StringComparer.OrdinalIgnoreCase);
-                                    if (!dicPara.Get("pageName").Nonempty("查询页名", out errMsg))
-                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                                    if (!dicPara.Get("processName").Nonempty("查询模块名", out errMsg))
-                                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                    var dicPara = new Dictionary<string, object>(el, StringComparer.OrdinalIgnoreCase);                                    
                                     if (!dicPara.Get("fieldName").Nonempty("查询字段名", out errMsg))
                                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                                     if (!dicPara.Get("title").Nonempty("查询标题", out errMsg))
@@ -116,8 +118,6 @@ namespace XCCloudService.Api
 
                                     var id = dicPara.Get("id").Toint(0);
                                     var tempId = dicPara.Get("tempId").Toint(0);
-                                    var pageName = dicPara.Get("pageName");
-                                    var processName = dicPara.Get("processName");
                                     var fieldName = dicPara.Get("fieldName");
                                     var title = dicPara.Get("title");
                                     var dataType = dicPara.Get("dataType");
@@ -187,7 +187,13 @@ namespace XCCloudService.Api
 
                         ts.Complete();
 
-                        return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
+                        List<InitModel> listInitModel = null;
+                        List<Dict_SystemModel> listDict_SystemModel = null;
+                        QueryBLL.GetInit(pageName, processName, userId, ref listInitModel, ref listDict_SystemModel);
+                        ResponseModel<List<InitModel>> responseModel = new ResponseModel<List<InitModel>>();
+                        responseModel.Result_Data = listInitModel;
+
+                        return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, responseModel);
                     }
                     catch (DbEntityValidationException e)
                     {
