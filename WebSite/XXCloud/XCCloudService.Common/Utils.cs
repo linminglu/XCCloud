@@ -1823,9 +1823,10 @@ namespace XCCloudService.Common
         /// </summary>
         /// <param name="t"></param>
         /// <param name="identity"></param>
+        /// <param name="pkList">主键组</param>
         /// <param name="merchSecret"></param>
         /// <returns></returns>
-        public static string GetClearText(this object t, bool identity, string merchSecret)
+        public static string GetClearText(this object t, bool identity, string[] pkList, string merchSecret)
         {
             SortedDictionary<string, string> fields = new SortedDictionary<string, string>();
             Type type = t.GetType();
@@ -1833,9 +1834,11 @@ namespace XCCloudService.Common
             {
                 if (pi.Name.Equals("Verifiction", StringComparison.OrdinalIgnoreCase))
                     continue;
-                if (identity && pi.Name.Equals("ID", StringComparison.OrdinalIgnoreCase))
-                    continue;
-                if (identity && type.Name.Equals("Data_MemberLevel", StringComparison.OrdinalIgnoreCase) && pi.Name.Equals("MemberLevelID", StringComparison.OrdinalIgnoreCase))
+                //if (identity && pi.Name.Equals("ID", StringComparison.OrdinalIgnoreCase))
+                //    continue;
+                //if (identity && type.Name.Equals("Data_MemberLevel", StringComparison.OrdinalIgnoreCase) && pi.Name.Equals("MemberLevelID", StringComparison.OrdinalIgnoreCase))
+                //    continue;
+                if (identity && (pkList != null && pkList.Any(a => a.Equals(pi.Name, StringComparison.OrdinalIgnoreCase))))
                     continue;
                 var value = t.GetPropertyValue(pi.Name);
                 if (!value.IsNull())

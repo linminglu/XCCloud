@@ -135,9 +135,9 @@
         //新增，存入一个cook
         $('.add').on('click', function () {
             layer.open({
-                title: '新增',
+                title: '新增>>'+'<span style="font-size: 14px">次票</span> ',
                 type: 2,
-                area: ['1045px', '650px'],
+                area: ['1100px', '650px'],
                 content: 'ticketsIframe.html'
             });
             xc.setStorage('ticketSet', JSON.stringify({'way': 'add', 'name': 'times', 'id': ''}))

@@ -231,6 +231,7 @@ var seachModel = function (options) {
         }
     }
     form.on('checkbox(checkList)', function (data) {
+        console.log(data.elem)
         let _val = data.value;
         if (data.elem.checked) {
             for (i in d) {
@@ -249,6 +250,12 @@ var seachModel = function (options) {
                 }
             }
 
+            for(i in templateDetails){
+                if(templateDetails[i].title==data.elem.title){
+                    templateDetails[i].showSearch=1
+                }
+            }
+
         } else {
             let index;
             for (i in d) {
@@ -263,6 +270,12 @@ var seachModel = function (options) {
                     conditions.splice(i,1);
                 }
             }
+            for(i in templateDetails){
+                if(templateDetails[i].title==d[index].title){
+                    templateDetails[i].showSearch=0
+                }
+            }
+// console.log(templateDetails)
         }
         event.stopPropagation();
     });
@@ -332,7 +345,7 @@ var seachModel = function (options) {
         xc.getInitData(parm)
         $('#'+options.elem1).parent().slideUp();
 
-
+        console.log(templateDetails)
         let obj = {
             // 'pagename': pagename,
             'templateDetails': templateDetails,

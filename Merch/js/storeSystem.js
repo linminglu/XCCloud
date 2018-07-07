@@ -630,6 +630,7 @@ xcActionSystem.prototype= {
             url: url,
             contentType: "application/json; charset=utf-8",
             data: {parasJson: parseJson},
+            async:false,
             success: function (data) {
                 data = JSON.parse(data);
                 console.log(data);
@@ -891,6 +892,7 @@ xcActionSystem.prototype= {
             type: "post",
             url: url,
             contentType: "application/json; charset=utf-8",
+            async:false,
             data: { parasJson: parasJson },
             success: function (data) {
                 data=JSON.parse(data);
@@ -972,6 +974,7 @@ xcActionSystem.prototype= {
             type: "post",
             url: url,
             contentType: "application/json; charset=utf-8",
+            async:false,
             data: { parasJson: parasJson },
             success: function (data) {
                 data=JSON.parse(data);
@@ -1403,6 +1406,7 @@ xcActionSystem.prototype= {
             type:'post',
             url:'/XCCloud/StoreInfo?action=GetStoreList',
             contentType: "application/json; charset=utf-8",
+            async:false,
             data:{parasJson: parseJson},
             success: function (data) {
                 data = JSON.parse(data);
@@ -1428,6 +1432,7 @@ xcActionSystem.prototype= {
             url:'/XCCloud/StoreInfo?action=GetUnderStores',
             contentType: "application/json; charset=utf-8",
             data:{parasJson: parseJson},
+            async:false,
             success: function (data) {
                 data = JSON.parse(data);
                 if (data.result_code == 1){
@@ -1462,6 +1467,7 @@ xcActionSystem.prototype= {
                 type: "post",
                 url: url,
                 contentType: "application/json; charset=utf-8",
+                async:false,
                 data: {parasJson: parseJson},
                 success: function (data) {
                     data = JSON.parse(data);
@@ -1490,6 +1496,7 @@ xcActionSystem.prototype= {
             url:'/XCCloud/DeviceInfo?action=GetRouteDevice',
             contentType: "application/json; charset=utf-8",
             data:{parasJson: parseJson},
+            async:false,
             success: function (data) {
                 data = JSON.parse(data);
                 if (data.result_code == 1) {
@@ -1514,6 +1521,7 @@ xcActionSystem.prototype= {
             url:'/XCCloud/GameInfo?action=GetGameInfoDic',
             contentType: "application/json; charset=utf-8",
             data:{parasJson: parseJson},
+            async:false,
             success: function (data) {
                 data = JSON.parse(data);
                 if (data.result_code == 1) {
@@ -1539,6 +1547,7 @@ xcActionSystem.prototype= {
             url:'/XCCloud/Project?action=GetProjectDic',
             contentType: "application/json; charset=utf-8",
             data:{parasJson: parseJson},
+            async:false,
             success: function (data) {
                 data = JSON.parse(data);
                 if (data.result_code == 1) {
@@ -1571,7 +1580,7 @@ xcActionSystem.prototype= {
             type:'post',
             url:'/XCCloud/BalanceType?action=GetBalanceTypeDic',
             contentType: "application/json; charset=utf-8",
-            data:{parasJson: parseJson},
+            data:{parasJson: parseJson}, async:false,
             success: function (data) {
                 data = JSON.parse(data);
                 if (data.result_code == 1) {
@@ -1602,7 +1611,7 @@ xcActionSystem.prototype= {
             type:'post',
             url:'/XCCloud/BalanceType?action=GetBalanceTypeDic',
             contentType: "application/json; charset=utf-8",
-            data:{parasJson: parseJson},
+            data:{parasJson: parseJson}, async:false,
             success: function (data) {
                 data = JSON.parse(data);
                 if (data.result_code == 1) {
@@ -1633,7 +1642,7 @@ xcActionSystem.prototype= {
             type:'post',
             url:'/XCCloud/BalanceType?action=GetBalanceTypeDic',
             contentType: "application/json; charset=utf-8",
-            data:{parasJson: parseJson},
+            data:{parasJson: parseJson}, async:false,
             success: function (data) {
                 data = JSON.parse(data);
                 if (data.result_code == 1) {
@@ -1665,7 +1674,7 @@ xcActionSystem.prototype= {
             type:'post',
             url:'/XCCloud/Member?action=GetMemberLevelDic',
             contentType: "application/json; charset=utf-8",
-            data:{parasJson: parseJson},
+            data:{parasJson: parseJson}, async:false,
             success: function (data) {
                 data = JSON.parse(data);
                 if (data.result_code == 1) {
@@ -1698,7 +1707,7 @@ xcActionSystem.prototype= {
             // url:'/XCCloud/Member?action=QueryMemberLevel',
             url:'/XCCloud/Member?action=GetMemberLevelDic',
             contentType: "application/json; charset=utf-8",
-            data:{parasJson: parseJson},
+            data:{parasJson: parseJson}, async:false,
             success: function (data) {
                 data = JSON.parse(data);
                 if (data.result_code == 1) {
@@ -1736,7 +1745,7 @@ xcActionSystem.prototype= {
             type:'post',
             url:'/XCCloud/DigitFood?action=GetDigitFoodDic',
             contentType: "application/json; charset=utf-8",
-            data:{parasJson: parseJson},
+            data:{parasJson: parseJson}, async:false,
             success: function (data) {
                 data = JSON.parse(data);
                 if (data.result_code == 1) {
@@ -1768,7 +1777,7 @@ xcActionSystem.prototype= {
             type:'post',
             url:'/XCCloud/Coupon?action=GetCouponDic',
             contentType: "application/json; charset=utf-8",
-            data:{parasJson: parseJson},
+            data:{parasJson: parseJson}, async:false,
             success: function (data) {
                 data = JSON.parse(data);
                 if (data.result_code == 1) {
@@ -1840,7 +1849,7 @@ xcActionSystem.prototype= {
             type:'post',
             url:'/XCCloud/Project?action=QueryProjectInfo',
             contentType: "application/json; charset=utf-8",
-            data:{parasJson: parseJson},
+            data:{parasJson: parseJson}, async:false,
             success: function (data) {
                 data = JSON.parse(data);
                 console.log(data)
@@ -1933,7 +1942,7 @@ xcActionSystem.prototype= {
             type:'post',
             url:'/XCCloud/DepotInfo?action=GetDepotDic',
             contentType: "application/json; charset=utf-8",
-            data:{parasJson: parseJson},
+            data:{parasJson: parseJson}, async:false,
             success: function (data) {
                 data = JSON.parse(data);
                 if (data.result_code == 1) {
@@ -1965,7 +1974,7 @@ xcActionSystem.prototype= {
             type:'post',
             url:'/XCCloud/GroupArea?action=QueryGroupArea',
             contentType: "application/json; charset=utf-8",
-            data:{parasJson: parseJson},
+            data:{parasJson: parseJson}, async:false,
             success: function (data) {
                 data = JSON.parse(data);
                 if (data.result_code == 1) {
@@ -2002,7 +2011,7 @@ xcActionSystem.prototype= {
             type:'post',
             url:'/XCCloud/Project?action=GetUnBindDeviceDic',
             contentType: "application/json; charset=utf-8",
-            data:{parasJson: parseJson},
+            data:{parasJson: parseJson}, async:false,
             success: function (data) {
                 data = JSON.parse(data);
                 if (data.result_code == 1) {
@@ -2034,7 +2043,7 @@ xcActionSystem.prototype= {
             type:'post',
             url:'/XCCloud/Promotion?action=GetFoodInfoDic',
             contentType: "application/json; charset=utf-8",
-            data:{parasJson: parseJson},
+            data:{parasJson: parseJson}, async:false,
             success: function (data) {
                 data = JSON.parse(data);
                 if (data.result_code == 1) {
@@ -2061,7 +2070,7 @@ xcActionSystem.prototype= {
     getGameType:function (token,layer,form,objVal,id,m) {
     var  obj={"dictKey":objVal,'enabled':1,'pDicKey':'',"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
     var url="/XCCloud/Dictionary?action=GetNodes";
-    var parasJson = JSON.stringify(obj);
+    var parasJson = JSON.stringify(obj); async:false,
     $.ajax({
         type: "post",
         url: url,
@@ -2124,7 +2133,7 @@ xcActionSystem.prototype= {
             type:'post',
             url:'/XCCloud/GoodsInfo?action=GetGoodSupplierDic',
             contentType: "application/json; charset=utf-8",
-            data:{parasJson: parseJson},
+            data:{parasJson: parseJson}, async:false,
             success: function (data) {
                 data = JSON.parse(data);
                 if (data.result_code == 1) {
@@ -2151,7 +2160,7 @@ xcActionSystem.prototype= {
     //获取商品类别
     getGoogsTypeDic:function (merchId,dictKey,id,form,layer,selected) {
         let _obj={'merchId':merchId,'dictKey':dictKey,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
-        let parseJson = JSON.stringify(_obj);
+        let parseJson = JSON.stringify(_obj); async:false,
         $.ajax({
             type:'post',
             url:'/XCCloud/Dictionary?action=GetNodes',
@@ -2208,7 +2217,7 @@ xcActionSystem.prototype= {
     //获取套餐类别
     getFoodTypeDic:function (token,layer,form,id,selected) {
         let _obj = {'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'};
-        let parseJson = JSON.stringify(_obj);
+        let parseJson = JSON.stringify(_obj); async:false,
         $.ajax({
             type: 'post',
             url: '/XCCloud/FoodType?action=GetFoodTypeDic',

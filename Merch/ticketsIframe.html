@@ -11,29 +11,40 @@
          .layui-card-body .layui-table{
             margin: 0!important;
         }
+        #ticketiframeBox .layui-card-body{
+            border: 1px solid #e4e6e7;
+            padding: 20px;
+        }
+        .mustFull{
+            border:1px solid #ff9090;
+            background-color: #fff3f3;
+        }
+        .mustFull:hover{
+            border:1px solid #ff9090;
+
+        }
+        #ticketiframeBox .layui-inline{
+            margin-left: 14px;
+        }
     </style>
 </head>
 <body>
 <div class="layui-row">
-    <div class="goodIsAll" style="padding: 15px;max-height: 550px;overflow-y: auto" id=""  >
+    <div class="goodIsAll" style="padding: 15px;max-height: 550px;overflow-y: auto" id="ticketiframeBox"  >
         <form class="layui-form layui-form-pane" lay-filter="formtest">
             <div class="layui-card">
                 <div class="layui-card-header">基本信息</div>
-                <div class="layui-card-body">
+                <div class="layui-card-body"  style="border:1px solid #e4e6e7">
                     <div class="layui-form-item">
                         <div class="layui-inline">
                             <label class="layui-form-label">门票名称</label>
                             <div class="layui-input-inline">
-                                <input type="text" class="layui-input" id="TicketName" name="TicketName">
+                                <input type="text" class="layui-input mustFull" id="TicketName" name="TicketName">
                             </div>
                         </div>
                         <div class="layui-inline">
                             <label class="layui-form-label">业务类别</label>
                             <div class="layui-input-inline">
-                                <!--<select name="BusinessType" id="BusinessType" lay-filter="BusinessType">-->
-                                    <!--<option value="0">门票</option>-->
-                                    <!--<option value="1">包段优惠</option>-->
-                                <!--</select>-->
                                 <input type="text" class="layui-input" id="BusinessType" name="BusinessType" readonly>
                             </div>
                         </div>

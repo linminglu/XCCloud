@@ -39,16 +39,20 @@ namespace XCCloudService.DAL.Base
                         if (!merchId.IsNull())
                         {
                             merchSecret = dbContext.Set<Base_MerchantInfo>().Where(w => w.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase))
-                                .Select(o => o.MerchSecret).FirstOrDefault() ?? string.Empty;
+                                .Select(o => o.MerchSecret).FirstOrDefault() ?? string.Empty;                            
                         }
                     }
+
+                    //获取表主键组
+                    //var table = dbContext.GetType().GetProperty(t.GetType().Name).GetValue(dbContext, null);
+                    var pkList = dbContext.GetPrimaryKey(t.GetType());
 
                     //先校验                    
                     var str = string.Empty;
                     var md5 = string.Empty;
                     if (oldT != null)
                     {
-                        str = oldT.GetClearText(identity, merchSecret);
+                        str = oldT.GetClearText(identity, pkList, merchSecret);
                         md5 = Utils.MD5(str);                        
                         if (!verifiction.Equals(md5, StringComparison.OrdinalIgnoreCase))
                         {
@@ -60,7 +64,7 @@ namespace XCCloudService.DAL.Base
                     }
 
                     //更新校验码                    
-                    str = t.GetClearText(identity, merchSecret);
+                    str = t.GetClearText(identity, pkList, merchSecret);
                     md5 = Utils.MD5(str);
                     //LogHelper.SaveLog(str);
                     //LogHelper.SaveLog(md5);
