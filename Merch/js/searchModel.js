@@ -162,8 +162,6 @@ var seachModel = function (options) {
                             if(d[i].userId==0){
                                 templateDetails.push({'id':0,
                                     'tempId':0,
-                                    'pagename':pagename,
-                                    'processname':processname,
                                     'fieldName':d[i].field,
                                     'title':d[i].title,
                                     'dataType':d[i].type,
@@ -175,8 +173,6 @@ var seachModel = function (options) {
                             }else {
                                 templateDetails.push({'id':d[i].id,
                                     'tempId':d[i].tempId,
-                                    'pagename':pagename,
-                                    'processname':processname,
                                     'fieldName':d[i].field,
                                     'title':d[i].title,
                                     'dataType':d[i].type,
@@ -231,7 +227,7 @@ var seachModel = function (options) {
         }
     }
     form.on('checkbox(checkList)', function (data) {
-        console.log(data.elem)
+        console.log(data.elem);
         let _val = data.value;
         if (data.elem.checked) {
             for (i in d) {
@@ -347,12 +343,12 @@ var seachModel = function (options) {
 
         console.log(templateDetails)
         let obj = {
-            // 'pagename': pagename,
+            'pagename': pagename,
+            'processname':processname,
             'templateDetails': templateDetails,
             'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'
         }
         let _parseJson = JSON.stringify(obj);
-        // console.log(obj)
         $.ajax({
             type: 'post',
             url: '/Query?action=save',
@@ -361,9 +357,23 @@ var seachModel = function (options) {
             async: false,
             success: function (data) {
                 data = JSON.parse(data);
-                // console.log(data)
+                console.log(data)
                 if (data.result_code == 1) {
+                    let ds=data.result_data;
+                    templateDetails=[];
+                    for(let i in ds){
 
+                        templateDetails.push({'id':ds[i].id,
+                            'tempId':ds[i].tempId,
+                            'fieldName':ds[i].field,
+                            'title':ds[i].title,
+                            'dataType':ds[i].type,
+                            'condition':ds[i].condition,
+                            'width':ds[i].width,
+                            'showColume':ds[i].iscolume,
+                            'showSearch':ds[i].issearch,
+                            'dictId':ds[i].dictId})
+                    }
                 }else {
                     layer.msg(data.result_msg||data.return_msg)
                 }

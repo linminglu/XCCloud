@@ -185,15 +185,7 @@ namespace XCCloudService.Api
                             }
                         }                        
 
-                        ts.Complete();
-
-                        List<InitModel> listInitModel = null;
-                        List<Dict_SystemModel> listDict_SystemModel = null;
-                        QueryBLL.GetInit(pageName, processName, userId, ref listInitModel, ref listDict_SystemModel);
-                        ResponseModel<List<InitModel>> responseModel = new ResponseModel<List<InitModel>>();
-                        responseModel.Result_Data = listInitModel;
-
-                        return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, responseModel);
+                        ts.Complete();                        
                     }
                     catch (DbEntityValidationException e)
                     {
@@ -205,6 +197,12 @@ namespace XCCloudService.Api
                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                     }
                 }
+
+                List<InitModel> listInitModel = null;
+                List<Dict_SystemModel> listDict_SystemModel = null;
+                QueryBLL.GetInit(pageName, processName, userId, ref listInitModel, ref listDict_SystemModel);
+
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, listInitModel);
             }
             catch (Exception e)
             {
