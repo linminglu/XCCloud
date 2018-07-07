@@ -155,6 +155,39 @@ var seachModel = function (options) {
                                 $('#'+d[i].field+'sh11').parent('div').removeClass('layui-hide')
                             }
                         }
+
+                        //模板条件
+
+
+                            if(d[i].userId==0){
+                                templateDetails.push({'id':0,
+                                    'tempId':0,
+                                    'pagename':pagename,
+                                    'processname':processname,
+                                    'fieldName':d[i].field,
+                                    'title':d[i].title,
+                                    'dataType':d[i].type,
+                                    'condition':d[i].condition,
+                                    'width':d[i].width,
+                                    'showColume':d[i].iscolume,
+                                    'showSearch':d[i].issearch,
+                                    'dictId':d[i].dictId})
+                            }else {
+                                templateDetails.push({'id':d[i].id,
+                                    'tempId':d[i].tempId,
+                                    'pagename':pagename,
+                                    'processname':processname,
+                                    'fieldName':d[i].field,
+                                    'title':d[i].title,
+                                    'dataType':d[i].type,
+                                    'condition':d[i].condition,
+                                    'width':d[i].width,
+                                    'showColume':d[i].iscolume,
+                                    'showSearch':d[i].issearch,
+                                    'dictId':d[i].dictId})
+                            }
+
+
                     }
                     form.render();
 
@@ -226,7 +259,7 @@ var seachModel = function (options) {
                 }
             }
             for(i in conditions){
-                if(conditions[i].id==d[index].tempId){
+                if(conditions[i].field==d[index].field){
                     conditions.splice(i,1);
                 }
             }
@@ -235,16 +268,16 @@ var seachModel = function (options) {
     });
 
     form.on("radio()", function (data) {
-        console.log(data.elem)
+        // console.log(data.elem)
         for (j in conditions) {
             if (conditions[j].field + 'sh' == data.elem.name) {
                 conditions[j].values = data.value;
             }
         }
-        console.log(conditions)
+        // console.log(conditions)
     });
     form.on("select()", function (data) {
-        console.log(data.elem);
+        // console.log(data.elem);
         for (j in d) {
             if (d[j].field + 'cond' == data.elem.id) {
 
@@ -265,6 +298,11 @@ var seachModel = function (options) {
         for(i in conditions){
             if(conditions[i].field+'cond'==data.elem.id){
                 conditions[i].condition=data.value
+            }
+        }
+        for(i in templateDetails){
+            if(templateDetails[i].fieldName+'cond'==data.elem.id){
+                templateDetails[i].condition=data.value
             }
         }
     });
@@ -288,15 +326,36 @@ var seachModel = function (options) {
                 }
             }
         }
-        console.log(conditions)
+        // console.log(conditions)
         parm.obj.conditions=conditions;
-        console.log(parm)
+        // console.log(parm)
         xc.getInitData(parm)
         $('#'+options.elem1).parent().slideUp();
-        for (i in conditions){
-            conditions[i].values='';
+
+
+        let obj = {
+            // 'pagename': pagename,
+            'templateDetails': templateDetails,
+            'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'
         }
-        // templateDetails=[];
+        let _parseJson = JSON.stringify(obj);
+        // console.log(obj)
+        $.ajax({
+            type: 'post',
+            url: '/Query?action=save',
+            contentType: "application/json; charset=utf-8",
+            data: {parasJson: _parseJson},
+            async: false,
+            success: function (data) {
+                data = JSON.parse(data);
+                // console.log(data)
+                if (data.result_code == 1) {
+
+                }else {
+                    layer.msg(data.result_msg||data.return_msg)
+                }
+            }
+        })
     })
 }
 

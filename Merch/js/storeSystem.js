@@ -293,6 +293,10 @@ xcActionSystem.prototype= {
                                             }
                                         });
                                     layer.close(index);
+                                    // for(i in parm.obj.conditions){
+                                    //     parm.obj.conditions[i].values='';
+                                    // }
+                                    // return parm.obj.conditions
                                 }  else {
                                  layer.msg(data.result_msg||data.return_msg);
                                 }

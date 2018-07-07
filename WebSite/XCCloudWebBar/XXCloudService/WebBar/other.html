@@ -505,15 +505,15 @@
                                                 <th>销售日期</th>
                                                 <th>会员</th>
                                                 <th>支付金额</th>
-                                                <th> 状态</th>
+                                                <th>状态</th>
                                             </tr>
                                             </thead>
                                             <tbody>
                                             <tr v-for="(item,index) in orderInquiry.orderListData" @click.stop="orderDetails(index)">
                                                 <td>{{item.orderId}}</td>
-                                                <td>{{item.createTime}}</td>
-                                                <td>{{item.userName}}</td>
-                                                <td>{{item.realPay}}</td>
+                                                <td>{{item.saleTime}}</td>
+                                                <td>{{item.icCardId}}</td>
+                                                <td>{{item.payCount}}</td>
                                                 <td>{{item.orderStatusName}}</td>
                                             </tr>
                                             </tbody>
@@ -535,13 +535,6 @@
                                                     <td>{{item.balance1}}</td>
                                                     <td>{{item.balance2}}</td>
                                                     <td>{{item.balance3}}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>合计</td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
                                                 </tr>
                                                 </tbody>
                                             </table>
@@ -579,6 +572,7 @@
                                             <table class="table table-bordered">
                                                 <thead style="background: #f5f5f5">
                                                 <tr>
+                                                    <th></th>
                                                     <th>商品名称</th>
                                                     <th>商品类别</th>
                                                     <th>购买数量</th>
@@ -590,31 +584,40 @@
                                                 </thead>
                                                 <tbody>
                                                 <tr v-for="items in orderInquiry.goodsData">
-                                                    <td>{{items.balanceType}}</td>
-                                                    <td>{{items.balance}}</td>
-                                                    <td>{{items.balance1}}</td>
-                                                    <td>{{items.balance2}}</td>
-                                                    <td>{{items.balance3}}</td>
-                                                    <td>{{items.balance3}}</td>
-                                                    <td>{{items.balance3}}</td>
+                                                    <td><input type="checkbox"></td>
+                                                    <td>{{items.foodName}}</td>
+                                                    <td>{{items.categoryName}}</td>
+                                                    <td>{{items.saleCount}}</td>
+                                                    <td>{{items.singlePrice}}</td>
+                                                    <td>{{items.salePrice}}</td>
+                                                    <td>{{items.taxFee}}</td>
+                                                    <td>{{items.taxTotal}}</td>
                                                 </tr>
                                                 <tr>
+                                                    <td></td>
                                                     <td>合计</td>
                                                     <td></td>
+                                                    <td>{{orderInquiry.saleCount}}</td>
                                                     <td></td>
+                                                    <td>{{orderInquiry.salePrice}}</td>
                                                     <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
+                                                    <td>{{orderInquiry.taxTotal}}</td>
                                                 </tr>
                                                 </tbody>
                                             </table>
                                             
                                         </div>
                                         <div class="col-md-12 col-sm-12 order-btn">
-                                            <button type="button" class="btn btn-primary">退货</button>
-                                            <button type="button" class="btn btn-primary">重打小票</button>
-                                            <button type="button" class="btn btn-primary">重打门票</button>
+                                            <div class="col-md-3 col-sm-3"></div>
+                                            <div class="col-md-3 col-sm-3">
+                                                <button type="button" class="btn btn-primary" :disabled="orderInquiry.disabled">退货</button>
+                                            </div>
+                                            <div class="col-md-3 col-sm-3">
+                                                <button type="button" class="btn btn-primary" :disabled="orderInquiry.disabled">重打小票</button>
+                                            </div>
+                                            <div class="col-md-3 col-sm-3">
+                                                <button type="button" class="btn btn-primary" :disabled="orderInquiry.disabled">重打门票</button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -809,7 +812,6 @@
                 disabled:""
             },
             orderInquiry:{
-                goodsData:"",
                 orderNo:"10002542010600120180517226810001",
                 stratTime:"",
                 endTime:"",
@@ -819,6 +821,10 @@
                 realPay:"",
                 cashier:"",
                 note:"",
+                saleCount:"",
+                salePrice:"",
+                taxTotal:"",
+                disabled:false,
                 orderListData:[],
                 orderPayData:[],
                 goodsData:[]
@@ -937,14 +943,36 @@
                console.log(index);
                 var that = this;
                 var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,flwOrderId:that.orderInquiry.orderListData[index].orderId};
+                if(that.orderInquiry.orderListData[index].orderStatusName != "已支付"){
+                    that.orderInquiry.disabled = true;
+                }else{
+                    that.orderInquiry.disabled = false; 
+                }
                 console.log(obj);
                 axios.post('/xccloud/order?action=getOrderDetailContain', obj).then(function (res) {
                     console.log(res.data);
                     that.msgPrompt(res.data);
                     if (res.data.result_code === '1') {
-                        that.orderInquiry.orderPayData=res.data.result_data;
-                        that.orderInquiry.goodsData=res.data.result_data;
-                    
+                        that.orderInquiry.orderPayData=res.data.result_data.orderPay;
+                        that.orderInquiry.goodsData=res.data.result_data.orderDetail;
+                        that.orderInquiry.orderNo=res.data.result_data.orderMain.orderId;
+                        that.orderInquiry.theData=res.data.result_data.orderMain.saleTime;
+                        that.orderInquiry.payable=res.data.result_data.orderMain.payCount;
+                        that.orderInquiry.preferential=res.data.result_data.orderMain.freePay;
+                        that.orderInquiry.realPay=res.data.result_data.orderMain.realPay;
+                        that.orderInquiry.cashier=res.data.result_data.orderMain.realName;
+                        that.orderInquiry.note=res.data.result_data.orderMain.note;
+                        var salePrice = 0;
+                        var saleCount = 0;
+                        var taxTotal = 0;
+                        for(var i = 0; i<that.orderInquiry.goodsData.length; i++){
+                            salePrice =salePrice+that.orderInquiry.goodsData[i].salePrice*1                            
+                            saleCount =saleCount+that.orderInquiry.goodsData[i].saleCount*1
+                            taxTotal =taxTotal+that.orderInquiry.goodsData[i].taxTotal*1
+                        }
+                        that.orderInquiry.saleCount = saleCount
+                        that.orderInquiry.salePrice = salePrice
+                        that.orderInquiry.taxTotal = taxTotal
                     }
                 }).catch(function (err) {
                     console.log(err);

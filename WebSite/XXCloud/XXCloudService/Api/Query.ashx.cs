@@ -75,7 +75,7 @@ namespace XCCloudService.Api
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
 
                 string errMsg = string.Empty;                
-                if (dicParas.GetArray("templateDetails").Validarray("模板条件列表", out errMsg))
+                if (!dicParas.GetArray("templateDetails").Validarray("模板条件列表", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
                 var userId = userTokenKeyModel.LogId.Toint(0);

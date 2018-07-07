@@ -90,62 +90,71 @@
         .otherAddon{width: 7em;}
         .padding_right{padding-right:0!important;}
         .padding_left{padding-left:0!important;}
+        .salesTitle{background-color: #fff;padding:0 1em;}
+        .salesTitle ul li{padding:0.5em 1em;cursor: pointer;float: left;color: #c3c7ce;}
+        .salesTitle ul .on{border-bottom: 3px solid #0289f5;color: #0289f5;}
+        .salesTitle ul .on .txt{color: #96cdf9;}
+        .salesTitle ul .on .iconfont{color: #96cdf9;}
+        .salesTitle ul li .txt{font-size: 1.1em;font-weight: 500;line-height: 1.5em;}
+        .salesTitle ul li .iconfont{font-size: 1.2em;margin-right: 0.1em;}
+
     </style>
 </head>
 <body>
 <div id="app" v-cloak>
     <!--header-->
     <div class="container-fluid boxShadow">
-        <!--导航-->
-        <div class="navbar-collapse collapse">
-            <div class="navbar-header">
-                <a href="index.html" class="navbar-brand"><img src="images/logo.png"></a>
-            </div>
-            <ul class="nav navbar-nav navbar-right">
-                <li><a class="boxBtn" href="javascript:void(0);"><span class="glyphicon glyphicon-menu-down"></span>&nbsp;&nbsp;现金:￥10500</a></li>
-                <li class="active"><a href="index.html"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;莘宸乐园【同城广场店】</a></li>
-                <li><a href="#"><span class="glyphicon glyphicon-user mag-_r1"></span><i>当前操作员：</i>&nbsp;&nbsp;张三</a></li>
-                <li class="dropdown">
-                    <a data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        未读消息 (0)
-                        <span class="caret"></span>
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a href="index.html">1</a></li>
-                        <li><a href="index.html">1</a></li>
-                        <li><a href="index.html">1</a></li>
-                        <li><a href="index.html">1</a></li>
-                    </ul>
-                </li>
-                <li class="dropdown">
-                    <a data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        admin
-                        <span class="caret"></span>
-                    </a>
-                    <ul class="dropdown-menu" aria-labelledby="dLabel">
-                        <li><a href="index.html"><span class="glyphicon glyphicon-screenshot"></span>&nbsp;&nbsp;前台首页</a></li>
-                        <li><a href="index.html"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;个人主页</a></li>
-                        <li><a href="index.html"><span class="glyphicon glyphicon-cog"></span>&nbsp;&nbsp;个人设置</a></li>
-                        <li><a href="index.html"><span class="glyphicon glyphicon-credit-card"></span>&nbsp;&nbsp;账户中心</a></li>
-                        <li><a href="index.html"><span class="glyphicon glyphicon-heart"></span>&nbsp;&nbsp;我的收藏</a></li>
-                    </ul>
-                </li>
-                <li><a href="#"><span class="glyphicon glyphicon-off"></span>&nbsp;&nbsp;退出</a></li>
-                <div class="bbs text-right">
-                    <p>开班时间：2017-08-23 15:38:12 <span>当前时间： <em id="oDiv"></em></span></p>
-                </div>
-            </ul>
-            <div class="navbar-right navLeftS">
-                <!--<div class="col-md-6 col-sm-6 navStyle">-->
-                <div class="navStyle">
-                    <h4>售币机</h4>
-                    <p>18000/30000</p>
-                </div>
-                <div class="navT">60%</div>
-            </div>
-        </div>
-        <!--导航-->
-    </div>
+		<!--导航-->
+		<div class="navbar-collapse collapse">
+			<div class="navbar-header">
+				<a href="index.html"><img src="images/logo.png"></a>
+			</div>
+
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="javascript:void(0);"><!--<span class="glyphicon glyphicon-menu-down"></span>&nbsp;&nbsp;-->现金:￥10500</a></li>
+				<li class="active"><a href="index.html"><!--<span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;-->莘宸乐园【同城广场店】</a></li>
+				<li class="dropdown">
+					<a data-toggle="dropdown"  aria-expanded="false">
+						<!--未读消息 (0)-->
+						<span class="iconfont icon-btnMsg"></span>
+                        <!--<span class="badge">1</span>-->
+					</a>
+					<ul class="dropdown-menu">
+						<li><a href="index.html">1</a></li>
+						<li><a href="index.html">1</a></li>
+						<li><a href="index.html">1</a></li>
+						<li><a href="index.html">1</a></li>
+					</ul>
+				</li>
+				<li class="dropdown">
+					<a data-toggle="dropdown"  aria-expanded="false">
+                        <span class="iconfont icon-touxiang"></span>
+						admin
+						<!--<span class="caret"></span>-->
+					</a>
+					<ul class="dropdown-menu" aria-labelledby="dLabel">
+						<li><a href="index.html"><span class="glyphicon glyphicon-screenshot"></span>前台首页</a></li>
+						<li><a href="index.html"><span class="glyphicon glyphicon-user"></span>个人主页</a></li>
+						<li><a href="index.html"><span class="glyphicon glyphicon-cog"></span>个人设置</a></li>
+						<li><a href="index.html"><span class="glyphicon glyphicon-credit-card"></span>账户中心</a></li>
+						<li><a href="index.html"><span class="glyphicon glyphicon-heart"></span>我的收藏</a></li>
+					</ul>
+				</li>
+				<div class="bbs text-right">
+					<p><span>当前班次：A</span><span>营业日期：2017-08-23 15:38:12 </span></p>
+				</div>
+			</ul>
+
+			<div class="navbar-right navLeftS">
+				<div class="navStyle">
+					<h4>售币机</h4>
+					<p>18000/30000</p>
+				</div>
+				<div class="navT">60%</div>
+			</div>
+		</div>
+		<!--导航-->
+	</div>
     <!--查询获取卡列表-->
     <div class="modal fade bs-example-modal-md" id="cardList" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
             <div class="modal-dialog modal-md" role="document">
@@ -211,7 +220,23 @@
     </div>
     <div class="container-fluid">
         <div class="row">
+            <div class="salesTitle">
+                <ul class="clearfix">
+                    <li class="on"><span class="iconfont icon-batai"></span><span class="txt">收银台</span></li>
+                    <li><span class="iconfont icon-jingdianmenpiao"></span><span class="txt">终端扣门票</span></li>
+                    <li><span class="iconfont icon-peitongruxue"></span><span class="txt">陪同票</span></li>
+                    <li><span class="iconfont icon-icon-jishi"></span><span class="txt">计时票补、退款</span></li>
+                    <li><span class="iconfont icon-qinglikehu"></span><span class="txt">手工清场</span></li>
+                    <li><span class="iconfont icon-dingdanchaxun1"></span><span class="txt">订单查询</span></li>
+                    <li><span class="iconfont icon-lipinhuigou"></span><span class="txt">礼品回购</span></li>
+                    <li><span class="iconfont icon-icon"></span><span class="txt">会员过户操作</span></li>
+                    <li><span class="iconfont icon-icon1"></span><span class="txt">会员等级变更</span></li>
+                    <li><span class="iconfont icon-jiaobanguanli"></span><span class="txt">交班总结</span></li>
+                    <li><span class="iconfont icon-jiabi"></span><span class="txt">吧台加币</span></li>
+                </ul>
+            </div>
             <ul class="menu">
+                
                 <li tabindex="1">
                     <span class="title"><i class="icon iconfont icon-batai"></i>收银台</span>
                     <div class="content">

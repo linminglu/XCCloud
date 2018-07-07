@@ -36,17 +36,17 @@ a:hover,a:active {text-decoration:none;cursor:pointer;}
 /*高度控制*/
 .boxShadow{background-color: #fff;}
 body{-moz-user-select: none;  -webkit-user-select: none;  -ms-user-select: none;  -khtml-user-select: none;  user-select: none;background-color: #f6f7fb;padding: 8px;}
-.navbar-header{height: 2.5em;margin-top:1.5em;}
+.navbar-header{height: 2.5em;}
 .navbar-header a img{height: 2.5em;}
 .navbar-nav a{margin-top:0.3em;font-size: 1em;color: #7d8184;}
 .nav a:hover {color: #666666;}
 .bbs{color: #b63b4d;margin-bottom: 0.5em;}
 .hidden{display: none;}
 .show{display: block;}
-.navLeftS{width: 200px;height:4.6em;margin-top: 0.4em;background: url("../images/navHeader.png") no-repeat left center;background-size: 100% 100%;display: flex;flex-direction: row;}
-.navStyle{margin-top: 0.8em!important;padding: 2px 10px;margin-left: 2.1em; color: #7d8184;width: 160px;display: inline-block;}
-.navStyle h4{font-size: 1em;line-height: 1.5em;text-indent: 12px;}
-.navT{width: 80px;margin-top: 1.75em;padding-left: 0.75em;color: #7d8184;font-weight: 600;font-size: 1em}
+.navLeftS{width: 180px;height:4em;margin-top: 0.4em;background: url("images/navHeader.png") no-repeat left center;background-size: 100% 100%;display: flex;flex-direction: row;}
+.navStyle{margin-top: 0.8em!important;padding: 2px 10px;margin-left: 1.3em; color: #7d8184;width: 160px;display: inline-block;}
+.navStyle h4{font-size: 0.8em;line-height: 1.2em;text-indent: 12px;}
+.navT{width: 80px;margin-top: 1.25em;padding-left: 10px;color: #7d8184;font-weight: 600;font-size: 1em}
 .navbar-right{margin-right: 1em;}
 .mainBody{margin: 8px 0;}
 .majorMenu{width: 100px; height: inherit;background: #fff;padding-top: 2em;}
@@ -72,8 +72,8 @@ body{-moz-user-select: none;  -webkit-user-select: none;  -ms-user-select: none;
 .salesTitle{background-color: #fff;padding:0 1em;}
 .salesTitle ul li{padding:0.5em 1em;cursor: pointer;float: left;color: #c3c7ce;}
 .salesTitle ul .on{border-bottom: 3px solid #0289f5;color: #0289f5;}
-/*.salesTitle ul .on .txt{color: #96cdf9;}*/
-/*.salesTitle ul .on .iconfont{color: #96cdf9;}*/
+.salesTitle ul .on .txt{color: #96cdf9;}
+.salesTitle ul .on .iconfont{color: #96cdf9;}
 
 .salesTitle ul li .txt{font-size: 1.1em;font-weight: 500;line-height: 1.5em;}
 .salesTitle ul li .iconfont{font-size: 1.2em;margin-right: 0.1em;}
@@ -192,7 +192,7 @@ input.btnSendCode{line-height: 0;}
 /*会员操作*/
 .Operation{padding: 1em;}
 .tab-min{margin-top: 1em;padding: 0;}
-.tab-text{margin: 0.8em 0;}
+.tab-text{margin: 0.5em 0;}
 .width100{width: 100%;background-color: #349ffd;}
 .tab-style{margin-top: 1.2em;line-height: 2em;font-size: 1.2em;}
 

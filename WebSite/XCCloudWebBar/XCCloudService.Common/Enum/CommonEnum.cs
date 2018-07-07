@@ -1398,6 +1398,8 @@ namespace XCCloudWebBar.Common.Enum
         [Description("余额支付")]
         余额支付 = 15,
         [Description("礼品回购")]
-        礼品回购 = 16
+        礼品回购 = 16,
+        [Description("手工补币")]
+        手工补币 = 17
     }
 }

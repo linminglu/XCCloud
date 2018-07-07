@@ -620,6 +620,23 @@
             common(url, parasJson);
         }
 
+
+        function do_getDeviceWorkInfo() {
+            var workStation = "lijunjie";
+            var parasObj = { "sysId": "0", "versionNo": "0.0.0.1", "userToken": userToken, "workStation": workStation };
+            var url = "/XCCloud/DeviceInfo?action=getDeviceWorkInfo";
+            var parasJson = JSON.stringify(parasObj);
+            common(url, parasJson);
+        }
+
+        function do_getOrderSalePay() {
+            var flwOrderId = "10002542010600120180517200810001";
+            var parasObj = { "sysId": "0", "versionNo": "0.0.0.1", "userToken": userToken, "flwOrderId": flwOrderId };
+            var url = "/XCCloud/Order?action=getOrderSalePay";
+            var parasJson = JSON.stringify(parasObj);
+            common(url, parasJson);
+        }
+
         function do_getOrders() {
             var parasObj = {
                 "sysId": "0",
@@ -635,26 +652,10 @@
             common(url, parasJson);
         }
 
-        function do_getDeviceWorkInfo() {
-            var workStation = "lijunjie";
-            var parasObj = { "sysId": "0", "versionNo": "0.0.0.1", "userToken": userToken, "workStation": workStation };
-            var url = "/XCCloud/DeviceInfo?action=getDeviceWorkInfo";
-            var parasJson = JSON.stringify(parasObj);
-            common(url, parasJson);
-        }
-
         function do_getOrderDetailContain() {
             var flwOrderId = $("#txt_FlwOrderId_do_getOrdersDetail").val();
             var parasObj = { "sysId": "0", "versionNo": "0.0.0.1", "userToken": userToken, "flwOrderId": flwOrderId };
             var url = "/XCCloud/Order?action=getOrderDetailContain";
-            var parasJson = JSON.stringify(parasObj);
-            common(url, parasJson);
-        }
-
-        function do_getOrderSalePay() {
-            var flwOrderId = "10002542010600120180517200810001";
-            var parasObj = { "sysId": "0", "versionNo": "0.0.0.1", "userToken": userToken, "flwOrderId": flwOrderId };
-            var url = "/XCCloud/Order?action=getOrderSalePay";
             var parasJson = JSON.stringify(parasObj);
             common(url, parasJson);
         }

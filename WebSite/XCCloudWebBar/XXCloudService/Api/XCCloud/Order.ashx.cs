@@ -95,29 +95,69 @@ namespace XXCloudService.Api.XCCloud
             sqlParameter[3] = new SqlParameter("@Return", SqlDbType.Int);
             sqlParameter[3].Direction = ParameterDirection.Output;
 
-            sqlParameter[4] = new SqlParameter("@ErrMsg", SqlDbType.VarChar,200);
+            sqlParameter[4] = new SqlParameter("@ErrMsg", SqlDbType.VarChar, 200);
             sqlParameter[4].Direction = ParameterDirection.Output;
 
             System.Data.DataSet ds = XCCloudBLL.GetStoredProcedureSentence(storedProcedure, sqlParameter);
 
+            List<object> listObj2 = new List<object>();
+            List<object> listObj3 = new List<object>();
+
             if (sqlParameter[3].Value.ToString() == "1")
             {
-                List<object> listObj = new List<object>();
-                for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                if (ds.Tables[0].Rows.Count > 0)
                 {
                     var obj = new
                     {
-                        categoryName = ds.Tables[0].Rows[i]["CategoryName"].ToString(),
-                        foodName = ds.Tables[0].Rows[i]["FoodName"].ToString(),
-                        saleCount = ds.Tables[0].Rows[i]["SaleCount"].ToString(),
-                        singlePrice = Convert.ToDecimal(ds.Tables[0].Rows[i]["SinglePrice"]).ToString("#.00"),
-                        salePrice = Convert.ToDecimal(ds.Tables[0].Rows[i]["SalePrice"]).ToString("#.00"),
-                        taxFee = Convert.ToDecimal(ds.Tables[0].Rows[i]["TaxFee"]).ToString("#.00"),
-                        taxTotal = Convert.ToDecimal(ds.Tables[0].Rows[i]["TaxTotal"]).ToString("#.00")
+                        orderId = ds.Tables[0].Rows[0]["OrderID"].ToString(),
+                        saleTime = ds.Tables[0].Rows[0]["SaleTime"].ToString(),
+                        payCount = ds.Tables[0].Rows[0]["PayCount"].ToString(),
+                        freePay = Convert.ToDecimal(ds.Tables[0].Rows[0]["FreePay"]).ToString("0.00"),
+                        realPay = ds.Tables[0].Rows[0]["RealPay"].ToString(),
+                        note = ds.Tables[0].Rows[0]["Note"].ToString(),
+                        realName = ds.Tables[0].Rows[0]["RealName"].ToString()
                     };
-                    listObj.Add(obj);
+
+                    for (int i = 0; i < ds.Tables[1].Rows.Count; i++)
+                    {
+                        var obj2 = new
+                        {
+                            foodId = ds.Tables[1].Rows[i]["FoodId"].ToString(),
+                            categoryName = ds.Tables[1].Rows[i]["CategoryName"].ToString(),
+                            foodName = ds.Tables[1].Rows[i]["FoodName"].ToString(),
+                            saleCount = ds.Tables[1].Rows[i]["SaleCount"].ToString(),
+                            singlePrice = Convert.ToDecimal(ds.Tables[1].Rows[i]["SinglePrice"]).ToString("0.00"),
+                            salePrice = Convert.ToDecimal(ds.Tables[1].Rows[i]["SalePrice"]).ToString("0.00"),
+                            taxFee = Convert.ToDecimal(ds.Tables[1].Rows[i]["TaxFee"]).ToString("0.00"),
+                            taxTotal = Convert.ToDecimal(ds.Tables[1].Rows[i]["TaxTotal"]).ToString("0.00")
+                        };
+                        listObj2.Add(obj2);
+                    }
+
+                    for (int i = 0; i < ds.Tables[2].Rows.Count; i++)
+                    {
+                        var obj3 = new
+                        {
+                            id = ds.Tables[2].Rows[i]["ID"].ToString(),
+                            balanceIndex = ds.Tables[2].Rows[i]["BalanceIndex"].ToString(),
+                            payCount = ds.Tables[2].Rows[i]["PayCount"].ToString()
+                        };
+                        listObj3.Add(obj3);
+                    }
+
+                    var orderObj = new
+                    {
+                        orderMain = obj,
+                        orderDetail = listObj2,
+                        orderPay = listObj3
+                    };
+
+                    return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, orderObj);
                 }
-                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, listObj);
+                else
+                {
+                    return new ResponseModel(Return_Code.T, "", Result_Code.F, "数据不存在");
+                }
             }
             else
             {
@@ -156,7 +196,7 @@ namespace XXCloudService.Api.XCCloud
             sqlParameter[5] = new SqlParameter("@EndDate", SqlDbType.VarChar);
             sqlParameter[5].Value = endDate;
 
-            sqlParameter[6] = new SqlParameter("@ErrMsg", SqlDbType.VarChar,200);
+            sqlParameter[6] = new SqlParameter("@ErrMsg", SqlDbType.VarChar, 200);
             sqlParameter[6].Direction = ParameterDirection.Output;
 
             sqlParameter[7] = new SqlParameter("@Return", SqlDbType.Int);
@@ -166,23 +206,27 @@ namespace XXCloudService.Api.XCCloud
 
             if (sqlParameter[7].Value.ToString() == "1")
             {
-                List<object> listObj = new List<object>();
-                for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                List<object> list = new List<object>();
+                if (ds.Tables[0].Rows.Count > 0)
                 {
-                    var obj = new {
-                        orderId = ds.Tables[0].Rows[i]["OrderID"].ToString(),
-                        icCardId = ds.Tables[0].Rows[i]["ICCardID"].ToString(),
-                        orderStatus = ds.Tables[0].Rows[i]["OrderStatus"].ToString(),
-                        orderStatusName = ds.Tables[0].Rows[i]["orderStatusName"].ToString(),
-                        realPay = Convert.ToDecimal(ds.Tables[0].Rows[i]["RealPay"]).ToString("#.00"),
-                        freePay = Convert.ToDecimal(ds.Tables[0].Rows[i]["FreePay"]).ToString("#.00"),
-                        payCount = Convert.ToDecimal(ds.Tables[0].Rows[i]["PayCount"]).ToString("#.00"),
-                        createTime = Convert.ToDateTime(ds.Tables[0].Rows[i]["CreateTime"]).ToString("yyyy-MM-dd HH:mm:ss"),
-                        userName = ds.Tables[0].Rows[i]["UseName"].ToString()
-                    };
-                    listObj.Add(obj);
+                    for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                    {
+                        var obj = new
+                        {
+                            orderId = ds.Tables[0].Rows[i]["OrderID"].ToString(),
+                            saleTime = Convert.ToDateTime(ds.Tables[0].Rows[i]["CreateTime"]).ToString("yyyy-MM-dd HH:mm:ss"),
+                            icCardId = ds.Tables[0].Rows[i]["ICCardID"].ToString(),
+                            payCount = Convert.ToDecimal(ds.Tables[0].Rows[i]["PayCount"]).ToString("#.00"),
+                            orderStatusName = ds.Tables[0].Rows[i]["OrderStatusName"].ToString()
+                        };
+                        list.Add(obj);
+                    }
+                    return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, list);
                 }
-                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, listObj);
+                else
+                {
+                    return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, list);
+                }
             }
             else
             {

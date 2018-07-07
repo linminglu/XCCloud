@@ -371,14 +371,4 @@ namespace XCCloudWebBar.Model.CustomModel.XCCloud
         public int freeType { get; set; }
         public string freeId { get; set; }
     }
-
-    public class FreeCoinModel
-    {
-        public int balanceIndex { get; set; }
-        public int qty { get; set; }
-        /// <summary>
-        /// 赠币方式： 1 实物币 2 存入卡
-        /// </summary>
-        public int freeCoinType { get; set; }
-    }
 }

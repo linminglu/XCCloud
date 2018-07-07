@@ -658,6 +658,21 @@
             var parasJson = JSON.stringify(parasObj);
             common(url, parasJson);
         }
+
+        function do_getOrders() {
+            var parasObj = {
+                "sysId": "0",
+                "versionNo": "0.0.0.1",
+                "userToken": userToken,
+                "orderId": $("#txt_FlwOrderId_do_getOrders").val(),
+                "icCardId": $("#txt_FlwOrderId_do_icCardId").val(),
+                "startDate": $("#txt_FlwOrderId_do_startDate").val(),
+                "endDate": $("#txt_FlwOrderId_do_endDate").val()
+            };
+            var url = "/XCCloud/Order?action=getOrders";
+            var parasJson = JSON.stringify(parasObj);
+            common(url, parasJson);
+        }
         
     </script>
         

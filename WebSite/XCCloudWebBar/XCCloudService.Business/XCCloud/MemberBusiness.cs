@@ -9,6 +9,8 @@ using XCCloudWebBar.BLL.Container;
 using XCCloudWebBar.BLL.XCCloud;
 using XCCloudWebBar.CacheService;
 using XCCloudWebBar.Common;
+using XCCloudWebBar.Common.Extensions;
+using XCCloudWebBar.Common.Enum;
 using XCCloudWebBar.Model.CustomModel.XCCloud;
 using XCCloudWebBar.Model.XCCloud;
 
@@ -94,44 +96,101 @@ namespace XCCloudWebBar.Business.XCCloud
             return storeIds;
         }
 
-        public static bool UpdateBalanceFree(string merchId, string storeId, string cardIndex, FreeCoinModel currFreeDetail)
+        public static bool UpdateBalanceFree(string merchId, string storeId, Base_MemberInfo member, Data_Member_Card memberCard, Flw_Schedule schedule, int userId, string workStation, string sourceId, int operationType, FreeDetailModel currFreeDetail, bool isFree, string note)
         {
-            Data_Card_Balance_Free balanceFree = Data_Card_Balance_FreeService.I.GetModels(t => t.MerchID == merchId && t.CardIndex == cardIndex && t.BalanceIndex == currFreeDetail.balanceIndex).FirstOrDefault();
-            if (balanceFree == null)
+            Data_Card_Balance balance = Data_Card_BalanceService.I.GetModels(t => t.MerchID == merchId && t.CardIndex == memberCard.ID && t.BalanceIndex == currFreeDetail.BalanceIndex).FirstOrDefault();
+            Data_Card_Balance_Free balanceFree = Data_Card_Balance_FreeService.I.GetModels(t => t.MerchID == merchId && t.CardIndex == memberCard.ID && t.BalanceIndex == currFreeDetail.BalanceIndex).FirstOrDefault();
+            if(isFree)
             {
-                balanceFree.Balance += currFreeDetail.qty;
-                if (!Data_Card_Balance_FreeService.I.Update(balanceFree, false))
+                if (balanceFree != null)
                 {
-                    return false;
-                }
-            }
-            else
-            {
-                //如果没有该币种余额就添加
-                balanceFree = new Data_Card_Balance_Free();
-                balanceFree.ID = RedisCacheHelper.CreateStoreSerialNo(storeId);
-                balanceFree.MerchID = merchId;
-                balanceFree.CardIndex = cardIndex;
-                balanceFree.BalanceIndex = currFreeDetail.balanceIndex;
-                balanceFree.Balance = currFreeDetail.qty;
-                balanceFree.UpdateTime = DateTime.Now;
-                if (!Data_Card_Balance_FreeService.I.Add(balanceFree, false))
-                {
-                    return false;
-                }
-                var storeIds = GetBalanceChainStoreList(merchId, currFreeDetail.balanceIndex);
-                foreach (var sid in storeIds)
-                {
-                    Data_Card_Balance_StoreList sl = new Data_Card_Balance_StoreList();
-                    sl.ID = RedisCacheHelper.CreateStoreSerialNo(storeId);
-                    sl.CardBalanceID = balanceFree.ID;
-                    sl.StoreID = sid;
-                    if (!Data_Card_Balance_StoreListService.I.Add(sl, false))
+                    balanceFree.Balance += currFreeDetail.Quantity;
+                    if (!Data_Card_Balance_FreeService.I.Update(balanceFree, false))
+                    {
+                        return false;
+                    }
+
+                    //记录余额变化流水
+                    Flw_MemberData fmd = new Flw_MemberData();
+                    fmd.ID = RedisCacheHelper.CreateStoreSerialNo(storeId);
+                    fmd.MerchID = merchId;
+                    fmd.StoreID = storeId;
+                    fmd.MemberID = member.ID;
+                    fmd.MemberName = member.UserName;
+                    fmd.CardIndex = memberCard.ID;
+                    fmd.ICCardID = memberCard.ICCardID;
+                    fmd.MemberLevelName = Data_MemberLevelService.I.GetModels(m => m.MemberLevelID == memberCard.MemberLevelID).FirstOrDefault().MemberLevelName;
+                    fmd.ChannelType = (int)MemberDataChannelType.吧台;
+                    fmd.OperationType = operationType;
+                    fmd.OPTime = DateTime.Now;
+                    fmd.SourceType = 0;
+                    fmd.SourceID = sourceId;
+                    fmd.BalanceIndex = balance.BalanceIndex;
+                    fmd.ChangeValue = 0;
+                    fmd.Balance = balance == null ? 0 : balance.Balance.Todecimal(0);
+                    fmd.FreeChangeValue = currFreeDetail.Quantity;
+                    fmd.FreeBalance = balanceFree.Balance;
+                    fmd.BalanceTotal = fmd.Balance + fmd.FreeBalance;
+                    fmd.Note = note;
+                    fmd.UserID = userId;
+                    fmd.DeviceID = 0;
+                    fmd.ScheduleID = schedule.ID;
+                    fmd.AuthorID = 0;
+                    fmd.WorkStation = workStation;
+                    fmd.CheckDate = schedule.CheckDate;
+                    fmd.SyncFlag = 0;
+                    if (!Flw_MemberDataService.I.Add(fmd, false))
                     {
                         return false;
                     }
                 }
             }
+            else
+            {
+                if (balance != null)
+                {
+                    balance.Balance += currFreeDetail.Quantity;
+                    if (!Data_Card_BalanceService.I.Update(balance, false))
+                    {
+                        return false;
+                    }
+
+                    //记录余额变化流水
+                    Flw_MemberData fmd = new Flw_MemberData();
+                    fmd.ID = RedisCacheHelper.CreateStoreSerialNo(storeId);
+                    fmd.MerchID = merchId;
+                    fmd.StoreID = storeId;
+                    fmd.MemberID = member.ID;
+                    fmd.MemberName = member.UserName;
+                    fmd.CardIndex = memberCard.ID;
+                    fmd.ICCardID = memberCard.ICCardID;
+                    fmd.MemberLevelName = Data_MemberLevelService.I.GetModels(m => m.MemberLevelID == memberCard.MemberLevelID).FirstOrDefault().MemberLevelName;
+                    fmd.ChannelType = (int)MemberDataChannelType.吧台;
+                    fmd.OperationType = operationType;
+                    fmd.OPTime = DateTime.Now;
+                    fmd.SourceType = 0;
+                    fmd.SourceID = sourceId;
+                    fmd.BalanceIndex = balance.BalanceIndex;
+                    fmd.ChangeValue = currFreeDetail.Quantity;
+                    fmd.Balance = balance.Balance;
+                    fmd.FreeChangeValue = 0;
+                    fmd.FreeBalance = balanceFree == null ? 0 : balanceFree.Balance.Todecimal(0);
+                    fmd.BalanceTotal = fmd.Balance + fmd.FreeBalance;
+                    fmd.Note = note;
+                    fmd.UserID = userId;
+                    fmd.DeviceID = 0;
+                    fmd.ScheduleID = schedule.ID;
+                    fmd.AuthorID = 0;
+                    fmd.WorkStation = workStation;
+                    fmd.CheckDate = schedule.CheckDate;
+                    fmd.SyncFlag = 0;
+                    if (!Flw_MemberDataService.I.Add(fmd, false))
+                    {
+                        return false;
+                    }
+                }
+            }
+            
             return true;
         }
 
@@ -156,6 +215,24 @@ namespace XCCloudWebBar.Business.XCCloud
         public static Dict_BalanceType GetBalanceTypeModel(int id)
         {
             return Dict_BalanceTypeService.I.GetModels(t => t.ID == id).FirstOrDefault();
+        }
+
+        public static CardPurviewModel GetCardRight(string storeId, string cardIndex)
+        {
+            var cardRight = from a in Data_Card_RightService.N.GetModels(t => t.CardID == cardIndex)
+                            join b in Data_Card_Right_StoreListService.N.GetModels(t => t.StoreID == storeId) on a.ID equals b.CardRightID
+                            select new CardPurviewModel
+                            {
+                                AllowIn = a.AllowPush.Value,
+                                AllowOut = a.AllowOut.Value,
+                                AllowExitCoin = a.AllowExitCoin.Value,
+                                AllowSaleCoin = a.AllowSaleCoin.Value,
+                                AllowSaveCoin = a.AllowSaveCoin.Value,
+                                AllowFreeCoin = a.AllowFreeCoin.Value,
+                                AllowRenew = a.AllowRenew.Value
+                            };
+            var cardPurview = cardRight.FirstOrDefault();
+            return cardPurview;
         }
     }
 }

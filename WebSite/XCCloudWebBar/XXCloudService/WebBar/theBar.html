@@ -14,6 +14,12 @@
     <link rel='icon' href='xinchen.ico ' type='image/x-ico'/>
     <style>
     .cardLevelList{margin-bottom:3em;}
+    .navLeftS{width: 180px;height:4em;margin-top: 0.4em;background: url("images/navHeader.png") no-repeat left center;background-size: 100% 100%;display: flex;flex-direction: row;}
+    .navStyle{margin-top: 0.8em!important;padding: 2px 10px;margin-left: 1.3em; color: #7d8184;width: 160px;display: inline-block;}
+    .navStyle h4{font-size: 0.8em;line-height: 1.2em;text-indent: 12px;}
+    .navT{width: 80px;margin-top: 1.25em;padding-left: 10px;color: #7d8184;font-weight: 600;font-size: 1em}
+    .operationBtn{text-align: right;margin: 2em;padding:0 1em;}
+    .operationBtn button{display: inline;width: 10em;margin: 0 0.5em;}
     </style>
 </head>
 <body>
@@ -376,9 +382,12 @@
 							<span class="input-group-addon addonWidth">备注：</span>
 							<textarea  class="form-control" v-model="outCoinData.note"></textarea>
 						</div>
-						<div class="input-group col-lg-6 col-md-6 tab-style">
-							<span class="input-group-addon addonWidth outCoinReadCard" @click="outCoinReadCard">读卡：</span>
-							<input  class="form-control" v-model="outCoinData.icCardId"/>
+						<div class="input-group col-lg-7 col-md-7 tab-style">
+							<span class="input-group-addon addonWidth">读卡：</span>
+                            <input  class="form-control" v-model="outCoinData.icCardId"/>
+                            <div class="input-group-btn">
+                                <button type="button" class="btn btn-default readCard" :disabled="loading" @click="outCoinReadCard">读取</button>
+                            </div>
 						</div>
 						<div class="col-lg-2 col-md-2 tab-style"></div>
 						<div class="col-lg-3 col-md-3 tab-style">
@@ -930,11 +939,11 @@
 										<div class="col-lg-10 col-md-10 tab-min">
 											<div class="tab-text col-lg-12 col-md-12">
 												<div class="input-group col-lg-4 col-md-6">
-													<span class="input-group-addon">手机号码：</span>
+													<span class="input-group-addon addonWidth">手机号码：</span>
 													<input   class="form-control" v-model="memberInfo.Mobile" maxlength="11" placeholder="请输入手机号"/>
 												</div>
 												<div class="input-group col-lg-4 col-md-6">
-													<span class="input-group-addon">验证码：</span>
+													<span class="input-group-addon addonWidth">验证码：</span>
 													<input class="form-control" v-model="memberInput.mobileCode"/>
 													<div class="input-group-btn">
 														<input class="form-control btnSendCode readCard" type="button" v-model="memberInput.codeBtn" @click="sendCode('1')" :disabled="memberInput.disabled"/>
@@ -948,7 +957,7 @@
 											</div>
 											<div class="tab-text col-lg-12 col-md-12">
 												<div class="input-group col-lg-4 col-md-6">
-													<span class="input-group-addon">证件号码：</span>
+													<span class="input-group-addon addonWidth">证件号码：</span>
 													<input   class="form-control" v-model="memberInfo.IDCardNo"/>
 													<div class="input-group-btn">
 														<button type="button" class="btn btn-default readCard" :disabled="loading">读取</button>
@@ -963,15 +972,15 @@
 											</div>
 											<div class="tab-text col-lg-12 col-md-12">
 												<div class="input-group col-lg-4 col-md-6">
-													<span class="input-group-addon">会员姓名：</span>
+													<span class="input-group-addon addonWidth">会员姓名：</span>
 													<input   class="form-control" v-model="memberInfo.UserName" placeholder="请输入会员姓名"/>
 												</div>
 												<div class="input-group col-lg-4 col-md-6">
-													<span class="input-group-addon">生日：</span>
+													<span class="input-group-addon addonWidth">生日：</span>
 													<input    class="form-control" v-model="memberInfo.Birthday" readonly/>
 												</div>
 												<div class="input-group col-lg-4 col-md-6 marg1200">
-													<span class="input-group-addon">性别：</span>
+													<span class="input-group-addon addonWidth">性别：</span>
 													<select  class="form-control" v-model="memberInfo.Gender">
 														<option value="0">男</option>
 														<option value="1">女</option>
@@ -980,7 +989,7 @@
 											</div>
 											<div class="tab-text col-lg-12 col-md-12">
 												<div class="input-group col-lg-12 col-md-12">
-													<span class="input-group-addon">备注：</span>
+													<span class="input-group-addon addonWidth">备注：</span>
 													<textarea class="form-control" v-model="memberInfo.Note"></textarea>
 												</div>
 											</div>
@@ -1143,16 +1152,13 @@
 								</div>
 							</div>
 						</div>
-						<div class="btn-margin container-fluid">
-							<div class="row">
-								<div class="col-lg-3"></div>
-                                <div class="col-lg-1 col-md-1"><button @click="getExchangeList" type="button" class="btn width100 btn-info" :disabled="loading">余额兑换</button></div>
-								<div class="col-lg-1 col-md-1"><button @click="saveManual" type="button" class="btn width100 btn-info" :disabled="loading">补币</button></div>
-								<div class="col-lg-1 col-md-1"><button @click="currency" type="button" class="btn width100 btn-info" :disabled="loading">提币</button></div>
-								<div class="col-lg-1 col-md-1"><button @click="sendCoin" type="button" class="btn width100 btn-info" :disabled="loading">送币</button></div>
-								<div class="col-lg-1 col-md-1"><button @click="backCard" type="button" class="btn width100 btn-info" :disabled="loading">退卡</button></div>
+						<div class="operationBtn">
+                                <button @click="getExchangeList" type="button" class="btn width100 btn-info" :disabled="loading">余额兑换</button>
+								<button @click="saveManual" type="button" class="btn width100 btn-info" :disabled="loading">补币</button>
+								<button @click="currency" type="button" class="btn width100 btn-info" :disabled="loading">提币</button>
+								<button @click="sendCoin" type="button" class="btn width100 btn-info" :disabled="loading">送币</button>
+								<button @click="backCard" type="button" class="btn width100 btn-info" :disabled="loading">退卡</button>
 							</div>
-						</div>
 				</div>
 				<!--会员入会-->
 				<div class="enrollment" v-if="memberShow">
@@ -3440,6 +3446,19 @@
 			sendCoin:function () {
                 var that = this;
                 this.givingShow = false;
+                that.FreeCoinData ={
+                    givingData:[],
+                    canGet:[],
+                    givingChecked:[],
+                    Content:"",
+                    RemainFrees:"",
+                    RemainCount:"",
+                    EndDate:"",
+                    sendOn:false,
+                    show:false,
+                    allowDevice:false,
+                    repairType:"1"
+                }
                 var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,type:"4", workStation:"lijunjie"};
                 console.log(obj);
                 axios.post('/XCCloud/DeviceInfo?action=getDeviceWorkInfo', obj).then(function (res) {
@@ -3513,12 +3532,14 @@
                     that.FreeCoinData.sendOn = true;
                     that.FreeCoinData.RemainCount = that.FreeCoinData.givingData[index].RemainCount;
                     that.FreeCoinData.RemainFrees = that.FreeCoinData.givingData[index].RemainFrees;
-				}
+				}else{
+                    that.FreeCoinData.sendOn = false;
+                }
             },
 //			确认送币
             confirmFreeCoin:function(){
                 var that = this;
-                var freeCoinList = [];
+                // var freeCoinList = [];
                 var freeRuleList = [];
                 for(var i = 0;i<that.FreeCoinData.givingChecked.length;i++){
                     freeRuleList.push({
@@ -3526,32 +3547,38 @@
                         FreeId:that.FreeCoinData.givingData[that.FreeCoinData.givingChecked[i]].FreeId
                     });
 				}
-                for(var i = 0;i<that.FreeCoinData.canGet.length;i++){
-                    if(that.FreeCoinData.repairType == "2"){
-                        var freeCoinType = 2
-                    }else if(that.FreeCoinData.repairType == "1" && that.FreeCoinData.canGet[i].IsDeviceOut == "0"){
-                        var freeCoinType = 2
-                    }else{
-                        var freeCoinType = 1
-                    }
-                    freeCoinList.push({
-                        balanceIndex:that.FreeCoinData.canGet[i].BalanceIndex,
-                        qty:that.FreeCoinData.canGet[i].Quantity,
-                        freeCoinType:freeCoinType
-                    });
-				}
+                // for(var i = 0;i<that.FreeCoinData.canGet.length;i++){
+                //     if(that.FreeCoinData.repairType == "2"){
+                //         var freeCoinType = 2
+                //     }else if(that.FreeCoinData.repairType == "1" && that.FreeCoinData.canGet[i].IsDeviceOut == "0"){
+                //         var freeCoinType = 2
+                //     }else{
+                //         var freeCoinType = 1
+                //     }
+                //     freeCoinList.push({
+                //         balanceIndex:that.FreeCoinData.canGet[i].BalanceIndex,
+                //         qty:that.FreeCoinData.canGet[i].Quantity,
+                //         freeCoinType:freeCoinType
+                //     });
+				// }
                 console.log(that.FreeCoinData.repairType)
-                console.log(freeCoinList)
+                console.log(that.FreeCoinData.givingChecked)
+                // console.log(freeCoinList)
                 console.log(freeRuleList)
-                freeCoinList = JSON.stringify(freeCoinList);
+                // freeCoinList = JSON.stringify(freeCoinList);
                 freeRuleList = JSON.stringify(freeRuleList);
-                var FreeCoinInfoList={sysId: sysId,versionNo: versionNo,userToken:that.userToken,iccardId:that.icCardId,deviceId:that.deviceId,freeRuleList:freeRuleList,freeCoinList:freeCoinList};
+                var FreeCoinInfoList={sysId: sysId,versionNo: versionNo,userToken:that.userToken,iccardId:that.icCardId,deviceId:that.deviceId,freeRuleList:freeRuleList,freeCoinType:that.FreeCoinData.repairType};
                 console.log(FreeCoinInfoList);
                 axios.post('/XCCloud/Member?action=confirmFreeCoin', FreeCoinInfoList).then(function (res) {
                     console.log(res.data);
                     that.msgPrompt(res.data);
                     if (res.data.result_code === '1') {
-                        
+                        that.msg = "送币成功！";
+                        $('#SendSModal').modal('hide');
+                        $('#myModal').modal('show');
+                        setTimeout(function () {
+                            $('#myModal').modal('hide');
+                        }, 1500);
                     }
                 }).catch(function (err) {
                     console.log(err);
