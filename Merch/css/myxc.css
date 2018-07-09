@@ -19,12 +19,13 @@ input::-ms-clear{display:none;}
 input::-ms-reveal{display:none;}
 img{border:none;}
 
-.settingPage{
+.settingPage,.reportPage{
     background-color: #d9dcde!important;
     /*padding: 30px 60px!important;*/
     position: relative;
     height: 100%;
 }
+
 .settingPage .layui-table td,.settingPage .layui-table th{
     border-width: 8px;
     border-left: none;
@@ -37,7 +38,7 @@ img{border:none;}
 .settingPage .layui-table-body .layui-table-main{
     border: none;
 }
-.settingPage .row-box{
+ .row-box{
     position: absolute;
     top:30px;
     left: 30px;
@@ -49,7 +50,7 @@ img{border:none;}
     overflow-y: auto;
     /*height: 100%*/
 }
-.settingPage .row-box .layui-table-page{
+ .row-box .layui-table-page{
     background-color: #fff;
 }
 /*home.page*/

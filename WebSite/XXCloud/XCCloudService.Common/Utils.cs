@@ -1679,6 +1679,13 @@ namespace XCCloudService.Common
             return ts;
         }
 
+        public static string DataTableToJson(DataTable table)
+        {
+            string jsonString = string.Empty;
+            jsonString = JsonConvert.SerializeObject(table);
+            return jsonString;
+        }
+
         public static void GetModel<T>(IDictionary<string, object> dictData, ref T t) where T : new()
         {
             string tempName = string.Empty;

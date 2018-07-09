@@ -20,16 +20,14 @@ namespace XXCloudService.Api.XCCloud
     public class MemberManage : ApiBase
     {
 
-        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.MethodToken, SysIdAndVersionNo = false)]
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object QueryMemberInfo(Dictionary<string, object> dicParas)
         {
             try
             {
-                //XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
-                //string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
-                //string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
-                string merchId = dicParas.Get("merchId");
-                string storeId = dicParas.Get("storeId");
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
 
                 string errMsg = string.Empty;
                 object[] conditions = dicParas.ContainsKey("conditions") ? (object[])dicParas["conditions"] : null;
@@ -60,31 +58,14 @@ namespace XXCloudService.Api.XCCloud
                     errMsg = "查询会员档案数据失败";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
-
-                List<object> listObj = new List<object>();
-                for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                
+                var json = string.Empty;
+                if (ds.Tables.Count > 0)
                 {
-                    var drs = ds.Tables[0].Rows;
-                    var obj = new
-                    {
-                        ICCardID = drs[i]["ICCardID"].Tostring(),
-                        UserName = drs[i]["UserName"].Tostring(),
-                        MemberLevelName = drs[i]["MemberLevelName"].Tostring(),
-                        CardType = drs[i]["CardType"].Toint() == 0 ? "主卡" : drs[i]["CardType"].Toint() == 1 ? "附属卡" : string.Empty,
-                        Deposit = drs[i]["Deposit"].Toint(),
-                        UpdateTime = drs[i]["UpdateTime"].Todatetime(),
-                        EndDate = drs[i]["EndDate"].Todatetime(),
-                        Gender = drs[i]["Gender"].Toint() == 0 ? "男" : drs[i]["Gender"].Toint() == 1 ? "女" : string.Empty,
-                        Mobile = drs[i]["Mobile"].Tostring(),
-                        IDCard = drs[i]["IDCard"].Tostring(),
-                        CreateTime = drs[i]["CreateTime"].Todatetime(),
-                        StoreName = drs[i]["StoreName"].Tostring(),
-                        CardStatus = drs[i]["CardStatus"].Toint() == 1 ? "启用" : drs[i]["CardStatus"].Toint() == 0 ? "禁用" : string.Empty
-                    };
-                    listObj.Add(obj);
+                    json = Utils.DataTableToJson(ds.Tables[0]);
                 }
 
-                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, listObj);
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, json);
             }
             catch (Exception e)
             {

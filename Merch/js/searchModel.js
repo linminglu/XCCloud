@@ -38,7 +38,6 @@ var seachModel = function (options) {
             data = JSON.parse(data);
             if (data.result_code == 1) {
                 d = data.result_data;
-                console.log(d);
                 if (d.length > 0) {
 
                     for (i in d) {
@@ -229,7 +228,6 @@ var seachModel = function (options) {
         }
     }
     form.on('checkbox(checkList)', function (data) {
-        console.log(data.elem);
         let _val = data.value;
         if (data.elem.checked) {
             for (i in d) {
@@ -273,22 +271,21 @@ var seachModel = function (options) {
                     templateDetails[i].showSearch=0
                 }
             }
-// console.log(templateDetails)
         }
         event.stopPropagation();
     });
 
     form.on("radio()", function (data) {
-        // console.log(data.elem)
+
         for (j in conditions) {
             if (conditions[j].field + 'sh' == data.elem.name) {
                 conditions[j].values = data.value;
             }
         }
-        // console.log(conditions)
+
     });
     form.on("select()", function (data) {
-        // console.log(data.elem);
+
         for (j in d) {
             if (d[j].field + 'cond' == data.elem.id) {
 
@@ -347,9 +344,7 @@ var seachModel = function (options) {
                 }
             }
         }
-        // console.log(conditions)
         parm.obj.conditions=conditions;
-        // console.log(parm)
         xc.getInitData(parm);
         _falg=false;
         $('#'+options.elem1).parent().slideUp(100);
@@ -369,12 +364,10 @@ var seachModel = function (options) {
             async: false,
             success: function (data) {
                 data = JSON.parse(data);
-                console.log(data)
                 if (data.result_code == 1) {
                     let ds=data.result_data;
                     templateDetails=[];
                     for(let i in ds){
-
                         templateDetails.push({'id':ds[i].id,
                             'tempId':ds[i].tempId,
                             'fieldName':ds[i].field,
@@ -386,7 +379,6 @@ var seachModel = function (options) {
                             'showSearch':ds[i].issearch,
                             'dictId':ds[i].dictId})
                     }
-                    console.log(templateDetails)
                 }else {
                     layer.msg(data.result_msg||data.return_msg)
                 }
@@ -416,14 +408,3 @@ function setOption(j) {
 
 // window.seachModel=seachModel;window
 // })()
-
-
-let token1 = window.localStorage.getItem('token');
-layui.use(['form', 'layer', 'table'], () => {
-    const form = layui.form;
-    const layer = layui.layer;
-    const table = layui.table;
-
-
-
-})

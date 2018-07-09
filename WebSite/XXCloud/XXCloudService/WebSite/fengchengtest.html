@@ -15,7 +15,7 @@
                 data: { parasJson: parasJson },
                 success: function (data) {
                     data = JSON.parse(data);
-                    console.log(data);
+                    console.log(data.result_data);
                     //document.location.href = "/Report/ToExcel.aspx?guid=" + data.result_data;
                 },
                 error: function (error) {

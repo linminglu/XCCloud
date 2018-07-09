@@ -824,16 +824,61 @@ as
 	declare @sql nvarchar(max)
 	SET @sql = ''
 	SET @sql = @sql + 'select a.* from ('
+	SET @sql = @sql + 'select a.*, b.* from ('
 	SET @sql = @sql + 
-	'select a.ICCardID, b.UserName, c.MemberLevelID, c.MemberLevelName, a.CardType, a.Deposit, a.UpdateTime, a.EndDate, b.Gender, b.Mobile, b.IDCard, a.CreateTime, d.StoreName, a.CardStatus '+    
+	'select a.ID, a.ICCardID as [会员卡号], b.UserName as [会员姓名], c.MemberLevelID as [会员级别ID], c.MemberLevelName as [会员级别],
+	 a.CardType as [卡类别], a.Deposit as [押金], a.UpdateTime as [余额最后更新时间], a.EndDate as [过期日期], b.Gender as [性别],
+	 b.Mobile as [手机], b.IDCard as [身份证], a.CreateTime as [入会日期], d.StoreName as [开卡门店], a.CardStatus as [状态] '+    
     ' from Data_Member_Card a'+
     ' inner join Data_Member_Card_Store s on a.ID=s.CardID and a.StoreID=s.StoreID '+
     ' inner join Base_MemberInfo b on a.MemberID=b.ID ' +
     ' inner join Data_MemberLevel c on a.MemberLevelID=c.MemberLevelID '+
     ' left join Base_StoreInfo d on a.StoreID=d.StoreID ' +    
     ' where a.MerchID=''' + @MerchID + ''' AND a.StoreID=''' + @StoreID + ''''
-    SET @sql = @sql + ') a' + @SqlWhere
-	exec (@sql)
+    SET @sql = @sql + ') a'
+    SET @sql = @sql + ' inner join ('
+
+    --获取余额
+    declare @temp table (BalanceTypeID int, BalanceTypeName varchar(50))	
+	insert @temp select distinct a.ID AS BalanceTypeID, a.TypeName AS BalanceTypeName from Dict_BalanceType a inner join Data_BalanceType_StoreList b on a.ID=b.BalanceIndex where b.StroeID=@StoreID and a.MerchID=@MerchID
+	order by a.ID
+	declare @ss nvarchar(MAX)='select CardIndex'
+	declare @BalanceTypeID int
+	declare @BalanceTypeName varchar(50)
+	WHILE EXISTS(SELECT BalanceTypeID FROM @temp)
+	BEGIN 
+	SET ROWCOUNT 1
+	select @BalanceTypeID=t.BalanceTypeID,@BalanceTypeName=t.BalanceTypeName from @temp as t	
+	SET @ss = @ss + ', MAX(' + @BalanceTypeName + ') AS ' + @BalanceTypeName
+	SET ROWCOUNT 0
+	DELETE from @temp where BalanceTypeID = @BalanceTypeID
+	END
+	
+	SET @ss = @ss + ' from ('
+	
+	insert @temp select distinct a.ID AS BalanceTypeID, a.TypeName AS BalanceTypeName from Dict_BalanceType a inner join Data_BalanceType_StoreList b on a.ID=b.BalanceIndex where b.StroeID=@StoreID and a.MerchID=@MerchID
+	order by a.ID	
+	declare @s nvarchar(MAX)='select ISNULL(a.CardIndex,b.CardIndex) as CardIndex'
+	WHILE EXISTS(SELECT BalanceTypeID FROM @temp)
+	BEGIN 
+	SET ROWCOUNT 1
+	select @BalanceTypeID=t.BalanceTypeID,@BalanceTypeName=t.BalanceTypeName from @temp as t	
+	SET @s = @s + ',(case ISNULL(a.BalanceIndex,b.BalanceIndex) when ' + convert(varchar, @BalanceTypeID) + ' then ISNULL(a.Balance,0)+ISNULL(b.Balance,0) else 0 end) AS ' + @BalanceTypeName	
+	SET ROWCOUNT 0
+	DELETE from @temp where BalanceTypeID = @BalanceTypeID
+	END 			
+
+	SET @s = @s + ' from (select a.* from Data_Card_Balance a inner join Data_Card_Balance_StoreList b on a.ID=b.CardBalanceID and a.MerchID=''' + @MerchID + ''' and b.StoreID=''' + @StoreID + ''') a'
+	SET @s = @s + ' full outer join (select a.* from Data_Card_Balance_Free a inner join Data_Card_Balance_StoreList b on a.ID=b.CardBalanceID and a.MerchID=''' + @MerchID + ''' and b.StoreID=''' + @StoreID + ''') b'
+	SET @s = @s + ' on a.CardIndex=b.CardIndex and a.BalanceIndex=b.BalanceIndex'
+	
+	SET @ss = @ss + @s + ') a group by a.CardIndex'	
+	SET @sql = @sql + @ss + ') b on a.ID=b.CardIndex'       
+    SET @sql = @sql + ') a' + ISNULL(@SqlWhere,'')
+	
+	--print @sql
+	exec (@sql)	
+	
 	set @Result = 1
 
 GO
