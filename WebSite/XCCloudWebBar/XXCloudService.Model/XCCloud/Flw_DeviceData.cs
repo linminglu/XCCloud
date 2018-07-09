@@ -38,5 +38,6 @@ namespace XCCloudWebBar.Model.XCCloud
         public Nullable<int> ACKControlValue { get; set; }
         public Nullable<int> ACKFreeCoin { get; set; }
         public Nullable<int> ACKPulesCount { get; set; }
+        public Nullable<int> SyncFlag { get; set; }
     }
 }

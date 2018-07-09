@@ -521,44 +521,48 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 string errMsg = string.Empty;
-                int id = dicParas.Get("id").Toint(0);
-                if (id == 0)
-                {
-                    errMsg = "规则ID不能为空";
+                var idArr = dicParas.GetArray("id");
+
+                if (!idArr.Validarray("规则ID列表", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
-                           
+      
                 //开启EF事务
                 using (TransactionScope ts = new TransactionScope())
                 {
                     try
                     {
-                        if (!Data_CouponInfoService.I.Any(a => a.ID == id))
+                        foreach (var id in idArr)
                         {
-                            errMsg = "该优惠券规则信息不存在";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
+                            if (!id.Validintnozero("规则ID", out errMsg))
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-                        if (isSend(id) || isUsed(id))
-                        {
-                            errMsg = "已派发或使用的优惠券规则不能删除";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
-                
-                        var data_CouponInfo = Data_CouponInfoService.I.GetModels(p => p.ID == id).FirstOrDefault();
-                        Data_CouponInfoService.I.DeleteModel(data_CouponInfo);
+                            if (!Data_CouponInfoService.I.Any(a => a.ID == (int)id))
+                            {
+                                errMsg = "该优惠券规则信息不存在";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
 
-                        var data_Coupon_StoreList = Data_Coupon_StoreListService.I.GetModels(p => p.CouponID == id);
-                        foreach (var model in data_Coupon_StoreList)
-                        {
-                            Data_Coupon_StoreListService.I.DeleteModel(model);
-                        }
+                            if (isSend((int)id) || isUsed((int)id))
+                            {
+                                errMsg = "已派发或使用的优惠券规则不能删除";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
 
-                        if (!Data_CouponInfoService.I.SaveChanges())
-                        {
-                            errMsg = "删除优惠券规则信息失败";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
+                            var data_CouponInfo = Data_CouponInfoService.I.GetModels(p => p.ID == (int)id).FirstOrDefault();
+                            Data_CouponInfoService.I.DeleteModel(data_CouponInfo);
+
+                            var data_Coupon_StoreList = Data_Coupon_StoreListService.I.GetModels(p => p.CouponID == (int)id);
+                            foreach (var model in data_Coupon_StoreList)
+                            {
+                                Data_Coupon_StoreListService.I.DeleteModel(model);
+                            }
+
+                            if (!Data_CouponInfoService.I.SaveChanges())
+                            {
+                                errMsg = "删除优惠券规则信息失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+                        }                        
 
                         ts.Complete();
                     }

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html>
 <head>
     <title></title>
@@ -8,30 +8,21 @@
     <link rel="stylesheet" href="css/iconfont.css">
 	<link href="css/style.css" rel="stylesheet">
 	<link rel="stylesheet" href="css/bootstrap-datetimepicker.min.css" rel="external nofollow" >
-
 </head>
- 
 <body>
- 
- 
-			
-                
-               
-			   <div class="input-group date form_date col-md-1" data-date="2018-07-04" data-link-format="yyyy-mm-dd">
-                    <input class="form-control"  type="text"  readonly>
-					<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
-                </div>
- 
- 
-				<script src="js/jquery-2.1.3.min.js"></script>
-				<script src="js/bootstrap.min.js"></script>
-				<!-- 引入 Vue -->
-				<script src="js/vue.js"></script>
-				<script src="js/axios.min.js"></script>
-				<!-- 引入 bootstrap-table -->
-				<script type="text/javascript" src="js/bootstrap-datetimepicker.min.js" charset="UTF-8"></script>
-				<script type="text/javascript" src="js/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
-<script type="text/javascript">
+	<div class="input-group date form_date col-md-1" data-date="2018-07-04" data-link-format="yyyy-mm-dd">
+	<input class="form-control"  type="text"  readonly>
+	<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+	</div>
+	<script src="js/jquery-2.1.3.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<!-- 引入 Vue -->
+	<!-- <script src="js/vue.js"></script>
+	<script src="js/axios.min.js"></script>
+	<!-- 引入 bootstrap-table -->
+	<!-- <script type="text/javascript" src="js/bootstrap-datetimepicker.min.js" charset="UTF-8"></script> -->
+	<!-- <script type="text/javascript" src="js/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script> -->
+<!-- <script type="text/javascript">
 	$(function(){
 		$('.form_date').datetimepicker({
 			language:  'zh-CN',
@@ -49,7 +40,220 @@
 	})
 	
  
+</script> -->
+<!--  
+</body>
+</html>  -->
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>吧台</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- 引入样式 -->
+	<link href="css/bootstrap.min.css" rel="stylesheet">
+	<link href="css/style.css" rel="stylesheet">
+	<link href="css/iconfont.css" rel="stylesheet">
+	<link rel="stylesheet" href="css/swiper.min.css">
+	<link href="css/bootstrap-table.css" rel="stylesheet">
+    <link rel='icon' href='xinchen.ico ' type='image/x-ico'/>
+    <style>
+    .cardLevelList{margin-bottom:3em;}
+    .navLeftS{width: 180px;height:4em;margin-top: 0.4em;background: url("images/navHeader.png") no-repeat left center;background-size: 100% 100%;display: flex;flex-direction: row;}
+    .navStyle{margin-top: 0.8em!important;padding: 2px 10px;margin-left: 1.3em; color: #7d8184;width: 160px;display: inline-block;}
+    .navStyle h4{font-size: 0.8em;line-height: 1.2em;text-indent: 12px;}
+    .navT{width: 80px;margin-top: 1.25em;padding-left: 10px;color: #7d8184;font-weight: 600;font-size: 1em}
+    .operationBtn{text-align: right;margin: 2em;padding:0 1em;}
+    .operationBtn button{display: inline;width: 10em;margin: 0 0.5em;}
+    </style>
+</head>
+<body>
+<div id="app" v-cloak>
+	<div class="container-fluid mainBody">
+		<div class="row">
+				<table id="memberTable3"></table>
+		</div>
+	</div>
+</div>
+<script src="js/jquery-2.1.3.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/swiper.min.js"></script>
+<!-- 引入 Vue-->
+<script src="js/vue.js"></script>
+<script src="js/axios.min.js"></script>
+<!-- 引入 bootstrap-table -->
+<script src="js/bootstrap-table.js"></script>
+<script src="js/bootstrap-table-zh-CN.js"></script>
+<script>
+    var sysId = 0; //调用方应用Id
+    var versionNo= "0.01"; //版本号
+    var machineName ="";
+    var dogIdToken ="";
+    var ws = new WebSocket("ws://127.0.0.1:12880");
+    var destroy =[
+        {"no":1,"name":"2017-09-04 12:44:30","name1":108,"name2":108,"name3":108,"name4":108,"name5":108,"name6":108,"name7":108,"name8":108,"name9":108,"name10":108},
+        {"no":1,"name":"2017-09-04 12:44:30","name1":107,"name2":108,"name3":108,"name4":108,"name5":108,"name6":108,"name7":108,"name8":108,"name9":108,"name10":108}
+    ];
+    var vm = new Vue({
+        el: '#app',
+        data:{
+           
+        },
+        mounted: function () {
+            this.Initialize();
+        },
+        directives: {
+            
+        },
+    	methods: {
+            Initialize:function () {
+                var that =this;
+                var userToken = getStorage("userToken");      	//获取userToken
+                var storeId = getStorage("storeId");       		//storeId
+                that.userToken = userToken;
+                that.storeId = storeId;
+                that.operationFnc()
+            },
+//			会员操作
+            operationFnc:function () {
+                var that = this;                                
+                var columns3=[
+                    {field:'no',title:'兑换日期'},
+                    {field:'name',title:'订单号'},
+                    {field:'name1',title:'兑换名称'},
+                    {field:'name2',title:'兑换类别'},
+                    {field:'name3',title:'兑换数量'},
+                    {field:'name4',title:'原价'},
+                    {field:'name5',title:'折扣(%)'},
+                    {field:'name6',title:'消耗数量'},
+                    {field:'name7',title:'消耗类别'},
+                    {field:'name8',title:'操作门店'},
+                    {field:'name9',title:'营业日期'},
+                    {field:'name10',title:'班次'},
+                    {field:'name11',title:'操作终端'},
+                    {field:'name12',title:'操作员'},
+                    {field:'name13',title:'备注'}];
+                setTimeout(function () {
+                    createTable("#memberTable3",destroy,columns3);
+                }, 50);
+
+            },
+
+//			确认框
+//            confirm:function (confirmMsg) {
+//                this.confirm = confirmMsg;
+//                $('#confirm').modal('show');
+//            },
+//			通用消息提示
+            msgPrompt:function (res) {
+                var that = this;
+                if(res.return_code == 0){
+                    that.msg = res.return_msg;
+                    $('#myModal').modal('show');
+                }else if(res.result_code == 0){
+                    that.msg = res.result_msg;
+                    $('#myModal').modal('show');
+                }
+            }
+        }
+    });
+    $(function () {
+        $(document).mouseup(function(e){
+            var _con = $(".salesCoin li .saleText a");  // 设置目标区域
+            if(!_con.is(e.target) && _con.has(e.target).length === 0){ // Mark 1
+                _con.popover("hide");	//设置功能
+            }
+        });
+        $("#shopTable tbody").on("click","tr",function () {
+            $(this).addClass('tableTag').siblings().removeClass('tableTag');
+        });
+    });
+//	详情
+    function detailTime(index) {
+        var detailHide = $('.detailHide').html();
+        console.log(detailHide);
+        $(".salesCoin").find("li").eq(index).find(".saleText a").popover({
+            trigger: 'manual',
+            placement: 'top', //top, bottom, left or right
+            title: "详情",
+            html: 'true',
+            content: detailHide
+        });
+        $(".salesCoin").find("li").eq(index).find(".saleText a").popover("show");
+        $(".salesCoin").find("li").eq(index).siblings().find(".saleText a").popover("hide");
+    }
+    //    表格
+    function createTable(id,tableData,columns){       //表格
+        $(id).bootstrapTable({ // 对应table标签的id
+            data:tableData,
+            toolbar: '.toolbar',                //工具按钮用哪个容器
+            striped: true,                      //是否显示行间隔色
+            cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+            pagination: false,                   //是否显示分页（*）
+            sortable: false,                     //是否启用排序
+//        	sortOrder: "asc",                   //排序方式
+//        queryParams: oTableInit.queryParams,//传递参数（*）
+            sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
+            pageNumber:1,                       //初始化加载第一页，默认第一页
+            pageSize: 8,                       //每页的记录行数（*）
+//            pageList: [5,10, 25, 50, 100],        //可供选择的每页的行数（*）
+            search: false,                       //是否显示表格搜索，此搜索是客户端搜索，不会进服务端，所以，个人感觉意义不大
+            strictSearch: true,
+            showColumns: true,                  //是否显示所有的列
+            showRefresh: true,                  //是否显示刷新按钮
+            minimumCountColumns: 2,             //最少允许的列数
+            clickToSelect: true,                //是否启用点击选中行
+//            height:500,
+//             height: $(window.top).height()-200,                        //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
+            uniqueId: "ID",                     //每一行的唯一标识，一般为主键列
+            showToggle:false,
+            showFooter:false,                 //是否显示详细视图和列表视图的切换按钮
+            cardView: false,                    //是否显示详细视图
+            detailView: false,
+            onClickCell:function (field, value, row, $element) {
+                if(field == "name" && id == "#memberTable3"){
+                    $('#billingDetails').modal('show');
+                }
+                console.log(field);
+                console.log(value);
+                console.log(row);
+                console.log($element);
+            },
+            sortName: 'id', // 要排序的字段
+            sortOrder: 'desc', // 排序规则
+            columns: columns,
+            onLoadSuccess: function(){  //加载成功时执行
+                console.info("加载成功");
+            },
+            onLoadError: function(){  //加载失败时执行
+                console.info("加载数据失败");
+            }
+        })
+    }
+    //存储session
+    function setStorage(key,value) {
+        if(window.localStorage){
+            value = JSON.stringify(value); //转化为JSON字符串
+            var storage=window.localStorage;
+            storage.setItem(key,value);
+        }
+    }
+    //删除session
+    function removeStorage(key) {
+        if(window.localStorage){
+            var storage=window.localStorage;
+            storage.removeItem(key);
+        }
+    }
+    //获取session
+    function getStorage(key) {
+        if(window.localStorage){
+            value = JSON.parse(localStorage.getItem(key));
+            return value;
+        }
+    }
 </script>
- 
 </body>
 </html>

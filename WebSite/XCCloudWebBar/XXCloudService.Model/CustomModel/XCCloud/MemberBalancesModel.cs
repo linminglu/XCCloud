@@ -371,4 +371,10 @@ namespace XCCloudWebBar.Model.CustomModel.XCCloud
         public int freeType { get; set; }
         public string freeId { get; set; }
     }
+
+    public class ddddd
+    {
+        public int DeviceId { get; set; }
+        public string DeviceName { get; set; }
+    }
 }

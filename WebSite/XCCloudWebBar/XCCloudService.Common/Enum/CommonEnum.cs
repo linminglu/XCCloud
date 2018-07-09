@@ -1387,10 +1387,10 @@ namespace XCCloudWebBar.Common.Enum
         余额兑换转入 = 9,
         [Description("余额兑换转出")]
         余额兑换转出 = 10,
-        [Description("过户入")]
-        过户入 = 11,
-        [Description("过户出")]
-        过户出 = 12,
+        [Description("过户转入")]
+        过户转入 = 11,
+        [Description("过户转出")]
+        过户转出 = 12,
         [Description("退储值金")]
         退储值金 = 13,
         [Description("退货返回")]

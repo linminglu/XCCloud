@@ -1091,7 +1091,8 @@ namespace XCCloudService.Common
                 }
                 
                 string picturePath = System.Configuration.ConfigurationManager.AppSettings["UploadImageUrl"].ToString() + savePath;
-                string path = System.Web.HttpContext.Current.Server.MapPath(picturePath);
+                string absolutePath = new Uri(picturePath).AbsolutePath;
+                string path = System.Web.HttpContext.Current.Server.MapPath(absolutePath);
                 //如果不存在就创建file文件夹
                 if (Directory.Exists(path) == false)
                 {

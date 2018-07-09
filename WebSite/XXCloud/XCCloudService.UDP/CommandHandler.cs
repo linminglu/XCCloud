@@ -280,7 +280,6 @@ namespace XCCloudService.SocketService.UDP
             return bSuccess;
         }
 
-
         public static void StoreQuery(string requestDataJson, UDPClientItemBusiness.ClientItem item)
         {
             object outModel = null;
@@ -316,7 +315,6 @@ namespace XCCloudService.SocketService.UDP
             string message = "[接收：" + requestDataJson + "]" + "[响应：" + responseOutModel.ResponseJson + "]";
             XCGameUDPMsgHub.SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.远程门店账目查询指令), "远程门店账目查询指令响应", answerModel.RadarToken, message);
         }
-
 
         public static void StoreQueryNotify(string requestDataJson, UDPClientItemBusiness.ClientItem item, int packId, int packNum)
         {
@@ -548,7 +546,6 @@ namespace XCCloudService.SocketService.UDP
             XCGameUDPMsgHub.SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.远程门店运行参数数据请求响应), "远程门店运行参数数据请求响应", asnwerModel.RadarToken, requestDataJson);
         }
 
-
         public static void MemberTransOperateNotify(string requestDataJson, UDPClientItemBusiness.ClientItem item)
         {
             string errMsg = string.Empty;
@@ -591,5 +588,67 @@ namespace XCCloudService.SocketService.UDP
             XCGameUDPMsgHub.SignalrServerToClient.BroadcastMessage(Convert.ToInt32(TransmiteEnum.黄牛卡信息查询请求响应), "黄牛卡信息查询请求响应", asnwerModel.RadarToken, requestDataJson);
         }
 
+        public static void ProjectChangeInsNotify(string requestDataJson, UDPClientItemBusiness.ClientItem item)
+        {
+            string routeDeivceToken = string.Empty;
+            string password = string.Empty;
+            string errMsg = string.Empty;
+
+            //获取雷达通知请求数据模式
+            ProjectChangeInsRequestModel requestDataModel = JsonHelper.DataContractJsonDeserializer<ProjectChangeInsRequestModel>(requestDataJson);
+            UDPSocketCommonQueryAnswerModel asnwerModel = UDPSocketCommonQueryAnswerBusiness.GetAnswerModel(requestDataModel.SN);
+
+            //验证MD5
+            if (!SignKeyHelper.CheckSignKey(requestDataModel, asnwerModel.StorePassword))
+            {
+                errMsg = "签名不正确";
+                return;
+            }
+
+            asnwerModel.Status = 1;
+            asnwerModel.Result = requestDataModel;
+        }
+
+        public static void DataChangeInsNotify(string requestDataJson, UDPClientItemBusiness.ClientItem item)
+        {
+            string routeDeivceToken = string.Empty;
+            string password = string.Empty;
+            string errMsg = string.Empty;
+
+            //获取雷达通知请求数据模式
+            DataChangeInsRequestModel requestDataModel = JsonHelper.DataContractJsonDeserializer<DataChangeInsRequestModel>(requestDataJson);
+            UDPSocketCommonQueryAnswerModel asnwerModel = UDPSocketCommonQueryAnswerBusiness.GetAnswerModel(requestDataModel.SN);
+
+            //验证MD5
+            if (!SignKeyHelper.CheckSignKey(requestDataModel, asnwerModel.StorePassword))
+            {
+                errMsg = "签名不正确";
+                return;
+            }
+
+            asnwerModel.Status = 1;
+            asnwerModel.Result = requestDataModel;
+        }
+
+        public static void CardHeadResetInsNotify(string requestDataJson, UDPClientItemBusiness.ClientItem item)
+        {
+            string routeDeivceToken = string.Empty;
+            string password = string.Empty;
+            string errMsg = string.Empty;
+
+            //获取雷达通知请求数据模式
+            CardHeadResetInsRequestModel requestDataModel = JsonHelper.DataContractJsonDeserializer<CardHeadResetInsRequestModel>(requestDataJson);
+            UDPSocketCommonQueryAnswerModel asnwerModel = UDPSocketCommonQueryAnswerBusiness.GetAnswerModel(requestDataModel.SN);
+
+            //验证MD5
+            if (!SignKeyHelper.CheckSignKey(requestDataModel, asnwerModel.StorePassword))
+            {
+                errMsg = "签名不正确";
+                return;
+            }
+
+            asnwerModel.Status = 1;
+            asnwerModel.Result = requestDataModel;
+        }
     }
 }

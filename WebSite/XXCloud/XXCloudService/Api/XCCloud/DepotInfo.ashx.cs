@@ -238,23 +238,42 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 string errMsg = string.Empty;
-                if (!dicParas.Get("id").Nonempty("仓库编号", out errMsg))
+                var idArr = dicParas.GetArray("id");
+
+                if (!idArr.Validarray("仓库ID列表", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-                var id = dicParas.Get("id").Toint();
-                
-                if (!Base_DepotInfoService.I.Any(a => a.ID == id))
+                //开启EF事务
+                using (TransactionScope ts = new TransactionScope())
                 {
-                    errMsg = "该仓库信息不存在";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
+                    try
+                    {
+                        foreach (var id in idArr)
+                        {
+                            if (!id.Validintnozero("仓库ID", out errMsg))
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-                var base_DepotInfo = Base_DepotInfoService.I.GetModels(p => p.ID == id).FirstOrDefault();
-                if (!Base_DepotInfoService.I.Update(base_DepotInfo))
-                {
-                    errMsg = "删除仓库信息失败";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
+                            if (!Base_DepotInfoService.I.Any(a => a.ID == (int)id))
+                            {
+                                errMsg = "该仓库信息不存在";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+
+                            var base_DepotInfo = Base_DepotInfoService.I.GetModels(p => p.ID == (int)id).FirstOrDefault();                            
+                            if (!Base_DepotInfoService.I.Delete(base_DepotInfo))
+                            {
+                                errMsg = "删除仓库信息失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+                        }
+
+                        ts.Complete();
+                    }
+                    catch (Exception ex)
+                    {
+                        return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, ex.Message);
+                    }
+                }                                
 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
             }

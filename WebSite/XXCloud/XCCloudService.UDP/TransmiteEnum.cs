@@ -25,6 +25,9 @@ namespace XCCloudService.SocketService.UDP
         远程门店会员转账操作请求 = 0x7a,
         远程门店员工手机号校验请求 = 0x7b,
         黄牛卡信息查询请求 = 0x7c,
+        游戏机游乐项目属性修改请求 = 0x60,
+        数据变更同步请求 = 0x61,
+        卡头解绑同步请求 = 0x62,
 
         雷达注册授权响应 = 0x90,
         设备状态变更通知响应 = 0x80,
@@ -43,7 +46,10 @@ namespace XCCloudService.SocketService.UDP
         远程门店运行参数数据请求响应 = 0x29,
         远程门店会员转账操作请求响应 = 0x2a,
         远程门店员工手机号校验请求响应 = 0x2b,
-        黄牛卡信息查询请求响应 = 0x2c
+        黄牛卡信息查询请求响应 = 0x2c,
+        游戏机游乐项目属性修改响应 = 0x30,
+        数据变更同步响应 = 0x31,
+        卡头解绑同步响应 = 0x32
      }
 
     public enum UDPRecordType

@@ -1224,5 +1224,119 @@ namespace XCCloudService.SocketService.UDP.Factory
             }
 
         #endregion
+
+        #region "游戏机游乐项目属性修改请求指令"
+
+            public static bool ProjectInsChange(string sn, string storeId, string storePassword, string gameIndex, out string radarToken, out string errMsg)
+            {
+                errMsg = string.Empty;
+                //验证雷达是否上线(获取雷达token)
+                if (!XCGameRadarDeviceTokenBusiness.GetRouteDeviceToken(storeId, out radarToken))
+                {
+                    errMsg = "雷达未上线";
+                    return false;
+                }
+                string ip = string.Empty;
+                int port = 0;
+                if (!DataFactory.GetRadarClient(radarToken, out ip, out port))
+                {
+                    errMsg = "未能获取雷达端地址";
+                    return false;
+                }
+
+                UDPSocketCommonQueryAnswerModel answerModel = new UDPSocketCommonQueryAnswerModel(sn, storeId, storePassword, 0, null, radarToken);
+                UDPSocketCommonQueryAnswerBusiness.AddAnswer(sn, answerModel);
+
+                ProjectChangeInsRequestModel dataModel = new ProjectChangeInsRequestModel(sn,gameIndex);
+                SignKeyHelper.SetSignKey(dataModel, storePassword);
+
+                //对象序列化为字节数组
+                byte[] dataByteArr = JsonHelper.DataContractJsonSerializerToByteArray(dataModel);
+                //生成发送数据包
+                byte[] requestPackages = CreateResponseProtocolData(TransmiteEnum.游戏机游乐项目属性修改请求, dataByteArr);
+
+                //服务端发送数据
+                XCCloudService.SocketService.UDP.Server.Send(ip, port, requestPackages);
+
+                return true;
+            }
+
+            #endregion
+
+        #region "游戏机游乐项目属性修改请求指令"
+
+            public static bool DataChange(string sn, string storeId, string storePassword, string dataIndex,string tableName,string action, out string radarToken, out string errMsg)
+            {
+                errMsg = string.Empty;
+                //验证雷达是否上线(获取雷达token)
+                if (!XCGameRadarDeviceTokenBusiness.GetRouteDeviceToken(storeId, out radarToken))
+                {
+                    errMsg = "雷达未上线";
+                    return false;
+                }
+                string ip = string.Empty;
+                int port = 0;
+                if (!DataFactory.GetRadarClient(radarToken, out ip, out port))
+                {
+                    errMsg = "未能获取雷达端地址";
+                    return false;
+                }
+
+                UDPSocketCommonQueryAnswerModel answerModel = new UDPSocketCommonQueryAnswerModel(sn, storeId, storePassword, 0, null, radarToken);
+                UDPSocketCommonQueryAnswerBusiness.AddAnswer(sn, answerModel);
+
+                DataChangeInsRequestModel dataModel = new DataChangeInsRequestModel(sn,dataIndex,tableName,action,storeId);
+                SignKeyHelper.SetSignKey(dataModel, storePassword);
+
+                //对象序列化为字节数组
+                byte[] dataByteArr = JsonHelper.DataContractJsonSerializerToByteArray(dataModel);
+                //生成发送数据包
+                byte[] requestPackages = CreateResponseProtocolData(TransmiteEnum.数据变更同步请求, dataByteArr);
+
+                //服务端发送数据
+                XCCloudService.SocketService.UDP.Server.Send(ip, port, requestPackages);
+
+                return true;
+            }
+
+        #endregion
+
+        #region "游戏机游乐项目属性修改请求指令"
+
+            public static bool CardHeadReset(string sn, string storeId, string storePassword, string mcuId, out string radarToken, out string errMsg)
+            {
+                errMsg = string.Empty;
+                //验证雷达是否上线(获取雷达token)
+                if (!XCGameRadarDeviceTokenBusiness.GetRouteDeviceToken(storeId, out radarToken))
+                {
+                    errMsg = "雷达未上线";
+                    return false;
+                }
+                string ip = string.Empty;
+                int port = 0;
+                if (!DataFactory.GetRadarClient(radarToken, out ip, out port))
+                {
+                    errMsg = "未能获取雷达端地址";
+                    return false;
+                }
+
+                UDPSocketCommonQueryAnswerModel answerModel = new UDPSocketCommonQueryAnswerModel(sn, storeId, storePassword, 0, null, radarToken);
+                UDPSocketCommonQueryAnswerBusiness.AddAnswer(sn, answerModel);
+
+                CardHeadResetInsRequestModel dataModel = new CardHeadResetInsRequestModel(sn, mcuId);
+                SignKeyHelper.SetSignKey(dataModel, storePassword);
+
+                //对象序列化为字节数组
+                byte[] dataByteArr = JsonHelper.DataContractJsonSerializerToByteArray(dataModel);
+                //生成发送数据包
+                byte[] requestPackages = CreateResponseProtocolData(TransmiteEnum.卡头解绑同步响应, dataByteArr);
+
+                //服务端发送数据
+                XCCloudService.SocketService.UDP.Server.Send(ip, port, requestPackages);
+
+                return true;
+            }
+
+        #endregion
     }
 }

@@ -531,8 +531,8 @@
                                                 <tbody>
                                                 <tr v-for="(item,index) in orderInquiry.orderPayData">
                                                     <td>{{item.balanceType}}</td>
-                                                    <td>{{item.balance}}</td>
-                                                    <td>{{item.balance1}}</td>
+                                                    <td>{{item.balanceIndex}}</td>
+                                                    <td>{{item.payCount}}</td>
                                                     <td>{{item.balance2}}</td>
                                                     <td>{{item.balance3}}</td>
                                                 </tr>
@@ -583,15 +583,15 @@
                                                 </tr>
                                                 </thead>
                                                 <tbody>
-                                                <tr v-for="items in orderInquiry.goodsData">
-                                                    <td><input type="checkbox"></td>
-                                                    <td>{{items.foodName}}</td>
-                                                    <td>{{items.categoryName}}</td>
-                                                    <td>{{items.saleCount}}</td>
-                                                    <td>{{items.singlePrice}}</td>
-                                                    <td>{{items.salePrice}}</td>
-                                                    <td>{{items.taxFee}}</td>
-                                                    <td>{{items.taxTotal}}</td>
+                                                <tr v-for="(item,index) in orderInquiry.goodsData">
+                                                    <td><input type="checkbox" :value="index" v-model="orderInquiry.exitChecked" @click.stop=""></td>
+                                                    <td>{{item.foodName}}</td>
+                                                    <td>{{item.category}}</td>
+                                                    <td>{{item.saleCount}}</td>
+                                                    <td>{{item.singlePrice}}</td>
+                                                    <td>{{item.salePrice}}</td>
+                                                    <td>{{item.taxFee}}</td>
+                                                    <td>{{item.taxTotal}}</td>
                                                 </tr>
                                                 <tr>
                                                     <td></td>
@@ -610,7 +610,8 @@
                                         <div class="col-md-12 col-sm-12 order-btn">
                                             <div class="col-md-3 col-sm-3"></div>
                                             <div class="col-md-3 col-sm-3">
-                                                <button type="button" class="btn btn-primary" :disabled="orderInquiry.disabled">退货</button>
+                                                <button type="button" class="btn btn-primary" :disabled="orderInquiry.disabled" @click="exitFood">退货</button>
+                                                <!-- :disabled="orderInquiry.disabled" -->
                                             </div>
                                             <div class="col-md-3 col-sm-3">
                                                 <button type="button" class="btn btn-primary" :disabled="orderInquiry.disabled">重打小票</button>
@@ -812,7 +813,7 @@
                 disabled:""
             },
             orderInquiry:{
-                orderNo:"10002542010600120180517226810001",
+                orderNo:"20180707075017323100025420106001",
                 stratTime:"",
                 endTime:"",
                 theData:"",
@@ -821,6 +822,7 @@
                 realPay:"",
                 cashier:"",
                 note:"",
+                exitChecked:[],
                 saleCount:"",
                 salePrice:"",
                 taxTotal:"",
@@ -926,7 +928,26 @@
 //          订单查询接口
             getOrders:function(){
                 var that = this;
-                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,orderId:that.orderInquiry.orderNo,icCardId:that.icCardId,startDate:"2017-07-04",endDate:"2018-07-04"};
+                that.orderInquiry = {
+                    orderNo:that.orderInquiry.orderNo,
+                    stratTime:that.orderInquiry.stratTime,
+                    endTime:that.orderInquiry.endTime,
+                    theData:"",
+                    payable:"",
+                    preferential:"",
+                    realPay:"",
+                    cashier:"",
+                    note:"",
+                    exitChecked:[],
+                    saleCount:"",
+                    salePrice:"",
+                    taxTotal:"",
+                    disabled:false,
+                    orderListData:[],
+                    orderPayData:[],
+                    goodsData:[]
+                };
+                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,orderId:that.orderInquiry.orderNo,icCardId:that.icCardId,startDate:"2017-07-04",endDate:"2018-10-04"};
                 console.log(obj);
                 axios.post('/xccloud/order?action=getOrders', obj).then(function (res) {
                     console.log(res.data);
@@ -942,6 +963,25 @@
             orderDetails:function(index){
                console.log(index);
                 var that = this;
+                that.orderInquiry = {
+                    orderNo:"",
+                    stratTime:"",
+                    endTime:"",
+                    theData:"",
+                    payable:"",
+                    preferential:"",
+                    realPay:"",
+                    cashier:"",
+                    note:"",
+                    exitChecked:[],
+                    saleCount:"",
+                    salePrice:"",
+                    taxTotal:"",
+                    disabled:false,
+                    orderListData:that.orderInquiry.orderListData,
+                    orderPayData:[],
+                    goodsData:[]
+                };
                 var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,flwOrderId:that.orderInquiry.orderListData[index].orderId};
                 if(that.orderInquiry.orderListData[index].orderStatusName != "已支付"){
                     that.orderInquiry.disabled = true;
@@ -973,6 +1013,31 @@
                         that.orderInquiry.saleCount = saleCount
                         that.orderInquiry.salePrice = salePrice
                         that.orderInquiry.taxTotal = taxTotal
+                    }
+                }).catch(function (err) {
+                    console.log(err);
+                });
+            },
+//          退货接口
+            exitFood:function(){
+                var that = this;
+                var exitFoodJson = []
+                console.log(that.orderInquiry.exitChecked);
+                for(var i = 0;i<that.orderInquiry.exitChecked.length;i++){   
+                    exitFoodJson.push({
+                        foodId: that.orderInquiry.goodsData[that.orderInquiry.exitChecked[i]].foodId,
+                        category: that.orderInquiry.goodsData[that.orderInquiry.exitChecked[i]].category,
+                        saleCount: that.orderInquiry.goodsData[that.orderInquiry.exitChecked[i]].saleCount,
+                    })   
+				}
+                exitFoodJson = JSON.stringify(exitFoodJson); //转化为JSON字符串
+                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,flwOrderId:that.orderInquiry.orderNo,note:that.orderInquiry.note,authorId:"0",exitFoodJson:exitFoodJson};
+                console.log(obj);
+                axios.post('/xccloud/order?action=exitFood', obj).then(function (res) {
+                    console.log(res.data);
+                    that.msgPrompt(res.data);
+                    if (res.data.result_code === '1') {
+                        alert(111)
                     }
                 }).catch(function (err) {
                     console.log(err);

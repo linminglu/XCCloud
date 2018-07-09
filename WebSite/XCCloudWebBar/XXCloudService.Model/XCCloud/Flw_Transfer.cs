@@ -14,17 +14,28 @@ namespace XCCloudWebBar.Model.XCCloud
     
     public partial class Flw_Transfer
     {
-        public int id { get; set; }
-        public Nullable<int> ExitFlwID { get; set; }
-        public Nullable<int> CardIDOut { get; set; }
-        public Nullable<int> CardIDIn { get; set; }
-        public Nullable<int> TransferType { get; set; }
-        public Nullable<int> Coins { get; set; }
-        public Nullable<int> BalanceOut { get; set; }
-        public Nullable<int> BalanceIn { get; set; }
+        public string id { get; set; }
+        public string MerchID { get; set; }
+        public string StoreID { get; set; }
+        public Nullable<int> OpType { get; set; }
+        public string CardIDOut { get; set; }
+        public string OutMemberID { get; set; }
+        public string CardIDIn { get; set; }
+        public string InMemberID { get; set; }
+        public Nullable<int> TransferBalanceIndex { get; set; }
+        public Nullable<decimal> TransferCount { get; set; }
+        public Nullable<decimal> BalanceOut { get; set; }
+        public Nullable<decimal> BalanceIn { get; set; }
         public Nullable<System.DateTime> RealTime { get; set; }
         public Nullable<int> UserID { get; set; }
         public string WorkStation { get; set; }
-        public Nullable<int> ScheduleID { get; set; }
+        public string ScheduleID { get; set; }
+        public Nullable<System.DateTime> CheckDate { get; set; }
+        public Nullable<int> State { get; set; }
+        public string Note { get; set; }
+        public Nullable<decimal> ChargeFee { get; set; }
+        public string OrderNumber { get; set; }
+        public Nullable<int> SyncFlag { get; set; }
+        public string Verifiction { get; set; }
     }
 }

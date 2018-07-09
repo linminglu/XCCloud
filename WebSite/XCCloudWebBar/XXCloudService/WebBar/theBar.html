@@ -2039,7 +2039,7 @@
                 this.saleShow = false;
                 this.memberShow = false;
                 var columns1=[
-                    {field:'no',title:'门票名称'},
+                    {field:' ',title:'门票名称'},
                     {field:'name',title:'类别'},
                     {field:'name1',title:'购买时间'},
                     {field:'name2',title:'过期日期'},
@@ -2429,7 +2429,28 @@
             },
 //			挖掘对应余额流水记录
             billingRecord:function (index) {
-                $('#billingRecord').modal('show');
+                var that = this;
+                console.log(balanceData)
+                if(that.loading == false){
+                    that.loading = true;
+                    var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,iccardId:that.icCardId,balanceIndex:'',sDate:"",eDate:"",pageIndex:"",pageSize:""};
+                    console.log(obj);
+                    axios.post('/XCCloud/Member?action=cardUnLock', obj).then(function (res) {	
+                        console.log(res.data);
+                        that.msgPrompt(res.data);
+                        if (res.data.result_code === '1') {
+                            $('#billingRecord').modal('show');
+                            // that.msg = "解锁成功！";
+                            // that.getMenberCardInfo();
+                            // $('#myModal').modal('show');
+                            // setTimeout(function () {
+                            //     $('#myModal').modal('hide');
+                            // }, 1500);
+                        }
+                    }).catch(function (err) {
+                        console.log(err);
+                    });
+                }                              
             },
 //			销售列表
             salesAll:function () {

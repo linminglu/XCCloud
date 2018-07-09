@@ -110,8 +110,6 @@ namespace XCCloudWebBar.Model.XCCloud
         public virtual DbSet<Dict_Area> Dict_Area { get; set; }
         public virtual DbSet<Dict_FunctionMenu> Dict_FunctionMenu { get; set; }
         public virtual DbSet<Divide_ProjectInfo> Divide_ProjectInfo { get; set; }
-        public virtual DbSet<Flw_485_Coin> Flw_485_Coin { get; set; }
-        public virtual DbSet<Flw_485_SaveCoin> Flw_485_SaveCoin { get; set; }
         public virtual DbSet<Flw_CheckDate> Flw_CheckDate { get; set; }
         public virtual DbSet<Flw_Digite_Coin> Flw_Digite_Coin { get; set; }
         public virtual DbSet<Flw_Digite_Coin_Detail> Flw_Digite_Coin_Detail { get; set; }
@@ -133,10 +131,8 @@ namespace XCCloudWebBar.Model.XCCloud
         public virtual DbSet<Data_DigitCoin> Data_DigitCoin { get; set; }
         public virtual DbSet<Data_LotteryInventory> Data_LotteryInventory { get; set; }
         public virtual DbSet<Data_LotteryStorage> Data_LotteryStorage { get; set; }
-        public virtual DbSet<Flw_Coin_Sale> Flw_Coin_Sale { get; set; }
         public virtual DbSet<Flw_Game_Free> Flw_Game_Free { get; set; }
         public virtual DbSet<Flw_Giveback> Flw_Giveback { get; set; }
-        public virtual DbSet<Flw_Transfer> Flw_Transfer { get; set; }
         public virtual DbSet<Flw_CouponUse> Flw_CouponUse { get; set; }
         public virtual DbSet<Flw_DiscountRule> Flw_DiscountRule { get; set; }
         public virtual DbSet<Base_StoreDogList> Base_StoreDogList { get; set; }
@@ -204,5 +200,6 @@ namespace XCCloudWebBar.Model.XCCloud
         public virtual DbSet<Log_GameAlarm> Log_GameAlarm { get; set; }
         public virtual DbSet<Flw_MemberCard_LevelChange> Flw_MemberCard_LevelChange { get; set; }
         public virtual DbSet<Flw_MemberData> Flw_MemberData { get; set; }
+        public virtual DbSet<Flw_Transfer> Flw_Transfer { get; set; }
     }
 }

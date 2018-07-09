@@ -123,6 +123,7 @@ namespace XXCloudService.Api.XCCloud
                         var obj2 = new
                         {
                             foodId = ds.Tables[1].Rows[i]["FoodId"].ToString(),
+                            category = ds.Tables[1].Rows[i]["Category"].ToString(),
                             categoryName = ds.Tables[1].Rows[i]["CategoryName"].ToString(),
                             foodName = ds.Tables[1].Rows[i]["FoodName"].ToString(),
                             saleCount = ds.Tables[1].Rows[i]["SaleCount"].ToString(),

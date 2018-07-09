@@ -153,6 +153,12 @@
     <Compile Include="Socket\UDP\LotteryOperateRequestDataModel.cs" />
     <Compile Include="Socket\UDP\OutTicketOperateRequestDataModel.cs" />
     <Compile Include="Socket\UDP\MemberTransOperateRequestDataModel.cs" />
+    <Compile Include="Socket\UDP\DataChangeInsRequestModel.cs" />
+    <Compile Include="Socket\UDP\CardHeadResetInsRequestModel.cs" />
+    <Compile Include="Socket\UDP\ProjectChangeInsRequestModel.cs" />
+    <Compile Include="Socket\UDP\DataChangeInsResultRequestModel.cs" />
+    <Compile Include="Socket\UDP\CardHeadResetInsResultRequestModel.cs" />
+    <Compile Include="Socket\UDP\ProjectChangeInsResultRequestModel.cs" />
     <Compile Include="Socket\UDP\TicketOperateRequestDataModel.cs" />
     <Compile Include="Socket\UDP\LotteryOperateResultNotifyRequestModel.cs" />
     <Compile Include="Socket\UDP\OutTicketOperateResultNotifyRequestModel.cs" />

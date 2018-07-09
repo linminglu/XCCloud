@@ -234,9 +234,15 @@ namespace XCCloudService.SocketService.UDP
                                 case TransmiteEnum.雷达通知指令:
                                     CommandHandler.RadarNotify(data, item);
                                     break;
-                                //case TransmiteEnum.远程门店账目查询指令响应:
-                                //    CommandHandler.StoreQuery(data, item);
-                                //    break;
+                                case TransmiteEnum.远程门店账目查询指令响应:
+                                    CommandHandler.StoreQuery(data, item);
+                                    break;
+                                case TransmiteEnum.游戏机游乐项目属性修改请求:
+                                    CommandHandler.ProjectChangeInsNotify(data, item);
+                                    break;
+                                case TransmiteEnum.卡头解绑同步请求:
+                                    CommandHandler.ProjectChangeInsNotify(data, item);
+                                    break;
                                 //case TransmiteEnum.远程门店账目应答通知指令:
                                 //    CommandHandler.StoreQueryNotify(data, item, packId, packNum);
                                 //    break;
@@ -249,9 +255,9 @@ namespace XCCloudService.SocketService.UDP
                                 //case TransmiteEnum.远程门店门票操作请求响应:
                                 //    CommandHandler.TicketOperateNotify(data, item);
                                 //    break;
-                                //case TransmiteEnum.远程门店彩票数据请求响应:
-                                //    CommandHandler.LotteryQueryNotify(data, item);
-                                //    break;
+                                case TransmiteEnum.远程门店彩票数据请求响应:
+                                    CommandHandler.LotteryQueryNotify(data, item);
+                                    break;
                                 //case TransmiteEnum.远程门店彩票操作请求响应:
                                 //    CommandHandler.LotteryOperateNotify(data, item);
                                 //    break;
