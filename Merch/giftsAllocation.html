@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>礼品调拨</title>
     <link rel="stylesheet" href="layui/css/layui.css">
+    <link rel="stylesheet" href="css/myxc.css">
 </head>
 <style>
     .layui-table-view .layui-table[lay-size="sm"] .layui-select-title .layui-input {
@@ -55,12 +56,18 @@
     }
 </style>
 <body>
-    <div class="layui-row">
-        <blockquote class="layui-elem-quote" style="text-align:right; padding-right: 100px;">
-            <button type="button" id="applyBtn" class="layui-btn layui-btn-normal">申请</button>
-            <button type="button" id="searchBtn" class="layui-btn layui-btn-normal">查询</button>
-        </blockquote>
-        <table class="layui-hide" lay-filter="giftAllocationTB" id="giftAllocationTB"></table>
+    <div class="layui-row settingPage">
+        <div class="row-box">
+            <div class="layui-col-lg12 layui-col-md12 layui-col-sm12 layui-col-xs12">
+
+                <blockquote class="layui-elem-quote" style="text-align:right; padding-right: 100px;">
+                    <button type="button" id="applyBtn" class="layui-btn layui-btn-normal">申请</button>
+                    <button type="button" id="searchBtn" class="layui-btn layui-btn-normal">查询</button>
+                </blockquote>
+                <table class="layui-hide" lay-filter="giftAllocationTB" id="giftAllocationTB"></table>
+            </div>
+        </div>
+
     </div>
 <!--申请-->
     <div id="openModel" style="display:none; padding: 15px;">

@@ -4,31 +4,38 @@
     <meta charset="UTF-8">
     <title>库存管理</title>
     <link rel="stylesheet" href="layui/css/layui.css">
+    <link rel="stylesheet" href="css/myxc.css">
 </head>
 <body>
-    <div class="layui-row" style="padding:15px">
-        <blockquote class="layui-elem-quote">
-            <form class="layui-form layui-form-pane">
-                <div class="layui-inline">
-                    <label class="layui-form-label">选择仓库</label>
-                    <div class="layui-input-inline">
-                        <select name="depotList" id="depotList" lay-filter="depotList"></select>
-                    </div>
-                    <div class="layui-input-inline">
-                        <button type="button" class="layui-btn layui-btn-normal" id="searchStock"><i class="layui-icon layui-icon-search"></i></button>
-                    </div>
-                </div>
+    <div class="layui-row settingPage" >
+        <div class="row-box">
+            <div class="layui-col-lg12 layui-col-md12 layui-col-sm12 layui-col-xs12">
+                <blockquote class="layui-elem-quote">
+                    <form class="layui-form layui-form-pane">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">选择仓库</label>
+                            <div class="layui-input-inline">
+                                <select name="depotList" id="depotList" lay-filter="depotList"></select>
+                            </div>
+                            <div class="layui-input-inline">
+                                <button type="button" class="layui-btn layui-btn-normal" id="searchStock"><i class="layui-icon layui-icon-search"></i></button>
+                            </div>
+                        </div>
 
-                <div class="layui-inline" style="float:right;">
+                        <div class="layui-inline" style="float:right;">
 
-                    <button type="button" class="layui-btn layui-btn-normal" i18n-content="查询模板">查询模板</button>
-                    <button type="button" class="layui-btn layui-btn-normal" id="exportBtn" i18n-content="查询模板">导出预警商品</button>
-                </div>
-            </form>
+                            <button type="button" class="layui-btn layui-btn-normal" i18n-content="查询模板">查询模板</button>
+                            <button type="button" class="layui-btn layui-btn-normal" id="exportBtn" i18n-content="查询模板">导出预警商品</button>
+                        </div>
+                    </form>
 
-            <!--<button type="button" class="layui-btn layui-btn-normal add" i18n-content="新增">新增</button>-->
-        </blockquote>
-        <table class="layui-hide" id="stockManage" lay-filter="stockManage"></table>
+                    <!--<button type="button" class="layui-btn layui-btn-normal add" i18n-content="新增">新增</button>-->
+                </blockquote>
+                <table class="layui-hide" id="stockManage" lay-filter="stockManage"></table>
+
+            </div>
+        </div>
+
     </div>
 </body>
 <script src="js/jquery-1.8.3-min.js"></script>

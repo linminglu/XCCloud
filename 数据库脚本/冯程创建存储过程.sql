@@ -817,3 +817,24 @@ as
 	set @Result = 1
 
 GO
+
+Create proc [dbo].[QueryMemberInfo](
+@MerchID varchar(15),@StoreID varchar(15),@SqlWhere varchar(MAX),@Result int out)
+as	
+	declare @sql nvarchar(max)
+	SET @sql = ''
+	SET @sql = @sql + 'select a.* from ('
+	SET @sql = @sql + 
+	'select a.ICCardID, b.UserName, c.MemberLevelID, c.MemberLevelName, a.CardType, a.Deposit, a.UpdateTime, a.EndDate, b.Gender, b.Mobile, b.IDCard, a.CreateTime, d.StoreName, a.CardStatus '+    
+    ' from Data_Member_Card a'+
+    ' inner join Data_Member_Card_Store s on a.ID=s.CardID and a.StoreID=s.StoreID '+
+    ' inner join Base_MemberInfo b on a.MemberID=b.ID ' +
+    ' inner join Data_MemberLevel c on a.MemberLevelID=c.MemberLevelID '+
+    ' left join Base_StoreInfo d on a.StoreID=d.StoreID ' +    
+    ' where a.MerchID=''' + @MerchID + ''' AND a.StoreID=''' + @StoreID + ''''
+    SET @sql = @sql + ') a' + @SqlWhere
+	exec (@sql)
+	set @Result = 1
+
+GO
+

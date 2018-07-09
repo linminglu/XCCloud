@@ -261,6 +261,6 @@ namespace XCCloudService.DBService.BLL
             sql = sql + sb.ToString();
 
             return true;
-        }
+        }        
     }
 }

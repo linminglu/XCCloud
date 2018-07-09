@@ -410,6 +410,7 @@
     <Content Include="Api\XCCloudH5\Member.ashx" />
     <Content Include="Api\XCCloudH5\Amusement.ashx" />
     <Content Include="Api\XCCloud\Schedule.ashx" />
+    <Content Include="Api\XCCloud\MemberManage.ashx" />
     <None Include="Properties\PublishProfiles\111.pubxml" />
     <None Include="Properties\PublishProfiles\aaa.pubxml" />
     <None Include="Properties\PublishProfiles\qqq.pubxml" />
@@ -1117,6 +1118,9 @@
     </Compile>
     <Compile Include="Api\XCCloud\GroupVerify.ashx.cs">
       <DependentUpon>GroupVerify.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="Api\XCCloud\MemberManage.ashx.cs">
+      <DependentUpon>MemberManage.ashx</DependentUpon>
     </Compile>
     <Compile Include="Api\XCCloud\ProjectTicket.ashx.cs">
       <DependentUpon>ProjectTicket.ashx</DependentUpon>
