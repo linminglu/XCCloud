@@ -209,23 +209,42 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 string errMsg = string.Empty;
-                if (!dicParas.Get("id").Validintnozero("套餐类别ID", out errMsg))
+                var idArr = dicParas.GetArray("id");
+
+                if (!idArr.Validarray("套餐类别ID列表", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-                var id = dicParas.Get("id").Toint();
-
-                var dict_SystemService = Dict_SystemService.I;
-                if (!dict_SystemService.Any(p => p.ID == id))
+                //开启EF事务
+                using (TransactionScope ts = new TransactionScope())
                 {
-                    errMsg = "该套餐类别不存在";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
+                    try
+                    {
+                        foreach (var id in idArr)
+                        {
+                            if (!id.Validintnozero("套餐类别ID", out errMsg))
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-                var dict_System = dict_SystemService.GetModels(p => p.ID == id).FirstOrDefault();
-                if (!dict_SystemService.Delete(dict_System))
-                {
-                    errMsg = "删除套餐类别失败";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            var dict_SystemService = Dict_SystemService.I;
+                            if (!dict_SystemService.Any(p => p.ID == (int)id))
+                            {
+                                errMsg = "该套餐类别不存在";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+
+                            var dict_System = dict_SystemService.GetModels(p => p.ID == (int)id).FirstOrDefault();
+                            if (!dict_SystemService.Delete(dict_System))
+                            {
+                                errMsg = "删除套餐类别失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+                        }
+
+                        ts.Complete();
+                    }
+                    catch (Exception ex)
+                    {
+                        return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, ex.Message);
+                    }
                 }
 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);

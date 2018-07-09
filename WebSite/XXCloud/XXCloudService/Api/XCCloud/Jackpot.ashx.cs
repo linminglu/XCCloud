@@ -8,6 +8,7 @@ using XCCloudService.Base;
 using XCCloudService.BLL.Container;
 using XCCloudService.BLL.IBLL.XCCloud;
 using XCCloudService.Common;
+using XCCloudService.Common.Extensions;
 using XCCloudService.DBService.BLL;
 using XCCloudService.Model.CustomModel.XCCloud;
 using XCCloudService.Model.XCCloud;
@@ -328,57 +329,62 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 string errMsg = string.Empty;
-                string id = dicParas.ContainsKey("id") ? (dicParas["id"] + "") : string.Empty;
-                if (string.IsNullOrEmpty(id))
-                {
-                    errMsg = "规则ID不能为空";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
+                var idArr = dicParas.GetArray("id");
 
-                int iId = Convert.ToInt32(id);
-                IData_Jackpot_LevelService data_Jackpot_LevelService = BLLContainer.Resolve<IData_Jackpot_LevelService>();
-                IData_JackpotInfoService data_JackpotInfoService = BLLContainer.Resolve<IData_JackpotInfoService>();
-                IData_Jackpot_MatrixService data_Jackpot_MatrixService = BLLContainer.Resolve<IData_Jackpot_MatrixService>();
-                if (data_Jackpot_MatrixService.Any(a => a.ActiveID == iId))
-                {
-                    errMsg = "该抽奖规则已使用不能删除";
+                if (!idArr.Validarray("规则ID列表", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
-
-                if (!data_JackpotInfoService.Any(a => a.ID == iId))
-                {
-                    errMsg = "该抽奖规则信息不存在";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
 
                 //开启EF事务
                 using (TransactionScope ts = new TransactionScope())
                 {
                     try
                     {
-                        var data_JackpotInfo = data_JackpotInfoService.GetModels(p => p.ID == iId).FirstOrDefault();
-                        data_JackpotInfoService.DeleteModel(data_JackpotInfo);
-
-                        var data_Jackpot_Level = data_Jackpot_LevelService.GetModels(p => p.ActiveID == iId);
-                        foreach (var model in data_Jackpot_Level)
+                        foreach (var id in idArr)
                         {
-                            data_Jackpot_LevelService.DeleteModel(model);
-                        }
+                            if (!id.Validintnozero("规则ID", out errMsg))
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-                        if (!data_JackpotInfoService.SaveChanges())
-                        {
-                            errMsg = "删除抽奖规则信息失败";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            int iId = Convert.ToInt32(id);
+                            IData_Jackpot_LevelService data_Jackpot_LevelService = BLLContainer.Resolve<IData_Jackpot_LevelService>();
+                            IData_JackpotInfoService data_JackpotInfoService = BLLContainer.Resolve<IData_JackpotInfoService>();
+                            IData_Jackpot_MatrixService data_Jackpot_MatrixService = BLLContainer.Resolve<IData_Jackpot_MatrixService>();
+                            if (data_Jackpot_MatrixService.Any(a => a.ActiveID == iId))
+                            {
+                                errMsg = "该抽奖规则已使用不能删除";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+
+                            if (!data_JackpotInfoService.Any(a => a.ID == iId))
+                            {
+                                errMsg = "该抽奖规则信息不存在";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+
+                            var data_JackpotInfo = data_JackpotInfoService.GetModels(p => p.ID == iId).FirstOrDefault();
+                            data_JackpotInfoService.DeleteModel(data_JackpotInfo);
+
+                            var data_Jackpot_Level = data_Jackpot_LevelService.GetModels(p => p.ActiveID == iId);
+                            foreach (var model in data_Jackpot_Level)
+                            {
+                                data_Jackpot_LevelService.DeleteModel(model);
+                            }
+
+                            if (!data_JackpotInfoService.SaveChanges())
+                            {
+                                errMsg = "删除抽奖规则信息失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
                         }
 
                         ts.Complete();
                     }
                     catch (Exception ex)
                     {
-                        return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, ex.Message);
+                        errMsg = ex.Message;
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                     }
                 }
-
+                                
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
             }
             catch (Exception e)

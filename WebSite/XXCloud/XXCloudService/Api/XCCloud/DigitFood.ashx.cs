@@ -183,42 +183,46 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 string errMsg = string.Empty;
-                int id = dicParas.Get("id").Toint(0);
-                if (id == 0)
-                {
-                    errMsg = "数字币套餐ID不能为空";
+                var idArr = dicParas.GetArray("id");
+
+                if (!idArr.Validarray("数字币套餐ID列表", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
 
                 //开启EF事务
                 using (TransactionScope ts = new TransactionScope())
                 {
                     try
                     {
-                        if (!Data_DigitCoinFoodService.I.Any(a => a.ID == id))
+                        foreach (var id in idArr)
                         {
-                            errMsg = "该数字币套餐不存在";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
+                            if (!id.Validintnozero("数字币套餐ID", out errMsg))
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-                        var data_DigitCoinFood = Data_DigitCoinFoodService.I.GetModels(p => p.ID == id).FirstOrDefault();
-                        if (!Data_DigitCoinFoodService.I.Delete(data_DigitCoinFood))
-                        {
-                            errMsg = "删除数字币套餐失败";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
+                            if (!Data_DigitCoinFoodService.I.Any(a => a.ID == (int)id))
+                            {
+                                errMsg = "该数字币套餐不存在";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
 
-                        foreach (var model in Data_Food_DetialService.I.GetModels(p => p.FoodType == (int)FoodDetailType.Digit && p.Status == 1))
-                        {
-                            model.Status = 0;
-                            Data_Food_DetialService.I.UpdateModel(model);
-                        }
+                            var data_DigitCoinFood = Data_DigitCoinFoodService.I.GetModels(p => p.ID == (int)id).FirstOrDefault();
+                            if (!Data_DigitCoinFoodService.I.Delete(data_DigitCoinFood))
+                            {
+                                errMsg = "删除数字币套餐失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
 
-                        if (!Data_Food_DetialService.I.SaveChanges())
-                        {
-                            errMsg = "删除套餐内容关联信息失败";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
+                            foreach (var model in Data_Food_DetialService.I.GetModels(p => p.FoodType == (int)FoodDetailType.Digit && p.Status == 1))
+                            {
+                                model.Status = 0;
+                                Data_Food_DetialService.I.UpdateModel(model);
+                            }
+
+                            if (!Data_Food_DetialService.I.SaveChanges())
+                            {
+                                errMsg = "删除套餐内容关联信息失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }   
+                        }                        
                         
                         ts.Complete();
                     }

@@ -228,29 +228,35 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 string errMsg = string.Empty;
-                if (!dicParas.Get("id").Validintnozero("规则ID", out errMsg))
+                var idArr = dicParas.GetArray("id");
+
+                if (!idArr.Validarray("规则ID列表", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-
-                var id = dicParas.Get("id").Toint();
-
+                
                 //开启EF事务
                 using (TransactionScope ts = new TransactionScope())
                 {
                     try
                     {
-                        if (!Data_FreeGiveRuleService.I.Any(a => a.ID == id))
+                        foreach (var id in idArr)
                         {
-                            errMsg = "该免费赠送规则不存在";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
+                            if (!id.Validintnozero("规则ID", out errMsg))
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-                        var model = Data_FreeGiveRuleService.I.GetModels(p => p.ID == id).FirstOrDefault();
-                        model.State = 0;
-                        if (!Data_FreeGiveRuleService.I.Update(model))
-                        {
-                            errMsg = "删除免费赠送规则失败";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
+                            if (!Data_FreeGiveRuleService.I.Any(a => a.ID == (int)id))
+                            {
+                                errMsg = "该免费赠送规则不存在";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+
+                            var model = Data_FreeGiveRuleService.I.GetModels(p => p.ID == (int)id).FirstOrDefault();
+                            model.State = 0;
+                            if (!Data_FreeGiveRuleService.I.Update(model))
+                            {
+                                errMsg = "删除免费赠送规则失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+                        }                        
 
                         ts.Complete();
                     }

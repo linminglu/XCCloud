@@ -759,49 +759,63 @@ namespace XXCloudService.Api.XCCloud
         {
             try
             {
-                string errMsg = string.Empty;
-                string merchId = dicParas.ContainsKey("merchId") ? dicParas["merchId"].ToString() : string.Empty;                
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string createUserId = userTokenKeyModel.LogId;
-                
-                #region 验证参数
 
-                if (string.IsNullOrWhiteSpace(merchId))
-                {
-                    errMsg = "商户编号不能为空";
+                string errMsg = string.Empty;
+                var merchIdArr = dicParas.GetArray("merchId");
+
+                if (!merchIdArr.Validarray("商户ID列表", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
 
-                if (!string.IsNullOrEmpty(merchId) && merchId.Length > 11)
+                //开启EF事务
+                using (TransactionScope ts = new TransactionScope())
                 {
-                    errMsg = "商户编号不能超过11个字符";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
-
-                #endregion
-                
-                IBase_MerchantInfoService base_MerchantInfoService = BLLContainer.Resolve<IBase_MerchantInfoService>();
-                if (base_MerchantInfoService.Any(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)))
-                {
-                    var base_MerchantInfoModel = base_MerchantInfoService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
-                    if (base_MerchantInfoModel.CreateType == (int)CreateType.Agent && !base_MerchantInfoModel.CreateUserID.Equals(createUserId, StringComparison.OrdinalIgnoreCase)) //代理商创建
+                    try
                     {
-                        errMsg = "该商户只有所属代理商能删除";
+                        foreach (string merchId in merchIdArr)
+                        {
+                            if (!merchId.Nonempty("商户ID", out errMsg))
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                            if (!string.IsNullOrEmpty(merchId) && merchId.Length > 11)
+                            {
+                                errMsg = "商户编号不能超过11个字符";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+
+                            IBase_MerchantInfoService base_MerchantInfoService = BLLContainer.Resolve<IBase_MerchantInfoService>();
+                            if (base_MerchantInfoService.Any(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)))
+                            {
+                                var base_MerchantInfoModel = base_MerchantInfoService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                                if (base_MerchantInfoModel.CreateType == (int)CreateType.Agent && !base_MerchantInfoModel.CreateUserID.Equals(createUserId, StringComparison.OrdinalIgnoreCase)) //代理商创建
+                                {
+                                    errMsg = "该商户只有所属代理商能删除";
+                                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                }
+
+                                base_MerchantInfoModel.MerchStatus = (int)MerchState.Stop;
+                                if (!base_MerchantInfoService.Update(base_MerchantInfoModel))
+                                {
+                                    errMsg = "删除商户信息失败";
+                                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                                }
+                            }
+                            else
+                            {
+                                errMsg = "该商户信息不存在";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+                        }
+
+                        ts.Complete();
+                    }
+                    catch (Exception ex)
+                    {
+                        errMsg = ex.Message;
                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                     }
-
-                    base_MerchantInfoModel.MerchStatus = (int)MerchState.Stop;
-                    if (!base_MerchantInfoService.Update(base_MerchantInfoModel))
-                    {
-                        errMsg = "删除商户信息失败";
-                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                    }
-                }
-                else
-                {
-                    errMsg = "该商户信息不存在";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
+                }                                                                             
                    
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
             }

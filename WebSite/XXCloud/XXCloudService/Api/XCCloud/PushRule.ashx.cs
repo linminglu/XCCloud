@@ -285,40 +285,46 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 string errMsg = string.Empty;
-                if (!dicParas.Get("id").Validintnozero("规则ID", out errMsg))
+                var idArr = dicParas.GetArray("id");
+
+                if (!idArr.Validarray("规则ID列表", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-
-                var id = dicParas.Get("id").Toint();
-
+                
                 //开启EF事务
                 using (TransactionScope ts = new TransactionScope())
                 {
                     try
                     {
-                        if (!Data_PushRuleService.I.Any(a => a.ID == id))
+                        foreach (var id in idArr)
                         {
-                            errMsg = "该规则不存在";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
+                            if (!id.Validintnozero("规则ID", out errMsg))
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-                        foreach (var gameModel in Data_PushRule_GameListService.I.GetModels(p => p.PushRuleID == id))
-                        {
-                            Data_PushRule_GameListService.I.DeleteModel(gameModel);
-                        }
+                            if (!Data_PushRuleService.I.Any(a => a.ID == (int)id))
+                            {
+                                errMsg = "该规则不存在";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
 
-                        foreach (var memberLevelModel in Data_PushRule_MemberLevelListService.I.GetModels(p => p.PushRuleID == id))
-                        {
-                            Data_PushRule_MemberLevelListService.I.DeleteModel(memberLevelModel);
-                        }
+                            foreach (var gameModel in Data_PushRule_GameListService.I.GetModels(p => p.PushRuleID == (int)id))
+                            {
+                                Data_PushRule_GameListService.I.DeleteModel(gameModel);
+                            }
 
-                        var model = Data_PushRuleService.I.GetModels(p => p.ID == id).FirstOrDefault();
-                        Data_PushRuleService.I.DeleteModel(model);
+                            foreach (var memberLevelModel in Data_PushRule_MemberLevelListService.I.GetModels(p => p.PushRuleID == (int)id))
+                            {
+                                Data_PushRule_MemberLevelListService.I.DeleteModel(memberLevelModel);
+                            }
 
-                        if (!Data_PushRuleService.I.SaveChanges())
-                        {
-                            errMsg = "删除投币规则失败";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
+                            var model = Data_PushRuleService.I.GetModels(p => p.ID == (int)id).FirstOrDefault();
+                            Data_PushRuleService.I.DeleteModel(model);
+
+                            if (!Data_PushRuleService.I.SaveChanges())
+                            {
+                                errMsg = "删除投币规则失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+                        }                        
 
                         ts.Complete();
                     }

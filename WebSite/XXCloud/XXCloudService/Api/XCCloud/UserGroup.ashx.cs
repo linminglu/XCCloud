@@ -8,6 +8,7 @@ using XCCloudService.Business;
 using XCCloudService.Base;
 using XCCloudService.Model.CustomModel.XCCloud;
 using XCCloudService.Common;
+using XCCloudService.Common.Extensions;
 using XCCloudService.BLL.IBLL.XCCloud;
 using XCCloudService.BLL.Container;
 using System.Data.SqlClient;
@@ -350,46 +351,48 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 string errMsg = string.Empty;
-                string groupId = dicParas.ContainsKey("groupId") ? dicParas["groupId"].ToString() : string.Empty;
+                var groupIdArr = dicParas.GetArray("groupId");
 
-                //验证参数
-                if (string.IsNullOrEmpty(groupId))
-                {
-                    errMsg = "工作组Id不能为空";
+                if (!groupIdArr.Validarray("工作组ID列表", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
-
+                
                 //开启EF事务
                 using (TransactionScope ts = new TransactionScope())
                 {
                     try
                     {
-                        IBase_UserGroupService base_UserGroupService = BLLContainer.Resolve<IBase_UserGroupService>();
-                        var base_UserGroup = base_UserGroupService.GetModels(p => p.ID.ToString().Equals(groupId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault<Base_UserGroup>();
-                        if (base_UserGroup == null)
+                        foreach (var groupId in groupIdArr)
                         {
-                            errMsg = "该工作组不存在";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
+                            if (!groupId.Validintnozero("工作组ID", out errMsg))
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-                        if (!base_UserGroupService.Delete(base_UserGroup))
-                        {
-                            errMsg = "更新数据库失败";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
+                            IBase_UserGroupService base_UserGroupService = BLLContainer.Resolve<IBase_UserGroupService>();
+                            var base_UserGroup = base_UserGroupService.GetModels(p => p.ID == (int)groupId).FirstOrDefault<Base_UserGroup>();
+                            if (base_UserGroup == null)
+                            {
+                                errMsg = "该工作组不存在";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
 
-                        var dbContext = DbContextFactory.CreateByModelNamespace(typeof(Base_UserGroup_Grant).Namespace);
-                        var base_UserGroup_Grants = dbContext.Set<Base_UserGroup_Grant>().Where(p => p.GroupID.ToString().Equals(groupId, StringComparison.OrdinalIgnoreCase)).ToList();
-                        foreach (var base_UserGroup_Grant in base_UserGroup_Grants)
-                        {
-                            dbContext.Entry(base_UserGroup_Grant).State = EntityState.Deleted;
-                        }
+                            if (!base_UserGroupService.Delete(base_UserGroup))
+                            {
+                                errMsg = "更新数据库失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
 
-                        if (dbContext.SaveChanges() < 0)
-                        {
-                            errMsg = "更新数据库失败";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
+                            var dbContext = DbContextFactory.CreateByModelNamespace(typeof(Base_UserGroup_Grant).Namespace);
+                            var base_UserGroup_Grants = dbContext.Set<Base_UserGroup_Grant>().Where(p => p.GroupID == (int)groupId).ToList();
+                            foreach (var base_UserGroup_Grant in base_UserGroup_Grants)
+                            {
+                                dbContext.Entry(base_UserGroup_Grant).State = EntityState.Deleted;
+                            }
+
+                            if (dbContext.SaveChanges() < 0)
+                            {
+                                errMsg = "更新数据库失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+                        }                        
 
                         ts.Complete();
                     }

@@ -558,31 +558,35 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 string errMsg = string.Empty;
-                int id = dicParas.Get("id").Toint(0);
-                if (id == 0)
-                {
-                    errMsg = "规则ID不能为空";
+                var idArr = dicParas.GetArray("id");
+
+                if (!idArr.Validarray("规则ID列表", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
 
                 //开启EF事务
                 using (TransactionScope ts = new TransactionScope())
                 {
                     try
                     {
-                        if (!Data_DiscountRuleService.I.Any(a => a.ID == id))
+                        foreach (var id in idArr)
                         {
-                            errMsg = "该满减优惠规则信息不存在";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
+                            if (!id.Validintnozero("规则ID", out errMsg))
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-                        var data_DiscountRule = Data_DiscountRuleService.I.GetModels(p => p.ID == id).FirstOrDefault();
-                        data_DiscountRule.State = 0;
-                        if (!Data_DiscountRuleService.I.Update(data_DiscountRule))
-                        {
-                            errMsg = "删除满减优惠规则信息失败";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
+                            if (!Data_DiscountRuleService.I.Any(a => a.ID == (int)id))
+                            {
+                                errMsg = "该满减优惠规则信息不存在";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+
+                            var data_DiscountRule = Data_DiscountRuleService.I.GetModels(p => p.ID == (int)id).FirstOrDefault();
+                            data_DiscountRule.State = 0;
+                            if (!Data_DiscountRuleService.I.Update(data_DiscountRule))
+                            {
+                                errMsg = "删除满减优惠规则信息失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+                        }                        
 
                         ts.Complete();
                     }

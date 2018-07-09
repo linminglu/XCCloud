@@ -9,6 +9,7 @@ using XCCloudService.Base;
 using XCCloudService.BLL.Container;
 using XCCloudService.BLL.IBLL.XCCloud;
 using XCCloudService.Common;
+using XCCloudService.Common.Extensions;
 using XCCloudService.DBService.BLL;
 using XCCloudService.Model.CustomModel.XCCloud;
 using XCCloudService.Model.XCCloud;
@@ -38,7 +39,7 @@ namespace XXCloudService.Api.XCCloud
 
                 if (conditions != null && conditions.Length > 0)
                 {
-                    if (!QueryBLL.GenDynamicSql(conditions, "a.", ref sqlWhere, ref parameters, out errMsg))
+                    if (!QueryBLL.GenDynamicSql(conditions, "c.", ref sqlWhere, ref parameters, out errMsg))
                     {
                         return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                     }
@@ -313,47 +314,51 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 string errMsg = string.Empty;
-                string id = dicParas.ContainsKey("id") ? (dicParas["id"] + "") : string.Empty;
-                if (string.IsNullOrEmpty(id))
-                {
-                    errMsg = "送局规则ID不能为空";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
+                var idArr = dicParas.GetArray("id");
 
-                int iId = Convert.ToInt32(id);
-                IData_GameFreeRuleService data_GameFreeRuleService = BLLContainer.Resolve<IData_GameFreeRuleService>();
-                IData_GameFreeRule_ListService data_GameFreeRule_ListService = BLLContainer.Resolve<IData_GameFreeRule_ListService>();
-                IFlw_Game_FreeService flw_Game_FreeService = BLLContainer.Resolve<IFlw_Game_FreeService>();
-                if (flw_Game_FreeService.Any(a => a.RuleID == iId))
-                {
-                    errMsg = "该送局规则已使用不能删除";
+                if (!idArr.Validarray("送局规则ID列表", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
-
-                if (!data_GameFreeRuleService.Any(a => a.ID == iId))
-                {
-                    errMsg = "该送局规则信息不存在";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
 
                 //开启EF事务
                 using (TransactionScope ts = new TransactionScope())
                 {
                     try
                     {
-                        var data_GameFreeRule = data_GameFreeRuleService.GetModels(p => p.ID == iId).FirstOrDefault();
-                        data_GameFreeRuleService.DeleteModel(data_GameFreeRule);                        
-
-                        var data_GameFreeRule_List = data_GameFreeRule_ListService.GetModels(p => p.RuleID == iId);
-                        foreach (var data_GameFreeRule_ListMode in data_GameFreeRule_List)
+                        foreach (var id in idArr)
                         {
-                            data_GameFreeRule_ListService.DeleteModel(data_GameFreeRule_ListMode);
-                        }
+                            if (!id.Validintnozero("送局规则ID", out errMsg))
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-                        if (!data_GameFreeRuleService.SaveChanges())
-                        {
-                            errMsg = "删除送局规则信息失败";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            int iId = Convert.ToInt32(id);
+                            IData_GameFreeRuleService data_GameFreeRuleService = BLLContainer.Resolve<IData_GameFreeRuleService>();
+                            IData_GameFreeRule_ListService data_GameFreeRule_ListService = BLLContainer.Resolve<IData_GameFreeRule_ListService>();
+                            IFlw_Game_FreeService flw_Game_FreeService = BLLContainer.Resolve<IFlw_Game_FreeService>();
+                            if (flw_Game_FreeService.Any(a => a.RuleID == iId))
+                            {
+                                errMsg = "该送局规则已使用不能删除";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+
+                            if (!data_GameFreeRuleService.Any(a => a.ID == iId))
+                            {
+                                errMsg = "该送局规则信息不存在";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+
+                            var data_GameFreeRule = data_GameFreeRuleService.GetModels(p => p.ID == iId).FirstOrDefault();
+                            data_GameFreeRuleService.DeleteModel(data_GameFreeRule);
+
+                            var data_GameFreeRule_List = data_GameFreeRule_ListService.GetModels(p => p.RuleID == iId);
+                            foreach (var data_GameFreeRule_ListMode in data_GameFreeRule_List)
+                            {
+                                data_GameFreeRule_ListService.DeleteModel(data_GameFreeRule_ListMode);
+                            }
+
+                            if (!data_GameFreeRuleService.SaveChanges())
+                            {
+                                errMsg = "删除送局规则信息失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
                         }
 
                         ts.Complete();
@@ -362,7 +367,7 @@ namespace XXCloudService.Api.XCCloud
                     {
                         return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, ex.Message);
                     }
-                }
+                }                
                 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
             }

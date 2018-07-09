@@ -14,6 +14,8 @@ using XCCloudService.DAL;
 using XCCloudService.Model.CustomModel.XCCloud;
 using XCCloudService.Model.XCCloud;
 using XCCloudService.Common.Extensions;
+using System.Data.Entity.Validation;
+using XXCloudService.Api.XCCloud.Common;
 
 namespace XXCloudService.Api.XCCloud
 {
@@ -195,42 +197,43 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 string errMsg = string.Empty;
-                string id = dicParas.ContainsKey("id") ? (dicParas["id"] + "") : string.Empty;
-                
-                #region 验证参数
-                if (string.IsNullOrEmpty(id))
-                {
-                    errMsg = "门店权重ID不能为空";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
-                #endregion
+                var idArr = dicParas.GetArray("id");
+
+                if (!idArr.Validarray("门店权重ID列表", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);               
 
                 //开启EF事务
                 using (TransactionScope ts = new TransactionScope())
                 {
                     try
                     {
-                        IBase_StoreWeightService base_StoreWeightService = BLLContainer.Resolve<IBase_StoreWeightService>();
-                        int iId = Convert.ToInt32(id);
-                        var base_StoreWeight = base_StoreWeightService.GetModels(p => p.ID == iId).FirstOrDefault();
-                        if (!base_StoreWeightService.Delete(base_StoreWeight))
+                        foreach (var id in idArr)
                         {
-                            errMsg = "删除门店权重信息失败";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
+                            if (!id.Validintnozero("门店权重ID", out errMsg))
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-                        var dbContext = DbContextFactory.CreateByModelNamespace(typeof(Base_StoreWeight_Game).Namespace);
-                        var base_StoreWeight_Game = dbContext.Set<Base_StoreWeight_Game>().Where(p => p.WeightID == iId).ToList();
-                        foreach (var model in base_StoreWeight_Game)
-                        {
-                            dbContext.Entry(model).State = EntityState.Deleted;
-                        }
+                            IBase_StoreWeightService base_StoreWeightService = BLLContainer.Resolve<IBase_StoreWeightService>();
+                            int iId = Convert.ToInt32(id);
+                            var base_StoreWeight = base_StoreWeightService.GetModels(p => p.ID == iId).FirstOrDefault();
+                            if (!base_StoreWeightService.Delete(base_StoreWeight))
+                            {
+                                errMsg = "删除门店权重信息失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
 
-                        if (dbContext.SaveChanges() < 0)
-                        {
-                            errMsg = "删除门店权重游戏机信息失败";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
+                            var dbContext = DbContextFactory.CreateByModelNamespace(typeof(Base_StoreWeight_Game).Namespace);
+                            var base_StoreWeight_Game = dbContext.Set<Base_StoreWeight_Game>().Where(p => p.WeightID == iId).ToList();
+                            foreach (var model in base_StoreWeight_Game)
+                            {
+                                dbContext.Entry(model).State = EntityState.Deleted;
+                            }
+
+                            if (dbContext.SaveChanges() < 0)
+                            {
+                                errMsg = "删除门店权重游戏机信息失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+                        }                        
 
                         ts.Complete();
                     }
@@ -677,13 +680,10 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 string errMsg = string.Empty;
-                string id = dicParas.ContainsKey("id") ? (dicParas["id"] + "") : string.Empty;
+                var id = dicParas.Get("id");
 
-                if (string.IsNullOrEmpty(id))
-                {
-                    errMsg = "门店连锁规则ID不能为空";
+                if (!id.Validintnozero("门店连锁规则ID", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
 
                 int iId = Convert.ToInt32(id);
                 IBase_ChainRule_StoreService base_ChainRule_StoreService = BLLContainer.Resolve<IBase_ChainRule_StoreService>();

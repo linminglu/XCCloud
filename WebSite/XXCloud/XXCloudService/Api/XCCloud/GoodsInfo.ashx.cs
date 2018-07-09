@@ -431,25 +431,48 @@ namespace XXCloudService.Api.XCCloud
                 var merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
 
                 var errMsg = string.Empty;
-                if (!dicParas.Get("id").Validint("商品ID", out errMsg))
+                var idArr = dicParas.GetArray("id");
+
+                if (!idArr.Validarray("商品ID列表", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-                var id = dicParas.Get("id").Toint();
+                //开启EF事务
+                using (TransactionScope ts = new TransactionScope())
+                {
+                    try
+                    {
+                        foreach (var id in idArr)
+                        {
+                            if (!id.Validintnozero("商品ID", out errMsg))
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-                if (!Base_GoodsInfoService.I.Any(a => a.ID == id))
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, "该商品信息不存在");
+                            if (!Base_GoodsInfoService.I.Any(a => a.ID == (int)id))
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, "该商品信息不存在");
 
-                var base_GoodsInfo = Base_GoodsInfoService.I.GetModels(p => p.ID == id).FirstOrDefault();
+                            var base_GoodsInfo = Base_GoodsInfoService.I.GetModels(p => p.ID == (int)id).FirstOrDefault();
 
-                if (!storeId.IsNull() && base_GoodsInfo.StoreID != storeId)
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, "无法删除其他门店的商品信息");
-                if (base_GoodsInfo.MerchID != merchId)
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, "无法删除非此商户下的商品信息");
+                            if (!storeId.IsNull() && base_GoodsInfo.StoreID != storeId)
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, "无法删除其他门店的商品信息");
+                            if (base_GoodsInfo.MerchID != merchId)
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, "无法删除非此商户下的商品信息");
 
-                base_GoodsInfo.Status = 0;
+                            base_GoodsInfo.Status = 0;
 
-                if (!Base_GoodsInfoService.I.Update(base_GoodsInfo))
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, "商品信息删除失败");
+                            if (!Base_GoodsInfoService.I.Update(base_GoodsInfo))
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, "商品信息删除失败");
+                        }
+
+                        ts.Complete();
+                    }
+                    catch (DbEntityValidationException e)
+                    {
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, e.EntityValidationErrors.ToErrors());
+                    }
+                    catch (Exception e)
+                    {
+                        return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+                    }
+                }                
 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
             }
@@ -2122,55 +2145,59 @@ namespace XXCloudService.Api.XCCloud
                 var logType = userTokenKeyModel.LogType;
 
                 var errMsg = string.Empty;
-                var requestId = dicParas.Get("requestId").Toint(0);
-                if (requestId == 0)
-                {
-                    errMsg = "调拨单ID不能为空";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
+                var requestIdArr = dicParas.GetArray("requestId");
 
+                if (!requestIdArr.Validarray("调拨单ID列表", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+               
                 //开启EF事务
                 using (TransactionScope ts = new TransactionScope())
                 {
                     try
                     {
-                        if (!Data_GoodRequestService.I.Any(a => a.ID == requestId))
+                        foreach (var requestId in requestIdArr)
                         {
-                            errMsg = "该调拨单不存在";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
+                            if (!requestId.Validintnozero("调拨单ID", out errMsg))
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-                        if (Data_GoodStock_RecordService.I.Any(a => a.SourceType == (int)SourceType.GoodRequest && a.SourceID == requestId))
-                        {
-                            errMsg = "该调拨单存在出入库信息不能删除";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
-                        
-                        //工作流更新
-                        var wf = new GoodReqWorkFlow(requestId, userId, logType, storeId);
-                        if (!wf.Delete(out errMsg))
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            if (!Data_GoodRequestService.I.Any(a => a.ID == (int)requestId))
+                            {
+                                errMsg = "该调拨单不存在";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
 
-                        //删除调拨明细
-                        var requestModel = Data_GoodRequestService.I.GetModels(p => p.ID == requestId).FirstOrDefault();
-                        Data_GoodRequestService.I.DeleteModel(requestModel);
+                            if (Data_GoodStock_RecordService.I.Any(a => a.SourceType == (int)SourceType.GoodRequest && a.SourceID == (int)requestId))
+                            {
+                                errMsg = "该调拨单存在出入库信息不能删除";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
 
-                        foreach (var detailModel in Data_GoodRequest_ListService.I.GetModels(p => p.RequestID == requestId))
-                        {
-                            Data_GoodRequest_ListService.I.DeleteModel(detailModel);
-                        }
+                            //工作流更新
+                            var wf = new GoodReqWorkFlow((int)requestId, userId, logType, storeId);
+                            if (!wf.Delete(out errMsg))
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-                        if (!Data_GoodRequest_ListService.I.SaveChanges())
-                        {
-                            errMsg = "更新调拨明细失败";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
+                            //删除调拨明细
+                            var requestModel = Data_GoodRequestService.I.GetModels(p => p.ID == (int)requestId).FirstOrDefault();
+                            Data_GoodRequestService.I.DeleteModel(requestModel);
 
-                        if (!Data_GoodRequestService.I.SaveChanges())
-                        {
-                            errMsg = "更新调拨单失败";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
+                            foreach (var detailModel in Data_GoodRequest_ListService.I.GetModels(p => p.RequestID == (int)requestId))
+                            {
+                                Data_GoodRequest_ListService.I.DeleteModel(detailModel);
+                            }
+
+                            if (!Data_GoodRequest_ListService.I.SaveChanges())
+                            {
+                                errMsg = "更新调拨明细失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+
+                            if (!Data_GoodRequestService.I.SaveChanges())
+                            {
+                                errMsg = "更新调拨单失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+                        }                        
                                                 
                         ts.Complete();
                     }
@@ -2536,42 +2563,48 @@ namespace XXCloudService.Api.XCCloud
                 string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
 
                 string errMsg = string.Empty;
-                if (!dicParas.Get("id").Validintnozero("入库单ID", out errMsg))
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                var idArr = dicParas.GetArray("id");
 
-                var id = dicParas.Get("id").Toint();
+                if (!idArr.Validarray("入库单ID列表", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
                 //开启EF事务
                 using (TransactionScope ts = new TransactionScope())
                 {
                     try
                     {
-                        if (!Data_GoodStorageService.I.Any(a => a.ID == id))
+                        foreach (var id in idArr)
                         {
-                            errMsg = "该入库单不存在";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
+                            if (!id.Validintnozero("入库单ID", out errMsg))
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-                        var model = Data_GoodStorageService.I.GetModels(p => p.ID == id).FirstOrDefault();
-                        if (model.AuthorFlag != (int)GoodOutInState.Pending)
-                        {
-                            errMsg = "已审核的入库信息不能删除";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
+                            if (!Data_GoodStorageService.I.Any(a => a.ID == (int)id))
+                            {
+                                errMsg = "该入库单不存在";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
 
-                        Data_GoodStorageService.I.DeleteModel(model);
+                            var model = Data_GoodStorageService.I.GetModels(p => p.ID == (int)id).FirstOrDefault();
+                            if (model.AuthorFlag != (int)GoodOutInState.Pending)
+                            {
+                                errMsg = "已审核的入库信息不能删除";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
 
-                        var storageOrderId = model.StorageOrderID;
-                        foreach (var detailModel in Data_GoodStorage_DetailService.I.GetModels(p => p.StorageOrderID == storageOrderId))
-                        {
-                            Data_GoodStorage_DetailService.I.DeleteModel(detailModel);
-                        }
+                            Data_GoodStorageService.I.DeleteModel(model);
 
-                        if (!Data_GoodStorageService.I.SaveChanges())
-                        {
-                            errMsg = "删除入库单失败";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
+                            var storageOrderId = model.StorageOrderID;
+                            foreach (var detailModel in Data_GoodStorage_DetailService.I.GetModels(p => p.StorageOrderID == storageOrderId))
+                            {
+                                Data_GoodStorage_DetailService.I.DeleteModel(detailModel);
+                            }
+
+                            if (!Data_GoodStorageService.I.SaveChanges())
+                            {
+                                errMsg = "删除入库单失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+                        }                        
 
                         ts.Complete();
                     }
@@ -3342,42 +3375,48 @@ namespace XXCloudService.Api.XCCloud
                 string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
 
                 string errMsg = string.Empty;
-                if (!dicParas.Get("id").Validintnozero("出库单ID", out errMsg))
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                var idArr = dicParas.GetArray("id");
 
-                var id = dicParas.Get("id").Toint();
+                if (!idArr.Validarray("出库单ID列表", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
                 //开启EF事务
                 using (TransactionScope ts = new TransactionScope())
                 {
                     try
                     {
-                        if (!Data_GoodOutOrderService.I.Any(a => a.ID == id))
+                        foreach (var id in idArr)
                         {
-                            errMsg = "该出库单不存在";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
+                            if (!id.Validintnozero("出库单ID", out errMsg))
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-                        var model = Data_GoodOutOrderService.I.GetModels(p => p.ID == id).FirstOrDefault();
-                        if (model.State != (int)GoodOutInState.Pending)
-                        {
-                            errMsg = "已审核的出库信息不能删除";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
+                            if (!Data_GoodOutOrderService.I.Any(a => a.ID == (int)id))
+                            {
+                                errMsg = "该出库单不存在";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
 
-                        Data_GoodOutOrderService.I.DeleteModel(model);
+                            var model = Data_GoodOutOrderService.I.GetModels(p => p.ID == (int)id).FirstOrDefault();
+                            if (model.State != (int)GoodOutInState.Pending)
+                            {
+                                errMsg = "已审核的出库信息不能删除";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
 
-                        var orderId = model.OrderID;
-                        foreach (var detailModel in Data_GoodOutOrder_DetailService.I.GetModels(p => p.OrderID == orderId))
-                        {
-                            Data_GoodOutOrder_DetailService.I.DeleteModel(detailModel);
-                        }
+                            Data_GoodOutOrderService.I.DeleteModel(model);
 
-                        if (!Data_GoodOutOrderService.I.SaveChanges())
-                        {
-                            errMsg = "删除入库单失败";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
+                            var orderId = model.OrderID;
+                            foreach (var detailModel in Data_GoodOutOrder_DetailService.I.GetModels(p => p.OrderID == orderId))
+                            {
+                                Data_GoodOutOrder_DetailService.I.DeleteModel(detailModel);
+                            }
+
+                            if (!Data_GoodOutOrderService.I.SaveChanges())
+                            {
+                                errMsg = "删除入库单失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+                        }                        
 
                         ts.Complete();
                     }

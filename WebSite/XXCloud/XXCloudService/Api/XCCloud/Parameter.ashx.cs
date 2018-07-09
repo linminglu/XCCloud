@@ -511,28 +511,45 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 string errMsg = string.Empty;
-                int id = dicParas.Get("id").Toint(0);
+                var idArr = dicParas.GetArray("id");
 
-                if (id == 0)
-                {
-                    errMsg = "返还规则ID不能为空";
+                if (!idArr.Validarray("返还规则ID列表", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
 
-                var data_GivebackRule = Data_GivebackRuleService.I.GetModels(p => p.ID == id).FirstOrDefault();
-                if (data_GivebackRule == null)
+                //开启EF事务
+                using (TransactionScope ts = new TransactionScope())
                 {
-                    errMsg = "该返还规则不存在";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
+                    try
+                    {
+                        foreach (var id in idArr)
+                        {
+                            if (!id.Validintnozero("返还规则ID", out errMsg))
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-                if (!Data_GivebackRuleService.I.Delete(data_GivebackRule))
-                {
-                    errMsg = "删除返还规则失败";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
+                            var data_GivebackRule = Data_GivebackRuleService.I.GetModels(p => p.ID == (int)id).FirstOrDefault();
+                            if (data_GivebackRule == null)
+                            {
+                                errMsg = "该返还规则不存在";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
 
-                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, data_GivebackRule);
+                            if (!Data_GivebackRuleService.I.Delete(data_GivebackRule))
+                            {
+                                errMsg = "删除返还规则失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+                        }
+
+                        ts.Complete();
+                    }
+                    catch (Exception ex)
+                    {
+                        errMsg = ex.Message;
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
+                }                
+
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
             }
             catch (Exception e)
             {

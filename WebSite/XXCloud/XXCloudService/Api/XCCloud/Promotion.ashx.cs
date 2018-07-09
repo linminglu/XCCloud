@@ -833,27 +833,44 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 string errMsg = string.Empty;
-                int foodId = dicParas.Get("foodId").Toint(0);
+                var foodIdArr = dicParas.GetArray("foodId");
 
-                if (foodId == 0)
-                {
-                    errMsg = "套餐ID不能为空";
+                if (!foodIdArr.Validarray("套餐ID列表", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
 
-                if (!Data_FoodInfoService.I.Any(p => p.FoodID == foodId))
+                //开启EF事务
+                using (TransactionScope ts = new TransactionScope())
                 {
-                    errMsg = "该套餐信息不存在";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
+                    try
+                    {
+                        foreach (var foodId in foodIdArr)
+                        {
+                            if (!foodId.Validintnozero("套餐ID", out errMsg))
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-                var data_FoodInfo = Data_FoodInfoService.I.GetModels(p => p.FoodID == foodId).FirstOrDefault();
-                data_FoodInfo.FoodState = (int)FoodState.Invalid;
-                if (!Data_FoodInfoService.I.Update(data_FoodInfo))
-                {
-                    errMsg = "删除套餐信息失败";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
+                            if (!Data_FoodInfoService.I.Any(p => p.FoodID == (int)foodId))
+                            {
+                                errMsg = "该套餐信息不存在";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+
+                            var data_FoodInfo = Data_FoodInfoService.I.GetModels(p => p.FoodID == (int)foodId).FirstOrDefault();
+                            data_FoodInfo.FoodState = (int)FoodState.Invalid;
+                            if (!Data_FoodInfoService.I.Update(data_FoodInfo))
+                            {
+                                errMsg = "删除套餐信息失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+                        }
+
+                        ts.Complete();
+                    }
+                    catch (Exception ex)
+                    {
+                        errMsg = ex.Message;
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
+                }                
 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
             }

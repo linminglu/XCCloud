@@ -178,30 +178,36 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 string errMsg = string.Empty;
-                if (!dicParas.Get("id").Validintnozero("规则ID", out errMsg))
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                var idArr = dicParas.GetArray("id");
 
-                var id = dicParas.Get("id").Toint();
+                if (!idArr.Validarray("规则ID列表", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
                 //开启EF事务
                 using (TransactionScope ts = new TransactionScope())
                 {
                     try
                     {
-                        if (!Data_GameEncourageService.I.Any(a => a.ID == id))
+                        foreach (var id in idArr)
                         {
-                            errMsg = "该规则不存在";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
+                            if (!id.Validintnozero("规则ID", out errMsg))
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-                        var model = Data_GameEncourageService.I.GetModels(p => p.ID == id).FirstOrDefault();
-                        Data_GameEncourageService.I.DeleteModel(model);
+                            if (!Data_GameEncourageService.I.Any(a => a.ID == (int)id))
+                            {
+                                errMsg = "该规则不存在";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
 
-                        if (!Data_GameEncourageService.I.SaveChanges())
-                        {
-                            errMsg = "删除鼓励续玩规则失败";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
+                            var model = Data_GameEncourageService.I.GetModels(p => p.ID == (int)id).FirstOrDefault();
+                            Data_GameEncourageService.I.DeleteModel(model);
+
+                            if (!Data_GameEncourageService.I.SaveChanges())
+                            {
+                                errMsg = "删除鼓励续玩规则失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+                        }                        
 
                         ts.Complete();
                     }

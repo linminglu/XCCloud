@@ -857,28 +857,48 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 string errMsg = string.Empty;
-                string id = dicParas.ContainsKey("id") ? (dicParas["id"] + "") : string.Empty;
-                if (string.IsNullOrEmpty(id))
-                {
-                    errMsg = "游戏机流水号不能为空";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
+                var idArr = dicParas.GetArray("id");
 
-                int iId = Convert.ToInt32(id);
-                IData_GameInfoService data_GameInfoService = BLLContainer.Resolve<IData_GameInfoService>();
-                if (!data_GameInfoService.Any(a => a.ID == iId))
-                {
-                    errMsg = "该游戏机信息不存在";
+                if (!idArr.Validarray("游戏机ID列表", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
 
-                var data_GameInfo = data_GameInfoService.GetModels(p => p.ID == iId).FirstOrDefault();
-                //data_GameInfo.State = 0;
-                if (!data_GameInfoService.Delete(data_GameInfo))
+                //开启EF事务
+                using (TransactionScope ts = new TransactionScope())
                 {
-                    errMsg = "删除游戏机信息失败";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
+                    try
+                    {
+                        foreach (var id in idArr)
+                        {
+                            if (!id.Validintnozero("游戏机ID", out errMsg))
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+
+                            int iId = Convert.ToInt32(id);
+                            IData_GameInfoService data_GameInfoService = BLLContainer.Resolve<IData_GameInfoService>();
+                            if (!data_GameInfoService.Any(a => a.ID == iId))
+                            {
+                                errMsg = "该游戏机信息不存在";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+
+                            var data_GameInfo = data_GameInfoService.GetModels(p => p.ID == iId).FirstOrDefault();
+                            if (!data_GameInfoService.Delete(data_GameInfo))
+                            {
+                                errMsg = "删除游戏机信息失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+                        }
+
+                        ts.Complete();
+                    }
+                    catch (DbEntityValidationException e)
+                    {
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, e.EntityValidationErrors.ToErrors());
+                    }
+                    catch (Exception e)
+                    {
+                        return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+                    }
+                }                
 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
             }
@@ -1169,24 +1189,47 @@ namespace XXCloudService.Api.XCCloud
                 string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
 
                 string errMsg = string.Empty;
-                if (!dicParas.Get("id").Validintnozero("会员扫码规则ID", out errMsg))
+                var idArr = dicParas.GetArray("id");
+
+                if (!idArr.Validarray("会员扫码规则ID列表", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-                var id = dicParas.Get("id").Toint();
-
-                if (!Data_GameAPP_MemberRuleService.I.Any(a => a.ID == id))
+                //开启EF事务
+                using (TransactionScope ts = new TransactionScope())
                 {
-                    errMsg = "该会员扫码规则信息不存在";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
+                    try
+                    {
+                        foreach (var id in idArr)
+                        {
+                            if (!id.Validintnozero("会员扫码规则ID", out errMsg))
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-                var data_GameAPP_MemberRule = Data_GameAPP_MemberRuleService.I.GetModels(p => p.ID == id).FirstOrDefault();
+                            if (!Data_GameAPP_MemberRuleService.I.Any(a => a.ID == (int)id))
+                            {
+                                errMsg = "该会员扫码规则信息不存在";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
 
-                if (!Data_GameAPP_MemberRuleService.I.Delete(data_GameAPP_MemberRule))
-                {
-                    errMsg = "删除会员扫码规则失败";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }                
+                            var data_GameAPP_MemberRule = Data_GameAPP_MemberRuleService.I.GetModels(p => p.ID == (int)id).FirstOrDefault();
+
+                            if (!Data_GameAPP_MemberRuleService.I.Delete(data_GameAPP_MemberRule))
+                            {
+                                errMsg = "删除会员扫码规则失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            } 
+                        }
+
+                        ts.Complete();
+                    }
+                    catch (DbEntityValidationException e)
+                    {
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, e.EntityValidationErrors.ToErrors());
+                    }
+                    catch (Exception e)
+                    {
+                        return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+                    }
+                }                               
 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
             }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.Data.Entity.Validation;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
@@ -22,6 +23,7 @@ using XCCloudService.Model.CustomModel.XCCloud;
 using XCCloudService.Model.WeiXin.Message;
 using XCCloudService.Model.XCCloud;
 using XCCloudService.WeiXin.Message;
+using XXCloudService.Api.XCCloud.Common;
 
 namespace XCCloudService.Api.XCCloud
 {
@@ -1060,29 +1062,49 @@ namespace XCCloudService.Api.XCCloud
             try
             {
                 string errMsg = string.Empty;
-                string storeId = dicParas.ContainsKey("storeId") ? dicParas["storeId"].ToString() : string.Empty;                
-                
-                if (string.IsNullOrEmpty(storeId))
-                {
-                    errMsg = "门店编号不能为空";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
+                var storeIdArr = dicParas.GetArray("storeId");
 
-                IBase_StoreInfoService base_StoreInfoService = BLLContainer.Resolve<IBase_StoreInfoService>();
-                var base_StoreInfoModel = base_StoreInfoService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
-                if (base_StoreInfoModel == null)
-                {
-                    errMsg = "门店信息不存在";
+                if (!storeIdArr.Validarray("门店ID列表", out errMsg))
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }
 
-                base_StoreInfoModel.StoreState = (int)StoreState.Cancel;
-                if (!base_StoreInfoService.Update(base_StoreInfoModel))
+                //开启EF事务
+                using (TransactionScope ts = new TransactionScope())
                 {
-                    errMsg = "删除门店信息失败";
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                }                
+                    try
+                    {
+                        foreach (string storeId in storeIdArr)
+                        {
+                            if (!storeId.Validintnozero("门店ID", out errMsg))
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
+                            IBase_StoreInfoService base_StoreInfoService = BLLContainer.Resolve<IBase_StoreInfoService>();
+                            var base_StoreInfoModel = base_StoreInfoService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                            if (base_StoreInfoModel == null)
+                            {
+                                errMsg = "门店信息不存在";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+
+                            base_StoreInfoModel.StoreState = (int)StoreState.Cancel;
+                            if (!base_StoreInfoService.Update(base_StoreInfoModel))
+                            {
+                                errMsg = "删除门店信息失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            } 
+                        }
+
+                        ts.Complete();
+                    }
+                    catch (DbEntityValidationException e)
+                    {
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, e.EntityValidationErrors.ToErrors());
+                    }
+                    catch (Exception e)
+                    {
+                        return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+                    }
+                }      
+                                               
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
             }
             catch (Exception e)

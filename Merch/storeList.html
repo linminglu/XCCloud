@@ -8,8 +8,10 @@
 	<link rel="stylesheet" href="css/manchartData.css">
 	<link rel="stylesheet" href="layui/css/layui.css">
 	<link rel="stylesheet" href="css/magicsuggest-1.2.2.css">
+	<link rel="stylesheet" href="css/myxc.css">
 	<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=rKXLFp7Q5LaRdax2dtrxkLzzQLrbGG4T"></script>
     <script type="text/javascript" src="http://developer.baidu.com/map/jsdemo/demo/convertor.js"></script>
+
 	<title>门店列表</title>
 </head>
 <style>
@@ -32,14 +34,33 @@
 	}
 </style>
 <body>
-	<div class="" style="padding: 5px">
-		<div class="layui-col-md12 layui-col-lg12 layui-col-sm12" style="text-align: right;">
-			 <button type="button" class="layui-btn layui-btn_serch" data-type="reload" id="shBtn"><i class="layui-icon">&#xe615;</i>高级搜索</button>
-			 <button type="button" class="layui-btn layui-btn-normal addbtn" id="addNewStore">新增</button>
-		</div>
-		<div class="layui-col-md12 layui-col-lg12 layui-col-sm12">
-			<table class="layui-hide" id="storeListTable"  lay-filter="storeList"></table>
-		</div>
+	<div class="lay-row settingPage">
+        <div class="row-box">
+            <div class="layui-col-md12 layui-col-sm12 layui-col-lg12">
+                <blockquote class="layui-elem-quote layui-col-md12 layui-col-sm12 layui-col-lg12">
+                    <div class="layui-form layui-form-pane layui-col-md9" id="form1">
+                        <div class="layui-form-item" id="serchMode"></div>
+                    </div>
+
+                    <div class="layui-col-md2" id="form2Box" >
+                        <div class="layui-form layui-form-pane" id="form2">
+                            <div id="tantion" class="layui-form-item">
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="button" class="layui-btn layui-btn-normal layui-col-md1" i18n-content="查询模板" id="searchBtn">查询</button>
+                </blockquote>
+            </div>
+            <div class="layui-col-lg12 layui-col-md12 layui-col-sm12">
+                <table class="layui-hide" id="storeListTable"  lay-filter="storeList"></table>
+
+                <button type="button" class="layui-btn layui-btn-sm layui-btn-primary" id="editBtn">编辑</button>
+                <button type="button" class="layui-btn  layui-btn-sm layui-btn-normal" id="addNewStore">新增</button>
+                <button type="button" class="layui-btn layui-btn-sm layui-btn-danger " id="delBtn">删除</button>
+            </div>
+        </div>
+
 	</div>
 
 	<form action="" class="formStore goodIsAll layui-form layui-form-pane" style="display: none;padding: 15px;">
@@ -597,33 +618,14 @@
 		</form>
 	</div>
 
-	<div id="searchModel" style="display: none">
-		<form action="" class="layui-form goodIsAll" style="padding: 15px">
-			<div class="layui-form-item layui-form-pane">
-				<label class="layui-form-label">查询条件</label>
-				<div class="layui-input-block" id="searchListUp" style="border: 1px dashed #f0ad4e">
 
-				</div>
-			</div>
-			<div class="layui-form-item layui-form-pane">
-				<div class="" pane id="searchListDown"  style="border: 1px dashed #f0ad4e;margin-left: 110px" lay-filter="sld">
-				</div>
-			</div>
-			<div class="layui-form-item layui-form-pane" id="searchbox" style="margin-left: 110px">
-			</div>
-			<div class="layui-col-md-offset9" id="submitBtn">
-				<button type="reset" class="layui-btn layui-btn-normal" id="searchReset">重置</button>
-				<button type="button" class="layui-btn layui-btn-danger" id="searchCAncle" onclick="closePage()">取消</button>
-				<button type="button" class="layui-btn layui-btn-normal" id="searchBtn">查询</button>
-			</div>
-		</form>
-	</div>
 </body>
 <script src="js/jquery-1.8.3-min.js"></script>
 <script src="layui/layui.js"></script>
 <script src="js/magicsuggest-1.2.2.js"></script>
 <script src="js/manchartSystem.js"></script>
 <script src="js/storeSystem.js"></script>
+<script src="js/searchModel.js"></script>
 <script>
 	let xc=xcActionSystem.prototype;
         var token=getStorage('token'),logMsg=JSON.parse(getStorage('logMsg')),bankTypes='',selttleTypes='',storeStatusModify='',settleTypeModify='';
@@ -680,6 +682,19 @@
         xc.getInitData(parm);
         layui.use(['upload','form','layer','table','laydate'], function(){
             var $ = layui.jquery,upload = layui.upload,form=layui.form,layer=layui.layer,table=layui.table,laydate=layui.laydate;
+            seachModel({
+                'elem1': 'tantion',
+                'elem2': 'serchMode',
+                'pagename': 'storeListSearch',
+                'processname': 'storeListSearch',
+                'token': token1,
+                'form': form,
+                'layer': layer,
+                'laydate':laydate,
+                'searchBtn': 'searchBtn',
+                'xc':xc,
+                'parm':parm
+            })
             table.on('tool(storeList)', function (obj) { //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
                 var data = obj.data; //获得当前行数据
                 var storeId=data.StoreID;

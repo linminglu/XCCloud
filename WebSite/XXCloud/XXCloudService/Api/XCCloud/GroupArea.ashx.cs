@@ -216,36 +216,42 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 string errMsg = string.Empty;
-                if(!dicParas.Get("id").Validintnozero("区域ID", out errMsg))
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                var idArr = dicParas.GetArray("id");
 
-                var id = dicParas.Get("id").Toint();
+                if (!idArr.Validarray("区域ID列表", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
                 //开启EF事务
                 using (TransactionScope ts = new TransactionScope())
                 {
                     try
                     {
-                        if (!Data_GroupAreaService.I.Any(p => p.ID == id))
+                        foreach (var id in idArr)
                         {
-                            errMsg = "该区域设置不存在";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
+                            if (!id.Validintnozero("区域ID", out errMsg))
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-                        foreach (var model in Data_ProjectInfoService.I.GetModels(p => p.AreaType == id && p.State == 1))
-                        {
-                            model.AreaType = (int?)null;
-                            Data_ProjectInfoService.I.UpdateModel(model);
-                        }
+                            if (!Data_GroupAreaService.I.Any(p => p.ID == (int)id))
+                            {
+                                errMsg = "该区域设置不存在";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
 
-                        var areaModel = Data_GroupAreaService.I.GetModels(p => p.ID == id).FirstOrDefault();
-                        Data_GroupAreaService.I.DeleteModel(areaModel);
+                            foreach (var model in Data_ProjectInfoService.I.GetModels(p => p.AreaType == (int)id && p.State == 1))
+                            {
+                                model.AreaType = (int?)null;
+                                Data_ProjectInfoService.I.UpdateModel(model);
+                            }
 
-                        if (!Data_GroupAreaService.I.SaveChanges())
-                        {
-                            errMsg = "删除区域设置失败";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }                      
+                            var areaModel = Data_GroupAreaService.I.GetModels(p => p.ID == (int)id).FirstOrDefault();
+                            Data_GroupAreaService.I.DeleteModel(areaModel);
+
+                            if (!Data_GroupAreaService.I.SaveChanges())
+                            {
+                                errMsg = "删除区域设置失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }   
+                        }                                           
 
                         ts.Complete();
                     }

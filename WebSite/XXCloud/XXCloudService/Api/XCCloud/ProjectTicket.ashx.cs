@@ -418,41 +418,47 @@ namespace XXCloudService.Api.XCCloud
             try
             {
                 string errMsg = string.Empty;
-                if (!dicParas.Get("id").Validintnozero("门票ID", out errMsg))
-                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                var idArr = dicParas.GetArray("id");
 
-                var id = dicParas.Get("id").Toint();
+                if (!idArr.Validarray("门票ID列表", out errMsg))
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);                
 
                 //开启EF事务
                 using (TransactionScope ts = new TransactionScope())
                 {
                     try
                     {
-                        if (!Data_ProjectTicketService.I.Any(p => p.ID == id))
+                        foreach (var id in idArr)
                         {
-                            errMsg = "该门票不存在";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
+                            if (!id.Validintnozero("门票ID", out errMsg))
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-                        var model = Data_ProjectTicketService.I.GetModels(p => p.ID == id).FirstOrDefault();
-                        Data_ProjectTicketService.I.DeleteModel(model);
+                            if (!Data_ProjectTicketService.I.Any(p => p.ID == (int)id))
+                            {
+                                errMsg = "该门票不存在";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
 
-                        foreach (var bindModel in Data_ProjectTicket_BindService.I.GetModels(p => p.ProjectTicketID == id))
-                        {
-                            Data_ProjectTicket_BindService.I.DeleteModel(bindModel);
-                        }
+                            var model = Data_ProjectTicketService.I.GetModels(p => p.ID == (int)id).FirstOrDefault();
+                            Data_ProjectTicketService.I.DeleteModel(model);
 
-                        if (!Data_ProjectTicketService.I.SaveChanges())
-                        {
-                            errMsg = "删除门票信息失败";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
+                            foreach (var bindModel in Data_ProjectTicket_BindService.I.GetModels(p => p.ProjectTicketID == (int)id))
+                            {
+                                Data_ProjectTicket_BindService.I.DeleteModel(bindModel);
+                            }
 
-                        if (!Data_ProjectTicket_BindService.I.SaveChanges())
-                        {
-                            errMsg = "删除门票绑定信息失败";
-                            return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                        }
+                            if (!Data_ProjectTicketService.I.SaveChanges())
+                            {
+                                errMsg = "删除门票信息失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+
+                            if (!Data_ProjectTicket_BindService.I.SaveChanges())
+                            {
+                                errMsg = "删除门票绑定信息失败";
+                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            }
+                        }                        
 
                         ts.Complete();
                     }
