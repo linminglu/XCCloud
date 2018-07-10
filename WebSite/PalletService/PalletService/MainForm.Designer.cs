@@ -44,6 +44,8 @@
             this.btnWhoIs2 = new System.Windows.Forms.Button();
             this.btnWhoIs1 = new System.Windows.Forms.Button();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.button3 = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
@@ -55,10 +57,9 @@
             this.tmrCheck = new System.Windows.Forms.Timer(this.components);
             this.tmrTimeOut = new System.Windows.Forms.Timer(this.components);
             this.tmrUpdate = new System.Windows.Forms.Timer(this.components);
-            this.button2 = new System.Windows.Forms.Button();
+            this.button4 = new System.Windows.Forms.Button();
             this.axwhois_enroll_ocx1 = new Axwhois_enroll_ocxLib.Axwhois_enroll_ocx();
             this.axwhois_feature_extract1 = new Axwhois_feature_extractLib.Axwhois_feature_extract();
-            this.button3 = new System.Windows.Forms.Button();
             contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             contextMenuStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
@@ -150,6 +151,7 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.button4);
             this.panel1.Controls.Add(this.btnWhoIs2);
             this.panel1.Controls.Add(this.btnWhoIs1);
             this.panel1.Controls.Add(this.axwhois_enroll_ocx1);
@@ -198,6 +200,24 @@
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "系统设置";
             this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // button3
+            // 
+            this.button3.Location = new System.Drawing.Point(487, 285);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(75, 23);
+            this.button3.TabIndex = 9;
+            this.button3.Text = "button3";
+            this.button3.UseVisualStyleBackColor = true;
+            // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(626, 67);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(75, 23);
+            this.button2.TabIndex = 8;
+            this.button2.Text = "button2";
+            this.button2.UseVisualStyleBackColor = true;
             // 
             // button1
             // 
@@ -279,15 +299,15 @@
             this.tmrUpdate.Interval = 1000;
             this.tmrUpdate.Tick += new System.EventHandler(this.tmrUpdate_Tick);
             // 
-            // button2
+            // button4
             // 
-            this.button2.Location = new System.Drawing.Point(626, 67);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
-            this.button2.TabIndex = 8;
-            this.button2.Text = "button2";
-            this.button2.UseVisualStyleBackColor = true;
-
+            this.button4.Location = new System.Drawing.Point(340, 437);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(75, 23);
+            this.button4.TabIndex = 7;
+            this.button4.Text = "button4";
+            this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
             // axwhois_enroll_ocx1
             // 
@@ -306,16 +326,6 @@
             this.axwhois_feature_extract1.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("axwhois_feature_extract1.OcxState")));
             this.axwhois_feature_extract1.Size = new System.Drawing.Size(450, 320);
             this.axwhois_feature_extract1.TabIndex = 4;
-            // 
-            // button3
-            // 
-            this.button3.Location = new System.Drawing.Point(487, 285);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(75, 23);
-            this.button3.TabIndex = 9;
-            this.button3.Text = "button3";
-            this.button3.UseVisualStyleBackColor = true;
-
             // 
             // MainForm
             // 
@@ -370,6 +380,7 @@
         private System.Windows.Forms.Timer tmrUpdate;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Button button4;
     }
 }
 

@@ -12,42 +12,43 @@
     <link rel="stylesheet" href="css/iconfont.css">
     <link href="css/style.css" rel="stylesheet">
     <link rel="stylesheet" href="css/bootstrap-datetimepicker.min.css" rel="external nofollow" >
+    <link rel='icon' href='xinchen.ico ' type='image/x-ico'/>
     <style>
         /*新style*/
-        .menu{width: 840px;margin: 100px auto;/*padding: 15px;*/list-style: none;counter-reset: li;/*background: #eee;*//*-moz-box-shadow: 0 1px 2px rgba(0, 0, 0, .1) inset;*//*-webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, .1) inset;*//*box-shadow: 0 1px 2px rgba(0, 0, 0, .1) inset;*//*-moz-border-radius: 10px;*//*-webkit-border-radius: 10px;*//*border-radius: 10px;*/}
+        .menu{width: 840px;margin: 100px auto;/*padding: 15px;list-style: none;counter-reset: li;/*background: #eee;*//*-moz-box-shadow: 0 1px 2px rgba(0, 0, 0, .1) inset;*//*-webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, .1) inset;*//*box-shadow: 0 1px 2px rgba(0, 0, 0, .1) inset;*//*-moz-border-radius: 10px;*//*-webkit-border-radius: 10px;*//*border-radius: 10px;*/}
         .menu:before, .menu:after{content: "";display: table;}
         .menu:after{clear: both;}
         .menu{zoom:1;}
-        .menu li{position: relative;float: left;cursor: pointer;height: 120px;width: 200px;margin: 10px 0 0 10px;color: #fff;}
-        .menu li:hover, .menu li:focus{background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 255, .2)), to(rgba(255, 255, 255, 0)));background-image: -webkit-linear-gradient(top, rgba(255, 255, 255, .2), rgba(255, 255, 255, 0));background-image: -moz-linear-gradient(top, rgba(255, 255, 255, .2), rgba(255, 255, 255, 0));background-image: -ms-linear-gradient(top, rgba(255, 255, 255, .2), rgba(255, 255, 255, 0));background-image: -o-linear-gradient(top, rgba(255, 255, 255, .2), rgba(255, 255, 255, 0));background-image: linear-gradient(top, rgba(255, 255, 255, .2), rgba(255, 255, 255, 0));}
+        .menuli{position: relative;float: left;cursor: pointer;height: 120px;width: 200px;margin: 10px 0 0 10px;color: #fff;}
+        .menuli:hover, .menuli:focus{background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 255, .2)), to(rgba(255, 255, 255, 0)));background-image: -webkit-linear-gradient(top, rgba(255, 255, 255, .2), rgba(255, 255, 255, 0));background-image: -moz-linear-gradient(top, rgba(255, 255, 255, .2), rgba(255, 255, 255, 0));background-image: -ms-linear-gradient(top, rgba(255, 255, 255, .2), rgba(255, 255, 255, 0));background-image: -o-linear-gradient(top, rgba(255, 255, 255, .2), rgba(255, 255, 255, 0));background-image: linear-gradient(top, rgba(255, 255, 255, .2), rgba(255, 255, 255, 0));}
         .menu .cover{z-index: 2;}
         .menu .cover:focus{outline: 0;}
-        .menu li::after{content: counter(li);counter-increment: li;font: italic bold 10px serif, georgia;position: absolute;color: rgba(255, 255, 255, .1);opacity: 0;/*-webkit-transition: all .2s ease-out;-moz-transition: all .2s ease-out;-ms-transition: all .2s ease-out;-o-transition: all .2s ease-out;*/transition: all 0.5s ease-out;}
-        .menu li:hover::after, .menu li:focus::after{font-size: 100px;opacity: 1;}
+        .menuli::after{content: counter(li);counter-increment: li;font: italic bold 10px serif, georgia;position: absolute;color: rgba(255, 255, 255, .1);opacity: 0;/*-webkit-transition: all .2s ease-out;-moz-transition: all .2s ease-out;-ms-transition: all .2s ease-out;-o-transition: all .2s ease-out;*/transition: all 0.5s ease-out;}
+        .menuli:hover::after, .menuli:focus::after{font-size: 100px;opacity: 1;}
         .menu .cover::after{z-index: -1;}
-        .menu li:nth-child(1), .menu li:nth-child(1) .content, .menu li:nth-child(1) .close{background-color: #DA70D6;}
-        .menu li:nth-child(2), .menu li:nth-child(2) .content, .menu li:nth-child(2) .close{background-color: #349ffd;}
-        .menu li:nth-child(3), .menu li:nth-child(3) .content, .menu li:nth-child(3) .close{background-color: #349ffd;}
-        .menu li:nth-child(4), .menu li:nth-child(4) .content, .menu li:nth-child(4) .close{background-color: #349ffd;}
-        .menu li:nth-child(5), .menu li:nth-child(5) .content, .menu li:nth-child(5) .close{background-color: #349ffd;}
-        .menu li:nth-child(6), .menu li:nth-child(6) .content, .menu li:nth-child(6) .close{background-color: rgb(190, 178, 178);}
-        .menu li:nth-child(7), .menu li:nth-child(7) .content, .menu li:nth-child(7) .close{background-color: rgb(190, 178, 178);}
-        .menu li:nth-child(8), .menu li:nth-child(8) .content, .menu li:nth-child(8) .close{background-color: rgb(190, 178, 178);}
-        .menu li:nth-child(9), .menu li:nth-child(9) .content, .menu li:nth-child(9) .close{background-color: #808080;}
-        .menu li:nth-child(10), .menu li:nth-child(10) .content, .menu li:nth-child(10) .close{background-color: #808080;}
-        .menu li:nth-child(11), .menu li:nth-child(11) .content, .menu li:nth-child(11) .close{background-color: #808080;}
-        .menu li:nth-child(12), .menu li:nth-child(12) .content, .menu li:nth-child(12) .close{background-color: #808080;}
+        .menu li.menuli.menuli:nth-child(1), .menu li.menuli.menuli:nth-child(1) .content, .menu li.menuli.menuli:nth-child(1) .close{background-color: #DA70D6;}
+        .menu li.menuli:nth-child(2), .menu li.menuli:nth-child(2) .content, .menu li.menuli:nth-child(2) .close{background-color: #349ffd;}
+        .menu li.menuli:nth-child(3), .menu li.menuli:nth-child(3) .content, .menu li.menuli:nth-child(3) .close{background-color: #349ffd;}
+        .menu li.menuli:nth-child(4), .menu li.menuli:nth-child(4) .content, .menu li.menuli:nth-child(4) .close{background-color: #349ffd;}
+        .menu li.menuli:nth-child(5), .menu li.menuli:nth-child(5) .content, .menu li.menuli:nth-child(5) .close{background-color: #349ffd;}
+        .menu li.menuli:nth-child(6), .menu li.menuli:nth-child(6) .content, .menu li.menuli:nth-child(6) .close{background-color: rgb(190, 178, 178);}
+        .menu li.menuli:nth-child(7), .menu li.menuli:nth-child(7) .content, .menu li.menuli:nth-child(7) .close{background-color: rgb(190, 178, 178);}
+        .menu li.menuli:nth-child(8), .menu li.menuli:nth-child(8) .content, .menu li.menuli:nth-child(8) .close{background-color: rgb(190, 178, 178);}
+        .menu li.menuli:nth-child(9), .menu li.menuli:nth-child(9) .content, .menu li.menuli:nth-child(9) .close{background-color: #808080;}
+        .menu li.menuli:nth-child(10), .menu li.menuli:nth-child(10) .content, .menu li.menuli:nth-child(10) .close{background-color: #808080;}
+        .menu li.menuli:nth-child(11), .menu li.menuli:nth-child(11) .content, .menu li.menuli:nth-child(11) .close{background-color: #808080;}
+        .menu li.menuli:nth-child(12), .menu li.menuli:nth-child(12) .content, .menu li.menuli:nth-child(12) .close{background-color: #808080;}
         .menu .content{opacity: 0;display: none;overflow:visible;font: 12px Arial, Helvetica;position: fixed;height: 120px;width: 200px; left: 50%;margin-left: -100px;top: 40%;margin-top: -40px; /*-webkit-transition: all .3s ease-out;-moz-transition: all .3s ease-out;-ms-transition: all .3s ease-out;-o-transition: all .3s ease-out;transition: all .3s ease-out;*/}
         .menu .expanded{opacity: .95;display: block;overflow: visible;padding: 40px;height: 300px;width: 540px;transition: all 3s ease-out;}
-        .menu li:nth-child(3n) .content{/* 3,6,9*/right: 0;}
-        .menu li:nth-child(3n-1) .expanded{/* 2,5,8*/left: 50%;margin-left: -310px;}
-        .menu li:nth-child(7) .content,
-        .menu li:nth-child(8) .content, .menu li:nth-child(9) .content, .menu li:nth-child(10) .content{bottom: 0;}
-        .menu li:nth-child(4) .expanded,
-        .menu li:nth-child(5) .expanded, .menu li:nth-child(6) .expanded{margin-top: -190px;top: 50%;}
+        .menu li.menuli:nth-child(3n) .content{/* 3,6,9*/right: 0;}
+        .menu li.menuli:nth-child(3n-1) .expanded{/* 2,5,8*/left: 50%;margin-left: -310px;}
+        .menu li.menuli:nth-child(7) .content,
+        .menu li.menuli:nth-child(8) .content, .menu li.menuli:nth-child(9) .content, .menu li.menuli:nth-child(10) .content{bottom: 0;}
+        .menu li.menuli:nth-child(4) .expanded,
+        .menu li.menuli:nth-child(5) .expanded, .menu li.menuli:nth-child(6) .expanded{margin-top: -190px;top: 50%;}
         .menu .title{position: absolute;height: 100%;width: 100%;text-align: center;font: italic bold 1.3em/120px 'trebuchet MS', Arial, helvetica;opacity: .3;}
         .menu .title i{font-size: 40px;}
-        .menu li:hover .title{opacity: .7;}
+        .menuli:hover .title{opacity: .7;}
         .menu .close{display: none;border: 5px solid #fff;color: #fff;cursor: pointer;height: 50px;width: 50px;font: bold 20px/40px arial, helvetica;position: absolute;text-align: center;top: -20px;right: -20px;-moz-border-radius: 40px;-webkit-border-radius: 40px;border-radius: 40px;z-index: 99999;}
         .menu .cover .close{display: block;}
 
@@ -62,7 +63,7 @@
         .margin1{margin-top: 1em;}
         .menu-btn{display: flex; flex-direction: row;justify-content: space-between;margin-top: 2em;padding: 0 2em;}
         .menu-btn button{width: 36%;}
-        .menu-r-btn{text-align: right;padding-right: 3em;margin-bottom: 1em;margin-top: 2em;}
+        .menu-r-btn{text-align: right;padding-right: 3em;margin-bottom: 1em;margin-top: 2em;} */
         .margin-02 input{margin-top: -0.3em}
         .width50 button{width: 50%}
         .order-style{margin-top: 0.5em;line-height: 1.6em;font-size: 1em;padding-left: 10px!important;padding-right: 10px!important;}
@@ -212,12 +213,12 @@
     <div class="container-fluid">
         <div class="row">
             <ul class="menu">
-                <li tabindex="1">
+                <li class="menuli" tabindex="1">
                     <span class="title"><i class="icon iconfont icon-batai"></i>收银台</span>
                     <div class="content">
                     </div>
                 </li>
-                <li tabindex="1">
+                <li class="menuli" tabindex="1">
                     <span class="title"><i class="icon iconfont icon-jingdianmenpiao"></i>终端扣门票</span>
                     <div class="content"><span class="close">x</span>
                         <div class="menu-main container-fluid">
@@ -294,7 +295,7 @@
                         </div>
                     </div>
                 </li>
-                <li tabindex="1">
+                <li class="menuli" tabindex="1">
                     <span class="title"><i class="icon iconfont icon-peitongruxue"></i>陪同票</span>
                     <div class="content"><span class="close">x</span>
                         <div class="menu-main container-fluid">
@@ -369,7 +370,7 @@
                         </div>
                     </div>
                 </li>
-                <li tabindex="1">
+                <li class="menuli" tabindex="1">
                     <span class="title"> <i class="icon iconfont icon-jishi"></i>计时票补、退款</span>
                     <div class="content"><span class="close">x</span>
                         <div class="menu-main container-fluid">
@@ -410,7 +411,7 @@
                         </div>
                     </div>
                 </li>
-                <li tabindex="1">
+                <li class="menuli" tabindex="1">
                     <span class="title"><i class="icon iconfont icon-qinglikehu"></i>手工清场</span>
                     <div class="content"><span class="close">x</span>
                         <div class="content"><span class="close">x</span>
@@ -470,7 +471,7 @@
                         </div>
                     </div>
                 </li>
-                <li tabindex="1">
+                <li class="menuli" tabindex="1">
                     <span class="title"><i class="icon iconfont icon-dingdanchaxun1"></i>订单查询</span>
                     <div class="content"><span class="close">x</span>
                         <div class="menu-main container-fluid">
@@ -488,17 +489,28 @@
                                     <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
                                 </div>
                                 <div class="input-group date form_date col-md-3 menu-style padding_left" data-date="2018-07-04" data-link-format="yyyy-mm-dd">
-                                        <span class="input-group-addon">至</span>
-                                        <input class="form-control"  type="text" v-model="orderInquiry.endTime" readonly>
-                                        <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
-                                    </div>
+                                    <span class="input-group-addon">至</span>
+                                    <input class="form-control"  type="text" v-model="orderInquiry.endTime" readonly>
+                                    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                                </div>
                                 <div class="col-md-1 col-sm-1 menu-style">
                                     <button type="button" class="btn btn-primary" @click="getOrders">查询</button>
                                 </div>
 
                                 <div class="col-md-12 col-sm-12 heightOver">
                                     <div class="col-md-6 col-sm-6 menu-style">
-                                        <table class="table table-bordered">
+                                        <table id="table" class="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th data-field="orderId">订单号</th>
+                                                    <th data-field="saleTime">销售日期</th>
+                                                    <th data-field="icCardId">会员</th>
+                                                    <th data-field="payCount">支付金额</th>
+                                                    <th data-field="orderStatusName">状态</th>
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                        <!-- <table class="table table-bordered">
                                             <thead style="background: #f5f5f5">
                                             <tr>
                                                 <th>订单号</th>
@@ -517,7 +529,7 @@
                                                 <td>{{item.orderStatusName}}</td>
                                             </tr>
                                             </tbody>
-                                        </table>
+                                        </table> -->
                                         <table class="table table-bordered">
                                                 <thead style="background: #f5f5f5">
                                                 <tr>
@@ -626,7 +638,7 @@
                         </div>
                     </div>
                 </li>
-                <li tabindex="1">
+                <li class="menuli" tabindex="1">
                     <span class="title"><i class="icon iconfont icon-lipinhuigou"></i>礼品回购</span>
                     <div class="content">
                         <span class="close">x</span>
@@ -724,19 +736,15 @@
                         </div>
                     </div>
                 </li>
-                <li tabindex="1">
+                <li class="menuli" tabindex="1">
                     <span class="title"><i class="icon iconfont icon-icon"></i>会员过户操作</span>
                     <div class="content"><span class="close">x</span></div>
                 </li>
-                <li tabindex="1">
-                    <span class="title"><i class="icon iconfont icon-icon1"></i>会员等级变更</span>
-                    <div class="content"><span class="close">x</span></div>
-                </li>
-                <li tabindex="1">
+                <li class="menuli" tabindex="1">
                     <span class="title"><i class="icon iconfont icon-jiaobanguanli"></i>交班总结</span>
                     <div class="content"><span class="close">x</span></div>
                 </li>
-                <li tabindex="1">
+                <li class="menuli" tabindex="1">
                     <span class="title"><i class="icon iconfont icon-jiabi"></i>吧台加币</span>
                     <div class="content"><span class="close">x</span>
 
@@ -770,6 +778,8 @@
 <!-- 引入 bootstrap-table -->
 <script type="text/javascript" src="js/bootstrap-datetimepicker.min.js" charset="UTF-8"></script>
 <script type="text/javascript" src="js/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+<script src="js/bootstrap-table.js"></script>
+<script src="js/bootstrap-table-zh-CN.js"></script>
 
 <script>
     var sysId = 0; //调用方应用Id
@@ -954,14 +964,62 @@
                     that.msgPrompt(res.data);
                     if (res.data.result_code === '1') {
                         that.orderInquiry.orderListData=res.data.result_data;
+                        var orderData = res.data.result_data;
+                        $("#table").bootstrapTable('destroy');
+                        setTimeout(function () {
+                            that.createTable(orderData);
+                        }, 50);
+                        
                     }
                 }).catch(function (err) {
                     console.log(err);
                 });
             },
+//          表格分页
+            createTable:function (tableData){       //表格
+                var that = this; 
+                $("#table").bootstrapTable({ // 对应table标签的id
+                    data:tableData,
+                    toolbar: '.toolbar',                //工具按钮用哪个容器
+                    striped: true,                      //是否显示行间隔色
+                    cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+                    toggle:"table",
+                    undefinedText:"",
+                    pagination: true,                   //是否显示分页（*）
+                    sortable: false,                     //是否启用排序
+                    sortOrder: "asc",                   //排序方式
+                    pageNumber:1,                       //初始化加载第一页，默认第一页
+                    pageSize: 10,                       //每页的记录行数（*）
+                    pageList: [5,10, 25],        //可供选择的每页的行数（*）
+                    search: false,                       //是否显示表格搜索，此搜索是客户端搜索，不会进服务端，所以，个人感觉意义不大
+                    strictSearch: true,
+                    showColumns: false,                  //是否显示所有的列
+                    showRefresh: false,                  //是否显示刷新按钮
+                    minimumCountColumns: 2,             //最少允许的列数
+                    clickToSelect: true,                //是否启用点击选中行
+                    height: 320,                        //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
+                    // height: $(window.top).height()-400,                        //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
+                    uniqueId: "ID",                     //每一行的唯一标识，一般为主键列
+                    showToggle:false,
+                    showFooter:false,                 //是否显示详细视图和列表视图的切换按钮
+                    cardView: false,                    //是否显示详细视图
+                    detailView: false,
+                    // columns: columns,
+                    onClickRow:function(row){
+                        console.log(row)
+                        that.orderDetails(row)
+                    },
+                    onLoadSuccess: function(){  //加载成功时执行
+                        console.info("加载成功");
+                    },
+                    onLoadError: function(){  //加载失败时执行
+                        console.info("加载数据失败");
+                    }
+                })
+            },
 //          查询订单详情
-            orderDetails:function(index){
-               console.log(index);
+            orderDetails:function(rowData){
+               console.log(rowData);
                 var that = this;
                 that.orderInquiry = {
                     orderNo:"",
@@ -982,8 +1040,8 @@
                     orderPayData:[],
                     goodsData:[]
                 };
-                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,flwOrderId:that.orderInquiry.orderListData[index].orderId};
-                if(that.orderInquiry.orderListData[index].orderStatusName != "已支付"){
+                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,flwOrderId:rowData.orderId};
+                if(rowData.orderStatusName != "已支付"){
                     that.orderInquiry.disabled = true;
                 }else{
                     that.orderInquiry.disabled = false; 
@@ -1033,7 +1091,7 @@
                 exitFoodJson = JSON.stringify(exitFoodJson); //转化为JSON字符串
                 var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,flwOrderId:that.orderInquiry.orderNo,note:that.orderInquiry.note,authorId:"0",exitFoodJson:exitFoodJson};
                 console.log(obj);
-                axios.post('/xccloud/order?action=exitFood', obj).then(function (res) {
+                axios.post('/XCCloud/foods?action=exitFood', obj).then(function (res) {
                     console.log(res.data);
                     that.msgPrompt(res.data);
                     if (res.data.result_code === '1') {
@@ -1071,11 +1129,11 @@
     (function(){
         $('.menu .content').append('<span class="close">x</span>');
         function showContent(elem){
-            elem.find('.content').stop(true,true).animate({"opacity": 1,"width": "1400px","height":"600px","margin-left": "-700px","margin-top": "-200px"},800);
+            elem.find('.content').stop(true,true).animate({"opacity": 1,"width": "1600px","height":"600px","margin-left": "-800px","margin-top": "-200px"},800);
             elem.addClass('cover');
         }
 
-        $('.menu li').click(function() {
+        $('.menuli').click(function() {
             console.log($(this).index());
             if($(this).index() == 0){
                 window.location.href='theBar.html';
@@ -1084,7 +1142,7 @@
                 showContent($(this));
             }
         });
-        $('.menu li').keypress(function(e) {
+        $('.menuli').keypress(function(e) {
             if (e.keyCode == 13) {
                 showContent($(this));
             }
@@ -1095,7 +1153,7 @@
             $(this).parent().stop(true,true).animate({"opacity": 0,"width": "200px","height":"120px","margin-left": "-100px","margin-top": "-40px"});
             $(this).parent().css("display","none");
 //            $('.menu .content').removeClass('expanded');
-            $('.menu li').removeClass('cover');
+            $('.menuli').removeClass('cover');
         });
     })();
 
@@ -1121,6 +1179,7 @@
             return value;
         }
     }
+    
 </script>
 </body>
 </html>

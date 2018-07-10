@@ -39,31 +39,61 @@ namespace XCCloudWebBar.Model.CustomModel.XCCloud
     }
 
 
+    public class OpenCardInfoModel
+    {
+        public OpenCardMemberLevelModel openCardMemberLevelModel { set; get; }
+        public List<OpenCardFoodInfoModel> listOpenCardFoodInfoModel { set; get; }
+    }
+
+
+    [DataContract]
+    public class OpenCardMemberLevelModel
+    {
+        [DataMember(Name = "memberLevelId", Order = 1)]
+        public int MemberLevelId { get; set; }
+
+        [DataMember(Name = "memberLevelName", Order = 2)]
+        public string MemberLevelName { get; set; }
+
+        [DataMember(Name = "coverURL", Order = 3)]
+        public string CoverURL { set; get; }
+
+        [DataMember(Name = "openFee", Order = 4)]
+        public decimal OpenFee { set; get; }
+
+        [DataMember(Name = "deposit", Order = 5)]
+        public decimal Deposit { set; get; }
+    }
+
+
     [DataContract]
     public class OpenCardFoodInfoModel
     {
-        [DataMember(Name = "foodId", Order = 1)]
+        [DataMember(Name = "memberLevelId", Order = 1)]
+        public int MemberLevelId { set; get; }
+
+        [DataMember(Name = "foodId", Order = 2)]
         public int FoodID { get; set; }
 
-        [DataMember(Name = "foodName", Order = 2)]
+        [DataMember(Name = "foodName", Order = 3)]
         public string FoodName { get; set; }
 
-        [DataMember(Name = "foodType", Order = 3)]
+        [DataMember(Name = "foodType", Order = 4)]
         public int FoodType { get; set; }
 
-        [DataMember(Name = "allowInternet", Order = 4)]
+        [DataMember(Name = "allowInternet", Order = 5)]
         public int AllowInternet { get; set; }
 
-        [DataMember(Name = "allowPrint", Order = 5)]
+        [DataMember(Name = "allowPrint", Order = 6)]
         public int AllowPrint { get; set; }
 
-        [DataMember(Name = "foreAuthorize", Order = 6)]
+        [DataMember(Name = "foreAuthorize", Order = 7)]
         public int ForeAuthorize { get; set; }
 
-        [DataMember(Name = "foodPrice", Order = 7)]
+        [DataMember(Name = "foodPrice", Order = 8)]
         public decimal FoodPrice { get; set; }
 
-        [DataMember(Name = "imageUrl", Order = 8)]
+        [DataMember(Name = "imageUrl", Order = 9)]
         public string ImageUrl { get; set; }
     }
 

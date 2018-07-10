@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Runtime.InteropServices;
-using PalletService.Utility.MemberCard;
-using DeviceUtility.Utility.MemberCard.Model;
 using System.Text.RegularExpressions;
 
 
@@ -24,6 +22,10 @@ namespace DeviceUtility.Utility.MemberCard
         /// 卡号写入的块位置4
         /// </summary>
         private const int ic_postion = 4;
+        /// <summary>
+        /// 动态密码写入的块位置4
+        /// </summary>
+        private const int ic_pwd_postion = 5;
         /// <summary>
         /// 密码写入的块位置7
         /// </summary>
@@ -83,7 +85,7 @@ namespace DeviceUtility.Utility.MemberCard
         /// <summary>
         /// 防卡冲突，返回卡的序列号
         /// </summary>
-        private static short dc_anticoll(int icdev,ref ulong _Snr)
+        private static short dc_anticoll(int icdev, ref ulong _Snr)
         {
             return Dcrf32.dc_anticoll(icdev, 0, ref _Snr);
         }
@@ -138,7 +140,7 @@ namespace DeviceUtility.Utility.MemberCard
             //B_ICPass = new byte[6] { 0x77, 0x88, 0x52, 0x01, 0x31, 0x45 };
             for (int i = 0; i < 6; i++)
             {
-                B_ICPass[i] = Convert.ToByte(Password.Substring(i*2,2),16);
+                B_ICPass[i] = Convert.ToByte(Password.Substring(i * 2, 2), 16);
             }
             //B_ICPass = Encoding.ASCII.GetBytes(Password); 
             result = Dcrf32.dc_load_key(icdev, pwd_mode, index, B_ICPass);    //密码加载到设备
@@ -151,7 +153,7 @@ namespace DeviceUtility.Utility.MemberCard
         /// <summary>
         /// 更改密码(0为更改成功)
         /// </summary>
-        private static short IC_ChangePass_4442hex(int icdev, int pwd_postion,string oldPassWord, string newPassWord)
+        private static short IC_ChangePass_4442hex(int icdev, int pwd_postion, string oldPassWord, string newPassWord)
         {
             Int16 result = 0;
             result = Dcrf32.dc_authentication(icdev, pwd_mode, secnr_index);
@@ -165,7 +167,7 @@ namespace DeviceUtility.Utility.MemberCard
         /// <summary>
         /// 更改密码(0为更改成功)
         /// </summary>
-        private static short IC_ChangePass(int icdev, int pwd_postion,int secnr_index, string oldPassWord, string newPassWord)
+        private static short IC_ChangePass(int icdev, int pwd_postion, int secnr_index, string oldPassWord, string newPassWord)
         {
             Int16 result = 0;
             result = Dcrf32.dc_authentication(icdev, pwd_mode, secnr_index);
@@ -350,7 +352,7 @@ namespace DeviceUtility.Utility.MemberCard
         /// <param name="icdev">读卡器ID</param>
         /// <param name="pwd">1区密码</param>
         /// <returns>成功true</returns>
-        private static bool DeleteICCaredData(int icdev,string pwd)
+        private static bool DeleteICCaredData(int icdev, string pwd)
         {
             byte[] b = new byte[16] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
             int st = ICCardUtility.IC_CheckPass_4442hex(icdev, pwd);     //下载密码到读卡器
@@ -363,7 +365,7 @@ namespace DeviceUtility.Utility.MemberCard
                     return true;
                 }
             }
-            
+
             return false;
         }
         #endregion
@@ -383,7 +385,7 @@ namespace DeviceUtility.Utility.MemberCard
         {
             int icdev = 0;
             icdev = ICCardUtility.IC_InitComm(100);
-            string checkStr = check(icdev,false);
+            string checkStr = check(icdev, false);
             if (!checkStr.Equals("ok")) return checkStr;
             //获得IC卡UID
             ulong uid = 0;
@@ -394,7 +396,7 @@ namespace DeviceUtility.Utility.MemberCard
         /// <summary>
         /// 初始化0区,参数:0区新卡号和原密码
         /// </summary>
-        public static string WriteICCard(string card,string pwd)
+        public static string WriteICCard(string card, string pwd)
         {
             int icdev = 0;
             try
@@ -436,7 +438,7 @@ namespace DeviceUtility.Utility.MemberCard
         /// <summary>
         /// 修改动态密码
         /// </summary>
-        public static string ChangeRandomCode(string sNewICCard, string sRepeatCode, string storePassword,bool isBeep = true)
+        public static string ChangeRandomCode(string sNewICCard, string sRepeatCode, string storePassword, bool isBeep = true)
         {
             int icdev = 0;
             try
@@ -469,7 +471,7 @@ namespace DeviceUtility.Utility.MemberCard
                 {
                     return "提示：无法写入动态密码。";
                 }
-                
+
                 return "Success";
             }
             finally
@@ -484,12 +486,12 @@ namespace DeviceUtility.Utility.MemberCard
         /// 获取当前读卡器上的IC卡号码,返回8位的卡号或错误信息
         /// 此方法自行处理卡号+加动态码,返回最终卡号,与ReadICCard不同
         /// </summary>
-        public static bool GetICCardID(string storePassword,out string icCardId,out string repeatCode,out string errMsg,bool isBeep = true, bool isCreate = false)
+        public static bool GetICCardID(string storePassword, out string icCardId, out string repeatCode, out string errMsg, bool isBeep = true, bool isCreate = false)
         {
             icCardId = string.Empty;
             errMsg = string.Empty;
             string sICCardID = string.Empty;
-            if (!ICCardUtility.ReadICCard(storePassword, out sICCardID, out repeatCode,out errMsg,isBeep, isCreate))
+            if (!ICCardUtility.ReadICCard(storePassword, out sICCardID, out repeatCode, out errMsg, isBeep, isCreate))
             {
                 return false;
             }
@@ -498,7 +500,7 @@ namespace DeviceUtility.Utility.MemberCard
             {
                 try
                 {
-                    string sRepeatCode = Convert.ToInt32(sICCardID.Substring(8), 16).ToString();
+                    repeatCode = Convert.ToInt32(sICCardID.Substring(8), 16).ToString();
                     sICCardID = sICCardID.Substring(0, 8);
                     int iICCardID = 0;
                     if (ICCardUtility.isNumberic(sICCardID, out iICCardID))
@@ -570,7 +572,7 @@ namespace DeviceUtility.Utility.MemberCard
                     }
                     return "提示：无法读取IC卡信息。";
                 }
-                
+
             }
             finally
             {
@@ -581,7 +583,7 @@ namespace DeviceUtility.Utility.MemberCard
         /// <summary>
         /// 读卡器按会员IC卡号写一张新卡
         /// </summary>
-        public static bool CreateICCard(string sNewICCard, string sRepeatCode, string storePassword, out string errMsg, bool isBeep = true)
+        public static bool CreateICCard(string sRepeatCode, string storePassword, out string errMsg, bool isBeep = true)
         {
             int icdev = 0;
             errMsg = string.Empty;
@@ -595,32 +597,35 @@ namespace DeviceUtility.Utility.MemberCard
                 if (!checkStr.Equals("ok"))
                 {
                     errMsg = checkStr;
-                    return false; 
-                } 
-
-                short st = 0;
-                //获得IC卡UID
-                ulong uid = 0;
-                st = dc_anticoll(icdev, ref uid);
-
-                //校验出厂密码
-                //1区的出厂密码和0区出厂密码不同,0区778852013144 1区FFFFFFFFFFFF
-                st = ICCardUtility.IC_CheckPass_4442hex(icdev, ICPass_one); 
-                if (st != 0)
-                {
-                    st = ICCardUtility.IC_CheckPass_4442hex(icdev, storePassword); //校验本店密码
-                    if (st == 0)
-                    {
-                        errMsg = "提示：此卡正在使用，请换一张空白卡。";
-                        return false;
-                    }
-                    else
-                    {
-                        errMsg = "提示：无法通过密码校验，可能不是本店的卡。";
-                        return false;
-                    }
+                    return false;
                 }
 
+                short st = 0;
+
+                st = ICCardUtility.IC_CheckPass_4442hex(icdev, ICPass, secnr_index_ic);
+                if (st != 0)
+                {
+                    errMsg = "提示：无法读取IC卡信息。";
+                    return false;
+                }
+
+                StringBuilder data = new StringBuilder();
+                st = ICCardUtility.IC_Read_hex(icdev, 1, len - 1, data); //新卡块4无卡号,改为读块1的原始卡号
+                if (st != 0)
+                {
+                    errMsg = "提示：无法通过密码校验，可能不是本店的卡。";
+                    return false;
+                }
+                //读取原卡号
+                string sNewICCard = data.ToString().Substring(0, len - 1);
+                //校验1扇区密码
+                st = ICCardUtility.IC_CheckPass_4442hex(icdev, ICPass_one, 1);
+                if (st != 0)
+                {
+                    errMsg = "提示：此卡正在使用，请换一张空白卡。";
+                    return false;
+                }
+                //写入卡号
                 byte[] b1 = new byte[16];
                 byte[] b2 = Encoding.ASCII.GetBytes(sNewICCard);
                 Array.Copy(b2, b1, b2.Length);
@@ -629,6 +634,21 @@ namespace DeviceUtility.Utility.MemberCard
                 if (st != 0)
                 {
                     errMsg = "提示：无法写入IC卡号码。";
+                    return false;
+                }
+                //校验1扇区密码，准备写入动态密码                            
+                st = ICCardUtility.IC_CheckPass_4442hex(icdev, ICPass_one, 1);
+                if (st != 0)
+                {
+                    errMsg = "提示：此卡正在使用，请换一张空白卡。";
+                    return false;
+                }
+                b1 = new byte[16];
+                b1[0] = (byte)Convert.ToInt32(sRepeatCode);
+                st = ICCardUtility.IC_Write(icdev, ic_pwd_postion, len, b1);
+                if (st != 0)
+                {
+                    errMsg = "提示：无法写入动态密码。";
                     return false;
                 }
                 st = ICCardUtility.IC_ChangePass_4442hex(icdev, pwd_postion, ICPass_one, storePassword);
@@ -663,7 +683,7 @@ namespace DeviceUtility.Utility.MemberCard
                 if (!checkStr.Equals("ok")) return checkStr;
 
                 short st = 0;
-               
+
                 //校验出厂密码
                 //1区的出厂密码和0区出厂密码不同,0区778852013144 1区FFFFFFFFFFFF
                 st = ICCardUtility.IC_CheckPass_4442hex(icdev, ICPass_one);
@@ -704,13 +724,56 @@ namespace DeviceUtility.Utility.MemberCard
             }
         }
         /// <summary>
+        /// 更新动态密码
+        /// </summary>
+        /// <param name="newRepeatCode">新动态密码</param>
+        /// <returns></returns>
+        public static bool UpdateRepeatCode(string newRepeatCode, string storePassword, out string errMsg)
+        {
+            string checkStr = "";
+            errMsg = string.Empty;
+            int icdev = 0;
+            try
+            {
+                icdev = ICCardUtility.IC_InitComm(100); //初始化usb  
+                checkStr = check(icdev, true);  //基本检查
+                if (!checkStr.Equals("ok"))
+                {
+                    errMsg = checkStr;
+                    return false;
+                }
+
+                short st = 0;
+                st = ICCardUtility.IC_CheckPass_4442hex(icdev, storePassword, secnr_index);
+                if (st != 0)
+                {
+                    errMsg = "提示：无法通过密码校验，可能不是本店的卡。";
+                    return false;
+                }
+                byte[] b1 = new byte[16];
+                b1[0] = (byte)Convert.ToInt32(newRepeatCode);
+                st = ICCardUtility.IC_Write(icdev, ic_pwd_postion, len, b1);
+                if (st != 0)
+                {
+                    errMsg = "提示：无法写入动态密码。";
+                    return false;
+                }
+                return true;
+            }
+            finally
+            {
+                ICCardUtility.IC_Down(icdev);
+                ICCardUtility.IC_ExitComm(icdev);
+            }
+        }
+        /// <summary>
         /// 读取16进制的卡号(含动态码的卡号)
         /// 参数：isBeep 是否需要蜂鸣,
         /// isCreate是入库或入会类型的操作,此类操作空白卡需要返回卡号
         /// 校验逻辑：1检查设备 2.检查密码 3.检查是不是空白卡
         /// 返回包含动态码的完整卡号,开新卡的业务只返回卡号
         /// </summary>
-        public static bool ReadICCard(string storePassword,out string icCardId,out string repeatCode,out string errMsg,bool isBeep = true, bool isCreate = false)
+        public static bool ReadICCard(string storePassword, out string icCardId, out string repeatCode, out string errMsg, bool isBeep = true, bool isCreate = false)
         {
             string checkStr = "";
             icCardId = string.Empty;
@@ -728,63 +791,37 @@ namespace DeviceUtility.Utility.MemberCard
                 }
 
                 short st = 0;
-
-                //开新卡
-                if (isCreate)
+                st = ICCardUtility.IC_CheckPass_4442hex(icdev, storePassword, secnr_index);
+                if (st != 0)
                 {
-                    st = ICCardUtility.IC_CheckPass_4442hex(icdev, storePassword, secnr_index);
-                    if (st == 0)
-                    {
-                        errMsg = "提示：此卡正在使用。";
-                        return false;
-                    }
-                    st = ICCardUtility.IC_CheckPass_4442hex(icdev, ICPass, secnr_index_ic);
-                    if (st != 0)
-                    {
-                        errMsg = "提示：无法读取IC卡信息。";
-                        return false;
-                    }
-
-                    StringBuilder data = new StringBuilder();
-                    st = ICCardUtility.IC_Read_hex(icdev, 1, len - 1 , data); //新卡块4无卡号,改为读块1的原始卡号
-                    if (st == 0)
-                    {
-                        errMsg = data.ToString().Substring(0, len - 1);
-                        return true;
-                    }
+                    errMsg = "提示：无法通过密码校验，可能不是本店的卡。";
+                    return false;
                 }
-                else
+                byte[] data = new byte[len];
+                st = ICCardUtility.IC_Read(icdev, ic_postion, len, data);
+                if (st != 0)
                 {
-                    st = ICCardUtility.IC_CheckPass_4442hex(icdev, ICPass_one, secnr_index);
-                    if (st == 0)
-                    {
-                        errMsg = "提示：此卡是一张空白卡，不需要处理。";
-                        return false;
-                    }
-                    st = ICCardUtility.IC_CheckPass_4442hex(icdev, storePassword, secnr_index);
-                    if (st != 0)
-                    {
-                        errMsg = "提示：无法通过密码校验，可能不是本店的卡。";
-                        return false;
-                    }
-
-                    byte[] data = new byte[len];
-                    st = ICCardUtility.IC_Read(icdev, ic_postion, len, data);
-                    if (st == 0)
-                    {
-                        byte[] b1 = new byte[len - 1];
-                        Array.Copy(data, b1, b1.Length);
-                        byte b2 = data[len - 1];
-                        string s = Encoding.ASCII.GetString(b1) + b2.ToString("X2");                        
-                        repeatCode = Convert.ToInt32(s.Substring(8), 16).ToString();
-                        string sICCardID = s.Substring(0, 8).Replace("\0", "");
-                        icCardId = s;
-                        return true;
-
-                    }
+                    errMsg = "提示：会员卡号读取错误。";
+                    return false;
                 }
-                errMsg = "提示：无法读取IC卡信息。";
-                return false;
+                byte[] b1 = new byte[len - 1];
+                Array.Copy(data, b1, b1.Length);
+                byte b2 = data[len - 1];
+                icCardId = Encoding.ASCII.GetString(b1) + b2.ToString("X2").Replace("\0", "");  //读取会员卡
+                st = ICCardUtility.IC_CheckPass_4442hex(icdev, storePassword, secnr_index);
+                if (st != 0)
+                {
+                    errMsg = "提示：无法通过密码校验，可能不是本店的卡。";
+                    return false;
+                }
+                st = ICCardUtility.IC_Read(icdev, ic_pwd_postion, len, data);
+                if (st != 0)
+                {
+                    errMsg = "提示：会员验证码读取错误。";
+                    return false;
+                }
+                repeatCode = data[0].ToString();    //读取动态密码
+                return true;
             }
             finally
             {
@@ -796,7 +833,7 @@ namespace DeviceUtility.Utility.MemberCard
         /// <summary>
         /// 判断读卡器中插入的是一张空卡
         /// </summary>
-        public static bool CheckNullCard(string storePassword,bool isBeep = true)
+        public static bool CheckNullCard(string storePassword, bool isBeep = true)
         {
             int icdev = 0;
             try
@@ -825,10 +862,10 @@ namespace DeviceUtility.Utility.MemberCard
                 }
 
                 if (isBeep)
-                { 
+                {
                     st = ICCardUtility.IC_DevBeep(icdev, 10);//等待10毫秒
                 }
-                
+
                 st = ICCardUtility.IC_Status(icdev);
                 if (st == 1)
                 {
@@ -861,7 +898,7 @@ namespace DeviceUtility.Utility.MemberCard
         /// <summary>
         /// 读卡器回收卡
         /// </summary>
-        public static bool RecoveryICCard(string storePassword,out string errMsg)
+        public static bool RecoveryICCard(string storePassword, out string errMsg)
         {
             int icdev = 0;
             errMsg = string.Empty;
@@ -899,7 +936,7 @@ namespace DeviceUtility.Utility.MemberCard
                 ICCardUtility.IC_ExitComm(icdev);
             }
         }
-        
+
         /// <summary>
         /// 每次插卡时生成新的IC卡序列号
         /// </summary>
@@ -1085,7 +1122,7 @@ namespace DeviceUtility.Utility.MemberCard
             return true;
         }
 
-        public static bool ReadNewICCard(string storePassword, out bool isNewCard ,out string icCardId, out string repeatCode, out string errMsg, bool isBeep = true, bool isCreate = true)
+        public static bool ReadNewICCard(string storePassword, out bool isNewCard, out string icCardId, out string repeatCode, out string errMsg, bool isBeep = true, bool isCreate = true)
         {
             isNewCard = false;
             string checkStr = "";
@@ -1123,7 +1160,7 @@ namespace DeviceUtility.Utility.MemberCard
                         icCardId = data.ToString().Substring(0, len - 1);
                         repeatCode = new Random().Next(100, 999).ToString();
 
-                        if (CheckNullCard(storePassword,false))
+                        if (CheckNullCard(storePassword, false))
                         {
                             isNewCard = true;
                         }

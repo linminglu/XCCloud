@@ -12,6 +12,7 @@ using XCCloudWebBar.Business.XCGameMana;
 using XCCloudWebBar.CacheService;
 using XCCloudWebBar.Common;
 using XCCloudWebBar.Model.CustomModel.XCCloud;
+using XCCloudWebBar.Model.XCCloud;
 
 namespace XXCloudService.Api.XCCloud
 {
@@ -173,6 +174,55 @@ namespace XXCloudService.Api.XCCloud
                 {
                     List<OpenCardFoodInfoModel> listFoodInfo = Utils.GetModelList<OpenCardFoodInfoModel>(dtFoodInfo).ToList();
                     return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, listFoodInfo);
+                }
+                else
+                {
+                    List<OpenCardFoodInfoModel> listFoodInfo = new List<OpenCardFoodInfoModel>();
+                    return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, listFoodInfo);
+                }
+            }
+            else
+            {
+                errMsg = parameters[3].Value.ToString();
+                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
+            }
+        }
+
+
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object getMemberOpenCardInfo(Dictionary<string, object> dicParas)
+        {
+            string errMsg = string.Empty;
+            XCCloudUserTokenModel userTokenModel = (XCCloudUserTokenModel)(dicParas[Constant.XCCloudUserTokenModel]);
+            TokenDataModel userTokenDataModel = (TokenDataModel)(userTokenModel.DataModel);
+
+            string sql = "GetMemberOpenCardInfo";
+            SqlParameter[] parameters = new SqlParameter[3];
+            parameters[0] = new SqlParameter("@MerchId", userTokenDataModel.MerchID);
+            parameters[1] = new SqlParameter("@StoreId", userTokenDataModel.StoreID);
+            parameters[2] = new SqlParameter("@ErrMsg", SqlDbType.VarChar, 200);
+            parameters[2].Direction = System.Data.ParameterDirection.Output;
+
+            System.Data.DataSet ds = XCCloudBLL.GetStoredProcedureSentence(sql, parameters);
+            if (ds.Tables.Count == 2 && ds.Tables[0].Rows.Count > 0)
+            {
+                DataTable dtMemberLevel = ds.Tables[0];
+                DataTable dtFoodInfo = ds.Tables[1];
+                if (dtFoodInfo.Rows.Count > 0)
+                {
+                    List<OpenCardMemberLevelModel> listOpenCardMemberLevelModel = Utils.GetModelList<OpenCardMemberLevelModel>(dtMemberLevel).ToList();
+                    List<OpenCardFoodInfoModel> listOpenCardFoodInfoModel = Utils.GetModelList<OpenCardFoodInfoModel>(dtFoodInfo).ToList();
+
+                    List<OpenCardInfoModel> listOpenCardInfoModel = new List<OpenCardInfoModel>();
+
+                    for (int i = 0; i < listOpenCardMemberLevelModel.Count; i++)
+                    {
+                        OpenCardInfoModel openCardInfoModel = new OpenCardInfoModel();
+                        openCardInfoModel.openCardMemberLevelModel = listOpenCardMemberLevelModel[i];
+                        openCardInfoModel.listOpenCardFoodInfoModel = listOpenCardFoodInfoModel.Where<OpenCardFoodInfoModel>(p => p.MemberLevelId == listOpenCardMemberLevelModel[i].MemberLevelId).ToList<OpenCardFoodInfoModel>();
+                        listOpenCardInfoModel.Add(openCardInfoModel);
+                    }
+                    return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, listOpenCardInfoModel);
                 }
                 else
                 {

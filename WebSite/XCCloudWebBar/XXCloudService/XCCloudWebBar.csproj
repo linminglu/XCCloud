@@ -458,7 +458,6 @@
       <DependentUpon>Web.config</DependentUpon>
     </Content>
     <Content Include="WebBar\AnyReturns.html" />
-    <Content Include="WebBar\cardLoss.html" />
     <Content Include="WebBar\css\bootstrap-table.css" />
     <Content Include="WebBar\css\bootstrap-theme.css" />
     <Content Include="WebBar\css\bootstrap-theme.min.css" />

@@ -1478,7 +1478,9 @@ namespace XCCloudWebBar.Api.XCCloud
                     {
                         BalanceIndex = t.BalanceIndex,
                         BalanceName = t.TypeName,
-                        Quantity = t.Total
+                        Balance = t.Balance.ToString(),
+                        BalanceFree = t.BalanceFree.ToString(),
+                        TotalBalance = t.Total.ToString()
                     }).ToList();
                 }
 
@@ -1898,7 +1900,7 @@ namespace XCCloudWebBar.Api.XCCloud
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
                 }
 
-                List<MemberBalanceExchangeRateModel> memberBalance = XCCloudWebBar.Business.XCCloud.MemberBusiness.GetMemberBalanceAndExchangeRate(storeId, ICCardId);
+                List<MemberBalanceExchangeRateModel> memberBalance = XCCloudWebBar.Business.XCCloud.MemberBusiness.GetMemberBalanceAndExchangeRate(storeId, ICCardId).Where(t => t.ExchangeRate > 0).ToList();
                 if (memberBalance.Count > 0)
                 {
                     return ResponseModelFactory<List<MemberBalanceExchangeRateModel>>.CreateModel(isSignKeyReturn, memberBalance);
@@ -1972,7 +1974,7 @@ namespace XCCloudWebBar.Api.XCCloud
                 }
 
                 //获取会员余额及兑换规则比列
-                List<MemberBalanceExchangeRateModel> memberBalanceExchange = XCCloudWebBar.Business.XCCloud.MemberBusiness.GetMemberBalanceAndExchangeRate(storeId, ICCardId);
+                List<MemberBalanceExchangeRateModel> memberBalanceExchange = XCCloudWebBar.Business.XCCloud.MemberBusiness.GetMemberBalanceAndExchangeRate(storeId, ICCardId).Where(t => t.ExchangeRate > 0).ToList(); ;
                 if (memberBalanceExchange.Count == 0)
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "该会员无可兑换余额");
@@ -2185,7 +2187,7 @@ namespace XCCloudWebBar.Api.XCCloud
                 }
 
                 //获取会员余额及兑换规则比列
-                List<MemberBalanceExchangeRateModel> memberBalanceExchange = XCCloudWebBar.Business.XCCloud.MemberBusiness.GetMemberBalanceAndExchangeRate(storeId, ICCardId);
+                List<MemberBalanceExchangeRateModel> memberBalanceExchange = XCCloudWebBar.Business.XCCloud.MemberBusiness.GetMemberBalanceAndExchangeRate(storeId, ICCardId).Where(t => t.ExchangeRate > 0).ToList(); ;
 
                 //可退款集合
                 //memberBalanceExchange = memberBalanceExchange.Where(t => t.ExchangeRate != 0).ToList();
@@ -4852,13 +4854,14 @@ namespace XCCloudWebBar.Api.XCCloud
                 //总条数
                 int totalRecords = query.Count();
 
-                //总页数
-                int totalPages = totalRecords / pageSize;
+                ////总页数
+                //int totalPages = totalRecords / pageSize;
 
-                if (totalRecords % pageSize > 0)
-                    totalPages++;
+                //if (totalRecords % pageSize > 0)
+                //    totalPages++;
 
-                var list = query.OrderByDescending(t => t.OPTime).Skip(pageIndex * pageSize).Take(pageSize).ToList().Select(t => new
+                //var list = query.OrderByDescending(t => t.OPTime).Skip(pageIndex * pageSize).Take(pageSize).ToList().Select(t => new
+                var list = query.OrderByDescending(t => t.OPTime).ToList().Select(t => new
                 {
                     OPTime = t.OPTime.Value.ToString("yyyy-MM-dd HH:mm:ss"),
                     OperationType = ((MemberDataOperationType)t.OperationType).ToDescription(),
@@ -4874,7 +4877,7 @@ namespace XCCloudWebBar.Api.XCCloud
                 var result = new
                 {
                     Records = totalRecords,
-                    Pages = totalPages,
+                    //Pages = totalPages,
                     Items = list
                 };
 

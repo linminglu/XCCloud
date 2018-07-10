@@ -28,6 +28,8 @@ namespace XXCloudService.Api.XCCloud
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
                 string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+                //string merchId = "100016";
+                //string storeId = "100016420111001";
 
                 string errMsg = string.Empty;
                 object[] conditions = dicParas.ContainsKey("conditions") ? (object[])dicParas["conditions"] : null;
@@ -58,14 +60,18 @@ namespace XXCloudService.Api.XCCloud
                     errMsg = "查询会员档案数据失败";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
-                
-                var json = string.Empty;
-                if (ds.Tables.Count > 0)
+                                
+                if (ds.Tables.Count > 1)
                 {
-                    json = Utils.DataTableToJson(ds.Tables[0]);
+                    var jsonArr = new {
+                        table1 = Utils.DataTableToJson(ds.Tables[0]),
+                        table2 = ds.Tables[1].Rows.Cast<DataRow>().ToDictionary(x => x[0].ToString(), x => x[1].ToString())
+                    };
+
+                    return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, jsonArr);
                 }
 
-                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, json);
+                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, "查询结果数据失败");
             }
             catch (Exception e)
             {

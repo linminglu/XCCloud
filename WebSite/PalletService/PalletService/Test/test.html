@@ -191,10 +191,27 @@
         var msgType = 0;
 
         function do_login() {
-            var parasObj = {  "storeId":"100010","userName": "admin","password":"88888888" };
+            var parasObj = {  "storeId":"100010","userName": "lijunjie","password":"123456" };
             var url = "/Handler1.ashx?action=userLogin";
             var parasJson = JSON.stringify(parasObj);
-            common(url, parasJson);
+            
+            $.ajax({
+                type: "post",
+                url: url,
+                contentType: "application/json; charset=utf-8",
+                data: { parasJson: parasJson },
+                success: function (data) {
+                    data = JSON.parse(data);
+                    if (data.result_code == "1") {
+                        var userToken = data.result_data.userToken;
+                        $("#userToken").val(userToken);
+                    }
+                    console.log(data);
+                },
+                error: function (error) {
+                    alert(1);  //这个地方也用到了
+                }
+            });
         }
 
         function do_IsNewCard() {

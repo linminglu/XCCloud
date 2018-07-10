@@ -656,5 +656,13 @@ namespace PalletService
 
             }
         }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            string icCardId = string.Empty;
+            string errMsg = string.Empty;
+            string repeatCode = string.Empty;
+            ICCardUtility.GetICCardID("778852013145", out icCardId,out repeatCode, out errMsg);
+        }
     }
 }

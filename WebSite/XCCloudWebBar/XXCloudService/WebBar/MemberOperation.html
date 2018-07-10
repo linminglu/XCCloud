@@ -21,7 +21,56 @@
 	<script src="js/axios.min.js"></script>
 	<!-- 引入 bootstrap-table -->
 	<!-- <script type="text/javascript" src="js/bootstrap-datetimepicker.min.js" charset="UTF-8"></script> -->
-	<!-- <script type="text/javascript" src="js/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script> -->
+    <!-- <script type="text/javascript" src="js/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script> -->
+    <!-- //    表格
+    function createTable(id,tableData,columns){       //表格
+        $(id).bootstrapTable({ // 对应table标签的id
+            data:tableData,
+            toolbar: '.toolbar',                //工具按钮用哪个容器
+            striped: true,                      //是否显示行间隔色
+            cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+            pagination: false,                   //是否显示分页（*）
+            sortable: false,                     //是否启用排序
+//        	sortOrder: "asc",                   //排序方式
+//        queryParams: oTableInit.queryParams,//传递参数（*）
+            sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
+            pageNumber:1,                       //初始化加载第一页，默认第一页
+            pageSize: 8,                       //每页的记录行数（*）
+//            pageList: [5,10, 25, 50, 100],        //可供选择的每页的行数（*）
+            search: false,                       //是否显示表格搜索，此搜索是客户端搜索，不会进服务端，所以，个人感觉意义不大
+            strictSearch: true,
+            showColumns: true,                  //是否显示所有的列
+            showRefresh: true,                  //是否显示刷新按钮
+            minimumCountColumns: 2,             //最少允许的列数
+            clickToSelect: true,                //是否启用点击选中行
+//            height:500,
+//             height: $(window.top).height()-200,                        //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
+            uniqueId: "ID",                     //每一行的唯一标识，一般为主键列
+            showToggle:false,
+            showFooter:false,                 //是否显示详细视图和列表视图的切换按钮
+            cardView: false,                    //是否显示详细视图
+            detailView: false,
+            onClickCell:function (field, value, row, $element) {
+                if(field == "name" && id == "#memberTable3"){
+                    $('#billingDetails').modal('show');
+                }
+                console.log(field);
+                console.log(value);
+                console.log(row);
+                console.log($element);
+            },
+            sortName: 'id', // 要排序的字段
+            sortOrder: 'desc', // 排序规则
+            columns: columns,
+            onLoadSuccess: function(){  //加载成功时执行
+                console.info("加载成功");
+            },
+            onLoadError: function(){  //加载失败时执行
+                console.info("加载数据失败");
+            }
+        })
+    } -->
+    
 <!-- <script type="text/javascript">
 	$(function(){
 		$('.form_date').datetimepicker({
@@ -70,13 +119,21 @@
     </style>
 </head>
 <body>
-<div id="app" v-cloak>
-	<div class="container-fluid mainBody">
-		<div class="row">
-				<table id="memberTable3"></table>
-		</div>
-	</div>
-</div>
+    <div id="app" v-cloak>
+        <table id="table">
+            <thead>
+                <tr>
+                    <th data-field="orderId">Item Name</th>
+                    <th data-field="icCardId">ID</th>
+                    <th data-field="orderStatusName">Item Price</th>
+                    <th data-field="payCount">Item Price</th>
+                    <th data-field="saleTime">Item Price</th>
+                </tr>
+            </thead>
+        </table>
+
+    </div>
+
 <script src="js/jquery-2.1.3.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
 <script src="js/swiper.min.js"></script>
@@ -86,6 +143,8 @@
 <!-- 引入 bootstrap-table -->
 <script src="js/bootstrap-table.js"></script>
 <script src="js/bootstrap-table-zh-CN.js"></script>
+
+    
 <script>
     var sysId = 0; //调用方应用Id
     var versionNo= "0.01"; //版本号
@@ -99,7 +158,8 @@
     var vm = new Vue({
         el: '#app',
         data:{
-           
+            userToken:"",
+            icCardId:"21110024",
         },
         mounted: function () {
             this.Initialize();
@@ -111,33 +171,36 @@
             Initialize:function () {
                 var that =this;
                 var userToken = getStorage("userToken");      	//获取userToken
-                var storeId = getStorage("storeId");       		//storeId
                 that.userToken = userToken;
-                that.storeId = storeId;
                 that.operationFnc()
             },
-//			会员操作
+//			测试
             operationFnc:function () {
-                var that = this;                                
-                var columns3=[
-                    {field:'no',title:'兑换日期'},
-                    {field:'name',title:'订单号'},
-                    {field:'name1',title:'兑换名称'},
-                    {field:'name2',title:'兑换类别'},
-                    {field:'name3',title:'兑换数量'},
-                    {field:'name4',title:'原价'},
-                    {field:'name5',title:'折扣(%)'},
-                    {field:'name6',title:'消耗数量'},
-                    {field:'name7',title:'消耗类别'},
-                    {field:'name8',title:'操作门店'},
-                    {field:'name9',title:'营业日期'},
-                    {field:'name10',title:'班次'},
-                    {field:'name11',title:'操作终端'},
-                    {field:'name12',title:'操作员'},
-                    {field:'name13',title:'备注'}];
-                setTimeout(function () {
-                    createTable("#memberTable3",destroy,columns3);
-                }, 50);
+                var that = this;
+                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,orderId:"",icCardId:"0",startDate:"2017-07-04",endDate:"2018-10-04"};
+                axios.post('/xccloud/order?action=getOrders', obj).then(function (res) {
+                    console.log(res.data);
+                    that.msgPrompt(res.data);
+                    that.loading = false;
+                    if (res.data.result_code === '1') {
+                        var destroy = res.data.result_data;
+                        var columns3=[
+                            {field:'AfterBalance',title:'兑换日期'},
+                            {field:'BeforeBalance',title:'订单号'},
+                            {field:'ChangeValue',title:'兑换名称'},
+                            {field:'ChannelType',title:'兑换类别'},
+                            {field:'CheckDate',title:'兑换数量'},
+                            {field:'Note',title:'原价'},
+                            {field:'OPTime',title:'折扣(%)'},
+                            {field:'OperationType',title:'消耗数量'},
+                        ]
+                        setTimeout(function () {
+                            createTable(destroy,"#table");
+                        }, 50);
+                    }
+                }).catch(function (err) {
+                    console.log(err);
+                });
 
             },
 
@@ -184,54 +247,7 @@
         $(".salesCoin").find("li").eq(index).find(".saleText a").popover("show");
         $(".salesCoin").find("li").eq(index).siblings().find(".saleText a").popover("hide");
     }
-    //    表格
-    function createTable(id,tableData,columns){       //表格
-        $(id).bootstrapTable({ // 对应table标签的id
-            data:tableData,
-            toolbar: '.toolbar',                //工具按钮用哪个容器
-            striped: true,                      //是否显示行间隔色
-            cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
-            pagination: false,                   //是否显示分页（*）
-            sortable: false,                     //是否启用排序
-//        	sortOrder: "asc",                   //排序方式
-//        queryParams: oTableInit.queryParams,//传递参数（*）
-            sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
-            pageNumber:1,                       //初始化加载第一页，默认第一页
-            pageSize: 8,                       //每页的记录行数（*）
-//            pageList: [5,10, 25, 50, 100],        //可供选择的每页的行数（*）
-            search: false,                       //是否显示表格搜索，此搜索是客户端搜索，不会进服务端，所以，个人感觉意义不大
-            strictSearch: true,
-            showColumns: true,                  //是否显示所有的列
-            showRefresh: true,                  //是否显示刷新按钮
-            minimumCountColumns: 2,             //最少允许的列数
-            clickToSelect: true,                //是否启用点击选中行
-//            height:500,
-//             height: $(window.top).height()-200,                        //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
-            uniqueId: "ID",                     //每一行的唯一标识，一般为主键列
-            showToggle:false,
-            showFooter:false,                 //是否显示详细视图和列表视图的切换按钮
-            cardView: false,                    //是否显示详细视图
-            detailView: false,
-            onClickCell:function (field, value, row, $element) {
-                if(field == "name" && id == "#memberTable3"){
-                    $('#billingDetails').modal('show');
-                }
-                console.log(field);
-                console.log(value);
-                console.log(row);
-                console.log($element);
-            },
-            sortName: 'id', // 要排序的字段
-            sortOrder: 'desc', // 排序规则
-            columns: columns,
-            onLoadSuccess: function(){  //加载成功时执行
-                console.info("加载成功");
-            },
-            onLoadError: function(){  //加载失败时执行
-                console.info("加载数据失败");
-            }
-        })
-    }
+    
     //存储session
     function setStorage(key,value) {
         if(window.localStorage){
@@ -253,6 +269,42 @@
             value = JSON.parse(localStorage.getItem(key));
             return value;
         }
+    }
+    //表格
+    function createTable(tableData,tableId){       //表格
+        $(tableId).bootstrapTable({ // 对应table标签的id
+            data:tableData,
+            toolbar: '.toolbar',                //工具按钮用哪个容器
+            striped: true,                      //是否显示行间隔色
+            cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+            toggle:"table",
+            pagination: true,                   //是否显示分页（*）
+            sortable: false,                     //是否启用排序
+       	    sortOrder: "asc",                   //排序方式
+            pageNumber:1,                       //初始化加载第一页，默认第一页
+            pageSize: 5,                       //每页的记录行数（*）
+            pageList: [5,10, 25],        //可供选择的每页的行数（*）
+            search: false,                       //是否显示表格搜索，此搜索是客户端搜索，不会进服务端，所以，个人感觉意义不大
+            strictSearch: true,
+            showColumns: false,                  //是否显示所有的列
+            showRefresh: false,                  //是否显示刷新按钮
+            minimumCountColumns: 2,             //最少允许的列数
+            clickToSelect: true,                //是否启用点击选中行
+            height: 320,                        //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
+            // height: $(window.top).height()-400,                        //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
+            uniqueId: "ID",                     //每一行的唯一标识，一般为主键列
+            showToggle:false,
+            showFooter:false,                 //是否显示详细视图和列表视图的切换按钮
+            cardView: false,                    //是否显示详细视图
+            detailView: false,
+            // columns: columns,
+            onLoadSuccess: function(){  //加载成功时执行
+                console.info("加载成功");
+            },
+            onLoadError: function(){  //加载失败时执行
+                console.info("加载数据失败");
+            }
+        })
     }
 </script>
 </body>

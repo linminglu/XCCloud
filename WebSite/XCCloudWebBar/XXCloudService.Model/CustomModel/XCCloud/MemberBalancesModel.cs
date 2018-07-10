@@ -256,13 +256,19 @@ namespace XCCloudWebBar.Model.CustomModel.XCCloud
         public int AllowRenew { get; set; }
     }
 
+    [DataContract]
     public class BalanceModel
     {
+        [DataMember(Order = 1)]
         public int BalanceIndex { get; set; }
-
+        [DataMember(Order = 2)]
         public string BalanceName { get; set; }
-
-        public decimal Quantity { get; set; }
+        [DataMember(Order = 3)]
+        public string Balance { get; set; }
+        [DataMember(Order = 4)]
+        public string BalanceFree { get; set; }
+        [DataMember(Order = 5)]
+        public string TotalBalance { get; set; }
     }
 
     public class ChildCardModel
