@@ -435,7 +435,7 @@
             'elem2': 'serchMode',
             'pagename': 'projectInfoSearch',
             'processname': 'projectInfoSearch',
-            'token': token1,
+            'token': token,
             'form': form,
             'layer': layer,
             'searchBtn': 'searchBtn',
@@ -657,10 +657,12 @@
             let checkStatus = table.checkStatus('ProjectList'); //test即为基础参数id对应的值
             let len = checkStatus.data.length;
             if (len == 1) {
-                // let ids = '';
-                // ids = checkStatus.data[0].ID;
+               let idArr=[];
+               for(let i in checkStatus.data){
+                   idArr.push(checkStatus.data[i].ID)
+               }
                 layer.confirm('FBI warming：删除不可恢复，是否确定删除?', function(index){
-                    var _obj={'id':checkStatus.data[0].ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                    var _obj={'id':idArr,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
                     var url='/XCCloud/Project?action=DelProjectInfo';
                     let parseJson = JSON.stringify(_obj);
                     $.ajax({

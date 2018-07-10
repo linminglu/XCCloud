@@ -304,6 +304,74 @@ xcActionSystem.prototype= {
                         })
                     });
     },
+
+    //动态表头
+    getActiveTable:function (parm) {
+        layui.use(['table', 'layer'], function () {
+            var table = layui.table;
+            var layer = layui.layer;
+            var index = layer.load(0, {shade: false});
+            var obj = parm.obj, url = parm.url;
+            $.ajax({
+                type: "post", url: url,
+                contentType: "application/json; charset=utf-8",
+                data: {parasJson: JSON.stringify(obj)},
+                async:false,
+                success: function (data) {
+                    data = JSON.parse(data);
+                    console.log(data);
+
+                    if (data.Result_Code == "1"||data.result_code==1) {
+                        let arr1=JSON.parse(data.result_data.table1);
+                        let arr2=data.result_data.table2;
+                        Object.keys(arr2).forEach(function (key,i,v) {
+                            parm.cols.push({field: key, title: arr2[key], align: 'center'})
+                        })
+
+                        table.render({
+                            elem: parm.elem
+                            , data: arr1
+                            // , height:'full-150'
+                            , cellMinWidth: 120 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+                            , cols: [parm.cols]
+                            ,skin:'line'
+                            , page: {page: true, limits: [10, 15, 20, 30, 50, 100]}
+                            , limit: 10
+                            ,total:parm.total
+                            ,done:function () {
+                                if(this.total){
+                                    let _col=this.cols[0];
+                                    let _data=this.data;
+                                    var intHtml = '<tr style="background-color: #93D1FF">';
+                                    intHtml+='<td style="text-align:center;">合计:'+this.data.length+'条</td>';
+                                    for(let i=1;i<_col.length;i++){
+                                        if(_col[i].total){
+                                            let index=_col[i].field;
+                                            let count=0;
+                                            for(let j in _data){
+                                                count+=parseInt(_data[j][index])
+                                            }
+                                            intHtml+='<td style="color: red;font-weight: bold;text-align:center;">'+count+'</td>'
+                                        }else {
+                                            intHtml+='<td></td>'
+                                        }
+                                    }
+                                    $(".layui-table-body.layui-table-main tbody").append(intHtml);
+                                }
+                            }
+                        });
+                        layer.close(index);
+                        // for(i in parm.obj.conditions){
+                        //     parm.obj.conditions[i].values='';
+                        // }
+                        // return parm.obj.conditions
+                    }  else {
+                        layer.msg(data.result_msg||data.return_msg);
+                    }
+                }
+            })
+        });
+    },
     closeAll: function (layer) {
         layer.closeAll();
     },

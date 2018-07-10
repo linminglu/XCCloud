@@ -160,7 +160,7 @@
         'obj':{"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"},
         'elem':'#employerManageTable',
         'cols':[
-            {type:'numbers'}
+            {type:'checkbox'}
             ,{field:'UserID', title:'员工ID', align: 'center', sort: true}
             ,{field:'StoreName',title: '门店名称', align: 'center'} //width 支持：数字、百分比和不填写。
             ,{field:'RealName', title: '员工姓名', align: 'center'}
@@ -169,7 +169,7 @@
             ,{field:'Mobile', title: '员工手机号', align: 'center'}
             ,{field:'IsAdminStr', title: '是否管理员', align: 'center'}
             ,{field:'UserStatusStr', title: '员工状态', align: 'center'}
-            ,{fixed: 'right', title: '操作', width:100, align:'center', toolbar: '#barDemo'}
+            // ,{fixed: 'right', title: '操作', width:100, align:'center', toolbar: '#barDemo'}
         ],
         'done':function (res,curr,count) {
             $("[data-field='UserID']").css('display','none');
@@ -185,7 +185,7 @@
             'elem2': 'serchMode',
             'pagename': 'storeUserSearch',
             'processname': 'storeUserSearch',
-            'token': token1,
+            'token': token,
             'form': form,
             'layer': layer,
             'laydate':laydate,

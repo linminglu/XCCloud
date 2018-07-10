@@ -367,6 +367,15 @@
         common(url, parasJson);
     }
 
+    function do_xccloud_querymemberentryinfo() {
+        var parasObj = {
+            "merchId": "100016", "storeId": "100016360103001"
+        };
+        var url = "/xccloud/MemberManage?action=QueryMemberEntryInfo";
+        var parasJson = JSON.stringify(parasObj);
+        common(url, parasJson);
+    }
+
     </script>
 
 </head>
@@ -422,7 +431,8 @@
         <div>莘助手注册登录验证</div>
         <input type="button" value="do_xcgamemana_getRegisterSMSCode" onclick="do_xcgamemana_getRegisterSMSCode()" />     
         <div>会员资料</div>
-        <input type="button" value="do_xccloud_querymemberinfo" onclick="do_xccloud_querymemberinfo()" />                  
+        <input type="button" value="do_xccloud_querymemberinfo" onclick="do_xccloud_querymemberinfo()" /> 
+        <input type="button" value="do_xccloud_querymemberentryinfo" onclick="do_xccloud_querymemberentryinfo()" />                      
     </div>
 </body>
 </html>

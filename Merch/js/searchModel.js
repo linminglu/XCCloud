@@ -14,6 +14,7 @@ var seachModel = function (options) {
 
     let xc=options.xc;
     let parm=options.parm;
+    let types=options.active==null?'1':'0'
     let d = [];
     let _domStr1 = "";  //结构字符串
     let _domStr2 = "";  //结构字符串
@@ -40,7 +41,7 @@ var seachModel = function (options) {
                 d = data.result_data;
                 if (d.length > 0) {
 
-                    for (i in d) {
+                    for (let i in d) {
                         if (d[i].issearch == 1) {
                             _domStr1 += '<input type="checkbox" checked lay-skin="primary" value="' + d[i].id + '" title="' + d[i].title + '" lay-filter="checkList"/><br>'
                         } else {
@@ -58,7 +59,7 @@ var seachModel = function (options) {
                             __domStr2 += html;
                             _domStr2 += '</select></div></div>';
                         } else if (d[i].type == 'bit') {
-                            _domStr2 += ' <div class="layui-inline ' + d[i].field + 'sh"><label class="layui-form-label">' + d[i].title + '</label>' +
+                            _domStr2 += ' <div class="layui-inline lay-bit ' + d[i].field + 'sh"><label class="layui-form-label">' + d[i].title + '</label>' +
                                 '<div class="layui-input-inline" style="width: 188px;height: 36px;border: 1px solid #eee;background-color: #fff;">' +
                                 '<input type="radio" name="' + d[i].field + 'sh" value="1" title="是" checked="" lay-filter="' + d[i].field + 'sh">' +
                                 '<input type="radio" name="' + d[i].field + 'sh" value="0" title="否" lay-filter="' + d[i].field + 'sh">' +
@@ -128,7 +129,7 @@ var seachModel = function (options) {
 
                     container1.innerHTML = _domStr1;
                     container2.innerHTML = _domStr2;
-                    for (i in d) {
+                    for (let i in d) {
                         if (d[i].issearch == 0) {
                             $('.' + d[i].field + 'sh').addClass('layui-hide')
                         } else {
@@ -195,7 +196,7 @@ var seachModel = function (options) {
             }
         }
     });
-    for(i in d){
+    for(let i in d){
         if(d[i].type == 'date' ) {
             options.laydate.render({
                 elem: '#'+d[i].field+'sh1'
@@ -230,7 +231,7 @@ var seachModel = function (options) {
     form.on('checkbox(checkList)', function (data) {
         let _val = data.value;
         if (data.elem.checked) {
-            for (i in d) {
+            for (let i in d) {
                 if (d[i].id == _val) {
                     d[i].issearch = 1;
                     container2.getElementsByClassName(d[i].field + 'sh')[0].classList.remove('layui-hide');
@@ -246,7 +247,7 @@ var seachModel = function (options) {
                 }
             }
 
-            for(i in templateDetails){
+            for(let i in templateDetails){
                 if(templateDetails[i].title==data.elem.title){
                     templateDetails[i].showSearch=1
                 }
@@ -254,19 +255,19 @@ var seachModel = function (options) {
 
         } else {
             let index;
-            for (i in d) {
+            for (let i in d) {
                 if (d[i].id == _val) {
                     index=i;
                     d[i].issearch = 0;
                     container2.getElementsByClassName(d[i].field + 'sh')[0].classList.add('layui-hide')
                 }
             }
-            for(i in conditions){
+            for(let i in conditions){
                 if(conditions[i].field==d[index].field){
                     conditions.splice(i,1);
                 }
             }
-            for(i in templateDetails){
+            for(let i in templateDetails){
                 if(templateDetails[i].title==d[index].title){
                     templateDetails[i].showSearch=0
                 }
@@ -277,7 +278,7 @@ var seachModel = function (options) {
 
     form.on("radio()", function (data) {
 
-        for (j in conditions) {
+        for (let j in conditions) {
             if (conditions[j].field + 'sh' == data.elem.name) {
                 conditions[j].values = data.value;
             }
@@ -286,7 +287,7 @@ var seachModel = function (options) {
     });
     form.on("select()", function (data) {
 
-        for (j in d) {
+        for (let j in d) {
             if (d[j].field + 'cond' == data.elem.id) {
 
                 d[j].condition = data.value;
@@ -303,12 +304,12 @@ var seachModel = function (options) {
                 }
             }
         }
-        for(i in conditions){
+        for(let i in conditions){
             if(conditions[i].field+'cond'==data.elem.id){
                 conditions[i].condition=data.value
             }
         }
-        for(i in templateDetails){
+        for(let i in templateDetails){
             if(templateDetails[i].fieldName+'cond'==data.elem.id){
                 templateDetails[i].condition=data.value
             }
@@ -326,7 +327,7 @@ var seachModel = function (options) {
 
     })
     searchBtn.addEventListener('click', function () {
-        for (i in d) {
+        for (let i in d) {
             if (d[i].issearch == 1) {
                 for (j in conditions) {
                     if (conditions[j].field == d[i].field) {
@@ -345,7 +346,12 @@ var seachModel = function (options) {
             }
         }
         parm.obj.conditions=conditions;
-        xc.getInitData(parm);
+        if(types==1){
+            xc.getInitData(parm);
+        }else {
+            xc.getActiveTable(parm);
+        }
+
         _falg=false;
         $('#'+options.elem1).parent().slideUp(100);
 

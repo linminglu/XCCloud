@@ -4491,9 +4491,7 @@ body .layui-util-face .layui-layer-content {
     right: 0;
     border-left: 1px solid #eee;
 }
-.settingPage .layui-form-pane .layui-form-radio, .layui-form-pane .layui-form-switch{
-    margin-left: 10px;
-}
-.reportPage .layui-form-pane .layui-form-radio, .layui-form-pane .layui-form-switch{
+
+.lay-bit  .layui-form-pane.layui-form-radio{
     margin-left: 10px;
 }

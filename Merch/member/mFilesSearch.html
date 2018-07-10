@@ -46,22 +46,34 @@
         'elem': '#mFileSearchTable',
         'cols': [
             {field: 'ICCardID', title: '会员卡号', align: 'center', sort: true,templet:'#_ICCard'}
-            , {field: 'UserName', title: '会员姓名', align: 'center'}
+            , {field: 'CardName', title: '会员姓名', align: 'center'}
             , {field: 'MemberLevelName', title: '会员级别', align: 'center'}
             , {field: 'CardType', title: '卡类别', align: 'center',templet:'#_cardType'}
             , {field: 'Deposit', title: '押金', align: 'center',templet:'#_deposit'}
             , {field: 'UpdateTime', title: '余额最后跟新时间', align: 'center'}
             , {field: 'EndDate', title: '过期日期', align: 'center'}
-            , {field: 'Gender', title: '性别', align: 'center'}
+            , {field: 'CardSex', title: '性别', align: 'center',templet:function (d) {
+                    if(d.CardSex==0){
+                        return '男'
+                    }else {
+                        return 'nv'
+                    }
+                }}
             , {field: 'Mobile', title: '手机号码', align: 'center'}
             , {field: 'IDCard', title: '身份证', align: 'center'}
             , {field: 'CreateTime', title: '入会日期', align: 'center'}
             , {field: 'StoreName', title: '开卡门店', align: 'center'}
-            , {field: 'State', title: '状态', align: 'center', templet: '#AllowOverOther'}
+            , {field: 'CardStatus', title: '状态', align: 'center', templet: function (d) {
+                    if(d.CardStatus==1){
+                        return '正常'
+                    }else {
+                        return '禁用'
+                    }
+                }}
            ]
     };
     //100016360103001
-    xc.getInitData(parm);
+    xc.getActiveTable(parm);
     layui.use(['form','layer','table','laydate'],function () {
         let form=layui.form;
         let layer=layui.layer;
@@ -77,7 +89,8 @@
             'layer': layer,
             'searchBtn': 'searchBtn',
             'xc':xc,
-            'parm':parm
+            'parm':parm,
+            'active':''
         })
     })
 </script>

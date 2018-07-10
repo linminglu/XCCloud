@@ -143,7 +143,7 @@ namespace XCCloudService.Business.XCGameMana
                 //IStoreService storeService = BLLContainer.Resolve<IStoreService>();
                 //string sql = " select ID as StoreID,store_password as StorePassword,store_dbname as StoreDBName,companyname as StoreName,StoreType,StoreDBDeployType from t_store where state = 1";
                 //System.Data.DataSet ds = XCGameManabll.ExecuteQuerySentence(sql, null);
-                string sql = "select StoreID, Password as StorePassword, '' as StoreDBName, StoreName, 2 AS StoreType, 1 AS StoreDBDeployType from Base_StoreInfo where StoreState = 1";
+                string sql = "select StoreID, Password as StorePassword, '' as StoreDBName, StoreName, 2 AS StoreType, 0 AS StoreDBDeployType from Base_StoreInfo where StoreState = 1";
                 System.Data.DataSet ds = XCCloudBLL.ExecuteQuerySentence(sql, null);
                 DataTable dt = ds.Tables[0];
                 if (dt.Rows.Count > 0)

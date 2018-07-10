@@ -450,6 +450,21 @@ namespace XCCloudService.Common.Enum
         Open=4 //开业
     }
 
+    /// <summary>
+    /// 入会渠道
+    /// </summary>
+    public enum JoinChannel
+    {
+        [Description("吧台")]
+        Router = 0,
+
+        [Description("自助机")]
+        SelfMachine = 1,
+
+        [Description("H5")]
+        H5 = 2,        
+    }
+
     public enum WorkType
     {
         UserCheck = 0,//用户审核

@@ -33,6 +33,7 @@ namespace XCCloudService.Model.XCCloud
         public string ScheduleID { get; set; }
         public string WorkStation { get; set; }
         public Nullable<int> AuthorID { get; set; }
+        public Nullable<System.DateTime> CheckDate { get; set; }
         public Nullable<int> OrderStatus { get; set; }
         public Nullable<int> SettleFlag { get; set; }
         public string Note { get; set; }

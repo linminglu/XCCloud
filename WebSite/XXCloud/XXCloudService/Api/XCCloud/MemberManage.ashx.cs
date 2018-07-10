@@ -8,6 +8,7 @@ using XCCloudService.Base;
 using XCCloudService.BLL.CommonBLL;
 using XCCloudService.BLL.XCCloud;
 using XCCloudService.Common;
+using XCCloudService.Common.Enum;
 using XCCloudService.Common.Extensions;
 using XCCloudService.DBService.BLL;
 using XCCloudService.Model.CustomModel.XCCloud;
@@ -20,6 +21,8 @@ namespace XXCloudService.Api.XCCloud
     /// </summary>
     public class MemberManage : ApiBase
     {
+        #region 会员资料
+
         /// <summary>
         /// 会员档案查询
         /// </summary>
@@ -33,8 +36,8 @@ namespace XXCloudService.Api.XCCloud
                 XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
                 string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
                 string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
-                //string merchId = "100016";
-                //string storeId = "100016420111001";
+                //string merchId = dicParas.Get("merchId");
+                //string storeId = dicParas.Get("storeId");
 
                 string errMsg = string.Empty;
                 object[] conditions = dicParas.ContainsKey("conditions") ? (object[])dicParas["conditions"] : null;
@@ -76,7 +79,7 @@ namespace XXCloudService.Api.XCCloud
                     return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, jsonArr);
                 }
 
-                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, "查询结果数据失败");
+                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, "查询数据失败");
             }
             catch (Exception e)
             {
@@ -85,7 +88,7 @@ namespace XXCloudService.Api.XCCloud
         }
 
         /// <summary>
-        /// 会员档案-押金
+        /// 会员档案查询-押金
         /// </summary>
         /// <param name="dicParas"></param>
         /// <returns></returns>
@@ -156,5 +159,91 @@ namespace XXCloudService.Api.XCCloud
                 return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
             }
         }
+
+        /// <summary>
+        /// 入会记录查询
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.MethodToken, SysIdAndVersionNo = false)]
+        public object QueryMemberEntryInfo(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                //XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                //string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                //string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+                string merchId = dicParas.Get("merchId");
+                string storeId = dicParas.Get("storeId");
+
+                string errMsg = string.Empty;
+                object[] conditions = dicParas.ContainsKey("conditions") ? (object[])dicParas["conditions"] : null;
+
+                SqlParameter[] parameters = new SqlParameter[2];
+                parameters[0] = new SqlParameter("@MerchID", merchId);
+                parameters[1] = new SqlParameter("@StoreID", storeId);
+
+                string sqlWhere = string.Empty;
+                if (conditions != null && conditions.Length > 0)
+                {
+                    if (!QueryBLL.GenDynamicSql(conditions, "a.", ref sqlWhere, ref parameters, out errMsg))
+                    {
+                        return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                    }
+                }
+
+                string storedProcedure = "QueryMemberEntryInfo";
+                Array.Resize(ref parameters, parameters.Length + 1);
+                parameters[parameters.Length - 1] = new SqlParameter("@SqlWhere", sqlWhere);
+                Array.Resize(ref parameters, parameters.Length + 1);
+                parameters[parameters.Length - 1] = new SqlParameter("@Result", SqlDbType.Int);
+                parameters[parameters.Length - 1].Direction = ParameterDirection.Output;
+
+                System.Data.DataSet ds = XCCloudBLL.GetStoredProcedureSentence(storedProcedure, parameters);
+                if (parameters[parameters.Length - 1].Value.ToString() != "1")
+                {
+                    errMsg = "查询入会记录信息失败";
+                    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                }
+
+                if (ds.Tables.Count > 0)
+                {
+                    List<object> listObj = new List<object>();
+                    for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                    {
+                        var obj = new
+                        {
+                            ICCardID = ds.Tables[0].Rows[i]["ICCardID"].Tostring(),
+                            CardName = ds.Tables[0].Rows[i]["CardName"].Tostring(),
+                            MemberLevelID = ds.Tables[0].Rows[i]["MemberLevelID"].Toint(),
+                            MemberLevelName = ds.Tables[0].Rows[i]["MemberLevelName"].Tostring(),
+                            CreateTime = ds.Tables[0].Rows[i]["CreateTime"].Todatetime(),
+                            JoinChannel = ((JoinChannel?)ds.Tables[0].Rows[i]["JoinChannel"].Toint()).GetDescription(),
+                            OrderID = ds.Tables[0].Rows[i]["OrderID"].Tostring(),
+                            Deposit = ds.Tables[0].Rows[i]["Deposit"].Todecimal(),
+                            OpenFee = ds.Tables[0].Rows[i]["OpenFee"].Todecimal(),
+                            EndDate = ds.Tables[0].Rows[i]["EndDate"].Todatetime(),
+                            StoreName = ds.Tables[0].Rows[i]["StoreName"].Tostring(),
+                            CheckDate = ds.Tables[0].Rows[i]["CheckDate"].Todate(),
+                            ScheduleName = ds.Tables[0].Rows[i]["ScheduleName"].Tostring(),
+                            WorkStation = ds.Tables[0].Rows[i]["WorkStation"].Tostring(),
+                            UserName = ds.Tables[0].Rows[i]["UserName"].Tostring(),
+                            Note = ds.Tables[0].Rows[i]["Note"].Tostring(),
+                        };
+                        listObj.Add(obj);
+                    }
+
+                    return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, listObj);
+                }
+
+                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, "查询数据失败");
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        #endregion
     }
 }

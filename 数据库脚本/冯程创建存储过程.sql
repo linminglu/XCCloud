@@ -889,3 +889,31 @@ as
 
 GO
 
+CREATE proc [dbo].[QueryMemberEntryInfo](
+@MerchID varchar(15),@StoreID varchar(15),@SqlWhere varchar(MAX),@Result int out)
+as	
+	declare @sql nvarchar(max)
+	SET @sql = ''
+	SET @sql = @sql + 'select a.* from ('
+	SET @sql = @sql + 
+	'select a.ICCardID, a.CardName, c.MemberLevelID, c.MemberLevelName, a.CreateTime, a.EndDate, a.JoinChannel, a.OrderID,
+	 b.Deposit, b.OpenFee, d.StoreName, o.CheckDate, sd.ScheduleName, o.WorkStation, u.LogName AS UserName, o.Note ' +    
+    ' from Data_Member_Card a' +
+    ' inner join Data_Member_Card_Store s on a.ID=s.CardID and a.StoreID=s.StoreID ' +
+    ' inner join Flw_Order o on a.OrderID=o.OrderID ' +
+    ' inner join Flw_Order_Detail od on o.OrderID=od.OrderFlwID ' +
+    ' inner join Flw_Food_Sale b on od.FoodFlwID=b.ID ' +
+    ' inner join Data_MemberLevel c on a.MemberLevelID=c.MemberLevelID ' +
+    ' left join Base_StoreInfo d on a.StoreID=d.StoreID ' + 
+    ' left join Base_UserInfo u on o.UserID=u.UserID ' +  
+    ' left join Flw_Schedule sd on o.ScheduleID=sd.ID ' +     
+    ' where a.MerchID=''' + @MerchID + ''' AND a.StoreID=''' + @StoreID + ''''
+    SET @sql = @sql + ') a' + ISNULL(@SqlWhere,'')
+	
+	--print @sql
+	exec (@sql)	
+	
+	set @Result = 1
+
+GO
+
