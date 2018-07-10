@@ -22,5 +22,8 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<System.DateTime> ExpireDay { get; set; }
         public Nullable<int> ValidType { get; set; }
         public Nullable<int> Status { get; set; }
+        public string MerchID { get; set; }
+        public Nullable<int> SyncFlag { get; set; }
+        public string Verifiction { get; set; }
     }
 }

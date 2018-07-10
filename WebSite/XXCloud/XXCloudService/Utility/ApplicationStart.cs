@@ -167,7 +167,7 @@ namespace XCCloudService.Utility
         {
             try
             {
-                if (RedisCacheHelper.KeyExists(UserBusiness.userInfoCacheKey))
+                if (!RedisCacheHelper.KeyExists(UserBusiness.userInfoCacheKey))
                 {
                     //XCCloudService.Business.XCCloud.UserBusiness.Clear();
                     XCCloudService.Business.XCCloud.UserBusiness.XcUserInit();

@@ -826,7 +826,7 @@ as
 	SET @sql = @sql + 'select a.* from ('
 	SET @sql = @sql + 'select a.*, b.* from ('
 	SET @sql = @sql + 
-	'select a.ID, a.ICCardID, a.CardName, c.MemberLevelID, c.MemberLevelName,
+	'select a.ID,  a.StoreID, a.ICCardID, a.CardName, c.MemberLevelID, c.MemberLevelName,
 	 a.CardType, a.Deposit, a.UpdateTime, a.EndDate, a.CardSex,
 	 b.Mobile, b.IDCard, a.CreateTime, d.StoreName, a.CardStatus '+    
     ' from Data_Member_Card a'+

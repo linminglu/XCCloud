@@ -19,11 +19,14 @@ namespace XCCloudService.Model.XCCloud
         public string StoreID { get; set; }
         public string ProjectTicketCode { get; set; }
         public string MemberID { get; set; }
-        public Nullable<int> DeviceID { get; set; }
+        public Nullable<int> InDeviceID { get; set; }
+        public Nullable<int> OutDeviceID { get; set; }
         public string DeviceName { get; set; }
         public Nullable<System.DateTime> InTime { get; set; }
         public Nullable<System.DateTime> OutTime { get; set; }
         public Nullable<int> OutMinuteTotal { get; set; }
+        public string Note { get; set; }
+        public Nullable<int> SyncFlag { get; set; }
         public string Verifiction { get; set; }
     }
 }

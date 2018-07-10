@@ -35,5 +35,9 @@ namespace XCCloudService.Model.XCCloud
         public string Note { get; set; }
         public Nullable<System.DateTime> CheckDate { get; set; }
         public string Verifiction { get; set; }
+        public Nullable<int> ACKControlValue { get; set; }
+        public Nullable<int> ACKFreeCoin { get; set; }
+        public Nullable<int> ACKPulesCount { get; set; }
+        public Nullable<int> SyncFlag { get; set; }
     }
 }
