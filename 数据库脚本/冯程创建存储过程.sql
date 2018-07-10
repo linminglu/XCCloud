@@ -826,8 +826,8 @@ as
 	SET @sql = @sql + 'select a.* from ('
 	SET @sql = @sql + 'select a.*, b.* from ('
 	SET @sql = @sql + 
-	'select a.ID, a.ICCardID, b.UserName, c.MemberLevelID, c.MemberLevelName,
-	 a.CardType, a.Deposit, a.UpdateTime, a.EndDate, b.Gender,
+	'select a.ID, a.ICCardID, a.CardName, c.MemberLevelID, c.MemberLevelName,
+	 a.CardType, a.Deposit, a.UpdateTime, a.EndDate, a.CardSex,
 	 b.Mobile, b.IDCard, a.CreateTime, d.StoreName, a.CardStatus '+    
     ' from Data_Member_Card a'+
     ' inner join Data_Member_Card_Store s on a.ID=s.CardID and a.StoreID=s.StoreID '+

@@ -4200,18 +4200,18 @@ namespace XXCloudService.Api.XCCloud
                                 	FROM
                                 		Data_GoodsStock
                                 ) a                                
-                                LEFT JOIN Data_GoodInventory b ON a.GoodID = b.GoodID AND a.StockType = b.InventoryType AND a.StockIndex = b.InventoryIndex
+                                LEFT JOIN Data_GoodInventory b ON a.GoodID = b.GoodID AND a.StockType = b.InventoryType AND a.StockIndex = b.InventoryIndex AND ISNULL(b.AuthorID,'')=''
                                 INNER JOIN Base_GoodsInfo c ON a.GoodID = c.ID  
                                 LEFT JOIN Dict_System d ON c.GoodType = d.ID
                                 LEFT JOIN Base_UserInfo u ON b.UserID = u.UserID
                                 LEFT JOIN Base_StoreInfo s ON c.StoreID = s.StoreID
                                 WHERE
-                                	c.Status = 1 AND a.RowNum <= 1 AND ISNULL(b.AuthorID,'')='' AND a.StockIndex = " + stockIndex + " AND a.StockType = " + stockType + " AND c.BarCode = '" + barCode + "'";    //查询未盘点审核的记录
+                                	c.Status = 1 AND a.RowNum <= 1 AND a.StockIndex = " + stockIndex + " AND a.StockType = " + stockType + " AND c.BarCode = '" + barCode + "'";    //查询未盘点审核的记录
 
                 #endregion
-
+               
                 var data_GoodInventory = Data_GoodInventoryService.I.SqlQuery<Data_GoodInventoryList>(sql).FirstOrDefault();
-
+                    
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, data_GoodInventory);
             }
             catch (Exception e)

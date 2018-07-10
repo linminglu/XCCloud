@@ -39,7 +39,6 @@
     let xc = xcActionSystem.prototype;
     let token = xc.getStorage('token');
     let Id = '';
-    let indexLayer;
     //初始化table
     let parm = {
         'obj': {'conditions':[],'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'},
@@ -61,6 +60,7 @@
             , {field: 'State', title: '状态', align: 'center', templet: '#AllowOverOther'}
            ]
     };
+    //100016360103001
     xc.getInitData(parm);
     layui.use(['form','layer','table','laydate'],function () {
         let form=layui.form;
@@ -72,7 +72,7 @@
             'elem2': 'serchMode',
             'pagename': 'memberInfoSearch',
             'processname': 'memberInfoSearch',
-            'token': token1,
+            'token': token,
             'form': form,
             'layer': layer,
             'searchBtn': 'searchBtn',
