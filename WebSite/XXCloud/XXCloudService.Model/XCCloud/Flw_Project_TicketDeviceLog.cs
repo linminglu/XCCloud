@@ -20,5 +20,11 @@ namespace XCCloudService.Model.XCCloud
         public Nullable<int> DeviceID { get; set; }
         public Nullable<System.DateTime> LogTime { get; set; }
         public Nullable<int> LogType { get; set; }
+        public Nullable<int> BalanceIndex { get; set; }
+        public Nullable<decimal> Total { get; set; }
+        public Nullable<int> UseType { get; set; }
+        public Nullable<decimal> CashTotal { get; set; }
+        public Nullable<int> SyncFlag { get; set; }
+        public string Verifiction { get; set; }
     }
 }

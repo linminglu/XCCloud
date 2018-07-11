@@ -1,5 +1,4 @@
-// var aa=(function () {
-// 构造
+
 var seachModel = function (options) {
 
     let container1 = document.getElementById(options.elem1); //容器
@@ -14,7 +13,7 @@ var seachModel = function (options) {
 
     let xc=options.xc;
     let parm=options.parm;
-    let types=options.active==null?'1':'0'
+    let types=options.active==null?'1':'0';
     let d = [];
     let _domStr1 = "";  //结构字符串
     let _domStr2 = "";  //结构字符串
@@ -27,7 +26,7 @@ var seachModel = function (options) {
         'pagename': pagename,
         'processname': processname,
         'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'
-    }
+    };
     let _parseJson = JSON.stringify(obj);
     $.ajax({
         type: 'post',
@@ -219,11 +218,11 @@ var seachModel = function (options) {
             options.laydate.render({
                 elem: '#'+d[i].field+'sh1'
                 ,type: 'date'
-            })
+            });
             options.laydate.render({
                 elem: '#'+d[i].field+'sh2'
                 ,type: 'date'
-            })
+            });
             options.laydate.render({
                 elem: '#'+d[i].field+'sh11'
                 ,type: 'date'
@@ -235,11 +234,11 @@ var seachModel = function (options) {
             options.laydate.render({
                 elem: '#'+d[i].field+'sh1'
                 ,type: 'time'
-            })
+            });
             options.laydate.render({
                 elem: '#'+d[i].field+'sh2'
                 ,type: 'time'
-            })
+            });
             options.laydate.render({
                 elem: '#'+d[i].field+'sh11'
                 ,type: 'time'
@@ -249,11 +248,11 @@ var seachModel = function (options) {
             options.laydate.render({
                 elem: '#'+d[i].field+'sh1'
                 ,type: 'datetime'
-            })
+            });
             options.laydate.render({
                 elem: '#'+d[i].field+'sh2'
                 ,type: 'datetime'
-            })
+            });
             options.laydate.render({
                 elem: '#'+d[i].field+'sh11'
                 ,type: 'datetime'
@@ -266,7 +265,7 @@ var seachModel = function (options) {
             for (let i in d) {
                 if (d[i].id == _val) {
                     d[i].issearch = 1;
-                    console.log( container2.getElementsByClassName(d[i].field + 'sh')[0])
+                    // console.log( container2.getElementsByClassName(d[i].field + 'sh')[0])
                     container2.getElementsByClassName(d[i].field + 'sh')[0].classList.remove('layui-hide');
                     if (d[i].type == 'string') {
                         conditions.push({'id': d[i].tempId, 'condition':'6','field': d[i].field, 'values': ''});
@@ -358,7 +357,7 @@ var seachModel = function (options) {
         }
             event.stopPropagation();
 
-    })
+    });
     searchBtn.addEventListener('click', function () {
         for (let i in d) {
             if (d[i].issearch == 1) {
@@ -424,7 +423,7 @@ var seachModel = function (options) {
             }
         })
     })
-}
+};
 
 function setOption(j) {
     let options = [{'value': '=', 'key': '0'},
@@ -433,7 +432,7 @@ function setOption(j) {
         {'value': '>=', 'key': '3'},
         {'value': '<=', 'key': '4'},
         {'value': '介于', 'key': '5'},
-        {'value': '包含', 'key': '6'}]
+        {'value': '包含', 'key': '6'}];
     let html = '';
     for (let i in options) {
         if (options[i].key == j) {
@@ -444,6 +443,3 @@ function setOption(j) {
     }
     return html;
 }
-
-// window.seachModel=seachModel;window
-// })()

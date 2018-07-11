@@ -24,6 +24,9 @@ namespace XCCloudService.Model.XCCloud
         public string DeviceName { get; set; }
         public Nullable<System.DateTime> InTime { get; set; }
         public Nullable<System.DateTime> OutTime { get; set; }
+        public Nullable<int> ProjectID { get; set; }
+        public Nullable<int> InDeviceType { get; set; }
+        public Nullable<int> OutDeviceType { get; set; }
         public Nullable<int> OutMinuteTotal { get; set; }
         public string Note { get; set; }
         public Nullable<int> SyncFlag { get; set; }

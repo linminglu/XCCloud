@@ -42,7 +42,7 @@
 
 <!--//挖掘会员卡详细信息-->
 <div id="openModel" style="display: none">
-    <form action="" id="memberInfo" lay-filter="memberInfo">
+    <form action="" id="memberInfo" lay-filter="memberInfo" class="layui-form layui-form-pane">
         <div class="layui-tab">
             <ul class="layui-tab-title">
                 <li class="layui-this">会员信息</li>
@@ -53,104 +53,160 @@
             </ul>
             <div class="layui-tab-content">
                 <div class="layui-tab-item layui-show">
-                    <div class="layui-card">
-                        <div class="layui-card-body">
-                            <div class="layui-form-item">
-                                <div class="layui-inline">
-                                    <label class="layui-form-label">会员姓名</label>
-                                    <div class="layui-input-inline">
-                                        <input type="text" name="userName" class="layui-input" readonly>
+                    <div class="layui-col-md12">
+                        <div class="layui-col-md10">
+                            <div class="layui-col-md12">
+                                <div class="layui-card">
+                                    <div class="layui-card-body">
+                                        <div class="layui-form-item">
+                                            <div class="layui-inline">
+                                                <label class="layui-form-label">会员姓名</label>
+                                                <div class="layui-input-inline">
+                                                    <input type="text" name="userName" class="layui-input" readonly>
+                                                </div>
+                                            </div>
+                                            <div class="layui-inline">
+                                                <label class="layui-form-label">生日</label>
+                                                <div class="layui-input-inline">
+                                                    <input type="text" name="birthday" class="layui-input" readonly>
+                                                </div>
+                                            </div>
+                                            <div class="layui-inline" style="margin-right: 0;">
+                                                <label class="layui-form-label">性别</label>
+                                                <div class="layui-input-inline" style="margin-right: 0;">
+                                                    <input type="text" name="gender" class="layui-input" readonly>
+                                                </div>
+                                            </div>
+                                            <div class="layui-inline">
+                                                <label class="layui-form-label">手机</label>
+                                                <div class="layui-input-inline">
+                                                    <input type="text" name="phone" class="layui-input" readonly>
+                                                </div>
+                                            </div>
+                                            <div class="layui-inline">
+                                                <label class="layui-form-label">证件号码</label>
+                                                <div class="layui-input-inline">
+                                                    <input type="text" name="IDCard" class="layui-input" readonly>
+                                                </div>
+                                            </div>
+                                            <div class="layui-inline" style="margin-right: 0;">
+                                                <label class="layui-form-label">微信</label>
+                                                <div class="layui-input-inline" style="margin-right: 0;">
+                                                    <input type="text" name="weChart" class="layui-input" readonly>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="layui-inline">
-                                    <label class="layui-form-label">生日</label>
-                                    <div class="layui-input-inline">
-                                        <input type="text" name="birthday" class="layui-input" readonly>
+                            </div>
+                            <div class="layui-col-md12">
+                                <div class="layui-card">
+                                    <div class="layui-card-body">
+                                        <div class="layui-form-item">
+                                            <div class="layui-inline lay-bit">
+                                                <label class="layui-form-label">允许投退币</label>
+                                                <div class="layui-input-inline">
+                                                    <input type="radio" name="allowExit" value="1" title="允许">
+                                                    <input type="radio" name="allowExit" value="0" title="禁止" checked>
+                                                </div>
+                                            </div>
+                                            <div class="layui-inline lay-bit">
+                                                <label class="layui-form-label">允许兑币</label>
+                                                <div class="layui-input-inline">
+                                                    <input type="radio" name="exchangeCoin" value="1" title="允许">
+                                                    <input type="radio" name="exchangeCoin" value="0" title="禁止" checked>
+                                                </div>
+                                            </div>
+                                            <div class="layui-inline lay-bit" style="margin-right: 0;">
+                                                <label class="layui-form-label">允许购买实物币</label>
+                                                <div class="layui-input-inline" style="margin-right: 0;">
+                                                    <input type="radio" name="buyCoin" value="1" title="允许">
+                                                    <input type="radio" name="buyCoin" value="0" title="禁止" checked>
+                                                </div>
+                                            </div>
+                                            <div class="layui-inline lay-bit">
+                                                <label class="layui-form-label" style="padding: 8px 0">允许手工存币</label>
+                                                <div class="layui-input-inline">
+                                                    <input type="radio" name="saveByHand" value="1" title="允许">
+                                                    <input type="radio" name="saveByHand" value="0" title="禁止" checked>
+                                                </div>
+                                            </div>
+                                            <div class="layui-inline lay-bit">
+                                                <label class="layui-form-label">允许手工送币</label>
+                                                <div class="layui-input-inline">
+                                                    <input type="radio" name="sendByHand" value="1" title="允许">
+                                                    <input type="radio" name="sendByHand" value="0" title="禁止" checked>
+                                                </div>
+                                            </div>
+                                            <div class="layui-inline lay-bit" style="margin-right: 0;">
+                                                <label class="layui-form-label">卡状态</label>
+                                                <div class="layui-input-inline" style="margin-right: 0;">
+                                                    <input type="radio" name="cardStatus" value="1" title="允许">
+                                                    <input type="radio" name="cardStatus" value="0" title="禁止" checked>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="layui-inline">
-                                    <label class="layui-form-label">性别</label>
-                                    <div class="layui-input-inline">
-                                        <input type="text" name="gender" class="layui-input" readonly>
-                                    </div>
-                                </div>
-                                <div class="layui-inline">
-                                    <label class="layui-form-label">手机</label>
-                                    <div class="layui-input-inline">
-                                        <input type="text" name="phone" class="layui-input" readonly>
-                                    </div>
-                                </div>
-                                <div class="layui-inline">
-                                    <label class="layui-form-label">证件号码</label>
-                                    <div class="layui-input-inline">
-                                        <input type="text" name="IDCard" class="layui-input" readonly>
-                                    </div>
-                                </div>
-                                <div class="layui-inline">
-                                    <label class="layui-form-label">微信</label>
-                                    <div class="layui-input-inline">
-                                        <input type="text" name="weChart" class="layui-input" readonly>
+                            </div>
+                        </div>
+                        <div class="layui-col-md2">
+                            <img src="" alt="">
+                        </div>
+                    </div>
+
+
+
+                    <div class="layui-col-md6">
+                        <div class="layui-card">
+                            <div class="layui-card-body">
+                                <table class="layui-hide" id="balanceTable" lay-filter="balanceTable"></table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-col-md6">
+                        <div class="layui-card">
+                            <div class="layui-card-body">
+                                <div class="layui-tab">
+                                    <ul class="layui-tab-title">
+                                        <li class="layui-this">主卡信息</li>
+                                    </ul>
+                                    <div class="layui-tab-content">
+                                        <div class="layui-tab-item layui-show">
+                                            <div class="layui-form-item">
+                                                <label class="layui-form-label">卡号</label>
+                                                <div class="layui-input-block">
+                                                    <input type="text" class="layui-input" name="cardNo" readonly>
+                                                </div>
+                                            </div>
+                                            <div class="layui-form-item">
+                                                <label class="layui-form-label">等级</label>
+                                                <div class="layui-input-block">
+                                                    <input type="text" class="layui-input" name="cardLevel" readonly>
+                                                </div>
+                                            </div>
+                                            <div class="layui-form-item">
+                                                <label class="layui-form-label">押金</label>
+                                                <div class="layui-input-block">
+                                                    <input type="text" class="layui-input" name="cardDeposit" readonly>
+                                                </div>
+                                            </div>
+                                            <div class="layui-form-item">
+                                                <label class="layui-form-label">有效期</label>
+                                                <div class="layui-input-block">
+                                                    <input type="text" class="layui-input" name="cardValueTime" readonly>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="layui-card">
-                        <div class="layui-card-body">
-                            <div class="layui-form-item">
-                                <div class="layui-inline">
-                                    <label class="layui-form-label">允许投退币</label>
-                                    <div class="layui-input-inline">
-                                        <input type="radio" name="allowExit" value="1" title="允许">
-                                        <input type="radio" name="allowExit" value="0" title="禁止" checked>
-                                    </div>
-                                </div>
-                                <div class="layui-inline">
-                                    <label class="layui-form-label">允许兑币</label>
-                                    <div class="layui-input-inline">
-                                        <input type="radio" name="exchangeCoin" value="1" title="允许">
-                                        <input type="radio" name="exchangeCoin" value="0" title="禁止" checked>
-                                    </div>
-                                </div>
-                                <div class="layui-inline">
-                                    <label class="layui-form-label">允许购买实物币</label>
-                                    <div class="layui-input-inline">
-                                        <input type="radio" name="buyCoin" value="1" title="允许">
-                                        <input type="radio" name="buyCoin" value="0" title="禁止" checked>
-                                    </div>
-                                </div>
-                                <div class="layui-inline">
-                                    <label class="layui-form-label">允许手工存币</label>
-                                    <div class="layui-input-inline">
-                                        <input type="radio" name="saveByHand" value="1" title="允许">
-                                        <input type="radio" name="saveByHand" value="0" title="禁止" checked>
-                                    </div>
-                                </div>
-                                <div class="layui-inline">
-                                    <label class="layui-form-label">允许手工送币</label>
-                                    <div class="layui-input-inline">
-                                        <input type="radio" name="sendByHand" value="1" title="允许">
-                                        <input type="radio" name="sendByHand" value="0" title="禁止" checked>
-                                    </div>
-                                </div>
-                                <div class="layui-inline">
-                                    <label class="layui-form-label">卡状态</label>
-                                    <div class="layui-input-inline">
-                                        <input type="radio" name="cardStatus" value="1" title="允许">
-                                        <input type="radio" name="cardStatus" value="0" title="禁止" checked>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="layui-card">
-                        <div class="layui-card-body">
-                        </div>
-                    </div>
-                    <div class="layui-card">
-                        <div class="layui-card-body">
-                        </div>
-                    </div>
+
+
+
+
                 </div>
                 <div class="layui-tab-item">内容2</div>
                 <div class="layui-tab-item">内容3</div>
@@ -195,11 +251,12 @@
     };
     //100016360103001
     xc.getActiveTable(parm);
-    layui.use(['form','layer','table','laydate'],function () {
+    layui.use(['form','layer','table','laydate','element'],function () {
         let form=layui.form;
         let layer=layui.layer;
         let table=layui.table;
         let laydate=layui.laydate;
+        let element=layui.element;
         seachModel({
             'elem1': 'tantion',
             'elem2': 'serchMode',
@@ -229,6 +286,41 @@
                     data = JSON.parse(data);
                     console.log(data);
                     if (data.result_code == 1) {
+                        let arr=data.result_data;
+                        form.val('memberInfo',{
+                            'userName':arr.MemberInfo.UserName,
+                            'birthday':arr.MemberInfo.Birthday,
+                            'gender':arr.MemberInfo.Gender==1?'女':'男',
+                            'phone':arr.MemberInfo.Mobile,
+                            'IDCard':arr.MemberInfo.IDCardNo,
+                            'cardNo':arr.ICCardId,
+                            'cardLevel':arr.LevelName,
+                            'cardDeposit':arr.Deposit,
+                            'cardValueTime':arr.EndDate
+
+                        });
+                        table.render({
+                            cols:[[
+                                {field:'BalanceName',title:'余额类别',align:'center',rowspan:2,width:164},
+                                {title:'余额',align:'center',colspan:3}],
+                                [
+                                    {field: 'Balance', title: '正价',align:'center',width:130}
+                                    ,{field: 'BalanceFree', title: '赠送',align:'center',width:130}
+                                    ,{field: 'TotalBalance', title: '总计',align:'center',width:130}
+                                ]
+                            ],
+                            elem:'#balanceTable',
+                            height:'260',
+                            data:arr.MemberBalances
+
+
+                        })
+                            layer.open({
+                            title:'信息',
+                            type:1,
+                            area:'1200px',
+                            content:$('#openModel')
+                        })
 
                     } else {
                         layer.msg(data.result_msg||data.return_msg);

@@ -19,7 +19,9 @@ namespace XCCloudWebBar.Model.XCCloud
         public string StoreID { get; set; }
         public string ProjectTicketCode { get; set; }
         public string MemberID { get; set; }
+        public Nullable<int> InDeviceType { get; set; }
         public Nullable<int> InDeviceID { get; set; }
+        public Nullable<int> OutDeviceType { get; set; }
         public Nullable<int> OutDeviceID { get; set; }
         public string DeviceName { get; set; }
         public Nullable<System.DateTime> InTime { get; set; }

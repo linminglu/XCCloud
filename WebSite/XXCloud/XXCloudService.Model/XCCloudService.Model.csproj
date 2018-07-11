@@ -134,6 +134,7 @@
     <Compile Include="CustomModel\XCGameManager\TokenModel.cs" />
     <Compile Include="CustomModel\XCGameManager\WxConfigModel.cs" />
     <Compile Include="CustomModel\XCGameManager\XCGameManaRadarMonitor.cs" />
+    <Compile Include="CustomModel\XCGame\TicketModel.cs" />
     <Compile Include="CustomModel\XCGame\DashboardModel.cs" />
     <Compile Include="CustomModel\XCGame\FoodsModel.cs" />
     <Compile Include="CustomModel\XCGame\MemberModel.cs" />

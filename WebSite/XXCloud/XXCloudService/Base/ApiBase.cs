@@ -33,6 +33,15 @@ namespace XCCloudService.Base
         protected string sysId = string.Empty;
         protected string versionNo = string.Empty;  
 
+        //获取当前周数
+        protected string Week()
+        {
+            string[] weekdays = { "7", "1", "2", "3", "4", "5", "6" };
+            string week = weekdays[Convert.ToInt32(DateTime.Now.DayOfWeek)];
+
+            return week;
+        }
+
         //获取游乐项目的游戏机类型
         protected List<int> getProjectGameTypes(out string errMsg)
         {

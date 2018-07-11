@@ -179,9 +179,9 @@
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_Food_Exit_Pay" Width="1.5" PointX="27.75" PointY="27.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_Food_SaleDetail" Width="1.5" PointX="19.75" PointY="33.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_MemberData" Width="1.5" PointX="5.75" PointY="41.75" />
-        <EntityTypeShape EntityType="XCCloudDBModel.Flw_Project_TicketUse" Width="1.5" PointX="0.75" PointY="35.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Store_CheckDate" Width="1.5" PointX="47.75" PointY="0.75" />
         <EntityTypeShape EntityType="XCCloudDBModel.Flw_Order" Width="1.5" PointX="47.375" PointY="6.75" />
+        <EntityTypeShape EntityType="XCCloudDBModel.Flw_Project_TicketUse" Width="1.5" PointX="0.75" PointY="35.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

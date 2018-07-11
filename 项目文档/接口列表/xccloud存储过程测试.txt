@@ -924,10 +924,10 @@ print '@NewFlwOrderId:' + cast(@NewFlwOrderId as varchar(32))
 --会员订单更新
 declare @Return int
 declare @NewFlwOrderId varchar(32) = ''
-declare @FlwOrderId varchar(32) = '10002542010600120180609519910001'
+declare @FlwOrderId varchar(32) = '20180711115624440100025420106001'
 declare @StoreId varchar(15) = '100025420106001'
-declare @NewFlwSaleId varchar(29) = '100025420106001' + '20180910' + '022010'
-declare @Mobile varchar(11) = ''
+declare @NewFlwSaleId varchar(29) = '100025420106001' + '20180702' + '259310'
+declare @Mobile varchar(11) = '15618920033'
 declare @PayCount decimal(18,2) = 50 + 5.5
 declare @FeePay decimal(18,2) = 23.20 + 25.00
 declare @RealPay decimal(18,2) = @PayCount - @FeePay
@@ -956,7 +956,7 @@ exec @Return = UpdateOrder @FoodSaleDetailList,@CouponsList,@StoreId,@FlwOrderId
 @WorkStation,@Note,@OrderSource,@AuthorID,@SaleCoinType,@NewFlwOrderId output,@ErrMsg output
 
 print '@Return:' + cast(@Return as varchar)
-print '@ErrMsg:' + cast(@ErrMsg as varchar(200))
+print '@ErrMsg:' + cast(@ErrMsg as varchar)
 print '@NewFlwOrderId:' + cast(@NewFlwOrderId as varchar(32))
 
 ----------------------------------------------------------------------------------------------------

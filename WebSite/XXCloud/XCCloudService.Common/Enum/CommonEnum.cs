@@ -487,6 +487,21 @@ namespace XCCloudService.Common.Enum
 
         [Description("不可用")]
         InValid = 5,
+
+        [Description("已过期")]
+        Expired = 6,
+    }
+
+    /// <summary>
+    /// 门票限制周期方式
+    /// </summary>
+    public enum RestrictPeriodType
+    {
+        [Description("小时")]
+        Hour = 0,
+
+        [Description("天")]
+        Day = 1,        
     }
 
     public enum WorkType
