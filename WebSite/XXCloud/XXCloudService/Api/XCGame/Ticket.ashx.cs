@@ -543,140 +543,84 @@ namespace XXCloudService.Api.XCGame
                 return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
             }
 
-            if (storeModel.StoreDBDeployType == 0)
+            //if (storeModel.StoreDBDeployType == 0)
+            //{
+            var flw_Project_TicketInfoService = Flw_Project_TicketInfoService.I;
+
+            if (!flw_Project_TicketInfoService.Any(a => a.Barcode.Equals(barCode, StringComparison.OrdinalIgnoreCase)))
             {
-                //验证门票是否有效
-                XCCloudService.BLL.IBLL.XCGame.IProject_buy_codelistService codeListService = BLLContainer.Resolve<XCCloudService.BLL.IBLL.XCGame.IProject_buy_codelistService>(storeModel.StoreDBName);
-                var codeListModel = codeListService.GetModels(p => p.Barcode.Equals(barCode)).FirstOrDefault<flw_project_buy_codelist>();
-                if (codeListModel == null)
-                {
-                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "门票不存在");
-                }
-
-                if (codeListModel.State == 1)
-                {
-                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "门票已使用不能锁定");
-                }
-
-                if (codeListModel.State == 2)
-                {
-                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "门票已锁定");
-                }
-
-                //验证门票项目是否有效
-                XCCloudService.BLL.IBLL.XCGame.IProjectService projectService = BLLContainer.Resolve<XCCloudService.BLL.IBLL.XCGame.IProjectService>(storeModel.StoreDBName);
-                var projectModel = projectService.GetModels(p => p.id == codeListModel.ProjectID).FirstOrDefault<t_project>();
-                if (projectModel == null)
-                {
-                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "门票项目不存在");
-                }
-
-                //验证购买记录
-                XCCloudService.BLL.IBLL.XCGame.IProject_buyService projectBuyService = BLLContainer.Resolve<XCCloudService.BLL.IBLL.XCGame.IProject_buyService>(storeModel.StoreDBName);
-                var projectBuyModel = projectBuyService.GetModels(p => p.ID == codeListModel.BuyID).FirstOrDefault<flw_project_buy>();
-                if (projectBuyModel == null)
-                {
-                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "门票购买记录不存在");
-                }
-
-                //消费类型：0 次数 1有效期
-                long currentDate = Utils.ConvertDateTimeToLong(System.DateTime.Now);
-                long startDate = Utils.ConvertDateTimeToLong(Convert.ToDateTime(codeListModel.StartTime));
-                long endDate = Utils.ConvertDateTimeToLong(Convert.ToDateTime(codeListModel.EndTime));
-                if (Convert.ToInt32(codeListModel.ProjectType) == 0)
-                {
-                    if (currentDate < startDate)
-                    {
-                        return ResponseModelFactory.CreateAnonymousFailModel(isSignKeyReturn, "门票未到使用日期");
-                    }
-                    else if (currentDate > endDate)
-                    {
-                        return ResponseModelFactory.CreateAnonymousFailModel(isSignKeyReturn, "门票已超过使用日期");
-                    }
-                    else if (codeListModel.BuyCount <= codeListModel.RemainCount)
-                    {
-                        return ResponseModelFactory.CreateAnonymousFailModel(isSignKeyReturn, "门票次数已用尽");
-                    }
-                }
-                else if (Convert.ToInt32(codeListModel.ProjectType) == 1)
-                {
-                    if (currentDate < startDate)
-                    {
-                        return ResponseModelFactory.CreateAnonymousFailModel(isSignKeyReturn, "门票未到使用日期");
-                    }
-                    else if (currentDate > endDate)
-                    {
-                        return ResponseModelFactory.CreateAnonymousFailModel(isSignKeyReturn, "门票已超过使用日期");
-                    }
-                    else
-                    {
-                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "");
-                    }
-                }
-                else
-                {
-                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "");
-                }
-
-                //锁定门票
-                codeListModel.State = 2;
-                if (codeListService.Update(codeListModel))
-                {
-                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.T, "");
-                }
-                else
-                {
-                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "门票锁定出错");
-                }
+                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "该门票信息不存在");
             }
-            else if (storeModel.StoreDBDeployType == 1)
+
+            var flw_Project_TicketInfoModel = flw_Project_TicketInfoService.GetModels(p => p.Barcode.Equals(barCode, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+
+            if (flw_Project_TicketInfoModel.State == (int)TicketState.Returned)
             {
-                string sn = System.Guid.NewGuid().ToString().Replace("-", "");
-                UDPSocketCommonQueryAnswerModel answerModel = null;
-                string radarToken = string.Empty;
-                if (DataFactory.SendDataTicketOperate(sn, storeModel.StoreID, storeModel.StorePassword, barCode, "2", out radarToken,out errMsg))
-                {
-
-                }
-                else
-                {
-                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
-                }
-
-                answerModel = null;
-                int whileCount = 0;
-                while (answerModel == null && whileCount <= 25)
-                {
-                    //获取应答缓存数据
-                    whileCount++;
-                    System.Threading.Thread.Sleep(1000);
-                    answerModel = UDPSocketCommonQueryAnswerBusiness.GetAnswerModel(sn, 1);
-                }
-
-                if (answerModel != null)
-                {
-                    TicketOperateResultNotifyRequestModel model = (TicketOperateResultNotifyRequestModel)(answerModel.Result);
-                    //移除应答缓存数据
-                    UDPSocketCommonQueryAnswerBusiness.Remove(sn);
-
-                    if (model.Result_Code == "1" && model.Result_Data == "1")
-                    {
-                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.T, "");
-                    }
-                    else
-                    {
-                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, model.Result_Msg);
-                    }
-                }
-                else
-                {
-                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "系统没有响应");
-                }
+                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "门票已退票");
             }
-            else
+
+            if (flw_Project_TicketInfoModel.State == (int)TicketState.Locked)
             {
-                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "系统没有响应");
+                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "门票已锁定");
             }
+            
+            flw_Project_TicketInfoModel.State = (int)TicketState.Locked;
+
+            if (!flw_Project_TicketInfoService.Update(flw_Project_TicketInfoModel))
+            {
+                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "门票锁定出错");
+            }
+
+            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.T, "");
+            //}
+            //else if (storeModel.StoreDBDeployType == 1)
+            //{
+            //    string sn = System.Guid.NewGuid().ToString().Replace("-", "");
+            //    UDPSocketCommonQueryAnswerModel answerModel = null;
+            //    string radarToken = string.Empty;
+            //    if (DataFactory.SendDataTicketOperate(sn, storeModel.StoreID, storeModel.StorePassword, barCode, "2", out radarToken,out errMsg))
+            //    {
+
+            //    }
+            //    else
+            //    {
+            //        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
+            //    }
+
+            //    answerModel = null;
+            //    int whileCount = 0;
+            //    while (answerModel == null && whileCount <= 25)
+            //    {
+            //        //获取应答缓存数据
+            //        whileCount++;
+            //        System.Threading.Thread.Sleep(1000);
+            //        answerModel = UDPSocketCommonQueryAnswerBusiness.GetAnswerModel(sn, 1);
+            //    }
+
+            //    if (answerModel != null)
+            //    {
+            //        TicketOperateResultNotifyRequestModel model = (TicketOperateResultNotifyRequestModel)(answerModel.Result);
+            //        //移除应答缓存数据
+            //        UDPSocketCommonQueryAnswerBusiness.Remove(sn);
+
+            //        if (model.Result_Code == "1" && model.Result_Data == "1")
+            //        {
+            //            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.T, "");
+            //        }
+            //        else
+            //        {
+            //            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, model.Result_Msg);
+            //        }
+            //    }
+            //    else
+            //    {
+            //        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "系统没有响应");
+            //    }
+            //}
+            //else
+            //{
+            //    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "系统没有响应");
+            //}
         }
 
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCManaUserHelperToken)]
@@ -701,113 +645,85 @@ namespace XXCloudService.Api.XCGame
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
                 }
 
-                if (storeModel.StoreDBDeployType == 0)
-                { 
-                    //验证门票是否有效
-                    XCCloudService.BLL.IBLL.XCGame.IProject_buy_codelistService codeListService = BLLContainer.Resolve<XCCloudService.BLL.IBLL.XCGame.IProject_buy_codelistService>(storeModel.StoreDBName);
-                    var codeListModel = codeListService.GetModels(p => p.Barcode.Equals(barCode)).FirstOrDefault<flw_project_buy_codelist>();
-                    if (codeListModel == null)
-                    {
-                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "门票不存在");
-                    }
+                //if (storeModel.StoreDBDeployType == 0)
+                //{ 
+                var flw_Project_TicketInfoService = Flw_Project_TicketInfoService.I;
+                var flw_Project_TicketUseService = Flw_Project_TicketUseService.I;
 
-                    if (codeListModel.State == 1)
-                    {
-                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "门票已使用不能锁定");
-                    }
-
-                    if (codeListModel.State == 0)
-                    {
-                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "门票未锁定");
-                    }
-
-                    //验证门票项目是否有效
-                    XCCloudService.BLL.IBLL.XCGame.IProjectService projectService = BLLContainer.Resolve<XCCloudService.BLL.IBLL.XCGame.IProjectService>(storeModel.StoreDBName);
-                    var projectModel = projectService.GetModels(p => p.id == codeListModel.ProjectID).FirstOrDefault<t_project>();
-                    if (projectModel == null)
-                    {
-                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "门票项目不存在");
-                    }
-
-                    //验证购买记录
-                    XCCloudService.BLL.IBLL.XCGame.IProject_buyService projectBuyService = BLLContainer.Resolve<XCCloudService.BLL.IBLL.XCGame.IProject_buyService>(storeModel.StoreDBName);
-                    var projectBuyModel = projectBuyService.GetModels(p => p.ID == codeListModel.BuyID).FirstOrDefault<flw_project_buy>();
-                    if (projectBuyModel == null)
-                    {
-                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "门票购买记录不存在");
-                    }
-
-                    //锁定门票
-                    codeListModel.State = 2;
-                    long currentDate = Utils.ConvertDateTimeToLong(System.DateTime.Now);
-                    long startDate = Utils.ConvertDateTimeToLong(Convert.ToDateTime(codeListModel.StartTime));
-                    long endDate = Utils.ConvertDateTimeToLong(Convert.ToDateTime(codeListModel.EndTime));
-                    if (currentDate > endDate)
-                    {
-                        codeListModel.State = 1;
-                    }
-                    else if (codeListModel.BuyCount <= codeListModel.RemainCount)
-                    {
-                        codeListModel.State = 1;
-                    }
-
-                    if (codeListService.Update(codeListModel))
-                    {
-                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.T, "");
-                    }
-                    else
-                    {
-                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "门票锁定出错");
-                    }                    
-                }
-                else if (storeModel.StoreDBDeployType == 1)
+                if (!flw_Project_TicketInfoService.Any(a => a.Barcode.Equals(barCode, StringComparison.OrdinalIgnoreCase)))
                 {
-                    string sn = System.Guid.NewGuid().ToString().Replace("-", "");
-                    UDPSocketCommonQueryAnswerModel answerModel = null;
-                    string radarToken = string.Empty;
-                    if (DataFactory.SendDataTicketOperate(sn,storeModel.StoreID, storeModel.StorePassword, barCode, "1",out radarToken, out errMsg))
-                    {
-
-                    }
-                    else
-                    {
-                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
-                    }
-
-                    answerModel = null;
-                    int whileCount = 0;
-                    while (answerModel == null && whileCount <= 25)
-                    {
-                        //获取应答缓存数据
-                        whileCount++;
-                        System.Threading.Thread.Sleep(1000);
-                        answerModel = UDPSocketCommonQueryAnswerBusiness.GetAnswerModel(sn, 1);
-                    }
-
-                    if (answerModel != null)
-                    {
-                        TicketOperateResultNotifyRequestModel model = (TicketOperateResultNotifyRequestModel)(answerModel.Result);
-                        //移除应答缓存数据
-                        UDPSocketCommonQueryAnswerBusiness.Remove(sn);
-
-                        if (model.Result_Code == "1" && model.Result_Data == "1")
-                        {
-                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.T, "");
-                        }
-                        else
-                        {
-                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, model.Result_Msg);
-                        }
-                    }
-                    else
-                    {
-                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "系统没有响应");
-                    }
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "该门票信息不存在");
                 }
-                else
+
+                var flw_Project_TicketInfoModel = flw_Project_TicketInfoService.GetModels(p => p.Barcode.Equals(barCode, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+
+                if (flw_Project_TicketInfoModel.State != (int)TicketState.Returned)
                 {
-                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "门店设置错误");
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "门票已退票");
                 }
+
+                if (flw_Project_TicketInfoModel.State != (int)TicketState.Locked)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "门票未锁定");
+                }
+
+                flw_Project_TicketInfoModel.State = flw_Project_TicketUseService.Any(a => a.ProjectTicketCode.Equals(barCode, StringComparison.OrdinalIgnoreCase)) ? (int)TicketState.Used : (int)TicketState.UnUse;
+
+                if (!flw_Project_TicketInfoService.Update(flw_Project_TicketInfoModel))
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "门票解锁出错");
+                }
+
+                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.T, "");             
+                //}
+                //else if (storeModel.StoreDBDeployType == 1)
+                //{
+                //    string sn = System.Guid.NewGuid().ToString().Replace("-", "");
+                //    UDPSocketCommonQueryAnswerModel answerModel = null;
+                //    string radarToken = string.Empty;
+                //    if (DataFactory.SendDataTicketOperate(sn,storeModel.StoreID, storeModel.StorePassword, barCode, "1",out radarToken, out errMsg))
+                //    {
+
+                //    }
+                //    else
+                //    {
+                //        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
+                //    }
+
+                //    answerModel = null;
+                //    int whileCount = 0;
+                //    while (answerModel == null && whileCount <= 25)
+                //    {
+                //        //获取应答缓存数据
+                //        whileCount++;
+                //        System.Threading.Thread.Sleep(1000);
+                //        answerModel = UDPSocketCommonQueryAnswerBusiness.GetAnswerModel(sn, 1);
+                //    }
+
+                //    if (answerModel != null)
+                //    {
+                //        TicketOperateResultNotifyRequestModel model = (TicketOperateResultNotifyRequestModel)(answerModel.Result);
+                //        //移除应答缓存数据
+                //        UDPSocketCommonQueryAnswerBusiness.Remove(sn);
+
+                //        if (model.Result_Code == "1" && model.Result_Data == "1")
+                //        {
+                //            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.T, "");
+                //        }
+                //        else
+                //        {
+                //            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, model.Result_Msg);
+                //        }
+                //    }
+                //    else
+                //    {
+                //        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "系统没有响应");
+                //    }
+                //}
+                //else
+                //{
+                //    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "门店设置错误");
+                //}
             }
             catch(Exception e)
             {
