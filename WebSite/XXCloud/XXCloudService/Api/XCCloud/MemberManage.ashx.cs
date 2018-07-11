@@ -72,8 +72,8 @@ namespace XXCloudService.Api.XCCloud
                 if (ds.Tables.Count > 1)
                 {
                     var jsonArr = new {
-                        table1 = Utils.DataTableToJson(ds.Tables[0]),
-                        table2 = ds.Tables[1].Rows.Cast<DataRow>().ToDictionary(x => x[0].ToString(), x => x[1].ToString())
+                        table1 = Utils.DataTableToJson(ds.Tables[1]), //会员档案信息
+                        table2 = ds.Tables[0].Rows.Cast<DataRow>().ToDictionary(x => x[0].ToString(), x => x[1].ToString()) //余额类别列表
                     };
 
                     return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, jsonArr);

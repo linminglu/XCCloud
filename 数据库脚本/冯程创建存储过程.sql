@@ -826,7 +826,7 @@ as
 	SET @sql = @sql + 'select a.* from ('
 	SET @sql = @sql + 'select a.*, b.* from ('
 	SET @sql = @sql + 
-	'select a.ID,  a.StoreID, a.ICCardID, a.CardName, c.MemberLevelID, c.MemberLevelName,
+	'select a.ID, a.StoreID, a.ICCardID, a.CardName, c.MemberLevelID, c.MemberLevelName,
 	 a.CardType, a.Deposit, a.UpdateTime, a.EndDate, a.CardSex,
 	 b.Mobile, b.IDCard, a.CreateTime, d.StoreName, a.CardStatus '+    
     ' from Data_Member_Card a'+
@@ -842,8 +842,11 @@ as
     declare @temp table (BalanceTypeID int, BalanceTypeName varchar(50))	
 	insert @temp select distinct a.ID AS BalanceTypeID, a.TypeName AS BalanceTypeName from Dict_BalanceType a inner join Data_BalanceType_StoreList b on a.ID=b.BalanceIndex where b.StroeID=@StoreID and a.MerchID=@MerchID
 	order by a.ID
+	
+	select * from @temp
 
 	declare @ss nvarchar(MAX)='select CardIndex'
+	declare @s nvarchar(MAX)='select ISNULL(a.CardIndex,b.CardIndex) as CardIndex'
 	declare @BalanceTypeID int
 	declare @BalanceTypeName varchar(50)
 	WHILE EXISTS(SELECT BalanceTypeID FROM @temp)
@@ -851,40 +854,22 @@ as
 	SET ROWCOUNT 1
 	select @BalanceTypeID=t.BalanceTypeID,@BalanceTypeName=t.BalanceTypeName from @temp as t	
 	SET @ss = @ss + ', MAX([' + convert(varchar, @BalanceTypeID) + ']) AS [' + convert(varchar, @BalanceTypeID) + ']'
-	SET ROWCOUNT 0
-	DELETE from @temp where BalanceTypeID = @BalanceTypeID
-	END
-	
-	SET @ss = @ss + ' from ('
-	
-	insert @temp select distinct a.ID AS BalanceTypeID, a.TypeName AS BalanceTypeName from Dict_BalanceType a inner join Data_BalanceType_StoreList b on a.ID=b.BalanceIndex where b.StroeID=@StoreID and a.MerchID=@MerchID
-	order by a.ID
-	
-	declare @s nvarchar(MAX)='select ISNULL(a.CardIndex,b.CardIndex) as CardIndex'
-	WHILE EXISTS(SELECT BalanceTypeID FROM @temp)
-	BEGIN 
-	SET ROWCOUNT 1
-	select @BalanceTypeID=t.BalanceTypeID,@BalanceTypeName=t.BalanceTypeName from @temp as t	
 	SET @s = @s + ',(case ISNULL(a.BalanceIndex,b.BalanceIndex) when ' + convert(varchar, @BalanceTypeID) + ' then ISNULL(a.Balance,0)+ISNULL(b.Balance,0) else 0 end) AS [' + convert(varchar, @BalanceTypeID) + ']'	
 	SET ROWCOUNT 0
 	DELETE from @temp where BalanceTypeID = @BalanceTypeID
-	END 			
-
+	END
+					
 	SET @s = @s + ' from (select a.* from Data_Card_Balance a inner join Data_Card_Balance_StoreList b on a.ID=b.CardBalanceID and a.MerchID=''' + @MerchID + ''' and b.StoreID=''' + @StoreID + ''') a'
 	SET @s = @s + ' full outer join (select a.* from Data_Card_Balance_Free a inner join Data_Card_Balance_StoreList b on a.ID=b.CardBalanceID and a.MerchID=''' + @MerchID + ''' and b.StoreID=''' + @StoreID + ''') b'
 	SET @s = @s + ' on a.CardIndex=b.CardIndex and a.BalanceIndex=b.BalanceIndex'
-	
+	SET @ss = @ss + ' from ('
 	SET @ss = @ss + @s + ') a group by a.CardIndex'	
 	SET @sql = @sql + @ss + ') b on a.ID=b.CardIndex'       
     SET @sql = @sql + ') a' + ISNULL(@SqlWhere,'')
 	
 	--print @sql
 	exec (@sql)	
-	
-	insert @temp select distinct a.ID AS BalanceTypeID, a.TypeName AS BalanceTypeName from Dict_BalanceType a inner join Data_BalanceType_StoreList b on a.ID=b.BalanceIndex where b.StroeID=@StoreID and a.MerchID=@MerchID
-	order by a.ID	
-	select * from @temp
-	
+		
 	set @Result = 1
 
 GO
