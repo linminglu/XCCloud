@@ -76,7 +76,7 @@ namespace XCCloudService.BLL.XCCloud
         /// <summary>
         /// 更新库存
         /// </summary>
-        public static bool UpdateGoodsStock(int? depotId, int? goodId, int? sourceType, int? sourceId, decimal? goodCost, int? stockFlag, int? stockCount, string merchId, string storeId, out string errMsg)
+        public static bool UpdateGoodsStock(int? depotId, int? goodId, int? sourceType, string sourceId, decimal? goodCost, int? stockFlag, int? stockCount, string merchId, string storeId, out string errMsg)
         {
             errMsg = string.Empty;
 

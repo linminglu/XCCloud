@@ -366,10 +366,13 @@ namespace XCCloudService.WorkFlow
                 try
                 {
                     var data_GoodRequest_ListService = Data_GoodRequest_ListService.I;
+                    var data_GoodRequestService = Data_GoodRequestService.I;
                     foreach (var model in data_GoodRequest_ListService.GetModels(p => p.RequestID == _eventId))
                     {
+                        var requestCode = data_GoodRequestService.GetModels(p => p.ID == _eventId).Select(o => o.RequestCode).FirstOrDefault();
+
                         //撤销冲红
-                        if (!XCCloudBLLExt.UpdateGoodsStock(model.OutDepotID, model.GoodID, (int)SourceType.GoodRequest, model.RequestID, model.CostPrice, (int)StockFlag.In, model.SendCount, model.MerchID, model.OutStoreID, out _errMsg))
+                        if (!XCCloudBLLExt.UpdateGoodsStock(model.OutDepotID, model.GoodID, (int)SourceType.GoodRequest, requestCode, model.CostPrice, (int)StockFlag.In, model.SendCount, model.MerchID, model.OutStoreID, out _errMsg))
                         {
                             _result = false;
                             return;
@@ -378,7 +381,7 @@ namespace XCCloudService.WorkFlow
                         //已入库的出库
                         if (model.StorageCount > 0)
                         {
-                            if (!XCCloudBLLExt.UpdateGoodsStock(model.InDeportID, model.GoodID, (int)SourceType.GoodRequest, model.RequestID, model.CostPrice, (int)StockFlag.Out, model.StorageCount, model.MerchID, model.InStoreID, out _errMsg))
+                            if (!XCCloudBLLExt.UpdateGoodsStock(model.InDeportID, model.GoodID, (int)SourceType.GoodRequest, requestCode, model.CostPrice, (int)StockFlag.Out, model.StorageCount, model.MerchID, model.InStoreID, out _errMsg))
                             {
                                 _result = false;
                                 return;
