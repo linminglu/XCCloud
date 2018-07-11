@@ -4,13 +4,16 @@ using System.Linq;
 using System.Web;
 using XCCloudService.Base;
 using XCCloudService.BLL.Container;
+using XCCloudService.BLL.XCCloud;
 using XCCloudService.Business;
 using XCCloudService.Business.Common;
 using XCCloudService.Business.XCGameMana;
 using XCCloudService.CacheService;
+using XCCloudService.Common.Enum;
 using XCCloudService.Model.CustomModel.Common;
 using XCCloudService.Model.CustomModel.XCGameManager;
 using XCCloudService.Model.Socket.UDP;
+using XCCloudService.Model.XCCloud;
 using XCCloudService.SocketService.UDP.Factory;
 using XXCloudService.Utility;
 
@@ -199,13 +202,13 @@ namespace XXCloudService.Api.XCGameMana
                     if (storeModel.StoreDBDeployType == 0)
                     {
                         //验证用户在分库是否存在
-                        XCCloudService.BLL.IBLL.XCGame.IUserService userService = BLLContainer.Resolve<XCCloudService.BLL.IBLL.XCGame.IUserService>(storeModel.StoreDBName);
-                        var gameUserModel = userService.GetModels(p => p.Mobile.Equals(mobile, StringComparison.OrdinalIgnoreCase)).FirstOrDefault<XCCloudService.Model.XCGame.u_users>();
-                        if (gameUserModel == null)
+                        XCCloudService.BLL.IBLL.XCCloud.IBase_UserInfoService userService = BLLContainer.Resolve<XCCloudService.BLL.IBLL.XCCloud.IBase_UserInfoService>();
+                        var userModel = userService.GetModels(p => p.Mobile.Equals(mobile, StringComparison.OrdinalIgnoreCase) && p.StoreID.Equals(storeModel.StoreID)).FirstOrDefault<XCCloudService.Model.XCCloud.Base_UserInfo>();
+                        if (userModel == null)
                         {
                             return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "未查询到该用户");
                         }
-                        userId = gameUserModel.UserID;
+                        userId = userModel.UserID;
                     }
                     else if(storeModel.StoreDBDeployType == 1)
                     {
@@ -234,6 +237,22 @@ namespace XXCloudService.Api.XCGameMana
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "未查询到该用户");
                     }
                     userId = userModel.UserID;
+
+                    //添加工作站信息
+                    var data_WorkstationModel = Data_WorkstationService.I.GetModels(p => p.WorkStation.Equals(mobile, StringComparison.OrdinalIgnoreCase)).FirstOrDefault() ?? new Data_Workstation();
+                    if (data_WorkstationModel.ID == 0)
+                    {
+                        data_WorkstationModel.MerchID = storeId.Substring(0, 6);
+                        data_WorkstationModel.StoreID = storeId;
+                        data_WorkstationModel.WorkStation = mobile;
+                        data_WorkstationModel.StationType = (int)StationType.Mobile;
+                        data_WorkstationModel.DepotID = 0;
+                        data_WorkstationModel.MacAddress = string.Empty;
+                        data_WorkstationModel.DiskID = string.Empty;
+                        data_WorkstationModel.State = 1;
+                        if(!Data_WorkstationService.I.Add(data_WorkstationModel))
+                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "手机注册工作站设备失败");
+                    }
                 }
                 else
                 {

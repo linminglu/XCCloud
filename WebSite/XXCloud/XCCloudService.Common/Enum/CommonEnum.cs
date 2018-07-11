@@ -215,6 +215,20 @@ namespace XCCloudService.Common.Enum
         Ali = 1
     }
 
+    //工作站类别
+    public enum StationType
+    {
+
+        [Description("收银台")]
+        Bar = 0,
+
+        [Description("自助机")]
+        SelfMachine = 1,
+
+        [Description("移动终端")]
+        Mobile = 2,
+    }
+
     //设备绑定状态枚举
     public enum DeviceBoundStateEnum : int
     {
