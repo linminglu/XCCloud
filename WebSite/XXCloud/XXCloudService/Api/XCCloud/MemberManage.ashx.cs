@@ -108,14 +108,15 @@ namespace XXCloudService.Api.XCCloud
                 var id = dicParas.Get("id");
 
                 var data_Member_CardService = Data_Member_CardService.I;
-                if (!data_Member_CardService.Any(p=>p.ID.Equals(id, StringComparison.OrdinalIgnoreCase)))
+                if (!data_Member_CardService.Any(p => p.ID.Equals(id, StringComparison.OrdinalIgnoreCase)))
                 {
                     errMsg = "该卡信息不存在";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
-                var data_Member_CardModel = data_Member_CardService.GetModels(p=>p.ID.Equals(id, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
-                if(data_Member_CardModel.CardType == 0) //如果是主卡, 查出所有附属卡（包括主卡)
+                //如果是主卡, 查出所有附属卡（包括主卡)
+                var data_Member_CardModel = data_Member_CardService.GetModels(p => p.ID.Equals(id, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                if(data_Member_CardModel.CardType == 0) 
                 {
                     var data_Member_Card = data_Member_CardService.GetModels(p => p.ParentCard.Equals(id, StringComparison.OrdinalIgnoreCase))
                                            .Select(o => new

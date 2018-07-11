@@ -22,12 +22,218 @@ using XCCloudService.Common.Enum;
 using XCCloudService.Model.CustomModel.XCGame;
 
 namespace XXCloudService.Api.XCGame
-{
+{    
     /// <summary>
     /// Ticket 的摘要说明
     /// </summary>
     public class Ticket : ApiBase
     {
+        //检查门票使用信息
+        private bool checkTicketInfo(string barCode, int projectId, out TicketModel resultModel, out string errMsg)
+        {
+            resultModel = new TicketModel();
+            errMsg = string.Empty;
+
+            var flw_Project_TicketInfoService = Flw_Project_TicketInfoService.N;
+            var flw_ProjectTicket_BindService = Flw_ProjectTicket_BindService.N;
+            var flw_ProjectTicket_EntryService = Flw_ProjectTicket_EntryService.N;
+
+            //验证门票是否有效
+            if (!(from a in flw_Project_TicketInfoService.GetModels(p => p.Barcode.Equals(barCode, StringComparison.OrdinalIgnoreCase))
+                  join b in flw_ProjectTicket_BindService.GetModels(p => p.ProjectID == projectId) on a.Barcode equals b.ProjectCode
+                  select 1).Any())
+            {
+                errMsg = "该门票无效";
+                return false;
+            }
+
+            //获取结果
+            resultModel = (from a in flw_Project_TicketInfoService.GetModels(p => p.Barcode.Equals(barCode, StringComparison.OrdinalIgnoreCase))
+                               join b in flw_ProjectTicket_BindService.GetModels(p => p.ProjectID == projectId) on a.Barcode equals b.ProjectCode
+                               join c in flw_ProjectTicket_EntryService.GetModels() on a.Barcode equals c.ProjectCode
+                               select new TicketModel
+                               {
+                                   TicketName = c.TicketName,
+                                   TicketType = c.TicketType,
+                                   State = a.State,
+                                   RemainCount = b.RemainCount ?? 0,
+                                   EndTime = (DateTime?)null,
+                                   Note = string.Empty
+                               }).FirstOrDefault();
+            //获取门票购买详情
+            var flw_Project_TicketInfoModel = flw_Project_TicketInfoService.GetModels(p => p.Barcode.Equals(barCode, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+
+            //获取门票规则实体
+            var flw_ProjectTicket_EntryModel = flw_ProjectTicket_EntryService.GetModels(p => p.ProjectCode.Equals(barCode, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+
+            //计算生效时间, 核销时间, 有效时间, 过期时间                
+            var saleTime = flw_Project_TicketInfoModel.SaleTime; //购买时间
+            if (saleTime == null)
+            {
+                errMsg = "门票售卖时间不能为空";
+                return false;
+            }
+
+            var effactTime = saleTime; //生效时间
+            var writeOffDays = flw_Project_TicketInfoModel.WriteOffDays ?? 0; //核销天数
+            var firstUseTime = flw_Project_TicketInfoModel.FirstUseTime; //首次使用时间
+            var writeOffTime = (DateTime?)null; //核销时间
+            var validTime = (DateTime?)null; //有效时间
+            if (firstUseTime != null)
+            {
+                writeOffTime = firstUseTime.Value.AddDays(writeOffDays);
+            }
+
+            var effactType = flw_ProjectTicket_EntryModel.EffactType;
+            if (effactType == (int)EffactType.Period) //有效时长
+            {
+                var effactPeriodType = flw_ProjectTicket_EntryModel.EffactPeriodType;
+                var effactPeriodValue = flw_ProjectTicket_EntryModel.EffactPeriodValue ?? 0;
+                var vaildPeriodType = flw_ProjectTicket_EntryModel.VaildPeriodType;
+                var vaildPeriodValue = flw_ProjectTicket_EntryModel.VaildPeriodValue ?? 0;
+                switch (effactPeriodType)
+                {
+                    case (int)FreqType.Day: effactTime = saleTime.Value.AddDays(effactPeriodValue); break;
+                    case (int)FreqType.Week: effactTime = saleTime.Value.AddDays(effactPeriodValue * 7); break;
+                    case (int)FreqType.Month: effactTime = saleTime.Value.AddDays(effactPeriodValue * 30); break;
+                    case (int)FreqType.Season: effactTime = saleTime.Value.AddDays(effactPeriodValue * 90); break;
+                    case (int)FreqType.Year: effactTime = saleTime.Value.AddDays(effactPeriodValue * 365); break;
+                    default: errMsg = "该门票生效周期值不正确"; return false;
+                }
+                switch (vaildPeriodType)
+                {
+                    case (int)FreqType.Day: validTime = saleTime.Value.AddDays(effactPeriodValue); break;
+                    case (int)FreqType.Week: validTime = saleTime.Value.AddDays(effactPeriodValue * 7); break;
+                    case (int)FreqType.Month: validTime = saleTime.Value.AddDays(effactPeriodValue * 30); break;
+                    case (int)FreqType.Season: validTime = saleTime.Value.AddDays(effactPeriodValue * 90); break;
+                    case (int)FreqType.Year: validTime = saleTime.Value.AddDays(effactPeriodValue * 365); break;
+                    default: errMsg = "该门票有效周期值不正确"; return false; 
+                }
+            }
+            else if (effactType == (int)EffactType.Date)//指定日期
+            {
+                var vaildEndDate = flw_ProjectTicket_EntryModel.VaildEndDate;
+                validTime = vaildEndDate;
+            }
+            else
+            {
+                errMsg = "该门票生效方式值不正确";
+                return false;
+            }
+
+            resultModel.EndTime = (writeOffTime != null && writeOffTime < validTime) ? writeOffTime : validTime;
+
+            //锁定或退票
+            var state = flw_Project_TicketInfoModel.State;
+            if (state == (int)TicketState.Locked || state == (int)TicketState.Returned) return true;
+
+            if (state == (int)TicketState.UnUse || state == (int)TicketState.Used) resultModel.State = (int)TicketState.Valid;            
+
+            //剩余次数为0不可用
+            if (resultModel.RemainCount == 0)
+            {
+                resultModel.State = (int)TicketState.InValid;
+                return true;
+            }
+
+            //未生效不可用
+            if (effactTime > DateTime.Now)
+            {
+                resultModel.State = (int)TicketState.InValid;
+                return true;
+            }
+
+            //已过期不可用
+            if (resultModel.EndTime < DateTime.Now)
+            {
+                resultModel.State = (int)TicketState.Expired;
+                return true;
+            }
+
+            //判断可用日期
+            var weekType = flw_ProjectTicket_EntryModel.WeekType;
+            var xC_HolidayListService = XC_HolidayListService.I;
+            if (weekType == (int)TimeType.Custom)
+            {
+                var week = flw_ProjectTicket_EntryModel.Week ?? "";
+                if (!week.Contains(Week())) resultModel.State = (int)TicketState.InValid;
+            }
+            else if (weekType == (int)TimeType.Workday)
+            {
+                if (!xC_HolidayListService.Any(a => a.DayType == 0 && System.Data.Entity.DbFunctions.DiffDays(a.WorkDay, DateTime.Now) == 0))
+                    resultModel.State = (int)TicketState.InValid;
+            }
+            else if (weekType == (int)TimeType.Weekend)
+            {
+                if (!xC_HolidayListService.Any(a => a.DayType == 1 && System.Data.Entity.DbFunctions.DiffDays(a.WorkDay, DateTime.Now) == 0))
+                    resultModel.State = (int)TicketState.InValid;
+            }
+            else if (weekType == (int)TimeType.Holiday)
+            {
+                if (!xC_HolidayListService.Any(a => a.DayType == 2 && System.Data.Entity.DbFunctions.DiffDays(a.WorkDay, DateTime.Now) == 0))
+                    resultModel.State = (int)TicketState.InValid;
+            }
+            else
+            {
+                errMsg = "该门票周方式值不正确";
+                return false;
+            }                
+
+            //判断可用时段
+            var startTime = Convert.ToDateTime(Utils.TimeSpanToStr(flw_ProjectTicket_EntryModel.StartTime));
+            var endTime = Convert.ToDateTime(Utils.TimeSpanToStr(flw_ProjectTicket_EntryModel.EndTime));
+            var nowTime = Convert.ToDateTime(DateTime.Now.ToString("HH:mm:ss"));
+            if (DateTime.Compare(startTime, nowTime) > 0 || DateTime.Compare(endTime, nowTime) < 0)
+                resultModel.State = (int)TicketState.InValid;
+
+            //判断不可用日期
+            var noStateDate = flw_ProjectTicket_EntryModel.NoStartDate;
+            var noEndDate = flw_ProjectTicket_EntryModel.NoEndDate;
+            if (noStateDate < noEndDate)
+            {
+                if (DateTime.Compare(DateTime.Now, noStateDate.Value) >= 0 && DateTime.Compare(DateTime.Now, noEndDate.Value) <= 0)
+                    resultModel.State = (int)TicketState.InValid;
+            }
+
+            //判断使用频率
+            var ticketType = flw_Project_TicketInfoModel.TicketType;
+            if (ticketType == (int)TicketType.Period) //期限票
+            {
+                var allowRestrict = flw_ProjectTicket_EntryModel.AllowRestrict;
+                if (allowRestrict == 1) //是否使用限制
+                {
+                    var flw_Project_TicketUseService = Flw_Project_TicketUseService.N;
+                    var data_Project_BindDeviceService = Data_Project_BindDeviceService.N;
+                    var restrictShareCount = flw_ProjectTicket_EntryModel.RestrictShareCount;
+                    var restrictPeriodType = flw_ProjectTicket_EntryModel.RestrictPeriodType;
+                    var restrictPreiodValue = flw_ProjectTicket_EntryModel.RestrictPreiodValue;
+                    var restrctCount = flw_ProjectTicket_EntryModel.RestrctCount;
+                    switch (restrictPeriodType)
+                    {
+                        case (int)RestrictPeriodType.Hour:
+                            if (restrictShareCount == 1 &&
+                                flw_Project_TicketUseService.GetCount(p => System.Data.Entity.DbFunctions.DiffHours(p.InTime, DateTime.Now) <= restrictPreiodValue && p.ProjectTicketCode.Equals(barCode, StringComparison.OrdinalIgnoreCase))
+                                > restrctCount) resultModel.State = (int)TicketState.InValid;
+                            if (restrictShareCount != 1 &&
+                                flw_Project_TicketUseService.GetCount(p => p.ProjectID == projectId && System.Data.Entity.DbFunctions.DiffHours(p.InTime, DateTime.Now) <= restrictPreiodValue && p.ProjectTicketCode.Equals(barCode, StringComparison.OrdinalIgnoreCase))
+                                > restrctCount) resultModel.State = (int)TicketState.InValid;
+                            break;
+                        case (int)RestrictPeriodType.Day:
+                            if (restrictShareCount == 1 &&
+                                flw_Project_TicketUseService.GetCount(p => System.Data.Entity.DbFunctions.DiffDays(p.InTime, DateTime.Now) <= restrictPreiodValue && p.ProjectTicketCode.Equals(barCode, StringComparison.OrdinalIgnoreCase))
+                                > restrctCount) resultModel.State = (int)TicketState.InValid;
+                            if (restrictShareCount != 1 &&
+                                flw_Project_TicketUseService.GetCount(p => p.ProjectID == projectId && System.Data.Entity.DbFunctions.DiffDays(p.InTime, DateTime.Now) <= restrictPreiodValue && p.ProjectTicketCode.Equals(barCode, StringComparison.OrdinalIgnoreCase))
+                                > restrctCount) resultModel.State = (int)TicketState.InValid;
+                            break;
+                        default: errMsg = "该门票限制周期方式值不正确"; return false; 
+                    }
+                }
+            }
+
+            return true;
+        }
+
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCManaUserHelperToken)]
         public object getTicketInfo(Dictionary<string, object> dicParas)
         {
@@ -51,200 +257,16 @@ namespace XXCloudService.Api.XCGame
                 //验证是否有效门店
                 StoreCacheModel storeModel = null;
                 StoreBusiness storeBusiness = new StoreBusiness();
-                if (!storeBusiness.IsEffectiveStore(userTokenModel.StoreId,ref storeModel,out errMsg))
+                if (!storeBusiness.IsEffectiveStore(userTokenModel.StoreId, ref storeModel, out errMsg))
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
                 }
 
-                //if (storeModel.StoreDBDeployType == 0)
-                //{
-                var flw_Project_TicketInfoService = Flw_Project_TicketInfoService.N;
-                var flw_ProjectTicket_BindService = Flw_ProjectTicket_BindService.N;
-                var flw_ProjectTicket_EntryService = Flw_ProjectTicket_EntryService.N;
-
-                //验证门票是否有效
-                if (!(from a in flw_Project_TicketInfoService.GetModels(p => p.Barcode.Equals(barCode, StringComparison.OrdinalIgnoreCase))
-                      join b in flw_ProjectTicket_BindService.GetModels(p => p.ProjectID == projectId) on a.Barcode equals b.ProjectCode
-                      select 1).Any())
+                //检查票使用信息
+                TicketModel resultModel = null;
+                if (!checkTicketInfo(barCode, projectId.Value, out resultModel, out errMsg))
                 {
-                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "该门票无效");
-                }
-
-                //获取结果
-                var resultModel = (from a in flw_Project_TicketInfoService.GetModels(p => p.Barcode.Equals(barCode, StringComparison.OrdinalIgnoreCase))
-                                    join b in flw_ProjectTicket_BindService.GetModels(p => p.ProjectID == projectId) on a.Barcode equals b.ProjectCode
-                                    join c in flw_ProjectTicket_EntryService.GetModels() on a.Barcode equals c.ProjectCode
-                                   select new TicketModel
-                                   {
-                                       TicketName = c.TicketName,
-                                       TicketType = c.TicketType,
-                                       State = a.State,
-                                       RemainCount = b.RemainCount ?? 0,
-                                       EndTime = (DateTime?)null,
-                                       Note = string.Empty
-                                   }).FirstOrDefault();
-                //获取门票购买详情
-                var flw_Project_TicketInfoModel = flw_Project_TicketInfoService.GetModels(p => p.Barcode.Equals(barCode, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
-
-                //获取门票规则实体
-                var flw_ProjectTicket_EntryModel = flw_ProjectTicket_EntryService.GetModels(p => p.ProjectCode.Equals(barCode, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
-
-                //计算生效时间, 核销时间, 有效时间, 过期时间                
-                var saleTime = flw_Project_TicketInfoModel.SaleTime; //购买时间
-                if(saleTime == null)
-                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "该门票售卖时间为空");
-               
-                var effactTime = saleTime; //生效时间
-                var writeOffDays = flw_Project_TicketInfoModel.WriteOffDays ?? 0; //核销天数
-                var firstUseTime = flw_Project_TicketInfoModel.FirstUseTime; //首次使用时间
-                var writeOffTime = (DateTime?)null; //核销时间
-                var validTime = (DateTime?)null; //有效时间
-                if (firstUseTime != null) 
-                {
-                    writeOffTime = firstUseTime.Value.AddDays(writeOffDays); 
-                }
-
-                var effactType = flw_ProjectTicket_EntryModel.EffactType;
-                if (effactType == (int)EffactType.Period) //有效时长
-                {
-                    var effactPeriodType = flw_ProjectTicket_EntryModel.EffactPeriodType;
-                    var effactPeriodValue = flw_ProjectTicket_EntryModel.EffactPeriodValue ?? 0;
-                    var vaildPeriodType = flw_ProjectTicket_EntryModel.VaildPeriodType;
-                    var vaildPeriodValue = flw_ProjectTicket_EntryModel.VaildPeriodValue ?? 0;
-                    switch (effactPeriodType)
-                    {
-                        case (int)FreqType.Day: effactTime = saleTime.Value.AddDays(effactPeriodValue); break;
-                        case (int)FreqType.Week: effactTime = saleTime.Value.AddDays(effactPeriodValue * 7); break;
-                        case (int)FreqType.Month: effactTime = saleTime.Value.AddDays(effactPeriodValue * 30); break;
-                        case (int)FreqType.Season: effactTime = saleTime.Value.AddDays(effactPeriodValue * 90); break;
-                        case (int)FreqType.Year: effactTime = saleTime.Value.AddDays(effactPeriodValue * 365); break;
-                        default: return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "该门票生效周期值不正确");
-                    }
-                    switch (vaildPeriodType)
-                    {
-                        case (int)FreqType.Day: validTime = saleTime.Value.AddDays(effactPeriodValue); break;
-                        case (int)FreqType.Week: validTime = saleTime.Value.AddDays(effactPeriodValue * 7); break;
-                        case (int)FreqType.Month: validTime = saleTime.Value.AddDays(effactPeriodValue * 30); break;
-                        case (int)FreqType.Season: validTime = saleTime.Value.AddDays(effactPeriodValue * 90); break;
-                        case (int)FreqType.Year: validTime = saleTime.Value.AddDays(effactPeriodValue * 365); break;
-                        default: return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "该门票有效周期值不正确");
-                    }
-                }
-                else if (effactType == (int)EffactType.Date)//指定日期
-                {
-                    var vaildEndDate = flw_ProjectTicket_EntryModel.VaildEndDate;
-                    validTime = vaildEndDate;
-                }
-                else
-                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "该门票生效方式值不正确");
-
-                resultModel.EndTime = (writeOffTime != null && writeOffTime < validTime) ? writeOffTime : validTime;
-
-                //锁定或退票
-                var state = flw_Project_TicketInfoModel.State;
-                if (state == (int)TicketState.Locked || state == (int)TicketState.Returned)
-                    return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, resultModel);
-
-                if (state == (int)TicketState.UnUse || state == (int)TicketState.Used)
-                    resultModel.State = (int)TicketState.Valid;
-
-                //剩余次数为0不可用
-                if (resultModel.RemainCount == 0)
-                {
-                    resultModel.State = (int)TicketState.InValid;
-                    return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, resultModel);
-                }                    
-
-                //未生效不可用
-                if (effactTime > DateTime.Now)
-                {
-                    resultModel.State = (int)TicketState.InValid;
-                    return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, resultModel);
-                } 
-
-                //已过期不可用
-                if (resultModel.EndTime < DateTime.Now)
-                {
-                    resultModel.State = (int)TicketState.Expired;
-                    return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, resultModel);
-                }
-
-                //判断可用日期
-                var weekType = flw_ProjectTicket_EntryModel.WeekType;
-                var xC_HolidayListService = XC_HolidayListService.I;
-                if (weekType == (int)TimeType.Custom)
-                {
-                    var week = flw_ProjectTicket_EntryModel.Week ?? "";
-                    if (!week.Contains(Week())) resultModel.State = (int)TicketState.InValid;
-                }
-                else if (weekType == (int)TimeType.Workday)
-                {
-                    if(!xC_HolidayListService.Any(a=>a.DayType == 0 && System.Data.Entity.DbFunctions.DiffDays(a.WorkDay, DateTime.Now) == 0))
-                        resultModel.State = (int)TicketState.InValid;
-                }
-                else if (weekType == (int)TimeType.Weekend)
-                {
-                    if (!xC_HolidayListService.Any(a => a.DayType == 1 && System.Data.Entity.DbFunctions.DiffDays(a.WorkDay, DateTime.Now) == 0))
-                        resultModel.State = (int)TicketState.InValid;
-                }
-                else if (weekType == (int)TimeType.Holiday)
-                {
-                    if (!xC_HolidayListService.Any(a => a.DayType == 2 && System.Data.Entity.DbFunctions.DiffDays(a.WorkDay, DateTime.Now) == 0))
-                        resultModel.State = (int)TicketState.InValid;
-                }
-                else
-                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "该门票周方式值不正确");
-
-                //判断可用时段
-                var startTime = Convert.ToDateTime(Utils.TimeSpanToStr(flw_ProjectTicket_EntryModel.StartTime));
-                var endTime = Convert.ToDateTime(Utils.TimeSpanToStr(flw_ProjectTicket_EntryModel.EndTime));
-                var nowTime = Convert.ToDateTime(DateTime.Now.ToString("HH:mm:ss"));
-                if (DateTime.Compare(startTime, nowTime) > 0 || DateTime.Compare(endTime, nowTime) < 0)
-                    resultModel.State = (int)TicketState.InValid;
-
-                //判断不可用日期
-                var noStateDate = flw_ProjectTicket_EntryModel.NoStartDate;
-                var noEndDate = flw_ProjectTicket_EntryModel.NoEndDate;
-                if (noStateDate < noEndDate)
-                {                    
-                    if(DateTime.Compare(DateTime.Now, noStateDate.Value) >= 0 && DateTime.Compare(DateTime.Now, noEndDate.Value) <= 0)
-                        resultModel.State = (int)TicketState.InValid;
-                }
-
-                //判断使用频率
-                var ticketType = flw_Project_TicketInfoModel.TicketType;
-                if (ticketType == (int)TicketType.Period) //期限票
-                {                    
-                    var allowRestrict = flw_ProjectTicket_EntryModel.AllowRestrict;                   
-                    if (allowRestrict == 1) //是否使用限制
-                    {
-                        var flw_Project_TicketUseService = Flw_Project_TicketUseService.N;
-                        var data_Project_BindDeviceService = Data_Project_BindDeviceService.N;
-                        var restrictShareCount = flw_ProjectTicket_EntryModel.RestrictShareCount;
-                        var restrictPeriodType = flw_ProjectTicket_EntryModel.RestrictPeriodType;
-                        var restrictPreiodValue = flw_ProjectTicket_EntryModel.RestrictPreiodValue;
-                        var restrctCount = flw_ProjectTicket_EntryModel.RestrctCount;
-                        switch (restrictPeriodType)
-                        {
-                            case (int)RestrictPeriodType.Hour: 
-                                if(restrictShareCount == 1 &&
-                                    flw_Project_TicketUseService.GetCount(p=>System.Data.Entity.DbFunctions.DiffHours(p.InTime, DateTime.Now) <= restrictPreiodValue && p.ProjectTicketCode.Equals(barCode, StringComparison.OrdinalIgnoreCase))
-                                    > restrctCount) resultModel.State = (int)TicketState.InValid;
-                                if (restrictShareCount != 1 &&
-                                    flw_Project_TicketUseService.GetCount(p => p.ProjectID == projectId && System.Data.Entity.DbFunctions.DiffHours(p.InTime, DateTime.Now) <= restrictPreiodValue && p.ProjectTicketCode.Equals(barCode, StringComparison.OrdinalIgnoreCase))
-                                    > restrctCount) resultModel.State = (int)TicketState.InValid;
-                                break;
-                            case (int)RestrictPeriodType.Day: 
-                                if(restrictShareCount == 1 &&
-                                    flw_Project_TicketUseService.GetCount(p=>System.Data.Entity.DbFunctions.DiffDays(p.InTime, DateTime.Now) <= restrictPreiodValue && p.ProjectTicketCode.Equals(barCode, StringComparison.OrdinalIgnoreCase))
-                                    > restrctCount) resultModel.State = (int)TicketState.InValid;
-                                if (restrictShareCount != 1 &&
-                                    flw_Project_TicketUseService.GetCount(p => p.ProjectID == projectId && System.Data.Entity.DbFunctions.DiffDays(p.InTime, DateTime.Now) <= restrictPreiodValue && p.ProjectTicketCode.Equals(barCode, StringComparison.OrdinalIgnoreCase))
-                                    > restrctCount) resultModel.State = (int)TicketState.InValid;
-                                break;
-                            default: return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "该门票限制周期方式值不正确");
-                        }
-                    }
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
                 }
                 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, resultModel);
@@ -343,13 +365,18 @@ namespace XXCloudService.Api.XCGame
                 string errMsg = string.Empty;
                 XCManaUserHelperTokenModel userTokenModel = (XCManaUserHelperTokenModel)(dicParas[Constant.XCManaUserHelperToken]);
                 string barCode = dicParas.ContainsKey("barCode") ? dicParas["barCode"].ToString() : string.Empty;
+                var projectId = dicParas.ContainsKey("projectId") ? dicParas["projectId"].Toint() : (int?)null;
 
                 if (string.IsNullOrEmpty(barCode))
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "请输入条码编号");
                 }
 
-                //验证是否有效门店
+                if (projectId.IsNull())
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "请选择门票项目");
+                }
+
                 //验证是否有效门店
                 StoreCacheModel storeModel = null;
                 StoreBusiness storeBusiness = new StoreBusiness();
@@ -358,163 +385,69 @@ namespace XXCloudService.Api.XCGame
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
                 }
 
-                if (storeModel.StoreDBDeployType == 0)
+                //if (storeModel.StoreDBDeployType == 0)
+                //{
+
+                //检查门票使用信息
+                TicketModel resultModel = null;
+                if (!checkTicketInfo(barCode, projectId.Value, out resultModel, out errMsg))
                 {
-                    //验证门票是否有效
-                    XCCloudService.BLL.IBLL.XCGame.IProject_buy_codelistService codeListService = BLLContainer.Resolve<XCCloudService.BLL.IBLL.XCGame.IProject_buy_codelistService>(storeModel.StoreDBName);
-                    var codeListModel = codeListService.GetModels(p => p.Barcode.Equals(barCode)).FirstOrDefault<flw_project_buy_codelist>();
-                    if (codeListModel == null)
-                    {
-                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "门票不存在");
-                    }
-
-                    if (codeListModel.State == 1)
-                    {
-                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "门票已使用");
-                    }
-
-                    //验证门票项目是否有效
-                    XCCloudService.BLL.IBLL.XCGame.IProjectService projectService = BLLContainer.Resolve<XCCloudService.BLL.IBLL.XCGame.IProjectService>(storeModel.StoreDBName);
-                    var projectModel = projectService.GetModels(p => p.id == codeListModel.ProjectID).FirstOrDefault<t_project>();
-                    if (projectModel == null)
-                    {
-                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "门票项目不存在");
-                    }
-
-                    //验证购买记录
-                    XCCloudService.BLL.IBLL.XCGame.IProject_buyService projectBuyService = BLLContainer.Resolve<XCCloudService.BLL.IBLL.XCGame.IProject_buyService>(storeModel.StoreDBName);
-                    var projectBuyModel = projectBuyService.GetModels(p => p.ID == codeListModel.BuyID).FirstOrDefault<flw_project_buy>();
-                    if (projectBuyModel == null)
-                    {
-                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "门票购买记录不存在");
-                    }
-
-                    string icCardId = projectBuyModel.ICCardID;
-
-                    //消费类型：0 次数 1有效期
-                    if (Convert.ToInt32(codeListModel.ProjectType) == 0)
-                    {
-                        long currentDate = Utils.ConvertDateTimeToLong(System.DateTime.Now);
-                        long startDate = Utils.ConvertDateTimeToLong(Convert.ToDateTime(codeListModel.StartTime));
-                        long endDate = Utils.ConvertDateTimeToLong(Convert.ToDateTime(codeListModel.EndTime));
-                        if (currentDate < startDate)
-                        {
-                            return ResponseModelFactory.CreateAnonymousFailModel(isSignKeyReturn, "门票未到使用日期");
-                        }
-                        else if (currentDate > endDate)
-                        {
-                            return ResponseModelFactory.CreateAnonymousFailModel(isSignKeyReturn, "门票已超过使用日期");
-                        }
-                        else if (codeListModel.BuyCount <= codeListModel.RemainCount)
-                        {
-                            return ResponseModelFactory.CreateAnonymousFailModel(isSignKeyReturn, "门票次数已用尽");
-                        }
-
-                        using (TransactionScope ts = new TransactionScope())
-                        {
-                            try
-                            {
-                                codeListModel.RemainCount -= 1;
-                                codeListService.Update(codeListModel);
-
-                                XCCloudService.BLL.IBLL.XCGame.IProjectPlayService projectPlayService = BLLContainer.Resolve<XCCloudService.BLL.IBLL.XCGame.IProjectPlayService>(storeModel.StoreDBName);
-                                flw_project_play play = new flw_project_play();
-                                play.BarCode = barCode;
-                                play.ICCardID = icCardId;
-                                play.InTime = System.DateTime.Now;
-                                play.CheckType = 2;
-                                play.BuyID = codeListModel.BuyID;
-                                projectPlayService.Add(play);
-
-                                ts.Complete();
-
-                                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.T, "");
-                            }
-                            catch (Exception e)
-                            {
-                                throw e;
-                            }
-                        }
-                    }
-                    else if (Convert.ToInt32(codeListModel.ProjectType) == 1)
-                    {
-                        long currentDate = Utils.ConvertDateTimeToLong(System.DateTime.Now);
-                        long startDate = Utils.ConvertDateTimeToLong(Convert.ToDateTime(codeListModel.StartTime));
-                        long endDate = Utils.ConvertDateTimeToLong(Convert.ToDateTime(codeListModel.EndTime));
-                        if (currentDate < startDate)
-                        {
-                            return ResponseModelFactory.CreateAnonymousFailModel(isSignKeyReturn, "门票未到使用日期");
-                        }
-                        else if (currentDate > endDate)
-                        {
-                            return ResponseModelFactory.CreateAnonymousFailModel(isSignKeyReturn, "门票已超过使用日期");
-                        }
-                        else
-                        {
-                            XCCloudService.BLL.IBLL.XCGame.IProjectPlayService projectPlayService = BLLContainer.Resolve<XCCloudService.BLL.IBLL.XCGame.IProjectPlayService>(storeModel.StoreDBName);
-                            flw_project_play play = new flw_project_play();
-                            play.BarCode = barCode;
-                            play.ICCardID = icCardId;
-                            play.InTime = System.DateTime.Now;
-                            play.CheckType = 2;
-                            play.BuyID = codeListModel.BuyID;
-                            projectPlayService.Add(play);
-                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.T, "");
-                        }
-                    }
-                    else
-                    {
-                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "");
-                    }
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
                 }
-                else if (storeModel.StoreDBDeployType == 1)
-                {
-                    string sn = System.Guid.NewGuid().ToString().Replace("-","");
-                    UDPSocketCommonQueryAnswerModel answerModel = null;
-                    string radarToken = string.Empty;
-                    if (DataFactory.SendDataTicketOperate(sn,storeModel.StoreID, storeModel.StorePassword, barCode, "0", out radarToken,out errMsg))
-                    {
 
-                    }
-                    else
-                    {
-                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
-                    }
 
-                    answerModel = null;
-                    int whileCount = 0;
-                    while (answerModel == null && whileCount <= 25)
-                    {
-                        //获取应答缓存数据
-                        whileCount++;
-                        System.Threading.Thread.Sleep(1000);
-                        answerModel = UDPSocketCommonQueryAnswerBusiness.GetAnswerModel(sn, 1);
-                    }
 
-                    if (answerModel != null)
-                    {
-                        TicketOperateResultNotifyRequestModel model = (TicketOperateResultNotifyRequestModel)(answerModel.Result);
-                        //移除应答缓存数据
-                        UDPSocketCommonQueryAnswerBusiness.Remove(sn);
+                return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn);
 
-                        if (model.Result_Code == "1" && model.Result_Data == "1")
-                        {
-                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.T, "");
-                        }
-                        else
-                        {
-                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, model.Result_Msg);
-                        }
-                    }
-                    else
-                    {
-                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "系统没有响应");
-                    }
-                }
-                else
-                {
-                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "门店设置错误");
-                }
+                //}
+                //else if (storeModel.StoreDBDeployType == 1)
+                //{
+                //    string sn = System.Guid.NewGuid().ToString().Replace("-","");
+                //    UDPSocketCommonQueryAnswerModel answerModel = null;
+                //    string radarToken = string.Empty;
+                //    if (DataFactory.SendDataTicketOperate(sn,storeModel.StoreID, storeModel.StorePassword, barCode, "0", out radarToken,out errMsg))
+                //    {
+
+                //    }
+                //    else
+                //    {
+                //        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
+                //    }
+
+                //    answerModel = null;
+                //    int whileCount = 0;
+                //    while (answerModel == null && whileCount <= 25)
+                //    {
+                //        //获取应答缓存数据
+                //        whileCount++;
+                //        System.Threading.Thread.Sleep(1000);
+                //        answerModel = UDPSocketCommonQueryAnswerBusiness.GetAnswerModel(sn, 1);
+                //    }
+
+                //    if (answerModel != null)
+                //    {
+                //        TicketOperateResultNotifyRequestModel model = (TicketOperateResultNotifyRequestModel)(answerModel.Result);
+                //        //移除应答缓存数据
+                //        UDPSocketCommonQueryAnswerBusiness.Remove(sn);
+
+                //        if (model.Result_Code == "1" && model.Result_Data == "1")
+                //        {
+                //            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.T, "");
+                //        }
+                //        else
+                //        {
+                //            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, model.Result_Msg);
+                //        }
+                //    }
+                //    else
+                //    {
+                //        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "系统没有响应");
+                //    }
+                //}
+                //else
+                //{
+                //    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "门店设置错误");
+                //}
             }
             catch(Exception e)
             {

@@ -240,18 +240,22 @@
         'obj': {'conditions': [], 'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'},
         'url': '/XCCloud/MemberManage?action=QueryMemberInfo',
         'elem': '#mFileSearchTable',
-        'cols': [
-            {
+        'cols': [{field:'ID',title:'id',templet:function (d) {
+                console.log(this)
+            }}
+            ,{
                 field: 'ICCardID', title: '会员卡号', align: 'center', sort: true, templet: function (d) {
-                    return '<a href="javascript:void(0);" class="a_line">' + d.ICCardID + '</a>'
+                    return '<a href="javascript:void(0);" class="a_line aCardID">' + d.ICCardID + '</a>'
                 }
             }
             , {field: 'CardName', title: '会员姓名', align: 'center'}
             , {field: 'MemberLevelName', title: '会员级别', align: 'center'}
             , {field: 'CardType', title: '卡类别', align: 'center', templet: '#_cardType'}
-            , {field: 'Deposit', title: '押金', align: 'center', templet: function () {
+            , {
+                field: 'Deposit', title: '押金', align: 'center', templet: function (d) {
                     return '<a href="javascript:void(0);" class="a_line memberDeposit">' + d.Deposit + '</a>'
-                }}
+                }
+            }
             , {field: 'UpdateTime', title: '余额最后跟新时间', align: 'center'}
             , {field: 'EndDate', title: '过期日期', align: 'center'}
             , {
@@ -301,7 +305,7 @@
             'active': ''
         });
         //根据会员卡号来查询会员详细信息
-        $('.a_line').on('click', function () {
+        $('.aCardID').on('click', function () {
 
             let _cardId = $(this).text();
             let obj = {icCardId: _cardId, userToken: token, sysId: '0', versionNo: '0.01'};
@@ -365,8 +369,49 @@
         })
 
         //查询押金明细
-        $('.memberDeposit').on('click',function () {
-            console.log($(this).parents('tr').children[0])
+        $('.memberDeposit').on('click', function () {
+            let _cardId = $(this).parents('tr').children()[0].getElementsByTagName('a')[0].innerHTML;
+            let obj = {id: _cardId, userToken: token, signkey: '1f626576304bf5d95b72ece2222e42c3'};
+            let parseJson = JSON.stringify(obj);
+            $.ajax({
+                type: 'post',
+                url: '/XCCloud/MemberManage?action=QueryMemberDepositInfo',
+                contentType: "application/json; charset=utf-8",
+                data: {parasJson: parseJson},
+                success: function (data) {
+                    data = JSON.parse(data);
+                    console.log(data);
+                    if (data.result_code == 1) {
+                        let arr = data.result_data;
+
+                        //初始化：押金明细信息
+                        table.render({
+                            cols: [[
+                                {field: 'ICCardID', title: '会员卡号', align: 'center',},
+                                {field: 'CardType', title: '卡类别', align: 'center',},
+                                {field: 'Deposit', title: '卡押金', align: 'center'},
+                                {field: 'CardName', title: '姓名', align: 'center'},
+                                {field: 'CardBirthday', title: '生日', align: 'center'},
+                                {field: 'CardSex', title: '性别', align: 'center'}
+                            ]
+                            ],
+                            elem: '#depositTable',
+                            data: arr
+                            , skin: 'line'
+                            , page: {page: true, limits: [10, 15, 20, 30, 50, 100]}
+                            , limit: 10
+                        })
+                        layer.open({
+                            title: '押金明细',
+                            type: 1,
+                            area: '1000px',
+                            content: $('#openDeposit')
+                        })
+                    } else {
+                        layer.msg(data.result_msg || data.return_msg);
+                    }
+                }
+            })
         })
 
         //查询卡类别明细
