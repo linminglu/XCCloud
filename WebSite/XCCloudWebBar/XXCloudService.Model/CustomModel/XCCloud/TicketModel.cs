@@ -25,4 +25,28 @@ namespace XCCloudWebBar.Model.CustomModel.XCCloud
         [DataMember(Name = "detailInfoList", Order = 5)]
         public List<FoodDetailInfoModel> DetailInfoList { set; get; }
     }
+
+    public class ProjectTicketDeviceLogModel
+    {
+        public ProjectTicketDeviceLogModel()
+        {
+            this.UnpaidAmount = string.Empty;
+        }
+        public string TicketUseId { get; set; }
+        public int ProjectID { get; set; }
+        public string ProjectName { get; set; }        
+        public string Payment { get; set; }
+        public string MemberName { get; set; }
+        public string InTime { get; set; }
+        public string Expenses { get; set; }
+        public string UnpaidAmount { get; set; }
+        public string TotalAmount
+        {
+            get
+            {
+                return Expenses;
+            }
+            set { }
+        }
+    }             
 }

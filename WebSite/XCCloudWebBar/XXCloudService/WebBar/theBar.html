@@ -19,7 +19,14 @@
     .navStyle h4{font-size: 0.8em;line-height: 1.2em;text-indent: 12px;}
     .navT{width: 80px;margin-top: 1.25em;padding-left: 10px;color: #7d8184;font-weight: 600;font-size: 1em}
     .operationBtn{text-align: right;margin: 2em;padding:0 1em;}
-    .operationBtn button{display: inline;width: 10em;margin: 0 0.5em;}
+    .operationBtn button{display: inline-block;width: 10em;margin: 0 0.5em;}
+    .tableCenter{background-color: #fefefe;}
+    .tableCenter th{text-align: center;}
+    .table>thead>tr>th {vertical-align: middle;}
+    .billingColor{cursor: pointer;background-color:#b196fd;text-align: center;}
+    .billingSty{text-align: center;font-weight:600;}
+    .margin15{margin-right:1.5em;}
+    .supStyle{display:inline-block;width:10px;height: 10px;border-radius:50%;background-color:red;margin-left:-5px;}
     </style>
 </head>
 <body>
@@ -30,14 +37,14 @@
 			<div class="navbar-header">
 				<a href="index.html"><img src="images/logo.png"></a>
 			</div>
-
 			<ul class="nav navbar-nav navbar-right">
 				<li><a href="javascript:void(0);"><!--<span class="glyphicon glyphicon-menu-down"></span>&nbsp;&nbsp;-->现金:￥10500</a></li>
-				<li class="active"><a href="index.html"><!--<span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;-->莘宸乐园【同城广场店】</a></li>
+				<li class="active"><a href="index.html">{{userData.storeName}}</a></li>
 				<li class="dropdown">
 					<a data-toggle="dropdown"  aria-expanded="false">
 						<!--未读消息 (0)-->
-						<span class="iconfont icon-btnMsg"></span>
+                        <span class="iconfont icon-btnMsg"></span>
+                        <sup class="supStyle"></sup>
                         <!--<span class="badge">1</span>-->
 					</a>
 					<ul class="dropdown-menu">
@@ -62,7 +69,7 @@
 					</ul>
 				</li>
 				<div class="bbs text-right">
-					<p><span>当前班次：A</span><span>营业日期：2017-08-23 15:38:12 </span></p>
+					<p><span class="margin15">当前班次：{{userData.scheduleName}}</span><span>营业日期：{{userData.checkDate}}</span></p>
 				</div>
 			</ul>
 
@@ -194,20 +201,20 @@
                 <div class="modal-body row">
                     <div class="container-fluid modal-bodySty">
                         <div class="input-group col-lg-6 col-md-6 tab-style">
-                            <span class="input-group-addon">可兑{{balanceExchangeData.selectBalanceName}}：</span>
+                            <span class="input-group-addon addonWidth">可兑{{balanceExchangeData.selectBalanceName}}：</span>
                             <input  class="form-control" v-model="balanceExchangeData.balanceExchange" readonly/>
                         </div>
                         <div class="input-group col-lg-6 col-md-6 tab-style">
-                            <span class="input-group-addon">当前{{balanceExchangeData.selectBalanceName}}：</span>
+                            <span class="input-group-addon addonWidth">当前{{balanceExchangeData.selectBalanceName}}：</span>
                             <input  class="form-control" v-model="balanceExchangeData.balance" readonly/>
                         </div>
-                        <div class="input-group col-lg-6 col-md-6 tab-style">
-                            <span class="input-group-addon">当前兑换比率：</span>
-                            <input  class="form-control" v-model="balanceExchangeData.ExchangeRate" readonly/>
+                        <div class="input-group col-lg-12 col-md-12 tab-style">
+                            <span class="input-group-addon addonWidth">兑换比率：</span>
+                            <input  class="form-control" v-model="balanceExchangeData.changeContent" readonly/>
                         </div>
                         <div class="col-lg-12 col-md-12"></div>
                         <div class="input-group col-lg-6 col-md-6 tab-style">
-                            <span class="input-group-addon">当前种类：</span>
+                            <span class="input-group-addon addonWidth">当前种类：</span>
                             <select  class="form-control" v-model="balanceExchangeData.selectValue" @change="selectValue">
                                 <option v-for="(option,index) in balanceExchangeData.selectList" :value="index">
                                     {{ option.SourceBalanceName}}
@@ -215,11 +222,11 @@
                             </select>
                         </div>
                         <div class="input-group col-lg-6 col-md-6 tab-style">
-                            <span class="input-group-addon">兑换数量：</span>
+                            <span class="input-group-addon addonWidth">兑换数量：</span>
                             <input  class="form-control" placeholder="输入兑换数量" v-model="balanceExchangeData.inputExchange" @input="inputExchange"/>
                         </div>
                         <div class="input-group col-lg-6 col-md-6 tab-style">
-                            <span class="input-group-addon">兑换种类：</span>
+                            <span class="input-group-addon addonWidth">兑换种类：</span>
                             <select  class="form-control" v-model="balanceExchangeData.selectType" @change="selectType">
                                 <option v-for="(option,index) in balanceExchangeData.selectData" :value="index">
                                     {{option.TargetBalanceName}}
@@ -249,7 +256,7 @@
 				<div class="modal-body row">
 					<div class="container-fluid modal-bodySty">
 						<div class="input-group col-lg-6 col-md-6 tab-style">
-							<span class="input-group-addon">补币币种：</span>
+							<span class="input-group-addon addonWidth">补币币种：</span>
 							<select class="form-control" v-model="repairCoin.balanceIndex">
 								<option v-for="(option,index) in repairCoinData" :value="index">
 									{{ option.BalanceName}}
@@ -257,18 +264,18 @@
 							</select>
 						</div>
 						<div class="input-group col-lg-6 col-md-6 tab-style">
-							<span class="input-group-addon">存币数量：</span>
+							<span class="input-group-addon addonWidth">存币数量：</span>
 							<input  class="form-control" placeholder="请输入存币数量" v-model.number="repairCoin.qty"/>
 						</div>
 						<div class="input-group col-lg-12 col-md-12 tab-style">
-							<span class="input-group-addon">补币方式：</span>
+							<span class="input-group-addon addonWidth">补币方式：</span>
 							<select class="form-control" v-model="repairCoin.repairType">
 								<option value="1" v-if="repairCoin.allowDevice">实物币</option>
 								<option value="2">存入卡中</option>
 							</select>
 						</div>
 						<div class="input-group col-lg-12 col-md-12 tab-style">
-							<span class="input-group-addon">备注：</span>
+							<span class="input-group-addon addonWidth">备注：</span>
 							<textarea  class="form-control" v-model="repairCoin.note"></textarea>
 						</div>
 						<div class="col-lg-12 tab-btn tab-style"><button type="button" class=" btn btn-info" @click="repairCoinFnc" :disabled="loading">补币</button></div>
@@ -451,7 +458,7 @@
                                     </table>
                                 </div>
                                 <div class="input-group col-lg-8 col-md-8 tab-style">
-                                    <span class="input-group-addon">补币方式：</span>
+                                    <span class="input-group-addon addonWidth">补币方式：</span>
                                     <select class="form-control" v-model="FreeCoinData.repairType">
                                         <option value="1" v-if="FreeCoinData.allowDevice">实物币</option>
                                         <option value="2">存入卡中</option>
@@ -618,13 +625,13 @@
 				<div class="modal-body row">
                     <div class="col-lg-12 col-md-12">
                         <div class="input-group date form_date col-md-4 menu-style" data-date="2018-07-04" data-link-format="yyyy-mm-dd">
-                            <span class="input-group-addon">开始日期：</span>
+                            <span class="input-group-addon addonWidth">开始日期：</span>
                             <!-- v-model="billing.stratTime" v-model="billing.endTime" -->
                             <input class="form-control" value="" type="text" id="billingStratTime" readonly>
                             <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
                         </div>
                         <div class="input-group date form_date col-md-4 menu-style" data-date="2018-07-04" data-link-format="yyyy-mm-dd">
-                            <span class="input-group-addon">结束日期：</span>
+                            <span class="input-group-addon addonWidth">结束日期：</span>
                             <input class="form-control" value="" type="text" id="billingEndTime" readonly>
                             <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
                         </div>
@@ -972,7 +979,7 @@
 												<!--<div class="input-group col-lg-4 col-md-0">-->
 												<!--</div>-->
 												<!--<div class="input-group col-lg-4 col-md-6">-->
-													<!--<span class="input-group-addon">微信：</span>-->
+													<!--<span class="input-group-addon addonWidth">微信：</span>-->
 													<!--<input   class="form-control" v-model="memberInfo.wxId"/>-->
 												<!--</div>-->
 											</div>
@@ -1067,11 +1074,32 @@
 									</div>
 									<div class="row" style="margin-top: 1em;">
 										<div class="col-lg-4 col-md-4">
-											<table class="table table-bordered">
+                                                <table class="table table-bordered">
+                                                    <thead>
+                                                        <tr class="tableCenter">
+                                                            <th  colspan="1" rowspan="2" data-valign="middle">余额种类</th>
+                                                            <th colspan="3" data-valign="middle">余额</th>
+                                                        </tr>
+                                                        <tr class="tableCenter">
+                                                            <th>正价</th>
+                                                            <th>赠送</th>
+                                                            <th>总计</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr v-for="(item,index) in balanceData" :key="index">
+                                                            <td class="billingSty">{{item.BalanceName}}</td>
+                                                            <td @click="billingRecord(index)" class="billingColor">{{item.Balance}}</td>
+                                                            <td @click="billingRecord(index)" class="billingColor">{{item.BalanceFree}}</td>
+                                                            <td @click="billingRecord(index)" class="billingColor">{{item.TotalBalance}}</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+											<!-- <table class="table table-bordered">
 												<thead style="background: #f5f5f5">
 												<tr>
-													<th>余额种类</th>
-													<th>余额</th>
+													<th colspan="1">余额种类</th>
+													<th colspan="3">余额</th>
 												</tr>
 												</thead>
 												<tbody>
@@ -1080,7 +1108,7 @@
 													<td @click="billingRecord(index)">{{item.Quantity}}</td>
 												</tr>
 												</tbody>
-											</table>
+											</table> -->
 										</div>
 										<div class="col-lg-8 col-md-8">
 											<div class="col-lg-9 col-md-9">
@@ -1187,19 +1215,19 @@
                         <h3 class="titleSty">用户信息</h3>
                         <div class="McText col-lg-12">
                             <div class="input-group col-lg-4 col-md-6">
-                                <span class="input-group-addon">手机号码：</span>
+                                <span class="input-group-addon addonWidth">手机号码：</span>
                                 <input   class="form-control" v-model.number="memberForm.mobile" maxlength="11" placeholder="请输入手机号"/>
                             </div>
                             <div class="input-group col-lg-3 col-md-6">
-                                <span class="input-group-addon">会员姓名：</span>
+                                <span class="input-group-addon addonWidth">会员姓名：</span>
                                 <input   class="form-control" v-model="memberForm.name" placeholder="请输入会员姓名"/>
                             </div>
                             <div class="input-group col-lg-3 col-md-6">
-                                <span class="input-group-addon">生日：</span>
+                                <span class="input-group-addon addonWidth">生日：</span>
                                 <input    class="form-control" v-model="memberForm.birthday" readonly/>
                             </div>
                             <div class="input-group col-lg-2 col-md-6">
-                                <span class="input-group-addon">性别：</span>
+                                <span class="input-group-addon addonWidth">性别：</span>
                                 <select  class="form-control" v-model="memberForm.sex">
                                     <option value="0">男</option>
                                     <option value="1">女</option>
@@ -1208,14 +1236,14 @@
                         </div>
                         <div class="McText col-lg-12">
                             <div class="input-group col-lg-5 col-md-6">
-                                <span class="input-group-addon">验证码：</span>
+                                <span class="input-group-addon addonWidth">验证码：</span>
                                 <input   class="form-control" v-model="memberForm.mobileCode"/>
                                 <div class="input-group-btn">
                                     <input class="form-control btnSendCode readCard" type="button" v-model="memberForm.codeBtn" @click="sendCode" :disabled="memberForm.disabled"/>
                                 </div>
                             </div>
                             <div class="input-group col-lg-7 col-md-12">
-                                <span class="input-group-addon">证件号码：</span>
+                                <span class="input-group-addon addonWidth">证件号码：</span>
                                 <input  class="form-control" v-model="memberForm.IdNumber" readonly/>
                                 <div class="input-group-btn">
                                     <button type="button" class="btn btn-default readCard" :disabled="loading">读取</button>
@@ -1224,7 +1252,7 @@
                         </div>
 						<div class="col-lg-12 McTarea col-md-12">
                             <div class="input-group col-lg-12 col-md-12">
-                                <span class="input-group-addon">备注：</span>
+                                <span class="input-group-addon addonWidth">备注：</span>
                                 <textarea class="form-control" v-model="memberForm.remark"></textarea>
                             </div>
                         </div>
@@ -1250,17 +1278,17 @@
 	</div>
 	<div class="footer" :class="{membershipDetails:footerShow}">
         <div class="btn-group dropup col-lg-3 col-md-3">
-            <button type="button" class="btn btn-default" :disabled="loading">{{dropChooseTxt1}}</button>
+            <button type="button" class="btn btn-default" :disabled="loading" @click="AllReadCard">{{dropChooseTxt1}}</button>
             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"  aria-expanded="false">
                 <span class="caret"></span>
             </button>
             <ul class="dropdown-menu dropChoosesty">
-                <li @click="dropChoose('0')"><span class="iconfont icon-duqiaqi"></span>读卡器</li>
+                <li @click="dropChoose('0')"><span class="iconfont icon-icqiaduqiaqi"></span>读卡器</li>
                 <li @click="dropChoose('1')"><span class="iconfont icon-shenfenzhengrenzheng"></span>身份证</li>
                 <li @click="dropChoose('2')"><span class="iconfont icon-3"></span>手动输入</li>
             </ul>
-            <input  class="form-control" placeholder="请输入会员姓名"/>
-            <button type="button" class="btn btn-default" :disabled="loading">{{dropChooseTxt2}}</button>
+            <input class="form-control" placeholder="请输入会员姓名" v-model="readCardInput"/>
+            <button type="button" class="btn btn-default" :disabled="loading" @click="AllReadCard">{{dropChooseTxt2}}</button>
         </div>
 		<ul class="member col-lg-9 col-md-9" @click="membershipDetails">
 			<li><span>会员卡号：4444444444444454545454</span></li>
@@ -1303,6 +1331,14 @@
         el: '#app',
         data:{
             loading:false,
+            userData:{
+                checkDate:"",
+                scheduleId:"",
+                scheduleName:"",
+                storeId:"",
+                storeName:"",
+                userToken:""
+            },
             salesIS: true,
             screeningTitle: false,
             shopData:[],
@@ -1350,6 +1386,7 @@
                 selectBalanceName:"",
                 balanceExchange:"",
                 balance:"",
+                changeContent:"",
                 ExchangeRate:""
             },
             memberInput:{
@@ -1505,6 +1542,7 @@
             radioValue:"",
             dropChooseTxt1:"读卡器",
             dropChooseTxt2:"读卡",
+            readCardInput:"",
            	msgEleven:"",			// 0 开卡，1补卡换卡，2...
             msgReadCard:""			// 0提币读卡，2...
         },
@@ -1646,10 +1684,10 @@
         methods: {
             Initialize:function () {
                 var that =this;
-                var userToken = getStorage("userToken");      	//获取userToken
-                var storeId = getStorage("storeId");       		//storeId
-                that.userToken = userToken;
-                that.storeId = storeId;
+                var userData = getStorage("userData");      	//获取userToken
+                console.log(userData)
+                that.userToken = userData.userToken;
+                that.userData = userData;
                 that.salesAll();
                 var heightkz = $(window).height()-$('.boxShadow').height()-100;
                 var widthKz = $(window).width();
@@ -1689,7 +1727,7 @@
                                         that.outCoinData.icCardId = receivedMsg.dataObj.icCardId;
                                         that.getBalanceTypeByICCardId()
                                     }else if(that.msgReadCard === "1"){
-
+                                        that.icCardId = receivedMsg.dataObj.icCardId;
                                     }
                                     break;
                                 case "5":
@@ -2128,6 +2166,39 @@
                         break;
 				}
 			},
+            AllReadCard:function(){
+                var that = this;
+				switch (that.dropChooseTxt2){
+					case "读卡":
+                        var msgType4 =JSON.stringify({"msgType":"4", "sObj": {"userToken": that.userToken}});
+                        that.msgReadCard = "1";
+                        ws.send(msgType4);
+					    break;
+                    case "读取":
+                        var msgType5 =JSON.stringify({"msgType":"5", "sObj": {"userToken": that.userToken}});
+                        ws.send(msgType5);
+                        break;
+                    case "查询":
+                        // if(){}
+                        break;
+				}
+			},
+ //			身份证号查询会员信息
+            getCardListByIDnumber:function (idCardNo) {
+			    var that = this;
+                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,idCardNo:idCardNo};
+                console.log(obj);
+			    axios.post('/XCCloud/Member?action=getCardListByIDnumber', obj).then(function (res) {
+                    console.log(res.data);
+                    that.msgPrompt(res.data);
+                    if (res.data.result_code === '1') {
+                        that.cardList = res.data.result_data;
+                        $('#cardList').modal('show');
+                    }
+                }).catch(function (err) {
+                    console.log(err);
+                });
+            },           
 //			按手机号查询会员信息
             getMember:function (type) {
 			    var that = this;
@@ -2206,6 +2277,7 @@
                         that.memberInput.Deposit = res.data.result_data.Deposit+"元";
                         that.memberInput.LevelName = res.data.result_data.LevelName;
                         that.memberInput.CardAvatar = res.data.result_data.CardAvatar;
+                        that.cardId = res.data.result_data.CardId;
                         var TitleCardList =[];
                         var childCardList =res.data.result_data.ChildCardList;
                         for(var i = 0;i<childCardList.length;i++){
@@ -3121,6 +3193,7 @@
                             that.balanceExchangeData.balanceExchange = that.balanceExchangeData.selectList[0].Balance;
                             that.balanceExchangeData.balance = that.balanceExchangeData.selectList[0].BalanceTotal;
                             that.balanceExchangeData.ExchangeRate = that.balanceExchangeData.selectList[0].TargetChargeList[0].ExchangeRate;
+                            that.balanceExchangeData.changeContent = "1"+that.balanceExchangeData.selectList[that.balanceExchangeData.selectValue].SourceBalanceName +"兑换"+ that.balanceExchangeData.ExchangeRate+that.balanceExchangeData.selectData[that.balanceExchangeData.selectType].TargetBalanceName;
                     }
                 }).catch(function (err) {
                     console.log(err);
@@ -3137,6 +3210,7 @@
                 that.balanceExchangeData.ExchangeRate = that.balanceExchangeData.selectList[that.balanceExchangeData.selectValue].TargetChargeList[0].ExchangeRate;
                 that.balanceExchangeData.inputExchange = "";
                 that.balanceExchangeData.exchangeValue = "";
+                that.balanceExchangeData.changeContent = "1"+that.balanceExchangeData.selectList[that.balanceExchangeData.selectValue].SourceBalanceName +"兑换"+ that.balanceExchangeData.ExchangeRate+that.balanceExchangeData.selectData[that.balanceExchangeData.selectType].TargetBalanceName;
             },
 //          selectType改变事件
             selectType:function () {
@@ -3144,6 +3218,7 @@
                 that.balanceExchangeData.ExchangeRate = that.balanceExchangeData.selectList[that.balanceExchangeData.selectValue].TargetChargeList[that.balanceExchangeData.selectType].ExchangeRate;
                 that.balanceExchangeData.inputExchange = "";
                 that.balanceExchangeData.exchangeValue = "";
+                that.balanceExchangeData.changeContent = "1"+that.balanceExchangeData.selectList[that.balanceExchangeData.selectValue].SourceBalanceName +"兑换"+ that.balanceExchangeData.ExchangeRate+that.balanceExchangeData.selectData[that.balanceExchangeData.selectType].TargetBalanceName;
             },
 //          inputExchange改变事件
             inputExchange:function () {

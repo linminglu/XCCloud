@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace XCCloudService.Model.Socket.UDP
 {
+    [DataContract]
     public class CardHeadResetInsResultRequestModel
     {
         public CardHeadResetInsResultRequestModel(string result_code, string result_msg, string sn)
@@ -14,6 +15,7 @@ namespace XCCloudService.Model.Socket.UDP
             this.Result_Code = result_code;
             this.Result_Msg = result_msg;
             this.SN = sn;
+            this.SignKey = "";
         }
 
         [DataMember(Name = "result_code", Order = 1)]
@@ -25,7 +27,7 @@ namespace XCCloudService.Model.Socket.UDP
         [DataMember(Name = "sn", Order = 3)]
         public string SN { set; get; }
 
-        [DataMember(Name = "signKey", Order = 4)]
+        [DataMember(Name = "signkey", Order = 4)]
         public string SignKey { set; get; }
     }
 }

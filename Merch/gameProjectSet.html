@@ -425,10 +425,11 @@
     let feeType='';let feeBalance='';let feekinds='';let feeWays='';let Lock=0;
     let checkedArr=[];
 
-    layui.use(['form','layer','table'],()=>{
+    layui.use(['form','layer','table','laydate'],()=>{
         const form=layui.form;
         const layer=layui.layer;
         const table=layui.table;
+        const laydate=layui.laydate;
 
         seachModel({
             'elem1': 'tantion',
@@ -440,6 +441,7 @@
             'layer': layer,
             'searchBtn': 'searchBtn',
             'xc':xc,
+            'laydate':laydate,
             'parm':parm
         })
         //用户余额类别
@@ -656,7 +658,7 @@
         $('#delBtn').on('click', function () {
             let checkStatus = table.checkStatus('ProjectList'); //test即为基础参数id对应的值
             let len = checkStatus.data.length;
-            if (len == 1) {
+            if (len >0) {
                let idArr=[];
                for(let i in checkStatus.data){
                    idArr.push(checkStatus.data[i].ID)

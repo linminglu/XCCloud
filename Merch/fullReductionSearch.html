@@ -5,23 +5,39 @@
     <title>满减优惠查询</title>
     <link rel="stylesheet" href="layui/css/layui.css">
     <link rel="stylesheet" href="layui/css/layui_font.css">
+    <link rel="stylesheet" href="css/myxc.css">
 </head>
 <body>
-<div class="layui-row" style="padding: 10px">
-    <form action="" class="layui-form layui-form-pane" >
-        <blockquote class="layui-elem-quote" style="text-align: right">
-            <button type="button" class="layui-btn layui-btn-normal">查询模板</button>
-            <!--<button type="button" class="layui-btn layui-btn-normal add">新增</button>-->
-        </blockquote>
+<div class="layui-row settingPage" style="padding: 10px">
+    <div class="row-box">
+        <div class="layui-col-md12 layui-col-sm12 layui-col-lg12">
+            <blockquote class="layui-elem-quote layui-col-md12 layui-col-sm12 layui-col-lg12">
+                <div class="layui-form layui-form-pane layui-col-md9" id="form1">
+                    <div class="layui-form-item" id="serchMode"></div>
+                </div>
+
+                <div class="layui-col-md2" id="form2Box" style="">
+                    <div class="layui-form layui-form-pane" id="form2" style="">
+                        <div id="tantion" class="layui-form-item">
+                        </div>
+                    </div>
+                </div>
+
+                <button type="button" class="layui-btn layui-btn-normal layui-col-md1" i18n-content="查询模板" id="searchBtn">查询</button>
+            </blockquote>
+        </div>
+
         <div class="layui-col-md12 layui-col-lg12 layui-col-sm12">
             <table class="layui-hide" id="fullReductionTable"  lay-filter="fullReductionTable"></table>
         </div>
-    </form>
+    </div>
+
 </div>
 </body>
 <script src="js/jquery-1.8.3-min.js"></script>
 <script src="layui/layui.js"></script>
 <script src="js/storeSystem.js"></script>
+<script src="js/searchModel.js"></script>
 <script>
     let xc=xcActionSystem.prototype;
     let token=xc.getStorage('token');
@@ -31,7 +47,7 @@
     let parm={'obj':{'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'},
         'url':'/XCCloud/Coupon?action=QueryCouponInfo',
         'elem':'#fullReductionTable',
-        'cols':[
+        'cols':[{type:'checkbox'},
             {field:'ID', title:'优惠券规则ID', align: 'center', sort: true}
             ,{field:'CouponName',title: '规则名称', align: 'center'}
             ,{field:'CouponTypeStr', title: '订单编号', align: 'center'}
@@ -43,14 +59,29 @@
             ,{field:'LeftCount', title: '优惠金额', align: 'center'}
             ,{field:'LeftCount', title: '使用门店', align: 'center'}
             ,{field:'LeftCount', title: '备注', align: 'center'}
-            ,{fixed: 'right', title: '操作', width:160, align:'center', toolbar: '#barDemo'}]
+            ]
     };
     xc.getInitData(parm);
+    layui.use(['table','form','layer','laydate'],function () {
+        let table = layui.table;
+        let form = layui.form;
+        let layer = layui.layer;
+        let laydate = layui.laydate;
+
+        seachModel({
+            'elem1': 'tantion',
+            'elem2': 'serchMode',
+            'pagename': 'discountRuleSearch',
+            'processname': 'discountRuleSearch',
+            'token': token,
+            'form': form,
+            'layer': layer,
+            'searchBtn': 'searchBtn',
+            'xc': xc,
+            'parm': parm,
+            'laydate':laydate
+        })
+    });
 </script>
-<script type="text/html" id="barDemo">
-    <!--<a class="layui-btn layui-btn-xs layui-bg-cyan" lay-event="export"><i class="layui-icon">&#xe642;</i>升级优先级</a>-->
-    <!--<a class="layui-btn layui-btn-xs layui-bg-orange" lay-event="transfers"><i class="layui-icon">&#xe642;</i>降级优先级</a>-->
-    <!--<a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="setStore"><i class="layui-icon">&#xe642;</i>适用门店</a>-->
-    <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del"><i class="layui-icon">&#xe640;</i>删除</a>
-</script>
+
 </html>

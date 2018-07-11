@@ -1482,7 +1482,7 @@ namespace XCCloudService.Api.XCCloud
                 model.Deposit = card.Deposit.Value;
                 model.EndDate = card.EndDate.HasValue ? card.EndDate.Value.ToString("yyyy-MM-dd") : "";
                 model.CardAvatar = card.CardPhoto ?? "";
-                model.LockList = MemberBusiness.GetMemberCardLockState(card.IsLock.Value);
+                model.LockList = card.IsLock.HasValue ? MemberBusiness.GetMemberCardLockState(card.IsLock.Value) : new List<CardLockStateModel>();
                 //会员信息
                 model.MemberInfo = new CardMemberInfoModel()
                 {
@@ -1496,14 +1496,16 @@ namespace XCCloudService.Api.XCCloud
                 };
 
                 //余额
-                List<MemberBalanceExchangeRateModel> memberBalance = XCCloudService.Business.XCCloud.MemberBusiness.GetMemberBalanceAndExchangeRate(storeId, card.ICCardID);
+                List<MemberBalanceExchangeRateModel> memberBalance = MemberBusiness.GetMemberBalanceAndExchangeRate(storeId, card.ICCardID);
                 if (memberBalance != null && memberBalance.Count > 0)
                 {
                     model.MemberBalances = memberBalance.Select(t => new BalanceModel
                     {
                         BalanceIndex = t.BalanceIndex,
                         BalanceName = t.TypeName,
-                        Quantity = t.Total
+                        Balance = t.Balance.ToString(),
+                        BalanceFree = t.BalanceFree.ToString(),
+                        TotalBalance = t.Total.ToString()
                     }).ToList();
                 }
 

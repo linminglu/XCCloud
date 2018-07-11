@@ -4,6 +4,32 @@
 ----------------------------------------------------------------------------------------------------------------------------------------
 
 ----------------------------------------------------------------------------------------------------------------------------------------
+
+declare @FlwSeedId varchar(29) = '100025420106001' + '20180625' + '5669331'
+declare @FlwIndex int = 1
+declare @MerchId varchar(15) = '100025'
+declare @StoreId varchar(15) = '100025420106001'
+declare @CardIndex varchar(32) = '10002542010600120180521000050000'
+declare @BalanceIndex int = 98307--98306-1´ú±Ò;98307-2»ý·Ö;98308-3²ÊÆ±
+declare @Balance decimal(18,2) = 2000
+declare @ErrMsg varchar(200) = ''
+declare @AddMemberBanlanceResult int = 0
+exec @AddMemberBanlanceResult = AddMemberBanlance @FlwSeedId,@FlwIndex,@MerchId,@StoreId,@CardIndex,@BalanceIndex,@Balance,@ErrMsg output
+print @AddMemberBanlanceResult
+print @ErrMsg
+
+delete Data_Card_Balance where CardIndex = '10002542010600120180521000050000'
+select * from Data_Card_Balance where CardIndex = '10002542010600120180521000050000'
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+exec GetGoodsChargeInfo '100025','100025420106001'
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------------------------------------------
 declare @Result int = 0
 declare @ErrMsg varchar(200)
 exec GetMemberOpenCardInfo '100025','100025420106001',@Result output,@ErrMsg output  

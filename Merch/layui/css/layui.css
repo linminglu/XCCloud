@@ -4492,6 +4492,6 @@ body .layui-util-face .layui-layer-content {
     border-left: 1px solid #eee;
 }
 
-.lay-bit  .layui-form-pane.layui-form-radio{
+.lay-bit .layui-input-inline  .layui-form-radio{
     margin-left: 10px;
 }

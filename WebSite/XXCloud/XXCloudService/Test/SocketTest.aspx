@@ -26,6 +26,26 @@
         });
     }
 
+
+    function common2(url, parasJson) {
+        $.ajax({
+            type: "post",
+            url: url,
+            contentType: "application/json; charset=utf-8",
+            data: { parasJson: parasJson },
+            success: function (data) {
+                //console.log(data);
+                data = JSON.parse(data);
+                console.log(data);
+            },
+            error: function (error) {
+                alert(1);  //这个地方也用到了
+            }
+        });
+    }
+
+
+
 </script>
 
 <script type="text/javascript">
@@ -124,6 +144,19 @@
         common(url, data);
     }
 
+    function do_getProjectInsChange() {
+        var parasObj = {
+            "userToken": "45cec6980a1843daa8af11f4ee31b2e0",
+            "sysId": "0",
+            "versionNo": "0.0.0.1",
+            "barCode": "fewfewfewfewfewfewfewfew",
+            "gameIndex":2
+        };
+        var url = "/xccloud/project?action=projectInsChange";
+        var parasJson = JSON.stringify(parasObj);
+        common2(url, parasJson);
+    }
+
 </script>
 </head>
 <body>
@@ -148,6 +181,9 @@
         <input id="Button20" type="button" value="雷达向服务端发送会员结果回复" onclick="getMemberInfo()" />
     
         <input id="btnSendSignalRNotify" type="button" value="btnSendSignalRNotify" onclick="getSendSignalRNotify()" />
+
+        <input id="btngetProjectInsChange" type="button" value="btngetProjectInsChange" onclick="do_getProjectInsChange()" />
+
     </div>
     </form>
 </body>

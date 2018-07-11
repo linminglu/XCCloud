@@ -5,14 +5,36 @@
     <title>免费赠送规则</title>
     <link rel="stylesheet" href="layui/css/layui.css">
     <link rel="stylesheet" href="layui/css/layui_font.css">
+    <link rel="stylesheet" href="css/myxc.css">
 </head>
 <body>
-<div class="layui-row" style="padding: 15px;">
-    <blockquote class="layui-elem-quote" style="text-align:right;padding-right: 50px;">
-        <button type="button" class="layui-btn">查询</button>
-        <button type="button" class="layui-btn" id="add">新增</button>
-    </blockquote>
-    <table class="layui-hide" id="freeGiveRuleTable" lay-filter="freeGiveRuleTable"></table>
+<div class="layui-row settingPage">
+    <div class="row-box">
+        <div class="layui-col-md12 layui-col-sm12 layui-col-lg12">
+            <blockquote class="layui-elem-quote layui-col-md12 layui-col-sm12 layui-col-lg12">
+                <div class="layui-form layui-form-pane layui-col-md9" id="form1">
+                    <div class="layui-form-item" id="serchMode"></div>
+                </div>
+
+                <div class="layui-col-md2" id="form2Box" style="">
+                    <div class="layui-form layui-form-pane" id="form2" style="">
+                        <div id="tantion" class="layui-form-item">
+                        </div>
+                    </div>
+                </div>
+
+                <button type="button" class="layui-btn layui-btn-normal layui-col-md1" i18n-content="查询模板" id="searchBtn">查询</button>
+            </blockquote>
+        </div>
+
+        <div class="layui-col-md12 layui-col-sm12 layui-col-lg12">
+            <table class="layui-hide" id="freeGiveRuleTable" lay-filter="freeGiveRuleTable"></table>
+            <button type="button" class="layui-btn layui-btn-sm layui-btn-primary" id="upLevel">升级优先级</button>
+            <button type="button" class="layui-btn layui-btn-sm layui-btn-primary" id="downLevel">降级优先级</button>
+            <button type="button" class="layui-btn layui-btn-sm layui-btn-normal" id="add"><i class="layui-icon">&#xe654;</i>新增</button>
+            <button type="button" class="layui-btn layui-btn-sm layui-btn-danger " id="delBtn">删除</button>
+        </div>
+    </div>
 </div>
 
 <!--新增规则-->
@@ -133,6 +155,7 @@
 <script src="js/jquery-1.8.3-min.js"></script>
 <script src="layui/layui.js"></script>
 <script src="js/storeSystem.js"></script>
+<script src="js/searchModel.js"></script>
 <script>
     var xc=xcActionSystem.prototype;
     var token=xc.getStorage('token');
@@ -140,8 +163,8 @@
         'url':'/XCCloud/FreeGiveRule?action=QueryFreeGiveRule',
         'elem':'#freeGiveRuleTable',
         'cols':[
-            {field:'ID', title:'ID', align: 'center', sort: true}
-            // ,{field:'MerchID',title: '商户编号', align: 'center'} //width 支持：数字、百分比和不填写。
+            {type:'checkbox'}
+            ,{field:'ID', title:'ID', align: 'center', sort: true}
             ,{field:'RuleName', title: '规则名称', align: 'center'}
             ,{field:'StartTime', title: '开始时间', align: 'center'}
             ,{field:'EndTime', title: '结束时间', align: 'center'}
@@ -153,7 +176,6 @@
             ,{field:'SpanTypeStr', title: '间隔类型', align: 'center'}
             ,{field:'GetTimes', title: '领取次数', align: 'center'}
             ,{field:'RuleLevel', title: '优先级别', align: 'center'}
-            ,{fixed: 'right', title: '操作', width:260, align:'center', toolbar: '#barDemo'}
         ]
     };
     xc.getInitData(parm);
@@ -162,8 +184,23 @@
     let FreeBalanceIndex='';let AllowGuest=0;
     let IDReadType='';let PeriodType='';let SpanType='';
     let memArr=[];
+    let checkedArr=[];
     layui.use(['table','form','layer','laydate'],function () {
         let table=layui.table;let form=layui.form;let layer=layui.layer;let laydate=layui.laydate;
+
+        seachModel({
+            'elem1': 'tantion',
+            'elem2': 'serchMode',
+            'pagename': 'freeGiveRuleSearch',
+            'processname': 'freeGiveRuleSearch',
+            'token': token,
+            'form': form,
+            'layer': layer,
+            'searchBtn': 'searchBtn',
+            'xc':xc,
+            'parm':parm,
+            'laydate':laydate
+        })
         form.on('switch(State)',function (data) {
             if(data.elem.checked){
                 State=1
@@ -204,9 +241,6 @@
                 AllowGuest=0;
             }
         });
-        // form.on('select(FreeBalanceIndex)',function (data) {
-        //     FreeBalanceIndex=data.value=='-请选择-'?'':data.value;
-        // });
         form.on('select(IDReadType)',function (data) {
             IDReadType=data.value=='-请选择-'?'':data.value;
         });
@@ -217,7 +251,7 @@
             SpanType=data.value=='-请选择-'?'':data.value;
         });
 
-        form.on('checkbox(ml)',function () {
+        form.on('checkbox(ml)',function (data) {
             if(data.elem.checked==true){
                 memArr.push(data.elem.value)
             }else {
@@ -285,12 +319,14 @@
                 }
             })
         });
-        table.on('tool(freeGiveRuleTable)',function (obj) {
-            let data=obj.data;
-            let layevent=obj.event;
-            if(layevent==='up'){ //升级
+        //升级
+        $('#upLevel').click(function () {
+            let checkStatus = table.checkStatus('freeGiveRuleTable'); //test即为基础参数id对应的值
+            let len = checkStatus.data.length;
+            if (len == 1) {
+
                 layer.confirm('确定升级该免费规则吗', function(index){
-                    let _obj={'id':data.ID,'updateState':'-1','userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+                    let _obj={'id':checkStatus.data[0].ID,'updateState':'-1','userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
                     let parseJson = JSON.stringify(_obj);
                     $.ajax({
                         type:'post',
@@ -309,9 +345,19 @@
                         }
                     })
                 })
-            }else if(layevent==='down'){ //降级
-                layer.confirm('确定降级该优免费规则吗', function(index){
-                    let _obj={'id':data.ID,'updateState':'1','userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
+
+            } else {
+                layer.msg('请且勾选一条数据！')
+            }
+        })
+        //降级
+        $('#downLevel').click(function () {
+            let checkStatus = table.checkStatus('freeGiveRuleTable'); //test即为基础参数id对应的值
+            let len = checkStatus.data.length;
+            if (len == 1) {
+
+                layer.confirm('确定降级该免费规则吗', function(index){
+                    let _obj={'id':checkStatus.data[0].ID,'updateState':'1','userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
                     let parseJson = JSON.stringify(_obj);
                     $.ajax({
                         type:'post',
@@ -321,7 +367,7 @@
                         success: function (data) {
                             data = JSON.parse(data);
                             if (data.result_code == 1) {
-                                layer.msg('降级成功',{time:1500},function () {
+                                layer.msg('升级成功',{time:1500},function () {
                                     location.reload();
                                 });
                             } else {
@@ -329,28 +375,44 @@
                             }
                         }
                     })
-                });
-            }else if(layevent==='del'){ //降级
-                layer.confirm('确定删除该免费规则吗', function(index){
-                    let _obj={'id':data.ID,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
-                    let parseJson = JSON.stringify(_obj);
+                })
+
+            } else {
+                layer.msg('请且勾选一条数据！')
+            }
+        })
+        //删除
+        $('#delBtn').click(function () {
+            let checkStatus = table.checkStatus('freeGiveRuleTable'); //test即为基础参数id对应的值
+            let len = checkStatus.data.length;
+            if (len >0) {
+                let idArr=[];
+                for(let i in checkStatus.data){
+                    idArr.push(checkStatus.data[i].ID)
+                }
+                layer.confirm('真的删除行么', function (index) {
+                    let _obj = {'id':idArr, 'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'};
+                    let url = '/XCCloud/GameInfo?action=DelGameInfo';
+                    let parasJson = JSON.stringify(_obj);
                     $.ajax({
-                        type:'post',
-                        url:'/XCCloud/FreeGiveRule?action=DelFreeGiveRule',
+                        type: "post",
+                        url: url,
                         contentType: "application/json; charset=utf-8",
-                        data:{parasJson: parseJson},
+                        data: {parasJson: parasJson},
                         success: function (data) {
                             data = JSON.parse(data);
                             if (data.result_code == 1) {
-                                layer.msg('删除成功',{time:1500},function () {
-                                   obj.del();
-                                });
+                                location.reload()
                             } else {
-                                layer.msg(data.result_msg||data.return_msg);
+                                layer.msg(data.result_msg||data.retrun_msg)
                             }
                         }
                     })
+
                 });
+
+            } else {
+                layer.msg('请且勾选一条数据！')
             }
         })
     })

@@ -160,7 +160,6 @@ namespace XCCloudWebBar.Model.XCCloud
         public virtual DbSet<Data_Card_Balance> Data_Card_Balance { get; set; }
         public virtual DbSet<Data_Card_Balance_Free> Data_Card_Balance_Free { get; set; }
         public virtual DbSet<Data_Food_Detial> Data_Food_Detial { get; set; }
-        public virtual DbSet<Flw_Project_TicketUse> Flw_Project_TicketUse { get; set; }
         public virtual DbSet<Base_MemberInfo> Base_MemberInfo { get; set; }
         public virtual DbSet<Data_GoodsStock> Data_GoodsStock { get; set; }
         public virtual DbSet<Data_Workstation> Data_Workstation { get; set; }
@@ -171,12 +170,10 @@ namespace XCCloudWebBar.Model.XCCloud
         public virtual DbSet<Data_ProjectTicket_Bind> Data_ProjectTicket_Bind { get; set; }
         public virtual DbSet<Flw_ProjectTicket_Bind> Flw_ProjectTicket_Bind { get; set; }
         public virtual DbSet<Flw_Project_TicketInfo> Flw_Project_TicketInfo { get; set; }
-        public virtual DbSet<Flw_Project_TicketDeviceLog> Flw_Project_TicketDeviceLog { get; set; }
         public virtual DbSet<Data_MemberLevel> Data_MemberLevel { get; set; }
         public virtual DbSet<Flw_ProjectTicket_Entry> Flw_ProjectTicket_Entry { get; set; }
         public virtual DbSet<Flw_Schedule_UserInfo> Flw_Schedule_UserInfo { get; set; }
         public virtual DbSet<Flw_Schedule> Flw_Schedule { get; set; }
-        public virtual DbSet<Flw_Food_SaleDetail> Flw_Food_SaleDetail { get; set; }
         public virtual DbSet<Flw_Food_ExitDetail> Flw_Food_ExitDetail { get; set; }
         public virtual DbSet<Store_CheckDate> Store_CheckDate { get; set; }
         public virtual DbSet<Flw_MemberCard_BalanceCharge> Flw_MemberCard_BalanceCharge { get; set; }
@@ -201,5 +198,8 @@ namespace XCCloudWebBar.Model.XCCloud
         public virtual DbSet<Flw_MemberCard_LevelChange> Flw_MemberCard_LevelChange { get; set; }
         public virtual DbSet<Flw_MemberData> Flw_MemberData { get; set; }
         public virtual DbSet<Flw_Transfer> Flw_Transfer { get; set; }
+        public virtual DbSet<Flw_Project_TicketUse> Flw_Project_TicketUse { get; set; }
+        public virtual DbSet<Flw_Food_SaleDetail> Flw_Food_SaleDetail { get; set; }
+        public virtual DbSet<Flw_Project_TicketDeviceLog> Flw_Project_TicketDeviceLog { get; set; }
     }
 }

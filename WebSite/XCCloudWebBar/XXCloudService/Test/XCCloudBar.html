@@ -685,7 +685,17 @@
             common(url, parasJson);
         }
 
-        
+        function do_getFoodChargeInfo() {
+            var parasObj = {
+                "sysId": "0",
+                "versionNo": "0.0.0.1",
+                "userToken": userToken,
+
+            };
+            var url = "/XCCloud/foods?action=getMemberOpenCardInfo";
+            var parasJson = JSON.stringify(parasObj);
+            common(url, parasJson);
+        }
         
     </script>
         
@@ -729,6 +739,8 @@
         <input id="Button_Food_3" type="button" value="do_ExitFood(退餐)" onclick="do_ExitFood()" />
         &nbsp;&nbsp;&nbsp;&nbsp;
         <input id="Button_Food_6" type="button" value="do_getMemberOpenCardInfo(获取会员级别和开卡套餐)" onclick="do_getMemberOpenCardInfo()" />
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <input id="Button_Food_7" type="button" value="do_getFoodChargeInfo(获取兑换商品信息)" onclick="do_getFoodChargeInfo()" />
     </div>
     <br />
 

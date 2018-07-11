@@ -13,13 +13,20 @@ using XCCloudService.BLL.CommonBLL;
 using XCCloudService.BLL.Container;
 using XCCloudService.BLL.IBLL.XCCloud;
 using XCCloudService.BLL.XCCloud;
+using XCCloudService.Business.Common;
+using XCCloudService.Business.XCGameMana;
+using XCCloudService.CacheService;
 using XCCloudService.Common;
 using XCCloudService.Common.Enum;
 using XCCloudService.Common.Extensions;
 using XCCloudService.DAL;
 using XCCloudService.DBService.BLL;
+using XCCloudService.Model.CustomModel.Common;
 using XCCloudService.Model.CustomModel.XCCloud;
+using XCCloudService.Model.CustomModel.XCGameManager;
+using XCCloudService.Model.Socket.UDP;
 using XCCloudService.Model.XCCloud;
+using XCCloudService.SocketService.UDP.Factory;
 using XXCloudService.Api.XCCloud.Common;
 
 namespace XXCloudService.Api.XCCloud
@@ -549,7 +556,7 @@ namespace XXCloudService.Api.XCCloud
             }
         }
 
-        [Authorize(Roles = "MerchUser", Inherit = true)]
+        [Authorize(Roles = "MerchUser", Inherit = false)]
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object GetProjectDic(Dictionary<string, object> dicParas)
         {
@@ -570,6 +577,32 @@ namespace XXCloudService.Api.XCCloud
                     query = query.Where(w => ((w.StoreID ?? "") == "" || w.StoreID.Equals(storeIds, StringComparison.OrdinalIgnoreCase)));
                 }
 
+                var linq = from a in query
+                           select new
+                           {
+                               ID = a.ID,
+                               ProjectName = a.ProjectName
+                           };
+
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, linq);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCManaUserHelperToken, SysIdAndVersionNo = false)]
+        public object GetProjectDicFromProgram(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                XCManaUserHelperTokenModel userTokenModel = (XCManaUserHelperTokenModel)(dicParas[Constant.XCManaUserHelperToken]);
+                string storeId = userTokenModel.StoreId;
+                string merchId = storeId.Substring(0, 6);
+
+                var query = Data_ProjectInfoService.I.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase));
+                
                 var linq = from a in query
                            select new
                            {
@@ -946,5 +979,283 @@ namespace XXCloudService.Api.XCCloud
         }
 
         #endregion
+
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object projectInsChange(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                string errMsg = string.Empty;
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+
+                string barCode = dicParas.ContainsKey("barCode") ? dicParas["barCode"].ToString() : string.Empty;
+                string gameIndex = dicParas.ContainsKey("gameIndex") ? dicParas["gameIndex"].ToString() : string.Empty;
+
+                if (string.IsNullOrEmpty(barCode))
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "请输入条码编号");
+                }
+
+                if (string.IsNullOrEmpty(gameIndex))
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "请输入游戏索引");
+                }
+
+                StoreCacheModel storeModel = null;
+                StoreBusiness storeBusiness = new StoreBusiness();
+                if (!storeBusiness.IsEffectiveStore(storeId, ref storeModel, out errMsg))
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
+                }
+
+                if (storeModel.StoreDBDeployType == 0)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "不能配置为本地门店");
+                }
+                else if (storeModel.StoreDBDeployType == 1)
+                {
+                    string sn = System.Guid.NewGuid().ToString().Replace("-", "");
+                    UDPSocketCommonQueryAnswerModel answerModel = null;
+                    string radarToken = string.Empty;
+
+                    if (DataFactory.ProjectInsChange(sn,storeId,storeModel.StorePassword,gameIndex,out radarToken,out errMsg))
+                    {
+
+                    }
+                    else
+                    {
+                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
+                    }
+
+                    answerModel = null;
+                    int whileCount = 0;
+                    while (answerModel == null && whileCount <= 25)
+                    {
+                        //获取应答缓存数据
+                        whileCount++;
+                        System.Threading.Thread.Sleep(1000);
+                        answerModel = UDPSocketCommonQueryAnswerBusiness.GetAnswerModel(sn, 1);
+                    }
+
+                    if (answerModel != null)
+                    {
+                        ProjectChangeInsResultRequestModel model = (ProjectChangeInsResultRequestModel)(answerModel.Result);
+                        //移除应答缓存数据
+                        UDPSocketCommonQueryAnswerBusiness.Remove(sn);
+
+                        if (model.Result_Code == "1")
+                        {
+                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.T, "");
+                        }
+                        else
+                        {
+                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, model.Result_Msg);
+                        }
+                    }
+                    else
+                    {
+                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "系统没有响应");
+                    }
+                }
+                else
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.T, "门店设置错误");
+                }
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object dataChange(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                string errMsg = string.Empty;
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+
+                string dataIndex = dicParas.ContainsKey("dataIndex") ? dicParas["dataIndex"].ToString() : string.Empty;
+                string tableName = dicParas.ContainsKey("tableName") ? dicParas["tableName"].ToString() : string.Empty;
+                string action = dicParas.ContainsKey("action") ? dicParas["action"].ToString() : string.Empty;
+
+                if (string.IsNullOrEmpty(dataIndex))
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "请输入数据索引");
+                }
+
+                if (string.IsNullOrEmpty(tableName))
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "请输入表名称");
+                }
+
+                //0 新增 1 修改 2 删除
+                if (string.IsNullOrEmpty(action))
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "请输入操作指令");
+                }
+
+                if (!action.Equals("0") && !action.Equals("1") && !action.Equals("2"))
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "操作指令无效");
+                }
+
+                StoreCacheModel storeModel = null;
+                StoreBusiness storeBusiness = new StoreBusiness();
+                if (!storeBusiness.IsEffectiveStore(storeId, ref storeModel, out errMsg))
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
+                }
+
+                if (storeModel.StoreDBDeployType == 0)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "不能配置为本地门店");
+                }
+                else if (storeModel.StoreDBDeployType == 1)
+                {
+                    string sn = System.Guid.NewGuid().ToString().Replace("-", "");
+                    UDPSocketCommonQueryAnswerModel answerModel = null;
+                    string radarToken = string.Empty;
+           
+                    if (DataFactory.DataChange(sn, storeId, storeModel.StorePassword, dataIndex, tableName, action, out radarToken, out errMsg))
+                    {
+
+                    }
+                    else
+                    {
+                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
+                    }
+
+                    answerModel = null;
+                    int whileCount = 0;
+                    while (answerModel == null && whileCount <= 25)
+                    {
+                        //获取应答缓存数据
+                        whileCount++;
+                        System.Threading.Thread.Sleep(1000);
+                        answerModel = UDPSocketCommonQueryAnswerBusiness.GetAnswerModel(sn, 1);
+                    }
+
+                    if (answerModel != null)
+                    {
+                        DataChangeInsResultRequestModel model = (DataChangeInsResultRequestModel)(answerModel.Result);
+                        //移除应答缓存数据
+                        UDPSocketCommonQueryAnswerBusiness.Remove(sn);
+
+                        if (model.Result_Code == "1")
+                        {
+                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.T, "");
+                        }
+                        else
+                        {
+                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, model.Result_Msg);
+                        }
+                    }
+                    else
+                    {
+                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "系统没有响应");
+                    }
+                }
+                else
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.T, "门店设置错误");
+                }
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+
+        //public static bool CardHeadReset(string sn, string storeId, string storePassword, string mcuId, out string radarToken, out string errMsg)
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object cardHeadReset(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                string errMsg = string.Empty;
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+
+                string mcuId = dicParas.ContainsKey("mcuId") ? dicParas["mcuId"].ToString() : string.Empty;
+
+                if (string.IsNullOrEmpty(mcuId))
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "请输入设备ID");
+                }
+
+                StoreCacheModel storeModel = null;
+                StoreBusiness storeBusiness = new StoreBusiness();
+                if (!storeBusiness.IsEffectiveStore(storeId, ref storeModel, out errMsg))
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
+                }
+
+                if (storeModel.StoreDBDeployType == 0)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "不能配置为本地门店");
+                }
+                else if (storeModel.StoreDBDeployType == 1)
+                {
+                    string sn = System.Guid.NewGuid().ToString().Replace("-", "");
+                    UDPSocketCommonQueryAnswerModel answerModel = null;
+                    string radarToken = string.Empty;
+
+                    if (DataFactory.CardHeadReset(sn, storeId, storeModel.StorePassword, mcuId, out radarToken, out errMsg))
+                    {
+
+                    }
+                    else
+                    {
+                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
+                    }
+
+                    answerModel = null;
+                    int whileCount = 0;
+                    while (answerModel == null && whileCount <= 25)
+                    {
+                        //获取应答缓存数据
+                        whileCount++;
+                        System.Threading.Thread.Sleep(1000);
+                        answerModel = UDPSocketCommonQueryAnswerBusiness.GetAnswerModel(sn, 1);
+                    }
+
+                    if (answerModel != null)
+                    {
+                        CardHeadResetInsResultRequestModel model = (CardHeadResetInsResultRequestModel)(answerModel.Result);
+                        //移除应答缓存数据
+                        UDPSocketCommonQueryAnswerBusiness.Remove(sn);
+
+                        if (model.Result_Code == "1")
+                        {
+                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.T, "");
+                        }
+                        else
+                        {
+                            return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, model.Result_Msg);
+                        }
+                    }
+                    else
+                    {
+                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "系统没有响应");
+                    }
+                }
+                else
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.T, "门店设置错误");
+                }
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
     }
 }

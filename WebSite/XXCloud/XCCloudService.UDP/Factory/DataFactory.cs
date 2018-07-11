@@ -1263,7 +1263,7 @@ namespace XCCloudService.SocketService.UDP.Factory
 
             #endregion
 
-        #region "游戏机游乐项目属性修改请求指令"
+        #region "数据变更同步请求"
 
             public static bool DataChange(string sn, string storeId, string storePassword, string dataIndex,string tableName,string action, out string radarToken, out string errMsg)
             {
@@ -1301,7 +1301,7 @@ namespace XCCloudService.SocketService.UDP.Factory
 
         #endregion
 
-        #region "游戏机游乐项目属性修改请求指令"
+        #region "卡头解绑同步请求"
 
             public static bool CardHeadReset(string sn, string storeId, string storePassword, string mcuId, out string radarToken, out string errMsg)
             {
@@ -1329,7 +1329,7 @@ namespace XCCloudService.SocketService.UDP.Factory
                 //对象序列化为字节数组
                 byte[] dataByteArr = JsonHelper.DataContractJsonSerializerToByteArray(dataModel);
                 //生成发送数据包
-                byte[] requestPackages = CreateResponseProtocolData(TransmiteEnum.卡头解绑同步响应, dataByteArr);
+                byte[] requestPackages = CreateResponseProtocolData(TransmiteEnum.卡头解绑同步请求, dataByteArr);
 
                 //服务端发送数据
                 XCCloudService.SocketService.UDP.Server.Send(ip, port, requestPackages);

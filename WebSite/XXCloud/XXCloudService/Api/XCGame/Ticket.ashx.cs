@@ -8,6 +8,7 @@ using XCCloudService.BLL.Container;
 using XCCloudService.Business.XCGameMana;
 using XCCloudService.CacheService;
 using XCCloudService.Common;
+using XCCloudService.Common.Extensions;
 using XCCloudService.Model.CustomModel.XCGameManager;
 using XCCloudService.Model.XCGame;
 using XCCloudService.SocketService.UDP;
@@ -16,6 +17,7 @@ using XCCloudService.Model.CustomModel.Common;
 using XCCloudService.Business.Common;
 using XCCloudService.Model.Socket.UDP;
 using XXCloudService.Utility;
+using XCCloudService.BLL.XCCloud;
 
 namespace XXCloudService.Api.XCGame
 {
@@ -32,10 +34,16 @@ namespace XXCloudService.Api.XCGame
                 string errMsg = string.Empty;
                 XCManaUserHelperTokenModel userTokenModel = (XCManaUserHelperTokenModel)(dicParas[Constant.XCManaUserHelperToken]);
                 string barCode = dicParas.ContainsKey("barCode") ? dicParas["barCode"].ToString() : string.Empty;
+                var projectId = dicParas.ContainsKey("projectId") ? dicParas["projectId"].Toint() : (int?)null;
 
                 if (string.IsNullOrEmpty(barCode))
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "请输入条码编号");
+                }
+
+                if (projectId.IsNull())
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "请选择门票项目");
                 }
 
                 //验证是否有效门店
@@ -48,66 +56,33 @@ namespace XXCloudService.Api.XCGame
 
                 //if (storeModel.StoreDBDeployType == 0)
                 //{
-                    //验证门票是否有效
-                    XCCloudService.BLL.IBLL.XCGame.IProject_buy_codelistService codeListService = BLLContainer.Resolve<XCCloudService.BLL.IBLL.XCGame.IProject_buy_codelistService>(storeModel.StoreDBName);
-                    var codeListModel = codeListService.GetModels(p => p.Barcode.Equals(barCode)).FirstOrDefault<flw_project_buy_codelist>();
-                    if (codeListModel == null)
-                    {
-                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "门票不存在");
-                    }
+                var flw_Project_TicketInfoService = Flw_Project_TicketInfoService.N;
+                var flw_ProjectTicket_BindService = Flw_ProjectTicket_BindService.N;
+                var flw_ProjectTicket_EntryService = Flw_ProjectTicket_EntryService.I;
 
-                    //验证门票项目是否有效
-                    XCCloudService.BLL.IBLL.XCGame.IProjectService projectService = BLLContainer.Resolve<XCCloudService.BLL.IBLL.XCGame.IProjectService>(storeModel.StoreDBName);
-                    var projectModel = projectService.GetModels(p => p.id == codeListModel.ProjectID).FirstOrDefault<t_project>();
-                    if (projectModel == null)
-                    {
-                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "门票项目不存在");
-                    }
+                //验证门票是否有效
+                if (!(from a in flw_Project_TicketInfoService.GetModels(p => p.Barcode.Equals(barCode, StringComparison.OrdinalIgnoreCase))
+                      join b in flw_ProjectTicket_BindService.GetModels(p => p.ProjectID == projectId) on a.Barcode equals b.ProjectCode
+                      select 1).Any())
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "该门票无效");
+                }
 
-                    //验证购买记录
-                    XCCloudService.BLL.IBLL.XCGame.IProject_buyService projectBuyService = BLLContainer.Resolve<XCCloudService.BLL.IBLL.XCGame.IProject_buyService>(storeModel.StoreDBName);
-                    var projectBuyModel = projectBuyService.GetModels(p => p.ID == codeListModel.BuyID).FirstOrDefault<flw_project_buy>();
-                    if (projectBuyModel == null)
-                    {
-                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "门票购买记录不存在");
-                    }
+                //获取门票规则实体
+                var flw_ProjectTicket_EntryModel = flw_ProjectTicket_EntryService.GetModels(p => p.ProjectCode.Equals(barCode, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
 
-                    string icCardId = projectBuyModel.ICCardID;
-                    string projectName = projectModel.ProjectName;
-                    string stateName = getTicketStuatsName(Convert.ToInt32(codeListModel.State));
-                    string projectTypeName = getConsumptionType(Convert.ToInt32(codeListModel.ProjectType));
-
-                    //消费类型：0 次数 1有效期
-                    if (Convert.ToInt32(codeListModel.ProjectType) == 0)
-                    {
-                        var obj = new
-                        {
-                            id = codeListModel.ID,
-                            projectName = projectName,
-                            state = stateName,
-                            projectType = projectTypeName,
-                            remainCount = codeListModel.RemainCount,
-                            endTime = Convert.ToDateTime(codeListModel.EndTime).ToString("yyyy-MM-dd")
-                        };
-                        return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, obj);
-                    }
-                    else if (Convert.ToInt32(codeListModel.ProjectType) == 1)
-                    {
-                        var obj = new
-                        {
-                            id = codeListModel.ID,
-                            projectName = projectName,
-                            state = stateName,
-                            projectType = projectTypeName,
-                            remainCount = 0,
-                            endTime = Convert.ToDateTime(codeListModel.EndTime).ToString("yyyy-MM-dd")
-                        };
-                        return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, obj);
-                    }
-                    else
-                    {
-                        return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "");
-                    }
+                //获取截止时间
+                var endTime = (DateTime?)null;
+                var effactType = flw_ProjectTicket_EntryModel.EffactType;
+                if (effactType == 0)
+                { }
+                else if (effactType == 1)
+                { }
+                else
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "该门票无效");
+                }
+                return null;
                 //}
                 //else if (storeModel.StoreDBDeployType == 1)
                 //{

@@ -465,6 +465,30 @@ namespace XCCloudService.Common.Enum
         H5 = 2,        
     }
 
+    /// <summary>
+    /// 门票状态
+    /// </summary>
+    public enum TicketState
+    {
+        [Description("未使用")]
+        UnUse = 0,
+
+        [Description("已使用")]
+        Used = 1,
+
+        [Description("被锁定")]
+        Locked = 2,
+
+        [Description("已退票")]
+        Returned = 3,
+
+        [Description("可用")]
+        Valid = 4,
+
+        [Description("不可用")]
+        InValid = 5,
+    }
+
     public enum WorkType
     {
         UserCheck = 0,//用户审核

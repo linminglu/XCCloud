@@ -24,6 +24,49 @@ namespace XXCloudService.Api.XCCloud
     {
 
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object getFoodChargeInfo(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                XCCloudUserTokenModel userTokenModel = (XCCloudUserTokenModel)(dicParas[Constant.XCCloudUserTokenModel]);
+                TokenDataModel userTokenDataModel = (TokenDataModel)(userTokenModel.DataModel);
+
+                string sql = "GetGoodsChargeInfo";
+                SqlParameter[] parameters = new SqlParameter[1];
+                parameters[0] = new SqlParameter("@MerchId", userTokenDataModel.MerchID);
+                parameters[1] = new SqlParameter("@StoreId", userTokenDataModel.StoreID);
+                System.Data.DataSet ds = XCCloudBLL.GetStoredProcedureSentence(sql, parameters);
+                if (ds != null && ds.Tables.Count == 1 && ds.Tables[0].Rows.Count > 0)
+                {
+                    List<object> listObject = new List<object>();
+                    for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                    {
+                        var obj = new
+                        {
+                            id = ds.Tables[0].Rows[0]["Id"].ToString(),
+                            barcode = ds.Tables[0].Rows[0]["Barcode"].ToString(),
+                            goodName = ds.Tables[0].Rows[0]["GoodName"].ToString(),
+                            price = Convert.ToDecimal(ds.Tables[0].Rows[0]["price"]).ToString("0.00"),
+                            allowCoin = Convert.ToDecimal(ds.Tables[0].Rows[0]["AllowCoin"]).ToString("0.00"),
+                            allowPoint = Convert.ToDecimal(ds.Tables[0].Rows[0]["AllowPoint"]).ToString("0.00"),
+                            allowLottery = Convert.ToDecimal(ds.Tables[0].Rows[0]["AllowLottery"]).ToString("0.00")
+                        };
+                        listObject.Add(obj);
+                    }
+                    return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, listObject);
+                }
+                else
+                {
+                    return ResponseModelFactory.CreateAnonymousFailModel(isSignKeyReturn, "数据不存在");
+                }
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object getFoodType(Dictionary<string, object> dicParas)
         {
             try

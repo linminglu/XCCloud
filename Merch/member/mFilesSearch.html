@@ -6,6 +6,15 @@
     <link rel="stylesheet" href="../layui/css/layui.css">
     <link rel="stylesheet" href="../css/myxc.css">
 </head>
+<style>
+    .a_line{
+        display: inline-block;width: 100%;height: 100%;line-height: 100%;
+    }
+    .a_line:hover{
+        text-decoration: underline;!important;
+        color: red;
+    }
+</style>
 <body>
 <div class="layui-row reportPage">
     <div class="row-box">
@@ -30,6 +39,127 @@
         </div>
     </div>
 </div>
+
+<!--//挖掘会员卡详细信息-->
+<div id="openModel" style="display: none">
+    <form action="" id="memberInfo" lay-filter="memberInfo">
+        <div class="layui-tab">
+            <ul class="layui-tab-title">
+                <li class="layui-this">会员信息</li>
+                <li>销售记录</li>
+                <li>游玩记录</li>
+                <li>兑换记录</li>
+                <li>门票信息</li>
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-tab-item layui-show">
+                    <div class="layui-card">
+                        <div class="layui-card-body">
+                            <div class="layui-form-item">
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">会员姓名</label>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="userName" class="layui-input" readonly>
+                                    </div>
+                                </div>
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">生日</label>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="birthday" class="layui-input" readonly>
+                                    </div>
+                                </div>
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">性别</label>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="gender" class="layui-input" readonly>
+                                    </div>
+                                </div>
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">手机</label>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="phone" class="layui-input" readonly>
+                                    </div>
+                                </div>
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">证件号码</label>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="IDCard" class="layui-input" readonly>
+                                    </div>
+                                </div>
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">微信</label>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="weChart" class="layui-input" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-card">
+                        <div class="layui-card-body">
+                            <div class="layui-form-item">
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">允许投退币</label>
+                                    <div class="layui-input-inline">
+                                        <input type="radio" name="allowExit" value="1" title="允许">
+                                        <input type="radio" name="allowExit" value="0" title="禁止" checked>
+                                    </div>
+                                </div>
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">允许兑币</label>
+                                    <div class="layui-input-inline">
+                                        <input type="radio" name="exchangeCoin" value="1" title="允许">
+                                        <input type="radio" name="exchangeCoin" value="0" title="禁止" checked>
+                                    </div>
+                                </div>
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">允许购买实物币</label>
+                                    <div class="layui-input-inline">
+                                        <input type="radio" name="buyCoin" value="1" title="允许">
+                                        <input type="radio" name="buyCoin" value="0" title="禁止" checked>
+                                    </div>
+                                </div>
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">允许手工存币</label>
+                                    <div class="layui-input-inline">
+                                        <input type="radio" name="saveByHand" value="1" title="允许">
+                                        <input type="radio" name="saveByHand" value="0" title="禁止" checked>
+                                    </div>
+                                </div>
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">允许手工送币</label>
+                                    <div class="layui-input-inline">
+                                        <input type="radio" name="sendByHand" value="1" title="允许">
+                                        <input type="radio" name="sendByHand" value="0" title="禁止" checked>
+                                    </div>
+                                </div>
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">卡状态</label>
+                                    <div class="layui-input-inline">
+                                        <input type="radio" name="cardStatus" value="1" title="允许">
+                                        <input type="radio" name="cardStatus" value="0" title="禁止" checked>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-card">
+                        <div class="layui-card-body">
+                        </div>
+                    </div>
+                    <div class="layui-card">
+                        <div class="layui-card-body">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-tab-item">内容2</div>
+                <div class="layui-tab-item">内容3</div>
+                <div class="layui-tab-item">内容4</div>
+                <div class="layui-tab-item">内容5</div>
+            </div>
+        </div>
+    </form>
+</div>
 </body>
 <script src="../js/jquery-1.8.3-min.js"></script>
 <script src="../layui/layui.js"></script>
@@ -45,7 +175,8 @@
         'url': '/XCCloud/MemberManage?action=QueryMemberInfo',
         'elem': '#mFileSearchTable',
         'cols': [
-            {field: 'ICCardID', title: '会员卡号', align: 'center', sort: true,templet:'#_ICCard'}
+            {field: 'ICCardID', title: '会员卡号', align: 'center', sort: true,templet:function (d) {
+                    return '<a href="javascript:void(0);" class="a_line">'+d.ICCardID+'</a>'  }}
             , {field: 'CardName', title: '会员姓名', align: 'center'}
             , {field: 'MemberLevelName', title: '会员级别', align: 'center'}
             , {field: 'CardType', title: '卡类别', align: 'center',templet:'#_cardType'}
@@ -53,23 +184,13 @@
             , {field: 'UpdateTime', title: '余额最后跟新时间', align: 'center'}
             , {field: 'EndDate', title: '过期日期', align: 'center'}
             , {field: 'CardSex', title: '性别', align: 'center',templet:function (d) {
-                    if(d.CardSex==0){
-                        return '男'
-                    }else {
-                        return 'nv'
-                    }
-                }}
+                    if(d.CardSex==0){ return '男' }else {  return '女'  }  }}
             , {field: 'Mobile', title: '手机号码', align: 'center'}
             , {field: 'IDCard', title: '身份证', align: 'center'}
             , {field: 'CreateTime', title: '入会日期', align: 'center'}
             , {field: 'StoreName', title: '开卡门店', align: 'center'}
             , {field: 'CardStatus', title: '状态', align: 'center', templet: function (d) {
-                    if(d.CardStatus==1){
-                        return '正常'
-                    }else {
-                        return '禁用'
-                    }
-                }}
+                    if(d.CardStatus==1){   return '正常' }else { return '禁用'  } }}
            ]
     };
     //100016360103001
@@ -90,11 +211,36 @@
             'searchBtn': 'searchBtn',
             'xc':xc,
             'parm':parm,
+            'laydate':laydate,
             'active':''
+        });
+        //根据会员卡号来查询会员详细信息
+        $('.a_line').on('click',function () {
+
+            let _cardId=$(this).text();
+            let obj={icCardId:_cardId,userToken:token,sysId:'0',versionNo:'0.01'};
+            let parseJson = JSON.stringify(obj);
+            $.ajax({
+                type:'post',
+                url:'/XCCloud/Member?action=getMenberCardInfoByICCardId',
+                contentType: "application/json; charset=utf-8",
+                data:{parasJson: parseJson},
+                success: function (data) {
+                    data = JSON.parse(data);
+                    console.log(data);
+                    if (data.result_code == 1) {
+
+                    } else {
+                        layer.msg(data.result_msg||data.return_msg);
+                    }
+                }
+            })
         })
+
+        //查询押金明细
+
+        //查询卡类别明细
+
     })
 </script>
-<script type="text/html" id="_ICCard"></script>
-<script type="text/html" id="assigned"></script>
-<script type="text/html" id="_deposit"></script>
 </html>

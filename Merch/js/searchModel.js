@@ -123,6 +123,24 @@ var seachModel = function (options) {
                                 '</div>' +
                                 '</div>'
 
+                        }else if (d[i].type == 'datetime') {
+                            _domStr2 += ' <div class="layui-inline ' + d[i].field + 'sh">' +
+                                '<label class="layui-form-label">' + d[i].title + '</label>' +
+                                '<div class="layui-input-inline" style="width: 75px;margin-right: 0">' +
+                                '<select id="' + d[i].field + 'cond">' + setOption(d[i].condition) + '</select>' +
+                                '</div>'+
+                                '<div class="layui-input-inline layui-hide" style="width: 100px">' +
+                                '<input type="text" id="' + d[i].field + 'sh1" class="layui-input">' +
+                                '</div>' +
+                                '<div class="layui-form-mid  ' + d[i].field + 'mid">至</div>' +
+                                '<div class="layui-input-inline layui-hide" style="width: 100px">' +
+                                '<input type="text" id="' + d[i].field + 'sh2" class="layui-input">' +
+                                '</div>'+
+                                '<div class="layui-input-inline layui-hide" style="width: 115px">' +
+                                '<input type="text" id="' + d[i].field + 'sh11" class="layui-input">' +
+                                '</div>' +
+                                '</div>'
+
                         }
 
                     }
@@ -192,7 +210,7 @@ var seachModel = function (options) {
                 }
 
             } else {
-                _this.layer.msg(data.result_msg || data.return_msg);
+                layer.msg(data.result_msg || data.return_msg);
             }
         }
     });
@@ -227,6 +245,20 @@ var seachModel = function (options) {
                 ,type: 'time'
             })
         }
+        if( d[i].type == 'datetime') {
+            options.laydate.render({
+                elem: '#'+d[i].field+'sh1'
+                ,type: 'datetime'
+            })
+            options.laydate.render({
+                elem: '#'+d[i].field+'sh2'
+                ,type: 'datetime'
+            })
+            options.laydate.render({
+                elem: '#'+d[i].field+'sh11'
+                ,type: 'datetime'
+            })
+        }
     }
     form.on('checkbox(checkList)', function (data) {
         let _val = data.value;
@@ -234,6 +266,7 @@ var seachModel = function (options) {
             for (let i in d) {
                 if (d[i].id == _val) {
                     d[i].issearch = 1;
+                    console.log( container2.getElementsByClassName(d[i].field + 'sh')[0])
                     container2.getElementsByClassName(d[i].field + 'sh')[0].classList.remove('layui-hide');
                     if (d[i].type == 'string') {
                         conditions.push({'id': d[i].tempId, 'condition':'6','field': d[i].field, 'values': ''});

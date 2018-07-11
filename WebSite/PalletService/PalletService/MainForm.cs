@@ -662,7 +662,30 @@ namespace PalletService
             string icCardId = string.Empty;
             string errMsg = string.Empty;
             string repeatCode = string.Empty;
-            ICCardUtility.GetICCardID("778852013145", out icCardId,out repeatCode, out errMsg);
+            bool b = ICCardUtility.GetICCardID("778852013145", out icCardId, out repeatCode, out errMsg);
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            string icCardId = string.Empty;
+            string errMsg = string.Empty;
+            string repeatCode = string.Empty;
+            bool b = ICCardUtility.GetNewICCard("778852013145",out icCardId,out repeatCode,out errMsg);
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            string errMsg = string.Empty;
+            bool b = ICCardUtility.RecoveryICCard("778852013145", out errMsg);
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            string icCardId = string.Empty;
+            string errMsg = string.Empty;
+            string repeatCode = string.Empty;
+            string repeatCode1 = new System.Random().Next(000, 999).ToString();
+            ICCardUtility.CreateICCard(repeatCode1, "778852013145", out errMsg, true);
         }
     }
 }

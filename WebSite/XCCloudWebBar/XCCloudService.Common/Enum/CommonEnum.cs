@@ -1402,4 +1402,25 @@ namespace XCCloudWebBar.Common.Enum
         [Description("手工补币")]
         手工补币 = 17
     }
+
+    /// <summary>
+    /// 操作渠道
+    /// </summary>
+    public enum ProjectTicketPayment
+    {
+        [Description("刷卡")]
+        刷卡 = 0,
+        [Description("条码验票")]
+        条码验票 = 1,
+        [Description("刷脸")]
+        刷脸 = 2,
+        [Description("线上")]
+        线上 = 3,
+        [Description("人工清场")]
+        人工清场 = 4,
+        [Description("现金")]
+        现金 = 5,
+        [Description("卡内余额")]
+        卡内余额 = 6
+    }
 }

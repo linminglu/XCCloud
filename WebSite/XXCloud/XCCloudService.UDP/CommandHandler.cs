@@ -595,7 +595,7 @@ namespace XCCloudService.SocketService.UDP
             string errMsg = string.Empty;
 
             //获取雷达通知请求数据模式
-            ProjectChangeInsRequestModel requestDataModel = JsonHelper.DataContractJsonDeserializer<ProjectChangeInsRequestModel>(requestDataJson);
+            ProjectChangeInsResultRequestModel requestDataModel = JsonHelper.DataContractJsonDeserializer<ProjectChangeInsResultRequestModel>(requestDataJson);
             UDPSocketCommonQueryAnswerModel asnwerModel = UDPSocketCommonQueryAnswerBusiness.GetAnswerModel(requestDataModel.SN);
 
             //验证MD5
@@ -637,7 +637,7 @@ namespace XCCloudService.SocketService.UDP
             string errMsg = string.Empty;
 
             //获取雷达通知请求数据模式
-            CardHeadResetInsRequestModel requestDataModel = JsonHelper.DataContractJsonDeserializer<CardHeadResetInsRequestModel>(requestDataJson);
+            CardHeadResetInsResultRequestModel requestDataModel = JsonHelper.DataContractJsonDeserializer<CardHeadResetInsResultRequestModel>(requestDataJson);
             UDPSocketCommonQueryAnswerModel asnwerModel = UDPSocketCommonQueryAnswerBusiness.GetAnswerModel(requestDataModel.SN);
 
             //验证MD5

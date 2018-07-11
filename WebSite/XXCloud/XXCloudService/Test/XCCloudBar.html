@@ -58,8 +58,8 @@
 
         function do_userlogin() {
             var parasObj = {
-                "sysId": "0", "versionNo": "0.0.0.1", "storeId": $("#txtStoreId").val(), "loginName": "lijunjie", "password": "123456",
-                "workStation": "lijunjie", "dogId": "22222222"
+                "sysId": "0", "versionNo": "0.0.0.1", "storeId": $("#txtStoreId").val(), "loginName": "lijunjie100016", "password": "123456",
+                "workStation": "lijunjie100016", "dogId": "22222222"
             };
             var url = "/XCCloud/userinfo?action=barLogin";
             var parasJson = JSON.stringify(parasObj);
@@ -659,6 +659,46 @@
             var parasJson = JSON.stringify(parasObj);
             common(url, parasJson);
         }
+
+        function do_getProjectInsChange() {
+            var parasObj = {
+                "userToken": userToken,
+                "sysId": "0",
+                "versionNo": "0.0.0.1",
+                "barCode": "fewfewfewfewfewfewfewfew",
+                "gameIndex": 2
+            };
+            var url = "/xccloud/project?action=projectInsChange";
+            var parasJson = JSON.stringify(parasObj);
+            common(url, parasJson);
+        }
+
+        function do_dataChange() {
+            var parasObj = {
+                "userToken": userToken,
+                "sysId": "0",
+                "versionNo": "0.0.0.1",
+                "dataIndex": "1",
+                "tableName": "Base_DeviceInfo",
+                "action":"0"
+            };
+            var url = "/xccloud/project?action=dataChange";
+            var parasJson = JSON.stringify(parasObj);
+            common(url, parasJson);
+        }
+
+
+        function do_cardHeadReset() {
+            var parasObj = {
+                "userToken": userToken,
+                "sysId": "0",
+                "versionNo": "0.0.0.1",
+                "mcuId": "20180528800001"
+            };
+            var url = "/xccloud/project?action=cardHeadReset";
+            var parasJson = JSON.stringify(parasObj);
+            common(url, parasJson);
+        }
         
     </script>
         
@@ -819,6 +859,8 @@
 
 
    <br />
-
+    <input id="WorkStation_do_getProjectInsChange" type="button" value="do_getProjectInsChange(项目指令改变)" onclick="do_getProjectInsChange()" />
+    <input id="WorkStation_do_dataChange" type="button" value="do_dataChange(数据改变)" onclick="do_dataChange()" />
+    <input id="WorkStation_do_cardHeadReset" type="button" value="do_cardHeadReset(卡头重置)" onclick="do_cardHeadReset()" />
 </body>
 </html>

@@ -91,6 +91,16 @@
         .otherAddon{width: 7em;}
         .padding_right{padding-right:0!important;}
         .padding_left{padding-left:0!important;}
+        .dropChoosesty li{padding: 0 15px;font-size: 1.3em;line-height: 2.5em;}
+        .dropChoosesty li span{margin-right: 8px;position: relative;top: 4px;}
+        .dropChoosesty li:nth-child(1) span{color: #349ffd;font-size:2em;}
+        .dropChoosesty li:nth-child(2) span{color: #00ffff;font-size:1.4em;}
+        .dropChoosesty li:nth-child(3) span{color: #5b6270;font-size:1.1em;}
+        .cardChoosesty li{padding: 0 15px;line-height: 2.5em;}
+        .cardChoosesty li em{font-size: 1em;color:#666;}
+        .cardChoosesty li span{margin-right: 8px;position: relative;top: 4px;}
+        .cardChoosesty li:nth-child(1) span{color: #349ffd;font-size:2em;}
+        .cardChoosesty li:nth-child(2) span{color: #00ffff;font-size:1.1em;}
     </style>
 </head>
 <body>
@@ -738,7 +748,51 @@
                 </li>
                 <li class="menuli" tabindex="1">
                     <span class="title"><i class="icon iconfont icon-icon"></i>会员过户操作</span>
-                    <div class="content"><span class="close">x</span></div>
+                    <div class="content">
+                        <span class="close">x</span>
+                        <div class="menu-main container-fluid">
+                            <div class="row menu-marginTop">
+                                <div class="col-lg-4 col-md-4">
+                                    <div class="input-group col-lg-12 col-md-12 tab-style">
+                                        <span class="input-group-addon addonWidth">转出卡卡号：</span>
+                                        <input  class="form-control" v-model="transferData.fromICCardId"/>
+                                        <div class="input-group-btn">
+                                            <button type="button" class="btn btn-default readCard" :disabled="loading" @click="fromICCardIdReadCard">读取</button>
+                                        </div>
+                                    </div>
+                                    <div class="btn-group dropup col-lg-12 col-md-12">
+                                        <button type="button" class="btn btn-default">转出卡卡号：</button>
+                                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"  aria-expanded="false">
+                                            <span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu cardChoosesty">
+                                            <li @click="dropChoose('0')"><span class="iconfont icon-icqiaduqiaqi"></span><em>读卡器</em></li>
+                                            <li @click="dropChoose('2')"><span class="iconfont icon-3"></span><em>手动输入</em></li>
+                                        </ul>
+                                        <input  class="form-control" placeholder="请输入会员姓名" v-model="inquireCard.keyInput"/>
+                                        <button type="button" class="btn btn-default">{{inquireCard.dropChooseTxt2}}</button>
+                                    </div> 
+                                    <div class="input-group col-lg-12 col-md-12 tab-style">
+                                        <span class="input-group-addon addonWidth">转出卡密码：</span>
+                                        <input type="password" class="form-control" v-model="transferData.pwd"/>
+                                    </div>
+                                    <div class="input-group col-lg-12 col-md-12 tab-style">
+                                        <span class="input-group-addon addonWidth">接收卡卡号：</span>
+                                        <input  class="form-control" v-model="transferData.toICCardId"/>
+                                        <div class="input-group-btn">
+                                            <button type="button" class="btn btn-default readCard" :disabled="loading" @click="toICCardIdReadCard">读取</button>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-9 col-md-9 tab-style">
+                                        
+                                    </div>
+                                    <div class="col-lg-3 col-md-3 tab-style">
+                                        <button type="button" class="btn btn-default width100 readCard" :disabled="loading" @click="memberTransfer">转换</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </li>
                 <li class="menuli" tabindex="1">
                     <span class="title"><i class="icon iconfont icon-jiaobanguanli"></i>交班总结</span>
@@ -760,7 +814,7 @@
                 <span class="caret"></span>
             </button>
             <ul class="dropdown-menu dropChoosesty">
-                <li @click="dropChoose('0')"><span class="iconfont icon-duqiaqi"></span>读卡器</li>
+                <li @click="dropChoose('0')"><span class="iconfont icon-icqiaduqiaqi"></span>读卡器</li>
                 <li @click="dropChoose('1')"><span class="iconfont icon-shenfenzhengrenzheng"></span>身份证</li>
                 <li @click="dropChoose('2')"><span class="iconfont icon-3"></span>手动输入</li>
             </ul>
@@ -787,6 +841,7 @@
     var vm = new Vue({
         el: '#app',
         data:{
+            loading:false,
             userToken:'',
             refundData:[{
                 balanceType:"代币",
@@ -841,23 +896,109 @@
                 orderPayData:[],
                 goodsData:[]
             },
+            transferData:{
+                fromICCardId:"",
+                pwd:"",
+                toICCardId:"",
+            },
             cardList:[],
             radioValue:"",
             icCardId:"0",
-            msg:""
+            msg:"",
         },
         mounted: function () {
             this.Initialize()
         },
         watch: {
-
+            
         },
         methods: {
             Initialize:function () {
                 var that =this;
-                var userToken = getStorage("userToken");      	//获取userToken
-                that.userToken = userToken;
+                var userData = getStorage("userData");      	//获取userToken
+                that.userToken = userData.userToken;
+                console.log(that.userToken)
             },
+            //			websocket配置函数
+            WebSocketTest:function() {
+                var that = this;
+				if ("WebSocket" in window)
+				{
+					// 打开一个 websocket
+					ws.onopen = function() {
+						console.log("连接成功");
+						var msgType0 =JSON.stringify({"msgType":"0","sObj":{"userToken": that.userToken}});
+						function send(data)
+						{
+							console.log("Send:"+data);
+							ws.send(data);
+						}
+						send(msgType0);
+					};
+					ws.onmessage = function (evt)
+					{
+						console.log("接收成功");
+						var receivedMsg = JSON.parse(evt.data);
+						console.log(receivedMsg);
+						
+						if(receivedMsg.result_code == 1){
+						    switch (receivedMsg.answerMsgType){
+								case 1:                                              
+								    break;
+								case "2":
+								    break;
+                                case "4":
+                                    if(that.msgReadCard === "0"){
+                                        that.outCoinData.icCardId = receivedMsg.dataObj.icCardId;
+                                        that.getBalanceTypeByICCardId()
+                                    }else if(that.msgReadCard === "1"){
+
+                                    }else if(that.msgReadCard === "2"){
+                                        that.transferData.fromICCardId = receivedMsg.dataObj.icCardId;
+                                    }else if(that.msgReadCard === "3"){
+                                        that.transferData.toICCardId = receivedMsg.dataObj.icCardId;
+                                    }
+                                    break;
+                                case "5":
+									that.msg = receivedMsg.answerMsg;
+									$('#myModal').modal('show');
+                                    break;
+								case "11":
+								    if(that.msgEleven === "0"){
+                                        that.dataObj =receivedMsg.dataObj;
+                                        $('#checkoutModal').modal('show');
+                                        that.inputCashFocus = true;
+                                        that.registerCheckOut = true;
+                                        that.shopCheckOut = false;
+                                        that.cardCheckOut = false;
+                                        that.registerFnc();
+									}else if(that.msgEleven === "1"){
+                                        that.dataObj =receivedMsg.dataObj;
+                                        that.supplementCardFnc();
+									}
+                                    that.msgEleven = "";
+                                	break;
+                                default:
+								    break;
+							}
+						}else if(receivedMsg.result_code == 0) {
+							that.msg = receivedMsg.answerMsg;
+                    		$('#myModal').modal('show');
+						}
+					};
+					ws.onclose = function()
+					{
+						// 关闭 websocket
+						// alert("连接已关闭...");
+                        // window.location.href='login.html';
+					};
+				}
+				else
+				{
+					// 浏览器不支持 WebSocket
+					alert("您的浏览器不支持 WebSocket!");
+				}
+			},
 //			按手机号查询会员信息
             getMember:function (type) {getMember
 			    var that = this;
@@ -904,18 +1045,20 @@
 //			选择读卡方式
             dropChoose:function(index){
                 var that = this;
+                
 				switch (index){
 					case "0":
-                        that.dropChooseTxt1 = "读卡器";
-                        that.dropChooseTxt2 = "读卡";
+                        console.log(index)
+                        that.inquireCard.dropChooseTxt1 = "读卡器";
+                        that.inquireCard.dropChooseTxt2 = "读卡";
 					    break;
                     case "1":
-                        that.dropChooseTxt1 = "身份证";
-                        that.dropChooseTxt2 = "读取";
+                        that.inquireCard.dropChooseTxt1 = "身份证";
+                        that.inquireCard.dropChooseTxt2 = "读取";
                         break;
                     case "2":
-                        that.dropChooseTxt1 = "输入";
-                        that.dropChooseTxt2 = "查询";
+                        that.inquireCard.dropChooseTxt1 = "输入";
+                        that.inquireCard.dropChooseTxt2 = "查询";
                         break;
 				}
 			},
@@ -935,6 +1078,96 @@
                 that.radioValue = "";
                 that.getMenberCardInfo()
 			},
+//          按会员卡查询会员及卡信息
+            getMenberCardInfo:function(){
+                var that = this;
+                var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,icCardId:that.icCardId};
+                console.log(obj);
+                axios.post('/XCCloud/Member?action=getMenberCardInfoByICCardId', obj).then(function (res) {
+                    console.log(res.data);
+                    that.msgPrompt(res.data);
+                    if (res.data.result_code === '1') {
+                        that.memberInfo = res.data.result_data.MemberInfo;
+                        that.balanceData = res.data.result_data.MemberBalances;
+                        that.memberInput.LockList = res.data.result_data.LockList;
+                        that.memberInput.ICCardId = res.data.result_data.ICCardId;
+                        that.memberInput.EndDate = res.data.result_data.EndDate;
+                        that.memberInput.Deposit = res.data.result_data.Deposit+"元";
+                        that.memberInput.LevelName = res.data.result_data.LevelName;
+                        that.memberInput.CardAvatar = res.data.result_data.CardAvatar;
+                        var TitleCardList =[];
+                        var childCardList =res.data.result_data.ChildCardList;
+                        for(var i = 0;i<childCardList.length;i++){
+                            TitleCardList.push({
+                                CardShape: childCardList[i].CardShape,
+                                ChildICCardId: childCardList[i].ChildICCardId,
+                                Deposit: childCardList[i].Deposit,
+                                Avatar: childCardList[i].ChildCardMemberInfo.Avatar,
+                                Birthday: childCardList[i].ChildCardMemberInfo.Birthday,
+                                Gender: childCardList[i].ChildCardMemberInfo.Gender,
+                                UserName: childCardList[i].ChildCardMemberInfo.UserName,
+                                titleIndex:"childCard"+(i+1),
+                                titleHref:"#childCard"+(i+1),
+                                indexTxt:"副卡"+(i+1)
+							})
+						}
+                        that.childCardList= TitleCardList;
+                    }
+                }).catch(function (err) {
+                    console.log(err);
+                });
+			},
+//          转出卡IC卡号事件
+            fromICCardIdReadCard:function(){
+                var that = this;
+                if(that.transferData.fromICCardId == ""){
+                    var msgType4 =JSON.stringify({"msgType":"4", "sObj": {"userToken": that.userToken}});
+                    that.msgReadCard = "2";
+                    ws.send(msgType4);
+                }else{
+
+                }
+			},
+//          接收卡IC卡号事件
+            toICCardIdReadCard:function(){
+                var that = this;
+                if(that.transferData.toICCardId == ""){
+                    var msgType4 =JSON.stringify({"msgType":"4", "sObj": {"userToken": that.userToken}});
+                    that.msgReadCard = "3";
+                    ws.send(msgType4);
+                }else{
+                    
+                }
+			},
+//          会员过户
+            memberTransfer:function(){
+                var that = this;
+                if(that.transferData.toICCardId == "" || that.transferData.fromICCardId == "" || that.transferData.pwd == ""){
+                    that.msg = "输入不能为空！";
+                    $('#myModal').modal('show');
+                    setTimeout(function () {
+                        $('#myModal').modal('hide');
+                    }, 1500);
+                }else{
+                    that.loading = true;
+                    var obj={sysId: sysId,versionNo: versionNo,userToken:that.userToken,fromICCardId:that.transferData.fromICCardId,pwd:that.transferData.pwd,toICCardId:that.transferData.toICCardId};
+                    console.log(obj);
+                    axios.post('/XCCloud/Member?action=memberTransfer', obj).then(function (res) {
+                        console.log(res.data);
+                        that.loading = false;
+                        that.msgPrompt(res.data);
+                        if (res.data.result_code === '1') {
+                            that.msg = "转卡成功！";
+                            $('#myModal').modal('show');
+                            setTimeout(function () {
+                                $('#myModal').modal('hide');
+                            }, 1500);
+                        }
+                    }).catch(function (err) {
+                        console.log(err);
+                    });
+                }
+            },
 //          订单查询接口
             getOrders:function(){
                 var that = this;

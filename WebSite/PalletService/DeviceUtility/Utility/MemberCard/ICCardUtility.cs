@@ -1076,50 +1076,23 @@ namespace DeviceUtility.Utility.MemberCard
         }
 
 
-        public static bool GetNewICCard(string storePassword, out string icCardId, out string errMsg)
+        public static bool GetNewICCard(string storePassword, out string icCardId, out string repeatCode, out string errMsg)
         {
             string sICCardID = string.Empty;
-            string repeatCode = string.Empty;
-            bool isCreate = false;
             bool isBeep = false;
             icCardId = string.Empty;
             errMsg = string.Empty;
             bool isNewCard = false;
-            if (!ICCardUtility.ReadNewICCard(storePassword, out isNewCard, out sICCardID, out repeatCode, out errMsg, isBeep, true))
+            if (ICCardUtility.ReadNewICCard(storePassword, out isNewCard, out sICCardID, out repeatCode, out errMsg, isBeep, true))
             {
-                return false;
-            }
-
-            if (IsValidCardNo(sICCardID))
-            {
-                try
-                {
-                    string sRepeatCode = Convert.ToInt32(sICCardID.Substring(8), 16).ToString();
-                    sICCardID = sICCardID.Substring(0, 8);
-                    int iICCardID = 0;
-                    if (ICCardUtility.isNumberic(sICCardID, out iICCardID))
-                    {
-                        icCardId = iICCardID.ToString();
-                    }
-                    else
-                    {
-                        icCardId = sICCardID;
-                    }
-                    return true;
-                }
-                catch
-                {
-                    errMsg = "¶ÁÈ¡¿¨Æ¬³ö´í";
-                    return false;
-                }
+                icCardId = sICCardID;
+                repeatCode = new System.Random().Next(111, 999).ToString();
+                return true;
             }
             else
             {
-                errMsg = sICCardID;
                 return false;
             }
-
-            return true;
         }
 
         public static bool ReadNewICCard(string storePassword, out bool isNewCard, out string icCardId, out string repeatCode, out string errMsg, bool isBeep = true, bool isCreate = true)
@@ -1158,7 +1131,7 @@ namespace DeviceUtility.Utility.MemberCard
                     if (st == 0)
                     {
                         icCardId = data.ToString().Substring(0, len - 1);
-                        repeatCode = new Random().Next(100, 999).ToString();
+                        //repeatCode = new Random().Next(100, 999).ToString();
 
                         if (CheckNullCard(storePassword, false))
                         {

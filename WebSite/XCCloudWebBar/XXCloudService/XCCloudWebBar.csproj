@@ -410,10 +410,6 @@
     <Content Include="Api\XCCloudH5\Member.ashx" />
     <Content Include="Api\XCCloudH5\Amusement.ashx" />
     <Content Include="Api\XCCloud\Schedule.ashx" />
-    <None Include="Properties\PublishProfiles\111.pubxml" />
-    <None Include="Properties\PublishProfiles\aaa.pubxml" />
-    <None Include="Properties\PublishProfiles\qqq.pubxml" />
-    <None Include="Properties\PublishProfiles\rrr.pubxml" />
     <None Include="Scripts\jquery-1.6.4-vsdoc.js" />
     <Content Include="radarLogin.html" />
     <Content Include="Report\DownloadTemplate.aspx" />
@@ -1696,6 +1692,7 @@
     <Folder Include="App_Data\" />
     <Folder Include="Logs\" />
     <Folder Include="memberphoto\" />
+    <Folder Include="Properties\PublishProfiles\" />
     <Folder Include="uplaodtest\" />
     <Folder Include="WebSite\.idea\inspectionProfiles\" />
     <Folder Include="WeiXin\Pay\Pages\" />
@@ -1753,8 +1750,6 @@
     <Content Include="Api\XCGame\Project.ashx" />
     <Content Include="Api\XCGameMana\Ticket.ashx" />
     <Content Include="Api\XCGame\Game.ashx" />
-    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
-    <None Include="Properties\PublishProfiles\配置文件1.pubxml" />
     <Content Include="Test\SocketTest.ashx" />
     <Content Include="WebBar\css\bootstrap-theme.css.map" />
     <Content Include="WebBar\css\bootstrap-theme.min.css.map" />
