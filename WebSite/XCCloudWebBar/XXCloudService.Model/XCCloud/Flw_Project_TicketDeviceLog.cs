@@ -17,6 +17,7 @@ namespace XCCloudWebBar.Model.XCCloud
         public string ID { get; set; }
         public string TicketUseID { get; set; }
         public string ProjectTicketCode { get; set; }
+        public Nullable<int> DeviceType { get; set; }
         public Nullable<int> DeviceID { get; set; }
         public Nullable<System.DateTime> LogTime { get; set; }
         public Nullable<int> LogType { get; set; }

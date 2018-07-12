@@ -24,17 +24,65 @@ namespace XXCloudService.Api.XCCloud
     {
 
         [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object goodBuyBack(Dictionary<string, object> dicParas)
+        {
+            XCCloudUserTokenModel userTokenModel = (XCCloudUserTokenModel)(dicParas[Constant.XCCloudUserTokenModel]);
+            TokenDataModel userTokenDataModel = (TokenDataModel)(userTokenModel.DataModel);
+
+            string icCardId = dicParas.ContainsKey("icCardId") ? dicParas["icCardId"].ToString() : string.Empty;
+            string goodId = dicParas.ContainsKey("goodId") ? dicParas["goodId"].ToString() : string.Empty;
+            string goodCount = dicParas.ContainsKey("goodCount") ? dicParas["goodCount"].ToString() : string.Empty;
+            string note = dicParas.ContainsKey("note") ? dicParas["note"].ToString() : string.Empty;
+            string useBalanceTypeId = dicParas.ContainsKey("useBalanceTypeId") ? dicParas["useBalanceTypeId"].ToString() : string.Empty;
+
+            string flwSeedId = RedisCacheHelper.CreateCloudSerialNo(userTokenDataModel.StoreID, true);
+
+            string sql = "GoodBuyBack";
+            SqlParameter[] parameters = new SqlParameter[12];
+            parameters[0] = new SqlParameter("@FlwSeedId", flwSeedId);
+            parameters[1] = new SqlParameter("@MerchId", userTokenDataModel.MerchID);
+            parameters[2] = new SqlParameter("@StoreId", userTokenDataModel.StoreID);
+            parameters[3] = new SqlParameter("@WorkStation", userTokenDataModel.WorkStation);
+            parameters[4] = new SqlParameter("@UseId", userTokenDataModel.CreateUserID);
+            parameters[5] = new SqlParameter("@ICCardId", icCardId);
+            parameters[6] = new SqlParameter("@GoodId", goodId);
+            parameters[7] = new SqlParameter("@GoodCount", goodCount);
+            parameters[8] = new SqlParameter("@Note", note);
+            parameters[9] = new SqlParameter("@UseBalanceTypeId", useBalanceTypeId);
+            parameters[10] = new SqlParameter("@ErrMsg",SqlDbType.VarChar,200);
+            parameters[11] = new SqlParameter("@Return", SqlDbType.Int);
+
+            XCCloudBLL.ExecuteStoredProcedureSentence(sql, parameters);
+
+            if (int.Parse(parameters[8].Value.ToString()) == 1)
+            {
+                return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.T, "");
+            }
+            else
+            {
+                string errMsg = parameters[7].Value.ToString();
+                return ResponseModelFactory.CreateAnonymousFailModel(isSignKeyReturn, errMsg);
+            }
+        }
+
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
         public object getFoodChargeInfo(Dictionary<string, object> dicParas)
         {
             try
             {
+                string barCode = dicParas.ContainsKey("barCode") ? dicParas["barCode"].ToString() : string.Empty;
+                string goodName = dicParas.ContainsKey("goodName") ? dicParas["goodName"].ToString() : string.Empty;
+
                 XCCloudUserTokenModel userTokenModel = (XCCloudUserTokenModel)(dicParas[Constant.XCCloudUserTokenModel]);
                 TokenDataModel userTokenDataModel = (TokenDataModel)(userTokenModel.DataModel);
 
                 string sql = "GetGoodsChargeInfo";
-                SqlParameter[] parameters = new SqlParameter[1];
+                SqlParameter[] parameters = new SqlParameter[4];
                 parameters[0] = new SqlParameter("@MerchId", userTokenDataModel.MerchID);
                 parameters[1] = new SqlParameter("@StoreId", userTokenDataModel.StoreID);
+                parameters[2] = new SqlParameter("@BarCode", barCode);
+                parameters[3] = new SqlParameter("@GoodName",goodName);
+
                 System.Data.DataSet ds = XCCloudBLL.GetStoredProcedureSentence(sql, parameters);
                 if (ds != null && ds.Tables.Count == 1 && ds.Tables[0].Rows.Count > 0)
                 {

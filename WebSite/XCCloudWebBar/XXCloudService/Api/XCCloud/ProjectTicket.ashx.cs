@@ -16,6 +16,7 @@ using XCCloudWebBar.Common.Enum;
 using XCCloudWebBar.DBService.BLL;
 using System.Data;
 using XCCloudWebBar.BLL.CommonBLL;
+using XCCloudWebBar.CacheService;
 
 namespace XXCloudService.Api.XCCloud
 {
@@ -560,6 +561,39 @@ namespace XXCloudService.Api.XCCloud
 
         #region 手工清场
 
+        #region 获取游乐项目列表
+        /// <summary>
+        /// 获取游乐项目列表
+        /// </summary>
+        /// <param name="dicParas"></param>
+        /// <returns></returns>
+        [Authorize(Roles = "StoreUser")]
+        [ApiMethodAttribute(SignKeyEnum = SignKeyEnum.XCCloudUserCacheToken, SysIdAndVersionNo = false)]
+        public object getProjectList(Dictionary<string, object> dicParas)
+        {
+            try
+            {
+                string errMsg = string.Empty;
+
+                XCCloudUserTokenModel userTokenKeyModel = (XCCloudUserTokenModel)dicParas[Constant.XCCloudUserTokenModel];
+                string merchID = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
+                string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
+
+                var query = Data_ProjectInfoService.I.GetModels(t => t.MerchID == merchID && t.StoreID == storeId && t.State == 1).Select(t => new
+                {
+                    ProjectId = t.ID,
+                    ProjectName = t.ProjectName
+                }).ToList();
+
+                return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, query);
+            }
+            catch (Exception e)
+            {
+                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, e.Message);
+            }
+        }
+        #endregion
+
         #region 查询游乐项目未出闸信息
         /// <summary>
         /// 查询游乐项目未出闸信息
@@ -581,12 +615,32 @@ namespace XXCloudService.Api.XCCloud
                 string merchID = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
                 string storeId = (userTokenKeyModel.DataModel as TokenDataModel).StoreID;
 
+                //var query = from a in Flw_Project_TicketUseService.N.GetModels(t => t.MerchID == merchID && t.StoreID == storeId)
+                //            join b in Data_Project_BindDeviceService.N.GetModels(t => t.MerchID == merchID && t.WorkType == 0) on a.InDeviceID equals b.DeviceID
+                //            join c in Data_ProjectInfoService.N.GetModels(t => t.MerchID == merchID && t.StoreID == storeId) on b.ProjectID equals c.ID
+                //            join d in Base_MemberInfoService.N.GetModels() on a.MemberID equals d.ID
+                //            join e in Flw_Project_TicketDeviceLogService.N.GetModels() on a.ID equals e.TicketUseID
+                //            where c.ChargeType == 0 && a.OutDeviceID == null && a.InDeviceID == e.DeviceID && e.UseType == 0
+                //            select new
+                //            {
+                //                TicketUseId = a.ID,
+                //                ProjectID = c.ID,
+                //                ProjectName = c.ProjectName,
+                //                ProjectTicketId = a.ProjectTicketCode,
+                //                Payment = e.LogType,
+                //                //MemberId = d.ID,
+                //                MemberName = d.UserName,
+                //                InTime = a.InTime,
+                //                BalanceIndex = e.BalanceIndex,
+                //                Total = e.Total,
+                //                CashTotal = e.CashTotal
+                //            };
+
                 var query = from a in Flw_Project_TicketUseService.N.GetModels(t => t.MerchID == merchID && t.StoreID == storeId)
-                            join b in Data_Project_BindDeviceService.N.GetModels(t => t.MerchID == merchID && t.WorkType == 0) on a.InDeviceID equals b.DeviceID
-                            join c in Data_ProjectInfoService.N.GetModels(t => t.MerchID == merchID && t.StoreID == storeId) on b.ProjectID equals c.ID
+                            join c in Data_ProjectInfoService.N.GetModels(t => t.MerchID == merchID && t.StoreID == storeId) on a.ProjectID equals c.ID
                             join d in Base_MemberInfoService.N.GetModels() on a.MemberID equals d.ID
                             join e in Flw_Project_TicketDeviceLogService.N.GetModels() on a.ID equals e.TicketUseID
-                            where c.ChargeType == 0 && a.OutDeviceID == null && a.InDeviceID == e.DeviceID && e.UseType == 0
+                            where a.OutTime == null && a.InDeviceID == e.DeviceID && e.UseType == 0
                             select new
                             {
                                 TicketUseId = a.ID,
@@ -601,6 +655,7 @@ namespace XXCloudService.Api.XCCloud
                                 Total = e.Total,
                                 CashTotal = e.CashTotal
                             };
+
 
                 if (projectId > 0)
                 {
@@ -676,46 +731,61 @@ namespace XXCloudService.Api.XCCloud
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "当前班次为空，不能进行过户操作");
                 }
 
+                Data_Workstation station = Data_WorkstationService.I.GetModels(t => t.MerchID == merchID && t.StoreID == storeId && t.WorkStation == workStation).FirstOrDefault();
+                if (schedule == null)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "当前工作站为空");
+                }
+
                 var ticketQuery = Flw_Project_TicketUseService.I.GetModels(t => t.MerchID == merchID && t.StoreID == storeId && ticketArray.Any(p => p == t.ID)).ToList();
                 if (ticketQuery.Count > 0)
                 {
+                    DateTime now = DateTime.Now;
                     using (TransactionScope ts = new TransactionScope(TransactionScopeOption.RequiresNew))
                     {
                         foreach (var item in ticketQuery)
                         {
-                            var queryDevice = from a in Data_Project_BindDeviceService.N.GetModels(t => t.MerchID == merchID)
-                                              join b in
-                                                  (
-                                                      //当前门票所关联的项目及入闸设备信息
-                                                      from c in Data_Project_BindDeviceService.N.GetModels(t => t.MerchID == merchID)
-                                                      join d in Flw_Project_TicketUseService.N.GetModels(t => t.ID == item.ID) on c.DeviceID equals d.InDeviceID
-                                                      select c
-                                                      ) on a.ProjectID equals b.ProjectID
-                                              where a.WorkType == 1 //查询出闸设备
-                                              select new
-                                              {
-                                                  DeviceId = a.DeviceID
-                                              };
+                            ////查询当前项目绑定的出闸设备
+                            //var queryDevice = from a in Data_Project_BindDeviceService.N.GetModels(t => t.MerchID == merchID)
+                            //                  join b in Flw_Project_TicketUseService.N.GetModels(t => t.ID == item.ID) on a.ProjectID equals b.ProjectID
+                            //                  where a.WorkType == 1 
+                            //                  select new
+                            //                  {
+                            //                      DeviceId = a.DeviceID
+                            //                  };
 
-                            if (queryDevice.Count() == 0)
-                            {
-                                var queryProject = from a in Data_ProjectInfoService.N.GetModels()
-                                                   join b in Data_Project_BindDeviceService.N.GetModels(t => t.DeviceID == item.InDeviceID) on a.ID equals b.ProjectID
-                                                   select new
-                                                   {
-                                                       ProjectName = a.ProjectName
-                                                   };
-                                var project = queryProject.FirstOrDefault();
-                                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, string.Format("项目【{0}】未设置出闸设备", project.ProjectName));
-                            }
+                            //if (queryDevice.Count() == 0)
+                            //{
+                            //    var queryProject = Data_ProjectInfoService.I.GetModels(t=>t.ID == item.ProjectID).FirstOrDefault();
+                            //    return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, string.Format("项目【{0}】未设置出闸设备", queryProject.ProjectName));
+                            //}
+                            //var outDevice = queryDevice.FirstOrDefault();
 
-                            var outDevice = queryDevice.FirstOrDefault();
-                            item.OutTime = DateTime.Now;
-                            item.OutDeviceID = outDevice.DeviceId;
+                            item.OutTime = now;
+                            item.OutDeviceType = 1;
+                            item.OutDeviceID = station.ID;
                             item.Note = string.Format("手工清场，工作站:{0}，操作人:{1}，营业日期:{2}，班次:{3}", workStation, user.RealName, schedule.CheckDate, schedule.ScheduleName);
                             if (!Flw_Project_TicketUseService.I.Update(item, false))
                             {
                                 return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, "执行手工清场失败");
+                            }
+
+                            Flw_Project_TicketDeviceLog tdLog = new Flw_Project_TicketDeviceLog();
+                            tdLog.ID = RedisCacheHelper.CreateStoreSerialNo(storeId);
+                            tdLog.TicketUseID = item.ID;
+                            tdLog.ProjectTicketCode = item.ProjectTicketCode;
+                            tdLog.DeviceType = 1;
+                            tdLog.DeviceID = station.ID;
+                            tdLog.LogTime = now;
+                            tdLog.LogType = 4;
+                            tdLog.BalanceIndex = 0;
+                            tdLog.Total = 0;
+                            tdLog.UseType = 1;
+                            tdLog.CashTotal = 0;
+                            tdLog.SyncFlag = 0;
+                            if (!Flw_Project_TicketDeviceLogService.I.Add(tdLog, false))
+                            {
+                                return ResponseModelFactory.CreateReturnModel(isSignKeyReturn, Return_Code.F, "创建出闸记录失败");
                             }
                         }
                         ts.Complete();

@@ -81,7 +81,7 @@ namespace XCCloudWebBar.BLL.XCCloud
             data_GoodStock_Record.DepotID = depotId;
             data_GoodStock_Record.GoodID = goodId;
             data_GoodStock_Record.SourceType = sourceType;
-            data_GoodStock_Record.SourceID = sourceId;
+            data_GoodStock_Record.SourceID = sourceId.ToString();
             data_GoodStock_Record.GoodCost = goodCost;
             data_GoodStock_Record.StockFlag = stockFlag;
             data_GoodStock_Record.StockCount = stockCount;

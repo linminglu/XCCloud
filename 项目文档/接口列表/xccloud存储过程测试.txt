@@ -5,6 +5,27 @@
 
 ----------------------------------------------------------------------------------------------------------------------------------------
 
+declare @MerchId varchar(15) = '100025'
+declare @StoreId varchar(20) = '100025420106001'
+declare @ICCardId int = 10004143
+declare @GoodId int = 1
+declare @GoodCount int = 2
+declare @UseBalanceTypeId int = 1
+declare @UseBalanceNum decimal(18,2) = 200.00
+declare @ErrMsg varchar(200) = ''
+declare @GoodBuyBackReturn int = 0
+declare @Note varchar(200) = ''
+declare @WorkStation varchar(50) = 'lijunjie'
+declare @FlwSeedId varchar(29) = '100025420106001' + '20180708' + '923891'
+declare @UseId int = 3
+exec @GoodBuyBackReturn = GoodBuyBack @FlwSeedId,@MerchId,@StoreId,@WorkStation,@UseId,@ICCardId,@GoodId,@GoodCount,@UseBalanceTypeId,@Note,@ErrMsg output
+print @GoodBuyBackReturn
+print @ErrMsg 
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
 declare @FlwSeedId varchar(29) = '100025420106001' + '20180625' + '5669331'
 declare @FlwIndex int = 1
 declare @MerchId varchar(15) = '100025'

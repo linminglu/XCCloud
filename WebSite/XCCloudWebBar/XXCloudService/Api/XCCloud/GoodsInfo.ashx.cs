@@ -2140,7 +2140,7 @@ namespace XXCloudService.Api.XCCloud
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 
-                        if (Data_GoodStock_RecordService.I.Any(a => a.SourceType == (int)SourceType.GoodRequest && a.SourceID == requestId))
+                        if (Data_GoodStock_RecordService.I.Any(a => a.SourceType == (int)SourceType.GoodRequest && a.SourceID == requestId.ToString()))
                         {
                             errMsg = "该调拨单存在出入库信息不能删除";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -2734,7 +2734,7 @@ namespace XXCloudService.Api.XCCloud
                         }
 
                         //添加入库存撤销记录
-                        var recordList = Data_GoodStock_RecordService.I.GetModels(p => p.SourceType == (int)SourceType.GoodStorage && p.SourceID == id).ToList();
+                        var recordList = Data_GoodStock_RecordService.I.GetModels(p => p.SourceType == (int)SourceType.GoodStorage && p.SourceID == id.ToString()).ToList();
                         foreach (var record in recordList)
                         {
                             //更新当前库存
@@ -3555,7 +3555,7 @@ namespace XXCloudService.Api.XCCloud
                         }
 
                         //添加出库存撤销记录
-                        var recordList = Data_GoodStock_RecordService.I.GetModels(p => p.SourceType == (int)SourceType.GoodOut && p.SourceID == id).ToList();
+                        var recordList = Data_GoodStock_RecordService.I.GetModels(p => p.SourceType == (int)SourceType.GoodOut && p.SourceID == id.ToString()).ToList();
                         foreach (var record in recordList)
                         {
                             //更新当前库存

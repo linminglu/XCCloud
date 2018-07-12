@@ -140,7 +140,6 @@ namespace XCCloudWebBar.Model.XCCloud
         public virtual DbSet<Base_DeviceInfo> Base_DeviceInfo { get; set; }
         public virtual DbSet<Data_GameAPP_MemberRule> Data_GameAPP_MemberRule { get; set; }
         public virtual DbSet<Data_GoodInventory> Data_GoodInventory { get; set; }
-        public virtual DbSet<Data_GoodStock_Record> Data_GoodStock_Record { get; set; }
         public virtual DbSet<Data_GameFreeLotteryRule> Data_GameFreeLotteryRule { get; set; }
         public virtual DbSet<Base_DeviceInfo_Ext> Base_DeviceInfo_Ext { get; set; }
         public virtual DbSet<Data_GameInfo> Data_GameInfo { get; set; }
@@ -161,7 +160,6 @@ namespace XCCloudWebBar.Model.XCCloud
         public virtual DbSet<Data_Card_Balance_Free> Data_Card_Balance_Free { get; set; }
         public virtual DbSet<Data_Food_Detial> Data_Food_Detial { get; set; }
         public virtual DbSet<Base_MemberInfo> Base_MemberInfo { get; set; }
-        public virtual DbSet<Data_GoodsStock> Data_GoodsStock { get; set; }
         public virtual DbSet<Data_Workstation> Data_Workstation { get; set; }
         public virtual DbSet<Data_FoodInfo> Data_FoodInfo { get; set; }
         public virtual DbSet<Data_Project_BindDevice> Data_Project_BindDevice { get; set; }
@@ -199,7 +197,9 @@ namespace XCCloudWebBar.Model.XCCloud
         public virtual DbSet<Flw_MemberData> Flw_MemberData { get; set; }
         public virtual DbSet<Flw_Transfer> Flw_Transfer { get; set; }
         public virtual DbSet<Flw_Food_SaleDetail> Flw_Food_SaleDetail { get; set; }
-        public virtual DbSet<Flw_Project_TicketDeviceLog> Flw_Project_TicketDeviceLog { get; set; }
         public virtual DbSet<Flw_Project_TicketUse> Flw_Project_TicketUse { get; set; }
+        public virtual DbSet<Flw_Project_TicketDeviceLog> Flw_Project_TicketDeviceLog { get; set; }
+        public virtual DbSet<Data_GoodsStock> Data_GoodsStock { get; set; }
+        public virtual DbSet<Data_GoodStock_Record> Data_GoodStock_Record { get; set; }
     }
 }

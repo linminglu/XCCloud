@@ -240,9 +240,7 @@
         'obj': {'conditions': [], 'userToken': token, 'signkey': '1f626576304bf5d95b72ece2222e42c3'},
         'url': '/XCCloud/MemberManage?action=QueryMemberInfo',
         'elem': '#mFileSearchTable',
-        'cols': [{field:'ID',title:'id',templet:function (d) {
-                console.log(this)
-            }}
+        'cols': [{field:'ID',title:'id',align:'center'}
             ,{
                 field: 'ICCardID', title: '会员卡号', align: 'center', sort: true, templet: function (d) {
                     return '<a href="javascript:void(0);" class="a_line aCardID">' + d.ICCardID + '</a>'
@@ -370,7 +368,7 @@
 
         //查询押金明细
         $('.memberDeposit').on('click', function () {
-            let _cardId = $(this).parents('tr').children()[0].getElementsByTagName('a')[0].innerHTML;
+            let _cardId = $(this).parents('tr').children()[0].getElementsByClassName('layui-table-cell')[0].innerHTML;
             let obj = {id: _cardId, userToken: token, signkey: '1f626576304bf5d95b72ece2222e42c3'};
             let parseJson = JSON.stringify(obj);
             $.ajax({
@@ -387,18 +385,19 @@
                         //初始化：押金明细信息
                         table.render({
                             cols: [[
-                                {field: 'ICCardID', title: '会员卡号', align: 'center',},
-                                {field: 'CardType', title: '卡类别', align: 'center',},
-                                {field: 'Deposit', title: '卡押金', align: 'center'},
-                                {field: 'CardName', title: '姓名', align: 'center'},
-                                {field: 'CardBirthday', title: '生日', align: 'center'},
-                                {field: 'CardSex', title: '性别', align: 'center'}
+                                {field: 'ICCardID', title: '会员卡号', align: 'center',width:160},
+                                {field: 'CardType', title: '卡类别', align: 'center',width:160},
+                                {field: 'Deposit', title: '卡押金', align: 'center',width:160},
+                                {field: 'CardName', title: '姓名', align: 'center',width:160},
+                                {field: 'CardBirthday', title: '生日', align: 'center',width:160},
+                                {field: 'CardSex', title: '性别', align: 'center',width:145}
                             ]
                             ],
                             elem: '#depositTable',
+                            cellMinWidth:145,
                             data: arr
                             , skin: 'line'
-                            , page: {page: true, limits: [10, 15, 20, 30, 50, 100]}
+                            , page: {page: true, limits: [10, 15, 20]}
                             , limit: 10
                         })
                         layer.open({
