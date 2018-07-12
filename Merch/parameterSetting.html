@@ -479,6 +479,52 @@
     let chkAddLeaveTime=0;
     let cmbAutoJoinMemberLevel;
     let cmbAutoJoinMemberLevels=[];
+
+    let memberLvlId='';
+    function getBackRule(storeId) {
+        let obj={"storeId":storeId,"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
+        let url = "/XCCloud/Parameter?action=GetGivebackRules";
+        let parasJson = JSON.stringify(obj);
+        $.ajax({
+            type: "post",
+            url: url,
+            contentType: "application/json; charset=utf-8",
+            data: { parasJson: parasJson },
+            success: function (data) {
+                data=JSON.parse(data);
+                if(data.result_code=="1"){
+                    dataTable=data.result_data;
+                    layui.use('table', function(){
+                        var table = layui.table;
+                        table.render({
+                            elem: '#test'
+                            ,data:dataTable
+                            ,cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+                            ,height:220
+                            ,size:'sm'
+                            ,cols: [[
+                                {field:'MemberLevelID', title: '会员级别', align: 'center'} //width 支持：数字、百分比和不填写。你还可以通过 minWidth 参数局部定义当前单元格的最小宽度，layui 2.2.1 新增
+                                ,{field:'BackMin', title: '最小币数', sort: true}
+                                ,{field:'BackMax', title: '最大币数', align: 'center'}
+                                ,{field:'BackScale', title: '返还比例', align: 'center'}
+                                ,{field:'ExitCardMin', title: '退卡最小余额', align: 'center'} //单元格内容水平居中
+                                ,{field:'Backtype', title: '计算方式', align: 'center'} //单元格内容水平居中
+                                ,{field:'TotalDays', title: '累计天数',  align: 'center'}
+                                ,{field:'AllowBackPrincipal', title: '是否扣除返还币', align: 'center'}
+                                ,{field:'AllowContainToday', title: '是否当天统计', align: 'center'}
+                            ]]
+                            ,page:true
+                            ,limit:10
+                        });
+                    });
+
+                }else {
+                    // alert("添加失败，请核对后再次提交！");
+                    console.log(data.result_msg||data.return_msg);
+                }
+            }
+        });
+    }
     function ifNeedSet(storeId,form,layer) {
         let obj={'storeId':storeId,'userToken':token,'signkey':'1f626576304bf5d95b72ece2222e42c3'};
         $.ajax({
@@ -525,7 +571,48 @@
                     if(arr[0].Tag==0){
                         $('.lci3').addClass('layui-hide');
                     }else  if(arr[0].Tag==1){
-                        getBackRule(_storeId);
+                        let obj={"storeId":storeId,"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
+                        let url = "/XCCloud/Parameter?action=GetGivebackRules";
+                        let parasJson = JSON.stringify(obj);
+                        $.ajax({
+                            type: "post",
+                            url: url,
+                            contentType: "application/json; charset=utf-8",
+                            data: { parasJson: parasJson },
+                            success: function (data) {
+                                data=JSON.parse(data);
+                                if(data.result_code=="1"){
+                                    dataTable=data.result_data;
+                                    layui.use('table', function(){
+                                        var table = layui.table;
+                                        table.render({
+                                            elem: '#test'
+                                            ,data:dataTable
+                                            ,cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+                                            ,height:220
+                                            ,size:'sm'
+                                            ,cols: [[
+                                                {field:'MemberLevelID', title: '会员级别', align: 'center'} //width 支持：数字、百分比和不填写。你还可以通过 minWidth 参数局部定义当前单元格的最小宽度，layui 2.2.1 新增
+                                                ,{field:'BackMin', title: '最小币数', sort: true}
+                                                ,{field:'BackMax', title: '最大币数', align: 'center'}
+                                                ,{field:'BackScale', title: '返还比例', align: 'center'}
+                                                ,{field:'ExitCardMin', title: '退卡最小余额', align: 'center'} //单元格内容水平居中
+                                                ,{field:'Backtype', title: '计算方式', align: 'center'} //单元格内容水平居中
+                                                ,{field:'TotalDays', title: '累计天数',  align: 'center'}
+                                                ,{field:'AllowBackPrincipal', title: '是否扣除返还币', align: 'center'}
+                                                ,{field:'AllowContainToday', title: '是否当天统计', align: 'center'}
+                                            ]]
+                                            ,page:true
+                                            ,limit:10
+                                        });
+                                    });
+
+                                }else {
+                                    // alert("添加失败，请核对后再次提交！");
+                                    console.log(data.result_msg||data.return_msg);
+                                }
+                            }
+                        });
                         $('.lci3').removeClass('layui-hide');
                     }
                     form.val("storeParm", {
@@ -700,6 +787,9 @@
             txtBusinessClass=data.value;
             // sourceTypeStr=data.elem[data.elem.selectedIndex].text;
         });
+        form.on('select(memberLvlId)',function (data) {
+            memberLvlId=data.value;
+        })
         form.on('select(cmbAuthChannel)',function (data) {
             cmbAuthChannel =data.value;
         });
@@ -799,53 +889,11 @@
 
             }
         });
-    function getBackRule(storeId) {
-        let obj={"storeId":storeId,"userToken":token,"signkey":"1f626576304bf5d95b72ece2222e42c3"};
-        let url = "/XCCloud/Parameter?action=GetGivebackRules";
-        let parasJson = JSON.stringify(obj);
-        $.ajax({
-            type: "post",
-            url: url,
-            contentType: "application/json; charset=utf-8",
-            data: { parasJson: parasJson },
-            success: function (data) {
-                data=JSON.parse(data);
-                if(data.result_code=="1"){
-                    dataTable=data.result_data;
-                    layui.use('table', function(){
-                        var table = layui.table;
-                        table.render({
-                            elem: '#test'
-                            ,data:dataTable
-                            ,cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
-                            ,height:220
-                            ,size:'sm'
-                            ,cols: [[
-                                {field:'MemberLevelID', title: '会员级别', align: 'center'} //width 支持：数字、百分比和不填写。你还可以通过 minWidth 参数局部定义当前单元格的最小宽度，layui 2.2.1 新增
-                                ,{field:'BackMin', title: '最小币数', sort: true}
-                                ,{field:'BackMax', title: '最大币数', align: 'center'}
-                                ,{field:'BackScale', title: '返还比例', align: 'center'}
-                                ,{field:'ExitCardMin', title: '退卡最小余额', align: 'center'} //单元格内容水平居中
-                                ,{field:'Backtype', title: '计算方式', align: 'center'} //单元格内容水平居中
-                                ,{field:'TotalDays', title: '累计天数',  align: 'center'}
-                                ,{field:'AllowBackPrincipal', title: '是否扣除返还币', align: 'center'}
-                                ,{field:'AllowContainToday', title: '是否当天统计', align: 'center'}
-                            ]]
-                            ,page:true
-                            ,limit:10
-                        });
-                    });
 
-                }else {
-                    // alert("添加失败，请核对后再次提交！");
-                    console.log(data.result_msg||data.return_msg);
-                }
-            }
-        });
-    }
     $('.checkBox>span').click(function () {
             $(this).addClass("layui-hide").siblings().removeClass("layui-hide");
         });
+
     function setParamList(storeIds,layer) {
         let a,b,c;
         let submitData=[

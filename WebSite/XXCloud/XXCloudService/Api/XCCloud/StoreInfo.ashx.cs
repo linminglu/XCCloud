@@ -165,7 +165,7 @@ namespace XCCloudService.Api.XCCloud
                     }
                 }
 
-                string sql = @"select a.StoreID, a.MerchID, a.StoreName, a.Password, convert(varchar, a.AuthorExpireDate, 23) AS AuthorExpireDate, a.AreaCode, a.Address, a.Contacts, a.Mobile, b.DictKey as SelttleTypeStr, c.DictKey as StoreStateStr from Base_StoreInfo a " +
+                string sql = @"select a.StoreID, a.StoreTag, a.MerchID, a.StoreName, a.Password, convert(varchar, a.AuthorExpireDate, 23) AS AuthorExpireDate, a.AreaCode, a.Address, a.Contacts, a.Mobile, b.DictKey as SelttleTypeStr, c.DictKey as StoreStateStr from Base_StoreInfo a " +
                     " left join (select b.* from Dict_System a inner join Dict_System b on a.ID=b.PID where a.DictKey='结算类型' and a.PID=0) b on convert(varchar, a.SelttleType)=b.DictValue " +
                     " left join (select b.* from Dict_System a inner join Dict_System b on a.ID=b.PID where a.DictKey='门店状态' and a.PID=0) c on convert(varchar, a.StoreState)=c.DictValue " +
                     " where a.MerchID=@merchId ";

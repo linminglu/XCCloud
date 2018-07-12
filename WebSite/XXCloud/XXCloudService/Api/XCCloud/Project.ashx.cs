@@ -282,13 +282,13 @@ namespace XXCloudService.Api.XCCloud
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                             }
 
-                            //校验顺序开启时，必须至少绑定一进一出的设备
-                            if (adjOrder == 1 && !(Data_Project_BindDeviceService.I.Any(a => a.ProjectID == id && a.WorkType == (int)ProjectBindDeviceWorkType.Entry)
-                                && Data_Project_BindDeviceService.I.Any(a => a.ProjectID == id && a.WorkType == (int)ProjectBindDeviceWorkType.Exit)))
-                            {
-                                errMsg = "校验顺序开启时，必须至少绑定一进一出的设备";
-                                return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
-                            }
+                            ////校验顺序开启时，必须至少绑定一进一出的设备
+                            //if (adjOrder == 1 && !(Data_Project_BindDeviceService.I.Any(a => a.ProjectID == id && a.WorkType == (int)ProjectBindDeviceWorkType.Entry)
+                            //    && Data_Project_BindDeviceService.I.Any(a => a.ProjectID == id && a.WorkType == (int)ProjectBindDeviceWorkType.Exit)))
+                            //{
+                            //    errMsg = "校验顺序开启时，必须至少绑定一进一出的设备";
+                            //    return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
+                            //}
 
                             if (!Data_ProjectInfoService.I.Update(model))
                             {
@@ -607,7 +607,8 @@ namespace XXCloudService.Api.XCCloud
                            select new
                            {
                                ID = a.ID,
-                               ProjectName = a.ProjectName
+                               ProjectName = a.ProjectName,
+                               AdjOrder = a.AdjOrder
                            };
 
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, linq);

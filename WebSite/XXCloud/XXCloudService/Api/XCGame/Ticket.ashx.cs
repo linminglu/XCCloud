@@ -366,6 +366,7 @@ namespace XXCloudService.Api.XCGame
                 XCManaUserHelperTokenModel userTokenModel = (XCManaUserHelperTokenModel)(dicParas[Constant.XCManaUserHelperToken]);
                 string barCode = dicParas.ContainsKey("barCode") ? dicParas["barCode"].ToString() : string.Empty;
                 var projectId = dicParas.ContainsKey("projectId") ? dicParas["projectId"].Toint() : (int?)null;
+                var useType = dicParas.ContainsKey("useType") ? dicParas["useType"].Toint() : (int?)null; //0进1出
 
                 if (string.IsNullOrEmpty(barCode))
                 {
@@ -375,6 +376,11 @@ namespace XXCloudService.Api.XCGame
                 if (projectId.IsNull())
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "请选择门票项目");
+                }
+
+                if (useType.IsNull())
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "请选择验票方式");
                 }
 
                 //验证是否有效门店
@@ -394,6 +400,24 @@ namespace XXCloudService.Api.XCGame
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, errMsg);
                 }
+
+                if (resultModel.State != (int)TicketState.Valid)
+                {
+                    return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "该门票已不可用");
+                }
+
+                //校验顺序
+                var data_ProjectInfoService = Data_ProjectInfoService.I;
+                var adjOrder = data_ProjectInfoService.GetModels(p => p.ID == projectId).Select(o => o.AdjOrder).FirstOrDefault() ?? 0;
+                if (adjOrder == 1) //校验顺序开启
+                {
+                    if (useType == 0)
+                    {
+                        
+                    }
+                }
+                else
+                { }
 
 
 
