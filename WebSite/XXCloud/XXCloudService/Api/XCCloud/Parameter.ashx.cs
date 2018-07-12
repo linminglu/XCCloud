@@ -236,7 +236,7 @@ namespace XXCloudService.Api.XCCloud
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
-                var storeTag = Base_StoreInfoService.I.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)).Select(o => o.StoreTag).FirstOrDefault() ?? 0;
+                var storeTag = Base_StoreInfoService.I.GetModels(p => p.ID.Equals(storeId, StringComparison.OrdinalIgnoreCase)).Select(o => o.StoreTag).FirstOrDefault() ?? 0;
                 var paramId = Dict_SystemService.I.GetModels(p => p.DictKey.Equals("运营参数设定", StringComparison.OrdinalIgnoreCase) && p.PID == 0).FirstOrDefault().ID;
                 var data_Parameter = from a in Dict_SystemService.N.GetModels(p => p.PID == paramId && p.MerchID == (storeTag + ""))
                                      join b in Data_ParametersService.N.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)) on a.DictKey equals b.System into b1
@@ -385,7 +385,7 @@ namespace XXCloudService.Api.XCCloud
                 string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
 
                 var data_GivebackRuleList = (from a in Data_GivebackRuleService.N.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase))
-                                             join b in Data_MemberLevelService.N.GetModels(p => p.State == 1) on a.MemberLevelID equals b.MemberLevelID into b1
+                                             join b in Data_MemberLevelService.N.GetModels(p => p.State == 1) on a.MemberLevelID equals b.ID into b1
                                              from b in b1.DefaultIfEmpty()
                                              select new
                                              {

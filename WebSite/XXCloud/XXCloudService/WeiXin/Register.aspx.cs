@@ -186,18 +186,18 @@ namespace XXCloudService.WeiXin
             //验证商户
             var mId = storeOrMerchId;
             IBase_MerchantInfoService base_MerchantInfoService = BLLContainer.Resolve<IBase_MerchantInfoService>();
-            if (!base_MerchantInfoService.Any(p => p.MerchID.Equals(mId, StringComparison.OrdinalIgnoreCase)))
+            if (!base_MerchantInfoService.Any(p => p.ID.Equals(mId, StringComparison.OrdinalIgnoreCase)))
             {
                 //验证门店
                 var sId = mId;
                 IBase_StoreInfoService storeInfoService = BLLContainer.Resolve<IBase_StoreInfoService>();
-                if (!storeInfoService.Any(p => p.StoreID.Equals(sId, StringComparison.OrdinalIgnoreCase)))
+                if (!storeInfoService.Any(p => p.ID.Equals(sId, StringComparison.OrdinalIgnoreCase)))
                 {
                     errMsg = "门店不存在";
                     return false;
                 }
 
-                mId = storeInfoService.GetModels(p => p.StoreID.Equals(sId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault().MerchID;
+                mId = storeInfoService.GetModels(p => p.ID.Equals(sId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault().MerchID;
                 storeId = sId;
             }
             else
@@ -220,13 +220,13 @@ namespace XXCloudService.WeiXin
             }
 
             //验证接收人
-            if (!base_MerchantInfoService.Any(a => a.MerchID.Equals(mId, StringComparison.OrdinalIgnoreCase)))
+            if (!base_MerchantInfoService.Any(a => a.ID.Equals(mId, StringComparison.OrdinalIgnoreCase)))
             {
                 errMsg = "接收商户不存在";
                 return false;
             }
 
-            var base_MerchantInfoModel = base_MerchantInfoService.GetModels(p => p.MerchID.Equals(mId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+            var base_MerchantInfoModel = base_MerchantInfoService.GetModels(p => p.ID.Equals(mId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
             var wxOpenId = base_MerchantInfoModel.WxOpenID;
             revOpenId = wxOpenId;
             if (!userInfoService.Any(p=>p.OpenID.Equals(wxOpenId, StringComparison.OrdinalIgnoreCase)))

@@ -155,10 +155,10 @@ namespace XXCloudService.Api.XCCloudH5
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "用户令牌无效，请重新登陆");
                 }
 
-                Base_StoreInfo store = Base_StoreInfoService.I.GetModels(t => t.StoreID == storeId).FirstOrDefault();
-                if(store != null && model.CurrStoreId != store.StoreID)
+                Base_StoreInfo store = Base_StoreInfoService.I.GetModels(t => t.ID == storeId).FirstOrDefault();
+                if(store != null && model.CurrStoreId != store.ID)
                 {
-                    model.CurrStoreId = store.StoreID;
+                    model.CurrStoreId = store.ID;
                 }
 
                 if (!string.IsNullOrEmpty(model.CurrStoreId) && !string.IsNullOrEmpty(model.MemberId))
@@ -169,7 +169,7 @@ namespace XXCloudService.Api.XCCloudH5
                         MemberCard cardInfo = new MemberCard();
                         cardInfo.CardId = card.ID;
                         cardInfo.ICCardId = card.ICCardID;
-                        cardInfo.StoreName = Base_StoreInfoService.I.GetModels(s => s.StoreID == card.StoreID).FirstOrDefault().StoreName ?? "";
+                        cardInfo.StoreName = Base_StoreInfoService.I.GetModels(s => s.ID == card.StoreID).FirstOrDefault().StoreName ?? "";
                         cardInfo.MemberLevelId = card.MemberLevelID.Value;
                         cardInfo.MemberLevelName = XCCloudStoreBusiness.GetMemberLevel(card.MemberLevelID.Value).MemberLevelName;
                         //卡余额
@@ -468,8 +468,8 @@ namespace XXCloudService.Api.XCCloudH5
                     Id = t.Id,
                     ICCardId = t.ICCardId,
                     StoreId = t.StoreId,
-                    StoreName = Base_StoreInfoService.I.GetModels(s=>s.StoreID == t.StoreId).FirstOrDefault().StoreName ?? "",
-                    LevelName = Data_MemberLevelService.I.GetModels(m=>m.MemberLevelID == t.LevelId).FirstOrDefault().MemberLevelName,
+                    StoreName = Base_StoreInfoService.I.GetModels(s=>s.ID == t.StoreId).FirstOrDefault().StoreName ?? "",
+                    LevelName = Data_MemberLevelService.I.GetModels(m=>m.ID == t.LevelId).FirstOrDefault().MemberLevelName,
                     CreateDate = t.CreateDate.Value.ToString("yyyy-MM-dd"),
                     EndDate = t.EndDate.Value.ToString("yyyy-MM-dd")
                 }).ToList();
@@ -518,7 +518,7 @@ namespace XXCloudService.Api.XCCloudH5
                 MemberCard mc = new MemberCard();
                 mc.CardId = card.ID;
                 mc.ICCardId = card.ICCardID;
-                mc.StoreName = Base_StoreInfoService.I.GetModels(s => s.StoreID == card.StoreID).FirstOrDefault().StoreName ?? "";
+                mc.StoreName = Base_StoreInfoService.I.GetModels(s => s.ID == card.StoreID).FirstOrDefault().StoreName ?? "";
                 mc.MemberLevelId = card.MemberLevelID.Value;
                 mc.MemberLevelName = XCCloudStoreBusiness.GetMemberLevel(card.MemberLevelID.Value).MemberLevelName;
                 //卡余额
@@ -681,9 +681,9 @@ namespace XXCloudService.Api.XCCloudH5
                     memberLevelId = model.CurrentCardInfo.MemberLevelId;
                 }
 
-                Base_StoreInfo store = Base_StoreInfoService.I.GetModels(t => t.StoreID == model.CurrStoreId).FirstOrDefault();
+                Base_StoreInfo store = Base_StoreInfoService.I.GetModels(t => t.ID == model.CurrStoreId).FirstOrDefault();
 
-                List<FoodInfoViewModel> foodList = XCCloudStoreBusiness.GetFoodInfoList(store.MerchID, store.StoreID, memberLevelId);
+                List<FoodInfoViewModel> foodList = XCCloudStoreBusiness.GetFoodInfoList(store.MerchID, store.ID, memberLevelId);
 
                 return ResponseModelFactory<List<FoodInfoViewModel>>.CreateModel(isSignKeyReturn, foodList);
             }

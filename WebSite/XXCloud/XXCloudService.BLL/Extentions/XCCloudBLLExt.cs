@@ -45,7 +45,7 @@ namespace XCCloudService.BLL.XCCloud
                         var merchId = Convert.ToString(t.GetPropertyValue("MerchID"));
                         if (!merchId.IsNull())
                         {                            
-                            merchSecret = dbContext.Set<Base_MerchantInfo>().Where(w => w.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase))
+                            merchSecret = dbContext.Set<Base_MerchantInfo>().Where(w => w.ID.Equals(merchId, StringComparison.OrdinalIgnoreCase))
                                 .Select(o => o.MerchSecret).FirstOrDefault() ?? string.Empty;
                         }
                     }

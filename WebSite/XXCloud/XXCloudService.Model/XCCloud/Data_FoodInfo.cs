@@ -14,7 +14,7 @@ namespace XCCloudService.Model.XCCloud
     
     public partial class Data_FoodInfo
     {
-        public int FoodID { get; set; }
+        public int ID { get; set; }
         public string FoodName { get; set; }
         public string MerchID { get; set; }
         public string Note { get; set; }

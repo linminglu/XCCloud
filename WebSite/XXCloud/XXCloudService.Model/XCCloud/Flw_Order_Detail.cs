@@ -15,10 +15,10 @@ namespace XCCloudService.Model.XCCloud
     public partial class Flw_Order_Detail
     {
         public string ID { get; set; }
+        public string MerchID { get; set; }
         public string OrderFlwID { get; set; }
         public string FoodFlwID { get; set; }
         public Nullable<int> GoodsCount { get; set; }
-        public string MerchID { get; set; }
         public string Verifiction { get; set; }
     }
 }

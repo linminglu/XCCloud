@@ -449,20 +449,20 @@ namespace XXCloudService.Api.XCCloud
                 
                 var foodIdForPrivateGood = from a in Data_Food_DetialService.N.GetModels(p => p.FoodType == (int)FoodDetailType.Good)
                               join b in Base_GoodsInfoService.N.GetModels(p => (p.StoreID ?? "") != "") on a.ContainID equals b.ID
-                              join c in Data_FoodInfoService.N.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.FoodState == (int)FoodState.Valid) on a.FoodID equals c.FoodID
+                              join c in Data_FoodInfoService.N.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.FoodState == (int)FoodState.Valid) on a.FoodID equals c.ID
                               select a.FoodID;
 
                 var foodIdContainedTicket = from a in Data_Food_DetialService.N.GetModels(p => p.FoodType == (int)FoodDetailType.Ticket)
-                                            join b in Data_FoodInfoService.N.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.FoodState == (int)FoodState.Valid) on a.FoodID equals b.FoodID
+                                            join b in Data_FoodInfoService.N.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.FoodState == (int)FoodState.Valid) on a.FoodID equals b.ID
                                             select a.FoodID;
 
                 //排除包含私有属性的套餐
                 var linq = from a in Data_FoodInfoService.N.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.FoodState == (int)FoodState.Valid)
-                           where !foodIdForPrivateGood.Contains(a.FoodID) && !foodIdContainedTicket.Contains(a.FoodID)
+                           where !foodIdForPrivateGood.Contains(a.ID) && !foodIdContainedTicket.Contains(a.ID)
                            orderby a.FoodName
                            select new
                            {
-                               FoodID = a.FoodID,
+                               FoodID = a.ID,
                                FoodName = a.FoodName
                            };
 
@@ -490,7 +490,7 @@ namespace XXCloudService.Api.XCCloud
                 var linq = from a in Data_FoodInfoService.I.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.FoodState == (int)FoodState.Valid)                          
                            select new
                            {
-                               FoodID = a.FoodID,
+                               FoodID = a.ID,
                                FoodName = a.FoodName
                            };
 
@@ -516,7 +516,7 @@ namespace XXCloudService.Api.XCCloud
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
                                              
-                var FoodInfo = Data_FoodInfoService.I.GetModels(p => p.FoodID == foodId).FirstOrDefault();
+                var FoodInfo = Data_FoodInfoService.I.GetModels(p => p.ID == foodId).FirstOrDefault();
                 if(FoodInfo == null)
                 {
                     errMsg = "该套餐不存在";
@@ -528,13 +528,13 @@ namespace XXCloudService.Api.XCCloud
 
                 var FoodLevels = from c in
                                      (from a in Data_Food_LevelService.N.GetModels(p => p.FoodID == foodId)
-                                      join b in Data_MemberLevelService.N.GetModels(p => p.State == 1) on a.MemberLevelID equals b.MemberLevelID
-                                      join c in Data_MemberLevelService.N.GetModels(p => p.State == 1) on a.UpdateLevelID equals c.MemberLevelID
+                                      join b in Data_MemberLevelService.N.GetModels(p => p.State == 1) on a.MemberLevelID equals b.ID
+                                      join c in Data_MemberLevelService.N.GetModels(p => p.State == 1) on a.UpdateLevelID equals c.ID
                                       select new
                                       {
                                           a = a,
                                           UpdateLevelName = c.MemberLevelName,
-                                          MemberLevelID = b.MemberLevelID,
+                                          MemberLevelID = b.ID,
                                           MemberLevelName = b.MemberLevelName
                                       }).AsEnumerable()
                                  group c by new { c.a.TimeType, c.a.Week, c.a.StartTime, c.a.EndTime } into g
@@ -605,7 +605,7 @@ namespace XXCloudService.Api.XCCloud
 
                 var result = new
                 {
-                    FoodID = FoodInfo.FoodID,
+                    FoodID = FoodInfo.ID,
                     FoodName = FoodInfo.FoodName,
                     FoodType = FoodInfo.FoodType,
                     StartTime = string.Format("{0:yyyy-MM-dd}", FoodInfo.StartTime),
@@ -701,8 +701,8 @@ namespace XXCloudService.Api.XCCloud
                 {
                     try
                     {
-                        var data_FoodInfo = Data_FoodInfoService.I.GetModels(p => p.FoodID == foodId).FirstOrDefault() ?? new Data_FoodInfo();
-                        data_FoodInfo.FoodID = foodId;
+                        var data_FoodInfo = Data_FoodInfoService.I.GetModels(p => p.ID == foodId).FirstOrDefault() ?? new Data_FoodInfo();
+                        data_FoodInfo.ID = foodId;
                         data_FoodInfo.FoodName = foodName;
                         data_FoodInfo.FoodType = foodType;
                         data_FoodInfo.StartTime = startTime;
@@ -734,7 +734,7 @@ namespace XXCloudService.Api.XCCloud
                         }
                         else
                         {
-                            if (!Data_FoodInfoService.I.Any(p => p.FoodID == foodId))
+                            if (!Data_FoodInfoService.I.Any(p => p.ID == foodId))
                             {
                                 errMsg = "该套餐信息不存在";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -748,7 +748,7 @@ namespace XXCloudService.Api.XCCloud
                             }
                         }
 
-                        foodId = data_FoodInfo.FoodID;
+                        foodId = data_FoodInfo.ID;
 
                         //保存消耗余额类别设定
                         if (!saveFoodSale(foodId, foodSales, out errMsg))
@@ -797,7 +797,7 @@ namespace XXCloudService.Api.XCCloud
                         //保存快速套餐, 设置其他快速套餐为0
                         if (allowQuickFood == 1)
                         {
-                            foreach (var model in Data_FoodInfoService.I.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.FoodID != foodId && p.AllowQuickFood == 1))
+                            foreach (var model in Data_FoodInfoService.I.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.ID != foodId && p.AllowQuickFood == 1))
                             {
                                 model.AllowQuickFood = 0;
                                 Data_FoodInfoService.I.UpdateModel(model);
@@ -848,13 +848,13 @@ namespace XXCloudService.Api.XCCloud
                             if (!foodId.Validintnozero("套餐ID", out errMsg))
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
 
-                            if (!Data_FoodInfoService.I.Any(p => p.FoodID == (int)foodId))
+                            if (!Data_FoodInfoService.I.Any(p => p.ID == (int)foodId))
                             {
                                 errMsg = "该套餐信息不存在";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                             }
 
-                            var data_FoodInfo = Data_FoodInfoService.I.GetModels(p => p.FoodID == (int)foodId).FirstOrDefault();
+                            var data_FoodInfo = Data_FoodInfoService.I.GetModels(p => p.ID == (int)foodId).FirstOrDefault();
                             data_FoodInfo.FoodState = (int)FoodState.Invalid;
                             if (!Data_FoodInfoService.I.Update(data_FoodInfo))
                             {

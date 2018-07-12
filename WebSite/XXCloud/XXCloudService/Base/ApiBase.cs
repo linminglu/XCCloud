@@ -196,7 +196,7 @@ namespace XCCloudService.Base
         /// <returns></returns>
         protected string getParam(string storeId, string system)
         {
-            var storeTag = Base_StoreInfoService.I.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)).Select(o => o.StoreTag).FirstOrDefault() ?? 0;
+            var storeTag = Base_StoreInfoService.I.GetModels(p => p.ID.Equals(storeId, StringComparison.OrdinalIgnoreCase)).Select(o => o.StoreTag).FirstOrDefault() ?? 0;
             var paramId = Dict_SystemService.I.GetModels(p => p.DictKey.Equals("运营参数设定", StringComparison.OrdinalIgnoreCase) && p.PID == 0).FirstOrDefault().ID;
             var value = (from a in Dict_SystemService.N.GetModels(p => p.PID == paramId && p.MerchID == (storeTag + "") && p.DictKey.Equals(system, StringComparison.OrdinalIgnoreCase) && p.Enabled == 1)
                                   join b in Data_ParametersService.N.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase) && p.IsAllow == 1) on a.DictKey equals b.System into b1

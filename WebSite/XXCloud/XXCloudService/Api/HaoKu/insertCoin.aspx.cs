@@ -67,7 +67,7 @@ namespace XXCloudService.Api.HaoKu
                     {
                         //找到对应的门店ID
                         string storeId = node.Attributes["XCStoreId"].Value;
-                        Base_StoreInfo store = Base_StoreInfoService.I.GetModels(t => t.StoreID == storeId).FirstOrDefault();
+                        Base_StoreInfo store = Base_StoreInfoService.I.GetModels(t => t.ID == storeId).FirstOrDefault();
                         if(store == null)
                         {
                             Response.Write(ReturnModel.ReturnInfo(ReturnCode.F, "没有找到对应店铺信息"));

@@ -589,7 +589,7 @@ namespace XXCloudService.Api.XCCloud
                 int couponId = dicParas.Get("couponId").Toint(0);
 
                 var storeList = from a in Data_Coupon_StoreListService.N.GetModels(p => p.CouponID == couponId)
-                                join b in Base_StoreInfoService.N.GetModels() on a.StoreID equals b.StoreID
+                                join b in Base_StoreInfoService.N.GetModels() on a.StoreID equals b.ID
                                                                 
                                 select new { StoreID = a.StoreID, StoreName = b.StoreName };
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, storeList);
@@ -1322,7 +1322,7 @@ namespace XXCloudService.Api.XCCloud
                                 join b in
                                     (
                                         from b in Data_CouponListService.N.GetModels(p => p.CouponID == couponId && (p.StoreID ?? "") != "")
-                                        join c in Base_StoreInfoService.N.GetModels() on b.StoreID equals c.StoreID into c1
+                                        join c in Base_StoreInfoService.N.GetModels() on b.StoreID equals c.ID into c1
                                         from c in c1.DefaultIfEmpty()
                                         select new { b.CouponID, b.StoreID, b.CouponIndex, b.IsLock, StoreName = c != null ? c.StoreName : string.Empty }
                                     ) on a.ID equals b.CouponID

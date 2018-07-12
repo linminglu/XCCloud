@@ -521,7 +521,7 @@ namespace XCCloudService.Api.XCCloud
             }
 
             IBase_StoreInfoService base_StoreInfoService = BLLContainer.Resolve<IBase_StoreInfoService>();            
-            if (!base_StoreInfoService.Any(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)))
+            if (!base_StoreInfoService.Any(p => p.ID.Equals(storeId, StringComparison.OrdinalIgnoreCase)))
             {
                 return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "门店号无效");
             }            
@@ -604,7 +604,7 @@ namespace XCCloudService.Api.XCCloud
 
                 var memberLevel = Data_MemberLevelService.I.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.State == 1).Select(o => new
                 {
-                    MemberLevelID = o.MemberLevelID,
+                    MemberLevelID = o.ID,
                     MemberLevelName = o.MemberLevelName
                 }).Distinct();
                 
@@ -626,7 +626,7 @@ namespace XCCloudService.Api.XCCloud
                 string merchId = (userTokenKeyModel.DataModel as TokenDataModel).MerchID;
 
                 var linq = from a in Base_StoreInfoService.N.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && (p.StoreState == (int)StoreState.Open || p.StoreState == (int)StoreState.Valid))
-                           join b in Data_Member_Card_StoreService.N.GetModels() on a.StoreID equals b.StoreID
+                           join b in Data_Member_Card_StoreService.N.GetModels() on a.ID equals b.StoreID
                            join c in Data_Member_CardService.N.GetModels() on (b.CardID + "") equals c.ID
                            join d in Base_MemberInfoService.N.GetModels() on c.MemberID equals d.ID
                            select new
@@ -661,7 +661,7 @@ namespace XCCloudService.Api.XCCloud
                 if (!string.IsNullOrEmpty(memberLevelID))
                 {
                     var iMemberLevelID = Convert.ToInt32(memberLevelID);
-                    query = query.Where(w => w.MemberLevelID == iMemberLevelID);
+                    query = query.Where(w => w.ID == iMemberLevelID);
                 }
 
                 if (!string.IsNullOrEmpty(memberLevelName))
@@ -679,7 +679,7 @@ namespace XCCloudService.Api.XCCloud
                     FreeType = dict_SystemService.GetModels(p => p.PID == FreeTypeId)
                 }).Select(oo => new
                 {
-                    MemberLevelID = oo.MemberLevelModel.MemberLevelID,
+                    MemberLevelID = oo.MemberLevelModel.ID,
                     MemberLevelName = oo.MemberLevelModel.MemberLevelName,
                     OpenFee = oo.MemberLevelModel.OpenFee,
                     Deposit = oo.MemberLevelModel.Deposit,
@@ -739,15 +739,15 @@ namespace XCCloudService.Api.XCCloud
                     {
                         IData_MemberLevelService data_MemberLevelService = Data_MemberLevelService.I;
                         if (data_MemberLevelService.Any(a => a.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) &&
-                            a.MemberLevelName.Equals(memberLevelName, StringComparison.OrdinalIgnoreCase) && a.MemberLevelID != iMemberLevelID && a.State == 1))
+                            a.MemberLevelName.Equals(memberLevelName, StringComparison.OrdinalIgnoreCase) && a.ID != iMemberLevelID && a.State == 1))
                         {
                             errMsg = "该会员级别名称已存在";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                         }
 
-                        var data_MemberLevel = data_MemberLevelService.GetModels(p => p.MemberLevelID == iMemberLevelID).FirstOrDefault() ?? new Data_MemberLevel();
+                        var data_MemberLevel = data_MemberLevelService.GetModels(p => p.ID == iMemberLevelID).FirstOrDefault() ?? new Data_MemberLevel();
                         Utils.GetModel(dicParas, ref data_MemberLevel);
-                        if (data_MemberLevel.MemberLevelID == 0)
+                        if (data_MemberLevel.ID == 0)
                         {
                             //新增
                             data_MemberLevel.MerchID = merchId;
@@ -768,7 +768,7 @@ namespace XCCloudService.Api.XCCloud
                             }
                         }
 
-                        iMemberLevelID = data_MemberLevel.MemberLevelID;
+                        iMemberLevelID = data_MemberLevel.ID;
 
                         //保存开卡套餐
                         if (memberLevelFoods != null && memberLevelFoods.Count() >= 0)
@@ -1015,13 +1015,13 @@ namespace XCCloudService.Api.XCCloud
 
                 int iMemberLevelID = Convert.ToInt32(memberLevelID);
                 IData_MemberLevelService data_MemberLevelService = Data_MemberLevelService.I;
-                if (!data_MemberLevelService.Any(a => a.MemberLevelID == iMemberLevelID))
+                if (!data_MemberLevelService.Any(a => a.ID == iMemberLevelID))
                 {
                     errMsg = "该会员级别不存在";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                 }
 
-                var data_MemberLevelModel = data_MemberLevelService.GetModels(p => p.MemberLevelID == iMemberLevelID).FirstOrDefault();
+                var data_MemberLevelModel = data_MemberLevelService.GetModels(p => p.ID == iMemberLevelID).FirstOrDefault();
 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, data_MemberLevelModel);
             }
@@ -1053,9 +1053,9 @@ namespace XCCloudService.Api.XCCloud
 
                 int iMemberLevelID = Convert.ToInt32(memberLevelID);              
                 var linq = from a in Data_MemberLevel_FoodService.N.GetModels(p => p.MemberLevelID == iMemberLevelID)
-                           join b in Data_FoodInfoService.N.GetModels() on a.FoodID equals b.FoodID
+                           join b in Data_FoodInfoService.N.GetModels() on a.FoodID equals b.ID
                            select new { 
-                               FoodID = b.FoodID,
+                               FoodID = b.ID,
                                FoodName = b.FoodName
                            };
 
@@ -1234,13 +1234,13 @@ namespace XCCloudService.Api.XCCloud
                             int iMemberLevelID = Convert.ToInt32(memberLevelID);
 
                             IData_MemberLevelService data_MemberLevelService = Data_MemberLevelService.I;
-                            if (!data_MemberLevelService.Any(a => a.MemberLevelID == iMemberLevelID))
+                            if (!data_MemberLevelService.Any(a => a.ID == iMemberLevelID))
                             {
                                 errMsg = "该会员级别不存在";
                                 return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
                             }
 
-                            var data_MemberLevel = data_MemberLevelService.GetModels(p => p.MemberLevelID == iMemberLevelID).FirstOrDefault();
+                            var data_MemberLevel = data_MemberLevelService.GetModels(p => p.ID == iMemberLevelID).FirstOrDefault();
                             //data_MemberLevel.State = 0;
                             if (!data_MemberLevelService.Delete(data_MemberLevel))
                             {
@@ -1362,7 +1362,7 @@ namespace XCCloudService.Api.XCCloud
                 {
                     CardId = t.CardId,
                     ICCardNo = t.ICCardNo,
-                    LevelName = Data_MemberLevelService.I.GetModels(m => m.MemberLevelID == t.LevelId).FirstOrDefault().MemberLevelName,
+                    LevelName = Data_MemberLevelService.I.GetModels(m => m.ID == t.LevelId).FirstOrDefault().MemberLevelName,
                     EndDate = t.EndDate.Value.ToString("yyyy-MM-dd")
                 }).ToList();
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, list);
@@ -1416,7 +1416,7 @@ namespace XCCloudService.Api.XCCloud
                 {
                     CardId = t.CardId,
                     ICCardNo = t.ICCardNo,
-                    LevelName = Data_MemberLevelService.I.GetModels(m => m.MemberLevelID == t.LevelId).FirstOrDefault().MemberLevelName,
+                    LevelName = Data_MemberLevelService.I.GetModels(m => m.ID == t.LevelId).FirstOrDefault().MemberLevelName,
                     EndDate = t.EndDate.Value.ToString("yyyy-MM-dd")
                 }).ToList();
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, list);
@@ -1478,7 +1478,7 @@ namespace XCCloudService.Api.XCCloud
                 model.CardId = card.ID;
                 model.ICCardId = card.ICCardID;
                 model.MemberLevelId = card.MemberLevelID.Value;
-                model.LevelName = Data_MemberLevelService.I.GetModels(m => m.MemberLevelID == card.MemberLevelID).FirstOrDefault().MemberLevelName;
+                model.LevelName = Data_MemberLevelService.I.GetModels(m => m.ID == card.MemberLevelID).FirstOrDefault().MemberLevelName;
                 model.Deposit = card.Deposit.Value;
                 model.EndDate = card.EndDate.HasValue ? card.EndDate.Value.ToString("yyyy-MM-dd") : "";
                 model.CardAvatar = card.CardPhoto ?? "";
@@ -1659,7 +1659,7 @@ namespace XCCloudService.Api.XCCloud
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "新会员级别参数无效");
                 }
-                Data_MemberLevel level = Data_MemberLevelService.I.GetModels(t => t.MemberLevelID == memberLevelId).FirstOrDefault();
+                Data_MemberLevel level = Data_MemberLevelService.I.GetModels(t => t.ID == memberLevelId).FirstOrDefault();
                 if (level == null)
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员级别无效");
@@ -1694,7 +1694,7 @@ namespace XCCloudService.Api.XCCloud
 
                 using (TransactionScope ts = new TransactionScope(TransactionScopeOption.RequiresNew))
                 {
-                    card.MemberLevelID = level.MemberLevelID;
+                    card.MemberLevelID = level.ID;
                     card.LastStore = storeId;
                     card.UpdateTime = DateTime.Now;
                     if (!Data_Member_CardService.I.Update(card, false))
@@ -1709,7 +1709,7 @@ namespace XCCloudService.Api.XCCloud
                     levelChange.MemberID = card.MemberID;
                     levelChange.ICCardID = card.ICCardID;
                     levelChange.OldMemberLevelID = card.MemberLevelID;
-                    levelChange.NewMemberLevleID = level.MemberLevelID;
+                    levelChange.NewMemberLevleID = level.ID;
                     levelChange.ChangeType = 0;
                     levelChange.OrderID = string.Empty;
                     levelChange.OpTime = DateTime.Now;
@@ -2234,7 +2234,7 @@ namespace XCCloudService.Api.XCCloud
                             {
                                 //写入附属卡退卡记录
                                 Flw_MemberCard_Exit mce = new Flw_MemberCard_Exit();
-                                mce.OrderID = RedisCacheHelper.CreateStoreSerialNo(storeId);
+                                mce.ID = RedisCacheHelper.CreateStoreSerialNo(storeId);
                                 mce.MerchID = merchID;
                                 mce.StoreID = storeId;
                                 mce.MemberID = card.MemberID;
@@ -2340,7 +2340,7 @@ namespace XCCloudService.Api.XCCloud
 
                         //主卡退卡、退款信息
                         Flw_MemberCard_Exit memberParentCardExit = new Flw_MemberCard_Exit();
-                        memberParentCardExit.OrderID = backSerialNo;
+                        memberParentCardExit.ID = backSerialNo;
                         memberParentCardExit.MerchID = merchID;
                         memberParentCardExit.StoreID = storeId;
                         memberParentCardExit.MemberID = memberCard.MemberID;
@@ -2465,7 +2465,7 @@ namespace XCCloudService.Api.XCCloud
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, string.Format("当前班次为空，不能进行{0}操作", operate));
                 }
-                Data_MemberLevel memberLevel = Data_MemberLevelService.I.GetModels(t => t.MemberLevelID == oldCard.MemberLevelID).FirstOrDefault();
+                Data_MemberLevel memberLevel = Data_MemberLevelService.I.GetModels(t => t.ID == oldCard.MemberLevelID).FirstOrDefault();
 
                 decimal OpFree = 0;
                 switch(operateType)
@@ -2480,7 +2480,7 @@ namespace XCCloudService.Api.XCCloud
                 {           
                     //创建订单
                     Flw_Order order = new Flw_Order();
-                    order.OrderID = orderId;
+                    order.ID = orderId;
                     order.MerchID = merchID;
                     order.StoreID = storeId;
                     order.FoodCount = 1;
@@ -2577,7 +2577,7 @@ namespace XCCloudService.Api.XCCloud
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "操作无效");
                 }
 
-                Flw_Order order = Flw_OrderService.I.GetModels(t => t.OrderID == orderId).FirstOrDefault();
+                Flw_Order order = Flw_OrderService.I.GetModels(t => t.ID == orderId).FirstOrDefault();
                 if(order == null)
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "订单不存在");
@@ -2590,7 +2590,7 @@ namespace XCCloudService.Api.XCCloud
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "订单支付异常");
                 }
-                Flw_Order_Detail orderDetail = Flw_Order_DetailService.I.GetModels(t => t.OrderFlwID == order.OrderID).FirstOrDefault();
+                Flw_Order_Detail orderDetail = Flw_Order_DetailService.I.GetModels(t => t.OrderFlwID == order.ID).FirstOrDefault();
                 if(orderDetail == null)
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "订单明细不存在");
@@ -2732,11 +2732,11 @@ namespace XCCloudService.Api.XCCloud
 
                     string saleId = RedisCacheHelper.CreateStoreSerialNo(storeId);
 
-                    Data_MemberLevel memberLevel = Data_MemberLevelService.I.GetModels(t => t.MemberLevelID == oldCard.MemberLevelID).FirstOrDefault();
+                    Data_MemberLevel memberLevel = Data_MemberLevelService.I.GetModels(t => t.ID == oldCard.MemberLevelID).FirstOrDefault();
 
                     //会员补卡/换卡记录
                     Flw_MemberCard_Change cardChange = new Flw_MemberCard_Change();
-                    cardChange.OrderID = RedisCacheHelper.CreateStoreSerialNo(storeId);
+                    cardChange.ID = RedisCacheHelper.CreateStoreSerialNo(storeId);
                     cardChange.MerchID = merchID;
                     cardChange.StoreID = storeId;
                     cardChange.MemberID = oldCard.MemberID;
@@ -2763,7 +2763,7 @@ namespace XCCloudService.Api.XCCloud
                     sale.StoreID = storeId;
                     sale.FlowType = 0;//单品
                     sale.SingleType = operateType == "0" ? 5 : 4;
-                    sale.FoodID = cardChange.OrderID;
+                    sale.FoodID = cardChange.ID;
                     sale.SaleCount = 1;
                     sale.MemberLevelID = oldCard.MemberLevelID;
                     sale.Deposit = 0;
@@ -2835,7 +2835,7 @@ namespace XCCloudService.Api.XCCloud
                 string workStation = (userTokenKeyModel.DataModel as TokenDataModel).WorkStation;
                 int userId = userTokenKeyModel.LogId.Toint(0);
 
-                Flw_Order order = Flw_OrderService.I.GetModels(t => t.OrderID == orderId).FirstOrDefault();
+                Flw_Order order = Flw_OrderService.I.GetModels(t => t.ID == orderId).FirstOrDefault();
                 if (order == null)
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "订单不存在");
@@ -2848,7 +2848,7 @@ namespace XCCloudService.Api.XCCloud
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "订单支付异常");
                 }
-                Flw_Order_Detail orderDetail = Flw_Order_DetailService.I.GetModels(t => t.OrderFlwID == order.OrderID).FirstOrDefault();
+                Flw_Order_Detail orderDetail = Flw_Order_DetailService.I.GetModels(t => t.OrderFlwID == order.ID).FirstOrDefault();
                 if (orderDetail == null)
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "订单明细不存在");
@@ -2867,7 +2867,7 @@ namespace XCCloudService.Api.XCCloud
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "当前班次为空，不能进行续卡操作");
                 }
 
-                Data_MemberLevel memberLevel = Data_MemberLevelService.I.GetModels(t => t.MemberLevelID == memberCard.MemberLevelID).FirstOrDefault();
+                Data_MemberLevel memberLevel = Data_MemberLevelService.I.GetModels(t => t.ID == memberCard.MemberLevelID).FirstOrDefault();
                 DateTime? oldEndDate = memberCard.EndDate;
                 using (TransactionScope ts = new TransactionScope(TransactionScopeOption.RequiresNew))
                 {
@@ -2886,7 +2886,7 @@ namespace XCCloudService.Api.XCCloud
 
                     //会员补卡记录
                     Flw_MemberCard_Renew cardRenew = new Flw_MemberCard_Renew();
-                    cardRenew.OrderID = RedisCacheHelper.CreateStoreSerialNo(storeId);
+                    cardRenew.ID = RedisCacheHelper.CreateStoreSerialNo(storeId);
                     cardRenew.MerchID = merchID;
                     cardRenew.StoreID = storeId;
                     cardRenew.MemberID = memberCard.MemberID;
@@ -2912,7 +2912,7 @@ namespace XCCloudService.Api.XCCloud
                     sale.StoreID = storeId;
                     sale.FlowType = 0;//单品
                     sale.SingleType = 3;
-                    sale.FoodID = cardRenew.OrderID;
+                    sale.FoodID = cardRenew.ID;
                     sale.SaleCount = 1;
                     sale.MemberLevelID = memberCard.MemberLevelID;
                     sale.Deposit = 0;
@@ -3819,7 +3819,7 @@ namespace XCCloudService.Api.XCCloud
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员信息无效");
                 }
                 //会员级别实体
-                Data_MemberLevel level = Data_MemberLevelService.I.GetModels(t => t.MemberLevelID == memberCard.MemberLevelID).FirstOrDefault();
+                Data_MemberLevel level = Data_MemberLevelService.I.GetModels(t => t.ID == memberCard.MemberLevelID).FirstOrDefault();
                 if (level == null)
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员卡级别无效");
@@ -3932,7 +3932,7 @@ namespace XCCloudService.Api.XCCloud
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员信息无效");
                 }
                 //会员级别实体
-                Data_MemberLevel level = Data_MemberLevelService.I.GetModels(t => t.MemberLevelID == memberCard.MemberLevelID).FirstOrDefault();
+                Data_MemberLevel level = Data_MemberLevelService.I.GetModels(t => t.ID == memberCard.MemberLevelID).FirstOrDefault();
                 if (level == null)
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "会员卡级别无效");
@@ -3998,9 +3998,9 @@ namespace XCCloudService.Api.XCCloud
                                 return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "添加预赠币领取记录失败");
                             }
                         }
-                        else if (item.FreeType == 2 && level.MemberLevelID.ToString() == item.FreeId)
+                        else if (item.FreeType == 2 && level.ID.ToString() == item.FreeId)
                         {
-                            Data_FoodInfo food = Data_FoodInfoService.I.GetModels(t => t.FoodID == level.FoodID).FirstOrDefault();
+                            Data_FoodInfo food = Data_FoodInfoService.I.GetModels(t => t.ID == level.FoodID).FirstOrDefault();
                             foreach (var detail in item.FreeDetails)
                             {
                                 //添加生日赠币记录
@@ -4026,7 +4026,7 @@ namespace XCCloudService.Api.XCCloud
                                 }
                             }
                         }
-                        else if (item.FreeType == 3 && level.MemberLevelID.ToString() == item.FreeId)
+                        else if (item.FreeType == 3 && level.ID.ToString() == item.FreeId)
                         {
                             //当前赠币详情
                             var currFreeDetail = item.FreeDetails.FirstOrDefault();
@@ -4223,7 +4223,7 @@ namespace XCCloudService.Api.XCCloud
                         string strFreeContent = string.Empty;
                         MemberFreeModel mf = new MemberFreeModel();
                         mf.FreeType = 2;
-                        mf.FreeId = level.MemberLevelID.ToString();
+                        mf.FreeId = level.ID.ToString();
                         mf.Title = "生日送币";
                         foreach (var item in foodDetail)
                         {
@@ -4317,7 +4317,7 @@ namespace XCCloudService.Api.XCCloud
 
                         MemberFreeModel mf = new MemberFreeModel();
                         mf.FreeType = 3;
-                        mf.FreeId = level.MemberLevelID.ToString();
+                        mf.FreeId = level.ID.ToString();
                         mf.Title = "输赢送币";
                         mf.FreeCoinName = level.FreeCoin + balanceTypeModel.TypeName;
                         mf.BalanceName = balanceTypeModel.TypeName;

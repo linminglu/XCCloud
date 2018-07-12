@@ -22,7 +22,7 @@ namespace XCCloudService.Pay.Alipay
             //收款账号
             builder.seller_id = AliPayConfig.pid;
             //订单编号
-            builder.out_trade_no = order.OrderID;
+            builder.out_trade_no = order.ID;
             //订单总金额
             builder.total_amount = amount.ToString("0.00");
             //参与优惠计算的金额
@@ -73,7 +73,7 @@ namespace XCCloudService.Pay.Alipay
             //收款账号
             builder.seller_id = AliPayConfig.pid;
             //订单编号
-            builder.out_trade_no = order.OrderID;
+            builder.out_trade_no = order.ID;
             //支付场景，无需修改
             builder.scene = "bar_code";
             //支付授权码,付款码

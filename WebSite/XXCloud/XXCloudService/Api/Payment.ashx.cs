@@ -85,7 +85,7 @@ namespace XXCloudService.Api
 
                 var storeId = order.StoreID;
                 IBase_StoreInfoService base_StoreInfoService = BLLContainer.Resolve<IBase_StoreInfoService>();
-                if (!base_StoreInfoService.Any(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)))
+                if (!base_StoreInfoService.Any(p => p.ID.Equals(storeId, StringComparison.OrdinalIgnoreCase)))
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "订单所属门店无效");
                 }
@@ -194,7 +194,7 @@ namespace XXCloudService.Api
                             string error = "";
                             PPosPayData.OrderPay pposOrder = new PPosPayData.OrderPay();
                             pposOrder.txnTime = System.DateTime.Now.ToString("yyyyMMddHHmmss");
-                            pposOrder.tradeNo = order.OrderID;
+                            pposOrder.tradeNo = order.ID;
                             //pposOrder.tradeNo = Guid.NewGuid().ToString().Replace("-", "");
                             pposOrder.amount = Convert.ToInt32(amount * 100).ToString();//实际付款
                             pposOrder.total_amount = Convert.ToInt32(amount * 100).ToString();//订单总金额
@@ -217,7 +217,7 @@ namespace XXCloudService.Api
                             string qrcode = "";
                             LcswPayDate.OrderPay payInfo = new LcswPayDate.OrderPay();
                             //payInfo.terminal_trace = Guid.NewGuid().ToString().Replace("-", "");
-                            payInfo.terminal_trace = order.OrderID;
+                            payInfo.terminal_trace = order.ID;
                             payInfo.pay_type = PayChannel.ToDescription();
                             payInfo.order_body = subject;
                             payInfo.total_fee = Convert.ToInt32(amount * 100).ToString();
@@ -303,7 +303,7 @@ namespace XXCloudService.Api
 
                 var storeId = order.StoreID;
                 IBase_StoreInfoService base_StoreInfoService = BLLContainer.Resolve<IBase_StoreInfoService>();
-                if (!base_StoreInfoService.Any(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)))
+                if (!base_StoreInfoService.Any(p => p.ID.Equals(storeId, StringComparison.OrdinalIgnoreCase)))
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "订单所属门店无效");
                 }
@@ -403,7 +403,7 @@ namespace XXCloudService.Api
                         #region 新大陆
                         PPosPayData.MicroPay pposOrder = new PPosPayData.MicroPay();
                         //string tradeNo = Guid.NewGuid().ToString().Replace("-", "");
-                        string tradeNo = order.OrderID;
+                        string tradeNo = order.ID;
 
                         pposOrder.tradeNo = tradeNo;
                         pposOrder.amount = Convert.ToInt32(amount * 100).ToString();
@@ -441,7 +441,7 @@ namespace XXCloudService.Api
                     case SelttleType.LcswPay: //扫呗
                         #region 扫呗
                         LcswPayDate.TradePay tradePay = new LcswPayDate.TradePay();
-                        tradePay.terminal_trace = order.OrderID;
+                        tradePay.terminal_trace = order.ID;
                         tradePay.pay_type = PayChannel.ToDescription();
                         tradePay.order_body = subject;
                         tradePay.total_fee = Convert.ToInt32(amount * 100).ToString();
@@ -748,7 +748,7 @@ namespace XXCloudService.Api
                 }
 
                 Flw_Order order = new Flw_Order();
-                order.OrderID = RedisCacheHelper.CreateCloudSerialNo(device.StoreID);
+                order.ID = RedisCacheHelper.CreateCloudSerialNo(device.StoreID);
                 order.StoreID = device.StoreID;
                 order.FoodCount = 1;
                 order.GoodCount = 0;
@@ -779,7 +779,7 @@ namespace XXCloudService.Api
                 pay.amount = ((int)(PayCount * 100)).ToString();//实际付款
                 pay.total_amount = pay.amount;//订单总金额
                 pay.subject = game.GameName + "-投币";
-                pay.selOrderNo = order.OrderID;
+                pay.selOrderNo = order.ID;
                 pay.goods_tag = coinNote;
 
                 PPosPayApi ppos = new PPosPayApi();

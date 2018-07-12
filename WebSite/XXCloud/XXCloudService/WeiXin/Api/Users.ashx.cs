@@ -45,7 +45,7 @@ namespace XXCloudService.WeiXin.Api
 
                 //验证工单
                 IXC_WorkInfoService xC_WorkInfoService = BLLContainer.Resolve<IXC_WorkInfoService>();
-                var xC_WorkInfoList = xC_WorkInfoService.GetModels(p => p.WorkID.ToString().Equals(workId, StringComparison.OrdinalIgnoreCase));
+                var xC_WorkInfoList = xC_WorkInfoService.GetModels(p => p.ID.ToString().Equals(workId, StringComparison.OrdinalIgnoreCase));
                 int xC_WorkInfoCount = xC_WorkInfoList.Count<XC_WorkInfo>();
                 if (xC_WorkInfoCount == 0)
                 {
@@ -56,24 +56,24 @@ namespace XXCloudService.WeiXin.Api
                 //验证用户
                 var xC_WorkInfo = xC_WorkInfoList.FirstOrDefault<XC_WorkInfo>();
                 IBase_UserInfoService userInfoService = BLLContainer.Resolve<IBase_UserInfoService>();
-                var userList = userInfoService.GetModels(p => p.UserID.Equals(xC_WorkInfo.SenderID.Value));
+                var userList = userInfoService.GetModels(p => p.ID.Equals(xC_WorkInfo.SenderID.Value));
                 if (userList.Count<Base_UserInfo>() == 0)
                 {
                     errMsg = "工单号" + workId + "的用户ID不存在";
                     return false;
                 }
 
-                userId = userList.FirstOrDefault<Base_UserInfo>().UserID;
+                userId = userList.FirstOrDefault<Base_UserInfo>().ID;
 
                 //验证审核人
-                userList = userInfoService.GetModels(p => p.UserID.Equals(xC_WorkInfo.AuditorID.Value));
+                userList = userInfoService.GetModels(p => p.ID.Equals(xC_WorkInfo.AuditorID.Value));
                 if (userList.Count<Base_UserInfo>() == 0)
                 {
                     errMsg = "工单号" + workId + "的审核人ID不存在";
                     return false;
                 }
 
-                authorId = userList.FirstOrDefault<Base_UserInfo>().UserID;
+                authorId = userList.FirstOrDefault<Base_UserInfo>().ID;
 
                 return true;
             }
@@ -227,7 +227,7 @@ namespace XXCloudService.WeiXin.Api
                         }
 
                         IBase_UserInfoService userInfoService = BLLContainer.Resolve<IBase_UserInfoService>();
-                        var base_UserInfo = userInfoService.GetModels(p => p.UserID.Equals(userId)).FirstOrDefault<Base_UserInfo>();
+                        var base_UserInfo = userInfoService.GetModels(p => p.ID.Equals(userId)).FirstOrDefault<Base_UserInfo>();
                         base_UserInfo.UserGroupID = ugid;
                         base_UserInfo.Auditor = authorId;
                         base_UserInfo.AuditorTime = DateTime.Now;
@@ -239,7 +239,7 @@ namespace XXCloudService.WeiXin.Api
                         base_UserInfo.SwitchWorkstation = Convert.ToInt32(switchworkstation);
 
                         string storeId = base_UserInfo.StoreID;
-                        if (base_UserInfo.IsAdmin == 1 && userInfoService.Any(a => a.UserID != userId && a.IsAdmin == 1 && a.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)))
+                        if (base_UserInfo.IsAdmin == 1 && userInfoService.Any(a => a.ID != userId && a.IsAdmin == 1 && a.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)))
                         {
                             errMsg = "同一个门店只能有一个管理员";
                             return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -285,7 +285,7 @@ namespace XXCloudService.WeiXin.Api
 
                         //修改工单
                         IXC_WorkInfoService xC_WorkInfoService = BLLContainer.Resolve<IXC_WorkInfoService>();
-                        var xC_WorkInfo = xC_WorkInfoService.GetModels(p => p.WorkID.ToString().Equals(workId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault<XC_WorkInfo>();
+                        var xC_WorkInfo = xC_WorkInfoService.GetModels(p => p.ID.ToString().Equals(workId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault<XC_WorkInfo>();
                         xC_WorkInfo.AuditorID = authorId;
                         xC_WorkInfo.AuditTime = DateTime.Now;
                         xC_WorkInfo.WorkState = (int)WorkState.Pass;
@@ -313,7 +313,7 @@ namespace XXCloudService.WeiXin.Api
                     {
                         //修改工单
                         IXC_WorkInfoService xC_WorkInfoService = BLLContainer.Resolve<IXC_WorkInfoService>();
-                        var xC_WorkInfo = xC_WorkInfoService.GetModels(p => p.WorkID.ToString().Equals(workId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault<XC_WorkInfo>();
+                        var xC_WorkInfo = xC_WorkInfoService.GetModels(p => p.ID.ToString().Equals(workId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault<XC_WorkInfo>();
                         xC_WorkInfo.AuditorID = authorId;
                         xC_WorkInfo.AuditTime = DateTime.Now;
                         xC_WorkInfo.WorkState = (int)WorkState.Reject;

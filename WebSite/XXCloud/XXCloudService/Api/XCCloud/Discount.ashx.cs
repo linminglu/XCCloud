@@ -614,7 +614,7 @@ namespace XXCloudService.Api.XCCloud
                 int discountRuleId = dicParas.Get("discountRuleId").Toint(0);
 
                 var storeList = from a in Data_Discount_StoreListService.N.GetModels(p => p.DiscountRuleID == discountRuleId)
-                                join b in Base_StoreInfoService.N.GetModels() on a.StoreID equals b.StoreID
+                                join b in Base_StoreInfoService.N.GetModels() on a.StoreID equals b.ID
                                 select new { StoreID = a.StoreID, StoreName = b.StoreName };
 
                 return ResponseModelFactory.CreateAnonymousSuccessModel(isSignKeyReturn, storeList);

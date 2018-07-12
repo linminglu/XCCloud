@@ -81,7 +81,7 @@ namespace XXCloudService.Api.XCCloud
                 }
 
                 var result = from a in query.AsEnumerable()
-                             join b in Base_UserInfoService.N.GetModels(p => p.UserType == (int)UserType.Store) on a.UserID equals b.UserID into b1
+                             join b in Base_UserInfoService.N.GetModels(p => p.UserType == (int)UserType.Store) on a.UserID equals b.ID into b1
                              from b in b1.DefaultIfEmpty()
                              select new
                              {
@@ -160,7 +160,7 @@ namespace XXCloudService.Api.XCCloud
                 }
 
                 var result = from a in query.AsEnumerable()
-                             join b in Base_UserInfoService.N.GetModels(p => p.UserType == (int)UserType.Store) on a.UserID equals b.UserID into b1
+                             join b in Base_UserInfoService.N.GetModels(p => p.UserType == (int)UserType.Store) on a.UserID equals b.ID into b1
                              from b in b1.DefaultIfEmpty()
                              select new
                              {
@@ -343,7 +343,7 @@ namespace XXCloudService.Api.XCCloud
                 }
 
                 var result = from a in query.AsEnumerable()
-                             join b in Base_UserInfoService.N.GetModels(p => p.UserType == (int)UserType.Store) on a.UserID equals b.UserID into b1
+                             join b in Base_UserInfoService.N.GetModels(p => p.UserType == (int)UserType.Store) on a.UserID equals b.ID into b1
                              from b in b1.DefaultIfEmpty()
                              select new
                              {

@@ -520,7 +520,7 @@ namespace XCCloudService.Api.XCGame
             }
 
             //【转出】会员级别实体
-            Data_MemberLevel fromLevel = Data_MemberLevelService.I.GetModels(t => t.MemberLevelID == fromCard.MemberLevelID).FirstOrDefault();
+            Data_MemberLevel fromLevel = Data_MemberLevelService.I.GetModels(t => t.ID == fromCard.MemberLevelID).FirstOrDefault();
             if (fromLevel == null)
             {
                 return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "转出会员卡级别无效");
@@ -546,7 +546,7 @@ namespace XCCloudService.Api.XCGame
             }
 
             //【转入】会员级别实体
-            Data_MemberLevel toLevel = Data_MemberLevelService.I.GetModels(t => t.MemberLevelID == toCard.MemberLevelID).FirstOrDefault();
+            Data_MemberLevel toLevel = Data_MemberLevelService.I.GetModels(t => t.ID == toCard.MemberLevelID).FirstOrDefault();
             if (toLevel == null)
             {
                 return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "转入会员卡级别无效");
@@ -563,16 +563,16 @@ namespace XCCloudService.Api.XCGame
             {
                 return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "目标卡尚未开通过户权限");
             }
-            if (fromLevel.MemberLevelID != toLevel.MemberLevelID)
+            if (fromLevel.ID != toLevel.ID)
             {
                 //判断转出级别是否与目标级别匹配
-                if (fromLevel.TransferOutLevelID != toLevel.MemberLevelID)
+                if (fromLevel.TransferOutLevelID != toLevel.ID)
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "转出级别与目标卡级别不匹配");
                 }
 
                 //判断转入级别是否与来源匹配
-                if (toLevel.TransferInLevelID != fromLevel.MemberLevelID)
+                if (toLevel.TransferInLevelID != fromLevel.ID)
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "转入级别与即将过户的会员卡级别不匹配");
                 }

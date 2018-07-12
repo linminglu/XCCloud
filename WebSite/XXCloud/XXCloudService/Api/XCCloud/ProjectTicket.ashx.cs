@@ -144,7 +144,7 @@ namespace XXCloudService.Api.XCCloud
                                             from c in c1.DefaultIfEmpty()
                                             join d in Data_GameInfoService.N.GetModels(p => p.State == 1) on a.ProjectID equals d.ID into d1
                                             from d in d1.DefaultIfEmpty()
-                                            join e in Base_StoreInfoService.N.GetModels() on a.StoreID equals e.StoreID into e1
+                                            join e in Base_StoreInfoService.N.GetModels() on a.StoreID equals e.ID into e1
                                             from e in e1.DefaultIfEmpty()
                                             select new
                                             {
@@ -498,7 +498,7 @@ namespace XXCloudService.Api.XCCloud
                                               join b in Dict_SystemService.N.GetModels() on a.ProjectType equals b.ID into b1
                                               from b in b1.DefaultIfEmpty()
                                               join c in Data_GameInfoService.N.GetModels(p => p.State == 1) on a.GameIndex equals c.ID
-                                              join d in Base_StoreInfoService.N.GetModels() on a.StoreID equals d.StoreID
+                                              join d in Base_StoreInfoService.N.GetModels() on a.StoreID equals d.ID
                                               orderby a.StoreID, a.ProjectType
                                               select new
                                               {
@@ -520,7 +520,7 @@ namespace XXCloudService.Api.XCCloud
                                               join b in Dict_SystemService.N.GetModels() on a.ProjectType equals b.ID into b1
                                               from b in b1.DefaultIfEmpty()
                                               join c in Data_GameInfoService.N.GetModels(p => p.State == 1) on a.GameIndex equals c.ID
-                                              join d in Base_StoreInfoService.N.GetModels() on a.StoreID equals d.StoreID
+                                              join d in Base_StoreInfoService.N.GetModels() on a.StoreID equals d.ID
                                               select new
                                               {
                                                   StoreID = a.StoreID,
@@ -542,7 +542,7 @@ namespace XXCloudService.Api.XCCloud
                             from a in Data_GameInfoService.N.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase) && p.State == 1)
                             join b in Dict_SystemService.N.GetModels() on a.GameType equals b.ID into b1
                             from b in b1.DefaultIfEmpty()
-                            join c in Base_StoreInfoService.N.GetModels() on a.StoreID equals c.StoreID
+                            join c in Base_StoreInfoService.N.GetModels() on a.StoreID equals c.ID
                             where !projectGameTypes.Contains(a.GameType ?? 0)
                             select new
                             {

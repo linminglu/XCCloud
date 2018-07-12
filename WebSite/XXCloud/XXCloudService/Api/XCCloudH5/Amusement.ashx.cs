@@ -233,7 +233,7 @@ namespace XXCloudService.Api.XCCloudH5
                 MemberCard cacheCard = new MemberCard();
                 cacheCard.CardId = card.ID;
                 cacheCard.ICCardId = card.ICCardID;
-                cacheCard.StoreName = Base_StoreInfoService.I.GetModels(s => s.StoreID == card.StoreID).FirstOrDefault().StoreName ?? "";
+                cacheCard.StoreName = Base_StoreInfoService.I.GetModels(s => s.ID == card.StoreID).FirstOrDefault().StoreName ?? "";
                 cacheCard.MemberLevelId = card.MemberLevelID.Value;
                 cacheCard.MemberLevelName = XCCloudStoreBusiness.GetMemberLevel(card.MemberLevelID.Value).MemberLevelName;
                 //卡余额

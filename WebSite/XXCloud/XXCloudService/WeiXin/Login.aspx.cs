@@ -64,7 +64,7 @@ namespace XXCloudService.WeiXin
                     if (count == 1)
                     {
                         var base_UserInfoModel = userInfoService.GetModels(w => w.UnionID == unionId).FirstOrDefault();
-                        int userId = base_UserInfoModel.UserID;
+                        int userId = base_UserInfoModel.ID;
                         int userType = (int)base_UserInfoModel.UserType;
                         int logType = (int)RoleType.XcUser; //默认普通员工登录
                         int auditorId = base_UserInfoModel.Auditor ?? 0;
@@ -97,12 +97,12 @@ namespace XXCloudService.WeiXin
                             var dataModel = new TokenDataModel { StoreID = storeId, MerchID = merchId };
                             token = XCCloudUserTokenBusiness.SetUserToken(userId.ToString(), logType, dataModel);
                             IBase_StoreInfoService base_StoreInfoService = BLLContainer.Resolve<IBase_StoreInfoService>();
-                            if (!base_StoreInfoService.Any(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)))
+                            if (!base_StoreInfoService.Any(p => p.ID.Equals(storeId, StringComparison.OrdinalIgnoreCase)))
                             {
                                 errMsg = "您所访问的门店不存在";
                                 Response.Redirect(WeiXinConfig.RedirectErrorPage + "?title=" + HttpUtility.UrlEncode("登录失败") + "&message=" + HttpUtility.UrlEncode(errMsg), false);
                             }
-                            var base_StoreInfoModel = base_StoreInfoService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                            var base_StoreInfoModel = base_StoreInfoService.GetModels(p => p.ID.Equals(storeId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
                             if (base_StoreInfoModel.AuthorExpireDate < DateTime.Now)
                             {
                                 errMsg = "您所访问的门店已到期";
@@ -122,12 +122,12 @@ namespace XXCloudService.WeiXin
                             logType = (int)RoleType.MerchUser;
                             merchId = base_UserInfoModel.MerchID;                            
                             IBase_MerchantInfoService base_MerchantInfoService = BLLContainer.Resolve<IBase_MerchantInfoService>();
-                            if (!base_MerchantInfoService.Any(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)))
+                            if (!base_MerchantInfoService.Any(p => p.ID.Equals(merchId, StringComparison.OrdinalIgnoreCase)))
                             {
                                 errMsg = "您所访问的商户不存在";
                                 Response.Redirect(WeiXinConfig.RedirectErrorPage + "?title=" + HttpUtility.UrlEncode("登录失败") + "&message=" + HttpUtility.UrlEncode(errMsg), false);
                             }
-                            var base_MerchantInfoModel = base_MerchantInfoService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                            var base_MerchantInfoModel = base_MerchantInfoService.GetModels(p => p.ID.Equals(merchId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
                             var dataModel = new TokenDataModel { MerchID = merchId, StoreID = string.Empty, MerchType = base_MerchantInfoModel.MerchType, CreateType = base_MerchantInfoModel.CreateType, CreateUserID = base_MerchantInfoModel.CreateUserID };
                             token = XCCloudUserTokenBusiness.SetUserToken(userId.ToString(), logType, dataModel);
                             tag = base_MerchantInfoModel.MerchTag;

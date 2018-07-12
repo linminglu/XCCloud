@@ -208,7 +208,7 @@ namespace XXCloudService.Api.XCGameMana
                         {
                             return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "未查询到该用户");
                         }
-                        userId = userModel.UserID;
+                        userId = userModel.ID;
                     }
                     else if(storeModel.StoreDBDeployType == 1)
                     {
@@ -236,7 +236,7 @@ namespace XXCloudService.Api.XCGameMana
                     {
                         return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "未查询到该用户");
                     }
-                    userId = userModel.UserID;
+                    userId = userModel.ID;
 
                     //添加工作站信息
                     var data_WorkstationModel = Data_WorkstationService.I.GetModels(p => p.WorkStation.Equals(mobile, StringComparison.OrdinalIgnoreCase)).FirstOrDefault() ?? new Data_Workstation();

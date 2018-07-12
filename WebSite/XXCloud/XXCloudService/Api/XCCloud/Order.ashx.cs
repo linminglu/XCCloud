@@ -260,7 +260,7 @@ namespace XXCloudService.Api.XCCloud
 
 
                 IBase_StoreInfoService base_StoreInfoService = BLLContainer.Resolve<IBase_StoreInfoService>();
-                var menlist = base_StoreInfoService.GetModels(x => x.StoreID == StoreID).FirstOrDefault<Base_StoreInfo>();
+                var menlist = base_StoreInfoService.GetModels(x => x.ID == StoreID).FirstOrDefault<Base_StoreInfo>();
                 if (menlist == null)
                 {
                     return ResponseModelFactory.CreateModel(isSignKeyReturn, Return_Code.T, "", Result_Code.F, "未查询到商户号");
@@ -1060,7 +1060,7 @@ namespace XXCloudService.Api.XCCloud
                 var orderFlwId = dicParas.Get("id");
 
                 IFlw_OrderService flw_OrderService = BLLContainer.Resolve<IFlw_OrderService>();
-                if (!flw_OrderService.Any(p => p.OrderID.Equals(orderFlwId, StringComparison.OrdinalIgnoreCase)))
+                if (!flw_OrderService.Any(p => p.ID.Equals(orderFlwId, StringComparison.OrdinalIgnoreCase)))
                 {
                     errMsg = "该订单不存在";
                     return ResponseModelFactory.CreateFailModel(isSignKeyReturn, errMsg);
@@ -1105,7 +1105,7 @@ namespace XXCloudService.Api.XCCloud
                 int num = ts.Days;
 
                 List<Store_CheckDateChartModel> store_CheckDateChart = new List<Store_CheckDateChartModel>();
-                var base_StoreInfo = BLLContainer.Resolve<IBase_StoreInfoService>().GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)).Select(o => o.StoreID);
+                var base_StoreInfo = BLLContainer.Resolve<IBase_StoreInfoService>().GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)).Select(o => o.ID);
                 var store_CheckDate = BLLContainer.Resolve<IStore_CheckDateService>().GetModels(p => base_StoreInfo.Contains(p.StoreID) && System.Data.Entity.DbFunctions.DiffMonths(p.CheckDate, DateTime.Now) == 0);
                 for (int i = 0; i <= num; i++)
                 {

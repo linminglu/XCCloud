@@ -14,7 +14,7 @@ namespace XCCloudService.Model.XCCloud
     
     public partial class Flw_MemberCard_Change
     {
-        public string OrderID { get; set; }
+        public string ID { get; set; }
         public string MerchID { get; set; }
         public string StoreID { get; set; }
         public string MemberID { get; set; }

@@ -242,7 +242,7 @@ namespace XXCloudService.Api.XCCloud
 
                 //会员电子存票赠送设置
                 var FreeLotteryRules = from a in Data_GameFreeLotteryRuleService.N.GetModels(p => p.GameIndex == iId)
-                                       join b in Data_MemberLevelService.N.GetModels() on a.MemberLevelID equals b.MemberLevelID into b1
+                                       join b in Data_MemberLevelService.N.GetModels() on a.MemberLevelID equals b.ID into b1
                                        from b in b1.DefaultIfEmpty()
                                        select new 
                                        {
@@ -1051,7 +1051,7 @@ namespace XXCloudService.Api.XCCloud
                 var gameId = dicParas.Get("gameId").Toint();
 
                 var list = (from a in Data_GameAPP_MemberRuleService.N.GetModels(p => p.GameID == gameId)
-                            join b in Data_MemberLevelService.N.GetModels() on a.MemberLevelID equals b.MemberLevelID into b1
+                            join b in Data_MemberLevelService.N.GetModels() on a.MemberLevelID equals b.ID into b1
                             from b in b1.DefaultIfEmpty()
                             join c in Dict_BalanceTypeService.N.GetModels() on a.PushBalanceIndex1 equals c.ID into c1
                             from c in c1.DefaultIfEmpty()

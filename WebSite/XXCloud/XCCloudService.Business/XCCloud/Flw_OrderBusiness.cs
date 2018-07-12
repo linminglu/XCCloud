@@ -35,7 +35,7 @@ namespace XCCloudService.Business.XCCloud
         /// <returns></returns>
         public static Model.XCCloud.Flw_Order GetOrderModel(string orderId)
         {
-            return GetOrderList().FirstOrDefault(m => m.OrderID.Equals(orderId));
+            return GetOrderList().FirstOrDefault(m => m.ID.Equals(orderId));
         }
 
         #region 订单支付成功处理

@@ -37,7 +37,7 @@ namespace XCCloudService.Business.XCCloud
             var list = base_UserInfoService.GetModels(p => p.UserType == (int)UserType.Xc).ToList();
             foreach (var item in list)
             {
-                RedisCacheHelper.HashSet<UserInfoCacheModel>(userInfoCacheKey, item.OpenID, new UserInfoCacheModel() { OpenID = item.OpenID, UserID = item.UserID });
+                RedisCacheHelper.HashSet<UserInfoCacheModel>(userInfoCacheKey, item.OpenID, new UserInfoCacheModel() { OpenID = item.OpenID, UserID = item.ID });
             }
         }
 

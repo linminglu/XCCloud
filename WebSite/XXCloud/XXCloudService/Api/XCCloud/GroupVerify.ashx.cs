@@ -50,11 +50,11 @@ namespace XXCloudService.Api.XCCloud
                 var result = from a in query
                              join b in dict_SystemService.GetModels() on (a.GroupType + "") equals b.DictValue into b1
                              from b in b1.DefaultIfEmpty()
-                             join c in base_StoreInfoService.GetModels() on a.StoreID equals c.StoreID
+                             join c in base_StoreInfoService.GetModels() on a.StoreID equals c.ID
                              join d in
                                  (
                                       from d in flw_Schedule_UserInfoService.GetModels()
-                                      join e in base_UserInfoService.GetModels() on d.UserID equals e.UserID
+                                      join e in base_UserInfoService.GetModels() on d.UserID equals e.ID
                                       select new { d.ScheduleID, e.LogName }
                                  ) on a.ScheduleID equals d.ScheduleID
                              join f in data_WorkstationService.GetModels() on a.WorkStationID equals f.ID

@@ -35,7 +35,7 @@ namespace XXCloudService.Api.XCCloud
                
                 var list = Base_StoreInfoService.I.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase)).Select(o => new 
                 {
-                    StoreID = o.StoreID,
+                    StoreID = o.ID,
                     StoreName = o.StoreName
                 });
 
@@ -64,14 +64,14 @@ namespace XXCloudService.Api.XCCloud
                 IBase_UserInfoService base_UserInfoService = BLLContainer.Resolve<IBase_UserInfoService>(resolveNew: true);
                 IBase_StoreWeightService base_StoreWeightService = BLLContainer.Resolve<IBase_StoreWeightService>(resolveNew: true);
                 var result = from a in base_UserInfoService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase) && p.UserType == (int)UserType.StoreBoss)
-                             join b in base_StoreWeightService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)) on a.UserID equals b.BossID into b1
+                             join b in base_StoreWeightService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)) on a.ID equals b.BossID into b1
                              from b in b1.DefaultIfEmpty()
                              where b.BossID == (int?)null
                              select new
                              {
                                  RealName = a.RealName,
                                  LogName = a.LogName,
-                                 UserID = a.UserID
+                                 UserID = a.ID
                              };
 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, result);
@@ -99,7 +99,7 @@ namespace XXCloudService.Api.XCCloud
                 IBase_UserInfoService base_UserInfoService = BLLContainer.Resolve<IBase_UserInfoService>(resolveNew: true);
                 IBase_StoreWeightService base_StoreWeightService = BLLContainer.Resolve<IBase_StoreWeightService>(resolveNew: true);
                 var result = from a in base_UserInfoService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase) && p.UserType == (int)UserType.StoreBoss)
-                             join b in base_StoreWeightService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)) on a.UserID equals b.BossID
+                             join b in base_StoreWeightService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)) on a.ID equals b.BossID
                              select new
                              {
                                  RealName = a.RealName,
@@ -307,12 +307,12 @@ namespace XXCloudService.Api.XCCloud
                 IBase_UserInfoService base_UserInfoService = BLLContainer.Resolve<IBase_UserInfoService>(resolveNew: true);
                 IBase_StoreWeightService base_StoreWeightService = BLLContainer.Resolve<IBase_StoreWeightService>(resolveNew: true);
                 var result = from a in base_UserInfoService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase) && p.UserType == (int)UserType.StoreBoss)
-                             join b in base_StoreWeightService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)) on a.UserID equals b.BossID
+                             join b in base_StoreWeightService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)) on a.ID equals b.BossID
                              select new
                              {
                                  RealName = a.RealName,
                                  LogName = a.LogName,
-                                 UserID = a.UserID
+                                 UserID = a.ID
                              };
 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, result);
@@ -495,7 +495,7 @@ namespace XXCloudService.Api.XCCloud
                 var result = from a in base_ChainRuleService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase))
                              join b in base_ChainRule_StoreService.GetModels(p => p.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)) on a.ID equals b.RuleGroupID
                              join c in base_ChainRule_StoreService.GetModels() on b.RuleGroupID equals c.RuleGroupID               
-                             join d in base_StoreInfoService.GetModels() on c.StoreID equals d.StoreID 
+                             join d in base_StoreInfoService.GetModels() on c.StoreID equals d.ID 
                              where !c.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)
                              select new
                              {
@@ -553,7 +553,7 @@ namespace XXCloudService.Api.XCCloud
                 IData_BalanceType_StoreListService data_BalanceType_StoreListService = BLLContainer.Resolve<IData_BalanceType_StoreListService>(resolveNew: true);
                 IBase_ChainRule_StoreService base_ChainRule_StoreService = BLLContainer.Resolve<IBase_ChainRule_StoreService>(resolveNew: true);
                 var result = from a in base_StoreInfoService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && (p.StoreState == (int)StoreState.Open || p.StoreState == (int)StoreState.Valid))
-                             join d in data_BalanceType_StoreListService.GetModels(p => p.BalanceIndex == iRuleType) on a.StoreID equals d.StroeID  //仅查找适用的余额类别的门店
+                             join d in data_BalanceType_StoreListService.GetModels(p => p.BalanceIndex == iRuleType) on a.ID equals d.StroeID  //仅查找适用的余额类别的门店
                              join b in
                                  (
                                      from a in base_ChainRuleService.GetModels(p => p.MerchID.Equals(merchId, StringComparison.OrdinalIgnoreCase) && p.RuleType == iRuleType)
@@ -561,12 +561,12 @@ namespace XXCloudService.Api.XCCloud
                                      join c in base_ChainRule_StoreService.GetModels() on b.RuleGroupID equals c.RuleGroupID
                                      select c
                                  )
-                             on a.StoreID equals b.StoreID into b1
+                             on a.ID equals b.StoreID into b1
                              from b in b1.DefaultIfEmpty()
-                             where string.IsNullOrEmpty(b.StoreID) && !a.StoreID.Equals(storeId, StringComparison.OrdinalIgnoreCase)
+                             where string.IsNullOrEmpty(b.StoreID) && !a.ID.Equals(storeId, StringComparison.OrdinalIgnoreCase)
                              select new
                              {
-                                 StoreID = a.StoreID,
+                                 StoreID = a.ID,
                                  StoreName = a.StoreName
                              };
 

@@ -45,7 +45,7 @@ namespace XXCloudService.Api.XCCloud
                 //EF左关联
                 var dbContext = DbContextFactory.CreateByModelNamespace(typeof(Base_UserGroup).Namespace);
                 var base_UserGroup = (from a in dbContext.Set<Base_UserGroup>()
-                                      join b in dbContext.Set<Base_UserInfo>().Where(p => p.UserID == userId) on a.ID equals b.UserGroupID into t
+                                      join b in dbContext.Set<Base_UserInfo>().Where(p => p.ID == userId) on a.ID equals b.UserGroupID into t
                                       from b in t.DefaultIfEmpty()
                                       where a.MerchID.Equals(logId, StringComparison.OrdinalIgnoreCase)
                                       select new UserGroupModel
@@ -53,7 +53,7 @@ namespace XXCloudService.Api.XCCloud
                                           ID = a.ID,
                                           GroupName = a.GroupName,
                                           Note = a.Note,
-                                          UserState = (b.UserID > 0 ? 1 : 0)
+                                          UserState = (b.ID > 0 ? 1 : 0)
                                       }).ToList();
 
                 return ResponseModelFactory.CreateSuccessModel(isSignKeyReturn, base_UserGroup);
