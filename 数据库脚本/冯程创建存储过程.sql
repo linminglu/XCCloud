@@ -17,7 +17,7 @@ as
 	declare @UserId int 
 	declare @AuditorId int
 	--添加门店用户
-	select @AuditorId = UserId from Base_UserInfo where OpenID = (select WXOpenID from Base_MerchantInfo where MerchID = (select MerchID from Base_StoreInfo where StoreID=@StoreId))
+	select @AuditorId = ID from Base_UserInfo where OpenID = (select WXOpenID from Base_MerchantInfo where ID = (select MerchID from Base_StoreInfo where ID=@StoreId))
 	insert into Base_UserInfo(StoreID,MerchID,UserType,LogName,LogPassword,OpenID,UnionID,RealName,Mobile,ICCardID,CreateTime,[Status],Auditor)
 	values(@StoreId,@MerchId,@UserType,@Username,@UserPassword,@WXOpenID,@UnionID,@Realname,@Mobile,'',GETDATE(),0,@AuditorId)
 	set @UserId = @@identity	
@@ -34,7 +34,7 @@ as
 	
 	commit transaction tran1
 	set @Return = 1
-	select * from XC_WorkInfo where WorkID = @WorkID
+	select * from XC_WorkInfo where ID = @WorkID
  end try
  begin catch
 	rollback transaction tran1
@@ -51,7 +51,7 @@ as
 	--union
 	select a.ID, a.MerchID, a.GroupName, a.Note
 	from Base_UserGroup a inner join Base_UserInfo b on a.MerchID=b.MerchID
-	where b.UserID=@UserID
+	where b.ID=@UserID
 	order by a.ID
  end 
 
@@ -64,7 +64,7 @@ as
 	from Dict_System a 
 	left join Dict_System b on a.PID=b.ID
 	--inner join Base_StoreInfo c on a.MerchID=c.MerchID 
-	--inner join Base_UserInfo b on c.StoreID=b.StoreID
+	--inner join Base_UserInfo b on c.ID=b.StoreID
 	left join Base_UserGrant d on a.ID=d.GrantID and d.UserID=@UserID	
 	where a.Enabled=1 and b.DictKey='权限列表' and a.MerchID='0'
 	order by OrderID
@@ -123,17 +123,19 @@ CREATE Proc [dbo].[SelectMerchFunction](@MerchID varchar(15))
 as
  begin
 	declare @MerchTag int = 0
-	select @MerchTag=MerchTag from Base_MerchantInfo where MerchID=@MerchID
-	select distinct a.ParentID, a.FunctionID, a.FunctionName, (case when c.FunctionEN is null then (case when b.FunctionEN is null then null else b.FunctionEN end) else c.FunctionEN end) as FunctionEN
+	select @MerchTag=MerchTag from Base_MerchantInfo where ID=@MerchID
+	select distinct a.ParentID, a.ID, a.FunctionName, (case when c.FunctionEN is null then (case when b.FunctionEN is null then null else b.FunctionEN end) else c.FunctionEN end) as FunctionEN
 	from Dict_FunctionMenu a 
-	left join (select b.MerchID,c.FunctionID,c.FunctionEN from Base_MerchantInfo a 
-				inner join Base_MerchantInfo b on a.MerchID=b.CreateUserID
-				inner join Base_MerchFunction c on a.MerchID=c.MerchID where a.MerchType=3
-				) b on a.FunctionID=b.FunctionID and b.MerchID=@MerchID
-	left join Base_MerchFunction c on a.FunctionID=c.FunctionID and c.MerchID=@MerchID 
+	left join (select b.ID,c.FunctionID,c.FunctionEN from Base_MerchantInfo a 
+				inner join Base_MerchantInfo b on a.ID=b.CreateUserID
+				inner join Base_MerchFunction c on a.ID=c.MerchID where a.MerchType=3
+				) b on a.ID=b.FunctionID and b.ID=@MerchID
+	left join Base_MerchFunction c on a.ID=c.FunctionID and c.MerchID=@MerchID 
 	where a.MenuType = 1 and a.UseType in (0, @MerchTag)
-	order by a.ParentID, a.FunctionID
+	order by a.ParentID, a.ID
  end
+
+GO
 
 CREATE Proc [dbo].[SP_GetMenus](@LogType int, @LogID int, @MerchID varchar(15), @StoreID varchar(15))
 as
@@ -144,52 +146,51 @@ begin
 	begin
 		declare @MerchType int 
 		declare @MerchTag int 
-		SELECT @MerchType=MerchType, @MerchTag=MerchTag FROM Base_MerchantInfo WHERE MerchID=@MerchID
+		SELECT @MerchType=MerchType, @MerchTag=MerchTag FROM Base_MerchantInfo WHERE ID=@MerchID
 		insert into #MENU
-		select FunctionID from Dict_FunctionMenu where MenuType=(case when @MerchType in (1, 2) then 3 when @MerchType=3 then 4 else null end)
-														and UseType in (0, @MerchTag)
+		select ID from Dict_FunctionMenu where MenuType=(case when @MerchType in (1, 2) then 3 when @MerchType=3 then 4 else null end) and UseType in (0, @MerchTag)
 	end
 	else if @LogType=1 --莘宸管理员
 	begin
 		insert into #MENU
-		select FunctionID from Dict_FunctionMenu where MenuType=0
+		select ID from Dict_FunctionMenu where MenuType=0
 	end
 	else if @LogType=0 --莘宸员工
 	begin
 		insert into #MENU
-		select a.FunctionID from Dict_FunctionMenu a left join Base_UserGroup_Grant b on a.FunctionID=b.FunctionID
-		left join Base_UserInfo c on b.GroupID=c.UserGroupID and c.UserID=@LogID
+		select a.ID from Dict_FunctionMenu a left join Base_UserGroup_Grant b on a.ID=b.FunctionID
+		left join Base_UserInfo c on b.GroupID=c.UserGroupID and c.ID=@LogID
 		where a.MenuType=0 and b.IsAllow=1
 	end
 	else if @LogType=2 --门店用户
 	begin
 		declare @StoreTag int 
-		SELECT @StoreTag=StoreTag FROM Base_StoreInfo WHERE StoreID=@StoreID
+		SELECT @StoreTag=StoreTag FROM Base_StoreInfo WHERE ID=@StoreID
 		insert into #MENU
-		select distinct a.FunctionID
+		select distinct a.ID
 		from Dict_FunctionMenu a 
-		--left join (select b.MerchID,c.FunctionID,c.FunctionEN from Base_MerchantInfo a 
-		--			inner join Base_MerchantInfo b on a.MerchID=b.CreateUserID
-		--			inner join Base_MerchFunction c on a.MerchID=c.MerchID where a.MerchType=3
+		--left join (select b.ID,c.FunctionID,c.FunctionEN from Base_MerchantInfo a 
+		--			inner join Base_MerchantInfo b on a.ID=b.CreateUserID
+		--			inner join Base_MerchFunction c on a.ID=c.MerchID where a.MerchType=3
 		--			) b on a.FunctionID=b.FunctionID and b.MerchID=@MerchID
 		--left join Base_MerchFunction c on a.FunctionID=c.FunctionID and c.MerchID=@MerchID 
-		left join Base_UserGroup_Grant b on a.FunctionID=b.FunctionID
+		left join Base_UserGroup_Grant b on a.ID=b.FunctionID
 		left join Base_UserInfo c on b.GroupID=c.UserGroupID
-		where a.MenuType = 1 and a.UseType in (0, @StoreTag) and c.UserID=@LogID and b.IsAllow=1 --(c.FunctionEN=1 or b.FunctionEN=1)
+		where a.MenuType = 1 and a.UseType in (0, @StoreTag) and c.ID=@LogID and b.IsAllow=1 --(c.FunctionEN=1 or b.FunctionEN=1)
 	end
 					
 	;WITH 
-	LOCS(FunctionID,ParentID,FunctionName,PageName,Icon,OrderID)
+	LOCS(ID,ParentID,FunctionName,PageName,Icon,OrderID)
 	AS
 	(
-	SELECT FunctionID,ParentID,FunctionName,PageName,Icon,OrderID FROM Dict_FunctionMenu WHERE FunctionID in (select FunctionID from #MENU)
+	SELECT ID,ParentID,FunctionName,PageName,Icon,OrderID FROM Dict_FunctionMenu WHERE ID in (select FunctionID from #MENU)
 	UNION ALL
-	SELECT A.FunctionID,A.ParentID,A.FunctionName,A.PageName,A.ICON,A.OrderID FROM Dict_FunctionMenu A JOIN LOCS B ON 
-	B.ParentID=A.FunctionID 
+	SELECT A.ID,A.ParentID,A.FunctionName,A.PageName,A.ICON,A.OrderID FROM Dict_FunctionMenu A JOIN LOCS B ON 
+	B.ParentID=A.ID 
 	--A.pid = B.id
 	)
 	
-	SELECT DISTINCT FunctionID,ParentID,FunctionName,PageName,Icon,OrderID from LOCS order by OrderID
+	SELECT DISTINCT ID as FunctionID,ParentID,FunctionName,PageName,Icon,OrderID from LOCS order by OrderID
 	
  end
 
@@ -210,16 +211,16 @@ as
 	
 		
 	;WITH 
-	LOCS(FunctionID,ParentID,FunctionName)
+	LOCS(ID,ParentID,FunctionName)
 	AS
 	(
-	SELECT FunctionID,ParentID,FunctionName FROM Dict_FunctionMenu WHERE FunctionID in (select FunctionID from #MENU)
+	SELECT ID,ParentID,FunctionName FROM Dict_FunctionMenu WHERE ID in (select FunctionID from #MENU)
 	UNION ALL
-	SELECT A.FunctionID,A.ParentID,A.FunctionName FROM Dict_FunctionMenu A JOIN LOCS B ON 
-	B.ParentID=A.FunctionID 
+	SELECT A.ID,A.ParentID,A.FunctionName FROM Dict_FunctionMenu A JOIN LOCS B ON 
+	B.ParentID=A.ID 
 	--A.pid = B.id
 	)
-	select DISTINCT a.FunctionID,a.ParentID,a.FunctionName,b.IsAllow from LOCS a Left JOIN #MENU b on a.FunctionID=b.FunctionID
+	select DISTINCT a.ID as FunctionID,a.ParentID,a.FunctionName,b.IsAllow from LOCS a Left JOIN #MENU b on a.ID=b.FunctionID
 	
  end
 
@@ -228,12 +229,12 @@ GO
 CREATE Proc [dbo].[SelectStoreUnchecked](@UserID int)
 as
  begin
-	select a.StoreID, a.MerchID, a.StoreName, a.Password, a.AuthorExpireDate, a.AreaCode, a.Address, a.Contacts, a.Mobile, b.DictKey as SelttleTypeStr, c.DictKey as StoreStateStr from Base_StoreInfo a 
+	select a.ID as StoreID, a.MerchID, a.StoreName, a.Password, a.AuthorExpireDate, a.AreaCode, a.Address, a.Contacts, a.Mobile, b.DictKey as SelttleTypeStr, c.DictKey as StoreStateStr from Base_StoreInfo a 
 	left join (select b.* from Dict_System a inner join Dict_System b on a.ID=b.PID where a.DictKey='结算类型') b on a.SelttleType=convert(int,b.DictValue) 
 	left join (select b.* from Dict_System a inner join Dict_System b on a.ID=b.PID where a.DictKey='门店状态') c on a.StoreState=convert(int,c.DictValue) 
-	left join Base_MerchantInfo d on a.MerchID=d.MerchID and d.CreateType=1 
-	left join Base_MerchantInfo e on a.MerchID=e.MerchID and e.CreateType=2 
-	left join Base_MerchantInfo f on e.CreateUserID=f.MerchID 
+	left join Base_MerchantInfo d on a.MerchID=d.ID and d.CreateType=1 
+	left join Base_MerchantInfo e on a.MerchID=e.ID and e.CreateType=2 
+	left join Base_MerchantInfo f on e.CreateUserID=f.ID 
 	where a.StoreState=0 and (d.CreateUserID=@UserID or f.CreateUserID=@UserID)
  end
 
@@ -245,10 +246,10 @@ CREATE Proc [dbo].[SelectFunctionForXA](@GroupID int)
 as
 begin
 	select ID,GroupName,Note from Base_UserGroup where ID=@GroupID
-	select distinct a.ParentID, a.FunctionID, a.FunctionName, b.IsAllow 
-	from Dict_FunctionMenu a left join Base_UserGroup_Grant b on a.FunctionID=b.FunctionID and b.GroupID=@GroupID
+	select distinct a.ParentID, a.ID as FunctionID, a.FunctionName, b.IsAllow 
+	from Dict_FunctionMenu a left join Base_UserGroup_Grant b on a.ID=b.FunctionID and b.GroupID=@GroupID
 	where a.MenuType=0
-	order by a.ParentID, a.FunctionID
+	order by a.ParentID, a.ID
 end
 
 GO
@@ -383,8 +384,8 @@ as
                             FROM          dbo.Flw_Schedule
                             WHERE      [State] IN (0, 2) AND CheckDateID = c.ID and c.ID is not null) THEN '未审核' ELSE '已审核' END) AS ScheduleState
 	FROM         dbo.Base_StoreInfo AS a INNER JOIN
-				dbo.Flw_Schedule AS b on a.StoreID = b.StoreID left join
-				  dbo.Flw_CheckDate AS c ON b.CheckDateID = c.ID and a.StoreID = c.StoreID and b.CheckDate = c.CheckDate
+				dbo.Flw_Schedule AS b on a.ID = b.StoreID left join
+				  dbo.Flw_CheckDate AS c ON b.CheckDateID = c.ID and a.ID = c.StoreID and b.CheckDate = c.CheckDate
     where b.CheckDate=CONVERT(date, @CheckDate) and a.MerchID=@MerchId
     ) as T1 left join
     (
@@ -504,8 +505,8 @@ as
 		begin
 			declare @temp table (ID int)
 			insert @temp select c.ID FROM dbo.Base_StoreInfo AS a INNER JOIN
-				dbo.Flw_Schedule AS b on a.StoreID = b.StoreID left join
-				  dbo.Flw_CheckDate AS c ON b.CheckDateID = c.ID and a.StoreID = c.StoreID and b.CheckDate = c.CheckDate
+				dbo.Flw_Schedule AS b on a.ID = b.StoreID left join
+				  dbo.Flw_CheckDate AS c ON b.CheckDateID = c.ID and a.ID = c.StoreID and b.CheckDate = c.CheckDate
 				  where b.CheckDate=CONVERT(date, @CheckDate) and a.MerchID=@MerchId and
 						NOT EXISTS
                           (SELECT     1
@@ -620,7 +621,7 @@ as
 		return
 	end
 	
-	if not exists (select 1 from Base_StoreInfo where StoreID=@StoreID)
+	if not exists (select 1 from Base_StoreInfo where ID=@StoreID)
 	begin
 		set @Result = -1
 		set @ErrMsg = '调拨门店不存在，编号为' + @StoreID
@@ -796,7 +797,7 @@ as
     ' left join (select a.ID as CouponID, count(b.ID) as NotActivatedCount from Data_CouponInfo a inner join Data_CouponList b on a.ID=b.CouponID where isnull(b.State, 0)=1 group by a.ID) g on a.ID=g.CouponID ' +
     ' left join (select a.ID as CouponID, count(b.ID) as ActivatedCount from Data_CouponInfo a inner join Data_CouponList b on a.ID=b.CouponID where isnull(b.State, 0)=2 group by a.ID) h on a.ID=h.CouponID ' +
     ' left join (select a.ID as CouponID, min(isnull(b.IsLock,0)) as IsLock from Data_CouponInfo a inner join Data_CouponList b on a.ID=b.CouponID group by a.ID) i on a.ID=i.CouponID ' +
-    ' left join Base_UserInfo j on a.OpUserID=j.UserID ' +
+    ' left join Base_UserInfo j on a.OpUserID=j.ID ' +
     ' where a.MerchID=''' + @MerchID + '''' + @SqlWhere
 	exec (@sql)
 	set @Result = 1
@@ -832,8 +833,8 @@ as
     ' from Data_Member_Card a'+
     ' inner join Data_Member_Card_Store s on a.ID=s.CardID and a.StoreID=s.StoreID '+
     ' inner join Base_MemberInfo b on a.MemberID=b.ID ' +
-    ' inner join Data_MemberLevel c on a.MemberLevelID=c.MemberLevelID '+
-    ' left join Base_StoreInfo d on a.StoreID=d.StoreID ' +    
+    ' inner join Data_MemberLevel c on a.MemberLevelID=c.ID '+
+    ' left join Base_StoreInfo d on a.StoreID=d.ID ' +    
     ' where a.MerchID=''' + @MerchID + ''' AND a.StoreID=''' + @StoreID + ''''
     SET @sql = @sql + ') a'
     SET @sql = @sql + ' inner join ('
@@ -888,9 +889,9 @@ as
     ' inner join Flw_Order o on a.OrderID=o.OrderID ' +
     ' inner join Flw_Order_Detail od on o.OrderID=od.OrderFlwID ' +
     ' inner join Flw_Food_Sale b on od.FoodFlwID=b.ID ' +
-    ' inner join Data_MemberLevel c on a.MemberLevelID=c.MemberLevelID ' +
-    ' left join Base_StoreInfo d on a.StoreID=d.StoreID ' + 
-    ' left join Base_UserInfo u on o.UserID=u.UserID ' +  
+    ' inner join Data_MemberLevel c on a.MemberLevelID=c.ID ' +
+    ' left join Base_StoreInfo d on a.StoreID=d.ID ' + 
+    ' left join Base_UserInfo u on o.UserID=u.ID ' +  
     ' left join Flw_Schedule sd on o.ScheduleID=sd.ID ' +     
     ' where a.MerchID=''' + @MerchID + ''' AND a.StoreID=''' + @StoreID + ''''
     SET @sql = @sql + ') a' + ISNULL(@SqlWhere,'')
